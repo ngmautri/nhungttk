@@ -27,10 +27,12 @@ return array(
        					'hostname'       => 'localhost',
        					'database'       => 'mib',
        					'username'       => 'root',
-       					'password'      =>  ''
+       					'password'       =>  '',
+       					'charset' 		 => 'utf-8'
        			));
        		},
 
+       		// Authentication Service
        		'AuthService' => function($sm) {
        			$dbAdapter           = $sm->get('Zend\Db\Adapter\Adapter');
        			$dbTableAuthAdapter  = new DbTableAuthAdapter($dbAdapter,

@@ -30,6 +30,4 @@ class UserTable
 		}
 		return  $row;
 	}
-
-
 }

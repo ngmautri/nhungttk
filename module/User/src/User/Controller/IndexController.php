@@ -44,6 +44,9 @@ class IndexController extends AbstractActionController
     }
 
 
+    /*
+     * Get Authentication Service
+     */
     public function getAuthService(){
         if (! $this->authService) {
         	$this->authservice = $this->getServiceLocator()->get('AuthService');

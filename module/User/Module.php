@@ -20,8 +20,6 @@ use Zend\Mvc\MvcEvent;
 use User\Model\User;
 use User\Model\UserTable;
 
-
-
 class Module
 {
     public function onBootstrap(MvcEvent $e)
@@ -29,6 +27,15 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
+
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, function($e) {
+        	sprintf('executed on dispatch process');
+        });
+
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH, function($e) {
+            sprintf('executed on dispatch process');
+         });
     }
 
     public function getConfig()

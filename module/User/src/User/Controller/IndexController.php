@@ -9,6 +9,8 @@
 
 namespace User\Controller;
 
+use User;
+use User\Form\UserForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -20,6 +22,8 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
+    	$form = new UserForm();
+
         if ($this->getAuthService()->hasIdentity()){
             $massage = "loged in";
         }else {
@@ -29,7 +33,8 @@ class IndexController extends AbstractActionController
 
         return new ViewModel(array(
             'users'     => $this->getUserTable()->fetchAll(),
-            'massage'   => $massage
+            'massage'   => $massage,
+        	'form'		=> $form
         ));
     }
 

@@ -20,8 +20,14 @@ class IndexController extends AbstractActionController
     public $authService;
     public $massage = 'NULL';
 
+    /*
+     * Defaul Action
+     */
+
     public function indexAction()
     {
+
+    	$this->NMTPlugin()->test();
     	$form = new UserForm();
 
         if ($this->getAuthService()->hasIdentity()){
@@ -37,6 +43,12 @@ class IndexController extends AbstractActionController
         	'form'		=> $form
         ));
     }
+
+    public function testAction(){
+    	$this->NMTPlugin()->test();
+    	return new ViewModel();
+    }
+
 
     // get UserTable
     public function getUserTable()

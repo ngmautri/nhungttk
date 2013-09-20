@@ -17,8 +17,8 @@ class UserTest extends PHPUnit_Framework_TestCase{
 
         $resultSet = new ResultSet();
         $userTable  =  Bootstrap::getServiceManager()->get('User\Model\UserTable');
-        //var_dump($userTable->getUserByID(1));
-        var_dump($userTable->fetchAll()->toArray());
+        var_dump($userTable->getUserByID(1));
+        //var_dump($userTable->fetchAll()->toArray());
 		}
 
 	public function testDI(){
@@ -27,6 +27,7 @@ class UserTest extends PHPUnit_Framework_TestCase{
 			echo "An event has happend \n";
 			var_dump($event->getName());
 			var_dump($event->getParams());
+			
 		};
 
 		$eventManager = new EventManager();

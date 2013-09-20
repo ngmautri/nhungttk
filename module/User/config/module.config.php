@@ -69,7 +69,7 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'User\Controller\Index' => 'User\Controller\IndexController'
+            'User\Controller\Index' => 'User\Controller\IndexController',
         ),
     ),
     'view_manager' => array(
@@ -87,5 +87,12 @@ return array(
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
+    ),
+
+    // Plugin
+    'controller_plugins' => array(
+    		'invokables' => array(
+    		'NMTPlugin' => 'User\Controller\Plugin\NMTPlugin',
+    	),
     ),
 );

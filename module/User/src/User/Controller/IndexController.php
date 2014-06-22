@@ -8,6 +8,8 @@
  */
 
 namespace User\Controller;
+use Zend\Barcode\Barcode;
+
 
 use User;
 use User\Form\UserForm;
@@ -37,6 +39,8 @@ class IndexController extends AbstractActionController
         }
 
 
+
+
         return new ViewModel(array(
             'users'     => $this->getUserTable()->fetchAll(),
             'massage'   => $massage,
@@ -44,12 +48,30 @@ class IndexController extends AbstractActionController
         ));
     }
 
+<<<<<<< .mine
+
+    public function barcodeAction(){
+        // Only the text to draw is required
+
+
+        $barcodeOptions = array('text' => 'ME.0000012');
+
+        // No required options
+        $rendererOptions = array();
+
+        // Draw the barcode in a new image,
+        Barcode::factory('code39', 'image', $barcodeOptions, $rendererOptions)->render();
+    }
+
+
+=======
     public function testAction(){
     	$this->NMTPlugin()->test();
     	return new ViewModel();
     }
 
 
+>>>>>>> .r20
     // get UserTable
     public function getUserTable()
     {

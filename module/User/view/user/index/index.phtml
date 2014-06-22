@@ -1,24 +1,8 @@
-<div><h1>USER LIST</h1></div>
+
+<img src="<?php echo $this->barcode;?>">
+<div id="mascot"></div>
+<!--
 <h2> <?php echo $this->massage; ?></h2>
-
-<?php
-$form->setAttribute('action', $this->url('user', array('action' => 'add')));
-$form->prepare();
-
-
-echo $this->form()->openTag($form);
-echo $this->formHidden($form->get('firstname'));
-echo $this->formRow($form->get('lastname'));
-echo $this->formRow($form->get('email'));
-echo $this->formSubmit($form->get('submit'));
-echo $this->form()->closeTag();
-
-
-//echo $this->formCollection($form);
-
-?>
-
-
 
 <table border="1">
  <?php foreach ($users as $user) : ?>
@@ -30,5 +14,4 @@ echo $this->form()->closeTag();
     </tr>
 <?php endforeach; ?>
 </table>
-
-
+-->

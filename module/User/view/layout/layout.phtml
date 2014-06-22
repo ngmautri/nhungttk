@@ -2,7 +2,7 @@
 
 <html lang="en">
     <head>
-        <meta charset="utf-8">
+        <meta charset=" ISO 8859-1">
         <?php echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
@@ -15,8 +15,19 @@
 
         <!-- Scripts -->
         <?php echo $this->headScript()->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
-                                      ->prependFile($this->basePath() . '/js/bootstrap.min.js')
-                                      ->prependFile($this->basePath() . '/js/jquery.min.js') ?>
+                                      ->prependFile($this->basePath() . '/js/mascot.js')
+                                      ->prependFile($this->basePath() . '/js/mascot_da.js')
+                                      ->prependFile($this->basePath() . '/js/mascot_nl.js')
+                                      ->prependFile($this->basePath() . '/js/mascot_no.js')
+                                      ->prependFile($this->basePath() . '/js/mascot_se.js')
+                                      ->prependFile($this->basePath() . '/js/mascot_fi.js')
+                                      ->prependFile($this->basePath() . '/js/mascot_fr.js')
+                                       ->prependFile($this->basePath() . '/js/bootstrap.min.js')
+                                      ->prependFile($this->basePath() . '/js/jquery-1.7.2.min.js')
+
+
+
+        ?>
 
     </head>
     <body>

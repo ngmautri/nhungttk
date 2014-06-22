@@ -17,7 +17,7 @@ class UserTest extends PHPUnit_Framework_TestCase{
 
         $resultSet = new ResultSet();
         $userTable  =  Bootstrap::getServiceManager()->get('User\Model\UserTable');
-        var_dump($userTable->getUserByID(1));
+        var_dump($userTable->getUserByID(100));
         //var_dump($userTable->fetchAll()->toArray());
 		}
 

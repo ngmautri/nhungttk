@@ -11,13 +11,14 @@ use Zend\EventManager\Event;
 use Inventory\Model\AssetTypeTable;
 use Inventory\Model\AssetType;
 use AssetTypeTest\Bootstrap;
+use Inventory\Services\AssetService;
 
 class AssetTypeTest extends PHPUnit_Framework_TestCase{
 		private $assetType;
 
     	public function testAssetTypeTable (){
 
-        $resultSet = new ResultSet();
+       /*  $resultSet = new ResultSet();
         $AssetTypeTable  =  Bootstrap::getServiceManager()->get('Inventory\Model\AssetTypeTable');
         
         $assetType = new AssetType;
@@ -25,7 +26,12 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase{
         $assetType->description = "Machinery";
         
         $AssetTypeTable->add($assetType);
-        var_dump($AssetTypeTable->fetchAll());
+        var_dump($AssetTypeTable->fetchAll()); 
+        */
+    	
+    	$as =  new  AssetService();
+    	$as->createAssetFolderById(1);
+    		
         }
 
 }

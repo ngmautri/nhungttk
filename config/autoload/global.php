@@ -25,7 +25,7 @@ return array(
        			return $adapter = new Adapter(array(
        					'driver'         => 'Pdo_Mysql',
        					'hostname'       => 'localhost',
-       					'database'       => 'mib',
+       					'database'       => 'mla',
        					'username'       => 'root',
        					'password'       =>  '',
        					'charset' 		 => 'utf-8'
@@ -36,7 +36,7 @@ return array(
        		'AuthService' => function($sm) {
        			$dbAdapter           = $sm->get('Zend\Db\Adapter\Adapter');
        			$dbTableAuthAdapter  = new DbTableAuthAdapter($dbAdapter,
-       					'mib_users','email','password', 'MD5(?)');
+       					'mla_users','email','password', 'MD5(?)');
        			$authService = new AuthenticationService();
        			$authService->setAdapter($dbTableAuthAdapter);
        			return $authService;

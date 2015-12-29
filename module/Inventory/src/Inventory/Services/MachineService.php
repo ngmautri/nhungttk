@@ -7,13 +7,12 @@ use Zend\Permissions\Acl\Acl;
 use MLA\Files;
 use MLA\Service\AbtractService;
 use Zend\Mail\Message;
-
 /**
  * 
  * @author nmt
  *
  */
-class AssetService extends AbtractService
+class MachineService extends AbtractService
 {
 	
 	
@@ -71,5 +70,23 @@ class AssetService extends AbtractService
 		} catch ( Exception $e ) {
 			return null;
 		}
+	}
+	
+	public function repair() {
+		
+	}
+	
+	public function dispose(){
+		
+	}
+	
+	public function addPictures()
+	{
+		
+	}
+	
+	public function removePictures()
+	{
+		
 	}
 }

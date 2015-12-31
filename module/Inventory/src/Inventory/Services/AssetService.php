@@ -34,28 +34,31 @@ class AssetService extends AbtractService
 	public function createAssetFolderById($id) {
 		try {
 			
+			
+			
+			$asset_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "asset_folder";
+			
+			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
+			
 			// Setup SMTP transport using PLAIN authentication over TLS
-			$transport = $this->getServiceLocator()->get('SmtpTransportService');			
+			/* $transport = $this->getServiceLocator()->get('SmtpTransportService');
 			$message = new Message ();
-			$message->addTo ( 'ngmautri@outlook.com' )->addFrom ( 'mib-team@web.de' )->setSubject ( 'Mascot Laos' )->setBody ( "This is a test of Nguyen Mau Tri" );
+			$message->addTo ( 'ngmautri@outlook.com' )->addFrom ( 'mib-team@web.de' )->setSubject ( 'Mascot Laos' )->setBody ( "Asset foler " . $asset_dir );
+				
+			$transport->send ( $message ); */
 			
-			$transport->send ( $message );
-			
-			$asset_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "asset_folder";
-			
-			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
 			
 			if (is_dir ( $asset_dir )) {
 				Files::recursiveCopy ( $asset_folders_tpl, $asset_dir );
-				return true;
+				return $asset_dir;
 			} else {
 				if (mkdir ( $asset_dir )) {
 					Files::recursiveCopy ( $asset_folders_tpl, $asset_dir );
-					return true;
+					return $asset_dir;
 				}
 			}
 		} catch ( Exception $e ) {
-			return false;
+			return null;
 		}
 	}
 	

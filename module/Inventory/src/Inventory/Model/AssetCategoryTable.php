@@ -40,6 +40,7 @@ class AssetCategoryTable {
 				'created_on' => date ( 'Y-m-d H:i:s' ) 
 		);
 		$resultSet = $this->tableGateway->insert ( $data );
+		return $this->tableGateway->lastInsertValue;
 	}
 	
 	public function update(AssetCategory $input, $id) {

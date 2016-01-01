@@ -1,0 +1,25 @@
+<h3>Asset Categories</h3>
+
+ <P><a href="<?php echo $this->baseUrl ?>/inventory/asset/addcategory">Add new category</a></P>
+
+<table border="1">
+<tr>
+		<td><b>Asset Category</b></td>
+		<td><b>Action</b></td>
+	</tr>
+ <?php foreach ($assetCategories as $category) : ?>
+ 
+ 	
+    <tr>
+		<td><?php echo $this->escapeHtml($category->category);?></td>
+		<td>
+         <a href="<?php echo $this->baseUrl ?>/inventory/asset/editcategory?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a>
+         | <a href="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory?id=<?php echo $this->escapeHtml($category->id);?>">Delete</a>
+     	 | <a href="<?php echo $this->baseUrl ?>/inventory/asset/categorydetail?category_id=<?php echo $this->escapeHtml($category->id);?>&category=<?php echo $this->escapeHtml($category->category);?>">detail</a>
+     	
+     	</td>
+	</tr>
+<?php endforeach; ?>
+</table>
+
+

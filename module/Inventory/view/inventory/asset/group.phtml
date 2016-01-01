@@ -1,0 +1,13 @@
+<h1>asset/Groups</h1>
+
+<table border="1">
+ <?php foreach ($assetGroups as $group) : ?>
+    <tr>
+		<td><?php echo $this->escapeHtml($group->id);?></td>
+		<td><?php echo $this->escapeHtml($group->category_id);?></td>
+		<td><?php echo $this->escapeHtml($group->name);?></td>
+		<td><?php echo $this->escapeHtml($group->description);?></td>
+		<td><?php echo $this->escapeHtml($group->created_on);?></td>
+	</tr>
+<?php endforeach; ?>
+</table>

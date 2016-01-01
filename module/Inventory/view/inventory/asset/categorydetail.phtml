@@ -1,0 +1,73 @@
+<h3><?php echo $this->escapeHtml($category)?></h3>
+
+ <P><a href="<?php echo $this->baseUrl ?>/inventory/asset/add?category_id=<?php echo $this->escapeHtml($category_id)?>&category=<?php echo $this->escapeHtml($category)?>">Add new asset</a></P>
+
+ <?php if ($total_asset <= 0){
+ 	
+ 	echo 'No asset found!';
+ }else { 	
+ 	
+ 	echo $total_asset. ' assets found!';
+ ?>
+ 
+<table border="1">
+<tr>
+		<td><b>Asset Name</b></td>
+		<td><b>Model</b></td>
+		<td><b>Serial</b></td>
+		<td><b>Tag</b></td>
+		<td><b>Action</b></td>
+	</tr>
+ <?php foreach ($assets as $asset) : ?>
+  	
+    <tr>
+		<td><?php echo $this->escapeHtml($asset['name']);?></td>
+		<td><?php echo $this->escapeHtml($asset['model']);?></td>
+		<td><?php echo $this->escapeHtml($asset['serial']);?></td>
+		<td><?php echo $this->escapeHtml($asset['brand']);?></td>
+		<td><?php echo $this->escapeHtml($asset['tag']);?></td>
+		<td>
+         <a href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $this->escapeHtml($asset['id']);?>">Edit</a>
+         | <a href="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory?id=<?php echo $this->escapeHtml($asset['id']);?>">Delete</a>
+     	 | <a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($asset['id']);?>">detail</a>
+     	
+     	</td>
+	</tr>
+<?php endforeach; ?>
+</table>
+
+<br>
+<?php 
+
+	$last = $this->baseUrl.'/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category.
+	'&page='.$paginator->totalPages.'&perPage='.$paginator->resultsPerPage;
+
+	$first = $this->baseUrl.'/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category.
+	'&page=1&perPage='.$paginator->resultsPerPage;
+	
+?>
+	
+	
+
+<?php if (!is_null($paginator)) { for($i=$paginator->minInPageSet; $i<=$paginator->maxInPageSet; $i++) {
+	
+	$url = $this->baseUrl.'/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category.
+	'&page='.$i.'&perPage='.$paginator->resultsPerPage;
+	
+	$last = $this->baseUrl.'/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category.
+	'&page='.$paginator->totalPages.'&perPage='.$paginator->resultsPerPage;
+	
+?>
+
+<?php if ($i == $paginator->page){
+	echo $i;
+}else {
+?>
+	<a href="<?php echo $url; ?>"><?php echo $i ?></a>
+
+<?php }
+}
+}
+?>
+<a href="<?php echo $last; ?>">Last</a>
+ <?php }	 ?>

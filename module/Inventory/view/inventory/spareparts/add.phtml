@@ -1,0 +1,49 @@
+<h3>New Spare Part.</h3>
+
+
+<form action="<?php echo $this->baseUrl ?>/inventory/spareparts/add"	method="post" enctype="multipart/form-data" id="New Sparepart">
+
+<table>
+
+<tr>
+	<td><label for="name">Name</label> </td>
+	<td><input type="text"	name="name" value="" /></td>
+</tr>
+
+<tr>
+	<td><label for="name_local">Name</label> </td>
+	<td><input type="text"	name="name_local" value="" /></td>
+</tr>
+<tr>
+	<td><label for="description">Description</label> 
+	<td><textarea cols="45" name="description" id="description" style="background:#FFFFFF" rows="3"></textarea></td>
+</tr>
+<tr>
+	<td><label for="tag">Tag</label> </td>
+	<td><input type="text"	name="tag" value="" /></td>
+</tr>
+
+<tr>
+	<td><label for="codo">Brand</label> </td>
+	<td><input type="text"	name="Code" value="" /></td>
+</tr>
+
+<tr>
+	<td><label for="origin">Location</label></td>
+	<td><input type="text"	name="location" value="MLA" /></td>
+</tr>
+
+<tr>
+	<td></td> 
+	<td><input type="submit" name="add" value="Add" />	</td>
+</tr>
+
+</table>
+
+<p>Pictures:</p>
+<input type="file" name="pictures[]" /><br>
+<input type="file" name="pictures[]" /><br>
+<input type="file" name="pictures[]" /><br>
+
+ 
+</form>

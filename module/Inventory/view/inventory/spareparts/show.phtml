@@ -1,0 +1,62 @@
+<h4> <?php echo $this->escapeHtml($sparepart->name);?></h4>
+
+
+<?php  echo '<ul><li>Total Inflow: ' .  $inflow.'</li>'; ?>
+	 <?php  echo '<li>Total Outflow: ' .  $outflow. '</li>'; ?>
+	 <?php  echo '<li>In stock: ' .  $instock.'</li></ul>';?>
+
+
+<h5>
+	<a
+		href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($sparepart->id);?>">Show
+		Stock Movements </a>
+</h5>
+<hr>
+<table>
+
+	<tr>
+		<td><label for="tag">Spare Part Tag:</label></td>
+		<td><?php echo $this->escapeHtml($sparepart->tag);?></td>
+	</tr>
+
+	<tr>
+		<td><label for="name_local">Description:</label>
+		
+		<td><?php echo $this->escapeHtml($sparepart->name_local);?></td>
+	</tr>
+	<tr>
+		<td><label for="description">Tag: </label></td>
+		<td><?php echo $this->escapeHtml($sparepart->description);?></td>
+	</tr>
+
+	<tr>
+		<td><label for="code">Supplier Code /Serial:</label></td>
+		<td><?php echo $this->escapeHtml($sparepart->code);?></td>
+	</tr>
+
+
+	<tr>
+		<td><label for="location">Location:</label></td>
+		<td><?php echo $this->escapeHtml($sparepart->location);?></td>
+	</tr>
+	<tr>
+		<td><label for="comment">Comment:</label></td>
+		<td><?php echo $this->escapeHtml($sparepart->comment);?></td>
+	</tr>
+
+</table>
+
+
+
+<h5>Spare part Picture:</h5>
+<table border="1">
+
+ <?php foreach ($pictures as $pic) : ?>
+  	
+    <tr>
+		<td><img alt=""
+			src="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
+		</td>
+	</tr>
+<?php endforeach; ?>
+</table>

@@ -19,6 +19,7 @@ class ImageController extends AbstractActionController {
 	public $authService;
 	public $massage = 'NULL';
 	public $assetPictureTable;
+	public $sparepartPictureTable;
 	
 	/*
 	 * Defaul Action
@@ -39,9 +40,33 @@ class ImageController extends AbstractActionController {
 		->addHeaderLine('Content-Type', 'image/jpeg')
 		->addHeaderLine('Content-Length', mb_strlen($imageContent));
 		
-		return $response;
-		
+		return $response;		
 	}
+	
+	/*
+	 * Defaul Action
+	 */
+	public function sparepartAction() {
+	
+		$request = $this->getRequest ();
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+	
+		$pic = $this->getSparepartPictureTable()->get( $id);
+	
+		$response = $this->getResponse();
+	
+		$imageContent =  file_get_contents($pic->url);
+		$response->setContent($imageContent);
+		$response->getHeaders()
+		->addHeaderLine('Content-Transfer-Encoding', 'binary')
+		->addHeaderLine('Content-Type', 'image/jpeg')
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+	
+		return $response;
+	}
+	
+	
+	
 	// get AssetPictureTable
 	private function getAssetPictureTable() {
 		if (! $this->assetPictureTable) {
@@ -50,6 +75,16 @@ class ImageController extends AbstractActionController {
 		}
 		return $this->assetPictureTable;
 	}
+	
+	
+	private function getSparepartPictureTable() {
+		if (! $this->sparepartPictureTable) {
+			$sm = $this->getServiceLocator ();
+			$this->sparepartPictureTable = $sm->get ( 'Inventory\Model\SparepartPictureTable' );
+		}
+		return $this->sparepartPictureTable;
+	}
+	
 }
 
 

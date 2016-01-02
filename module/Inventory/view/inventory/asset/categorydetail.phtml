@@ -8,6 +8,15 @@
  }else { 	
  	
  	echo $total_asset. ' assets found!';
+ 	
+  	if (! is_null ( $paginator )) {
+ 		?>
+ 			
+ 		<hr>
+ 	<?php	
+ 		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage;
+ 		}
+ 	
  ?>
  
 <table border="1">
@@ -15,7 +24,8 @@
 		<td><b>Asset Name</b></td>
 		<td><b>Model</b></td>
 		<td><b>Serial</b></td>
-		<td><b>Tag</b></td>
+		<td><b>Brand </b></td>
+		<td><b>Tag </b></td>
 		<td><b>Action</b></td>
 	</tr>
  <?php foreach ($assets as $asset) : ?>
@@ -27,9 +37,8 @@
 		<td><?php echo $this->escapeHtml($asset['brand']);?></td>
 		<td><?php echo $this->escapeHtml($asset['tag']);?></td>
 		<td>
-         <a href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $this->escapeHtml($asset['id']);?>">Edit</a>
-         | <a href="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory?id=<?php echo $this->escapeHtml($asset['id']);?>">Delete</a>
-     	 | <a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($asset['id']);?>">detail</a>
+         <a href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $this->escapeHtml($asset['id']);?>">  Edit </a>
+      	 | <a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($asset['id']);?>">  Detail</a>
      	
      	</td>
 	</tr>
@@ -39,17 +48,17 @@
 <br>
 <?php 
 
-	$last = $this->baseUrl.'/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category.
-	'&page='.$paginator->totalPages.'&perPage='.$paginator->resultsPerPage;
-
-	$first = $this->baseUrl.'/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category.
-	'&page=1&perPage='.$paginator->resultsPerPage;
-	
-?>
-	
-	
-
-<?php if (!is_null($paginator)) { for($i=$paginator->minInPageSet; $i<=$paginator->maxInPageSet; $i++) {
+		
+ if (!is_null($paginator)) { 
+ 	
+ 	$last = $this->baseUrl.'/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category.
+ 	'&page='.$paginator->totalPages.'&perPage='.$paginator->resultsPerPage;
+ 	
+ 	$first = $this->baseUrl.'/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category.
+ 	'&page=1&perPage='.$paginator->resultsPerPage;
+ 	
+ 	
+ 	for($i=$paginator->minInPageSet; $i<=$paginator->maxInPageSet; $i++) {
 	
 	$url = $this->baseUrl.'/inventory/asset/categorydetail?category_id='.$category_id.'&category='.$category.
 	'&page='.$i.'&perPage='.$paginator->resultsPerPage;
@@ -60,14 +69,15 @@
 ?>
 
 <?php if ($i == $paginator->page){
-	echo $i;
+	echo $i. '&nbsp';
 }else {
 ?>
-	<a href="<?php echo $url; ?>"><?php echo $i ?></a>
+	<a href="<?php echo $url; ?>"> <?php echo $i ?> &nbsp</a>
 
 <?php }
 }
-}
 ?>
-<a href="<?php echo $last; ?>">Last</a>
- <?php }	 ?>
+<a href="<?php echo $last; ?>">| Last</a>
+<?php
+}
+}?>

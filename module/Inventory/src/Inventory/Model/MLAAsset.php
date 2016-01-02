@@ -23,7 +23,11 @@ class MLAAsset {
 	public $serial;
 	public $origin;
 	
-	//Picture offect)
+	public $received_on;
+	
+	
+	
+	//Picture  object)
 	public $pictures;
 	public $spareparts;
 	public $vendor;
@@ -47,6 +51,7 @@ class MLAAsset {
 		$this->model = (! empty ( $data ['model'] )) ? $data ['model'] : null;
 		$this->serial = (! empty ( $data ['serial'] )) ? $data ['serial'] : null;
 		$this->origin = (! empty ( $data ['origin'] )) ? $data ['origin'] : null;
+		$this->received_on = (! empty ( $data ['received_on'] )) ? $data ['received_on'] : null;
 		
 		$this->pictures = (! empty ( $data ['pictures'] )) ? $data ['pictures'] : null;
 		$this->spareparts = (! empty ( $data ['spareparts'] )) ? $data ['spareparts'] : null;

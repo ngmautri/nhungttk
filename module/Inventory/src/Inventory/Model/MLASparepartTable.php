@@ -6,15 +6,14 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 
-
-use Inventory\Model\MLAAsset;
+use Inventory\Model\MLASparepart;
 
 /**
  * 
  * @author nmt
  *
  */
-class MLAAssetTable {
+class MLASparepartTable {
 	
 	protected $tableGateway;
 	
@@ -29,8 +28,17 @@ class MLAAssetTable {
 	 */
 	
 	public function fetchAll() {
-		$resultSet = $this->tableGateway->select ();
-		return $resultSet;
+		
+		$adapter = $this->tableGateway->adapter;
+		
+		$sql = new Sql($adapter);
+		$select = $sql->select();
+		$select->from('mla_spareparts');
+		$statement = $sql->prepareStatementForSqlObject($select);
+		$results = $statement->execute();
+		
+		// array
+		return $results;
 	}
 	
 	/**
@@ -50,64 +58,39 @@ class MLAAssetTable {
 		return $row;
 	}
 	
-	public function getAssetsByCategoryID($id){
-		
+	public function getLimitSpareParts($limit,$offset){
 		$adapter = $this->tableGateway->adapter;
 		
 		$sql = new Sql($adapter);
 		$select = $sql->select();
 		
-		$where = 'category_id ='.$id;
-			
-		$select->from('mla_asset');
-		$select->where($where);
+				
+		$select->from('mla_spareparts');
+		$select->limit($limit)->offset($offset);
 		
 		$statement = $sql->prepareStatementForSqlObject($select);
 		$results = $statement->execute();
 		
-		return $results;
-	}
-	
-	public function getLimitAssetsByCategoryID($id,$limit,$offset){
-		$adapter = $this->tableGateway->adapter;
-		
-		$sql = new Sql($adapter);
-		$select = $sql->select();
-		
-		$where = 'category_id ='.$id;
-			
-		$select->from('mla_asset');
-		$select->where($where)->limit($limit)->offset($offset);
-		
-		$statement = $sql->prepareStatementForSqlObject($select);
-		$results = $statement->execute();
-		
+		// array
 		return $results;
 	}
 		
 	/**
 	 * 
-	 * @param MLAAsset $input
+	 * @param MLASparepart $input
 	 */
-	public function add(MLAAsset $input) {
+	public function add(MLASparepart $input) {
 		$data = array (
 				'name' => $input->name,
-				'description' => $input->description,
-				'category_id' => $input->category_id,
-				'group_id' => $input->group_id,
+				'name_local' => $input->name_local,
+				'description' => $input->description,				
+				'code' => $input->code,				
 				'tag' => $input->tag,
-				'brand' => $input->brand,
-				'model' => $input->model,
-				'serial' => $input->serial,
-				'origin' => $input->origin,
 				'location' => $input->location,
-				'status' => $input->status,
 				'comment' => $input->comment,
 				'created_on' => date ( 'Y-m-d H:i:s' ) 
 		);
 		$this->tableGateway->insert ( $data );
-		
-		
 		return $this->tableGateway->lastInsertValue;
 	}
 	
@@ -116,24 +99,19 @@ class MLAAssetTable {
 	 * @param MLAAsset $input
 	 * @param unknown $id
 	 */
-	public function update(MLAAsset $input, $id) {
+	public function update(MLASparepart $input, $id) {
 		
 		$data = array (
 				'name' => $input->name,
-				'description' => $input->description,
-				'category_id' => $input->category_id,
-				'group_id' => $input->group_id,
+				'name_local' => $input->local,
+				'description' => $input->description,				
+				'code' => $input->code,				
 				'tag' => $input->tag,
-				'brand' => $input->brand,
-				'model' => $input->model,
-				'serial' => $input->serial,
-				'origin' => $input->origin,
 				'location' => $input->location,
-				'status' => $input->status,
 				'comment' => $input->comment,
 				'created_on' => date ( 'Y-m-d H:i:s' ) 
 		);
-	
+		
 		$where = 'id = ' . $id;
 		$resultSet = $this->tableGateway->update( $data,$where);
 	}

@@ -1,0 +1,83 @@
+<h3>Spare Part Receive: </h3>
+<hr>
+
+<?php if (count($errors)>0){
+	echo '<ul style="color:#FF0000">';
+	 foreach ($errors as $error) :
+	 echo '<li>'.$error . '</li>';
+	 
+	 endforeach;
+	 echo '</ul>';
+	 ?>
+	 <hr>
+ 
+<?php } ?>
+
+
+<h4> Spare Part Name: <?php echo $sp->name; ?> </h4>
+
+
+
+<h4>In stock: <?php echo (int) $instock; ?></h4>
+
+
+<form action="<?php echo $this->baseUrl ?>/inventory/spareparts/receive"
+	method="post" enctype="multipart/form-data" id="New Sparepart">
+	<input type="hidden" name="sparepart_id" value="<?php echo (int) $sp->id; ?>" />
+	
+	<table>
+
+		<tr>
+			<td><label for="movement_date">Receipt date</label></td>
+			<td><input type="text" name="movement_date" value="" id="movement_date" /></td>
+		</tr>
+
+		<tr>
+			<td><label for="asset_id">Asset:</label>
+			
+			<td><input type="text" name="asset_id" value="" /></td>
+		</tr>
+		<tr>
+			<td><label for="quantity">Quantity:</label></td>
+			<td><input type="text" name="quantity" value="" /></td>
+		</tr>
+
+		<tr>
+			<td><label for="requester">Requester: </label></td>
+			<td><input type="text" name="requester" value="" /></td>
+		</tr>
+
+		<tr>
+			<td><label for="reason">Reason: </label></td>
+			<td><textarea cols="45" name="reason" id="reason"
+					style="background: #FFFFFF" rows="3"></textarea></td>
+		</tr>
+
+
+		<tr>
+			<td><label for="comment">Comment: </label></td>
+			<td><textarea cols="45" name="comment" id="comment"
+					style="background: #FFFFFF" rows="3"></textarea></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td><input type="submit" name="receive" value="reveive" /></td>
+		</tr>
+
+	</table>
+</form>
+
+
+<h5> Spare part Picture:</h5>
+<table border="1">
+
+ <?php foreach ($pictures as $pic) : ?>
+  	
+    <tr>
+		<td>
+			<img alt="" src="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
+     	</td>
+	</tr>
+<?php endforeach; ?>
+</table>

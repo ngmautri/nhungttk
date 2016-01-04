@@ -6,6 +6,7 @@
         "framework",
         "zf2"
     ],
+    
     "homepage": "http://framework.zend.com/",
     "require": {
         "php": ">=5.3.3",

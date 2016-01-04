@@ -9,7 +9,8 @@
 
 /**
  * This autoloading setup is really more complicated than it needs to be for most
- * applications. The added complexity is simply to reduce the time it takes for
+ * applications.
+ * The added complexity is simply to reduce the time it takes for
  * new developers to be productive with a fresh skeleton. It allows autoloading
  * to be correctly configured, regardless of the installation method and keeps
  * the use of composer completely optional. This setup should work fine for
@@ -17,35 +18,47 @@
  */
 
 // Composer autoloading
-if (file_exists('vendor/autoload.php')) {
-    $loader = include 'vendor/autoload.php';
+if (file_exists ( 'vendor/autoload.php' )) {
+	$loader = include 'vendor/autoload.php';
 }
 
 $zf2Path = false;
 
-if (is_dir('vendor/ZF2/library')) {
-    $zf2Path = __DIR__.'/vendor/ZF2/library';
-} elseif (getenv('ZF2_PATH')) {      // Support for ZF2_PATH environment variable or git submodule
-    $zf2Path = getenv('ZF2_PATH');
-} elseif (function_exists('zend_deployment_library_path') && zend_deployment_library_path ('Zend Framework 2')) {
-	$zf2Path = zend_deployment_library_path ('Zend Framework 2');
-} elseif (get_cfg_var('zf2_path')) { // Support for zf2_path directive value
-    $zf2Path = get_cfg_var('zf2_path');
+if (is_dir ( 'vendor/ZF2/library' )) {
+	$zf2Path = __DIR__ . '/vendor/ZF2/library';
+} elseif (getenv ( 'ZF2_PATH' )) { // Support for ZF2_PATH environment variable or git submodule
+	$zf2Path = getenv ( 'ZF2_PATH' );
+} elseif (function_exists ( 'zend_deployment_library_path' ) && zend_deployment_library_path ( 'Zend Framework 2' )) {
+	$zf2Path = zend_deployment_library_path ( 'Zend Framework 2' );
+} elseif (get_cfg_var ( 'zf2_path' )) { // Support for zf2_path directive value
+	$zf2Path = get_cfg_var ( 'zf2_path' );
 }
 
 if ($zf2Path) {
-    if (isset($loader)) {
-        $loader->add('Zend', $zf2Path);
-    } else {
-        include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
-        Zend\Loader\AutoloaderFactory::factory(array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'autoregister_zf' => true
-            )
-        ));
-    }
+	if (isset ( $loader )) {
+		$loader->add ( 'Zend', $zf2Path );
+	} else {
+		include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
+		Zend\Loader\AutoloaderFactory::factory ( array (
+				'Zend\Loader\StandardAutoloader' => array (
+						'autoregister_zf' => true,
+										) 
+		) );
+	}
 }
 
-if (!class_exists('Zend\Loader\AutoloaderFactory')) {
-    throw new RuntimeException('Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.');
+if (! class_exists ( 'Zend\Loader\AutoloaderFactory' )) {
+	throw new RuntimeException ( 'Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.' );
 }
+
+// by NMT
+Zend\Loader\AutoloaderFactory::factory ( array (
+		'Zend\Loader\StandardAutoloader' => array (
+				'autoregister_zf' => true,
+				'namespaces' => array (
+						__NAMESPACE__ => __DIR__ . '/' . __NAMESPACE__,
+						'MLA' =>  __DIR__ . '/vendor/' . DIRECTORY_SEPARATOR . 'MLA' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'MLA'
+				)
+					
+		)
+) );

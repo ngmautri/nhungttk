@@ -12,6 +12,10 @@ namespace Inventory\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\I18n\Validator\Int;
+use Zend\Validator\EmailAddress;
+
+use Zend\Mail\Message;
+
 use Zend\View\Model\ViewModel;
 
 use MLA\Paginator;
@@ -22,6 +26,8 @@ use Inventory\Model\SparepartMovementsTable;
 
 class SparepartsController extends AbstractActionController {
 	public $authService;
+	public $SmtpTransportService;
+	
 	public $sparePartService;
 	public $userTable;
 	public $mlaSparepartTable;
@@ -218,6 +224,7 @@ class SparepartsController extends AbstractActionController {
 				$input->requester = $request->getPost ( 'requester' );
 				$input->comment = $request->getPost ( 'comment' );
 				$input->created_on = $request->getPost ( 'created_on' );
+				$email = $request->getPost ( 'email' );
 				
 				$instock = $request->getPost ( 'instock' );
 				
@@ -235,13 +242,18 @@ class SparepartsController extends AbstractActionController {
 				if (! $validator->isValid ( $input->quantity )) {
 					$errors [] = 'Quantity is not valid. It must be a number.';
 				}
+				
+				$validator = new EmailAddress();
+				if (! $validator->isValid ( $email )) {
+					$errors [] = 'Email is not correct.';
+				}
+				
+				$id = ( int ) $request->getPost ( 'sparepart_id' );
+				$sp = $this->getMLASparepartTable ()->get ( $id );
+				$pictures = $this->getSparepartPictureTable ()->getSparepartPicturesById ( $id );
+				
 					
 				if (count($errors) > 0) {
-				
-					$id = ( int ) $request->getPost ( 'sparepart_id' );
-					$sp = $this->getMLASparepartTable ()->get ( $id );
-					$pictures = $this->getSparepartPictureTable ()->getSparepartPicturesById ( $id );
-				
 					return new ViewModel ( array (
 							'sp' => $sp,
 							'pictures' => $pictures,
@@ -252,6 +264,19 @@ class SparepartsController extends AbstractActionController {
 				
 					// Validated
 					$newId = $this->getSparepartMovementsTable ()->add ( $input );
+					
+					if($newId >0){
+						// sent email;
+						
+						 $transport = $this->getServiceLocator()->get('SmtpTransportService');
+						 $message = new Message ();
+						 $body = $input->quantity . ' pcs of Spare parts ' . $sp->name . ' (ID'.  $sp->tag. ') received!';
+						 $message->addTo ( $email )->addFrom ( 'mib-team@web.de' )->setSubject ( 'Mascot Laos - Spare Part Movements' )->setBody ($body);
+						 $transport->send ( $message );
+						
+					}
+					
+					
 					return $this->redirect ()->toRoute ( 'assetcategory' );
 				}		
 				
@@ -405,5 +430,14 @@ class SparepartsController extends AbstractActionController {
 			$this->sparePartService = $sm->get ( 'Inventory\Services\SparePartService' );
 		}
 		return $this->sparePartService;
+	}
+	
+	// SmtpTransportService
+	private function getSmtpTransportService() {
+		if (! $this->SmtpTransportService) {
+			$sm = $this->getServiceLocator ();
+			$this->SmtpTransportService = $sm->get ( 'SmtpTransportService' );
+		}
+		return $this->SmtpTransportService;
 	}
 }

@@ -5,7 +5,7 @@ namespace Inventory\Services;
 
 use Zend\Permissions\Acl\Acl;
 use MLA\Files;
-use MLA\Service\AbtractService;
+use MLA\Service\AbstractService;
 use Zend\Mail\Message;
 
 /**
@@ -13,15 +13,11 @@ use Zend\Mail\Message;
  * @author nmt
  *
  */
-class SparepartService extends AbtractService
+class SparepartService extends AbstractService
 {
 	
 	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \MLA\Service\AbtractService::initAcl()
-	 */
+	
 	public function initAcl(Acl $acl){
 		// TODO
 	}
@@ -36,15 +32,15 @@ class SparepartService extends AbtractService
 			
 			
 			
-			$sp_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "sparepart_folder";
+			//$sp_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "sparepart_folder";
 			
 			//Test
-			//$sp_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "sparepart_folder";
+			$sp_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "sparepart_folder";
 			
-			$sp_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR . "sparepart_" . $id;
+			//$sp_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR . "sparepart_" . $id;
 			
 			//Test
-			//$sp_dir = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR . "sparepart_" . $id;
+			$sp_dir = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR . "sparepart_" . $id;
 			
 			// Setup SMTP transport using PLAIN authentication over TLS
 			/* $transport = $this->getServiceLocator()->get('SmtpTransportService');

@@ -103,7 +103,7 @@ class MLASparepartTable {
 		
 		$data = array (
 				'name' => $input->name,
-				'name_local' => $input->local,
+				'name_local' => $input->name_local,
 				'description' => $input->description,				
 				'code' => $input->code,				
 				'tag' => $input->tag,

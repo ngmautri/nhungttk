@@ -35,14 +35,15 @@ class AssetService extends AbstractService
 			
 			
 			
-			//$asset_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "asset_folder";
+			$asset_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "asset_folder";
 			
 			//Test
-			$asset_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "asset_folder";
+			//$asset_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "asset_folder";
 			
-			//$asset_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
+			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
+			
 			//Test
-			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
+			//$asset_dir = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
 			
 			// Setup SMTP transport using PLAIN authentication over TLS
 			/* $transport = $this->getServiceLocator()->get('SmtpTransportService');

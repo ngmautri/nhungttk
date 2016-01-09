@@ -1,0 +1,379 @@
+/* CSS Document */
+/* by Nguyen Mau Tri am 26.11 */
+/*=============*/
+/** BODY **/
+
+#jsn-body_wrapper {
+	height: 100%;
+	background: #F9F9F9 url(../images/body_bg.png) repeat-x left top;
+	margin-top:25px;
+}
+#jsn-body {
+	width: 960px;
+	margin: 0 auto;
+}
+#jsn-body_inner1 {
+	background: url(../images/body_shadow_l.png) no-repeat top left;
+	padding-left: 10px;
+}
+
+#jsn-body_inner2 {
+	background: url(../images/body_shadow_r.png) no-repeat top right;
+	padding-right: 10px;
+}
+
+#jsn-body_inner3 {
+	background: #FFFFFF none;
+	border-left: 1px solid #D4D4D4;
+	border-right: 1px solid #D4D4D4;
+	padding: 1em;
+	margin-top:10px;
+
+}
+
+
+
+
+/* box style */
+div.module-box {
+	margin: 0;
+	padding: 0;
+}
+
+div.module-box > div {
+	padding: 1em 0 0 0;
+}
+
+div.module-box > div > div {
+	padding: 0 0 0 1em;
+}
+
+div.module-box > div > div > div {
+	padding: 0 1em 1em 0;
+}
+
+
+/* grey*/
+div.box-grey {
+	background: url(../images/module_box_grey_r.png) top right no-repeat;	
+}
+
+div.box-grey > div {
+	background: url(../images/module_box_grey_l.png) top left no-repeat;
+}
+
+div.box-grey > div > div {
+	background: url(../images/module_box_grey_l.png) bottom left no-repeat;
+}
+
+div.box-grey > div > div > div {
+	background: url(../images/module_box_grey_r.png) bottom right no-repeat; 
+}
+
+/* White */
+div.box-white {
+	background: url(../images/module_box_white_r.png) top right no-repeat;	
+}
+
+div.box-white > div {
+	background: url(../images/module_box_white_l.png) top left no-repeat;
+}
+
+div.box-white > div > div {
+	background: url(../images/module_box_white_l.png) bottom left no-repeat;
+}
+
+div.box-white > div > div > div {
+	background: url(../images/module_box_white_r.png) bottom right no-repeat; 
+}
+
+/**
+* Rot
+*/
+ 
+div.box-rot {
+	background: url(../images/module_window_red_r.png) top right no-repeat;	
+}
+
+div.box-rot > div {
+	background: url(../images/module_window_red_l.png) top left no-repeat;
+}
+
+div.box-rot > div > div {
+	background: url(../images/module_window_red_l.png) bottom left no-repeat;
+}
+
+div.box-rot > div > div > div {
+	background: url(../images/module_window_red_r.png) bottom right no-repeat; 
+}
+
+/* =====*/
+
+div.box-fadetop {
+	background: url(../images/module_box_fadetop_r.gif) top right no-repeat;
+	color: #000000;
+}
+
+div.box-fadetop > div {
+	background: url(../images/module_box_fadetop_l.gif) top left no-repeat;
+}
+
+div.box-fadetop > div > div {
+}
+
+div.box-fadetop > div > div > div {
+}
+
+/* blue */
+div.box-blue {
+	background: url(../images/module_box_blue_r.png) top right no-repeat;	
+}
+
+div.box-blue > div {
+	background: url(../images/module_box_blue_l.png) top left no-repeat;
+}
+
+div.box-blue > div > div {
+	background: url(../images/module_box_blue_l.png) bottom left no-repeat;
+}
+
+div.box-blue > div > div > div {
+	background: url(../images/module_box_blue_r.png) bottom right no-repeat; 
+}
+
+
+
+#main_content{
+	position:relative;
+	text-align:left;
+	margin:0 auto;
+
+	background: #FFFFFF;
+	 
+	margin-top:50px;
+	padding:4px;
+
+}
+#side_left{
+	background: #FFFFFF;
+	border-bottom:1px #CCCCCC solid;
+}
+
+#side_right{
+	background: url(../images/rightside-bg-full.png) 75% 0 repeat-y;
+}
+
+.left_column{
+	width:76%;
+	float:left;
+	background: #FFFFFF;
+	background:url(../images/bg1.png) repeat-x #FFFFFF;
+	border-top: #CCCCCC 1px solid;
+}
+.right_column{
+	width:24%;
+	float:left;
+	border-top: #CCCCCC 1px solid;
+}
+
+.clearfix:after {
+	content: ".";
+	clear: both;
+	height: 0;
+	visibility: hidden;
+	display: block;
+}
+.clearfix {
+	display: inline-block; /* Fixes IE/Mac */
+	}
+/* Hides from IE-mac \*/
+* html .clearfix,
+* html .clearfix * {height: 1%;}
+.clearfix {display: block;}
+
+
+
+#path{
+	background:url(../images/header-gradient.gif);
+	height:19px;
+	border-top: #CCCCCC 1px solid;
+	font-size:9pt; color:#FFFFFF
+
+}
+.inside{
+	padding:10px;
+}
+
+
+/* CSS Document */
+/* by Nguyen Mau Tri am 26.11 */
+/*=============*/
+body {
+text-align:center;
+font-size:76%;
+font-family:Tahoma, Arial, Helvetica, sans-serif;
+line-height:1.3;
+background: #000000;
+}
+body.width_0 div#shell {
+width: 760px;
+}
+body.width_1 div#shell {
+width: 960px;
+}
+body.width_2 div#shell {
+min-width:760px;
+max-width:960px;
+width:auto !important;
+width:960px;
+}  
+  
+  
+/* Shell */
+div#shell {
+	text-align:left;
+	margin:0 auto;
+	border-left: 1px solid #999999 ;
+	}
+div#main_nav {
+	position: relative;
+	z-index:100;
+	padding: 0px;
+	margin: 0px;
+	text-align: left;
+	width: 100%;
+	min-height: 20px;
+	white-space: nowrap;
+	/*\*/vertical-align: bottom;/*\*/
+	font-size: 10px;
+	_height: 20px !important;
+	background:none;
+	}
+div#main_nav ul.tabs {
+	display: block;
+	padding: 0;
+	margin: 0;
+	white-space: nowrap;
+	text-transform: uppercase;
+/*\*/vertical-align: middle;/*\*/
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:11px;
+	}
+	
+div#main_nav ul.tabs li {
+	margin: 0;
+	display: block;
+	float: left;
+	border: 1px solid #999999;
+	border-width: 1px 1px 0px 0px;
+	white-space: nowrap;
+	padding: 5px 5px 5px 5px;
+	width:75px;
+	background-image: url(../images/button_bg.png); background-repeat: repeat-x;
+	z-index:50;
+	text-align:center;
+	margin-right:1px;
+	font-weight:bold;
+	}
+
+div#main_nav ul.tabs li.selected {
+	background-color: #C3E3E8;
+	border-bottom: none;
+	z-index: 9999;
+	padding: 5px 5px 6px 5px;
+	width:75px;
+	background-image: url(../images/button_bg_ok.png); background-repeat: repeat-x;
+	margin:0px;
+	color: #FFFFFF;
+	font-weight:bold;
+	text-align:center;
+	margin-right:1px;
+	}
+
+div#main_nav ul.tabs li img{border:none;margin:0}	
+div#main_nav ul.tabs li a:link {color: #FFFFFF; text-decoration:none;}
+div#main_nav ul.tabs li a:visited {color: #FFFFFF; text-decoration:none; }
+div#main_nav ul.tabs li a:focus {color: #006600 ; text-decoration:none; } 
+div#main_nav ul.tabs li a:hover {color: #FFFF00; background:#006600;}
+		
+div#main_nav ul.tabs li a {
+	color: #333;
+	}
+
+/* Copyright */
+div#main_nav ul#help {
+	font-size: 11px;
+	display: block;
+	text-align: right;
+	margin: 0px;
+	padding: 2px 0px 0px 0px;
+	white-space: nowrap;   
+	width: auto;
+	float: right;     
+	_border-bottom: 1px solid #999999;
+/*\*/	vertical-align: middle;/*\*/
+	font-family: Arial, sans-serif;
+	border:0 !important;
+	position:relative;
+	z-index: 9998;
+	}
+	
+div#main_nav ul#help li {
+	font-size: 12px; 
+	margin: 0;
+	background-image: none;
+	display: inline; 
+	white-space: nowrap;
+	
+	border: 1 solid #ccc;
+	
+	padding: 0 4px 0 4px;
+	color: #999999;
+	}
+div#main_nav ul#help li a {	color: #666666; text-decoration:none;
+	}
+div#main_nav #help a:hover {color:green; text-decoration:underline; }
+	
+
+/* Page */
+.mainpage {
+	position: relative;
+	z-index:1;
+	clear: both; 
+	border-bottom: 1px solid #999999;
+	border-top: 1px solid #999999;
+	width:100%
+
+
+	border-right: 1px solid #999999; 
+	top: -1px;
+	margin:0;
+	padding-top:60px;
+	padding-bottom:65px;
+	display: block;
+	vertical-align:top;
+/*
+	background: url(../images/bg.png); background-repeat:repeat-x; background-color: #C9E7FF;
+*/
+	background: url(../images/header1.png) repeat-x; background-color: #FFFFFF;
+	display:block;
+	}
+
+#indicator{position:absolute; background: #FFFFCC; top:55px; left: 40%;
+border:1px #999999 solid; z-index:99999; padding: 2px 5px 4px 5px; font-weight:bold; font-size:8pt  }
+ 
+/*modal*/ 
+#modal_data {
+  background:url(../images/bg1.png) repeat-x #FFFFFF; padding:5px; line-height:1.5; 
+}
+
+/*modal*/ 
+#modal_title{
+position:absolute;
+left:5px;
+top: -1px;
+color:#FFFFFF;
+text-transform: capitalize;
+font-size:9pt;
+font-weight:bold;
+}

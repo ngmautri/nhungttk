@@ -10,13 +10,10 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\Event;
 use Inventory\Model\AssetCategory;
 use Inventory\Model\AssetCategoryTable;
-
 use Inventory\Model\AssetGroup;
 use Inventory\Model\AssetGroupTable;
-
 use AssetTypeTest\Bootstrap;
 use Inventory\Services\AssetService;
-
 
 class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
@@ -39,32 +36,34 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	 */
 	
 	/*
-	public function testAssetCatergoryTest() {
-		$resultSet = new ResultSet ();
-		$AssetCategoryTable = Bootstrap::getServiceManager()->get('Inventory\Model\AssetCategoryTable');
-		 
-		 $assetType = new AssetCategory();
-		 $assetType->category = "Buiding	";
-		 $assetType->description = "Machinery details";
-		 
-		 //$AssetCategoryTable->add($assetType);
-		 echo $AssetCategoryTable->add($assetType);
-	
-	}*/
-	
-	
+	 * public function testAssetCatergoryTest() {
+	 * $resultSet = new ResultSet ();
+	 * $AssetCategoryTable = Bootstrap::getServiceManager()->get('Inventory\Model\AssetCategoryTable');
+	 *
+	 * $assetType = new AssetCategory();
+	 * $assetType->category = "Buiding ";
+	 * $assetType->description = "Machinery details";
+	 *
+	 * //$AssetCategoryTable->add($assetType);
+	 * echo $AssetCategoryTable->add($assetType);
+	 *
+	 * }
+	 */
 	public function testAssetServiceTest() {
 		$resultSet = new ResultSet ();
-		$sv = Bootstrap::getServiceManager()->get('Inventory\Services\SparepartService');
-			
-		/*for ($i=1;$i<=808;$i++) {
-			print $sv->createAssetFolderById($i);
-		}
-		*/
 		
-		print $sv->createSparepartFolderById(1);
-		var_dump($sv->getSparepartPath(1));
-	
+ 		$sv = Bootstrap::getServiceManager ()->get ( 'Inventory\Services\SparepartService' );
+		
+		for($i = 1; $i <= 917; $i ++) {
+			print $sv->createSparepartFolderById ( $i );
+		} 
+		
+		
+ 	/* 	$sv = Bootstrap::getServiceManager ()->get ( 'Inventory\Services\AssetService' );
+		
+		for($i = 1; $i <= 808; $i ++) {
+			print $sv->createAssetFolderById ( $i );
+		}  */
 	}
 	
 	

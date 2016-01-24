@@ -1,0 +1,40 @@
+
+<h3>User Register</h3>
+
+
+<form action="<?php echo $this->baseUrl ?>/user/index/register"	method="post" enctype="multipart/form-data" id="new user">
+
+<table>
+
+<tr>
+	<td><label for="name">First Name</label> </td>
+	<td><input type="text"	name="firstname" value="" /></td>
+</tr>
+
+<tr>
+	<td><label for="name_local">Last name</label> </td>
+	<td><input type="text"	name="lastname" value="" /></td>
+</tr>
+<tr>
+	<td><label for="tag">Email</label> </td>
+	<td><input type="text"	name="email" value="" /></td>
+</tr>
+
+<tr>
+	<td><label for="tag">Password</label> </td>
+	<td><input type="password"	name="password" value="" /></td>
+</tr>
+
+<tr>
+	<td><label for="tag">Password (retype)</label> </td>
+	<td><input type="password"	name="passwords" value="" /></td>
+</tr>
+
+<tr>
+	<td></td> 
+	<td><input type="submit" name="register" value="Register" />	</td>
+</tr>
+
+</table>
+ 
+</form>

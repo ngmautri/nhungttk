@@ -1,17 +1,17 @@
 
 <img src="<?php echo $this->barcode;?>">
-<div id="mascot"></div>
-<!--
+<!--  <div id="mascot"></div>  -->
+
 <h2> <?php echo $this->massage; ?></h2>
 
 <table border="1">
  <?php foreach ($users as $user) : ?>
     <tr>
-        <td><?php echo $this->escapeHtml($user->id);?></td>
-        <td><?php echo $this->escapeHtml($user->firstname);?></td>
-        <td><?php echo $this->escapeHtml($user->lastname);?></td>
-        <td><?php echo $this->escapeHtml($user->email);?></td>
-    </tr>
+		<td><?php echo $this->escapeHtml($user->id);?></td>
+		<td><?php echo $this->escapeHtml($user->firstname);?></td>
+		<td><?php echo $this->escapeHtml($user->lastname);?></td>
+		<td><?php echo $this->escapeHtml($user->email);?></td>
+	</tr>
 <?php endforeach; ?>
 </table>
--->
+

@@ -14,6 +14,7 @@ return array (
 								'options' => array (
 										'route' => '/',
 										'defaults' => array (
+												'module' => 'Inventory',
 												'controller' => 'Inventory\Controller\Asset',
 												'action' => 'Index' 
 										) 
@@ -22,6 +23,7 @@ return array (
 								
 						),
 						
+												
 						'assetcategory' => array(
 								'type' => 'literal',
 								'options' => array(

@@ -62,4 +62,30 @@ class Files
 		}
 		return rmdir($dir);
 	}
+	
+	/**
+	 * Generate unique token
+	 *
+	 * @return string
+	 */
+	public function generateToken()
+	{
+		return md5(uniqid(microtime() . Str::random(Str::NUMERIC), true));
+	}
+	
+	
+	public static function generate_random_string($length=32)
+	{
+		// Allowable random string characters
+		$seeds = 'abcdefghijklmnopqrstuvwxyz0123456789';
+	
+		// Generate the random string
+		$str = '';
+		$count = strlen($seeds);
+		for ($i = 0; $length > $i; $i++)
+		{
+			$str .= $seeds[mt_rand(0, $count - 1)];
+		}
+		return $str;
+	}
 }

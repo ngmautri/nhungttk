@@ -8,19 +8,18 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 namespace User\Controller;
+
 use User\Form\UserForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-
 use User\Model\User;
 use MLA\Files;
-
+use Zend\Validator\EmailAddress;
 
 class IndexController extends AbstractActionController {
 	public $userTable;
 	public $authService;
 	public $registerService;
-	
 	public $massage = 'NULL';
 	
 	/*
@@ -34,7 +33,7 @@ class IndexController extends AbstractActionController {
 		if ($this->getAuthService ()->hasIdentity ()) {
 			$massage = "loged in";
 		} else {
-			$massage = "not loged in yet";
+			return $this->redirect ()->toRoute ( 'login' );
 		}
 		
 		return new ViewModel ( array (
@@ -42,50 +41,81 @@ class IndexController extends AbstractActionController {
 				'massage' => $massage,
 				'form' => $form 
 		) );
-		
 	}
-	
-	
-	public function registerAction(){
+	public function registerAction() {
+		
+		// User is authenticated
+		if ($this->getAuthService ()->hasIdentity ()) {
+			return $this->redirect ()->toRoute ( 'assetcategory' );
+		}
 		
 		$request = $this->getRequest ();
+		
 		if ($request->isPost ()) {
-				
-			$request = $this->getRequest ();
 			
-			if ($request->isPost ()) {
-		
-				$input = new User();
-				$input->firstname = $request->getPost ( 'firstname' );
-				$input->lastname = $request->getPost ( 'lastname' );
-		
-				$input->password = md5($request->getPost ( 'password' ));
-				$input->email = $request->getPost ( 'email' );
-				$input->block = 0;
-		
-				$f = new Files;
-				$input->registration_key = Files::generate_random_string();
-								
-				$newId = $this->getUserTable()->add( $input );
-				
-				$this->getRegisterService()->doRegister ($input);
-				
-				return $this->redirect ()->toRoute ( 'assetcategory' );
+			$input = new User ();
+			$input->firstname = $request->getPost ( 'firstname' );
+			$input->lastname = $request->getPost ( 'lastname' );			
+			$input->password = $request->getPost ( 'password' );
+			$input->email = $request->getPost ( 'email' );
+			$input->block = 0;			
+			$input->registration_key = Files::generate_random_string ();
+			
+			
+
+			$errors = array ();
+			
+			$validator = new EmailAddress();
+			
+			if ($input->firstname ==''){
+				$errors [] = 'Please give your first name';
 			}
-		
+			
+			if ($input->lastname ==''){
+				$errors [] = 'Please give your last name';
+			}
+			
+			if (strlen($input->password) < 6) {
+				$errors [] = 'Password is too short. Length muss be at least 6';
+			}else{
+				
+				if($input->password!= $request->getPost ( 'password1' )  ){
+					$errors [] = 'Password are not matched';
+				}
+			}
+			
+			
+			if (! $validator->isValid ( $input->email )) {
+				$errors [] = 'Email addresse is not correct!';
+			}else{
+				$r = $this->getUserTable()->getUserByEmail($input->email);
+				
+				if ($r->count()>0){
+					$errors [] = 'Email exists already!';
+				}
+			}
+				
+			
+			if (count($errors) > 0) {
+				return new ViewModel ( array (
+						'messages' => $errors
+				));
+			}
+			
+			$input->password = md5 ( $input->password);
+				
+			
+			$newId = $this->getUserTable ()->add ( $input );
+			
+			$this->getRegisterService ()->doRegister ( $input );
+			
+			return $this->redirect ()->toRoute ( 'assetcategory' );
 		}
-		return new ViewModel ( array (
-				
-				
-		) );
-	}
-	
-	public function registerConfirmAction(){
 		
-		
+		return new ViewModel ( array () );
 	}
-	
-	
+	public function registerConfirmAction() {
+	}
 	
 	// get UserTable
 	public function getUserTable() {
@@ -96,7 +126,7 @@ class IndexController extends AbstractActionController {
 		return $this->userTable;
 	}
 	
-	/*
+	/**
 	 * Get Authentication Service
 	 */
 	public function getAuthService() {

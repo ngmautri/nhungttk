@@ -3,6 +3,7 @@
 namespace User\Model;
 
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Sql;
 
 class UserTable {
 	protected $tableGateway;
@@ -32,6 +33,24 @@ class UserTable {
 			throw new \Exception ( "Could not find row $id" );
 		}
 		return $row;
+	}
+	
+	public function getUserByEmail($email) {
+		
+		$adapter = $this->tableGateway->adapter;
+		
+		$sql = new Sql($adapter);
+		$select = $sql->select();
+		
+		$where = 'email =\''.$email.'\'';
+			
+		$select->from('mla_users');
+		$select->where($where);
+		
+		$statement = $sql->prepareStatementForSqlObject($select);
+		$results = $statement->execute();
+		
+		return $results;
 	}
 	
 	/*

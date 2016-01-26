@@ -13,12 +13,14 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use User\Model\User;
 use MLA\Files;
+use Zend\Validator\EmailAddress;
 
 class AuthController extends AbstractActionController {
 	public $userTable;
 	public $authService;
 	public $registerService;
 	public $massage = 'NULL';
+	
 	
 	/*
 	 * Defaul Action
@@ -35,6 +37,19 @@ class AuthController extends AbstractActionController {
 				
 				$email = $request->getPost ( 'email' );
 				$password = $request->getPost ( 'password' );
+				
+				$errors = array ();
+				
+				$validator = new EmailAddress();
+				if (! $validator->isValid ( $email )) {
+					$errors [] = 'Email addresse is not correct!';
+				}
+				
+				if (count($errors) > 0) {
+					return new ViewModel ( array (
+							'messages' => $errors
+					));
+				}				
 				
 				$this->getAuthService ()->getAdapter ()->setIdentity ( $email )->setCredential ( $password );
 				
@@ -61,7 +76,10 @@ class AuthController extends AbstractActionController {
 	}
 	
 	public function logoutAction(){
-	
+		$this->getAuthService ()->clearIdentity();
+		$this->flashmessenger()->addMessage("You've been logged out");
+		return $this->redirect()->toRoute('login');
+			
 	}
 	
 	// get UserTable

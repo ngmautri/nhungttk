@@ -1,6 +1,17 @@
 
 <h3>User Register</h3>
 
+<?php if (!$messages== null)
+{
+	echo '<ul style="color:#FF0000">';
+	 foreach ($messages as $m) :
+	 echo '<li>'.$m . '</li>';
+	 
+	 endforeach;
+	 echo '</ul>';
+} 
+?>
+
 
 <form action="<?php echo $this->baseUrl ?>/user/index/register"	method="post" enctype="multipart/form-data" id="new user">
 
@@ -27,7 +38,7 @@
 
 <tr>
 	<td><label for="tag">Password (retype)</label> </td>
-	<td><input type="password"	name="passwords" value="" /></td>
+	<td><input type="password"	name="password1" value="" /></td>
 </tr>
 
 <tr>

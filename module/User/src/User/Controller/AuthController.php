@@ -21,65 +21,62 @@ class AuthController extends AbstractActionController {
 	public $registerService;
 	public $massage = 'NULL';
 	
-	
 	/*
 	 * Defaul Action
 	 */
 	public function indexAction() {
 	}
-	
-	
 	public function authenticateAction() {
-				
-			$request = $this->getRequest ();
+		
+		// User is authenticated
+		if ($this->getAuthService ()->hasIdentity ()) {
+			return $this->redirect ()->toRoute ( 'assetcategory' );
+		}
+		
+		$request = $this->getRequest ();
+		
+		if ($request->isPost ()) {
 			
-			if ($request->isPost ()) {
-				
-				$email = $request->getPost ( 'email' );
-				$password = $request->getPost ( 'password' );
-				
-				$errors = array ();
-				
-				$validator = new EmailAddress();
-				if (! $validator->isValid ( $email )) {
-					$errors [] = 'Email addresse is not correct!';
-				}
-				
-				if (count($errors) > 0) {
-					return new ViewModel ( array (
-							'messages' => $errors
-					));
-				}				
-				
-				$this->getAuthService ()->getAdapter ()->setIdentity ( $email )->setCredential ( $password );
-				
-				$result = $this->getAuthService ()->authenticate ();
-				
-				if ($result->isValid ()) {
-					return $this->redirect ()->toRoute ( 'assetcategory' );
-				} else {
-					
-					// $route = $this->getServiceLocator ()->get ( 'application' )->getMvcEvent()->getRouteMatch();
-					
-					return new ViewModel ( array (
-							'messages' => $result->getMessages()
-					) );
-				}
-				
-				
+			$email = $request->getPost ( 'email' );
+			$password = $request->getPost ( 'password' );
+			
+			$errors = array ();
+			
+			$validator = new EmailAddress ();
+			if (! $validator->isValid ( $email )) {
+				$errors [] = 'Email addresse is not correct!';
 			}
 			
-			return new ViewModel ( array (
-					'messages' => ''
-			) );
-		
-	}
-	
-	public function logoutAction(){
-		$this->getAuthService ()->clearIdentity();
-		$this->flashmessenger()->addMessage("You've been logged out");
-		return $this->redirect()->toRoute('login');
+			if (count ( $errors ) > 0) {
+				return new ViewModel ( array (
+						'messages' => $errors 
+				) );
+			}
 			
+			$this->getAuthService ()->getAdapter ()->setIdentity ( $email )->setCredential ( $password );
+			
+			$result = $this->getAuthService ()->authenticate ();
+			
+			if ($result->isValid ()) {
+				return $this->redirect ()->toRoute ( 'assetcategory' );
+			} else {
+				
+				// $route = $this->getServiceLocator ()->get ( 'application' )->getMvcEvent()->getRouteMatch();
+				
+				return new ViewModel ( array (
+						'messages' => $result->getMessages () 
+				) );
+			}
+		}
+		
+		return new ViewModel ( array (
+				'messages' => '' 
+		) );
+	}
+	public function logoutAction() {
+		$this->getAuthService ()->clearIdentity ();
+		$this->flashmessenger ()->addMessage ( "You've been logged out" );
+		return $this->redirect ()->toRoute ( 'login' );
 	}
 	
 	// get UserTable

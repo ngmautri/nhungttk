@@ -49,13 +49,31 @@ class RegisterListener implements ListenerAggregateInterface {
 		/* @var $order \ArrayObject */
 		$user = $e->getParam ('user');
 		
+		$emailText = <<<EOT
+<p>Hello {$user->firstname} {$user->lastname},</p>
+		
+<p>Welcome Mascot Laos Plattform!</p>
+		
+Your account is created.<br/>
+click on below link to activate your account Sie bitte auf folgenden Link:
+		
+	<p><a href="http://localhost/user/index/register-confirm?key={$user->registration_key}&email={$user->email}"/>http://localhost/user/index/register-confirm?key={$user->registration_key}&email={$user->email}
+	</p>
+		
+<p>
+Regards<br/>
+MLA Team
+</p>
+<p>(<em>Diese Email wurde automatisch vom System gesendet.</em>)</p>
+EOT;
+		
 		// build message
 		$message = new Message ();
 		$message->setEncoding ( 'utf-8' );
 		$message->addFrom ( 'mib-team@web.de' );
 		$message->addTo ($user->email);
 		$message->setSubject ( 'Mascot Laos Plattform Register' );
-		$message->setBody ( 'please confirm "' . $user->registration_key);
+		$message->setBody ( $emailText);
 		// send message
 		$this->getMailTransport ()->send ( $message );
 	}

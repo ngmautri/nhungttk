@@ -112,7 +112,7 @@ class IndexController extends AbstractActionController {
 			return $this->redirect ()->toRoute ( 'assetcategory' );
 		}
 		
-		return new ViewModel ( array () );
+		return new ViewModel ( array ('messages' => '') );
 	}
 	public function registerConfirmAction() {
 	}

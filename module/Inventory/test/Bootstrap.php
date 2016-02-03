@@ -123,7 +123,9 @@ class Bootstrap {
 						'autoregister_zf' => true,
 						'namespaces' => array (
 								__NAMESPACE__ => __DIR__ . '/' . __NAMESPACE__,
-								'MLA' => $vendorPath . DIRECTORY_SEPARATOR . 'MLA' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'MLA' 
+								'MLA' => $vendorPath . DIRECTORY_SEPARATOR . 'MLA' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'MLA' ,
+								'ZendSearch' => $vendorPath . DIRECTORY_SEPARATOR . 'ZendSearch' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'ZendSearch' ,
+								
 						)
 						 
 				) 

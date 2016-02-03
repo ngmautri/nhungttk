@@ -52,6 +52,7 @@ class AssetController extends AbstractActionController {
 		// Draw the barcode in a new image,
 		Barcode::factory ( 'code39', 'image', $barcodeOptions, $rendererOptions )->render ();
 	}
+	
 	public function addAction() {
 		$request = $this->getRequest ();
 		if ($request->isPost ()) {
@@ -73,6 +74,7 @@ class AssetController extends AbstractActionController {
 				$input->received_on = $request->getPost ( 'received_on' );
 				
 				$input->location = $request->getPost ( 'location' );
+				$input->comment = $request->getPost ( 'comment' );
 				
 				$newId = $this->getMLAAssetTable ()->add ( $input );
 				$asset_dir = $this->getAssetService ()->createAssetFolderById ( $newId );
@@ -122,8 +124,10 @@ class AssetController extends AbstractActionController {
 			$input->serial = $request->getPost ( 'serial' );
 			$input->origin = $request->getPost ( 'origin' );
 			$input->received_on = $request->getPost ( 'received_on' );
-			
+					
 			$input->location = $request->getPost ( 'location' );
+			$input->comment = $request->getPost ( 'comment' );
+				
 			
 			$this->getMLAAssetTable ()->update ( $input,$input->id );
 			$asset_dir = $this->getAssetService ()->getAssetPath($input->id);

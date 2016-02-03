@@ -57,7 +57,9 @@ Zend\Loader\AutoloaderFactory::factory ( array (
 				'autoregister_zf' => true,
 				'namespaces' => array (
 						__NAMESPACE__ => __DIR__ . '/' . __NAMESPACE__,
-						'MLA' =>  __DIR__ . '/vendor/' . DIRECTORY_SEPARATOR . 'MLA' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'MLA'
+						'MLA' =>  __DIR__ . '/vendor/' . DIRECTORY_SEPARATOR . 'MLA' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'MLA',
+						'ZendSearch' =>  __DIR__ . '/vendor/' . DIRECTORY_SEPARATOR . 'ZendSearch' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'ZendSearch'
+						
 				)
 					
 		)

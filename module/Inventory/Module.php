@@ -215,13 +215,16 @@ class Module {
 							$resultSetPrototype = new ResultSet ();
 							$resultSetPrototype->setArrayObjectPrototype ( new SparepartMovement () );
 							return new TableGateway ( 'mla_sparepart_movements', $dbAdapter, null, $resultSetPrototype );
-						} 
+						},
+						
+						'Inventory\Services\AssetSearchService'  => 'Inventory\Services\AssetSearchServiceFactory',
+						'Inventory\Services\SparePartsSearchService'  => 'Inventory\Services\SparePartsSearchServiceFactory',
 				)
 				,
 				
 				'invokables' => array (
 						'Inventory\Services\AssetService' => 'Inventory\Services\AssetService',
-						'Inventory\Services\SparepartService' => 'Inventory\Services\SparepartService' 
+						'Inventory\Services\SparepartService' => 'Inventory\Services\SparepartService',
 				) 
 		);
 	}

@@ -12,18 +12,18 @@ use ZendSearch\Lucene\document\Field;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 
-use Inventory\Model\MLAAssetTable;
 
 use MLA\Service\AbstractService;
+use Inventory\Model\MLASparepartTable;
 
 
  /* 
  * @author nmt
  *
  */
-class AssetSearchService extends AbstractService
+class SparePartsSearchService extends AbstractService
 {
-	protected $assetTable;
+	protected $sparePartTable;
 	protected $eventManager = null;
 	
 	/**
@@ -37,16 +37,16 @@ class AssetSearchService extends AbstractService
 	
 	public function createIndex(){
 		
-		//$index_path = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "asset";
+		$index_path = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "spareparts";
 		
 		//Test
-		$index_path = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "asset";
+		//$index_path = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "spareparts";
 		
 		
 		$index = Lucene::create($index_path);
 		Analyzer::setDefault(new CaseInsensitive());
 		
-		$assetTable = $this->getAssetTable();
+		$assetTable = $this->getSparepartTable();
 		
 		$rows = $assetTable->fetchAll();
 		
@@ -55,16 +55,14 @@ class AssetSearchService extends AbstractService
 			foreach($rows as $row)
 			{
 				$doc = new Document();
-				$doc->addField(Field::Text('name', mb_strtolower($row->name)));
-				$doc->addField(Field::Text('description', mb_strtolower($row->description)));
-				$doc->addField(Field::Text('tag', $row->tag));
-				$doc->addField(Field::Keyword('tag1', $row->tag));
-				$doc->addField(Field::Keyword('model', $row->model));
-				$doc->addField(Field::Keyword('serial', $row->serial));
-				$doc->addField(Field::Text('location', mb_strtolower($row->location)));
-				$doc->addField(Field::Text('comment', mb_strtolower($row->comment)));			
+				$doc->addField(Field::Text('name', mb_strtolower($row['name'])));
+				$doc->addField(Field::Text('description', mb_strtolower($row['description'])));
+				$doc->addField(Field::Text('tag', $row['tag']));
+				$doc->addField(Field::Keyword('tag1', $row['tag']));
+				$doc->addField(Field::Keyword('code', $row['code']));
+				$doc->addField(Field::Text('comment', mb_strtolower($row['comment'])));			
 				
-				$doc->addField(Field::UnIndexed ('asset_id',$row->id));
+				$doc->addField(Field::UnIndexed ('sparepart_id',$row['id']));
 				
 				$index->addDocument($doc);
 			}
@@ -79,10 +77,10 @@ class AssetSearchService extends AbstractService
 		
 		
 	
-		$index_path = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "asset";
+		$index_path = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "spareparts";
 	
 		//Test
-		//$index_path = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "asset";
+		//$index_path = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "spareparts";
 		
 		$index = Lucene::open($index_path);
 		
@@ -114,14 +112,14 @@ class AssetSearchService extends AbstractService
 		return $this->eventManager;
 	}
 	
-	public function setAssetTable(MLAAssetTable $assetTable)
+	public function setSparepartTable(MLASparepartTable $sparePartTable)
 	{
-		$this->assetTable =  $assetTable;
+		$this->sparePartTable =  $sparePartTable;
 	}
 	
-	public function getAssetTable()
+	public function getSparepartTable()
 	{
-		return $this->assetTable;
+		return $this->sparePartTable;
 	}
 
 }

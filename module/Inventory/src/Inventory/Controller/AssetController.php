@@ -177,8 +177,9 @@ class AssetController extends AbstractActionController {
 		 );
 	}
 	
-	/**
-	 */
+	
+	
+	
 	public function categorydetailAction() {
 		$categeory_id = $this->params ()->fromQuery ( 'category_id' );
 		
@@ -213,6 +214,7 @@ class AssetController extends AbstractActionController {
 				'paginator' => $paginator 
 		) );
 	}
+	
 	public function addcategoryAction() {
 		$request = $this->getRequest ();
 		if ($request->isPost ()) {
@@ -225,6 +227,7 @@ class AssetController extends AbstractActionController {
 			return $this->redirect ()->toRoute ( 'assetcategory' );
 		}
 	}
+	
 	public function editcategoryAction() {
 		$request = $this->getRequest ();
 		
@@ -268,11 +271,13 @@ class AssetController extends AbstractActionController {
 				'category' => $category 
 		) );
 	}
+	
 	public function categoryAction() {
 		return new ViewModel ( array (
 				'assetCategories' => $this->getAssetCategoryTable ()->fetchAll () 
 		) );
 	}
+	
 	public function groupAction() {
 		return new ViewModel ( array (
 				'assetGroups' => $this->getAssetGroupTable ()->fetchAll () 

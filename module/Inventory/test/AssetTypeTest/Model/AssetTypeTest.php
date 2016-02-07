@@ -49,6 +49,8 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * }
 	 */
+	
+	/*
 	public function testAssetServiceTest() {
 		$resultSet = new ResultSet ();
 		
@@ -56,16 +58,17 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 		
 		for($i = 1; $i <= 917; $i ++) {
 			print $sv->createSparepartFolderById ( $i );
-		} 
+	} 
+	*/
 		
 		
  	/* 	$sv = Bootstrap::getServiceManager ()->get ( 'Inventory\Services\AssetService' );
 		
 		for($i = 1; $i <= 808; $i ++) {
 			print $sv->createAssetFolderById ( $i );
-		}  */
+		}  
 	}
-	
+	*/
 	
 /* 	public function testAssetGroupTest() {
 		$resultSet = new ResultSet ();
@@ -81,5 +84,27 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 		var_dump($table->get(2));
 	
 	} */
+	
+	/*
+	public function testAssetSearchServieTest() {
+		$resultSet = new ResultSet ();
+	
+		$sv = Bootstrap::getServiceManager ()->get ( 'Inventory\Services\AssetSearchService' );
+	
+		$sv->createIndex();
+		
+		//$sv->search("00051");
+		
+	}
+	
+	*/
+	
+	public function testAssetSearchServieTest() {
+		$resultSet = new ResultSet ();
+		$sv = Bootstrap::getServiceManager ()->get ( 'Inventory\Services\SparePartsSearchService' );
+		//$sv->createIndex();
+		
+		var_dump($sv->search('bobbin'));
+	}
 
 }

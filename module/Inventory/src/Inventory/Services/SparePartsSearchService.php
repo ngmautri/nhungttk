@@ -57,16 +57,21 @@ class SparePartsSearchService extends AbstractService
 				$doc = new Document();
 				$doc->addField(Field::Text('name', mb_strtolower($row['name'])));
 				$doc->addField(Field::Text('description', mb_strtolower($row['description'])));
+				
 				$doc->addField(Field::Text('tag', $row['tag']));
 				$doc->addField(Field::Keyword('tag1', $row['tag']));
-				$doc->addField(Field::Keyword('code', $row['code']));
+				
+				$doc->addField(Field::Text('code', $row['code']));
+				$doc->addField(Field::Keyword('code1', $row['code']));
+						
+				
 				$doc->addField(Field::Text('comment', mb_strtolower($row['comment'])));			
 				
 				$doc->addField(Field::UnIndexed ('sparepart_id',$row['id']));
 				
 				$index->addDocument($doc);
 			}
-			return 'Companies index is created successfully!';
+			return 'Sparepart index is created successfully!';
 		}else{
 			return 'Nothing for indexing!';
 		}

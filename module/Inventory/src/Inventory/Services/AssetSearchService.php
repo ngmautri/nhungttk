@@ -37,10 +37,10 @@ class AssetSearchService extends AbstractService
 	
 	public function createIndex(){
 		
-		//$index_path = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "asset";
+		$index_path = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "asset";
 		
 		//Test
-		$index_path = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "asset";
+		//$index_path = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "asset";
 		
 		
 		$index = Lucene::create($index_path);
@@ -55,12 +55,25 @@ class AssetSearchService extends AbstractService
 			foreach($rows as $row)
 			{
 				$doc = new Document();
+				
 				$doc->addField(Field::Text('name', mb_strtolower($row->name)));
 				$doc->addField(Field::Text('description', mb_strtolower($row->description)));
+				
 				$doc->addField(Field::Text('tag', $row->tag));
 				$doc->addField(Field::Keyword('tag1', $row->tag));
-				$doc->addField(Field::Keyword('model', $row->model));
-				$doc->addField(Field::Keyword('serial', $row->serial));
+				
+				$doc->addField(Field::Text('model', mb_strtolower($row->model)));
+				$doc->addField(Field::Keyword('model1', $row->model));
+				
+				$doc->addField(Field::Text('brand', mb_strtolower($row->brand)));
+				$doc->addField(Field::Keyword('brand1', $row->brand));
+				
+				$doc->addField(Field::Text('serial', $row->serial));
+				$doc->addField(Field::Keyword('serial1', $row->serial));
+				
+				$doc->addField(Field::Text('origin', mb_strtolower($row->origin)));
+				$doc->addField(Field::Keyword('origin1', $row->origin));
+												
 				$doc->addField(Field::Text('location', mb_strtolower($row->location)));
 				$doc->addField(Field::Text('comment', mb_strtolower($row->comment)));			
 				
@@ -68,7 +81,7 @@ class AssetSearchService extends AbstractService
 				
 				$index->addDocument($doc);
 			}
-			return 'Companies index is created successfully!';
+			return 'Asset index is created successfully!';
 		}else{
 			return 'Nothing for indexing!';
 		}

@@ -88,7 +88,8 @@ return array (
 						'Inventory\Controller\Index' => 'Inventory\Controller\IndexController',
 						'Inventory\Controller\Asset' => 'Inventory\Controller\AssetController',
 						'Inventory\Controller\Spareparts' => 'Inventory\Controller\SparepartsController',
-						'Inventory\Controller\Image' => 'Inventory\Controller\ImageController'
+						'Inventory\Controller\Image' => 'Inventory\Controller\ImageController',
+						'Inventory\Controller\Search' => 'Inventory\Controller\SearchController'
 				) 
 		),
 		'view_manager' => array (

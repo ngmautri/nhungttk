@@ -84,7 +84,8 @@ return array (
 		'controllers' => array (
 				'invokables' => array (
 						'User\Controller\Index' => 'User\Controller\IndexController',
-						'User\Controller\Auth' => 'User\Controller\AuthController'
+						'User\Controller\Auth' => 'User\Controller\AuthController',
+						'User\Controller\Admin' => 'User\Controller\AdminController'
 						
 				) 
 		),

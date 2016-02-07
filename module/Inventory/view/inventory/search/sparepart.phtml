@@ -1,0 +1,35 @@
+
+<?php // var_dump( $hits) ?>
+
+
+<form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data" id="search">
+<table>
+	<tr><td><input type="text"	name="query" value="" /><td>
+	<td><input type="submit" name="seach" value="search" /></td>
+	</tr>
+</table>
+</form>
+
+
+<?php if (!$hits==null): ?>
+
+<table border="1">
+	<tr>
+		<td><b>Score</b></td>
+		<td><b>Tag</b></td>
+		<td><b>Asset Name</b></td>
+		<td><b>Detail</b></td>
+	</tr>
+ <?php foreach ($hits as $hit) : ?>
+  	
+    <tr>
+    	<td><?php echo $this->escapeHtml($hit->score);?></td>
+    	<td><?php echo $this->escapeHtml($hit->tag);?></td>
+		<td><?php echo $this->escapeHtml($hit->name);?></td>
+		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $hit->sparepart_id?>">  Detail</a></td>
+	</tr>
+<?php endforeach; ?>
+</table>
+
+
+<?php endif; ?>

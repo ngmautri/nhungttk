@@ -8,7 +8,6 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 namespace User\Controller;
-use User\Form\UserForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -16,10 +15,14 @@ use User\Model\User;
 use MLA\Files;
 
 
-class IndexController extends AbstractActionController {
-	public $userTable;
-	public $authService;
-	public $registerService;
+class AdminController extends AbstractActionController {
+	protected $userTable;
+	protected $authService;
+	protected $registerService;
+	protected $assetSearchService;
+	protected $sparePartSearchService;
+	protected $mesage;
+	
 	
 	public $massage = 'NULL';
 	
@@ -27,65 +30,35 @@ class IndexController extends AbstractActionController {
 	 * Defaul Action
 	 */
 	public function indexAction() {
-		
-		// $this->NMTPlugin()->test();
-		$form = new UserForm ();
-		
-		if ($this->getAuthService ()->hasIdentity ()) {
-			$massage = "loged in";
-		} else {
-			$massage = "not loged in yet";
-		}
-		
 		return new ViewModel ( array (
 				'users' => $this->getUserTable ()->fetchAll (),
-				'massage' => $massage,
-				'form' => $form 
 		) );
-		
 	}
 	
-	
-	public function registerAction(){
+	public function assetIndexAction() {
+		$searcher = $this->getAssetSearchService();
+		$message = $searcher->createIndex();
 		
-		$request = $this->getRequest ();
-		if ($request->isPost ()) {
-				
-			$request = $this->getRequest ();
-			
-			if ($request->isPost ()) {
-		
-				$input = new User();
-				$input->firstname = $request->getPost ( 'firstname' );
-				$input->lastname = $request->getPost ( 'lastname' );
-		
-				$input->password = md5($request->getPost ( 'password' ));
-				$input->email = $request->getPost ( 'email' );
-				$input->block = 0;
-		
-				$f = new Files;
-				$input->registration_key = Files::generate_random_string();
-								
-				$newId = $this->getUserTable()->add( $input );
-				
-				$this->getRegisterService()->doRegister ($input);
-				
-				return $this->redirect ()->toRoute ( 'assetcategory' );
-			}
-		
-		}
 		return new ViewModel ( array (
-				
+				'message' => $message,
+			) );
+		
+	}
+	
+	
+	public function sparePartIndexAction() {
+		
+		$searcher = $this->getSparePartSearchService();
+		$message = $searcher->createIndex();
+		
+		return new ViewModel ( array (
+				'message' => $message,
 		) );
-	}
 	
-	public function registerConfirmAction(){
-		
-		
 	}
 	
 	
-	
+		
 	// get UserTable
 	public function getUserTable() {
 		if (! $this->userTable) {
@@ -105,13 +78,25 @@ class IndexController extends AbstractActionController {
 		return $this->authservice;
 	}
 	
-	/*
-	 * Get Authentication Service
+	
+	/**
+	 * Get asset search service
 	 */
-	public function getRegisterService() {
-		if (! $this->registerService) {
-			$this->registerService = $this->getServiceLocator ()->get ( 'User\Service\RegisterService' );
+	public function getAssetSearchService() {
+		if (! $this->assetSearchService) {
+			$this->assetSearchService = $this->getServiceLocator ()->get ( 'Inventory\Services\AssetSearchService' );
 		}
-		return $this->registerService;
+		return $this->assetSearchService;
 	}
+	
+	/**
+	 * Get asset search service
+	 */
+	public function getSparePartSearchService() {
+		if (! $this->sparePartSearchService) {
+			$this->sparePartSearchService = $this->getServiceLocator ()->get ( 'Inventory\Services\SparePartsSearchService' );
+		}
+		return $this->sparePartSearchService;
+	}
+	
 }

@@ -46,43 +46,6 @@ class IndexController extends AbstractActionController {
 	}
 	
 	
-	public function registerAction(){
-		
-		$request = $this->getRequest ();
-		if ($request->isPost ()) {
-				
-			$request = $this->getRequest ();
-			
-			if ($request->isPost ()) {
-		
-				$input = new User();
-				$input->firstname = $request->getPost ( 'firstname' );
-				$input->lastname = $request->getPost ( 'lastname' );
-		
-				$input->password = md5($request->getPost ( 'password' ));
-				$input->email = $request->getPost ( 'email' );
-				$input->block = 0;
-		
-				$f = new Files;
-				$input->registration_key = Files::generate_random_string();
-								
-				$newId = $this->getUserTable()->add( $input );
-				
-				$this->getRegisterService()->doRegister ($input);
-				
-				return $this->redirect ()->toRoute ( 'assetcategory' );
-			}
-		
-		}
-		return new ViewModel ( array (
-				
-		) );
-	}
-	
-	public function registerConfirmAction(){
-		
-		
-	}
 	
 	
 	

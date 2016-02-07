@@ -1,0 +1,25 @@
+<h3>Admin</h3>
+
+<ul>
+<li>Users manager</li>
+<li>User Group</li>
+
+<li>Asset Categories</li>
+
+</ul>
+
+
+
+<h2> <?php echo $this->massage; ?></h2>
+
+<table border="1">
+ <?php foreach ($users as $user) : ?>
+    <tr>
+		<td><?php echo $this->escapeHtml($user->id);?></td>
+		<td><?php echo $this->escapeHtml($user->firstname);?></td>
+		<td><?php echo $this->escapeHtml($user->lastname);?></td>
+		<td><?php echo $this->escapeHtml($user->email);?></td>
+	</tr>
+<?php endforeach; ?>
+</table>
+

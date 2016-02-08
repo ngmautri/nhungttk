@@ -13,19 +13,19 @@
 
 <?php if (!$hits==null): ?>
 
-<table border="1">
+<table border="1" cellpadding="3">
 	<tr>
-		<td><b>Score</b></td>
 		<td><b>Tag</b></td>
 		<td><b>Asset Name</b></td>
+		<td><b>Edit</b></td>
 		<td><b>Detail</b></td>
 	</tr>
  <?php foreach ($hits as $hit) : ?>
   	
     <tr>
-    	<td><?php echo $this->escapeHtml($hit->score);?></td>
     	<td><?php echo $this->escapeHtml($hit->tag);?></td>
 		<td><?php echo $this->escapeHtml($hit->name);?></td>
+		<td><a href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $hit->asset_id?>">  Edit</a></td>
 		<td><a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $hit->asset_id?>">  Detail</a></td>
 	</tr>
 <?php endforeach; ?>

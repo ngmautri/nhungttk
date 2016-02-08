@@ -2,6 +2,15 @@
 
  <P><a href="<?php echo $this->baseUrl ?>/inventory/asset/add?category_id=<?php echo $this->escapeHtml($category_id)?>&category=<?php echo $this->escapeHtml($category)?>">Add new asset</a></P>
 
+<form action="<?php echo $this->baseUrl ?>/inventory/search/asset"	method="get" enctype="multipart/form-data" id="search">
+<table>
+	<tr><td><input type="text"	name="query" value="" /><td>
+	<td><input type="submit" name="seach" value="search" /></td>
+	</tr>
+</table>
+</form>
+
+
  <?php if ($total_asset <= 0){
  	
  	echo 'No asset found!';
@@ -19,7 +28,7 @@
  	
  ?>
  
-<table border="1">
+<table border="1" cellpadding="3"> 
 <tr>
 		<td><b>Asset Name</b></td>
 		<td><b>Model</b></td>

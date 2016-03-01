@@ -15,6 +15,10 @@ use Inventory\Model\AssetGroupTable;
 use AssetTypeTest\Bootstrap;
 use Inventory\Services\AssetService;
 
+
+use Inventory\Model\SparepartCategory;
+use Inventory\Model\SparepartCategoryMember;
+
 class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	/*
@@ -98,13 +102,71 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	}
 	
 	*/
-	
+	/*
 	public function testAssetSearchServieTest() {
 		$resultSet = new ResultSet ();
 		$sv = Bootstrap::getServiceManager ()->get ( 'Inventory\Services\SparePartsSearchService' );
 		//$sv->createIndex();
 		
-		var_dump($sv->search('bobbin'));
+		//var_dump($sv->search('bobbin'));
+		
+		$pictures_dir =  ROOT . DIRECTORY_SEPARATOR . "/data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_22".DIRECTORY_SEPARATOR."pictures".DIRECTORY_SEPARATOR;
+	
+		$name='0002.png';
+		
+		var_dump($pictures_dir.$name);
+		
+		$im = imagecreatefrompng($pictures_dir.$name);
+			
+		$ox = imagesx($im);
+		$oy = imagesy($im);
+		
+		$final_width_of_image =450;
+		
+		$nx = $final_width_of_image;
+		$ny = floor($oy * ($final_width_of_image / $ox));
+			
+		$nm = imagecreatetruecolor($nx, $ny);
+		
+		$name_thumbnail = 'thumbnail_450_'.$name ;
+		var_dump($name_thumbnail);
+			
+		imagecopyresized($nm, $im, 0,0,0,0,$nx,$ny,$ox,$oy);
+		imagepng($nm, "$pictures_dir/$name_thumbnail");
+		
 	}
+	*/
+	
+	
+	 public function testSparepartCatergoryTest() {
+	 /* 
+	 $resultSet = new ResultSet ();
+	 $tbl = Bootstrap::getServiceManager()->get('Inventory\Model\SparepartCategoryTable');
+	 
+	 $data = new SparepartCategory();
+	 $data->name = "1 needle m/c";
+	 $data->description = "1 needle m/c";
+	 var_dump($tbl->add($data)); 
+	 */
+	 	
+	 	
+	 	 $resultSet = new ResultSet ();
+	 	 $tbl = Bootstrap::getServiceManager()->get('Inventory\Model\SparepartCategoryMemberTable');
+	 	
+	 	 //$data = new SparepartCategoryMember();
+	 	 //$data->sparepart_id = 1;
+	 	 //$data->sparepart_cat_id=1;
+	 	 //var_dump($tbl->add($data)); 
+	 	 $result = $tbl->getMembersByCatId(19);
+	 	 
+		 foreach ($result as $user) {
+	        echo $user['name'];
+	    }
+	 
+	 //$table->add($assetType);
+	
+		//var_dump($tbl->fetchall());
+		
+	 }
 
 }

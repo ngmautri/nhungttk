@@ -33,6 +33,13 @@ use Inventory\Model\SparepartPictureTable;
 use Inventory\Model\SparepartMovement;
 use Inventory\Model\SparepartMovementsTable;
 
+use Inventory\Model\SparepartCategory;
+use Inventory\Model\SparepartCategoryTable;
+
+use Inventory\Model\SparepartCategoryMember;
+use Inventory\Model\SparepartCategoryMemberTableTable;
+use Inventory\Model\SparepartCategoryMemberTable;
+
 class Module {
 	
 	/*
@@ -217,8 +224,39 @@ class Module {
 							return new TableGateway ( 'mla_sparepart_movements', $dbAdapter, null, $resultSetPrototype );
 						},
 						
+						// Spare part Category
+						'Inventory\Model\SparepartCategoryTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'SparepartCategoryGateway' );
+						$table = new SparepartCategoryTable( $tableGateway );
+						return $table;
+						},
+						
+						'SparepartCategoryGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new SparepartCategory() );
+						return new TableGateway ( 'mla_sparepart_cats', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// Spare part Category Member
+						'Inventory\Model\SparepartCategoryMemberTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'SparepartCategoryMemberGateway' );
+						$table = new SparepartCategoryMemberTable( $tableGateway );
+						return $table;
+						},
+						
+						'SparepartCategoryMemberGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new SparepartCategoryMember() );
+						return new TableGateway ( 'mla_sparepart_cats_members', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						
+						
 						'Inventory\Services\AssetSearchService'  => 'Inventory\Services\AssetSearchServiceFactory',
 						'Inventory\Services\SparePartsSearchService'  => 'Inventory\Services\SparePartsSearchServiceFactory',
+						'Inventory\Listener\PictureUploadListener' => 'Inventory\Listener\PictureUploadListenerFactory',
 				)
 				,
 				

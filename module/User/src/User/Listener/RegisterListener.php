@@ -20,12 +20,14 @@ class RegisterListener implements ListenerAggregateInterface {
 	 */
 	protected $listeners = array ();
 	protected $mailTransport = null;
+	
 	public function attach(EventManagerInterface $events) {
 		$this->listeners [] = $events->attach ( 'postRegister', array (
 				$this,
 				'sendConfirmation' 
 		), 100 );
 	}
+	
 	public function detach(EventManagerInterface $events) {
 		foreach ( $this->listeners as $index => $listener ) {
 			if ($events->detach ( $listener )) {

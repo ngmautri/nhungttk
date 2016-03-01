@@ -44,7 +44,7 @@ return array (
 							return $authService;
 						},
 							
-							// Email Service
+						// Email Service
 						'SmtpTransportService' => function ($sm) {
 							
 							$transport = new SmtpTransport ();
@@ -64,5 +64,5 @@ return array (
 							return $transport;						
 						}
 				) 
-		) 
+		),
 );

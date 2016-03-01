@@ -23,6 +23,7 @@ use Inventory\Model\SparepartPicture;
 use Inventory\Model\MLASparepart;
 use Inventory\Model\SparepartMovement;
 use Inventory\Model\SparepartMovementsTable;
+use Inventory\Model\SparepartCategoryMember;
 
 class SparepartsController extends AbstractActionController {
 	public $authService;
@@ -33,6 +34,11 @@ class SparepartsController extends AbstractActionController {
 	public $mlaSparepartTable;
 	public $sparepartPictureTable;
 	public $sparepartMovementsTable;
+	
+	protected $sparePartCategoryTable;
+	protected $sparePartCategoryMemberTable;
+	
+	
 	public $massage = 'NULL';
 	public $errors = array ();
 	
@@ -92,6 +98,49 @@ class SparepartsController extends AbstractActionController {
 				'message' => 'Add new Sparepart' 
 		) );
 	}
+	
+	public function addCategoryAction() {
+		
+		$request = $this->getRequest ();
+		
+		if ($request->isPost ()) {
+			
+			$sparepart_id = (int) $request->getPost ( 'id' );
+			$categories = $request->getPost ( 'category' );
+			
+			if (count($categories) > 0) {
+				
+				foreach ($categories as $cat){
+					$member = new SparepartCategoryMember();
+					$member->sparepart_cat_id = $cat;
+					$member->sparepart_id =  $sparepart_id;
+					$this->getSparePartCategoryMemberTable()->add($member);
+				}
+				
+				
+				/*				
+				return new ViewModel ( array (
+						'sparepart' => null,
+						'categories' => $categories,
+							
+				) );
+				*/	
+				return $this->redirect ()->toRoute ( 'assetcategory' );
+			}
+		}
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$sparepart = $this->getMLASparepartTable ()->get ( $id );
+		
+		$categories = $this->getSparePartCategoryTable()->fetchAll ();
+		
+		return new ViewModel ( array (
+				'sparepart' => $sparepart,
+				'categories' => $categories,
+				
+		) );
+	}
+	
 	public function editAction() {
 		$request = $this->getRequest ();
 		if ($request->isPost ()) {
@@ -172,6 +221,46 @@ class SparepartsController extends AbstractActionController {
 				'total_spareparts' => $totalResults,
 				'spareparts' => $spareparts,
 				'paginator' => $paginator 
+		) );
+	}
+	
+	
+	/**
+	 * List all spare parts
+	 */
+	public function showCategoryAction() {
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 20;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		
+	
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		
+		$id = $this->params ()->fromQuery ( 'id' );
+		
+		$category = $this->getSparePartCategoryTable()->get($id);
+	
+		$spareparts = $this->getSparePartCategoryMemberTable()->getMembersByCatId ($id);
+		$totalResults = $spareparts->count ();
+	
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$spareparts = $this->getMLASparepartTable ()->getLimitSpareParts ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+	
+		return new ViewModel ( array (
+				'category' => $category,				
+				'total_spareparts' => $totalResults,
+				'spareparts' => $spareparts,
+				'paginator' => $paginator
 		) );
 	}
 	
@@ -439,5 +528,23 @@ class SparepartsController extends AbstractActionController {
 			$this->SmtpTransportService = $sm->get ( 'SmtpTransportService' );
 		}
 		return $this->SmtpTransportService;
+	}
+	
+	// table
+	private function getSparePartCategoryTable() {
+		if (! $this->sparePartCategoryTable) {
+			$sm = $this->getServiceLocator ();
+			$this->sparePartCategoryTable = $sm->get ( 'Inventory\Model\SparepartCategoryTable' );
+		}
+		return $this->sparePartCategoryTable;
+	}
+	
+	// table
+	private function getSparePartCategoryMemberTable() {
+		if (! $this->sparePartCategoryMemberTable) {
+			$sm = $this->getServiceLocator ();
+			$this->sparePartCategoryMemberTable = $sm->get ( 'Inventory\Model\SparepartCategoryMemberTable' );
+		}
+		return $this->sparePartCategoryMemberTable;
 	}
 }

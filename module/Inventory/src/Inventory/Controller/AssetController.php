@@ -21,9 +21,11 @@ class AssetController extends AbstractActionController {
 	public $assetCategoryTable;
 	public $assetGroupTable;
 	public $mlaAssetTable;
+	
 	public $assetPictureTable;
 	public $assetService;
 	public $authService;
+	
 	public $massage = 'NULL';
 	
 	/*
@@ -82,6 +84,10 @@ class AssetController extends AbstractActionController {
 				
 				$files = $request->getFiles ()->toArray ();
 				
+				$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
+				$this->getEventManager()->attachAggregate ( $pictureUploadListener );
+				
+				
 				foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 					if ($error == UPLOAD_ERR_OK) {
 						$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
@@ -95,6 +101,11 @@ class AssetController extends AbstractActionController {
 						$pic->filetype = $ftype;
 						$pic->asset_id = $newId;
 						$this->getAssetPictureTable ()->add ( $pic );
+						
+						// trigger uploadPicture
+						$this->getEventManager()->trigger(
+								'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
+						);
 					}
 				}				
 				return $this->redirect ()->toRoute ( 'assetcategory' );
@@ -135,6 +146,10 @@ class AssetController extends AbstractActionController {
 			
 			$files = $request->getFiles ()->toArray ();
 			
+			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
+			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
+			
+			
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
@@ -148,6 +163,11 @@ class AssetController extends AbstractActionController {
 					$pic->filetype = $ftype;
 					$pic->asset_id = $input->id;
 					$this->getAssetPictureTable ()->add ( $pic );
+					
+					// trigger uploadPicture
+					$this->getEventManager()->trigger(
+							'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
+							);
 				}
 			}
 			
@@ -328,4 +348,6 @@ class AssetController extends AbstractActionController {
 		}
 		return $this->assetPictureTable;
 	}
+	
+	
 }

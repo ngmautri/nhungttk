@@ -1,0 +1,22 @@
+<h3>Add member spare part category</h3>
+<form action="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category" method="post">
+<div>
+    <label for="name">Spare part Category Name</label>
+    <input type="text" name="name" value=""/>
+</div>
+<div>
+    <label for="description">Description</label>
+    <textarea cols="45" name="description" id="description" style="background:#FFFFFF" rows="4"></textarea>
+  
+</div>
+
+<div>
+    <label for="parent_id">Parent Category</label>
+    <input type="text" name="parent_id" value=""/>
+</div>
+
+<div id="formbutton">
+<input type="submit" name="add" value="Add" />
+</div>
+
+</form>

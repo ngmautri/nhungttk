@@ -1,0 +1,42 @@
+<h3>Spare part Categories</h3>
+
+<P>
+	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list">Show all spare parts</a>
+</P>
+
+<P>
+	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new
+		spare part</a>
+</P>
+
+ 
+<form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data" id="search">
+<table>
+	<tr><td><input type="text"	name="query" value="" /><td>
+	<td><input type="submit" name="seach" value="search" /></td>
+	</tr>
+</table>
+</form>
+ 
+
+<table border="1" cellpadding="3">
+<tr>
+		<td><b>Asset Category</b></td>
+		<td><b>Action</b></td>
+	</tr>	
+ <?php foreach ($assetCategories as $category) : ?>
+ 
+ 	
+    <tr>
+		<td><?php echo $this->escapeHtml($category->name);?></td>
+		<td>
+         <a href="<?php echo $this->baseUrl ?>/inventory/admin/edit-sparepart-category?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a>
+          <a href="<?php echo $this->baseUrl ?>/inventory/admin/delete-sparepart-category?id=<?php echo $this->escapeHtml($category->id);?>">Delete</a>
+     	 | <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($category->id);?>">detail</a>
+     	
+     	</td>
+	</tr>
+<?php endforeach; ?>
+</table>
+
+

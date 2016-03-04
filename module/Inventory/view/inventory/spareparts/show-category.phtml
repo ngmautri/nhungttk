@@ -1,14 +1,9 @@
-<h3>Spare parts list</h3>
-
-<P>
-	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare part category</a>
-</P>
+<h3>Spare part for:  <?php echo $category->name ?></h3>
 
 <P>
 	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new
 		spare part</a>
 </P>
-
 
 
 <form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data" id="search">
@@ -67,10 +62,6 @@ if ($total_spareparts <= 0) {
 		|
 		<a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Receive
-		</a>
-		|
-		<a
-			href="<?php echo $this->baseUrl ?>/inventory/spareparts/add-category?id=<?php echo $this->escapeHtml($a['id']);?>">change category
 		</a>
 		|
 		<a

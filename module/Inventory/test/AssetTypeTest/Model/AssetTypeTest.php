@@ -157,11 +157,15 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	 	 //$data->sparepart_id = 1;
 	 	 //$data->sparepart_cat_id=1;
 	 	 //var_dump($tbl->add($data)); 
+	 	 /*
 	 	 $result = $tbl->getMembersByCatId(19);
 	 	 
 		 foreach ($result as $user) {
 	        echo $user['name'];
-	    }
+	     }
+	     */
+	 	 
+	 	 var_dump($tbl->isMember(1,2));
 	 
 	 //$table->add($assetType);
 	

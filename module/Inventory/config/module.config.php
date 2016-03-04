@@ -36,6 +36,18 @@ return array (
 								),
 						),
 						
+						'spare_parts_list' => array(
+								'type' => 'literal',
+								'options' => array(
+										'route'    => '/inventory/spareparts/list',
+										'defaults' => array(
+												'__NAMESPACE__' => 'Inventory\Controller',
+												'controller' => 'Spartparts',
+												'action' => 'list'
+										),
+								),
+						),
+						
 						// The following is a route to simplify getting started creating
 						// new controllers and actions without needing to create a new
 						// module. Simply drop new controllers in, and you can access them
@@ -87,10 +99,16 @@ return array (
 				'invokables' => array (
 						'Inventory\Controller\Index' => 'Inventory\Controller\IndexController',
 						'Inventory\Controller\Asset' => 'Inventory\Controller\AssetController',
-						'Inventory\Controller\Spareparts' => 'Inventory\Controller\SparepartsController',
 						'Inventory\Controller\Image' => 'Inventory\Controller\ImageController',
-						'Inventory\Controller\Search' => 'Inventory\Controller\SearchController'
-				) 
+						'Inventory\Controller\Search' => 'Inventory\Controller\SearchController',
+				),
+				
+				'factories' => array (
+						'Inventory\Controller\Admin' => 'Inventory\Controller\AdminControllerFactory',
+						'Inventory\Controller\Spareparts' => 'Inventory\Controller\SparepartsControllerFactory',
+				)
+				
+				
 		),
 		'view_manager' => array (
 				'display_not_found_reason' => true,

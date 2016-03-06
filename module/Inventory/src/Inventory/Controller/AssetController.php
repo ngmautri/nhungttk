@@ -11,11 +11,11 @@ namespace Inventory\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\Barcode\Barcode;
 use Inventory\Model\AssetCategory;
 use Inventory\Model\MLAAsset;
 use Inventory\Model\AssetPicture;
 use MLA\Paginator;
+use Zend\Barcode\Barcode;
 
 class AssetController extends AbstractActionController {
 	public $assetCategoryTable;
@@ -34,27 +34,24 @@ class AssetController extends AbstractActionController {
 	public function indexAction() {
 	}
 	
-	/**
-	 * Barcode
-	 */
 	public function barcodeAction() {
-		$request = $this->getRequest ();
-		
+	
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$asset = $this->getMLAAssetTable ()->get ( $id );
-		
+	
 		// Only the text to draw is required
 		$barcodeOptions = array (
-				'text' => $asset->tag 
+				'text' => $asset->tag
 		);
-		
+	
 		// No required options
 		$rendererOptions = array ();
-		
+	
 		// Draw the barcode in a new image,
 		Barcode::factory ( 'code39', 'image', $barcodeOptions, $rendererOptions )->render ();
 	}
 	
+		
 	public function addAction() {
 		$request = $this->getRequest ();
 		if ($request->isPost ()) {
@@ -81,8 +78,6 @@ class AssetController extends AbstractActionController {
 				$newId = $this->getMLAAssetTable ()->add ( $input );
 				$asset_dir = $this->getAssetService ()->createAssetFolderById ( $newId );
 				$pictures_dir = $asset_dir . DIRECTORY_SEPARATOR . "pictures";
-				
-				$files = $request->getFiles ()->toArray ();
 				
 				$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
 				$this->getEventManager()->attachAggregate ( $pictureUploadListener );
@@ -144,7 +139,6 @@ class AssetController extends AbstractActionController {
 			$asset_dir = $this->getAssetService ()->getAssetPath($input->id);
 			$pictures_dir = $asset_dir . DIRECTORY_SEPARATOR . "pictures";
 			
-			$files = $request->getFiles ()->toArray ();
 			
 			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
 			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
@@ -183,7 +177,6 @@ class AssetController extends AbstractActionController {
 	}
 	
 	public function showAction() {
-		$request = $this->getRequest ();
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$asset = $this->getMLAAssetTable ()->get ( $id );

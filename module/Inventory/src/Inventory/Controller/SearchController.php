@@ -11,6 +11,7 @@ namespace Inventory\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 
 
 class SearchController extends AbstractActionController {
@@ -34,6 +35,7 @@ class SearchController extends AbstractActionController {
 		//$query = $this->params ()->fromQuery ( 'query' );
 		
 		$query = $this->params ()->fromQuery ( 'query' );
+		$json = (int) $this->params ()->fromQuery ( 'json' );
 		
 		
 		if($query==''){
@@ -43,6 +45,28 @@ class SearchController extends AbstractActionController {
 		}
 				
 		$hits = $this->getAssetSearchService()->search($query);
+		
+		$isAjax = $this->getRequest()->isXmlHttpRequest();
+		
+		if ($json === 1){
+			
+			$data = array();
+			
+			foreach ($hits as $key => $value)
+			{
+				$n = (int)$key;
+				$data[$n]['id'] = $value->asset_id;
+				$data[$n]['name'] =  $value->name;
+				$data[$n]['tag'] =  $value->tag;
+			}
+			
+			
+			$response = $this->getResponse();
+            $response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
+            $response->setContent(json_encode($data));
+            return $response;
+		}
+					
 		return new ViewModel ( array (
 				'hits' => $hits,
 		));

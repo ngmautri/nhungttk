@@ -38,7 +38,6 @@ class SparepartsController extends AbstractActionController {
 	protected $sparePartCategoryTable;
 	protected $sparePartCategoryMemberTable;
 	protected $massage = 'NULL';
-	protected $errors = array ();
 	
 	/*
 	 * Defaul Action
@@ -47,13 +46,17 @@ class SparepartsController extends AbstractActionController {
 	}
 	
 	/**
-	 * Add new spare part
+	 * create new spare part
 	 */
 	public function addAction() {
+		
 		$request = $this->getRequest ();
+		
+		
 		if ($request->isPost ()) {
 			
 			$request = $this->getRequest ();
+			
 			if ($request->isPost ()) {
 				
 				$input = new MLASparepart ();
@@ -61,17 +64,21 @@ class SparepartsController extends AbstractActionController {
 				$input->name_local = $request->getPost ( 'name_local' );
 				
 				$input->description = $request->getPost ( 'description' );
-				$input->code = $request->getPost ( 'category_id' );
-				$input->tag = $request->getPost ( 'group_id' );
+				$input->code = $request->getPost ( 'code' );
+				$input->tag = $request->getPost ( 'tag' );
 				
-				$input->location = $request->getPost ( 'tag' );
-				$input->comment = $request->getPost ( 'location' );
+				$input->location = $request->getPost ( 'location' );
+				$input->comment = $request->getPost ( 'comment' );
 				
 				$newId = $this->sparePartTable->add ( $input );
 				$root_dir = $this->sparePartService->createSparepartFolderById ( $newId );
 				$pictures_dir = $root_dir . DIRECTORY_SEPARATOR . "pictures";
 				
 				// $files = $request->getFiles ()->toArray ();
+				
+				$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
+				$this->getEventManager()->attachAggregate ( $pictureUploadListener );
+				
 				
 				foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 					if ($error == UPLOAD_ERR_OK) {
@@ -86,14 +93,38 @@ class SparepartsController extends AbstractActionController {
 						$pic->filetype = $ftype;
 						$pic->spare_id = $newId;
 						$this->sparePartPictureTable->add ( $pic );
+						
+						//create thumbnail
+						
+						// trigger uploadPicture
+						$this->getEventManager()->trigger(
+								'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
+								);
+						
 					}
 				}
+				
+				$category_id = (int) $request->getPost ( 'category_id' );
+				
+				// add category
+				if ($category_id>1){
+					$m = new SparepartCategoryMember();
+					$m->sparepart_id = $newId;
+					$m->sparepart_cat_id = $category_id;						
+					$this->sparePartCategoryMemberTable->add($m);					
+				}
+								
 				return $this->redirect ()->toRoute ( 'spare_parts_list' );
 			}
 		}
 		
+		$category_id = ( int ) $this->params ()->fromQuery ( 'category_id' );
+		
+		
 		return new ViewModel ( array (
-				'message' => 'Add new Sparepart' 
+				'message' => 'Add new Sparepart',
+				'category_id' => $category_id,
+				
 		) );
 	}
 	public function addCategoryAction() {
@@ -161,6 +192,10 @@ class SparepartsController extends AbstractActionController {
 			
 			// $files = $request->getFiles ()->toArray ();
 			
+			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
+			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
+			
+			
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
@@ -173,7 +208,13 @@ class SparepartsController extends AbstractActionController {
 					$pic->url = "$pictures_dir/$name";
 					$pic->filetype = $ftype;
 					$pic->sparepart_id = $input->id;
-					$this->sparePartPictureTable ()->add ( $pic );
+					$this->sparePartPictureTable->add ( $pic );
+					
+					// trigger uploadPicture
+					$this->getEventManager()->trigger(
+							'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
+					);
+						
 				}
 			}
 			
@@ -321,6 +362,9 @@ class SparepartsController extends AbstractActionController {
 				
 				$instock = $request->getPost ( 'instock' );
 				
+				$errors = array();
+				
+				
 				// validator.
 				$validator = new Date ();
 				
@@ -388,6 +432,10 @@ class SparepartsController extends AbstractActionController {
 				'errors' => null 
 		) );
 	}
+	
+	/**
+	 * Issue sparepart
+	 */
 	public function issueAction() {
 		$request = $this->getRequest ();
 		
@@ -412,6 +460,9 @@ class SparepartsController extends AbstractActionController {
 			
 			// validator.
 			$validator = new Date ();
+			
+			$errors = array();
+				
 			
 			if (! $validator->isValid ( $input->movement_date )) {
 				$errors [] = 'Transaction date format is not correct!';
@@ -444,7 +495,7 @@ class SparepartsController extends AbstractActionController {
 			} else {
 				
 				// Validated
-				$newId = $this->sparepartMovementsTable->add ( $input );
+				$this->sparepartMovementsTable->add ( $input );
 				return $this->redirect ()->toRoute ( 'spare_parts_list' );
 			}
 		}

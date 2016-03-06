@@ -10,8 +10,7 @@
 namespace Inventory\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Inventory\Model\AssetPicture;
+
 
 class ImageController extends AbstractActionController {
 	
@@ -26,8 +25,7 @@ class ImageController extends AbstractActionController {
 	 */
 	public function indexAction() {
 		
-		$request = $this->getRequest ();
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+			$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		
 		$pic = $this->getAssetPictureTable ()->get( $id);
 		
@@ -48,7 +46,6 @@ class ImageController extends AbstractActionController {
 	 */
 	public function sparepartAction() {
 	
-		$request = $this->getRequest ();
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 	
 		$pic = $this->getSparepartPictureTable()->get( $id);

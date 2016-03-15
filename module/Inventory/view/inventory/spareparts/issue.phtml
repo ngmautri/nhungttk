@@ -1,11 +1,10 @@
-<h3> Spare Part Issue: </h3>
+<h4> Spare Part Issue: </h4>
 <hr>
 
 <?php if (count($errors)>0){
 	echo '<ul style="color:#FF0000">';
 	 foreach ($errors as $error) :
-	 echo '<li>'.$error . '</li>';
-	 
+	 echo '<li>'.$error . '</li>';	 
 	 endforeach;
 	 echo '</ul>';
 	 ?>
@@ -14,9 +13,9 @@
 <?php } ?>
 
 
-<h4> Spare Part Name: <?php echo $sp->name; ?> </h4>
+<h5> Spare Part Name: <?php echo $sp->name; ?> </h5>
 
-<h4>In stock: <?php echo (int) $instock . ' pcs.'; ?></h4>
+
 
 
 <?php if ($instock > 0){
@@ -28,22 +27,25 @@
 	method="post" enctype="multipart/form-data" id="New Sparepart">
 	<input type="hidden" name="sparepart_id" value="<?php echo (int) $sp->id; ?>" />
 	<input type="hidden" name="instock" value="<?php echo (int) $instock ?>" />
+	<input type="hidden" name="asset_id" id="asset_id" value="" />
 	
 	<table>
-
+			
+		<tr>
+			<td><label for="asset">Issue for Asset:</label></td>
+		<td><input type="text" name="asset" value="" id="asset" /><a href="javascript:;" onclick="showDialog()" class="helper"> Select Asset</a>
+		</td>
+	
+		</tr>
+	
 		<tr>
 			<td><label for="movement_date">Issue date</label></td>
 			<td><input type="text" name="movement_date" value="" id="movement_date" /></td>
 		</tr>
-
-		<tr>
-			<td><label for="asset_id">Asset:</label>
-			
-			<td><input type="text" name="asset_id" value="" /></td>
-		</tr>
 		<tr>
 			<td><label for="quantity">Quantity:</label></td>
-			<td><input type="text" name="quantity" value="" /></td>
+			<td><input type="text" name="quantity" value="" /> (In stock: <?php echo (int) $instock . ' pcs.'; ?>)
+			</td>
 		</tr>
 
 		<tr>
@@ -71,6 +73,8 @@
 
 	</table>
 </form>
+
+<div id = "dialog">No asset found...</div>
 
 
 <?php }else {

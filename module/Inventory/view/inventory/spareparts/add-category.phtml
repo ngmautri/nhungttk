@@ -17,9 +17,9 @@
 	<?php foreach ($categories as $category) : ?>
  	
     <tr>
-    		<td><input type="checkbox" name="category[]" value="<?php echo $this->escapeHtml($category->id);?>" class="checkbox"/></td>
+    		<td><input type="checkbox" name="category[]" value="<?php echo $this->escapeHtml($category['id2']);?>" class="checkbox"/></td>
     
-		<td><?php echo $this->escapeHtml($category->name);?></td>
+		<td><?php echo $this->escapeHtml($category['level2']);?></td>
      	</tr>
 <?php endforeach; ?>
 

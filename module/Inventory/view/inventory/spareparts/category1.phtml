@@ -1,22 +1,9 @@
-<h3>Spare part Categories</h3>
-
-
-
 	<a href="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category">Add spare part category</a>
 
 	| <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list">Show all spare parts</a>
 	| <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new
 		spare part</a>
 
- 
-<form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data" id="search">
-<table>
-	<tr><td><input type="text"	name="query" value="" /><td>
-	<td><input type="submit" name="seach" value="search" /></td>
-	</tr>
-</table>
-</form>
- 
 
 <table border="1" cellpadding="3">
 <tr>
@@ -34,7 +21,7 @@
 		<td>
          <a href="<?php echo $this->baseUrl ?>/inventory/admin/edit-sparepart-category?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a>
          | <a href="<?php echo $this->baseUrl ?>/inventory/admin/delete-sparepart-category?id=<?php echo $this->escapeHtml($category->id);?>">Delete</a>
-     	 | <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($category->id);?>">Detail</a>
+     	 | <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($category->id);?>">detail</a>
          | <a href="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category-member?id=<?php echo $this->escapeHtml($category->id);?>">Add member</a>
     	
      	</td>

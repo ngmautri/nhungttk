@@ -16,21 +16,34 @@
 										'href' => $this->basePath () . '/img/favicon.ico' 
 								) )->prependStylesheet ( $this->basePath () . '/css/bootstrap-responsive.min.css' )->prependStylesheet ( $this->basePath () . '/css/style.css' )->prependStylesheet ( $this->basePath () . '/css/bootstrap.min.css' )?>
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/redmond/jquery-ui.css">
 
 <!-- Scripts -->
         <?php
 								
 								echo $this->headScript ()->prependFile ( $this->basePath () . '/js/html5.js', 'text/javascript', array (
 										'conditional' => 'lt IE 9' 
-								) )->prependFile ( $this->basePath () . '/js/jquery-ui.js' )->prependFile ( $this->basePath () . '/js/jquery.js' )?>
+								) )->prependFile ( $this->basePath () . '/js/jquery-ui.js' )->prependFile ( $this->basePath () . '/js/jquery.js' )->prependFile ( $this->basePath () . '/js/mla.js' )?>
 
   <script>
+  
 
   $(function() {
 	    $( "input[id='movement_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
    });
-  	
+
+  $(function() {
+	    $( "#tabs" ).tabs({
+	      beforeLoad: function( event, ui ) {
+	        ui.jqXHR.fail(function() {
+	          ui.panel.html(
+	            "Couldn't load this tab. We'll try to fix this as soon as possible. " +
+	            "If this wouldn't be a demo." );
+	        });
+	      }
+	    });
+	  });
+  
   </script>
 
 </head>

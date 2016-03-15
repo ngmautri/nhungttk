@@ -1,18 +1,7 @@
-<h3>Spare parts list</h3>
-
 	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare part category</a>
 	| <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new
 		spare part</a>
 <hr>
-
-
-<form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data" id="search">
-<table>
-	<tr><td><input type="text"	name="query" value="" /><td>
-	<td><input type="submit" name="seach" value="search" /></td>
-	</tr>
-</table>
-</form>
 
 <?php
 
@@ -34,11 +23,6 @@ if ($total_spareparts <= 0) {
 		<td><b>Spare Part Name</b></td>
 		<td><b>Code</b></td>
 		<td><b>Location</b></td>
-		<td><b>IN</b></td>
-		<td><b>OUT</b></td>
-		<td><b>In Stock</b></td>
-		
-		
 		<td><b>Action</b></td>
 	</tr>
 	 <?php foreach ($spareparts as $a) : ?>
@@ -48,9 +32,6 @@ if ($total_spareparts <= 0) {
 		<td><?php echo $this->escapeHtml($a['name']);?></td>
 		<td><?php echo $this->escapeHtml($a['code']);?></td>
 		<td><?php echo $this->escapeHtml($a['location']);?></td>
-		<td><?php echo $this->escapeHtml($a['totalINFLOW']);?></td>
-		<td><?php echo $this->escapeHtml($a['totalOUTFLOW']);?></td>
-		<td><?php echo $this->escapeHtml($a['totalINFLOW'])-$this->escapeHtml($a['totalOUTFLOW']);?></td>
 
 		<td>
 		<a

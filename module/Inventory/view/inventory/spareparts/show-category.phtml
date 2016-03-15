@@ -1,7 +1,7 @@
 <h3>Spare part for:  <?php echo $category->name ?></h3>
 
 <P>
-	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new
+	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>">Add new
 		spare part</a>
 </P>
 
@@ -20,20 +20,16 @@ if ($total_spareparts <= 0) {
 	
 	echo 'No spare part found!';
 } else {
-
 	
-	
-		
-	
-	echo $total_spareparts . ' spare parts found!';
 	if (! is_null ( $paginator )) {
+		echo '<h5>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage . ' | ' .  $total_spareparts . ' spare parts found! </h5>';
+	;
+	}else{
+		echo '<h5>'. $total_spareparts . ' spare parts found! </h5>';
+		
+	}
 ?>
 		
-	<hr>
-<?php	
-	echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage;
-	}
-	?>
 
 <table border="1"  cellpadding="3">
 	<tr>
@@ -41,7 +37,11 @@ if ($total_spareparts <= 0) {
 		<td><b>Spare Part Name</b></td>
 		<td><b>Code</b></td>
 		<td><b>Location</b></td>
+		<td><b>IN</b></td>
+		<td><b>OUT</b></td>
+		<td><b>In Stock</b></td>
 		<td><b>Action</b></td>
+		
 	</tr>
 	 <?php foreach ($spareparts as $a) : ?>
   	
@@ -50,6 +50,9 @@ if ($total_spareparts <= 0) {
 		<td><?php echo $this->escapeHtml($a['name']);?></td>
 		<td><?php echo $this->escapeHtml($a['code']);?></td>
 		<td><?php echo $this->escapeHtml($a['location']);?></td>
+		<td><?php echo $this->escapeHtml($a['totalINFLOW']);?></td>
+		<td><?php echo $this->escapeHtml($a['totalOUTFLOW']);?></td>
+		<td><?php echo $this->escapeHtml($a['totalINFLOW'])-$this->escapeHtml($a['totalOUTFLOW']);?></td>
 
 		<td>
 		<a
@@ -66,7 +69,10 @@ if ($total_spareparts <= 0) {
 		|
 		<a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-				Detail </a></td>
+				Detail </a>
+				
+						
+				</td>
 	</tr>
 <?php endforeach; ?>
 </table>
@@ -77,16 +83,16 @@ if ($total_spareparts <= 0) {
 	
 	if (! is_null ( $paginator )) {
 		
-		$last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$last = $this->baseUrl . '/inventory/spareparts/show-category?id='. $category->id . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
 		
-		$first = $this->baseUrl . '/inventory/spareparts/list' . '?page=1&perPage=' . $paginator->resultsPerPage;
+		$first = $this->baseUrl . '/inventory/spareparts/show-category?id='. $category->id .' &page=1&perPage=' . $paginator->resultsPerPage;
 		
 		
 		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
 			
-			$url = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			$url = $this->baseUrl . '/inventory/spareparts/show-category?id='. $category->id . '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
 			
-			$last = $this->baseUrl . '/inventory/spareparts/list' . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+			$last = $this->baseUrl . '/inventory/spareparts/show-category?id='. $category->id . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
 			
 			?>
 

@@ -72,6 +72,15 @@ class SearchController extends AbstractActionController {
 		));
 	}
 	
+	
+	public function asset1Action() {
+			$response = $this->getResponse();
+			$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/text' );
+			$response->setContent('Test');
+			return $response;
+			
+	}
+	
 	public function sparepartAction() {
 	
 		//$query = $this->params ()->fromQuery ( 'query' );

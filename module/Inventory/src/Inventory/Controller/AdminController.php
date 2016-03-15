@@ -74,6 +74,48 @@ class AdminController extends AbstractActionController {
 		}
 	}
 	
+	public function addSparepartCategoryMemberAction() {
+		$request = $this->getRequest ();
+		
+		if ($request->isPost ()) {
+			
+			$category_id = ( int ) $request->getPost ( 'id' );
+			$spareparts = $request->getPost ( 'sparepart' );
+			
+			if (count ( $spareparts ) > 0) {
+				
+				foreach ( $spareparts as $sp ) {
+					$member = new SparepartCategoryMember ();
+					$member->sparepart_cat_id = $category_id;
+					$member->sparepart_id = $sp;
+					
+					if ($this->sparePartCategoryMemberTable->isMember ( $sp, $category_id ) == false) {
+						$this->sparePartCategoryMemberTable->add ( $member );
+					}
+				}
+				
+				/*
+				 * return new ViewModel ( array (
+				 * 'sparepart' => null,
+				 * 'categories' => $categories,
+				 *
+				 * ) );
+				 */
+				return $this->redirect ()->toRoute ( 'spare_parts_list' );
+			}
+		}
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$category = $this->sparePartCategoryTable->get ( $id );
+		
+		$spareparts = $this->sparePartCategoryMemberTable->getNoneMembersOfCatId($id);
+		
+		return new ViewModel ( array (
+				'category' => $category,
+				'spareparts' => $spareparts 
+			)
+		);
+	}
 	
 		
 	// Setter and getter

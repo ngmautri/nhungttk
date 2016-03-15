@@ -161,7 +161,7 @@ class SparepartsController extends AbstractActionController {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$sparepart = $this->sparePartTable->get ( $id );
 		
-		$categories = $this->sparePartCategoryTable->fetchAll ();
+		$categories = $this->sparePartCategoryTable->getCategories();
 		
 		return new ViewModel ( array (
 				'sparepart' => $sparepart,
@@ -247,13 +247,13 @@ class SparepartsController extends AbstractActionController {
 		}
 		;
 		
-		$spareparts = $this->sparePartTable->fetchAll ();
+		$spareparts = $this->sparePartTable->getSpareparts();
 		$totalResults = $spareparts->count ();
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$spareparts = $this->sparePartTable->getLimitSpareParts ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$spareparts = $this->sparePartTable->getLimitedSpareParts ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -264,18 +264,73 @@ class SparepartsController extends AbstractActionController {
 	}
 	
 	
+	/**
+	 * List all spare parts
+	 */
+	public function list1Action() {
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 20;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+	
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+	
+		$spareparts = $this->sparePartTable->fetchAll ();
+		$totalResults = $spareparts->count ();
+	
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$spareparts = $this->sparePartTable->getLimitSpareParts ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		$this->layout('layout/no-layout');
+		
+	
+		return new ViewModel ( array (
+				'total_spareparts' => $totalResults,
+				'spareparts' => $spareparts,
+				'paginator' => $paginator
+		) );
+	}
+	
+	
 	/*
 	 * * 
 	 */
 	public function categoryAction() {
+		$categories = $this->sparePartCategoryTable->getCategories1();
 		
-	$categories = $this->sparePartCategoryTable->fetchAll();
-	
 		return new ViewModel ( array (
 				'assetCategories' =>$categories,
 		));
+		
+		
+	
 	}
-
+	
+	/*
+	 * *
+	 */
+	public function category1Action() {
+	
+		$categories = $this->sparePartCategoryTable->getCategories1();
+		$this->layout('layout/no-layout');
+		
+		
+		$viewModel = new ViewModel(array (
+				'assetCategories' =>$categories,
+		));		
+		
+		return $viewModel;
+	}
 	
 	public function showCategoryAction() {
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
@@ -294,13 +349,13 @@ class SparepartsController extends AbstractActionController {
 		
 		$category = $this->sparePartCategoryTable->get ( $id );
 		
-		$spareparts = $this->sparePartCategoryMemberTable->getMembersByCatId ( $id );
+		$spareparts = $this->sparePartCategoryMemberTable->getMembersByCatIdWithBalance( $id );
 		$totalResults = $spareparts->count ();
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$spareparts = $this->sparePartTable->getLimitSpareParts ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$spareparts = $this->sparePartCategoryMemberTable->getLimitMembersByCatIdWithBalance ($id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -316,11 +371,12 @@ class SparepartsController extends AbstractActionController {
 	 */
 	public function showAction() {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$sp = $this->sparePartTable->get ( $id );
-		
+		$sp = $this->sparePartTable->get ( $id );		
 		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
 		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
 		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
+		$categories = $this->sparePartCategoryTable->getCategoriesOf($id);
+		
 		$instock = $inflow - $outflow;
 		
 		return new ViewModel ( array (
@@ -328,7 +384,8 @@ class SparepartsController extends AbstractActionController {
 				'pictures' => $pictures,
 				'inflow' => $inflow,
 				'outflow' => $outflow,
-				'instock' => $instock 
+				'instock' => $instock,
+				'categories' =>$categories
 		) );
 	}
 	

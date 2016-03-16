@@ -45,7 +45,7 @@ function showDialog()
 				var i;
 			    s="";
 				if(n_hits > 0){
-					s = '<table border="1" class="blog"><tr><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td></tr>';
+					s = '<table <table class="pure-table pure-table-bordered"><thead><tr><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td></thead></tr>';
 					for(i=0; i< n_hits; i++)
 					{
 					s = s + "<tr>"	

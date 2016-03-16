@@ -3,6 +3,26 @@ body {
 	padding-bottom: 40px;
 }
 
+.table{
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11pt;
+	line-height:1.2;
+	padding: 4px 4px 4px 4px;
+	
+}
+.link {
+    color: blue;
+}
+
+
+td {
+	padding: 4px 4px 4px 4px;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:10pt;
+	
+}
+
+
 div.erfordert{
   display: block;
   clear:left;

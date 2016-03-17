@@ -12,16 +12,23 @@
 </form>
  
 
-<table border="1" cellpadding="3">
+<table class="pure-table pure-table-bordered">
+<thead>
 <tr>
 		<td><b>Asset Category</b></td>
 		<td><b>Action</b></td>
 	</tr>
- <?php foreach ($assetCategories as $category) : ?>
- 
- 	
-    <tr>
-		<td><?php echo $this->escapeHtml($category->category);?></td>
+</thead>
+<tbody>
+ <?php 
+	 
+	 $count = 0;
+	 foreach ($assetCategories as $category) :
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+ 		<td><?php echo $this->escapeHtml($category->category);?></td>
 		<td>
          <a href="<?php echo $this->baseUrl ?>/inventory/asset/editcategory?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a>
          | <a href="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory?id=<?php echo $this->escapeHtml($category->id);?>">Delete</a>
@@ -30,6 +37,7 @@
      	</td>
 	</tr>
 <?php endforeach; ?>
+</tbody>
 </table>
 
 

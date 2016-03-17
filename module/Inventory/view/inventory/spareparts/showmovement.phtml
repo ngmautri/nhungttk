@@ -3,16 +3,26 @@
 <h4> <?php echo $this->escapeHtml($sparepart->name);?> </h4>
 
 <hr>
-<table border="1">
+<table class="pure-table pure-table-bordered">
+<thead>
 	<tr>
 		<td><b>id</b></td>
 		<td><b>Date of Movement</b></td>
 		<td><b>Flow</b></td>
 		<td><b>Quantity</b></td>
 	</tr>
- <?php foreach ($movements as $a) : ?>
-  	
-    <tr>
+</thead>
+<tbody>
+
+<?php 
+	 
+	 $count = 0;
+	foreach ($movements as $a) :
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+
 		<td><?php echo $this->escapeHtml($a['id']);?></td>
 		<td><?php echo $this->escapeHtml($a['movement_date']);?></td>
 		<td><?php echo $this->escapeHtml($a['flow']);?></td>
@@ -20,5 +30,6 @@
 	</tr>
 
 <?php endforeach; ?>
+</tbody>
 </table>
 

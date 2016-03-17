@@ -6,13 +6,10 @@
 </P>
 
 
-<form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data" id="search">
-<table>
-	<tr><td><input type="text"	name="query" value="" /><td>
-	<td><input type="submit" name="seach" value="search" /></td>
-	</tr>
-</table>
+<form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+<input type="text"	name="query" value="" /> <button type="submit" class="pure-button">Search</button>
 </form>
+
 
 <?php
 
@@ -31,7 +28,8 @@ if ($total_spareparts <= 0) {
 ?>
 		
 
-<table border="1"  cellpadding="3">
+<table class="pure-table pure-table-bordered">
+<thead>
 	<tr>
 		<td><b>Tag</b></td>
 		<td><b>Spare Part Name</b></td>
@@ -43,10 +41,17 @@ if ($total_spareparts <= 0) {
 		<td><b>Action</b></td>
 		
 	</tr>
-	 <?php foreach ($spareparts as $a) : ?>
-  	
-    <tr>
-		<td><?php echo $this->escapeHtml($a['tag']);?></td>
+</thead>
+ <tbody>
+	  <?php 
+	 
+	 $count = 0;
+	 foreach ($spareparts as $a) : 
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+ 		<td><?php echo $this->escapeHtml($a['tag']);?></td>
 		<td><?php echo $this->escapeHtml($a['name']);?></td>
 		<td><?php echo $this->escapeHtml($a['code']);?></td>
 		<td><?php echo $this->escapeHtml($a['location']);?></td>
@@ -75,6 +80,7 @@ if ($total_spareparts <= 0) {
 				</td>
 	</tr>
 <?php endforeach; ?>
+</tbody>
 </table>
 
 <br>

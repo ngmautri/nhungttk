@@ -28,7 +28,8 @@
  	
  ?>
  
-<table border="1" cellpadding="3"> 
+<table class="pure-table pure-table-bordered">
+<thead>
 <tr>
 		<td><b>Asset Name</b></td>
 		<td><b>Model</b></td>
@@ -37,10 +38,18 @@
 		<td><b>Tag </b></td>
 		<td><b>Action</b></td>
 	</tr>
- <?php foreach ($assets as $asset) : ?>
-  	
-    <tr>
-		<td><?php echo $this->escapeHtml($asset['name']);?></td>
+</thead>
+<tbody>
+	 <?php 
+	 
+	 $count = 0;
+	 foreach ($assets as $asset) : 
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+
+ 		<td><?php echo $this->escapeHtml($asset['name']);?></td>
 		<td><?php echo $this->escapeHtml($asset['model']);?></td>
 		<td><?php echo $this->escapeHtml($asset['serial']);?></td>
 		<td><?php echo $this->escapeHtml($asset['brand']);?></td>
@@ -52,6 +61,7 @@
      	</td>
 	</tr>
 <?php endforeach; ?>
+
 </table>
 
 <br>

@@ -10,7 +10,7 @@
 namespace Inventory\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-
+use Zend\View\Model\ViewModel;
 
 class ImageController extends AbstractActionController {
 	
@@ -90,6 +90,38 @@ class ImageController extends AbstractActionController {
 		->addHeaderLine('Content-Length', mb_strlen($imageContent));
 		
 		return $response;		
+	}
+	
+	public function deleteSparePartPictureAction() {
+		
+		$request = $this->getRequest ();
+	
+		if ($request->isPost ()) {
+			$del = $request->getPost ( 'delete_confirmation', 'NO' );
+				
+			if ($del === 'YES') {
+				
+				$id = ( int ) $request->getPost ( 'id' );
+				$pic= $this->getSparepartPictureTable ()->get ( $id );
+				$filename = $pic->url;
+				
+				if (file_exists($filename)) {
+					unlink($filename);
+				}
+				$this->getSparepartPictureTable ()->delete ($id);
+				
+			}
+			return $this->redirect ()->toRoute ( 'assetcategory' );
+		}
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$pic= $this->getSparepartPictureTable ()->get ( $id );
+		
+		
+	
+		return new ViewModel ( array (
+				'picture' => $pic
+		) );
 	}
 	
 	

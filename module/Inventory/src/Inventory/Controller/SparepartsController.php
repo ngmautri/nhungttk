@@ -393,6 +393,23 @@ class SparepartsController extends AbstractActionController {
 		) );
 	}
 	
+	
+	public function picturesAction() {
+		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
+		$sp = $this->sparePartTable->get ( $id );
+		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
+
+		return new ViewModel ( array (
+				'sparepart' => $sp,
+				'pictures' => $pictures,
+			) );
+	}
+	
+	
+	
+	
+	
+	
 	/**
 	 * receive spare part
 	 */

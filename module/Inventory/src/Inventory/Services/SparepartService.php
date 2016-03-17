@@ -71,7 +71,7 @@ class SparepartService extends AbstractService
 	 */
 	public function getRootDirById($id) {
 		try {
-			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR . "sparepart_" . $id;
+			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR . "sparepart_" . $id;
 			return scandir ( $asset_dir );
 		} catch ( Exception $e ) {
 			return null;
@@ -80,7 +80,7 @@ class SparepartService extends AbstractService
 	
 	public function getSparepartPath($id) {
 		try {
-			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR . "sparepart_" . $id;
+			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR ."sparepart_" . $id;
 			return $asset_dir;
 		} catch ( Exception $e ) {
 			return null;

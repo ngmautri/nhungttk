@@ -3,36 +3,49 @@
 
 
 <form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data" id="search">
-<table>
-	<tr><td><input type="text"	name="query" value="" /><td>
-	<td><input type="submit" name="seach" value="search" /></td>
-	</tr>
-</table>
-</form>
+<input type="text"	name="query" value="" />
+<input type="submit" name="seach" value="search" />
+	
 
 
-<?php if (!$hits==null): ?>
+<?php if (!$hits==null): 
+echo '<hr><b>'.count($hits).' result(s) found for query: "' . $query. '"</b>';
 
-<table border="1" cellpadding="3">
+?>
+
+<table class="pure-table pure-table-bordered">
+<thead>
 	<tr>
 		<td><b>Tag</b></td>
 		<td><b>Name</b></td>
 		<td><b>Code</b></td>
 		<td><b>Edit</b></td>
+		<td><b>Receive</b></td>
+		<td><b>Issue</b></td>
 		<td><b>Detail</b></td>
 	</tr>
- <?php foreach ($hits as $hit) : ?>
-  	
-    <tr>
+</thead>
+<tbody>
+
+	 <?php 
+	 
+	 $count = 0;
+	foreach ($hits as $hit) :
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+
     	<td><?php echo $this->escapeHtml($hit->tag);?></td>
 		<td><?php echo $this->escapeHtml($hit->name);?></td>
 		<td><?php echo $this->escapeHtml($hit->code);?></td>
-				
-		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $hit->sparepart_id?>">  Edit</a></td>
-			
+		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $hit->sparepart_id?>">  Edit</a></td>			
+		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $hit->sparepart_id?>">  Receive</a></td>			
+		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $hit->sparepart_id?>">  Issue</a></td>
 		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $hit->sparepart_id?>">  Detail</a></td>
 	</tr>
 <?php endforeach; ?>
+</tbody>
 </table>
 
 

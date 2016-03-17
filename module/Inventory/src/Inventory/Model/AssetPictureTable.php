@@ -42,9 +42,12 @@ class AssetPictureTable {
 				'size' => $input->size,
 				'visibility' => $input->visibility,
 				'comments' => $input->comments,
-				'uploaded_on' => date ( 'Y-m-d H:i:s' ) 
+				'uploaded_on' => date ( 'Y-m-d H:i:s' ),
+				'filename' => $input->filename,
+				'folder' => $input->folder,
+				
 		);
-		$resultSet = $this->tableGateway->insert ( $data );
+		$this->tableGateway->insert ( $data );
 		return $this->tableGateway->lastInsertValue;
 	}
 	
@@ -56,11 +59,13 @@ class AssetPictureTable {
 				'size' => $input->size,
 				'visibility' => $input->visibility,
 				'comments' => $input->comments,
-				'uploaded_on' => date ( 'Y-m-d H:i:s' ) 
+				'uploaded_on' => date ( 'Y-m-d H:i:s' ),
+				'filename' => $input->filename,
+				'folder' => $input->folder,				
 		);
 		
 		$where = 'id = ' . $id;
-		$resultSet = $this->tableGateway->update( $data,$where);
+		$this->tableGateway->update( $data,$where);
 	}
 	
 	public function getAssetPicturesById($id)

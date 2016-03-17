@@ -71,8 +71,28 @@ class PictureUploadListener implements ListenerAggregateInterface {
 			imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
 		}
 		
-		// 100
-		$final_width_of_image =100;
+		// 150
+		$final_width_of_image =150;
+		
+		$nx = $final_width_of_image;
+		$ny = floor($oy * ($final_width_of_image / $ox));
+			
+		$nm = imagecreatetruecolor($nx, $ny);
+		
+		$name_thumbnail = 'thumbnail_150_' . $name;
+		
+		imagecopyresized ( $nm, $im, 0, 0, 0, 0, $nx, $ny, $ox, $oy );
+		
+		if (preg_match ( '/[.](jpg)$/', $name_thumbnail )) {
+			imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
+		} else if (preg_match ( '/[.](gif)$/', $name_thumbnail )) {
+			imagegif( $nm, "$pictures_dir/$name_thumbnail" );
+		} else if (preg_match('/[.](png)$/', $name_thumbnail)) {
+			imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
+		}
+		
+		// 200
+		$final_width_of_image =200;
 		
 		$nx = $final_width_of_image;
 		$ny = floor($oy * ($final_width_of_image / $ox));

@@ -8,7 +8,7 @@ use Zend\EventManager\EventManagerInterface;
 
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Document;
-use ZendSearch\Lucene\document\Field;
+use ZendSearch\Lucene\Document\Field;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 
@@ -89,8 +89,6 @@ class SparePartsSearchService extends AbstractService
 		
 		$index = Lucene::open($index_path);
 		
-		
-		
 		$hits = $index->find($q);
 		
 		/*
@@ -105,6 +103,7 @@ class SparePartsSearchService extends AbstractService
 		return $hits;
 		
 	}
+	
 	
 	public function setEventManager(EventManagerInterface $eventManager)
 	{

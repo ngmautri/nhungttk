@@ -95,6 +95,10 @@ class AssetController extends AbstractActionController {
 						$pic->url = "$pictures_dir/$name";
 						$pic->filetype = $ftype;
 						$pic->asset_id = $newId;
+						$pic->filename = $name;
+						$pic->folder = $pictures_dir;
+											
+						
 						$this->getAssetPictureTable ()->add ( $pic );
 						
 						// trigger uploadPicture
@@ -156,6 +160,8 @@ class AssetController extends AbstractActionController {
 					$pic->url = "$pictures_dir/$name";
 					$pic->filetype = $ftype;
 					$pic->asset_id = $input->id;
+					$pic->filename = $name;
+					$pic->folder = $pictures_dir;
 					$this->getAssetPictureTable ()->add ( $pic );
 					
 					// trigger uploadPicture

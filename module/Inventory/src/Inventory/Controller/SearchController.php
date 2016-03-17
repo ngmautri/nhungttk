@@ -68,6 +68,7 @@ class SearchController extends AbstractActionController {
 		}
 					
 		return new ViewModel ( array (
+				'query' => $query,
 				'hits' => $hits,
 		));
 	}
@@ -96,6 +97,7 @@ class SearchController extends AbstractActionController {
 	
 		$hits = $this->getSparePartSearchService()->search($query);
 		return new ViewModel ( array (
+				'query' => $query,
 				'hits' => $hits,
 		));
 	}

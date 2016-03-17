@@ -19,17 +19,38 @@
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/redmond/jquery-ui.css">
    <link rel="stylesheet" href="/css/tables.css">
    <link rel="stylesheet" href="/css/forms.css">
-    
+   <link href="/css/lightgallery.css" rel="stylesheet">
 
 <!-- Scripts -->
         <?php
 								
 								echo $this->headScript ()->prependFile ( $this->basePath () . '/js/html5.js', 'text/javascript', array (
 										'conditional' => 'lt IE 9' 
-								) )->prependFile ( $this->basePath () . '/js/jquery-ui.js' )->prependFile ( $this->basePath () . '/js/jquery.js' )->prependFile ( $this->basePath () . '/js/mla.js' )?>
+								) )->prependFile ( $this->basePath () . '/js/jquery-ui.js' )->prependFile ( $this->basePath () . '/js/jquery.js' )?>
 
-  <script>
   
+    <script src="/js/lightgallery-all.min.js"></script>
+    <script src="/js/lg-thumbnail.js"></script>
+    <script src="/js/lg-fullscreen.min.js"></script>
+     <script src="/lightgallery/js/lg-autoplay.min.js"></script>
+     <script src="/lightgallery/js/lg-zoom.min.js"></script>
+ 
+  
+  
+  
+  <script>
+
+
+  $(document).ready(function() {
+
+
+	    $(document).ready(function() {
+	        $("#lightgallery").lightGallery(); 
+	    });
+
+
+  });
+
 
   $(function() {
 	    $( "input[id='movement_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
@@ -46,11 +67,13 @@
 	      }
 	    });
 	  });
-  
+
   </script>
 
 </head>
 <body>
+
+
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
@@ -79,4 +102,6 @@
 	<!-- /container -->
         <?php echo $this->inlineScript()?>
     </body>
+    
+
 </html>

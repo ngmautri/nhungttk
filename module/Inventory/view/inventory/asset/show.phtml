@@ -55,14 +55,16 @@
 
 
 <h5> Asset Picture:</h5>
-<table border="1">
 
+<div id="lightgallery">
  <?php foreach ($pictures as $pic) : ?>
-  	
-    <tr>
-		<td>
-			<img alt="" src="/inventory/image/index?id=<?php  echo $this->escapeHtml($pic->id);?>">
-     	</td>
-	</tr>
+    <a href="/inventory/image/index?id=<?php  echo $this->escapeHtml($pic->id);?>">
+    <img alt="" src="/inventory/image/assetthumbnail150?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+    </a>
+	
 <?php endforeach; ?>
+</div>
+
+
+
 </table>

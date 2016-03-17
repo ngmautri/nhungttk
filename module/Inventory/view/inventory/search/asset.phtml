@@ -10,25 +10,36 @@
 </table>
 </form>
 
-
-<?php if (!$hits==null): ?>
-
-<table border="1" cellpadding="3">
+<?php if (!$hits==null): 
+echo '<hr><b>'.count($hits).' result(s) found for query: "' . $query. '"</b>';
+?>
+<table class="pure-table pure-table-bordered">
+<thead>
 	<tr>
 		<td><b>Tag</b></td>
 		<td><b>Asset Name</b></td>
 		<td><b>Edit</b></td>
 		<td><b>Detail</b></td>
 	</tr>
- <?php foreach ($hits as $hit) : ?>
-  	
-    <tr>
-    	<td><?php echo $this->escapeHtml($hit->tag);?></td>
+</thead>
+<tbody>
+
+	 <?php 
+	 
+	 $count = 0;
+	foreach ($hits as $hit) :
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+	 
+     	<td><?php echo $this->escapeHtml($hit->tag);?></td>
 		<td><?php echo $this->escapeHtml($hit->name);?></td>
 		<td><a href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $hit->asset_id?>">  Edit</a></td>
 		<td><a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $hit->asset_id?>">  Detail</a></td>
 	</tr>
 <?php endforeach; ?>
+</tbody>
 </table>
 
 

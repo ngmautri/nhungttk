@@ -91,9 +91,11 @@ class SparepartsController extends AbstractActionController {
 						$pic = new SparepartPicture ();
 						$pic->url = "$pictures_dir/$name";
 						$pic->filetype = $ftype;
-						$pic->spare_id = $newId;
-						$this->sparePartPictureTable->add ( $pic );
-						
+						$pic->sparepart_id = $input->id;
+						$pic->filename = $name;
+						$pic->folder = $pictures_dir;					
+						$this->sparePartPictureTable->add ( $pic);
+					
 						//create thumbnail
 						
 						// trigger uploadPicture
@@ -208,7 +210,9 @@ class SparepartsController extends AbstractActionController {
 					$pic->url = "$pictures_dir/$name";
 					$pic->filetype = $ftype;
 					$pic->sparepart_id = $input->id;
-					$this->sparePartPictureTable->add ( $pic );
+					$pic->filename = "$name";
+					$pic->folder = "$pictures_dir";					
+					$this->sparePartPictureTable->add ( $pic);
 					
 					// trigger uploadPicture
 					$this->getEventManager()->trigger(

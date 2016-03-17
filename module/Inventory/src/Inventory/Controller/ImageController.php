@@ -25,7 +25,7 @@ class ImageController extends AbstractActionController {
 	 */
 	public function indexAction() {
 		
-			$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		
 		$pic = $this->getAssetPictureTable ()->get( $id);
 		
@@ -44,8 +44,7 @@ class ImageController extends AbstractActionController {
 	/*
 	 * Defaul Action
 	 */
-	public function sparepartAction() {
-	
+	public function sparepartAction() {	
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 	
 		$pic = $this->getSparepartPictureTable()->get( $id);
@@ -57,11 +56,41 @@ class ImageController extends AbstractActionController {
 		$response->getHeaders()
 		->addHeaderLine('Content-Transfer-Encoding', 'binary')
 		->addHeaderLine('Content-Type', 'image/jpeg')
-		->addHeaderLine('Content-Length', mb_strlen($imageContent));
-	
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));	
 		return $response;
 	}
 	
+	public function sparepartThumbnail200Action() {
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+	
+		$pic = $this->getSparepartPictureTable()->get( $id);
+	
+		$response = $this->getResponse();
+	
+		$imageContent =  file_get_contents($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_200_'.$pic->filename);
+		$response->setContent($imageContent);
+		$response->getHeaders()
+		->addHeaderLine('Content-Transfer-Encoding', 'binary')
+		->addHeaderLine('Content-Type', 'image/png')
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+		return $response;
+	}
+	
+	
+	public function assetThumbnail150Action() {
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$pic = $this->getAssetPictureTable ()->get( $id);
+		$response = $this->getResponse();
+		$imageContent =  file_get_contents($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_150_'.$pic->filename);
+		$response->setContent($imageContent);
+		$response->getHeaders()
+		->addHeaderLine('Content-Transfer-Encoding', 'binary')
+		->addHeaderLine('Content-Type', 'image/jpeg')
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+		
+		return $response;		
+	}
 	
 	
 	// get AssetPictureTable

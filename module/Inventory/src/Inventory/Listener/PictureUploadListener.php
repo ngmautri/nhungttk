@@ -40,7 +40,7 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		$pictures_dir = $e->getParam ('pictures_dir');
 		
 
-		if(preg_match('/[.](jpg)|(jpeg)$/', $name)) {
+		if(preg_match('/[.](jpg)$/', $name)) {
 			$im = imagecreatefromjpeg("$pictures_dir/$name");
 		} else if (preg_match('/[.](gif)$/', $name)) {
 			$im = imagecreatefromgif("$pictures_dir/$name");
@@ -69,6 +69,8 @@ class PictureUploadListener implements ListenerAggregateInterface {
 			imagegif( $nm, "$pictures_dir/$name_thumbnail" );
 		} else if (preg_match('/[.](png)$/', $name_thumbnail)) {
 			imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
+		}else if (preg_match('/[.](jpeg)$/', $name_thumbnail)) {
+			imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
 		}
 		
 		// 150

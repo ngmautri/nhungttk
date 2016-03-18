@@ -1,0 +1,11 @@
+<h1>asset/category/delete</h1>
+
+<form action="<?php echo $this->baseUrl ?>/inventory/image/delete-asset_picture" method="post">
+	<p>
+		Are you sure that you want to delete picture <strong>'<?php echo $this->escapeHtml($picture->url); ?>'</strong>
+	</p>
+	<div>
+		<input type="hidden" name="id" value="<?php echo (int) $picture->id; ?>" /> 
+		<input type="submit" name="delete_confirmation" value="YES" /> <input type="submit" name="delete_confirmation" value="NO" />
+	</div>
+</form>

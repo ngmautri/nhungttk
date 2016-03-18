@@ -26,31 +26,12 @@
 								
 								echo $this->headScript ()->prependFile ( $this->basePath () . '/js/html5.js', 'text/javascript', array (
 										'conditional' => 'lt IE 9' 
-								) )->prependFile ( $this->basePath () . '/js/jquery-ui.js' )->prependFile ( $this->basePath () . '/js/jquery.js' )?>
-
-  
-    <script src="/js/lightgallery-all.min.js"></script>
+								) )->prependFile ( $this->basePath () . '/js/mla.js' )->prependFile ( $this->basePath () . '/js/jquery-ui.js' )->prependFile ( $this->basePath () . '/js/jquery.js' )?>
+	<script src="/js/lightgallery-all.min.js"></script>
     <script src="/js/lg-thumbnail.js"></script>
     <script src="/js/lg-fullscreen.min.js"></script>
-     <script src="/lightgallery/js/lg-autoplay.min.js"></script>
-     <script src="/lightgallery/js/lg-zoom.min.js"></script>
  
-  
-  
-  
   <script>
-
-
-  $(document).ready(function() {
-
-
-	    $(document).ready(function() {
-	        $("#lightgallery").lightGallery(); 
-	    });
-
-
-  });
-
 
   $(function() {
 	    $( "input[id='movement_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});

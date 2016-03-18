@@ -74,7 +74,7 @@
 	</table>
 </form>
 
-<div id = "dialog">No asset found...</div>
+<div id = "dialog" style="display: none;">No asset found...</div>
 
 
 <?php }else {
@@ -87,17 +87,14 @@
  <?php if ($pictures->count()>0){ ?>
 
 <h5> Spare part Picture:</h5>
-<table border="1">
-
+<div id="lightgallery">
  <?php foreach ($pictures as $pic) : ?>
   	
-    <tr>
-		<td>
-			<img alt="" src="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
-     	</td>
-	</tr>
-<?php endforeach; 
-?>
-</table>
+    <a href="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
+    <img src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+    </a>
+	
+<?php endforeach; ?>
+</div>
 
 <?php }?>

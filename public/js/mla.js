@@ -1,28 +1,10 @@
 
 
 $(document).ready(function(){
-	
-	  $(function() {
-		    $( "#tabs" ).tabs();
-		  });
-
-	 for (var key in myData) {
-
-		 if (myData.hasOwnProperty(key)){
-		 		str_key = str_key + key + ":{" + "<br>"+
-		 		"&nbsp;&nbsp;&nbsp; en: '" + myData[key].en + "',<br>" +
-		 		"&nbsp;&nbsp;&nbsp; da: '" + data_da[key].da + "'<br>"+
-		 		"&nbsp;&nbsp;&nbsp; de: '" + myData[key].de + "',<br>" +
-		 		"&nbsp;&nbsp;&nbsp; nl: '" + data_nl[key].nl + "',<br>" +
-		 		"&nbsp;&nbsp;&nbsp; no: '" + data_no[key].no + "',<br>" +
-		 		"&nbsp;&nbsp;&nbsp; se: '" + data_se[key].se + "',<br>" +
-		 		"&nbsp;&nbsp;&nbsp; fi: '" + data_fi[key].fi + "',<br>" +
-		 		"&nbsp;&nbsp;&nbsp; fr: '" + data_fr[key].fr + "',<br>" +
-		 		"}," + "<br><br>";
-		 }
-	}
-	 $('#mascot').html(str_key);
-
+	$(document).ready(function() {
+        $("#lightgallery").lightGallery(); 
+    });
+ 
 });
 
 /**

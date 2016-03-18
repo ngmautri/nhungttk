@@ -15,6 +15,7 @@ use Inventory\Model\AssetCategory;
 use Inventory\Model\MLAAsset;
 use Inventory\Model\AssetPicture;
 use MLA\Paginator;
+use MLA\Files;
 use Zend\Barcode\Barcode;
 
 class AssetController extends AbstractActionController {
@@ -86,7 +87,10 @@ class AssetController extends AbstractActionController {
 				foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 					if ($error == UPLOAD_ERR_OK) {
 						$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
-						$name = $_FILES ["pictures"] ["name"] [$key];
+						
+						$ext = pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION);					
+						$name = Files::generate_random_string().'_'.md5(uniqid(microtime())).'.'.strtolower ($ext);
+											
 						$ftype = $_FILES ["pictures"] ["type"] [$key];
 						move_uploaded_file ( $tmp_name, "$pictures_dir/$name" );
 						
@@ -151,7 +155,10 @@ class AssetController extends AbstractActionController {
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
-					$name = $_FILES ["pictures"] ["name"] [$key];
+					
+					$ext = pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION);					
+					$name = Files::generate_random_string().'_'.md5(uniqid(microtime())).'.'.strtolower ($ext);
+											
 					$ftype = $_FILES ["pictures"] ["type"] [$key];
 					move_uploaded_file ( $tmp_name, "$pictures_dir/$name" );
 					

@@ -2,7 +2,7 @@
 
 <form action="<?php echo $this->baseUrl ?>/inventory/image/delete-asset_picture" method="post">
 	<p>
-		Are you sure that you want to delete picture <strong>'<?php echo $this->escapeHtml($picture->url); ?>'</strong>
+		Are you sure that you want to delete picture <strong>'<?php echo $this->escapeHtml($picture->filename); ?>'</strong>
 	</p>
 	<div>
 		<input type="hidden" name="id" value="<?php echo (int) $picture->id; ?>" /> 

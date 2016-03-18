@@ -40,7 +40,7 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		$pictures_dir = $e->getParam ('pictures_dir');
 		
 
-		if(preg_match('/[.](jpg)$/', $name)) {
+		if(preg_match('/[.](jpg|jpeg)$/', $name)) {
 			$im = imagecreatefromjpeg("$pictures_dir/$name");
 		} else if (preg_match('/[.](gif)$/', $name)) {
 			$im = imagecreatefromgif("$pictures_dir/$name");
@@ -63,14 +63,12 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		
 		imagecopyresized($nm, $im, 0,0,0,0,$nx,$ny,$ox,$oy);
 		
-		if (preg_match ( '/[.](jpg)$/', $name_thumbnail )) {
+		if (preg_match ( '/[.](jpg|jpeg)$/', $name_thumbnail )) {
 			imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
 		} else if (preg_match ( '/[.](gif)$/', $name_thumbnail )) {
 			imagegif( $nm, "$pictures_dir/$name_thumbnail" );
 		} else if (preg_match('/[.](png)$/', $name_thumbnail)) {
 			imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
-		}else if (preg_match('/[.](jpeg)$/', $name_thumbnail)) {
-			imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
 		}
 		
 		// 150
@@ -85,7 +83,7 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		
 		imagecopyresized ( $nm, $im, 0, 0, 0, 0, $nx, $ny, $ox, $oy );
 		
-		if (preg_match ( '/[.](jpg)$/', $name_thumbnail )) {
+		if (preg_match ( '/[.](jpg|jpeg)$/', $name_thumbnail )) {
 			imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
 		} else if (preg_match ( '/[.](gif)$/', $name_thumbnail )) {
 			imagegif( $nm, "$pictures_dir/$name_thumbnail" );
@@ -105,7 +103,7 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		
 		imagecopyresized ( $nm, $im, 0, 0, 0, 0, $nx, $ny, $ox, $oy );
 		
-		if (preg_match ( '/[.](jpg)$/', $name_thumbnail )) {
+		if (preg_match ( '/[.](jpg|jpeg)$/', $name_thumbnail )) {
 			imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
 		} else if (preg_match ( '/[.](gif)$/', $name_thumbnail )) {
 			imagegif( $nm, "$pictures_dir/$name_thumbnail" );

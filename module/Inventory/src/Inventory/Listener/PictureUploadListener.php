@@ -40,7 +40,7 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		$pictures_dir = $e->getParam ('pictures_dir');
 		
 
-		if(preg_match('/[.](jpg)$/', $name)) {
+		if(preg_match('/[.](jpg|jpeg)$/', $name)) {
 			$im = imagecreatefromjpeg("$pictures_dir/$name");
 		} else if (preg_match('/[.](gif)$/', $name)) {
 			$im = imagecreatefromgif("$pictures_dir/$name");

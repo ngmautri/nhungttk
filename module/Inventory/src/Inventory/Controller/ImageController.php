@@ -124,6 +124,38 @@ class ImageController extends AbstractActionController {
 		) );
 	}
 	
+	public function deleteAssetPictureAction() {
+	
+		$request = $this->getRequest ();
+	
+		if ($request->isPost ()) {
+			$del = $request->getPost ( 'delete_confirmation', 'NO' );
+	
+			if ($del === 'YES') {
+	
+				$id = ( int ) $request->getPost ( 'id' );
+				$pic= $this->getAssetPictureTable ()->get ( $id );
+				$filename = $pic->url;
+	
+				if (file_exists($filename)) {
+					unlink($filename);
+				}
+				$this->getAssetPictureTable ()->delete ($id);
+	
+			}
+			return $this->redirect ()->toRoute ( 'assetcategory' );
+		}
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$pic= $this->getAssetPictureTable ()->get ( $id );
+	
+	
+	
+		return new ViewModel ( array (
+				'picture' => $pic
+		) );
+	}
+	
 	
 	// get AssetPictureTable
 	private function getAssetPictureTable() {

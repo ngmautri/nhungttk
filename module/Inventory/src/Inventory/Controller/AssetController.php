@@ -269,6 +269,18 @@ class AssetController extends AbstractActionController {
 			) );
 		}
 	}
+	
+	public function picturesAction() {
+		$id = ( int ) $this->params ()->fromQuery ( 'asset_id' );
+		$sp = $this->getMLAAssetTable()->get ( $id );
+		$pictures = $this->getAssetPictureTable()->getAssetPicturesById( $id );
+	
+		return new ViewModel ( array (
+				'asset' => $sp,
+				'pictures' => $pictures,
+		) );
+	}
+	
 	public function deletecategoryAction() {
 		$request = $this->getRequest ();
 		

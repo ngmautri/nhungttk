@@ -95,6 +95,9 @@ class ImageController extends AbstractActionController {
 	public function deleteSparePartPictureAction() {
 		
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		
 	
 		if ($request->isPost ()) {
 			$del = $request->getPost ( 'delete_confirmation', 'NO' );
@@ -111,7 +114,9 @@ class ImageController extends AbstractActionController {
 				$this->getSparepartPictureTable ()->delete ($id);
 				
 			}
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);
 		}
 	
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
@@ -120,13 +125,17 @@ class ImageController extends AbstractActionController {
 		
 	
 		return new ViewModel ( array (
-				'picture' => $pic
+				'picture' => $pic,
+				'redirectUrl'=>$redirectUrl,
+				
 		) );
 	}
 	
 	public function deleteAssetPictureAction() {
 	
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 	
 		if ($request->isPost ()) {
 			$del = $request->getPost ( 'delete_confirmation', 'NO' );
@@ -143,7 +152,8 @@ class ImageController extends AbstractActionController {
 				$this->getAssetPictureTable ()->delete ($id);
 	
 			}
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);
 		}
 	
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
@@ -152,7 +162,8 @@ class ImageController extends AbstractActionController {
 	
 	
 		return new ViewModel ( array (
-				'picture' => $pic
+				'picture' => $pic,
+				'redirectUrl'=>$redirectUrl,
 		) );
 	}
 	

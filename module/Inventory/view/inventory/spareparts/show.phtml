@@ -1,12 +1,12 @@
 <h4> <?php echo $this->escapeHtml($sparepart->name);?></h4>
 
- <?php foreach ($categories as $category) : ?>
+ <b>Category:</b> <?php foreach ($categories as $category) : ?>
 
 <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($category->category_id);?>"><?php  echo $this->escapeHtml($category->category_name);?>
 </a> //
   	
 <?php endforeach; ?>
- 
+ <hr>
 <?php  echo '<ul><li>Total Inflow: ' .  $inflow.'</li>'; ?>
 	 <?php  echo '<li>Total Outflow: ' .  $outflow. '</li>'; ?>
 	 <?php  echo '<li>In stock: ' .  $instock.'</li></ul>';?>

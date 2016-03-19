@@ -1,4 +1,14 @@
-<h3>Create New Spare Part</h3>
+<h3>Create New Spare-Part</h3>
+
+<?php if (count($errors)>0){
+	echo '<ul style="color:#FF0000">';
+	 foreach ($errors as $error) :
+	 echo '<li>'.$error . '</li>';	 
+	 endforeach;
+	 echo '</ul>';
+	 ?>
+	 <hr> 
+<?php } ?>
 
 <hr>
 <form action="<?php echo $this->baseUrl ?>/inventory/spareparts/add"	method="post" enctype="multipart/form-data" id="NewAsset">
@@ -19,7 +29,7 @@
 </tr>
 
 <tr>
-	<td><label for="category">Name</label> </td>
+	<td><label for="category">Name Local (Laos)</label> </td>
 	<td><input type="text"	name="name_local" value="" /></td>
 </tr>
 <tr>
@@ -29,7 +39,7 @@
 
 <tr>
 	<td><label for="code">Code /Serial</label> </td>
-	<td><input type="text"	name="code" value="" /></td>
+	<td><input type="text"	name="code" value="" id="sparepart_code"/> <a href="javascript:;" onclick="checkSparePartCode()" class="helper">check code</a></td>
 </tr>
 
 <tr>
@@ -53,3 +63,6 @@
 
 <input type="submit" name="add" value="Create" />
 </form>
+
+
+<div id = "dialog" style="display: none;">Check code...</div>

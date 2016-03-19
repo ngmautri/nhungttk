@@ -38,6 +38,10 @@
    });
 
   $(function() {
+	    $( "input[type=submit], button" ).button();
+  });
+
+  $(function() {
 	    $( "#tabs" ).tabs({
 	      beforeLoad: function( event, ui ) {
 	        ui.jqXHR.fail(function() {

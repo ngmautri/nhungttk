@@ -39,6 +39,9 @@ class AdminController extends AbstractActionController {
 	}
 	public function editSparepartCategoryAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		
 		
 		if ($request->isPost ()) {
 			
@@ -49,19 +52,25 @@ class AdminController extends AbstractActionController {
 			
 			$this->sparePartCategoryTable->update ( $category, $request->getPost ( 'id' ) );
 			
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);					
+	
 		} else {
 			$id = ( int ) $this->params ()->fromQuery ( 'id' );
 			$category = $this->sparePartCategoryTable->get ( $id );
 			
 			return new ViewModel ( array (
-					'category' => $category 
+					'category' => $category,
+					'redirectUrl'=>$redirectUrl,
+						
 			) );
 		}
 	}
 	
 	public function addSparepartCategoryAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 		if ($request->isPost ()) {
 			
 			$category = new SparepartCategory ();
@@ -70,12 +79,23 @@ class AdminController extends AbstractActionController {
 			$category->parent_id = $request->getPost ( 'parent_id' );
 			$this->sparePartCategoryTable->add ( $category );
 			
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);					
 		}
+		
+		
+		return new ViewModel ( array (
+				'redirectUrl'=>$redirectUrl,
+			)
+		);
+		
+		
 	}
 	
 	public function addSparepartCategoryMemberAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 		
 		if ($request->isPost ()) {
 			
@@ -101,7 +121,10 @@ class AdminController extends AbstractActionController {
 				 *
 				 * ) );
 				 */
-				return $this->redirect ()->toRoute ( 'spare_parts_list' );
+			
+				$redirectUrl  = $request->getPost ( 'redirectUrl' );
+				$this->redirect()->toUrl($redirectUrl);					
+				
 			}
 		}
 		
@@ -112,7 +135,8 @@ class AdminController extends AbstractActionController {
 		
 		return new ViewModel ( array (
 				'category' => $category,
-				'spareparts' => $spareparts 
+				'spareparts' => $spareparts,
+				'redirectUrl'=>$redirectUrl,
 			)
 		);
 	}

@@ -55,6 +55,9 @@ class AssetController extends AbstractActionController {
 		
 	public function addAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		
 		if ($request->isPost ()) {
 			
 			$request = $this->getRequest ();
@@ -110,19 +113,25 @@ class AssetController extends AbstractActionController {
 								'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
 						);
 					}
-				}				
-				return $this->redirect ()->toRoute ( 'assetcategory' );
+				}
+				
+				$redirectUrl  = $request->getPost ( 'redirectUrl' );
+				$this->redirect()->toUrl($redirectUrl);	
 			}
 		}
 		
 		return new ViewModel ( array (
 				'category_id' => $this->params ()->fromQuery ( 'category_id' ),
-				'category' => $this->params ()->fromQuery ( 'category' ) 
+				'category' => $this->params ()->fromQuery ( 'category' ),
+				'redirectUrl'=>$redirectUrl,
+				
 		) );
 	}
 	public function editAction() {
 		
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 		if ($request->isPost ()) {
 			
 			$input = new MLAAsset ();
@@ -178,14 +187,16 @@ class AssetController extends AbstractActionController {
 				}
 			}
 			
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);	
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$asset = $this->getMLAAssetTable ()->get ( $id );
 		
 		return new ViewModel ( array (
-				'asset' => $asset
+				'asset' => $asset,
+				'redirectUrl'=>$redirectUrl,
 		) );
 	}
 	
@@ -243,6 +254,9 @@ class AssetController extends AbstractActionController {
 	
 	public function addcategoryAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		
 		if ($request->isPost ()) {
 			
 			$assetType = new AssetCategory ();
@@ -250,12 +264,20 @@ class AssetController extends AbstractActionController {
 			$assetType->description = $request->getPost ( 'description' );
 			$this->getAssetCategoryTable ()->add ( $assetType );
 			
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);	
+			
 		}
+		
+		return new ViewModel ( array (
+				'redirectUrl'=>$redirectUrl,
+			) );
 	}
 	
 	public function editcategoryAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 		
 		if ($request->isPost ()) {
 			
@@ -265,14 +287,17 @@ class AssetController extends AbstractActionController {
 			
 			$this->getAssetCategoryTable ()->update ( $assetType, $request->getPost ( 'id' ) );
 			
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);	
+			
 		} else {
 			
 			$id = ( int ) $this->params ()->fromQuery ( 'id' );
 			$category = $this->getAssetCategoryTable ()->get ( $id );
 			
 			return new ViewModel ( array (
-					'category' => $category 
+					'category' => $category,
+					'redirectUrl'=>$redirectUrl,						
 			) );
 		}
 	}
@@ -290,6 +315,8 @@ class AssetController extends AbstractActionController {
 	
 	public function deletecategoryAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 		
 		if ($request->isPost ()) {
 			
@@ -299,14 +326,17 @@ class AssetController extends AbstractActionController {
 				$this->getAssetCategoryTable ()->delete ( $request->getPost ( 'id' ) );
 			}
 			
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);	
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$category = $this->getAssetCategoryTable ()->get ( $id );
 		
 		return new ViewModel ( array (
-				'category' => $category 
+				'category' => $category,
+				'redirectUrl'=>$redirectUrl,
+				
 		) );
 	}
 	

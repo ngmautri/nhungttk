@@ -55,6 +55,9 @@ class SparepartsController extends AbstractActionController {
 	public function addAction() {
 		
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		
 		
 		
 		if ($request->isPost ()) {
@@ -123,7 +126,8 @@ class SparepartsController extends AbstractActionController {
 					$this->sparePartCategoryMemberTable->add($m);					
 				}
 								
-				return $this->redirect ()->toRoute ( 'spare_parts_list' );
+				$redirectUrl  = $request->getPost ( 'redirectUrl' );
+				$this->redirect()->toUrl($redirectUrl);
 			}
 		}
 		
@@ -133,11 +137,15 @@ class SparepartsController extends AbstractActionController {
 		return new ViewModel ( array (
 				'message' => 'Add new Sparepart',
 				'category_id' => $category_id,
+				'redirectUrl'=>$redirectUrl,
+				
 				
 		) );
 	}
 	public function addCategoryAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 		
 		if ($request->isPost ()) {
 			
@@ -163,7 +171,9 @@ class SparepartsController extends AbstractActionController {
 				 *
 				 * ) );
 				 */
-				return $this->redirect ()->toRoute ( 'spare_parts_list' );
+				$redirectUrl  = $request->getPost ( 'redirectUrl' );
+				$this->redirect()->toUrl($redirectUrl);
+	
 			}
 		}
 		
@@ -174,12 +184,16 @@ class SparepartsController extends AbstractActionController {
 		
 		return new ViewModel ( array (
 				'sparepart' => $sparepart,
-				'categories' => $categories 
+				'categories' => $categories,
+				'redirectUrl'=>$redirectUrl,
 		)
-		 );
+		
+		);
 	}
 	public function editAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 		
 		if ($request->isPost ()) {
 			
@@ -232,14 +246,19 @@ class SparepartsController extends AbstractActionController {
 				}
 			}
 			
-			return $this->redirect ()->toRoute ( 'spare_parts_list' );
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);
+			
+			//return $this->redirect ()->toRoute ( 'Spareparts_Category');
 		}
+		
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$sparepart = $this->sparePartTable->get ( $id );
 		
 		return new ViewModel ( array (
-				'sparepart' => $sparepart 
+				'sparepart' => $sparepart,
+				'redirectUrl'=>$redirectUrl,
 		) );
 	}
 	
@@ -425,6 +444,8 @@ class SparepartsController extends AbstractActionController {
 	 */
 	public function receiveAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 		
 		if ($request->isPost ()) {
 			
@@ -498,11 +519,11 @@ class SparepartsController extends AbstractActionController {
 						$transport->send ( $message );
 					}
 					
-					return $this->redirect ()->toRoute ( 'spare_parts_list' );
+					$newId = $this->sparepartMovementsTable->add ( $input );
+					
+					$redirectUrl  = $request->getPost ( 'redirectUrl' );
+					$this->redirect()->toUrl($redirectUrl);					
 				}
-				
-				$newId = $this->sparepartMovementsTable->add ( $input );
-				return $this->redirect ()->toRoute ( 'spare_parts_list' );
 			}
 		}
 		
@@ -517,7 +538,8 @@ class SparepartsController extends AbstractActionController {
 				'sp' => $sp,
 				'pictures' => $pictures,
 				'instock' => $instock,
-				'errors' => null 
+				'errors' => null,
+				'redirectUrl'=>$redirectUrl,				
 		) );
 	}
 	
@@ -526,6 +548,8 @@ class SparepartsController extends AbstractActionController {
 	 */
 	public function issueAction() {
 		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
 		
 		if ($request->isPost ()) {
 			
@@ -584,8 +608,10 @@ class SparepartsController extends AbstractActionController {
 				
 				// Validated
 				$this->sparepartMovementsTable->add ( $input );
-				return $this->redirect ()->toRoute ( 'spare_parts_list' );
-			}
+				
+				$redirectUrl  = $request->getPost ( 'redirectUrl' );
+					$this->redirect()->toUrl($redirectUrl);					
+				}
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
@@ -599,7 +625,8 @@ class SparepartsController extends AbstractActionController {
 				'sp' => $sp,
 				'pictures' => $pictures,
 				'instock' => $instock,
-				'errors' => null 
+				'errors' => null,
+				'redirectUrl'=>$redirectUrl,				
 		) );
 	}
 	public function showMovementAction() {

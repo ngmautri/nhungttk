@@ -1,6 +1,7 @@
 <h1>asset/category/delete</h1>
 
 <form action="<?php echo $this->baseUrl ?>/inventory/image/delete-asset_picture" method="post">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 	<p>
 		Are you sure that you want to delete picture <strong>'<?php echo $this->escapeHtml($picture->filename); ?>'</strong>
 	</p>

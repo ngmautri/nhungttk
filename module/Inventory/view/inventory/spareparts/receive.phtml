@@ -25,6 +25,7 @@
 <form action="<?php echo $this->baseUrl ?>/inventory/spareparts/receive"
 	method="post" enctype="multipart/form-data" id="New Sparepart">
 	<input type="hidden" name="sparepart_id" value="<?php echo (int) $sp->id; ?>" />
+	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 	
 	<table>
 

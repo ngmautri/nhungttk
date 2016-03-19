@@ -86,38 +86,48 @@ if ($total_spareparts <= 0) {
 <br>
 
 <?php
-	
-	if (! is_null ( $paginator )) {
-		
-		$last = $this->baseUrl . '/inventory/spareparts/show-category?id='. $category->id . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		
-		$first = $this->baseUrl . '/inventory/spareparts/show-category?id='. $category->id .' &page=1&perPage=' . $paginator->resultsPerPage;
-		
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $this->baseUrl . '/inventory/spareparts/show-category?id='. $category->id . '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			$last = $this->baseUrl . '/inventory/spareparts/show-category?id='. $category->id . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-			
-			?>
 
-<?php
-			
-			if ($i == $paginator->page) {
-				echo $i;
-			} else {
-				?>
-<a href="<?php echo $url; ?>"><?php echo $i ?></a>
+if (! is_null ( $paginator )) {
 
-<?php
-			}
-		}
-		?>
-	
-<a href="<?php echo $last; ?>"> Last</a>
-<?php
+	//change it only
+	$base=$this->baseUrl . '/inventory/spareparts/show-category?id='.$category->id;
+
+	$last 	= $base . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+	$first 	= $base . '&page=1&perPage=' . $paginator->resultsPerPage;
+
+	$p1 = ($paginator->page)-1;
+	$p2 = ($paginator->page)+1;
+
+	$prev = $base . '&page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+	$next = $base . '&page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+
+	echo '<ul class="pagination">';
+
+	if($paginator->page != 1 AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $first.'"> |< </a></li>';
+		echo '<li><a href="'.  $prev .'"> < </a></li>';
 	}
+
+	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+		$url = $base. '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+			
+		if ($i == $paginator->page) {
+			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
+		} else {
+			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
+		}
+	}
+	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $next.'"> > </a></li>';
+		echo '<li><a href="'.  $last .'"> >| </a></li>';
+	}
+	echo '</ul>';
+}
+
+	
 }
 ?>
 

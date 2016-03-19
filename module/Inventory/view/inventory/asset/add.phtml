@@ -3,6 +3,7 @@
 
 <form action="<?php echo $this->baseUrl ?>/inventory/asset/add"	method="post" enctype="multipart/form-data" id="NewAsset">
 <input type="hidden" name="category_id" value="<?php echo (int) $category_id; ?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
 <table>
 

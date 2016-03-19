@@ -2,6 +2,8 @@
 
 
 <form action="<?php echo $this->baseUrl ?>/inventory/asset/edit"	method="post" enctype="multipart/form-data" id="NewAsset">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
 <input type="hidden" name="id" value="<?php echo (int) $asset->id; ?>" />
 
 <input type="hidden" name="category_id" value="<?php echo (int) $asset->category_id; ?>" />

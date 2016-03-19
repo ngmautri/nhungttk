@@ -1,5 +1,6 @@
 <h3>Add spare part category</h3>
 <form action="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category" method="post">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 <div>
     <label for="name">Spare part Category Name</label>
     <input type="text" name="name" value=""/>

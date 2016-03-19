@@ -7,6 +7,7 @@
 <form action="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category-member"	method="post" enctype="multipart/form-data" id="New Sparepart">
 	
 <input type="hidden" name="id" value="<?php echo (int) $category->id; ?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
 <table class="pure-table pure-table-bordered">
 <thead>

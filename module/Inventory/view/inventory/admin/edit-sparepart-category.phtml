@@ -1,5 +1,6 @@
 <h1>Edit spare part category</h1>
 <form action="<?php echo $this->baseUrl ?>/inventory/admin/edit-sparepart-category" method="post">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 <div>
 	<input type="hidden" name="id" value="<?php echo (int) $category->id; ?>" />
     <label for="name">Sparepart Category</label>

@@ -1,6 +1,8 @@
 <h1>asset/category/add</h1>
 
 <form action="<?php echo $this->baseUrl ?>/inventory/asset/addcategory" method="post">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
 <div>
     <label for="category">Asset Category</label>
     <input type="text" name="category" value=""/>

@@ -9,59 +9,22 @@
 return array (
 		'router' => array (
 				'routes' => array (
-						'home' => array (
-								'type' => 'Zend\Mvc\Router\Http\Literal',
-								'options' => array (
-										'route' => '/',
-										'defaults' => array (
-												'module' => 'Inventory',
-												'controller' => 'Inventory\Controller\Asset',
-												'action' => 'Index' 
-										) 
-								)
-									
-								
-						),
-						
-												
-						'assetcategory' => array(
-								'type' => 'literal',
-								'options' => array(
-										'route'    => '/inventory/asset/category',
-										'defaults' => array(
-												'__NAMESPACE__' => 'Inventory\Controller',
-												'controller' => 'Asset',
-												'action' => 'index' 
-										),
-								),
-						),
-						
-						'spare_parts_list' => array(
-								'type' => 'literal',
-								'options' => array(
-										'route'    => '/inventory/spareparts/list',
-										'defaults' => array(
-												'__NAMESPACE__' => 'Inventory\Controller',
-												'controller' => 'Spartparts',
-												'action' => 'list'
-										),
-								),
-						),
 						
 						// The following is a route to simplify getting started creating
 						// new controllers and actions without needing to create a new
 						// module. Simply drop new controllers in, and you can access them
 						// using the path /application/:controller/:action
-						'inventory' => array (
+						'Inventory' => array (
 								'type' => 'Literal',
 								'options' => array (
 										'route' => '/inventory',
 										'defaults' => array (
 												'__NAMESPACE__' => 'Inventory\Controller',
-												'controller' => 'Asset',
-												'action' => 'category' 
+												'controller' => 'Index',
+												'action' => 'index' 
 										) 
 								),
+								
 								'may_terminate' => true,
 								'child_routes' => array (
 										'default' => array (
@@ -75,16 +38,44 @@ return array (
 														'defaults' => array () 
 												) 
 										) 
-								)
-								
-							) 
-				) 
+								) 
+						),
+							
+				'Asset_Category' => array (
+						'type' => 'literal',
+						'options' => array (
+								'route' => '/inventory/asset/category',
+								'defaults' => array (
+										'__NAMESPACE__' => 'Inventory\Controller',
+										'controller' => 'Asset',
+										'action' => 'category' 
+								) 
+						) 
+				),
+				
+				'Spareparts_Category' => array (
+						'type' => 'literal',
+						'options' => array (
+								'route' => '/inventory/spareparts/category',
+								'defaults' => array (
+										'__NAMESPACE__' => 'Inventory\Controller',
+										'controller' => 'Spareparts',
+										'action' => 'category' 
+								) 
+						),
+				),
+						
+
+			),
+						
 		),
+		
 		'service_manager' => array (
 				'factories' => array (
 						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory' 
 				) 
 		),
+		
 		'translator' => array (
 				'locale' => 'en_US',
 				'translation_file_patterns' => array (

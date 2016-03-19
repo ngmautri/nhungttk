@@ -58,12 +58,11 @@ class AuthController extends AbstractActionController {
 			$result = $this->getAuthService ()->authenticate ();
 			
 			if ($result->isValid ()) {
-				return $this->redirect ()->toRoute ( 'assetcategory' );
+				return $this->redirect ()->toRoute ( 'Inventory' );
 			} else {
 				
 				// $route = $this->getServiceLocator ()->get ( 'application' )->getMvcEvent()->getRouteMatch();
-				
-				return new ViewModel ( array (
+					return new ViewModel ( array (
 						'messages' => $result->getMessages () 
 				) );
 			}

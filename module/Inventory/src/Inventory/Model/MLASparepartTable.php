@@ -184,7 +184,7 @@ on t4.sparepart_id = t3.id where t4.flow = 'OUT' group by t4.sparepart_id) as tO
 	}
 	
 	
-	public function isUniqueTag($tag)
+	public function isTagExits($tag)
 	{
 		$adapter = $this->tableGateway->adapter;
 	

@@ -82,7 +82,7 @@ class SparepartsController extends AbstractActionController {
 				
 				//tag must be unique
 				
-				if ($this->sparePartTable->isUniqueTag($input->tag == false)){
+				if ($this->sparePartTable->isTagExits($input->tag === true)){
 					$errors [] = 'Sparepart with tag number "'. $input->tag.  '" exits already in database';					
 				}
 				

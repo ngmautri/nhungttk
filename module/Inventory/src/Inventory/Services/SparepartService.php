@@ -32,12 +32,12 @@ class SparepartService extends AbstractService
 			
 			
 			
-			$sp_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "sparepart_folder";
+			$sp_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "sparepart_folder";
 			
 			//Test
 			//$sp_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "sparepart_folder";
 			
-			$sp_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR . "sparepart_" . $id;
+			$sp_dir = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR ."sparepart_" . $id;
 			
 			//Test
 			//$sp_dir = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR . "sparepart_" . $id;

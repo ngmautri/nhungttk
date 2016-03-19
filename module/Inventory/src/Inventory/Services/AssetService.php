@@ -34,12 +34,12 @@ class AssetService extends AbstractService
 				
 				
 				
-			$asset_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "asset_folder";
+			$asset_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR ."templates" . DIRECTORY_SEPARATOR . "asset_folder";
 				
 			//Test
 			//$asset_folders_tpl = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . "asset_folder";
 				
-			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
+			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
 				
 			//Test
 			//$asset_dir = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
@@ -73,7 +73,7 @@ class AssetService extends AbstractService
 	 */
 	public function getRootDirById($id) {
 		try {
-			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
+			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
 			return scandir ( $asset_dir );
 		} catch ( Exception $e ) {
 			return null;
@@ -82,7 +82,7 @@ class AssetService extends AbstractService
 
 	public function getAssetPath($id) {
 		try {
-			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR . "asset_" . $id;
+			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "assets" . DIRECTORY_SEPARATOR ."asset_" . $id;
 			return $asset_dir;
 		} catch ( Exception $e ) {
 			return null;

@@ -182,5 +182,31 @@ on t4.sparepart_id = t3.id where t4.flow = 'OUT' group by t4.sparepart_id) as tO
 		$where = 'id = ' . $id;
 		$this->tableGateway->delete($where);
 	}
+	
+	
+	public function isUniqueTag($tag)
+	{
+		$adapter = $this->tableGateway->adapter;
+	
+		$where = array(
+				'tag=?'		=>$tag,
+		);
+	
+		$sql = new Sql($adapter);
+		$select = $sql->select();
+	
+		$select->from(array('t1'=>'mla_spareparts'));
+		$select->where($where);
+	
+		$statement = $sql->prepareStatementForSqlObject($select);
+		$results = $statement->execute();
+	
+		if($results->count()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 
 }

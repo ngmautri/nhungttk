@@ -77,6 +77,28 @@ class SparepartsController extends AbstractActionController {
 				$input->location = $request->getPost ( 'location' );
 				$input->comment = $request->getPost ( 'comment' );
 				
+								
+				$errors = array();
+				
+				//tag must be unique
+				
+				if ($this->sparePartTable->isUniqueTag($input->tag == false)){
+					$errors [] = 'Sparepart with tag number "'. $input->tag.  '" exits already in database';					
+				}
+				
+
+				if ($input->name ==''){
+					$errors [] = 'Please give spare-part name';
+				}
+					
+				
+				if (count ( $errors ) > 0) {
+					return new ViewModel ( array (
+							'errors' => $errors
+					) );
+				}
+				
+				
 				$newId = $this->sparePartTable->add ( $input );
 				$root_dir = $this->sparePartService->createSparepartFolderById ( $newId );
 				$pictures_dir = $root_dir . DIRECTORY_SEPARATOR . "pictures";
@@ -138,7 +160,7 @@ class SparepartsController extends AbstractActionController {
 				'message' => 'Add new Sparepart',
 				'category_id' => $category_id,
 				'redirectUrl'=>$redirectUrl,
-				
+				'errors' => null,			
 				
 		) );
 	}

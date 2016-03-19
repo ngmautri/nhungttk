@@ -11,7 +11,10 @@ namespace Inventory\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
+
+
+use ZendSearch\Lucene\Index\Term;
+use ZendSearch\Lucene\Search\Query\Wildcard;
 
 
 class SearchController extends AbstractActionController {
@@ -34,19 +37,25 @@ class SearchController extends AbstractActionController {
 		
 		//$query = $this->params ()->fromQuery ( 'query' );
 		
-		$query = $this->params ()->fromQuery ( 'query' );
+		$q = $this->params ()->fromQuery ( 'query' );		
 		$json = (int) $this->params ()->fromQuery ( 'json' );
 		
-		
-		if($query==''){
+	
+		if($q==''){
 			return new ViewModel ( array (
-					'hits' => null,
+					'hits' => null,	
 			));
 		}
-				
-		$hits = $this->getAssetSearchService()->search($query);
 		
-		$isAjax = $this->getRequest()->isXmlHttpRequest();
+		if (strpos($q,'*') !== false) {
+			$pattern = new Term($q);
+			$query = new Wildcard($pattern);
+			$hits = $this->getAssetSearchService()->search($query);
+		
+		}else{
+			$hits = $this->getAssetSearchService()->search($q);
+		}
+		
 		
 		if ($json === 1){
 			
@@ -68,7 +77,7 @@ class SearchController extends AbstractActionController {
 		}
 					
 		return new ViewModel ( array (
-				'query' => $query,
+				'query' => $q,
 				'hits' => $hits,
 		));
 	}
@@ -86,18 +95,49 @@ class SearchController extends AbstractActionController {
 	
 		//$query = $this->params ()->fromQuery ( 'query' );
 	
-		$query = $this->params ()->fromQuery ( 'query' );
+		$q = $this->params ()->fromQuery ( 'query' );		
+		$json = (int) $this->params ()->fromQuery ( 'json' );
+		
 	
-	
-		if($query==''){
+		if($q==''){
 			return new ViewModel ( array (
-					'hits' => null,
+					'hits' => null,	
 			));
 		}
+		
+		if (strpos($q,'*') !== false) {
+			$pattern = new Term($q);
+			$query = new Wildcard($pattern);
+			$hits = $this->getSparePartSearchService()->search($query);
+		
+		}else{
+			$hits = $this->getSparePartSearchService()->search($q);
+		}
+		
 	
-		$hits = $this->getSparePartSearchService()->search($query);
+		if ($json === 1){
+		
+			$data = array();
+		
+			foreach ($hits as $key => $value)
+			{
+				$n = (int)$key;
+				$data[$n]['id'] = $value->sparepart_id;
+				$data[$n]['name'] =  $value->name;
+				$data[$n]['tag'] =  $value->tag;
+				$data[$n]['code'] =  $value->code;
+				
+			}
+		
+		
+			$response = $this->getResponse();
+			$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
+			$response->setContent(json_encode($data));
+			return $response;
+		}
+		
 		return new ViewModel ( array (
-				'query' => $query,
+				'query' => $q,
 				'hits' => $hits,
 		));
 	}

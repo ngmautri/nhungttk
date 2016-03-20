@@ -2,39 +2,42 @@
 <h3>Login</h3>
 <?php if (!$messages== null)
 {
-	echo '<ul style="color:#FF0000">';
+echo '<div class="alert alert-error">';
+	
+	echo '<ul';
 	 foreach ($messages as $m) :
 	 echo '<li>'.$m . '</li>';
 	 
 	 endforeach;
 	 echo '</ul>';
+	 echo '</div>';
+	 
 } 
-
 ?>
 
-<form action="<?php echo $this->baseUrl ?>/user/auth/authenticate"	method="post" enctype="multipart/form-data" id="authentication">
-
-<table>
-
-<tr>
-	<td><label for="email">Email: </label> </td>
-	<td><input type="text"	name="email" value="" /></td>
-</tr>
 
 
-<tr>
-	<td><label for="tag">Password: </label> </td>
-	<td><input type="password"	name="password" value="" /></td>
-</tr>
+      <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/user/auth/authenticate"	method="post" enctype="multipart/form-data" id="authentication">
+      <div class="control-group">
+        <label class="control-label" for="inputEmail">Email</label>
+        <div class="controls">
+          <input type="text" id="inputEmail" placeholder="Email" name="email">
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="inputPassword">Password</label>
+        <div class="controls">
+          <input type="password" id="inputPassword" placeholder="Password" name="password">
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn">Sign in</button>
+        </div>
+      </div>
+    </form>
 
-<tr>
-	<td></td> 
-	<td><input type="submit" name="login" value="login" />	</td>
-</tr>
 
-</table>
- 
-</form>
-
-<br>
-<b>If you're new user, please <a href="<?php echo $this->baseUrl ?>/user/index/register">click here</a> to register.</b>
+<div class="alert alert-warning">
+<Strong>Info: </Strong>If you're new user, please <a href="<?php echo $this->baseUrl ?>/user/index/register">click here</a> to register.
+</div>

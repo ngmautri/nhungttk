@@ -56,10 +56,12 @@ div.erfordert{
 }
 
 div.container a.brand {
-	background: url("../img/zf2-logo.png") no-repeat scroll 0 10px
+	background: url("/img/zf2-logo.png") no-repeat scroll 0 10px
 		transparent;
 	margin-left: 0;
 	padding: 8px 20px 12px 40px;
+	font-size:12pt;
+	
 }
 
 
@@ -99,3 +101,19 @@ ul.pagination li a.active {
 
 ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 
+.dialogClass a {
+    color: #0080ff;
+    float: left;
+    padding: 3px 10px;
+    font-size:9pt;
+    text-decoration: none;
+    transition: background-color .3s;
+}
+
+.dialogClass a:hover{background-color: #0080c0;color: #ffffff;}
+
+.ui-menu { width: 200px; border: none}
+
+.ui-button,  .ui-button-text .ui-button{  
+font-size: 10pt !important; 
+}

@@ -27,7 +27,7 @@ function showDialog()
 				var i;
 			    s="";
 				if(n_hits > 0){
-					s = '<table <table class="pure-table pure-table-bordered"><thead><tr><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td></thead></tr>';
+					s = '<table class="pure-table pure-table-bordered"><thead><tr><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td></thead></tr>';
 					for(i=0; i< n_hits; i++)
 					{
 					s = s + "<tr>"	
@@ -37,11 +37,9 @@ function showDialog()
 					s = s + '<td>' +  id + '</td>';
 					s = s + '<td>' +  name + '</td>';
 					s = s + '<td>' +  tag	 + '</td>';
-					s = s + '<td><a href="javascript:;" onclick="selectAsset(\''+ id + '\',\''+ name + '\',\''+ tag +'\')">  SELECT  </a></td>';
-					s = s + '<td><a href="/inventory/asset/show?id='+ id + '" target="_blank">  DETAIL  </a></td>';
-
-						
-					s = s + "</tr>";
+					s = s + '<td><a href="javascript:;" onclick="selectAsset(\''+ id + '\',\''+ name + '\',\''+ tag +'\')">  Select  </a></td>';
+					s = s + '<td><a href="/inventory/asset/show?id='+ id + '" target="_blank">  Detail  </a></td>';
+				s = s + "</tr>";
 						
 					}
 					s = s + "</table>";
@@ -59,7 +57,7 @@ function showDialog()
 	
 	
 	//$( "#dialog" ).text(t);
-	$( "#dialog" ).dialog({width :860,height:500,title: "Select asset", modal: true});
+	$( "#dialog" ).dialog({width :860,height:500,title: "Select asset", modal: true, dialogClass: 'dialogClass'});
 }
 
 function selectAsset(id,name,tag){
@@ -106,7 +104,7 @@ function checkSparePartCode()
 					s = s + '<td>' +  tag	 + '</td>';
 					s = s + '<td>' +  code	 + '</td>';
 					//s = s + '<td><a href="javascript:;" onclick="selectAsset(\''+ id + '\',\''+ name + '\',\''+ tag +'\')">  SELECT  </a></td>';
-					s = s + '<td><a href="/inventory/spareparts/show?id='+ id + '" target="_blank">  DETAIL  </a></td>';
+					s = s + '<td><a href="/inventory/spareparts/show?id='+ id + '" target="_blank">  Detail  </a></td>';
 
 						
 					s = s + "</tr>";
@@ -128,7 +126,7 @@ function checkSparePartCode()
 	
 	
 	//$( "#dialog" ).text(t);
-	$( "#dialog" ).dialog({width :600,height:500,title: "Check Sparepart Code", modal: true});
+	$( "#dialog" ).dialog({width :650,height:500,title: "Check Sparepart Code", modal: true, dialogClass: 'dialogClass'});
 }
 
 

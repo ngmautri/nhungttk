@@ -80,3 +80,16 @@ striping:
 .pure-table-horizontal tbody > tr:last-child > td {
     border-bottom-width: 0;
 }
+
+
+.pure-table a {
+    color: #0080ff;
+    float: left;
+    padding: 1px 5px;
+    font-size:9.5pt;
+    text-decoration: none;
+    text-transform: capitalize;
+ }
+
+.pure-table a:hover{background-color: #0080c0;color: #ffffff;}
+

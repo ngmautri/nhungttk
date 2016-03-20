@@ -12,6 +12,7 @@ class SparepartMovement {
 	public $movement_date;
 	public $sparepart_id;
 	public $asset_id;
+	public $asset_name;
 	public $flow;
 	public $quantity;
 	public $reason;
@@ -25,6 +26,8 @@ class SparepartMovement {
 		$this->sparepart_id = (! empty ( $data ['sparepart_id'] )) ? $data ['sparepart_id'] : null;
 		
 		$this->asset_id = (! empty ( $data ['asset_id'] )) ? $data ['asset_id'] : null;
+		$this->asset_name = (! empty ( $data ['asset_name'] )) ? $data ['asset_name'] : null;
+		
 		$this->flow = (! empty ( $data ['flow'] )) ? $data ['flow'] : null;
 		$this->quantity = (! empty ( $data ['quantity'] )) ? $data ['quantity'] : null;
 		

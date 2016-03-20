@@ -49,14 +49,17 @@ class SparepartMovementsTable {
 				'movement_date' => $input->movement_date,
 				'sparepart_id' => $input->sparepart_id,
 				'asset_id' => $input->asset_id,
+				'asset_name' => $input->asset_name,
+				
 				'flow' => $input->flow,
 				'quantity' => $input->quantity,
 				'reason' => $input->reason,
 				'requester' => $input->requester,
+				
 				'comment' => $input->comment,
 				'created_on' => date ( 'Y-m-d H:i:s' ) 
 		);
-		$resultSet = $this->tableGateway->insert ( $data );
+		 $this->tableGateway->insert ( $data );
 		return $this->tableGateway->lastInsertValue;
 	}
 	
@@ -70,6 +73,8 @@ class SparepartMovementsTable {
 				'movement_date' => $input->movement_date,
 				'sparepart_id' => $input->sparepart_id,
 				'asset_id' => $input->asset_id,
+				'asset_name' => $input->asset_name,
+				
 				'flow' => $input->flow,
 				'quantity' => $input->quantity,
 				'reason' => $input->reason,

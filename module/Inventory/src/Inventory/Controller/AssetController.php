@@ -127,6 +127,7 @@ class AssetController extends AbstractActionController {
 				
 		) );
 	}
+	
 	public function editAction() {
 		
 		$request = $this->getRequest ();
@@ -199,6 +200,66 @@ class AssetController extends AbstractActionController {
 				'redirectUrl'=>$redirectUrl,
 		) );
 	}
+	
+	public function uploadPictureAction() {
+	
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+	
+		if ($request->isPost ()) {
+				
+			$id = $request->getPost ( 'id' );
+	
+				
+			$asset_dir = $this->getAssetService ()->getAssetPath($id);
+			$pictures_dir = $asset_dir . DIRECTORY_SEPARATOR . "pictures";
+				
+			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
+			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
+				
+				
+			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
+				if ($error == UPLOAD_ERR_OK) {
+					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
+						
+					$ext = pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION);
+					$name = Files::generate_random_string().'_'.md5(uniqid(microtime())).'.'.strtolower ($ext);
+						
+					$ftype = $_FILES ["pictures"] ["type"] [$key];
+					move_uploaded_file ( $tmp_name, "$pictures_dir/$name" );
+						
+					// add pictures
+					$pic = new AssetPicture ();
+					$pic->url = "$pictures_dir/$name";
+					$pic->filetype = $ftype;
+					$pic->asset_id = $id;
+					$pic->filename = $name;
+					$pic->folder = $pictures_dir;
+					$this->getAssetPictureTable ()->add ( $pic );
+						
+					// trigger uploadPicture
+					$this->getEventManager()->trigger(
+							'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
+							);
+				}
+			}
+				
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);
+		}
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$asset = $this->getMLAAssetTable ()->get ( $id );
+	
+		return new ViewModel ( array (
+				'asset' => $asset,
+				'redirectUrl'=>$redirectUrl,
+				'errors'=> null,
+		) );
+	}
+	
+	
+	
 	
 	public function showAction() {
 		

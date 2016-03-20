@@ -52,16 +52,20 @@
 
 </table>
 
-
+<hr>
 
 <h5>    <a href="/inventory/spareparts/pictures?sparepart_id=<?php echo $this->escapeHtml($sparepart->id);?>">Spare-part pictures</a></h5>
 
+<div class="container">
 <div id="lightgallery">
+
+ 
  <?php foreach ($pictures as $pic) : ?>
   	
     <a href="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
-    <img src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+    <img class= "img-rounded" width="80" src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
     </a>
 	
 <?php endforeach; ?>
+</div>
 </div>

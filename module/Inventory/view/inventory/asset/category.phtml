@@ -3,13 +3,10 @@
 
  <P><a href="<?php echo $this->baseUrl ?>/inventory/asset/addcategory">Add new category</a></P>
  
-<form action="<?php echo $this->baseUrl ?>/inventory/search/asset"	method="get" enctype="multipart/form-data" id="search">
-<table>
-	<tr><td><input type="text"	name="query" value="" /><td>
-	<td><input type="submit" name="seach" value="search" /></td>
-	</tr>
-</table>
-</form>
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/asset"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
  
 
 <table class="pure-table pure-table-bordered">
@@ -31,8 +28,8 @@
  		<td><?php echo $this->escapeHtml($category->category);?></td>
 		<td>
          <a href="<?php echo $this->baseUrl ?>/inventory/asset/editcategory?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a>
-         | <a href="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory?id=<?php echo $this->escapeHtml($category->id);?>">Delete</a>
-     	 | <a href="<?php echo $this->baseUrl ?>/inventory/asset/categorydetail?category_id=<?php echo $this->escapeHtml($category->id);?>&category=<?php echo $this->escapeHtml($category->category);?>">detail</a>
+         <a href="<?php echo $this->baseUrl ?>/inventory/asset/deletecategory?id=<?php echo $this->escapeHtml($category->id);?>">Delete</a>
+     	 <a href="<?php echo $this->baseUrl ?>/inventory/asset/categorydetail?category_id=<?php echo $this->escapeHtml($category->id);?>&category=<?php echo $this->escapeHtml($category->category);?>">detail</a>
      	
      	</td>
 	</tr>

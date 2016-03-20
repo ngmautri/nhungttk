@@ -1,80 +1,86 @@
-<h4> Spare Part Issue: </h4>
+<h4>Issuing: <span class="label label-success"><?php echo $sp->tag; ?></span> <?php echo $sp->name; ?> </h4>
+
 <hr>
 
-<?php if (count($errors)>0){
-	echo '<ul style="color:#FF0000">';
+<?php if (count($errors)>0)
+{
+echo '<div class="alert alert-error">';
+	
+	echo '<ul>';
 	 foreach ($errors as $error) :
-	 echo '<li>'.$error . '</li>';	 
+	 echo '<li>'.$error . '</li>';
+	 
 	 endforeach;
 	 echo '</ul>';
-	 ?>
-	 <hr>
- 
-<?php } ?>
-
-
-<h5> Spare Part Name: <?php echo $sp->name; ?> </h5>
-
+	 echo '</div>';
+} 
+?>
+	
 
 
 
 <?php if ($instock > 0){
 	
-	
 ?>
 
-<form action="<?php echo $this->baseUrl ?>/inventory/spareparts/issue"
-	method="post" enctype="multipart/form-data" id="New Sparepart">
-	<input type="hidden" name="sparepart_id" value="<?php echo (int) $sp->id; ?>" />
+
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/spareparts/issue"	method="post" enctype="multipart/form-data" id="NewSP" >
+ 	<input type="hidden" name="sparepart_id" value="<?php echo (int) $sp->id; ?>" />
 	<input type="hidden" name="instock" value="<?php echo (int) $instock ?>" />
 	<input type="hidden" name="asset_id" id="asset_id" value="" />
-		<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-	
-	
-	<table>
-			
-		<tr>
-			<td><label for="asset">Issue for Asset:</label></td>
-		<td><input type="text" name="asset" value="" id="asset" /><a href="javascript:;" onclick="showDialog()" class="helper"> Select Asset</a>
-		</td>
-	
-		</tr>
-	
-		<tr>
-			<td><label for="movement_date">Issue date</label></td>
-			<td><input type="text" name="movement_date" value="" id="movement_date" /></td>
-		</tr>
-		<tr>
-			<td><label for="quantity">Quantity:</label></td>
-			<td><input type="text" name="quantity" value="" /> (In stock: <?php echo (int) $instock . ' pcs.'; ?>)
-			</td>
-		</tr>
-
-		<tr>
-			<td><label for="requester">Requester: </label></td>
-			<td><input type="text" name="requester" value="" /></td>
-		</tr>
-
-		<tr>
-			<td><label for="reason">Reason: </label></td>
-			<td><textarea cols="45" name="reason" id="reason"
-					style="background: #FFFFFF" rows="3"></textarea></td>
-		</tr>
-
-
-		<tr>
-			<td><label for="comment">Comment: </label></td>
-			<td><textarea cols="45" name="comment" id="comment"
-					style="background: #FFFFFF" rows="3"></textarea></td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td><input type="submit" name="receive" value="Issue" /></td>
-		</tr>
-
-	</table>
-</form>
+	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+ 
+ 
+      <div class="control-group">
+        <label class="control-label" for="inputAsset">Issue for Asset:</label>
+        <div class="controls">
+<input type="text" name="asset" id="asset" value=""/>
+<a href="javascript:;" onclick="showDialog()" class="helper"> Select Asset</a>        </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputName">Issue date:</label>
+        <div class="controls">
+  			<input type="text" name="movement_date" value="" placeholder =" please select" id="movement_date" />
+         </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">Quantity:</label>
+        <div class="controls">
+			<input type="text" name="quantity" value="<?php echo $movement!==null ? ($movement->quantity) :""?>" /> <span class="label label-info">
+			(In stock: <?php echo (int) $instock . ' pcs.'; ?>)</span>        
+		</div>
+      </div>
+      
+       <div class="control-group">
+        <label class="control-label" for="inputNameLocal">Requester:</label>
+        <div class="controls">
+			<input type="text" name="requester" value="<?php echo $movement!==null ? ($movement->requester) :""?>" />     
+		</div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputDescription">Reason:</label>
+        <div class="controls">
+          <textarea class="form-control" id="inputDescription" placeholder="" rows="3" name="reason"><?php echo $movement!==null ? ($movement->reason) :""?></textarea>
+        </div>
+      </div>
+      
+         
+      <div class="control-group">
+        <label class="control-label" for="inputDescription">Comment:</label>
+        <div class="controls">
+          <textarea class="form-control" id="inputDescription" placeholder="" rows="2" name="comment"><?php echo $movement!==null ? ($movement->comment) :""?></textarea>
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn"><i class="icon-minus">  </i> Issue</button>
+        </div>
+      </div>
+    </form>
 
 <div id = "dialog" style="display: none;">No asset found...</div>
 
@@ -85,18 +91,21 @@
 	
 	
 }?>
-	
- <?php if ($pictures->count()>0){ ?>
+<hr>
 
-<h5> Spare part Picture:</h5>
+<div class="container">
 <div id="lightgallery">
+
+  <?php if ($pictures->count()>0){ ?>
  <?php foreach ($pictures as $pic) : ?>
   	
     <a href="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
-    <img src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+    <img class= "img-rounded" width="100" height="100" src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
     </a>
 	
 <?php endforeach; ?>
 </div>
+</div>
 
 <?php }?>
+	

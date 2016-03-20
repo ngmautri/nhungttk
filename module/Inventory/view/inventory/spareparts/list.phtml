@@ -6,10 +6,11 @@
 <hr>
 
 
-<form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
-<input type="text"	name="query" value="" /> <button type="submit" class="pure-button">Search</button>
-</form>
-
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
+ 
 
 
 <?php
@@ -24,12 +25,6 @@ if ($total_spareparts <= 0) {
 	}else{	
 		echo $total_spareparts . ' spare parts found!';
 	}
-
-	
-
-	
-	
-	
 	
 ?>
 
@@ -43,11 +38,7 @@ if ($total_spareparts <= 0) {
 		<td><b>Spare Part Name</b></td>
 		<td><b>Code</b></td>
 		<td><b>Location</b></td>
-		<td><b>IN</b></td>
-		<td><b>OUT</b></td>
-		<td><b>In Stock</b></td>
-		
-		
+	
 		<td><b>Action</b></td>
 	</tr>
 </thead>
@@ -66,30 +57,23 @@ if ($total_spareparts <= 0) {
   	
     
 		<td><?php echo $this->escapeHtml($a['tag']);?></td>
-		<td><?php echo $this->escapeHtml($a['name']);?></td>
+		<td><?php echo $this->escapeHtml($a['name']);?> <span class="label label-info"> <?php echo $this->escapeHtml($a['totalINFLOW'])-$this->escapeHtml($a['totalOUTFLOW']);?></span></td>
 		<td><?php echo $this->escapeHtml($a['code']);?></td>
 		<td><?php echo $this->escapeHtml($a['location']);?></td>
-		<td><?php echo $this->escapeHtml($a['totalINFLOW']);?></td>
-		<td><?php echo $this->escapeHtml($a['totalOUTFLOW']);?></td>
-		<td><?php echo $this->escapeHtml($a['totalINFLOW'])-$this->escapeHtml($a['totalOUTFLOW']);?></td>
 
 		<td>
 		<a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $this->escapeHtml($a['id']);?>">Edit
 		</a>
-		| 
 		<a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Issue
 		</a>
-		|
 		<a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Receive
 		</a>
-		|
 		<a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/add-category?id=<?php echo $this->escapeHtml($a['id']);?>">change category
 		</a>
-		|
 		<a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $this->escapeHtml($a['id']);?>">
 				Detail </a></td>

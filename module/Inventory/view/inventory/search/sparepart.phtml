@@ -2,15 +2,16 @@
 <?php // var_dump( $hits) ?>
 
 
-<form action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data" id="search">
-<input type="text"	name="query" value="" />
-<input type="submit" name="seach" value="search" />
-	
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
 
-
+ 
 <?php if (!$hits==null): 
-echo '<hr><b>'.count($hits).' result(s) found for query: "' . $query. '"</b>';
-
+echo '<span class="label label-info">';
+echo count($hits).' result(s) found for query: "' . $query;
+echo '</span><br>';
 ?>
 
 <table class="pure-table pure-table-bordered">
@@ -19,10 +20,7 @@ echo '<hr><b>'.count($hits).' result(s) found for query: "' . $query. '"</b>';
 		<td><b>Tag</b></td>
 		<td><b>Name</b></td>
 		<td><b>Code</b></td>
-		<td><b>Edit</b></td>
-		<td><b>Receive</b></td>
-		<td><b>Issue</b></td>
-		<td><b>Detail</b></td>
+		<td><b>Action</b></td>
 	</tr>
 </thead>
 <tbody>
@@ -39,10 +37,14 @@ echo '<hr><b>'.count($hits).' result(s) found for query: "' . $query. '"</b>';
     	<td><?php echo $this->escapeHtml($hit->tag);?></td>
 		<td><?php echo $this->escapeHtml($hit->name);?></td>
 		<td><?php echo $this->escapeHtml($hit->code);?></td>
-		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $hit->sparepart_id?>">  Edit</a></td>			
-		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $hit->sparepart_id?>">  Receive</a></td>			
-		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $hit->sparepart_id?>">  Issue</a></td>
-		<td><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $hit->sparepart_id?>">  Detail</a></td>
+		<td>
+		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $hit->sparepart_id?>">  Edit</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/upload-picture?id=<?php echo $hit->sparepart_id?>">  Picture</a>
+					
+		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $hit->sparepart_id?>">  Receive</a>			
+		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $hit->sparepart_id?>">  Issue</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $hit->sparepart_id?>">  Detail</a>
+		</td>
 	</tr>
 <?php endforeach; ?>
 </tbody>

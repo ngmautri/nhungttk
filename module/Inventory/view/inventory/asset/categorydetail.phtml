@@ -2,28 +2,24 @@
 
  <P><a href="<?php echo $this->baseUrl ?>/inventory/asset/add?category_id=<?php echo $this->escapeHtml($category_id)?>&category=<?php echo $this->escapeHtml($category)?>">Add new asset</a></P>
 
-<form action="<?php echo $this->baseUrl ?>/inventory/search/asset"	method="get" enctype="multipart/form-data" id="search">
-<table>
-	<tr><td><input type="text"	name="query" value="" /><td>
-	<td><input type="submit" name="seach" value="search" /></td>
-	</tr>
-</table>
-</form>
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/asset"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
+
+
+
 
 
  <?php if ($total_asset <= 0){
+  	echo 'No assets found!';
  	
- 	echo 'No asset found!';
- }else { 	
+ } else {
  	
- 	echo $total_asset. ' assets found!';
- 	
-  	if (! is_null ( $paginator )) {
- 		?>
- 			
- 		<hr>
- 	<?php	
- 		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage;
+ 		if (! is_null ( $paginator )) {
+ 			echo '<strong>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_asset . ' assets found!</strong>';
+ 		}else{
+ 			echo '<strong>'.$total_asset . ' asset(s) found!</strong>';
  		}
  	
  ?>
@@ -56,7 +52,7 @@
 		<td><?php echo $this->escapeHtml($asset['tag']);?></td>
 		<td>
          <a href="<?php echo $this->baseUrl ?>/inventory/asset/edit?id=<?php echo $this->escapeHtml($asset['id']);?>">  Edit </a>
-      	 | <a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($asset['id']);?>">  Detail</a>
+      	 <a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($asset['id']);?>">  Detail</a>
      	
      	</td>
 	</tr>

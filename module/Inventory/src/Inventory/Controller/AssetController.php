@@ -22,11 +22,9 @@ class AssetController extends AbstractActionController {
 	public $assetCategoryTable;
 	public $assetGroupTable;
 	public $mlaAssetTable;
-	
 	public $assetPictureTable;
 	public $assetService;
 	public $authService;
-	
 	public $massage = 'NULL';
 	
 	/*
@@ -34,29 +32,28 @@ class AssetController extends AbstractActionController {
 	 */
 	public function indexAction() {
 	}
-	
 	public function barcodeAction() {
-	
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$asset = $this->getMLAAssetTable ()->get ( $id );
-	
+		
 		// Only the text to draw is required
 		$barcodeOptions = array (
-				'text' => $asset->tag
+				'text' => $asset->tag 
 		);
-	
+		
 		// No required options
 		$rendererOptions = array ();
-	
+		
 		// Draw the barcode in a new image,
 		Barcode::factory ( 'code39', 'image', $barcodeOptions, $rendererOptions )->render ();
 	}
 	
-		
+	/**
+	 * 
+	 */
 	public function addAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		if ($request->isPost ()) {
 			
@@ -80,63 +77,83 @@ class AssetController extends AbstractActionController {
 				$input->comment = $request->getPost ( 'comment' );
 				
 				$newId = $this->getMLAAssetTable ()->add ( $input );
-				$asset_dir = $this->getAssetService ()->createAssetFolderById ( $newId );
-				$pictures_dir = $asset_dir . DIRECTORY_SEPARATOR . "pictures";
 				
-				$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
-				$this->getEventManager()->attachAggregate ( $pictureUploadListener );
+				$root_dir = $this->getAssetService ()->getPicturesPath ();
 				
+				$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+				$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
 				
+				$id = $newId;
 				foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 					if ($error == UPLOAD_ERR_OK) {
 						$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
 						
-						$ext = pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION);					
-						$name = Files::generate_random_string().'_'.md5(uniqid(microtime())).'.'.strtolower ($ext);
-											
-						$ftype = $_FILES ["pictures"] ["type"] [$key];
-						move_uploaded_file ( $tmp_name, "$pictures_dir/$name" );
+						$ext = strtolower ( pathinfo ( $_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION ) );
 						
-						// add pictures
-						$pic = new AssetPicture ();
-						$pic->url = "$pictures_dir/$name";
-						$pic->filetype = $ftype;
-						$pic->asset_id = $newId;
-						$pic->filename = $name;
-						$pic->folder = $pictures_dir;
-											
-						
-						$this->getAssetPictureTable ()->add ( $pic );
-						
-						// trigger uploadPicture
-						$this->getEventManager()->trigger(
-								'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
-						);
+						if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png') {
+							
+							$checksum = md5_file ( $tmp_name );
+							
+							if (! $this->getAssetPictureTable ()->isChecksumExits ( $id, $checksum )) {
+								
+								$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+								$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+								
+								if (! is_dir ( $folder )) {
+									mkdir ( $folder, 0777, true ); // important
+								}
+								
+								$ftype = $_FILES ["pictures"] ["type"] [$key];
+								move_uploaded_file ( $tmp_name, "$folder/$name" );
+								
+								// add pictures
+								$pic = new AssetPicture ();
+								$pic->url = "$folder/$name";
+								$pic->filetype = $ftype;
+								$pic->asset_id = $id;
+								$pic->filename = "$name";
+								$pic->folder = "$folder";
+								$pic->checksum = $checksum;
+								
+								$this->getAssetPictureTable ()->add ( $pic );
+								
+								// trigger uploadPicture
+								$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+										'picture_name' => $name,
+										'pictures_dir' => $folder 
+								) );
+							}
+						}
 					}
 				}
 				
-				$redirectUrl  = $request->getPost ( 'redirectUrl' );
-				$this->redirect()->toUrl($redirectUrl);	
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				$this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
 		
 		return new ViewModel ( array (
 				'category_id' => $this->params ()->fromQuery ( 'category_id' ),
 				'category' => $this->params ()->fromQuery ( 'category' ),
-				'redirectUrl'=>$redirectUrl,
-				
-		) );
+				'redirectUrl' => $redirectUrl 
+		)
+		 );
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function editAction() {
-		
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		if ($request->isPost ()) {
 			
+			$id = $request->getPost ( 'id' );
+			
 			$input = new MLAAsset ();
-			$input->id = $request->getPost ( 'id' );
+			$input->id = $id;
 			$input->name = $request->getPost ( 'name' );
 			$input->description = $request->getPost ( 'description' );
 			$input->category_id = $request->getPost ( 'category_id' );
@@ -148,48 +165,62 @@ class AssetController extends AbstractActionController {
 			$input->serial = $request->getPost ( 'serial' );
 			$input->origin = $request->getPost ( 'origin' );
 			$input->received_on = $request->getPost ( 'received_on' );
-					
+			
 			$input->location = $request->getPost ( 'location' );
 			$input->comment = $request->getPost ( 'comment' );
-				
 			
-			$this->getMLAAssetTable ()->update ( $input,$input->id );
-			$asset_dir = $this->getAssetService ()->getAssetPath($input->id);
-			$pictures_dir = $asset_dir . DIRECTORY_SEPARATOR . "pictures";
+			$this->getMLAAssetTable ()->update ( $input, $input->id );
 			
+			$root_dir = $this->getAssetService ()->getPicturesPath ();
 			
-			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
-			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
-			
+			$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+			$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
 			
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
 					
-					$ext = pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION);					
-					$name = Files::generate_random_string().'_'.md5(uniqid(microtime())).'.'.strtolower ($ext);
-											
-					$ftype = $_FILES ["pictures"] ["type"] [$key];
-					move_uploaded_file ( $tmp_name, "$pictures_dir/$name" );
+					$ext = strtolower ( pathinfo ( $_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION ) );
 					
-					// add pictures
-					$pic = new AssetPicture ();
-					$pic->url = "$pictures_dir/$name";
-					$pic->filetype = $ftype;
-					$pic->asset_id = $input->id;
-					$pic->filename = $name;
-					$pic->folder = $pictures_dir;
-					$this->getAssetPictureTable ()->add ( $pic );
-					
-					// trigger uploadPicture
-					$this->getEventManager()->trigger(
-							'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
-							);
+					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png') {
+						
+						$checksum = md5_file ( $tmp_name );
+						
+						if (! $this->getAssetPictureTable ()->isChecksumExits ( $id, $checksum )) {
+							
+							$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+							$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+							
+							if (! is_dir ( $folder )) {
+								mkdir ( $folder, 0777, true ); // important
+							}
+							
+							$ftype = $_FILES ["pictures"] ["type"] [$key];
+							move_uploaded_file ( $tmp_name, "$folder/$name" );
+							
+							// add pictures
+							$pic = new AssetPicture ();
+							$pic->url = "$folder/$name";
+							$pic->filetype = $ftype;
+							$pic->asset_id = $id;
+							$pic->filename = "$name";
+							$pic->folder = "$folder";
+							$pic->checksum = $checksum;
+							
+							$this->getAssetPictureTable ()->add ( $pic );
+							
+							// trigger uploadPicture
+							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+									'picture_name' => $name,
+									'pictures_dir' => $folder 
+							) );
+						}
+					}
 				}
 			}
 			
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			$this->redirect()->toUrl($redirectUrl);	
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
@@ -197,72 +228,79 @@ class AssetController extends AbstractActionController {
 		
 		return new ViewModel ( array (
 				'asset' => $asset,
-				'redirectUrl'=>$redirectUrl,
+				'redirectUrl' => $redirectUrl 
 		) );
 	}
-	
 	public function uploadPictureAction() {
-	
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-	
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
 		if ($request->isPost ()) {
-				
+			
 			$id = $request->getPost ( 'id' );
-	
-				
-			$asset_dir = $this->getAssetService ()->getAssetPath($id);
-			$pictures_dir = $asset_dir . DIRECTORY_SEPARATOR . "pictures";
-				
-			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
-			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
-				
-				
+			
+			$root_dir = $this->getAssetService ()->getPicturesPath ();
+			
+			$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+			$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
+			
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
+					
+					$ext = strtolower ( pathinfo ( $_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION ) );
+					
+					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png') {
 						
-					$ext = pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION);
-					$name = Files::generate_random_string().'_'.md5(uniqid(microtime())).'.'.strtolower ($ext);
+						$checksum = md5_file ( $tmp_name );
 						
-					$ftype = $_FILES ["pictures"] ["type"] [$key];
-					move_uploaded_file ( $tmp_name, "$pictures_dir/$name" );
-						
-					// add pictures
-					$pic = new AssetPicture ();
-					$pic->url = "$pictures_dir/$name";
-					$pic->filetype = $ftype;
-					$pic->asset_id = $id;
-					$pic->filename = $name;
-					$pic->folder = $pictures_dir;
-					$this->getAssetPictureTable ()->add ( $pic );
-						
-					// trigger uploadPicture
-					$this->getEventManager()->trigger(
-							'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
-							);
+						if (! $this->getAssetPictureTable ()->isChecksumExits ( $id, $checksum )) {
+							
+							$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+							$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+							
+							if (! is_dir ( $folder )) {
+								mkdir ( $folder, 0777, true ); // important
+							}
+							
+							$ftype = $_FILES ["pictures"] ["type"] [$key];
+							move_uploaded_file ( $tmp_name, "$folder/$name" );
+							
+							// add pictures
+							$pic = new AssetPicture ();
+							$pic->url = "$folder/$name";
+							$pic->filetype = $ftype;
+							$pic->asset_id = $id;
+							$pic->filename = "$name";
+							$pic->folder = "$folder";
+							$pic->checksum = $checksum;
+							
+							$this->getAssetPictureTable ()->add ( $pic );
+							
+							// trigger uploadPicture
+							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+									'picture_name' => $name,
+									'pictures_dir' => $folder 
+							) );
+						}
+					}
 				}
 			}
-				
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			$this->redirect()->toUrl($redirectUrl);
+			
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$this->redirect ()->toUrl ( $redirectUrl );
 		}
-	
+		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$asset = $this->getMLAAssetTable ()->get ( $id );
-	
+		
 		return new ViewModel ( array (
 				'asset' => $asset,
-				'redirectUrl'=>$redirectUrl,
-				'errors'=> null,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null 
 		) );
 	}
-	
-	
-	
-	
 	public function showAction() {
-		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$asset = $this->getMLAAssetTable ()->get ( $id );
 		
@@ -271,13 +309,8 @@ class AssetController extends AbstractActionController {
 		return new ViewModel ( array (
 				'asset' => $asset,
 				'pictures' => $pictures 
-		)
-		 );
+		) );
 	}
-	
-	
-	
-	
 	public function categorydetailAction() {
 		$categeory_id = $this->params ()->fromQuery ( 'category_id' );
 		
@@ -312,11 +345,9 @@ class AssetController extends AbstractActionController {
 				'paginator' => $paginator 
 		) );
 	}
-	
 	public function addcategoryAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		if ($request->isPost ()) {
 			
@@ -325,20 +356,17 @@ class AssetController extends AbstractActionController {
 			$assetType->description = $request->getPost ( 'description' );
 			$this->getAssetCategoryTable ()->add ( $assetType );
 			
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			$this->redirect()->toUrl($redirectUrl);	
-			
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
 		return new ViewModel ( array (
-				'redirectUrl'=>$redirectUrl,
-			) );
+				'redirectUrl' => $redirectUrl 
+		) );
 	}
-	
 	public function editcategoryAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		if ($request->isPost ()) {
 			
@@ -348,9 +376,8 @@ class AssetController extends AbstractActionController {
 			
 			$this->getAssetCategoryTable ()->update ( $assetType, $request->getPost ( 'id' ) );
 			
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			$this->redirect()->toUrl($redirectUrl);	
-			
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$this->redirect ()->toUrl ( $redirectUrl );
 		} else {
 			
 			$id = ( int ) $this->params ()->fromQuery ( 'id' );
@@ -358,26 +385,23 @@ class AssetController extends AbstractActionController {
 			
 			return new ViewModel ( array (
 					'category' => $category,
-					'redirectUrl'=>$redirectUrl,						
+					'redirectUrl' => $redirectUrl 
 			) );
 		}
 	}
-	
 	public function picturesAction() {
 		$id = ( int ) $this->params ()->fromQuery ( 'asset_id' );
-		$sp = $this->getMLAAssetTable()->get ( $id );
-		$pictures = $this->getAssetPictureTable()->getAssetPicturesById( $id );
-	
+		$sp = $this->getMLAAssetTable ()->get ( $id );
+		$pictures = $this->getAssetPictureTable ()->getAssetPicturesById ( $id );
+		
 		return new ViewModel ( array (
 				'asset' => $sp,
-				'pictures' => $pictures,
+				'pictures' => $pictures 
 		) );
 	}
-	
 	public function deletecategoryAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		if ($request->isPost ()) {
 			
@@ -387,8 +411,8 @@ class AssetController extends AbstractActionController {
 				$this->getAssetCategoryTable ()->delete ( $request->getPost ( 'id' ) );
 			}
 			
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			$this->redirect()->toUrl($redirectUrl);	
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
@@ -396,17 +420,15 @@ class AssetController extends AbstractActionController {
 		
 		return new ViewModel ( array (
 				'category' => $category,
-				'redirectUrl'=>$redirectUrl,
-				
-		) );
+				'redirectUrl' => $redirectUrl 
+		)
+		 );
 	}
-	
 	public function categoryAction() {
 		return new ViewModel ( array (
 				'assetCategories' => $this->getAssetCategoryTable ()->fetchAll () 
 		) );
 	}
-	
 	public function groupAction() {
 		return new ViewModel ( array (
 				'assetGroups' => $this->getAssetGroupTable ()->fetchAll () 
@@ -457,6 +479,4 @@ class AssetController extends AbstractActionController {
 		}
 		return $this->assetPictureTable;
 	}
-	
-	
 }

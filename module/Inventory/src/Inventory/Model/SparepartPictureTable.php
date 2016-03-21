@@ -3,7 +3,9 @@
 namespace Inventory\Model;
 
 use Zend\Db\TableGateway\TableGateway;
-use Inventory\Model\SparepartPicture;	
+use Inventory\Model\SparepartPicture;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 
 class SparepartPictureTable {
@@ -54,6 +56,7 @@ class SparepartPictureTable {
 				'uploaded_on' => date ( 'Y-m-d H:i:s' ),
 				'filename' => $input->filename,
 				'folder' => $input->folder,
+				'checksum' => $input->checksum,
 		);
 		$this->tableGateway->insert ( $data );
 		return $this->tableGateway->lastInsertValue;
@@ -75,7 +78,7 @@ class SparepartPictureTable {
 				'uploaded_on' => date ( 'Y-m-d H:i:s' ),
 				'filename' => $input->filename,
 				'folder' => $input->folder,
-				
+				'checksum' => $input->checksum,
 		);
 		
 		$where = 'id = ' . $id;
@@ -102,6 +105,32 @@ class SparepartPictureTable {
 	public function delete($id) {
 		$where = 'id = ' . $id;
 		$this->tableGateway->delete($where);
+	}
+	
+	
+	public function isChecksumExits($id, $checksum)
+	{
+		$adapter = $this->tableGateway->adapter;
+	
+		$where = array(
+				'sparepart_id=?'		=>$id,
+				'checksum=?'		=>$checksum,
+		);
+	
+		$sql = new Sql($adapter);
+		$select = $sql->select();
+	
+		$select->from(array('t1'=>'mla_sparepart_pics'));
+		$select->where($where);
+	
+		$statement = $sql->prepareStatementForSqlObject($select);
+		$results = $statement->execute();
+	
+		if($results->count()>0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 }

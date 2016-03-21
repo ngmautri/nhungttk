@@ -103,43 +103,61 @@ class SparepartsController extends AbstractActionController {
 				
 				
 				$newId = $this->sparePartTable->add ( $input );
-				$root_dir = $this->sparePartService->createSparepartFolderById ( $newId );
-				$pictures_dir = $root_dir . DIRECTORY_SEPARATOR . "pictures";
+				$root_dir = $this->sparePartService->getPicturesPath();
 				
 				// $files = $request->getFiles ()->toArray ();
 				
 				$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
 				$this->getEventManager()->attachAggregate ( $pictureUploadListener );
 				
+				$id = $newId;
 				
 				foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 					if ($error == UPLOAD_ERR_OK) {
 						$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
-						
-						$ext = pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION);					
-						$name = Files::generate_random_string().'_'.md5(uniqid(microtime())).'.'.strtolower ($ext);
-						
-						$ftype = $_FILES ["pictures"] ["type"] [$key];
-						move_uploaded_file ( $tmp_name, "$pictures_dir/$name" );
-						
-						// add pictures
-						$pic = new SparepartPicture ();
-						$pic->url = "$pictures_dir/$name";
-						$pic->filetype = $ftype;
-						$pic->sparepart_id = $input->id;
-						$pic->filename = $name;
-						$pic->folder = $pictures_dir;					
-						$this->sparePartPictureTable->add ( $pic);
-					
-						//create thumbnail
-						
-						// trigger uploadPicture
-						$this->getEventManager()->trigger(
-								'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
-								);
-						
+				
+						$ext = strtolower (pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION));
+				
+						if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png'){
+								
+							$checksum = md5_file($tmp_name);
+								
+							if(!$this->sparePartPictureTable->isChecksumExits($id, $checksum)){
+									
+								$name = md5($id.$checksum.uniqid(microtime())).'.'. $ext;
+								$folder = $root_dir.DIRECTORY_SEPARATOR. $name[0].$name[1].DIRECTORY_SEPARATOR.$name[2].$name[3].DIRECTORY_SEPARATOR.$name[4].$name[5];
+				
+								if (!is_dir ( $folder)) {
+									mkdir ($folder,0777, true ); //important
+								}
+									
+								$ftype = $_FILES ["pictures"] ["type"] [$key];
+								move_uploaded_file ( $tmp_name, "$folder/$name" );
+				
+								// add pictures
+								$pic = new SparepartPicture ();
+								$pic->url = "$folder/$name";
+								$pic->filetype = $ftype;
+								$pic->sparepart_id = $id;
+								$pic->filename = "$name";
+								$pic->folder = "$folder";
+								$pic->checksum = $checksum;
+				
+								$this->sparePartPictureTable->add ( $pic);
+				
+								// trigger uploadPicture
+								$this->getEventManager()->trigger('uploadPicture', __CLASS__,
+										array('picture_name' => $name,'pictures_dir'=>$folder));
+									
+							}
+								
+						}
+							
 					}
 				}
+				
+				
+
 				
 				// add category
 				if ($category_id > 1){
@@ -175,9 +193,11 @@ class SparepartsController extends AbstractActionController {
 			
 	
 		if ($request->isPost ()) {
+			
+			$id = $request->getPost ( 'id' );
 				
 			$input = new MLASparepart ();
-			$input->id = $request->getPost ( 'id' );
+			$input->id = $id;
 			$input->name = $request->getPost ( 'name' );
 			$input->name_local = $request->getPost ( 'name_local' );
 				
@@ -208,43 +228,55 @@ class SparepartsController extends AbstractActionController {
 						'sparepart' =>$sparepart,
 				) );
 			}
-			
-			
 				
 			$this->sparePartTable->update ( $input, $input->id );
-			$root_dir = $this->sparePartService->getSparepartPath ( $input->id );
-			$pictures_dir = $root_dir . DIRECTORY_SEPARATOR . "pictures";
-				
-			// $files = $request->getFiles ()->toArray ();
+			$root_dir = $this->sparePartService->getPicturesPath();
+					
 				
 			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
 			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
-				
 				
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
 						
-					$ext = pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION);
-					$name = Files::generate_random_string().'_'.md5(uniqid(microtime())).'.'.strtolower ($ext);
-	
-					$ftype = $_FILES ["pictures"] ["type"] [$key];
-					move_uploaded_file ( $tmp_name, "$pictures_dir/$name" );
+					$ext = strtolower (pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION));
 						
-					// add pictures
-					$pic = new SparepartPicture ();
-					$pic->url = "$pictures_dir/$name";
-					$pic->filetype = $ftype;
-					$pic->sparepart_id = $input->id;
-					$pic->filename = "$name";
-					$pic->folder = "$pictures_dir";
-					$this->sparePartPictureTable->add ( $pic);
-						
-					// trigger uploadPicture
-					$this->getEventManager()->trigger(
-							'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
-							);
-	
+					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png'){
+			
+						$checksum = md5_file($tmp_name);
+			
+						if(!$this->sparePartPictureTable->isChecksumExits($id, $checksum)){
+			
+							$name = md5($id.$checksum.uniqid(microtime())).'.'. $ext;
+							$folder = $root_dir.DIRECTORY_SEPARATOR. $name[0].$name[1].DIRECTORY_SEPARATOR.$name[2].$name[3].DIRECTORY_SEPARATOR.$name[4].$name[5];
+								
+							if (!is_dir ( $folder)) {
+								mkdir ($folder,0777, true ); //important
+							}
+			
+							$ftype = $_FILES ["pictures"] ["type"] [$key];
+							move_uploaded_file ( $tmp_name, "$folder/$name" );
+								
+							// add pictures
+							$pic = new SparepartPicture ();
+							$pic->url = "$folder/$name";
+							$pic->filetype = $ftype;
+							$pic->sparepart_id = $id;
+							$pic->filename = "$name";
+							$pic->folder = "$folder";
+							$pic->checksum = $checksum;
+								
+							$this->sparePartPictureTable->add ( $pic);
+								
+							// trigger uploadPicture
+							$this->getEventManager()->trigger('uploadPicture', __CLASS__,
+									array('picture_name' => $name,'pictures_dir'=>$folder));
+			
+						}
+			
+					}
+			
 				}
 			}
 				
@@ -276,9 +308,8 @@ class SparepartsController extends AbstractActionController {
 		if ($request->isPost ()) {
 	
 			$id = $request->getPost ( 'id' );
-			$root_dir = $this->sparePartService->getSparepartPath ($id );
-			$pictures_dir = $root_dir . DIRECTORY_SEPARATOR . "pictures";
-	
+			$root_dir = $this->sparePartService->getPicturesPath();
+		
 			// $files = $request->getFiles ()->toArray ();
 	
 			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
@@ -288,26 +319,43 @@ class SparepartsController extends AbstractActionController {
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
-	
-					$ext = pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION);
-					$name = Files::generate_random_string().'_'.md5(uniqid(microtime())).'.'.strtolower ($ext);
-	
-					$ftype = $_FILES ["pictures"] ["type"] [$key];
-					move_uploaded_file ( $tmp_name, "$pictures_dir/$name" );
-	
-					// add pictures
-					$pic = new SparepartPicture ();
-					$pic->url = "$pictures_dir/$name";
-					$pic->filetype = $ftype;
-					$pic->sparepart_id = $id;
-					$pic->filename = "$name";
-					$pic->folder = "$pictures_dir";
-					$this->sparePartPictureTable->add ( $pic);
-	
-					// trigger uploadPicture
-					$this->getEventManager()->trigger(
-							'uploadPicture', __CLASS__, array('picture_name' => $name,'pictures_dir'=>$pictures_dir)
-							);
+					
+					$ext = strtolower (pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION));
+					
+					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png'){
+						
+						$checksum = md5_file($tmp_name);
+						
+						if(!$this->sparePartPictureTable->isChecksumExits($id, $checksum)){
+						
+							$name = md5($id.$checksum.uniqid(microtime())).'.'. $ext;
+							$folder = $root_dir.DIRECTORY_SEPARATOR. $name[0].$name[1].DIRECTORY_SEPARATOR.$name[2].$name[3].DIRECTORY_SEPARATOR.$name[4].$name[5];
+							
+							if (!is_dir ( $folder)) {
+							 	mkdir ($folder,0777, true ); //important
+							}
+				
+							$ftype = $_FILES ["pictures"] ["type"] [$key];
+							move_uploaded_file ( $tmp_name, "$folder/$name" );
+			
+							// add pictures
+							$pic = new SparepartPicture ();
+							$pic->url = "$folder/$name";
+							$pic->filetype = $ftype;
+							$pic->sparepart_id = $id;
+							$pic->filename = "$name";
+							$pic->folder = "$folder";
+							$pic->checksum = $checksum;
+							
+							$this->sparePartPictureTable->add ( $pic);
+			
+							// trigger uploadPicture
+							$this->getEventManager()->trigger('uploadPicture', __CLASS__, 
+									array('picture_name' => $name,'pictures_dir'=>$folder));
+						
+						}
+						
+					}
 	
 				}
 			}

@@ -18,6 +18,7 @@ class AssetPicture {
 	public $uploaded_on;
 	public $filename;
 	public $folder;
+	public $checksum;
 	
 	public function exchangeArray($data) {
 		$this->id = (! empty ( $data ['id'] )) ? $data ['id'] : null;
@@ -31,6 +32,7 @@ class AssetPicture {
 		$this->uploaded_on = (! empty ( $data ['uploaded_on'] )) ? $data ['uploaded_on'] : null;
 		$this->filename = (! empty ( $data ['filename'] )) ? $data ['filename'] : null;
 		$this->folder = (! empty ( $data ['folder'] )) ? $data ['folder'] : null;
+		$this->checksum = (! empty ( $data ['checksum'] )) ? $data ['checksum'] : null;
 		
 	}
 }

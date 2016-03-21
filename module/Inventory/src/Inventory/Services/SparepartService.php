@@ -78,6 +78,15 @@ class SparepartService extends AbstractService
 		}
 	}
 	
+	public function getPicturesPath() {
+		try {
+			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "spare_parts".DIRECTORY_SEPARATOR . "pictures";
+			return $asset_dir;
+		} catch ( Exception $e ) {
+			return null;
+		}
+	}
+	
 	public function getSparepartPath($id) {
 		try {
 			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "spare_parts" . DIRECTORY_SEPARATOR ."sparepart_" . $id;

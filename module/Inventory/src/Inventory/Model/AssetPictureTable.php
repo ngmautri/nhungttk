@@ -4,6 +4,8 @@ namespace Inventory\Model;
 
 use Zend\Db\TableGateway\TableGateway;
 use Inventory\Model\AssetPicture;	
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 
 class AssetPictureTable {
@@ -45,6 +47,7 @@ class AssetPictureTable {
 				'uploaded_on' => date ( 'Y-m-d H:i:s' ),
 				'filename' => $input->filename,
 				'folder' => $input->folder,
+				'checksum' => $input->checksum,
 				
 		);
 		$this->tableGateway->insert ( $data );
@@ -61,7 +64,9 @@ class AssetPictureTable {
 				'comments' => $input->comments,
 				'uploaded_on' => date ( 'Y-m-d H:i:s' ),
 				'filename' => $input->filename,
-				'folder' => $input->folder,				
+				'folder' => $input->folder,
+				'checksum' => $input->checksum,
+				
 		);
 		
 		$where = 'id = ' . $id;
@@ -82,6 +87,31 @@ class AssetPictureTable {
 	public function delete($id) {
 		$where = 'id = ' . $id;
 		$this->tableGateway->delete($where);
+	}
+	
+	public function isChecksumExits($id, $checksum)
+	{
+		$adapter = $this->tableGateway->adapter;
+	
+		$where = array(
+				'asset_id=?'		=>$id,
+				'checksum=?'		=>$checksum,
+		);
+	
+		$sql = new Sql($adapter);
+		$select = $sql->select();
+	
+		$select->from(array('t1'=>'mla_asset_pics'));
+		$select->where($where);
+	
+		$statement = $sql->prepareStatementForSqlObject($select);
+		$results = $statement->execute();
+	
+		if($results->count()>0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 }

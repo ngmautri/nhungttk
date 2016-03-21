@@ -79,6 +79,16 @@ class AssetService extends AbstractService
 			return null;
 		}
 	}
+	
+	
+	public function getPicturesPath() {
+		try {
+			$asset_dir = ROOT . DIRECTORY_SEPARATOR . "module".  DIRECTORY_SEPARATOR. "Inventory". DIRECTORY_SEPARATOR. "data" . DIRECTORY_SEPARATOR . "assets".DIRECTORY_SEPARATOR . "pictures";
+			return $asset_dir;
+		} catch ( Exception $e ) {
+			return null;
+		}
+	}
 
 	public function getAssetPath($id) {
 		try {

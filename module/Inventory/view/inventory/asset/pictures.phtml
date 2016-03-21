@@ -28,7 +28,10 @@
  		<td><?php  echo $this->escapeHtml($pic->size);?></td>
   		<td><?php  echo $this->escapeHtml($pic->visibility);?></td>
   		<td><?php  echo $this->escapeHtml($pic->uploaded_on);?></td>
-  		<td> </td>
+  		<td> 
+   		<img alt="" class= "img-rounded" width="50" hight="50" src="/inventory/image/assetthumbnail150?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+   		
+  		</td>
   		
 	
 		<td><a

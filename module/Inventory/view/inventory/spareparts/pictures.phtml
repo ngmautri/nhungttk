@@ -1,11 +1,15 @@
 
 <h5><?php  echo $this->escapeHtml($sparepart->name);?> - Pictures</h5>
 
+<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/upload-picture?id=<?php echo $sparepart->id?>">  <i class="icon-upload">  </i> UPLOAD</a>
+
+
 <table class="pure-table pure-table-bordered">
 <thead>
 	<tr>
 		<td>File name</td>
 		<td>File Type</td>
+		<td>Checksum</td>
 		<td>Size</td>
 		<td>Visibility</td>
 		<td>Uploaded on</td>		
@@ -25,10 +29,14 @@
 	 ?>
 	 	<td><?php  echo $this->escapeHtml($pic->filename);?></td>
  		<td><?php  echo $this->escapeHtml($pic->filetype);?></td>
+ 		<td><?php  echo $this->escapeHtml($pic->checksum);?></td>
+ 		
  		<td><?php  echo $this->escapeHtml($pic->size);?></td>
   		<td><?php  echo $this->escapeHtml($pic->visibility);?></td>
   		<td><?php  echo $this->escapeHtml($pic->uploaded_on);?></td>
-  		<td> </td>
+  		<td>
+  		<img class= "img-rounded" width="50" hight="50" src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+  		</td>
   		
 	
 		<td><a

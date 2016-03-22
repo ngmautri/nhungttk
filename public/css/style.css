@@ -112,7 +112,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 
 .dialogClass a:hover{background-color: #0080c0;color: #ffffff;}
 
-.ui-menu { width: 200px; border: none}
+.ui-menu { width: 250px; border: none}
 
 .ui-button,  .ui-button-text .ui-button{  
 font-size: 10pt !important; 

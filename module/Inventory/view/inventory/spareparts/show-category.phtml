@@ -51,7 +51,7 @@ if ($total_spareparts <= 0) {
 	 	 
 	 ?>
  		<td><?php echo $this->escapeHtml($a['tag']);?></td>
-		<td><?php echo $this->escapeHtml($a['name']);?> 
+		<td><?php echo $a['name'];?> 
 		
 		<?php if($instock > 0){			
 			echo '<span class="label label-info">'.$instock.'</span>';				

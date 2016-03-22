@@ -1,917 +1,918 @@
-1;Bobbin case ASM;;Bobbin case ASM;11038759;1-1;MLA;;2015-12-31 00:00:00
-2;Screw15/64-28 L=15;;Screw15/64-28 L=15;SS 8151550 SP ;1-2;MLA;;2015-12-31 00:00:00
-3;Needle Bar Thread Guide;;Needle Bar Thread Guide;B1418530000 ;1-3;MLA;;2015-12-31 00:00:00
-4;Moving Knife;;Moving Knife;11351400;1-4;MLA;;2015-12-31 00:00:00
-5;Presser Foot ASMG with Guard;;Presser Foot ASMG with Guard;B1524530GBO ;1-5;MLA;;2015-12-31 00:00:00
-6;Knife;;Knife;B4121522000 ;1-6;MLA;;2015-12-31 00:00:00
-7;Screw 11/64-40 L=6;;Screw 11/64-40 L=6;SS 6110610 TP;1-7;MLA;;2015-12-31 00:00:00
-8;Thread Take - Up Spring;;Thread Take - Up Spring;22921605;1-8;MLA;;2015-12-31 00:00:00
-9;NUT;;NUT;22928808;1-9;MLA;;2015-12-31 00:00:00
-10;Counter Knife;;Counter Knife;11351509;1-10;MLA;;2015-12-31 00:00:00
-11;Screw 1/8-44 L= 4;;Screw 1/8-44 L= 4;SS 6080410 SP;1-11;MLA;;2015-12-31 00:00:00
-12;Screw 11/64-40 L=7;;Screw 11/64-40 L=7;SS 7110740 TP;1-12;MLA;;2015-12-31 00:00:00
-13;Hinge Screw D=7.24 H=33;;Hinge Screw D=7.24 H=33;SD 0720331 SP ;1-13;MLA;;2015-12-31 00:00:00
-14;Washer 5x10. 5x1;;Washer 5x10. 5x1;WP 0501016 SD ;1-14;MLA;;2015-12-31 00:00:00
-15;Screw 9/64-40 L=10.5;;Screw 9/64-40 L=10.5;SS7091110 TP;1-15;MLA;;2015-12-31 00:00:00
-16;Rubber Joint;;Rubber Joint;22924609;1-16;MLA;;2015-12-31 00:00:00
-17;Screw 11/64-40 L= 9.5;;Screw 11/64-40 L= 9.5;SS 6111010 TP ;1-17;MLA;;2015-12-31 00:00:00
-18;E-Ring 12;;E-Ring 12;RE 1200000 K 0 ;1-18;MLA;;2015-12-31 00:00:00
-19;Rubber Plug D=12.5 L=4;;Rubber Plug D=12.5 L=4;TA 1250406R 0 ;1-19;MLA;;2015-12-31 00:00:00
-20;Pin contact;;Pin contact;HK 03464000 B ;1-20;MLA;;2015-12-31 00:00:00
-21;Screw1/8-44 L=4.5;;Screw1/8-44 L=4.5;SS 7080510 TP ;1-21;MLA;;2015-12-31 00:00:00
-22;Reverse Feed Connecting shaft;;Reverse Feed Connecting shaft;11101300;1-22;MLA;;2015-12-31 00:00:00
-23;E - Ring;;E - Ring;RE 0500000K0 ;1-23;MLA;;2015-12-31 00:00:00
-24;Nut 9/64-40;;Nut 9/64-40;NS 6090310 SP ;1-24;MLA;;2015-12-31 00:00:00
-25;Screw 3/32-56 L= 1.9;;Screw 3/32-56 L= 1.9;SS 6060210 SP ;1-25;MLA;;2015-12-31 00:00:00
-26;Thread Tension ASM, NO.1;;Thread Tension ASM, NO.1;22945463;1-26;MLA;;2015-12-31 00:00:00
-27;Screw 9/64 - 40 L=6;;Screw 9/64 - 40 L=6;SS 6090670 TP ;1-27;MLA;;2015-12-31 00:00:00
-28;Thread Tension Disk;;Thread Tension Disk;229251506;1-28;MLA;;2015-12-31 00:00:00
-29;Screw 11/64-40L= 6.8;;Screw 11/64-40L= 6.8;SS 2110915 SP ;1-29;MLA;;2015-12-31 00:00:00
-30;Feed Bar ASM;;Feed Bar ASM;22940753;1-30;MLA;;2015-12-31 00:00:00
-31;Screw 1/8-44 L= 6;;Screw 1/8-44 L= 6;SS 4080620 TP ;1-31;MLA;;2015-12-31 00:00:00
-32;Solenoid Rubber A;;Solenoid Rubber A;11043205;1-32;MLA;;2015-12-31 00:00:00
-33;E - Ring 3;;E - Ring 3;RE 0300000K0 ;1-33;MLA;;2015-12-31 00:00:00
-34;Washer 4.8x8,4x0.8;;Washer 4.8x8,4x0.8;WP 0480856 SP ;1-34;MLA;;2015-12-31 00:00:00
-35;Thread Take up spring;;Thread Take up spring;40029412;1-35;MLA;;2015-12-31 00:00:00
-36;;;0;22945356;1-36;MLA;;2015-12-31 00:00:00
-37; Hook ASM;; Hook ASM;11038650;1-37;MLA;;2015-12-31 00:00:00
-38;Hook ASM;;Hook ASM;11141355;1-38;MLA;;2015-12-31 00:00:00
-39;Oil Wick;;Oil Wick;11015906;1-39;MLA;;2015-12-31 00:00:00
-40;Screw 3/16-32 L=6.5;;Screw 3/16-32 L=6.5;SS7620750 SP ;1-40;MLA;;2015-12-31 00:00:00
-41;Waste Material Guard E;;Waste Material Guard E;11346905;1-41;MLA;;2015-12-31 00:00:00
-42;Screw 3/16-28 L=9;;Screw 3/16-28 L=9;SS 4120915 SP ;1-42;MLA;;2015-12-31 00:00:00
-43;Pump Body Strut;;Pump Body Strut;22924005;1-43;MLA;;2015-12-31 00:00:00
-44;Bobbin  ;;Bobbin  ;22932909;1-44;MLA;;2015-12-31 00:00:00
-45;Presser Regulator Screw AS M;;Presser Regulator Screw AS M;22907554;1-45;MLA;;2015-12-31 00:00:00
-46;Screw 1/8-44 L= 2.9;;Screw 1/8-44 L= 2.9;SS 6080340 SP ;1-46;MLA;;2015-12-31 00:00:00
-47;Hook Thread Presser AS M;;Hook Thread Presser AS M;22950356;1-47;MLA;;2015-12-31 00:00:00
-48;Rubber Ring;;Rubber Ring;RO 092270200 ;1-48;MLA;;2015-12-31 00:00:00
-49;NUT 11/64-40;;NUT 11/64-40;NS 6110420 SP ;1-49;MLA;;2015-12-31 00:00:00
-50;NUT;;NUT;NS 6110310 SP ;1-50;MLA;;2015-12-31 00:00:00
-51;Screw 11/64-40 L=7;;Screw 11/64-40 L=7;SS 4110715 SP ;1-51;MLA;;2015-12-31 00:00:00
-52;Screw;;Screw;SS 6090620 TP ;1-52;MLA;;2015-12-31 00:00:00
-53;DYNAMO STATOR;;DYNAMO STATOR;22937965;1-53;MLA;;2015-12-31 00:00:00
-54;Oil Pump ASM;;Oil Pump ASM;22923056;1-54;MLA;;2015-12-31 00:00:00
-55;Left Screw;;Left Screw;B 1903552000 ;1-55;MLA;;2015-12-31 00:00:00
-56;Throat plate 3/8'';;Throat plate 3/8'';B 1190530M00 ;1-56;MLA;;2015-12-31 00:00:00
-57;Throat plate plug ASM.M;;Throat plate plug ASM.M;B 11155300 AM ;1-57;MLA;;2015-12-31 00:00:00
-58;Waste Material Guard  K;;Waste Material Guard  K;11347309;1-58;MLA;;2015-12-31 00:00:00
-59;Screw;;Screw;SM 4040855 SP ;1-59;MLA;;2015-12-31 00:00:00
-60;Needle plate;;Needle plate;1/4 U  ;1-60;MLA;;2015-12-31 00:00:00
-61;Presser foot;;Presser foot;B 1524 ;1-61;MLA;;2015-12-31 00:00:00
-62; BOBBIN WINDER SPINDLE;tr?c ? nh su?t; BOBBIN WINDER SPINDLE;229-27602;1-62;MLA;;2015-12-31 00:00:00
-63;Gauge 3/16inch (4.8mm);;Gauge 3/16inch (4.8mm);B1190-530-F00;1-63;MLA;;2015-12-31 00:00:00
-64;Feed dog 3/16 inch;;Feed dog 3/16 inch;B1609-530-D00;1-64;MLA;;2015-12-31 00:00:00
-65;Gauge 1/4 inch;;Gauge 1/4 inch;B1190530H00;1-65;MLA;;2015-12-31 00:00:00
-66;"Feed dog 1/4"" (3/8"")";;"Feed dog 1/4"" (3/8"")";B1609503G00;1-66;MLA;;2015-12-31 00:00:00
-67;Knife;;Knife;B4145-530-B0A;1-67;MLA;;2015-12-31 00:00:00
-68;Needle Screw;;Needle Screw;SS 8080660 TP ;2-1;MLA;;2015-12-31 00:00:00
-69;2-Needle gauge set;;2-Needle gauge set;1- 1/4 ;2-2;MLA;;2015-12-31 00:00:00
-70;2-Needle gauge set;;2-Needle gauge set;7/8  ;2-3;MLA;;2015-12-31 00:00:00
-71;Throat plate 1/4;;Throat plate 1/4;40094773;2-4;MLA;;2015-12-31 00:00:00
-72;Assy_ratch_largehook(T);;Assy_ratch_largehook(T);40043334;2-5;MLA;;2015-12-31 00:00:00
-73;Spping_L;;Spping_L;40055358;2-6;MLA;;2015-12-31 00:00:00
-74;SCREW 1/8-44 L=6;;SCREW 1/8-44 L=6;B1425526000;2-7;MLA;;2015-12-31 00:00:00
-75;SCREW M4 L=6;;SCREW M4 L=6;SM6040655TP;2-8;MLA;;2015-12-31 00:00:00
-76;SCREW M4 L=7.4;;SCREW M4 L=7.4;SM1040750TP;2-9;MLA;;2015-12-31 00:00:00
-77;Sheet;;Sheet;22819809;2-10;MLA;;2015-12-31 00:00:00
-78;CLAMP_ SPRING;;CLAMP_ SPRING;40076708;2-11;MLA;;2015-12-31 00:00:00
-79;Shuttle (A);;Shuttle (A);40014964;3-1;MLA;;2015-12-31 00:00:00
-80;Thread Take - Up Spring;;Thread Take - Up Spring;22921605;3-2;MLA;;2015-12-31 00:00:00
-81;Wiper;;Wiper;B2107210D00 ;3-3;MLA;;2015-12-31 00:00:00
-82;Shuttle (H) ?;;Shuttle (H) ?;40061991;3-4;MLA;;2015-12-31 00:00:00
-83;Counter knife;;Counter knife;B2424210000 ;3-5;MLA;;2015-12-31 00:00:00
-84;Needle Hole Guide D=1.6;;Needle Hole Guide D=1.6;B242621000A ;3-6;MLA;;2015-12-31 00:00:00
-85;Needle Bearing;;Needle Bearing;B1905541B00 ;3-7;MLA;;2015-12-31 00:00:00
-86;Needle Hole Guide D=2.0;;Needle Hole Guide D=2.0;B242621000B ;3-8;MLA;;2015-12-31 00:00:00
-87;Moving Knife Compl;;Moving Knife Compl;B2421210AA0 ;3-9;MLA;;2015-12-31 00:00:00
-88;Needle - Bar;;Needle - Bar;40026882;3-10;MLA;;2015-12-31 00:00:00
-89;Screw 3/32-56 L=2.2;;Screw 3/32-56 L=2.2;SS 1060210 TP ;3-11;MLA;;2015-12-31 00:00:00
-90;Shuttle Driver AS M;;Shuttle Driver AS M;40014963;3-12;MLA;;2015-12-31 00:00:00
-91;Intermediate Presser A;;Intermediate Presser A;40023632;3-13;MLA;;2015-12-31 00:00:00
-92;Bobbin case AS M;;Bobbin case AS M;B1828210 DAA ;3-14;MLA;;2015-12-31 00:00:00
-93;Thread Tension 2 AS M-11;;Thread Tension 2 AS M-11;40029411;3-15;MLA;;2015-12-31 00:00:00
-94;Crank Rod All-ASM;;Crank Rod All-ASM;40089367;3-16;MLA;;2015-12-31 00:00:00
-95;Clamp (2014);;Clamp (2014);NIS-742-99 ;3-17;MLA;;2015-12-31 00:00:00
-96;Adjustable Guide(top and button);;Adjustable Guide(top and button);NIS 742-61,62 ;3-18;MLA;;2015-12-31 00:00:00
-97;Needle plate support Cove (2014);;Needle plate support Cove (2014);NIS 742120 ;3-19;MLA;;2015-12-31 00:00:00
-98;TURN AROUND CRANK SHAET;con l?t;TURN AROUND CRANK SHAET;GFU01001000;3-20;MLA;;2015-12-31 00:00:00
-99;INTERMEDIATE PRESSER BASE;mi?ng b?t con l?t;INTERMEDIATE PRESSER BASE;B4314210000;3-21;MLA;;2015-12-31 00:00:00
-100;SCREW 3/32-56L=5.5;?c b?t con l?t;SCREW 3/32-56L=5.5;SS7060610SP;3-22;MLA;;2015-12-31 00:00:00
-101;COMPENSATING FOOT;ke ch?n;COMPENSATING FOOT;D255421XXOO;3-23;MLA;;2015-12-31 00:00:00
-102;E-RING 4;;E-RING 4;RE0400000K0;3-24;MLA;;2015-12-31 00:00:00
-103;SCREW 9/64-40 L=7;;SCREW 9/64-40 L=7;SS1090750SP;3-25;MLA;;2015-12-31 00:00:00
-104;WASHER 2.5X6X0.5;;WASHER 2.5X6X0.5;WP0250516SD;3-26;MLA;;2015-12-31 00:00:00
-105;"E-25; Bobbin";;"E-25; Bobbin";07S026S-306H;3-27;MLA;;2015-12-31 00:00:00
-106;;;0;;3-28;MLA;;2015-12-31 00:00:00
-107;;;0;;3-29;MLA;;2015-12-31 00:00:00
-108;;;0;;3-30;MLA;;2015-12-31 00:00:00
-109;Needle - head - 64;;Needle - head - 64;13350400;4-1;MLA;;2015-12-31 00:00:00
-110;Thraot plate;;Thraot plate;13351705;4-2;MLA;;2015-12-31 00:00:00
-111;presser foot assembly;;presser foot assembly;40056411;4-3;MLA;;2015-12-31 00:00:00
-112;Stopper ASM;;Stopper ASM;40082313;4-4;MLA;;2015-12-31 00:00:00
-113;main Feed Dog;;main Feed Dog;13353701;4-5;MLA;;2015-12-31 00:00:00
-114;diff feed dog;;diff feed dog;13357603;4-6;MLA;;2015-12-31 00:00:00
-115;presser foot assy;;presser foot assy;40082974;4-7;MLA;;2015-12-31 00:00:00
-116;throat plate;;throat plate;40040513;4-8;MLA;;2015-12-31 00:00:00
-117;SCREW M3 L=3;;SCREW M3 L=3;SM8030312TP;4-9;MLA;;2015-12-31 00:00:00
-118;PC board 230VHD/HN/ND 230C;;PC board 230VHD/HN/ND 230C;DQ010333;5-1;MLA;;2015-12-31 00:00:00
-119;Temperature sensor Iron;;Temperature sensor Iron;JK020200 ;5-2;MLA;;2015-12-31 00:00:00
-120;Right angle bias binder;;Right angle bias binder;24 mm ;6-1;MLA;;2015-12-31 00:00:00
-121;Right angle bias binder;;Right angle bias binder;26 mm ;6-2;MLA;;2015-12-31 00:00:00
-122;Right angle bias binder;;Right angle bias binder;28 mm ;6-3;MLA;;2015-12-31 00:00:00
-123;Right angle bias binder;;Right angle bias binder;32 mm ;6-4;MLA;;2015-12-31 00:00:00
-124;Right angle bias binder; ;Right angle bias binder;34 mm ;6-5;MLA;;2015-12-31 00:00:00
-125;Right angle bias binder;;Right angle bias binder;36 mm ;6-6;MLA;;2015-12-31 00:00:00
-126;Right angle bias binder;;Right angle bias binder;38 mm ;6-7;MLA;;2015-12-31 00:00:00
-127;Right angle bias binder;;Right angle bias binder;40 mm;6-8;MLA;;2015-12-31 00:00:00
-128;Right angle bias binder;;Right angle bias binder;45 mm ;6-9;MLA;;2015-12-31 00:00:00
-129;Hemming;;Hemming;1/4 6mm ;6-10;MLA;;2015-12-31 00:00:00
-130;Hemming;;Hemming;3/8 10mm;6-11;MLA;;2015-12-31 00:00:00
-131;Hemming;;Hemming;1/2 13mm ;6-12;MLA;;2015-12-31 00:00:00
-132;Hemming;;Hemming;5/8 16mm ;6-13;MLA;;2015-12-31 00:00:00
-133;0;;0;13/16 20mm;6-14;MLA;;2015-12-31 00:00:00
-134;Loop;;Loop;10 mm  ;6-15;MLA;;2015-12-31 00:00:00
-135;Loop;;Loop;15 mm ;6-16;MLA;;2015-12-31 00:00:00
-136;Loop;;Loop;20 mm  ;6-17;MLA;;2015-12-31 00:00:00
-137;Folder Fat Lock M/C;;Folder Fat Lock M/C;3/8mm  ;6-18;MLA;;2015-12-31 00:00:00
-138;Folder Fat Lock M/C;;Folder Fat Lock M/C;1/2mm ;6-19;MLA;;2015-12-31 00:00:00
-139;Zipper guide;;Zipper guide;031-747-9479 ;6-20;MLA;;2015-12-31 00:00:00
-140; Up and Down guide;; Up and Down guide;601;6-21;MLA;;2015-12-31 00:00:00
-141;Magnetic guide;;Magnetic guide;TKM G20 ;6-22;MLA;;2015-12-31 00:00:00
-142;sliding guide;;sliding guide;120428;6-23;MLA;;2015-12-31 00:00:00
-143;Guide;;Guide;????. ;6-24;MLA;;2015-12-31 00:00:00
-144;Loop Folder;;Loop Folder;3.5cm ;6-25;MLA;;2015-12-31 00:00:00
-145;Loop Folder;;Loop Folder;2.7cm  ;6-26;MLA;;2015-12-31 00:00:00
-146;Upper looper;;Upper looper;11888104;7-1;MLA;;2015-12-31 00:00:00
-147;Main Feed Dog;;Main Feed Dog;13192406;7-2;MLA;;2015-12-31 00:00:00
-148;Needle clamp Chain Looper;;Needle clamp Chain Looper;13175500;7-3;MLA;;2015-12-31 00:00:00
-149;Auxiliary Feed Dog;;Auxiliary Feed Dog;13191408;7-4;MLA;;2015-12-31 00:00:00
-150;Plain knife;;Plain knife;13150602;7-5;MLA;;2015-12-31 00:00:00
-151;Lower Looper;;Lower Looper;11999307;7-6;MLA;;2015-12-31 00:00:00
-152;Differential Feed Dog;;Differential Feed Dog;13193602;7-7;MLA;;2015-12-31 00:00:00
-153;Needle Rod (A) ASM;;Needle Rod (A) ASM; ;7-8;MLA;;2015-12-31 00:00:00
-154;Lower knife;;Lower knife;13150701;7-9;MLA;;2015-12-31 00:00:00
-155;Chain Looper;;Chain Looper;12120705;7-10;MLA;;2015-12-31 00:00:00
-156;Throat Plate;;Throat Plate;R4612J6FF00 ;7-11;MLA;;2015-12-31 00:00:00
-157;Needle Screw;;Needle Screw;SS- 8080310- Tp ;7-12;MLA;;2015-12-31 00:00:00
-158;Main Feed Dog;;Main Feed Dog;11883006;7-13;MLA;;2015-12-31 00:00:00
-159;Differential Feed Dog;;Differential Feed Dog;12173506;7-14;MLA;;2015-12-31 00:00:00
-160;Needle Clamp, Chain Looper;;Needle Clamp, Chain Looper;12257507;7-15;MLA;;2015-12-31 00:00:00
-161;NEEDLE THREAD PRESSER GUIDE A;;NEEDLE THREAD PRESSER GUIDE A;122-80905( 13110705);7-16;MLA;;2015-12-31 00:00:00
-162;NEEDLE THREAD PRESSER SPRING;;NEEDLE THREAD PRESSER SPRING;131-10903;7-17;MLA;;2015-12-31 00:00:00
-163;NEEDLE THREAD PRESSER PLATE A;;NEEDLE THREAD PRESSER PLATE A;131-11000;7-18;MLA;;2015-12-31 00:00:00
-164;HINGE SCREW D=2.8 H=4;;HINGE SCREW D=2.8 H=4;SD-0280401;7-19;MLA;;2015-12-31 00:00:00
-165;TOP FEED DOG;;TOP FEED DOG;123-30205;7-20;MLA;;2015-12-31 00:00:00
-166;THROAT  PLATE;;THROAT  PLATE;R4608J6DD00;7-21;MLA;;2015-12-31 00:00:00
-167;MAIN FEED DOG;;MAIN FEED DOG;11882909;7-22;MLA;;2015-12-31 00:00:00
-168;DIFFERENTIAL FEED DOG;;DIFFERENTIAL FEED DOG;12173209;7-23;MLA;;2015-12-31 00:00:00
-169;NEEDEL CLAMP CHAIN LOOPER;;NEEDEL CLAMP CHAIN LOOPER;13175500;7-24;MLA;;2015-12-31 00:00:00
-170;TOP FEED DOG;;TOP FEED DOG;12330007;7-25;MLA;;2015-12-31 00:00:00
-171;PRESSER FOOT ASM;;PRESSER FOOT ASM;12320057;7-26;MLA;;2015-12-31 00:00:00
-172;SPRING;;SPRING;7*37mm;7-27;MLA;;2015-12-31 00:00:00
-173;REAR PRESSER FOOT;;REAR PRESSER FOOT;12165908;7-28;MLA;;2015-12-31 00:00:00
-174;PRESSER FOOT HINGLE PIN;;PRESSER FOOT HINGLE PIN;11930708;7-29;MLA;;2015-12-31 00:00:00
-175;KNIFE ARM SHAFT;;KNIFE ARM SHAFT;31216005;7-30;MLA;;2015-12-31 00:00:00
-176;LOWER LOOPER;;LOWER LOOPER;11999307;7-31;MLA;;2015-12-31 00:00:00
-177;UPPER LOOPER;;UPPER LOOPER;11991908;7-32;MLA;;2015-12-31 00:00:00
-178;;;0;;7-33;MLA;;2015-12-31 00:00:00
-179;;;0;;7-34;MLA;;2015-12-31 00:00:00
-180;Bobbin case;;Bobbin case;07-004A-3500 ( 229-32909);8-1;MLA;;2015-12-31 00:00:00
-181;Bobbin  (AL);;Bobbin  (AL);07-105-2700 ;8-2;MLA;;2015-12-31 00:00:00
-182;Needle plate;;Needle plate;1109415 H  ;8-3;MLA;;2015-12-31 00:00:00
-183;Needle plate;;Needle plate;150792 (H 26 ) ;8-4;MLA;;2015-12-31 00:00:00
-184;Feed Dog;;Feed Dog;150793;8-5;MLA;;2015-12-31 00:00:00
-185;Thread Take up spring;;Thread Take up spring;229-21605 ;8-6;MLA;;2015-12-31 00:00:00
-186;Counter Knife;;Counter Knife;400-00324;8-7;MLA;;2015-12-31 00:00:00
-187;Moving Knife  AS M;;Moving Knife  AS M;113-13053 ;8-8;MLA;;2015-12-31 00:00:00
-188;Bobbin Case Tanison spring;;Bobbin Case Tanison spring;??   (18);8-9;MLA;;2015-12-31 00:00:00
-189;Bobbin case ( Srew Big );;Bobbin case ( Srew Big );     ??   (16)        ;8-10;MLA;;2015-12-31 00:00:00
-190;Bobbin case (Screw Small );;Bobbin case (Screw Small );?..     (17);8-11;MLA;;2015-12-31 00:00:00
-191;Rotory Hook  AS M;;Rotory Hook  AS M;110-38650/YZH-7 94BTR ;8-12;MLA;;2015-12-31 00:00:00
-192;Upper Knife;;Upper Knife;10-101A-2700 ;8-13;MLA;;2015-12-31 00:00:00
-193;Screw ( 1/8 N=44);;Screw ( 1/8 N=44);SC-0130-1230 ;8-14;MLA;;2015-12-31 00:00:00
-194;Rotory Hook ;;Rotory Hook ;KLH-7 94BTR ;8-15;MLA;;2015-12-31 00:00:00
-195;A-31: Needle plate( A-type);Mat nguyet;A-31: Needle plate( A-type);01-144A-350A;8-16;MLA;;2015-12-31 00:00:00
-196;A-32: Needle plate 1/4;Mat nguyet xen 1/4;A-32: Needle plate 1/4;01-114A-5300;8-17;MLA;;2015-12-31 00:00:00
-197;A-32: Needle plate 1/8;Mat nguyet may xen 1/8;A-32: Needle plate 1/8;01-035A-5300;8-18;MLA;;2015-12-31 00:00:00
-198;A-32: Needle plate 3/8 inch;Mat nguyet may xen 3/8;A-32: Needle plate 3/8 inch;01-115A-5300;8-19;MLA;;2015-12-31 00:00:00
-199;A-33: Screw(1/8 n=40);Oc Mat nguyet;A-33: Screw(1/8 n=40);01-136S-1230;8-20;MLA;;2015-12-31 00:00:00
-200;A-53: Arm thread guide;huong dan chi;A-53: Arm thread guide;01-030C-1230;8-21;MLA;;2015-12-31 00:00:00
-201;A-55: Thread guide for A-5;huong dan chi;A-55: Thread guide for A-5;01-031C-1230;8-22;MLA;;2015-12-31 00:00:00
-202;B-27: Thread take up lever Assy;Cum co giat;B-27: Thread take up lever Assy;08-201A-250A;8-23;MLA;;2015-12-31 00:00:00
-203;Bobbin presser;Nhip khong che luong danh chi suot;Bobbin presser;;8-24;MLA;;2015-12-31 00:00:00
-204;Bobbin winder spindle;Truc Banh xe danh chi;Bobbin winder spindle;22927602;8-25;MLA;;2015-12-31 00:00:00
-205;G-32: Bobbin case Assy;Thoi;G-32: Bobbin case Assy;07-004A-3500;8-26;MLA;;2015-12-31 00:00:00
-206;C-34: Hook retainer;don ganh;C-34: Hook retainer;07-013A-1230;8-27;MLA;;2015-12-31 00:00:00
-207;"F-59: Screw (1/8"" n=44)";oc;"F-59: Screw (1/8"" n=44)";SC-0312-5050;8-28;MLA;;2015-12-31 00:00:00
-208;D-100:Reverse feed solenoid crank;Can lai Mui;D-100:Reverse feed solenoid crank;06-131A-257A;8-29;MLA;;2015-12-31 00:00:00
-209;D-118: Feed regulator control plate;num dieu chinh mui may;D-118: Feed regulator control plate;06-028C-357B;8-30;MLA;;2015-12-31 00:00:00
-210;D-122:Dial shaft eccentric stopper spring;tay ham bo dieu chinh Mui may;D-122:Dial shaft eccentric stopper spring;GP-016425-00;8-31;MLA;;2015-12-31 00:00:00
-211;D-42:Feed dog ( A- type);Rang cua;D-42:Feed dog ( A- type);06-131A-350A;8-32;MLA;;2015-12-31 00:00:00
-212;D-43: Feed dog;Rang cua (GP-010652-00);D-43: Feed dog;06-031A-350B;8-33;MLA;;2015-12-31 00:00:00
-213;D-43: Feed dog;Rang cua may xen 1/8;D-43: Feed dog;06-138A-5300;8-34;MLA;;2015-12-31 00:00:00
-214;D-43: Feed dog;Rang cua may xen 1/4;D-43: Feed dog;06-111A-5300;8-35;MLA;;2015-12-31 00:00:00
-215;D-43: Feed dog 3/8 inch;Rang cua may xen 3/8;D-43: Feed dog 3/8 inch;06-111A-5300;8-36;MLA;;2015-12-31 00:00:00
-216;D-44: Screw (1/8 inch n=44);Oc vit cho cau Rang cua;D-44: Screw (1/8 inch n=44);SC-0130-1230;8-37;MLA;;2015-12-31 00:00:00
-217;D-50: Screw (3/16 inch n=28);Oc dieu chinh do cao thap cua cau Rang cua;D-50: Screw (3/16 inch n=28);06-119S-1230;8-38;MLA;;2015-12-31 00:00:00
-218;;Dao may tra Vong nach DURKOPP ( Strong H);0;227683(TI);8-39;MLA;;2015-12-31 00:00:00
-219;E1: Fix Mes;Dao tinh;E1: Fix Mes;10-101A-2700;8-40;MLA;;2015-12-31 00:00:00
-220;E-12 Stopper C ring for E-11;vong ch?n;E-12 Stopper C ring for E-11;10-009C-2700;8-41;MLA;;2015-12-31 00:00:00
-221;E5: Thread retaining plate;Nhip giu chi suot cua dao;E5: Thread retaining plate;10-005A-2700;8-42;MLA;;2015-12-31 00:00:00
-222;E-52: Thread trimming solenoid Assy;so len noi;E-52: Thread trimming solenoid Assy;10-044A-2507;8-43;MLA;;2015-12-31 00:00:00
-223;E-61: Bobbin presser spring;Lo xo hoi cua co mo giu chi suot;E-61: Bobbin presser spring;01-015C-2350;8-44;MLA;;2015-12-31 00:00:00
-224;E-9: Rotary Mes;Dao dong;E-9: Rotary Mes;10-106A-235B;8-45;MLA;;2015-12-31 00:00:00
-225;F-34: Needle bar(B type);Tru kim;F-34: Needle bar(B type);04-101A-350B;8-47;MLA;;2015-12-31 00:00:00
-226;F-38: Screw(1/8 n=44);Oc tao kim;F-38: Screw(1/8 n=44);SC-A131-4522;8-48;MLA;;2015-12-31 00:00:00
-227;Feed dog;Rang cua may co;Feed dog;;8-49;MLA;;2015-12-31 00:00:00
-228;Feed dog;Rang cua Banh xe;Feed dog;;8-50;MLA;;2015-12-31 00:00:00
-229;Fuse ( S/R 160/40);07-009A-SC53( 09-007A-SC53);Fuse ( S/R 160/40);40W 160?J;8-51;MLA;;2015-12-31 00:00:00
-230;G-12: Screw (9/64 inch n=40);Oc bat Chan vit;G-12: Screw (9/64 inch n=40);SC-0157-1230;8-52;MLA;;2015-12-31 00:00:00
-231;G-12: Screw (9/64 inch n=40);Nang truc chan vit;G-12: Screw (9/64 inch n=40);43-102A-2500;8-53;MLA;;2015-12-31 00:00:00
-232;G-29:Needle bar;Tru kim;G-29:Needle bar; 04-001A-5300;8-54;MLA;;2015-12-31 00:00:00
-233;G-30: Tension release link;Tach dong tien;G-30: Tension release link;40-005A-3500;8-55;MLA;;2015-12-31 00:00:00
-234;G-35: Spring for G-32;Lo xo;G-35: Spring for G-32;40-009G-3500;8-56;MLA;;2015-12-31 00:00:00
-235;G-40: Cable connection bolt;chot cap;G-40: Cable connection bolt;40-003A-2700;8-57;MLA;;2015-12-31 00:00:00
-236;G-41: Nut for cable connection bolt B;bu long;G-41: Nut for cable connection bolt B;40-005C-2700;8-58;MLA;;2015-12-31 00:00:00
-237;G-42: Nut for cable connection bolt A;bu long;G-42: Nut for cable connection bolt A;0;8-59;MLA;;2015-12-31 00:00:00
-238;H-16: Hing screw for H-15;oc;H-16: Hing screw for H-15;11-009S-257A;8-60;MLA;;2015-12-31 00:00:00
-239;H-9: Presser foot;Chan vit may xen 1/8;H-9: Presser foot;05-010A-5300;8-61;MLA;;2015-12-31 00:00:00
-240;J-7-9: Knee lifter connection crank;Khop Noi Choac 3 de nhac Chan vit;J-7-9: Knee lifter connection crank;GP-023209-00;8-62;MLA;;2015-12-31 00:00:00
-241;Needle bar crank shaft;Truc Noi tru kim;Needle bar crank shaft;PN-000277-01;8-63;MLA;;2015-12-31 00:00:00
-242;Needle bar lower bushing;Bac tru kim;Needle bar lower bushing;04-109A-235A;8-64;MLA;;2015-12-31 00:00:00
-243;Needle gauge;Bo cu ly;Needle gauge;TS-752;8-65;MLA;;2015-12-31 00:00:00
-244;Needle plate;Mat nguyet may co;Needle plate;;8-66;MLA;;2015-12-31 00:00:00
-245;Needle plate;Mat nguyet Banh xe;Needle plate;;8-67;MLA;;2015-12-31 00:00:00
-246;Needle plate;Mat nguyet thuong;Needle plate;E18;8-68;MLA;;2015-12-31 00:00:00
-247;Normal Feed dog;Rang cua thuong;Normal Feed dog;S03885;8-69;MLA;;2015-12-31 00:00:00
-248;Nut;Num dong tien danh chi suot;Nut;;8-70;MLA;;2015-12-31 00:00:00
-249;Nut(by metal);Num dong tien phu;Nut(by metal);;8-71;MLA;;2015-12-31 00:00:00
-250;Nut(by plastic);Num dong tien phu;Nut(by plastic);;8-72;MLA;;2015-12-31 00:00:00
-251;Presser foot 1/4;Chan vit may xen 1/4;Presser foot 1/4;05-112A-5300;8-73;MLA;;2015-12-31 00:00:00
-252;Pressure foot;Chan vit Banh xe;Pressure foot;;8-74;MLA;;2015-12-31 00:00:00
-253;Rubber ring;Gioang cao su;Rubber ring;fi 40 x 3;8-75;MLA;;2015-12-31 00:00:00
-254;Screw 1/8-44 L=4.5;Oc gan kim;Screw 1/8-44 L=4.5;SS7080510TP;8-76;MLA;;2015-12-31 00:00:00
-255;Stop ring C ( @ 12);vong chan;Stop ring C ( @ 12);PSR-AC001000;8-77;MLA;;2015-12-31 00:00:00
-256;Thread tension disk;dia dong tien phu;Thread tension disk;;8-78;MLA;;2015-12-31 00:00:00
-257;Washer;long den;Washer;01-023C-2507(-);8-79;MLA;;2015-12-31 00:00:00
-258;A-63:Cap for tension release pin;Ty;A-63:Cap for tension release pin;40-104A-3500;8-80;MLA;;2015-12-31 00:00:00
-259;G-65:Fixed Mes;dao tinh;G-65:Fixed Mes;GP-000075-01(GP-000075-02);8-81;MLA;;2015-12-31 00:00:00
-260;A-58-1 thread tension contronl Assy;cum dong tien;A-58-1 thread tension contronl Assy;;8-82;MLA;;2015-12-31 00:00:00
-261;THROAT PLATE (H);m?t nguy?t;THROAT PLATE (H);B1109-415-H0B;8-83;MLA;;2015-12-31 00:00:00
-262;POSITIONING FINGER H;c  gi? ?;POSITIONING FINGER H;236-46003;8-84;MLA;;2015-12-31 00:00:00
-263;OIL TANK ASM;tr?c ? nh su?t;OIL TANK ASM;236-28555;8-85;MLA;;2015-12-31 00:00:00
-264;F-37Needle bar threadguide(B type);;F-37Needle bar threadguide(B type);04-001A-2700;8-86;MLA;;2015-12-31 00:00:00
-265;G-2:presser adjusting nut;;G-2:presser adjusting nut;05-002C-2500;8-87;MLA;;2015-12-31 00:00:00
-266;G-36:Tension release cad assy;;G-36:Tension release cad assy;40-008A-2500;8-88;MLA;;2015-12-31 00:00:00
-267;Mes driving  shaft bush F-40;;Mes driving  shaft bush F-40;13-140A-5300;8-89;MLA;;2015-12-31 00:00:00
-268;Mes mounting base F-45;;Mes mounting base F-45;13-146A-5300;8-90;MLA;;2015-12-31 00:00:00
-269;"J-24 Belt Cover""B""";;"J-24 Belt Cover""B"""; 60-002A-2500;8-91;MLA;;2015-12-31 00:00:00
-270; J-39 Thread Stand Ass'y;; J-39 Thread Stand Ass'y;GP-022624-00;8-92;MLA;;2015-12-31 00:00:00
-271;A-32: Needle plate(B type);;A-32: Needle plate(B type);01-144A-350B;8-93;MLA;;2015-12-31 00:00:00
-272;G-1: Screw (9/16 n=20);;G-1: Screw (9/16 n=20);SC-0339-1230;8-94;MLA;;2015-12-31 00:00:00
-273;k-14: Oil pump connection spring;;k-14: Oil pump connection spring;44-016G-1230;8-95;MLA;;2015-12-31 00:00:00
-274;Hook protecting plate ,F-60,;;Hook protecting plate ,F-60,;13-053A-5300;8-96;MLA;;2015-12-31 00:00:00
-275;Bobbin;;Bobbin;07-161A-750L(AL) ;9-1;MLA;;2015-12-31 00:00:00
-276;Bobbin Case (Screw small);;Bobbin Case (Screw small);?.   (21);9-2;MLA;;2015-12-31 00:00:00
-277;Bobbin case (Screw Big );;Bobbin case (Screw Big );?.   (20);9-3;MLA;;2015-12-31 00:00:00
-278;Take up spring L;;Take up spring L;?..   (203);9-4;MLA;;2015-12-31 00:00:00
-279;Take up spring R;;Take up spring R;?.   (204);9-5;MLA;;2015-12-31 00:00:00
-280;2-Needle gauge set;;2-Needle gauge set;( 1'' ) ;9-6;MLA;;2015-12-31 00:00:00
-281;2-Needle gauge set;;2-Needle gauge set;3/4 mm ;9-7;MLA;;2015-12-31 00:00:00
-282;Needle screw;;Needle screw;SC- 0160-5607;9-8;MLA;;2015-12-31 00:00:00
-283;NEEDLE CLAMP;;NEEDLE CLAMP;"3/4""";9-9;MLA;;2015-12-31 00:00:00
-284;NEEDLE CLAMP;;NEEDLE CLAMP;"5/8""";9-10;MLA;;2015-12-31 00:00:00
-285;NEEDLE CLAMP;;NEEDLE CLAMP;"1""";9-11;MLA;;2015-12-31 00:00:00
-286;ZIPPER ( Side 5mm );;ZIPPER ( Side 5mm );;9-12;MLA;;2015-12-31 00:00:00
-287;HOOK G-73;;HOOK G-73;;9-13;MLA;;2015-12-31 00:00:00
-288;B-34: Thread take- up lever;Co giat chi;B-34: Thread take- up lever;08-102A-750L;9-14;MLA;;2015-12-31 00:00:00
-289;D-29-1: Needle bar clamp;Cum tach tru kim;D-29-1: Needle bar clamp;04-016A-7900;9-15;MLA;;2015-12-31 00:00:00
-290;D-48: Screw ( 1/8 inch n=40 );Oc bat Tao kim tach goc;D-48: Screw ( 1/8 inch n=40 );SC-A320-4222;9-16;MLA;;2015-12-31 00:00:00
-291;E-32: Tension release cable Assy;ong phanh va day phanh;E-32: Tension release cable Assy;40-024A-5770;9-17;MLA;;2015-12-31 00:00:00
-292;A-13: Screw (9/64 inch n=40);oc;A-13: Screw (9/64 inch n=40);SC-0519-2302;9-18;MLA;;2015-12-31 00:00:00
-293;A-14: Arm thread guide plate U;huong dan chi;A-14: Arm thread guide plate U;01-018A-7500;9-19;MLA;;2015-12-31 00:00:00
-294;A-16: Arm thread guide plate M;huong dan chi;A-16: Arm thread guide plate M;01-020A-7500;9-20;MLA;;2015-12-31 00:00:00
-295;A-21: Thread take up cover;Bao ve co giat chi;A-21: Thread take up cover;GP-013234-00;9-21;MLA;;2015-12-31 00:00:00
-296;A-35: Screw (11/64 inch n=40);Oc;A-35: Screw (11/64 inch n=40);SC-0179-3710;9-22;MLA;;2015-12-31 00:00:00
-297;A-38: Stopper for slide plate;Nhip chan;A-38: Stopper for slide plate;01-046A7500;9-23;MLA;;2015-12-31 00:00:00
-298;A-39: Screw (11/64 inch n=40);Oc;A-39: Screw (11/64 inch n=40);SC-0543-2302;9-24;MLA;;2015-12-31 00:00:00
-299;A-56: Needle plate 1/4;Mat nguyet 1/4;A-56: Needle plate 1/4;01-40TA-7507;9-25;MLA;;2015-12-31 00:00:00
-300;A-56: Needle plate 7/16;Mat nguyet 7/16;A-56: Needle plate 7/16;01-49TA-7507;9-26;MLA;;2015-12-31 00:00:00
-301;A-57: Screw (11/64 inch n=40);Oc Mat nguyet( Oc dai);A-57: Screw (11/64 inch n=40);SC-0119-7600;9-27;MLA;;2015-12-31 00:00:00
-302;A-58: Slide plate;Nap che may;A-58: Slide plate;01-045A-7500;9-28;MLA;;2015-12-31 00:00:00
-303;A-73: Thread tension ajusting Assy;Cum dong tien;A-73: Thread tension ajusting Assy;AS-004113-00;9-29;MLA;;2015-12-31 00:00:00
-304;A-74: Stopper for A-73;Vong ban nguyet;A-74: Stopper for A-73;01-019C-7400;9-30;MLA;;2015-12-31 00:00:00
-305;B-13: Timming beltt;Day dai;B-13: Timming beltt;02-013A-7400;9-31;MLA;;2015-12-31 00:00:00
-306;B-28: Needle bar crank shaft;Tru kim;B-28: Needle bar crank shaft;PN-000243-03;9-32;MLA;;2015-12-31 00:00:00
-307;B-31: Hing pin for thread take up lever(08-105P-7900);thanh noi;B-31: Hing pin for thread take up lever(08-105P-7900);08-101A-8130;9-33;MLA;;2015-12-31 00:00:00
-308;B-38: Thread take-up lever holder;Kep giu co giat chi;B-38: Thread take-up lever holder;02-103A-740L;9-34;MLA;;2015-12-31 00:00:00
-309;B-5: Screw (15/64 inch n=28);Oc;B-5: Screw (15/64 inch n=28);SC-0150-2500;9-35;MLA;;2015-12-31 00:00:00
-310;Bobbin case opener;Cai gat thoi(may KM-757);Bobbin case opener;GP-019543-00;9-36;MLA;;2015-12-31 00:00:00
-311;Bobbin case opener;Cai gat thoi(may KM-757BL-7S);Bobbin case opener;GP-019545-01(GP-019545-00);9-37;MLA;;2015-12-31 00:00:00
-312;Bobbin winder thread tension disk;dia dong tien danh chi suot;Bobbin winder thread tension disk;;9-38;MLA;;2015-12-31 00:00:00
-313;C-4:Set screw for slide plate;Oc bat cum de tach kim;C-4:Set screw for slide plate;17-004A-7900;9-39;MLA;;2015-12-31 00:00:00
-314;D-15: Needle bar;tru kim;D-15: Needle bar;04-101A-7500(GP-035932-00);9-40;MLA;;2015-12-31 00:00:00
-315;D-16: Needle clamp 1x3/8 inch;Tao kim 1x3/8 inch;D-16: Needle clamp 1x3/8 inch;;9-41;MLA;;2015-12-31 00:00:00
-316;D-17: Screw (9/64 n=40);Oc;D-17: Screw (9/64 n=40);SC-0160-5607;9-42;MLA;;2015-12-31 00:00:00
-317;D-24-16: Screw for D-29-15;Oc;D-24-16: Screw for D-29-15;04-022S-7900;9-43;MLA;;2015-12-31 00:00:00
-318;D-29-10: Hinge pin B for clutch lever;Ty ngan;D-29-10: Hinge pin B for clutch lever;04-028P-7900;9-44;MLA;;2015-12-31 00:00:00
-319;D-29-11: Hinge pin for latchet;Ty;D-29-11: Hinge pin for latchet;04-029P-7900;9-45;MLA;;2015-12-31 00:00:00
-320;D-29-12: Latchet (L);Co trai;D-29-12: Latchet (L);04-018A-7900;9-46;MLA;;2015-12-31 00:00:00
-321;D-29-12: Latchet (R);Co phai;D-29-12: Latchet (R);04-019A-7900;9-47;MLA;;2015-12-31 00:00:00
-322;D-29-14: Latchet return sping;Lo xo;D-29-14: Latchet return sping;04-032G-7900;9-48;MLA;;2015-12-31 00:00:00
-323;D-29-15: Latchet bracket;Gia do Lo xo;D-29-15: Latchet bracket;04-023A-7900;9-49;MLA;;2015-12-31 00:00:00
-324;D-29-3: Cover for releasing pin;Tam chan;D-29-3: Cover for releasing pin;04-024A-7900;9-50;MLA;;2015-12-31 00:00:00
-325;D-29-4: Release pin return spring;Lo xo;D-29-4: Release pin return spring;04-030G-7900;9-51;MLA;;2015-12-31 00:00:00
-326;D-29-5: Needle bar releasing pin;Chot;D-29-5: Needle bar releasing pin;04-025P-7900;9-52;MLA;;2015-12-31 00:00:00
-327;D-29-6: Clutch lever return spring;Lo xo cua bo tach goc;D-29-6: Clutch lever return spring;04-031G-7900;9-53;MLA;;2015-12-31 00:00:00
-328; ;choac noi; ;GP-020645-01;9-54;MLA;;2015-12-31 00:00:00
-329;D-29-8: Hinge pin A or clutch lever;Ty dai;D-29-8: Hinge pin A or clutch lever;04-026P-7900;9-55;MLA;;2015-12-31 00:00:00
-330;D-29-9: Neelde bar down positioning pin;Chot;D-29-9: Neelde bar down positioning pin;04-033P-7900;9-56;MLA;;2015-12-31 00:00:00
-331;D-32:Needle up positioning pin;Chot(PN-000355-00);D-32:Needle up positioning pin;15-021P-7900 (DPN-BC002900);9-57;MLA;;2015-12-31 00:00:00
-332;D-33: Spring for D-32;Lo xo;D-33: Spring for D-32;15-022G-7900;9-58;MLA;;2015-12-31 00:00:00
-333;D-36: Screw (1/8 inch n=40);Oc;D-36: Screw (1/8 inch n=40);SC-0323-7900;9-59;MLA;;2015-12-31 00:00:00
-334;D-40: Slide block;thanh truot;D-40: Slide block;15-020A-7900;9-60;MLA;;2015-12-31 00:00:00
-335;D-42: Screw (9/64 n=40);Oc;D-42: Screw (9/64 n=40);SC-0531-2302;9-61;MLA;;2015-12-31 00:00:00
-336;D-43L: Needle bar (L);tru kim trai;D-43L: Needle bar (L);GP-012980-01;9-62;MLA;;2015-12-31 00:00:00
-337;D-43R: Needle bar ( R);tru kim phai;D-43R: Needle bar ( R);GP-012979-01;9-63;MLA;;2015-12-31 00:00:00
-338;D-45, D-46: Needle clamp ( R) 7/16;Tao kim phai 7/16;D-45, D-46: Needle clamp ( R) 7/16;GP-022613-00;9-64;MLA;;2015-12-31 00:00:00
-339;D-45, D-46: Needle clamp 5/8;Tao kim trai 5/8;D-45, D-46: Needle clamp 5/8;GP-022616-00;9-65;MLA;;2015-12-31 00:00:00
-340;D-45,D-46: Needle clamp ( L) 7/16;Tao kim trai 7/16;D-45,D-46: Needle clamp ( L) 7/16;GP-022612-00(04-19LA-7900);9-66;MLA;;2015-12-31 00:00:00
-341;D-47: Screw (1/8 inch n=40);?c b?t ??u t?kim;D-47: Screw (1/8 inch n=40);SC-A297-4118;9-67;MLA;;2015-12-31 00:00:00
-342;D-5: Needle bar guide lside block;Con truot;D-5: Needle bar guide lside block;04-105A-7400;9-68;MLA;;2015-12-31 00:00:00
-343;D-8: Needle bar crank;Truyen dong tru kim;D-8: Needle bar crank;04-004A-7400;9-69;MLA;;2015-12-31 00:00:00
-344;D-9: Needle bar clamp;Thanh giu tru kim;D-9: Needle bar clamp;04-102A-7400;9-70;MLA;;2015-12-31 00:00:00
-345;E-11: Lifting Level Shaft;Nang truc chan vit;E-11: Lifting Level Shaft;43-001A-640L;9-71;MLA;;2015-12-31 00:00:00
-346;E-12: Screw (M5);Oc;E-12: Screw (M5);SC-0164-2700;9-72;MLA;;2015-12-31 00:00:00
-347;E-16: Spring for presser bar lifter lever;Lo xo keo de dong dong tien(dau may);E-16: Spring for presser bar lifter lever;GP-012864-00;9-73;MLA;;2015-12-31 00:00:00
-348;E-19: Presser lifter bar lever;Thanh nang chan vit;E-19: Presser lifter bar lever;GP-021143-01;9-74;MLA;;2015-12-31 00:00:00
-349;E-2: Screw (9/64 n=20);Num dien chinh luc ep Chan vit;E-2: Screw (9/64 n=20);SC-0339-1230;9-75;MLA;;2015-12-31 00:00:00
-350;E-27: Knee lifter connecting rod;Thanh truc nang;E-27: Knee lifter connecting rod;43-015A-7500;9-76;MLA;;2015-12-31 00:00:00
-351;E-41: Stud screw for E-40;oc;E-41: Stud screw for E-40;10-027S257A;9-77;MLA;;2015-12-31 00:00:00
-352;E-43: Clutch lever moving pin screw;oc;E-43: Clutch lever moving pin screw;43-004S-3400;9-78;MLA;;2015-12-31 00:00:00
-353;E-44: Stud screw for E48;oc;E-44: Stud screw for E48;10-028S-257A;9-79;MLA;;2015-12-31 00:00:00
-354;E-8: Presser foot 7/16;Chan vit 7/16;E-8: Presser foot 7/16;05-112A-7500;9-80;MLA;;2015-12-31 00:00:00
-355;E-8: Presser foot 1x3/8 inch;Chan vit 1x3/8 inch;E-8: Presser foot 1x3/8 inch;05-120A-7500;9-81;MLA;;2015-12-31 00:00:00
-356;F-2: Length control dial plate;num;F-2: Length control dial plate;06-013M-740L;9-82;MLA;;2015-12-31 00:00:00
-357;F-28: Stud screw for E-27;Oc bat thanh Noi gat Chan vit( ben trong may);F-28: Stud screw for E-27;43-017S-7500;9-83;MLA;;2015-12-31 00:00:00
-358;F-59-2: Feed dog 1x3/8 inch;Rang cua 1x3/8 inch;F-59-2: Feed dog 1x3/8 inch;06-73TA-7507;9-84;MLA;;2015-12-31 00:00:00
-359;F-59-2: Feed dog 7/16;Rang cua 7/16;F-59-2: Feed dog 7/16;06-10TA-75L7;9-85;MLA;;2015-12-31 00:00:00
-360;F-61: Screw (1/8 inch n=40);Oc;F-61: Screw (1/8 inch n=40);SC-0212-7400;9-86;MLA;;2015-12-31 00:00:00
-361;F-62: Nut (1/8 inch n=44);Chot;F-62: Nut (1/8 inch n=44);SN-0113-7400;9-87;MLA;;2015-12-31 00:00:00
-362;F-93:Stud screw for F-92;Oc;F-93:Stud screw for F-92;06-022A-5607(DSC-BJ004300);9-88;MLA;;2015-12-31 00:00:00
-363;Feed dog 1/2;Chan vit 1/2;Feed dog 1/2;05-810A-750L;9-89;MLA;;2015-12-31 00:00:00
-364;Feed dog 1/8;Rang cua 1/8;Feed dog 1/8;06-03TA-75L7(06-07SA-750L);9-90;MLA;;2015-12-31 00:00:00
-365;Feed dog 3/8;Rang cua 3/8;Feed dog 3/8;06-65TA-7507;9-91;MLA;;2015-12-31 00:00:00
-366;G-73: Hook;o may( KM-757BL-7S);G-73: Hook;07-052A-75L7;9-92;MLA;;2015-12-31 00:00:00
-367;G-78: Bobbin;Thoi;G-78: Bobbin;07-160A-7500;9-93;MLA;;2015-12-31 00:00:00
-368;G-83: Bobbin case;Thoi( tru kim tach);G-83: Bobbin case;07-064A-790L;9-94;MLA;;2015-12-31 00:00:00
-369;Gear (large);Nhong o ( to);Gear (large);GP-018248-01;9-95;MLA;;2015-12-31 00:00:00
-370;H-7: Dust protector:;Che bui;H-7: Dust protector:;44-004A-7500;9-96;MLA;;2015-12-31 00:00:00
-371;H-8: Dust protector;Che bui;H-8: Dust protector;44-106A-7900;9-97;MLA;;2015-12-31 00:00:00
-372;H-9: Screw 9/64 inch n=44;Oc;H-9: Screw 9/64 inch n=44;SC-0502-2302;9-98;MLA;;2015-12-31 00:00:00
-373;I-12: Moving knife bracket;Thot do dao;I-12: Moving knife bracket;10-011A-7507;9-99;MLA;;2015-12-31 00:00:00
-374;I-19: Screw for stopper pin;Oc;I-19: Screw for stopper pin;10-050S-8577;9-100;MLA;;2015-12-31 00:00:00
-375;I-26: Stud screw for thread trimming cam roller;Oc con truot cam cat chi;I-26: Stud screw for thread trimming cam roller;10-067S-7507;9-101;MLA;;2015-12-31 00:00:00
-376;I-3: Moving knife;Dao dong;I-3: Moving knife;GP-012112-01;9-102;MLA;;2015-12-31 00:00:00
-377;I-39: Joint connection stud (1/64 inch - 1_1/2 inch );chuyen t? may SPS/B-1306-HS;I-39: Joint connection stud (1/64 inch - 1_1/2 inch );10-034A-7507;9-103;MLA;;2015-12-31 00:00:00
-378;I-4: Screw (11/64 inch n=40);Oc bat dao dong;I-4: Screw (11/64 inch n=40);SC-A154-4114;9-104;MLA;;2015-12-31 00:00:00
-379;I-50: Hing screw for I-48, I-49;Oc bat 2 ben de tay noi cua keo;I-50: Hing screw for I-48, I-49;10-046S-7507;9-105;MLA;;2015-12-31 00:00:00
-380;I-58: Screw for clutch lever pin;oc;I-58: Screw for clutch lever pin;10-551S-7507;9-106;MLA;;2015-12-31 00:00:00
-381;I-60: Clutch lever;choac noi;I-60: Clutch lever;10-554A-7507;9-107;MLA;;2015-12-31 00:00:00
-382;I-7: Thread catcher;Nhip giu chi suot cua dao;I-7: Thread catcher;10-106A-7507;9-108;MLA;;2015-12-31 00:00:00
-383;I-8: Fix knife;Dao tinh;I-8: Fix knife;GP-012111-00;9-109;MLA;;2015-12-31 00:00:00
-384;J-12: Return spring for J-1;lo xo;J-12: Return spring for J-1;06-138G-967B;9-110;MLA;;2015-12-31 00:00:00
-385;J-13: wiper link A Assy;Tay bien cua giat chi kim;J-13: wiper link A Assy;11-014A-7507;9-111;MLA;;2015-12-31 00:00:00
-386;J-14: Stud screw for J-13;bu long;J-14: Stud screw for J-13;11-015S-7507;9-112;MLA;;2015-12-31 00:00:00
-387;J-16: Nut for J-14;dai oc;J-16: Nut for J-14;11-017C-7507;9-113;MLA;;2015-12-31 00:00:00
-388;J-20: Thread trimming cam roller shaft;chot;J-20: Thread trimming cam roller shaft;PN-000338-00;9-114;MLA;;2015-12-31 00:00:00
-389;J-20: Wiper shaft Assy;Truc gat;J-20: Wiper shaft Assy;11-021A-7507;9-115;MLA;;2015-12-31 00:00:00
-390;J-21:Wiper link shaft;dinh chot;J-21:Wiper link shaft;11-022A-7507(DPN-AD007600);9-116;MLA;;2015-12-31 00:00:00
-391;J-22: Collar for J-23;vong dai ham;J-22: Collar for J-23;11-023A-7507;9-117;MLA;;2015-12-31 00:00:00
-392;J-23: Thread release lever pin;Chot giu;J-23: Thread release lever pin;PN-000233-01(DSC-GA000100);9-118;MLA;;2015-12-31 00:00:00
-393;"J-23; Screw (M4)";Oc;"J-23; Screw (M4)";SC-0105-7500;9-119;MLA;;2015-12-31 00:00:00
-394;J-24: Wiper link C;Op giu co giat chi;J-24: Wiper link C;11-125A-7507;9-120;MLA;;2015-12-31 00:00:00
-395;J-25: Wiper holder;de gan giat chi kim;J-25: Wiper holder;11-026A-7507;9-121;MLA;;2015-12-31 00:00:00
-396;J-26: Screw (M3x0,5);Oc;J-26: Screw (M3x0,5);SC-0298-7500;9-122;MLA;;2015-12-31 00:00:00
-397;J-27: Screw (M3);Oc;J-27: Screw (M3);SC-0132-7500;9-123;MLA;;2015-12-31 00:00:00
-398;J-28: Wiper(right);Gat chi phai;J-28: Wiper(right);11-029A-7507;9-124;MLA;;2015-12-31 00:00:00
-399;J-28: hinge screw for J-25;Bulong;J-28: hinge screw for J-25;GP-022418-00(DSC-FD000100);9-125;MLA;;2015-12-31 00:00:00
-400;J-29: wiper(left);Gat chi trai;J-29: wiper(left);11-029B-7507;9-126;MLA;;2015-12-31 00:00:00
-401;J-30: Wiper link body;tam noi chinh;J-30: Wiper link body;11-030A-7507;9-127;MLA;;2015-12-31 00:00:00
-402;J-31: Screw(3/64 inch n=32);Oc;J-31: Screw(3/64 inch n=32);SC-0173-1230;9-128;MLA;;2015-12-31 00:00:00
-403;J-32: Stopper;mieng chan;J-32: Stopper;11-032P-7507;9-129;MLA;;2015-12-31 00:00:00
-404;J-43:Washer for J-32;long den;J-43:Washer for J-32;10-020W-2700;9-130;MLA;;2015-12-31 00:00:00
-405;L-1: Synchronizer Assy;bo can chinh puly;L-1: Synchronizer Assy;11-0000-2507;9-131;MLA;;2015-12-31 00:00:00
-406;Needle bar crank;tay bien;Needle bar crank;04-104A-7400;9-132;MLA;;2015-12-31 00:00:00
-407;Needle bar rotate stopper bloc;Mieng thep chan dau tru kim;Needle bar rotate stopper bloc;15-325A-7900;9-133;MLA;;2015-12-31 00:00:00
-408;Needle clamp (L) (6.4mm);Tao kim trai 1/4 inch;Needle clamp (L) (6.4mm);GP-022606-00;9-134;MLA;;2015-12-31 00:00:00
-409;Needle clamp (L) 3/8;tao kim trai 3/8;Needle clamp (L) 3/8;GP-022610-00;9-135;MLA;;2015-12-31 00:00:00
-410;Needle clamp (R) (6.4mm);Tao kim phai 1/4 inch;Needle clamp (R) (6.4mm);GP-022607-00;9-136;MLA;;2015-12-31 00:00:00
-411;Needle clamp (R) 3/8;tao kim phai 3/8;Needle clamp (R) 3/8;GP-022611-00;9-137;MLA;;2015-12-31 00:00:00
-412;Needle gauge 1 1/8 inch;Bo cu ly (28,57mm);Needle gauge 1 1/8 inch;;9-138;MLA;;2015-12-31 00:00:00
-413;Needle gauge 1/4 inch;Bo cu ly (6,4mm);Needle gauge 1/4 inch;;9-139;MLA;;2015-12-31 00:00:00
-414;Needle plate 3/8;tao kim 3/8;Needle plate 3/8;01-46TA-7507;9-140;MLA;;2015-12-31 00:00:00
-415;O-27: Bobbin winder assembly;Bo danh chi suot;O-27: Bobbin winder assembly;GP-018166-00;9-141;MLA;;2015-12-31 00:00:00
-416;O-42(L-16): Knee base rubber;De cau su truc khuyu;O-42(L-16): Knee base rubber;43-010A-1600;9-142;MLA;;2015-12-31 00:00:00
-417;Oil filter;Luoi loc dau;Oil filter;44-148M-5700;9-143;MLA;;2015-12-31 00:00:00
-418;Presser foot 3/4 inch;Chan vit 3/4 inch;Presser foot 3/4 inch;;9-144;MLA;;2015-12-31 00:00:00
-419;Presser foot 3/8;chan vit 3/8;Presser foot 3/8;05-610A-7400( CGA-GC014600);9-145;MLA;;2015-12-31 00:00:00
-420;Program unit box;Bang dieu khien;Program unit box;SP-200;9-146;MLA;;2015-12-31 00:00:00
-421;Pully;bu li;Pully;fi 90;9-147;MLA;;2015-12-31 00:00:00
-422;Pully;bu li;Pully;fi 100;9-148;MLA;;2015-12-31 00:00:00
-423;Pully;bu li;Pully;fi 60;9-149;MLA;;2015-12-31 00:00:00
-424;Rotary hook gear(09-002A-7400);Nhong o ( nho);Rotary hook gear(09-002A-7400);GP-015572-00 (DGR-AB001200);9-150;MLA;;2015-12-31 00:00:00
-425;Screw;Oc op o;Screw;228-14008;9-151;MLA;;2015-12-31 00:00:00
-426;Screw 1/4-40 L=4.5;Oc Nhong o;Screw 1/4-40 L=4.5;SS-8660530-TP;9-152;MLA;;2015-12-31 00:00:00
-427;Solenoid tranformer;Bien ap;Solenoid tranformer;GP-011348-00;9-153;MLA;;2015-12-31 00:00:00
-428;Spring ( 0.3 );Nhip cua thoi;Spring ( 0.3 );228-27406;9-154;MLA;;2015-12-31 00:00:00
-429;Thread take-up lever;Co giat chi;Thread take-up lever;08-103A-7500;9-155;MLA;;2015-12-31 00:00:00
-430;O-35:Belt cover(D);Bao ve day cu roa;O-35:Belt cover(D);60-004A-2350;9-156;MLA;;2015-12-31 00:00:00
-431;B-4: Screw(5/64 inch n=24):;Oc;B-4: Screw(5/64 inch n=24):;SC-0188-1230;9-157;MLA;;2015-12-31 00:00:00
-432;Needle clamp 1-1/10 inch;Tao kim 1-1/10 inch;Needle clamp 1-1/10 inch;GP-035844-00;9-158;MLA;;2015-12-31 00:00:00
-433;Throat plate:1-1/10 inch;Mat nguyet1-1/10 inch;Throat plate:1-1/10 inch;GP-035845-00;9-159;MLA;;2015-12-31 00:00:00
-434;Feed dog 1-1/10 inch;Rang cua 1-1/10 inch;Feed dog 1-1/10 inch;GP-035843-00;9-160;MLA;;2015-12-31 00:00:00
-435;Presser foot 1-1/10 inch;Chan vit 1-1/10 inch;Presser foot 1-1/10 inch;GP-035817-00;9-161;MLA;;2015-12-31 00:00:00
-436;2-Needle gauge set;;2-Needle gauge set;1/8mm;9-162;MLA;;2015-12-31 00:00:00
-437;2-Needle gauge set;;2-Needle gauge set;7/8mm;9-163;MLA;;2015-12-31 00:00:00
-438;2-Needle gauge set;;2-Needle gauge set;5/8mm;9-164;MLA;;2015-12-31 00:00:00
-439;2-Needle gauge set;;2-Needle gauge set;;9-165;MLA;;2015-12-31 00:00:00
-440;Neeldle gauge 1''3/8;;Neeldle gauge 1''3/8;KM-757BL-7s;9-166;MLA;;2015-12-31 00:00:00
-441;Needle bar stopper screw;;Needle bar stopper screw;04-004S-7900;9-167;MLA;;2015-12-31 00:00:00
-442;D-29-2: Screw for D-29-3;;D-29-2: Screw for D-29-3;04-021S-7900;9-168;MLA;;2015-12-31 00:00:00
-443;F-60 Screw (1/8 inch n=44);;F-60 Screw (1/8 inch n=44);SC-A306-4113;9-169;MLA;;2015-12-31 00:00:00
-444;Phu tung Sunstar;;Phu tung Sunstar;09-043G-740L;9-170;MLA;;2015-12-31 00:00:00
-445;B-36:thread takew up lever;;B-36:thread takew up lever;08-104A-790L;9-171;MLA;;2015-12-31 00:00:00
-446;Knife;;Knife;;9-172;MLA;;2015-12-31 00:00:00
-447;Presser foot 5/8 inch;;Presser foot 5/8 inch;;9-173;MLA;;2015-12-31 00:00:00
-448;O-28 Thread Stand Assebly ;;O-28 Thread Stand Assebly ;91-008A-7400;9-174;MLA;;2015-12-31 00:00:00
-449;D-31: Needle bar crank,;;D-31: Needle bar crank,;04-105A-7900;9-175;MLA;;2015-12-31 00:00:00
-450;I-61 Thread trimming return spring;;I-61 Thread trimming return spring; 10-056A-7507;9-176;MLA;;2015-12-31 00:00:00
-451;L-1-4 Sunchronizer Assy ( Servo;;L-1-4 Sunchronizer Assy ( Servo;  13-0000-SE55;9-177;MLA;;2015-12-31 00:00:00
-452;;;0;;9-178;MLA;;2015-12-31 00:00:00
-453;Bobbin case;;Bobbin case;B1828-210-DAA (23);10-1;MLA;;2015-12-31 00:00:00
-454;Bobbin ;;Bobbin ;138-12102  (22);10-2;MLA;;2015-12-31 00:00:00
-455;Shuttle (h) for LK1900A WS(B);;Shuttle (h) for LK1900A WS(B);40014965 (198);10-3;MLA;;2015-12-31 00:00:00
-456;Moving knife ASM;;Moving knife ASM;B2421-280-0A0;10-4;MLA;;2015-12-31 00:00:00
-457;Needle bar;;Needle bar;400-10573;10-5;MLA;;2015-12-31 00:00:00
-458;Screw;;Screw;87-278  ;11-1;MLA;;2015-12-31 00:00:00
-459;Feed Rocker Link pin;;Feed Rocker Link pin;71-432  ;11-2;MLA;;2015-12-31 00:00:00
-460;Rear Puller Shaft (S);;Rear Puller Shaft (S);71-439  ;11-3;MLA;;2015-12-31 00:00:00
-461;Thrad eyelet;;Thrad eyelet;45-432  ;11-4;MLA;;2015-12-31 00:00:00
-462;Nut;;Nut;86-701  ;11-5;MLA;;2015-12-31 00:00:00
-463;Nut;;Nut;86-4120 OC ;11-6;MLA;;2015-12-31 00:00:00
-464;Screw;;Screw;84-8130  ;11-7;MLA;;2015-12-31 00:00:00
-465;E- Ring;;E- Ring;93-205  ;11-8;MLA;;2015-12-31 00:00:00
-466;Feed dog;;Feed dog;15-499  ;11-9;MLA;;2015-12-31 00:00:00
-467;                                                                                                                                                                                                                                                                                 ;;                                                                                                                                                                                                                                                                                 ;65-3340-1 ;11-10;MLA;;2015-12-31 00:00:00
-468;Pin;;Pin;77-419  ;11-11;MLA;;2015-12-31 00:00:00
-469;Needle Plate;;Needle Plate;14-469  ;11-12;MLA;;2015-12-31 00:00:00
-470;Connecting rod Assy;;Connecting rod Assy;60-8271-0 ;11-13;MLA;;2015-12-31 00:00:00
-471;Bushing;;Bushing;81-180  ;11-14;MLA;;2015-12-31 00:00:00
-472;Coller;;Coller;02-278  ;11-15;MLA;;2015-12-31 00:00:00
-473;Bearing;;Bearing;91-401  ;11-16;MLA;;2015-12-31 00:00:00
-474;Presser Foot Assy;;Presser Foot Assy;17-471-1  ;11-17;MLA;;2015-12-31 00:00:00
-475;Rear puller  ;;Rear puller  ;02-493  ;11-18;MLA;;2015-12-31 00:00:00
-476;Rear puller;;Rear puller;02-492  ;11-19;MLA;;2015-12-31 00:00:00
-477;connecting link;;connecting link;66-131 ;11-20;MLA;;2015-12-31 00:00:00
-478;CARBON BRUSH;0;CARBON BRUSH;4117;12-1;MLA;;2015-12-31 00:00:00
-479;DRIVE BUSHING;;DRIVE BUSHING;124D/124C;12-2;MLA;;2015-12-31 00:00:00
-480;FILTER;;FILTER;183-07-01/02;12-3;MLA;;2015-12-31 00:00:00
-481;FLEXBLE SHAFL;;FLEXBLE SHAFL;182-06-01;12-4;MLA;;2015-12-31 00:00:00
-482;Moving Blade;;Moving Blade;177M;12-5;MLA;;2015-12-31 00:00:00
-483;SUCTION MOTOR;;SUCTION MOTOR;183-01-05;12-6;MLA;;2015-12-31 00:00:00
-484;ROTOR LONG 12,5CM;;ROTOR LONG 12,5CM;;12-7;MLA;;2015-12-31 00:00:00
-485;BEARING ( 608-2Z );;BEARING ( 608-2Z );;12-8;MLA;;2015-12-31 00:00:00
-486;COVER;;COVER;;12-9;MLA;;2015-12-31 00:00:00
-487;PLASTIC CONTAINER;;PLASTIC CONTAINER;;12-10;MLA;;2015-12-31 00:00:00
-488;FIX KNIFE 177F;;FIX KNIFE 177F;177F;12-11;MLA;;2015-12-31 00:00:00
-489;Circuit board ;;Circuit board ;TSZJ-220V;12-12;MLA;;2015-12-31 00:00:00
-490;Regulation resistance;;Regulation resistance;470 K;12-13;MLA;;2015-12-31 00:00:00
-491;Clipper head bearing;;Clipper head bearing;181-07-22;12-14;MLA;;2015-12-31 00:00:00
-492;Clipper head with blade;;Clipper head with blade;181-06;12-15;MLA;;2015-12-31 00:00:00
-493;Long clipper head bearing;;Long clipper head bearing;181-07-32;12-16;MLA;;2015-12-31 00:00:00
-494;Drive shaft;;Drive shaft;181-08;12-17;MLA;;2015-12-31 00:00:00
-495;Drive shaft wassher;;Drive shaft wassher;181-08 B;12-18;MLA;;2015-12-31 00:00:00
-496;Moter coupling;;Moter coupling;182-05;12-19;MLA;;2015-12-31 00:00:00
-497;Tape-guiding ring- rulo t?i ang;;Tape-guiding ring- rulo t?i ang;Tape-guiding ring- rulo ;13-1;MLA;;2015-12-31 00:00:00
-498;Heating elemnemt- s?i ??t;;Heating elemnemt- s?i ??t;Heating elemnemt;13-2;MLA;;2015-12-31 00:00:00
-499;Axletree -v•ng bi ;;Axletree -v•ng bi ;Axletree;13-3;MLA;;2015-12-31 00:00:00
-500;Lower column ruller axle parts - tr?c rulo trˆn;;Lower column ruller axle parts - tr?c rulo trˆn;Lower column ruller axle parts ;13-4;MLA;;2015-12-31 00:00:00
-501;Bearing assembly- tr?c rulo d??i;;Bearing assembly- tr?c rulo d??i;Bearing assembly;13-5;MLA;;2015-12-31 00:00:00
-502;Bearing - vong bi;;Bearing - vong bi;Bearing ;13-6;MLA;;2015-12-31 00:00:00
-503;Temperature Sensing wire- cam bien nhiet;;Temperature Sensing wire- cam bien nhiet;Temperature Sensing wire;13-7;MLA;;2015-12-31 00:00:00
-504;Small motor ( m“ t? t?i b?ng);;Small motor ( m“ t? t?i b?ng);Small motor;13-8;MLA;;2015-12-31 00:00:00
-505;Driving wheel - V8;;Driving wheel - V8;;13-9;MLA;;2015-12-31 00:00:00
-506;V8 - Tape press wheel;;V8 - Tape press wheel;;13-10;MLA;;2015-12-31 00:00:00
-507;Temperature Sensing wire: c?m bi?n nhi?t;;Temperature Sensing wire: c?m bi?n nhi?t;Temperature Sensing wire: c?m bi?n nhi?t;13-11;MLA;;2015-12-31 00:00:00
-508;Sensor: ??u d•;;Sensor: ??u d•;Sensor: ??u d•;13-12;MLA;;2015-12-31 00:00:00
-509;Speed regulation board: bo m?ch ?i?u khi?n m“ t? t?i b?ng;;Speed regulation board: bo m?ch ?i?u khi?n m“ t? t?i b?ng;Speed regulation board: bo m?ch ?i?u khi?n m“ t? t?i b?ng;13-13;MLA;;2015-12-31 00:00:00
-510;Shear- moving flake: dao c?t b?ng;;Shear- moving flake: dao c?t b?ng;Shear- moving flake: dao c?t b?ng;13-14;MLA;;2015-12-31 00:00:00
-511;Shear- moving flake: dao c?t b?ng;;Shear- moving flake: dao c?t b?ng;Shear- moving flake: dao c?t b?ng;13-15;MLA;;2015-12-31 00:00:00
-512;v•ng bi;;v•ng bi;v•ng bi;13-16;MLA;;2015-12-31 00:00:00
-513;Rulo t?i b?ng;;Rulo t?i b?ng;Rulo t?i b?ng;13-17;MLA;;2015-12-31 00:00:00
-514;Timer relay (PF113A-E);;Timer relay (PF113A-E);H3CR-A (24V);14-1;MLA;;2015-12-31 00:00:00
-515;?? c?m Timer (E3X-NA41);;?? c?m Timer (E3X-NA41);PF113A-E;14-2;MLA;;2015-12-31 00:00:00
-516;Photoelectric Switch 2M;C?m bi?n;Photoelectric Switch 2M;E3X-NA41;14-3;MLA;;2015-12-31 00:00:00
-517;Fibre optics ( ?Šn quang);;Fibre optics ( ?Šn quang);E32-DC200E;14-4;MLA;;2015-12-31 00:00:00
-518;light for industrial sewing mcs;;light for industrial sewing mcs;L80-HM-05AD;14-5;MLA;;2015-12-31 00:00:00
-519;Time relay ;;Time relay ;H3CR-A8E (24V);14-6;MLA;;2015-12-31 00:00:00
-520;Time relay ;;Time relay ;H3CR-AP(24V);14-7;MLA;;2015-12-31 00:00:00
-521;Botton Switch;;Botton Switch;;14-8;MLA;;2015-12-31 00:00:00
-522;Ballast;;Ballast;2*28W;14-9;MLA;;2015-12-31 00:00:00
-523;capacitor;;capacitor;;14-10;MLA;;2015-12-31 00:00:00
-524;swith;;swith;;14-11;MLA;;2015-12-31 00:00:00
-525;Upper knife ;;Upper knife ;B-2;15-1;MLA;;2015-12-31 00:00:00
-526;Lower knife ;;Lower knife ;B-9;15-2;MLA;;2015-12-31 00:00:00
-527;Lower Roller;;Lower Roller;A-28;15-3;MLA;;2015-12-31 00:00:00
-528;Upper Roller;;Upper Roller;A-29;15-4;MLA;;2015-12-31 00:00:00
-529;Chain Cutter Blade, Lower;;Chain Cutter Blade, Lower;35796C;16-1;MLA;;2015-12-31 00:00:00
-530;Chain Cutter Blade, upper;;Chain Cutter Blade, upper;35796B;16-2;MLA;;2015-12-31 00:00:00
-531;Screw;;Screw;605A;16-3;MLA;;2015-12-31 00:00:00
-532;"Looper,middle,marked""AV'";;"Looper,middle,marked""AV'";35809AY;16-4;MLA;;2015-12-31 00:00:00
-533;Looper,Holder,for middle looper,marked ''D'';;Looper,Holder,for middle looper,marked ''D'';35848E;16-5;MLA;;2015-12-31 00:00:00
-534;Looper,holder,for left looper,marked''C'';;Looper,holder,for left looper,marked''C'';35848D;16-6;MLA;;2015-12-31 00:00:00
-535;Looper holder,for right loper,marked''A'';;Looper holder,for right loper,marked''A'';35848B;16-7;MLA;;2015-12-31 00:00:00
-536;Looper,left,middle,marked''AY'';;Looper,left,middle,marked''AY'';35809BY;16-8;MLA;;2015-12-31 00:00:00
-537;Looper,right,marked''AU'';;Looper,right,marked''AU'';35808AY;16-9;MLA;;2015-12-31 00:00:00
-538;Screw;;Screw;22738;16-10;MLA;;2015-12-31 00:00:00
-539;Gera guard ,rear;;Gera guard ,rear;35875Z;16-11;MLA;;2015-12-31 00:00:00
-540;Gera guard ,front;;Gera guard ,front;35875AA;16-12;MLA;;2015-12-31 00:00:00
-541;Screw;;Screw;22845A;16-13;MLA;;2015-12-31 00:00:00
-542;Screw;;Screw;87U;16-14;MLA;;2015-12-31 00:00:00
-543;Needle Guard;;Needle Guard;35825AC;16-15;MLA;;2015-12-31 00:00:00
-544;Screw;;Screw;22768;16-16;MLA;;2015-12-31 00:00:00
-545;Main feed dog Support;;Main feed dog Support;35834AC;16-17;MLA;;2015-12-31 00:00:00
-546;Screw;;Screw;22804;16-18;MLA;;2015-12-31 00:00:00
-547;Roller clutch Connect+E589:E635ing rod;;Roller clutch Connect+E589:E635ing rod;4761;16-19;MLA;;2015-12-31 00:00:00
-548;Adjusting_Shaft;;Adjusting_Shaft;SD-0600756-TP(400-76305);16-20;MLA;;2015-12-31 00:00:00
-549;Ball joint assembly, right;;Ball joint assembly, right;35876V;16-21;MLA;;2015-12-31 00:00:00
-550;Base;;Base;23424T;16-22;MLA;;2015-12-31 00:00:00
-551;Clutch driving segment lever;;Clutch driving segment lever;35877Z;16-23;MLA;;2015-12-31 00:00:00
-552;Connecting rod;;Connecting rod;36244;16-24;MLA;;2015-12-31 00:00:00
-553;Connecting rod and clutch driving eccentric assembly;;Connecting rod and clutch driving eccentric assembly;29480ALY;16-25;MLA;;2015-12-31 00:00:00
-554;Cover, head, front;;Cover, head, front;35882K;16-26;MLA;;2015-12-31 00:00:00
-555;Crew;;Crew;22562A;16-27;MLA;;2015-12-31 00:00:00
-556;Differential feed dog, for style 35800DLU9;;Differential feed dog, for style 35800DLU9;35826DL;16-28;MLA;;2015-12-31 00:00:00
-557;Driven miter gear;;Driven miter gear;35875X;16-29;MLA;;2015-12-31 00:00:00
-558;Driven miter gear;;Driven miter gear;35875Y;16-30;MLA;;2015-12-31 00:00:00
-559;Eccentric;;Eccentric;35877XA;16-31;MLA;;2015-12-31 00:00:00
-560;Feed drive assembly;;Feed drive assembly;29478EC;16-32;MLA;;2015-12-31 00:00:00
-561;Feed lift eccentric assembly, for styles 35800DZ;;Feed lift eccentric assembly, for styles 35800DZ;29478DV;16-33;MLA;;2015-12-31 00:00:00
-562;Feed rocker driving link;;Feed rocker driving link;36236C;16-34;MLA;;2015-12-31 00:00:00
-563;Feed roller shaft;;Feed roller shaft;35873AK;16-35;MLA;;2015-12-31 00:00:00
-564;Folder support slide;;Folder support slide;23424AA;16-36;MLA;;2015-12-31 00:00:00
-565;Folder support spring;;Folder support spring;23424F;16-37;MLA;;2015-12-31 00:00:00
-566;Lifter lever bell crank link;;Lifter lever bell crank link;35835F;16-38;MLA;;2015-12-31 00:00:00
-567;Lifter lever connecting link;;Lifter lever connecting link;35880L;16-39;MLA;;2015-12-31 00:00:00
-568;Link pin;;Link pin;62238A;16-40;MLA;;2015-12-31 00:00:00
-569;Locking spring;;Locking spring;56341G;16-41;MLA;;2015-12-31 00:00:00
-570;Looper drive connecting rod assembly;;Looper drive connecting rod assembly;29478DZ;16-42;MLA;;2015-12-31 00:00:00
-571;Looper plunger;;Looper plunger;35853W;16-43;MLA;;2015-12-31 00:00:00
-572;Lower scroll spring;;Lower scroll spring;23424S;16-44;MLA;;2015-12-31 00:00:00
-573;Main feed bar driving link;;Main feed bar driving link;35834W;16-45;MLA;;2015-12-31 00:00:00
-574;Needle bar;;Needle bar;US-35817S;16-46;MLA;;2015-12-31 00:00:00
-575;Needle bearing;;Needle bearing;660-303;16-47;MLA;;2015-12-31 00:00:00
-576;Needle guard;;Needle guard;35869C;16-48;MLA;;2015-12-31 00:00:00
-577;Needle heard (8gauge);;Needle heard (8gauge);US-FB35818-CB8;16-49;MLA;;2015-12-31 00:00:00
-578;Needle heard (9gauge);;Needle heard (9gauge);US-FB35818-CB9;16-50;MLA;;2015-12-31 00:00:00
-579;Needle thread control lever eyelet;;Needle thread control lever eyelet;35869K;16-51;MLA;;2015-12-31 00:00:00
-580;Pin;;Pin;50-458BLK;16-52;MLA;;2015-12-31 00:00:00
-581;Plunger Bushing;;Plunger Bushing;35853AA;16-53;MLA;;2015-12-31 00:00:00
-582;Plunger knob;;Plunger knob;35853Z;16-54;MLA;;2015-12-31 00:00:00
-583;Plunger spring;;Plunger spring;35853Y;16-55;MLA;;2015-12-31 00:00:00
-584;Presser foot fork;;Presser foot fork;35830DY;16-56;MLA;;2015-12-31 00:00:00
-585;Roller clutch ball joint assembly, left;;Roller clutch ball joint assembly, left;35876W;16-57;MLA;;2015-12-31 00:00:00
-586;Screw;;Screw;22557A;16-58;MLA;;2015-12-31 00:00:00
-587;Screw;;Screw;22894C;16-59;MLA;;2015-12-31 00:00:00
-588;Screw;;Screw;22849A;16-60;MLA;;2015-12-31 00:00:00
-589;Screw;;Screw;22760A;16-61;MLA;;2015-12-31 00:00:00
-590;Screw;;Screw;22564J;16-62;MLA;;2015-12-31 00:00:00
-591;Screw, for throat plates;;Screw, for throat plates;22524;16-63;MLA;;2015-12-31 00:00:00
-592;Segment lever bushing;;Segment lever bushing;35877N;16-64;MLA;;2015-12-31 00:00:00
-593;Tension post ferrule;;Tension post ferrule;39592AK;16-65;MLA;;2015-12-31 00:00:00
-594;Thread controler Arm;;Thread controler Arm;35869L;16-66;MLA;;2015-12-31 00:00:00
-595;Throat plate, for stype 35800DLU9;;Throat plate, for stype 35800DLU9;35824BQ9;16-67;MLA;;2015-12-31 00:00:00
-596;Woodruff key;;Woodruff key;35877AA;16-68;MLA;;2015-12-31 00:00:00
-597;Puller drive cover assy;;Puller drive cover assy;35882T;16-69;MLA;;2015-12-31 00:00:00
-598;Pin;;Pin;660-219S;16-70;MLA;;2015-12-31 00:00:00
-599;Upper needle bar pushing;;Upper needle bar pushing;35854A(US-FP35854A);16-71;MLA;;2015-12-31 00:00:00
-600;Loower needle bar pushing;;Loower needle bar pushing;35854B(US-FP35854B);16-72;MLA;;2015-12-31 00:00:00
-601;Tension release shaft spring;;Tension release shaft spring;36292K;16-73;MLA;;2015-12-31 00:00:00
-602;Screw;;Screw;22894BJ;16-74;MLA;;2015-12-31 00:00:00
-603;Screw;;Screw;22560B;16-75;MLA;;2015-12-31 00:00:00
-604;Vent csrew,for oil pump;;Vent csrew,for oil pump;21756G;16-76;MLA;;2015-12-31 00:00:00
-605;Cylinder;;Cylinder;Cylinder;16-77;MLA;;2015-12-31 00:00:00
-606;Cylinder;;Cylinder;Cylinder;16-78;MLA;;2015-12-31 00:00:00
-607;Screw;;Screw;22747;16-79;MLA;;2015-12-31 00:00:00
-608;Screw;;Screw;US-22594;16-80;MLA;;2015-12-31 00:00:00
-609;Spreader Spring (RIGHT);;Spreader Spring (RIGHT);320-38705;17-1;MLA;;2015-12-31 00:00:00
-610;Looper,Right;;Looper,Right;140-30803;17-2;MLA;;2015-12-31 00:00:00
-611;Looper, Left;;Looper, Left;140-30902;17-3;MLA;;2015-12-31 00:00:00
-612;Spreader ,Right;;Spreader ,Right;140-31017;17-4;MLA;;2015-12-31 00:00:00
-613;Spreader Stopper right;;Spreader Stopper right;400-15693;17-5;MLA;;2015-12-31 00:00:00
-614;Spreader stopper Left;;Spreader stopper Left;400-15692;17-6;MLA;;2015-12-31 00:00:00
-615;Spreader spring ,Left;;Spreader spring ,Left;140-32403;17-7;MLA;;2015-12-31 00:00:00
-616;Cover;;Cover;320-20919;17-8;MLA;;2015-12-31 00:00:00
-617;Thread cutter upper knife;;Thread cutter upper knife;400-15996;17-9;MLA;;2015-12-31 00:00:00
-618;Thread guide;;Thread guide;320-51708;17-10;MLA;;2015-12-31 00:00:00
-619;Thread haul plate:;;Thread haul plate:;320-20703;17-11;MLA;;2015-12-31 00:00:00
-620;;;0;;17-12;MLA;;2015-12-31 00:00:00
-621;;;0;;17-13;MLA;;2015-12-31 00:00:00
-622;Needle installing base;;Needle installing base;144-04800;18-1;MLA;;2015-12-31 00:00:00
-623;Screw M2.5L=5;;Screw M2.5L=5;SM-6850502-TN;18-2;MLA;;2015-12-31 00:00:00
-624;Shuttle,H;;Shuttle,H;B1818-210-D0B;18-3;MLA;;2015-12-31 00:00:00
-625;Bobbin;;Bobbin;B1806-210-D00;18-4;MLA;;2015-12-31 00:00:00
-626;Bobbin Case ASM;;Bobbin Case ASM;B1828-210-DAA;18-5;MLA;;2015-12-31 00:00:00
-627;Counter knife;;Counter knife;B2424-210-000;18-6;MLA;;2015-12-31 00:00:00
-628;Moving knife Junction;;Moving knife Junction;138-81255;18-7;MLA;;2015-12-31 00:00:00
-629;Shuttle driver;;Shuttle driver;144-05005;18-8;MLA;;2015-12-31 00:00:00
-630;Chute Stand (Lower);;Chute Stand (Lower);A314;19-1;MLA;;2015-12-31 00:00:00
-631;Push-FootBlock;;Push-FootBlock;A313;19-2;MLA;;2015-12-31 00:00:00
-632;Clutch Pull Pate ;;Clutch Pull Pate ;A240;19-3;MLA;;2015-12-31 00:00:00
-633;Clutch Hook;;Clutch Hook;A241;19-4;MLA;;2015-12-31 00:00:00
-634;Main Alex;;Main Alex;A225;19-5;MLA;;2015-12-31 00:00:00
-635;Clutch Roller;;Clutch Roller;A230;19-6;MLA;;2015-12-31 00:00:00
-636;Pressure Foot;;Pressure Foot;P 36 LN ;29-1;MLA;;2015-12-31 00:00:00
-637;Pressure Foot;;Pressure Foot;P 351 ;29-2;MLA;;2015-12-31 00:00:00
-638;Pressure Foot;;Pressure Foot;MT- 18  ;29-3;MLA;;2015-12-31 00:00:00
-639;Pressure Foot;;Pressure Foot;P 58 N  ;29-4;MLA;;2015-12-31 00:00:00
-640;Pressure Foot;;Pressure Foot;CL 1/16 N ;29-5;MLA;;2015-12-31 00:00:00
-641;Pressure Foot;;Pressure Foot;L 1/32 N  ;29-6;MLA;;2015-12-31 00:00:00
-642;Pressure Foot;;Pressure Foot;CR 1/16 N ;29-7;MLA;;2015-12-31 00:00:00
-643;Pressure Foot;;Pressure Foot;SP-18  1/8 ;29-8;MLA;;2015-12-31 00:00:00
-644;Pressure Foot;;Pressure Foot;SP- 18  1/4 ;29-9;MLA;;2015-12-31 00:00:00
-645;Pressure Foot;;Pressure Foot;SPK-3  ;29-10;MLA;;2015-12-31 00:00:00
-646;Pressure Foot;;Pressure Foot;P 363  ;29-11;MLA;;2015-12-31 00:00:00
-647;Pressure Foot;;Pressure Foot;P36 RN ;29-12;MLA;;2015-12-31 00:00:00
-648;Needle plate, Roller fool, Rubber feed dog;;Needle plate, Roller fool, Rubber feed dog;SPK4-SPK5-SPK6;29-13;MLA;;2015-12-31 00:00:00
-649;Needle plate;;Needle plate;CF 211 ;29-14;MLA;;2015-12-31 00:00:00
-650;Feed Dog;;Feed Dog;CF 210 ;29-15;MLA;;2015-12-31 00:00:00
-651;Presser foot;;Presser foot;1- 1/2 ;29-16;MLA;;2015-12-31 00:00:00
-652;Presser foot;;Presser foot;1- 1/4 ;29-17;MLA;;2015-12-31 00:00:00
-653;Presser foot;;Presser foot;1- 1/8 ;29-18;MLA;;2015-12-31 00:00:00
-654;Presser foot;;Presser foot;CL 1/16 E ;29-19;MLA;;2015-12-31 00:00:00
-655;Presser foot;;Presser foot;SP-18L 1/4 ;29-20;MLA;;2015-12-31 00:00:00
-656;Feed dog ;;Feed dog ;T 13  ;29-21;MLA;;2015-12-31 00:00:00
-657;Feed dog;;Feed dog;T 15  ;29-22;MLA;;2015-12-31 00:00:00
-658;Pressure Foot;;Pressure Foot;1/4 R ( 1mm )  ;29-23;MLA;;2015-12-31 00:00:00
-659;Pressure Foot;;Pressure Foot;1/4 L R ( 1mm ) ;29-24;MLA;;2015-12-31 00:00:00
-660;Pressure Foot;;Pressure Foot;1/4 L    (1mm) ;29-25;MLA;;2015-12-31 00:00:00
-661;Pressure Foot;;Pressure Foot;1/4 L R ( 2mm ) ;29-26;MLA;;2015-12-31 00:00:00
-662;Pressure Foot;;Pressure Foot;1/4 ( small ) ;29-27;MLA;;2015-12-31 00:00:00
-663;Pressure Foot;;Pressure Foot;1/4 R ( 2mm ) ;29-28;MLA;;2015-12-31 00:00:00
-664;Pressure Foot;;Pressure Foot;1/4 L ( 2mm ) ;29-29;MLA;;2015-12-31 00:00:00
-665;Pressure Foot;;Pressure Foot;3/16L;29-30;MLA;;2015-12-31 00:00:00
-666;Pressure Foot;;Pressure Foot;3/16R;29-31;MLA;;2015-12-31 00:00:00
-667;Pressure Foot;;Pressure Foot;SP 3/16 L;29-32;MLA;;2015-12-31 00:00:00
-668;Pressure Foot;;Pressure Foot;SP 3/16 R;29-33;MLA;;2015-12-31 00:00:00
-669;Pressure Foot;;Pressure Foot;SP 18-1/16 L;29-34;MLA;;2015-12-31 00:00:00
-670;Pressure Foot;;Pressure Foot;SP 18-1/16 R;29-35;MLA;;2015-12-31 00:00:00
-671;Pressure Foot;?? chƒn v?t nh?a;Pressure Foot;Plastic MT 18;29-36;MLA;;2015-12-31 00:00:00
-672;Pressure Foot;;Pressure Foot;T35CW-15mm;29-37;MLA;;2015-12-31 00:00:00
-673;Pressure Foot;;Pressure Foot;P962;29-38;MLA;;2015-12-31 00:00:00
-674;Pressure Foot;;Pressure Foot;T36LN;29-39;MLA;;2015-12-31 00:00:00
-675;Pressure Foot;;Pressure Foot;T36N;29-40;MLA;;2015-12-31 00:00:00
-676;Pressure Foot;;Pressure Foot;P36LN;29-41;MLA;;2015-12-31 00:00:00
-677;Pressure Foot;;Pressure Foot;P360;29-42;MLA;;2015-12-31 00:00:00
-678;Pressure Foot;;Pressure Foot;P361;29-43;MLA;;2015-12-31 00:00:00
-679;Pressure Foot;;Pressure Foot;P237;29-44;MLA;;2015-12-31 00:00:00
-680;Pressure Foot ;;Pressure Foot ;CR 1/16 E;29-45;MLA;;2015-12-31 00:00:00
-681;Pressure Foot;;Pressure Foot;T363;29-46;MLA;;2015-12-31 00:00:00
-682;Pressor foot for 1 needle;;Pressor foot for 1 needle;211-NF;29-47;MLA;;2015-12-31 00:00:00
-683;Pressor foot for 2 needle;;Pressor foot for 2 needle;DAUY 1/4(1,5 mm);29-48;MLA;;2015-12-31 00:00:00
-684;Foot;;Foot;CF465/5;29-49;MLA;;2015-12-31 00:00:00
-685;pesser foot;;pesser foot;Chan vit 1 kim mi trai cap kenh ( 221NF/YS);29-50;MLA;;2015-12-31 00:00:00
-686;Needle;;Needle;DP x 5 ( 75/11) ;30-1;MLA;;2015-12-31 00:00:00
-687;Needle;;Needle;DP x 5  (80/12) ;30-2;MLA;;2015-12-31 00:00:00
-688;Needle;;Needle;DP x 5  (90/14);30-3;MLA;;2015-12-31 00:00:00
-689;Needle;;Needle;DP x 5  (100/16);30-4;MLA;;2015-12-31 00:00:00
-690;Needle;;Needle;DP x 5 (110/18) ;30-5;MLA;;2015-12-31 00:00:00
-691;Needle;;Needle;DP x 5 (130/21) ;30-6;MLA;;2015-12-31 00:00:00
-692;Needle;;Needle;DC x 1  (80/12)  ;30-7;MLA;;2015-12-31 00:00:00
-693;Needle;;Needle;DC x 1  (90/14) ;30-8;MLA;;2015-12-31 00:00:00
-694;Needle;;Needle;DC x 1 (100/16) ;30-9;MLA;;2015-12-31 00:00:00
-695;Needle;;Needle;DC x 1 (110/18);30-10;MLA;;2015-12-31 00:00:00
-696;Needle;;Needle;DB x 1  (90/14)  ;30-11;MLA;;2015-12-31 00:00:00
-697;Needle;;Needle;DB x 1 (100/16);30-12;MLA;;2015-12-31 00:00:00
-698;Needle;;Needle;DB x 1 (110/18)  ;30-13;MLA;;2015-12-31 00:00:00
-699;Needle;;Needle;DP x 17 (90/14) ;30-14;MLA;;2015-12-31 00:00:00
-700;Needle;;Needle;DP x 17 (100/16) ;30-15;MLA;;2015-12-31 00:00:00
-701;Needle;;Needle;DP x 17 (110/18) ;30-16;MLA;;2015-12-31 00:00:00
-702;Needle;;Needle;UY 188/128 GAS 14 ;30-17;MLA;;2015-12-31 00:00:00
-703;Needle;;Needle;UY 188/128 GAS 16 ;30-18;MLA;;2015-12-31 00:00:00
-704;Needle;;Needle;UY 188/128 GAS 18 ;30-19;MLA;;2015-12-31 00:00:00
-705;Needle;;Needle;TV x 5 (100/16)  ;30-20;MLA;;2015-12-31 00:00:00
-706;Needle;;Needle;UY 180 (110/18) ;30-21;MLA;;2015-12-31 00:00:00
-707;Needle;;Needle;UY 130 (100/16) ;30-22;MLA;;2015-12-31 00:00:00
-708;Needle;;Needle;UY 130 (110/18)  ;30-23;MLA;;2015-12-31 00:00:00
-709;Needle;;Needle;UO x 113 (100/16) ;30-24;MLA;;2015-12-31 00:00:00
-710;Needle;;Needle;UO x 113 (110/18) ;30-25;MLA;;2015-12-31 00:00:00
-711;Needle;;Needle;UY 188/128 GAS 12;30-26;MLA;;2015-12-31 00:00:00
-712;Needle;;Needle;DO x 558 (90/14) ;30-27;MLA;;2015-12-31 00:00:00
-713;Needle;;Needle;DO x 558 (100/16) ;30-28;MLA;;2015-12-31 00:00:00
-714;Needle;;Needle;DO x 558 (110/18) ;30-29;MLA;;2015-12-31 00:00:00
-715;Needle;;Needle;UY 180 GVS (100/16);30-30;MLA;;2015-12-31 00:00:00
-716;Needle;;Needle;UO x 113 ( 90/14);30-31;MLA;;2015-12-31 00:00:00
-717;Needle;;Needle;TV x 5 (100/18)  ;30-32;MLA;;2015-12-31 00:00:00
-718;Needle;;Needle;UY 180 GVS(18);30-33;MLA;;2015-12-31 00:00:00
-719;Grinding Wheel Flange;61/5;Grinding Wheel Flange;;31-1;MLA;;2015-12-31 00:00:00
-720;Scissor Grinding Wheel;52/11;Scissor Grinding Wheel;;31-2;MLA;;2015-12-31 00:00:00
-721;Diamond Cup Grinding Stone;53/2;Diamond Cup Grinding Stone;;31-3;MLA;;2015-12-31 00:00:00
-722;Bearings;;Bearings;Look UCP-204;31-4;MLA;;2015-12-31 00:00:00
-723; Plastic COIL;; Plastic COIL;0.5MM;31-5;MLA;;2015-12-31 00:00:00
-724; Plastic COIL;; Plastic COIL;1MM;31-6;MLA;;2015-12-31 00:00:00
-725;Drill Twist 16;;Drill Twist 16;;31-7;MLA;;2015-12-31 00:00:00
-726;Drill Twist 19;;Drill Twist 19;;31-8;MLA;;2015-12-31 00:00:00
-727;Drill Twist 20;;Drill Twist 20;;31-9;MLA;;2015-12-31 00:00:00
-728;Drill Twist 25;;Drill Twist 25;;31-10;MLA;;2015-12-31 00:00:00
-729;Saw blade red and blue;;Saw blade red and blue;;31-11;MLA;;2015-12-31 00:00:00
-730;Welding electrodes;;Welding electrodes;;31-12;MLA;;2015-12-31 00:00:00
-731;cutting stone;;cutting stone;?105 x1.0 x16mm;31-13;MLA;;2015-12-31 00:00:00
-732;Polisher;;Polisher;;31-14;MLA;;2015-12-31 00:00:00
-733;cutting pliea;;cutting pliea;;31-15;MLA;;2015-12-31 00:00:00
-734;Drill bit;;Drill bit;3.5 mm;31-16;MLA;;2015-12-31 00:00:00
-735;Drill bit;;Drill bit;4 mm;31-17;MLA;;2015-12-31 00:00:00
-736;Bearing;;Bearing;UCP204;31-18;MLA;;2015-12-31 00:00:00
-737;DRILL BIT;;DRILL BIT;M1mm;31-19;MLA;;2015-12-31 00:00:00
-738;DRILL BIT;;DRILL BIT;M2 mm;31-20;MLA;;2015-12-31 00:00:00
-739;DRILL BIT;;DRILL BIT;M2.5mm;31-21;MLA;;2015-12-31 00:00:00
-740;DRILL BIT;;DRILL BIT;M3mm;31-22;MLA;;2015-12-31 00:00:00
-741;DRILL BIT;;DRILL BIT;M3.2 mm;31-23;MLA;;2015-12-31 00:00:00
-742;DRILL BIT;;DRILL BIT;M3.5mm;31-24;MLA;;2015-12-31 00:00:00
-743;DRILL BIT;;DRILL BIT;M4mm;31-25;MLA;;2015-12-31 00:00:00
-744;DRILL BIT;;DRILL BIT;M4.2mm;31-26;MLA;;2015-12-31 00:00:00
-745;DRILL BIT;;DRILL BIT;M4.5mm;31-27;MLA;;2015-12-31 00:00:00
-746;DRILL BIT;;DRILL BIT;M5mm;31-28;MLA;;2015-12-31 00:00:00
-747;DRILL BIT;;DRILL BIT;M6mm;31-29;MLA;;2015-12-31 00:00:00
-748;DRILL BIT;;DRILL BIT;M7mm;31-30;MLA;;2015-12-31 00:00:00
-749;DRILL BIT;;DRILL BIT;M7.5mm;31-31;MLA;;2015-12-31 00:00:00
-750;DRILL BIT;;DRILL BIT;M8mm;31-32;MLA;;2015-12-31 00:00:00
-751;DRILL BIT;;DRILL BIT;M9mm;31-33;MLA;;2015-12-31 00:00:00
-752;DRILL BIT;;DRILL BIT;M9.5mm;31-34;MLA;;2015-12-31 00:00:00
-753;DRILL BIT;;DRILL BIT;M10mm;31-35;MLA;;2015-12-31 00:00:00
-754;DRILL BIT;;DRILL BIT;M10.5mm;31-36;MLA;;2015-12-31 00:00:00
-755;Cylinder;;Cylinder;TGM20 x 150;33-1;MLA;;2015-12-31 00:00:00
-756;Axes adapter-Y;;Axes adapter-Y;M6;33-2;MLA;;2015-12-31 00:00:00
-757;Axes adapter-Y;;Axes adapter-Y;M8;33-3;MLA;;2015-12-31 00:00:00
-758;Cylinder ( Xi Land );;Cylinder ( Xi Land );TGA 16 x 20-S;33-4;MLA;;2015-12-31 00:00:00
-759;Cylinder ( Xi Land );;Cylinder ( Xi Land );CXSM32 X40;33-5;MLA;;2015-12-31 00:00:00
-760;Straight Union;;Straight Union;YPU 6-6;33-6;MLA;;2015-12-31 00:00:00
-761;Straight Union;;Straight Union;YPU 8-8;33-7;MLA;;2015-12-31 00:00:00
-762;Straight Union;;Straight Union;8 X 6 ( YPG 8-6 );33-8;MLA;;2015-12-31 00:00:00
-763;Straight Union;;Straight Union;YPG 6-4;33-9;MLA;;2015-12-31 00:00:00
-764;Union Tee;;Union Tee;YPE-4 ( YPE4-4 );33-10;MLA;;2015-12-31 00:00:00
-765;Union Tee;;Union Tee;YPE-6 ( YPE-6-6 );33-11;MLA;;2015-12-31 00:00:00
-766;Union Tee;;Union Tee;YPY-6 ( YPY-6-6 );33-12;MLA;;2015-12-31 00:00:00
-767;Union Tee;;Union Tee;YPE-8 ( YPE-8-8 );33-13;MLA;;2015-12-31 00:00:00
-768;Air Connection;;Air Connection;4 X 13 ( 4 x 1/4 ) PC4-02;33-14;MLA;;2015-12-31 00:00:00
-769;Air Connation;;Air Connation;6 X 13 ( 6 x 1/4 ) PC6-02;33-15;MLA;;2015-12-31 00:00:00
-770;Air Connection;;Air Connection;8 X 13 ( 8 X 1/4 ) PC8-02;33-16;MLA;;2015-12-31 00:00:00
-771;Air Connation 8 X 10;;Air Connation 8 X 10;YPC08-01;33-17;MLA;;2015-12-31 00:00:00
-772;Air Connection 6 X 10;;Air Connection 6 X 10;YPC06-01;33-18;MLA;;2015-12-31 00:00:00
-773;Speed Control Valve;;Speed Control Valve;YSA 4 ( YSA 4-4 );33-19;MLA;;2015-12-31 00:00:00
-774;Air Valve;;Air Valve;YSC 4M5;33-20;MLA;;2015-12-31 00:00:00
-775;Air Valve;;Air Valve;YSC 6M5;33-21;MLA;;2015-12-31 00:00:00
-776;Straight Union;;Straight Union;KD 1/4;33-22;MLA;;2015-12-31 00:00:00
-777;Air Connation L6X5;;Air Connation L6X5;YPL6-M5;33-23;MLA;;2015-12-31 00:00:00
-778;Air Connation L6 X13 ( 1/4 );;Air Connation L6 X13 ( 1/4 );YPL6-02;33-24;MLA;;2015-12-31 00:00:00
-779;Air Connation L6 X10 ( 1/8 );;Air Connation L6 X10 ( 1/8 );YPL6-01;33-25;MLA;;2015-12-31 00:00:00
-780;Air Connation L8 X 10 ( 1/8 );;Air Connation L8 X 10 ( 1/8 );YPL8-01;33-26;MLA;;2015-12-31 00:00:00
-781;Air Valve 6 X 10 ( 6x1/8 );;Air Valve 6 X 10 ( 6x1/8 );YSC6-01;33-27;MLA;;2015-12-31 00:00:00
-782;Air Valve 6 X 13 ( 6x1/4 );;Air Valve 6 X 13 ( 6x1/4 );YSC6-02;33-28;MLA;;2015-12-31 00:00:00
-783;Air Valve 4 X 13 ( 4x1/4 );;Air Valve 4 X 13 ( 4x1/4 );YSC4-01;33-29;MLA;;2015-12-31 00:00:00
-784;Air Connection by Brass;;Air Connection by Brass;KT1/4;33-30;MLA;;2015-12-31 00:00:00
-785;Electric Air Valve;;Electric Air Valve;TG2521-08-220v;33-31;MLA;;2015-12-31 00:00:00
-786;Electric Air Valve;;Electric Air Valve;TG2531-08-220v;33-32;MLA;;2015-12-31 00:00:00
-787;Electric Air Valve;;Electric Air Valve;TG2521-08-24v;33-33;MLA;;2015-12-31 00:00:00
-788;Electric Air Valve;;Electric Air Valve;TG2321-08-24v;33-34;MLA;;2015-12-31 00:00:00
-789;Electric Air Valve;;Electric Air Valve;TG22-8-24v;33-35;MLA;;2015-12-31 00:00:00
-790;Cylinder;;Cylinder;CD85KN16-25-B;33-36;MLA;;2015-12-31 00:00:00
-791;Speed Controloll;;Speed Controloll;YSC4-02;33-37;MLA;;2015-12-31 00:00:00
-792;Screw thread straight union;;Screw thread straight union;YPC8-02;33-38;MLA;;2015-12-31 00:00:00
-793;Controller STNC;;Controller STNC;YSA4-4;33-39;MLA;;2015-12-31 00:00:00
-794;Controller STNC;;Controller STNC;YSA6-6;33-40;MLA;;2015-12-31 00:00:00
-795;Fittings STNC;;Fittings STNC;YPC8-01;33-41;MLA;;2015-12-31 00:00:00
-796;Fittings STNC;;Fittings STNC;YPC6-02;33-42;MLA;;2015-12-31 00:00:00
-797;Cylinder;;Cylinder;TGA16x100;33-43;MLA;;2015-12-31 00:00:00
-798;Valve;;Valve;G321R;33-44;MLA;;2015-12-31 00:00:00
-799;Axes adapter-Y iron;;Axes adapter-Y iron;M6;33-45;MLA;;2015-12-31 00:00:00
-800;Axes adapter-Y iron;;Axes adapter-Y iron;M8;33-46;MLA;;2015-12-31 00:00:00
-801;AIR CUN;;AIR CUN;;33-47;MLA;;2015-12-31 00:00:00
-802;- Belt - Day Curoa;;- Belt - Day Curoa;Belt;40-1;MLA;;2015-12-31 00:00:00
-803;87C7-40 - 4-Lead knife gear - banh rang dao;;87C7-40 - 4-Lead knife gear - banh rang dao;87C7-40 - 4;40-2;MLA;;2015-12-31 00:00:00
-804;523C1-101 - wire with plug - day dien co phich cam;;523C1-101 - wire with plug - day dien co phich cam;523C1-101 - wire with plug - day dien co phich cam;40-3;MLA;;2015-12-31 00:00:00
-805;- BRUSH THE - choi than dong;;- BRUSH THE - choi than dong;- BRUSH THE - choi than dong;40-4;MLA;;2015-12-31 00:00:00
-806;- switch - Cong tac dieu khien;;- switch - Cong tac dieu khien;- switch - Cong tac dieu khien;40-5;MLA;;2015-12-31 00:00:00
-807;- abrasives cut the table S150 - da mai cat dau ban s150;;- abrasives cut the table S150 - da mai cat dau ban s150;- abrasives cut the table S150 - da mai cat dau ban s150;40-6;MLA;;2015-12-31 00:00:00
-808;- knife sharpening stone - ?a mai dao;;- knife sharpening stone - ?a mai dao;- knife sharpening stone - ?a mai dao;40-7;MLA;;2015-12-31 00:00:00
-809;Fancon 82,5 6-kt. HSS - circular cutter - dao cat tron;;Fancon 82,5 6-kt. HSS - circular cutter - dao cat tron;Fancon 82,5 6-kt. HSS - circular cutter - dao cat tron;40-8;MLA;;2015-12-31 00:00:00
-810;- Electrical knife for cutter blade - Mo to dao;;- Electrical knife for cutter blade - Mo to dao;- Electrical knife for cutter blade - Mo to dao;40-9;MLA;;2015-12-31 00:00:00
-811;300C15-3 - Screw, 10-32x3/8 Round hd. - oc bat dao;;300C15-3 - Screw, 10-32x3/8 Round hd. - oc bat dao;300C15-3 - Screw, 10-32x3/8 Round hd. - oc bat dao;40-10;MLA;;2015-12-31 00:00:00
-812;308C5-1 - Screw, 3-48x1/2 SKT - oc bat nhong;;308C5-1 - Screw, 3-48x1/2 SKT - oc bat nhong;308C5-1 - Screw, 3-48x1/2 SKT - oc bat nhong;40-11;MLA;;2015-12-31 00:00:00
-813;302C8-1 - Screw, 4-40x3/8 socket flat hd. - oc bat dem dao;;302C8-1 - Screw, 4-40x3/8 socket flat hd. - oc bat dem dao;302C8-1 - Screw, 4-40x3/8 socket flat hd. - oc bat dem dao;40-12;MLA;;2015-12-31 00:00:00
-814;726C1-16 - Shear plate with blank - Dao tinh;;726C1-16 - Shear plate with blank - Dao tinh;726C1-16 - Shear plate with blank - Dao tinh;40-13;MLA;;2015-12-31 00:00:00
-815;508C1-101 - outlet - o cam dien;;508C1-101 - outlet - o cam dien;508C1-101 - outlet - o cam dien;40-14;MLA;;2015-12-31 00:00:00
-816;SE135024500K - Thermistor relay - ro le thoi gian;;SE135024500K - Thermistor relay - ro le thoi gian;SE135024500K - Thermistor relay - ro le thoi gian;40-15;MLA;;2015-12-31 00:00:00
-817;PAA01CM24 - Thermistor relay - ro le thoi gian;;PAA01CM24 - Thermistor relay - ro le thoi gian;PAA01CM24 - Thermistor relay - ro le thoi gian;40-16;MLA;;2015-12-31 00:00:00
-818;87C7-37 - 2-Lead knife gear - banh rang dao;;87C7-37 - 2-Lead knife gear - banh rang dao;87C7-37 - 2-Lead knife gear - banh rang dao;40-17;MLA;;2015-12-31 00:00:00
-819;- Switch ( Slow speed) - Cong tac nhan chay cham;;- Switch ( Slow speed) - Cong tac nhan chay cham;- Switch ( Slow speed) - Cong tac nhan chay cham;40-18;MLA;;2015-12-31 00:00:00
-820;- Wheel - Banh xe may trai vai;;- Wheel - Banh xe may trai vai;- Wheel - Banh xe may trai vai;40-19;MLA;;2015-12-31 00:00:00
-821;Tekoma Niebuhr Semi Spreader m/c (2000mm- 129S) - Counter - bo dem san pham may trai vai;;Tekoma Niebuhr Semi Spreader m/c (2000mm- 129S) - Counter - bo dem san pham may trai vai;Tekoma Niebuhr Semi Spreader m/c (2000mm- 129S) - Counter - bo dem san pham may trai vai;40-20;MLA;;2015-12-31 00:00:00
-822;8 chan - Relay - Ro le trung gian;;8 chan - Relay - Ro le trung gian;8 chan - Relay - Ro le trung gian;40-21;MLA;;2015-12-31 00:00:00
-823;14 chan - Relay - Ro le trung gian;;14 chan - Relay - Ro le trung gian;14 chan - Relay - Ro le trung gian;40-22;MLA;;2015-12-31 00:00:00
-824;YS SEP 323-11RA - Stop switch - Cong tac dung khan;;YS SEP 323-11RA - Stop switch - Cong tac dung khan;YS SEP 323-11RA - Stop switch - Cong tac dung khan;40-23;MLA;;2015-12-31 00:00:00
-825;505C2-85 - Base plate asembly - Bo dan huong dao;;505C2-85 - Base plate asembly - Bo dan huong dao;505C2-85 - Base plate asembly - Bo dan huong dao;40-24;MLA;;2015-12-31 00:00:00
-826;- Sensor - sen so can bien;;- Sensor - sen so can bien;- Sensor - sen so can bien;40-25;MLA;;2015-12-31 00:00:00
-827;- Guided knife - dan huong dao;;- Guided knife - dan huong dao;- Guided knife - dan huong dao;40-26;MLA;;2015-12-31 00:00:00
-828;34C10-158 - Sharpenner spring - Lo xo;;34C10-158 - Sharpenner spring - Lo xo;34C10-158 - Sharpenner spring - Lo xo;40-27;MLA;;2015-12-31 00:00:00
-829;151C1-3 - Motor CHK coupling - khop noi motor dao;;151C1-3 - Motor CHK coupling - khop noi motor dao;151C1-3 - Motor CHK coupling - khop noi motor dao;40-28;MLA;;2015-12-31 00:00:00
-830;83C4-21 - Knife flange - Chan dao trong;;83C4-21 - Knife flange - Chan dao trong;83C4-21 - Knife flange - Chan dao trong;40-29;MLA;;2015-12-31 00:00:00
-831;53C11-107 - Knife flange cover - Chan dao ngoai;;53C11-107 - Knife flange cover - Chan dao ngoai;53C11-107 - Knife flange cover - Chan dao ngoai;40-30;MLA;;2015-12-31 00:00:00
-832;79C12-217 - Gear Rtaining plate - lap ham banh rang;;79C12-217 - Gear Rtaining plate - lap ham banh rang;79C12-217 - Gear Rtaining plate - lap ham banh rang;40-31;MLA;;2015-12-31 00:00:00
-833;32C5-60 - Sharpenner Bracket - gia bat da mai;;32C5-60 - Sharpenner Bracket - gia bat da mai;32C5-60 - Sharpenner Bracket - gia bat da mai;40-32;MLA;;2015-12-31 00:00:00
-834;25C4-162 - Knife Guard - bao ve dao;;25C4-162 - Knife Guard - bao ve dao;25C4-162 - Knife Guard - bao ve dao;40-33;MLA;;2015-12-31 00:00:00
-835;12C15-95 - Washer , #6 flat - long den;;12C15-95 - Washer , #6 flat - long den;12C15-95 - Washer , #6 flat - long den;40-34;MLA;;2015-12-31 00:00:00
-836;300C10-1 - Screw, 6-32x3/16 round Hd - oc bat dao;;300C10-1 - Screw, 6-32x3/16 round Hd - oc bat dao;300C10-1 - Screw, 6-32x3/16 round Hd - oc bat dao;40-35;MLA;;2015-12-31 00:00:00
-837;- Carbon brush - Choi than dao;;- Carbon brush - Choi than dao;- Carbon brush - Choi than dao;40-36;MLA;;2015-12-31 00:00:00
-838;18C6-49 - oil seal ring - Giang cao su;;18C6-49 - oil seal ring - Giang cao su;18C6-49 - oil seal ring - Giang cao su;40-37;MLA;;2015-12-31 00:00:00
-839;21C5-5 - Sharpenner Bushing - de bat da mai dao;;21C5-5 - Sharpenner Bushing - de bat da mai dao;21C5-5 - Sharpenner Bushing - de bat da mai dao;40-38;MLA;;2015-12-31 00:00:00
-840;- Motor - Mo to toi mo to dao;;- Motor - Mo to toi mo to dao;- Motor - Mo to toi mo to dao;40-39;MLA;;2015-12-31 00:00:00
-841;- Gear - Banh rang;;- Gear - Banh rang;- Gear - Banh rang;40-40;MLA;;2015-12-31 00:00:00
-842;18C6-35 - Snap ring - Phanh;;18C6-35 - Snap ring - Phanh;18C6-35 - Snap ring - Phanh;40-41;MLA;;2015-12-31 00:00:00
-843;55C4-98 - Sparcer bearing - dau noi;;55C4-98 - Sparcer bearing - dau noi;55C4-98 - Sparcer bearing - dau noi;40-42;MLA;;2015-12-31 00:00:00
-844;653C1-3 - Wrom shaft (Electric) - Truc dao;;653C1-3 - Wrom shaft (Electric) - Truc dao;653C1-3 - Wrom shaft (Electric) - Truc dao;40-43;MLA;;2015-12-31 00:00:00
-845;4C1-197 - Allent nut - dai oc;;4C1-197 - Allent nut - dai oc;4C1-197 - Allent nut - dai oc;40-44;MLA;;2015-12-31 00:00:00
-846;300C10-4 - Screw, 6-32x3/8 round hd. - Oc;;300C10-4 - Screw, 6-32x3/8 round hd. - Oc;300C10-4 - Screw, 6-32x3/8 round hd. - Oc;40-45;MLA;;2015-12-31 00:00:00
-847;300C10-11 - Screw, 6-32x1-1/8 round hd. - Oc;;300C10-11 - Screw, 6-32x1-1/8 round hd. - Oc;300C10-11 - Screw, 6-32x1-1/8 round hd. - Oc;40-46;MLA;;2015-12-31 00:00:00
-848;647C1-10 - Standard W/Shaft & Felt Wick - Cum bao ve dao;;647C1-10 - Standard W/Shaft & Felt Wick - Cum bao ve dao;647C1-10 - Standard W/Shaft & Felt Wick - Cum bao ve dao;40-47;MLA;;2015-12-31 00:00:00
-849;307C8-1 - Screw, 4-40x1/4 button hd. - Oc;;307C8-1 - Screw, 4-40x1/4 button hd. - Oc;307C8-1 - Screw, 4-40x1/4 button hd. - Oc;40-48;MLA;;2015-12-31 00:00:00
-850;302C10-4 - Screw, 6-32x5/6 flat hd. - Oc;;302C10-4 - Screw, 6-32x5/6 flat hd. - Oc;302C10-4 - Screw, 6-32x5/6 flat hd. - Oc;40-49;MLA;;2015-12-31 00:00:00
-851;191C1-26 - Knife pad wipe - Mut tham dau;;191C1-26 - Knife pad wipe - Mut tham dau;191C1-26 - Knife pad wipe - Mut tham dau;40-50;MLA;;2015-12-31 00:00:00
-852;302C15-19 - Screw, 10-32x1inch socket flat hd. - Oc;;302C15-19 - Screw, 10-32x1inch socket flat hd. - Oc;302C15-19 - Screw, 10-32x1inch socket flat hd. - Oc;40-51;MLA;;2015-12-31 00:00:00
-853;Wheel-Banh xe be may;;Wheel-Banh xe be may;Wheel -Banh xe cho be may;40-52;MLA;;2015-12-31 00:00:00
-854;Fower Caerriage;;Fower Caerriage;DEYLE DEN5-16L 230/400V IP23;40-53;MLA;;2015-12-31 00:00:00
-855;;;0;;41:   Band-knife machine;MLA;;2015-12-31 00:00:00
-856;Band-knife (Dao c?t v•ng);;Band-knife (Dao c?t v•ng);4600 x 10;41-1;MLA;;2015-12-31 00:00:00
-857;4600 - Grind stone - da mai dao;;4600 - Grind stone - da mai dao;4600( from DK);41-2;MLA;;2015-12-31 00:00:00
-858;;;0;;41-3;MLA;;2015-12-31 00:00:00
-859;GS 181C2-2 (Great knives) - Emery-paper - Giay rap vong mai dao;;GS 181C2-2 (Great knives) - Emery-paper - Giay rap vong mai dao;GS 181C2-2 ;42-1;MLA;;2015-12-31 00:00:00
-860;Straight knives (Dao c?t th?ng);;Straight knives (Dao c?t th?ng);8E;42-2;MLA;;2015-12-31 00:00:00
-861;Straight knives (Dao c?t th?ng);;Straight knives (Dao c?t th?ng);10 E;42-3;MLA;;2015-12-31 00:00:00
-862;Drill;;Drill;m;42-4;MLA;;2015-12-31 00:00:00
-863;Drill;;Drill;1,6;42-5;MLA;;2015-12-31 00:00:00
-864;Oi tank ;;Oi tank ;M-034;42-6;MLA;;2015-12-31 00:00:00
-865;Knife lock washer( t?m ??m dao);;Knife lock washer( t?m ??m dao);M-041;42-7;MLA;;2015-12-31 00:00:00
-866;Terminal sleeve ( ti?p ?i?m ph¡ch c?m);;Terminal sleeve ( ti?p ?i?m ph¡ch c?m);M-071;42-8;MLA;;2015-12-31 00:00:00
-867;Terminal contact with pin  (ti?p ?i?m ph¡ch c?m);;Terminal contact with pin  (ti?p ?i?m ph¡ch c?m);M-072;42-9;MLA;;2015-12-31 00:00:00
-868;Plate bolt / nut (?c +bu l“ng);;Plate bolt / nut (?c +bu l“ng);M-090;42-10;MLA;;2015-12-31 00:00:00
-869;Screw shaft with Extension( v¡t tr?c Xo n);;Screw shaft with Extension( v¡t tr?c Xo n);M-106;42-11;MLA;;2015-12-31 00:00:00
-870;Sping for latch( l• so);;Sping for latch( l• so);M-110;42-12;MLA;;2015-12-31 00:00:00
-871;Cam sping( l• so h?m m  m…i);;Cam sping( l• so h?m m  m…i);M-111;42-13;MLA;;2015-12-31 00:00:00
-872;Pressure foot shoe( chƒn v?t);;Pressure foot shoe( chƒn v?t);M-219;42-14;MLA;;2015-12-31 00:00:00
-873;Right hand follower Nut (tr?c b? m…i);;Right hand follower Nut (tr?c b? m…i);M-135;42-15;MLA;;2015-12-31 00:00:00
-874;LH square Shaft(tr?c b? m…i);;LH square Shaft(tr?c b? m…i);M-137;42-16;MLA;;2015-12-31 00:00:00
-875;Spur Gear (b nh r?ng lai);;Spur Gear (b nh r?ng lai);M-148;42-17;MLA;;2015-12-31 00:00:00
-876;Thrust washers for spiral gear(v•ng bi tr?c xo n ?c);;Thrust washers for spiral gear(v•ng bi tr?c xo n ?c);M-151;42-18;MLA;;2015-12-31 00:00:00
-877;Ldler Gear with bushing( b nh r?ng);;Ldler Gear with bushing( b nh r?ng);M-156;42-19;MLA;;2015-12-31 00:00:00
-878;L.H. sp?al gear with key( b nh r?ng);;L.H. sp?al gear with key( b nh r?ng);M-157;42-20;MLA;;2015-12-31 00:00:00
-879;Gear on screw shaft ( nh“ng tr?c v¡t);;Gear on screw shaft ( nh“ng tr?c v¡t);M-166;42-21;MLA;;2015-12-31 00:00:00
-880;Intermediate Gear( b nh r?ng trung gian);;Intermediate Gear( b nh r?ng trung gian);M-167;42-22;MLA;;2015-12-31 00:00:00
-881;R.H.Shoe( ?‚ t? m…i);;R.H.Shoe( ?‚ t? m…i);M-169;42-23;MLA;;2015-12-31 00:00:00
-882;L.H.Shoe( ?‚ t? m…i);;L.H.Shoe( ?‚ t? m…i);M-170;42-24;MLA;;2015-12-31 00:00:00
-883;Set screw for Sharpenner she ( ?c);;Set screw for Sharpenner she ( ?c);M-171;42-25;MLA;;2015-12-31 00:00:00
-884;Guide back of standard 8'';;Guide back of standard 8'';M-173;42-26;MLA;;2015-12-31 00:00:00
-885;R.H.Slide with pulley - pu ly cang day mai;;R.H.Slide with pulley - pu ly cang day mai;M-176;42-27;MLA;;2015-12-31 00:00:00
-886; L.H.Slide with pulley - pu ly cang day mai;; L.H.Slide with pulley - pu ly cang day mai;M-177;42-28;MLA;;2015-12-31 00:00:00
-887;Front pulley for belt - pu ly day cu roa mai dao;;Front pulley for belt - pu ly day cu roa mai dao;M-179;42-29;MLA;;2015-12-31 00:00:00
-888;Neoprene band for puelly - vong cao su dem pu ly;;Neoprene band for puelly - vong cao su dem pu ly;M-178;42-30;MLA;;2015-12-31 00:00:00
-889; Roll pin for Belt - Ty lo xo pully;; Roll pin for Belt - Ty lo xo pully;M-180;42-31;MLA;;2015-12-31 00:00:00
-890;Spring for Pulley Slide - Lo xo cang day mai;;Spring for Pulley Slide - Lo xo cang day mai;M-181;42-32;MLA;;2015-12-31 00:00:00
-891;Clamping Arm for shoe - Gia do banh mai;;Clamping Arm for shoe - Gia do banh mai;M-183;42-33;MLA;;2015-12-31 00:00:00
-892;L.H.Sharpener shoe spring - chot cang mai;;L.H.Sharpener shoe spring - chot cang mai;M-187;42-34;MLA;;2015-12-31 00:00:00
-893; R.H.Sharpener shoe spring - lo xo mai;; R.H.Sharpener shoe spring - lo xo mai;M-186;42-35;MLA;;2015-12-31 00:00:00
-894;Spring for arm - lo xo ham da mai;;Spring for arm - lo xo ham da mai;M-188;42-36;MLA;;2015-12-31 00:00:00
-895;Collar for lower screw shaft;;Collar for lower screw shaft;M-102;42-37;MLA;;2015-12-31 00:00:00
-896;Line knife ;;Line knife ;10 inch;42-38;MLA;;2015-12-31 00:00:00
-897;L.H slide with pulley;;L.H slide with pulley;;42-39;MLA;;2015-12-31 00:00:00
-898;Nut for screw shaft L.H & R.H;;Nut for screw shaft L.H & R.H;M-104;42-40;MLA;;2015-12-31 00:00:00
-899;R.H square shaft (10inch);;R.H square shaft (10inch);M-136;42-41;MLA;;2015-12-31 00:00:00
-900;R.H square shaft (8inch);;R.H square shaft (8inch);M-136;42-42;MLA;;2015-12-31 00:00:00
-901;Thrust washer;;Thrust washer;M-229;42-43;MLA;;2015-12-31 00:00:00
-902;Knife lock bolt;;Knife lock bolt;M-051;42-44;MLA;;2015-12-31 00:00:00
-903;Knife slides ;;Knife slides ;M-086;42-45;MLA;;2015-12-31 00:00:00
-904;Switch - cong tac nguon;;Switch - cong tac nguon;M-020;42-46;MLA;;2015-12-31 00:00:00
-905;Rubbe rmuonted roler (Conplete) ;;Rubbe rmuonted roler (Conplete) ;M-080;42-47;MLA;;2015-12-31 00:00:00
-906;Ball bearing for crank;;Ball bearing for crank;M-149;42-48;MLA;;2015-12-31 00:00:00
-907;Stabilizer -Banh ty hong cat puly;;Stabilizer -Banh ty hong cat puly;M-172;42-49;MLA;;2015-12-31 00:00:00
-908;Spacer  tube - ong dem;;Spacer  tube - ong dem;M-107;42-50;MLA;;2015-12-31 00:00:00
-909;Switch - cong tac ly tan;;Switch - cong tac ly tan;M-301;42-51;MLA;;2015-12-31 00:00:00
-910;Switch - cong tac ly tan;;Switch - cong tac ly tan;M-302;42-52;MLA;;2015-12-31 00:00:00
-911;Driving shaft - Ong dan huong;;Driving shaft - Ong dan huong;M-093;42-53;MLA;;2015-12-31 00:00:00
-912;Right and left hand follwer -Ong dan huong;;Right and left hand follwer -Ong dan huong;M-094;42-54;MLA;;2015-12-31 00:00:00
-913;Knob for pressure foot rob - Can nang chan vit;;Knob for pressure foot rob - Can nang chan vit;M-230;42-55;MLA;;2015-12-31 00:00:00
-914;9 Driving wheel ( Ru lo );;9 Driving wheel ( Ru lo );Number 7 page;42-56;MLA;;2015-12-31 00:00:00
-915;10 Tape - press wheel ( Ru lo );;10 Tape - press wheel ( Ru lo );Number 10 page;42-57;MLA;;2015-12-31 00:00:00
-916;;;0;;42-58;MLA;;2015-12-31 00:00:00
-917;;;0;;42-59;MLA;;2015-12-31 00:00:00
+"1";"Bobbin case ASM";;"Bobbin case ASM";"11038759";"1-1";"MLA";NULL;"2016-03-19 09:34:09"
+"2";"Screw15/64-28 L=15";;"Screw15/64-28 L=15";"SS 8151550 SP ";"1-2";"MLA";NULL;"2016-03-03 08:35:38"
+"3";"Needle Bar Thread Guide";;"Needle Bar Thread Guide";"B1418530000 ";"1-3";"MLA";;"2015-12-30 09:00:00"
+"4";"Moving Knife";;"Moving Knife";"11351400";"1-4";"MLA";;"2015-12-30 09:00:00"
+"5";"Presser Foot ASMG with Guard";;"Presser Foot ASMG with Guard";"B1524530GBO ";"1-5";"MLA";;"2015-12-30 09:00:00"
+"6";"Knife";;"Knife";"B4121522000 ";"1-6";"MLA";;"2015-12-30 09:00:00"
+"7";"Screw 11/64-40 L=6";;"Screw 11/64-40 L=6";"SS 6110610 TP";"1-7";"MLA";;"2015-12-30 09:00:00"
+"8";"Thread Take - Up Spring";;"Thread Take - Up Spring";"22921605";"1-8";"MLA";;"2015-12-30 09:00:00"
+"9";"NUT";;"NUT";"22928808";"1-9";"MLA";;"2015-12-30 09:00:00"
+"10";"Counter Knife";;"Counter Knife";"11351509";"1-10";"MLA";;"2015-12-30 09:00:00"
+"11";"Screw 1/8-44 L= 4";;"Screw 1/8-44 L= 4";"SS 6080410 SP";"1-11";"MLA";;"2015-12-30 09:00:00"
+"12";"Screw 11/64-40 L=7";;"Screw 11/64-40 L=7";"SS 7110740 TP";"1-12";"MLA";;"2015-12-30 09:00:00"
+"13";"Hinge Screw D=7.24 H=33";;"Hinge Screw D=7.24 H=33";"SD 0720331 SP ";"1-13";"MLA";;"2015-12-30 09:00:00"
+"14";"Washer 5x10. 5x1";;"Washer 5x10. 5x1";"WP 0501016 SD ";"1-14";"MLA";;"2015-12-30 09:00:00"
+"15";"Screw 9/64-40 L=10.5";;"Screw 9/64-40 L=10.5";"SS7091110 TP";"1-15";"MLA";;"2015-12-30 09:00:00"
+"16";"Rubber Joint";;"Rubber Joint";"22924609";"1-16";"MLA";;"2015-12-30 09:00:00"
+"17";"Screw 11/64-40 L= 9.5";;"Screw 11/64-40 L= 9.5";"SS 6111010 TP ";"1-17";"MLA";NULL;"2016-03-19 08:40:29"
+"18";"E-Ring 12";;"E-Ring 12";"RE 1200000 K 0 ";"1-18";"MLA";;"2015-12-30 09:00:00"
+"19";"Rubber Plug D=12.5 L=4";;"Rubber Plug D=12.5 L=4";"TA 1250406R 0 ";"1-19";"MLA";;"2015-12-30 09:00:00"
+"20";"Pin contact";;"Pin contact";"HK 03464000 B ";"1-20";"MLA";;"2015-12-30 09:00:00"
+"21";"Screw1/8-44 L=4.5";;"Screw1/8-44 L=4.5";"SS 7080510 TP ";"1-21";"MLA";;"2015-12-30 09:00:00"
+"22";"Reverse Feed Connecting shaft";;"Reverse Feed Connecting shaft";"11101300";"1-22";"MLA";;"2015-12-30 09:00:00"
+"23";"E - Ring";;"E - Ring";"RE 0500000K0 ";"1-23";"MLA";;"2015-12-30 09:00:00"
+"24";"Nut 9/64-40";;"Nut 9/64-40";"NS 6090310 SP ";"1-24";"MLA";;"2015-12-30 09:00:00"
+"25";"Screw 3/32-56 L= 1.9";;"Screw 3/32-56 L= 1.9";"SS 6060210 SP ";"1-25";"MLA";;"2015-12-30 09:00:00"
+"26";"Thread Tension ASM, NO.1";;"Thread Tension ASM, NO.1";"22945463";"1-26";"MLA";;"2015-12-30 09:00:00"
+"27";"Screw 9/64 - 40 L=6";;"Screw 9/64 - 40 L=6";"SS 6090670 TP ";"1-27";"MLA";;"2015-12-30 09:00:00"
+"28";"Thread Tension Disk";;"Thread Tension Disk";"229251506";"1-28";"MLA";;"2015-12-30 09:00:00"
+"29";"Screw 11/64-40L= 6.8";;"Screw 11/64-40L= 6.8";"SS 2110915 SP ";"1-29";"MLA";;"2015-12-30 09:00:00"
+"30";"Feed Bar ASM";;"Feed Bar ASM";"22940753";"1-30";"MLA";;"2015-12-30 09:00:00"
+"31";"Screw 1/8-44 L= 6";;"Screw 1/8-44 L= 6";"SS 4080620 TP ";"1-31";"MLA";;"2015-12-30 09:00:00"
+"32";"Solenoid Rubber A";;"Solenoid Rubber A";"11043205";"1-32";"MLA";;"2015-12-30 09:00:00"
+"33";"E - Ring 3";;"E - Ring 3";"RE 0300000K0 ";"1-33";"MLA";;"2015-12-30 09:00:00"
+"34";"Washer 4.8x8,4x0.8";;"Washer 4.8x8,4x0.8";"WP 0480856 SP ";"1-34";"MLA";;"2015-12-30 09:00:00"
+"35";"Thread Take up spring";;"Thread Take up spring";"40029412";"1-35";"MLA";;"2015-12-30 09:00:00"
+"36";;;"0";"22945356";"1-36";"MLA";;"2015-12-30 09:00:00"
+"37";" Hook ASM";;" Hook ASM";"11038650";"1-37";"MLA";;"2015-12-30 09:00:00"
+"38";"Hook ASM";;"Hook ASM";"11141355";"1-38";"MLA";;"2015-12-30 09:00:00"
+"39";"Oil Wick";;"Oil Wick";"11015906";"1-39";"MLA";;"2015-12-30 09:00:00"
+"40";"Screw 3/16-32 L=6.5";;"Screw 3/16-32 L=6.5";"SS7620750 SP ";"1-40";"MLA";;"2015-12-30 09:00:00"
+"41";"Waste Material Guard E";;"Waste Material Guard E";"11346905";"1-41";"MLA";;"2015-12-30 09:00:00"
+"42";"Screw 3/16-28 L=9";;"Screw 3/16-28 L=9";"SS 4120915 SP ";"1-42";"MLA";;"2015-12-30 09:00:00"
+"43";"Pump Body Strut";;"Pump Body Strut";"22924005";"1-43";"MLA";;"2015-12-30 09:00:00"
+"44";"Bobbin  ";;"Bobbin  ";"22932909";"1-44";"MLA";;"2015-12-30 09:00:00"
+"45";"Presser Regulator Screw AS M";;"Presser Regulator Screw AS M";"22907554";"1-45";"MLA";;"2015-12-30 09:00:00"
+"46";"Screw 1/8-44 L= 2.9";;"Screw 1/8-44 L= 2.9";"SS 6080340 SP ";"1-46";"MLA";;"2015-12-30 09:00:00"
+"47";"Hook Thread Presser AS M";;"Hook Thread Presser AS M";"22950356";"1-47";"MLA";;"2015-12-30 09:00:00"
+"48";"Rubber Ring";;"Rubber Ring";"RO 092270200 ";"1-48";"MLA";;"2015-12-30 09:00:00"
+"49";"NUT 11/64-40";;"NUT 11/64-40";"NS 6110420 SP ";"1-49";"MLA";;"2015-12-30 09:00:00"
+"50";"NUT";;"NUT";"NS 6110310 SP ";"1-50";"MLA";;"2015-12-30 09:00:00"
+"51";"Screw 11/64-40 L=7";;"Screw 11/64-40 L=7";"SS 4110715 SP ";"1-51";"MLA";;"2015-12-30 09:00:00"
+"52";"Screw";;"Screw";"SS 6090620 TP ";"1-52";"MLA";;"2015-12-30 09:00:00"
+"53";"DYNAMO STATOR";;"DYNAMO STATOR";"22937965";"1-53";"MLA";;"2015-12-30 09:00:00"
+"54";"Oil Pump ASM";;"Oil Pump ASM";"22923056";"1-54";"MLA";;"2015-12-30 09:00:00"
+"55";"Left Screw";;"Left Screw";"B 1903552000 ";"1-55";"MLA";;"2015-12-30 09:00:00"
+"56";"Throat plate 3/8''";;"Throat plate 3/8''";"B 1190530M00 ";"1-56";"MLA";;"2015-12-30 09:00:00"
+"57";"Throat plate plug ASM.M";;"Throat plate plug ASM.M";"B 11155300 AM ";"1-57";"MLA";;"2015-12-30 09:00:00"
+"58";"Waste Material Guard  K";;"Waste Material Guard  K";"11347309";"1-58";"MLA";;"2015-12-30 09:00:00"
+"59";"Screw";;"Screw";"SM 4040855 SP ";"1-59";"MLA";;"2015-12-30 09:00:00"
+"60";"Needle plate";;"Needle plate";"1/4 U  ";"1-60";"MLA";;"2015-12-30 09:00:00"
+"61";"Presser foot";;"Presser foot";"B 1524 ";"1-61";"MLA";;"2015-12-30 09:00:00"
+"62";" BOBBIN WINDER SPINDLE";"tr?c ??nh su?t";" BOBBIN WINDER SPINDLE";"229-27602";"1-62";"MLA";;"2015-12-30 09:00:00"
+"63";"Gauge 3/16inch (4.8mm)";;"Gauge 3/16inch (4.8mm)";"B1190-530-F00";"1-63";"MLA";;"2015-12-30 09:00:00"
+"64";"Feed dog 3/16 inch";;"Feed dog 3/16 inch";"B1609-530-D00";"1-64";"MLA";;"2015-12-30 09:00:00"
+"65";"Gauge 1/4 inch";;"Gauge 1/4 inch";"B1190530H00";"1-65";"MLA";;"2015-12-30 09:00:00"
+"66";"Feed dog 1/4"" (3/8"")";;"Feed dog 1/4"" (3/8"")";"B1609503G00";"1-66";"MLA";;"2015-12-30 09:00:00"
+"67";"Knife";;"Knife";"B4145-530-B0A";"1-67";"MLA";;"2015-12-30 09:00:00"
+"68";"Needle Screw";;"Needle Screw";"SS 8080660 TP ";"2-1";"MLA";;"2015-12-30 09:00:00"
+"69";"2-Needle gauge set";;"2-Needle gauge set";"1- 1/4 ";"2-2";"MLA";;"2015-12-30 09:00:00"
+"70";"2-Needle gauge set";;"2-Needle gauge set";"7/8  ";"2-3";"MLA";;"2015-12-30 09:00:00"
+"71";"Throat plate 1/4";;"Throat plate 1/4";"40094773";"2-4";"MLA";;"2015-12-30 09:00:00"
+"72";"Assy_ratch_largehook(T)";;"Assy_ratch_largehook(T)";"40043334";"2-5";"MLA";;"2015-12-30 09:00:00"
+"73";"Spping_L";;"Spping_L";"40055358";"2-6";"MLA";;"2015-12-30 09:00:00"
+"74";"SCREW 1/8-44 L=6";;"SCREW 1/8-44 L=6";"B1425526000";"2-7";"MLA";;"2015-12-30 09:00:00"
+"75";"SCREW M4 L=6";;"SCREW M4 L=6";"SM6040655TP";"2-8";"MLA";;"2015-12-30 09:00:00"
+"76";"SCREW M4 L=7.4";;"SCREW M4 L=7.4";"SM1040750TP";"2-9";"MLA";;"2015-12-30 09:00:00"
+"77";"Sheet";;"Sheet";"22819809";"2-10";"MLA";;"2015-12-30 09:00:00"
+"78";"CLAMP_ SPRING";;"CLAMP_ SPRING";"40076708";"2-11";"MLA";;"2015-12-30 09:00:00"
+"79";"Shuttle (A)";;"Shuttle (A)";"40014964";"3-1";"MLA";;"2015-12-30 09:00:00"
+"80";"Thread Take - Up Spring";;"Thread Take - Up Spring";"22921605";"3-2";"MLA";;"2015-12-30 09:00:00"
+"81";"Wiper";;"Wiper";"B2107210D00 ";"3-3";"MLA";;"2015-12-30 09:00:00"
+"82";"Shuttle (H) ?";;"Shuttle (H) ?";"40061991";"3-4";"MLA";;"2015-12-30 09:00:00"
+"83";"Counter knife";;"Counter knife";"B2424210000 ";"3-5";"MLA";;"2015-12-30 09:00:00"
+"84";"Needle Hole Guide D=1.6";;"Needle Hole Guide D=1.6";"B242621000A ";"3-6";"MLA";;"2015-12-30 09:00:00"
+"85";"Needle Bearing";;"Needle Bearing";"B1905541B00 ";"3-7";"MLA";;"2015-12-30 09:00:00"
+"86";"Needle Hole Guide D=2.0";;"Needle Hole Guide D=2.0";"B242621000B ";"3-8";"MLA";;"2015-12-30 09:00:00"
+"87";"Moving Knife Compl";;"Moving Knife Compl";"B2421210AA0 ";"3-9";"MLA";;"2015-12-30 09:00:00"
+"88";"Needle - Bar";;"Needle - Bar";"40026882";"3-10";"MLA";;"2015-12-30 09:00:00"
+"89";"Screw 3/32-56 L=2.2";;"Screw 3/32-56 L=2.2";"SS 1060210 TP ";"3-11";"MLA";;"2015-12-30 09:00:00"
+"90";"Shuttle Driver AS M";;"Shuttle Driver AS M";"40014963";"3-12";"MLA";;"2015-12-30 09:00:00"
+"91";"Intermediate Presser A";;"Intermediate Presser A";"40023632";"3-13";"MLA";;"2015-12-30 09:00:00"
+"92";"Bobbin case AS M";;"Bobbin case AS M";"B1828210 DAA ";"3-14";"MLA";;"2015-12-30 09:00:00"
+"93";"Thread Tension 2 AS M-11";;"Thread Tension 2 AS M-11";"40029411";"3-15";"MLA";;"2015-12-30 09:00:00"
+"94";"Crank Rod All-ASM";;"Crank Rod All-ASM";"40089367";"3-16";"MLA";;"2015-12-30 09:00:00"
+"95";"Clamp (2014)";;"Clamp (2014)";"NIS-742-99 ";"3-17";"MLA";;"2015-12-30 09:00:00"
+"96";"Adjustable Guide(top and button)";;"Adjustable Guide(top and button)";"NIS 742-61,62 ";"3-18";"MLA";;"2015-12-30 09:00:00"
+"97";"Needle plate support Cove (2014)";;"Needle plate support Cove (2014)";"NIS 742120 ";"3-19";"MLA";;"2015-12-30 09:00:00"
+"98";"TURN AROUND CRANK SHAET";"con l?t";"TURN AROUND CRANK SHAET";"GFU01001000";"3-20";"MLA";;"2015-12-30 09:00:00"
+"99";"INTERMEDIATE PRESSER BASE";"mi?ng b?t con l?t";"INTERMEDIATE PRESSER BASE";"B4314210000";"3-21";"MLA";;"2015-12-30 09:00:00"
+"100";"SCREW 3/32-56L=5.5";"?c b?t con l?t";"SCREW 3/32-56L=5.5";"SS7060610SP";"3-22";"MLA";;"2015-12-30 09:00:00"
+"101";"COMPENSATING FOOT";"ke ch?n";"COMPENSATING FOOT";"D255421XXOO";"3-23";"MLA";;"2015-12-30 09:00:00"
+"102";"E-RING 4";;"E-RING 4";"RE0400000K0";"3-24";"MLA";;"2015-12-30 09:00:00"
+"103";"SCREW 9/64-40 L=7";;"SCREW 9/64-40 L=7";"SS1090750SP";"3-25";"MLA";;"2015-12-30 09:00:00"
+"104";"WASHER 2.5X6X0.5";;"WASHER 2.5X6X0.5";"WP0250516SD";"3-26";"MLA";;"2015-12-30 09:00:00"
+"105";"E-25; Bobbin";;"E-25; Bobbin";"07S026S-306H";"3-27";"MLA";;"2015-12-30 09:00:00"
+"106";;;"0";;"3-28";"MLA";;"2015-12-30 09:00:00"
+"107";;;"0";;"3-29";"MLA";;"2015-12-30 09:00:00"
+"108";;;"0";;"3-30";"MLA";;"2015-12-30 09:00:00"
+"109";"Needle - head - 64";;"Needle - head - 64";"13350400";"4-1";"MLA";;"2015-12-30 09:00:00"
+"110";"Thraot plate";;"Thraot plate";"13351705";"4-2";"MLA";;"2015-12-30 09:00:00"
+"111";"presser foot assembly";;"presser foot assembly";"40056411";"4-3";"MLA";;"2015-12-30 09:00:00"
+"112";"Stopper ASM";;"Stopper ASM";"40082313";"4-4";"MLA";;"2015-12-30 09:00:00"
+"113";"main Feed Dog";;"main Feed Dog";"13353701";"4-5";"MLA";;"2015-12-30 09:00:00"
+"114";"diff feed dog";;"diff feed dog";"13357603";"4-6";"MLA";;"2015-12-30 09:00:00"
+"115";"presser foot assy";;"presser foot assy";"40082974";"4-7";"MLA";;"2015-12-30 09:00:00"
+"116";"throat plate";;"throat plate";"40040513";"4-8";"MLA";;"2015-12-30 09:00:00"
+"117";"SCREW M3 L=3";;"SCREW M3 L=3";"SM8030312TP";"4-9";"MLA";;"2015-12-30 09:00:00"
+"118";"PC board 230VHD/HN/ND 230C";;"PC board 230VHD/HN/ND 230C";"DQ010333";"5-1";"MLA";;"2015-12-30 09:00:00"
+"119";"Temperature sensor Iron";;"Temperature sensor Iron";"JK020200 ";"5-2";"MLA";;"2015-12-30 09:00:00"
+"120";"Right angle bias binder";;"Right angle bias binder";"24 mm ";"6-1";"MLA";;"2015-12-30 09:00:00"
+"121";"Right angle bias binder";;"Right angle bias binder";"26 mm ";"6-2";"MLA";;"2015-12-30 09:00:00"
+"122";"Right angle bias binder";;"Right angle bias binder";"28 mm ";"6-3";"MLA";;"2015-12-30 09:00:00"
+"123";"Right angle bias binder";;"Right angle bias binder";"32 mm ";"6-4";"MLA";;"2015-12-30 09:00:00"
+"124";"Right angle bias binder";" ";"Right angle bias binder";"34 mm ";"6-5";"MLA";;"2015-12-30 09:00:00"
+"125";"Right angle bias binder";;"Right angle bias binder";"36 mm ";"6-6";"MLA";;"2015-12-30 09:00:00"
+"126";"Right angle bias binder";;"Right angle bias binder";"38 mm ";"6-7";"MLA";;"2015-12-30 09:00:00"
+"127";"Right angle bias binder";;"Right angle bias binder";"40 mm";"6-8";"MLA";;"2015-12-30 09:00:00"
+"128";"Right angle bias binder";;"Right angle bias binder";"45 mm ";"6-9";"MLA";;"2015-12-30 09:00:00"
+"129";"Hemming";;"Hemming";"1/4 6mm ";"6-10";"MLA";;"2015-12-30 09:00:00"
+"130";"Hemming";;"Hemming";"3/8 10mm";"6-11";"MLA";;"2015-12-30 09:00:00"
+"131";"Hemming";;"Hemming";"1/2 13mm ";"6-12";"MLA";;"2015-12-30 09:00:00"
+"132";"Hemming";;"Hemming";"5/8 16mm ";"6-13";"MLA";;"2015-12-30 09:00:00"
+"133";"0";;"0";"13/16 20mm";"6-14";"MLA";;"2015-12-30 09:00:00"
+"134";"Loop";;"Loop";"10 mm  ";"6-15";"MLA";;"2015-12-30 09:00:00"
+"135";"Loop";;"Loop";"15 mm ";"6-16";"MLA";;"2015-12-30 09:00:00"
+"136";"Loop";;"Loop";"20 mm  ";"6-17";"MLA";;"2015-12-30 09:00:00"
+"137";"Folder Fat Lock M/C";;"Folder Fat Lock M/C";"3/8mm  ";"6-18";"MLA";;"2015-12-30 09:00:00"
+"138";"Folder Fat Lock M/C";;"Folder Fat Lock M/C";"1/2mm ";"6-19";"MLA";;"2015-12-30 09:00:00"
+"139";"Zipper guide";;"Zipper guide";"031-747-9479 ";"6-20";"MLA";;"2015-12-30 09:00:00"
+"140";" Up and Down guide";;" Up and Down guide";"601";"6-21";"MLA";;"2015-12-30 09:00:00"
+"141";"Magnetic guide";;"Magnetic guide";"TKM G20 ";"6-22";"MLA";;"2015-12-30 09:00:00"
+"142";"sliding guide";;"sliding guide";"120428";"6-23";"MLA";;"2015-12-30 09:00:00"
+"143";"Guide";;"Guide";"????. ";"6-24";"MLA";;"2015-12-30 09:00:00"
+"144";"Loop Folder";;"Loop Folder";"3.5cm ";"6-25";"MLA";;"2015-12-30 09:00:00"
+"145";"Loop Folder";;"Loop Folder";"2.7cm  ";"6-26";"MLA";;"2015-12-30 09:00:00"
+"146";"Upper looper";;"Upper looper";"11888104";"7-1";"MLA";;"2015-12-30 09:00:00"
+"147";"Main Feed Dog";;"Main Feed Dog";"13192406";"7-2";"MLA";;"2015-12-30 09:00:00"
+"148";"Needle clamp Chain Looper";;"Needle clamp Chain Looper";"13175500";"7-3";"MLA";;"2015-12-30 09:00:00"
+"149";"Auxiliary Feed Dog";;"Auxiliary Feed Dog";"13191408";"7-4";"MLA";;"2015-12-30 09:00:00"
+"150";"Plain knife";;"Plain knife";"13150602";"7-5";"MLA";;"2015-12-30 09:00:00"
+"151";"Lower Looper";;"Lower Looper";"11999307";"7-6";"MLA";;"2015-12-30 09:00:00"
+"152";"Differential Feed Dog";;"Differential Feed Dog";"13193602";"7-7";"MLA";;"2015-12-30 09:00:00"
+"153";"Needle Rod (A) ASM";;"Needle Rod (A) ASM";" ";"7-8";"MLA";;"2015-12-30 09:00:00"
+"154";"Lower knife";;"Lower knife";"13150701";"7-9";"MLA";;"2015-12-30 09:00:00"
+"155";"Chain Looper";;"Chain Looper";"12120705";"7-10";"MLA";;"2015-12-30 09:00:00"
+"156";"Throat Plate";;"Throat Plate";"R4612J6FF00 ";"7-11";"MLA";;"2015-12-30 09:00:00"
+"157";"Needle Screw";;"Needle Screw";"SS- 8080310- Tp ";"7-12";"MLA";;"2015-12-30 09:00:00"
+"158";"Main Feed Dog";;"Main Feed Dog";"11883006";"7-13";"MLA";;"2015-12-30 09:00:00"
+"159";"Differential Feed Dog";;"Differential Feed Dog";"12173506";"7-14";"MLA";;"2015-12-30 09:00:00"
+"160";"Needle Clamp, Chain Looper";;"Needle Clamp, Chain Looper";"12257507";"7-15";"MLA";;"2015-12-30 09:00:00"
+"161";"NEEDLE THREAD PRESSER GUIDE A";;"NEEDLE THREAD PRESSER GUIDE A";"122-80905( 13110705)";"7-16";"MLA";;"2015-12-30 09:00:00"
+"162";"NEEDLE THREAD PRESSER SPRING";;"NEEDLE THREAD PRESSER SPRING";"131-10903";"7-17";"MLA";;"2015-12-30 09:00:00"
+"163";"NEEDLE THREAD PRESSER PLATE A";;"NEEDLE THREAD PRESSER PLATE A";"131-11000";"7-18";"MLA";;"2015-12-30 09:00:00"
+"164";"HINGE SCREW D=2.8 H=4";;"HINGE SCREW D=2.8 H=4";"SD-0280401";"7-19";"MLA";;"2015-12-30 09:00:00"
+"165";"TOP FEED DOG";;"TOP FEED DOG";"123-30205";"7-20";"MLA";;"2015-12-30 09:00:00"
+"166";"THROAT  PLATE";;"THROAT  PLATE";"R4608J6DD00";"7-21";"MLA";;"2015-12-30 09:00:00"
+"167";"MAIN FEED DOG";;"MAIN FEED DOG";"11882909";"7-22";"MLA";;"2015-12-30 09:00:00"
+"168";"DIFFERENTIAL FEED DOG";;"DIFFERENTIAL FEED DOG";"12173209";"7-23";"MLA";;"2015-12-30 09:00:00"
+"169";"NEEDEL CLAMP CHAIN LOOPER";;"NEEDEL CLAMP CHAIN LOOPER";"13175500";"7-24";"MLA";;"2015-12-30 09:00:00"
+"170";"TOP FEED DOG";;"TOP FEED DOG";"12330007";"7-25";"MLA";;"2015-12-30 09:00:00"
+"171";"PRESSER FOOT ASM";;"PRESSER FOOT ASM";"12320057";"7-26";"MLA";;"2015-12-30 09:00:00"
+"172";"SPRING";;"SPRING";"7*37mm";"7-27";"MLA";;"2015-12-30 09:00:00"
+"173";"REAR PRESSER FOOT";;"REAR PRESSER FOOT";"12165908";"7-28";"MLA";;"2015-12-30 09:00:00"
+"174";"PRESSER FOOT HINGLE PIN";;"PRESSER FOOT HINGLE PIN";"11930708";"7-29";"MLA";;"2015-12-30 09:00:00"
+"175";"KNIFE ARM SHAFT";;"KNIFE ARM SHAFT";"31216005";"7-30";"MLA";;"2015-12-30 09:00:00"
+"176";"LOWER LOOPER";;"LOWER LOOPER";"11999307";"7-31";"MLA";;"2015-12-30 09:00:00"
+"177";"UPPER LOOPER";;"UPPER LOOPER";"11991908";"7-32";"MLA";;"2015-12-30 09:00:00"
+"178";;;"0";;"7-33";"MLA";;"2015-12-30 09:00:00"
+"179";;;"0";;"7-34";"MLA";;"2015-12-30 09:00:00"
+"180";"Bobbin case";;"Bobbin case";"07-004A-3500 ( 229-32909)";"8-1";"MLA";;"2015-12-30 09:00:00"
+"181";"Bobbin  (AL)";;"Bobbin  (AL)";"07-105-2700 ";"8-2";"MLA";;"2015-12-30 09:00:00"
+"182";"Needle plate";;"Needle plate";"1109415 H  ";"8-3";"MLA";;"2015-12-30 09:00:00"
+"183";"Needle plate";;"Needle plate";"150792 (H 26 ) ";"8-4";"MLA";;"2015-12-30 09:00:00"
+"184";"Feed Dog";;"Feed Dog";"150793";"8-5";"MLA";;"2015-12-30 09:00:00"
+"185";"Thread Take up spring";;"Thread Take up spring";"229-21605 ";"8-6";"MLA";;"2015-12-30 09:00:00"
+"186";"Counter Knife";;"Counter Knife";"400-00324";"8-7";"MLA";;"2015-12-30 09:00:00"
+"187";"Moving Knife  AS M";;"Moving Knife  AS M";"113-13053 ";"8-8";"MLA";;"2015-12-30 09:00:00"
+"188";"Bobbin Case Tanison spring";;"Bobbin Case Tanison spring";"??   (18)";"8-9";"MLA";;"2015-12-30 09:00:00"
+"189";"Bobbin case ( Srew Big )";;"Bobbin case ( Srew Big )";"     ??   (16)        ";"8-10";"MLA";;"2015-12-30 09:00:00"
+"190";"Bobbin case (Screw Small )";;"Bobbin case (Screw Small )";"?..     (17)";"8-11";"MLA";;"2015-12-30 09:00:00"
+"191";"Rotory Hook  AS M";;"Rotory Hook  AS M";"110-38650/YZH-7 94BTR ";"8-12";"MLA";;"2015-12-30 09:00:00"
+"192";"Upper Knife";;"Upper Knife";"10-101A-2700 ";"8-13";"MLA";;"2015-12-30 09:00:00"
+"193";"Screw ( 1/8 N=44)";;"Screw ( 1/8 N=44)";"SC-0130-1230 ";"8-14";"MLA";;"2015-12-30 09:00:00"
+"194";"Rotory Hook ";;"Rotory Hook ";"KLH-7 94BTR ";"8-15";"MLA";;"2015-12-30 09:00:00"
+"195";"A-31: Needle plate( A-type)";"Mat nguyet";"A-31: Needle plate( A-type)";"01-144A-350A";"8-16";"MLA";;"2015-12-30 09:00:00"
+"196";"A-32: Needle plate 1/4";"Mat nguyet xen 1/4";"A-32: Needle plate 1/4";"01-114A-5300";"8-17";"MLA";;"2015-12-30 09:00:00"
+"197";"A-32: Needle plate 1/8";"Mat nguyet may xen 1/8";"A-32: Needle plate 1/8";"01-035A-5300";"8-18";"MLA";;"2015-12-30 09:00:00"
+"198";"A-32: Needle plate 3/8 inch";"Mat nguyet may xen 3/8";"A-32: Needle plate 3/8 inch";"01-115A-5300";"8-19";"MLA";;"2015-12-30 09:00:00"
+"199";"A-33: Screw(1/8 n=40)";"Oc Mat nguyet";"A-33: Screw(1/8 n=40)";"01-136S-1230";"8-20";"MLA";;"2015-12-30 09:00:00"
+"200";"A-53: Arm thread guide";"huong dan chi";"A-53: Arm thread guide";"01-030C-1230";"8-21";"MLA";;"2015-12-30 09:00:00"
+"201";"A-55: Thread guide for A-5";"huong dan chi";"A-55: Thread guide for A-5";"01-031C-1230";"8-22";"MLA";;"2015-12-30 09:00:00"
+"202";"B-27: Thread take up lever Assy";"Cum co giat";"B-27: Thread take up lever Assy";"08-201A-250A";"8-23";"MLA";;"2015-12-30 09:00:00"
+"203";"Bobbin presser";"Nhip khong che luong danh chi suot";"Bobbin presser";;"8-24";"MLA";;"2015-12-30 09:00:00"
+"204";"Bobbin winder spindle";"Truc Banh xe danh chi";"Bobbin winder spindle";"22927602";"8-25";"MLA";;"2015-12-30 09:00:00"
+"205";"G-32: Bobbin case Assy";"Thoi";"G-32: Bobbin case Assy";"07-004A-3500";"8-26";"MLA";;"2015-12-30 09:00:00"
+"206";"C-34: Hook retainer";"don ganh";"C-34: Hook retainer";"07-013A-1230";"8-27";"MLA";;"2015-12-30 09:00:00"
+"207";"F-59: Screw (1/8"" n=44)";"oc";"F-59: Screw (1/8"" n=44)";"SC-0312-5050";"8-28";"MLA";;"2015-12-30 09:00:00"
+"208";"D-100:Reverse feed solenoid crank";"Can lai Mui";"D-100:Reverse feed solenoid crank";"06-131A-257A";"8-29";"MLA";;"2015-12-30 09:00:00"
+"209";"D-118: Feed regulator control plate";"num dieu chinh mui may";"D-118: Feed regulator control plate";"06-028C-357B";"8-30";"MLA";;"2015-12-30 09:00:00"
+"210";"D-122:Dial shaft eccentric stopper spring";"tay ham bo dieu chinh Mui may";"D-122:Dial shaft eccentric stopper spring";"GP-016425-00";"8-31";"MLA";;"2015-12-30 09:00:00"
+"211";"D-42:Feed dog ( A- type)";"Rang cua";"D-42:Feed dog ( A- type)";"06-131A-350A";"8-32";"MLA";;"2015-12-30 09:00:00"
+"212";"D-43: Feed dog";"Rang cua (GP-010652-00)";"D-43: Feed dog";"06-031A-350B";"8-33";"MLA";;"2015-12-30 09:00:00"
+"213";"D-43: Feed dog";"Rang cua may xen 1/8";"D-43: Feed dog";"06-138A-5300";"8-34";"MLA";;"2015-12-30 09:00:00"
+"214";"D-43: Feed dog";"Rang cua may xen 1/4";"D-43: Feed dog";"06-111A-5300";"8-35";"MLA";;"2015-12-30 09:00:00"
+"215";"D-43: Feed dog 3/8 inch";"Rang cua may xen 3/8";"D-43: Feed dog 3/8 inch";"06-111A-5300";"8-36";"MLA";;"2015-12-30 09:00:00"
+"216";"D-44: Screw (1/8 inch n=44)";"Oc vit cho cau Rang cua";"D-44: Screw (1/8 inch n=44)";"SC-0130-1230";"8-37";"MLA";;"2015-12-30 09:00:00"
+"217";"D-50: Screw (3/16 inch n=28)";"Oc dieu chinh do cao thap cua cau Rang cua";"D-50: Screw (3/16 inch n=28)";"06-119S-1230";"8-38";"MLA";;"2015-12-30 09:00:00"
+"218";;"Dao may tra Vong nach DURKOPP ( Strong H)";"0";"227683(TI)";"8-39";"MLA";;"2015-12-30 09:00:00"
+"219";"E1: Fix Mes";"Dao tinh";"E1: Fix Mes";"10-101A-2700";"8-40";"MLA";;"2015-12-30 09:00:00"
+"220";"E-12 Stopper C ring for E-11";"vong ch?n";"E-12 Stopper C ring for E-11";"10-009C-2700";"8-41";"MLA";;"2015-12-30 09:00:00"
+"221";"E5: Thread retaining plate";"Nhip giu chi suot cua dao";"E5: Thread retaining plate";"10-005A-2700";"8-42";"MLA";;"2015-12-30 09:00:00"
+"222";"E-52: Thread trimming solenoid Assy";"so len noi";"E-52: Thread trimming solenoid Assy";"10-044A-2507";"8-43";"MLA";;"2015-12-30 09:00:00"
+"223";"E-61: Bobbin presser spring";"Lo xo hoi cua co mo giu chi suot";"E-61: Bobbin presser spring";"01-015C-2350";"8-44";"MLA";;"2015-12-30 09:00:00"
+"224";"E-9: Rotary Mes";"Dao dong";"E-9: Rotary Mes";"10-106A-235B";"8-45";"MLA";;"2015-12-30 09:00:00"
+"225";"F-34: Needle bar(B type)";"Tru kim";"F-34: Needle bar(B type)";"04-101A-350B";"8-47";"MLA";;"2015-12-30 09:00:00"
+"226";"F-38: Screw(1/8 n=44)";"Oc tao kim";"F-38: Screw(1/8 n=44)";"SC-A131-4522";"8-48";"MLA";;"2015-12-30 09:00:00"
+"227";"Feed dog";"Rang cua may co";"Feed dog";;"8-49";"MLA";;"2015-12-30 09:00:00"
+"228";"Feed dog";"Rang cua Banh xe";"Feed dog";;"8-50";"MLA";;"2015-12-30 09:00:00"
+"229";"Fuse ( S/R 160/40)";"07-009A-SC53( 09-007A-SC53)";"Fuse ( S/R 160/40)";"40W 160?J";"8-51";"MLA";;"2015-12-30 09:00:00"
+"230";"G-12: Screw (9/64 inch n=40)";"Oc bat Chan vit";"G-12: Screw (9/64 inch n=40)";"SC-0157-1230";"8-52";"MLA";;"2015-12-30 09:00:00"
+"231";"G-12: Screw (9/64 inch n=40)";"Nang truc chan vit";"G-12: Screw (9/64 inch n=40)";"43-102A-2500";"8-53";"MLA";;"2015-12-30 09:00:00"
+"232";"G-29:Needle bar";"Tru kim";"G-29:Needle bar";" 04-001A-5300";"8-54";"MLA";;"2015-12-30 09:00:00"
+"233";"G-30: Tension release link";"Tach dong tien";"G-30: Tension release link";"40-005A-3500";"8-55";"MLA";;"2015-12-30 09:00:00"
+"234";"G-35: Spring for G-32";"Lo xo";"G-35: Spring for G-32";"40-009G-3500";"8-56";"MLA";;"2015-12-30 09:00:00"
+"235";"G-40: Cable connection bolt";"chot cap";"G-40: Cable connection bolt";"40-003A-2700";"8-57";"MLA";;"2015-12-30 09:00:00"
+"236";"G-41: Nut for cable connection bolt B";"bu long";"G-41: Nut for cable connection bolt B";"40-005C-2700";"8-58";"MLA";;"2015-12-30 09:00:00"
+"237";"G-42: Nut for cable connection bolt A";"bu long";"G-42: Nut for cable connection bolt A";"0";"8-59";"MLA";;"2015-12-30 09:00:00"
+"238";"H-16: Hing screw for H-15";"oc";"H-16: Hing screw for H-15";"11-009S-257A";"8-60";"MLA";;"2015-12-30 09:00:00"
+"239";"H-9: Presser foot";"Chan vit may xen 1/8";"H-9: Presser foot";"05-010A-5300";"8-61";"MLA";;"2015-12-30 09:00:00"
+"240";"J-7-9: Knee lifter connection crank";"Khop Noi Choac 3 de nhac Chan vit";"J-7-9: Knee lifter connection crank";"GP-023209-00";"8-62";"MLA";;"2015-12-30 09:00:00"
+"241";"Needle bar crank shaft";"Truc Noi tru kim";"Needle bar crank shaft";"PN-000277-01";"8-63";"MLA";;"2015-12-30 09:00:00"
+"242";"Needle bar lower bushing";"Bac tru kim";"Needle bar lower bushing";"04-109A-235A";"8-64";"MLA";;"2015-12-30 09:00:00"
+"243";"Needle gauge";"Bo cu ly";"Needle gauge";"TS-752";"8-65";"MLA";;"2015-12-30 09:00:00"
+"244";"Needle plate";"Mat nguyet may co";"Needle plate";;"8-66";"MLA";;"2015-12-30 09:00:00"
+"245";"Needle plate";"Mat nguyet Banh xe";"Needle plate";;"8-67";"MLA";;"2015-12-30 09:00:00"
+"246";"Needle plate";"Mat nguyet thuong";"Needle plate";"E18";"8-68";"MLA";;"2015-12-30 09:00:00"
+"247";"Normal Feed dog";"Rang cua thuong";"Normal Feed dog";"S03885";"8-69";"MLA";;"2015-12-30 09:00:00"
+"248";"Nut";"Num dong tien danh chi suot";"Nut";;"8-70";"MLA";;"2015-12-30 09:00:00"
+"249";"Nut(by metal)";"Num dong tien phu";"Nut(by metal)";;"8-71";"MLA";;"2015-12-30 09:00:00"
+"250";"Nut(by plastic)";"Num dong tien phu";"Nut(by plastic)";;"8-72";"MLA";;"2015-12-30 09:00:00"
+"251";"Presser foot 1/4";"Chan vit may xen 1/4";"Presser foot 1/4";"05-112A-5300";"8-73";"MLA";;"2015-12-30 09:00:00"
+"252";"Pressure foot";"Chan vit Banh xe";"Pressure foot";;"8-74";"MLA";;"2015-12-30 09:00:00"
+"253";"Rubber ring";"Gioang cao su";"Rubber ring";"fi 40 x 3";"8-75";"MLA";;"2015-12-30 09:00:00"
+"254";"Screw 1/8-44 L=4.5";"Oc gan kim";"Screw 1/8-44 L=4.5";"SS7080510TP";"8-76";"MLA";;"2015-12-30 09:00:00"
+"255";"Stop ring C ( @ 12)";"vong chan";"Stop ring C ( @ 12)";"PSR-AC001000";"8-77";"MLA";;"2015-12-30 09:00:00"
+"256";"Thread tension disk";"dia dong tien phu";"Thread tension disk";;"8-78";"MLA";;"2015-12-30 09:00:00"
+"257";"Washer";"long den";"Washer";"01-023C-2507(-)";"8-79";"MLA";;"2015-12-30 09:00:00"
+"258";"A-63:Cap for tension release pin";"Ty";"A-63:Cap for tension release pin";"40-104A-3500";"8-80";"MLA";;"2015-12-30 09:00:00"
+"259";"G-65:Fixed Mes";"dao tinh";"G-65:Fixed Mes";"GP-000075-01(GP-000075-02)";"8-81";"MLA";;"2015-12-30 09:00:00"
+"260";"A-58-1 thread tension contronl Assy";"cum dong tien";"A-58-1 thread tension contronl Assy";;"8-82";"MLA";;"2015-12-30 09:00:00"
+"261";"THROAT PLATE (H)";"m?t nguy?t";"THROAT PLATE (H)";"B1109-415-H0B";"8-83";"MLA";;"2015-12-30 09:00:00"
+"262";"POSITIONING FINGER H";"c? gi? ?";"POSITIONING FINGER H";"236-46003";"8-84";"MLA";;"2015-12-30 09:00:00"
+"263";"OIL TANK ASM";"tr?c ??nh su?t";"OIL TANK ASM";"236-28555";"8-85";"MLA";;"2015-12-30 09:00:00"
+"264";"F-37Needle bar threadguide(B type)";;"F-37Needle bar threadguide(B type)";"04-001A-2700";"8-86";"MLA";;"2015-12-30 09:00:00"
+"265";"G-2:presser adjusting nut";;"G-2:presser adjusting nut";"05-002C-2500";"8-87";"MLA";;"2015-12-30 09:00:00"
+"266";"G-36:Tension release cad assy";;"G-36:Tension release cad assy";"40-008A-2500";"8-88";"MLA";;"2015-12-30 09:00:00"
+"267";"Mes driving  shaft bush F-40";;"Mes driving  shaft bush F-40";"13-140A-5300";"8-89";"MLA";;"2015-12-30 09:00:00"
+"268";"Mes mounting base F-45";;"Mes mounting base F-45";"13-146A-5300";"8-90";"MLA";;"2015-12-30 09:00:00"
+"269";"J-24 Belt Cover""B""";;"J-24 Belt Cover""B""";" 60-002A-2500";"8-91";"MLA";;"2015-12-30 09:00:00"
+"270";" J-39 Thread Stand Ass'y";;" J-39 Thread Stand Ass'y";"GP-022624-00";"8-92";"MLA";;"2015-12-30 09:00:00"
+"271";"A-32: Needle plate(B type)";;"A-32: Needle plate(B type)";"01-144A-350B";"8-93";"MLA";;"2015-12-30 09:00:00"
+"272";"G-1: Screw (9/16 n=20)";;"G-1: Screw (9/16 n=20)";"SC-0339-1230";"8-94";"MLA";;"2015-12-30 09:00:00"
+"273";"k-14: Oil pump connection spring";;"k-14: Oil pump connection spring";"44-016G-1230";"8-95";"MLA";;"2015-12-30 09:00:00"
+"274";"Hook protecting plate ,F-60,";;"Hook protecting plate ,F-60,";"13-053A-5300";"8-96";"MLA";;"2015-12-30 09:00:00"
+"275";"Bobbin";;"Bobbin";"07-161A-750L(AL) ";"9-1";"MLA";;"2015-12-30 09:00:00"
+"276";"Bobbin Case (Screw small)";;"Bobbin Case (Screw small)";"?.   (21)";"9-2";"MLA";;"2015-12-30 09:00:00"
+"277";"Bobbin case (Screw Big )";;"Bobbin case (Screw Big )";"?.   (20)";"9-3";"MLA";;"2015-12-30 09:00:00"
+"278";"Take up spring L";;"Take up spring L";"?..   (203)";"9-4";"MLA";;"2015-12-30 09:00:00"
+"279";"Take up spring R";;"Take up spring R";"?.   (204)";"9-5";"MLA";;"2015-12-30 09:00:00"
+"280";"2-Needle gauge set";;"2-Needle gauge set";"( 1'' ) ";"9-6";"MLA";;"2015-12-30 09:00:00"
+"281";"2-Needle gauge set";;"2-Needle gauge set";"3/4 mm ";"9-7";"MLA";;"2015-12-30 09:00:00"
+"282";"Needle screw";;"Needle screw";"SC- 0160-5607";"9-8";"MLA";;"2015-12-30 09:00:00"
+"283";"NEEDLE CLAMP";;"NEEDLE CLAMP";"3/4""";"9-9";"MLA";;"2015-12-30 09:00:00"
+"284";"NEEDLE CLAMP";;"NEEDLE CLAMP";"5/8""";"9-10";"MLA";;"2015-12-30 09:00:00"
+"285";"NEEDLE CLAMP";;"NEEDLE CLAMP";"1""";"9-11";"MLA";;"2015-12-30 09:00:00"
+"286";"ZIPPER ( Side 5mm )";;"ZIPPER ( Side 5mm )";;"9-12";"MLA";;"2015-12-30 09:00:00"
+"287";"HOOK G-73";;"HOOK G-73";;"9-13";"MLA";;"2015-12-30 09:00:00"
+"288";"B-34: Thread take- up lever";"Co giat chi";"B-34: Thread take- up lever";"08-102A-750L";"9-14";"MLA";;"2015-12-30 09:00:00"
+"289";"D-29-1: Needle bar clamp";"Cum tach tru kim";"D-29-1: Needle bar clamp";"04-016A-7900";"9-15";"MLA";;"2015-12-30 09:00:00"
+"290";"D-48: Screw ( 1/8 inch n=40 )";"Oc bat Tao kim tach goc";"D-48: Screw ( 1/8 inch n=40 )";"SC-A320-4222";"9-16";"MLA";;"2015-12-30 09:00:00"
+"291";"E-32: Tension release cable Assy";"ong phanh va day phanh";"E-32: Tension release cable Assy";"40-024A-5770";"9-17";"MLA";;"2015-12-30 09:00:00"
+"292";"A-13: Screw (9/64 inch n=40)";"oc";"A-13: Screw (9/64 inch n=40)";"SC-0519-2302";"9-18";"MLA";;"2015-12-30 09:00:00"
+"293";"A-14: Arm thread guide plate U";"huong dan chi";"A-14: Arm thread guide plate U";"01-018A-7500";"9-19";"MLA";;"2015-12-30 09:00:00"
+"294";"A-16: Arm thread guide plate M";"huong dan chi";"A-16: Arm thread guide plate M";"01-020A-7500";"9-20";"MLA";;"2015-12-30 09:00:00"
+"295";"A-21: Thread take up cover";"Bao ve co giat chi";"A-21: Thread take up cover";"GP-013234-00";"9-21";"MLA";;"2015-12-30 09:00:00"
+"296";"A-35: Screw (11/64 inch n=40)";"Oc";"A-35: Screw (11/64 inch n=40)";"SC-0179-3710";"9-22";"MLA";;"2015-12-30 09:00:00"
+"297";"A-38: Stopper for slide plate";"Nhip chan";"A-38: Stopper for slide plate";"01-046A7500";"9-23";"MLA";;"2015-12-30 09:00:00"
+"298";"A-39: Screw (11/64 inch n=40)";"Oc";"A-39: Screw (11/64 inch n=40)";"SC-0543-2302";"9-24";"MLA";;"2015-12-30 09:00:00"
+"299";"A-56: Needle plate 1/4";"Mat nguyet 1/4";"A-56: Needle plate 1/4";"01-40TA-7507";"9-25";"MLA";;"2015-12-30 09:00:00"
+"300";"A-56: Needle plate 7/16";"Mat nguyet 7/16";"A-56: Needle plate 7/16";"01-49TA-7507";"9-26";"MLA";;"2015-12-30 09:00:00"
+"301";"A-57: Screw (11/64 inch n=40)";"Oc Mat nguyet( Oc dai)";"A-57: Screw (11/64 inch n=40)";"SC-0119-7600";"9-27";"MLA";;"2015-12-30 09:00:00"
+"302";"A-58: Slide plate";"Nap che may";"A-58: Slide plate";"01-045A-7500";"9-28";"MLA";;"2015-12-30 09:00:00"
+"303";"A-73: Thread tension ajusting Assy";"Cum dong tien";"A-73: Thread tension ajusting Assy";"AS-004113-00";"9-29";"MLA";;"2015-12-30 09:00:00"
+"304";"A-74: Stopper for A-73";"Vong ban nguyet";"A-74: Stopper for A-73";"01-019C-7400";"9-30";"MLA";;"2015-12-30 09:00:00"
+"305";"B-13: Timming beltt";"Day dai";"B-13: Timming beltt";"02-013A-7400";"9-31";"MLA";;"2015-12-30 09:00:00"
+"306";"B-28: Needle bar crank shaft";"Tru kim";"B-28: Needle bar crank shaft";"PN-000243-03";"9-32";"MLA";;"2015-12-30 09:00:00"
+"307";"B-31: Hing pin for thread take up lever(08-105P-79";"thanh noi";"B-31: Hing pin for thread take up lever(08-105P-7900)";"08-101A-8130";"9-33";"MLA";;"2015-12-30 09:00:00"
+"308";"B-38: Thread take-up lever holder";"Kep giu co giat chi";"B-38: Thread take-up lever holder";"02-103A-740L";"9-34";"MLA";;"2015-12-30 09:00:00"
+"309";"B-5: Screw (15/64 inch n=28)";"Oc";"B-5: Screw (15/64 inch n=28)";"SC-0150-2500";"9-35";"MLA";;"2015-12-30 09:00:00"
+"310";"Bobbin case opener";"Cai gat thoi(may KM-757)";"Bobbin case opener";"GP-019543-00";"9-36";"MLA";;"2015-12-30 09:00:00"
+"311";"Bobbin case opener";"Cai gat thoi(may KM-757BL-7S)";"Bobbin case opener";"GP-019545-01(GP-019545-00)";"9-37";"MLA";;"2015-12-30 09:00:00"
+"312";"Bobbin winder thread tension disk";"dia dong tien danh chi suot";"Bobbin winder thread tension disk";;"9-38";"MLA";;"2015-12-30 09:00:00"
+"313";"C-4:Set screw for slide plate";"Oc bat cum de tach kim";"C-4:Set screw for slide plate";"17-004A-7900";"9-39";"MLA";;"2015-12-30 09:00:00"
+"314";"D-15: Needle bar";"tru kim";"D-15: Needle bar";"04-101A-7500(GP-035932-00)";"9-40";"MLA";;"2015-12-30 09:00:00"
+"315";"D-16: Needle clamp 1x3/8 inch";"Tao kim 1x3/8 inch";"D-16: Needle clamp 1x3/8 inch";;"9-41";"MLA";;"2015-12-30 09:00:00"
+"316";"D-17: Screw (9/64 n=40)";"Oc";"D-17: Screw (9/64 n=40)";"SC-0160-5607";"9-42";"MLA";;"2015-12-30 09:00:00"
+"317";"D-24-16: Screw for D-29-15";"Oc";"D-24-16: Screw for D-29-15";"04-022S-7900";"9-43";"MLA";;"2015-12-30 09:00:00"
+"318";"D-29-10: Hinge pin B for clutch lever";"Ty ngan";"D-29-10: Hinge pin B for clutch lever";"04-028P-7900";"9-44";"MLA";;"2015-12-30 09:00:00"
+"319";"D-29-11: Hinge pin for latchet";"Ty";"D-29-11: Hinge pin for latchet";"04-029P-7900";"9-45";"MLA";;"2015-12-30 09:00:00"
+"320";"D-29-12: Latchet (L)";"Co trai";"D-29-12: Latchet (L)";"04-018A-7900";"9-46";"MLA";;"2015-12-30 09:00:00"
+"321";"D-29-12: Latchet (R)";"Co phai";"D-29-12: Latchet (R)";"04-019A-7900";"9-47";"MLA";;"2015-12-30 09:00:00"
+"322";"D-29-14: Latchet return sping";"Lo xo";"D-29-14: Latchet return sping";"04-032G-7900";"9-48";"MLA";;"2015-12-30 09:00:00"
+"323";"D-29-15: Latchet bracket";"Gia do Lo xo";"D-29-15: Latchet bracket";"04-023A-7900";"9-49";"MLA";;"2015-12-30 09:00:00"
+"324";"D-29-3: Cover for releasing pin";"Tam chan";"D-29-3: Cover for releasing pin";"04-024A-7900";"9-50";"MLA";;"2015-12-30 09:00:00"
+"325";"D-29-4: Release pin return spring";"Lo xo";"D-29-4: Release pin return spring";"04-030G-7900";"9-51";"MLA";;"2015-12-30 09:00:00"
+"326";"D-29-5: Needle bar releasing pin";"Chot";"D-29-5: Needle bar releasing pin";"04-025P-7900";"9-52";"MLA";;"2015-12-30 09:00:00"
+"327";"D-29-6: Clutch lever return spring";"Lo xo cua bo tach goc";"D-29-6: Clutch lever return spring";"04-031G-7900";"9-53";"MLA";;"2015-12-30 09:00:00"
+"328";" ";"choac noi";" ";"GP-020645-01";"9-54";"MLA";;"2015-12-30 09:00:00"
+"329";"D-29-8: Hinge pin A or clutch lever";"Ty dai";"D-29-8: Hinge pin A or clutch lever";"04-026P-7900";"9-55";"MLA";;"2015-12-30 09:00:00"
+"330";"D-29-9: Neelde bar down positioning pin";"Chot";"D-29-9: Neelde bar down positioning pin";"04-033P-7900";"9-56";"MLA";;"2015-12-30 09:00:00"
+"331";"D-32:Needle up positioning pin";"Chot(PN-000355-00)";"D-32:Needle up positioning pin";"15-021P-7900 (DPN-BC002900)";"9-57";"MLA";;"2015-12-30 09:00:00"
+"332";"D-33: Spring for D-32";"Lo xo";"D-33: Spring for D-32";"15-022G-7900";"9-58";"MLA";;"2015-12-30 09:00:00"
+"333";"D-36: Screw (1/8 inch n=40)";"Oc";"D-36: Screw (1/8 inch n=40)";"SC-0323-7900";"9-59";"MLA";;"2015-12-30 09:00:00"
+"334";"D-40: Slide block";"thanh truot";"D-40: Slide block";"15-020A-7900";"9-60";"MLA";;"2015-12-30 09:00:00"
+"335";"D-42: Screw (9/64 n=40)";"Oc";"D-42: Screw (9/64 n=40)";"SC-0531-2302";"9-61";"MLA";NULL;"2016-03-03 08:06:48"
+"336";"D-43L: Needle bar (L)";"tru kim trai";"D-43L: Needle bar (L)";"GP-012980-01";"9-62";"MLA";;"2015-12-30 09:00:00"
+"337";"D-43R: Needle bar ( R)";"tru kim phai";"D-43R: Needle bar ( R)";"GP-012979-01";"9-63";"MLA";;"2015-12-30 09:00:00"
+"338";"D-45, D-46: Needle clamp ( R) 7/16";"Tao kim phai 7/16";"D-45, D-46: Needle clamp ( R) 7/16";"GP-022613-00";"9-64";"MLA";;"2015-12-30 09:00:00"
+"339";"D-45, D-46: Needle clamp 5/8";"Tao kim trai 5/8";"D-45, D-46: Needle clamp 5/8";"GP-022616-00";"9-65";"MLA";;"2015-12-30 09:00:00"
+"340";"D-45,D-46: Needle clamp ( L) 7/16";"Tao kim trai 7/16";"D-45,D-46: Needle clamp ( L) 7/16";"GP-022612-00(04-19LA-7900)";"9-66";"MLA";;"2015-12-30 09:00:00"
+"341";"D-47: Screw (1/8 inch n=40)";"?c b?t ??u t?kim";"D-47: Screw (1/8 inch n=40)";"SC-A297-4118";"9-67";"MLA";;"2015-12-30 09:00:00"
+"342";"D-5: Needle bar guide lside block";"Con truot";"D-5: Needle bar guide lside block";"04-105A-7400";"9-68";"MLA";;"2015-12-30 09:00:00"
+"343";"D-8: Needle bar crank";"Truyen dong tru kim";"D-8: Needle bar crank";"04-004A-7400";"9-69";"MLA";;"2015-12-30 09:00:00"
+"344";"D-9: Needle bar clamp";"Thanh giu tru kim";"D-9: Needle bar clamp";"04-102A-7400";"9-70";"MLA";;"2015-12-30 09:00:00"
+"345";"E-11: Lifting Level Shaft";"Nang truc chan vit";"E-11: Lifting Level Shaft";"43-001A-640L";"9-71";"MLA";;"2015-12-30 09:00:00"
+"346";"E-12: Screw (M5)";"Oc";"E-12: Screw (M5)";"SC-0164-2700";"9-72";"MLA";;"2015-12-30 09:00:00"
+"347";"E-16: Spring for presser bar lifter lever";"Lo xo keo de dong dong tien(dau may)";"E-16: Spring for presser bar lifter lever";"GP-012864-00";"9-73";"MLA";;"2015-12-30 09:00:00"
+"348";"E-19: Presser lifter bar lever";"Thanh nang chan vit";"E-19: Presser lifter bar lever";"GP-021143-01";"9-74";"MLA";;"2015-12-30 09:00:00"
+"349";"E-2: Screw (9/64 n=20)";"Num dien chinh luc ep Chan vit";"E-2: Screw (9/64 n=20)";"SC-0339-1230";"9-75";"MLA";;"2015-12-30 09:00:00"
+"350";"E-27: Knee lifter connecting rod";"Thanh truc nang";"E-27: Knee lifter connecting rod";"43-015A-7500";"9-76";"MLA";;"2015-12-30 09:00:00"
+"351";"E-41: Stud screw for E-40";"oc";"E-41: Stud screw for E-40";"10-027S257A";"9-77";"MLA";;"2015-12-30 09:00:00"
+"352";"E-43: Clutch lever moving pin screw";"oc";"E-43: Clutch lever moving pin screw";"43-004S-3400";"9-78";"MLA";;"2015-12-30 09:00:00"
+"353";"E-44: Stud screw for E48";"oc";"E-44: Stud screw for E48";"10-028S-257A";"9-79";"MLA";;"2015-12-30 09:00:00"
+"354";"E-8: Presser foot 7/16";"Chan vit 7/16";"E-8: Presser foot 7/16";"05-112A-7500";"9-80";"MLA";;"2015-12-30 09:00:00"
+"355";"E-8: Presser foot 1x3/8 inch";"Chan vit 1x3/8 inch";"E-8: Presser foot 1x3/8 inch";"05-120A-7500";"9-81";"MLA";;"2015-12-30 09:00:00"
+"356";"F-2: Length control dial plate";"num";"F-2: Length control dial plate";"06-013M-740L";"9-82";"MLA";;"2015-12-30 09:00:00"
+"357";"F-28: Stud screw for E-27";"Oc bat thanh Noi gat Chan vit( ben trong may)";"F-28: Stud screw for E-27";"43-017S-7500";"9-83";"MLA";;"2015-12-30 09:00:00"
+"358";"F-59-2: Feed dog 1x3/8 inch";"Rang cua 1x3/8 inch";"F-59-2: Feed dog 1x3/8 inch";"06-73TA-7507";"9-84";"MLA";;"2015-12-30 09:00:00"
+"359";"F-59-2: Feed dog 7/16";"Rang cua 7/16";"F-59-2: Feed dog 7/16";"06-10TA-75L7";"9-85";"MLA";;"2015-12-30 09:00:00"
+"360";"F-61: Screw (1/8 inch n=40)";"Oc";"F-61: Screw (1/8 inch n=40)";"SC-0212-7400";"9-86";"MLA";;"2015-12-30 09:00:00"
+"361";"F-62: Nut (1/8 inch n=44)";"Chot";"F-62: Nut (1/8 inch n=44)";"SN-0113-7400";"9-87";"MLA";;"2015-12-30 09:00:00"
+"362";"F-93:Stud screw for F-92";"Oc";"F-93:Stud screw for F-92";"06-022A-5607(DSC-BJ004300)";"9-88";"MLA";;"2015-12-30 09:00:00"
+"363";"Feed dog 1/2";"Chan vit 1/2";"Feed dog 1/2";"05-810A-750L";"9-89";"MLA";;"2015-12-30 09:00:00"
+"364";"Feed dog 1/8";"Rang cua 1/8";"Feed dog 1/8";"06-03TA-75L7(06-07SA-750L)";"9-90";"MLA";;"2015-12-30 09:00:00"
+"365";"Feed dog 3/8";"Rang cua 3/8";"Feed dog 3/8";"06-65TA-7507";"9-91";"MLA";;"2015-12-30 09:00:00"
+"366";"G-73: Hook";"o may( KM-757BL-7S)";"G-73: Hook";"07-052A-75L7";"9-92";"MLA";;"2015-12-30 09:00:00"
+"367";"G-78: Bobbin";"Thoi";"G-78: Bobbin";"07-160A-7500";"9-93";"MLA";;"2015-12-30 09:00:00"
+"368";"G-83: Bobbin case";"Thoi( tru kim tach)";"G-83: Bobbin case";"07-064A-790L";"9-94";"MLA";;"2015-12-30 09:00:00"
+"369";"Gear (large)";"Nhong o ( to)";"Gear (large)";"GP-018248-01";"9-95";"MLA";;"2015-12-30 09:00:00"
+"370";"H-7: Dust protector:";"Che bui";"H-7: Dust protector:";"44-004A-7500";"9-96";"MLA";;"2015-12-30 09:00:00"
+"371";"H-8: Dust protector";"Che bui";"H-8: Dust protector";"44-106A-7900";"9-97";"MLA";;"2015-12-30 09:00:00"
+"372";"H-9: Screw 9/64 inch n=44";"Oc";"H-9: Screw 9/64 inch n=44";"SC-0502-2302";"9-98";"MLA";;"2015-12-30 09:00:00"
+"373";"I-12: Moving knife bracket";"Thot do dao";"I-12: Moving knife bracket";"10-011A-7507";"9-99";"MLA";;"2015-12-30 09:00:00"
+"374";"I-19: Screw for stopper pin";"Oc";"I-19: Screw for stopper pin";"10-050S-8577";"9-100";"MLA";;"2015-12-30 09:00:00"
+"375";"I-26: Stud screw for thread trimming cam roller";"Oc con truot cam cat chi";"I-26: Stud screw for thread trimming cam roller";"10-067S-7507";"9-101";"MLA";;"2015-12-30 09:00:00"
+"376";"I-3: Moving knife";"Dao dong";"I-3: Moving knife";"GP-012112-01";"9-102";"MLA";;"2015-12-30 09:00:00"
+"377";"I-39: Joint connection stud (1/64 inch - 1_1/2 inc";"chuyen t? may SPS/B-1306-HS";"I-39: Joint connection stud (1/64 inch - 1_1/2 inch )";"10-034A-7507";"9-103";"MLA";;"2015-12-30 09:00:00"
+"378";"I-4: Screw (11/64 inch n=40)";"Oc bat dao dong";"I-4: Screw (11/64 inch n=40)";"SC-A154-4114";"9-104";"MLA";;"2015-12-30 09:00:00"
+"379";"I-50: Hing screw for I-48, I-49";"Oc bat 2 ben de tay noi cua keo";"I-50: Hing screw for I-48, I-49";"10-046S-7507";"9-105";"MLA";;"2015-12-30 09:00:00"
+"380";"I-58: Screw for clutch lever pin";"oc";"I-58: Screw for clutch lever pin";"10-551S-7507";"9-106";"MLA";;"2015-12-30 09:00:00"
+"381";"I-60: Clutch lever";"choac noi";"I-60: Clutch lever";"10-554A-7507";"9-107";"MLA";;"2015-12-30 09:00:00"
+"382";"I-7: Thread catcher";"Nhip giu chi suot cua dao";"I-7: Thread catcher";"10-106A-7507";"9-108";"MLA";;"2015-12-30 09:00:00"
+"383";"I-8: Fix knife";"Dao tinh";"I-8: Fix knife";"GP-012111-00";"9-109";"MLA";;"2015-12-30 09:00:00"
+"384";"J-12: Return spring for J-1";"lo xo";"J-12: Return spring for J-1";"06-138G-967B";"9-110";"MLA";;"2015-12-30 09:00:00"
+"385";"J-13: wiper link A Assy";"Tay bien cua giat chi kim";"J-13: wiper link A Assy";"11-014A-7507";"9-111";"MLA";;"2015-12-30 09:00:00"
+"386";"J-14: Stud screw for J-13";"bu long";"J-14: Stud screw for J-13";"11-015S-7507";"9-112";"MLA";;"2015-12-30 09:00:00"
+"387";"J-16: Nut for J-14";"dai oc";"J-16: Nut for J-14";"11-017C-7507";"9-113";"MLA";;"2015-12-30 09:00:00"
+"388";"J-20: Thread trimming cam roller shaft";"chot";"J-20: Thread trimming cam roller shaft";"PN-000338-00";"9-114";"MLA";;"2015-12-30 09:00:00"
+"389";"J-20: Wiper shaft Assy";"Truc gat";"J-20: Wiper shaft Assy";"11-021A-7507";"9-115";"MLA";;"2015-12-30 09:00:00"
+"390";"J-21:Wiper link shaft";"dinh chot";"J-21:Wiper link shaft";"11-022A-7507(DPN-AD007600)";"9-116";"MLA";;"2015-12-30 09:00:00"
+"391";"J-22: Collar for J-23";"vong dai ham";"J-22: Collar for J-23";"11-023A-7507";"9-117";"MLA";;"2015-12-30 09:00:00"
+"392";"J-23: Thread release lever pin";"Chot giu";"J-23: Thread release lever pin";"PN-000233-01(DSC-GA000100)";"9-118";"MLA";;"2015-12-30 09:00:00"
+"393";"J-23; Screw (M4)";"Oc";"J-23; Screw (M4)";"SC-0105-7500";"9-119";"MLA";;"2015-12-30 09:00:00"
+"394";"J-24: Wiper link C";"Op giu co giat chi";"J-24: Wiper link C";"11-125A-7507";"9-120";"MLA";;"2015-12-30 09:00:00"
+"395";"J-25: Wiper holder";"de gan giat chi kim";"J-25: Wiper holder";"11-026A-7507";"9-121";"MLA";;"2015-12-30 09:00:00"
+"396";"J-26: Screw (M3x0,5)";"Oc";"J-26: Screw (M3x0,5)";"SC-0298-7500";"9-122";"MLA";;"2015-12-30 09:00:00"
+"397";"J-27: Screw (M3)";"Oc";"J-27: Screw (M3)";"SC-0132-7500";"9-123";"MLA";;"2015-12-30 09:00:00"
+"398";"J-28: Wiper(right)";"Gat chi phai";"J-28: Wiper(right)";"11-029A-7507";"9-124";"MLA";;"2015-12-30 09:00:00"
+"399";"J-28: hinge screw for J-25";"Bulong";"J-28: hinge screw for J-25";"GP-022418-00(DSC-FD000100)";"9-125";"MLA";;"2015-12-30 09:00:00"
+"400";"J-29: wiper(left)";"Gat chi trai";"J-29: wiper(left)";"11-029B-7507";"9-126";"MLA";;"2015-12-30 09:00:00"
+"401";"J-30: Wiper link body";"tam noi chinh";"J-30: Wiper link body";"11-030A-7507";"9-127";"MLA";;"2015-12-30 09:00:00"
+"402";"J-31: Screw(3/64 inch n=32)";"Oc";"J-31: Screw(3/64 inch n=32)";"SC-0173-1230";"9-128";"MLA";;"2015-12-30 09:00:00"
+"403";"J-32: Stopper";"mieng chan";"J-32: Stopper";"11-032P-7507";"9-129";"MLA";;"2015-12-30 09:00:00"
+"404";"J-43:Washer for J-32";"long den";"J-43:Washer for J-32";"10-020W-2700";"9-130";"MLA";;"2015-12-30 09:00:00"
+"405";"L-1: Synchronizer Assy";"bo can chinh puly";"L-1: Synchronizer Assy";"11-0000-2507";"9-131";"MLA";;"2015-12-30 09:00:00"
+"406";"Needle bar crank";"tay bien";"Needle bar crank";"04-104A-7400";"9-132";"MLA";;"2015-12-30 09:00:00"
+"407";"Needle bar rotate stopper bloc";"Mieng thep chan dau tru kim";"Needle bar rotate stopper bloc";"15-325A-7900";"9-133";"MLA";;"2015-12-30 09:00:00"
+"408";"Needle clamp (L) (6.4mm)";"Tao kim trai 1/4 inch";"Needle clamp (L) (6.4mm)";"GP-022606-00";"9-134";"MLA";;"2015-12-30 09:00:00"
+"409";"Needle clamp (L) 3/8";"tao kim trai 3/8";"Needle clamp (L) 3/8";"GP-022610-00";"9-135";"MLA";;"2015-12-30 09:00:00"
+"410";"Needle clamp (R) (6.4mm)";"Tao kim phai 1/4 inch";"Needle clamp (R) (6.4mm)";"GP-022607-00";"9-136";"MLA";;"2015-12-30 09:00:00"
+"411";"Needle clamp (R) 3/8";"tao kim phai 3/8";"Needle clamp (R) 3/8";"GP-022611-00";"9-137";"MLA";;"2015-12-30 09:00:00"
+"412";"Needle gauge 1 1/8 inch";"Bo cu ly (28,57mm)";"Needle gauge 1 1/8 inch";;"9-138";"MLA";;"2015-12-30 09:00:00"
+"413";"Needle gauge 1/4 inch";"Bo cu ly (6,4mm)";"Needle gauge 1/4 inch";;"9-139";"MLA";;"2015-12-30 09:00:00"
+"414";"Needle plate 3/8";"tao kim 3/8";"Needle plate 3/8";"01-46TA-7507";"9-140";"MLA";;"2015-12-30 09:00:00"
+"415";"O-27: Bobbin winder assembly";"Bo danh chi suot";"O-27: Bobbin winder assembly";"GP-018166-00";"9-141";"MLA";;"2015-12-30 09:00:00"
+"416";"O-42(L-16): Knee base rubber";"De cau su truc khuyu";"O-42(L-16): Knee base rubber";"43-010A-1600";"9-142";"MLA";;"2015-12-30 09:00:00"
+"417";"Oil filter";"Luoi loc dau";"Oil filter";"44-148M-5700";"9-143";"MLA";;"2015-12-30 09:00:00"
+"418";"Presser foot 3/4 inch";"Chan vit 3/4 inch";"Presser foot 3/4 inch";;"9-144";"MLA";;"2015-12-30 09:00:00"
+"419";"Presser foot 3/8";"chan vit 3/8";"Presser foot 3/8";"05-610A-7400( CGA-GC014600)";"9-145";"MLA";;"2015-12-30 09:00:00"
+"420";"Program unit box";"Bang dieu khien";"Program unit box";"SP-200";"9-146";"MLA";;"2015-12-30 09:00:00"
+"421";"Pully";"bu li";"Pully";"fi 90";"9-147";"MLA";;"2015-12-30 09:00:00"
+"422";"Pully";"bu li";"Pully";"fi 100";"9-148";"MLA";;"2015-12-30 09:00:00"
+"423";"Pully";"bu li";"Pully";"fi 60";"9-149";"MLA";;"2015-12-30 09:00:00"
+"424";"Rotary hook gear(09-002A-7400)";"Nhong o ( nho)";"Rotary hook gear(09-002A-7400)";"GP-015572-00 (DGR-AB001200)";"9-150";"MLA";;"2015-12-30 09:00:00"
+"425";"Screw";"Oc op o";"Screw";"228-14008";"9-151";"MLA";;"2015-12-30 09:00:00"
+"426";"Screw 1/4-40 L=4.5";"Oc Nhong o";"Screw 1/4-40 L=4.5";"SS-8660530-TP";"9-152";"MLA";;"2015-12-30 09:00:00"
+"427";"Solenoid tranformer";"Bien ap";"Solenoid tranformer";"GP-011348-00";"9-153";"MLA";;"2015-12-30 09:00:00"
+"428";"Spring ( 0.3 )";"Nhip cua thoi";"Spring ( 0.3 )";"228-27406";"9-154";"MLA";;"2015-12-30 09:00:00"
+"429";"Thread take-up lever";"Co giat chi";"Thread take-up lever";"08-103A-7500";"9-155";"MLA";;"2015-12-30 09:00:00"
+"430";"O-35:Belt cover(D)";"Bao ve day cu roa";"O-35:Belt cover(D)";"60-004A-2350";"9-156";"MLA";;"2015-12-30 09:00:00"
+"431";"B-4: Screw(5/64 inch n=24):";"Oc";"B-4: Screw(5/64 inch n=24):";"SC-0188-1230";"9-157";"MLA";;"2015-12-30 09:00:00"
+"432";"Needle clamp 1-1/10 inch";"Tao kim 1-1/10 inch";"Needle clamp 1-1/10 inch";"GP-035844-00";"9-158";"MLA";;"2015-12-30 09:00:00"
+"433";"Throat plate:1-1/10 inch";"Mat nguyet1-1/10 inch";"Throat plate:1-1/10 inch";"GP-035845-00";"9-159";"MLA";;"2015-12-30 09:00:00"
+"434";"Feed dog 1-1/10 inch";"Rang cua 1-1/10 inch";"Feed dog 1-1/10 inch";"GP-035843-00";"9-160";"MLA";;"2015-12-30 09:00:00"
+"435";"Presser foot 1-1/10 inch";"Chan vit 1-1/10 inch";"Presser foot 1-1/10 inch";"GP-035817-00";"9-161";"MLA";;"2015-12-30 09:00:00"
+"436";"2-Needle gauge set";;"2-Needle gauge set";"1/8mm";"9-162";"MLA";;"2015-12-30 09:00:00"
+"437";"2-Needle gauge set";;"2-Needle gauge set";"7/8mm";"9-163";"MLA";;"2015-12-30 09:00:00"
+"438";"2-Needle gauge set";;"2-Needle gauge set";"5/8mm";"9-164";"MLA";;"2015-12-30 09:00:00"
+"439";"2-Needle gauge set";;"2-Needle gauge set";;"9-165";"MLA";;"2015-12-30 09:00:00"
+"440";"Neeldle gauge 1''3/8";;"Neeldle gauge 1''3/8";"KM-757BL-7s";"9-166";"MLA";;"2015-12-30 09:00:00"
+"441";"Needle bar stopper screw";;"Needle bar stopper screw";"04-004S-7900";"9-167";"MLA";;"2015-12-30 09:00:00"
+"442";"D-29-2: Screw for D-29-3";;"D-29-2: Screw for D-29-3";"04-021S-7900";"9-168";"MLA";;"2015-12-30 09:00:00"
+"443";"F-60 Screw (1/8 inch n=44)";;"F-60 Screw (1/8 inch n=44)";"SC-A306-4113";"9-169";"MLA";;"2015-12-30 09:00:00"
+"444";"Phu tung Sunstar";;"Phu tung Sunstar";"09-043G-740L";"9-170";"MLA";;"2015-12-30 09:00:00"
+"445";"B-36:thread takew up lever";;"B-36:thread takew up lever";"08-104A-790L";"9-171";"MLA";;"2015-12-30 09:00:00"
+"446";"Knife";;"Knife";;"9-172";"MLA";;"2015-12-30 09:00:00"
+"447";"Presser foot 5/8 inch";;"Presser foot 5/8 inch";;"9-173";"MLA";;"2015-12-30 09:00:00"
+"448";"O-28 Thread Stand Assebly ";;"O-28 Thread Stand Assebly ";"91-008A-7400";"9-174";"MLA";;"2015-12-30 09:00:00"
+"449";"D-31: Needle bar crank,";;"D-31: Needle bar crank,";"04-105A-7900";"9-175";"MLA";;"2015-12-30 09:00:00"
+"450";"I-61 Thread trimming return spring";;"I-61 Thread trimming return spring";" 10-056A-7507";"9-176";"MLA";;"2015-12-30 09:00:00"
+"451";"L-1-4 Sunchronizer Assy ( Servo";;"L-1-4 Sunchronizer Assy ( Servo";"  13-0000-SE55";"9-177";"MLA";;"2015-12-30 09:00:00"
+"452";;;"0";;"9-178";"MLA";;"2015-12-30 09:00:00"
+"453";"Bobbin case";;"Bobbin case";"B1828-210-DAA (23)";"10-1";"MLA";;"2015-12-30 09:00:00"
+"454";"Bobbin ";;"Bobbin ";"138-12102  (22)";"10-2";"MLA";;"2015-12-30 09:00:00"
+"455";"Shuttle (h) for LK1900A WS(B)";;"Shuttle (h) for LK1900A WS(B)";"40014965 (198)";"10-3";"MLA";;"2015-12-30 09:00:00"
+"456";"Moving knife ASM";;"Moving knife ASM";"B2421-280-0A0";"10-4";"MLA";;"2015-12-30 09:00:00"
+"457";"Needle bar";;"Needle bar";"400-10573";"10-5";"MLA";;"2015-12-30 09:00:00"
+"458";"Screw";;"Screw";"87-278  ";"11-1";"MLA";;"2015-12-30 09:00:00"
+"459";"Feed Rocker Link pin";;"Feed Rocker Link pin";"71-432  ";"11-2";"MLA";;"2015-12-30 09:00:00"
+"460";"Rear Puller Shaft (S)";;"Rear Puller Shaft (S)";"71-439  ";"11-3";"MLA";;"2015-12-30 09:00:00"
+"461";"Thrad eyelet";;"Thrad eyelet";"45-432  ";"11-4";"MLA";;"2015-12-30 09:00:00"
+"462";"Nut";;"Nut";"86-701  ";"11-5";"MLA";;"2015-12-30 09:00:00"
+"463";"Nut";;"Nut";"86-4120 OC ";"11-6";"MLA";;"2015-12-30 09:00:00"
+"464";"Screw";;"Screw";"84-8130  ";"11-7";"MLA";;"2015-12-30 09:00:00"
+"465";"E- Ring";;"E- Ring";"93-205  ";"11-8";"MLA";;"2015-12-30 09:00:00"
+"466";"Feed dog";;"Feed dog";"15-499  ";"11-9";"MLA";;"2015-12-30 09:00:00"
+"467";"                                                  ";;"                                                                                                                                                                                                                                                                                 ";"65-3340-1 ";"11-10";"MLA";;"2015-12-30 09:00:00"
+"468";"Pin";;"Pin";"77-419  ";"11-11";"MLA";;"2015-12-30 09:00:00"
+"469";"Needle Plate";;"Needle Plate";"14-469  ";"11-12";"MLA";;"2015-12-30 09:00:00"
+"470";"Connecting rod Assy";;"Connecting rod Assy";"60-8271-0 ";"11-13";"MLA";;"2015-12-30 09:00:00"
+"471";"Bushing";;"Bushing";"81-180  ";"11-14";"MLA";;"2015-12-30 09:00:00"
+"472";"Coller";;"Coller";"02-278  ";"11-15";"MLA";;"2015-12-30 09:00:00"
+"473";"Bearing";;"Bearing";"91-401  ";"11-16";"MLA";;"2015-12-30 09:00:00"
+"474";"Presser Foot Assy";;"Presser Foot Assy";"17-471-1  ";"11-17";"MLA";;"2015-12-30 09:00:00"
+"475";"Rear puller  ";;"Rear puller  ";"02-493  ";"11-18";"MLA";;"2015-12-30 09:00:00"
+"476";"Rear puller";;"Rear puller";"02-492  ";"11-19";"MLA";;"2015-12-30 09:00:00"
+"477";"connecting link";;"connecting link";"66-131 ";"11-20";"MLA";;"2015-12-30 09:00:00"
+"478";"CARBON BRUSH";"0";"CARBON BRUSH";"4117";"12-1";"MLA";;"2015-12-30 09:00:00"
+"479";"DRIVE BUSHING";;"DRIVE BUSHING";"124D/124C";"12-2";"MLA";;"2015-12-30 09:00:00"
+"480";"FILTER";;"FILTER";"183-07-01/02";"12-3";"MLA";;"2015-12-30 09:00:00"
+"481";"FLEXBLE SHAFL";;"FLEXBLE SHAFL";"182-06-01";"12-4";"MLA";;"2015-12-30 09:00:00"
+"482";"Moving Blade";;"Moving Blade";"177M";"12-5";"MLA";;"2015-12-30 09:00:00"
+"483";"SUCTION MOTOR";;"SUCTION MOTOR";"183-01-05";"12-6";"MLA";;"2015-12-30 09:00:00"
+"484";"ROTOR LONG 12,5CM";;"ROTOR LONG 12,5CM";;"12-7";"MLA";;"2015-12-30 09:00:00"
+"485";"BEARING ( 608-2Z )";;"BEARING ( 608-2Z )";;"12-8";"MLA";;"2015-12-30 09:00:00"
+"486";"COVER";;"COVER";;"12-9";"MLA";;"2015-12-30 09:00:00"
+"487";"PLASTIC CONTAINER";;"PLASTIC CONTAINER";;"12-10";"MLA";;"2015-12-30 09:00:00"
+"488";"FIX KNIFE 177F";;"FIX KNIFE 177F";"177F";"12-11";"MLA";;"2015-12-30 09:00:00"
+"489";"Circuit board ";;"Circuit board ";"TSZJ-220V";"12-12";"MLA";;"2015-12-30 09:00:00"
+"490";"Regulation resistance";;"Regulation resistance";"470 K";"12-13";"MLA";;"2015-12-30 09:00:00"
+"491";"Clipper head bearing";;"Clipper head bearing";"181-07-22";"12-14";"MLA";;"2015-12-30 09:00:00"
+"492";"Clipper head with blade";;"Clipper head with blade";"181-06";"12-15";"MLA";;"2015-12-30 09:00:00"
+"493";"Long clipper head bearing";;"Long clipper head bearing";"181-07-32";"12-16";"MLA";;"2015-12-30 09:00:00"
+"494";"Drive shaft";;"Drive shaft";"181-08";"12-17";"MLA";;"2015-12-30 09:00:00"
+"495";"Drive shaft wassher";;"Drive shaft wassher";"181-08 B";"12-18";"MLA";;"2015-12-30 09:00:00"
+"496";"Moter coupling";;"Moter coupling";"182-05";"12-19";"MLA";;"2015-12-30 09:00:00"
+"497";"Tape-guiding ring- rulo t?i ang";;"Tape-guiding ring- rulo t?i ang";"Tape-guiding ring- rulo ";"13-1";"MLA";;"2015-12-30 09:00:00"
+"498";"Heating elemnemt- s?i ??t";;"Heating elemnemt- s?i ??t";"Heating elemnemt";"13-2";"MLA";;"2015-12-30 09:00:00"
+"499";"Axletree -v?ng bi ";;"Axletree -v?ng bi ";"Axletree";"13-3";"MLA";;"2015-12-30 09:00:00"
+"500";"Lower column ruller axle parts - tr?c rulo tr?n";;"Lower column ruller axle parts - tr?c rulo tr?n";"Lower column ruller axle parts ";"13-4";"MLA";;"2015-12-30 09:00:00"
+"501";"Bearing assembly- tr?c rulo d??i";;"Bearing assembly- tr?c rulo d??i";"Bearing assembly";"13-5";"MLA";;"2015-12-30 09:00:00"
+"502";"Bearing - vong bi";;"Bearing - vong bi";"Bearing ";"13-6";"MLA";;"2015-12-30 09:00:00"
+"503";"Temperature Sensing wire- cam bien nhiet";;"Temperature Sensing wire- cam bien nhiet";"Temperature Sensing wire";"13-7";"MLA";;"2015-12-30 09:00:00"
+"504";"Small motor ( m? t? t?i b?ng)";;"Small motor ( m? t? t?i b?ng)";"Small motor";"13-8";"MLA";;"2015-12-30 09:00:00"
+"505";"Driving wheel - V8";;"Driving wheel - V8";;"13-9";"MLA";;"2015-12-30 09:00:00"
+"506";"V8 - Tape press wheel";;"V8 - Tape press wheel";;"13-10";"MLA";;"2015-12-30 09:00:00"
+"507";"Temperature Sensing wire: c?m bi?n nhi?t";;"Temperature Sensing wire: c?m bi?n nhi?t";"Temperature Sensing wire: c?m bi?n nhi?t";"13-11";"MLA";;"2015-12-30 09:00:00"
+"508";"Sensor: ??u d?";;"Sensor: ??u d?";"Sensor: ??u d?";"13-12";"MLA";;"2015-12-30 09:00:00"
+"509";"Speed regulation board: bo m?ch ?i?u khi?n m? t? t";;"Speed regulation board: bo m?ch ?i?u khi?n m? t? t?i b?ng";"Speed regulation board: bo m?ch ?i?u khi?n m? t? t?i b?ng";"13-13";"MLA";;"2015-12-30 09:00:00"
+"510";"Shear- moving flake: dao c?t b?ng";;"Shear- moving flake: dao c?t b?ng";"Shear- moving flake: dao c?t b?ng";"13-14";"MLA";;"2015-12-30 09:00:00"
+"511";"Shear- moving flake: dao c?t b?ng";;"Shear- moving flake: dao c?t b?ng";"Shear- moving flake: dao c?t b?ng";"13-15";"MLA";;"2015-12-30 09:00:00"
+"512";"v?ng bi";;"v?ng bi";"v?ng bi";"13-16";"MLA";;"2015-12-30 09:00:00"
+"513";"Rulo t?i b?ng";;"Rulo t?i b?ng";"Rulo t?i b?ng";"13-17";"MLA";;"2015-12-30 09:00:00"
+"514";"Timer relay (PF113A-E)";;"Timer relay (PF113A-E)";"H3CR-A (24V)";"14-1";"MLA";;"2015-12-30 09:00:00"
+"515";"?? c?m Timer (E3X-NA41)";;"?? c?m Timer (E3X-NA41)";"PF113A-E";"14-2";"MLA";;"2015-12-30 09:00:00"
+"516";"Photoelectric Switch 2M";"C?m bi?n";"Photoelectric Switch 2M";"E3X-NA41";"14-3";"MLA";;"2015-12-30 09:00:00"
+"517";"Fibre optics ( ??n quang)";;"Fibre optics ( ??n quang)";"E32-DC200E";"14-4";"MLA";;"2015-12-30 09:00:00"
+"518";"light for industrial sewing mcs";;"light for industrial sewing mcs";"L80-HM-05AD";"14-5";"MLA";;"2015-12-30 09:00:00"
+"519";"Time relay ";;"Time relay ";"H3CR-A8E (24V)";"14-6";"MLA";;"2015-12-30 09:00:00"
+"520";"Time relay ";;"Time relay ";"H3CR-AP(24V)";"14-7";"MLA";;"2015-12-30 09:00:00"
+"521";"Botton Switch";;"Botton Switch";;"14-8";"MLA";;"2015-12-30 09:00:00"
+"522";"Ballast";;"Ballast";"2*28W";"14-9";"MLA";;"2015-12-30 09:00:00"
+"523";"capacitor";;"capacitor";;"14-10";"MLA";;"2015-12-30 09:00:00"
+"524";"swith";;"swith";;"14-11";"MLA";;"2015-12-30 09:00:00"
+"525";"Upper knife ";;"Upper knife ";"B-2";"15-1";"MLA";;"2015-12-30 09:00:00"
+"526";"Lower knife ";;"Lower knife ";"B-9";"15-2";"MLA";;"2015-12-30 09:00:00"
+"527";"Lower Roller";;"Lower Roller";"A-28";"15-3";"MLA";;"2015-12-30 09:00:00"
+"528";"Upper Roller";;"Upper Roller";"A-29";"15-4";"MLA";;"2015-12-30 09:00:00"
+"529";"Chain Cutter Blade, Lower";;"Chain Cutter Blade, Lower";"35796C";"16-1";"MLA";;"2015-12-30 09:00:00"
+"530";"Chain Cutter Blade, upper";;"Chain Cutter Blade, upper";"35796B";"16-2";"MLA";;"2015-12-30 09:00:00"
+"531";"Screw";;"Screw";"605A";"16-3";"MLA";;"2015-12-30 09:00:00"
+"532";"Looper,middle,marked""AV'";;"Looper,middle,marked""AV'";"35809AY";"16-4";"MLA";;"2015-12-30 09:00:00"
+"533";"Looper,Holder,for middle looper,marked ''D''";;"Looper,Holder,for middle looper,marked ''D''";"35848E";"16-5";"MLA";;"2015-12-30 09:00:00"
+"534";"Looper,holder,for left looper,marked''C''";;"Looper,holder,for left looper,marked''C''";"35848D";"16-6";"MLA";;"2015-12-30 09:00:00"
+"535";"Looper holder,for right loper,marked''A''";;"Looper holder,for right loper,marked''A''";"35848B";"16-7";"MLA";;"2015-12-30 09:00:00"
+"536";"Looper,left,middle,marked''AY''";;"Looper,left,middle,marked''AY''";"35809BY";"16-8";"MLA";;"2015-12-30 09:00:00"
+"537";"Looper,right,marked''AU''";;"Looper,right,marked''AU''";"35808AY";"16-9";"MLA";;"2015-12-30 09:00:00"
+"538";"Screw";;"Screw";"22738";"16-10";"MLA";;"2015-12-30 09:00:00"
+"539";"Gera guard ,rear";;"Gera guard ,rear";"35875Z";"16-11";"MLA";;"2015-12-30 09:00:00"
+"540";"Gera guard ,front";;"Gera guard ,front";"35875AA";"16-12";"MLA";;"2015-12-30 09:00:00"
+"541";"Screw";;"Screw";"22845A";"16-13";"MLA";;"2015-12-30 09:00:00"
+"542";"Screw";;"Screw";"87U";"16-14";"MLA";;"2015-12-30 09:00:00"
+"543";"Needle Guard";;"Needle Guard";"35825AC";"16-15";"MLA";;"2015-12-30 09:00:00"
+"544";"Screw";;"Screw";"22768";"16-16";"MLA";;"2015-12-30 09:00:00"
+"545";"Main feed dog Support";;"Main feed dog Support";"35834AC";"16-17";"MLA";;"2015-12-30 09:00:00"
+"546";"Screw";;"Screw";"22804";"16-18";"MLA";;"2015-12-30 09:00:00"
+"547";"Roller clutch Connect+E589:E635ing rod";;"Roller clutch Connect+E589:E635ing rod";"4761";"16-19";"MLA";;"2015-12-30 09:00:00"
+"548";"Adjusting_Shaft";;"Adjusting_Shaft";"SD-0600756-TP(400-76305)";"16-20";"MLA";;"2015-12-30 09:00:00"
+"549";"Ball joint assembly, right";;"Ball joint assembly, right";"35876V";"16-21";"MLA";;"2015-12-30 09:00:00"
+"550";"Base";;"Base";"23424T";"16-22";"MLA";;"2015-12-30 09:00:00"
+"551";"Clutch driving segment lever";;"Clutch driving segment lever";"35877Z";"16-23";"MLA";;"2015-12-30 09:00:00"
+"552";"Connecting rod";;"Connecting rod";"36244";"16-24";"MLA";;"2015-12-30 09:00:00"
+"553";"Connecting rod and clutch driving eccentric assemb";;"Connecting rod and clutch driving eccentric assembly";"29480ALY";"16-25";"MLA";;"2015-12-30 09:00:00"
+"554";"Cover, head, front";;"Cover, head, front";"35882K";"16-26";"MLA";;"2015-12-30 09:00:00"
+"555";"Crew";;"Crew";"22562A";"16-27";"MLA";;"2015-12-30 09:00:00"
+"556";"Differential feed dog, for style 35800DLU9";;"Differential feed dog, for style 35800DLU9";"35826DL";"16-28";"MLA";;"2015-12-30 09:00:00"
+"557";"Driven miter gear";;"Driven miter gear";"35875X";"16-29";"MLA";;"2015-12-30 09:00:00"
+"558";"Driven miter gear";;"Driven miter gear";"35875Y";"16-30";"MLA";;"2015-12-30 09:00:00"
+"559";"Eccentric";;"Eccentric";"35877XA";"16-31";"MLA";;"2015-12-30 09:00:00"
+"560";"Feed drive assembly";;"Feed drive assembly";"29478EC";"16-32";"MLA";;"2015-12-30 09:00:00"
+"561";"Feed lift eccentric assembly, for styles 35800DZ";;"Feed lift eccentric assembly, for styles 35800DZ";"29478DV";"16-33";"MLA";;"2015-12-30 09:00:00"
+"562";"Feed rocker driving link";;"Feed rocker driving link";"36236C";"16-34";"MLA";;"2015-12-30 09:00:00"
+"563";"Feed roller shaft";;"Feed roller shaft";"35873AK";"16-35";"MLA";;"2015-12-30 09:00:00"
+"564";"Folder support slide";;"Folder support slide";"23424AA";"16-36";"MLA";;"2015-12-30 09:00:00"
+"565";"Folder support spring";;"Folder support spring";"23424F";"16-37";"MLA";;"2015-12-30 09:00:00"
+"566";"Lifter lever bell crank link";;"Lifter lever bell crank link";"35835F";"16-38";"MLA";;"2015-12-30 09:00:00"
+"567";"Lifter lever connecting link";;"Lifter lever connecting link";"35880L";"16-39";"MLA";;"2015-12-30 09:00:00"
+"568";"Link pin";;"Link pin";"62238A";"16-40";"MLA";;"2015-12-30 09:00:00"
+"569";"Locking spring";;"Locking spring";"56341G";"16-41";"MLA";;"2015-12-30 09:00:00"
+"570";"Looper drive connecting rod assembly";;"Looper drive connecting rod assembly";"29478DZ";"16-42";"MLA";;"2015-12-30 09:00:00"
+"571";"Looper plunger";;"Looper plunger";"35853W";"16-43";"MLA";;"2015-12-30 09:00:00"
+"572";"Lower scroll spring";;"Lower scroll spring";"23424S";"16-44";"MLA";;"2015-12-30 09:00:00"
+"573";"Main feed bar driving link";;"Main feed bar driving link";"35834W";"16-45";"MLA";;"2015-12-30 09:00:00"
+"574";"Needle bar";;"Needle bar";"US-35817S";"16-46";"MLA";;"2015-12-30 09:00:00"
+"575";"Needle bearing";;"Needle bearing";"660-303";"16-47";"MLA";;"2015-12-30 09:00:00"
+"576";"Needle guard";;"Needle guard";"35869C";"16-48";"MLA";;"2015-12-30 09:00:00"
+"577";"Needle heard (8gauge)";;"Needle heard (8gauge)";"US-FB35818-CB8";"16-49";"MLA";;"2015-12-30 09:00:00"
+"578";"Needle heard (9gauge)";;"Needle heard (9gauge)";"US-FB35818-CB9";"16-50";"MLA";;"2015-12-30 09:00:00"
+"579";"Needle thread control lever eyelet";;"Needle thread control lever eyelet";"35869K";"16-51";"MLA";;"2015-12-30 09:00:00"
+"580";"Pin";;"Pin";"50-458BLK";"16-52";"MLA";;"2015-12-30 09:00:00"
+"581";"Plunger Bushing";;"Plunger Bushing";"35853AA";"16-53";"MLA";;"2015-12-30 09:00:00"
+"582";"Plunger knob";;"Plunger knob";"35853Z";"16-54";"MLA";;"2015-12-30 09:00:00"
+"583";"Plunger spring";;"Plunger spring";"35853Y";"16-55";"MLA";;"2015-12-30 09:00:00"
+"584";"Presser foot fork";;"Presser foot fork";"35830DY";"16-56";"MLA";;"2015-12-30 09:00:00"
+"585";"Roller clutch ball joint assembly, left";;"Roller clutch ball joint assembly, left";"35876W";"16-57";"MLA";;"2015-12-30 09:00:00"
+"586";"Screw";;"Screw";"22557A";"16-58";"MLA";;"2015-12-30 09:00:00"
+"587";"Screw";;"Screw";"22894C";"16-59";"MLA";;"2015-12-30 09:00:00"
+"588";"Screw";;"Screw";"22849A";"16-60";"MLA";;"2015-12-30 09:00:00"
+"589";"Screw";;"Screw";"22760A";"16-61";"MLA";;"2015-12-30 09:00:00"
+"590";"Screw";;"Screw";"22564J";"16-62";"MLA";;"2015-12-30 09:00:00"
+"591";"Screw, for throat plates";;"Screw, for throat plates";"22524";"16-63";"MLA";;"2015-12-30 09:00:00"
+"592";"Segment lever bushing";;"Segment lever bushing";"35877N";"16-64";"MLA";;"2015-12-30 09:00:00"
+"593";"Tension post ferrule";;"Tension post ferrule";"39592AK";"16-65";"MLA";;"2015-12-30 09:00:00"
+"594";"Thread controler Arm";;"Thread controler Arm";"35869L";"16-66";"MLA";;"2015-12-30 09:00:00"
+"595";"Throat plate, for stype 35800DLU9";;"Throat plate, for stype 35800DLU9";"35824BQ9";"16-67";"MLA";;"2015-12-30 09:00:00"
+"596";"Woodruff key";;"Woodruff key";"35877AA";"16-68";"MLA";;"2015-12-30 09:00:00"
+"597";"Puller drive cover assy";;"Puller drive cover assy";"35882T";"16-69";"MLA";;"2015-12-30 09:00:00"
+"598";"Pin";;"Pin";"660-219S";"16-70";"MLA";;"2015-12-30 09:00:00"
+"599";"Upper needle bar pushing";;"Upper needle bar pushing";"35854A(US-FP35854A)";"16-71";"MLA";;"2015-12-30 09:00:00"
+"600";"Loower needle bar pushing";;"Loower needle bar pushing";"35854B(US-FP35854B)";"16-72";"MLA";;"2015-12-30 09:00:00"
+"601";"Tension release shaft spring";;"Tension release shaft spring";"36292K";"16-73";"MLA";;"2015-12-30 09:00:00"
+"602";"Screw";;"Screw";"22894BJ";"16-74";"MLA";;"2015-12-30 09:00:00"
+"603";"Screw";;"Screw";"22560B";"16-75";"MLA";;"2015-12-30 09:00:00"
+"604";"Vent csrew,for oil pump";;"Vent csrew,for oil pump";"21756G";"16-76";"MLA";;"2015-12-30 09:00:00"
+"605";"Cylinder";;"Cylinder";"Cylinder";"16-77";"MLA";;"2015-12-30 09:00:00"
+"606";"Cylinder";;"Cylinder";"Cylinder";"16-78";"MLA";;"2015-12-30 09:00:00"
+"607";"Screw";;"Screw";"22747";"16-79";"MLA";;"2015-12-30 09:00:00"
+"608";"Screw";;"Screw";"US-22594";"16-80";"MLA";;"2015-12-30 09:00:00"
+"609";"Spreader Spring (RIGHT)";;"Spreader Spring (RIGHT)";"320-38705";"17-1";"MLA";;"2015-12-30 09:00:00"
+"610";"Looper,Right";;"Looper,Right";"140-30803";"17-2";"MLA";;"2015-12-30 09:00:00"
+"611";"Looper, Left";;"Looper, Left";"140-30902";"17-3";"MLA";;"2015-12-30 09:00:00"
+"612";"Spreader ,Right";;"Spreader ,Right";"140-31017";"17-4";"MLA";;"2015-12-30 09:00:00"
+"613";"Spreader Stopper right";;"Spreader Stopper right";"400-15693";"17-5";"MLA";;"2015-12-30 09:00:00"
+"614";"Spreader stopper Left";;"Spreader stopper Left";"400-15692";"17-6";"MLA";;"2015-12-30 09:00:00"
+"615";"Spreader spring ,Left";;"Spreader spring ,Left";"140-32403";"17-7";"MLA";;"2015-12-30 09:00:00"
+"616";"Cover";;"Cover";"320-20919";"17-8";"MLA";;"2015-12-30 09:00:00"
+"617";"Thread cutter upper knife";;"Thread cutter upper knife";"400-15996";"17-9";"MLA";;"2015-12-30 09:00:00"
+"618";"Thread guide";;"Thread guide";"320-51708";"17-10";"MLA";;"2015-12-30 09:00:00"
+"619";"Thread haul plate:";;"Thread haul plate:";"320-20703";"17-11";"MLA";;"2015-12-30 09:00:00"
+"620";;;"0";;"17-12";"MLA";;"2015-12-30 09:00:00"
+"621";;;"0";;"17-13";"MLA";;"2015-12-30 09:00:00"
+"622";"Needle installing base";;"Needle installing base";"144-04800";"18-1";"MLA";;"2015-12-30 09:00:00"
+"623";"Screw M2.5L=5";;"Screw M2.5L=5";"SM-6850502-TN";"18-2";"MLA";;"2015-12-30 09:00:00"
+"624";"Shuttle,H";;"Shuttle,H";"B1818-210-D0B";"18-3";"MLA";;"2015-12-30 09:00:00"
+"625";"Bobbin";;"Bobbin";"B1806-210-D00";"18-4";"MLA";;"2015-12-30 09:00:00"
+"626";"Bobbin Case ASM";;"Bobbin Case ASM";"B1828-210-DAA";"18-5";"MLA";;"2015-12-30 09:00:00"
+"627";"Counter knife";;"Counter knife";"B2424-210-000";"18-6";"MLA";;"2015-12-30 09:00:00"
+"628";"Moving knife Junction";;"Moving knife Junction";"138-81255";"18-7";"MLA";;"2015-12-30 09:00:00"
+"629";"Shuttle driver";;"Shuttle driver";"144-05005";"18-8";"MLA";;"2015-12-30 09:00:00"
+"630";"Chute Stand (Lower)";;"Chute Stand (Lower)";"A314";"19-1";"MLA";;"2015-12-30 09:00:00"
+"631";"Push-FootBlock";;"Push-FootBlock";"A313";"19-2";"MLA";;"2015-12-30 09:00:00"
+"632";"Clutch Pull Pate ";;"Clutch Pull Pate ";"A240";"19-3";"MLA";;"2015-12-30 09:00:00"
+"633";"Clutch Hook";;"Clutch Hook";"A241";"19-4";"MLA";;"2015-12-30 09:00:00"
+"634";"Main Alex";;"Main Alex";"A225";"19-5";"MLA";;"2015-12-30 09:00:00"
+"635";"Clutch Roller";;"Clutch Roller";"A230";"19-6";"MLA";;"2015-12-30 09:00:00"
+"636";"Pressure Foot";;"Pressure Foot";"P 36 LN ";"29-1";"MLA";;"2015-12-30 09:00:00"
+"637";"Pressure Foot";;"Pressure Foot";"P 351 ";"29-2";"MLA";;"2015-12-30 09:00:00"
+"638";"Pressure Foot";;"Pressure Foot";"MT- 18  ";"29-3";"MLA";;"2015-12-30 09:00:00"
+"639";"Pressure Foot";;"Pressure Foot";"P 58 N  ";"29-4";"MLA";;"2015-12-30 09:00:00"
+"640";"Pressure Foot";;"Pressure Foot";"CL 1/16 N ";"29-5";"MLA";;"2015-12-30 09:00:00"
+"641";"Pressure Foot";;"Pressure Foot";"L 1/32 N  ";"29-6";"MLA";;"2015-12-30 09:00:00"
+"642";"Pressure Foot";;"Pressure Foot";"CR 1/16 N ";"29-7";"MLA";;"2015-12-30 09:00:00"
+"643";"Pressure Foot";;"Pressure Foot";"SP-18  1/8 ";"29-8";"MLA";;"2015-12-30 09:00:00"
+"644";"Pressure Foot";;"Pressure Foot";"SP- 18  1/4 ";"29-9";"MLA";;"2015-12-30 09:00:00"
+"645";"Pressure Foot";;"Pressure Foot";"SPK-3  ";"29-10";"MLA";;"2015-12-30 09:00:00"
+"646";"Pressure Foot";;"Pressure Foot";"P 363  ";"29-11";"MLA";;"2015-12-30 09:00:00"
+"647";"Pressure Foot";;"Pressure Foot";"P36 RN ";"29-12";"MLA";;"2015-12-30 09:00:00"
+"648";"Needle plate, Roller fool, Rubber feed dog";;"Needle plate, Roller fool, Rubber feed dog";"SPK4-SPK5-SPK6";"29-13";"MLA";;"2015-12-30 09:00:00"
+"649";"Needle plate";;"Needle plate";"CF 211 ";"29-14";"MLA";;"2015-12-30 09:00:00"
+"650";"Feed Dog";;"Feed Dog";"CF 210 ";"29-15";"MLA";;"2015-12-30 09:00:00"
+"651";"Presser foot";;"Presser foot";"1- 1/2 ";"29-16";"MLA";;"2015-12-30 09:00:00"
+"652";"Presser foot";;"Presser foot";"1- 1/4 ";"29-17";"MLA";;"2015-12-30 09:00:00"
+"653";"Presser foot";;"Presser foot";"1- 1/8 ";"29-18";"MLA";;"2015-12-30 09:00:00"
+"654";"Presser foot";;"Presser foot";"CL 1/16 E ";"29-19";"MLA";;"2015-12-30 09:00:00"
+"655";"Presser foot";;"Presser foot";"SP-18L 1/4 ";"29-20";"MLA";;"2015-12-30 09:00:00"
+"656";"Feed dog ";;"Feed dog ";"T 13  ";"29-21";"MLA";;"2015-12-30 09:00:00"
+"657";"Feed dog";;"Feed dog";"T 15  ";"29-22";"MLA";;"2015-12-30 09:00:00"
+"658";"Pressure Foot";;"Pressure Foot";"1/4 R ( 1mm )  ";"29-23";"MLA";;"2015-12-30 09:00:00"
+"659";"Pressure Foot";;"Pressure Foot";"1/4 L R ( 1mm ) ";"29-24";"MLA";;"2015-12-30 09:00:00"
+"660";"Pressure Foot";;"Pressure Foot";"1/4 L    (1mm) ";"29-25";"MLA";;"2015-12-30 09:00:00"
+"661";"Pressure Foot";;"Pressure Foot";"1/4 L R ( 2mm ) ";"29-26";"MLA";;"2015-12-30 09:00:00"
+"662";"Pressure Foot";;"Pressure Foot";"1/4 ( small ) ";"29-27";"MLA";;"2015-12-30 09:00:00"
+"663";"Pressure Foot";;"Pressure Foot";"1/4 R ( 2mm ) ";"29-28";"MLA";;"2015-12-30 09:00:00"
+"664";"Pressure Foot";;"Pressure Foot";"1/4 L ( 2mm ) ";"29-29";"MLA";;"2015-12-30 09:00:00"
+"665";"Pressure Foot";;"Pressure Foot";"3/16L";"29-30";"MLA";;"2015-12-30 09:00:00"
+"666";"Pressure Foot";;"Pressure Foot";"3/16R";"29-31";"MLA";;"2015-12-30 09:00:00"
+"667";"Pressure Foot";;"Pressure Foot";"SP 3/16 L";"29-32";"MLA";;"2015-12-30 09:00:00"
+"668";"Pressure Foot";;"Pressure Foot";"SP 3/16 R";"29-33";"MLA";;"2015-12-30 09:00:00"
+"669";"Pressure Foot";;"Pressure Foot";"SP 18-1/16 L";"29-34";"MLA";;"2015-12-30 09:00:00"
+"670";"Pressure Foot";;"Pressure Foot";"SP 18-1/16 R";"29-35";"MLA";;"2015-12-30 09:00:00"
+"671";"Pressure Foot";"?? ch?n v?t nh?a";"Pressure Foot";"Plastic MT 18";"29-36";"MLA";;"2015-12-30 09:00:00"
+"672";"Pressure Foot";;"Pressure Foot";"T35CW-15mm";"29-37";"MLA";;"2015-12-30 09:00:00"
+"673";"Pressure Foot";;"Pressure Foot";"P962";"29-38";"MLA";;"2015-12-30 09:00:00"
+"674";"Pressure Foot";;"Pressure Foot";"T36LN";"29-39";"MLA";;"2015-12-30 09:00:00"
+"675";"Pressure Foot";;"Pressure Foot";"T36N";"29-40";"MLA";;"2015-12-30 09:00:00"
+"676";"Pressure Foot";;"Pressure Foot";"P36LN";"29-41";"MLA";;"2015-12-30 09:00:00"
+"677";"Pressure Foot";;"Pressure Foot";"P360";"29-42";"MLA";;"2015-12-30 09:00:00"
+"678";"Pressure Foot";;"Pressure Foot";"P361";"29-43";"MLA";;"2015-12-30 09:00:00"
+"679";"Pressure Foot";;"Pressure Foot";"P237";"29-44";"MLA";;"2015-12-30 09:00:00"
+"680";"Pressure Foot ";;"Pressure Foot ";"CR 1/16 E";"29-45";"MLA";;"2015-12-30 09:00:00"
+"681";"Pressure Foot";;"Pressure Foot";"T363";"29-46";"MLA";;"2015-12-30 09:00:00"
+"682";"Pressor foot for 1 needle";;"Pressor foot for 1 needle";"211-NF";"29-47";"MLA";;"2015-12-30 09:00:00"
+"683";"Pressor foot for 2 needle";;"Pressor foot for 2 needle";"DAUY 1/4(1,5 mm)";"29-48";"MLA";;"2015-12-30 09:00:00"
+"684";"Foot";;"Foot";"CF465/5";"29-49";"MLA";;"2015-12-30 09:00:00"
+"685";"pesser foot";;"pesser foot";"Chan vit 1 kim mi trai cap kenh ( 221NF/YS)";"29-50";"MLA";;"2015-12-30 09:00:00"
+"686";"Needle";;"Needle";"DP x 5 ( 75/11) ";"30-1";"MLA";;"2015-12-30 09:00:00"
+"687";"Needle";;"Needle";"DP x 5  (80/12) ";"30-2";"MLA";;"2015-12-30 09:00:00"
+"688";"Needle";;"Needle";"DP x 5  (90/14)";"30-3";"MLA";;"2015-12-30 09:00:00"
+"689";"Needle";;"Needle";"DP x 5  (100/16)";"30-4";"MLA";NULL;"2016-03-03 08:40:14"
+"690";"Needle";;"Needle";"DP x 5 (110/18) ";"30-5";"MLA";;"2015-12-30 09:00:00"
+"691";"Needle";;"Needle";"DP x 5 (130/21) ";"30-6";"MLA";;"2015-12-30 09:00:00"
+"692";"Needle";;"Needle";"DC x 1  (80/12)  ";"30-7";"MLA";;"2015-12-30 09:00:00"
+"693";"Needle";;"Needle";"DC x 1  (90/14) ";"30-8";"MLA";;"2015-12-30 09:00:00"
+"694";"Needle";;"Needle";"DC x 1 (100/16) ";"30-9";"MLA";;"2015-12-30 09:00:00"
+"695";"Needle";;"Needle";"DC x 1 (110/18)";"30-10";"MLA";;"2015-12-30 09:00:00"
+"696";"Needle";;"Needle";"DB x 1  (90/14)  ";"30-11";"MLA";;"2015-12-30 09:00:00"
+"697";"Needle";;"Needle";"DB x 1 (100/16)";"30-12";"MLA";;"2015-12-30 09:00:00"
+"698";"Needle";;"Needle";"DB x 1 (110/18)  ";"30-13";"MLA";;"2015-12-30 09:00:00"
+"699";"Needle";;"Needle";"DP x 17 (90/14) ";"30-14";"MLA";;"2015-12-30 09:00:00"
+"700";"Needle";;"Needle";"DP x 17 (100/16) ";"30-15";"MLA";;"2015-12-30 09:00:00"
+"701";"Needle";;"Needle";"DP x 17 (110/18) ";"30-16";"MLA";;"2015-12-30 09:00:00"
+"702";"Needle";;"Needle";"UY 188/128 GAS 14 ";"30-17";"MLA";;"2015-12-30 09:00:00"
+"703";"Needle";;"Needle";"UY 188/128 GAS 16 ";"30-18";"MLA";;"2015-12-30 09:00:00"
+"704";"Needle";;"Needle";"UY 188/128 GAS 18 ";"30-19";"MLA";;"2015-12-30 09:00:00"
+"705";"Needle";;"Needle";"TV x 5 (100/16)  ";"30-20";"MLA";;"2015-12-30 09:00:00"
+"706";"Needle";;"Needle";"UY 180 (110/18) ";"30-21";"MLA";;"2015-12-30 09:00:00"
+"707";"Needle";;"Needle";"UY 130 (100/16) ";"30-22";"MLA";;"2015-12-30 09:00:00"
+"708";"Needle";;"Needle";"UY 130 (110/18)  ";"30-23";"MLA";;"2015-12-30 09:00:00"
+"709";"Needle";;"Needle";"UO x 113 (100/16) ";"30-24";"MLA";;"2015-12-30 09:00:00"
+"710";"Needle";;"Needle";"UO x 113 (110/18) ";"30-25";"MLA";;"2015-12-30 09:00:00"
+"711";"Needle";;"Needle";"UY 188/128 GAS 12";"30-26";"MLA";;"2015-12-30 09:00:00"
+"712";"Needle";;"Needle";"DO x 558 (90/14) ";"30-27";"MLA";;"2015-12-30 09:00:00"
+"713";"Needle";;"Needle";"DO x 558 (100/16) ";"30-28";"MLA";;"2015-12-30 09:00:00"
+"714";"Needle";;"Needle";"DO x 558 (110/18) ";"30-29";"MLA";;"2015-12-30 09:00:00"
+"715";"Needle";;"Needle";"UY 180 GVS (100/16)";"30-30";"MLA";;"2015-12-30 09:00:00"
+"716";"Needle";;"Needle";"UO x 113 ( 90/14)";"30-31";"MLA";;"2015-12-30 09:00:00"
+"717";"Needle";;"Needle";"TV x 5 (100/18)  ";"30-32";"MLA";;"2015-12-30 09:00:00"
+"718";"Needle";;"Needle";"UY 180 GVS(18)";"30-33";"MLA";;"2015-12-30 09:00:00"
+"719";"Grinding Wheel Flange";"61/5";"Grinding Wheel Flange";;"31-1";"MLA";;"2015-12-30 09:00:00"
+"720";"Scissor Grinding Wheel";"52/11";"Scissor Grinding Wheel";;"31-2";"MLA";;"2015-12-30 09:00:00"
+"721";"Diamond Cup Grinding Stone";"53/2";"Diamond Cup Grinding Stone";;"31-3";"MLA";;"2015-12-30 09:00:00"
+"722";"Bearings";;"Bearings";"Look UCP-204";"31-4";"MLA";;"2015-12-30 09:00:00"
+"723";" Plastic COIL";;" Plastic COIL";"0.5MM";"31-5";"MLA";;"2015-12-30 09:00:00"
+"724";" Plastic COIL";;" Plastic COIL";"1MM";"31-6";"MLA";;"2015-12-30 09:00:00"
+"725";"Drill Twist 16";;"Drill Twist 16";;"31-7";"MLA";;"2015-12-30 09:00:00"
+"726";"Drill Twist 19";;"Drill Twist 19";;"31-8";"MLA";;"2015-12-30 09:00:00"
+"727";"Drill Twist 20";;"Drill Twist 20";;"31-9";"MLA";;"2015-12-30 09:00:00"
+"728";"Drill Twist 25";;"Drill Twist 25";;"31-10";"MLA";;"2015-12-30 09:00:00"
+"729";"Saw blade red and blue";;"Saw blade red and blue";;"31-11";"MLA";;"2015-12-30 09:00:00"
+"730";"Welding electrodes";;"Welding electrodes";;"31-12";"MLA";;"2015-12-30 09:00:00"
+"731";"cutting stone";;"cutting stone";"?105 x1.0 x16mm";"31-13";"MLA";;"2015-12-30 09:00:00"
+"732";"Polisher";;"Polisher";;"31-14";"MLA";;"2015-12-30 09:00:00"
+"733";"cutting pliea";;"cutting pliea";;"31-15";"MLA";;"2015-12-30 09:00:00"
+"734";"Drill bit";;"Drill bit";"3.5 mm";"31-16";"MLA";;"2015-12-30 09:00:00"
+"735";"Drill bit";;"Drill bit";"4 mm";"31-17";"MLA";;"2015-12-30 09:00:00"
+"736";"Bearing";;"Bearing";"UCP204";"31-18";"MLA";;"2015-12-30 09:00:00"
+"737";"DRILL BIT";;"DRILL BIT";"M1mm";"31-19";"MLA";;"2015-12-30 09:00:00"
+"738";"DRILL BIT";;"DRILL BIT";"M2 mm";"31-20";"MLA";;"2015-12-30 09:00:00"
+"739";"DRILL BIT";;"DRILL BIT";"M2.5mm";"31-21";"MLA";;"2015-12-30 09:00:00"
+"740";"DRILL BIT";;"DRILL BIT";"M3mm";"31-22";"MLA";;"2015-12-30 09:00:00"
+"741";"DRILL BIT";;"DRILL BIT";"M3.2 mm";"31-23";"MLA";;"2015-12-30 09:00:00"
+"742";"DRILL BIT";;"DRILL BIT";"M3.5mm";"31-24";"MLA";;"2015-12-30 09:00:00"
+"743";"DRILL BIT";;"DRILL BIT";"M4mm";"31-25";"MLA";;"2015-12-30 09:00:00"
+"744";"DRILL BIT";;"DRILL BIT";"M4.2mm";"31-26";"MLA";;"2015-12-30 09:00:00"
+"745";"DRILL BIT";;"DRILL BIT";"M4.5mm";"31-27";"MLA";;"2015-12-30 09:00:00"
+"746";"DRILL BIT";;"DRILL BIT";"M5mm";"31-28";"MLA";;"2015-12-30 09:00:00"
+"747";"DRILL BIT";;"DRILL BIT";"M6mm";"31-29";"MLA";;"2015-12-30 09:00:00"
+"748";"DRILL BIT";;"DRILL BIT";"M7mm";"31-30";"MLA";;"2015-12-30 09:00:00"
+"749";"DRILL BIT";;"DRILL BIT";"M7.5mm";"31-31";"MLA";;"2015-12-30 09:00:00"
+"750";"DRILL BIT";;"DRILL BIT";"M8mm";"31-32";"MLA";;"2015-12-30 09:00:00"
+"751";"DRILL BIT";;"DRILL BIT";"M9mm";"31-33";"MLA";;"2015-12-30 09:00:00"
+"752";"DRILL BIT";;"DRILL BIT";"M9.5mm";"31-34";"MLA";;"2015-12-30 09:00:00"
+"753";"DRILL BIT";;"DRILL BIT";"M10mm";"31-35";"MLA";;"2015-12-30 09:00:00"
+"754";"DRILL BIT";;"DRILL BIT";"M10.5mm";"31-36";"MLA";;"2015-12-30 09:00:00"
+"755";"Cylinder";;"Cylinder";"TGM20 x 150";"33-1";"MLA";;"2015-12-30 09:00:00"
+"756";"Axes adapter-Y";;"Axes adapter-Y";"M6";"33-2";"MLA";;"2015-12-30 09:00:00"
+"757";"Axes adapter-Y";;"Axes adapter-Y";"M8";"33-3";"MLA";;"2015-12-30 09:00:00"
+"758";"Cylinder ( Xi Land )";;"Cylinder ( Xi Land )";"TGA 16 x 20-S";"33-4";"MLA";;"2015-12-30 09:00:00"
+"759";"Cylinder ( Xi Land )";;"Cylinder ( Xi Land )";"CXSM32 X40";"33-5";"MLA";;"2015-12-30 09:00:00"
+"760";"Straight Union";;"Straight Union";"YPU 6-6";"33-6";"MLA";;"2015-12-30 09:00:00"
+"761";"Straight Union";;"Straight Union";"YPU 8-8";"33-7";"MLA";;"2015-12-30 09:00:00"
+"762";"Straight Union";;"Straight Union";"8 X 6 ( YPG 8-6 )";"33-8";"MLA";;"2015-12-30 09:00:00"
+"763";"Straight Union";;"Straight Union";"YPG 6-4";"33-9";"MLA";;"2015-12-30 09:00:00"
+"764";"Union Tee";;"Union Tee";"YPE-4 ( YPE4-4 )";"33-10";"MLA";;"2015-12-30 09:00:00"
+"765";"Union Tee";;"Union Tee";"YPE-6 ( YPE-6-6 )";"33-11";"MLA";;"2015-12-30 09:00:00"
+"766";"Union Tee";;"Union Tee";"YPY-6 ( YPY-6-6 )";"33-12";"MLA";;"2015-12-30 09:00:00"
+"767";"Union Tee";;"Union Tee";"YPE-8 ( YPE-8-8 )";"33-13";"MLA";;"2015-12-30 09:00:00"
+"768";"Air Connection";;"Air Connection";"4 X 13 ( 4 x 1/4 ) PC4-02";"33-14";"MLA";;"2015-12-30 09:00:00"
+"769";"Air Connation";;"Air Connation";"6 X 13 ( 6 x 1/4 ) PC6-02";"33-15";"MLA";;"2015-12-30 09:00:00"
+"770";"Air Connection";;"Air Connection";"8 X 13 ( 8 X 1/4 ) PC8-02";"33-16";"MLA";;"2015-12-30 09:00:00"
+"771";"Air Connation 8 X 10";;"Air Connation 8 X 10";"YPC08-01";"33-17";"MLA";;"2015-12-30 09:00:00"
+"772";"Air Connection 6 X 10";;"Air Connection 6 X 10";"YPC06-01";"33-18";"MLA";;"2015-12-30 09:00:00"
+"773";"Speed Control Valve";;"Speed Control Valve";"YSA 4 ( YSA 4-4 )";"33-19";"MLA";;"2015-12-30 09:00:00"
+"774";"Air Valve";;"Air Valve";"YSC 4M5";"33-20";"MLA";;"2015-12-30 09:00:00"
+"775";"Air Valve";;"Air Valve";"YSC 6M5";"33-21";"MLA";;"2015-12-30 09:00:00"
+"776";"Straight Union";;"Straight Union";"KD 1/4";"33-22";"MLA";;"2015-12-30 09:00:00"
+"777";"Air Connation L6X5";;"Air Connation L6X5";"YPL6-M5";"33-23";"MLA";;"2015-12-30 09:00:00"
+"778";"Air Connation L6 X13 ( 1/4 )";;"Air Connation L6 X13 ( 1/4 )";"YPL6-02";"33-24";"MLA";;"2015-12-30 09:00:00"
+"779";"Air Connation L6 X10 ( 1/8 )";;"Air Connation L6 X10 ( 1/8 )";"YPL6-01";"33-25";"MLA";;"2015-12-30 09:00:00"
+"780";"Air Connation L8 X 10 ( 1/8 )";;"Air Connation L8 X 10 ( 1/8 )";"YPL8-01";"33-26";"MLA";;"2015-12-30 09:00:00"
+"781";"Air Valve 6 X 10 ( 6x1/8 )";;"Air Valve 6 X 10 ( 6x1/8 )";"YSC6-01";"33-27";"MLA";;"2015-12-30 09:00:00"
+"782";"Air Valve 6 X 13 ( 6x1/4 )";;"Air Valve 6 X 13 ( 6x1/4 )";"YSC6-02";"33-28";"MLA";;"2015-12-30 09:00:00"
+"783";"Air Valve 4 X 13 ( 4x1/4 )";;"Air Valve 4 X 13 ( 4x1/4 )";"YSC4-01";"33-29";"MLA";;"2015-12-30 09:00:00"
+"784";"Air Connection by Brass";;"Air Connection by Brass";"KT1/4";"33-30";"MLA";;"2015-12-30 09:00:00"
+"785";"Electric Air Valve";;"Electric Air Valve";"TG2521-08-220v";"33-31";"MLA";;"2015-12-30 09:00:00"
+"786";"Electric Air Valve";;"Electric Air Valve";"TG2531-08-220v";"33-32";"MLA";;"2015-12-30 09:00:00"
+"787";"Electric Air Valve";;"Electric Air Valve";"TG2521-08-24v";"33-33";"MLA";;"2015-12-30 09:00:00"
+"788";"Electric Air Valve";;"Electric Air Valve";"TG2321-08-24v";"33-34";"MLA";;"2015-12-30 09:00:00"
+"789";"Electric Air Valve";;"Electric Air Valve";"TG22-8-24v";"33-35";"MLA";;"2015-12-30 09:00:00"
+"790";"Cylinder";;"Cylinder";"CD85KN16-25-B";"33-36";"MLA";;"2015-12-30 09:00:00"
+"791";"Speed Controloll";;"Speed Controloll";"YSC4-02";"33-37";"MLA";;"2015-12-30 09:00:00"
+"792";"Screw thread straight union";;"Screw thread straight union";"YPC8-02";"33-38";"MLA";;"2015-12-30 09:00:00"
+"793";"Controller STNC";;"Controller STNC";"YSA4-4";"33-39";"MLA";;"2015-12-30 09:00:00"
+"794";"Controller STNC";;"Controller STNC";"YSA6-6";"33-40";"MLA";;"2015-12-30 09:00:00"
+"795";"Fittings STNC";;"Fittings STNC";"YPC8-01";"33-41";"MLA";;"2015-12-30 09:00:00"
+"796";"Fittings STNC";;"Fittings STNC";"YPC6-02";"33-42";"MLA";;"2015-12-30 09:00:00"
+"797";"Cylinder";;"Cylinder";"TGA16x100";"33-43";"MLA";;"2015-12-30 09:00:00"
+"798";"Valve";;"Valve";"G321R";"33-44";"MLA";;"2015-12-30 09:00:00"
+"799";"Axes adapter-Y iron";;"Axes adapter-Y iron";"M6";"33-45";"MLA";;"2015-12-30 09:00:00"
+"800";"Axes adapter-Y iron";;"Axes adapter-Y iron";"M8";"33-46";"MLA";;"2015-12-30 09:00:00"
+"801";"AIR CUN";;"AIR CUN";;"33-47";"MLA";;"2015-12-30 09:00:00"
+"802";"- Belt - Day Curoa";;"- Belt - Day Curoa";"Belt";"40-1";"MLA";;"2015-12-30 09:00:00"
+"803";"87C7-40 - 4-Lead knife gear - banh rang dao";;"87C7-40 - 4-Lead knife gear - banh rang dao";"87C7-40 - 4";"40-2";"MLA";;"2015-12-30 09:00:00"
+"804";"523C1-101 - wire with plug - day dien co phich cam";;"523C1-101 - wire with plug - day dien co phich cam";"523C1-101 - wire with plug - day dien co phich cam";"40-3";"MLA";;"2015-12-30 09:00:00"
+"805";"- BRUSH THE - choi than dong";;"- BRUSH THE - choi than dong";"- BRUSH THE - choi than dong";"40-4";"MLA";NULL;"2016-03-03 08:19:18"
+"806";"- switch - Cong tac dieu khien";;"- switch - Cong tac dieu khien";"- switch - Cong tac dieu khien";"40-5";"MLA";;"2015-12-30 09:00:00"
+"807";"- abrasives cut the table S150 - da mai cat dau ba";;"- abrasives cut the table S150 - da mai cat dau ban s150";"- abrasives cut the table S150 - da mai cat dau ban s150";"40-6";"MLA";;"2015-12-30 09:00:00"
+"808";"- knife sharpening stone - ?a mai dao";;"- knife sharpening stone - ?a mai dao";"- knife sharpening stone - ?a mai dao";"40-7";"MLA";;"2015-12-30 09:00:00"
+"809";"Fancon 82,5 6-kt. HSS - circular cutter - dao cat ";;"Fancon 82,5 6-kt. HSS - circular cutter - dao cat tron";"Fancon 82,5 6-kt. HSS - circular cutter - dao cat tron";"40-8";"MLA";;"2015-12-30 09:00:00"
+"810";"- Electrical knife for cutter blade - Mo to dao";;"- Electrical knife for cutter blade - Mo to dao";"- Electrical knife for cutter blade - Mo to dao";"40-9";"MLA";;"2015-12-30 09:00:00"
+"811";"300C15-3 - Screw, 10-32x3/8 Round hd. - oc bat dao";;"300C15-3 - Screw, 10-32x3/8 Round hd. - oc bat dao";"300C15-3 - Screw, 10-32x3/8 Round hd. - oc bat dao";"40-10";"MLA";;"2015-12-30 09:00:00"
+"812";"308C5-1 - Screw, 3-48x1/2 SKT - oc bat nhong";;"308C5-1 - Screw, 3-48x1/2 SKT - oc bat nhong";"308C5-1 - Screw, 3-48x1/2 SKT - oc bat nhong";"40-11";"MLA";;"2015-12-30 09:00:00"
+"813";"302C8-1 - Screw, 4-40x3/8 socket flat hd. - oc bat";;"302C8-1 - Screw, 4-40x3/8 socket flat hd. - oc bat dem dao";"302C8-1 - Screw, 4-40x3/8 socket flat hd. - oc bat dem dao";"40-12";"MLA";;"2015-12-30 09:00:00"
+"814";"726C1-16 - Shear plate with blank - Dao tinh";;"726C1-16 - Shear plate with blank - Dao tinh";"726C1-16 - Shear plate with blank - Dao tinh";"40-13";"MLA";;"2015-12-30 09:00:00"
+"815";"508C1-101 - outlet - o cam dien";;"508C1-101 - outlet - o cam dien";"508C1-101 - outlet - o cam dien";"40-14";"MLA";;"2015-12-30 09:00:00"
+"816";"SE135024500K - Thermistor relay - ro le thoi gian";;"SE135024500K - Thermistor relay - ro le thoi gian";"SE135024500K - Thermistor relay - ro le thoi gian";"40-15";"MLA";;"2015-12-30 09:00:00"
+"817";"PAA01CM24 - Thermistor relay - ro le thoi gian";;"PAA01CM24 - Thermistor relay - ro le thoi gian";"PAA01CM24 - Thermistor relay - ro le thoi gian";"40-16";"MLA";;"2015-12-30 09:00:00"
+"818";"87C7-37 - 2-Lead knife gear - banh rang dao";;"87C7-37 - 2-Lead knife gear - banh rang dao";"87C7-37 - 2-Lead knife gear - banh rang dao";"40-17";"MLA";;"2015-12-30 09:00:00"
+"819";"- Switch ( Slow speed) - Cong tac nhan chay cham";;"- Switch ( Slow speed) - Cong tac nhan chay cham";"- Switch ( Slow speed) - Cong tac nhan chay cham";"40-18";"MLA";;"2015-12-30 09:00:00"
+"820";"- Wheel - Banh xe may trai vai";;"- Wheel - Banh xe may trai vai";"- Wheel - Banh xe may trai vai";"40-19";"MLA";;"2015-12-30 09:00:00"
+"821";"Tekoma Niebuhr Semi Spreader m/c (2000mm- 129S) - ";;"Tekoma Niebuhr Semi Spreader m/c (2000mm- 129S) - Counter - bo dem san pham may trai vai";"Tekoma Niebuhr Semi Spreader m/c (2000mm- 129S) - Counter - bo dem san pham may trai vai";"40-20";"MLA";;"2015-12-30 09:00:00"
+"822";"8 chan - Relay - Ro le trung gian";;"8 chan - Relay - Ro le trung gian";"8 chan - Relay - Ro le trung gian";"40-21";"MLA";NULL;"2016-03-03 08:23:35"
+"823";"14 chan - Relay - Ro le trung gian";;"14 chan - Relay - Ro le trung gian";"14 chan - Relay - Ro le trung gian";"40-22";"MLA";NULL;"2016-03-03 08:25:31"
+"824";"YS SEP 323-11RA - Stop switch - Cong tac dung khan";;"YS SEP 323-11RA - Stop switch - Cong tac dung khan";"YS SEP 323-11RA - Stop switch - Cong tac dung khan";"40-23";"MLA";;"2015-12-30 09:00:00"
+"825";"505C2-85 - Base plate asembly - Bo dan huong dao";;"505C2-85 - Base plate asembly - Bo dan huong dao";"505C2-85 - Base plate asembly - Bo dan huong dao";"40-24";"MLA";;"2015-12-30 09:00:00"
+"826";"- Sensor - sen so can bien";;"- Sensor - sen so can bien";"- Sensor - sen so can bien";"40-25";"MLA";NULL;"2016-03-03 08:21:05"
+"827";"- Guided knife - dan huong dao";;"- Guided knife - dan huong dao";"- Guided knife - dan huong dao";"40-26";"MLA";;"2015-12-30 09:00:00"
+"828";"34C10-158 - Sharpenner spring - Lo xo";;"34C10-158 - Sharpenner spring - Lo xo";"34C10-158 - Sharpenner spring - Lo xo";"40-27";"MLA";;"2015-12-30 09:00:00"
+"829";"151C1-3 - Motor CHK coupling - khop noi motor dao";;"151C1-3 - Motor CHK coupling - khop noi motor dao";"151C1-3 - Motor CHK coupling - khop noi motor dao";"40-28";"MLA";;"2015-12-30 09:00:00"
+"830";"83C4-21 - Knife flange - Chan dao trong";;"83C4-21 - Knife flange - Chan dao trong";"83C4-21 - Knife flange - Chan dao trong";"40-29";"MLA";;"2015-12-30 09:00:00"
+"831";"53C11-107 - Knife flange cover - Chan dao ngoai";;"53C11-107 - Knife flange cover - Chan dao ngoai";"53C11-107 - Knife flange cover - Chan dao ngoai";"40-30";"MLA";;"2015-12-30 09:00:00"
+"832";"79C12-217 - Gear Rtaining plate - lap ham banh ran";;"79C12-217 - Gear Rtaining plate - lap ham banh rang";"79C12-217 - Gear Rtaining plate - lap ham banh rang";"40-31";"MLA";;"2015-12-30 09:00:00"
+"833";"32C5-60 - Sharpenner Bracket - gia bat da mai";;"32C5-60 - Sharpenner Bracket - gia bat da mai";"32C5-60 - Sharpenner Bracket - gia bat da mai";"40-32";"MLA";;"2015-12-30 09:00:00"
+"834";"25C4-162 - Knife Guard - bao ve dao";;"25C4-162 - Knife Guard - bao ve dao";"25C4-162 - Knife Guard - bao ve dao";"40-33";"MLA";;"2015-12-30 09:00:00"
+"835";"12C15-95 - Washer , #6 flat - long den";;"12C15-95 - Washer , #6 flat - long den";"12C15-95 - Washer , #6 flat - long den";"40-34";"MLA";;"2015-12-30 09:00:00"
+"836";"300C10-1 - Screw, 6-32x3/16 round Hd - oc bat dao";;"300C10-1 - Screw, 6-32x3/16 round Hd - oc bat dao";"300C10-1 - Screw, 6-32x3/16 round Hd - oc bat dao";"40-35";"MLA";;"2015-12-30 09:00:00"
+"837";"- Carbon brush - Choi than dao";;"- Carbon brush - Choi than dao";"- Carbon brush - Choi than dao";"40-36";"MLA";;"2015-12-30 09:00:00"
+"838";"18C6-49 - oil seal ring - Giang cao su";;"18C6-49 - oil seal ring - Giang cao su";"18C6-49 - oil seal ring - Giang cao su";"40-37";"MLA";;"2015-12-30 09:00:00"
+"839";"21C5-5 - Sharpenner Bushing - de bat da mai dao";;"21C5-5 - Sharpenner Bushing - de bat da mai dao";"21C5-5 - Sharpenner Bushing - de bat da mai dao";"40-38";"MLA";;"2015-12-30 09:00:00"
+"840";"- Motor - Mo to toi mo to dao";;"- Motor - Mo to toi mo to dao";"- Motor - Mo to toi mo to dao";"40-39";"MLA";;"2015-12-30 09:00:00"
+"841";"- Gear - Banh rang";;"- Gear - Banh rang";"- Gear - Banh rang";"40-40";"MLA";;"2015-12-30 09:00:00"
+"842";"18C6-35 - Snap ring - Phanh";;"18C6-35 - Snap ring - Phanh";"18C6-35 - Snap ring - Phanh";"40-41";"MLA";;"2015-12-30 09:00:00"
+"843";"55C4-98 - Sparcer bearing - dau noi";;"55C4-98 - Sparcer bearing - dau noi";"55C4-98 - Sparcer bearing - dau noi";"40-42";"MLA";;"2015-12-30 09:00:00"
+"844";"653C1-3 - Wrom shaft (Electric) - Truc dao";;"653C1-3 - Wrom shaft (Electric) - Truc dao";"653C1-3 - Wrom shaft (Electric) - Truc dao";"40-43";"MLA";;"2015-12-30 09:00:00"
+"845";"4C1-197 - Allent nut - dai oc";;"4C1-197 - Allent nut - dai oc";"4C1-197 - Allent nut - dai oc";"40-44";"MLA";;"2015-12-30 09:00:00"
+"846";"300C10-4 - Screw, 6-32x3/8 round hd. - Oc";;"300C10-4 - Screw, 6-32x3/8 round hd. - Oc";"300C10-4 - Screw, 6-32x3/8 round hd. - Oc";"40-45";"MLA";;"2015-12-30 09:00:00"
+"847";"300C10-11 - Screw, 6-32x1-1/8 round hd. - Oc";;"300C10-11 - Screw, 6-32x1-1/8 round hd. - Oc";"300C10-11 - Screw, 6-32x1-1/8 round hd. - Oc";"40-46";"MLA";;"2015-12-30 09:00:00"
+"848";"647C1-10 - Standard W/Shaft & Felt Wick - Cum bao ";;"647C1-10 - Standard W/Shaft & Felt Wick - Cum bao ve dao";"647C1-10 - Standard W/Shaft & Felt Wick - Cum bao ve dao";"40-47";"MLA";;"2015-12-30 09:00:00"
+"849";"307C8-1 - Screw, 4-40x1/4 button hd. - Oc";;"307C8-1 - Screw, 4-40x1/4 button hd. - Oc";"307C8-1 - Screw, 4-40x1/4 button hd. - Oc";"40-48";"MLA";;"2015-12-30 09:00:00"
+"850";"302C10-4 - Screw, 6-32x5/6 flat hd. - Oc";;"302C10-4 - Screw, 6-32x5/6 flat hd. - Oc";"302C10-4 - Screw, 6-32x5/6 flat hd. - Oc";"40-49";"MLA";;"2015-12-30 09:00:00"
+"851";"191C1-26 - Knife pad wipe - Mut tham dau";;"191C1-26 - Knife pad wipe - Mut tham dau";"191C1-26 - Knife pad wipe - Mut tham dau";"40-50";"MLA";;"2015-12-30 09:00:00"
+"852";"302C15-19 - Screw, 10-32x1inch socket flat hd. - O";;"302C15-19 - Screw, 10-32x1inch socket flat hd. - Oc";"302C15-19 - Screw, 10-32x1inch socket flat hd. - Oc";"40-51";"MLA";;"2015-12-30 09:00:00"
+"853";"Wheel-Banh xe be may";;"Wheel-Banh xe be may";"Wheel -Banh xe cho be may";"40-52";"MLA";;"2015-12-30 09:00:00"
+"854";"Fower Caerriage";;"Fower Caerriage";"DEYLE DEN5-16L 230/400V IP23";"40-53";"MLA";;"2015-12-30 09:00:00"
+"855";;;"0";;"41:   Band-knife machine";"MLA";;"2015-12-30 09:00:00"
+"856";"Band-knife (Dao c?t v?ng)";;"Band-knife (Dao c?t v?ng)";"4600 x 10";"41-1";"MLA";;"2015-12-30 09:00:00"
+"857";"4600 - Grind stone - da mai dao";;"4600 - Grind stone - da mai dao";"4600( from DK)";"41-2";"MLA";;"2015-12-30 09:00:00"
+"858";;;"0";;"41-3";"MLA";;"2015-12-30 09:00:00"
+"859";"GS 181C2-2 (Great knives) - Emery-paper - Giay rap";;"GS 181C2-2 (Great knives) - Emery-paper - Giay rap vong mai dao";"GS 181C2-2 ";"42-1";"MLA";;"2015-12-30 09:00:00"
+"860";"Straight knives (Dao c?t th?ng)";;"Straight knives (Dao c?t th?ng)";"8E";"42-2";"MLA";;"2015-12-30 09:00:00"
+"861";"Straight knives (Dao c?t th?ng)";;"Straight knives (Dao c?t th?ng)";"10 E";"42-3";"MLA";;"2015-12-30 09:00:00"
+"862";"Drill";;"Drill";"m";"42-4";"MLA";;"2015-12-30 09:00:00"
+"863";"Drill";;"Drill";"1,6";"42-5";"MLA";;"2015-12-30 09:00:00"
+"864";"Oi tank ";;"Oi tank ";"M-034";"42-6";"MLA";;"2015-12-30 09:00:00"
+"865";"Knife lock washer( t?m ??m dao)";;"Knife lock washer( t?m ??m dao)";"M-041";"42-7";"MLA";;"2015-12-30 09:00:00"
+"866";"Terminal sleeve ( ti?p ?i?m ph?ch c?m)";;"Terminal sleeve ( ti?p ?i?m ph?ch c?m)";"M-071";"42-8";"MLA";;"2015-12-30 09:00:00"
+"867";"Terminal contact with pin  (ti?p ?i?m ph?ch c?m)";;"Terminal contact with pin  (ti?p ?i?m ph?ch c?m)";"M-072";"42-9";"MLA";;"2015-12-30 09:00:00"
+"868";"Plate bolt / nut (?c +bu l?ng)";;"Plate bolt / nut (?c +bu l?ng)";"M-090";"42-10";"MLA";;"2015-12-30 09:00:00"
+"869";"Screw shaft with Extension( v?t tr?c Xo?n)";;"Screw shaft with Extension( v?t tr?c Xo?n)";"M-106";"42-11";"MLA";;"2015-12-30 09:00:00"
+"870";"Sping for latch( l? so)";;"Sping for latch( l? so)";"M-110";"42-12";"MLA";;"2015-12-30 09:00:00"
+"871";"Cam sping( l? so h?m m? m?i)";;"Cam sping( l? so h?m m? m?i)";"M-111";"42-13";"MLA";;"2015-12-30 09:00:00"
+"872";"Pressure foot shoe( ch?n v?t)";;"Pressure foot shoe( ch?n v?t)";"M-219";"42-14";"MLA";;"2015-12-30 09:00:00"
+"873";"Right hand follower Nut (tr?c b? m?i)";;"Right hand follower Nut (tr?c b? m?i)";"M-135";"42-15";"MLA";;"2015-12-30 09:00:00"
+"874";"LH square Shaft(tr?c b? m?i)";;"LH square Shaft(tr?c b? m?i)";"M-137";"42-16";"MLA";;"2015-12-30 09:00:00"
+"875";"Spur Gear (b?nh r?ng lai)";;"Spur Gear (b?nh r?ng lai)";"M-148";"42-17";"MLA";;"2015-12-30 09:00:00"
+"876";"Thrust washers for spiral gear(v?ng bi tr?c xo?n ?";;"Thrust washers for spiral gear(v?ng bi tr?c xo?n ?c)";"M-151";"42-18";"MLA";;"2015-12-30 09:00:00"
+"877";"Ldler Gear with bushing( b?nh r?ng)";;"Ldler Gear with bushing( b?nh r?ng)";"M-156";"42-19";"MLA";;"2015-12-30 09:00:00"
+"878";"L.H. sp?al gear with key( b?nh r?ng)";;"L.H. sp?al gear with key( b?nh r?ng)";"M-157";"42-20";"MLA";;"2015-12-30 09:00:00"
+"879";"Gear on screw shaft ( nh?ng tr?c v?t)";;"Gear on screw shaft ( nh?ng tr?c v?t)";"M-166";"42-21";"MLA";;"2015-12-30 09:00:00"
+"880";"Intermediate Gear( b?nh r?ng trung gian)";;"Intermediate Gear( b?nh r?ng trung gian)";"M-167";"42-22";"MLA";;"2015-12-30 09:00:00"
+"881";"R.H.Shoe( ?? t? m?i)";;"R.H.Shoe( ?? t? m?i)";"M-169";"42-23";"MLA";;"2015-12-30 09:00:00"
+"882";"L.H.Shoe( ?? t? m?i)";;"L.H.Shoe( ?? t? m?i)";"M-170";"42-24";"MLA";;"2015-12-30 09:00:00"
+"883";"Set screw for Sharpenner she ( ?c)";;"Set screw for Sharpenner she ( ?c)";"M-171";"42-25";"MLA";;"2015-12-30 09:00:00"
+"884";"Guide back of standard 8''";;"Guide back of standard 8''";"M-173";"42-26";"MLA";;"2015-12-30 09:00:00"
+"885";"R.H.Slide with pulley - pu ly cang day mai";;"R.H.Slide with pulley - pu ly cang day mai";"M-176";"42-27";"MLA";;"2015-12-30 09:00:00"
+"886";" L.H.Slide with pulley - pu ly cang day mai";;" L.H.Slide with pulley - pu ly cang day mai";"M-177";"42-28";"MLA";;"2015-12-30 09:00:00"
+"887";"Front pulley for belt - pu ly day cu roa mai dao";;"Front pulley for belt - pu ly day cu roa mai dao";"M-179";"42-29";"MLA";;"2015-12-30 09:00:00"
+"888";"Neoprene band for puelly - vong cao su dem pu ly";;"Neoprene band for puelly - vong cao su dem pu ly";"M-178";"42-30";"MLA";;"2015-12-30 09:00:00"
+"889";" Roll pin for Belt - Ty lo xo pully";;" Roll pin for Belt - Ty lo xo pully";"M-180";"42-31";"MLA";;"2015-12-30 09:00:00"
+"890";"Spring for Pulley Slide - Lo xo cang day mai";;"Spring for Pulley Slide - Lo xo cang day mai";"M-181";"42-32";"MLA";;"2015-12-30 09:00:00"
+"891";"Clamping Arm for shoe - Gia do banh mai";;"Clamping Arm for shoe - Gia do banh mai";"M-183";"42-33";"MLA";;"2015-12-30 09:00:00"
+"892";"L.H.Sharpener shoe spring - chot cang mai";;"L.H.Sharpener shoe spring - chot cang mai";"M-187";"42-34";"MLA";;"2015-12-30 09:00:00"
+"893";" R.H.Sharpener shoe spring - lo xo mai";;" R.H.Sharpener shoe spring - lo xo mai";"M-186";"42-35";"MLA";;"2015-12-30 09:00:00"
+"894";"Spring for arm - lo xo ham da mai";;"Spring for arm - lo xo ham da mai";"M-188";"42-36";"MLA";;"2015-12-30 09:00:00"
+"895";"Collar for lower screw shaft";;"Collar for lower screw shaft";"M-102";"42-37";"MLA";;"2015-12-30 09:00:00"
+"896";"Line knife ";;"Line knife ";"10 inch";"42-38";"MLA";;"2015-12-30 09:00:00"
+"897";"L.H slide with pulley";;"L.H slide with pulley";;"42-39";"MLA";;"2015-12-30 09:00:00"
+"898";"Nut for screw shaft L.H & R.H";;"Nut for screw shaft L.H & R.H";"M-104";"42-40";"MLA";;"2015-12-30 09:00:00"
+"899";"R.H square shaft (10inch)";;"R.H square shaft (10inch)";"M-136";"42-41";"MLA";;"2015-12-30 09:00:00"
+"900";"R.H square shaft (8inch)";;"R.H square shaft (8inch)";"M-136";"42-42";"MLA";;"2015-12-30 09:00:00"
+"901";"Thrust washer";;"Thrust washer";"M-229";"42-43";"MLA";;"2015-12-30 09:00:00"
+"902";"Knife lock bolt";;"Knife lock bolt";"M-051";"42-44";"MLA";;"2015-12-30 09:00:00"
+"903";"Knife slides ";;"Knife slides ";"M-086";"42-45";"MLA";;"2015-12-30 09:00:00"
+"904";"Switch - cong tac nguon";;"Switch - cong tac nguon";"M-020";"42-46";"MLA";;"2015-12-30 09:00:00"
+"905";"Rubbe rmuonted roler (Conplete) ";;"Rubbe rmuonted roler (Conplete) ";"M-080";"42-47";"MLA";;"2015-12-30 09:00:00"
+"906";"Ball bearing for crank";;"Ball bearing for crank";"M-149";"42-48";"MLA";;"2015-12-30 09:00:00"
+"907";"Stabilizer -Banh ty hong cat puly";;"Stabilizer -Banh ty hong cat puly";"M-172";"42-49";"MLA";;"2015-12-30 09:00:00"
+"908";"Spacer  tube - ong dem";;"Spacer  tube - ong dem";"M-107";"42-50";"MLA";;"2015-12-30 09:00:00"
+"909";"Switch - cong tac ly tan";;"Switch - cong tac ly tan";"M-301";"42-51";"MLA";;"2015-12-30 09:00:00"
+"910";"Switch - cong tac ly tan";;"Switch - cong tac ly tan";"M-302";"42-52";"MLA";;"2015-12-30 09:00:00"
+"911";"Driving shaft - Ong dan huong";;"Driving shaft - Ong dan huong";"M-093";"42-53";"MLA";;"2015-12-30 09:00:00"
+"912";"Right and left hand follwer -Ong dan huong";;"Right and left hand follwer -Ong dan huong";"M-094";"42-54";"MLA";;"2015-12-30 09:00:00"
+"913";"Knob for pressure foot rob - Can nang chan vit";;"Knob for pressure foot rob - Can nang chan vit";"M-230";"42-55";"MLA";;"2015-12-30 09:00:00"
+"914";"9 Driving wheel ( Ru lo )";;"9 Driving wheel ( Ru lo )";"Number 7 page";"42-56";"MLA";;"2015-12-30 09:00:00"
+"915";"10 Tape - press wheel ( Ru lo )";;"10 Tape - press wheel ( Ru lo )";"Number 10 page";"42-57";"MLA";;"2015-12-30 09:00:00"
+"916";"VANLOCK";"VANLOCK";;"Plug PCE F013-6Eco";"42-58";"MLA";NULL;"2016-01-02 18:07:44"
+"917";"VANLOCK";;;"Plug PCE F213-6Eco";"42-59";"MLA";NULL;"2016-01-02 18:06:56"
+"921";"Fff";;;"409";;;NULL;"2016-03-21 03:14:30"

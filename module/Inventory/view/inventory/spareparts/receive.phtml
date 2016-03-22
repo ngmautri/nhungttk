@@ -83,7 +83,7 @@ echo '<div class="alert alert-error">';
  <?php foreach ($pictures as $pic) : ?>
   	
     <a href="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
-    <img class= "img-rounded" width="80" src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+    <img class= "img-rounded" width="80" height="80" src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
     </a>
 	
 <?php endforeach; ?>

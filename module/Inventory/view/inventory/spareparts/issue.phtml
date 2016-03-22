@@ -91,12 +91,15 @@ echo '<div class="alert alert-error">';
 	
 	
 }?>
-<hr>
 
-<div class="container">
+<hr>
+<h5>    <a href="/inventory/spareparts/pictures?sparepart_id=<?php echo (int) $sp->id; ?>">Spare-part pictures</a></h5>
+
+
+
 <div id="lightgallery">
 
-  <?php if ($pictures->count()>0){ ?>
+ <?php if ($pictures->count()>0){ ?>
  <?php foreach ($pictures as $pic) : ?>
   	
     <a href="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
@@ -105,7 +108,7 @@ echo '<div class="alert alert-error">';
 	
 <?php endforeach; ?>
 </div>
-</div>
+
 
 <?php }?>
 	

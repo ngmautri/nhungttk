@@ -35,6 +35,7 @@
 		<td><?php echo $this->escapeHtml($category->l1);?> <span class="label label-info"><?php echo $this->escapeHtml($category->members);?></span></td>
 		<td>
          <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($category->id);?>">Detail</a>
+         <a href="<?php echo $this->baseUrl ?>/inventory/admin/edit-sparepart-category?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a>
          <a href="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category-member?id=<?php echo $this->escapeHtml($category->id);?>">Add-Member</a>
     	
      	</td>

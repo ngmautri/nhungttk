@@ -1,0 +1,45 @@
+<h3>Stock Movement</h3>
+
+
+<hr>
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>id</b></td>
+		<td><b>Date of Movement</b></td>
+		<td><b>Spare-part ID	</b></td>
+		<td><b>Asset ID	</b></td>
+		<td><b>Flow</b></td>
+		<td><b>Quantity</b></td>
+		<td><b>Reason</b></td>
+		<td><b>Comment</b></td>
+			
+	</tr>
+</thead>
+<tbody>
+
+<?php 
+	 
+	 $count = 0;
+	foreach ($movements as $a) :
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+
+		<td><?php echo $this->escapeHtml($a->id);?></td>
+		<td><?php echo $this->escapeHtml($a->movement_date);?></td>
+		<td><?php echo $this->escapeHtml($a->sparepart_id);?></td>
+		<td><?php echo $this->escapeHtml($a->asset_id);?></td>
+		<td><?php echo $this->escapeHtml($a->flow);?></td>
+		<td><?php echo $this->escapeHtml($a->quantity);?></td>
+				<td><?php echo $this->escapeHtml($a->reason);?></td>
+		
+		<td><?php echo $this->escapeHtml($a->comment);?></td>
+		
+	</tr>
+
+<?php endforeach; ?>
+</tbody>
+</table>
+	

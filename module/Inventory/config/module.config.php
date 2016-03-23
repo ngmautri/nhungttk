@@ -97,6 +97,8 @@ return array (
 				'factories' => array (
 						'Inventory\Controller\Admin' => 'Inventory\Controller\AdminControllerFactory',
 						'Inventory\Controller\Spareparts' => 'Inventory\Controller\SparepartsControllerFactory',
+						'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
+						
 				)
 				
 				

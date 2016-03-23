@@ -170,7 +170,7 @@ on t4.sparepart_id = t3.id where t4.flow = 'OUT' group by t4.sparepart_id) as tO
 		);
 		
 		$where = 'id = ' . $id;
-		$resultSet = $this->tableGateway->update( $data,$where);
+		$this->tableGateway->update( $data,$where);
 	}
 	
 	

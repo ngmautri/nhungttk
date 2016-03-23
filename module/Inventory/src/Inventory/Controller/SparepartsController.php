@@ -58,9 +58,6 @@ class SparepartsController extends AbstractActionController {
 			
 		if ($request->isPost ()) {
 			
-			$request = $this->getRequest ();
-			
-			
 			if ($request->isPost ()) {
 				$redirectUrl  = $request->getPost ( 'redirectUrl' );
 				
@@ -173,10 +170,18 @@ class SparepartsController extends AbstractActionController {
 		
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
 		$category_id = ( int ) $this->params ()->fromQuery ( 'category_id' );
+		
+		// add category
+		if ($category_id > 1){
+			$category = $this->sparePartCategoryTable->get($category_id);
+		}else{
+			$category = null;
+		}
+		
 			
 		return new ViewModel ( array (
 				'message' => 'Add new Sparepart',
-				'category_id' => $category_id,
+				'category' => $category,
 				'redirectUrl'=>$redirectUrl,
 				'errors' => null,
 				'sparepart' =>null,

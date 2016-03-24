@@ -37,8 +37,14 @@ use Inventory\Model\SparepartCategory;
 use Inventory\Model\SparepartCategoryTable;
 
 use Inventory\Model\SparepartCategoryMember;
-use Inventory\Model\SparepartCategoryMemberTableTable;
 use Inventory\Model\SparepartCategoryMemberTable;
+
+use Inventory\Model\AssetCounting;
+use Inventory\Model\AssetCountingTable;
+
+use Inventory\Model\AssetCountingItem;
+use Inventory\Model\AssetCountingItemTable;
+
 
 class Module {
 	
@@ -252,7 +258,33 @@ class Module {
 						return new TableGateway ( 'mla_sparepart_cats_members', $dbAdapter, null, $resultSetPrototype );
 						},
 						
+						// AssetCounting Table
+						'Inventory\Model\AssetCountingTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'AssetCountingTableGateway' );
+						$table = new AssetCountingTable($tableGateway );
+						return $table;
+						},
 						
+						'AssetCountingTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new AssetCounting() );
+						return new TableGateway ( 'mla_asset_counting', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// AssetCountingItem Table
+						'Inventory\Model\AssetCountingItemTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'AssetCountingItemTableGateway' );
+						$table = new AssetCountingItemTable($tableGateway );
+						return $table;
+						},
+						
+						'AssetCountingItemTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new AssetCountingItem() );
+						return new TableGateway ( 'mla_asset_counting_items', $dbAdapter, null, $resultSetPrototype );
+						},
 						
 						'Inventory\Services\AssetSearchService'  => 'Inventory\Services\AssetSearchServiceFactory',
 						'Inventory\Services\SparePartsSearchService'  => 'Inventory\Services\SparePartsSearchServiceFactory',

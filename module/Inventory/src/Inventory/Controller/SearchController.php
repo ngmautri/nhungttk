@@ -82,6 +82,7 @@ class SearchController extends AbstractActionController {
 		));
 	}
 	
+
 	
 	public function asset1Action() {
 			$response = $this->getResponse();

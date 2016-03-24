@@ -8,7 +8,7 @@ use Zend\EventManager\EventManagerInterface;
 
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Document;
-use ZendSearch\Lucene\document\Field;
+use ZendSearch\Lucene\Document\Field;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 
@@ -73,6 +73,9 @@ class AssetSearchService extends AbstractService
 				
 				$doc->addField(Field::Text('origin', mb_strtolower($row->origin)));
 				$doc->addField(Field::Keyword('origin1', $row->origin));
+				
+				$doc->addField(Field::Keyword('catetory_id', $row->category_id));
+				
 												
 				$doc->addField(Field::Text('location', mb_strtolower($row->location)));
 				$doc->addField(Field::Text('comment', mb_strtolower($row->comment)));			

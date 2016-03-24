@@ -13,12 +13,11 @@ echo '<div class="alert alert-info">';
 	 echo '</div>';
 } 
 ?>
-
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/count/asset"	method="get" enctype="multipart/form-data">
-      <input type="text" name = "query" class="">
-      <input type="hidden" name = "id" value="<?php echo $counting->id?>">  
-      <button type="submit" class="btn"><i class="icon-search">  </i> Search & Count</button>
-   </form>
+		<h5>
+		<a
+			href="<?php echo $this->baseUrl ?>/inventory/count/select-location?id=<?php echo $counting->id?>"> Count
+		</a>
+		</h5>
 
 <table class="pure-table pure-table-bordered">
 <thead>

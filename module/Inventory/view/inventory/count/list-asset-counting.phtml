@@ -1,0 +1,49 @@
+<h4>Create New Asset Counting:</h4>
+<hr>
+
+
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>Name</b></td>
+		<td><b>Asset Category</b></td>
+		<td><b>Start Date</b></td>
+		<td><b>End Date</b></td>
+		<td><b>Status</td>
+		<td><b>Action</td>
+		
+	</tr>
+</thead>
+
+ <tbody>
+<?php	 
+	 $count = 0;
+	 foreach ($countings as $a) : 
+	 	 $count++;
+	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+	 
+  	
+    
+		<td><?php echo $a['name'];?></td>
+		<td><?php echo $a['asset_category'];?></td>
+		<td><?php echo $a['start_date'];?></td>
+		<td><?php echo $a['end_date'];?></td>
+		<td><?php echo $a['status'];?></td>
+		
+		<td>
+		<a
+			href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $this->escapeHtml($a['id']);?>">edit
+		</a>
+			<a
+			href="<?php echo $this->baseUrl ?>/inventory/count/select-location?id=<?php echo $this->escapeHtml($a['id']);?>">count
+		</a>
+		
+		<a href="<?php echo $this->baseUrl ?>/inventory/count/show-asset-counting?id=<?php echo $this->escapeHtml($a['id']);?>">
+		show </a></td>
+	</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>

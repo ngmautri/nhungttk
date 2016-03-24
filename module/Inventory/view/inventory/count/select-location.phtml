@@ -1,0 +1,41 @@
+<h4>Asset Counting/Selection Location:</h4>
+<?php if ($counting!==null)
+{
+echo '<div class="alert alert-info">';
+	
+	 echo '<ul>';
+	 echo '<li>Task Name: <strong>' . $counting->name . '</strong></li>';
+	 //echo '<li>Start date	: <strong>' .$counting-> start_date . '</strong> - End date	: <strong>' .$counting->end_date . '</strong></li>';
+	// echo '<li>Status	: <strong>' .$counting-> status . '</strong></li>';
+	 
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+	
+	<form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/count/asset"	method="get" enctype="multipart/form-data">
+      <input type="hidden" name = "id" value="<?php echo $counting->id ?>">
+       <div class="control-group">
+        <label class="control-label" for="inputTag">Where do you want to check now?</label>
+        <div class="controls">
+        	<select name="location" >
+        		<option value="">---Please select---</option>
+   	
+   			<?php foreach ($locations as $location) : 
+        		 echo '<option value="' . $location. '">' .  $location. '</option>';
+   			
+			endforeach; 
+   			?>
+			</select>
+                    
+        </div>
+      </div>
+      
+        
+      <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn">Next <i class="icon-arrow-right"></i></button>
+        </div>
+      </div>
+</form>
+

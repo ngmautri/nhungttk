@@ -35,8 +35,21 @@
   <script>
 
   $(function() {
+	    $( document ).tooltip();
+	  });
+
+  $(function() {
 	    $( "input[id='movement_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
    });
+
+
+  $(function() {
+	    $( "input[id='start_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+ });
+
+  $(function() {
+	    $( "input[id='end_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+});
 
   $(function() {
 	   // $( "input[type=submit], button" ).button();

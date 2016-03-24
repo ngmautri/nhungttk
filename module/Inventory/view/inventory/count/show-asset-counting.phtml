@@ -1,0 +1,63 @@
+<h4>Asset Counting:</h4>
+
+<?php if ($counting!==null)
+{
+echo '<div class="alert alert-info">';
+	
+	 echo '<ul>';
+	 echo '<li>Task Name	: <strong>' . $counting->name . '</strong></li>';
+	 echo '<li>Start date	: <strong>' .$counting-> start_date . '</strong> - End date	: <strong>' .$counting->end_date . '</strong></li>';
+	 echo '<li>Status	: <strong>' .$counting-> status . '</strong></li>';
+	 
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/count/asset"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <input type="hidden" name = "id" value="<?php echo $counting->id?>">  
+      <button type="submit" class="btn"><i class="icon-search">  </i> Search & Count</button>
+   </form>
+
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>N0.</b></td>
+		<td><b>ASSET TAG</b></td>
+		<td><b>LOCATION</b></td>
+		<td><b>COUNTED BY</b></td>
+		<td><b>VERIFED BY</b></td>
+		<td><b>ACKNOWLEDED BY</b></td>
+		<td><b>COUNTED ON</b></td>
+		<td><b>ACTION</b></td>
+		
+	</tr>
+</thead>
+
+ <tbody>
+<?php	 
+	 $count = 0;
+	 foreach ($items as $a) : 
+	 	 $count++;
+	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+	
+  		<td><b><?php echo $count;?></b></td>
+  	
+ 		<td><?php echo $a['counted_on']!==null? '<span class="label label-success">'.$a['tag'].'</span>': $a['tag'];?></td>
+		<td><?php echo $a['location'];?></td>
+
+		<td><?php echo $a['counted_by'];?></td>
+		<td><?php echo $a['verified_by'];?></td>
+		<td><?php echo $a['acknowledged_by'];?></td>
+		<td><?php echo $a['counted_on'];?></td>
+		<td>
+		<a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($a['asset_id']);?>">
+		Detail </a></td>
+	</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>

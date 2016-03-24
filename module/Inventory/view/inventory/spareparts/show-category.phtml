@@ -54,11 +54,11 @@ if ($total_spareparts <= 0) {
 		<td><?php echo $a['name'];?> 
 		
 		<?php if($instock > 0){			
-			echo '<span class="label label-info">'.$instock.'</span>';				
+			echo '<span class="label label-info" title="'.$instock. ' pcs. in stock">'.$instock.'</span>';				
 			
 		}else{
 			
-			echo '<span class="label">'.$instock.'</span>';				
+			echo '<span class="label" title="Nothing in stock. Please make order!">'.$instock.'</span>';				
 		}
 		?>
 		

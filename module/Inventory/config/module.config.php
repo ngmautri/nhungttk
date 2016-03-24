@@ -98,6 +98,7 @@ return array (
 						'Inventory\Controller\Admin' => 'Inventory\Controller\AdminControllerFactory',
 						'Inventory\Controller\Spareparts' => 'Inventory\Controller\SparepartsControllerFactory',
 						'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
+						'Inventory\Controller\Count' => 'Inventory\Controller\CountControllerFactory',
 						
 				)
 				

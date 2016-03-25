@@ -41,7 +41,7 @@ class AssetCountingItemTable {
 		ON t2.id = t1.asset_id
 		WHERE t1.counting_id = '. $id) as T2;
 	*/
-	public function getCountedItems($id){
+	public function getCountedItems($id, $category_id){
 	
 		$adapter = $this->tableGateway->adapter;
 		
@@ -54,7 +54,8 @@ class AssetCountingItemTable {
 		ON t2.id = t1.asset_id
 		WHERE t1.counting_id = '. $id. ') as TBL2				
 		ON TBL1.id = TBL2.asset_id
-		ORDER BY TBL2.counted_on DESC';
+		WHERE TBL1.category_id = '. $category_id .
+		'ORDER BY TBL2.counted_on DESC';
 		
 		$statement = $adapter->query($sql);
 		$result = $statement->execute();

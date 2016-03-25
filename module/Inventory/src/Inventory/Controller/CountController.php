@@ -166,7 +166,8 @@ class CountController extends AbstractActionController {
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$counting = $this->assetCountingTable->get($id);
-		$items = $this->assetCountingItemTable->getCountedItems($id);
+		$asset_cat_id =  $counting->asset_cat_id;
+		$items = $this->assetCountingItemTable->getCountedItems($id,$asset_cat_id);
 	
 		return new ViewModel ( array (
 				'counting'=> $counting,

@@ -51,6 +51,32 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		$ox = imagesx($im);
 		$oy = imagesy($im);
 		
+		
+		// resize
+		if ($ox > 1800){
+			
+			$final_width_of_image =1800;
+			
+			$nx = $final_width_of_image;
+			$ny = floor($oy * ($final_width_of_image / $ox));
+				
+			$nm = imagecreatetruecolor($nx, $ny);
+			
+			$name_thumbnail = $name ;
+			
+			
+			imagecopyresized($nm, $im, 0,0,0,0,$nx,$ny,$ox,$oy);
+			
+			if (preg_match ( '/[.](jpg|jpeg)$/', $name_thumbnail )) {
+				imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
+			} else if (preg_match ( '/[.](gif)$/', $name_thumbnail )) {
+				imagegif( $nm, "$pictures_dir/$name_thumbnail" );
+			} else if (preg_match('/[.](png)$/', $name_thumbnail)) {
+				imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
+			}
+		}
+		
+		
 		$final_width_of_image =450;
 		
 		$nx = $final_width_of_image;
@@ -90,27 +116,6 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		} else if (preg_match('/[.](png)$/', $name_thumbnail)) {
 			imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
 		}
-		
-		// 200
-		$final_width_of_image =200;
-		
-		$nx = $final_width_of_image;
-		$ny = floor($oy * ($final_width_of_image / $ox));
-			
-		$nm = imagecreatetruecolor($nx, $ny);
-		
-		$name_thumbnail = 'thumbnail_200_' . $name;
-		
-		imagecopyresized ( $nm, $im, 0, 0, 0, 0, $nx, $ny, $ox, $oy );
-		
-		if (preg_match ( '/[.](jpg|jpeg)$/', $name_thumbnail )) {
-			imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
-		} else if (preg_match ( '/[.](gif)$/', $name_thumbnail )) {
-			imagegif( $nm, "$pictures_dir/$name_thumbnail" );
-		} else if (preg_match('/[.](png)$/', $name_thumbnail)) {
-			imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
-		}
-		
 
 	}
 }

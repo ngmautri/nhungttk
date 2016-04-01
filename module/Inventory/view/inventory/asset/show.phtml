@@ -59,7 +59,7 @@
 <div id="lightgallery">
  <?php foreach ($pictures as $pic) : ?>
     <a href="/inventory/image/index?id=<?php  echo $this->escapeHtml($pic->id);?>">
-    <img class= "img-rounded" width="80" height="80" title="<?php  echo $this->escapeHtml($pic->comments);?>" src="/inventory/image/assetthumbnail150?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+    <img class= "img-rounded" width="150" height="150" title="<?php  echo $this->escapeHtml($pic->comments);?>" src="/inventory/image/assetthumbnail150?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
     </a>
 	
 <?php endforeach; ?>

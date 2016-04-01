@@ -16,19 +16,19 @@ echo '<div class="alert alert-info">';
 ?>
 	
 
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/asset/upload-picture"	method="post" enctype="multipart/form-data" id="NewSP" >
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/asset/upload-picture"	method="post" enctype="multipart/form-data" id="UploadPicsForm" >
  <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
  <input type="hidden" name="id" value="<?php echo $asset!==null ? ($asset->id) :""?>"/>
       
       <div class="control-group">
         <label class="control-label" for="inputLocation">Pictures:</label>
         <div class="controls">
-        <input type="file" name="pictures[]" /><br>
-   		<input type="file" name="pictures[]" /><br>
-		<input type="file" name="pictures[]" /><br>
-		<input type="file" name="pictures[]" /><br>
-   		<input type="file" name="pictures[]" /><br>
-		<input type="file" name="pictures[]" /><br>
+        <input type="file" name="pictures[]" id="pic01"/><br>
+   		<input type="file" name="pictures[]" id="pic02"/><br>
+		<input type="file" name="pictures[]" id="pic03"/><br>
+		<input type="file" name="pictures[]" id="pic04"/><br>
+   		<input type="file" name="pictures[]" id="pic05"/><br>
+		<input type="file" name="pictures[]" id="pic06"/><br>
 
         </div>
       </div>
@@ -36,8 +36,8 @@ echo '<div class="alert alert-info">';
       <div class="control-group">
         <div class="controls">
              <button type="submit" class="btn"><i class="icon-upload">  </i> Upload</button>
+              <button type="button" onclick="uploadPictures()" class="btn" id="upload"><i class="icon-upload">  </i> Upload</button>
         </div>
       </div>
     </form>
-
 

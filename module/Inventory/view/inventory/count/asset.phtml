@@ -51,12 +51,12 @@ echo '</span>';
 		
 		<?php if ($hit['status'] !== "COUNTED") { ?>
 		
-		<a href="<?php echo $this->baseUrl ?>/inventory/count/add-counting-item?id=<?php echo $counting_id?>
+		<a href="<?php echo $this->baseUrl ?>/inventory/count/add-counting-item1?id=<?php echo $counting_id?>
 		&asset_id=<?php echo $hit['id']?>&location=<?php echo $location?>">Count</a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $hit['id']?>">  Detail</a>
 
 		<?php }else {
-		echo '<span class="label label-success">Already counted!</span>';	
+		echo '<span class="label label-success">Counted!</span>';	
 
 		} ?>
 		

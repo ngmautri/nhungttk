@@ -231,6 +231,103 @@ class AssetController extends AbstractActionController {
 				'redirectUrl' => $redirectUrl 
 		) );
 	}
+	
+	
+	public function uploadPicture1Action() {
+		
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		if ($request->isPost ()) {
+			
+			$pictures = $_POST['pictures'];
+			$id = $_POST['asset_id'];
+			
+			foreach ($pictures as $p){
+			
+				$filetype = $p[0];
+			
+				if(preg_match('/(jpg|jpeg)$/', $filetype)) {
+					$ext = 'jpg';
+			
+				} else if (preg_match('/(gif)$/', $filetype)) {
+					$ext = 'gif';
+				} else if (preg_match('/(png)$/', $filetype)) {
+					$ext = 'png';
+				}
+			
+				$tmp_name = md5 ( $id . uniqid ( microtime () ) ) . '.' . $ext;
+			
+				// remove "data:image/png;base64,"
+				$uri =  substr($p[1],strpos($p[1],",") +1 );
+					
+				// save to file
+				file_put_contents($tmp_name, base64_decode($uri));
+					
+				$checksum = md5_file ( $tmp_name );
+					
+					
+				$root_dir = $this->getAssetService ()->getPicturesPath ();
+			
+				$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+				$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
+					
+					
+				if (! $this->getAssetPictureTable ()->isChecksumExits ( $id, $checksum )) {
+					$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+			
+					$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+			
+					if (! is_dir ( $folder )) {
+						mkdir ( $folder, 0777, true ); // important
+					}
+			
+					rename( $tmp_name, "$folder/$name" );
+			
+					// add pictures
+					$pic = new AssetPicture ();
+					$pic->url = "$folder/$name";
+					$pic->filetype = $filetype;
+					$pic->asset_id = $id;
+					$pic->filename = "$name";
+					$pic->folder = "$folder";
+					$pic->checksum = $checksum;
+			
+					$this->getAssetPictureTable ()->add ( $pic );
+			
+					// trigger uploadPicture
+					$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+							'picture_name' => $name,
+							'pictures_dir' => $folder
+					) );
+				}
+				
+			}
+			
+			$data = array();
+			$data['id'] =  $id;
+			//$data['filetype'] =  $filetype;
+			
+			$response = $this->getResponse();
+			$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
+			$response->setContent(json_encode($data));
+			return $response;
+		}
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$asset = $this->getMLAAssetTable ()->get ( $id );
+		
+		return new ViewModel ( array (
+				'asset' => $asset,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null
+		) );
+
+	}
+	
+	
+	
+	
 	public function uploadPictureAction() {
 		$request = $this->getRequest ();
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();

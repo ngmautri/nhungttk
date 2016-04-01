@@ -257,6 +257,137 @@ class CountController extends AbstractActionController {
 		
 	}
 	
+	public function addCountingItem1Action() {
+		
+		$request = $this->getRequest ();
+		$user = $this->authService->getIdentity();
+		
+		$counting_id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$asset_id = ( int ) $this->params ()->fromQuery ( 'asset_id' );
+		
+		$location = $this->params ()->fromQuery ( 'location' );
+		
+		if ($this->assetCountingItemTable->isAssetCounted($counting_id, $asset_id)){
+			$asset =  $this->assetTable->get($asset_id);
+			$counting = $this->assetCountingTable->get($counting_id);
+			$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+				
+			return new ViewModel ( array (
+					'counting'=> $counting,
+					'asset'=> $asset,
+					'errors'=> null,
+					'redirectUrl'=>$redirectUrl,
+					'counted'=>true,
+					'location'=>$location,
+			));
+		}
+		
+		if ($request->isPost ()) {
+			
+			$pictures = $_POST['pictures'];
+			$id = $_POST['asset_id'];
+			//$filetype = $_POST['filetype'];
+			
+			$input = new AssetCountingItem();
+			$input->counting_id = $_POST['counting_id'];
+			$input->asset_id =  $id;
+			$input->location =   $_POST['updated_location'];
+			$input->counted_by =  $user;
+			
+			$this->assetCountingItemTable->add($input);
+					
+			foreach ($pictures as $p){
+				
+				$filetype = $p[0];
+
+				if(preg_match('/(jpg|jpeg)$/', $filetype)) {
+					$ext = 'jpg';
+				
+				} else if (preg_match('/(gif)$/', $filetype)) {
+					$ext = 'gif';
+				} else if (preg_match('/(png)$/', $filetype)) {
+					$ext = 'png';
+				}
+				
+				$tmp_name = md5 ( $id . uniqid ( microtime () ) ) . '.' . $ext;
+				
+				// remove "data:image/png;base64,"
+				$uri =  substr($p[1],strpos($p[1],",") +1 );
+					
+				// save to file
+				file_put_contents($tmp_name, base64_decode($uri));
+					
+				$checksum = md5_file ( $tmp_name );
+					
+					
+				$root_dir = $this->getAssetService ()->getPicturesPath ();
+				
+				$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+				$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
+					
+					
+				if (! $this->getAssetPictureTable ()->isChecksumExits ( $id, $checksum )) {
+					$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+						
+					$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+						
+					if (! is_dir ( $folder )) {
+						mkdir ( $folder, 0777, true ); // important
+					}
+						
+					rename( $tmp_name, "$folder/$name" );
+						
+					// add pictures
+					$pic = new AssetPicture ();
+					$pic->url = "$folder/$name";
+					$pic->filetype = $filetype;
+					$pic->asset_id = $id;
+					$pic->filename = "$name";
+					$pic->folder = "$folder";
+					$pic->checksum = $checksum;
+						
+					$this->getAssetPictureTable ()->add ( $pic );
+						
+					// trigger uploadPicture
+					$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+							'picture_name' => $name,
+							'pictures_dir' => $folder
+					) );
+				}
+				
+				
+			}
+			
+
+			$data = array();
+			$data['id'] =  $id;
+			//$data['filetype'] =  $filetype;
+				
+			$response = $this->getResponse();
+			$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
+			$response->setContent(json_encode($data));
+			return $response;
+			
+		}
+		
+		$asset =  $this->assetTable->get($asset_id);
+		$counting = $this->assetCountingTable->get($counting_id);
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		return new ViewModel ( array (
+				'counting'=> $counting,
+				'asset'=> $asset,
+				'errors'=> null,
+				'redirectUrl'=>$redirectUrl,
+				'counted'=>false,
+				'locations'=>$this->locations,
+				'location'=>$location,
+		));
+		
+	}
+	
+	
+	
 	public function addCountingItemAction() {
 	
 		$request = $this->getRequest ();

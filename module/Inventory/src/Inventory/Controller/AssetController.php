@@ -310,7 +310,7 @@ class AssetController extends AbstractActionController {
 			
 			$response = $this->getResponse();
 			$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
-			$response->setContent(json_encode($data));
+				$response->setContent(json_encode($data));
 			return $response;
 		}
 		

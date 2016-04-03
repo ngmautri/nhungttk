@@ -62,6 +62,13 @@ class AssetSearchService extends AbstractService
 				$doc->addField(Field::Text('tag', $row->tag));
 				$doc->addField(Field::Keyword('tag1', $row->tag));
 				
+				 
+				$s = $row->tag;
+				$l = strlen($s);
+				$l>3? $p = strpos($s, "-",3) +1:$p = 0;
+				
+				$doc->addField(Field::Text('tag2',substr ($s,$p, $l - $p)*1));
+				
 				$doc->addField(Field::Text('model', mb_strtolower($row->model)));
 				$doc->addField(Field::Keyword('model1', $row->model));
 				

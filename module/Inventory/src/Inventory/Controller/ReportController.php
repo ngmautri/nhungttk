@@ -47,11 +47,93 @@ class ReportController extends AbstractActionController {
 	 */
 	public function indexAction() {
 		
-		$movements = $this->sparepartMovementsTable->fetchAll();
+		//$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$fromDate = $this->params ()->fromQuery ( 'start_date' );
+		$toDate = $this->params ()->fromQuery ( 'end_date' );
+		$flow = $this->params ()->fromQuery ( 'flow' );
+		$output = $this->params ()->fromQuery ( 'output' );
 		
-		return new ViewModel ( array (
-				'movements' => $movements,
-		) ); 
+		$movements = $this->sparepartMovementsTable->getMovements($fromDate, $toDate, $flow);
+		
+		
+		if($output === 'csv'){
+			
+			
+			$fh = fopen( 'php://memory', 'w' );
+			//$myfile = fopen('ouptut.csv', 'a+');
+			
+			$h = array();
+			$h[] = "DATE";
+			$h[] = "TAG";
+			$h[] = "NAME";
+			$h[] = "QUANTITY";
+			$h[] = "FLOW";
+			
+			$delimiter = ";";
+			
+			fputcsv($fh, $h, $delimiter,'"');
+			//fputs($fh, implode($h, ',')."\n");
+			
+			
+			foreach ($movements as $m) {
+				$l = array();
+				$l[] = (string) $m->movement_date;
+				$l[] = (string) '"'. $m->tag .'"' ;
+				
+				$name = (string) $m->name;
+				
+				$name === ''?$name="-":$name;
+				
+				$name = str_replace(',','',$name);
+				$name = str_replace(';','',$name);
+			
+				
+				$l[] =  $name;
+				$l[] = (string) $m->quantity;
+				$l[] = (string) $m->flow;
+				
+				fputcsv($fh, $l, $delimiter,'"');
+				//fputs($fh, implode($l, ',')."\n");
+			}
+			
+			$fileName = 'report.csv';
+			fseek($fh, 0);
+			$output = stream_get_contents($fh);
+			//file_put_contents($fileName, $output);
+			
+			$response= $this->getResponse();
+			$headers = $response->getHeaders();
+			
+			
+			
+			$headers->addHeaderLine('Content-Type: text/csv' );
+			
+			$headers->addHeaderLine('Content-Disposition: attachment; "'. $fileName . '"');
+			$headers->addHeaderLine('Content-Description: File Transfer');
+			$headers->addHeaderLine('Content-Transfer-Encoding: binary');
+			$headers->addHeaderLine('Content-Encoding: UTF-8');
+			
+			//$output = fread($fh, 8192);
+			$response->setContent($output);
+			
+			fclose($fh);
+			//unlink($fileName);
+				
+			return $response;
+			
+			
+		}else{
+			
+			
+			return new ViewModel ( array (
+					'movements' => $movements,
+					//'redirectUrl' => $redirectUrl,
+					'fromDate' => $fromDate,
+					'toDate' => $toDate,
+					'flow' => $flow,
+			
+			) );
+		}
 	}
 	
 	

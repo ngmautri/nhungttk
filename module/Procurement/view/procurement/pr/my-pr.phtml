@@ -1,0 +1,33 @@
+<h4>My Purchase Requests:</h4>
+
+
+<?php echo count($my_pr) . ' PRs found'?>
+<table class="pure-table pure-table-bordered"">
+<thead>
+<tr>	
+		<td><b>Name</b></td>
+		<td><b>Description</b></td>
+		<td><b>Created on</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+<tbody>	
+ 
+  <?php 
+	 
+	 $count = 0;
+	 foreach ($my_pr as $item) : 
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 ?>
+		<td><?php echo $item->pr_number;?> <span class="label label-info"><?php echo $item->tItems;?></span></td> 	
+		<td><?php echo $item->description;?></td>
+		<td><?php echo $item->requested_on;?></td>
+		<td>
+		<a
+			href="<?php echo $this->baseUrl ?>/procurement/pr/create-step2?pr_id=<?php echo $item->id;?>">Edit
+		</a>
+	</td>
+<?php endforeach; ?>
+</tbody>
+</table>

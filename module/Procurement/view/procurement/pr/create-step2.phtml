@@ -1,0 +1,76 @@
+<div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1"><?php echo $pr!==null ? '<h4>PR: '. $pr->pr_number.'</h4>':"" ?></a>
+        </h5>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
+        <div class="panel-body">
+        
+     <?php if ($pr!==null)
+{
+echo '<div class="alert alert-warning">';
+	
+	 echo '<ul>';
+	 echo '<li>Description	: <strong>' .$pr->description	 . '</strong></li>';
+	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' .$pr->requested_by. '</strong></li>';
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+        </div>
+     </div>
+    </div>
+  </div>        
+
+
+	<form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item"	method="get" enctype="multipart/form-data">
+      <input type="hidden" name = "pr_id" value="<?php echo $pr->id ?>">
+ 
+	
+   
+
+    <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn">Add new Item <i class="icon-arrow-right"></i></button>
+        </div>
+      </div>
+
+	</form>
+
+
+<span class="label label-info"><?php echo count($pr_items) . ' PR - Items'?></span>
+
+<table class="pure-table pure-table-bordered"">
+<thead>
+<tr>	
+		<td><b>Priority</b></td>
+		<td><b>Name</b></td>
+		<td><b>Description</b></td>
+		<td><b>Unit</b></td>
+		<td><b>Quantity</b></td>
+		<td><b>EDT</b></td>
+	</tr>
+</thead>
+<tbody>	
+ 
+  <?php 
+	 
+	 $count = 0;
+	 foreach ($pr_items as $item) : 
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+		<td><?php echo $item->priority;?></td> 	
+		<td><?php echo $item->name;?></td>
+		<td><?php echo $item->description;?></td>
+		<td><?php echo $item->unit;?></td>
+		<td><?php echo $item->quantity;?></td>
+		<td><?php echo $item->EDT;?></td>
+		</tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+	

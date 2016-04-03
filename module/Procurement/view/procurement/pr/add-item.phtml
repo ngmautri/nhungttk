@@ -1,0 +1,116 @@
+<div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1"><?php echo $pr!==null ? '<h4>PR: '. $pr->pr_number.'</h4>':"" ?></a>
+        </h5>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
+        <div class="panel-body">
+        
+     <?php if ($pr!==null)
+{
+echo '<div class="alert alert-warning">';
+	
+	 echo '<ul>';
+	 echo '<li>Description	: <strong>' .$pr->description	 . '</strong></li>';
+	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' .$pr->requested_by. '</strong></li>';
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+        </div>
+     </div>
+    </div>
+  </div>        
+
+<h4>Add PR Item:</h4>
+
+<?php if (count($errors)>0)
+{
+echo '<div class="alert alert-error">';
+	
+	echo '<ul>';
+	 foreach ($errors as $error) :
+	 echo '<li>'.$error . '</li>';
+	 
+	 endforeach;
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+	
+
+<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item"	method="post" enctype="multipart/form-data" id="NewSP" >
+ <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+ <input type="hidden" name="pr_id" value="<?php echo $pr->id ?>" />
+ 	
+	 	 <div class="control-group">
+	        <label class="control-label" for="inputNameLocal">Priority:</label>
+        <div class="controls">
+        	<select name="priority" >
+        		<option value="Low">Low</option>
+        		<option value="Medium" selected>Medium</option>
+        		<option value="High">High</option>
+        		<option value="Urgent">Urgent</option>
+ 			</select>
+	     </div>
+      </div>
+      	
+      <div class="control-group">
+        <label class="control-label" for="inputTag">Name:</label>
+        <div class="controls">
+          <input type="text" id="inputTag" placeholder="" name="name" value="">
+        </div>
+      </div>
+      
+     <div class="control-group">
+        <label class="control-label" for="inputDescription">Description</label>
+        <div class="controls">
+          <textarea id="inputDescription" placeholder="" rows="2" cols="5" name="description"></textarea>
+          <a href="javascript:;" onclick="showDialog()" class="helper"> Add Pictures</a>  
+        </div>
+      </div>
+      
+       <div class="control-group">
+        <label class="control-label" for="inputTag">Unit:</label>
+        <div class="controls">
+          <input type="text" id="inputTag" placeholder="" name="unit" value="">
+        </div>
+      </div>
+      
+       <div class="control-group">
+        <label class="control-label" for="inputTag">Quantity:</label>
+        <div class="controls">
+          <input type="text" id="inputTag" placeholder="" name="quantity" value="">
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">Requested Delivery Date:</label>
+        <div class="controls">
+          <input type="text" id="end_date" placeholder="click to select" name="EDT" value="">
+        </div>
+      </div>
+      
+       <div class="control-group">
+        <label class="control-label" for="inputDescription">Reason /Note:</label>
+        <div class="controls">
+          <textarea id="inputDescription" placeholder="" rows="2" cols="5" name="comment"></textarea>
+        </div>
+      </div>
+       
+       <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn"><i class="icon-plus">  </i> Add</button>
+        </div>
+      </div>
+    </form>
+
+
+
+<div id = "dialog" style="display: none;">Check code...</div>
+	
+
+
+

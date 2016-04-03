@@ -237,7 +237,7 @@ function uploadPictures(){
  */
 function countAsset(){
 	
-	$('#myModal').modal();	 
+	
 	
 	var pic_to_upload = [];
 	var pic_to_upload_resized = [];
@@ -257,6 +257,14 @@ function countAsset(){
 		    }
 		}
 	}
+	
+	if(pic_to_upload.length<1){
+		
+		$('#modal1').modal();
+		return;
+	}
+	
+	$('#myModal').modal();	 
 	
 	// checking input
 	for (var j = 0; j < pic_to_upload.length; j++) {
@@ -370,7 +378,7 @@ function isCountingCompleted(pic_to_upload_resized,n)
  */
 function uploadAssetPictures(){
 	
-	$('#myModal').modal();	 
+	 
 	
 	var pic_to_upload = [];
 	var pic_to_upload_resized = [];
@@ -391,6 +399,13 @@ function uploadAssetPictures(){
 		}
 	}
 	
+	if(pic_to_upload.length<1){
+		
+		$('#modal1').modal();
+		return;
+	}
+	
+	$('#myModal').modal();	
 	
 	// checking input
 	for (var j = 0; j < pic_to_upload.length; j++) {

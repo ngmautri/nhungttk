@@ -1,11 +1,13 @@
 
-<h4 >Spare-part category</h4>
+<ul class="nav nav-pills">
+ <li class="active"><a href="#">Spare-part category</a></li>
+  <li><a href="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category">Add spare part category</a></li>
+  <li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list">Show all spare parts</a></li>
+  <li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new spare part</a></li>
+   <li> <a href="<?php echo $this->baseUrl ?>/inventory/report/index">Reporting		</a></li>
+</ul>
 
-	<a href="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category">Add spare part category</a>
-
-	| <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list">Show all spare parts</a>
-	| <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new
-		spare part</a>
+	
 
     <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
       <input type="text" name = "query" class="">

@@ -1,14 +1,83 @@
-<h3>Stock Movement</h3>
+<h4>Stock Movement</h4>
+
+  <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1">Filter</a>
+        </h5>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse <?php echo count($movements)>0?"":"in"?>">
+        <div class="panel-body">
+        
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/report/index"	method="get" enctype="multipart/form-data" id="ReportForm" >
+       
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">From Date</label>
+        <div class="controls">
+          <input type="text" id="start_date" placeholder="click to select" name="start_date" value="">
+        </div>
+       </div>
+  
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">To Date</label>
+        <div class="controls">
+          <input type="text" id="end_date" placeholder="click to select" name="end_date" value="">
+        </div>
+      </div>
+  
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">Flow</label>
+        <div class="controls">
+        	<select name="flow" >
+        		<option value="ALL">All</option>
+   	    		<option value="IN">IN</option>
+   	    		<option value="OUT">OUT</option>
+   	
+   			</select>
+	     </div>
+      </div>
+      
+       <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn"><i class="icon-search">  </i> show</button>
+        </div>
+      </div>
+    </form>
+        
+        
+        
+        </div>
+     </div>
+    </div>
+  </div>
 
 
+ 
+
+
+
+<?php if(count($movements)>0){
+	
+		echo '<div class="alert alert-info">';
+	
+		echo '<ul>';
+		echo '<li> <strong>' . count($movements) . ' </strong> transaction(s) done from <strong>' .$fromDate . '</strong> To <strong>' .$toDate . '</strong></li>';
+			echo '<li>Flow		: <strong>' .$flow . '</strong></li>';
+	
+		echo '</ul>';
+		echo '</div>';
+		
+?>
+<a href="<?php echo $this->baseUrl ?>/inventory/report/index?start_date=<?php echo $fromDate;?>&end_date=<?php echo $toDate;?>&flow=<?php echo $flow;?>&output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
 <hr>
 <table class="pure-table pure-table-bordered">
 <thead>
 	<tr>
 		<td><b>id</b></td>
 		<td><b>Date of Movement</b></td>
-		<td><b>Spare-part ID	</b></td>
-		<td><b>Asset ID	</b></td>
+		<td><b>Spare-part Name	</b></td>
+		<td><b>Tag	</b></td>
 		<td><b>Flow</b></td>
 		<td><b>Quantity</b></td>
 		<td><b>Reason</b></td>
@@ -19,8 +88,9 @@
 <tbody>
 
 <?php 
-	 
-	 $count = 0;
+	
+
+	$count = 0;
 	foreach ($movements as $a) :
 	 	 $count++;
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
@@ -29,8 +99,8 @@
 
 		<td><?php echo $a->id;?></td>
 		<td><?php echo $a->movement_date;?></td>
-		<td><?php echo $a->sparepart_id;?></td>
-		<td><?php echo $a->asset_id;?></td>
+		<td><?php echo $a->name;?></td>
+		<td><?php echo $a->tag;?></td>
 		<td><?php echo $a->flow;?></td>
 		<td><?php echo $a->quantity;?></td>
 		<td><?php echo $a->reason;?></td>
@@ -42,4 +112,4 @@
 <?php endforeach; ?>
 </tbody>
 </table>
-	
+<?php }; ?>

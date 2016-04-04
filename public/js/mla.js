@@ -1,10 +1,9 @@
-
-
 $(document).ready(function(){
 	$(document).ready(function() {
         $("#lightgallery").lightGallery(); 
+        countdown();
     });
-			
+		
 });
 
 /**

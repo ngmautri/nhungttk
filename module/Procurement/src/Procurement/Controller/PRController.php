@@ -46,7 +46,7 @@ class PRController extends AbstractActionController {
 		
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity();
-		$user=$this->userTable->getUserByEmail($identity)->current();
+		$user=$this->userTable->getUserByEmail($identity);
 		
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
 		
@@ -60,7 +60,6 @@ class PRController extends AbstractActionController {
 				$input->pr_number = $request->getPost ( 'pr_number' );
 				$input->name = $request->getPost ( 'name' );
 				$input->description = $request->getPost ( 'description' );				
-				$input->requested_by = $user['id'];
 				$input->requested_by = $user['id'];
 				
 				// validator.
@@ -213,7 +212,7 @@ class PRController extends AbstractActionController {
 		$user=$this->userTable->getUserByEmail($identity);
 		
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		$my_pr=$this->purchaseRequestTable->getPRof($user->id);
+		$my_pr=$this->purchaseRequestTable->getPRof($user['id']);
 		
 		
 		return new ViewModel ( array (

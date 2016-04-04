@@ -213,7 +213,7 @@ class PRController extends AbstractActionController {
 		$user=$this->userTable->getUserByEmail($identity);
 		
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		$my_pr=$this->purchaseRequestTable->getPRof($user['id']);
+		$my_pr=$this->purchaseRequestTable->getPRof($user->id);
 		
 		
 		return new ViewModel ( array (

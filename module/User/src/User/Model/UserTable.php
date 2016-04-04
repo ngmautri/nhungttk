@@ -4,6 +4,7 @@ namespace User\Model;
 
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Adapter\Driver\Pdo\Result;
 
 class UserTable {
 	
@@ -51,7 +52,14 @@ class UserTable {
 		$statement = $sql->prepareStatementForSqlObject($select);
 		$results = $statement->execute();
 		
-		return $results;
+		$row = $results->current ();
+		
+		if (! $row) {
+			throw new \Exception ( "Could not find row $id" );
+		}
+		return $row;
+		
+		
 	}
 	
 	/*

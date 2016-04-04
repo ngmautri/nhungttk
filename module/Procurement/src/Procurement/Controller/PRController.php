@@ -100,10 +100,10 @@ class PRController extends AbstractActionController {
 		
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity();
-		$user=$this->userTable->getUserByEmail($identity)->current();
+		$user=$this->userTable->getUserByEmail($identity);
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
 		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
-		$pr=$this->purchaseRequestTable->get($pr_id);
+		$pr=$this->purchaseRequestTable->getPR($pr_id);
 		$pr_items = $this->purchaseRequestItemTable->getItemsByPR($pr_id);
 				
 		return new ViewModel ( array (
@@ -118,7 +118,7 @@ class PRController extends AbstractActionController {
 	public function addItemAction() {
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity();
-		$user=$this->userTable->getUserByEmail($identity)->current();
+		$user=$this->userTable->getUserByEmail($identity);
 		
 		if ($request->isPost ()) {
 		
@@ -210,7 +210,7 @@ class PRController extends AbstractActionController {
 	public function myPRAction() {
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity();
-		$user=$this->userTable->getUserByEmail($identity)->current();
+		$user=$this->userTable->getUserByEmail($identity);
 		
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
 		$my_pr=$this->purchaseRequestTable->getPRof($user['id']);

@@ -114,4 +114,32 @@ group by t2.id) as TB2
 		$resultSet->initialize ( $result );
 		return $resultSet;
 	}
+	
+	public function getPR($id) {
+		$adapter = $this->tableGateway->adapter;
+	
+	
+		$sql = "select t1.*, concat(t2.firstname, ' ', t2.lastname) as requester from mla_purchase_requests as t1
+		left join mla_users as t2
+		on t2.id = t1.requested_by
+		WHERE t1.id = ". $id;
+		/*
+			$sql = "SELECT *
+			FROM mla_purchase_requests as t1
+			LEFT JOIN mla_purchase_request_items as t2
+			on t2.purchase_request_id = t1.id
+			WHERE requested_by = ". $user_id;
+			*/
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		
+		$row = $resultSet->current();
+		if (!$row) {
+			throw new \Exception("Could not find row $id");
+		}
+		return $row;		
+	}
 }

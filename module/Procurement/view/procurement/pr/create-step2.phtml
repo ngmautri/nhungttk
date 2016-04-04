@@ -1,3 +1,7 @@
+<script language="javascript">
+			var id_array = [];
+</script>
+
 <div class="panel-group">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -14,7 +18,7 @@ echo '<div class="alert alert-warning">';
 	
 	 echo '<ul>';
 	 echo '<li>Description	: <strong>' .$pr->description	 . '</strong></li>';
-	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' .$pr->requested_by. '</strong></li>';
+	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' . $pr->requester . '</strong></li>';
 	 echo '</ul>';
 	 echo '</div>';
 } 
@@ -33,7 +37,8 @@ echo '<div class="alert alert-warning">';
 
     <div class="control-group">
         <div class="controls">
-             <button type="submit" class="btn">Add new Item <i class="icon-arrow-right"></i></button>
+             <button type="submit" class="btn"><i class="icon-plus"></i> Add new Item </button>
+             <button type="button" onclick="" class="btn"><i class="icon-ok"> </i> Done</button>
         </div>
       </div>
 
@@ -51,6 +56,7 @@ echo '<div class="alert alert-warning">';
 		<td><b>Unit</b></td>
 		<td><b>Quantity</b></td>
 		<td><b>EDT</b></td>
+		<td><b>Count Down</b></td>
 	</tr>
 </thead>
 <tbody>	
@@ -63,14 +69,23 @@ echo '<div class="alert alert-warning">';
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 	 
 	 ?>
-		<td><?php echo $item->priority;?></td> 	
+			
+		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning">'. $item->priority .'</span>':$item->priority;?></td> 	
 		<td><?php echo $item->name;?></td>
 		<td><?php echo $item->description;?></td>
 		<td><?php echo $item->unit;?></td>
 		<td><?php echo $item->quantity;?></td>
-		<td><?php echo $item->EDT;?></td>
+		<td><span id="<?php echo $item->id;?>_EDT"><?php echo $item->EDT;?></span></td>
+		<td><span id="<?php echo $item->id;?>_timer"></span></td>
 		</tr>
+		
+		<script language="javascript">
+			id_array.push(<?php echo $item->id;?>);
+		</script>
 <?php endforeach; ?>
+
+ 			
+
 </tbody>
 </table>
 	

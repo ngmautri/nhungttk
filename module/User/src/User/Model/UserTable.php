@@ -52,14 +52,12 @@ class UserTable {
 		$statement = $sql->prepareStatementForSqlObject($select);
 		$results = $statement->execute();
 		
-		$row = $results->current ();
+		$row = $results->current();
 		
 		if (! $row) {
-			throw new \Exception ( "Could not find row $id" );
+			return null;
 		}
 		return $row;
-		
-		
 	}
 	
 	/*

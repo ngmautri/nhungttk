@@ -15,6 +15,7 @@ use Zend\View\Model\ViewModel;
 use User\Model\User;
 use MLA\Files;
 use Zend\Validator\EmailAddress;
+use Zend\Console\Request;
 
 class IndexController extends AbstractActionController {
 	public $userTable;
@@ -88,9 +89,9 @@ class IndexController extends AbstractActionController {
 			if (! $validator->isValid ( $input->email )) {
 				$errors [] = 'Email addresse is not correct!';
 			}else{
-				$r = $this->getUserTable()->getUserByEmail($input->email);
+				$u = $this->getUserTable()->getUserByEmail($input->email);
 				
-				if ($r->count()>0){
+				if (count($u)>0){
 					$errors [] = 'Email exists already!';
 				}
 			}
@@ -114,6 +115,48 @@ class IndexController extends AbstractActionController {
 		
 		return new ViewModel ( array ('messages' => '') );
 	}
+	
+	public function consoleAction() {
+	
+		$request = $this->getRequest();
+	
+		// Make sure that we are running in a console and the user has not tricked our
+		// application into running this action from a public web server.
+		if (!$request instanceof  \Zend\Console\Request){
+			throw new \RuntimeException('You can only use this action from a console-- NMT!');
+		}
+	
+		// Get user email from console and check if the user used --verbose or -v flag
+		//$userEmail   = $request->getParam('userEmail');
+		//$verbose     = $request->getParam('verbose') || $request->getParam('v');
+	
+		// reset new password
+		//$newPassword = Rand::getString(16);
+	
+		//  Fetch the user and change his password, then email him ...
+		// [...]
+		/*
+			if (!$verbose) {
+			return "Done! $userEmail has received an email with his new password.\n";
+			}else{
+			return "Done! New password for user $userEmail is '$newPassword'. It has also been emailed to him. \n";
+			}
+			*/
+		
+		$users = $this->getUserTable()->fetchAll();
+		
+		foreach ($users as $user){
+			
+			echo $user->email;
+		}
+		
+		
+		return "test sucessfully";
+	
+	}
+	
+	
+	
 	public function registerConfirmAction() {
 	}
 	

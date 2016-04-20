@@ -550,7 +550,8 @@ class SparepartsController extends AbstractActionController {
 						
 					// Validated
 					$newId = $this->sparepartMovementsTable->add ( $input );
-						
+					
+					/* do not send email 
 					if ($newId > 0) {
 						// sent email;
 	
@@ -560,6 +561,7 @@ class SparepartsController extends AbstractActionController {
 						$message->addTo ( $email )->addFrom ( 'mib-team@web.de' )->setSubject ( 'Mascot Laos - Spare Part Movements' )->setBody ( $body );
 						$transport->send ( $message );
 					}
+					*/
 						
 						
 					$redirectUrl  = $request->getPost ( 'redirectUrl' );

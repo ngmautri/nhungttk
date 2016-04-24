@@ -5,13 +5,13 @@ namespace Procurement\Controller;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-use Procurement\Controller\PRController;
+use Procurement\Controller\DeliveryController;
 
 /*
  * @author nmt
  *
  */
-class PRControllerFactory implements FactoryInterface {
+class DeliveryControllerFactory implements FactoryInterface {
 	
 	/**
 	 *
@@ -23,19 +23,28 @@ class PRControllerFactory implements FactoryInterface {
 		
 		$sm = $serviceLocator->getServiceLocator();
 			
-		$controller = new PRController();
-		
+		$controller = new DeliveryController();		
 		// Purchase Request table
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestTable' );
-		$controller->setPurchaseRequetTable($tbl);
+		$controller->setPurchaseRequestTable($tbl);
 		
 		// Purchase Request Item table
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemTable' );
-		$controller->setPurchaseRequetItemTable($tbl);
+		$controller->setPurchaseRequestItemTable($tbl);
 
-		// Purchase Request Item Pic table
-		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemPicTable' );
-		$controller->setPurchaseRequetItemPicTable($tbl);
+			
+		// Delivery Item table
+		$tbl =  $sm->get ('Procurement\Model\DeliveryItemTable' );
+		$controller->setDeliveryItemTable($tbl);
+		
+		// Delivery table
+		$tbl =  $sm->get ('Procurement\Model\DeliveryTable' );
+		$controller->setDeliveryTable($tbl);
+		
+		// User table
+		$tbl =  $sm->get ('User\Model\UserTable' );
+		$controller->setUserTable($tbl);
+		
 		
 		$sv =  $sm->get ('AuthService' );
 		$controller->setAuthService($sv );

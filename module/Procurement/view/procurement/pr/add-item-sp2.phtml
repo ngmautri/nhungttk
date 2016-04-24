@@ -1,7 +1,10 @@
- <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/create-step2"	method="get" enctype="multipart/form-data">
+<?php //var_dump( $sp) ?>
+
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp1"	method="get" enctype="multipart/form-data">
       <input type="hidden" name = "pr_id" value="<?php echo $pr->id ?>">
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
 </form>
+
 
 <div class="panel-group">
     <div class="panel panel-default">
@@ -15,11 +18,11 @@
         
      <?php if ($pr!==null)
 {
-echo '<div class="alert alert-infor">';
+echo '<div class="alert alert-info">';
 	
 	 echo '<ul>';
 	 echo '<li>Description	: <strong>' .$pr->description	 . '</strong></li>';
-	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' .$pr->requested_by. '</strong></li>';
+	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' . $pr->requester . '</strong></li>';
 	 echo '</ul>';
 	 echo '</div>';
 } 
@@ -27,9 +30,9 @@ echo '<div class="alert alert-infor">';
         </div>
      </div>
     </div>
-  </div>        
+  </div>     
 
-<h4>Add PR Item:</h4>
+<h5>Add Sparepart to this PR:</h5>
 
 <?php if (count($errors)>0)
 {
@@ -46,9 +49,11 @@ echo '<div class="alert alert-error">';
 ?>
 	
 
-<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item"	method="post" enctype="multipart/form-data" id="NewSP" >
+<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp2"	method="post" enctype="multipart/form-data" id="NewSP" >
  <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
  <input type="hidden" name="pr_id" value="<?php echo $pr->id ?>" />
+ <input type="hidden" name="sparepart_id" value="<?php echo $sp->id ?>" />
+ 
  	
 	 	 <div class="control-group">
 	        <label class="control-label" for="inputNameLocal">Priority:</label>
@@ -65,24 +70,24 @@ echo '<div class="alert alert-error">';
       <div class="control-group">
         <label class="control-label" for="inputTag">Name:</label>
         <div class="controls">
-          <input type="text" id="inputTag" placeholder="" name="name" value="">
+          <input type="text" id="inputTag" placeholder="" name="name" value="<?php echo $sp->name ?>">
         </div>
       </div>
       
      <div class="control-group">
         <label class="control-label" for="inputDescription">Description</label>
         <div class="controls">
-          <textarea id="inputDescription" placeholder="" rows="2" cols="5" name="description"></textarea>
+          <textarea id="inputDescription" placeholder="" rows="2" cols="5" name="description"><?php echo $sp->description ?></textarea>
           <a href="javascript:;" onclick="showDialog()" class="helper"> Add Pictures</a>  
         </div>
       </div>
-      
        <div class="control-group">
         <label class="control-label" for="inputTag">Code:</label>
         <div class="controls">
-          <input type="text" id="inputTag" placeholder="" name="code" value="">
+          <input type="text" id="inputTag" placeholder="" name="code" value="<?php echo $sp->code ?>">
         </div>
       </div>
+      
        <div class="control-group">
         <label class="control-label" for="inputTag">Unit:</label>
         <div class="controls">

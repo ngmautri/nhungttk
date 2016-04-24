@@ -24,6 +24,12 @@ use Procurement\Model\PurchaseRequestItemTable;
 use Procurement\Model\PurchaseRequestItemPic;
 use Procurement\Model\PurchaseRequestItemPicTable;
 
+use Procurement\Model\Delivery;
+use Procurement\Model\DeliveryTable;
+
+use Procurement\Model\DeliveryItem;
+use Procurement\Model\DeliveryItemTable;
+
 class Module {
 	public function onBootstrap(MvcEvent $e) {
 		$eventManager = $e->getApplication ()->getEventManager ();
@@ -90,6 +96,34 @@ class Module {
 						$resultSetPrototype = new ResultSet ();
 						$resultSetPrototype->setArrayObjectPrototype ( new PurchaseRequestItemPic());
 						return new TableGateway ( 'mla_purchase_request_item_pics', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// DeliveryTable
+						'Procurement\Model\DeliveryTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'DeliveryTableGateway' );
+						$table = new DeliveryTable($tableGateway );
+						return $table;
+						},
+						
+						'DeliveryTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new Delivery());
+						return new TableGateway ( 'mla_delivery', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// DeliveryItemTable
+						'Procurement\Model\DeliveryItemTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'DeliveryItemTableGateway' );
+						$table = new DeliveryItemTable($tableGateway );
+						return $table;
+						},
+						
+						'DeliveryItemTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new DeliveryItem());
+						return new TableGateway ( 'mla_delivery_items', $dbAdapter, null, $resultSetPrototype );
 						},
 	
 					)

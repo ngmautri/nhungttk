@@ -6,19 +6,18 @@
     <div class="panel panel-default">
       <div class="panel-heading">
         <h5 class="panel-title">
-          <a data-toggle="collapse" href="#collapse1"><?php echo $pr!==null ? '<h5>Purchase Request (PR): '. $pr->pr_number.'</h5>':"" ?></a>
+          <a data-toggle="collapse" href="#collapse1"><?php echo $dn!==null ? '<h5>Deliver Note (DN): '. $dn->dn_number.'</h5>':"" ?></a>
         </h5>
       </div>
       <div id="collapse1" class="panel-collapse collapse">
         <div class="panel-body">
         
-     <?php if ($pr!==null)
+     <?php if ($dn!==null)
 {
 echo '<div class="alert alert-info">';
 	
 	 echo '<ul>';
-	 echo '<li>Description	: <strong>' .$pr->description	 . '</strong></li>';
-	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' . $pr->requester . '</strong></li>';
+	 echo '<li>Description	: <strong>' .$dn->description	 . '</strong></li>';
 	 echo '</ul>';
 	 echo '</div>';
 } 
@@ -29,10 +28,10 @@ echo '<div class="alert alert-info">';
   </div>        
 
  <div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Add PR Items
+    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Add delivery Items
     <span class="caret"></span></button>
     <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/pr/add-item?pr_id=<?php echo $pr->id?>"><i class="icon-plus">  </i> Add new PR Item</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/delivery/select-from-list1?dn_id=<?php echo $dn->id?>"><i class="icon-plus">  </i> Select item from PR list</a></li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/pr/add-item?pr_id=<?php echo $pr->id?>"><i class="icon-plus">  </i> Add new PR Item from template</a></li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp1?pr_id=<?php echo $pr->id?>"><i class="icon-plus">  </i> Add spare-part as new PR Item</a></li>
       </ul>
@@ -43,46 +42,37 @@ echo '<div class="alert alert-info">';
   <hr>
 
 <!--  
-<span class="label label-info"><?php echo count($pr_items) . ' PR - Items'?></span>
+<span class="label label-info"><?php echo count($dn_items) . ' PR - Items'?></span>
 
 -->
 <table class="pure-table pure-table-bordered"">
 <thead>
 <tr>	
-		<td><b>Item</b></td>
-		<td><b>Priority</b></td>
-		<td><b>Name</b></td>
-		<td><b>Description</b></td>
-		<td><b>Unit</b></td>
-		<td><b>Quantity</b></td>
+		<td><b>Purchase Item</b></td>
 		<td><b>Delivered</b></td>
-		<td><b>To Delivery</b></td>		
-		<td><b>EDT</b></td>
-		<td><b>Count Down</b></td>
-	</tr>
+		<td><b>Unit Price</b></td>
+		<td><b>Total</b></td>
+		<td><b>Currency</b></td>
+		
+		</tr>
 </thead>
 <tbody>	
  
   <?php 
 	 
 	 $count = 0;
-	 foreach ($pr_items as $item) : 
+	 foreach ($dn_items as $item) : 
 	 	 $count++;
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 	 
 	 ?>
-		<td><?php echo $count;?></td>
-		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning">'. $item->priority .'</span>':$item->priority;?></td> 	
-		<td><?php echo $item->name;?></td>
-		<td><?php echo $item->description;?></td>
-		<td><?php echo $item->unit;?></td>
-		<td><?php echo $item->quantity;?></td>
+	 	<td><?php echo $item->pr_item_id;?></td>
 		<td><?php echo $item->delivered_quantity;?></td>
-				<td><?php echo $item->quantity - $item->delivered_quantity;?></td>
+		<td><?php echo $item->price;?></td>
+		<td><?php echo ($item->price*$item->delivered_quantity);?></td>
 		
+		<td><?php echo $item->currency;?></td>
 		
-		<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span></td>
-		<td><span id="<?php echo $item->id;?>_timer"></span></td>
 		</tr>
 		
 		<script language="javascript">

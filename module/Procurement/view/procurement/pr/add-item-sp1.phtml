@@ -1,0 +1,85 @@
+
+<?php // var_dump( $hits) ?>
+
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/create-step2"	method="get" enctype="multipart/form-data">
+      <input type="hidden" name = "pr_id" value="<?php echo $pr->id ?>">
+      <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
+</form>
+
+
+<div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1"><?php echo $pr!==null ? '<h5>Purchase Request (PR): '. $pr->pr_number.'</h5>':"" ?></a>
+        </h5>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse in">
+        <div class="panel-body">
+        
+     <?php if ($pr!==null)
+{
+echo '<div class="alert alert-info">';
+	
+	 echo '<ul>';
+	 echo '<li>Description	: <strong>' .$pr->description	 . '</strong></li>';
+	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' . $pr->requester . '</strong></li>';
+	 echo '<li>Please search for spare-part you want to order</li>';
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+        </div>
+     </div>
+    </div>
+  </div>
+  
+
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp1"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <input type="hidden" name = "pr_id" value="<?php echo $pr->id ?>">
+      
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
+
+ 
+<?php if (!$hits==null): 
+echo '<span class="label label-info">';
+echo count($hits).' result(s) found for query: "' . $query;
+echo '</span><br>';
+?>
+
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>Tag</b></td>
+		<td><b>Name</b></td>
+		<td><b>Code</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+<tbody>
+
+	 <?php 
+	 
+	 $count = 0;
+	foreach ($hits as $hit) :
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+
+    	<td><?php echo $this->escapeHtml($hit->tag);?></td>
+		<td><?php echo $this->escapeHtml($hit->name);?></td>
+		<td><?php echo $this->escapeHtml($hit->code);?></td>
+		<td>
+		<a href="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp2?pr_id=<?php echo $pr->id ?>&sparepart_id=<?php echo $hit->sparepart_id?>">  Add to PR</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $hit->sparepart_id?>" target="_blank">  Detail</a>
+		</td>
+	</tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+
+
+<?php endif; ?>

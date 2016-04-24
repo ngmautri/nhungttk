@@ -41,11 +41,17 @@ class PRControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('User\Model\UserTable' );
 		$controller->setUserTable($tbl);
 		
+		// SP table
+		$tbl =  $sm->get ('Inventory\Model\MLASparepartTable' );
+		$controller->setSparePartTable($tbl);
+		
+		
 		
 		$sv =  $sm->get ('AuthService' );
 		$controller->setAuthService($sv );
 		
-			
+		$sv =  $sm->get ('Inventory\Services\SparePartsSearchService' );
+		$controller->setSparepartSearchService($sv );
 		return $controller;
 	}
 }

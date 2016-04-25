@@ -218,9 +218,8 @@ left join mla_users as ttt02
 on ttt01.requested_by = ttt02.id) as TT3
 
 on TT1.purchase_request_id = TT3.id
+ORDER BY TT1.EDT ASC
 		";
-	
-		//"ORDER BY TT1.EDT ASC";
 	
 	
 		$statement = $adapter->query ( $sql );

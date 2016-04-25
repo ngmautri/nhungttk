@@ -1,0 +1,73 @@
+<script language="javascript">
+			var id_array = [];
+</script>
+
+        
+ <?php 
+echo '<div class="alert alert-info">';
+	
+	 echo '<ul>';
+	 echo '<li>All Items View for Procurement</li>';
+	 echo '</ul>';
+	 echo '</div>';
+
+?>
+
+ 
+<!--  
+<span class="label label-info"><?php echo count($dn_items) . ' PR - Items'?></span>
+
+-->
+<table class="pure-table pure-table-bordered"">
+<thead>
+<tr>	
+		<td><b>Item</b></td>
+		<td><b>PR </b></td>
+		<td><b>Requester </b></td>
+		<td><b>Priority</b></td>
+		<td><b>Name</b></td>
+		<td><b>Unit</b></td>
+		<td><b>Quantity</b></td>
+		<td><b>Delivered</b></td>
+		<td><b>To Delivery</b></td>		
+		<td><b>EDT</b></td>
+		<td><b>Count Down</b></td>
+		</tr>
+</thead>
+<tbody>	
+ 
+  <?php 
+	 
+	 $count = 0;
+	 foreach ($pr_items as $item) : 
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 $to_delivery = $item->quantity - $item->delivered_quantity;
+	 
+	 ?>
+		<td><?php echo $count;?></td>
+		<td><?php echo $item->pr_number;?></td>
+		<td><?php echo $item->requester_firstname . ' ' . $item->requester_lastname;?></td>
+		
+		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning">'. $item->priority .'</span>':$item->priority;?></td> 	
+		<td><?php echo $item->name;?></td>
+		<td><?php echo $item->unit;?></td>
+		<td><?php echo $item->quantity;?></td>
+		<td><?php echo $item->delivered_quantity;?></td>
+		<td><?php echo $to_delivery;?></td>
+		
+		
+		<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span></td>
+		<td><span id="<?php echo $item->id;?>_timer"></span></td>
+		</tr>
+		
+		<script language="javascript">
+			id_array.push(<?php echo $item->id;?>);
+		</script>
+	<?php endforeach; ?>
+
+ 			
+
+</tbody>
+</table>
+	

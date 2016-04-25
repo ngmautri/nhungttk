@@ -25,8 +25,8 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	 public function testDBTest() {
 	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\PurchaseRequestItemTable');
 	 	 
-	  	 $result = $tbl->getItem(14);
-	  	var_dump($result);
+	  	 $result = $tbl->getPRItems();
+	  	//var_dump($result);
 		
 	   	 foreach ($result as $user) {
 	 	 	var_dump ($user);

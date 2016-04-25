@@ -194,6 +194,42 @@ on TT1.purchase_request_id = TT3.id";
 		$resultSet->initialize ( $result );
 		return $resultSet;
 	}
+
+	
+	public function getPRItems() {
+		$adapter = $this->tableGateway->adapter;
+		$sql = "
+select TT3.pr_number, TT3.user_id, TT3.requester_firstname, TT3.requester_lastname , TT1.*, TT2.delivered_quantity from mla_purchase_request_items as TT1
+left join
+
+(select t2.*, t3.created_on as delivered_on, sum(t1.delivered_quantity) as delivered_quantity, t3.created_by as delivered_by
+from mla_delivery_items as T1
+left join mla_purchase_request_items as T2
+On T2.id = T1.pr_item_id
+left join mla_delivery as T3
+on T1.delivery_id = t3.id
+group by T1.pr_item_id) as TT2
+On TT2.id = TT1.id
+	
+left join 
+
+(select ttt01.*, ttt02.id as user_id, ttt02.firstname as requester_firstname, ttt02.lastname as requester_lastname from mla_purchase_requests as ttt01
+left join mla_users as ttt02
+on ttt01.requested_by = ttt02.id) as TT3
+
+on TT1.purchase_request_id = TT3.id
+		";
+	
+		//"ORDER BY TT1.EDT ASC";
+	
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
 	
 	public function getDeliveredOfItem($item) {
 		$adapter = $this->tableGateway->adapter;

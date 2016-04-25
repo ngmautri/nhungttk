@@ -388,6 +388,23 @@ class PRController extends AbstractActionController {
 	
 	}
 	
+	public function prItemsAction() {
+		
+		//$request = $this->getRequest ();
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		$pr_items = $this->purchaseRequestItemTable->getPRItems();
+	
+		return new ViewModel ( array (
+				'redirectUrl'=>$redirectUrl,
+				'user' =>$user,
+				'errors' => null,
+				'pr_items'=>$pr_items,
+		));
+	
+	}
+	
 	public function editItemAction() {
 		return new ViewModel ();
 	}

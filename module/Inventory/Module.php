@@ -29,8 +29,10 @@ use Inventory\Model\AssetPictureTable;
 use Inventory\Model\MLASparepart;
 use Inventory\Model\MLASparepartTable;
 use Inventory\Model\SparepartPicture;
+
 use Inventory\Model\SparepartPictureTable;
 use Inventory\Model\SparepartMovement;
+
 use Inventory\Model\SparepartMovementsTable;
 
 use Inventory\Model\SparepartCategory;
@@ -44,6 +46,21 @@ use Inventory\Model\AssetCountingTable;
 
 use Inventory\Model\AssetCountingItem;
 use Inventory\Model\AssetCountingItemTable;
+
+use Inventory\Model\Article;
+use Inventory\Model\ArticleTable;
+
+use Inventory\Model\ArticleCategory;
+use Inventory\Model\ArticleCategoryTable;
+
+use Inventory\Model\ArticleCategoryMember;
+use Inventory\Model\ArticleCategoryMemberTable;
+
+use Inventory\Model\ArticlePicture;
+use Inventory\Model\ArticlePictureTable;
+
+
+
 
 
 class Module {
@@ -93,7 +110,7 @@ class Module {
 
             // Route is whitelisted
             $name = $match->getMatchedRouteName();
-            if (in_array($name, array('login','register'))) {
+            if (in_array($name, array('login','register','test_console'))) {
                 return;
             }
 
@@ -286,6 +303,64 @@ class Module {
 						return new TableGateway ( 'mla_asset_counting_items', $dbAdapter, null, $resultSetPrototype );
 						},
 						
+						// Article Table
+						'Inventory\Model\ArticleTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'ArticleTableGateway' );
+						$table = new ArticleTable($tableGateway );
+						return $table;
+						},
+						
+						'ArticleTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new Article() );
+						return new TableGateway ( 'mla_articles', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// Article Picture Table
+						'Inventory\Model\ArticlePictureTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'ArticlePictureTableGateway' );
+						$table = new ArticlePictureTable($tableGateway );
+						return $table;
+						},
+						
+						'ArticlePictureTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new ArticlePicture() );
+						return new TableGateway ( 'mla_articles_pics', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+
+						// Article Category Table
+						'Inventory\Model\ArticleCategoryTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'ArticleCategoryTableGateway' );
+						$table = new ArticleCategoryTable($tableGateway );
+						return $table;
+						},
+						
+						'ArticleCategoryTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new ArticleCategory() );
+						return new TableGateway ( 'mla_articles_categories', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+
+						// Article Category Member Table
+						'Inventory\Model\ArticleCategoryMemberTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'ArticleCategoryMemberTableGateway' );
+						$table = new ArticleCategoryMemberTable($tableGateway);
+						return $table;
+						},
+						
+						'ArticleCategoryMemberTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new ArticleCategoryMember() );
+						return new TableGateway ( 'mla_articles_categories_members', $dbAdapter, null, $resultSetPrototype );
+						},
+						
 						'Inventory\Services\AssetSearchService'  => 'Inventory\Services\AssetSearchServiceFactory',
 						'Inventory\Services\SparePartsSearchService'  => 'Inventory\Services\SparePartsSearchServiceFactory',
 						'Inventory\Listener\PictureUploadListener' => 'Inventory\Listener\PictureUploadListenerFactory',
@@ -295,6 +370,8 @@ class Module {
 				'invokables' => array (
 						'Inventory\Services\AssetService' => 'Inventory\Services\AssetService',
 						'Inventory\Services\SparepartService' => 'Inventory\Services\SparepartService',
+						'Inventory\Services\ArticleService' => 'Inventory\Services\ArticleService',
+						
 				) 
 		);
 	}

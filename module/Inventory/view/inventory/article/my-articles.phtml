@@ -1,0 +1,112 @@
+<h4>Spare parts list</h4>
+
+	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare part category</a>
+	| <a href="<?php echo $this->baseUrl ?>/inventory/article/add">Add new
+		article</a>
+<hr>
+
+
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
+ 
+
+
+<?php
+
+if ($total_articles <= 0) {
+	
+	echo 'No articles found!';
+} else {
+
+	if (! is_null ( $paginator )) {
+		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_articles . ' spare parts found!';
+	}else{	
+		echo $total_articles . ' articles found!';
+	}
+	
+?>
+
+
+
+
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>Tag</b></td>
+		<td><b>Spare Part Name</b></td>
+		<td><b>Status</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+
+ <tbody>
+ 
+	 <?php 
+	 
+	 $count = 0;
+	 foreach ($articles as $a) : 
+	 	 $count++;
+	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
+	 
+	 	 
+	 ?>
+		<td><?php echo $this->escapeHtml($a->name);?></td>
+		<td><?php echo $this->escapeHtml($a->description);?> 
+		<td><?php echo $this->escapeHtml($a->status);?> 
+		<td><a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</td>
+	</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+
+<br>
+
+<?php
+	
+	if (! is_null ( $paginator )) {
+		
+		//change it only
+		$base=$this->baseUrl . '/inventory/article/my-articles';
+		
+		$last 	= $base . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;		
+		$first 	= $base . '?page=1&perPage=' . $paginator->resultsPerPage;
+		
+		$p1 = ($paginator->page)-1;
+		$p2 = ($paginator->page)+1;
+		
+		$prev = $base . '?page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . '?page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		
+		
+		echo '<ul class="pagination">';
+		
+		if($paginator->page != 1){
+			echo '<li><a href="'.  $first.'"> |< </a></li>';
+			echo '<li><a href="'.  $prev .'"> < </a></li>';
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base. '?page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+		
+			
+			if ($i == $paginator->page) {
+				echo   '<li><a class="active" href="#">'.$i.'</a></li>';
+			} else {
+				echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
+			}
+		}
+		if($paginator->page != $paginator->totalPages){
+			echo '<li><a href="'.  $next.'"> > </a></li>';
+			echo '<li><a href="'.  $last .'"> >| </a></li>';
+		}
+		echo '</ul>';
+	}
+}
+?>
+

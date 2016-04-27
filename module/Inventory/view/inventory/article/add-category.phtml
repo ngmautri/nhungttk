@@ -1,0 +1,44 @@
+	<h1><?php echo $this->escapeHtml($sparepart->name);?></h1>
+	
+<?php echo $this->escapeHtml($sparepart->id);?>
+
+<?php //var_dump($categories); ?>
+
+<form action="<?php echo $this->baseUrl ?>/inventory/spareparts/add-category"	method="post" enctype="multipart/form-data" id="New Sparepart">
+	
+<input type="hidden" name="id" value="<?php echo (int) $sparepart->id; ?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+
+<table class="pure-table pure-table-bordered">
+<thead>
+
+	<tr>
+		<td><b></b></td>
+
+		<td><b>Spare Part Category</b></td>
+		
+	</tr>	
+</thead>
+<tbody>
+ <?php 
+	 
+	 $count = 0;
+	 foreach ($categories as $category) : 
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+    <td><input type="checkbox" name="category[]" value="<?php echo $this->escapeHtml($category['id2']);?>" class="checkbox"/></td>
+    
+		<td><?php echo $this->escapeHtml($category['level2']);?></td>
+     	</tr>
+<?php endforeach; ?>
+
+<tr>
+	<td></td> 
+	<td><input type="submit" name="add" value="Add" />	</td>
+</tr>
+
+</tbody>
+</table>

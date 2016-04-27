@@ -1,19 +1,29 @@
-<h4>Department Detail for:  <?php echo $category->name ?></h4>
+<h4>Spare-parts for:  <?php echo $category->name ?></h4>
 
-< 
+<P>
+	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>">Add new
+		spare part</a>
+</P>
+<hr>
+
+<form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
+ 
 
 <?php
 
-if ($total_members <= 0) {
+if ($total_spareparts <= 0) {
 	
 	echo 'No spare part found!';
 } else {
 	
 	if (! is_null ( $paginator )) {
-		echo '<h5>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage . ' | ' .  $total_members . ' members found! </h5>';
+		echo '<h5>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage . ' | ' .  $total_spareparts . ' spare parts found! </h5>';
 	;
 	}else{
-		echo '<h5>'. $total_members . ' spare parts found! </h5>';
+		echo '<h5>'. $total_spareparts . ' spare parts found! </h5>';
 		
 	}
 ?>
@@ -34,15 +44,44 @@ if ($total_members <= 0) {
 	  <?php 
 	 
 	 $count = 0;
-	 foreach ($users as $a) : 
+	 foreach ($spareparts as $a) : 
 	 	 $count++;
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 $instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
+	 	 
 	 ?>
  		<td><?php echo $this->escapeHtml($a['tag']);?></td>
 		<td><?php echo $a['name'];?> 
+		
+		<?php if($instock > 0){			
+			echo '<span class="label label-info" title="'.$instock. ' pcs. in stock">'.$instock.'</span>';				
+			
+		}else{
+			
+			echo '<span class="label" title="Nothing in stock. Please make order!">'.$instock.'</span>';				
+		}
+		?>
+		
 		</td>
 		<td><?php echo $this->escapeHtml($a['code']);?></td>
 		<td><?php echo $this->escapeHtml($a['location']);?></td>
+
+		<td>
+		<a
+			href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $this->escapeHtml($a['id']);?>">Edit
+		</a>
+			<a
+			href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Issue
+		</a>
+		<a
+			href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Receive
+		</a>
+		<a
+			href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $this->escapeHtml($a['id']);?>">
+				Detail </a>
+				
+						
+				</td>
 	</tr>
 <?php endforeach; ?>
 </tbody>

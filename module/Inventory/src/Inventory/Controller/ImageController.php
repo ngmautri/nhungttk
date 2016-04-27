@@ -19,6 +19,8 @@ class ImageController extends AbstractActionController {
 	public $massage = 'NULL';
 	public $assetPictureTable;
 	public $sparepartPictureTable;
+	public $articlePictureTable;
+	
 	
 	/*
 	 * Defaul Action
@@ -60,6 +62,26 @@ class ImageController extends AbstractActionController {
 		return $response;
 	}
 	
+
+	/*
+	 * Defaul Action
+	 */
+	public function articleAction() {
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+	
+		$pic = $this->getArticlePictureTable()->get( $id);
+	
+		$response = $this->getResponse();
+	
+		$imageContent =  file_get_contents($pic->url);
+		$response->setContent($imageContent);
+		$response->getHeaders()
+		->addHeaderLine('Content-Transfer-Encoding', 'binary')
+		->addHeaderLine('Content-Type', 'image/jpeg')
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+		return $response;
+	}
+	
 	public function sparepartThumbnail200Action() {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 	
@@ -72,6 +94,22 @@ class ImageController extends AbstractActionController {
 		$response->getHeaders()
 		->addHeaderLine('Content-Transfer-Encoding', 'binary')
 		->addHeaderLine('Content-Type', 'image/png')
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+		return $response;
+	}
+	
+	public function articleThumbnail200Action() {
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+	
+		$pic = $this->getArticlePictureTable()->get( $id);
+	
+		$response = $this->getResponse();
+	
+		$imageContent =  file_get_contents($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_200_'.$pic->filename);
+		$response->setContent($imageContent);
+		$response->getHeaders()
+		->addHeaderLine('Content-Transfer-Encoding', 'binary')
+		->addHeaderLine('Content-Type', 'image/jpeg')
 		->addHeaderLine('Content-Length', mb_strlen($imageContent));
 		return $response;
 	}
@@ -90,6 +128,21 @@ class ImageController extends AbstractActionController {
 		->addHeaderLine('Content-Length', mb_strlen($imageContent));
 		
 		return $response;		
+	}
+	
+	public function articleThumbnail150Action() {
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$pic = $this->getArticlePictureTable()->get( $id);
+		$response = $this->getResponse();
+		$imageContent =  file_get_contents($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_150_'.$pic->filename);
+		$response->setContent($imageContent);
+		$response->getHeaders()
+		->addHeaderLine('Content-Transfer-Encoding', 'binary')
+		->addHeaderLine('Content-Type', 'image/jpeg')
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+	
+		return $response;
 	}
 	
 	public function deleteSparePartPictureAction() {
@@ -184,6 +237,14 @@ class ImageController extends AbstractActionController {
 			$this->sparepartPictureTable = $sm->get ( 'Inventory\Model\SparepartPictureTable' );
 		}
 		return $this->sparepartPictureTable;
+	}
+	
+	private function getArticlePictureTable() {
+		if (! $this->articlePictureTable) {
+			$sm = $this->getServiceLocator ();
+			$this->articlePictureTable = $sm->get ( 'Inventory\Model\ArticlePictureTable' );
+		}
+		return $this->articlePictureTable;
 	}
 	
 }

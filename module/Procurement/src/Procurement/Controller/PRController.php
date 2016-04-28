@@ -17,6 +17,8 @@ use Zend\Validator\EmailAddress;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\Wildcard;
 
+use MLA\Paginator;
+use MLA\Files;
 
 use Procurement\Model\PurchaseRequest;
 use Procurement\Model\PurchaseRequestTable;
@@ -30,8 +32,12 @@ use Procurement\Model\PurchaseRequestItemPicTable;
 use User\Model\UserTable;
 
 use Inventory\Services\SparePartsSearchService;
-use Inventory\Model\MLASparepartTable;
 
+use Inventory\Model\MLASparepartTable;
+use Inventory\Model\ArticleTable;
+
+use Procurement\Model\PRWorkFlow;
+use Procurement\Model\PRWorkFlowTable;
 
 
 
@@ -42,14 +48,15 @@ class PRController extends AbstractActionController {
 	protected  $purchaseRequestItemTable;
 	protected  $purchaseRequestItemPicTable;
 	protected  $sparePartTable;
+	protected  $articleTable;
+	protected  $prWorkflowTable;
+	
+	
 	
 	
 	protected  $authService;
 	protected  $sparepartSearchService;
-	
-	
-	
-	
+		
 	public function indexAction() {
 		return new ViewModel ();
 	}
@@ -107,6 +114,10 @@ class PRController extends AbstractActionController {
 	
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function createStep2Action() {
 		
 		$request = $this->getRequest ();
@@ -125,6 +136,26 @@ class PRController extends AbstractActionController {
 				'pr_items'=>$pr_items,
 		));
 	}
+	
+	/**
+	 * Submit PR
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function submitAction() {
+	
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		
+		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
+		$input = new PRWorkFlow();
+		$input->status = "Submitted";
+		$input->purchase_request_id = $pr_id;
+		$input->updated_by = $user['id'];
+		
+		$this->prWorkflowTable->add($input);
+		$this->redirect()->toUrl('/procurement/pr/my-pr');
+	}
+	
 	
 	public function addItemAction() {
 		$request = $this->getRequest ();
@@ -284,7 +315,6 @@ class PRController extends AbstractActionController {
 				$input->name = $request->getPost ( 'name' );
 				$input->description = $request->getPost ( 'description' );
 				$input->code = $request->getPost ( 'code' );
-				
 
 				$input->unit = $request->getPost ( 'unit' );
 				$input->quantity = $request->getPost ( 'quantity' );
@@ -340,7 +370,6 @@ class PRController extends AbstractActionController {
 		$pr=$this->purchaseRequestTable->getPR($pr_id);
 		
 		$sp_id = $this->params ()->fromQuery ( 'sparepart_id' );
-		
 		$sp =$this->sparePartTable->get($sp_id);
 				
 		return new ViewModel ( array (
@@ -349,6 +378,140 @@ class PRController extends AbstractActionController {
 				'errors' => null,
 				'pr'=>$pr,
 				'sp' =>$sp,
+		));
+	}
+	
+	/**
+	 * Select Item from List
+	 */
+	public function selectItem1Action() {
+	
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		$user_id  = $user['id'];
+		
+		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
+		$pr=$this->purchaseRequestTable->getPR($pr_id);
+		
+	
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 20;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+	
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+	
+		$articles = $this->articleTable->getArticlesOfMyDepartment($user_id);
+		$totalResults = $articles->count ();
+	
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$articles = $this->articleTable->getLimitedArticlesOfMyDepartment($user_id,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		
+	
+		return new ViewModel ( array (
+				'total_articles' => $totalResults,
+				'articles' => $articles,
+				'pr' =>$pr, 
+				'paginator' => $paginator
+		) );
+	}
+	
+	
+	/* Request for new spare parts
+	 * step1: search the spare part
+	 *
+	 */
+	public function selectItem2Action() {
+	
+		$request = $this->getRequest ();
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+	
+		if ($request->isPost ()) {
+	
+			if ($request->isPost ()) {
+				$redirectUrl  = $request->getPost ( 'redirectUrl' );
+	
+				$input = new PurchaseRequestItem();
+				$input->purchase_request_id = $request->getPost ( 'pr_id' );
+				$input->priority = $request->getPost ( 'priority' );
+				$input->name = $request->getPost ( 'name' );
+				$input->description = $request->getPost ( 'description' );
+				$input->code = $request->getPost ( 'code' );
+	
+				$input->unit = $request->getPost ( 'unit' );
+				$input->quantity = $request->getPost ( 'quantity' );
+				$input->EDT = $request->getPost ( 'EDT' );
+				$input->article_id = $request->getPost ( 'article_id' );
+				$input->remarks = $request->getPost ( 'remarks' );
+				
+	
+				// validator.
+				$errors = array();
+	
+				if ($input->name ==''){
+					$errors [] = 'Please give a item name';
+				}
+	
+				if ($input->unit ==''){
+					$errors [] = 'Please give a unit';
+				}
+	
+				$validator = new Date ();
+	
+				if (! $validator->isValid ( $input->EDT )) {
+					$errors [] = 'requested delievery date is not correct!';
+				}
+	
+				// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
+				$validator = new Int ();
+					
+				if (! $validator->isValid ( $input->quantity )) {
+					$errors [] = 'Quantity is not valid. It must be a number.';
+				}
+	
+	
+				if (count ( $errors ) > 0) {
+						
+					$pr=$this->purchaseRequestTable->getPR($input->purchase_request_id);
+						
+					return new ViewModel ( array (
+							'redirectUrl' => $redirectUrl,
+							'user' => $user,
+							'errors' => $errors,
+							'pr' => $pr
+					) );
+				}
+	
+				$this->purchaseRequestItemTable->add($input);
+				$this->redirect()->toUrl($redirectUrl);
+			}
+		}
+	
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
+		$pr=$this->purchaseRequestTable->getPR($pr_id);
+	
+		$article_id = $this->params ()->fromQuery ( 'article_id' );
+		$article =$this->articleTable->get($article_id);
+	
+		return new ViewModel ( array (
+				'redirectUrl'=>$redirectUrl,
+				'user' =>$user,
+				'errors' => null,
+				'pr'=>$pr,
+				'article' =>$article,
 		));
 	}
 	
@@ -370,22 +533,77 @@ class PRController extends AbstractActionController {
 	
 	}
 	
-	public function showItemsAction() {
-		$request = $this->getRequest ();
+	public function mySubmittedItemsAction() {
+	
+		//$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity();
 		$user=$this->userTable->getUserByEmail($identity);
-	
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		$my_pr=$this->purchaseRequestTable->getPRof($user['id']);
-	
+		$pr_items = $this->purchaseRequestItemTable->getMySubmittedPRItems($user['id']);
 	
 		return new ViewModel ( array (
 				'redirectUrl'=>$redirectUrl,
 				'user' =>$user,
 				'errors' => null,
-				'my_pr'=>$my_pr,
+				'pr_items'=>$pr_items,
 		));
 	
+	}
+	
+	/**
+	 * show all PR for Procurement
+	 */
+	public function allPRAction() {
+	
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		$all_pr=$this->purchaseRequestTable->getAllSumbittedPRs();
+	
+		return new ViewModel ( array (
+				'redirectUrl'=>$redirectUrl,
+				'errors' => null,
+				'all_pr'=>$all_pr,
+		));
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function approveStep1Action() {
+	
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
+		$pr=$this->purchaseRequestTable->getPR($pr_id);
+		$pr_items = $this->purchaseRequestItemTable->getItemsByPR($pr_id);
+	
+		return new ViewModel ( array (
+				'redirectUrl'=>$redirectUrl,
+				'user' =>$user,
+				'errors' => null,
+				'pr'=>$pr,
+				'pr_items'=>$pr_items,
+		));
+	}
+	
+	/**
+	 * Submit PR
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function approveAction() {
+	
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+	
+		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
+		$input = new PRWorkFlow();
+		$input->status = "Approved";
+		$input->purchase_request_id = $pr_id;
+		$input->updated_by = $user['id'];
+	
+		$this->prWorkflowTable->add($input);
+		$this->redirect()->toUrl('/procurement/pr/all-pr');
 	}
 	
 	public function prItemsAction() {
@@ -394,7 +612,7 @@ class PRController extends AbstractActionController {
 		$identity = $this->authService->getIdentity();
 		$user=$this->userTable->getUserByEmail($identity);
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		$pr_items = $this->purchaseRequestItemTable->getPRItems();
+		$pr_items = $this->purchaseRequestItemTable->getSubmittedPRItems();
 	
 		return new ViewModel ( array (
 				'redirectUrl'=>$redirectUrl,
@@ -474,8 +692,18 @@ class PRController extends AbstractActionController {
 		$this->sparePartTable = $sparePartTable;
 		return $this;
 	}
-	
-	
-	
-
+	public function getArticleTable() {
+		return $this->articleTable;
+	}
+	public function setArticleTable(ArticleTable $articleTable) {
+		$this->articleTable = $articleTable;
+		return $this;
+	}
+	public function getPrWorkflowTable() {
+		return $this->prWorkflowTable;
+	}
+	public function setPrWorkflowTable(PRWorkFlowTable $prWorkflowTable) {
+		$this->prWorkflowTable = $prWorkflowTable;
+		return $this;
+	}
 }

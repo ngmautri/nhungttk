@@ -5,13 +5,13 @@ namespace Procurement\Controller;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-use Procurement\Controller\PRController;
+use Procurement\Controller\VendorController;
 
 /*
  * @author nmt
  *
  */
-class PRControllerFactory implements FactoryInterface {
+class VendorControllerFactory implements FactoryInterface {
 	
 	/**
 	 *
@@ -23,8 +23,7 @@ class PRControllerFactory implements FactoryInterface {
 		
 		$sm = $serviceLocator->getServiceLocator();
 			
-		$controller = new PRController();
-		
+		$controller = new VendorController();		
 		// Purchase Request table
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestTable' );
 		$controller->setPurchaseRequestTable($tbl);
@@ -33,36 +32,29 @@ class PRControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemTable' );
 		$controller->setPurchaseRequestItemTable($tbl);
 
-		// Purchase Request Item Pic table
-		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemPicTable' );
-		$controller->setPurchaseRequestItemPicTable($tbl);
+			
+		// Delivery Item table
+		$tbl =  $sm->get ('Procurement\Model\DeliveryItemTable' );
+		$controller->setDeliveryItemTable($tbl);
 		
-
-		// Purchase Request Item Pic table
-		$tbl =  $sm->get ('Procurement\Model\PRWorkFlowTable' );
-		$controller->setPrWorkflowTable($tbl);
+		// Delivery table
+		$tbl =  $sm->get ('Procurement\Model\DeliveryTable' );
+		$controller->setDeliveryTable($tbl);
+		
+		// Vendor table
+		$tbl =  $sm->get ('Procurement\Model\VendorTable' );
+		$controller->setVendorTable($tbl);
 		
 		
 		// User table
 		$tbl =  $sm->get ('User\Model\UserTable' );
 		$controller->setUserTable($tbl);
 		
-		// SP table
-		$tbl =  $sm->get ('Inventory\Model\MLASparepartTable' );
-		$controller->setSparePartTable($tbl);
-		
-
-		// Article table
-		$tbl =  $sm->get ('Inventory\Model\ArticleTable' );
-		$controller->setArticleTable($tbl);
-		
-			
 		
 		$sv =  $sm->get ('AuthService' );
 		$controller->setAuthService($sv );
 		
-		$sv =  $sm->get ('Inventory\Services\SparePartsSearchService' );
-		$controller->setSparepartSearchService($sv );
+			
 		return $controller;
 	}
 }

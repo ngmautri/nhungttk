@@ -30,6 +30,12 @@ use Procurement\Model\DeliveryTable;
 use Procurement\Model\DeliveryItem;
 use Procurement\Model\DeliveryItemTable;
 
+use Procurement\Model\Vendor;
+use Procurement\Model\VendorTable;
+
+use Procurement\Model\PRWorkFlow;
+use Procurement\Model\PRWorkFlowTable;
+
 class Module {
 	public function onBootstrap(MvcEvent $e) {
 		$eventManager = $e->getApplication ()->getEventManager ();
@@ -125,7 +131,33 @@ class Module {
 						$resultSetPrototype->setArrayObjectPrototype ( new DeliveryItem());
 						return new TableGateway ( 'mla_delivery_items', $dbAdapter, null, $resultSetPrototype );
 						},
-	
+						
+						// VendorTable
+						'Procurement\Model\VendorTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'VendorTableGateway' );
+						$table = new VendorTable($tableGateway);
+						return $table;
+						},
+						
+						'VendorTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new Vendor());
+						return new TableGateway ( 'mla_vendors', $dbAdapter, null, $resultSetPrototype );
+						},
+						// PRWorkFlowTable
+						'Procurement\Model\PRWorkFlowTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'PRWorkFlowTableGateway' );
+						$table = new PRWorkFlowTable($tableGateway);
+						return $table;
+						},
+						
+						'PRWorkFlowTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new PRWorkFlow());
+						return new TableGateway ( 'mla_purchase_requests_workflows', $dbAdapter, null, $resultSetPrototype );
+						},
 					)
 				);
 	}

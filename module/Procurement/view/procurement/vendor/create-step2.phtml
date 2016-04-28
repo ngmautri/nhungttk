@@ -1,0 +1,87 @@
+<script language="javascript">
+			var id_array = [];
+</script>
+
+<div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1"><?php echo $dn!==null ? '<h5>Deliver Note (DN): '. $dn->dn_number.'</h5>':"" ?></a>
+        </h5>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
+        <div class="panel-body">
+        
+     <?php if ($dn!==null)
+{
+echo '<div class="alert alert-info">';
+	
+	 echo '<ul>';
+	 echo '<li>Description	: <strong>' .$dn->description	 . '</strong></li>';
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+        </div>
+     </div>
+    </div>
+  </div>        
+
+ <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Add delivery Items
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/delivery/select-from-list1?dn_id=<?php echo $dn->id?>"><i class="icon-plus">  </i> Select item from PR list</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/pr/add-item?pr_id=<?php echo $pr->id?>"><i class="icon-plus">  </i> Add new PR Item from template</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp1?pr_id=<?php echo $pr->id?>"><i class="icon-plus">  </i> Add spare-part as new PR Item</a></li>
+      </ul>
+       <button type="button" onclick="" class="btn"><i class="icon-ok"> </i> Done</button>
+ 
+  </div>
+ 
+  <hr>
+
+<!--  
+<span class="label label-info"><?php echo count($dn_items) . ' PR - Items'?></span>
+
+-->
+<table class="pure-table pure-table-bordered"">
+<thead>
+<tr>	
+		<td><b>Purchase Item</b></td>
+		<td><b>Delivered</b></td>
+		<td><b>Unit Price</b></td>
+		<td><b>Total</b></td>
+		<td><b>Currency</b></td>
+		
+		</tr>
+</thead>
+<tbody>	
+ 
+  <?php 
+	 
+	 $count = 0;
+	 foreach ($dn_items as $item) : 
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+	 	<td><?php echo $item->pr_item_id;?></td>
+		<td><?php echo $item->delivered_quantity;?></td>
+		<td><?php echo $item->price;?></td>
+		<td><?php echo ($item->price*$item->delivered_quantity);?></td>
+		
+		<td><?php echo $item->currency;?></td>
+		
+		</tr>
+		
+		<script language="javascript">
+			id_array.push(<?php echo $item->id;?>);
+		</script>
+<?php endforeach; ?>
+
+ 			
+
+</tbody>
+</table>
+	

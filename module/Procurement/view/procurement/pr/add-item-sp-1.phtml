@@ -35,7 +35,7 @@ echo '<div class="alert alert-info">';
   </div>
   
 
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp1"	method="get" enctype="multipart/form-data">
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp-1"	method="get" enctype="multipart/form-data">
       <input type="text" name = "query" class="">
       <input type="hidden" name = "pr_id" value="<?php echo $pr->id ?>">
       
@@ -73,7 +73,7 @@ echo '</span><br>';
 		<td><?php echo $this->escapeHtml($hit->name);?></td>
 		<td><?php echo $this->escapeHtml($hit->code);?></td>
 		<td>
-		<a href="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp2?pr_id=<?php echo $pr->id ?>&sparepart_id=<?php echo $hit->sparepart_id?>">  Add to PR</a>
+		<a href="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp-2?pr_id=<?php echo $pr->id ?>&sparepart_id=<?php echo $hit->sparepart_id?>">Order Now </a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $hit->sparepart_id?>" target="_blank">  Detail</a>
 		</td>
 	</tr>

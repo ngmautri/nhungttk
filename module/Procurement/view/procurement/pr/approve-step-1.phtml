@@ -20,7 +20,7 @@ echo '<div class="alert alert-info">';
 	 echo '<li>Description	: <strong>' .$pr->description	 . '</strong></li>';
 	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' . $pr->requester . '</strong></li>';
 	 echo '<li>Updated on		: <strong>' .$pr->last_change . '</strong></li>';
-	 echo '<li>Latest Status		: <strong>' .$pr->status . '</strong> by <strong>' .$pr->changed_by . '</strong></li>';
+	 echo '<li>Latest Status		: <strong>' .$pr->status .  '</strong> by <strong>' .$pr->changed_by . '</strong></li>';
 	 
 	 echo '</ul>';
 	 echo '</div>';
@@ -31,31 +31,15 @@ echo '<div class="alert alert-info">';
     </div>
   </div>        
 
-<?php if($pr->status === null){ ?>
-
- <div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Add Item
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/pr/add-item?pr_id=<?php echo $pr->id?>"><i class="icon-plus">  </i> Add new Item</a></li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/pr/select-item-1?pr_id=<?php echo $pr->id?>"><i class="icon-plus">  </i> Select Item from List</a></li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp-1?pr_id=<?php echo $pr->id?>"><i class="icon-plus">  </i> Add spare-part as new Item</a></li>
-      </ul>
-      <?php  	if (count($pr_items) >0): ?>
-        <button title="Submit PR to Procurment" class="btn btn-default" onclick="submitPR('<?php echo $pr->id?>');" type="button"><i class="icon-ok">  </i> Submit</button>
-      <?php endif; ?>
-  </div>
  
-  <hr>
-
-<?php  }?>
-<!--  
-<span class="label label-info"><?php echo count($pr_items) . ' PR - Items'?></span>
-
--->
 
 <?php  	if (count($pr_items) >0): ?>
-  	
+
+<?php  	if ($pr->status!=='Approved'): ?>
+<button title="Submit PR to Procurment" class="btn btn-default" onclick="approvePR('<?php echo $pr->id?>');" type="button"><i class="icon-ok">  </i> Approve</button>
+ <hr>
+<?php  	endif; ?>
+   	
 <table class="pure-table pure-table-bordered"">
 <thead>
 <tr>	
@@ -94,15 +78,11 @@ echo '<div class="alert alert-info">';
 		<td><?php echo $item->quantity;?></td>
 		<td><?php echo $item->delivered_quantity;?></td>
 		<td><?php echo $to_delivery==0?'<span class="label label-success">0</span>':$to_delivery;?></td>
-		<?php if($to_delivery == 0): ?>
-				<td><?php echo date_format(date_create($item->EDT),"Y-m-d");?></td>
-				<td><span class="label label-success">Fulfilled</span></td>
-		<?php else: ?>
 		
-			<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span></td>
-			<td><span id="<?php echo $item->id;?>_timer"></span></td>
-		<?php endif; ?>
-		<td><b><?php echo $item->id;?></b></td>
+		
+		<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span></td>
+		<td><span id="<?php echo $item->id;?>_timer"></span></td>
+		<td>  </i> <b>Action</b></td>
 		
 		</tr>
 		
@@ -118,11 +98,9 @@ echo '<div class="alert alert-info">';
 </tbody>
 </table>
 <hr>
-<?php else: echo 'please add items!' ?>
-
 
 <?php endif; ?>
- <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/my-pr"	method="get" enctype="multipart/form-data">
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/all-pr"	method="get" enctype="multipart/form-data">
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
 </form>
 

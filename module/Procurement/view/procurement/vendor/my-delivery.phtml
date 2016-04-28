@@ -1,0 +1,33 @@
+<h4>My Delivery:</h4>
+
+
+<?php echo count($my_delivery) . ' Delivers found'?>
+<table class="pure-table pure-table-bordered"">
+<thead>
+<tr>	
+		<td><b>No.</b></td>
+		<td><b>Name</b></td>
+		<td><b>Description</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+<tbody>	
+ 
+  <?php 
+	 
+	 $count = 0;
+	 foreach ($my_delivery as $item) : 
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 ?>
+ 		<td><?php echo $count;?></td> 	
+		<td><?php echo $item->dn_number;?> <span class="label label-info"><?php echo $item->tItems;?></span></td> 	
+		<td><?php echo $item->description;?></td>
+		<td>
+		<a
+			href="<?php echo $this->baseUrl ?>/procurement/delivery/create-step2?dn_id=<?php echo $item->id;?>">Show
+		</a>
+	</td>
+<?php endforeach; ?>
+</tbody>
+</table>

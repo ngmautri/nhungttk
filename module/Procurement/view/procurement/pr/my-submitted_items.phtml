@@ -2,21 +2,21 @@
 			var id_array = [];
 </script>
 
-
+        
  <?php 
 echo '<div class="alert alert-info">';
 	
 	 echo '<ul>';
-	 echo '<li>All Items View for Procurement</li>';
+	 echo '<li>All Items View for Requester</li>';
 	 echo '</ul>';
 	 echo '</div>';
 
 ?>
 
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/"	method="get" enctype="multipart/form-data">
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/"	method="get" enctype="multipart/form-data">
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
 </form>
-        
+ 
 <!--  
 <span class="label label-info"><?php echo count($dn_items) . ' PR - Items'?></span>
 
@@ -59,9 +59,7 @@ echo '<div class="alert alert-info">';
 		<td><?php echo $item->unit;?></td>
 		<td><?php echo $item->quantity;?></td>
 		<td><?php echo $item->delivered_quantity;?></td>
-		<td><?php echo $to_delivery==0?'<span class="label label-success">0</span>':$to_delivery;?>
-		
-		</td>
+		<td><?php echo $to_delivery==0?'<span class="label label-success">0</span>':$to_delivery;?></td>
 		<?php if($to_delivery == 0): ?>
 				<td><?php echo date_format(date_create($item->EDT),"Y-m-d");?></td>
 				<td><span class="label label-success">Fulfilled</span></td>
@@ -69,11 +67,11 @@ echo '<div class="alert alert-info">';
 		
 			<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span></td>
 			<td><span id="<?php echo $item->id;?>_timer"></span></td>
-			<?php endif; ?>
-		
-		<td><b><?php echo $item->id;?></b></td>
+		<?php endif; ?>
+			<td><b><?php echo $item->id;?></b></td>
 		
 		</tr>
+		
 		
 		<script language="javascript">
 			id_array.push(<?php echo $item->id;?>);

@@ -56,6 +56,8 @@ return array (
 				'factories' => array (
 						'Procurement\Controller\PR' => 'Procurement\Controller\PRControllerFactory',
 						'Procurement\Controller\Delivery' => 'Procurement\Controller\DeliveryControllerFactory',
+						'Procurement\Controller\Vendor' => 'Procurement\Controller\VendorControllerFactory',
+						
 				)
 		),
 		'view_manager' => array (

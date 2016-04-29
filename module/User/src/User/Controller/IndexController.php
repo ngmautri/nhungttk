@@ -110,7 +110,7 @@ class IndexController extends AbstractActionController {
 			
 			$this->getRegisterService ()->doRegister ( $input );
 			
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			return $this->redirect ()->toRoute ( 'Inventory' );
 		}
 		
 		return new ViewModel ( array ('messages' => '') );

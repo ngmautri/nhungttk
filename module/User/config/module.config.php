@@ -66,6 +66,23 @@ return array (
 									
 		),
 		
+		'console' => array(
+				'router' => array(
+						'routes' => array(
+									
+								'test_console' => array(
+										'options' => array(
+												'route'    => 'users',
+												'defaults' => array(
+														'controller' => 'User\Controller\Index',
+														'action'     => 'console'
+												)
+										)
+								)
+						)
+				)
+		),
+		
 		'service_manager' => array (
 				'factories' => array (
 						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory' 

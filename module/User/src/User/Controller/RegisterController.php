@@ -99,9 +99,7 @@ class IndexController extends AbstractActionController {
 			
 			
 			$newId = $this->getUserTable ()->add ( $input );
-			
 			$this->getRegisterService ()->doRegister ( $input );
-			
 			return $this->redirect ()->toRoute ( 'Inventory' );
 		}
 		

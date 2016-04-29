@@ -9,6 +9,10 @@ use Zend\Db\Adapter\Adapter;
 use RuntimeException;
 use User\Module;
 
+use Zend\Mail\Transport\Smtp as SmtpTransport;
+use Zend\Mail\Transport\SmtpOptions;
+
+
 error_reporting ( E_ALL | E_STRICT );
 chdir ( __DIR__ );
 
@@ -50,12 +54,34 @@ class Bootstrap {
 							return $adapter = new Adapter ( array (
 									'driver' => 'Pdo_Mysql',
 									'hostname' => 'localhost',
-									'database' => 'mib',
+									'database' => 'mla',
 									'username' => 'root',
 									'password' => '' 
 							) );
-						} 
-				) 
+						},
+						
+						// Email Service
+						'SmtpTransportService' => function ($sm) {
+							
+						$transport = new SmtpTransport ();
+						$options = new SmtpOptions ( array (
+								'name' => 'Web.de',
+								'host' => 'smtp.web.de',
+								'port' => '587',
+								'connection_class' => 'login',
+								'connection_config' => array (
+										'username' => 'mib-team@web.de',
+										'password' => 'mib2009',
+										'ssl' => 'tls'
+								)
+						) );
+							
+						$transport->setOptions ( $options );
+						return $transport;
+						}
+						
+				)
+				
 		);
 		
 		$serviceManager = new ServiceManager ( new ServiceManagerConfig ( $smConfig ) );

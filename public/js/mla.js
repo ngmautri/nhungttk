@@ -3,6 +3,10 @@ $(document).ready(function(){
         $("#lightgallery").lightGallery(); 
         countdown();
     });
+	
+	
+	
+	 $('[data-toggle="tooltip"]').tooltip();
 		
 });
 
@@ -237,7 +241,6 @@ function uploadPictures(){
 function countAsset(){
 	
 	
-	
 	var pic_to_upload = [];
 	var pic_to_upload_resized = [];
 	
@@ -377,8 +380,6 @@ function isCountingCompleted(pic_to_upload_resized,n)
  */
 function uploadAssetPictures(){
 	
-	 
-	
 	var pic_to_upload = [];
 	var pic_to_upload_resized = [];
 	
@@ -506,4 +507,33 @@ function isUploadAssetPicturedCompleted(pic_to_upload_resized,n)
 	
 }
 
+
+function submitPR(ID)
+{
+		$('#myModal').modal();	
+		redirectUrl = "/procurement/pr/my-pr"
+	    $.get("/procurement/pr/submit",
+                {
+            	  pr_id: ID,
+                },
+                function(data,status){
+                       window.location = redirectUrl;
+        });
+	
+}
+
+
+function approvePR(ID)
+{
+		$('#myModal').modal();	
+		redirectUrl = "/procurement/pr/all-pr"
+	    $.get("/procurement/pr/approve",
+                {
+            	  pr_id: ID,
+                },
+                function(data,status){
+                       window.location = redirectUrl;
+        });
+	
+}
 

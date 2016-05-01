@@ -24,22 +24,7 @@ class VendorControllerFactory implements FactoryInterface {
 		$sm = $serviceLocator->getServiceLocator();
 			
 		$controller = new VendorController();		
-		// Purchase Request table
-		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestTable' );
-		$controller->setPurchaseRequestTable($tbl);
-		
-		// Purchase Request Item table
-		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemTable' );
-		$controller->setPurchaseRequestItemTable($tbl);
-
-			
-		// Delivery Item table
-		$tbl =  $sm->get ('Procurement\Model\DeliveryItemTable' );
-		$controller->setDeliveryItemTable($tbl);
-		
-		// Delivery table
-		$tbl =  $sm->get ('Procurement\Model\DeliveryTable' );
-		$controller->setDeliveryTable($tbl);
+	
 		
 		// Vendor table
 		$tbl =  $sm->get ('Procurement\Model\VendorTable' );

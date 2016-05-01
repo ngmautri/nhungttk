@@ -39,6 +39,8 @@ use Inventory\Model\ArticleTable;
 use Procurement\Model\PRWorkFlow;
 use Procurement\Model\PRWorkFlowTable;
 
+use Application\Model\DepartmentTable;
+
 
 
 class PRController extends AbstractActionController {
@@ -50,8 +52,7 @@ class PRController extends AbstractActionController {
 	protected  $sparePartTable;
 	protected  $articleTable;
 	protected  $prWorkflowTable;
-	
-	
+	protected  $departmentTable;
 	
 	
 	protected  $authService;
@@ -120,7 +121,6 @@ class PRController extends AbstractActionController {
 	 */
 	public function createStep2Action() {
 		
-		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity();
 		$user=$this->userTable->getUserByEmail($identity);
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
@@ -176,6 +176,7 @@ class PRController extends AbstractActionController {
 				$input->unit = $request->getPost ( 'unit' );
 				$input->quantity = $request->getPost ( 'quantity' );
 				$input->EDT = $request->getPost ( 'EDT' );
+				$input->created_by = $user['id'];
 				
 				
 					// validator.
@@ -321,6 +322,7 @@ class PRController extends AbstractActionController {
 				$input->EDT = $request->getPost ( 'EDT' );
 				
 				$input->sparepart_id = $request->getPost ( 'sparepart_id' );
+				$input->created_by = $user['id'];
 				
 				
 					// validator.
@@ -455,6 +457,7 @@ class PRController extends AbstractActionController {
 				$input->EDT = $request->getPost ( 'EDT' );
 				$input->article_id = $request->getPost ( 'article_id' );
 				$input->remarks = $request->getPost ( 'remarks' );
+				$input->created_by = $user['id'];
 				
 	
 				// validator.
@@ -516,7 +519,6 @@ class PRController extends AbstractActionController {
 	}
 	
 	public function myPRAction() {
-		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity();
 		$user=$this->userTable->getUserByEmail($identity);
 	
@@ -556,12 +558,32 @@ class PRController extends AbstractActionController {
 	public function allPRAction() {
 	
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		$all_pr=$this->purchaseRequestTable->getAllSumbittedPRs();
+		$last_status = $this->params ()->fromQuery ( 'last_status' );
+		$user_id = $this->params ()->fromQuery ( 'user_id' );
+		$department_id = $this->params ()->fromQuery ( 'department_id' );
+		$departments= $this->departmentTable->fetchAll();
+		
+		if ($user_id ==null):
+			$user_id ='';
+		endif;
+		
+		if ($last_status ==null):
+		$last_status ='';
+		endif;
+		
+		if ($department_id ==null):
+		$department_id ='';
+		endif;
+		$all_pr=$this->purchaseRequestTable->getAllSumbittedPurchaseRequests($last_status, $user_id, $department_id);
 	
 		return new ViewModel ( array (
 				'redirectUrl'=>$redirectUrl,
 				'errors' => null,
 				'all_pr'=>$all_pr,
+				'departments'=>$departments,
+				'last_status'=>$last_status,
+				'department_id'=>$department_id,
+				
 		));
 	}
 	
@@ -608,17 +630,74 @@ class PRController extends AbstractActionController {
 	
 	public function prItemsAction() {
 		
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 20;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		
+		
+		
 		//$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity();
 		$user=$this->userTable->getUserByEmail($identity);
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		$pr_items = $this->purchaseRequestItemTable->getSubmittedPRItems();
-	
+		
+		$last_status = $this->params ()->fromQuery ( 'last_status' );
+		$user_id = $this->params ()->fromQuery ( 'user_id' );
+		$department_id = $this->params ()->fromQuery ( 'department_id' );
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		
+		$departments= $this->departmentTable->fetchAll();
+		
+		if ($user_id ==null):
+		$user_id ='';
+		endif;
+		
+		if ($balance ==null):
+		$balance =-1;
+		endif;
+		
+		if ($last_status ==null):
+		$last_status ='';
+		endif;
+		
+		if ($department_id ==null):
+		$department_id ='';
+		endif;
+		
+		
+		$pr_items = $this->purchaseRequestItemTable->getAllSubmittedPRItems($last_status, $user_id, $department_id,$balance,0,0);
+		$totalResults = count($pr_items);
+		
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$pr_items = $this->purchaseRequestItemTable->getAllSubmittedPRItems($last_status, $user_id, $department_id,$balance,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		
 		return new ViewModel ( array (
 				'redirectUrl'=>$redirectUrl,
 				'user' =>$user,
 				'errors' => null,
 				'pr_items'=>$pr_items,
+				'departments'=>$departments,
+				'last_status'=>$last_status,
+				'department_id'=>$department_id,
+				'paginator' => $paginator,
+				'total_items' =>$totalResults,
+					
 		));
 	
 	}
@@ -706,4 +785,13 @@ class PRController extends AbstractActionController {
 		$this->prWorkflowTable = $prWorkflowTable;
 		return $this;
 	}
+	public function getDepartmentTable() {
+		return $this->departmentTable;
+	}
+	public function setDepartmentTable(DepartmentTable $departmentTable) {
+		$this->departmentTable = $departmentTable;
+		return $this;
+	}
+	
+	
 }

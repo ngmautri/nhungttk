@@ -23,7 +23,11 @@ class DeliveryItem {
 	public $currency;
 	
 	public $vendor_id;
-	public $notes;
+	public $remarks;
+	
+	public $created_by;
+	public $created_on;
+	
 	
 	
 	public function exchangeArray($data) {
@@ -40,7 +44,9 @@ class DeliveryItem {
 		$this->currency = (! empty ( $data ['currency'] )) ? $data ['currency'] : null;
 		
 		$this->vendor_id = (! empty ( $data ['vendor_id'] )) ? $data ['vendor_id'] : null;
-		$this->notes = (! empty ( $data ['notes'] )) ? $data ['notes'] : null;
+		$this->remarks = (! empty ( $data ['remarks'] )) ? $data ['remarks'] : null;
+		$this->created_by = (! empty ( $data ['created_by'] )) ? $data ['created_by'] : null;
+		$this->created_on = (! empty ( $data ['created_on'] )) ? $data ['created_on'] : null;
 		
 	}
 }

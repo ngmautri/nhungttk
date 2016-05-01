@@ -28,6 +28,7 @@ class PurchaseRequestItem{
 	
 	public $remarks;
 	public $created_on;
+	public $created_by;
 	
 	
 	
@@ -52,6 +53,7 @@ class PurchaseRequestItem{
 		
 		$this->remarks = (! empty ( $data ['remarks'] )) ? $data ['remarks'] : null;
 		$this->created_on = (! empty ( $data ['created_on'] )) ? $data ['created_on'] : null;
+		$this->created_by = (! empty ( $data ['created_by'] )) ? $data ['created_by'] : null;
 		
 	}
 }

@@ -34,6 +34,7 @@ class DeliveryItemTable {
 	
 	/*
 	 * public $id;
+	public $id;
 	public $delivery_id;
 	public $pr_item_id;
 	
@@ -47,7 +48,10 @@ class DeliveryItemTable {
 	public $currency;
 	
 	public $vendor_id;
-	public $notes;
+	public $remarks;
+	
+	public $created_by;
+	public $created_on;
 	 */
 	public function add(DeliveryItem $input) {
 		$data = array (
@@ -60,7 +64,10 @@ class DeliveryItemTable {
 				'price' => $input->price,
 				'currency' => $input->currency,
 				'vendor_id' => $input->vendor_id,
-				'notes' => $input->notes,
+				'remarks' => $input->remarks,
+				'created_by' => $input->created_by,
+				'created_on' => date ( 'Y-m-d H:i:s' ),
+				
 		);
 		
 		$this->tableGateway->insert ( $data );
@@ -79,7 +86,9 @@ class DeliveryItemTable {
 				'price' => $input->price,
 				'currency' => $input->currency,
 				'vendor_id' => $input->vendor_id,
-				'notes' => $input->notes,
+				'remarks' => $input->remarks,
+				'created_by' => $input->created_by,
+				'created_on' => date ( 'Y-m-d H:i:s' ),
 		);	
 		
 		$where = 'id = ' . $id;

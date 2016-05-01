@@ -3,10 +3,10 @@
 namespace Procurement\Model;
 
 use Zend\Db\TableGateway\TableGateway;
-use Procurement\Model\Vendor;	
+use Procurement\Model\PRItemWorkFlow;	
 
 
-class VendorTable {
+class PRItemWorkFlowTable {
 	
 	protected $tableGateway;
 	
@@ -34,44 +34,52 @@ class VendorTable {
 	
 	/**
 	public $id;
-	public $name;
-	public $keywords;
+	public $pr_item_id;
 	public $status;
-	public $created_on;
-	public $created_by;
-	 * 
-	 *
-	 * @param Delivery $input
+	
+	public $updated_on;
+	public $updated_by;
+	 * @param PurchaseRequest $input
 	 */
-	public function add(Vendor $input) {
+	public function add(PRItemWorkFlow $input) {
 		$data = array (
-				'name' => $input->name,
-				'keywords' => $input->keywords,
+				'pr_item_id' => $input->pr_item_id,
+				'delivery_id' => $input->delivery_id,
+				
 				'status' => $input->status,
-				'created_by' => $input->created_by,
-				'created_on' => date ( 'Y-m-d H:i:s' ),
+				'updated_by' => $input->updated_by,
+				'updated_on' => date ( 'Y-m-d H:i:s' ),
 		);
 		
 		$this->tableGateway->insert ( $data );
 		return $this->tableGateway->lastInsertValue;
 	}
 	
-	public function update(Vendor $input, $id) {
+	/**
+	 * 
+	 * @param PRItemWorkFlow $input
+	 * @param unknown $id
+	 */
+	public function update(PRItemWorkFlow $input, $id) {
 		
 		$data = array (
-				'name' => $input->name,
-				'keywords' => $input->keywords,
-				'status' => $input->status,
-				'created_by' => $input->created_by,
-				'created_on' => date ( 'Y-m-d H:i:s' ),
-				);	
+				'pr_item_id' => $input->pr_item_id,
+				'delivery_id' => $input->delivery_id,
+				
+				'name' => $input->status,
+				'updated_by' => $input->updated_by,
+				'updated_on' => date ( 'Y-m-d H:i:s' ),
+		);	
 		
 		$where = 'id = ' . $id;
 		$this->tableGateway->update( $data,$where);
 	}
 	
+	
+	
 	public function delete($id) {
 		$where = 'id = ' . $id;
 		$this->tableGateway->delete($where);
 	}
+	
 }

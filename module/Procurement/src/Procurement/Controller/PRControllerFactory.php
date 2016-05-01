@@ -42,6 +42,10 @@ class PRControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('Procurement\Model\PRWorkFlowTable' );
 		$controller->setPrWorkflowTable($tbl);
 		
+		// department table
+		$tbl =  $sm->get ('Application\Model\DepartmentTable' );
+		$controller->setDepartmentTable($tbl);
+		
 		
 		// User table
 		$tbl =  $sm->get ('User\Model\UserTable' );

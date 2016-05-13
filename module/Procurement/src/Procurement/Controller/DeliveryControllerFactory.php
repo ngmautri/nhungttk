@@ -41,7 +41,7 @@ class DeliveryControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('Procurement\Model\DeliveryTable' );
 		$controller->setDeliveryTable($tbl);
 		
-		// Delivery table
+		// PRItemWorkFlow table
 		$tbl =  $sm->get ('Procurement\Model\PRItemWorkFlowTable' );
 		$controller->setPRItemWorkflowTable($tbl);
 		
@@ -49,6 +49,25 @@ class DeliveryControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('Procurement\Model\DeliveryWorkFlowTable' );
 		$controller->setDeliveryWorkFlowTable($tbl);
 		
+		// Delivery Item WF table
+		$tbl =  $sm->get ('Procurement\Model\DeliveryItemWorkFlowTable' );
+		$controller->setDeliveryItemWorkFlowTable($tbl);
+		
+		// Article Movement Table
+		$tbl =  $sm->get ('Inventory\Model\ArticleMovementTable' );
+		$controller->setArticleMovementTable($tbl);
+		
+		// Article Last DN Table
+		$tbl =  $sm->get ('Inventory\Model\ArticleLastDNTable' );
+		$controller->setArticleLastDNTable($tbl);
+		
+		// Sparepart Sparepare Table
+		$tbl =  $sm->get ('Inventory\Model\SparepartMovementsTable' );
+		$controller->setSparepartMovementTable($tbl);
+		
+		// Sparepart Last DN Table
+		$tbl =  $sm->get ('Inventory\Model\SparepartLastDNTable' );
+		$controller->setSparepartLastDNTable($tbl);
 		
 		// Department table
 		$tbl =  $sm->get ('Application\Model\DepartmentTable' );

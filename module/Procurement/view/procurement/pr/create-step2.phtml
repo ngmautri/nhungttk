@@ -42,7 +42,7 @@ echo '<div class="alert alert-info">';
       <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp-1?pr_id=<?php echo $pr->id?>"><i class="icon-plus">  </i> Add spare-part as new Item</a></li>
       </ul>
       <?php  	if (count($pr_items) >0): ?>
-        <button title="Submit PR to Procurment" class="btn btn-default" onclick="submitPR('<?php echo $pr->id?>');" type="button"><i class="icon-ok">  </i> Submit</button>
+        <button title="Submit PR to Procurment" class="btn btn-default" onclick="openConfirmation('<?php echo $pr->id?>');" type="button"><i class="icon-ok">  </i> Submit</button>
       <?php endif; ?>
   </div>
  
@@ -126,12 +126,29 @@ echo '<div class="alert alert-info">';
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
 </form>
 
-
-	<!-- Modal -->
+<!-- Modal -->
 	<div id="myModal" class="modal hide" role="dialog">
 	  <div class="modal-dialog">
+	  	 <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title">Mascot International (Laos)</h5>
+      </div>
 	      <div class="modal-body">
-	        <p>Submiting data........Please Wait!</p>
+	        <p>Do you want to complete and submit this Purchase Request?</p>
+	      </div>
+	      
+		  <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button onclick="submitPR('<?php echo $pr->id?>');" type="button" class="btn btn-primary">OK</button>
 	      </div>
 	   </div>
-	</div>
+	</div>	
+	
+	<!-- Modal -->
+	<div id="myModal1" class="modal hide" role="dialog">
+	  <div class="modal-dialog">
+	      <div class="modal-body">
+	        <p>Sending data........Please Wait!</p>
+	      </div>
+	   </div>
+	</div>	

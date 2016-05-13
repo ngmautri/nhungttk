@@ -13,19 +13,76 @@ echo '<div class="alert alert-info">';
 
 ?>
 
+<div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1"><i class="icon-filter">  </i> FILTER</a>
+        </h5>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse <?php echo count($all_pr)>0?"":"in"?>">
+        <div class="panel-body">
+        
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/all-pr"	method="get" enctype="multipart/form-data" id="ReportForm" >
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">PR by Department: </label>
+        <div class="controls">
+        	<select name="department_id" >
+        		<option value="">All departments</option>
+   	    	<?php foreach ($departments as $dept) :
+        		if($dept->id === $department_id):
+   					echo '<option selected="selected" value="' . $dept->id. '">' .  $dept->name. '</option>';
+        		else:
+        			echo '<option value="' . $dept->id. '">' .  $dept->name. '</option>';
+        		endif;
+			endforeach; 
+   			?>
+   	
+   			</select>
+	     </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">PR by Status: </label>
+        <div class="controls">
+        	<select name="last_status" >
+        		<option value="">All</option>
+   	    		<option <?php echo $last_status=='Submitted'? "selected='selected'":"";?> value="Submitted">Submitted</option>
+   	 	    	<option <?php echo $last_status=='Approved'? "selected='selected'":"";?> value="Approved">Approved</option>
+  	 	    	<option <?php echo $last_status=='Fulfilled'? "selected='selected'":"";?> value="Fulfilled">Fulfilled</option>
+  
+   			</select>
+	     </div>
+      </div>
+      
+       <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn"><i class="icon-search">  </i> show</button>
+        </div>
+      </div>
+    </form>
+        
+        
+        
+        </div>
+     </div>
+    </div>
+  </div>
+
+<hr>
  <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/"	method="get" enctype="multipart/form-data">
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
 </form>
- 
-<h4>All Purchase Requests:</h4>
 
-<?php echo count($all_pr) . ' PRs found'?>
-<table class="pure-table pure-table-bordered"">
+<?php if(count($all_pr) >0): 
+	echo count($all_pr) . ' PRs found'?>
+<table class="pure-table pure-table-bordered">
 <thead>
 <tr>	
 		<td><b>Name</b></td>
 		<td><b>Description</b></td>
-		<td><b>Requester</b></td>		
+		<td><b>Requester</b></td>
+		<td><b>Department</b></td>			
 		<td><b>Created on</b></td>
 		<td><b>Latest Status</b></td>
 		<td><b>Updated on</b></td>
@@ -45,13 +102,15 @@ echo '<div class="alert alert-info">';
 		<td><?php echo $item->pr_number;?> <span class="label label-info"><?php echo $item->tItems;?></span></td> 	
 		<td><?php echo $item->description;?></td>
 		<td><?php echo $item->requester;?></td>
+				<td><?php echo $item->department_name;?></td>
+		
 		
 		<td><?php echo date_format(date_create($item->requested_on),"Y-m-d");?></td>
-		<td><?php echo $item->status ===null?'Started':$item->status;?></td>
-		<td><?php echo $item->last_change;?></td>
-		<td>
+		<td><?php echo $item->last_status ===null?'Started':$item->last_status;?></td>
+		<td><?php echo date_format(date_create($item->last_change),"Y-m-d");?></td>
+			<td>
 		<a
-		href="<?php echo $this->baseUrl ?>/procurement/pr/approve-step-1?pr_id=<?php echo $item->id;?>"><?php echo $item->status ==='Approved'?'show':'approve';?>
+		href="<?php echo $this->baseUrl ?>/procurement/pr/approve-step-1?pr_id=<?php echo $item->id;?>"><?php echo $item->last_status ==='Approved'?'show':'approve';?>
 		</a>
 		
 		
@@ -59,4 +118,8 @@ echo '<div class="alert alert-info">';
 <?php endforeach; ?>
 </tbody>
 </table>
+<?php else:
+echo 'No PRs found ...';
 
+endif;
+ ?>

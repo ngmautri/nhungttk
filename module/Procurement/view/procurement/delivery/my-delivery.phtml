@@ -8,6 +8,8 @@
 		<td><b>No.</b></td>
 		<td><b>Name</b></td>
 		<td><b>Description</b></td>
+		<td><b>Status</b></td>
+		<td><b>Updated on</b></td>
 		<td><b>Action</b></td>
 	</tr>
 </thead>
@@ -21,12 +23,24 @@
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 ?>
  		<td><?php echo $count;?></td> 	
-		<td><?php echo $item->dn_number;?> <span class="label label-info"><?php echo $item->tItems;?></span></td> 	
+		<td><?php echo $item->dn_number;?> <span class="label label-info"><?php echo $item->totalItems;?></span></td> 	
 		<td><?php echo $item->description;?></td>
+		<td><?php echo $item->dn_last_status;?></td>
+		<td><?php echo date_format(date_create($item->dn_last_change),"Y-m-d");?></td>
+		
 		<td>
+		<?php if ($item->dn_last_status==null):?> 
+		<a
+			href="<?php echo $this->baseUrl ?>/procurement/delivery/create-step2?dn_id=<?php echo $item->id;?>">Edit
+		</a>
+		
+		<?php else: ?>
 		<a
 			href="<?php echo $this->baseUrl ?>/procurement/delivery/create-step2?dn_id=<?php echo $item->id;?>">Show
 		</a>
+		
+		
+		<?php endif;?>
 	</td>
 <?php endforeach; ?>
 </tbody>

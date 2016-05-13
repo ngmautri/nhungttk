@@ -19,19 +19,41 @@ use Inventory\Services\AssetService;
 use Inventory\Model\SparepartCategory;
 use Inventory\Model\SparepartCategoryMember;
 
+use Procurement\Model\PRItemWorkFlow;
+
+use Inventory\Model\ArticleLastDN;
+use Inventory\Model\ArticleLastDNTable;
+
 class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	
 	 public function testDBTest() {
 	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\PurchaseRequestItemTable');
+	 	 /*
+	 	 $input = new PRItemWorkFlow();
+	 	 $input->status = "Notified";
+	 	 $input->pr_item_id= 1;
+	 	 $input->updated_by = 39;
+	 	 $tbl->add($input);
+	 	  	 
 	 	 
-	  	 $result = $tbl->getMySubmittedPRItems(39);
-		var_dump($result);
-		
+	  	 $result = $tbl->updateLastWorkFlow(25,6);
+	  	 var_dump ($result);
+	  	 /*
 	   	 foreach ($result as $user) {
 	 	 	var_dump ($user);
 	  	 }
-	  	
+	  	 */
+	
+	 	 //$result = $tbl->getPRItems(2,null,1,0,0);
+	 	  $result = $tbl->getPRItem(1);
+	 	  var_dump($result);
+	 	 /*
+	 	  
+	 	 foreach ($result as$user) {
+	 	 	var_dump ($user);
+	 	 }
+	 	 */
 	 }
 
 }

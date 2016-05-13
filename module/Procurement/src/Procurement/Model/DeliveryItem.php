@@ -28,6 +28,9 @@ class DeliveryItem {
 	public $created_by;
 	public $created_on;
 	
+	public $last_workflow_id;
+	
+	
 	
 	
 	public function exchangeArray($data) {
@@ -47,6 +50,9 @@ class DeliveryItem {
 		$this->remarks = (! empty ( $data ['remarks'] )) ? $data ['remarks'] : null;
 		$this->created_by = (! empty ( $data ['created_by'] )) ? $data ['created_by'] : null;
 		$this->created_on = (! empty ( $data ['created_on'] )) ? $data ['created_on'] : null;
+
+		$this->last_workflow_id= (! empty ( $data ['last_workflow_id'] )) ? $data ['last_workflow_id'] : null;
+		
 		
 	}
 }

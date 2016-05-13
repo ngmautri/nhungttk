@@ -1,39 +1,9 @@
- <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/create-step2"	method="get" enctype="multipart/form-data">
-      <input type="hidden" name = "pr_id" value="<?php echo $pr->id ?>">
-      <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
-</form>
+<h4>Spare parts list</h4>
 
-<div class="panel-group">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a data-toggle="collapse" href="#collapse1"><?php echo $pr!==null ? '<h5>Purchase Request (PR): '. $pr->pr_number.'</h5>':"" ?></a>
-        </h5>
-      </div>
-      <div id="collapse1" class="panel-collapse collapse">
-        <div class="panel-body">
-        
-     <?php if ($pr!==null)
-{
-echo '<div class="alert alert-info">';
-	
-	 echo '<ul>';
-	 echo '<li>Description	: <strong>' .$pr->description	 . '</strong></li>';
-	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' . $pr->requester . '</strong></li>';
-	 echo '</ul>';
-	 echo '</div>';
-} 
-?>
-        </div>
-     </div>
-    </div>
-  </div> 
-
-
-<ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl ?>/inventory/article/add">Add new Article (Item)</a></li>
-	</ul>
-
+	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare part category</a>
+	| <a href="<?php echo $this->baseUrl ?>/inventory/article/add">Add new
+		article</a>
+<hr>
 
 
   <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
@@ -41,7 +11,6 @@ echo '<div class="alert alert-info">';
       <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
    </form>
  
-
 
 
 <?php
@@ -65,10 +34,8 @@ if ($total_articles <= 0) {
 <table class="pure-table pure-table-bordered">
 <thead>
 	<tr>
-		<td><b>Name</b></td>
-		<td><b>Description</b></td>
+		<td><b>Vendor Name</b></td>
 		<td><b>Status</b></td>
-	
 		<td><b>Action</b></td>
 	</tr>
 </thead>
@@ -78,22 +45,16 @@ if ($total_articles <= 0) {
 	 <?php 
 	 
 	 $count = 0;
-	 foreach ($articles as $a) : 
+	 foreach ($vendors as $a) : 
 	 	 $count++;
 	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
+	 
+	 	 
 	 ?>
-		<td><?php echo $this->escapeHtml($a->name);?> 
-		
-		<?php if($a->article_balance > 0){			
-			echo '<span class="label label-info">'.$a->article_balance .'</span>';				
-		}else{
-			echo '<span class="label">'.$a->article_balance .'</span>';				
-		}
-		?>
-		</td>
-		<td><?php echo $this->escapeHtml($a->description);?></td>
-		<td><?php echo $this->escapeHtml($a->status);?> </td>
-		<td><a href="<?php echo $this->baseUrl ?>/procurement/pr/select-item-2?article_id=<?php echo $this->escapeHtml($a->id);?>&pr_id=<?php echo $this->escapeHtml($pr->id);?>">Order Now</td>
+		<td><?php echo $this->escapeHtml($a->name);?></td>
+			<td><?php echo $this->escapeHtml($a->status);?> 
+		<td><a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</td>
 	</tr>
 <?php endforeach; ?>
 
@@ -108,7 +69,7 @@ if ($total_articles <= 0) {
 	if (! is_null ( $paginator )) {
 		
 		//change it only
-		$base=$this->baseUrl . '/inventory/article/my-dept-articles';
+		$base=$this->baseUrl . '/inventory/spareparts/list';
 		
 		$last 	= $base . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;		
 		$first 	= $base . '?page=1&perPage=' . $paginator->resultsPerPage;

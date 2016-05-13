@@ -28,8 +28,26 @@ use Procurement\Model\PRItemWorkFlow;
 use Procurement\Model\PRItemWorkFlowTable;
 use Procurement\Model\DeliveryWorkFlow;
 use Procurement\Model\DeliveryWorkFlowTable;
+
+use Procurement\Model\DeliveryItemWorkFlow;
+use Procurement\Model\DeliveryItemWorkFlowTable;
+
 use Application\Model\DepartmentTable;
 use User\Model\UserTable;
+
+
+use Inventory\Model\ArticleMovement;
+use Inventory\Model\ArticleMovementTable;
+
+use Inventory\Model\ArticleLastDN;
+use Inventory\Model\ArticleLastDNTable;
+
+use Inventory\Model\SparepartMovement;
+use Inventory\Model\SparepartMovementsTableTable;
+
+use Inventory\Model\SparepartLastDN;
+use Inventory\Model\SparepartLastDNTableDNTable;
+
 
 /**
  *
@@ -41,15 +59,113 @@ class DeliveryController extends AbstractActionController {
 	protected $purchaseRequestItemTable;
 	protected $purchaseRequestTable;
 	protected $deliveryTable;
+	
 	protected $deliveryItemTable;
 	protected $deliveryWorkFlowTable;
+	protected $deliveryItemWorkFlowTable;
+	
+	protected $articleMovementTable;
+	protected $articleLastDNTable;
+	
+	protected $sparepartMovementTable;
+	protected $sparepartLastDNTable;
+	
 	
 	protected $departmentTable;
 	protected $PRItemWorkflowTable;
 	protected $authService;
+	
 	public function indexAction() {
 		return new ViewModel ();
 	}
+	
+	public function getNotificationAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$notified_dn_items = $this->deliveryItemTable->getNotifiedDNItemsOf($user['id']);
+	
+	
+		return new ViewModel ( array (
+				'redirectUrl' => $redirectUrl,
+				'user' => $user,
+				'errors' => null,
+				'dn_items' => $notified_dn_items,
+		) );
+	}
+	
+	/**
+	 * Ajax
+	 * ================================
+	 */
+	public function confirmAction() {
+	
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$dn_id = $this->params ()->fromQuery ( 'dn_id' );
+		$dn_item_id = $this->params ()->fromQuery ( 'dn_item_id' );
+		$pr_item_id = $this->params ()->fromQuery ( 'pr_item_id' );
+		$sparepart_id = $this->params ()->fromQuery ( 'sparepart_id' );
+		$article_id = (int) $this->params ()->fromQuery ( 'article_id' );
+		$asset_id = $this->params ()->fromQuery ( 'asset_id' );
+		
+		$dn_item = $this->deliveryItemTable->get($dn_item_id);
+		
+		$input = new DeliveryItemWorkFlow();
+		$input->delivery_id = $dn_id;
+		$input->dn_item_id = $dn_item_id;
+		$input->pr_item_id = $pr_item_id;
+		$input->status = "Confirmed";
+		$input->updated_by = $user ['id'];
+		$last_workflow_id = $this->deliveryItemWorkFlowTable->add ( $input );
+		$this->deliveryItemTable->updateLastWorkFlow($dn_item_id, $last_workflow_id);
+		
+		if ($article_id >0):
+		
+			//up-date-movement
+			$m = new ArticleMovement();
+			$m->movement_date = $dn_item->created_on;
+			$m->article_id = $article_id;
+				
+			$m->flow = "IN";
+			$m->quantity = $dn_item->delivered_quantity;
+			$m->pr_item_id = $pr_item_id;
+			$m->dn_item_id = $dn_item_id;
+			$m->created_by = $user['id'];
+			$m->comment = 'PR:'. $dn_item->pr_number;
+			
+			$this->articleMovementTable->add($m);
+			
+			$i = new ArticleLastDN();
+			$i->article_id = $article_id;
+			$i->last_workflow_id = $last_workflow_id;				
+			$this->articleLastDNTable->add($i);
+				
+		endif;
+		
+		
+		if($sparepart_id >0):
+			$input = new SparepartMovement ();
+			$input->movement_date = $dn_item->created_on;
+			$input->sparepart_id = $sparepart_id;
+			$input->quantity = $dn_item->delivered_quantity;
+			$input->flow = 'IN';
+			$input->comment = 'PR:'. $dn_item->pr_number;
+			$input->created_by = $user['id'];
+			
+			$this->sparepartMovementTable->add($input);
+				
+			$i = new SparepartLastDN();
+			$i->sparepart_id = $sparepart_id;
+			$i->last_workflow_id = $last_workflow_id;
+			$this->sparepartLastDNTable->add($i);
+				
+		endif;
+	
+		$this->redirect ()->toUrl ( '/procurement/delivery/get-notification' );
+	}
+	
+	
 	public function createStep1Action() {
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity ();
@@ -113,6 +229,7 @@ class DeliveryController extends AbstractActionController {
 	 * ================================
 	 */
 	public function completeNotifyAction() {
+		
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
 		
@@ -124,16 +241,19 @@ class DeliveryController extends AbstractActionController {
 			$wf->delivery_id = $dn_id;
 			$wf->status = "Notified";
 			$wf->updated_by = $user ['id'];
-				$this->deliveryWorkFlowTable->add($wf);
+			$last_workflow_id = $this->deliveryWorkFlowTable->add($wf);
+			$this->deliveryTable->updateLastWorkFlow($dn_id, $last_workflow_id);
 		
 			
 			foreach ( $dn_items as $dn_item ) {
-				$input = new PRItemWorkFlow ();
+				$input = new DeliveryItemWorkFlow();
 				$input->delivery_id = $dn_id;
-				$input->status = "Notified";
+				$input->dn_item_id = $dn_item->dn_item_id;
 				$input->pr_item_id = $dn_item->pr_item_id;
+				$input->status = "Notified";
 				$input->updated_by = $user ['id'];
-				$this->PRItemWorkflowTable->add ( $input );
+				$last_workflow_id = $this->deliveryItemWorkFlowTable->add ( $input );
+				$this->deliveryItemTable->updateLastWorkFlow($dn_item->dn_item_id, $last_workflow_id);
 			}
 		
 		endif;
@@ -395,6 +515,45 @@ class DeliveryController extends AbstractActionController {
 		$this->deliveryWorkFlowTable = $deliveryWorkFlowTable;
 		return $this;
 	}
+	public function getDeliveryItemWorkFlowTable() {
+		return $this->deliveryItemWorkFlowTable;
+	}
+	public function setDeliveryItemWorkFlowTable(DeliveryItemWorkFlowTable $deliveryItemWorkFlowTable) {
+		$this->deliveryItemWorkFlowTable = $deliveryItemWorkFlowTable;
+		return $this;
+	}
+	public function getArticleMovementTable() {
+		return $this->articleMovementTable;
+	}
+	public function setArticleMovementTable(ArticleMovementTable $articleMovementTable) {
+		$this->articleMovementTable = $articleMovementTable;
+		return $this;
+	}
+	public function getArticleLastDNTable() {
+		return $this->articleLastDNTable;
+	}
+	public function setArticleLastDNTable(ArticleLastDNTable $articleLastDNTable) {
+		$this->articleLastDNTable = $articleLastDNTable;
+		return $this;
+	}
+	public function getSparepartMovementTable() {
+		return $this->sparepartMovementTable;
+	}
+	public function setSparepartMovementTable($sparepartMovementTable) {
+		$this->sparepartMovementTable = $sparepartMovementTable;
+		return $this;
+	}
+	public function getSparepartLastDNTable() {
+		return $this->sparepartLastDNTable;
+	}
+	public function setSparepartLastDNTable($sparepartLastDNTable) {
+		$this->sparepartLastDNTable = $sparepartLastDNTable;
+		return $this;
+	}
+	
+	
+	
+	
 	
 	
 }

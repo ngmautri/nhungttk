@@ -36,6 +36,15 @@ use Procurement\Model\VendorTable;
 use Procurement\Model\PRWorkFlow;
 use Procurement\Model\PRWorkFlowTable;
 
+use Procurement\Model\PRItemWorkFlow;
+use Procurement\Model\PRItemWorkFlowTable;
+
+use Procurement\Model\DeliveryWorkFlow;
+use Procurement\Model\DeliveryWorkFlowTable;
+
+use Procurement\Model\DeliveryItemWorkFlow;
+use Procurement\Model\DeliveryItemWorkFlowTable;
+
 class Module {
 	public function onBootstrap(MvcEvent $e) {
 		$eventManager = $e->getApplication ()->getEventManager ();
@@ -157,6 +166,49 @@ class Module {
 						$resultSetPrototype = new ResultSet ();
 						$resultSetPrototype->setArrayObjectPrototype ( new PRWorkFlow());
 						return new TableGateway ( 'mla_purchase_requests_workflows', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// PRItemWorkFlowTable
+						'Procurement\Model\PRItemWorkFlowTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'PRItemWorkFlowTableGateway' );
+						$table = new PRItemWorkFlowTable($tableGateway);
+						return $table;
+						},
+						
+						'PRItemWorkFlowTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new PRItemWorkFlow());
+						return new TableGateway ( 'mla_purchase_requests_items_workflows', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+
+						// DeliveryWorkFlowTable
+						'Procurement\Model\DeliveryWorkFlowTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'DeliveryWorkFlowTableGateway' );
+						$table = new DeliveryWorkFlowTable($tableGateway);
+						return $table;
+						},
+						
+						'DeliveryWorkFlowTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new DeliveryWorkFlow());
+						return new TableGateway ( 'mla_delivery_workflows', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// DeliveryItemWorkFlowTable
+						'Procurement\Model\DeliveryItemWorkFlowTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'DeliveryItemWorkFlowTableGateway' );
+						$table = new DeliveryItemWorkFlowTable($tableGateway);
+						return $table;
+						},
+						
+						'DeliveryItemWorkFlowTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new DeliveryItemWorkFlow());
+						return new TableGateway ( 'mla_delivery_items_workflows', $dbAdapter, null, $resultSetPrototype );
 						},
 					)
 				);

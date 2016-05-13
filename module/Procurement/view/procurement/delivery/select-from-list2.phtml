@@ -45,9 +45,29 @@ echo '<div class="alert alert-error">';
  <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
  <input type="hidden" name="delivery_id" value="<?php echo $dn->id ?>" />
   <input type="hidden" name="pr_item_id" value="<?php echo $pr_item->id ?>" />
+  <input type="hidden" name="vendor_id" id="vendor_id" value="" />
  	
-	
-       <div class="control-group">
+ 		<div class="control-group">
+        <label class="control-label" for="inputTag">Items:</label>
+        <div class="controls">
+          <input type="text" placeholder="" name="name" value="<?php echo $pr_item->name ?>">
+         </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="inputTag">Item Code (if any):</label>
+        <div class="controls">
+          <input type="text"  placeholder="" name="code" value="<?php echo $pr_item->code ?>">
+         </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputTag">Item Unit:</label>
+        <div class="controls">
+          <input type="text" placeholder="" name="code" value="<?php echo $pr_item->unit ?>">
+         </div>
+      </div>
+		
+		<div class="control-group">
         <label class="control-label" for="inputTag">Delivered Quantity:</label>
         <div class="controls">
           <input type="text" id="inputTag" placeholder="" name="delivered_quantity" value="">
@@ -55,7 +75,18 @@ echo '<div class="alert alert-error">';
         </div>
       </div>    
    
+		<div class="control-group">
+        <label class="control-label" for="inputTag">Vendor:</label>
+        <div class="controls">
+          <input readonly type="text" id="vendor" placeholder="" name="vendor" value="">
+            <a href="javascript:;" onclick="loadVendorList();" class="helper"> Select Vendor <i class=" icon-folder-open"></i></a>
+	
+        </div>
+      </div>
+		
+       
       
+    
        <div class="control-group">
         <label class="control-label" for="inputTag">Price:</label>
         <div class="controls">
@@ -80,9 +111,9 @@ echo '<div class="alert alert-error">';
       
      
        <div class="control-group">
-        <label class="control-label" for="inputDescription">Note:</label>
+        <label class="control-label" for="inputDescription">Remarks:</label>
         <div class="controls">
-          <textarea id="inputDescription" placeholder="" rows="2" cols="5" name="notes"></textarea>
+          <textarea id="inputDescription" placeholder="" rows="2" cols="5" name="remarks"></textarea>
         </div>
       </div>
        

@@ -152,7 +152,8 @@ class PRController extends AbstractActionController {
 		$input->purchase_request_id = $pr_id;
 		$input->updated_by = $user['id'];
 		
-		$this->prWorkflowTable->add($input);
+		$last_workflow_id = $this->prWorkflowTable->add($input);
+		$this->purchaseRequestTable->updateLastWorkFlow($pr_id, $last_workflow_id);		
 		$this->redirect()->toUrl('/procurement/pr/my-pr');
 	}
 	
@@ -410,17 +411,15 @@ class PRController extends AbstractActionController {
 		}
 		;
 	
-		$articles = $this->articleTable->getArticlesOfMyDepartment($user_id);
+		$articles = $this->articleTable->getArticles($user_id, 0, 0);
 		$totalResults = $articles->count ();
-	
+		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$articles = $this->articleTable->getLimitedArticlesOfMyDepartment($user_id,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$articles = $this->articleTable->getArticles($user_id,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
-		
-	
 		return new ViewModel ( array (
 				'total_articles' => $totalResults,
 				'articles' => $articles,
@@ -624,7 +623,10 @@ class PRController extends AbstractActionController {
 		$input->purchase_request_id = $pr_id;
 		$input->updated_by = $user['id'];
 	
-		$this->prWorkflowTable->add($input);
+		$last_workflow_id = $this->prWorkflowTable->add($input);
+		$this->purchaseRequestTable->updateLastWorkFlow($pr_id, $last_workflow_id);
+		
+		
 		$this->redirect()->toUrl('/procurement/pr/all-pr');
 	}
 	
@@ -645,45 +647,29 @@ class PRController extends AbstractActionController {
 		}
 		;
 		
-		
-		
-		
+			
 		//$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity();
 		$user=$this->userTable->getUserByEmail($identity);
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
 		
 		$last_status = $this->params ()->fromQuery ( 'last_status' );
-		$user_id = $this->params ()->fromQuery ( 'user_id' );
 		$department_id = $this->params ()->fromQuery ( 'department_id' );
 		$balance = $this->params ()->fromQuery ( 'balance' );
 		
 		$departments= $this->departmentTable->fetchAll();
 		
-		if ($user_id ==null):
-		$user_id ='';
+		if($balance == null):
+			$balance =-1;
 		endif;
 		
-		if ($balance ==null):
-		$balance =-1;
-		endif;
-		
-		if ($last_status ==null):
-		$last_status ='';
-		endif;
-		
-		if ($department_id ==null):
-		$department_id ='';
-		endif;
-		
-		
-		$pr_items = $this->purchaseRequestItemTable->getAllSubmittedPRItems($last_status, $user_id, $department_id,$balance,0,0);
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN($department_id, $last_status, $balance,0,0);
 		$totalResults = count($pr_items);
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getAllSubmittedPRItems($last_status, $user_id, $department_id,$balance,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN($department_id, $last_status, $balance,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		

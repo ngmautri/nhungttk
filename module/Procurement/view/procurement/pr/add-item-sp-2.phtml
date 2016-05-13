@@ -1,6 +1,6 @@
 <?php //var_dump( $sp) ?>
 
- <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp1"	method="get" enctype="multipart/form-data">
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp-1"	method="get" enctype="multipart/form-data">
       <input type="hidden" name = "pr_id" value="<?php echo $pr->id ?>">
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
 </form>
@@ -49,7 +49,7 @@ echo '<div class="alert alert-error">';
 ?>
 	
 
-<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp2"	method="post" enctype="multipart/form-data" id="NewSP" >
+<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/add-item-sp-2"	method="post" enctype="multipart/form-data" id="NewSP" >
  <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
  <input type="hidden" name="pr_id" value="<?php echo $pr->id ?>" />
  <input type="hidden" name="sparepart_id" value="<?php echo $sp->id ?>" />

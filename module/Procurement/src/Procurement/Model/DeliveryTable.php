@@ -181,7 +181,7 @@ JOIN
 
 ON mla_users_1.user_id = mla_delivery.created_by
 
-JOIN
+LEFT JOIN
 (
 	select 
 		mla_delivery.id as dn_id, 
@@ -270,6 +270,25 @@ group by t2.id) as TB2
 	}
 	
 	/**
+	 * 
+	 * @param unknown $dn_id
+	 * @param unknown $last_workflow_id
+	 */
+	public function updateLastWorkFlow($dn_id,$last_workflow_id) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql =
+		"update mla_delivery
+		set last_workflow_id = " . $last_workflow_id.
+		" where id = " . $dn_id;
+	
+		//echo $sql;
+	
+		$statement = $adapter->query ( $sql );
+		$statement->execute ();
+	}
+	
+	/**
 	 * ===================================
 	 * @param unknown $id
 	 * @throws \Exception
@@ -281,6 +300,7 @@ group by t2.id) as TB2
 		$sql = "
 select
 	mla_delivery.*,
+	mla_delivery_items.id as dn_item_id,				
     mla_delivery_items.pr_item_id,
     mla_delivery_items.name as delivered_item_name,
     mla_delivery_items.delivered_quantity,
@@ -306,6 +326,25 @@ on mla_delivery_1.dn_id = mla_delivery.id
 		 on t2.purchase_request_id = t1.id
 		 WHERE requested_by = ". $user_id;
 		 */
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+	
+		return $resultSet;
+	}
+	
+	/**
+	 * ===================================
+	 * @param unknown $id
+	 * @throws \Exception
+	 */
+	public function test() {
+		$adapter = $this->tableGateway->adapter;
+			
+		/*call stored procedured.*/
+		$sql = "call getDelivers()";
 		$statement = $adapter->query ( $sql );
 		$result = $statement->execute ();
 	

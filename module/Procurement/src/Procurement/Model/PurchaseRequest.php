@@ -26,6 +26,8 @@ class PurchaseRequest {
 	public $released_by;
 	public $released_on;
 	
+	public $last_workflow_id;
+	
 	
 	public function exchangeArray($data) {
 		$this->id = (! empty ( $data ['id'] )) ? $data ['id'] : null;
@@ -44,6 +46,8 @@ class PurchaseRequest {
 		
 		$this->released_by = (! empty ( $data ['released_by'] )) ? $data ['released_by'] : null;
 		$this->released_on = (! empty ( $data ['released_on'] )) ? $data ['released_on'] : null;
+		
+		$this->last_workflow_id= (! empty ( $data ['last_workflow_id'] )) ? $data ['last_workflow_id'] : null;
 		
 	}
 }

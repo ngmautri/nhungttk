@@ -21,6 +21,9 @@ use Procurement\Model\PurchaseRequestTable;
 use Procurement\Model\PurchaseRequestItem;
 use Procurement\Model\PurchaseRequestItemTable;
 
+use Procurement\Model\PurchaseRequestCartItem;
+use Procurement\Model\PurchaseRequestCartItemTable;
+
 use Procurement\Model\PurchaseRequestItemPic;
 use Procurement\Model\PurchaseRequestItemPicTable;
 
@@ -96,6 +99,20 @@ class Module {
 						$resultSetPrototype = new ResultSet ();
 						$resultSetPrototype->setArrayObjectPrototype ( new PurchaseRequestItem() );
 						return new TableGateway ( 'mla_purchase_request_items', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// PurchaseRequestCartItemTable
+						'Procurement\Model\PurchaseRequestCartItemTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'PurchaseRequestCartItemTableGateway' );
+						$table = new PurchaseRequestCartItemTable($tableGateway );
+						return $table;
+						},
+						
+						'PurchaseRequestCartItemTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new PurchaseRequestCartItem() );
+						return new TableGateway ( 'mla_purchase_cart', $dbAdapter, null, $resultSetPrototype );
 						},
 						
 

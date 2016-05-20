@@ -26,6 +26,7 @@ use Procurement\Model\PurchaseRequestTable;
 use Procurement\Model\PurchaseRequestItem;
 use Procurement\Model\PurchaseRequestItemTable;
 
+
 use Procurement\Model\PurchaseRequestItemPic;
 use Procurement\Model\PurchaseRequestItemPicTable;
 
@@ -40,7 +41,8 @@ use Procurement\Model\PRWorkFlow;
 use Procurement\Model\PRWorkFlowTable;
 
 use Application\Model\DepartmentTable;
-
+use Procurement\Model\PurchaseRequestCartItem;
+use Procurement\Model\PurchaseRequestCartItemTable;
 
 
 class PRController extends AbstractActionController {
@@ -48,7 +50,9 @@ class PRController extends AbstractActionController {
 	protected  $userTable;
 	protected  $purchaseRequestTable;
 	protected  $purchaseRequestItemTable;
+	protected  $purchaseRequestCartItemTable;
 	protected  $purchaseRequestItemPicTable;
+	
 	protected  $sparePartTable;
 	protected  $articleTable;
 	protected  $prWorkflowTable;
@@ -688,6 +692,160 @@ class PRController extends AbstractActionController {
 	
 	}
 	
+	
+	/* Request for new spare parts
+	 * step1: search the spare part
+	 *
+	 */
+	public function addPRCartAction() {
+	
+		$request = $this->getRequest ();
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+	
+		if ($request->isPost ()) {
+	
+			if ($request->isPost ()) {
+				//$redirectUrl  = $request->getPost ( 'redirectUrl' );
+				
+				$item_type =  $request->getPost ( 'item_type' );
+				$item_id = $request->getPost ( 'item_id' );
+				
+				$input = new PurchaseRequestCartItem();
+				 
+				$input->priority = $request->getPost ( 'priority' );
+				$input->name = $request->getPost ( 'name' );
+				
+				$input->quantity = $request->getPost ( 'quantity' );
+				$input->EDT = $request->getPost ( 'EDT' );
+				$input->remarks = $request->getPost ( 'remarks' );
+				$input->created_by = $user['id'];
+	
+				switch ($item_type){
+				case "ARTICLE":
+					$input->article_id = $item_id;
+					break;
+				case "SPARE-PART":
+					$input->sparepart_id = $item_id;
+					break;
+				}
+				
+				
+				// validator.
+				$errors = array();
+	
+				
+				$validator = new Date ();
+	
+				if (! $validator->isValid ( $input->EDT )) {
+					$errors [] = 'requested delievery date is not correct!';
+				}
+	
+				// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
+				$validator = new Int ();
+					
+				if (! $validator->isValid ( $input->quantity )) {
+					$errors [] = 'Quantity is not valid. It must be a number.';
+				}
+				
+				$response = $this->getResponse();
+				
+				if (count ( $errors ) > 0) {
+					
+					$c = array(
+						'status' => '0',
+						'messages'=>$errors,
+					);
+					
+					$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
+					$response->setContent(json_encode($c));
+					return $response;
+				}
+				
+				
+				 $this->purchaseRequestCartItemTable->add($input);
+				 $c = array(
+						'status' => '1',
+						'messages'=>null,
+					);
+					
+				$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
+				$response->setContent(json_encode($c));
+				return $response;
+			}
+		}
+	}
+		
+		/*
+	 * Request for new spare parts
+	 * step1: search the spare part
+	 *
+	 */
+	public function updateCartAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
+		
+		$c = array(
+				'total_cart_items' => $total_cart_items,
+		);
+		
+		$response = $this->getResponse ();
+		$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+		$response->setContent ( json_encode ( $c ) );
+		return $response;
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function cartAction() {
+	
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		$cart_items = $this->purchaseRequestCartItemTable->getCartItems($user['id']);
+	
+		return new ViewModel ( array (
+				'redirectUrl'=>$redirectUrl,
+				'user' =>$user,
+				'errors' => null,
+				'cart_items'=>$cart_items,
+		));
+	}
+	
+	/**
+	 * Submit PR
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function checkoutAction() {
+	
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+	
+		$pr_number = $this->params ()->fromQuery ( 'pr_number' );
+		//create PR
+		$pr =  new PurchaseRequest();
+		$pr->pr_number = $pr_number;
+		$pr_id = $this->purchaseRequetTable->add($pr);
+		
+		//update PR Workflow
+		$input = new PRWorkFlow();
+		$input->status = "Submitted";
+		$input->purchase_request_id = $pr_id;
+		$input->updated_by = $user['id'];
+	
+		$last_workflow_id = $this->prWorkflowTable->add($input);
+		$this->purchaseRequestTable->updateLastWorkFlow($pr_id, $last_workflow_id);
+		
+		//add PR Items from Cart Items
+		
+		
+		
+		$this->redirect()->toUrl('/procurement/pr/my-pr');
+	}
+
 	public function editItemAction() {
 		return new ViewModel ();
 	}
@@ -778,6 +936,12 @@ class PRController extends AbstractActionController {
 		$this->departmentTable = $departmentTable;
 		return $this;
 	}
-	
-	
+	public function getPurchaseRequestCartItemTable() {
+		return $this->purchaseRequestCartItemTable;
+	}
+	public function setPurchaseRequestCartItemTable(PurchaseRequestCartItemTable $purchaseRequestCartItemTable) {
+		$this->purchaseRequestCartItemTable = $purchaseRequestCartItemTable;
+		return $this;
+	}
+
 }

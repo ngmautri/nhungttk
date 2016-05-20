@@ -32,6 +32,10 @@ class PRControllerFactory implements FactoryInterface {
 		// Purchase Request Item table
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemTable' );
 		$controller->setPurchaseRequestItemTable($tbl);
+		
+		// Purchase Request Cart Item table
+		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestCartItemTable' );
+		$controller->setPurchaseRequestCartItemTable($tbl);
 
 		// Purchase Request Item Pic table
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemPicTable' );

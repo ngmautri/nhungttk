@@ -61,4 +61,5 @@ class PurchaseRequestItemPicTable {
 		$this->tableGateway->delete($where);
 	}
 	
+
 }

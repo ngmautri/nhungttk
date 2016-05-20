@@ -28,7 +28,7 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	
 	 public function testDBTest() {
-	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\PurchaseRequestItemTable');
+	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\PurchaseRequestCartItemTable');
 	 	 /*
 	 	 $input = new PRItemWorkFlow();
 	 	 $input->status = "Notified";
@@ -46,14 +46,14 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	  	 */
 	
 	 	 //$result = $tbl->getPRItems(2,null,1,0,0);
-	 	  $result = $tbl->getPRItem(1);
-	 	  var_dump($result);
-	 	 /*
+	 	  $result = $tbl->getCartItems(39);
+	 	//  var_dump($result);
+	 	
 	 	  
 	 	 foreach ($result as$user) {
 	 	 	var_dump ($user);
 	 	 }
-	 	 */
+	 	 
 	 }
 
 }

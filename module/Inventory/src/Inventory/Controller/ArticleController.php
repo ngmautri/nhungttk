@@ -34,6 +34,12 @@ use Inventory\Model\ArticleCategoryTable;
 use Inventory\Model\ArticleCategoryMember;
 use Inventory\Model\ArticleCategoryMemberTable;
 
+use Inventory\Model\ArticleMovement;
+use Inventory\Model\ArticleMovementTable;
+use Procurement\Model\PurchaseRequestCartItem;
+use Procurement\Model\PurchaseRequestCartItemTable;
+use Procurement\Model\PurchaseRequestItemTable;
+
 class ArticleController extends AbstractActionController {
 	protected $SmtpTransportService;
 	protected $authService;
@@ -45,7 +51,8 @@ class ArticleController extends AbstractActionController {
 	protected $articleCategoryTable;
 	protected $articleCategoryMemberTable;
 	protected $articlePictureTable;
-	
+	protected $articleMovementTable;
+	protected  $purchaseRequestCartItemTable;
 	
 	/*
 	 * Defaul Action
@@ -192,6 +199,106 @@ class ArticleController extends AbstractActionController {
 				'article' =>null,
 			) );
 	}
+	
+	/**
+	 * Show Movement of Article
+	 */
+	public function movementsAction() {
+		$id = ( int ) $this->params ()->fromQuery ( 'article_id' );
+		$movements = $this->articleMovementTable->getMovements($id);
+		$article = $this->articleTable->getArticleByID( $id );
+		
+		return new ViewModel ( array (
+				'article' => $article,
+				'movements' => $movements,
+		) );
+	}
+	
+	
+	/**
+	 * Issue Article
+	 */
+	public function issueAction() {
+		
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		if ($request->isPost ()) {
+	
+			$input = new ArticleMovement();
+			$input->article_id = $request->getPost ( 'article_id' );
+			$input->movement_date = $request->getPost ( 'movement_date' );
+			$input->quantity = $request->getPost ( 'quantity' );
+			$input->flow = 'OUT';
+			$input->reason = $request->getPost ( 'reason' );
+			$input->requester = $request->getPost ( 'requester' );
+			$input->comment = $request->getPost ( 'comment' );
+			$input->created_on = $request->getPost ( 'created_on' );
+	
+			$instock = $request->getPost ( 'instock' );
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+				
+	
+	
+			// validator.
+			$validator = new Date ();
+	
+			$errors = array();
+	
+	
+			if (! $validator->isValid ( $input->movement_date )) {
+				$errors [] = 'Transaction date format is not correct!';
+			}
+	
+			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
+			$validator = new Int ();
+	
+			if (! $validator->isValid ( $input->quantity )) {
+				$errors [] = 'Quantity is not valid. It must be a number.';
+			} else {
+	
+				if ($input->quantity > $instock) {
+					$errors [] = 'Issue quantity is: ' . $input->quantity . ' pcs, which is bigger than availabe stock';
+				}
+			}
+	
+			if (count ( $errors ) > 0) {
+	
+				$id = ( int ) $request->getPost ( 'article_id' );
+				$article = $this->articleTable->getArticleByID( $id );
+				$pictures = $this->articlePictureTable->getArticlePicturesById( $id );
+	
+				return new ViewModel ( array (
+						'article' => $article,
+						'pictures' => $pictures,
+						'instock' => $instock,
+						'errors' => $errors,
+						'redirectUrl'=>$redirectUrl,
+						'movement'=>$input,
+				) );
+			} else {
+	
+				// Validated
+				$this->articleMovementTable->add ( $input );
+				$this->redirect()->toUrl($redirectUrl);
+			}
+		}
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'article_id' );
+		$article = $this->articleTable->getArticleByID( $id );
+		$pictures = $this->articlePictureTable->getArticlePicturesById( $id );
+		$instock = $article->article_balance;
+	
+		return new ViewModel ( array (
+				'article' => $article,
+				'pictures' => $pictures,
+				'instock' => $instock,
+				'errors' => null,
+				'redirectUrl'=>$redirectUrl,
+				'movement'=>null,
+		) );
+	}
+	
 	
 	/**
 	 * Edit Spare part
@@ -392,97 +499,7 @@ class ArticleController extends AbstractActionController {
 	/**
 	 * Issue sparepart
 	 */
-	public function issueAction() {
-		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-	
-	
-		if ($request->isPost ()) {
-				
-			$input = new SparepartMovement ();
-			$input->sparepart_id = $request->getPost ( 'sparepart_id' );
-			$input->movement_date = $request->getPost ( 'movement_date' );
-				
-			$input->sparepart_id = $request->getPost ( 'sparepart_id' );
-			$input->asset_id = $request->getPost ( 'asset_id' );
-			$input->asset_name = $request->getPost ( 'asset' );
-				
-			$input->quantity = $request->getPost ( 'quantity' );
-				
-			$input->flow = 'OUT';
-				
-			$input->reason = $request->getPost ( 'reason' );
-			$input->requester = $request->getPost ( 'requester' );
-			$input->comment = $request->getPost ( 'comment' );
-			$input->created_on = $request->getPost ( 'created_on' );
-				
-			$instock = $request->getPost ( 'instock' );
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			
-		
-				
-			// validator.
-			$validator = new Date ();
-				
-			$errors = array();
-	
-				
-			if (! $validator->isValid ( $input->movement_date )) {
-				$errors [] = 'Transaction date format is not correct!';
-			}
-				
-			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
-			$validator = new Int ();
-				
-			if (! $validator->isValid ( $input->quantity )) {
-				$errors [] = 'Quantity is not valid. It must be a number.';
-			} else {
-	
-				if ($input->quantity > $instock) {
-					$errors [] = 'Issue quantity is: ' . $input->quantity . ' pcs, which is bigger than availabe stock';
-				}
-			}
-				
-			if (count ( $errors ) > 0) {
-	
-				$id = ( int ) $request->getPost ( 'sparepart_id' );
-				$sp = $this->sparePartTable->get ( $id );
-				$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
-	
-				return new ViewModel ( array (
-						'sp' => $sp,
-						'pictures' => $pictures,
-						'instock' => $instock,
-						'errors' => $errors,
-						'redirectUrl'=>$redirectUrl,
-						'movement'=>$input,
-				) );
-			} else {
-	
-				// Validated
-				$this->sparepartMovementsTable->add ( $input );
-	
-				$this->redirect()->toUrl($redirectUrl);
-			}
-		}
-	
-		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
-		$sp = $this->sparePartTable->get ( $id );
-		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
-		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
-		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
-		$instock = $inflow - $outflow;
-	
-		return new ViewModel ( array (
-				'sp' => $sp,
-				'pictures' => $pictures,
-				'instock' => $instock,
-				'errors' => null,
-				'redirectUrl'=>$redirectUrl,
-				'movement'=>null,
-			) );
-	}
-	
+
 	/**
 	 * receive spare part
 	 */
@@ -647,6 +664,10 @@ class ArticleController extends AbstractActionController {
 	 * List all articles
 	 */
 	public function listAction() {
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		
+		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 20;
 		} else {
@@ -661,19 +682,62 @@ class ArticleController extends AbstractActionController {
 		}
 		;
 		
-		$articles = $this->articleTable->fetchAll();
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		$user_id  = $user['id'];
+		
+		
+		$articles = $this->articleTable->getArticles($user_id, 0, 0);
 		$totalResults = $articles->count ();
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$articles = $this->articleTable->getLimitArticles(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$articles = $this->articleTable->getArticles($user_id,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
+		
+		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
 		
 		return new ViewModel ( array (
 				'total_articles' => $totalResults,
 				'articles' => $articles,
-				'paginator' => $paginator 
+				'paginator' => $paginator,
+				'total_cart_items' => $total_cart_items,
+				
+		) );
+	}
+	
+	/**
+	 * List all articles
+	 */
+	public function listWithLastDOAction() {
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 10;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+	
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+	
+		$articles = $this->articleTable->getAllWithLastDO();
+		$totalResults = $articles->count ();
+	
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$articles = $this->articleTable->getAllWithLastDOWithLimit(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+	
+		return new ViewModel ( array (
+				'total_articles' => $totalResults,
+				'articles' => $articles,
+				'paginator' => $paginator
 		) );
 	}
 	
@@ -968,6 +1032,22 @@ class ArticleController extends AbstractActionController {
 		$this->articleCategoryMemberTable = $articleCategoryMemberTable;
 		return $this;
 	}
+	public function getArticleMovementTable() {
+		return $this->articleMovementTable;
+	}
+	public function setArticleMovementTable(ArticleMovementTable $articleMovementTable) {
+		$this->articleMovementTable = $articleMovementTable;
+		return $this;
+	}
+	public function getPurchaseRequestCartItemTable() {
+		return $this->purchaseRequestCartItemTable;
+	}
+	public function setPurchaseRequestCartItemTable(PurchaseRequestCartItemTable $purchaseRequestCartItemTable) {
+		$this->purchaseRequestCartItemTable = $purchaseRequestCartItemTable;
+		return $this;
+	}
+	
+	
 	
 	
 	

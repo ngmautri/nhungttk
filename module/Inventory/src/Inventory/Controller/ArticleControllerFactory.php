@@ -44,8 +44,16 @@ class ArticleControllerFactory implements FactoryInterface {
 		//Article Category Member Table
 		$tbl =  $sm->get ('Inventory\Model\ArticleCategoryMemberTable' );
 		$controller->setArticleCategoryMemberTable($tbl );
+
+		//Article Category Member Table
+		$tbl =  $sm->get ('Inventory\Model\ArticleMovementTable' );
+		$controller->setArticleMovementTable($tbl );
 		
+		// Purchase Request Cart Item table
+		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestCartItemTable' );
+		$controller->setPurchaseRequestCartItemTable($tbl );
 		
+			
 		//Auth Service
 		$sv =  $sm->get ('AuthService' );
 		$controller->setAuthService($sv );

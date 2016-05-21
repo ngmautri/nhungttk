@@ -82,6 +82,8 @@ return array (
 						
 		),
 		
+		
+		
 		'service_manager' => array (
 				'factories' => array (
 						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory' 
@@ -111,6 +113,7 @@ return array (
 						'Inventory\Controller\Spareparts' => 'Inventory\Controller\SparepartsControllerFactory',
 						'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
 						'Inventory\Controller\Count' => 'Inventory\Controller\CountControllerFactory',
+						'Inventory\Controller\Article' => 'Inventory\Controller\ArticleControllerFactory',
 						
 				)
 				

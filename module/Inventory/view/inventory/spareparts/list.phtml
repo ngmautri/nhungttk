@@ -1,10 +1,9 @@
-<h4>Spare parts list</h4>
 
-	<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare part category</a>
-	| <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new
-		spare part</a>
-<hr>
-
+<ul class="nav nav-pills">
+ <li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare part category</a></li>
+ <li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add New Spare-part</a></li>
+ <li><a href="<?php echo $this->baseUrl ?>/procurement/pr/cart"></i>MY ORDER LIST<span id="cart_items" class="badge"><?php echo $total_cart_items ?></span>	</a></li>
+</ul>
 
   <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
       <input type="text" name = "query" class="">
@@ -72,7 +71,7 @@ if ($total_spareparts <= 0) {
 		<td><?php echo $this->escapeHtml($a['location']);?></td>
 
 		<td>
-		<a href="#" onclick="openPRCart('<?php echo $this->escapeHtml($a['id'])?>');">Order</a>
+		<a href="#" onclick="openPRCart('<?php echo $this->escapeHtml($a['id'])?>');"><i class="icon-shopping-cart"></i>Order</a>
 			<a
 			href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Issue
 		</a>

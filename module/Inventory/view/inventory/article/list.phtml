@@ -2,7 +2,6 @@
 <ul class="nav nav-pills">
  <li><a href="<?php echo $this->baseUrl ?>/inventory/article/add">Add New Item</a></li>
  <li><a href="<?php echo $this->baseUrl ?>/procurement/pr/cart"></i>MY ORDER LIST<span id="cart_items" class="badge"><?php echo $total_cart_items ?></span>	</a></li>
-   
 </ul>
 
 
@@ -131,10 +130,12 @@ if ($total_articles <= 0) {
 	  <div class="modal-dialog">
 	  	 <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h5 class="modal-title">Mascot International (Laos) // Add To Cart</h5>
+        <h5 class="modal-title">Add To Cart</h5>
       </div>
 	      <div class="modal-body">
+	  <div>
 	  <span id="_status"></span>
+	  </div>
 
 <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/select-item-2"	method="post" enctype="multipart/form-data" id="NewSP" >
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />

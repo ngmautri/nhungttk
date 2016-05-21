@@ -30,7 +30,8 @@ use Inventory\Model\SparepartCategoryTable;
 use Inventory\Model\SparepartMovement;
 use Inventory\Model\SparepartMovementsTable;
 use Inventory\Services\SparepartService;
-
+use Procurement\Model\PurchaseRequestCartItem;
+use Procurement\Model\PurchaseRequestCartItemTable;
 class SparepartsController extends AbstractActionController {
 	protected $authService;
 	protected $SmtpTransportService;
@@ -41,6 +42,9 @@ class SparepartsController extends AbstractActionController {
 	protected $sparepartMovementsTable;
 	protected $sparePartCategoryTable;
 	protected $sparePartCategoryMemberTable;
+	
+	protected  $purchaseRequestCartItemTable;
+	
 	protected $massage = 'NULL';
 	
 	/*
@@ -640,6 +644,11 @@ class SparepartsController extends AbstractActionController {
 	 * List all spare parts
 	 */
 	public function listAction() {
+		
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		
+		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 20;
 		} else {
@@ -662,11 +671,14 @@ class SparepartsController extends AbstractActionController {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
 			$spareparts = $this->sparePartTable->getLimitedSpareParts ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
+		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
 		
 		return new ViewModel ( array (
 				'total_spareparts' => $totalResults,
 				'spareparts' => $spareparts,
-				'paginator' => $paginator 
+				'paginator' => $paginator,
+				'total_cart_items' => $total_cart_items,
+				
 		) );
 	}
 	
@@ -893,5 +905,12 @@ class SparepartsController extends AbstractActionController {
 	}
 	public function getSparePartCategoryMemberTable() {
 		return $this->sparePartCategoryMemberTable;
+	}
+	public function getPurchaseRequestCartItemTable() {
+		return $this->purchaseRequestCartItemTable;
+	}
+	public function setPurchaseRequestCartItemTable(PurchaseRequestCartItemTable $purchaseRequestCartItemTable) {
+		$this->purchaseRequestCartItemTable = $purchaseRequestCartItemTable;
+		return $this;
 	}
 }

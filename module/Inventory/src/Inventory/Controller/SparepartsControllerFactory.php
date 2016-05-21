@@ -24,6 +24,11 @@ class SparepartsControllerFactory implements FactoryInterface {
 			
 		$controller = new SparepartsController ();
 		
+		//User Table
+		$tbl =  $sm->get ('User\Model\UserTable' );
+		$controller->setUserTable($tbl);
+		
+		
 		// Spare Part table
 		$tbl =  $sm->get ('Inventory\Model\MLASparepartTable' );
 		$controller->setSparePartTable($tbl);
@@ -40,8 +45,18 @@ class SparepartsControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('Inventory\Model\SparepartCategoryMemberTable' );
 		$controller->setSparePartCategoryMemberTable( $tbl );
 		
+		// Purchase Request Cart Item table
+		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestCartItemTable' );
+		$controller->setPurchaseRequestCartItemTable($tbl);
+		
+		
 		$tbl =  $sm->get ('Inventory\Services\SparepartService' );
 		$controller->setSparePartService( $tbl );
+		
+		//Auth Service
+		$sv =  $sm->get ('AuthService' );
+		$controller->setAuthService($sv );
+		
 		
 		
 		return $controller;

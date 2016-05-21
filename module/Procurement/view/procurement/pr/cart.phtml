@@ -9,7 +9,7 @@
  <div class="control-group">
         <label class="control-label" for="inputTag">PR Number:</label>
         <div class="controls">
-          <input type="text" id="inputTag" placeholder="" name="pr_number" value="PR-FA-2016-0001">
+          <input type="text" id="pr_number" placeholder="" name="pr_number" value="PR-FA-2016-0001">
         </div>
       </div>
 <?php  	if (count($cart_items) >0): ?>
@@ -20,7 +20,6 @@
 		<td><b>Item</b></td>
 		<td><b>Priority</b></td>
 		<td><b>Name</b></td>
-		<td><b>Description</b></td>
 		<td><b>Unit</b></td>
 		<td><b>Quantity</b></td>
 	<td><b>EDT</b></td>
@@ -43,8 +42,7 @@
 		<td><?php echo $count;?></td>
 		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning">'. $item->priority .'</span>':$item->priority;?></td> 	
 		<td><?php echo $item->name;?></td>
-		<td><?php echo $item->description;?></td>
-		<td><?php echo $item->unit;?></td>
+			<td><?php echo $item->unit;?></td>
 		<td><?php echo $item->quantity;?></td>
 			<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span></td>
 			<td><span id="<?php echo $item->id;?>_timer"></span></td>
@@ -70,7 +68,7 @@
 <?php endif; ?>
  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory"	method="get" enctype="multipart/form-data">
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
-            <button title="Submit PR to Procurment" class="btn btn-default" onclick="openConfirmation('<?php echo $pr->id?>');" type="button"><i class="icon-ok">  </i> Submit</button>
+            <button title="Submit PR to Procurment" class="btn btn-default" onclick="openConfirmation(1);" type="button"><i class="icon-ok">  </i> Submit</button>
  
 </form>
 
@@ -87,7 +85,7 @@
 	      
 		  <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	        <button onclick="submitPR('<?php echo $pr->id?>');" type="button" class="btn btn-primary">OK</button>
+	        <button onclick="submitCartItems();" type="button" class="btn btn-primary">OK</button>
 	      </div>
 	   </div>
 	</div>	
@@ -96,7 +94,7 @@
 	<div id="myModal1" class="modal hide" role="dialog">
 	  <div class="modal-dialog">
 	      <div class="modal-body">
-	        <p>Sending data........Please Wait!</p>
+	        <p>Working on it........Please Wait!</p>
 	      </div>
 	   </div>
 	</div>	

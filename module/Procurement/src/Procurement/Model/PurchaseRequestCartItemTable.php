@@ -114,8 +114,8 @@ class PurchaseRequestCartItemTable {
 	}
 	
 	/**
-	 * 
-	 * @param unknown $user_id
+	 *
+	 * @param unknown $user_id        	
 	 * @return number
 	 */
 	public function getTotalCartItems($user_id) {
@@ -134,21 +134,21 @@ class PurchaseRequestCartItemTable {
 		
 		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
 		$resultSet->initialize ( $result );
-		if ($resultSet->count()>0){
-		return $resultSet->current()->cart_items;
-	}else {
-		return 0;
+		if ($resultSet->count () > 0) {
+			return $resultSet->current ()->cart_items;
+		} else {
+			return 0;
+		}
 	}
-	}
-
+	
 	/**
-	 * 
-	 * @param unknown $user_id
+	 *
+	 * @param unknown $user_id        	
 	 * @return number
 	 */
 	public function getCartItems($user_id) {
 		$adapter = $this->tableGateway->adapter;
-	
+		
 		$sql = "select
 mla_purchase_cart.*
 from mla_purchase_cart
@@ -156,10 +156,89 @@ left join mla_articles
 on mla_articles.id = mla_purchase_cart.article_id
 
 left join mla_spareparts
-on mla_spareparts.id = mla_purchase_cart.sparepart_id
+on mla_spareparts.id = mla_purchase_cart.sparepart_id			
 			where 1
 			and mla_purchase_cart.status is null
-			and mla_purchase_cart.created_by = " . $user_id;
+			and mla_purchase_cart.created_by = " . $user_id . " order by mla_purchase_cart.edt";
+		// echo ($sql);
+		
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	
+	/**
+	 * 
+	 * @param unknown $user_id
+	 */
+	public function setCartItemsAsOrdered($user_id) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = "
+update
+(
+   mla_purchase_cart   
+) 
+set  mla_purchase_cart.status  = 'ORDERED'
+where 1
+and mla_purchase_cart.status is null
+and mla_purchase_cart.created_by = " . $user_id;
+
+		// echo ($sql);
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	/**
+	 * 
+	 * @param unknown $user_id
+	 */
+	public function submitCartItems($user_id, $pr_id) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = "
+insert into mla_purchase_request_items
+(
+	mla_purchase_request_items.purchase_request_id,
+    mla_purchase_request_items.priority,
+    mla_purchase_request_items.name,
+    mla_purchase_request_items.EDT,
+	mla_purchase_request_items.quantity,
+    mla_purchase_request_items.article_id,
+    mla_purchase_request_items.sparepart_id,
+    mla_purchase_request_items.asset_id,
+    mla_purchase_request_items.other_res_id,
+    mla_purchase_request_items.remarks,    
+    mla_purchase_request_items.created_on,
+    mla_purchase_request_items.created_by
+)
+select
+".$pr_id.",
+	mla_purchase_cart.priority,
+    mla_purchase_cart.name,
+    mla_purchase_cart.EDT,
+	mla_purchase_cart.quantity,
+    mla_purchase_cart.article_id,
+    mla_purchase_cart.sparepart_id,
+    mla_purchase_cart.asset_id,
+    mla_purchase_cart.other_res_id,
+    mla_purchase_cart.remarks,    
+    mla_purchase_cart.created_on,
+    mla_purchase_cart.created_by
+from mla_purchase_cart
+where 1
+and mla_purchase_cart.status is null
+and mla_purchase_cart.created_by = " . $user_id;
+	
 		// echo ($sql);
 	
 		$statement = $adapter->query ( $sql );

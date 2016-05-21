@@ -739,8 +739,14 @@ class PRController extends AbstractActionController {
 	
 				if (! $validator->isValid ( $input->EDT )) {
 					$errors [] = 'requested delievery date is not correct!';
+				}else{
+					$today = date("Y-m-d H:i:s");
+					if($input->EDT < $today){
+						$errors [] = 'requested delievery date is in the past!';
+					}
+						
+					
 				}
-	
 				// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
 				$validator = new Int ();
 					
@@ -819,16 +825,18 @@ class PRController extends AbstractActionController {
 	 * Submit PR
 	 * @return \Zend\View\Model\ViewModel
 	 */
-	public function checkoutAction() {
+	public function submitCartItemsAction() {
 	
 		$identity = $this->authService->getIdentity();
 		$user=$this->userTable->getUserByEmail($identity);
-	
-		$pr_number = $this->params ()->fromQuery ( 'pr_number' );
+		$user_id = $user['id'];
+		$pr_number = $this->params()->fromQuery ( 'pr_number' );
+		
 		//create PR
 		$pr =  new PurchaseRequest();
 		$pr->pr_number = $pr_number;
-		$pr_id = $this->purchaseRequetTable->add($pr);
+		$pr->requested_by = $user_id;
+		$pr_id = $this->purchaseRequestTable->add($pr);
 		
 		//update PR Workflow
 		$input = new PRWorkFlow();
@@ -840,8 +848,10 @@ class PRController extends AbstractActionController {
 		$this->purchaseRequestTable->updateLastWorkFlow($pr_id, $last_workflow_id);
 		
 		//add PR Items from Cart Items
+		$this->purchaseRequestCartItemTable->submitCartItems($user_id, $pr_id);
 		
-		
+		//update cart item status
+		$this->purchaseRequestCartItemTable->setCartItemsAsOrdered($user_id);
 		
 		$this->redirect()->toUrl('/procurement/pr/my-pr');
 	}

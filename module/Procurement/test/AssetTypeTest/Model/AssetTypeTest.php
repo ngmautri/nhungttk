@@ -46,13 +46,14 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	  	 */
 	
 	 	 //$result = $tbl->getPRItems(2,null,1,0,0);
-	 	  $result = $tbl->getCartItems(39);
-	 	//  var_dump($result);
+	 	  $result = $tbl->submitCartItems(39);
+	 	  var_dump($result);
 	 	
-	 	  
+	 	  /*
 	 	 foreach ($result as$user) {
 	 	 	var_dump ($user);
 	 	 }
+	 	 */
 	 	 
 	 }
 

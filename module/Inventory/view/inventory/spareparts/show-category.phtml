@@ -1,4 +1,4 @@
-<h4>Department Detail for:  <?php echo $category->name ?></h4>
+<h3>CategoryL  <?php echo $category->name ?></h3>
 
 
 <ul class="nav nav-pills">
@@ -43,9 +43,18 @@ if ($total_spareparts <= 0) {
 	 foreach ($spareparts as $a) : 
 	 	 $count++;
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 $instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
+	 
 	 ?>
  		<td><?php echo $this->escapeHtml($a['tag']);?></td>
-		<td><span id="<?php echo $this->escapeHtml($a['id']);?>_name"><?php echo $this->escapeHtml($a['name']);?></span> 
+		<td><span id="<?php echo $this->escapeHtml($a['id']);?>_name"><?php echo $this->escapeHtml($a['name']);?></span>
+		<?php if($instock > 0){			
+			echo '<span class="label label-info">'.$instock.'</span>';				
+			
+		}else{
+			
+			echo '<span class="label">'.$instock.'</span>';				
+		}?>
 		</td>
 		<td><?php echo $this->escapeHtml($a['code']);?></td>
 		<td><?php echo $this->escapeHtml($a['location']);?></td>

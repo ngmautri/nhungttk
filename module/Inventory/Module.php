@@ -59,7 +59,14 @@ use Inventory\Model\ArticleCategoryMemberTable;
 use Inventory\Model\ArticlePicture;
 use Inventory\Model\ArticlePictureTable;
 
+use Inventory\Model\ArticleMovement;
+use Inventory\Model\ArticleMovementTable;
 
+use Inventory\Model\ArticleLastDN;
+use Inventory\Model\ArticleLastDNTable;
+
+use Inventory\Model\SparepartLastDN;
+use Inventory\Model\SparepartLastDNTable;
 
 
 
@@ -360,6 +367,49 @@ class Module {
 						$resultSetPrototype->setArrayObjectPrototype ( new ArticleCategoryMember() );
 						return new TableGateway ( 'mla_articles_categories_members', $dbAdapter, null, $resultSetPrototype );
 						},
+						
+						// Article Movement Table
+						'Inventory\Model\ArticleMovementTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'ArticleMovementTableGateway' );
+						$table = new ArticleMovementTable($tableGateway);
+						return $table;
+						},
+						
+						'ArticleMovementTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new ArticleMovement() );
+						return new TableGateway ( 'mla_articles_movements', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// Article Last DN Table
+						'Inventory\Model\ArticleLastDNTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'ArticleLastDNTableGateway' );
+						$table = new ArticleLastDNTable($tableGateway);
+						return $table;
+						},
+						
+						'ArticleLastDNTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new ArticleLastDN() );
+						return new TableGateway ( 'mla_articles_last_dn', $dbAdapter, null, $resultSetPrototype );
+						},
+
+						// SP Last DN Table
+						'Inventory\Model\SparepartLastDNTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'SparepartLastDNTableGateway' );
+						$table = new SparepartLastDNTable($tableGateway);
+						return $table;
+						},
+						
+						'SparepartLastDNTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new SparepartLastDN() );
+						return new TableGateway ( 'mla_spareparts_last_dn', $dbAdapter, null, $resultSetPrototype );
+						},
+						
 						
 						'Inventory\Services\AssetSearchService'  => 'Inventory\Services\AssetSearchServiceFactory',
 						'Inventory\Services\SparePartsSearchService'  => 'Inventory\Services\SparePartsSearchServiceFactory',

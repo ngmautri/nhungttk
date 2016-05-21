@@ -1,4 +1,6 @@
-
+/**
+ * NMT
+ */
 function countdown(){
 	
 	//alert(id_array.length);
@@ -84,7 +86,7 @@ function getRemain(input)
 	//d.setTime(input);
 	var rest;
 	var n_day = Math.floor(input/day_timestamp);
-	var s_day = (n_day > 0) ?  (n_day) + 'day ' : '';
+	var s_day = (n_day > 0) ?  (n_day) + 'd ' : '';
 	
 	rest = input - n_day * day_timestamp;
 	var n_hh  = Math.floor(rest/hh_timestamp);

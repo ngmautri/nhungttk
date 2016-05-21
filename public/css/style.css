@@ -114,6 +114,8 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 
 .ui-menu { width: 250px; border: none}
 
+  .ui-widget-header { padding: 0.2em; }
+
 .ui-button,  .ui-button-text .ui-button{  
 font-size: 10pt !important; 
 }

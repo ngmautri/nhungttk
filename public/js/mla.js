@@ -507,10 +507,14 @@ function isUploadAssetPicturedCompleted(pic_to_upload_resized,n)
 	
 }
 
+function openConfirmation(ID)
+{		$('#myModal').modal();
+}
+
 
 function submitPR(ID)
-{
-		$('#myModal').modal();	
+{		$('#myModal').modal('hide');
+		$('#myModal1').modal();	
 		redirectUrl = "/procurement/pr/my-pr"
 	    $.get("/procurement/pr/submit",
                 {
@@ -524,8 +528,9 @@ function submitPR(ID)
 
 
 function approvePR(ID)
-{
-		$('#myModal').modal();	
+{	
+		$('#myModal').modal('hide');
+		$('#myModal1').modal();	
 		redirectUrl = "/procurement/pr/all-pr"
 	    $.get("/procurement/pr/approve",
                 {
@@ -534,6 +539,203 @@ function approvePR(ID)
                 function(data,status){
                        window.location = redirectUrl;
         });
+}
+
+function completeNotifyDNConfirm(ID)
+{		$('#myModal').modal();
+}
+
+function completeNotifyDN(ID)
+{
+		$('#myModal').modal('hide');
+		$('#myModal1').modal();
+		
+		redirectUrl = "/procurement/delivery/my-delivery"
+	    $.get("/procurement/delivery/complete-notify",
+                {
+	    		dn_id: ID,
+                },
+                function(data,status){
+                       window.location = redirectUrl;
+        });
+}
+
+/**
+ *	function on calendar dialog
+ */
+function loadVendorList()
+{
+	$("#dialog").html('Please wait ...');
+		$.ajax({
+		  url: "/procurement/vendor/list-json",
+		  success: function(text){
+			  	var obj = eval(text);
+				var n_hits = obj.length;
+				//alert(n_hits);
+				//var html = "No asset found"
+				var s;
+				var i;
+			    s="";
+				if(n_hits > 0){
+					s = '<table class="pure-table pure-table-bordered"><thead><tr><td>ID</td><td>NAME</td><td>Keywords</td><td>ACTION</td><td>DETAIL</td></thead></tr>';
+					for(i=0; i< n_hits; i++)
+					{
+					s = s + "<tr>"	
+						var id  = obj[i]["id"];
+						var name = obj[i]["name"];
+						var keywords = obj[i]["keywords"];
+					s = s + '<td>' +  id + '</td>';
+					s = s + '<td>' +  name + '</td>';
+					s = s + '<td>' +  keywords	 + '</td>';
+					s = s + '<td><a href="javascript:;" onclick="selectVendor(\''+ id + '\',\''+ name + '\',\''+ keywords +'\')">  Select  </a></td>';
+					s = s + '<td><a href="/procurement/vendor/show?id='+ id + '" target="_blank">  Detail  </a></td>';
+				s = s + "</tr>";
+						
+					}
+					s = s + "</table>";
+
+				}else{
+					
+					s="No Vendors found!";
+				}
+					
+				//alert(s);
+				
+				$("#dialog").html(s);
+		  }
+	});
+	
+	
+	//$( "#dialog" ).text(t);
+	$( "#dialog" ).dialog({width :860,height:500,title: "Select Vendor", modal: true, dialogClass: 'dialogClass'});
+}
+
+function selectVendor(id,name,tag){
+	$( "#vendor_id" ).val(id);
+	$( "#vendor" ).val(name);
+	$( "#dialog" ).dialog("close");
 	
 }
 
+
+/* =============================== */
+function openPRCart(ID)
+{
+	var	item_name_id;	
+	item_name_id = '#'+ ID + '_name';
+	
+	
+	$('#end_date').val("");
+	$('#item_quantity').val("").select();
+	$('#item_remarks').val("");
+	
+	
+	$('#item_name').val($(item_name_id).text());
+	$('#item_id').val(ID);
+	$('#myModal').modal();
+	$('#item_quantity').select();
+	
+}
+
+
+
+function addItemToCart(type)
+{
+	$('#myModal').modal('hide');
+	$('#myModal1').modal();
+	
+	var	item_name;
+	var	item_priority; 
+	var item_edt;
+	var item_quantity;
+	var item_remarks;
+	var ID;
+	
+	ID = $('#item_id').val();
+	item_name = $('#item_name').val();
+	item_priority = $('#item_priority').val();
+
+	item_edt = $('#end_date').val();
+	item_quantity = $('#item_quantity').val();
+	item_remarks = $('#item_remarks').val();
+	$('#_status').text("");
+	
+	
+	$.post("/procurement/pr/add-pr-cart",
+            {
+ 	   			item_id: ID,
+ 	   			item_type: type,
+ 	   			priority: item_priority,
+ 	   			name:  item_name,
+ 	   			quantity: item_quantity,
+ 	   			EDT: item_edt,
+ 	   			remarks: item_remarks,
+ 	   			
+           },
+            function(data,status){
+                  // window.location = redirectUrl;
+        	   var obj = eval(data);
+        	   var status = obj['status'];
+        	   var messages = obj['messages'];
+        	   if (status==1)
+        	   {
+        		   $('#myModal1').modal('hide');
+        		   $('#_status').show();
+        		   updateCarts();
+        	   }else{
+        		   $('#myModal1').modal('hide');
+        		   var n_errors = messages.length;
+         		   if (n_errors>0)
+        		   {	
+        				s = '<div class="alert alert-error">';
+        				s= s+ '<ul>';
+        			   for(i=0; i< n_errors; i++){   
+        				   	s= s+ '<li>' + messages[i] + '</li>';
+        			   }
+        				s= s+ '</ul></div>';
+        		   }
+         		   
+        		   $('#_status').html(s);
+        		   $('#_status').show();
+        		   $('#myModal').modal();
+        		   $('#_status').fadeOut(6000);
+           	   }
+    });
+    
+}
+
+
+/**
+ *	function on calendar dialog
+ */
+function updateCarts()
+{
+	$("#cart_items").text('???');
+		$.ajax({
+		  url: "/procurement/pr/update-cart",
+		  success: function(text){
+			  	var obj = eval(text);
+			  	var total_cart_items = obj['total_cart_items'];
+					$("#cart_items").text(total_cart_items)
+		  }
+	});
+}
+
+function openConfirmation(ID)
+{		$('#myModal').modal();
+}
+
+
+function submitCartItems()
+{		$('#myModal').modal('hide');
+		$('#myModal1').modal();	
+		var pr_number = $('#pr_number').val();
+		redirectUrl = "/procurement/pr/my-pr";
+	    $.get("/procurement/pr/submit-cart-items",
+                {
+            	  pr_number: pr_number,
+                },
+                function(data,status){
+                       window.location = redirectUrl;
+        });
+}

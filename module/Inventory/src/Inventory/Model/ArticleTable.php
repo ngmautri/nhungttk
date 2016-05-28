@@ -129,19 +129,22 @@ WHERE 1
 	public function add(Article $input) {
 		
 		$data = array (
+				'article_tag' => $input->article_tag,
+				'name_local' => $input->name_local,
 				'name' => $input->name,
 				'description' => $input->description,
 				'keywords' => $input->keywords,
 				'type' => $input->type,
-				'code' => $input->code,
 				
+				'unit' => $input->unit,
+				'code' => $input->code,				
 				'barcode' => $input->barcode,
 				'created_on' => date ( 'Y-m-d H:i:s' ),
 				'created_by' => $input->created_by,
 				'status' => $input->status,
 				'visibility' => $input->visibility,
-				'remarks' => $input->remarks 
-		);
+				'remarks' => $input->remarks,
+			);
 		
 		$this->tableGateway->insert ( $data );
 		return $this->tableGateway->lastInsertValue;
@@ -152,17 +155,20 @@ WHERE 1
 	 */
 	public function update(Article $input, $id) {
 		$data = array (
+				'article_tag' => $input->article_tag,
+				'name_local' => $input->name_local,
 				'name' => $input->name,
 				'description' => $input->description,
 				'keywords' => $input->keywords,
 				'type' => $input->type,
-				'code' => $input->code,
 				
+				'unit' => $input->unit,
+				'code' => $input->code,				
 				'barcode' => $input->barcode,
-				'created_by' => $input->created_by,
+				'created_on' => date ( 'Y-m-d H:i:s' ),
 				'status' => $input->status,
 				'visibility' => $input->visibility,
-				'remarks' => $input->remarks 
+				'remarks' => $input->remarks,
 		);
 		
 		$where = 'id = ' . $id;
@@ -201,7 +207,8 @@ WHERE 1
 		if ($user_id > 0) {
 			$sql = $sql. " AND mla_articles.department_id
 				IN (SELECT department_id from mla_departments_members
-				where user_id = ".$user_id.")";
+				where user_id = ".$user_id.")
+				ORDER BY mla_articles.name ";
 		}
 	
 		if ($limit > 0) {

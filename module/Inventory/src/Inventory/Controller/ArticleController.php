@@ -24,6 +24,8 @@ use Inventory\Model\Article;
 use Inventory\Model\ArticleTable;
 
 use Inventory\Services\ArticleService;
+use Inventory\Services\ArticleSearchService;
+
 
 use Inventory\Model\ArticlePicture;
 use Inventory\Model\ArticlePictureTable;
@@ -44,6 +46,8 @@ class ArticleController extends AbstractActionController {
 	protected $SmtpTransportService;
 	protected $authService;
 	protected $articleService;
+	protected $articleSearchService;
+	
 	
 	
 	protected $userTable;	
@@ -76,9 +80,13 @@ class ArticleController extends AbstractActionController {
 				
 				$input = new Article();
 				$input->name = $request->getPost ( 'name' );
+				$input->name_local = $request->getPost ( 'name_local' );
+				
 				$input->description = $request->getPost ( 'description' );
 				
 				$input->keywords = $request->getPost ( 'keywords' );
+				$input->unit = $request->getPost ( 'unit' );
+				
 				$input->type = $request->getPost ( 'type' );
 				$input->code = $request->getPost ( 'code' );
 				
@@ -112,6 +120,12 @@ class ArticleController extends AbstractActionController {
 				
 				
 				$newId = $this->articleTable->add ( $input );
+				$row = $this->articleTable->getArticleByID($newId);
+				$this->articleSearchService->updateIndex($row);
+				
+				//update search index
+				
+				
 				$root_dir = $this->articleService->getPicturesPath();
 				
 				// $files = $request->getFiles ()->toArray ();
@@ -307,27 +321,26 @@ class ArticleController extends AbstractActionController {
 	
 	public function editAction() {
 		$request = $this->getRequest ();
-		
-		
-			
 	
 		if ($request->isPost ()) {
 			
 			$id = $request->getPost ( 'id' );
 				
-			$input = new MLASparepart ();
-			$input->id = $id;
+			$input = new Article();
 			$input->name = $request->getPost ( 'name' );
 			$input->name_local = $request->getPost ( 'name_local' );
-				
 			$input->description = $request->getPost ( 'description' );
+			$input->keywords = $request->getPost ( 'keywords' );
+			$input->unit = $request->getPost ( 'unit' );
+			$input->type = $request->getPost ( 'type' );
 			$input->code = $request->getPost ( 'code' );
-			$input->tag = $request->getPost ( 'tag' );
-				
-			$input->location = $request->getPost ( 'location' );
-			$input->comment = $request->getPost ( 'comment' );
+			$input->barcode = $request->getPost ( 'barcode' );
+			//$input->created_by =  $user['id'];
 			
-
+			$input->visibility = $request->getPost ( 'visibility' );
+			$input->status = $request->getPost ( 'status' );
+			$input->remarks = $request->getPost ( 'remarks' );
+			
 			$errors = array();
 			
 			if ($input->name ==''){
@@ -339,77 +352,75 @@ class ArticleController extends AbstractActionController {
 			
 			if (count ( $errors ) > 0) {
 				// return current sp
-				$sparepart = $this->sparePartTable->get ( $input->id );
+				$article = $this->articleTable->get ( $input->id );
 				
 				return new ViewModel ( array (
 						'errors' => $errors,
 						'redirectUrl'=>$redirectUrl,
-						'sparepart' =>$sparepart,
+						'article' =>$article,
 				) );
 			}
 				
-			$this->sparePartTable->update ( $input, $input->id );
-			$root_dir = $this->sparePartService->getPicturesPath();
-					
-				
+			$this->articleTable->update ( $input, $id);
+			$root_dir = $this->articleService->getPicturesPath();
+			
+			// $files = $request->getFiles ()->toArray ();
+			
 			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
 			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
-				
+			
+			
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
-						
+			
 					$ext = strtolower (pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION));
-						
+			
 					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png'){
 			
 						$checksum = md5_file($tmp_name);
 			
-						if(!$this->sparePartPictureTable->isChecksumExits($id, $checksum)){
-			
+						if(!$this->articlePictureTable->isChecksumExits($id, $checksum)){
+								
 							$name = md5($id.$checksum.uniqid(microtime())).'.'. $ext;
 							$folder = $root_dir.DIRECTORY_SEPARATOR. $name[0].$name[1].DIRECTORY_SEPARATOR.$name[2].$name[3].DIRECTORY_SEPARATOR.$name[4].$name[5];
-								
+			
 							if (!is_dir ( $folder)) {
 								mkdir ($folder,0777, true ); //important
 							}
-			
+								
 							$ftype = $_FILES ["pictures"] ["type"] [$key];
 							move_uploaded_file ( $tmp_name, "$folder/$name" );
-								
+			
 							// add pictures
-							$pic = new SparepartPicture ();
+							$pic = new ArticlePicture();
 							$pic->url = "$folder/$name";
 							$pic->filetype = $ftype;
-							$pic->sparepart_id = $id;
+							$pic->article_id = $id;
 							$pic->filename = "$name";
 							$pic->folder = "$folder";
 							$pic->checksum = $checksum;
-								
-							$this->sparePartPictureTable->add ( $pic);
-								
+			
+							$this->articlePictureTable->add ( $pic);
+			
 							// trigger uploadPicture
 							$this->getEventManager()->trigger('uploadPicture', __CLASS__,
 									array('picture_name' => $name,'pictures_dir'=>$folder));
-			
+								
 						}
-			
 					}
-			
 				}
 			}
-				
+			
 			$this->redirect()->toUrl($redirectUrl);
-				
-			//return $this->redirect ()->toRoute ( 'Spareparts_Category');
 		}
 	
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$sparepart = $this->sparePartTable->get ( $id );
+		$article = $this->articleTable->get ( $id );
 	
 		return new ViewModel ( array (
-				'sparepart' => $sparepart,
+				'article' => $article,
 				'redirectUrl'=>$redirectUrl,
 				'errors' => null,
 		) );
@@ -669,7 +680,7 @@ class ArticleController extends AbstractActionController {
 		
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 20;
+			$resultsPerPage = 18;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
@@ -1046,6 +1057,14 @@ class ArticleController extends AbstractActionController {
 		$this->purchaseRequestCartItemTable = $purchaseRequestCartItemTable;
 		return $this;
 	}
+	public function getArticleSearchService() {
+		return $this->articleSearchService;
+	}
+	public function setArticleSearchService(ArticleSearchService $articleSearchService) {
+		$this->articleSearchService = $articleSearchService;
+		return $this;
+	}
+	
 	
 	
 	

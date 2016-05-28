@@ -2,128 +2,137 @@
 
 namespace Inventory\Services;
 
-
 use Zend\Permissions\Acl\Acl;
 use Zend\EventManager\EventManagerInterface;
-
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Document\Field;
 use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
-
-
 use MLA\Service\AbstractService;
-use Inventory\Model\MLASparepartTable;
+use Inventory\Model\ArticleTable;
 
-
- /* 
+/*
  * @author nmt
  *
  */
-class SparePartsSearchService extends AbstractService
-{
-	protected $sparePartTable;
+class ArticleSearchService extends AbstractService {
+	protected $articleTable;
 	protected $eventManager = null;
+	
+	//Production
+	private $index_path = "module/Inventory/data/index/articles";
+	
+	//Test
+	//private $index_path = "data/index/articles";
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 *
+	 * @see \MLA\Service\AbtractService::initAcl()
+	 */
+	public function initAcl(Acl $acl) {
+		// TODO
+	}
+	/**
+	 */
+	public function createIndex() {
+		
+		$index = Lucene::create ( ROOT . DIRECTORY_SEPARATOR . $this->index_path );
+		Analyzer::setDefault ( new CaseInsensitive () );
+		
+		$rows = $this->articleTable->getArticles ( 0, 0, 0 );
+		
+		if (count ( $rows ) > 0) {
+			foreach ( $rows as $row ) {
+				$doc = new Document ();
+				$doc->addField ( Field::UnIndexed ( 'article_id', $row->id ) );
+				$doc->addField ( Field::Keyword ( 'department_id', $row->department_id ) );
+				$doc->addField ( Field::UnIndexed ( 'unit', $row->unit ) );
+				
+				$doc->addField ( Field::Text ( 'name', mb_strtolower ( $row->name ) ) );
+				$doc->addField ( Field::Text ( 'description', mb_strtolower ( $row->description ) ) );
+				$doc->addField ( Field::Text ( 'keywords', mb_strtolower ( $row->keywords ) ) );
+				$doc->addField ( Field::Keyword ( 'type', mb_strtolower ( $row->type ) ) );
+				$doc->addField ( Field::Keyword ( 'code', mb_strtolower ( $row->code ) ) );
+				$doc->addField ( Field::Keyword ( 'barcode', mb_strtolower ( $row->barcode ) ) );
+				$doc->addField ( Field::Keyword ( 'created_by', mb_strtolower ( $row->created_by ) ) );
+				$doc->addField ( Field::Text ( 'remarks', mb_strtolower ( $row->remarks ) ) );
+				
+				$index->addDocument ( $doc );
+			}
+			return 'Article index is created successfully!';
+		} else {
+			return 'Nothing for indexing!';
+		}
+	}
 	
 	/**
 	 * 
-	 * {@inheritDoc}
-	 * @see \MLA\Service\AbtractService::initAcl()
+	 * @param unknown $row
+	 * @return string
 	 */
-	public function initAcl(Acl $acl){
-		// TODO
+	public function updateIndex($row) {
+		
+		$index = Lucene::open ( ROOT . DIRECTORY_SEPARATOR . $this->index_path);
+		Analyzer::setDefault ( new CaseInsensitive () );
+		
+		$doc = new Document ();
+		$doc->addField ( Field::UnIndexed ( 'article_id', $row->id ) );
+		$doc->addField ( Field::Keyword ( 'department_id', $row->department_id ) );
+		$doc->addField ( Field::UnIndexed ( 'unit', $row->unit ) );
+		
+		
+		$doc->addField ( Field::Text ( 'name', mb_strtolower ( $row->name ) ) );
+		$doc->addField ( Field::Text ( 'description', mb_strtolower ( $row->description ) ) );
+		$doc->addField ( Field::Text ( 'keywords', mb_strtolower ( $row->keywords ) ) );
+		$doc->addField ( Field::Keyword ( 'type', mb_strtolower ( $row->type ) ) );
+		$doc->addField ( Field::Keyword ( 'code', mb_strtolower ( $row->code ) ) );
+		$doc->addField ( Field::Keyword ( 'barcode', mb_strtolower ( $row->barcode ) ) );
+		$doc->addField ( Field::Keyword ( 'created_by', mb_strtolower ( $row->created_by ) ) );
+		$doc->addField ( Field::Text ( 'remarks', mb_strtolower ( $row->remarks ) ) );
+		$index->addDocument ( $doc );
+		return 'Article index is created successfully!';
 	}
-	
-	public function createIndex(){
-		
-		$index_path = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "spareparts";
-		
-		//Test
-		//$index_path = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "spareparts";
-		
-		
-		$index = Lucene::create($index_path);
-		Analyzer::setDefault(new CaseInsensitive());
-		
-		$assetTable = $this->getSparepartTable();
-		
-		$rows = $assetTable->fetchAll();
-		
-		if(count($rows) > 0 )
-		{
-			foreach($rows as $row)
-			{
-				$doc = new Document();
-				$doc->addField(Field::Text('name', mb_strtolower($row['name'])));
-				$doc->addField(Field::Text('description', mb_strtolower($row['description'])));
-				
-				$doc->addField(Field::Text('tag', $row['tag']));
-				$doc->addField(Field::Keyword('tag1', $row['tag']));
-				
-				$doc->addField(Field::Text('code', $row['code']));
-				$doc->addField(Field::Keyword('code1', $row['code']));
-						
-				
-				$doc->addField(Field::Text('comment', mb_strtolower($row['comment'])));			
-				
-				$doc->addField(Field::UnIndexed ('sparepart_id',$row['id']));
-				
-				$index->addDocument($doc);
-			}
-			return 'Sparepart index is created successfully!';
-		}else{
-			return 'Nothing for indexing!';
-		}
-		
-	}
-	
-	public function search($q){
-		
-		
-	
-		$index_path = ROOT . DIRECTORY_SEPARATOR . "/module/Inventory/data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "spareparts";
-	
-		//Test
-		//$index_path = ROOT . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "index" . DIRECTORY_SEPARATOR . "spareparts";
-		
-		$index = Lucene::open($index_path);
-		
-		$hits = $index->find($q);
-		
-		/*
-		foreach ($hits as $hit) {
-			echo $hit->score;
-			echo $hit->tag;
-			var_dump($document = $hit->getDocument());
+	/**
+	 * 
+	 * @param unknown $q
+	 * @param unknown $department_id
+	 */
+	public function search($q,$department_id) {
 			
-		}
-		*/
+		$index = Lucene::open (  ROOT . DIRECTORY_SEPARATOR . $this->index_path );
 		
+		if($department_id >0):
+			$q = $q. ' AND department_id:'.$department_id;
+		endif;
+		
+		$hits = $index->find ($q);
+	
 		return $hits;
-		
 	}
 	
 	
-	public function setEventManager(EventManagerInterface $eventManager)
-	{
-		$eventManager->setIdentifiers(array(__CLASS__));
+	
+	public function setEventManager(EventManagerInterface $eventManager) {
+		$eventManager->setIdentifiers ( array (
+				__CLASS__ 
+		) );
 		$this->eventManager = $eventManager;
 	}
-	
-	public function getEventManager()
-	{
+	public function getEventManager() {
 		return $this->eventManager;
 	}
-	
-	public function setSparepartTable(MLASparepartTable $sparePartTable)
-	{
-		$this->sparePartTable =  $sparePartTable;
+	public function getArticleTable() {
+		return $this->articleTable;
+	}
+	public function setArticleTable(ArticleTable $articleTable) {
+		$this->articleTable = $articleTable;
+		return $this;
 	}
 	
-	public function getSparepartTable()
-	{
-		return $this->sparePartTable;
-	}
-
+	
+	
 }

@@ -62,7 +62,9 @@ class ArticleControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('Inventory\Services\ArticleService' );
 		$controller->setArticleService($sv );
 	
-		
+		//Article Search Service
+		$sv =  $sm->get ('Inventory\Services\ArticleSearchService' );
+		$controller->setArticleSearchService($sv );
 		return $controller;
 	}
 }

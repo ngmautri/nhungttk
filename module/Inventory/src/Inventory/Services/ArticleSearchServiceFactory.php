@@ -5,13 +5,13 @@ namespace Inventory\Services;
 use Zend\EventManager\EventManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Inventory\Services\SparePartsSearchService;
+use Inventory\Services\ArticleSearchService;
 
 /*
  * @author nmt
  *
  */
-class SparePartsSearchServiceFactory implements FactoryInterface {
+class ArticleSearchServiceFactory implements FactoryInterface {
 	
 	
 	
@@ -22,12 +22,12 @@ class SparePartsSearchServiceFactory implements FactoryInterface {
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		
-		$sparePartTable =  $serviceLocator->get ('Inventory\Model\MLASparepartTable' );
+		$tbl =  $serviceLocator->get ('Inventory\Model\ArticleTable' );
 		$eventManager = $serviceLocator->get ( 'EventManager' );
 				
-		$searchService = new SparePartsSearchService();
+		$searchService = new ArticleSearchService();
 		$searchService->setEventManager ( $eventManager );		
-		$searchService->setSparepartTable($sparePartTable);
+		$searchService->setArticleTable($tbl);
 		
 		return $searchService;
 	}

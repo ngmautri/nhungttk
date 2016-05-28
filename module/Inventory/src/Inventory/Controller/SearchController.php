@@ -12,16 +12,24 @@ namespace Inventory\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\Wildcard;
 
+use Inventory\Services\ArticleSearchService;
+use Inventory\Services\AssetSearchService;
+use Inventory\Services\SparePartsSearchService;
+
+use Procurement\Model\PurchaseRequestCartItemTable;
+use User\Model\UserTable;
 
 class SearchController extends AbstractActionController {
 	
-	protected 	 $assetSearchService;
-	protected 	 $sparePartSearchService;
-	
+	private $assetSearchService;
+	private $sparePartSearchService;
+	private $articleSearchService;
+	private  $purchaseRequestCartItemTable;
+	private $authService;
+	private $userTable;
 	
 	/*
 	 * Defaul Action
@@ -50,10 +58,10 @@ class SearchController extends AbstractActionController {
 		if (strpos($q,'*') !== false) {
 			$pattern = new Term($q);
 			$query = new Wildcard($pattern);
-			$hits = $this->getAssetSearchService()->search($query);
+			$hits = $this->assetSearchService->search($query);
 		
 		}else{
-			$hits = $this->getAssetSearchService()->search($q);
+			$hits = $this->assetSearchService->search($q);
 		}
 		
 		
@@ -94,6 +102,9 @@ class SearchController extends AbstractActionController {
 	
 	public function sparepartAction() {
 	
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		
 		//$query = $this->params ()->fromQuery ( 'query' );
 	
 		$q = $this->params ()->fromQuery ( 'query' );		
@@ -109,10 +120,10 @@ class SearchController extends AbstractActionController {
 		if (strpos($q,'*') !== false) {
 			$pattern = new Term($q);
 			$query = new Wildcard($pattern);
-			$hits = $this->getSparePartSearchService()->search($query);
+			$hits = $this->sparePartSearchService->search($query);
 		
 		}else{
-			$hits = $this->getSparePartSearchService()->search($q);
+			$hits = $this->sparePartSearchService->search($q);
 		}
 		
 	
@@ -136,31 +147,131 @@ class SearchController extends AbstractActionController {
 			$response->setContent(json_encode($data));
 			return $response;
 		}
+
+		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
 		
 		return new ViewModel ( array (
 				'query' => $q,
 				'hits' => $hits,
+				'total_cart_items' => $total_cart_items,
+				
 		));
 	}
 	
-
+	public function articleAction() {
+		
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		
 	
-	private function getAssetSearchService() {
-		if (! $this->assetSearchService) {
-			$sm = $this->getServiceLocator ();
-			$this->assetSearchService = $sm->get ( 'Inventory\Services\AssetSearchService' );
+		//$query = $this->params ()->fromQuery ( 'query' );
+	
+		$q = $this->params ()->fromQuery ( 'query' );
+		$json = (int) $this->params ()->fromQuery ( 'json' );
+	
+	
+		if($q==''){
+			return new ViewModel ( array (
+					'hits' => null,
+			));
 		}
+	
+		if (strpos($q,'*') !== false) {
+			$pattern = new Term($q);
+			$query = new Wildcard($pattern);
+			$hits = $this->articleSearchService->search($query,0);
+	
+		}else{
+			$hits = $this->articleSearchService->search($q,0);
+		}
+	
+	
+		if ($json === 1){
+	
+			$data = array();
+	
+			foreach ($hits as $key => $value)
+			{
+				$n = (int)$key;
+				$data[$n]['id'] = $value->article_id;
+				$data[$n]['name'] =  $value->name;
+				$data[$n]['description'] =  $value->description;
+				$data[$n]['code'] =  $value->code;
+	
+			}
+	
+	
+			$response = $this->getResponse();
+			$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
+			$response->setContent(json_encode($data));
+			return $response;
+		}
+		
+		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
+		
+	
+		return new ViewModel ( array (
+				'query' => $q,
+				'hits' => $hits,
+				'total_cart_items' => $total_cart_items,
+				
+				
+		));
+	}
+	
+	public function getAssetSearchService() {
 		return $this->assetSearchService;
 	}
 	
-	private function getSparePartSearchService() {
-		if (! $this->sparePartSearchService) {
-			$sm = $this->getServiceLocator ();
-			$this->getSparePartSearchService = $sm->get ( 'Inventory\Services\SparePartsSearchService' );
-		}
-		return $this->getSparePartSearchService;
+		public function setAssetSearchService(AssetSearchService $assetSearchService) {
+		$this->assetSearchService = $assetSearchService;
+		return $this;
 	}
 	
+	public function getSparePartSearchService() {
+		return $this->sparePartSearchService;
+	}
+	
+	public function setSparePartSearchService(SparePartsSearchService $sparePartSearchService) {
+		$this->sparePartSearchService = $sparePartSearchService;
+		return $this;
+	}
+	
+	public function getArticleSearchService() {
+		return $this->articleSearchService;
+	}
+	
+	public function setArticleSearchService(ArticleSearchService $articleSearchService) {
+		$this->articleSearchService = $articleSearchService;
+		return $this;
+	}
+	public function getPurchaseRequestCartItemTable() {
+		return $this->purchaseRequestCartItemTable;
+	}
+	public function setPurchaseRequestCartItemTable($purchaseRequestCartItemTable) {
+		$this->purchaseRequestCartItemTable = $purchaseRequestCartItemTable;
+		return $this;
+	}
+	public function getAuthService() {
+		return $this->authService;
+	}
+	public function setAuthService($authService) {
+		$this->authService = $authService;
+		return $this;
+	}
+	public function getUserTable() {
+		return $this->userTable;
+	}
+	public function setUserTable(UserTable $userTable) {
+		$this->userTable = $userTable;
+		return $this;
+	}
+	
+	
+	
+	
+	
+
 }
 
 

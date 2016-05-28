@@ -105,7 +105,6 @@ return array (
 						'Inventory\Controller\Index' => 'Inventory\Controller\IndexController',
 						'Inventory\Controller\Asset' => 'Inventory\Controller\AssetController',
 						'Inventory\Controller\Image' => 'Inventory\Controller\ImageController',
-						'Inventory\Controller\Search' => 'Inventory\Controller\SearchController',
 				),
 				
 				'factories' => array (
@@ -114,6 +113,7 @@ return array (
 						'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
 						'Inventory\Controller\Count' => 'Inventory\Controller\CountControllerFactory',
 						'Inventory\Controller\Article' => 'Inventory\Controller\ArticleControllerFactory',
+						'Inventory\Controller\Search' => 'Inventory\Controller\SearchControllerFactory',
 						
 				)
 				

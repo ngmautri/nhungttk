@@ -834,6 +834,19 @@ class PRController extends AbstractActionController {
 		
 		//create PR
 		$pr =  new PurchaseRequest();
+		
+		$t = $this->purchaseRequestTable->getTotalPROfYear($user_id);
+		if ($t == null):
+			$pr->seq_number_of_year= 1;
+			$pr->auto_pr_number ="PR-000". $pr->seq_number_of_year;
+		else:
+			$pr->seq_number_of_year= $t->total_pr_this_year +1;
+			$pr->auto_pr_number ="PR-".$t->pr_of_department_short_name."-000".$pr->seq_number_of_year;
+		endif;
+		
+		//$pr->seq_number_year = 1;
+		//$pr->auto_pr_number ="PR-". $pr->seq_number_year;
+		
 		$pr->pr_number = $pr_number;
 		$pr->requested_by = $user_id;
 		$pr_id = $this->purchaseRequestTable->add($pr);
@@ -855,14 +868,25 @@ class PRController extends AbstractActionController {
 		
 		$this->redirect()->toUrl('/procurement/pr/my-pr');
 	}
-
-	public function editItemAction() {
-		return new ViewModel ();
-	}
 	
-	public function deleteItemAction() {
-		return new ViewModel ();
+	/**
+	 * AJAX 
+	 */
+	public function deleteCartItemAction() {
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$this->purchaseRequestCartItemTable->delete($id);
+			
+		$c = array(
+				'status' => $id . ' deleted',
+		);
+		
+		$response = $this->getResponse ();
+		$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+		$response->setContent ( json_encode ( $c ) );
+		return $response;
 	}
+
+
 	
 	public function addItemPictureAction() {
 		return new ViewModel ();

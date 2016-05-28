@@ -9,6 +9,70 @@ use Procurement\Model\PurchaseRequest;
 class PurchaseRequestTable {
 	
 	protected $tableGateway;
+	private  $sql_GetToTalPRThisYear = 
+"Select
+count(*) as total_pr_this_year,
+mla_purchase_requests.pr_of_department_short_name
+from
+(
+	select
+		mla_purchase_requests.*,
+		year(mla_purchase_requests.requested_on) as pr_year,
+		
+		concat (mla_users.firstname,' ',mla_users.lastname ) as requester_name,
+		mla_users.department_id as pr_of_department_id,
+		mla_users.department_name as pr_of_department,
+		mla_users.department_short_name as pr_of_department_short_name,
+		mla_users.department_status as pr_of_department_status
+	from 
+	(
+	select
+		mla_purchase_requests.*,
+		mla_purchase_requests_workflows.status as pr_last_status,
+		mla_purchase_requests_workflows.updated_by as pr_last_status_by,
+		mla_purchase_requests_workflows.updated_on as pr_last_status_on
+		 
+	from mla_purchase_requests
+
+	left join mla_purchase_requests_workflows
+		on mla_purchase_requests_workflows.id = mla_purchase_requests.last_workflow_id
+
+
+	)
+	as mla_purchase_requests
+
+	left join
+	(
+	   /**USER-DEPARTMENT beginns*/
+		select 
+			mla_users.title, 
+			mla_users.firstname, 
+			mla_users.lastname, 
+			mla_departments_members_1.*
+		from mla_users
+		join 
+		(	select 
+				mla_departments_members.department_id,
+				mla_departments_members.user_id,
+				mla_departments.name as department_name,
+				mla_departments.short_name as department_short_name,
+				mla_departments.status as department_status
+			from mla_departments_members
+			join mla_departments on mla_departments_members.department_id = mla_departments.id
+		) as mla_departments_members_1 
+		on mla_users.id = mla_departments_members_1.user_id
+		/**USER-DEPARTMENT ends*/
+
+	) 
+	as mla_users
+		
+		on mla_users.user_id = mla_purchase_requests.requested_by
+) 
+as mla_purchase_requests
+
+where 1
+and pr_year = year(now())";
+			
 	
 	public function __construct(TableGateway $tableGateway) {
 		$this->tableGateway = $tableGateway;
@@ -35,6 +99,9 @@ class PurchaseRequestTable {
 	
 	public function add(PurchaseRequest $input) {
 		$data = array (
+				'seq_number_of_year' => $input->seq_number_of_year,
+				'auto_pr_number' => $input->auto_pr_number,
+				
 				'pr_number' => $input->pr_number,
 				'name' => $input->name,
 				'description' => $input->description,
@@ -59,6 +126,9 @@ class PurchaseRequestTable {
 	public function update(PurchaseRequest $input, $id) {
 		
 		$data = array (
+				'seq_number_of_year' => $input->seq_number_of_year,
+				'auto_pr_number' => $input->auto_pr_number,
+				
 				'pr_number' => $input->pr_number,
 				'name' => $input->name,
 				'description' => $input->description,
@@ -346,5 +416,34 @@ on TB4.id = TB1.requested_by
 			throw new \Exception("Could not find row $id");
 		}
 		return $row;		
+	}
+	
+	
+	
+	/**Get all PR of User
+	 *
+	 * @param unknown $user_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getTotalPROfYear($user_id) {
+		$adapter = $this->tableGateway->adapter;
+		$sql = $this->sql_GetToTalPRThisYear;
+		$sql= $sql
+		."AND mla_purchase_requests.pr_of_department_id
+				= (SELECT department_id from mla_departments_members
+				where user_id = ". $user_id . " Limit 1)";
+		
+		//echo $sql;
+		
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		if($resultSet->count() > 0){
+			return $resultSet->current();
+		}else{
+			return null;
+		}
 	}
 }

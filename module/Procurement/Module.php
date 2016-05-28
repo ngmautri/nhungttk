@@ -49,11 +49,16 @@ use Procurement\Model\DeliveryItemWorkFlow;
 use Procurement\Model\DeliveryItemWorkFlowTable;
 
 class Module {
+	
+	
+	
 	public function onBootstrap(MvcEvent $e) {
 		$eventManager = $e->getApplication ()->getEventManager ();
-		$moduleRouteListener = new ModuleRouteListener ();
-		$moduleRouteListener->attach ( $eventManager );
+		//$moduleRouteListener = new ModuleRouteListener ();
+		//$moduleRouteListener->attach ( $eventManager );
 	}
+	
+	
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
 	}
@@ -227,6 +232,8 @@ class Module {
 						$resultSetPrototype->setArrayObjectPrototype ( new DeliveryItemWorkFlow());
 						return new TableGateway ( 'mla_delivery_items_workflows', $dbAdapter, null, $resultSetPrototype );
 						},
+						
+						
 					)
 				);
 	}

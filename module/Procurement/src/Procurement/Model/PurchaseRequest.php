@@ -10,6 +10,9 @@ namespace Procurement\Model;
 class PurchaseRequest {
 	
 	public $id;
+	public $seq_number_of_year;
+	public $auto_pr_number;
+	
 	public $pr_number;
 	public $name;
 	public $description;
@@ -31,6 +34,9 @@ class PurchaseRequest {
 	
 	public function exchangeArray($data) {
 		$this->id = (! empty ( $data ['id'] )) ? $data ['id'] : null;
+		$this->seq_number_of_year = (! empty ( $data ['seq_number_of_year'] )) ? $data ['seq_number_of_year'] : null;
+		$this->auto_pr_number = (! empty ( $data ['auto_pr_number'] )) ? $data ['auto_pr_number'] : null;
+		
 		$this->pr_number = (! empty ( $data ['pr_number'] )) ? $data ['pr_number'] : null;
 		$this->name = (! empty ( $data ['name'] )) ? $data ['name'] : null;		
 		$this->description = (! empty ( $data ['description'] )) ? $data ['description'] : null;

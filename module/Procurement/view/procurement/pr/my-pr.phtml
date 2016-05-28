@@ -16,6 +16,7 @@
 <thead>
 <tr>	
 		<td><b>Name</b></td>
+		<td><b>Name</b></td>
 		<td><b>Description</b></td>
 		<td><b>Requester</b></td>
 		<td><b>Created on</b></td>
@@ -35,7 +36,9 @@
 	 	 $count++;
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 ?>
-		<td><?php echo $item->pr_number;?> <span class="label label-info"><?php echo $item->tItems;?></span></td> 	
+	 	<td><?php echo $item->auto_pr_number;?> <span class="label label-info"><?php echo $item->tItems;?></span></td> 	
+	
+		<td><?php echo $item->pr_number;?></td> 	
 		<td><?php echo $item->description;?></td>
 		<td><?php echo $item->requester;?></td>
 		

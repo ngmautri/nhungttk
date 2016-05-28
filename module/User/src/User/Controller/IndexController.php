@@ -47,7 +47,7 @@ class IndexController extends AbstractActionController {
 		
 		// User is authenticated
 		if ($this->getAuthService ()->hasIdentity ()) {
-			return $this->redirect ()->toRoute ( 'assetcategory' );
+			return $this->redirect ()->toRoute ( 'Inventory' );
 		}
 		
 		$request = $this->getRequest ();
@@ -157,7 +157,10 @@ class IndexController extends AbstractActionController {
 	
 	
 	
-	public function registerConfirmAction() {
+	public function confirmAction() {
+	}
+	
+	public function denyAction() {
 	}
 	
 	// get UserTable

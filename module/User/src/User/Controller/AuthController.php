@@ -14,12 +14,15 @@ use Zend\View\Model\ViewModel;
 use User\Model\User;
 use MLA\Files;
 use Zend\Validator\EmailAddress;
+use Zend\Session\Container;
+
+use User\Model\UserTable;
 
 class AuthController extends AbstractActionController {
+	
 	public $userTable;
 	public $authService;
 	public $registerService;
-	public $massage = 'NULL';
 	
 	/*
 	 * Defaul Action
@@ -53,11 +56,16 @@ class AuthController extends AbstractActionController {
 				) );
 			}
 			
-			$this->getAuthService ()->getAdapter ()->setIdentity ( $email )->setCredential ( $password );
-			
-			$result = $this->getAuthService ()->authenticate ();
+			$this->authService->getAdapter ()->setIdentity ( $email )->setCredential ( $password );
+			$result = $this->authService->authenticate ();
 			
 			if ($result->isValid ()) {
+				
+				$user = $this->userTable->getUserByEmail($email);
+				// create new session 
+				$session = new Container('MLA_USER');
+				$session->offsetSet('user', $user);
+				
 				return $this->redirect ()->toRoute ( 'Inventory' );
 			} else {
 				
@@ -73,27 +81,38 @@ class AuthController extends AbstractActionController {
 		) );
 	}
 	public function logoutAction() {
-		$this->getAuthService ()->clearIdentity ();
+		
+		$session = new Container('MLA_USER');
+		$session->getManager()->destroy();
+		
+		$this->authService->clearIdentity ();
 		$this->flashmessenger ()->addMessage ( "You've been logged out" );
 		return $this->redirect ()->toRoute ( 'login' );
 	}
 	
-	// get UserTable
+	// GETTER AND SETTER
+	
+	
 	public function getUserTable() {
-		if (! $this->userTable) {
-			$sm = $this->getServiceLocator ();
-			$this->userTable = $sm->get ( 'User\Model\UserTable' );
-		}
 		return $this->userTable;
 	}
-	
-	/*
-	 * Get Authentication Service
-	 */
-	public function getAuthService() {
-		if (! $this->authService) {
-			$this->authservice = $this->getServiceLocator ()->get ( 'AuthService' );
-		}
-		return $this->authservice;
+	public function setUserTable(UserTable $userTable) {
+		$this->userTable = $userTable;
+		return $this;
 	}
+	public function getAuthService() {
+		return $this->authService;
+	}
+	public function setAuthService($authService) {
+		$this->authService = $authService;
+		return $this;
+	}
+	public function getRegisterService() {
+		return $this->registerService;
+	}
+	public function setRegisterService($registerService) {
+		$this->registerService = $registerService;
+		return $this;
+	}
+	
 }

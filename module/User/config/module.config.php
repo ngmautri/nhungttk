@@ -48,8 +48,20 @@ return array (
 							),
 					),
 					
+					'logout' => array(
+							'type' => 'literal',
+							'options' => array(
+									'route'    => '/user/auth/logout',
+									'defaults' => array(
+											'module' => 'User',
+											'controller' => 'User\Controller\Auth',
+											'action' => 'logout'
+									),
+							),
+					),
+					
 
-					'register' => array(
+					'user_register' => array(
 							'type' => 'literal',
 							'options' => array(
 									'route'    => '/user/index/register',
@@ -60,7 +72,31 @@ return array (
 									),
 							),
 					),
-						
+					
+					'access_denied' => array(
+							'type' => 'literal',
+							'options' => array(
+									'route'    => '/user/index/deny',
+									'defaults' => array(
+											'module' => 'User',
+											'controller' => 'User\Controller\Index',
+											'action' => 'deny'
+									),
+							),
+					),
+					
+					
+					'user_register_confirmation' => array(
+							'type' => 'literal',
+							'options' => array(
+									'route'    => '/user/index/confirm',
+									'defaults' => array(
+											'module' => 'User',
+											'controller' => 'User\Controller\Index',
+											'action' => 'confirm'
+									),
+							),
+					),
 						
 				)
 									
@@ -101,10 +137,13 @@ return array (
 		'controllers' => array (
 				'invokables' => array (
 						'User\Controller\Index' => 'User\Controller\IndexController',
-						'User\Controller\Auth' => 'User\Controller\AuthController',
 						'User\Controller\Admin' => 'User\Controller\AdminController'
-						
-				) 
+				),
+				'factories' => array (
+						'User\Controller\Role' => 'User\Controller\RoleControllerFactory',
+						'User\Controller\Auth' => 'User\Controller\AuthControllerFactory',
+					)
+				
 		),
 		'view_manager' => array (
 				'display_not_found_reason' => true,

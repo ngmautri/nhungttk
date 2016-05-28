@@ -60,6 +60,30 @@ class UserTable {
 		return $row;
 	}
 	
+	/**
+	 * 
+	 * @param unknown $email
+	 */
+	public function getUserDetailByEmail($email) {
+	
+				$sql =
+			"
+	select
+	*
+	from mla_acl_roles
+	where 1
+	AND mla_acl_roles.id = " . $id ;
+			
+			$adapter = $this->tableGateway->adapter;
+			$statement = $adapter->query($sql);
+		
+			$result = $statement->execute();
+		
+			$resultSet = new \Zend\Db\ResultSet\ResultSet();
+			$resultSet->initialize($result);
+			return $resultSet->current();
+	}
+	
 	/*
 	 *
 	 */

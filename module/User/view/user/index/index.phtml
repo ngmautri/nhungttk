@@ -1,17 +1,7 @@
 
-<img src="<?php echo $this->barcode;?>">
-<!--  <div id="mascot"></div>  -->
-
-<h2> <?php echo $this->massage; ?></h2>
-
-<table border="1">
- <?php foreach ($users as $user) : ?>
-    <tr>
-		<td><?php echo $this->escapeHtml($user->id);?></td>
-		<td><?php echo $this->escapeHtml($user->firstname);?></td>
-		<td><?php echo $this->escapeHtml($user->lastname);?></td>
-		<td><?php echo $this->escapeHtml($user->email);?></td>
-	</tr>
-<?php endforeach; ?>
-</table>
-
+	<ul id="menu" >
+	 <li> <a href="<?php echo $this->baseUrl ?>/user/index/list">User list</a> </li>	
+	 <li> <a href="<?php echo $this->baseUrl ?>/user/role/list">Role Management</a> </li>
+	 	</ul>
+	
+    

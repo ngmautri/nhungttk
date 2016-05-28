@@ -1,0 +1,69 @@
+<h4>Create New Role:</h4>
+<hr>
+
+<?php if (count($errors)>0)
+{
+echo '<div class="alert alert-error">';
+	
+	echo '<ul>';
+	 foreach ($errors as $error) :
+	 echo '<li>'.$error . '</li>';
+	 
+	 endforeach;
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+	
+
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/user/role/add"	method="post" enctype="multipart/form-data" id="NewSP" >
+  <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+      <div class="control-group">
+        <label class="control-label" for="inputTag">Name</label>
+        <div class="controls">
+          <input type="text" id="inputTag" placeholder="" name="role" value="<?php echo $role!==null ? ($role->role) :""?>">
+        </div>
+        </div>
+        
+       <div class="control-group">
+        <label class="control-label" for="inputTag">Parent Role: </label>
+        <div class="controls">
+        	<select name="parent_id" >
+        		<option value="">-------</option>
+        		<?php if (count($roles)>0):
+				 		foreach ($roles as $role) :
+							 echo '<option value ='. $role->id .'>'.$role->role . '</option>';
+						 endforeach;
+					 endif;
+				?>
+	   	</select>
+       </div>
+      </div>
+     
+      <div class="control-group">
+        <label class="control-label" for="inputDescription">remarks</label>
+        <div class="controls">
+          <textarea id="inputDescription" placeholder="" rows="2" name="remarks"><?php echo $role!==null ? ($role->remarks):""?></textarea>
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputTag">Status</label>
+        <div class="controls">
+        	<select name="parent" >
+        		<option selected = "selected" value="Activated">Activated</option>
+        		<option value="Deactivated">Deactivated</option>
+     			</select>
+       </div>
+      </div>
+       
+      <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn"><i class="icon-plus">  </i> Create</button>
+        </div>
+      </div>
+    </form>
+
+
+
+<div id = "dialog" style="display: none;">Check code...</div>

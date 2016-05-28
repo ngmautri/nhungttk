@@ -3,54 +3,110 @@
 <html lang="en">
 <head>
 <meta charset=" ISO 8859-1">
-        <?php echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false)?>
+        <?php echo $this->headTitle('Mascot International (Lao) Sole co., Ltd')?>
 
         <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')?>
 
         <!-- Le styles -->
         <?php
 								
-echo $this->headLink ( array (
+								echo $this->headLink ( array (
 										'rel' => 'shortcut icon',
 										'type' => 'image/vnd.microsoft.icon',
 										'href' => $this->basePath () . '/img/favicon.ico' 
 								) )->prependStylesheet ( $this->basePath () . '/css/bootstrap-responsive.min.css' )->prependStylesheet ( $this->basePath () . '/css/style.css' )->prependStylesheet ( $this->basePath () . '/css/bootstrap.min.css' )?>
 
-        <!-- Scripts -->
+   <link rel="stylesheet" href="/jquery/jquery-ui.css">
+   <link rel="stylesheet" href="/css/tables.css">
+   <link href="/css/lightgallery.css" rel="stylesheet">
+
+<!-- Scripts -->
         <?php
 								
-echo $this->headScript ()->prependFile ( $this->basePath () . '/js/html5.js', 'text/javascript', array (
+								echo $this->headScript ()->prependFile ( $this->basePath () . '/js/html5.js', 'text/javascript', array (
 										'conditional' => 'lt IE 9' 
-								) )->prependFile ( $this->basePath () . '/js/mascot.js' )->prependFile ( $this->basePath () . '/js/mascot_da.js' )->prependFile ( $this->basePath () . '/js/mascot_nl.js' )->prependFile ( $this->basePath () . '/js/mascot_no.js' )->prependFile ( $this->basePath () . '/js/mascot_se.js' )->prependFile ( $this->basePath () . '/js/mascot_fi.js' )->prependFile ( $this->basePath () . '/js/mascot_fr.js' )->prependFile ( $this->basePath () . '/js/bootstrap.min.js' )->prependFile ( $this->basePath () . '/js/jquery-1.7.2.min.js' )?>
+								) )->prependFile ( $this->basePath () . '/js/mla.js' )->prependFile ( $this->basePath () . '/js/jquery.js' )?>
+	<script src="/js/lightgallery-all.min.js"></script>
+    <script src="/js/lg-thumbnail.js"></script>
+    <script src="/js/lg-fullscreen.min.js"></script>
+    <script src="/jquery/jquery-ui.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/Observer.js"></script>
+    <script src="/js/NMT.js"></script>
+    
+  
+  <script>
+  var timerSubject = new Subject();
+
+  $(function() {
+	    $( "input[id='movement_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+   });
 
 
-								
-    </head>
+  $(function() {
+	    $( "input[id='start_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+ });
+
+  $(function() {
+	    $( "input[id='end_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+});
+
+  $(function() {
+	   // $( "input[type=submit], button" ).button();
+  });
+
+  $(function() {
+	    $( "#tabs" ).tabs({
+	      beforeLoad: function( event, ui ) {
+	        ui.jqXHR.fail(function() {
+	          ui.panel.html(
+	            "Couldn't load this tab. We'll try to fix this as soon as possible. " +
+	            "If this wouldn't be a demo." );
+	        });
+	      }
+	    });
+	  });
+  
+  $(function() {
+	    $( "#menu" ).menu();
+	  });
+
+  </script>
+
+  
+</head>
 <body>
+
+
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
 				<a class="btn btn-navbar" data-toggle="collapse"
 					data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 					class="icon-bar"></span> <span class="icon-bar"></span>
-				</a> <a class="brand" href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Skeleton Application') ?></a>
+				</a> <a class="brand" href="<?php echo $this->url('Inventory') ?>">Mascot
+					International (Lao) Sole co., Ltd</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
+						<li class="active"><a href="<?php echo $this->url('Inventory') ?>"><?php echo $this->translate('Home') ?></a></li>
+							<li class=""><a href="/user/auth/logout">Logout</a></li>
 					</ul>
 				</div>
 				<!--/.nav-collapse -->
 			</div>
 		</div>
 	</div>
+	
 	<div class="container">
             <?php echo $this->content; ?>
             <hr>
 		<footer>
-			<p>&copy; 2005 - <?php echo date('Y') ?> by Zend Technologies Ltd. <?php echo $this->translate('All rights reserved.') ?></p>
+			<p>Email: nmt@mascot.dk</p>
 		</footer>
 	</div>
 	<!-- /container -->
         <?php echo $this->inlineScript()?>
     </body>
+    
+
 </html>

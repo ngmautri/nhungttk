@@ -19,19 +19,44 @@ use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Mime;
 
 use Zend\Mail\Header\ContentType;
+use User\Service\Acl;
 
 class UserTest extends PHPUnit_Framework_TestCase {
 	
-	/*
-	public function testUserTable() {
-		$resultSet = new ResultSet ();
-		$userTable = Bootstrap::getServiceManager ()->get ( 'User\Model\UserTable' );
-		// var_dump($userTable->getUserByID(1));
-		$u =  $userTable->getUserByEmail ("ngmautri@outlook.com1");
-		var_dump ( count($u) );
 		
-	}
-	*/
+	
+	public function testUserTable() {
+		//$userTable = Bootstrap::getServiceManager ()->get ( 'User\Model\AclRoleTable' );
+		 //var_dump($userTable->getAclRoleResources());
+		/*
+		$results  = $userTable->initAcl();
+		var_dump($results->isAccessAllowed('spare-part-controller','Inventory\Controller\Spareparts-add',null));
+		*/
+		
+		//$userTable = Bootstrap::getServiceManager ()->get ( 'User\Model\AclRoleTable' );
+		
+		
+		/*
+		$data = array();
+		$index = array();
+		
+		
+		$results = $userTable->getRoles(0,0);
+		foreach ($results as $row)
+		{
+			$id = $row["id"];
+			$parent_id = $row->parent_id === NULL ? "NULL" :  $row->parent_id;
+			$data[$id] = $row;
+			$index[$parent_id][] = $id;
+		}
+		$this->display_tree($index, $data, "NULL", 0);
+		var_dump($index);
+		*/
+		
+		$userTable = Bootstrap::getServiceManager ()->get ( 'User\Service\Acl' );
+		$results  = $userTable->initAcl();
+		var_dump($results);
+		}
 	
 	/*
 	public function testDI() {
@@ -51,7 +76,7 @@ class UserTest extends PHPUnit_Framework_TestCase {
 	}
 	*/
 	
-	
+	/*
 	public function testSendingMail() {
 		
 $emailText = <<<EOT
@@ -92,5 +117,22 @@ EOT;
 		echo $emailText;
 	
 	}
+	*/
+	
+	function display_tree($index,$data,$parent_id, $level)
+	{
+			$parent_id = $parent_id === NULL ? "NULL" : $parent_id;
+		if (isset($index[$parent_id])) {
+			foreach ($index[$parent_id] as $id) {
+				if(isset($data[$parent_id])):
+					echo $level . ". " . str_repeat(" - ", $level) . $data[$parent_id]->role .'//'.$data[$id]->role . "==". $data[$id]->path . "\n";
+				else:
+					echo $level . ". " . str_repeat(" - ", $level) .$data[$id]->role . "==". $data[$id]->path . "\n";
+				endif;
+				$this->display_tree($index,$data,$id, $level+1);
+			}
+		}
+	}
+	
 }
 

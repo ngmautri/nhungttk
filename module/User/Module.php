@@ -14,8 +14,19 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\Session\Container;
 use User\Model\User;
 use User\Model\UserTable;
+use User\Model\AclResource;
+use User\Model\AclResourceTable;
+use User\Model\AclRole;
+use User\Model\AclRoleTable;
+use User\Model\AclRoleResource;
+use User\Model\AclRoleResourceTable;
+use User\Model\AclWhiteList;
+use User\Model\AclWhiteListTable;
+use User\Model\AclUserRole;
+use User\Model\AclUserRoleTable;
 
 class Module {
 	
@@ -40,9 +51,17 @@ class Module {
 	public function onBootstrap(MvcEvent $e) {
 		$eventManager = $e->getApplication ()->getEventManager ();
 		
-		$eventManager->attach ( MvcEvent::EVENT_DISPATCH, function ($e) {
-			sprintf ( 'executed on dispatch process' );
-		} );
+		
+		$eventManager->attach ( MvcEvent::EVENT_ROUTE, array (
+				$this,'checkIdentity'
+		), -100 );
+		
+		
+		$eventManager->attach ( MvcEvent::EVENT_DISPATCH, array (
+				$this,
+				'checkACL' 
+		), -100 );
+		
 	}
 	
 	public function getConfig() {
@@ -57,12 +76,149 @@ class Module {
 				) 
 		);
 	}
+	function checkACL(MvcEvent $e) {
+		$match = $e->getRouteMatch ();
+		$app = $e->getApplication ();
+		$sm = $app->getServiceManager ();
+		
+		$controller = $e->getRouteMatch ()->getParam ( 'controller' );
+		$action = $e->getRouteMatch ()->getParam ( 'action' );
+		$action = str_replace("-","",$action);
+		$action = str_replace("_","",$action);
+		$requestedResourse = strtoupper($controller . "-" . $action = str_replace("-","",$action));
+		
+		$session = new Container ( 'MLA_USER' );
+		$hasUser = $session->offsetExists ( 'user' );
+		$hasACL = $session->offsetExists ( 'ACL' );
+		
+		if ($hasUser) {
+			
+			// Route is whitelisted
+			$name = $match->getMatchedRouteName ();
+			if (in_array ( $name, array (
+					'login',
+					'logout',
+					'user_register',
+					'test_console',
+					'user_register_confirmation',
+					'access_denied' 
+			) )) {
+				return;
+			}
+			
+			$user = $session->offsetGet ( 'user' );
+			
+			/*
+			if(!$hasACL)
+			{
+				// get ACL
+				$acl = $sm->get ( 'User\Service\Acl' );
+				$acl = $acl->initAcl ();
+				$session->offsetSet('ACL', $acl);
+			}else{
+				
+				$acl = $session->offsetGet ( 'ACL' );
+			}
+			*/
+			
+			$acl = $sm->get ( 'User\Service\Acl' );
+			$acl = $acl->initAcl ();
+			
+			
+			// get user role
+			$user_id = $user ['id'];
+			$aclUserRole = $sm->get ( 'User\Model\AclUserRoleTable' );
+			$roles = $aclUserRole->getRoleByUserId ( $user_id );
+			
+			
+			$isAllowedAccess = false;
+			foreach ( $roles as $role ) {
+				$isAllowed = $acl->isAccessAllowed ($role->role, $requestedResourse, null );
+				//var_dump($requestedResourse);
+				//var_dump($role->role);
+				if ($isAllowed) {
+					$isAllowedAccess = true;
+					break;
+				}
+			}
+			
+			//var_dump($requestedResourse);
+			
+			if ($isAllowedAccess===false) {
+				//die('<h3>Permission denied</h3>' . $requestedResourse);
+				
+				// Redirect to the user login page, as an example
+				
+				$router = $e->getRouter ();
+				$url = $router->assemble ( array (), array (
+						'name' => 'access_denied' 
+				) );
+				
+				$response = $e->getResponse ();
+				$response->getHeaders ()->addHeaderLine ( 'Location', $url );
+				$response->setStatusCode ( 302 );
+				
+				return $response;				
+			}
+		}
+	}
+	
+	function checkIdentity(MvcEvent $e) {
+	
+		$match = $e->getRouteMatch();
+		$app = $e->getApplication();
+		$sm = $app->getServiceManager();
+	
+		$controller = $e->getRouteMatch()->getParam('controller');
+		$action = $e->getRouteMatch()->getParam('action');
+		$requestedResourse = $controller . "-" . $action;
+	
+		$auth = $sm->get('AuthService');
+	
+		// No route match, this is a 404
+		if (!$match instanceof RouteMatch) {
+			return;
+		}
+	
+	
+		// Route is whitelisted
+		$name = $match->getMatchedRouteName();
+		if (in_array ( $name, array (
+						'login',
+					'logout',
+					'user_register',
+					'test_console',
+					'user_register_confirmation',
+					'access_denied' 
+			) )) {
+				return;
+		}
+	
+		// User is authenticated
+		if ($auth->hasIdentity()) {
+			return;
+		}
+	
+		// Redirect to the user login page, as an example
+		$router   = $e->getRouter();
+		$url      = $router->assemble(array(), array(
+				'name' => 'login'
+		));
+	
+		$response = $e->getResponse();
+		$response->getHeaders()->addHeaderLine('Location', $url);
+		$response->setStatusCode(302);
+	
+		return $response;
+	
+	}
+	
 	
 	// Add this method:
 	public function getServiceConfig() {
-		
 		return array (
 				'factories' => array (
+						
 						'User\Model\UserTable' => function ($sm) {
 							$tableGateway = $sm->get ( 'UserTableGateway' );
 							$table = new UserTable ( $tableGateway );
@@ -76,9 +232,79 @@ class Module {
 							return new TableGateway ( 'mla_users', $dbAdapter, null, $resultSetPrototype );
 						},
 						
-						'User\Service\RegisterService'  => 'User\Service\RegisterServiceFactory',
+						// Acl Resource
+						'User\Model\AclResourceTable' => function ($sm) {
+							$tableGateway = $sm->get ( 'AclResourceTableGateway' );
+							$table = new AclResourceTable ( $tableGateway );
+							return $table;
+						},
 						
+						'AclResourceTableGateway' => function ($sm) {
+							$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+							$resultSetPrototype = new ResultSet ();
+							$resultSetPrototype->setArrayObjectPrototype ( new AclResource () );
+							return new TableGateway ( 'mla_acl_resources', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// Acl Role
+						'User\Model\AclRoleTable' => function ($sm) {
+							$tableGateway = $sm->get ( 'AclRoleTableGateway' );
+							$table = new AclRoleTable ( $tableGateway );
+							return $table;
+						},
+						
+						'AclRoleTableGateway' => function ($sm) {
+							$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+							$resultSetPrototype = new ResultSet ();
+							$resultSetPrototype->setArrayObjectPrototype ( new AclRole () );
+							return new TableGateway ( 'mla_acl_roles', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// Acl Role
+						'User\Model\AclRoleResourceTable' => function ($sm) {
+							$tableGateway = $sm->get ( 'AclRoleResourceTableGateway' );
+							$table = new AclRoleResourceTable ( $tableGateway );
+							return $table;
+						},
+						
+						'AclRoleResourceTableGateway' => function ($sm) {
+							$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+							$resultSetPrototype = new ResultSet ();
+							$resultSetPrototype->setArrayObjectPrototype ( new AclRoleResource () );
+							return new TableGateway ( 'mla_acl_role_resource', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// Acl White List
+						'User\Model\AclWhiteListTable' => function ($sm) {
+							$tableGateway = $sm->get ( 'AclWhiteListTableGateway' );
+							$table = new AclWhiteListTable ( $tableGateway );
+							return $table;
+						},
+						
+						'AclWhiteListTableGateway' => function ($sm) {
+							$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+							$resultSetPrototype = new ResultSet ();
+							$resultSetPrototype->setArrayObjectPrototype ( new AclWhiteList () );
+							return new TableGateway ( 'mla_acl_whitelist', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// Acl User Rolse
+						'User\Model\AclUserRoleTable' => function ($sm) {
+							$tableGateway = $sm->get ( 'AclUserRoleTable' );
+							$table = new AclUserRoleTable ( $tableGateway );
+							return $table;
+						},
+						
+						'AclUserRoleTable' => function ($sm) {
+							$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+							$resultSetPrototype = new ResultSet ();
+							$resultSetPrototype->setArrayObjectPrototype ( new AclUserRole () );
+							return new TableGateway ( 'mla_acl_user_role', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						'User\Service\RegisterService' => 'User\Service\RegisterServiceFactory',
 						'User\Listener\RegisterListener' => 'User\Listener\RegisterListenerFactory',
+						'User\Service\Acl' => 'User\Service\AclFactory' 
 				) 
 		);
 	}

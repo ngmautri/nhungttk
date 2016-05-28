@@ -101,3 +101,6 @@ as mla_users_1
 as mla_purchase_requests
 
 where 1
+
+and pr_year = year(now())
+and pr

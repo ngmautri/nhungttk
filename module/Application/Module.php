@@ -9,6 +9,7 @@
  */
 namespace Application;
 
+use Zend\Mvc\ModuleRouteListener;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
@@ -20,13 +21,23 @@ use Application\Model\DepartmentMember;
 use Application\Model\DepartmentMemberTable;
 
 class Module {
+	
+
 	public function onBootstrap(MvcEvent $e) {
+		
+		$eventManager = $e->getApplication ()->getEventManager ();
+		$moduleRouteListener = new ModuleRouteListener ();
+		$moduleRouteListener->attach ( $eventManager );
+		
+		/*
 		$eventManager = $e->getApplication ()->getEventManager ();
 		
 		$eventManager->attach ( MvcEvent::EVENT_DISPATCH, function ($e) {
 			sprintf ( 'executed on dispatch process' );
 		} );
+		*/
 	}
+	
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
 	}
@@ -70,6 +81,9 @@ class Module {
 						$resultSetPrototype->setArrayObjectPrototype ( new DepartmentMember() );
 						return new TableGateway ( 'mla_departments_members', $dbAdapter, null, $resultSetPrototype );
 						} ,
+						
+						'Application\Service\ApplicationService' => 'Application\Service\ApplicationServiceFactory',
+						
 						
 						
 				)

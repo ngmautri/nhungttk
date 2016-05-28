@@ -45,6 +45,7 @@ class DepartmentTable {
 		
 		$data = array (
 				'name' => $input->name,
+				'short_name' => $input->short_name,
 				'description' => $input->description,
 				'status' => $input->status,
 				'created_on' => date ( 'Y-m-d H:i:s' ),
@@ -61,6 +62,7 @@ class DepartmentTable {
 	public function update(Department $input, $id) {
 		$data = array (
 				'name' => $input->name,
+				'short_name' => $input->short_name,
 				'description' => $input->description,
 				'status' => $input->status,
 				'created_on' => date ( 'Y-m-d H:i:s' ),

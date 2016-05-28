@@ -53,6 +53,8 @@ class DepartmentController extends AbstractActionController {
 				
 				$input = new Department ();
 				$input->name = $request->getPost ( 'name' );
+				$input->short_name = $request->getPost ( 'short_name' );
+				
 				$input->description = $request->getPost ( 'description' );
 				$input->status = $request->getPost ( 'status' );
 				$input->created_by = $user ["id"];

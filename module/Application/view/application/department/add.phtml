@@ -24,13 +24,20 @@ echo '<div class="alert alert-error">';
           <input type="text" id="inputTag" placeholder="" name="name" value="<?php echo $department!==null ? ($department->name) :""?>">
         </div>
       </div>
-      
+       <div class="control-group">
+        <label class="control-label" for="inputTag">Short Name</label>
+        <div class="controls">
+          <input type="text" id="inputTag" placeholder="" name="short-name" value="<?php echo $department!==null ? ($department->short_name) :""?>">
+        </div>
+      </div>
       <div class="control-group">
         <label class="control-label" for="inputDescription">Description</label>
         <div class="controls">
           <textarea id="inputDescription" placeholder="" rows="2" name="description"><?php echo $department!==null ? ($department->description):""?></textarea>
         </div>
       </div>
+      
+      
       
       <div class="control-group">
         <label class="control-label" for="inputTag">Status</label>

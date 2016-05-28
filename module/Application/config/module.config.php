@@ -19,6 +19,7 @@ return array (
 										) 
 								) 
 						),
+						
 						// The following is a route to simplify getting started creating
 						// new controllers and actions without needing to create a new
 						// module. Simply drop new controllers in, and you can access them
@@ -72,7 +73,8 @@ return array (
 				
 				'factories' => array (
 						'Application\Controller\Department' => 'Application\Controller\DepartmentControllerFactory',
-					)
+						'Application\Controller\Acl' => 'Application\Controller\AclControllerFactory',
+				)
 		),
 		'view_manager' => array (
 				'display_not_found_reason' => true,

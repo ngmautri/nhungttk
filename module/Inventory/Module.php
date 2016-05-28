@@ -12,6 +12,7 @@ namespace Inventory;
 /*
  *
  */
+use Zend\Mvc\ModuleRouteListener;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
@@ -90,55 +91,16 @@ class Module {
 	 * The onBootstrap() method is called for every module implementing this feature, on every page request,
 	 * and should only be used for performing lightweight tasks such as registering event listeners.
 	 */
+	
 	public function onBootstrap(MvcEvent $e) {
+		
 		$eventManager = $e->getApplication ()->getEventManager ();
-		
-		// worked with -100, or dispatch
-		$eventManager->attach ( MvcEvent::EVENT_ROUTE, array (
-				$this,'checkIdentity' 
-		), -100 );
+		$moduleRouteListener = new ModuleRouteListener ();
+		$moduleRouteListener->attach ( $eventManager );
 	
-		
 	}
 	
-	function checkIdentity(MvcEvent $e) {
-		
-		 	$match = $e->getRouteMatch();
-		 	$app = $e->getApplication();
-		 	$sm = $app->getServiceManager();
-		 	
-		 	$auth = $sm->get('AuthService');
-
-            // No route match, this is a 404
-            if (!$match instanceof RouteMatch) {
-               return;
-            }
-            
-
-            // Route is whitelisted
-            $name = $match->getMatchedRouteName();
-            if (in_array($name, array('login','register','test_console'))) {
-                return;
-            }
-
-            // User is authenticated
-            if ($auth->hasIdentity()) {
-                return;
-            }
-
-            // Redirect to the user login page, as an example
-            $router   = $e->getRouter();
-            $url      = $router->assemble(array(), array(
-                'name' => 'login'
-            ));
-
-            $response = $e->getResponse();
-            $response->getHeaders()->addHeaderLine('Location', $url);
-            $response->setStatusCode(302);
-
-            return $response;		
-		
-	}
+	
 	
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
@@ -413,6 +375,7 @@ class Module {
 						
 						'Inventory\Services\AssetSearchService'  => 'Inventory\Services\AssetSearchServiceFactory',
 						'Inventory\Services\SparePartsSearchService'  => 'Inventory\Services\SparePartsSearchServiceFactory',
+						'Inventory\Services\ArticleSearchService'  => 'Inventory\Services\ArticleSearchServiceFactory',
 						'Inventory\Listener\PictureUploadListener' => 'Inventory\Listener\PictureUploadListenerFactory',
 				)
 				,

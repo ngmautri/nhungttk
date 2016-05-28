@@ -1,29 +1,25 @@
 
 <?php // var_dump( $hits) ?>
-
 <ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare-part Category</a></li>
+ <li><a href="<?php echo $this->baseUrl ?>/inventory/article/list">Item List</a></li>
  <li><a href="<?php echo $this->baseUrl ?>/procurement/pr/cart">MY ORDER LIST<span id="cart_items" class="badge"><?php echo $total_cart_items ?></span>	</a></li>
 </ul>
 
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/article"	method="get" enctype="multipart/form-data">
       <input type="text" name = "query" class="">
       <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
    </form>
 
- 
 <?php if (!$hits==null): 
 echo '<span class="label label-info">';
 echo count($hits).' result(s) found for query: "' . $query;
-echo '</span><br>';
+echo '</span><hr>';
 ?>
-
 <table class="pure-table pure-table-bordered">
 <thead>
 	<tr>
-		<td><b>Tag</b></td>
 		<td><b>Name</b></td>
-		<td><b>Code</b></td>
+		<td><b>Unit</b></td>
 		<td><b>Action</b></td>
 	</tr>
 </thead>
@@ -37,19 +33,17 @@ echo '</span><br>';
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 	 
 	 ?>
-
-    	<td><?php echo $this->escapeHtml($hit->tag);?></td>
-		<td><span id="<?php echo $hit->sparepart_id?>_name"><?php echo $this->escapeHtml($hit->name);?></span></td>
-		<td><?php echo $this->escapeHtml($hit->code);?></td>
+	 
+ 		<td><span id="<?php echo $hit->article_id?>_name"><?php echo $this->escapeHtml($hit->name);?></span></td>
+		<td><span id="<?php echo $hit->article_id;?>_unit"><?php echo $hit->unit;?></span>
+	
 		<td>
-		<a href="#" onclick="openPRCart('<?php echo $hit->sparepart_id?>');"><i class="icon-shopping-cart"></i>Order</a>
+			<a href="#" onclick="openPRCart('<?php echo $hit->article_id?>');"><i class="icon-shopping-cart"></i>Order</a>
+	
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $hit->article_id?>">  Edit</a>
+				<a href="<?php echo $this->baseUrl ?>/inventory/asset/upload-picture1?id=<?php echo $hit->article_id?>">  Picture</a>
 		
-		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $hit->sparepart_id?>">  Edit</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/upload-picture?id=<?php echo $hit->sparepart_id?>">  Picture</a>
-					
-		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $hit->sparepart_id?>">  Receive</a>			
-		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $hit->sparepart_id?>">  Issue</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $hit->sparepart_id?>">  Detail</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $hit->article_id?>">  Detail</a>
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -58,6 +52,7 @@ echo '</span><br>';
 
 
 <?php endif; ?>
+
 
 <!-- Modal -->
 	<div id="myModal" class="modal hide" role="dialog">
@@ -128,7 +123,7 @@ echo '</span><br>';
 	      
 		  <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	        <button onclick="addItemToCart('SPARE_PART');" type="button" class="btn btn-primary">Add To Cart</button>
+	        <button onclick="addItemToCart('ARTICLE');" type="button" class="btn btn-primary">Add To Cart</button>
 	      </div>
 	   </div>
 	</div>

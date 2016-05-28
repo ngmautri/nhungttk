@@ -1,11 +1,23 @@
 
 <ul class="nav nav-pills">
  <li><a href="<?php echo $this->baseUrl ?>/inventory/article/add">Add New Item</a></li>
- <li><a href="<?php echo $this->baseUrl ?>/procurement/pr/cart"></i>MY ORDER LIST<span id="cart_items" class="badge"><?php echo $total_cart_items ?></span>	</a></li>
+ <li><a href="<?php echo $this->baseUrl ?>/procurement/pr/cart">MY ORDER LIST<span id="cart_items" class="badge"><?php echo $total_cart_items ?></span>	</a></li>
+	<li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Purchase Request (PR)
+    <span class="caret"></span></a>
+    <ul class="dropdown-menu">
+      <li><a href="/procurement/pr/my-pr">My PR</a></li>
+      <li><a href="/procurement/pr/my-submitted_items">My PR Items</a></li>
+      <li class="divider"></li>
+      <li><a href="/procurement/delivery/get-notification">Delivery Notification</a></li>
+    </ul>
+  </li>
+
 </ul>
 
+ 	 
 
-  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/article"	method="get" enctype="multipart/form-data">
       <input type="text" name = "query" class="">
       <button type="submit" class="btn"><i class="icon-search"></i>Search</button>
    </form>
@@ -16,26 +28,26 @@
 
 if ($total_articles <= 0) {
 	
-	echo 'No articles found!';
+	echo 'No items found!';
 } else {
 
 	if (! is_null ( $paginator )) {
-		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_articles . ' spare parts found!';
+		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_articles . ' items found!';
 	}else{	
-		echo $total_articles . ' articles found!';
+		echo $total_articles . ' items found!';
 	}
 	
 ?>
-
-
-
 
 <table class="pure-table pure-table-bordered">
 <thead>
 	<tr>
 		<td><b>Name</b></td>
+		<!-- td><b>Name-LA</b></td> -->
 		<td><b>Description</b></td>
-		<td><b>Status</b></td>
+		<td><b>Code</b></td>
+		<td><b>Unit</b></td>
+		<td><b>Remark</b></td>
 		<td><b>Action</b></td>
 	</tr>
 </thead>
@@ -63,11 +75,16 @@ if ($total_articles <= 0) {
 		}
 		?>
 		</td>
-		<td><?php echo $this->escapeHtml($a->description);?> 
-		<td><?php echo $this->escapeHtml($a->status);?> 
+		<!-- <td><?php echo$this->escapeHtml($a->name_local);?> -->
+		<td><?php echo $this->escapeHtml($a->description);?>
+		<td><?php echo $this->escapeHtml($a->code);?> 
+		<td><span id="<?php echo $this->escapeHtml($a->id);?>_unit"><?php echo $this->escapeHtml($a->unit);?></span>
+		<td><?php echo $this->escapeHtml($a->remarks);?> 
+		 
 		<td>
 		<a href="#" onclick="openPRCart('<?php echo $a->id?>');"><i class="icon-shopping-cart"></i>Order</a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($a->id);?>">Issue</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>">Edit</a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a>
 		
 		</td>
@@ -81,47 +98,52 @@ if ($total_articles <= 0) {
 <br>
 
 <?php
+
+//===============================
+if (! is_null ( $paginator )):
+		
 	
-	if (! is_null ( $paginator )) {
-		
-		//change it only
-		$base=$this->baseUrl . '/inventory/spareparts/list';
-		
-		$last 	= $base . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;		
-		$first 	= $base . '?page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page)-1;
-		$p2 = ($paginator->page)+1;
-		
-		$prev = $base . '?page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . '?page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		
-		echo '<ul class="pagination">';
-		
-		if($paginator->page != 1){
-			echo '<li><a href="'.  $first.'"> |< </a></li>';
-			echo '<li><a href="'.  $prev .'"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base. '?page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-		
-			
-			if ($i == $paginator->page) {
-				echo   '<li><a class="active" href="#">'.$i.'</a></li>';
-			} else {
-				echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
-			}
-		}
-		if($paginator->page != $paginator->totalPages){
-			echo '<li><a href="'.  $next.'"> > </a></li>';
-			echo '<li><a href="'.  $last .'"> >| </a></li>';
-		}
-		echo '</ul>';
+	//change it only
+	$base=$this->baseUrl . '/inventory/article/list';
+	$_connector_symbol = '?';
+
+	$last 	= $base . $_connector_symbol.'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+	$first 	= $base . $_connector_symbol.'page=1&perPage=' . $paginator->resultsPerPage;
+
+	$p1 = ($paginator->page)-1;
+	$p2 = ($paginator->page)+1;
+
+	$prev = $base . $_connector_symbol.'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+	$next = $base . $_connector_symbol.'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+
+	echo '<ul class="pagination">';
+
+	if($paginator->page != 1 AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $first.'"> |< </a></li>';
+		echo '<li><a href="'.  $prev .'"> < </a></li>';
 	}
+
+	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+		$url = $base. $_connector_symbol.'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+			
+		if ($i == $paginator->page) {
+			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
+		} else {
+			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
+		}
+	}
+	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $next.'"> > </a></li>';
+		echo '<li><a href="'.  $last .'"> >| </a></li>';
+	}
+	echo '</ul>';
+endif;
+
 }
+//===============================
 ?>
 
 
@@ -160,12 +182,21 @@ if ($total_articles <= 0) {
         </div>
       </div>
       
+      <div class="control-group">
+        <label class="control-label" for="inputTag">Unit</label>
+        <div class="controls">
+          <input type="text" id="item_unit" placeholder="" name="quantity" value="">
+        </div>
+      </div>
+      
        <div class="control-group">
         <label class="control-label" for="inputTag">Quantity:</label>
         <div class="controls">
           <input type="text" id="item_quantity" placeholder="" name="quantity" value="">
         </div>
       </div>
+      
+     
       
       <div class="control-group">
         <label class="control-label" for="inputNameLocal">Requested Delivery Date:</label>

@@ -782,15 +782,11 @@ class SparepartsController extends AbstractActionController {
 			$spareparts = $this->sparePartCategoryMemberTable->getLimitMembersByCatIdWithBalance ($id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
-		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
-		
 		return new ViewModel ( array (
 				'category' => $category,
 				'total_spareparts' => $totalResults,
 				'spareparts' => $spareparts,
 				'paginator' => $paginator,
-				'total_cart_items' => $total_cart_items,
-				
 		) );
 	}
 	

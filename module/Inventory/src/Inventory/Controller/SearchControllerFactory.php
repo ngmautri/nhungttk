@@ -27,7 +27,8 @@ class SearchControllerFactory implements FactoryInterface {
 		//User Table
 		$tbl =  $sm->get ('User\Model\UserTable' );
 		$controller->setUserTable($tbl);
-			
+		
+		
 		// Purchase Request Cart Item table
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestCartItemTable' );
 		$controller->setPurchaseRequestCartItemTable($tbl );

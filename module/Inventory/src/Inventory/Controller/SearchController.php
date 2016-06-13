@@ -13,6 +13,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 use ZendSearch\Lucene\Index\Term;
+use ZendSearch\Lucene\Search\Query\MultiTerm;
+
 use ZendSearch\Lucene\Search\Query\Wildcard;
 
 use Inventory\Services\ArticleSearchService;
@@ -27,7 +29,7 @@ class SearchController extends AbstractActionController {
 	private $assetSearchService;
 	private $sparePartSearchService;
 	private $articleSearchService;
-	private  $purchaseRequestCartItemTable;
+	private $purchaseRequestCartItemTable;
 	private $authService;
 	private $userTable;
 	
@@ -101,10 +103,7 @@ class SearchController extends AbstractActionController {
 	}
 	
 	public function sparepartAction() {
-	
-		$identity = $this->authService->getIdentity();
-		$user=$this->userTable->getUserByEmail($identity);
-		
+			
 		//$query = $this->params ()->fromQuery ( 'query' );
 	
 		$q = $this->params ()->fromQuery ( 'query' );		
@@ -148,23 +147,25 @@ class SearchController extends AbstractActionController {
 			return $response;
 		}
 
-		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
-		
-		return new ViewModel ( array (
+			return new ViewModel ( array (
 				'query' => $q,
 				'hits' => $hits,
-				'total_cart_items' => $total_cart_items,
-				
 		));
 	}
 	
 	public function articleAction() {
 		
-		$identity = $this->authService->getIdentity();
-		$user=$this->userTable->getUserByEmail($identity);
-		
-	
 		//$query = $this->params ()->fromQuery ( 'query' );
+		$user_id = $this->UserPlugin()->getUser()['id'];
+		$user = $this->userTable->getUserDepartment($user_id);
+		
+		if(!$user == null){
+			$department = $user->department_id;
+		}else{
+			$department=0;
+		}
+		
+		//var_dump($department);
 	
 		$q = $this->params ()->fromQuery ( 'query' );
 		$json = (int) $this->params ()->fromQuery ( 'json' );
@@ -179,10 +180,10 @@ class SearchController extends AbstractActionController {
 		if (strpos($q,'*') !== false) {
 			$pattern = new Term($q);
 			$query = new Wildcard($pattern);
-			$hits = $this->articleSearchService->search($query,0);
+			$hits = $this->articleSearchService->search($query,$department);
 	
 		}else{
-			$hits = $this->articleSearchService->search($q,0);
+			$hits = $this->articleSearchService->search($q,$department);
 		}
 	
 	
@@ -207,15 +208,9 @@ class SearchController extends AbstractActionController {
 			return $response;
 		}
 		
-		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
-		
-	
-		return new ViewModel ( array (
+			return new ViewModel ( array (
 				'query' => $q,
 				'hits' => $hits,
-				'total_cart_items' => $total_cart_items,
-				
-				
 		));
 	}
 	

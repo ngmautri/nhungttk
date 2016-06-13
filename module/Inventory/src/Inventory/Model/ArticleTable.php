@@ -199,6 +199,12 @@ WHERE 1
 		endif;
 	}
 	
+	/**
+	 * 
+	 * @param unknown $user_id
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 */
 	public function getArticles($user_id,$limit, $offset){
 	
 		$adapter = $this->tableGateway->adapter;

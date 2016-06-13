@@ -35,11 +35,15 @@ class IndexController extends AbstractActionController {
 			$aclUserRole= $this->getArticlePictureTable();
 			$roles = $aclUserRole;
 		}
-		
+		$this->
 		return new ViewModel ( array (
 				'user' => $aclUserRole,
 		) );
 		*/
+		
+		return new ViewModel ( array (
+				'user' => $this->UserPlugin()->getUser(),
+		) );
 	}
 	
 	private function getArticlePictureTable() {

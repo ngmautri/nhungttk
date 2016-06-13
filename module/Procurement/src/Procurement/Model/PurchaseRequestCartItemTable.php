@@ -172,7 +172,8 @@ on mla_spareparts.id = mla_purchase_cart.sparepart_id
 	
 	
 	/**
-	 * 
+	 * Set All Cart Items as ORDERED
+	 *
 	 * @param unknown $user_id
 	 */
 	public function setCartItemsAsOrdered($user_id) {
@@ -198,9 +199,42 @@ and mla_purchase_cart.created_by = " . $user_id;
 		return $resultSet;
 	}
 	
+
 	/**
 	 * 
+	 * 
+	 * @param unknown $seletect_items must look like <code> (12,12,12)</code)
+	 */
+	public function setSelectedCartItemsAsOrdered($seletect_items) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = "
+update
+(
+   mla_purchase_cart
+)
+set  mla_purchase_cart.status  = 'ORDERED'
+where 1
+and mla_purchase_cart.id  IN " . $seletect_items;
+	
+		// echo ($sql);
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	
+	
+	/**
+	 * Add all cart items as pr items.
+	 * 
 	 * @param unknown $user_id
+	 * @param unknown $pr_id
+	 * @return \Zend\Db\ResultSet\ResultSet
 	 */
 	public function submitCartItems($user_id, $pr_id) {
 		$adapter = $this->tableGateway->adapter;
@@ -222,7 +256,7 @@ insert into mla_purchase_request_items
     mla_purchase_request_items.created_by
 )
 select
-".$pr_id.",
+	".$pr_id.",
 	mla_purchase_cart.priority,
     mla_purchase_cart.name,
     mla_purchase_cart.EDT,
@@ -238,6 +272,59 @@ from mla_purchase_cart
 where 1
 and mla_purchase_cart.status is null
 and mla_purchase_cart.created_by = " . $user_id;
+	
+		// echo ($sql);
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	/**
+	 * Add selected cart items as pr items.
+	 *
+	 * @param unknown $user_id
+	 * @param unknown $pr_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function submitSelectedCartItems($seletect_items, $pr_id) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = "
+insert into mla_purchase_request_items
+(
+	mla_purchase_request_items.purchase_request_id,
+    mla_purchase_request_items.priority,
+    mla_purchase_request_items.name,
+    mla_purchase_request_items.EDT,
+	mla_purchase_request_items.quantity,
+    mla_purchase_request_items.article_id,
+    mla_purchase_request_items.sparepart_id,
+    mla_purchase_request_items.asset_id,
+    mla_purchase_request_items.other_res_id,
+    mla_purchase_request_items.remarks,
+    mla_purchase_request_items.created_on,
+    mla_purchase_request_items.created_by
+)
+select
+	".$pr_id.",
+	mla_purchase_cart.priority,
+    mla_purchase_cart.name,
+    mla_purchase_cart.EDT,
+	mla_purchase_cart.quantity,
+    mla_purchase_cart.article_id,
+    mla_purchase_cart.sparepart_id,
+    mla_purchase_cart.asset_id,
+    mla_purchase_cart.other_res_id,
+    mla_purchase_cart.remarks,
+    mla_purchase_cart.created_on,
+    mla_purchase_cart.created_by
+from mla_purchase_cart
+where 1
+and mla_purchase_cart.id IN " . $seletect_items;
 	
 		// echo ($sql);
 	

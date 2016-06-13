@@ -1,29 +1,78 @@
+<h5>My Purchase Requests</h5>
+
+<div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1"><i class="icon-filter">  </i> FILTER</a>
+        </h5>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse <?php echo count($my_pr)>0?"":"in"?>">
+        <div class="panel-body">
+        
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/my-pr"	method="get" enctype="multipart/form-data" id="ReportForm" >
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">PR by Year: </label>
+        <div class="controls">
+        	<select name="pr_year" >
+        		<option value="">All</option>
+   	    		<option value="2016">2016</option>
+   	    		<option value="2017">2017</option>
+   	    		<option value="2018">2018</option>
+   	 
+   			</select>
+	     </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">PR by Status: </label>
+        <div class="controls">
+        	<select name="pr_status" >
+        		<option value="">All</option>
+   	    		<option <?php echo $pr_status=='Submitted'? "selected='selected'":"";?> value="Submitted">Submitted</option>
+   	 	    	<option <?php echo $pr_status=='Approved'? "selected='selected'":"";?> value="Approved">Approved</option>
+  	 	    	<option <?php echo $pr_status=='Fulfilled'? "selected='selected'":"";?> value="Fulfilled">Fulfilled</option>
+  
+   			</select>
+	     </div>
+      </div>
+    
+       <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn"><i class="icon-search">  </i> show</button>
+        </div>
+      </div>
+    </form>
+        
+        
+        
+        </div>
+     </div>
+    </div>
+  </div>
+ <hr>
+
+
  <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/"	method="get" enctype="multipart/form-data">
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
 </form>
-<hr>
-
-<h4>My Purchase Requests:</h4>
-
-<ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl ?>/procurement/pr/create-step1">Create New PR</a></li>
- </ul>
-
 
 <?php if(count($my_pr) >0): 
-	echo count($my_pr) . ' PRs found'?>
+
+if (! is_null ( $paginator )):
+echo '<h6>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage . ' | ' .  $total_items . ' Items found | Year = ' . $pr_year . ' | Status='. $pr_status. '</h6>';
+else:
+echo '<h6>'. $total_items . ' Items found | Year = ' . $pr_year . '| Status='. $pr_status .'</h6>';
+endif;
+?>
 <table class="pure-table pure-table-bordered">
 <thead>
 <tr>	
-		<td><b>Name</b></td>
+		<td><b>PR Number (Auto)</b></td>
 		<td><b>Name</b></td>
 		<td><b>Description</b></td>
-		<td><b>Requester</b></td>
 		<td><b>Created on</b></td>
 		<td><b>Latest Status</b></td>
-		<td><b>Last change by</b></td>
-		<td><b>Updated on</b></td>
-		
 		<td><b>Action</b></td>
 	</tr>
 </thead>
@@ -36,26 +85,69 @@
 	 	 $count++;
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 ?>
-	 	<td><?php echo $item->auto_pr_number;?> <span class="label label-info"><?php echo $item->tItems;?></span></td> 	
+	 	<td><?php echo $item->auto_pr_number;?> <span class="label label-info"><?php echo $item->totalItems;?></span></td> 	
 	
 		<td><?php echo $item->pr_number;?></td> 	
 		<td><?php echo $item->description;?></td>
-		<td><?php echo $item->requester;?></td>
-		
-		<td><?php echo date_format(date_create($item->requested_on),"Y-m-d");?></td>
-		<td><?php echo $item->status ===null?'Started':$item->status;?></td>
-		<td><?php echo $item->changed_by;?></td>
-		<td><?php echo $item->last_change;?></td>
+		<td><?php echo date_format(date_create($item->pr_updated_on),"Y-m-d");?></td>
+		<td><?php echo $item->pr_status;?></td>
 		<td>
-		<a
-			href="<?php echo $this->baseUrl ?>/procurement/pr/create-step2?pr_id=<?php echo $item->id;?>"><?php echo $item->status ===null?'Edit':'Show';?>
-		</a>
-		
-		
-	</td>
+<a href="<?php echo $this->baseUrl ?>/procurement/pr/create-step2?pr_id=<?php echo $item->id;?>">show </a>
+		</td>
+		</tr>
+	
 <?php endforeach; ?>
 </tbody>
 </table>
+
+<?php
+	
+if (! is_null ( $paginator )) {
+		
+	
+	//change it only
+	$base=$this->baseUrl . '/procurement/pr/my-pr?pr_status='.$pr_status;
+	
+	$_connector_symbol = '&';
+
+	$last 	= $base . $_connector_symbol.'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+	$first 	= $base . $_connector_symbol.'page=1&perPage=' . $paginator->resultsPerPage;
+
+	$p1 = ($paginator->page)-1;
+	$p2 = ($paginator->page)+1;
+
+	$prev = $base . $_connector_symbol.'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+	$next = $base . $_connector_symbol.'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+
+	echo '<ul class="pagination">';
+
+	if($paginator->page != 1 AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $first.'"> |< </a></li>';
+		echo '<li><a href="'.  $prev .'"> < </a></li>';
+	}
+
+	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+		$url = $base. $_connector_symbol.'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+			
+		if ($i == $paginator->page) {
+			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
+		} else {
+			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
+		}
+	}
+	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $next.'"> > </a></li>';
+		echo '<li><a href="'.  $last .'"> >| </a></li>';
+	}
+	echo '</ul>';
+}
+?>
+
+
+
 <?php else:
 echo 'No PRs found ...';
 

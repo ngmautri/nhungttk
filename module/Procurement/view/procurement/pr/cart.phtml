@@ -14,9 +14,13 @@
       </div>
 <?php  	if (count($cart_items) >0): ?>
   	
-<table class="pure-table pure-table-bordered"">
+  	
+	
+<table class="pure-table pure-table-bordered">
 <thead>
 <tr>	
+  		<td><input type="checkbox" id="select_ALL" name="SelectAll" value="YES"/> <b>All</b> </td>
+ 
 		<td><b>Item</b></td>
 		<td><b>Priority</b></td>
 		<td><b>Name</b></td>
@@ -39,6 +43,8 @@
 	 
 	 	 
 	 ?>
+	 	<td><input class="checkbox1" type="checkbox" name="cart_items[]" value="<?php echo $item->id ;?>"/></td>
+ 
 		<td><?php echo $count;?></td>
 		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning">'. $item->priority .'</span>':$item->priority;?></td> 	
 		<td><?php echo $item->name;?></td>
@@ -102,7 +108,7 @@
 	<div id="myModal1" class="modal hide" role="dialog">
 	  <div class="modal-dialog">
 	      <div class="modal-body">
-	        <p>Working on it........Please Wait!</p>
+	        <span id="modad_body_text">Working on it........Please Wait!</span>
 	      </div>
 	   </div>
 	</div>

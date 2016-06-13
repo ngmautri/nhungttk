@@ -55,7 +55,9 @@ echo '<div class="alert alert-info">';
 -->
 
 <?php  	if (count($pr_items) >0): ?>
-  	
+
+<a href="/application/pdf/pr?id=<?php echo $pr->id ?>"  target="_blank"><i class="icon-download-alt">  </i> PDF</a>    	
+<hr>	
 <table class="pure-table pure-table-bordered"">
 <thead>
 <tr>	

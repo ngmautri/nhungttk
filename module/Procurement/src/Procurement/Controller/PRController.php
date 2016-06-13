@@ -43,6 +43,7 @@ use Procurement\Model\PRWorkFlowTable;
 use Application\Model\DepartmentTable;
 use Procurement\Model\PurchaseRequestCartItem;
 use Procurement\Model\PurchaseRequestCartItemTable;
+use Zend\Session\Container;
 
 
 class PRController extends AbstractActionController {
@@ -526,7 +527,34 @@ class PRController extends AbstractActionController {
 		$user=$this->userTable->getUserByEmail($identity);
 	
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		$my_pr=$this->purchaseRequestTable->getPRof($user['id']);
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		
+
+		$pr_status = $this->params ()->fromQuery ( 'pr_status' );
+		$pr_year = $this->params ()->fromQuery ( 'pr_year' );
+		$order_by = $this->params ()->fromQuery ( 'pr_year' );
+		
+		
+		//all my PR
+		$my_pr=$this->purchaseRequestTable->getMyPR($user['id'],$pr_status,0,0,null);
+		$totalResults = count($my_pr);
+		
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$my_pr = $this->purchaseRequestTable->getMyPR($user['id'], $pr_status, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1,$order_by );
+		}
 	
 	
 		return new ViewModel ( array (
@@ -534,6 +562,12 @@ class PRController extends AbstractActionController {
 				'user' =>$user,
 				'errors' => null,
 				'my_pr'=>$my_pr,
+				'paginator'=>$paginator,
+				'total_items' =>$totalResults,
+				'pr_status' =>$pr_status,
+				'pr_year' =>$pr_year,
+				'order_by' =>$order_by,
+				
 		));
 	
 	}
@@ -792,6 +826,9 @@ class PRController extends AbstractActionController {
 		$user = $this->userTable->getUserByEmail ( $identity );
 		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
 		
+		$session = new Container('MLA_USER');
+		$session->offsetSet('cart_items', $total_cart_items);
+		
 		$c = array(
 				'total_cart_items' => $total_cart_items,
 		);
@@ -831,6 +868,7 @@ class PRController extends AbstractActionController {
 		$user=$this->userTable->getUserByEmail($identity);
 		$user_id = $user['id'];
 		$pr_number = $this->params()->fromQuery ( 'pr_number' );
+		$select_all_item = $this->params()->fromQuery ( 'SelectAll' );
 		
 		//create PR
 		$pr =  new PurchaseRequest();
@@ -860,21 +898,55 @@ class PRController extends AbstractActionController {
 		$last_workflow_id = $this->prWorkflowTable->add($input);
 		$this->purchaseRequestTable->updateLastWorkFlow($pr_id, $last_workflow_id);
 		
-		//add PR Items from Cart Items
-		$this->purchaseRequestCartItemTable->submitCartItems($user_id, $pr_id);
 		
-		//update cart item status
-		$this->purchaseRequestCartItemTable->setCartItemsAsOrdered($user_id);
+		// if user submit all items*/
+		if($select_all_item =="YES"){
+	
+			//add PR Items from ALL Cart Items
+			$this->purchaseRequestCartItemTable->submitCartItems($user_id, $pr_id);
+			
+			//update cart item status
+			$this->purchaseRequestCartItemTable->setCartItemsAsOrdered($user_id);
+			
+			$session = new Container('MLA_USER');
+			$session->offsetSet('cart_items', 0);
+			
+		}else{
+			
+			$selected_items= $this->params()->fromQuery ( 'cart_items' );
+			
+				//add PR Items from SELETECT Cart Items
+				$this->purchaseRequestCartItemTable->submitSelectedCartItems($selected_items, $pr_id);
+				
+				//update cart item status
+				$this->purchaseRequestCartItemTable->setSelectedCartItemsAsOrdered($selected_items);
+				
+				$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
+				
+				$session = new Container('MLA_USER');
+				$session->offsetSet('cart_items', $total_cart_items);
+		}
+		
 		
 		$this->redirect()->toUrl('/procurement/pr/my-pr');
+		
 	}
 	
 	/**
 	 * AJAX 
 	 */
 	public function deleteCartItemAction() {
+		$identity = $this->authService->getIdentity();
+		$user=$this->userTable->getUserByEmail($identity);
+		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$this->purchaseRequestCartItemTable->delete($id);
+		
+		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
+		
+		$session = new Container('MLA_USER');
+		$session->offsetSet('cart_items', $total_cart_items);
+		
 			
 		$c = array(
 				'status' => $id . ' deleted',

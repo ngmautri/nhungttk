@@ -39,8 +39,9 @@ echo '<div class="alert alert-info">';
 <button title="Submit PR to Procurment" class="btn btn-default" onclick="openConfirmation('<?php echo $pr->id?>');" type="button"><i class="icon-ok">  </i> Approve</button>
  <hr>
 <?php  	endif; ?>
-   	
-<table class="pure-table pure-table-bordered"">
+
+<a href="/application/pdf/pr?id=<?php echo $pr->id ?>"  target="_blank"><i class="icon-download-alt">  </i> PDF</a>    	
+<table class="pure-table pure-table-bordered">
 <thead>
 <tr>	
 		<td><b>Item</b></td>

@@ -28,6 +28,8 @@ use User\Model\AclWhiteListTable;
 use User\Model\AclUserRole;
 use User\Model\AclUserRoleTable;
 
+use Zend\Permissions\Acl;
+
 class Module {
 	
 	/*
@@ -60,7 +62,7 @@ class Module {
 		$eventManager->attach ( MvcEvent::EVENT_DISPATCH, array (
 				$this,
 				'checkACL' 
-		), -100 );
+		), 100 );
 		
 	}
 	
@@ -80,6 +82,9 @@ class Module {
 		$match = $e->getRouteMatch ();
 		$app = $e->getApplication ();
 		$sm = $app->getServiceManager ();
+		$viewModel = $app->getMvcEvent()->getViewModel();
+		
+		$controller = $e->getTarget();
 		
 		$controller = $e->getRouteMatch ()->getParam ( 'controller' );
 		$action = $e->getRouteMatch ()->getParam ( 'action' );
@@ -90,25 +95,39 @@ class Module {
 		$session = new Container ( 'MLA_USER' );
 		$hasUser = $session->offsetExists ( 'user' );
 		$hasACL = $session->offsetExists ( 'ACL' );
+		$hasPRCart = $session->offsetExists ( 'cart_items' );
+		
+		// Route is whitelisted
+		$name = $match->getMatchedRouteName ();
+		if (in_array ( $name, array (
+				'login',
+				'logout',
+				'user_register',
+				'test_console',
+				'user_register_confirmation',
+				'access_denied'
+		) )) {
+			return;
+		}
+		
 		
 		if ($hasUser) {
 			
-			// Route is whitelisted
-			$name = $match->getMatchedRouteName ();
-			if (in_array ( $name, array (
-					'login',
-					'logout',
-					'user_register',
-					'test_console',
-					'user_register_confirmation',
-					'access_denied' 
-			) )) {
-				return;
+			$user = $session->offsetGet ( 'user' );
+			$viewModel->user = $user['firstname'] . ' ' .  $user['firstname'];
+			$user_id = $user ['id'];
+			
+			if($hasPRCart)
+			{
+					$viewModel->cart_items = $session->offsetGet ( 'cart_items' );
+			}else{
+				
+				$cartItemTable = $sm->get ( 'Procurement\Model\PurchaseRequestCartItemTable' );
+				$total_cart_items = $cartItemTable->getTotalCartItems($user_id);
+				$session->offsetSet('cart_items', $total_cart_items);
+				$viewModel->cart_items = $total_cart_items;
 			}
 			
-			$user = $session->offsetGet ( 'user' );
-			
-			/*
 			if(!$hasACL)
 			{
 				// get ACL
@@ -119,26 +138,34 @@ class Module {
 				
 				$acl = $session->offsetGet ( 'ACL' );
 			}
-			*/
 			
-			$acl = $sm->get ( 'User\Service\Acl' );
-			$acl = $acl->initAcl ();
+			//$session->offsetSet('ACL', new \Zend\Permissions\Acl\Acl());
+			//$acl = $sm->get ( 'User\Service\Acl' );
+			//$acl = $acl->initAcl ();
 			
+			//var_dump($acl);
 			
 			// get user role
-			$user_id = $user ['id'];
+			
 			$aclUserRole = $sm->get ( 'User\Model\AclUserRoleTable' );
 			$roles = $aclUserRole->getRoleByUserId ( $user_id );
 			
 			
 			$isAllowedAccess = false;
+			$viewModel->isAdmin = false;
+			
 			foreach ( $roles as $role ) {
 				$isAllowed = $acl->isAccessAllowed ($role->role, $requestedResourse, null );
 				//var_dump($requestedResourse);
 				//var_dump($role->role);
 				if ($isAllowed) {
 					$isAllowedAccess = true;
-					break;
+					
+					if(strtoupper($role->role) == 'ADMINISTRATOR'){
+						$viewModel->isAdmin = true;
+					}
+					//break;
+					//var_dump
 				}
 			}
 			
@@ -160,6 +187,18 @@ class Module {
 				
 				return $response;				
 			}
+		}else{
+			// Redirect to the user login page, as an example
+			$router   = $e->getRouter();
+			$url      = $router->assemble(array(), array(
+					'name' => 'login'
+			));
+			
+			$response = $e->getResponse();
+			$response->getHeaders()->addHeaderLine('Location', $url);
+			$response->setStatusCode(302);
+			
+			return $response;
 		}
 	}
 	
@@ -168,10 +207,6 @@ class Module {
 		$match = $e->getRouteMatch();
 		$app = $e->getApplication();
 		$sm = $app->getServiceManager();
-	
-		$controller = $e->getRouteMatch()->getParam('controller');
-		$action = $e->getRouteMatch()->getParam('action');
-		$requestedResourse = $controller . "-" . $action;
 	
 		$auth = $sm->get('AuthService');
 	
@@ -184,7 +219,7 @@ class Module {
 		// Route is whitelisted
 		$name = $match->getMatchedRouteName();
 		if (in_array ( $name, array (
-						'login',
+					'login',
 					'logout',
 					'user_register',
 					'test_console',
@@ -304,7 +339,8 @@ class Module {
 						
 						'User\Service\RegisterService' => 'User\Service\RegisterServiceFactory',
 						'User\Listener\RegisterListener' => 'User\Listener\RegisterListenerFactory',
-						'User\Service\Acl' => 'User\Service\AclFactory' 
+						'User\Service\Acl' => 'User\Service\AclFactory',
+						'User\Service\ArticleCategory' => 'User\Service\ArticleCategoryFactory'
 				) 
 		);
 	}

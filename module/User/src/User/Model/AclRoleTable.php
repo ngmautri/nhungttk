@@ -33,7 +33,7 @@ class AclRoleTable {
 				'status' => $input->status,
 				'remarks' => $input->remarks,
 				'created_on' => date ( 'Y-m-d H:i:s' ),
-				'created_by' => $input->created_by,
+				'created_by' => $input->created_by 
 		);
 		
 		$this->tableGateway->insert ( $data );
@@ -52,11 +52,24 @@ class AclRoleTable {
 				'path' => $input->path,
 				'path_depth' => $input->path_depth,
 				'status' => $input->status,
-				'remarks' => $input->remark,
-				'created_by' => $input->created_by,
+				'remarks' => $input->remarks,
 		);
 		
 		$where = 'id = ' . $id;
+		return $this->tableGateway->update ( $data, $where );
+	}
+	
+	/**
+	 *
+	 * @param AssetCategory $input
+	 * @param unknown $id
+	 */
+	public function updateByRole(AclRole $input, $role) {
+		$data = array (
+				'role' => $input->role,
+		);
+	
+		$where = "role = '" . $role ."'";
 		return $this->tableGateway->update ( $data, $where );
 	}
 	
@@ -66,11 +79,8 @@ class AclRoleTable {
 	 */
 	public function delete($id) {
 	}
-	
-	public function getRoles($limit,$offset)
-	{
-		$sql =
-"
+	public function getRoles($limit, $offset) {
+		$sql = "
 select
 	mla_acl_roles.*,
 	ifnull(mla_acl_user_role.total_members,0) as total_members
@@ -87,45 +97,119 @@ on mla_acl_user_role.role_id = mla_acl_roles.id
 
 where 1
 		
-" ;
-		$sql = $sql. " order by mla_acl_roles.role";
-	
+";
+		$sql = $sql . " order by mla_acl_roles.role";
+		
 		if ($limit > 0) {
-			$sql = $sql. " LIMIT " . $limit;
+			$sql = $sql . " LIMIT " . $limit;
 		}
-	
+		
 		if ($offset > 0) {
-			$sql = $sql. " OFFSET " . $offset;
+			$sql = $sql . " OFFSET " . $offset;
 		}
-	
-	
+		
 		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
+		$statement = $adapter->query ( $sql );
+		
+		$result = $statement->execute ();
+		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
 		return $resultSet;
 	}
 	
-	public function getRole($id)
-	{
-		$sql =
-		"
+	
+	public function getRoleIDByName($role) {
+		$sql = "
 select
 *
 from mla_acl_roles
 where 1
-AND mla_acl_roles.id = " . $id ;
+And mla_acl_roles.role='".$role ."'";
+	
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query ( $sql );
+	
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		
+		if($resultSet->count()>0){
+			return $resultSet->current()->id;
+		}else {
+			return null;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param unknown $id
+	 * @return ArrayObject|NULL
+	 */	
+	public function getRole($id) {
+		$sql = "
+select
+*
+from mla_acl_roles
+where 1
+AND mla_acl_roles.id = " . $id;
 		
 		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
+		$statement = $adapter->query ( $sql );
+		
+		$result = $statement->execute ();
+		
 		$resultSet = new \Zend\Db\ResultSet\ResultSet();
 		$resultSet->initialize($result);
 		return $resultSet->current();
+	}
+	
+	public function isRoleExits($role)
+	{
+		$adapter = $this->tableGateway->adapter;
+	
+		$where = array(
+				'role=?'=> $role,
+		);
+	
+		$sql = new Sql($adapter);
+		$select = $sql->select();
+	
+		$select->from(array('t1'=>'mla_acl_roles'));
+		$select->where($where);
+	
+		$statement = $sql->prepareStatementForSqlObject($select);
+		$results = $statement->execute();
+	
+		if($results->count()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public function isExits($id)
+	{
+		$adapter = $this->tableGateway->adapter;
+	
+		$where = array(
+				'id=?'		=> $id,
+		);
+	
+		$sql = new Sql($adapter);
+		$select = $sql->select();
+	
+		$select->from(array('t1'=>'mla_acl_roles'));
+		$select->where($where);
+	
+		$statement = $sql->prepareStatementForSqlObject($select);
+		$results = $statement->execute();
+	
+		if($results->count()>0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

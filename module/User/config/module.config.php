@@ -165,7 +165,7 @@ return array (
 		// Plugin
 		'controller_plugins' => array (
 				'invokables' => array (
-						'NMTPlugin' => 'User\Controller\Plugin\NMTPlugin' 
+						'UserPlugin' => 'User\Controller\Plugin\UserPlugin' 
 				) 
 		) 
 );

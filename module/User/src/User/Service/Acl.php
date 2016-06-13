@@ -9,7 +9,7 @@ use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 use User\Model\AclResourceTable;
 use User\Model\AclRoleTable;
 use Zend\Permissions\Acl\Role\Registry;
-
+use User\Utility\CategoryRegistry;
 
 /**
  * 
@@ -28,12 +28,17 @@ class Acl extends ZendAcl
     protected $resources;
     protected $roleResources;
     protected $branch = array();
+    protected $branch1 = array();
     protected $roleRegistry;
     protected $member;
+    protected $catRegistry;
+    protected $tree;
     
-    /**
-     * 
-     */
+    
+	  /**
+	   * 
+	   * @return \User\Service\Acl
+	   */
     public function initAcl()
     {
       $roles = $this->aclRoleTable->getRoles(0,0);;
@@ -84,7 +89,23 @@ class Acl extends ZendAcl
       		$this->allow($r->role,strtoupper($r->resource),null);
       }
       
-      return $this;
+      
+      /*
+    protected $aclResourceTable;
+    protected $aclRoleTable;
+    
+    protected $roles;
+    protected $resources;
+    protected $roleResources;
+    protected $branch = array();
+    protected $roleRegistry;
+    protected $member;
+       */
+      unset($this->aclResourceTable);
+  	  unset($this->aclRoleTable);    
+      
+  	  
+  	  return $this;
     }
     
     /**
@@ -135,6 +156,33 @@ class Acl extends ZendAcl
     	
     	return $this->branch;
     }
+    
+    public function returnAclTree1()
+    {
+    	$roles = $this->aclRoleTable->getRoles(0,0);;
+    	$data = array();
+    	$index = array();
+    	
+    	 
+    	foreach ($roles as $row)
+    	{
+    		$id = $row->id;
+    		$parent_id = $row->parent_id;
+    		$data[$id] = $row;
+    		$index[$parent_id][] = $id;
+    
+    		if ($row->role == 'member'){
+    			array_push($this->branch, array(
+    					'level'=>1,
+    					'role_id'=>$id,
+    					'role'=>$row->role,
+    			));
+    		}
+    	}
+   		$this->acl_tree1($index,$data,NULL, 0);
+    	 
+    	return $this->getCatetoryRegistry();
+    }
   	
     //=====================================
   	public function getAclResourceTable() {
@@ -164,6 +212,7 @@ class Acl extends ZendAcl
 							'level'=>$level,
 							'role_id'=>$id,
 							'role'=>$data[$id]->role,
+							'path'=>$data[$id]->path,
 					));
 				endif;
 				
@@ -173,12 +222,46 @@ class Acl extends ZendAcl
 	}
 	
 	
+	protected function acl_tree1($index,$data,$parent_id, $level)
+	{
+	
+		if (isset($index[$parent_id])) {
+			foreach ($index[$parent_id] as $id) {
+				
+				//pre-order travesal
+				$this->acl_tree1($index,$data,$id, $level+1);
+				
+				if(isset($data[$parent_id])):
+				//echo $level . "." . str_repeat(" - ", $level) .$data[$id]->role . "==". $data[$id]->path . "\n";
+				
+				$roleName = ucwords($data[$id]->role);
+				$parentRoleName = ucwords($data[$parent_id]->role);
+				
+				try	{
+					if(!$this->getCatetoryRegistry()->has($roleName))
+					{	
+						$this->getCatetoryRegistry()->add($roleName,$parentRoleName);
+					}else{
+						$this->getCatetoryRegistry()->updateParent($roleName,$parentRoleName);
+					}
+						
+				}catch(\Exception $e )
+				{
+					//var_dump($e);
+				}
+					//echo $level . ". " . str_repeat(" - ", $level) . $parentRoleName .'//'.$roleName . "==". $data[$id]->path . "\n";
+				endif;
+			}
+		}
+	}
+	
 	protected function add_roles($index,$data,$parent_id, $level)
 	{
 		
 		if (isset($index[$parent_id])) {
 			foreach ($index[$parent_id] as $id) {
 				
+				//postOrder
 				$this->add_roles($index,$data,$id, $level+1);
 				
 				if(isset($data[$parent_id])):
@@ -225,6 +308,17 @@ class Acl extends ZendAcl
 	
 	public function getRoleRegistry() {
 		return parent::getRoleRegistry();
+	}
+	
+	public function getRoles() {
+		return parent::getRoleRegistry()->getRoles();
+	}
+	
+	protected function getCatetoryRegistry() {
+		if (null === $this->catRegistry) {
+			$this->catRegistry = new CategoryRegistry();
+		}
+		return $this->catRegistry;
 	}
 
 }

@@ -148,7 +148,14 @@ where 1
 	LEFT JOIN mla_acl_roles
 		on mla_acl_roles.id = mla_acl_role_resource.role_id
 	WHERE 1
-	AND mla_acl_roles.id = " . $role_id;
+    AND mla_acl_roles.id = 
+    (
+        select
+			mla_acl_roles.id
+			from mla_acl_roles
+		where mla_acl_roles.role='member'
+	)
+	OR mla_acl_roles.id = " . $role_id;
 	
 		$sql =
 		"select

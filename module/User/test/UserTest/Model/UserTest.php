@@ -22,7 +22,7 @@ use Zend\Mail\Header\ContentType;
 use User\Service\Acl;
 
 class UserTest extends PHPUnit_Framework_TestCase {
-	
+ 	 protected $tree;
 		
 	
 	public function testUserTable() {
@@ -53,10 +53,43 @@ class UserTest extends PHPUnit_Framework_TestCase {
 		var_dump($index);
 		*/
 		
-		$userTable = Bootstrap::getServiceManager ()->get ( 'User\Service\Acl' );
-		$results  = $userTable->initAcl();
-		var_dump($results);
+		$userTable = Bootstrap::getServiceManager ()->get ( 'User\Utility\ArticleCategory' );
+		$results  = $userTable->initCategory();
+		
+		$results =$results->updateCategory(1,0);
+		$results =$results->generateJSTree(1);
+		
+		var_dump($results->getJsTree());
+		//var_dump($results->getCategories()[1]);
+		
+		//$root= $results->categories['adm-hr-manager '];
+		//$this->tree($data,'administrator');
+		//echo $this->tree;
 		}
+		
+	public function tree($data,$root){
+		$tree = $data->categories[$root];
+		$children = $tree['children'];
+		
+		if(count($children)>0)
+		{
+			$this->tree=$this->tree.'<li data-jstree=\'{ "opened" : true }\'>' .ucwords($root )."\n";
+			$this->tree=$this->tree. '<ul>'.  "\n";
+			foreach ($children as $c){
+				if(count($c['children'])>0){
+					$this->tree($data,$c['instance']);
+					
+				}else{
+					$this->tree=$this->tree. '<li>' . $c['instance'] .' </li>'. "\n";
+					$this->tree($data,$c['instance']);	
+				}
+			}
+			$this->tree=$this->tree. '</ul>'.  "\n";
+			
+			$this->tree=$this->tree. '</li>'.  "\n";
+		}
+		
+	}
 	
 	/*
 	public function testDI() {

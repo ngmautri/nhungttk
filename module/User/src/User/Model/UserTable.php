@@ -113,4 +113,94 @@ class UserTable {
 	 */
 	public function delete($id) {
 	}
+	
+	/**
+	 *
+	 * @param unknown $email
+	 */
+	public function getUserDepartment($id) {
+	
+		$sql =
+		"
+ /**USER-DEPARTMENT beginns*/
+    select
+		mla_users.id,
+        mla_users.title,
+        mla_users.firstname, 
+        mla_users.lastname,
+        mla_users.email, 
+        mla_departments_members_1.*
+    from mla_users
+    join 
+	(	select
+			mla_departments_members.user_id,
+			mla_departments_members.department_id,
+             mla_departments.name as department_name,
+            mla_departments.status as department_status
+		from mla_departments_members
+			join mla_departments on mla_departments_members.department_id = mla_departments.id
+	) as mla_departments_members_1 
+    on mla_users.id = mla_departments_members_1.user_id
+    
+    where 1 AND mla_users.id = " . $id ;
+			
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		
+		if(count($resultSet)>0){
+			return $resultSet->current();
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 *
+	 * @param unknown $email
+	 */
+	public function getUserDepartmentByEmail($email) {
+	
+		$sql =
+		"
+ /**USER-DEPARTMENT beginns*/
+    select
+		mla_users.id,
+        mla_users.title,
+        mla_users.firstname,
+        mla_users.lastname,
+        mla_users.email,
+        mla_departments_members_1.*
+    from mla_users
+    join
+	(	select
+			mla_departments_members.user_id,
+			mla_departments_members.department_id,
+             mla_departments.name as department_name,
+            mla_departments.status as department_status
+		from mla_departments_members
+			join mla_departments on mla_departments_members.department_id = mla_departments.id
+	) as mla_departments_members_1
+    on mla_users.id = mla_departments_members_1.user_id
+	
+    where 1 AND mla_users.email = '".$email . "'";
+			
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+	
+		if(count()>0){
+			return $resultSet->current();
+		}else{
+			return null;
+		}
+	}
 }

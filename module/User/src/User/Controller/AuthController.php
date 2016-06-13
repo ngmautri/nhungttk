@@ -62,6 +62,7 @@ class AuthController extends AbstractActionController {
 			if ($result->isValid ()) {
 				
 				$user = $this->userTable->getUserByEmail($email);
+				
 				// create new session 
 				$session = new Container('MLA_USER');
 				$session->offsetSet('user', $user);
@@ -84,7 +85,6 @@ class AuthController extends AbstractActionController {
 		
 		$session = new Container('MLA_USER');
 		$session->getManager()->destroy();
-		
 		$this->authService->clearIdentity ();
 		$this->flashmessenger ()->addMessage ( "You've been logged out" );
 		return $this->redirect ()->toRoute ( 'login' );

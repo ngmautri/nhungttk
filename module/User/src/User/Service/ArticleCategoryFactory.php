@@ -4,14 +4,13 @@ namespace User\Service;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use User\Service\Acl;
+use User\Service\ArticleCategory;
 
 /*
  * @author nmt
  *
  */
-class AclFactory implements FactoryInterface {
-	
+class ArticleCategoryFactory implements FactoryInterface {
 	
 	/**
 	 * 
@@ -19,15 +18,12 @@ class AclFactory implements FactoryInterface {
 	 * @see \Zend\ServiceManager\FactoryInterface::createService()
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
-	
-		$service = new Acl();
 		
-		$tbl =  $serviceLocator->get ('User\Model\AclResourceTable' );
-		$service->setAclResourceTable($tbl);
-
-		$tbl =  $serviceLocator->get ('User\Model\AclRoleTable' );
-		$service->setAclRoleTable($tbl);
-		
+		$service = new ArticleCategory();
+			
+		//User Table
+		$tbl =  $serviceLocator->get ('Inventory\Model\ArticleCategoryTable' );
+		$service->setArticleCategoryTable($tbl);
 		
 		return $service;
 	}

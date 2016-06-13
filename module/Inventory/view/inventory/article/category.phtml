@@ -1,51 +1,105 @@
 
-<ul class="nav nav-pills">
- <li class="active"><a href="#">Spare-part category</a></li>
-  <li><a href="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category">Add spare part category</a></li>
-  <li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list">Show all spare parts</a></li>
-  <li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add new spare part</a></li>
-   <li> <a href="<?php echo $this->baseUrl ?>/inventory/report/index">Reporting		</a></li>
+<div id="html" class="demo">
+	<ul>
+	<?php echo $jsTree?>
 </ul>
+</div>
 
+
+
+
+<script type="text/javascript">	
+// html demo
+	$('#html').jstree({
+		"core" : {
+		       // so that create works
+		       "check_callback" : true
+		     },
+		    "plugins" : [ "contextmenu" ],
+
+		    "contextmenu":{         
+		        "items": function($node) {
+		            var tree = $("#html").jstree(true);
+		            return {
+		                "Create": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Create",
+		                    "action": function (obj) { 
+		                    	var ref = $.jstree.reference(obj.reference);
+                                sel = ref.get_selected();
+        	                    $node = tree.create_node($node);
+			                    tree.edit($node);
+		                    }
+		                },
+		                "Rename": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Rename",
+		                    "action": function (obj) { 
+		                        tree.edit($node);
+		                    }
+		                },                         
+		                "Remove": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Remove",
+		                    "action": function (obj) { 
+		                        tree.delete_node($node);
+		                    }
+		                },
+		                "Add Member": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Add Member",
+		                    "action": function (obj) { 
+		                   }
+		                }
+		            };
+		        }
+		    }
+		    
+    });
+
+	// When the jsTree is ready, add two more records.
+	$('#html').on('create_node.jstree', function (e, data) {
+		//alert(data.node.parent +  data.node.id);
+	});
 	
+	$('#html').on('rename_node.jstree', function (e, data) {
+		//alert(data.node.parent +  data.node.id);
+		createArticleCat(data.node.parent,data.node.id,data.node.text);
+    });
 
-    <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
-      <input type="text" name = "query" class="">
-      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
-   </form>
- 
- 
+	$('#html').on('delete_node.jstree', function (e, data) {
+		//alert(data.node.id);
+		deleteArticleCat(data.node.id);
+   });
+</script>
 
-<table class="pure-table pure-table-bordered"">
-<thead>
-<tr>
-		<td><b>Spare Part Category</b></td>
-		<td><b>Action</b></td>
-	</tr>
-</thead>
-<tbody>	
- 
-  <?php 
-	 
-	 $count = 0;
-	 foreach ($assetCategories as $category) : 
-	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	 
-	 ?>
- 
-		<td><?php echo $this->escapeHtml($category->l1);?> <span class="label label-info" title="<?php echo $this->escapeHtml($category->members);?> items"><?php echo $this->escapeHtml($category->members);?></span></td>
-		<td>
-         <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($category->id);?>">Detail</a>
-         <a href="<?php echo $this->baseUrl ?>/inventory/admin/edit-sparepart-category?id=<?php echo $this->escapeHtml($category->id);?>">Edit</a>
-         <a href="<?php echo $this->baseUrl ?>/inventory/admin/add-sparepart-category-member?id=<?php echo $this->escapeHtml($category->id);?>">Add-Member</a>
-    	
-     	</td>
-	</tr>
-<?php endforeach; ?>
-</tbody>
-</table>
+<!-- Modal -->
+<div id="myModal1" class="modal hide" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-body">
+			<p>Working on it........Please Wait!</p>
+		</div>
+	</div>
+</div>
 
-
-
-
+<!-- Modal -->
+<div id="myModal" class="modal hide" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h5 class="modal-title">Message:</h5>
+		</div>
+		<div class="modal-body">
+			<div>
+				<span id="_status"></span>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+		</div>
+	</div>
+</div>

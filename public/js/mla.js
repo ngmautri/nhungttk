@@ -6,10 +6,13 @@ $(document).ready(function() {
 
 	$('[data-toggle="tooltip"]').tooltip();
 
+	$("#select_ALL").change(function() {
+		$(".checkbox1").prop('checked', $(this).prop("checked"));
+	});
 });
 
 /**
- *	function on calendar dialog
+ * function on calendar dialog
  */
 function showDialog() {
 	q = $("#asset").val();
@@ -22,8 +25,8 @@ function showDialog() {
 				success : function(text) {
 					var obj = eval(text);
 					var n_hits = obj.length;
-					//alert(n_hits);
-					//var html = "No asset found"
+					// alert(n_hits);
+					// var html = "No asset found"
 					var s;
 					var i;
 					s = "";
@@ -54,13 +57,13 @@ function showDialog() {
 						s = "No asset found!";
 					}
 
-					//alert(s);
+					// alert(s);
 
 					$("#dialog").html(s);
 				}
 			});
 
-	//$( "#dialog" ).text(t);
+	// $( "#dialog" ).text(t);
 	$("#dialog").dialog({
 		width : 860,
 		height : 500,
@@ -78,7 +81,7 @@ function selectAsset(id, name, tag) {
 }
 
 /**
- *	function on calendar dialog
+ * function on calendar dialog
  */
 function checkSparePartCode() {
 	q = $("#sparepart_code").val();
@@ -91,8 +94,8 @@ function checkSparePartCode() {
 				success : function(text) {
 					var obj = eval(text);
 					var n_hits = obj.length;
-					//alert(n_hits);
-					//var html = "No asset found"
+					// alert(n_hits);
+					// var html = "No asset found"
 					var s;
 					var i;
 					s = "";
@@ -113,7 +116,9 @@ function checkSparePartCode() {
 							s = s + '<td>' + name + '</td>';
 							s = s + '<td>' + tag + '</td>';
 							s = s + '<td>' + code + '</td>';
-							//s = s + '<td><a href="javascript:;" onclick="selectAsset(\''+ id + '\',\''+ name + '\',\''+ tag +'\')">  SELECT  </a></td>';
+							// s = s + '<td><a href="javascript:;"
+							// onclick="selectAsset(\''+ id + '\',\''+ name +
+							// '\',\''+ tag +'\')"> SELECT </a></td>';
 							s = s
 									+ '<td><a href="/inventory/spareparts/show?id='
 									+ id
@@ -130,13 +135,13 @@ function checkSparePartCode() {
 
 					}
 
-					//alert(s);
+					// alert(s);
 
 					$("#dialog").html(s);
 				}
 			});
 
-	//$( "#dialog" ).text(t);
+	// $( "#dialog" ).text(t);
 	$("#dialog").dialog({
 		width : 650,
 		height : 500,
@@ -162,7 +167,7 @@ function uploadPictures() {
 		var pic = pics[i];
 		var pic_file = pic.files[0];
 
-		// resize pic		
+		// resize pic
 		if (typeof pic_file !== "undefined") {
 
 			// Ensure it's an image
@@ -181,7 +186,15 @@ function uploadPictures() {
 					image.onload = function(imageEvent) {
 
 						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1500, // TODO : pull max size from a site config
+						var canvas = document.createElement('canvas'), max_size = 1500, // TODO
+																						// :
+																						// pull
+																						// max
+																						// size
+																						// from
+																						// a
+																						// site
+																						// config
 						width = image.width, height = image.height;
 						if (width > height) {
 							if (width > max_size) {
@@ -257,7 +270,7 @@ function countAsset() {
 	for (var i = 0; i < pics.length; i++) {
 		var pic = pics[i];
 		var pic_file = pic.files[0];
-		// resize pic		
+		// resize pic
 		if (typeof pic_file !== "undefined") {
 
 			// Ensure it's an image
@@ -289,14 +302,22 @@ function countAsset() {
 			return function(e) {
 				var contents = e.target.result;
 
-				//resize
+				// resize
 				var image = new Image();
 
 				image.onload = (function(p, pic_to_upload_resized, n) {
 					return function(imageEvent) {
 
 						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1200, // TODO : pull max size from a site config
+						var canvas = document.createElement('canvas'), max_size = 1200, // TODO
+																						// :
+																						// pull
+																						// max
+																						// size
+																						// from
+																						// a
+																						// site
+																						// config
 						width = image.width, height = image.height;
 						if (width > height) {
 							if (width > max_size) {
@@ -360,7 +381,7 @@ function isCountingCompleted(pic_to_upload_resized, n) {
 		var updated_location = $("#updated_location").val();
 		var redirectUrl = $("#redirectUrl").val();
 
-		//alert(pic_to_upload_resized.length);
+		// alert(pic_to_upload_resized.length);
 
 		$.post("/inventory/count/add-counting-item1", {
 			asset_id : asset_id,
@@ -389,7 +410,7 @@ function uploadAssetPictures() {
 	for (var i = 0; i < pics.length; i++) {
 		var pic = pics[i];
 		var pic_file = pic.files[0];
-		// resize pic		
+		// resize pic
 		if (typeof pic_file !== "undefined") {
 
 			// Ensure it's an image
@@ -421,14 +442,22 @@ function uploadAssetPictures() {
 			return function(e) {
 				var contents = e.target.result;
 
-				//resize
+				// resize
 				var image = new Image();
 
 				image.onload = (function(p, pic_to_upload_resized, n) {
 					return function(imageEvent) {
 
 						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1200, // TODO : pull max size from a site config
+						var canvas = document.createElement('canvas'), max_size = 1200, // TODO
+																						// :
+																						// pull
+																						// max
+																						// size
+																						// from
+																						// a
+																						// site
+																						// config
 						width = image.width, height = image.height;
 						if (width > height) {
 							if (width > max_size) {
@@ -540,7 +569,7 @@ function completeNotifyDN(ID) {
 }
 
 /**
- *	function on calendar dialog
+ * function on calendar dialog
  */
 function loadVendorList() {
 	$("#dialog").html('Please wait ...');
@@ -550,8 +579,8 @@ function loadVendorList() {
 				success : function(text) {
 					var obj = eval(text);
 					var n_hits = obj.length;
-					//alert(n_hits);
-					//var html = "No asset found"
+					// alert(n_hits);
+					// var html = "No asset found"
 					var s;
 					var i;
 					s = "";
@@ -582,13 +611,13 @@ function loadVendorList() {
 						s = "No Vendors found!";
 					}
 
-					//alert(s);
+					// alert(s);
 
 					$("#dialog").html(s);
 				}
 			});
 
-	//$( "#dialog" ).text(t);
+	// $( "#dialog" ).text(t);
 	$("#dialog").dialog({
 		width : 860,
 		height : 500,
@@ -685,16 +714,19 @@ function addItemToCart(type) {
 }
 
 /**
- *	function on calendar dialog
+ * function on calendar dialog
  */
 function updateCarts() {
 	$("#cart_items").text('???');
+
 	$.ajax({
 		url : "/procurement/pr/update-cart",
 		success : function(text) {
 			var obj = eval(text);
 			var total_cart_items = obj['total_cart_items'];
-			$("#cart_items").text(total_cart_items)
+
+			$("#cart_items").text(total_cart_items);
+			$("#cart_items").attr('class', 'label label-warning');
 		}
 	});
 }
@@ -704,13 +736,42 @@ function openConfirmation(ID) {
 }
 
 function submitCartItems() {
+
+	// var all_options = [];
+	var selected_items = '';
+	var i = 0;
+
+	var pr_number = $('#pr_number').val();
+	var SelectAll = $('#select_ALL').prop('checked') ? "YES" : "NO";
+
+	selected_items = selected_items + '(';
+	$(".checkbox1").each(function() {
+		if (this.checked) {
+			i = i + 1;
+			selected_items = selected_items + this.value + ',';
+		}
+	});
+
+	// remove last ','
+	selected_items = selected_items.substring(selected_items.length - 1, 1);
+	selected_items = '(' + selected_items + ')';
+
+	if (SelectAll === 'NO' && i === 0) {
+		$('#myModal').modal('hide');
+		alert('no item selected');
+		return;
+	}
+
 	$('#myModal').modal('hide');
 	$('#myModal1').modal();
-	var pr_number = $('#pr_number').val();
+
 	redirectUrl = "/procurement/pr/my-pr";
 	$.get("/procurement/pr/submit-cart-items", {
 		pr_number : pr_number,
+		cart_items : selected_items,
+		SelectAll : SelectAll,
 	}, function(data, status) {
+		updateCarts();
 		window.location = redirectUrl;
 	});
 }
@@ -731,10 +792,100 @@ function deleteCartItem() {
 	$('#myModal2').modal('hide');
 	$('#myModal1').modal();
 	var cart_item_id = $('#cart_item_to_delete').val();
+
 	redirectUrl = "/procurement/pr/cart";
 	$.get("/procurement/pr/delete-cart-item", {
-		id : cart_item_id
+		id : cart_item_id,
+	}, function(data, status) {
+		updateCarts();
+		window.location = redirectUrl;
+
+	});
+}
+
+/**
+ * 
+ */
+function createArticleCat(parent_id, node_id, node_text) {
+	$('#myModal1').modal();
+
+	redirectUrl = "/inventory/article/category";
+	$.post("/inventory/article/add-category", {
+		parent_id : parent_id,
+		name : node_text,
+		cat_id : node_id,
+		redirectUrl : redirectUrl
 	}, function(data, status) {
 		window.location = redirectUrl;
+		// alert(status);
+		// $('#myModal1').hide();
 	});
+}
+
+function deleteArticleCat(cat_id) {	
+	$('#myModal1').modal();
+	var redirectUrl = "/inventory/article/category";
+	$.get("/inventory/article/delete-category", {
+		cat_id : cat_id,
+	}, function(data, status) {
+		var obj = eval(data);
+		var status = obj['status'];
+		var messages = obj['messages'];
+		
+		
+		if (status == 1) {
+			window.location = redirectUrl;
+		} else {
+			$('#myModal1').modal('hide');
+			var n_errors = messages.length;
+			if (n_errors > 0) {
+				s = '<div class="alert alert-error">';
+				s = s + '<ul>';
+				for (i = 0; i < n_errors; i++) {
+					s = s + '<li>' + messages[i] + '</li>';
+				}
+				s = s + '</ul></div>';
+			}
+
+			$('#_status').html(s);
+			$('#_status').show();
+			$('#myModal').modal();
+		}
+	});
+}
+
+/**
+ * 
+ */
+function createRole(parent_id, node_id, node_text) {
+	$('#myModal1').modal();
+	var redirectUrl = "/user/role/list";
+	$.post("/user/role/add", {
+		parent_name : parent_id,
+		role : node_text,
+		role_id : node_id,
+	}, function(data, status) {
+		var obj = eval(data);
+		var status = obj['status'];
+		var messages = obj['messages'];
+		if (status == 1) {
+			window.location = redirectUrl;
+		} else {
+			$('#myModal1').modal('hide');
+			var n_errors = messages.length;
+			if (n_errors > 0) {
+				s = '<div class="alert alert-error">';
+				s = s + '<ul>';
+				for (i = 0; i < n_errors; i++) {
+					s = s + '<li>' + messages[i] + '</li>';
+				}
+				s = s + '</ul></div>';
+			}
+
+			$('#_status').html(s);
+			$('#_status').show();
+			$('#myModal').modal();
+		}
+	});
+
 }

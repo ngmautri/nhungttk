@@ -9,9 +9,6 @@
  */
 namespace Inventory;
 
-/*
- *
- */
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\ResultSet\ResultSet;

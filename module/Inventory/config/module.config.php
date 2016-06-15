@@ -139,7 +139,8 @@ return array (
 		),
 		
 		// Plugin
-		'controller_plugins' => array ()
+		'controller_plugins' => array (
+	)
 		
 		// blank
 		

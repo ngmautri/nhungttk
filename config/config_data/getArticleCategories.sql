@@ -5,7 +5,7 @@ from
 select
 	mla_articles_categories.*,
 	ifnull(mla_articles_categories_members.totalMembers,0) as totalMembers,
-    mla_articles_categories_1.totalChildren
+    ifnull(mla_articles_categories_1.totalChildren,0) as totalChildren
 	from mla_articles_categories
 	left join
 	(
@@ -30,4 +30,3 @@ select
 ) 
 as mla_articles_categories
 WHERE 1
-and mla_articles_categories.id=2

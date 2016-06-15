@@ -91,6 +91,11 @@ class AclUserRoleTable {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param unknown $role_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function getNoneMembersOfRole($role_id)
 	{
 		$sql_MemberOfRole = 	

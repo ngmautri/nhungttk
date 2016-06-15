@@ -79,6 +79,13 @@ class AclRoleTable {
 	 */
 	public function delete($id) {
 	}
+	
+	/**
+	 * 
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function getRoles($limit, $offset) {
 		$sql = "
 select

@@ -1,4 +1,8 @@
-<h4>Receiving: <span class="label label-success"><?php echo $sp->tag; ?></span> <?php echo $sp->name; ?> </h4>
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/article/list"	method="get" enctype="multipart/form-data">
+      <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
+</form>
+
+<h4>Receiving: <span class="label label-success"></span> <?php echo $article->name; ?> </h4>
 
 <hr>
 
@@ -16,8 +20,8 @@ echo '<div class="alert alert-error">';
 } 
 ?>
 
-<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/spareparts/receive"	method="post" enctype="multipart/form-data" id="NewSP" >
-	<input type="hidden" name="sparepart_id" value="<?php echo (int) $sp->id; ?>" />
+<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/article/receive"	method="post" enctype="multipart/form-data" id="NewSP" >
+	<input type="hidden" name="article_id" value="<?php echo (int) $article->id; ?>" />
 	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
       <div class="control-group">
@@ -31,7 +35,7 @@ echo '<div class="alert alert-error">';
         <label class="control-label" for="inputNameLocal">Quantity:</label>
         <div class="controls">
 			<input type="text" name="quantity" value="<?php echo $movement!==null ? ($movement->quantity) :""?>" /> <span class="label label-info">
-			(In stock: <?php echo (int) $instock . ' pcs.'; ?>)</span>        
+			(In stock: <?php echo (int) $article->article_balance . ' pcs.'; ?>)</span>        
 		</div>
       </div>
       
@@ -57,14 +61,7 @@ echo '<div class="alert alert-error">';
         </div>
       </div>
       
- 	 <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Notify Accounting:</label>
-        <div class="controls">
-			<input type="text" name="email" value="nmt@mascot.dk" />        
-		</div>
-      </div>
-      
-      <div class="control-group">
+ 	  <div class="control-group">
         <div class="controls">
              <button type="submit" class="btn"><i class="icon-plus">  </i> Receive</button>
         </div>
@@ -74,7 +71,7 @@ echo '<div class="alert alert-error">';
 <div id = "dialog" style="display: none;">No asset found...</div>
 
 <hr>
-<h5>    <a href="/inventory/spareparts/pictures?sparepart_id=<?php echo (int) $sp->id; ?>">Spare-part pictures</a></h5>
+<h5>    <a href="/inventory/spareparts/pictures?sparepart_id=<?php echo (int) $article->id; ?>">Items pictures</a></h5>
 
 <div class="container">
 <div id="lightgallery">
@@ -82,8 +79,8 @@ echo '<div class="alert alert-error">';
  
  <?php foreach ($pictures as $pic) : ?>
   	
-    <a href="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
-    <img class= "img-rounded" width="80" height="80" src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+    <a href="/inventory/image/article?id=<?php  echo $this->escapeHtml($pic->id);?>">
+    <img class= "img-rounded" width="80" height="80" src="/inventory/image/article-thumbnail150?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
     </a>
 	
 <?php endforeach; ?>

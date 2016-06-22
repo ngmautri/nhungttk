@@ -72,7 +72,9 @@ if ($total_articles <= 0) {
 		 
 		<td>
 		<a href="#" onclick="openPRCart('<?php echo $a->id?>');"><i class="icon-shopping-cart"></i>Order</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/receive?article_id=<?php echo $this->escapeHtml($a->id);?>">Receive</a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($a->id);?>">Issue</a>
+	
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>">Edit</a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a>
 		

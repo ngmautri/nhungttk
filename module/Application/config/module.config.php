@@ -53,7 +53,9 @@ return array (
 		),
 		'service_manager' => array (
 				'factories' => array (
-						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory' 
+						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+						'Application\Service\ApplicationService' => 'Application\Service\ApplicationServiceFactory',
+						'Application\Service\PdfService' => 'Application\Service\PdfServiceFactory',
 				) 
 		),
 		'translator' => array (
@@ -74,6 +76,7 @@ return array (
 				'factories' => array (
 						'Application\Controller\Department' => 'Application\Controller\DepartmentControllerFactory',
 						'Application\Controller\Acl' => 'Application\Controller\AclControllerFactory',
+						'Application\Controller\Pdf' => 'Application\Controller\PdfControllerFactory',
 				)
 		),
 		'view_manager' => array (

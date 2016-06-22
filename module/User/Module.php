@@ -114,7 +114,7 @@ class Module {
 		if ($hasUser) {
 			
 			$user = $session->offsetGet ( 'user' );
-			$viewModel->user = $user['firstname'] . ' ' .  $user['firstname'];
+			$viewModel->user = $user['firstname'] . ' ' .  $user['lastname'];
 			$user_id = $user ['id'];
 			
 			if($hasPRCart)

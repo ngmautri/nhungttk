@@ -68,8 +68,9 @@ class RoleController extends AbstractActionController {
 				'roles' => $roles 
 		) );
 	}
-	
 	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function addMemberAction() {
 		$request = $this->getRequest ();

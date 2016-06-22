@@ -568,6 +568,7 @@ class ArticleController extends AbstractActionController {
 						$input->parent_id = null;
 					
 					
+					
 					endif;
 					
 					// get path of parent and update new role
@@ -595,19 +596,20 @@ class ArticleController extends AbstractActionController {
 	 */
 	public function deleteCategoryAction() {
 		$cat_id = $this->params ()->fromQuery ( 'cat_id' );
-		$cat = $this->articleCategoryTable->getArticleCategoy( $cat_id );
+		$cat = $this->articleCategoryTable->getArticleCategoy ( $cat_id );
 		$response = $this->getResponse ();
 		
-		if($cat ===null){
+		if ($cat === null) {
 			$c = array (
 					'status' => '0',
-					'messages' => array("Category not found")
+					'messages' => array (
+							"Category not found" 
+					) 
 			);
 			$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
 			$response->setContent ( json_encode ( $c ) );
 			return $response;
 		}
-			
 		
 		$totalMembers = $cat->totalMembers;
 		$totalChildren = $cat->totalChildren;
@@ -620,8 +622,6 @@ class ArticleController extends AbstractActionController {
 		if ($totalChildren > 0) {
 			$errors [] = "This category has sub-category";
 		}
-		
-		
 		
 		if (count ( $errors ) > 0) {
 			$c = array (
@@ -638,13 +638,65 @@ class ArticleController extends AbstractActionController {
 			
 			$c = array (
 					'status' => '1',
-					'messages' => array ("deleted") 
+					'messages' => array (
+							"deleted" 
+					) 
 			);
 			$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
 			$response->setContent ( json_encode ( $c ) );
 			return $response;
 		}
 	}
+	public function addCategoryMemberAction() {
+		
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		
+		if ($request->isPost ()) {
+			
+			$role_id = ( int ) $request->getPost ( 'id' );
+			$user_id_list = $request->getPost ( 'users' );
+			
+			if (count ( $user_id_list ) > 0) {
+				
+				foreach ( $user_id_list as $user_id ) {
+					$member = new AclUserRole ();
+					$member->role_id = $role_id;
+					$member->user_id = $user_id;
+					$member->updated_by = $user ['id'];
+					
+					if ($this->aclUserRoleTable->isMember ( $user_id, $role_id ) == false) {
+						$this->aclUserRoleTable->add ( $member );
+					}
+				}
+				
+				/*
+				 * return new ViewModel ( array (
+				 * 'sparepart' => null,
+				 * 'categories' => $categories,
+				 *
+				 * ) );
+				 */
+				
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				$this->redirect ()->toUrl ( $redirectUrl );
+			}
+		}
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$cat = $this->aclRoleTable->getRole ( $id );
+		
+		$articles = $this->articleCategoryMemberTable->getNoneMembersOfCategory( $id );
+		
+		return new ViewModel ( array (
+				'cat' => $cat,
+				'articles' => $articles,
+				'redirectUrl' => $redirectUrl 
+		) );
+	}
+	
 	/**
 	 * List all articles
 	 */

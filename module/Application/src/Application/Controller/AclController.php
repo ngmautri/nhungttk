@@ -98,9 +98,6 @@ class AclController extends AbstractActionController {
 				$this->aclResourceTable->add($input);
 			}
 		}
-		
-		
-		
 		return new ViewModel ( array (
 				'modules' => $modules,
 				'e' => $this->getEvent(),

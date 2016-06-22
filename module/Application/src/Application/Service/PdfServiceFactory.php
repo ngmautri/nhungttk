@@ -22,11 +22,8 @@ class PdfServiceFactory implements FactoryInterface {
 			
 		$s = new PdfService();
 		
-		$sv =  $serviceLocator->get ('ModuleManager' );
-		$s->setModuleManager($sv);
 		
-		$sv =  $serviceLocator->get ('ControllerLoader' );
-		$s->setControllerManager($sv);
+	
 		return $s;
 	}
 }

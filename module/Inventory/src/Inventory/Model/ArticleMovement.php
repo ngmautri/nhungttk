@@ -3,9 +3,9 @@
 namespace Inventory\Model;
 
 /**
- *
+ * 
  * @author nmt
- *        
+ *
  */
 class ArticleMovement {
 	public $id;

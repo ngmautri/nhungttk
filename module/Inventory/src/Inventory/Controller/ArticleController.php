@@ -207,6 +207,91 @@ class ArticleController extends AbstractActionController {
 	}
 	
 	/**
+	 * Receive Article /Item
+	 */
+	public function receiveAction() {
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		if ($request->isPost ()) {
+			
+			$request = $this->getRequest ();
+			
+			if ($request->isPost ()) {
+				
+				$input = new ArticleMovement();
+				$input->article_id = $request->getPost ( 'article_id' );
+				$input->movement_date = $request->getPost ( 'movement_date' );
+				
+				$input->quantity = $request->getPost ( 'quantity' );
+				
+				$input->flow = 'IN';
+				
+				$input->reason = $request->getPost ( 'reason' );
+				$input->requester = $request->getPost ( 'requester' );
+				$input->comment = $request->getPost ( 'comment' );
+				$input->created_on = $request->getPost ( 'created_on' );
+				
+				$instock = $request->getPost ( 'instock' );
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				
+				$errors = array ();
+				
+				// validator.
+				$validator = new Date ();
+				
+				if (! $validator->isValid ( $input->movement_date )) {
+					$errors [] = 'Transaction date format is not correct!';
+				}
+				
+				// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
+				$validator = new Int ();
+				
+				if (! $validator->isValid ( $input->quantity )) {
+					$errors [] = 'Quantity is not valid. It must be a number.';
+				}
+				
+					
+				$id = ( int ) $request->getPost ( 'article_id' );
+				$article = $this->articleTable->get ( $id );
+				$pictures = $this->articlePictureTable->getArticlePicturesById( $id );
+				
+				if (count ( $errors ) > 0) {
+					return new ViewModel ( array (
+							'article' => $article,
+							'pictures' => $pictures,
+							'instock' => $instock,
+							'errors' => $errors,
+							'redirectUrl' => $redirectUrl,
+							'movement' => $input 
+					)
+					 );
+				} else {
+					
+					// Validated
+					$newId = $this->articleMovementTable->add ( $input );
+					
+					$redirectUrl = $request->getPost ( 'redirectUrl' );
+					$this->redirect ()->toUrl ( $redirectUrl );
+				}
+			}
+		}
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'article_id' );
+		$article = $this->articleTable->getArticleByID ( $id );
+		$pictures = $this->articlePictureTable->getArticlePicturesById( $id );
+		
+		return new ViewModel ( array (
+				'article' => $article,
+				'pictures' => $pictures,
+				'instock' => null,
+				'errors' => null,
+				'redirectUrl' => $redirectUrl,
+				'movement' => null 
+		) );
+	}
+	
+	/**
 	 * Issue Article
 	 */
 	public function issueAction() {
@@ -286,6 +371,21 @@ class ArticleController extends AbstractActionController {
 		) );
 	}
 	
+	/**
+	 * Article picture
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function picturesAction() {
+		$id = ( int ) $this->params ()->fromQuery ( 'article_id' );
+		$article = $this->articleTable->get ( $id );
+		$pictures = $this->articlePictureTable->getArticlePicturesById ( $id );
+		
+		return new ViewModel ( array (
+				'article' => $article,
+				'pictures' => $pictures 
+		) );
+	}
 	/**
 	 * Edit Spare part
 	 *
@@ -398,7 +498,7 @@ class ArticleController extends AbstractActionController {
 	}
 	
 	/**
-	 * Edit Spare part
+	 * Upload Article Picture
 	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
@@ -408,7 +508,7 @@ class ArticleController extends AbstractActionController {
 		if ($request->isPost ()) {
 			
 			$id = $request->getPost ( 'id' );
-			$root_dir = $this->sparePartService->getPicturesPath ();
+			$root_dir = $this->articleService->getPicturesPath ();
 			
 			// $files = $request->getFiles ()->toArray ();
 			
@@ -425,7 +525,7 @@ class ArticleController extends AbstractActionController {
 						
 						$checksum = md5_file ( $tmp_name );
 						
-						if (! $this->sparePartPictureTable->isChecksumExits ( $id, $checksum )) {
+						if (! $this->articlePictureTable->isChecksumExits ( $id, $checksum )) {
 							
 							$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
 							$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
@@ -438,15 +538,15 @@ class ArticleController extends AbstractActionController {
 							move_uploaded_file ( $tmp_name, "$folder/$name" );
 							
 							// add pictures
-							$pic = new SparepartPicture ();
+							$pic = new ArticlePicture ();
 							$pic->url = "$folder/$name";
 							$pic->filetype = $ftype;
-							$pic->sparepart_id = $id;
+							$pic->article_id = $id;
 							$pic->filename = "$name";
 							$pic->folder = "$folder";
 							$pic->checksum = $checksum;
 							
-							$this->sparePartPictureTable->add ( $pic );
+							$this->articlePictureTable->add ( $pic );
 							
 							// trigger uploadPicture
 							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
@@ -460,16 +560,14 @@ class ArticleController extends AbstractActionController {
 			
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			$this->redirect ()->toUrl ( $redirectUrl );
-			
-			// return $this->redirect ()->toRoute ( 'Spareparts_Category');
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$sparepart = $this->sparePartTable->get ( $id );
+		$article = $this->articleTable->get ( $id );
 		
 		return new ViewModel ( array (
-				'sparepart' => $sparepart,
+				'article' => $article,
 				'redirectUrl' => $redirectUrl,
 				'errors' => null 
 		) );
@@ -569,6 +667,8 @@ class ArticleController extends AbstractActionController {
 					
 					
 					
+					
+					
 					endif;
 					
 					// get path of parent and update new role
@@ -648,7 +748,6 @@ class ArticleController extends AbstractActionController {
 		}
 	}
 	public function addCategoryMemberAction() {
-		
 		$request = $this->getRequest ();
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$identity = $this->authService->getIdentity ();
@@ -688,7 +787,7 @@ class ArticleController extends AbstractActionController {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$cat = $this->aclRoleTable->getRole ( $id );
 		
-		$articles = $this->articleCategoryMemberTable->getNoneMembersOfCategory( $id );
+		$articles = $this->articleCategoryMemberTable->getNoneMembersOfCategory ( $id );
 		
 		return new ViewModel ( array (
 				'cat' => $cat,
@@ -900,16 +999,6 @@ class ArticleController extends AbstractActionController {
 		
 		return new ViewModel ( array (
 				'article' => $article,
-				'pictures' => $pictures 
-		) );
-	}
-	public function picturesAction() {
-		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
-		$sp = $this->sparePartTable->get ( $id );
-		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
-		
-		return new ViewModel ( array (
-				'sparepart' => $sp,
 				'pictures' => $pictures 
 		) );
 	}

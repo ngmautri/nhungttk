@@ -63,8 +63,9 @@ class ImageController extends AbstractActionController {
 	}
 	
 
-	/*
-	 * Defaul Action
+	/**
+	 * 
+	 * @return \Zend\Stdlib\ResponseInterface
 	 */
 	public function articleAction() {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
@@ -82,6 +83,10 @@ class ImageController extends AbstractActionController {
 		return $response;
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\Stdlib\ResponseInterface
+	 */
 	public function sparepartThumbnail200Action() {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 	
@@ -98,6 +103,10 @@ class ImageController extends AbstractActionController {
 		return $response;
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\Stdlib\ResponseInterface
+	 */
 	public function articleThumbnail200Action() {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 	
@@ -145,6 +154,10 @@ class ImageController extends AbstractActionController {
 		return $response;
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function deleteSparePartPictureAction() {
 		
 		$request = $this->getRequest ();
@@ -184,6 +197,49 @@ class ImageController extends AbstractActionController {
 		) );
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function deleteArticlePictureAction() {
+	
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		if ($request->isPost ()) {
+			$del = $request->getPost ( 'delete_confirmation', 'NO' );
+	
+			if ($del === 'YES') {
+	
+				$id = ( int ) $request->getPost ( 'id' );
+				$pic= $this->getArticlePictureTable ()->get ( $id );
+				$filename = $pic->url;
+	
+				if (file_exists($filename)) {
+					unlink($filename);
+				}
+				$this->getArticlePictureTable ()->delete ($id);
+	
+			}
+				
+			$redirectUrl  = $request->getPost ( 'redirectUrl' );
+			$this->redirect()->toUrl($redirectUrl);
+		}
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$pic= $this->getArticlePictureTable ()->get ( $id );
+		
+		return new ViewModel ( array (
+				'picture' => $pic,
+				'redirectUrl'=>$redirectUrl,
+	
+		) );
+	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function deleteAssetPictureAction() {
 	
 		$request = $this->getRequest ();

@@ -82,7 +82,7 @@ class Module {
 						return new TableGateway ( 'mla_departments_members', $dbAdapter, null, $resultSetPrototype );
 						} ,
 						
-						'Application\Service\ApplicationService' => 'Application\Service\ApplicationServiceFactory',
+						
 						
 						
 						

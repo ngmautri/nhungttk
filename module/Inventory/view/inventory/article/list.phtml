@@ -33,7 +33,7 @@ if ($total_articles <= 0) {
 	<tr>
 		<td><b>Name</b></td>
 		<!-- td><b>Name-LA</b></td> -->
-		<td><b>Description</b></td>
+		<td ><b data-toggle="tooltip" title = "Balance">Bal.</b></td>	
 		<td><b>Code</b></td>
 		<td><b>Unit</b></td>
 		<td><b>Remark</b></td>
@@ -56,16 +56,15 @@ if ($total_articles <= 0) {
 	 
 	 
 		<td><span id="<?php echo $this->escapeHtml($a->id);?>_name"><?php echo $this->escapeHtml($a->name);?></span>
-		
-		<?php if($a->article_balance > 0){			
-			echo '<span class="label label-info">'.$a->article_balance .'</span>';				
-		}else{
-			echo '<span class="label">'.$a->article_balance .'</span>';				
-		}
-		?>
 		</td>
+		
+		<td>
+		
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a->id);?>"><?php echo $this->escapeHtml($a->article_balance);?></a>
+		</td>
+		
+		
 		<!-- <td><?php echo$this->escapeHtml($a->name_local);?> -->
-		<td><?php echo $this->escapeHtml($a->description);?>
 		<td><?php echo $this->escapeHtml($a->code);?> 
 		<td><span id="<?php echo $this->escapeHtml($a->id);?>_unit"><?php echo $this->escapeHtml($a->unit);?></span>
 		<td><?php echo $this->escapeHtml($a->remarks);?> 

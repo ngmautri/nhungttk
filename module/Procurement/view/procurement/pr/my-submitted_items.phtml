@@ -26,14 +26,13 @@ echo '<div class="alert alert-info">';
 <tr>	
 		<td><b>Item</b></td>
 		<td><b>PR </b></td>
-		<td><b>Requester </b></td>
 		<td><b>Priority</b></td>
 		<td><b>Name</b></td>
 		<td><b>Unit</b></td>
-		<td><b>Quantity</b></td>
-		<td><b>Delivered</b></td>
-		<td><b>Balance</b></td>	
-		<td><b>EDT</b></td>
+	<td ><b data-toggle="tooltip" title = "Ordred Quantity">Q'ty</b></td>
+		<td ><b data-toggle="tooltip" title = "Delivered Quantity">Del.</b></td>
+		<td ><b data-toggle="tooltip" title = "Balance">Bal.</b></td>	
+			<td><b>EDT</b></td>
 		<td><b>Count Down</b></td>
 		<td><b>Action</b></td>
 		
@@ -52,8 +51,6 @@ echo '<div class="alert alert-info">';
 	 ?>
 		<td><?php echo $count;?></td>
 		<td><?php echo $item->pr_number;?></td>
-		<td><?php echo $item->requester;?></td>
-		
 		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. $item->priority .'</span>':$item->priority;?></td> 	
 		<td><?php echo $item->name;?></td>
 		<td><?php echo $item->unit;?></td>

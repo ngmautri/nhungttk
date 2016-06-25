@@ -53,11 +53,16 @@ echo '<div class="alert alert-info">';
 <span class="label label-info"><?php echo count($dn_items) . ' PR - Items'?></span>
 
 -->
+
+<a href="/application/pdf/dn?id=<?php echo $dn->id ?>"  target="_blank"><i class="icon-download-alt">  </i> PDF</a>    	
+<hr>
 <table class="pure-table pure-table-bordered">
 <thead>
 <tr>	
-		<td><b>Purchase Item</b></td>
-		<td><b>Delivered</b></td>
+		<td><b>Requester</b></td>
+		<td><b>Name</b></td>
+		<td ><b data-toggle="tooltip" title = "Ordered Quantity">Q'ty</b></td>
+		<td ><b data-toggle="tooltip" title = "Delivered Quantity">Del.</b></td>
 		<td><b>Unit Price</b></td>
 		<td><b>Total</b></td>
 		<td><b>Currency</b></td>
@@ -74,11 +79,12 @@ echo '<div class="alert alert-info">';
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 	 
 	 ?>
-	 	<td><?php echo $item->pr_item_id;?></td>
+	 	<td><?php echo $item->firstname . ' ' . $item->lastname ;?></td>
+	 	<td><?php echo $item->name;?></td>
+	 	<td><?php echo $item->quantity;?></td>
 		<td><?php echo $item->delivered_quantity;?></td>
 		<td><?php echo $item->price;?></td>
 		<td><?php echo ($item->price*$item->delivered_quantity);?></td>
-		
 		<td><?php echo $item->currency;?></td>
 		
 		</tr>

@@ -178,8 +178,52 @@ as mla_purchase_request_items
 	
 	
 		$sql = "
-SELECT * from mla_delivery_items as TT1
-WHERE TT1.delivery_id =". $dn;	
+SELECT
+*
+From
+(
+	SELECT 
+		mla_delivery_items.*,
+		mla_purchase_request_items.purchase_request_id,
+		mla_purchase_request_items.pr_number,
+        mla_purchase_request_items.auto_pr_number,
+		mla_purchase_request_items.priority,
+		
+		mla_purchase_request_items.quantity,
+		mla_purchase_request_items.EDT,
+		mla_purchase_request_items.article_id,
+		mla_purchase_request_items.sparepart_id,
+		mla_purchase_request_items.asset_id,
+		
+		mla_purchase_request_items.created_on as requested_on,
+		mla_purchase_request_items.created_by as requested_by,
+		mla_purchase_request_items.firstname,
+		mla_purchase_request_items.lastname,
+		mla_purchase_request_items.email
+		
+	FROM mla_delivery_items
+	JOIN
+	(
+		select
+			mla_purchase_requests.pr_number,
+            mla_purchase_requests.auto_pr_number,
+			mla_purchase_request_items.*,
+			mla_users.firstname,
+			mla_users.lastname,
+			mla_users.email
+		from mla_purchase_request_items
+		join mla_users
+		on mla_users.id = mla_purchase_request_items.created_by
+        
+        join mla_purchase_requests
+        on mla_purchase_requests.id = mla_purchase_request_items.purchase_request_id
+        
+	) as mla_purchase_request_items
+	ON mla_purchase_request_items.id = mla_delivery_items.pr_item_id
+)
+AS mla_delivery_items
+WHERE 1";
+		$sql = $sql . " AND mla_delivery_items.delivery_id =". $dn;	
 	
 		$statement = $adapter->query ( $sql );
 		$result = $statement->execute ();

@@ -165,7 +165,10 @@ class DeliveryController extends AbstractActionController {
 		$this->redirect ()->toUrl ( '/procurement/delivery/get-notification' );
 	}
 	
-	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function createStep1Action() {
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity ();
@@ -207,6 +210,11 @@ class DeliveryController extends AbstractActionController {
 				'errors' => null 
 		) );
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function createStep2Action() {
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );

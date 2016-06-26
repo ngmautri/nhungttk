@@ -27,7 +27,6 @@ use User\Model\AclWhiteList;
 use User\Model\AclWhiteListTable;
 use User\Model\AclUserRole;
 use User\Model\AclUserRoleTable;
-
 use Zend\Permissions\Acl;
 
 class Module {
@@ -53,19 +52,16 @@ class Module {
 	public function onBootstrap(MvcEvent $e) {
 		$eventManager = $e->getApplication ()->getEventManager ();
 		
-		
 		$eventManager->attach ( MvcEvent::EVENT_ROUTE, array (
-				$this,'checkIdentity'
-		), -100 );
-		
+				$this,
+				'checkIdentity' 
+		), - 100 );
 		
 		$eventManager->attach ( MvcEvent::EVENT_DISPATCH, array (
 				$this,
 				'checkACL' 
 		), 100 );
-		
 	}
-	
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
 	}
@@ -82,15 +78,15 @@ class Module {
 		$match = $e->getRouteMatch ();
 		$app = $e->getApplication ();
 		$sm = $app->getServiceManager ();
-		$viewModel = $app->getMvcEvent()->getViewModel();
+		$viewModel = $app->getMvcEvent ()->getViewModel ();
 		
-		$controller = $e->getTarget();
+		$controller = $e->getTarget ();
 		
 		$controller = $e->getRouteMatch ()->getParam ( 'controller' );
 		$action = $e->getRouteMatch ()->getParam ( 'action' );
-		$action = str_replace("-","",$action);
-		$action = str_replace("_","",$action);
-		$requestedResourse = strtoupper($controller . "-" . $action = str_replace("-","",$action));
+		$action = str_replace ( "-", "", $action );
+		$action = str_replace ( "_", "", $action );
+		$requestedResourse = strtoupper ( $controller . "-" . $action = str_replace ( "-", "", $action ) );
 		
 		$session = new Container ( 'MLA_USER' );
 		$hasUser = $session->offsetExists ( 'user' );
@@ -105,74 +101,73 @@ class Module {
 				'user_register',
 				'test_console',
 				'user_register_confirmation',
-				'access_denied'
+				'access_denied' 
 		) )) {
 			return;
 		}
 		
-		
 		if ($hasUser) {
 			
 			$user = $session->offsetGet ( 'user' );
-			$viewModel->user = $user['firstname'] . ' ' .  $user['lastname'];
+			$viewModel->user = $user ['firstname'] . ' ' . $user ['lastname'];
 			$user_id = $user ['id'];
 			
-			if($hasPRCart)
-			{
-					$viewModel->cart_items = $session->offsetGet ( 'cart_items' );
-			}else{
+			if ($hasPRCart) {
+				$viewModel->cart_items = $session->offsetGet ( 'cart_items' );
+			} else {
 				
 				$cartItemTable = $sm->get ( 'Procurement\Model\PurchaseRequestCartItemTable' );
-				$total_cart_items = $cartItemTable->getTotalCartItems($user_id);
-				$session->offsetSet('cart_items', $total_cart_items);
+				$total_cart_items = $cartItemTable->getTotalCartItems ( $user_id );
+				$session->offsetSet ( 'cart_items', $total_cart_items );
 				$viewModel->cart_items = $total_cart_items;
 			}
 			
-			if(!$hasACL)
-			{
+			if (! $hasACL) {
 				// get ACL
 				$acl = $sm->get ( 'User\Service\Acl' );
 				$acl = $acl->initAcl ();
-				$session->offsetSet('ACL', $acl);
-			}else{
+				$session->offsetSet ( 'ACL', $acl );
+			} else {
 				
 				$acl = $session->offsetGet ( 'ACL' );
 			}
 			
-			//$session->offsetSet('ACL', new \Zend\Permissions\Acl\Acl());
-			//$acl = $sm->get ( 'User\Service\Acl' );
-			//$acl = $acl->initAcl ();
-			
-			//var_dump($acl);
-			
-			// get user role
 			
 			$aclUserRole = $sm->get ( 'User\Model\AclUserRoleTable' );
 			$roles = $aclUserRole->getRoleByUserId ( $user_id );
 			
-			
 			$isAllowedAccess = false;
 			$viewModel->isAdmin = false;
 			
-			foreach ( $roles as $role ) {
-				$isAllowed = $acl->isAccessAllowed ($role->role, $requestedResourse, null );
-				//var_dump($requestedResourse);
-				//var_dump($role->role);
+			if ($roles->count () > 0) {
+				
+				foreach ( $roles as $role ) {
+					$isAllowed = $acl->isAccessAllowed ( $role->role, $requestedResourse, null );
+					// var_dump($requestedResourse);
+					// var_dump($role->role);
+					if ($isAllowed) {
+						$isAllowedAccess = true;
+						
+						if (strtoupper ( $role->role ) == 'ADMINISTRATOR') {
+							$viewModel->isAdmin = true;
+						}
+						// break;
+						// var_dump
+					}
+				}
+				
+			} else {
+				// member only
+				$isAllowed = $acl->isAccessAllowed ( 'member', $requestedResourse, null );
 				if ($isAllowed) {
 					$isAllowedAccess = true;
-					
-					if(strtoupper($role->role) == 'ADMINISTRATOR'){
-						$viewModel->isAdmin = true;
-					}
-					//break;
-					//var_dump
 				}
 			}
 			
-			//var_dump($requestedResourse);
+			// var_dump($requestedResourse);
 			
-			if ($isAllowedAccess===false) {
-				//die('<h3>Permission denied</h3>' . $requestedResourse);
+			if ($isAllowedAccess === false) {
+				// die('<h3>Permission denied</h3>' . $requestedResourse);
 				
 				// Redirect to the user login page, as an example
 				
@@ -185,69 +180,64 @@ class Module {
 				$response->getHeaders ()->addHeaderLine ( 'Location', $url );
 				$response->setStatusCode ( 302 );
 				
-				return $response;				
+				return $response;
 			}
-		}else{
+		} else {
 			// Redirect to the user login page, as an example
-			$router   = $e->getRouter();
-			$url      = $router->assemble(array(), array(
-					'name' => 'login'
-			));
+			$router = $e->getRouter ();
+			$url = $router->assemble ( array (), array (
+					'name' => 'login' 
+			) );
 			
-			$response = $e->getResponse();
-			$response->getHeaders()->addHeaderLine('Location', $url);
-			$response->setStatusCode(302);
+			$response = $e->getResponse ();
+			$response->getHeaders ()->addHeaderLine ( 'Location', $url );
+			$response->setStatusCode ( 302 );
 			
 			return $response;
 		}
 	}
-	
 	function checkIdentity(MvcEvent $e) {
-	
-		$match = $e->getRouteMatch();
-		$app = $e->getApplication();
-		$sm = $app->getServiceManager();
-	
-		$auth = $sm->get('AuthService');
-	
+		$match = $e->getRouteMatch ();
+		$app = $e->getApplication ();
+		$sm = $app->getServiceManager ();
+		
+		$auth = $sm->get ( 'AuthService' );
+		
 		// No route match, this is a 404
-		if (!$match instanceof RouteMatch) {
+		if (! $match instanceof RouteMatch) {
 			return;
 		}
-	
-	
+		
 		// Route is whitelisted
-		$name = $match->getMatchedRouteName();
+		$name = $match->getMatchedRouteName ();
 		if (in_array ( $name, array (
-					'login',
-					'logout',
-					'user_register',
-					'test_console',
-					'user_register_confirmation',
-					'access_denied' 
-			) )) {
-				return;
-		}
-	
-		// User is authenticated
-		if ($auth->hasIdentity()) {
+				'login',
+				'logout',
+				'user_register',
+				'test_console',
+				'user_register_confirmation',
+				'access_denied' 
+		) )) {
 			return;
 		}
-	
+		
+		// User is authenticated
+		if ($auth->hasIdentity ()) {
+			return;
+		}
+		
 		// Redirect to the user login page, as an example
-		$router   = $e->getRouter();
-		$url      = $router->assemble(array(), array(
-				'name' => 'login'
-		));
-	
-		$response = $e->getResponse();
-		$response->getHeaders()->addHeaderLine('Location', $url);
-		$response->setStatusCode(302);
-	
+		$router = $e->getRouter ();
+		$url = $router->assemble ( array (), array (
+				'name' => 'login' 
+		) );
+		
+		$response = $e->getResponse ();
+		$response->getHeaders ()->addHeaderLine ( 'Location', $url );
+		$response->setStatusCode ( 302 );
+		
 		return $response;
-	
 	}
-	
 	
 	// Add this method:
 	public function getServiceConfig() {

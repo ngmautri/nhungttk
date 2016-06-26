@@ -730,6 +730,12 @@ WHERE TT1.id = " . $id . " ORDER BY TT1.EDT ASC";
 		endif;
 	}
 	
+	
+	/**
+	 * 
+	 * @param unknown $pr
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function getItemsByPR($pr) {
 		$adapter = $this->tableGateway->adapter;
 		
@@ -764,6 +770,11 @@ WHERE TT1.purchase_request_id = " . $pr . " ORDER BY TT1.EDT ASC";
 		$resultSet->initialize ( $result );
 		return $resultSet;
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function getItems() {
 		$adapter = $this->tableGateway->adapter;
 		$sql = "

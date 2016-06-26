@@ -574,7 +574,7 @@ class ArticleController extends AbstractActionController {
 	}
 	
 	/**
-	 * List all articles
+	 * List all articles Ò usser
 	 */
 	public function listAction() {
 		$identity = $this->authService->getIdentity ();
@@ -613,6 +613,45 @@ class ArticleController extends AbstractActionController {
 				'paginator' => $paginator 
 		) );
 	}
+	
+	/**
+	 * List all articles ADMIN
+	 */
+	public function allAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+	
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 18;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+	
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+	
+	
+		$articles = $this->articleTable->getArticles ( 0, 0, 0 );
+		$totalResults = $articles->count ();
+	
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$articles = $this->articleTable->getArticles ( 0, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+	
+		return new ViewModel ( array (
+				'total_articles' => $totalResults,
+				'articles' => $articles,
+				'paginator' => $paginator
+		) );
+	}
+	
 	public function categoryAction() {
 		$list = $this->articleCategoryService;
 		$list = $list->initCategory ();

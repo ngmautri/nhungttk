@@ -84,6 +84,27 @@ class UserTable {
 			return $resultSet->current();
 	}
 	
+	
+	public function changePassword($user_id, $new_password) {
+	
+		$sql =
+	"
+	update
+	mla_users
+	set password = '" . $new_password ."'
+	where 1
+	AND id = " . $user_id ;
+			
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return null;
+	}
+	
 	/*
 	 *
 	 */
@@ -159,6 +180,7 @@ class UserTable {
 		}
 	}
 	
+	
 	/**
 	 *
 	 * @param unknown $email
@@ -197,10 +219,13 @@ class UserTable {
 		$resultSet = new \Zend\Db\ResultSet\ResultSet();
 		$resultSet->initialize($result);
 	
-		if(count()>0){
+		if(count($resultSet)>0){
 			return $resultSet->current();
 		}else{
 			return null;
 		}
 	}
+	
+	
+	
 }

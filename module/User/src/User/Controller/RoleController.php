@@ -69,7 +69,7 @@ class RoleController extends AbstractActionController {
 		) );
 	}
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function addMemberAction() {
@@ -138,11 +138,11 @@ class RoleController extends AbstractActionController {
 			
 			$errors = array ();
 			
-			if ($role_name === '' OR $role_name === null) {
+			if ($role_name === '' or $role_name === null) {
 				$errors [] = 'Please give role name';
 			}
 			
-			if ($this->aclRoleTable->isRoleExits ( $role_name) === true) {
+			if ($this->aclRoleTable->isRoleExits ( $role_name ) === true) {
 				$errors [] = $role_name . ' exists';
 			}
 			
@@ -158,30 +158,29 @@ class RoleController extends AbstractActionController {
 				return $response;
 			}
 			
-			
 			$input = new AclRole ();
 			$input->role = $role_name;
 			$input->parent_id = $this->aclRoleTable->getRoleIDByName ( $request->getPost ( 'parent_name' ) );
 			$input->created_by = $user ["id"];
-		
+			
 			// actually Role_name
 			$role_id = $request->getPost ( 'role_id' );
 			
-			if ($this->aclRoleTable->isRoleExits ( $role_id) === true) {
+			if ($this->aclRoleTable->isRoleExits ( $role_id ) === true) {
 				$this->aclRoleTable->updateByRole ( $input, $role_id );
 				
 				$c = array (
 						'status' => '1',
-						'messages' => array("Updated")
+						'messages' => array (
+								"Updated" 
+						) 
 				);
 				$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
 				$response->setContent ( json_encode ( $c ) );
 				return $response;
-				
 			} else {
 				// role name must unique
 				$new_role_id = $this->aclRoleTable->add ( $input );
-				
 				
 				// get path of parent and update new role
 				if ($input->parent_id !== null) :
@@ -198,19 +197,19 @@ class RoleController extends AbstractActionController {
 				
 				$c = array (
 						'status' => '1',
-						'messages' => array("Created")
+						'messages' => array (
+								"Created" 
+						) 
 				);
 				$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
 				$response->setContent ( json_encode ( $c ) );
 				return $response;
 			}
-			
-			
 		}
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function grantAccessAction() {
@@ -276,17 +275,20 @@ class RoleController extends AbstractActionController {
 		) );
 	}
 	
-	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function grantAccess1Action() {
 		$request = $this->getRequest ();
-	
+		
 		if ($request->isPost ()) {
-				
+			
 			$role_id = ( int ) $request->getPost ( 'role_id' );
 			$resources = $request->getPost ( 'resources' );
-				
+			
 			if (count ( $resources ) > 0) {
-	
+				
 				foreach ( $resources as $r ) {
 					if ($this->aclRoleResourceTable->isGrantedAccess ( $role_id, $r ) == false) {
 						$access = new AclRoleResource ();
@@ -295,7 +297,7 @@ class RoleController extends AbstractActionController {
 						$this->aclRoleResourceTable->add ( $access );
 					}
 				}
-	
+				
 				/*
 				 * return new ViewModel ( array (
 				 * 'sparepart' => null,
@@ -306,14 +308,14 @@ class RoleController extends AbstractActionController {
 				$this->redirect ()->toUrl ( "/user/role/grant-access?id=" . $role_id );
 			}
 		}
-	
+		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 18;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
 		;
-	
+		
 		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
 			$page = 1;
 		} else {
@@ -321,26 +323,25 @@ class RoleController extends AbstractActionController {
 		}
 		;
 		$role = $this->params ()->fromQuery ( 'role' );
-		$role_id = $this->aclRoleTable->getRoleIDByName($role);
-	
+		$role_id = $this->aclRoleTable->getRoleIDByName ( $role );
+		
 		$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, 0, 0 );
 		$totalResults = $resources->count ();
-	
+		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
 			$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
-	
+		
 		return new ViewModel ( array (
 				'total_resources' => $totalResults,
 				'role_id' => $role_id,
-	
+				
 				'resources' => $resources,
-				'paginator' => $paginator
+				'paginator' => $paginator 
 		) );
 	}
-	
 	public function getAclRoleTable() {
 		return $this->aclRoleTable;
 	}

@@ -40,7 +40,7 @@ echo '<div class="alert alert-info">';
         <label class="control-label" for="inputNameLocal">PR by Department: </label>
         <div class="controls">
         	<select name="department_id" >
-        		<option value="">All departments</option>
+        	<option value="">All departments</option>
    	    	<?php foreach ($departments as $dept) :
         		if($dept->id === $department_id):
 	        			$department_name = $dept->name;
@@ -116,9 +116,8 @@ echo '<div class="alert alert-info">';
 <tr>	
 		<td><b>N0.</b></td>
 		<td><b>PR Number</b></td>
-		<td><b>PR Status</b></td>
 		<td><b>Department </b></td>
-		<td><b>Priority</b></td>
+		<td ><b data-toggle="tooltip" title = "Priority">P</b></td>
 		<td><b>Name</b></td>
 		<td><b>Unit</b></td>
 		<td ><b data-toggle="tooltip" title = "Ordred Quantity">Q'ty</b></td>
@@ -147,12 +146,10 @@ echo '<div class="alert alert-info">';
 	 ?>
 		<td><?php echo $count;?></td>
 		<td><?php echo $item->pr_number;?></td>
-		<td><?php echo $item->pr_last_status;?></td>
 		
 		<td><?php echo $item->pr_of_department;?></td>
 		
-		
-		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. $item->priority .'</span>':$item->priority;?></td> 	
+		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. substr ($item->priority,0,1) .'</span>':substr ($item->priority,0,1);?></td> 	
 		<td><?php echo $item->name;?></td>
 		<td><?php echo $item->unit;?></td>
 		<td><?php echo $item->quantity;?></td>
@@ -206,8 +203,7 @@ echo '<div class="alert alert-info">';
 
 
 </tbody>
-</table>
-
+</table><br>
 
 <?php
 	

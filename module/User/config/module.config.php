@@ -142,6 +142,7 @@ return array (
 				'factories' => array (
 						'User\Controller\Role' => 'User\Controller\RoleControllerFactory',
 						'User\Controller\Auth' => 'User\Controller\AuthControllerFactory',
+						'User\Controller\Profile' => 'User\Controller\ProfileControllerFactory',
 					)
 				
 		),

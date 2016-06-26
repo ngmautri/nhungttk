@@ -251,8 +251,8 @@ EOD;
 				$pdf->SetCreator ( PDF_CREATOR );
 				$pdf->SetAuthor ( 'Mascot Laos ' );
 				//$pdf->SetTitle ( 'Purchase request ' . $pr_number);
-				$pdf->SetSubject ( 'TCPDF Tutorial' );
-				$pdf->SetKeywords ( 'TCPDF, PDF, example, test, guide' );
+				$pdf->SetSubject ( 'Delivery Note' );
+				$pdf->SetKeywords ( 'Mascot Las, PDF, Delivery, Note' );
 	
 				// set default monospaced font
 				$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -310,6 +310,6 @@ EOD;
 				// -----------------------------------------------------------------------------
 	
 				//Close and output PDF document
-				$pdf->Output('DN.'.'1'.'.pdf', 'I');
+				$pdf->Output('Delivery Note.'.'1'.'.pdf', 'I');
 	}
 }

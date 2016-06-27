@@ -149,6 +149,79 @@ class SparepartMovementsTable {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param unknown $fromDate
+	 * @param unknown $toDate
+	 * @param unknown $flow
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getSparePartMovements($fromDate, $toDate, $flow, $limit,$offset) {
+		$adapter = $this->tableGateway->adapter;
+		
+		$sql = "
+select
+*
+from
+(
+select 
+	mla_sparepart_movements.*,
+	mla_asset.name as asset,
+    mla_spareparts.name as sparepart_name,
+				 mla_spareparts.tag
+    
+from
+mla_sparepart_movements
+
+left join mla_asset
+on mla_asset.id = mla_sparepart_movements.asset_id
+
+
+left join mla_spareparts
+on mla_spareparts.id = mla_sparepart_movements.sparepart_id
+)
+as mla_sparepart_movements
+WHERE 1
+		";
+		
+		$sql = $sql .  " AND mla_sparepart_movements.movement_date >= '" . $fromDate . "'" ;
+		$sql = $sql .  " AND mla_sparepart_movements.movement_date <= '" . $toDate . "'";
+		
+		
+		if ($flow !='ALL'){
+			$sql = $sql. " AND mla_sparepart_movements.flow = '" . $flow . "'";
+		}
+		
+		$sql = $sql. " ORDER BY mla_sparepart_movements.movement_date DESC";
+
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+		
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+		
+		//echo $sql;
+		
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	
+	/**
+	 * 
+	 * @param unknown $fromDate
+	 * @param unknown $toDate
+	 * @param unknown $flow
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function getMovements($fromDate, $toDate, $flow) {
 		$adapter = $this->tableGateway->adapter;
 		if ($flow == null|| $flow =='ALL') {

@@ -15,10 +15,8 @@ use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
-
 use MLA\Paginator;
 use MLA\Files;
-
 use Inventory\Model\SparepartPicture;
 use Inventory\Model\SparepartPictureTable;
 use Inventory\Model\MLASparepart;
@@ -47,95 +45,109 @@ class ReportController extends AbstractActionController {
 	 */
 	public function indexAction() {
 		
-		//$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		// $redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$fromDate = $this->params ()->fromQuery ( 'start_date' );
 		$toDate = $this->params ()->fromQuery ( 'end_date' );
 		$flow = $this->params ()->fromQuery ( 'flow' );
 		$output = $this->params ()->fromQuery ( 'output' );
 		
-		$movements = $this->sparepartMovementsTable->getMovements($fromDate, $toDate, $flow);
+		$movements = $this->sparepartMovementsTable->getSparePartMovements ( $fromDate, $toDate, $flow, 0, 0 );
 		
-		
-		if($output === 'csv'){
+		if ($output === 'csv') {
 			
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
 			
-			$fh = fopen( 'php://memory', 'w' );
-			//$myfile = fopen('ouptut.csv', 'a+');
-			
-			$h = array();
-			$h[] = "DATE";
-			$h[] = "TAG";
-			$h[] = "NAME";
-			$h[] = "QUANTITY";
-			$h[] = "FLOW";
+			$h = array ();
+			$h [] = "DATE";
+			$h [] = "TAG";
+			$h [] = "NAME";
+			$h [] = "QUANTITY";
+			$h [] = "FLOW";
 			
 			$delimiter = ";";
 			
-			fputcsv($fh, $h, $delimiter,'"');
-			//fputs($fh, implode($h, ',')."\n");
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
 			
-			
-			foreach ($movements as $m) {
-				$l = array();
-				$l[] = (string) $m->movement_date;
-				$l[] = (string) '"'. $m->tag .'"' ;
+			foreach ( $movements as $m ) {
+				$l = array ();
+				$l [] = ( string ) $m->movement_date;
+				$l [] = ( string ) '"' . $m->tag . '"';
 				
-				$name = (string) $m->name;
+				$name = ( string ) $m->sparepart_name;
 				
-				$name === ''?$name="-":$name;
+				$name === '' ? $name = "-" : $name;
 				
-				$name = str_replace(',','',$name);
-				$name = str_replace(';','',$name);
-			
+				$name = str_replace ( ',', '', $name );
+				$name = str_replace ( ';', '', $name );
 				
-				$l[] =  $name;
-				$l[] = (string) $m->quantity;
-				$l[] = (string) $m->flow;
+				$l [] = $name;
+				$l [] = ( string ) $m->quantity;
+				$l [] = ( string ) $m->flow;
 				
-				fputcsv($fh, $l, $delimiter,'"');
-				//fputs($fh, implode($l, ',')."\n");
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
 			}
 			
 			$fileName = 'report.csv';
-			fseek($fh, 0);
-			$output = stream_get_contents($fh);
-			//file_put_contents($fileName, $output);
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
 			
-			$response= $this->getResponse();
-			$headers = $response->getHeaders();
+			$response = $this->getResponse ();
+			$headers = $response->getHeaders ();
 			
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
 			
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; "' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
 			
-			$headers->addHeaderLine('Content-Type: text/csv' );
+			// $output = fread($fh, 8192);
+			$response->setContent ( $output );
 			
-			$headers->addHeaderLine('Content-Disposition: attachment; "'. $fileName . '"');
-			$headers->addHeaderLine('Content-Description: File Transfer');
-			$headers->addHeaderLine('Content-Transfer-Encoding: binary');
-			$headers->addHeaderLine('Content-Encoding: UTF-8');
+			fclose ( $fh );
+			// unlink($fileName);
 			
-			//$output = fread($fh, 8192);
-			$response->setContent($output);
-			
-			fclose($fh);
-			//unlink($fileName);
-				
 			return $response;
+		} else {
 			
+			if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+				$resultsPerPage = 18;
+			} else {
+				$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+			}
+			;
 			
-		}else{
+			if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+				$page = 1;
+			} else {
+				$page = $this->params ()->fromQuery ( 'page' );
+			}
+			;
 			
+			$totalResults = count ( $movements );
+			
+			$paginator = null;
+			if ($totalResults > $resultsPerPage) {
+				$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+				$movements = $this->sparepartMovementsTable->getSparePartMovements ( $fromDate, $toDate, $flow, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			}
 			
 			return new ViewModel ( array (
 					'movements' => $movements,
-					//'redirectUrl' => $redirectUrl,
+					// 'redirectUrl' => $redirectUrl,
 					'fromDate' => $fromDate,
 					'toDate' => $toDate,
 					'flow' => $flow,
-			
-			) );
+					'paginator' => $paginator,
+					'total_items' => $totalResults 
+			)
+			 );
 		}
 	}
-	
 	
 	// SETTER AND GETTER
 	public function getAuthService() {

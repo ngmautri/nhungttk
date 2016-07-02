@@ -28,7 +28,8 @@ if ($total_articles <= 0) {
 	
 ?>
 
-<table class="pure-table pure-table-bordered">
+
+<table class="table table-bordered table-striped ">
 <thead>
 	<tr>
 		<td><b>Name</b></td>
@@ -39,6 +40,7 @@ if ($total_articles <= 0) {
 		<td><b>Remark</b></td>
 		<td><b>Department</b></td>
 		<td><b>Action</b></td>
+		<td><b>...</b></td>
 	</tr>
 </thead>
 
@@ -48,13 +50,11 @@ if ($total_articles <= 0) {
 	 
 	 $count = 0;
 	 foreach ($articles as $a) : 
-	 	 $count++;
-	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+//	 	 $count++;
+	 	//echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 	//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
-	 
-	 	 
-	 ?>
-	 
+		 ?>
+	 <tr>
 	 
 		<td><span id="<?php echo $this->escapeHtml($a->id);?>_name"><?php echo $this->escapeHtml($a->name);?></span>
 		</td>
@@ -72,9 +72,23 @@ if ($total_articles <= 0) {
 		<td><?php echo $this->escapeHtml($a->department_name);?> 
 		 
 		<td>
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>">Edit</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/receive?article_id=<?php echo $this->escapeHtml($a->id);?>">Receive</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($a->id);?>">Issue</a>
 		
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a>
+		</td>
+		<td>
+			
+  <div class="dropdown">
+    <a class="dropdown-toggle" type="button" data-toggle="dropdown" href="#">More
+    <span class="caret"></span></a>
+    <ul class="dropdown-menu">
+    	 <li class="dropdown-header"><b> <?php echo $this->escapeHtml($a->name);?></b></li>
+    	 <li class="divider"></li>
+        <li><a href="#">Picture</a></li>
+    	<li><a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>">Edit</a></li>
+    </ul>
+  </div>
 		</td>
 	</tr>
 <?php endforeach; ?>

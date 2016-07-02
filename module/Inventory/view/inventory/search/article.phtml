@@ -38,11 +38,14 @@ echo '</span><hr>';
 	
 		<td>
 			<a href="#" onclick="openPRCart('<?php echo $hit->article_id?>');"><i class="icon-shopping-cart"></i>Order</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/receive?article_id=<?php echo $this->escapeHtml($hit->article_id);?>">Receive</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($hit->article_id);?>">Issue</a>
 	
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $hit->article_id?>">  Edit</a>
-				<a href="<?php echo $this->baseUrl ?>/inventory/asset/upload-picture1?id=<?php echo $hit->article_id?>">  Picture</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/upload-picture1?id=<?php echo $hit->article_id?>">  Picture</a>
 		
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $hit->article_id?>">  Detail</a>
+						
 		</td>
 	</tr>
 <?php endforeach; ?>

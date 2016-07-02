@@ -93,3 +93,11 @@ striping:
 
 .pure-table a:hover{background-color: #0080c0;color: #ffffff;}
 
+.table a {
+    color: #0080ff;
+    padding: 2px 4px;
+    font-size:10pt;
+    text-decoration: none;
+    text-transform: capitalize;
+ }
+.table a:hover{background-color: #0080c0;color: #ffffff;}

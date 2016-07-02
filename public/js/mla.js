@@ -661,12 +661,14 @@ function addItemToCart(type) {
 	var item_name;
 	var item_priority;
 	var item_edt;
+	var item_unit;
 	var item_quantity;
 	var item_remarks;
 	var ID;
 
 	ID = $('#item_id').val();
 	item_name = $('#item_name').val();
+	item_unit = $('#item_unit').val();
 	item_priority = $('#item_priority').val();
 
 	item_edt = $('#end_date').val();
@@ -679,6 +681,7 @@ function addItemToCart(type) {
 		item_type : type,
 		priority : item_priority,
 		name : item_name,
+		unit:item_unit,
 		quantity : item_quantity,
 		EDT : item_edt,
 		remarks : item_remarks,

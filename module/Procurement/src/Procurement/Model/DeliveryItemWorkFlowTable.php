@@ -15,16 +15,30 @@ class DeliveryItemWorkFlowTable {
 	
 	protected $tableGateway;
 	
+	
+	/**
+	 * 
+	 * @param TableGateway $tableGateway
+	 */
 	public function __construct(TableGateway $tableGateway) {
 		$this->tableGateway = $tableGateway;
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function fetchAll() {
 		$resultSet = $this->tableGateway->select ();
 		return $resultSet;
 	}
 	
-	
+	/**
+	 * 
+	 * @param unknown $id
+	 * @throws \Exception
+	 * @return ArrayObject|NULL
+	 */
 	public function get($id){
 		
 		$id  = (int) $id;
@@ -57,12 +71,21 @@ class DeliveryItemWorkFlowTable {
 				'status' => $input->status,
 				'updated_by' => $input->updated_by,
 				'updated_on' => date ( 'Y-m-d H:i:s' ),
+				'confirmed_quantity' => $input->confirmed_quantity,
+				'rejected_quantity' => $input->rejected_quantity,
+				'remarks' => $input->remarks,
+				
 		);
 		
 		$this->tableGateway->insert ( $data );
 		return $this->tableGateway->lastInsertValue;
 	}
 	
+	/**
+	 * 
+	 * @param DeliveryWorkFlow $input
+	 * @param unknown $id
+	 */
 	public function update(DeliveryWorkFlow $input, $id) {
 		
 		$data = array (
@@ -73,14 +96,20 @@ class DeliveryItemWorkFlowTable {
 				'status' => $input->status,
 				'updated_by' => $input->updated_by,
 				'updated_on' => date ( 'Y-m-d H:i:s' ),
+				'confirmed_quantity' => $input->confirmed_quantity,
+				'rejected_quantity' => $input->rejected_quantity,
+				'remarks' => $input->remarks,
+				
 		);	
 		
 		$where = 'id = ' . $id;
 		$this->tableGateway->update( $data,$where);
 	}
 	
-	
-	
+	/**
+	 * 
+	 * @param unknown $id
+	 */
 	public function delete($id) {
 		$where = 'id = ' . $id;
 		$this->tableGateway->delete($where);

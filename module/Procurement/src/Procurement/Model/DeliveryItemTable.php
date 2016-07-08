@@ -120,6 +120,7 @@ as mla_purchase_request_items
 	 */
 	public function add(DeliveryItem $input) {
 		$data = array (
+				'delivery_date' => $input->delivery_date,
 				'delivery_id' => $input->delivery_id,
 				'pr_item_id' => $input->pr_item_id,
 				'name' => $input->name,
@@ -128,6 +129,7 @@ as mla_purchase_request_items
 				'delivered_quantity' => $input->delivered_quantity,
 				'price' => $input->price,
 				'currency' => $input->currency,
+				'payment_method' => $input->payment_method,
 				'vendor_id' => $input->vendor_id,
 				'remarks' => $input->remarks,
 				'created_by' => $input->created_by,
@@ -139,9 +141,15 @@ as mla_purchase_request_items
 		return $this->tableGateway->lastInsertValue;
 	}
 	
+	/**
+	 * 
+	 * @param DeliveryItem $input
+	 * @param unknown $id
+	 */
 	public function update(DeliveryItem $input, $id) {
 		
 		$data = array (
+				'delivery_date' => $input->delivery_date,
 				'delivery_id' => $input->delivery_id,
 				'pr_item_id' => $input->pr_item_id,
 				'name' => $input->name,
@@ -150,10 +158,10 @@ as mla_purchase_request_items
 				'delivered_quantity' => $input->delivered_quantity,
 				'price' => $input->price,
 				'currency' => $input->currency,
+				'payment_method' => $input->payment_method,
 				'vendor_id' => $input->vendor_id,
 				'remarks' => $input->remarks,
 				'created_by' => $input->created_by,
-				'created_on' => date ( 'Y-m-d H:i:s' ),
 		);	
 		
 		$where = 'id = ' . $id;
@@ -233,7 +241,11 @@ WHERE 1";
 		return $resultSet;
 	}
 	
-
+	/**
+	 * 
+	 * @param unknown $user_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function getNotifiedDNItemsOf($user_id) {
 		$adapter = $this->tableGateway->adapter;
 	
@@ -249,4 +261,30 @@ WHERE 1";
 		$resultSet->initialize ( $result );
 		return $resultSet;
 	}
+	
+	/**
+	 * 
+	 * @param unknown $user_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function setDNItemsAsNotified($dn_id) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = "
+update
+(
+   mla_delivery_items
+)
+set  mla_delivery_items.status  = 'NOTIFIED'
+where 1
+and mla_delivery_cart.id  IN " . $seletect_items;
+		
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}	
+
 }

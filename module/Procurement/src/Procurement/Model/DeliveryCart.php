@@ -7,7 +7,7 @@ namespace Procurement\Model;
  * @author nmt
  *        
  */
-class DeliveryItem {
+class DeliveryCart {
 	
 	public $id;
 	public $delivery_date;
@@ -31,6 +31,8 @@ class DeliveryItem {
 	public $created_on;
 	
 	public $last_workflow_id;
+	public $status;
+	
 	
 	
 	
@@ -54,6 +56,7 @@ class DeliveryItem {
 		$this->created_on = (! empty ( $data ['created_on'] )) ? $data ['created_on'] : null;
 
 		$this->last_workflow_id= (! empty ( $data ['last_workflow_id'] )) ? $data ['last_workflow_id'] : null;
+		$this->status= (! empty ( $data ['status'] )) ? $data ['status'] : null;
 		
 		
 	}

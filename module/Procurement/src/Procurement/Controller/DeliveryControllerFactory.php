@@ -53,6 +53,10 @@ class DeliveryControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('Procurement\Model\DeliveryItemWorkFlowTable' );
 		$controller->setDeliveryItemWorkFlowTable($tbl);
 		
+		// Delivery Cart table
+		$tbl =  $sm->get ('Procurement\Model\DeliveryCartTable' );
+		$controller->setDeliveryCartTable($tbl);		
+		
 		// Article Movement Table
 		$tbl =  $sm->get ('Inventory\Model\ArticleMovementTable' );
 		$controller->setArticleMovementTable($tbl);

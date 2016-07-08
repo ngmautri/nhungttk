@@ -94,7 +94,7 @@ class VendorController extends AbstractActionController {
 	}
 	
 	/**
-	 * List all articles
+	 * List vendor
 	 */
 	public function listAction() {
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {

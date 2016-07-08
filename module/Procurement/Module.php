@@ -48,6 +48,10 @@ use Procurement\Model\DeliveryWorkFlowTable;
 use Procurement\Model\DeliveryItemWorkFlow;
 use Procurement\Model\DeliveryItemWorkFlowTable;
 
+use Procurement\Model\DeliveryCart;
+use Procurement\Model\DeliveryCartTable;
+
+
 class Module {
 	
 	
@@ -233,7 +237,19 @@ class Module {
 						return new TableGateway ( 'mla_delivery_items_workflows', $dbAdapter, null, $resultSetPrototype );
 						},
 						
+						// DeliveryCartable
+						'Procurement\Model\DeliveryCartTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'DeliveryCartTableGateway' );
+						$table = new DeliveryCartTable($tableGateway);
+						return $table;
+						},
 						
+						'DeliveryCartTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new DeliveryCart());
+						return new TableGateway ( 'mla_delivery_cart', $dbAdapter, null, $resultSetPrototype );
+						},
 					)
 				);
 	}

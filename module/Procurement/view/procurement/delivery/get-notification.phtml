@@ -5,10 +5,7 @@
         
  <?php 
 echo '<div class="alert alert-info">';
-	
-	 echo '<ul>';
-	 echo '<li>All Items View for Requester</li>';
-	 echo '</ul>';
+	 echo 'Notifications:';
 	 echo '</div>';
 
 ?>
@@ -21,7 +18,7 @@ echo '<div class="alert alert-info">';
 <span class="label label-info"><?php echo count($dn_items) . ' PR - Items'?></span>
 
 -->
-<table class="pure-table pure-table-bordered"">
+<table class="pure-table pure-table-bordered">
 <thead>
 <tr>	
 		<td><b>Item</b></td>
@@ -55,10 +52,10 @@ echo '<div class="alert alert-info">';
 		<td><?php echo $item->delivered_quantity;?></td>
 		
 		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. $item->priority .'</span>':$item->priority;?></td> 	
-		<td><?php echo $item->name;?></td>
+		<td><span id="<?php echo $item->dn_item_id;?>_item_name"><?php echo $item->name;?></span></td>
 		<td><?php echo $item->unit;?></td>
 		<td><?php echo $item->quantity;?></td>
-		<td><?php echo $item->delivered_quantity;?></td>
+		<td><span id="<?php echo $this->escapeHtml($item->dn_item_id);?>_delivered_quantity"><?php echo $item->delivered_quantity;?></span></td>
 		<td><?php echo $to_delivery==0?'<span class="label label-success">0</span>':$to_delivery;?></td>
 		<?php if($to_delivery == 0): ?>
 				<td><?php echo date_format(date_create($item->EDT),"Y-m-d");?></td>
@@ -69,14 +66,8 @@ echo '<div class="alert alert-info">';
 			<td><span id="<?php echo $item->id;?>_timer"></span></td>
 		<?php endif; ?>
 		<td>
-		<a
-href="<?php echo $this->baseUrl ?>/procurement/delivery/confirm?dn_item_id=<?php echo $item->dn_item_id;?>&
-pr_item_id=<?php echo $item->pr_item_id;?>&
-sparepart_id=<?php echo $item->sparepart_id;?>&
-article_id=<?php echo $item->article_id;?>&
-asset_id=<?php echo $item->asset_id;?>&
-dn_id=<?php echo $item->delivery_id;?>">Confirm
-		</a>
+		<a href="#" onclick="openDeliveryConfirmation('<?php echo $item->dn_item_id;?>','<?php echo $this->baseUrl ?>/procurement/delivery/confirm-delivery?dn_item_id=<?php echo $item->dn_item_id;?>&pr_item_id=<?php echo $item->pr_item_id;?>&sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>&asset_id=<?php echo $item->asset_id;?>&dn_id=<?php echo $item->delivery_id;?>');">CONFIRM</a>
+		
 		</td>
 		
 		</tr>
@@ -92,3 +83,73 @@ dn_id=<?php echo $item->delivery_id;?>">Confirm
 </tbody>
 </table>
 	
+	
+
+<!-- Modal -->
+	<div id="myModal" class="modal hide" role="dialog">
+	  <div class="modal-dialog">
+	  	 <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title">Delivery Confirmation:</h5>
+      </div>
+	      <div class="modal-body">
+	  <div>
+	  <span id="_status"></span>
+	  <span id="_uri"></span>
+	  </div>
+
+<form class="form-horizontal" action=""	method="post" enctype="multipart/form-data" id="NewSP" >
+<input type="hidden" name="article_id" id ="item_id" value="" />
+	 <div class="control-group">
+        <label class="control-label" for="inputTag">Item Name:</label>
+        <div class="controls">
+          <input readonly type="text" id="item_name" placeholder="" name="item_name" value="">
+        </div>
+      </div>
+ 	
+	  <div class="control-group">
+        <label class="control-label" for="inputTag">Delivered Quantity:</label>
+        <div class="controls">
+          <input readonly type="text" id="delivered_quantity" placeholder="" name="delivered_quantity" value="">
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputTag">Confirmed Quantity:</label>
+        <div class="controls">
+          <input type="text" id="confirmed_quantity" placeholder="" name="name" value="article">
+        </div>
+      </div>
+      
+       <div class="control-group">
+        <label class="control-label" for="inputTag">Rejected Quantity:</label>
+        <div class="controls">
+          <input readonly type="text" id="rejected_quantity" placeholder="" name="quantity" value="">
+        </div>
+      </div>
+      
+       
+       <div class="control-group">
+        <label class="control-label" for="inputDescription">Reason /Remarks:</label>
+        <div class="controls">
+          <textarea id="confirmation_remarks" placeholder="" rows="2" cols="5" name=""></textarea>
+        </div>
+      </div>
+    </form>
+	   </div>
+	      
+		  <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	        <button onclick="doConfirmDelivery();" type="button" class="btn btn-primary">SEND</button>
+	      </div>
+	   </div>
+	</div>
+	
+	<!-- Modal -->
+	<div id="myModal1" class="modal hide" role="dialog">
+	  <div class="modal-dialog">
+	      <div class="modal-body">
+	        <p>Working on it........Please Wait!</p>
+	      </div>
+	   </div>
+	</div>			

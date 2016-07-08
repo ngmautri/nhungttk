@@ -29,7 +29,7 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	
 	 public function testDBTest() {
-	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\PurchaseRequestTable');
+	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\DeliveryCartTable');
 	 	 /*
 	 	 $input = new PRItemWorkFlow();
 	 	 $input->status = "Notified";
@@ -48,7 +48,7 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	 	 //$result = $tbl->getPRItems(2,null,1,0,0);
 	 	 
-	 	  $result = $tbl->getTotalPROfYear(46);
+	 	  $result = $tbl->fetchAll();
 	 	  var_dump($result);
 	 	
 	 	  /*

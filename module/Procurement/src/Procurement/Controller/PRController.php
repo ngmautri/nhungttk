@@ -50,6 +50,11 @@ class PRController extends AbstractActionController {
 	public function indexAction() {
 		return new ViewModel ();
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function createStep1Action() {
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity ();

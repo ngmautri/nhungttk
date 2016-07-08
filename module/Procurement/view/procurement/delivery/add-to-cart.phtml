@@ -1,30 +1,4 @@
 
-<div class="panel-group">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h5 class="panel-title">
-				<a data-toggle="collapse" href="#collapse1"><?php echo $dn!==null ? '<h5>Deliver Note (DN): '. $dn->dn_number.'</h5>':"" ?></a>
-			</h5>
-		</div>
-		<div id="collapse1" class="panel-collapse collapse">
-			<div class="panel-body">
-        
-     <?php
-					
-if ($dn !== null) {
-						echo '<div class="alert alert-info">';
-						
-						echo '<ul>';
-						echo '<li>Description	: <strong>' . $dn->description . '</strong></li>';
-						echo '</ul>';
-						echo '</div>';
-					}
-					?>
-        </div>
-		</div>
-	</div>
-</div>
-
 <h5>Adding Deliver Item:</h5>
 
 <?php
@@ -43,12 +17,10 @@ if (count ( $errors ) > 0) {
 ?>
 
 
-<form class="form-horizontal"
-	action="<?php echo $this->baseUrl ?>/procurement/delivery/select-from-list2"
+<form class="form-horizontal" 	action="<?php echo $this->baseUrl ?>/procurement/delivery/add-to-cart"
 	method="post" enctype="multipart/form-data" id="NewSP">
 	<input type="hidden" name="redirectUrl"
-		value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-		name="delivery_id" value="<?php echo $dn->id ?>" /> <input
+		value="<?php echo $redirectUrl ?>" /><input
 		type="hidden" name="pr_item_id" value="<?php echo $pr_item->id ?>" />
 	<input type="hidden" name="vendor_id" id="vendor_id" value="" />
 
@@ -98,7 +70,7 @@ if (count ( $errors ) > 0) {
 		<div class="controls">
 			<input type="text" id="inputTag" placeholder=""
 				name="delivered_quantity" value="">
-           <?php echo '<span class="label label-info">(To delivery: '.($pr_item['quantity'] - $pr_item['delivered_quantity']).')</span>'?>
+               <?php echo '<span class="label label-info">(To deliver: '. $pr_item->confirmed_balance.')</span>'?>
         </div>
 	</div>
 
@@ -130,7 +102,7 @@ if (count ( $errors ) > 0) {
 
 				<option selected="selected" value="">---Please select---</option>
 				<option value="By Cash">By Cash</option>
-				<option value="Bank Transer">Bank Transer</option>
+				<option value="Bank Transfer">Bank Transfer</option>
 				<option value="Other">Other Method</option>
 			</select>
 		</div>

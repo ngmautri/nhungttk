@@ -15,11 +15,8 @@ use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
-
 use MLA\Paginator;
 use MLA\Files;
-
-
 use Inventory\Model\SparepartPicture;
 use Inventory\Model\SparepartPictureTable;
 use Inventory\Model\MLASparepart;
@@ -32,6 +29,7 @@ use Inventory\Model\SparepartMovementsTable;
 use Inventory\Services\SparepartService;
 use Procurement\Model\PurchaseRequestCartItem;
 use Procurement\Model\PurchaseRequestCartItemTable;
+
 class SparepartsController extends AbstractActionController {
 	protected $authService;
 	protected $SmtpTransportService;
@@ -42,9 +40,7 @@ class SparepartsController extends AbstractActionController {
 	protected $sparepartMovementsTable;
 	protected $sparePartCategoryTable;
 	protected $sparePartCategoryMemberTable;
-	
-	protected  $purchaseRequestCartItemTable;
-	
+	protected $purchaseRequestCartItemTable;
 	protected $massage = 'NULL';
 	
 	/*
@@ -57,13 +53,12 @@ class SparepartsController extends AbstractActionController {
 	 * create new spare part
 	 */
 	public function addAction() {
-		
 		$request = $this->getRequest ();
-			
+		
 		if ($request->isPost ()) {
 			
 			if ($request->isPost ()) {
-				$redirectUrl  = $request->getPost ( 'redirectUrl' );
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
 				
 				$input = new MLASparepart ();
 				$input->name = $request->getPost ( 'name' );
@@ -76,65 +71,61 @@ class SparepartsController extends AbstractActionController {
 				$input->location = $request->getPost ( 'location' );
 				$input->comment = $request->getPost ( 'comment' );
 				
-				$category_id = (int) $request->getPost ( 'category_id' );
+				$category_id = ( int ) $request->getPost ( 'category_id' );
 				
-								
-				$errors = array();
+				$errors = array ();
 				
-				//tag must be unique
+				// tag must be unique
 				
-				if ($this->sparePartTable->isTagExits($input->tag) === true){
-					$errors [] = 'Sparepart with tag number "'. $input->tag.  '" exits already in database';					
+				if ($this->sparePartTable->isTagExits ( $input->tag ) === true) {
+					$errors [] = 'Sparepart with tag number "' . $input->tag . '" exits already in database';
 				}
 				
-
-				if ($input->name ==''){
+				if ($input->name == '') {
 					$errors [] = 'Please give spare-part name';
 				}
-					
 				
 				if (count ( $errors ) > 0) {
 					return new ViewModel ( array (
 							'errors' => $errors,
-							'redirectUrl'=>$redirectUrl,
+							'redirectUrl' => $redirectUrl,
 							'category_id' => $category_id,
-							'sparepart' =>$input,							
+							'sparepart' => $input 
 					) );
 				}
 				
-				
 				$newId = $this->sparePartTable->add ( $input );
-				$root_dir = $this->sparePartService->getPicturesPath();
+				$root_dir = $this->sparePartService->getPicturesPath ();
 				
 				// $files = $request->getFiles ()->toArray ();
 				
-				$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
-				$this->getEventManager()->attachAggregate ( $pictureUploadListener );
+				$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+				$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
 				
 				$id = $newId;
 				
 				foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 					if ($error == UPLOAD_ERR_OK) {
 						$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
-				
-						$ext = strtolower (pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION));
-				
-						if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png'){
+						
+						$ext = strtolower ( pathinfo ( $_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION ) );
+						
+						if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png') {
+							
+							$checksum = md5_file ( $tmp_name );
+							
+							if (! $this->sparePartPictureTable->isChecksumExits ( $id, $checksum )) {
 								
-							$checksum = md5_file($tmp_name);
+								$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+								$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
 								
-							if(!$this->sparePartPictureTable->isChecksumExits($id, $checksum)){
-									
-								$name = md5($id.$checksum.uniqid(microtime())).'.'. $ext;
-								$folder = $root_dir.DIRECTORY_SEPARATOR. $name[0].$name[1].DIRECTORY_SEPARATOR.$name[2].$name[3].DIRECTORY_SEPARATOR.$name[4].$name[5];
-				
-								if (!is_dir ( $folder)) {
-									mkdir ($folder,0777, true ); //important
+								if (! is_dir ( $folder )) {
+									mkdir ( $folder, 0777, true ); // important
 								}
-									
+								
 								$ftype = $_FILES ["pictures"] ["type"] [$key];
 								move_uploaded_file ( $tmp_name, "$folder/$name" );
-				
+								
 								// add pictures
 								$pic = new SparepartPicture ();
 								$pic->url = "$folder/$name";
@@ -143,89 +134,81 @@ class SparepartsController extends AbstractActionController {
 								$pic->filename = "$name";
 								$pic->folder = "$folder";
 								$pic->checksum = $checksum;
-				
-								$this->sparePartPictureTable->add ( $pic);
-				
-								// trigger uploadPicture
-								$this->getEventManager()->trigger('uploadPicture', __CLASS__,
-										array('picture_name' => $name,'pictures_dir'=>$folder));
-									
-							}
 								
+								$this->sparePartPictureTable->add ( $pic );
+								
+								// trigger uploadPicture
+								$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+										'picture_name' => $name,
+										'pictures_dir' => $folder 
+								) );
+							}
 						}
-							
 					}
 				}
 				
-				
-
-				
 				// add category
-				if ($category_id > 1){
-					$m = new SparepartCategoryMember();
+				if ($category_id > 1) {
+					$m = new SparepartCategoryMember ();
 					$m->sparepart_id = $newId;
-					$m->sparepart_cat_id = $category_id;						
-					$this->sparePartCategoryMemberTable->add($m);					
+					$m->sparepart_cat_id = $category_id;
+					$this->sparePartCategoryMemberTable->add ( $m );
 				}
-								
-				$this->redirect()->toUrl($redirectUrl);
+				
+				$this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
 		
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$category_id = ( int ) $this->params ()->fromQuery ( 'category_id' );
 		
 		// add category
-		if ($category_id > 1){
-			$category = $this->sparePartCategoryTable->get($category_id);
-		}else{
+		if ($category_id > 1) {
+			$category = $this->sparePartCategoryTable->get ( $category_id );
+		} else {
 			$category = null;
 		}
 		
-			
 		return new ViewModel ( array (
 				'message' => 'Add new Sparepart',
 				'category' => $category,
-				'redirectUrl'=>$redirectUrl,
+				'redirectUrl' => $redirectUrl,
 				'errors' => null,
-				'sparepart' =>null,
-			) );
+				'sparepart' => null 
+		) );
 	}
 	
 	/**
 	 * Edit Spare part
+	 * 
 	 * @return \Zend\View\Model\ViewModel
 	 */
-	
 	public function editAction() {
 		$request = $this->getRequest ();
-			
-	
+		
 		if ($request->isPost ()) {
 			
 			$id = $request->getPost ( 'id' );
-				
+			
 			$input = new MLASparepart ();
 			$input->id = $id;
 			$input->name = $request->getPost ( 'name' );
 			$input->name_local = $request->getPost ( 'name_local' );
-				
+			
 			$input->description = $request->getPost ( 'description' );
 			$input->code = $request->getPost ( 'code' );
 			$input->tag = $request->getPost ( 'tag' );
-				
+			
 			$input->location = $request->getPost ( 'location' );
 			$input->comment = $request->getPost ( 'comment' );
 			
-
-			$errors = array();
+			$errors = array ();
 			
-			if ($input->name ==''){
+			if ($input->name == '') {
 				$errors [] = 'Please give spare-part name';
 			}
 			
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			
 			if (count ( $errors ) > 0) {
 				// return current sp
@@ -233,40 +216,39 @@ class SparepartsController extends AbstractActionController {
 				
 				return new ViewModel ( array (
 						'errors' => $errors,
-						'redirectUrl'=>$redirectUrl,
-						'sparepart' =>$sparepart,
+						'redirectUrl' => $redirectUrl,
+						'sparepart' => $sparepart 
 				) );
 			}
-				
+			
 			$this->sparePartTable->update ( $input, $input->id );
-			$root_dir = $this->sparePartService->getPicturesPath();
-					
-				
-			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
-			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
-				
+			$root_dir = $this->sparePartService->getPicturesPath ();
+			
+			$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+			$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
+			
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
+					
+					$ext = strtolower ( pathinfo ( $_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION ) );
+					
+					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png') {
 						
-					$ext = strtolower (pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION));
+						$checksum = md5_file ( $tmp_name );
 						
-					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png'){
-			
-						$checksum = md5_file($tmp_name);
-			
-						if(!$this->sparePartPictureTable->isChecksumExits($id, $checksum)){
-			
-							$name = md5($id.$checksum.uniqid(microtime())).'.'. $ext;
-							$folder = $root_dir.DIRECTORY_SEPARATOR. $name[0].$name[1].DIRECTORY_SEPARATOR.$name[2].$name[3].DIRECTORY_SEPARATOR.$name[4].$name[5];
-								
-							if (!is_dir ( $folder)) {
-								mkdir ($folder,0777, true ); //important
+						if (! $this->sparePartPictureTable->isChecksumExits ( $id, $checksum )) {
+							
+							$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+							$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+							
+							if (! is_dir ( $folder )) {
+								mkdir ( $folder, 0777, true ); // important
 							}
-			
+							
 							$ftype = $_FILES ["pictures"] ["type"] [$key];
 							move_uploaded_file ( $tmp_name, "$folder/$name" );
-								
+							
 							// add pictures
 							$pic = new SparepartPicture ();
 							$pic->url = "$folder/$name";
@@ -275,78 +257,75 @@ class SparepartsController extends AbstractActionController {
 							$pic->filename = "$name";
 							$pic->folder = "$folder";
 							$pic->checksum = $checksum;
-								
-							$this->sparePartPictureTable->add ( $pic);
-								
+							
+							$this->sparePartPictureTable->add ( $pic );
+							
 							// trigger uploadPicture
-							$this->getEventManager()->trigger('uploadPicture', __CLASS__,
-									array('picture_name' => $name,'pictures_dir'=>$folder));
-			
+							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+									'picture_name' => $name,
+									'pictures_dir' => $folder 
+							) );
 						}
-			
 					}
-			
 				}
 			}
-				
-			$this->redirect()->toUrl($redirectUrl);
-				
-			//return $this->redirect ()->toRoute ( 'Spareparts_Category');
+			
+			$this->redirect ()->toUrl ( $redirectUrl );
+			
+			// return $this->redirect ()->toRoute ( 'Spareparts_Category');
 		}
-	
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$sparepart = $this->sparePartTable->get ( $id );
-	
+		
 		return new ViewModel ( array (
 				'sparepart' => $sparepart,
-				'redirectUrl'=>$redirectUrl,
-				'errors' => null,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null 
 		) );
 	}
 	
 	/**
 	 * Edit Spare part
+	 * 
 	 * @return \Zend\View\Model\ViewModel
 	 */
-	
 	public function uploadPictureAction() {
 		$request = $this->getRequest ();
-			
-	
-		if ($request->isPost ()) {
-	
-			$id = $request->getPost ( 'id' );
-			$root_dir = $this->sparePartService->getPicturesPath();
 		
+		if ($request->isPost ()) {
+			
+			$id = $request->getPost ( 'id' );
+			$root_dir = $this->sparePartService->getPicturesPath ();
+			
 			// $files = $request->getFiles ()->toArray ();
-	
-			$pictureUploadListener = $this->getServiceLocator()->get ( 'Inventory\Listener\PictureUploadListener');
-			$this->getEventManager()->attachAggregate ( $pictureUploadListener );
-	
-	
+			
+			$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+			$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
+			
 			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
 				if ($error == UPLOAD_ERR_OK) {
 					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
 					
-					$ext = strtolower (pathinfo($_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION));
+					$ext = strtolower ( pathinfo ( $_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION ) );
 					
-					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png'){
+					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png') {
 						
-						$checksum = md5_file($tmp_name);
+						$checksum = md5_file ( $tmp_name );
 						
-						if(!$this->sparePartPictureTable->isChecksumExits($id, $checksum)){
-						
-							$name = md5($id.$checksum.uniqid(microtime())).'.'. $ext;
-							$folder = $root_dir.DIRECTORY_SEPARATOR. $name[0].$name[1].DIRECTORY_SEPARATOR.$name[2].$name[3].DIRECTORY_SEPARATOR.$name[4].$name[5];
+						if (! $this->sparePartPictureTable->isChecksumExits ( $id, $checksum )) {
 							
-							if (!is_dir ( $folder)) {
-							 	mkdir ($folder,0777, true ); //important
+							$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+							$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+							
+							if (! is_dir ( $folder )) {
+								mkdir ( $folder, 0777, true ); // important
 							}
-				
+							
 							$ftype = $_FILES ["pictures"] ["type"] [$key];
 							move_uploaded_file ( $tmp_name, "$folder/$name" );
-			
+							
 							// add pictures
 							$pic = new SparepartPicture ();
 							$pic->url = "$folder/$name";
@@ -356,33 +335,32 @@ class SparepartsController extends AbstractActionController {
 							$pic->folder = "$folder";
 							$pic->checksum = $checksum;
 							
-							$this->sparePartPictureTable->add ( $pic);
-			
+							$this->sparePartPictureTable->add ( $pic );
+							
 							// trigger uploadPicture
-							$this->getEventManager()->trigger('uploadPicture', __CLASS__, 
-									array('picture_name' => $name,'pictures_dir'=>$folder));
-						
+							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+									'picture_name' => $name,
+									'pictures_dir' => $folder 
+							) );
 						}
-						
 					}
-	
 				}
 			}
-	
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			$this->redirect()->toUrl($redirectUrl);
-	
-			//return $this->redirect ()->toRoute ( 'Spareparts_Category');
+			
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$this->redirect ()->toUrl ( $redirectUrl );
+			
+			// return $this->redirect ()->toRoute ( 'Spareparts_Category');
 		}
-	
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$sparepart = $this->sparePartTable->get ( $id );
-	
+		
 		return new ViewModel ( array (
 				'sparepart' => $sparepart,
-				'redirectUrl'=>$redirectUrl,
-				'errors' => null,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null 
 		) );
 	}
 	
@@ -391,93 +369,89 @@ class SparepartsController extends AbstractActionController {
 	 */
 	public function issueAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-	
-	
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
 		if ($request->isPost ()) {
-				
+			
 			$input = new SparepartMovement ();
 			$input->sparepart_id = $request->getPost ( 'sparepart_id' );
 			$input->movement_date = $request->getPost ( 'movement_date' );
-				
+			
 			$input->sparepart_id = $request->getPost ( 'sparepart_id' );
 			$input->asset_id = $request->getPost ( 'asset_id' );
 			$input->asset_name = $request->getPost ( 'asset' );
-				
+			
 			$input->quantity = $request->getPost ( 'quantity' );
-				
+			
 			$input->flow = 'OUT';
-				
+			
 			$input->reason = $request->getPost ( 'reason' );
 			$input->requester = $request->getPost ( 'requester' );
 			$input->comment = $request->getPost ( 'comment' );
 			$input->created_on = $request->getPost ( 'created_on' );
-				
-			$instock = $request->getPost ( 'instock' );
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
 			
-		
-				
+			$instock = $request->getPost ( 'instock' );
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			
 			// validator.
 			$validator = new Date ();
-				
-			$errors = array();
-	
-				
+			
+			$errors = array ();
+			
 			if (! $validator->isValid ( $input->movement_date )) {
 				$errors [] = 'Transaction date format is not correct!';
 			}
-				
+			
 			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
 			$validator = new Int ();
-				
+			
 			if (! $validator->isValid ( $input->quantity )) {
 				$errors [] = 'Quantity is not valid. It must be a number.';
 			} else {
-	
+				
 				if ($input->quantity > $instock) {
 					$errors [] = 'Issue quantity is: ' . $input->quantity . ' pcs, which is bigger than availabe stock';
 				}
 			}
-				
+			
 			if (count ( $errors ) > 0) {
-	
+				
 				$id = ( int ) $request->getPost ( 'sparepart_id' );
 				$sp = $this->sparePartTable->get ( $id );
 				$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
-	
+				
 				return new ViewModel ( array (
 						'sp' => $sp,
 						'pictures' => $pictures,
 						'instock' => $instock,
 						'errors' => $errors,
-						'redirectUrl'=>$redirectUrl,
-						'movement'=>$input,
+						'redirectUrl' => $redirectUrl,
+						'movement' => $input 
 				) );
 			} else {
-	
+				
 				// Validated
 				$this->sparepartMovementsTable->add ( $input );
-	
-				$this->redirect()->toUrl($redirectUrl);
+				
+				$this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
-	
+		
 		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
 		$sp = $this->sparePartTable->get ( $id );
 		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
 		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
 		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
 		$instock = $inflow - $outflow;
-	
+		
 		return new ViewModel ( array (
 				'sp' => $sp,
 				'pictures' => $pictures,
 				'instock' => $instock,
 				'errors' => null,
-				'redirectUrl'=>$redirectUrl,
-				'movement'=>null,
-			) );
+				'redirectUrl' => $redirectUrl,
+				'movement' => null 
+		) );
 	}
 	
 	/**
@@ -485,116 +459,111 @@ class SparepartsController extends AbstractActionController {
 	 */
 	public function receiveAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-	
-	
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
 		if ($request->isPost ()) {
-				
+			
 			$request = $this->getRequest ();
-				
+			
 			if ($request->isPost ()) {
-	
+				
 				$input = new SparepartMovement ();
 				$input->sparepart_id = $request->getPost ( 'sparepart_id' );
 				$input->movement_date = $request->getPost ( 'movement_date' );
-	
+				
 				$input->sparepart_id = $request->getPost ( 'sparepart_id' );
 				$input->asset_id = $request->getPost ( 'asset_id' );
 				$input->quantity = $request->getPost ( 'quantity' );
-	
+				
 				$input->flow = 'IN';
-	
+				
 				$input->reason = $request->getPost ( 'reason' );
 				$input->requester = $request->getPost ( 'requester' );
 				$input->comment = $request->getPost ( 'comment' );
 				$input->created_on = $request->getPost ( 'created_on' );
 				$email = $request->getPost ( 'email' );
-	
-				$instock = $request->getPost ( 'instock' );
-				$redirectUrl  = $request->getPost ( 'redirectUrl' );
 				
-	
-				$errors = array();
-	
-	
+				$instock = $request->getPost ( 'instock' );
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				
+				$errors = array ();
+				
 				// validator.
 				$validator = new Date ();
-	
+				
 				if (! $validator->isValid ( $input->movement_date )) {
 					$errors [] = 'Transaction date format is not correct!';
 				}
-	
+				
 				// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
 				$validator = new Int ();
-	
+				
 				if (! $validator->isValid ( $input->quantity )) {
 					$errors [] = 'Quantity is not valid. It must be a number.';
 				}
-	
+				
 				$validator = new EmailAddress ();
 				if (! $validator->isValid ( $email )) {
 					$errors [] = 'Email is not correct.';
 				}
-	
+				
 				$id = ( int ) $request->getPost ( 'sparepart_id' );
 				$sp = $this->sparePartTable->get ( $id );
 				$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
-	
+				
 				if (count ( $errors ) > 0) {
 					return new ViewModel ( array (
 							'sp' => $sp,
 							'pictures' => $pictures,
 							'instock' => $instock,
 							'errors' => $errors,
-							'redirectUrl'=>$redirectUrl,								
-							'movement'=>$input,
-								
-					) );
+							'redirectUrl' => $redirectUrl,
+							'movement' => $input 
+					)
+					 );
 				} else {
-						
+					
 					// Validated
 					$newId = $this->sparepartMovementsTable->add ( $input );
 					
-					/* do not send email 
-					if ($newId > 0) {
-						// sent email;
-	
-						$transport = $this->getServiceLocator ()->get ( 'SmtpTransportService' );
-						$message = new Message ();
-						$body = $input->quantity . ' pcs of Spare parts ' . $sp->name . ' (ID' . $sp->tag . ') received!';
-						$message->addTo ( $email )->addFrom ( 'mib-team@web.de' )->setSubject ( 'Mascot Laos - Spare Part Movements' )->setBody ( $body );
-						$transport->send ( $message );
-					}
-					*/
-						
-						
-					$redirectUrl  = $request->getPost ( 'redirectUrl' );
-					$this->redirect()->toUrl($redirectUrl);
+					/*
+					 * do not send email
+					 * if ($newId > 0) {
+					 * // sent email;
+					 *
+					 * $transport = $this->getServiceLocator ()->get ( 'SmtpTransportService' );
+					 * $message = new Message ();
+					 * $body = $input->quantity . ' pcs of Spare parts ' . $sp->name . ' (ID' . $sp->tag . ') received!';
+					 * $message->addTo ( $email )->addFrom ( 'mib-team@web.de' )->setSubject ( 'Mascot Laos - Spare Part Movements' )->setBody ( $body );
+					 * $transport->send ( $message );
+					 * }
+					 */
+					
+					$redirectUrl = $request->getPost ( 'redirectUrl' );
+					$this->redirect ()->toUrl ( $redirectUrl );
 				}
 			}
 		}
-	
+		
 		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
 		$sp = $this->sparePartTable->get ( $id );
 		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
 		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
 		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
 		$instock = $inflow - $outflow;
-	
+		
 		return new ViewModel ( array (
 				'sp' => $sp,
 				'pictures' => $pictures,
 				'instock' => $instock,
 				'errors' => null,
-				'redirectUrl'=>$redirectUrl,
-				'movement'=>null,
+				'redirectUrl' => $redirectUrl,
+				'movement' => null 
 		) );
 	}
-	
 	public function addCategoryAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		if ($request->isPost ()) {
 			
@@ -620,34 +589,31 @@ class SparepartsController extends AbstractActionController {
 				 *
 				 * ) );
 				 */
-				$redirectUrl  = $request->getPost ( 'redirectUrl' );
-				$this->redirect()->toUrl($redirectUrl);
-	
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				$this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$sparepart = $this->sparePartTable->get ( $id );
 		
-		$categories = $this->sparePartCategoryTable->getCategories();
+		$categories = $this->sparePartCategoryTable->getCategories ();
 		
 		return new ViewModel ( array (
 				'sparepart' => $sparepart,
 				'categories' => $categories,
-				'redirectUrl'=>$redirectUrl,
-		)
-		
-		);
+				'redirectUrl' => $redirectUrl 
+		) )
+
+		;
 	}
 	
 	/**
 	 * List all spare parts
 	 */
 	public function listAction() {
-		
-		$identity = $this->authService->getIdentity();
-		$user=$this->userTable->getUserByEmail($identity);
-		
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 20;
@@ -663,7 +629,7 @@ class SparepartsController extends AbstractActionController {
 		}
 		;
 		
-		$spareparts = $this->sparePartTable->getSpareparts();
+		$spareparts = $this->sparePartTable->getSpareparts ();
 		$totalResults = $spareparts->count ();
 		
 		$paginator = null;
@@ -671,17 +637,16 @@ class SparepartsController extends AbstractActionController {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
 			$spareparts = $this->sparePartTable->getLimitedSpareParts ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
-		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems($user['id']);
+		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems ( $user ['id'] );
 		
 		return new ViewModel ( array (
 				'total_spareparts' => $totalResults,
 				'spareparts' => $spareparts,
 				'paginator' => $paginator,
-				'total_cart_items' => $total_cart_items,
-				
-		) );
+				'total_cart_items' => $total_cart_items 
+		)
+		 );
 	}
-	
 	
 	/**
 	 * List all spare parts
@@ -693,69 +658,59 @@ class SparepartsController extends AbstractActionController {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
 		;
-	
+		
 		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
 			$page = 1;
 		} else {
 			$page = $this->params ()->fromQuery ( 'page' );
 		}
 		;
-	
+		
 		$spareparts = $this->sparePartTable->fetchAll ();
 		$totalResults = $spareparts->count ();
-	
+		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
 			$spareparts = $this->sparePartTable->getLimitSpareParts ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
-		$this->layout('layout/no-layout');
+		$this->layout ( 'layout/no-layout' );
 		
-	
 		return new ViewModel ( array (
 				'total_spareparts' => $totalResults,
 				'spareparts' => $spareparts,
-				'paginator' => $paginator
+				'paginator' => $paginator 
 		) );
 	}
 	
-	
 	/*
-	 * * 
+	 * *
 	 */
 	public function categoryAction() {
-		$categories = $this->sparePartCategoryTable->getCategories1();
+		$categories = $this->sparePartCategoryTable->getCategories1 ();
 		
 		return new ViewModel ( array (
-				'assetCategories' =>$categories,
-		));
-		
-		
-	
+				'assetCategories' => $categories 
+		) );
 	}
 	
 	/*
 	 * *
 	 */
 	public function category1Action() {
-	
-		$categories = $this->sparePartCategoryTable->getCategories1();
-		$this->layout('layout/no-layout');
+		$categories = $this->sparePartCategoryTable->getCategories1 ();
+		$this->layout ( 'layout/no-layout' );
 		
-		
-		$viewModel = new ViewModel(array (
-				'assetCategories' =>$categories,
-		));		
+		$viewModel = new ViewModel ( array (
+				'assetCategories' => $categories 
+		) );
 		
 		return $viewModel;
 	}
-	
 	public function showCategoryAction() {
-		
-		$identity = $this->authService->getIdentity();
-		$user=$this->userTable->getUserByEmail($identity);
-		
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 20;
@@ -773,20 +728,20 @@ class SparepartsController extends AbstractActionController {
 		
 		$category = $this->sparePartCategoryTable->get ( $id );
 		
-		$spareparts = $this->sparePartCategoryMemberTable->getMembersByCatIdWithBalance( $id );
+		$spareparts = $this->sparePartCategoryMemberTable->getMembersByCatIdWithBalance ( $id );
 		$totalResults = $spareparts->count ();
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$spareparts = $this->sparePartCategoryMemberTable->getLimitMembersByCatIdWithBalance ($id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$spareparts = $this->sparePartCategoryMemberTable->getLimitMembersByCatIdWithBalance ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
 				'category' => $category,
 				'total_spareparts' => $totalResults,
 				'spareparts' => $spareparts,
-				'paginator' => $paginator,
+				'paginator' => $paginator 
 		) );
 	}
 	
@@ -795,11 +750,11 @@ class SparepartsController extends AbstractActionController {
 	 */
 	public function showAction() {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$sp = $this->sparePartTable->get ( $id );		
+		$sp = $this->sparePartTable->get ( $id );
 		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
 		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
 		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
-		$categories = $this->sparePartCategoryTable->getCategoriesOf($id);
+		$categories = $this->sparePartCategoryTable->getCategoriesOf ( $id );
 		
 		$instock = $inflow - $outflow;
 		
@@ -809,42 +764,123 @@ class SparepartsController extends AbstractActionController {
 				'inflow' => $inflow,
 				'outflow' => $outflow,
 				'instock' => $instock,
-				'categories' =>$categories
+				'categories' => $categories 
 		) );
 	}
-	
-	
 	public function picturesAction() {
 		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
 		$sp = $this->sparePartTable->get ( $id );
 		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
-
-		return new ViewModel ( array (
-				'sparepart' => $sp,
-				'pictures' => $pictures,
-			) );
-	}
-	
-	
-	
-	
-	
-	
-
-	
-	
-	public function showMovementAction() {
-		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
-		$movements = $this->getSparepartMovementsTable ()->getMovementsOfSparepartByID ( $id );
-		
-		$sp = $this->sparePartTable->get ( $id );
-		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
 		
 		return new ViewModel ( array (
 				'sparepart' => $sp,
-				'movements' => $movements,
 				'pictures' => $pictures 
 		) );
+	}
+	public function showMovementAction() {
+		// $redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
+		$fromDate = $this->params ()->fromQuery ( 'start_date' );
+		$toDate = $this->params ()->fromQuery ( 'end_date' );
+		$flow = $this->params ()->fromQuery ( 'flow' );
+		$output = $this->params ()->fromQuery ( 'output' );
+		
+		$movements = $this->sparepartMovementsTable->getSparePartMovementsByID ( $id, $fromDate, $toDate, $flow, 0, 0 );
+		
+		if ($output === 'csv') {
+			
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+			
+			$h = array ();
+			$h [] = "DATE";
+			$h [] = "TAG";
+			$h [] = "NAME";
+			$h [] = "QUANTITY";
+			$h [] = "FLOW";
+			
+			$delimiter = ";";
+			
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+			
+			foreach ( $movements as $m ) {
+				$l = array ();
+				$l [] = ( string ) $m->movement_date;
+				$l [] = ( string ) '"' . $m->tag . '"';
+				
+				$name = ( string ) $m->sparepart_name;
+				
+				$name === '' ? $name = "-" : $name;
+				
+				$name = str_replace ( ',', '', $name );
+				$name = str_replace ( ';', '', $name );
+				
+				$l [] = $name;
+				$l [] = ( string ) $m->quantity;
+				$l [] = ( string ) $m->flow;
+				
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+			
+			$fileName = 'report.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+			
+			$response = $this->getResponse ();
+			$headers = $response->getHeaders ();
+			
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; "' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+			
+			// $output = fread($fh, 8192);
+			$response->setContent ( $output );
+			
+			fclose ( $fh );
+			// unlink($fileName);
+			
+			return $response;
+		} else {
+			
+			if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+				$resultsPerPage = 18;
+			} else {
+				$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+			}
+			;
+			
+			if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+				$page = 1;
+			} else {
+				$page = $this->params ()->fromQuery ( 'page' );
+			}
+			;
+			
+			$totalResults = count ( $movements );
+			
+			$paginator = null;
+			if ($totalResults > $resultsPerPage) {
+				$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+				$movements = $this->sparepartMovementsTable->getSparePartMovementsByID ( $id, $fromDate, $toDate, $flow, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			}
+			
+			return new ViewModel ( array (
+					'movements' => $movements,
+					// 'redirectUrl' => $redirectUrl,
+					'fromDate' => $fromDate,
+					'toDate' => $toDate,
+					'flow' => $flow,
+					'paginator' => $paginator,
+					'total_items' => $totalResults,
+					'id' => $id 
+			) );
+		}
 	}
 	
 	// SETTER AND GETTER

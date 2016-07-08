@@ -75,6 +75,7 @@ class Module {
 		);
 	}
 	function checkACL(MvcEvent $e) {
+		
 		$match = $e->getRouteMatch ();
 		$app = $e->getApplication ();
 		$sm = $app->getServiceManager ();
@@ -138,6 +139,7 @@ class Module {
 			
 			$isAllowedAccess = false;
 			$viewModel->isAdmin = false;
+			$viewModel->isProcurement = false;
 			
 			if ($roles->count () > 0) {
 				
@@ -151,6 +153,11 @@ class Module {
 						if (strtoupper ( $role->role ) == 'ADMINISTRATOR') {
 							$viewModel->isAdmin = true;
 						}
+						
+						if (strtoupper ( $role->role ) == 'PROCUREMENT-MEMBER') {
+							$viewModel->isProcurement = true;
+						}
+						
 						// break;
 						// var_dump
 					}
@@ -164,7 +171,7 @@ class Module {
 				}
 			}
 			
-			// var_dump($requestedResourse);
+			//var_dump($user);
 			
 			if ($isAllowedAccess === false) {
 				// die('<h3>Permission denied</h3>' . $requestedResourse);

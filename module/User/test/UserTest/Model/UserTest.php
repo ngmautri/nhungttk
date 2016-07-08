@@ -53,13 +53,16 @@ class UserTest extends PHPUnit_Framework_TestCase {
 		var_dump($index);
 		*/
 		
-		$userTable = Bootstrap::getServiceManager ()->get ( 'User\Utility\ArticleCategory' );
+		$userTable = Bootstrap::getServiceManager ()->get ( 'User\Model\AclUserRoleTable' );
+		
+		/*
 		$results  = $userTable->initCategory();
 		
 		$results =$results->updateCategory(1,0);
 		$results =$results->generateJSTree(1);
+		*/
 		
-		var_dump($results->getJsTree());
+		var_dump($userTable->getRoleByUserId(39)->Count());
 		//var_dump($results->getCategories()[1]);
 		
 		//$root= $results->categories['adm-hr-manager '];

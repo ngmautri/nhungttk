@@ -115,6 +115,12 @@ on t4.sparepart_id = t3.id where t4.flow = 'OUT' group by t4.sparepart_id) as tO
 		return $row;
 	}
 	
+	/**
+	 * 
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\Adapter\Driver\ResultInterface
+	 */
 	public function getLimitSpareParts($limit,$offset){
 		$adapter = $this->tableGateway->adapter;
 		

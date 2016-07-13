@@ -30,6 +30,10 @@ use Inventory\Services\SparepartService;
 use Procurement\Model\PurchaseRequestCartItem;
 use Procurement\Model\PurchaseRequestCartItemTable;
 
+use Inventory\Model\SparepartMinimumBalance;
+use Inventory\Model\SparepartMinimumBalanceTable;
+
+
 class SparepartsController extends AbstractActionController {
 	protected $authService;
 	protected $SmtpTransportService;
@@ -41,6 +45,10 @@ class SparepartsController extends AbstractActionController {
 	protected $sparePartCategoryTable;
 	protected $sparePartCategoryMemberTable;
 	protected $purchaseRequestCartItemTable;
+	
+	protected $spMinimumBalanceTable;
+	
+	
 	protected $massage = 'NULL';
 	
 	/*
@@ -708,12 +716,16 @@ class SparepartsController extends AbstractActionController {
 		
 		return $viewModel;
 	}
+	/**
+	 >
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function showCategoryAction() {
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 20;
+			$resultsPerPage = 15;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
@@ -728,13 +740,13 @@ class SparepartsController extends AbstractActionController {
 		
 		$category = $this->sparePartCategoryTable->get ( $id );
 		
-		$spareparts = $this->sparePartCategoryMemberTable->getMembersByCatIdWithBalance ( $id );
+		$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID( $id,0,0 );
 		$totalResults = $spareparts->count ();
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$spareparts = $this->sparePartCategoryMemberTable->getLimitMembersByCatIdWithBalance ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -883,6 +895,71 @@ class SparepartsController extends AbstractActionController {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function setMinBalanceAction() {
+		
+		$request = $this->getRequest ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		
+		
+		if ($request->isPost ()) {
+				
+			if ($request->isPost ()) {
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+			
+				$input = new SparepartMinimumBalance();
+				$input->sparepart_id = ( int ) $request->getPost ( 'sparepart_id' );
+				$input->minimum_balance = $request->getPost ( 'minimum_balance' );
+				$input->remarks = $request->getPost ( 'remarks' );
+				$input->status = $request->getPost ( 'status' );
+				$input->created_by = $user ["id"];
+		
+				$errors = array ();
+				
+				$validator = new Int ();
+					
+				if (! $validator->isValid ($input->minimum_balance )) {
+					$errors [] = 'Quantity is not valid. It must be a number.';
+				}
+		
+				if (count ( $errors ) > 0) {
+					
+					$sp = $this->spMinimumBalanceTable->getSparepartID($input->sparepart_id);
+					$pictures = $this->sparePartPictureTable->getSparepartPicturesById ($input->sparepart_id );
+					
+					
+					return new ViewModel ( array (
+							'errors' => $errors,
+							'sparepart' => $sp,
+							'pictures' => $pictures,
+							'redirectUrl'=>$redirectUrl,
+					) );
+				}
+		
+				$this->spMinimumBalanceTable->add ( $input );
+				$this->redirect ()->toUrl ( $redirectUrl );
+			}
+		}
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
+		$sp = $this->spMinimumBalanceTable->getSparepartID( $id );
+		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
+		
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		return new ViewModel ( array (
+				'sparepart' => $sp,
+				'pictures' => $pictures,
+				'errors'=>null,
+				'redirectUrl'=>$redirectUrl,
+		) );
+	}
+	
 	// SETTER AND GETTER
 	public function getAuthService() {
 		return $this->authService;
@@ -954,4 +1031,14 @@ class SparepartsController extends AbstractActionController {
 		$this->purchaseRequestCartItemTable = $purchaseRequestCartItemTable;
 		return $this;
 	}
+	public function getSpMinimumBalanceTable() {
+		return $this->spMinimumBalanceTable;
+	}
+	public function setSpMinimumBalanceTable(SparepartMinimumBalanceTable $spMinimumBalanceTable) {
+		$this->spMinimumBalanceTable = $spMinimumBalanceTable;
+		return $this;
+	}
+	
+	
+	
 }

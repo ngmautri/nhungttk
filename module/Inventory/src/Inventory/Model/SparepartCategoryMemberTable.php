@@ -14,6 +14,148 @@ use Inventory\Model\SparepartCategoryMember;
 
 class SparepartCategoryMemberTable {
 	
+	private $getSP_SQL ="
+	select
+	*
+	from 
+	(
+		select 
+			mla_spareparts.*,
+			ifnull(mla_spareparts_inflow.total_inflow,0) as total_inflow,
+			ifnull(mla_spareparts_outflow.total_outflow,0) as total_outflow,
+            (mla_spareparts_inflow.total_inflow - mla_spareparts_outflow.total_outflow) as current_balance,
+			ifnull(mla_sparepart_minimum_balance.minimum_balance,0) as mininum_balance
+			
+		from mla_spareparts
+
+		/* inflow*/
+		left join
+		(
+			select  
+			mla_spareparts.id, 
+				SUM(mla_sparepart_movements.quantity) AS total_inflow
+			from mla_spareparts 
+			LEFT JOIN mla_sparepart_movements 
+			on mla_sparepart_movements.sparepart_id = mla_spareparts.id 
+			where mla_sparepart_movements.flow = 'IN' 
+			GROUP BY mla_sparepart_movements.sparepart_id
+		) as mla_spareparts_inflow
+		on mla_spareparts_inflow.id = mla_spareparts.id
+
+		/* outflow*/
+		left join
+		(
+			select  
+			mla_spareparts.id, 
+				SUM(mla_sparepart_movements.quantity) AS total_outflow
+			from mla_spareparts 
+			LEFT JOIN mla_sparepart_movements 
+			on mla_sparepart_movements.sparepart_id = mla_spareparts.id 
+			where mla_sparepart_movements.flow = 'OUT' 
+			GROUP BY mla_sparepart_movements.sparepart_id
+		) 
+		as mla_spareparts_outflow
+		on mla_spareparts_outflow.id = mla_spareparts.id
+
+		/*minimum_balance*/
+		left join mla_sparepart_minimum_balance
+		on mla_sparepart_minimum_balance.sparepart_id =  mla_spareparts.id
+	)
+	as mla_spareparts
+
+	WHERE 1			
+			";
+	
+	private $getSP_Cat_SQL = "
+	select
+    *
+    from
+    (
+    select 
+		mla_sparepart_cats_members.sparepart_cat_id,
+		mla_sparepart_cats.name as cat_name,
+		mla_spareparts.*
+		from mla_sparepart_cats_members
+    left join
+    (
+		select
+		*
+		from 
+		(
+			select 
+				mla_spareparts.*,
+				ifnull(mla_spareparts_inflow.total_inflow,0) as total_inflow,
+				ifnull(mla_spareparts_outflow.total_outflow,0) as total_outflow,
+				(ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) as current_balance,
+				ifnull(mla_sparepart_minimum_balance.minimum_balance,0) as mininum_balance,
+                mla_sparepart_pics.id as sp_pic_id,
+                mla_sparepart_pics.filename,
+                mla_sparepart_pics.url,
+                mla_sparepart_pics.folder
+  				
+			from mla_spareparts
+
+			/* inflow*/
+			left join
+			(
+				select  
+				mla_spareparts.id, 
+					SUM(mla_sparepart_movements.quantity) AS total_inflow
+				from mla_spareparts 
+				LEFT JOIN mla_sparepart_movements 
+				on mla_sparepart_movements.sparepart_id = mla_spareparts.id 
+				where mla_sparepart_movements.flow = 'IN' 
+				GROUP BY mla_sparepart_movements.sparepart_id
+			) as mla_spareparts_inflow
+			on mla_spareparts_inflow.id = mla_spareparts.id
+
+			/* outflow*/
+			left join
+			(
+				select  
+				mla_spareparts.id, 
+					SUM(mla_sparepart_movements.quantity) AS total_outflow
+				from mla_spareparts 
+				LEFT JOIN mla_sparepart_movements 
+				on mla_sparepart_movements.sparepart_id = mla_spareparts.id 
+				where mla_sparepart_movements.flow = 'OUT' 
+				GROUP BY mla_sparepart_movements.sparepart_id
+			) 
+			as mla_spareparts_outflow
+			on mla_spareparts_outflow.id = mla_spareparts.id
+
+			/*minimum_balance*/
+			left join mla_sparepart_minimum_balance
+			on mla_sparepart_minimum_balance.sparepart_id =  mla_spareparts.id
+            
+			/*picture*/
+            left join 
+            (
+	            select
+				*
+				from 
+                (
+                select * from
+					mla_sparepart_pics
+                    order by mla_sparepart_pics.uploaded_on desc
+                )
+                as mla_sparepart_pics
+				group by mla_sparepart_pics.sparepart_id
+            )
+            as mla_sparepart_pics
+            on mla_sparepart_pics.sparepart_id = mla_spareparts.id
+		)
+		as mla_spareparts
+	) 
+    as mla_spareparts
+    on mla_spareparts.id = mla_sparepart_cats_members.sparepart_id
+    left join mla_sparepart_cats
+    on mla_sparepart_cats.id = mla_sparepart_cats_members.sparepart_cat_id
+    )
+    as mla_sparepart_cats_members
+    Where 1
+	";
+	
 	protected $tableGateway;
 	
 	public function __construct(TableGateway $tableGateway) {
@@ -66,6 +208,13 @@ class SparepartCategoryMemberTable {
 		
 		return $results;
 	}
+	
+	
+	/**
+	 * 
+	 * @param unknown $id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	
 	public function getMembersByCatIdWithBalance($id)
 	{
@@ -121,6 +270,14 @@ WHERE lt1.sparepart_cat_id ='". $id ."'";
 		return $results;
 	}
 	
+	
+	/**
+	 * 
+	 * @param unknown $id
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function getLimitMembersByCatIdWithBalance($id,$limit,$offset)
 	{
 		
@@ -151,6 +308,40 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 		$resultSet->initialize($result);
 		return $resultSet;
 	
+	}
+	
+	
+	/**
+	 *
+	 * @param unknown $id
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getMembersOfCatID($id,$limit,$offset)
+	{
+	
+		$sql = $this->getSP_Cat_SQL;
+		
+		$sql = $sql. " AND mla_sparepart_cats_members.sparepart_cat_id =" .$id;
+		
+	
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+		
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+		
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return $resultSet;
 	}
 	
 	
@@ -197,8 +388,11 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 	}
 	
 	
-	
-	
+	/**
+	 * 
+	 * @param SparepartCategoryMember $input
+	 * @return number
+	 */
 	public function add(SparepartCategoryMember $input) {
 		$data = array (
 				'sparepart_id' => $input->sparepart_id,
@@ -226,7 +420,12 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 		$this->tableGateway->delete($where);
 	}
 	
-	
+	/**
+	 * 
+	 * @param unknown $sparepart_id
+	 * @param unknown $cat_id
+	 * @return boolean
+	 */
 	public function isMember($sparepart_id, $cat_id)
 	{
 			$adapter = $this->tableGateway->adapter;

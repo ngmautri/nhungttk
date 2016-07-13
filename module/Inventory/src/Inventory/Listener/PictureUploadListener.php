@@ -98,14 +98,14 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		}
 		
 		// 150
-		$final_width_of_image =150;
+		$final_width_of_image =200;
 		
 		$nx = $final_width_of_image;
 		$ny = floor($oy * ($final_width_of_image / $ox));
 			
 		$nm = imagecreatetruecolor($nx, $ny);
 		
-		$name_thumbnail = 'thumbnail_150_' . $name;
+		$name_thumbnail = 'thumbnail_200_' . $name;
 		
 		imagecopyresized ( $nm, $im, 0, 0, 0, 0, $nx, $ny, $ox, $oy );
 		

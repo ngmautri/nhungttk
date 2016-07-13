@@ -134,10 +134,12 @@ class SparepartCategoryMemberTable {
             )
             as mla_sparepart_pics
             on mla_sparepart_pics.sparepart_id = mla_sparepart_cats_members.sparepart_id
-            
+
+			/*SP*/
             left join mla_spareparts
             on mla_spareparts.id = mla_sparepart_cats_members.sparepart_id
             
+			/* sp_cat*/
             left join mla_sparepart_cats
             on mla_sparepart_cats.id = mla_sparepart_cats_members.sparepart_cat_id
             )

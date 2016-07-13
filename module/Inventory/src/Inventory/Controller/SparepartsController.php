@@ -29,10 +29,8 @@ use Inventory\Model\SparepartMovementsTable;
 use Inventory\Services\SparepartService;
 use Procurement\Model\PurchaseRequestCartItem;
 use Procurement\Model\PurchaseRequestCartItemTable;
-
 use Inventory\Model\SparepartMinimumBalance;
 use Inventory\Model\SparepartMinimumBalanceTable;
-
 
 class SparepartsController extends AbstractActionController {
 	protected $authService;
@@ -45,10 +43,7 @@ class SparepartsController extends AbstractActionController {
 	protected $sparePartCategoryTable;
 	protected $sparePartCategoryMemberTable;
 	protected $purchaseRequestCartItemTable;
-	
 	protected $spMinimumBalanceTable;
-	
-	
 	protected $massage = 'NULL';
 	
 	/*
@@ -188,7 +183,7 @@ class SparepartsController extends AbstractActionController {
 	
 	/**
 	 * Edit Spare part
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function editAction() {
@@ -296,7 +291,7 @@ class SparepartsController extends AbstractActionController {
 	
 	/**
 	 * Edit Spare part
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function uploadPictureAction() {
@@ -359,6 +354,96 @@ class SparepartsController extends AbstractActionController {
 			$this->redirect ()->toUrl ( $redirectUrl );
 			
 			// return $this->redirect ()->toRoute ( 'Spareparts_Category');
+		}
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$sparepart = $this->sparePartTable->get ( $id );
+		
+		return new ViewModel ( array (
+				'sparepart' => $sparepart,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null 
+		) );
+	}
+	
+	/**
+	 * Upload resized pictures
+	 *
+	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+	 */
+	public function uploadPicture1Action() {
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		if ($request->isPost ()) {
+			
+			$pictures = $_POST ['pictures'];
+			$id = $_POST ['sparepart_id'];
+			
+			foreach ( $pictures as $p ) {
+				
+				$filetype = $p [0];
+				if (preg_match ( '/(jpg|jpeg)$/', $filetype )) {
+					$ext = 'jpg';
+				} else if (preg_match ( '/(gif)$/', $filetype )) {
+					$ext = 'gif';
+				} else if (preg_match ( '/(png)$/', $filetype )) {
+					$ext = 'png';
+				}
+				
+				$tmp_name = md5 ( $id . uniqid ( microtime () ) ) . '.' . $ext;
+				
+				// remove "data:image/png;base64,"
+				$uri = substr ( $p [1], strpos ( $p [1], "," ) + 1 );
+				
+				// save to file
+				file_put_contents ( $tmp_name, base64_decode ( $uri ) );
+				
+				$checksum = md5_file ( $tmp_name );
+				
+				$root_dir = $this->sparePartService->getPicturesPath ();
+				
+				$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+				$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
+				
+				if (! $this->sparePartPictureTable->isChecksumExits ( $id, $checksum )) {
+					$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+					
+					$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+					
+					if (! is_dir ( $folder )) {
+						mkdir ( $folder, 0777, true ); // important
+					}
+					
+					rename ( $tmp_name, "$folder/$name" );
+					
+					// add pictures
+					$pic = new SparepartPicture ();
+					$pic->url = "$folder/$name";
+					$pic->filetype = $filetype;
+					$pic->sparepart_id = $id;
+					$pic->filename = "$name";
+					$pic->folder = "$folder";
+					$pic->checksum = $checksum;
+					$this->sparePartPictureTable->add ( $pic );
+					
+					// trigger uploadPicture
+					$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+							'picture_name' => $name,
+							'pictures_dir' => $folder 
+					) );
+				}
+			}
+			
+			$data = array ();
+			$data ['id'] = $id;
+			// $data['filetype'] = $filetype;
+			
+			$response = $this->getResponse ();
+			$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+			$response->setContent ( json_encode ( $data ) );
+			return $response;
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
@@ -527,8 +612,7 @@ class SparepartsController extends AbstractActionController {
 							'errors' => $errors,
 							'redirectUrl' => $redirectUrl,
 							'movement' => $input 
-					)
-					 );
+					) );
 				} else {
 					
 					// Validated
@@ -611,9 +695,7 @@ class SparepartsController extends AbstractActionController {
 				'sparepart' => $sparepart,
 				'categories' => $categories,
 				'redirectUrl' => $redirectUrl 
-		) )
-
-		;
+		) );
 	}
 	
 	/**
@@ -652,8 +734,7 @@ class SparepartsController extends AbstractActionController {
 				'spareparts' => $spareparts,
 				'paginator' => $paginator,
 				'total_cart_items' => $total_cart_items 
-		)
-		 );
+		) );
 	}
 	
 	/**
@@ -717,7 +798,8 @@ class SparepartsController extends AbstractActionController {
 		return $viewModel;
 	}
 	/**
-	 >
+	 * >
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function showCategoryAction() {
@@ -740,7 +822,7 @@ class SparepartsController extends AbstractActionController {
 		
 		$category = $this->sparePartCategoryTable->get ( $id );
 		
-		$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID( $id,0,0 );
+		$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
 		$totalResults = $spareparts->count ();
 		
 		$paginator = null;
@@ -761,6 +843,10 @@ class SparepartsController extends AbstractActionController {
 	 * Show detail of a spare parts
 	 */
 	public function showAction() {
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$sp = $this->sparePartTable->get ( $id );
 		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
@@ -776,7 +862,9 @@ class SparepartsController extends AbstractActionController {
 				'inflow' => $inflow,
 				'outflow' => $outflow,
 				'instock' => $instock,
-				'categories' => $categories 
+				'categories' => $categories,
+				'redirectUrl' => $redirectUrl,
+				
 		) );
 	}
 	public function picturesAction() {
@@ -896,67 +984,63 @@ class SparepartsController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function setMinBalanceAction() {
-		
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
 		
-		
 		if ($request->isPost ()) {
-				
+			
 			if ($request->isPost ()) {
 				$redirectUrl = $request->getPost ( 'redirectUrl' );
-			
-				$input = new SparepartMinimumBalance();
+				
+				$input = new SparepartMinimumBalance ();
 				$input->sparepart_id = ( int ) $request->getPost ( 'sparepart_id' );
 				$input->minimum_balance = $request->getPost ( 'minimum_balance' );
 				$input->remarks = $request->getPost ( 'remarks' );
 				$input->status = $request->getPost ( 'status' );
 				$input->created_by = $user ["id"];
-		
+				
 				$errors = array ();
 				
 				$validator = new Int ();
-					
-				if (! $validator->isValid ($input->minimum_balance )) {
+				
+				if (! $validator->isValid ( $input->minimum_balance )) {
 					$errors [] = 'Quantity is not valid. It must be a number.';
 				}
-		
+				
 				if (count ( $errors ) > 0) {
 					
-					$sp = $this->spMinimumBalanceTable->getSparepartID($input->sparepart_id);
-					$pictures = $this->sparePartPictureTable->getSparepartPicturesById ($input->sparepart_id );
-					
+					$sp = $this->spMinimumBalanceTable->getSparepartID ( $input->sparepart_id );
+					$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $input->sparepart_id );
 					
 					return new ViewModel ( array (
 							'errors' => $errors,
 							'sparepart' => $sp,
 							'pictures' => $pictures,
-							'redirectUrl'=>$redirectUrl,
+							'redirectUrl' => $redirectUrl 
 					) );
 				}
-		
+				
 				$this->spMinimumBalanceTable->add ( $input );
 				$this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
-		$sp = $this->spMinimumBalanceTable->getSparepartID( $id );
+		$sp = $this->spMinimumBalanceTable->getSparepartID ( $id );
 		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
-		
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		return new ViewModel ( array (
 				'sparepart' => $sp,
 				'pictures' => $pictures,
-				'errors'=>null,
-				'redirectUrl'=>$redirectUrl,
+				'errors' => null,
+				'redirectUrl' => $redirectUrl 
 		) );
 	}
 	
@@ -1038,7 +1122,4 @@ class SparepartsController extends AbstractActionController {
 		$this->spMinimumBalanceTable = $spMinimumBalanceTable;
 		return $this;
 	}
-	
-	
-	
 }

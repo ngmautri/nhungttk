@@ -50,12 +50,14 @@ if ($total_spareparts <= 0) {
 			<td>
 			<?php 
 			if($a->sp_pic_id!==null):
-			?>			
-			<img class= "img-rounded" width="50" height="50" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"/>
+			?>
+			<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/pictures?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">
+			<img class= "img-rounded" width="60" height="60" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"/>
+		</a>			
 			<?php 
 			else:
 			?>
-		<img class= "img-rounded" width="50" height="50" src="/images/no-pic.jpg"/>
+			<img class= "img-rounded" width="60" height="60" src="/images/no-pic.jpg"/>
 				
 			<?php 
 			endif;
@@ -81,7 +83,7 @@ if ($total_spareparts <= 0) {
 						</li>
  						<li class="divider"></li>
  						<li><a
-							href="<?php echo $this->baseUrl ?>/inventory/spareparts/upload-picture?id=<?php echo $this->escapeHtml($a['id']);?>">Upload Picture</a>
+							href="<?php echo $this->baseUrl ?>/inventory/spareparts/upload-picture1?id=<?php echo $this->escapeHtml($a['id']);?>">Upload Picture</a>
 						</li>
  	
  							<li class="divider"></li>

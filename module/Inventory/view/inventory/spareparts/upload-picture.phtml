@@ -15,7 +15,7 @@ echo '<div class="alert alert-info">';
 ?>
 	
 
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/spareparts/upload-picture"	method="post" enctype="multipart/form-data" id="NewSP" >
+ <form class="form-horizontal" id="sp_upload_pic_form" action="<?php echo $this->baseUrl ?>/inventory/spareparts/upload-picture"	method="post" enctype="multipart/form-data" id="NewSP" >
  <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
  <input type="hidden" name="id" value="<?php echo $sparepart!==null ? ($sparepart->id) :""?>"/>
       

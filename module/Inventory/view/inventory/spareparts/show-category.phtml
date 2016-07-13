@@ -2,7 +2,9 @@
 
 
 <ul class="nav nav-pills">
-  <li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>">Add New Spare-part</a></li>
+	<li><a
+		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>">Add
+			New Spare-part</a></li>
 </ul>
 
 
@@ -14,67 +16,105 @@ if ($total_spareparts <= 0) {
 } else {
 	
 	if (! is_null ( $paginator )) {
-		echo '<h5>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage . ' | ' .  $total_spareparts . ' members found! </h5>';
-	;
-	}else{
-		echo '<h5>'. $total_spareparts . ' spare parts found! </h5>';
-		
+		echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_spareparts . ' members found! </h5>';
+		;
+	} else {
+		echo '<h5>' . $total_spareparts . ' spare parts found! </h5>';
 	}
-?>
-		
+	?>
 
-<table class="pure-table pure-table-bordered">
-<thead>
-	<tr>
-		<td><b>Tag</b></td>
-		<td><b>Spare Part Name</b></td>
-		<td><b>Code</b></td>
-		<td><b>Location</b></td>
-		<td><b>Action</b></td>
-	</tr>
-</thead>
- <tbody>
-	  <?php 
-	 
-	 $count = 0;
-	 foreach ($spareparts as $a) : 
-	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 $instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
-	 
-	 ?>
- 		<td><?php echo $this->escapeHtml($a['tag']);?></td>
-		<td><span id="<?php echo $this->escapeHtml($a['id']);?>_name"><?php echo $this->escapeHtml($a['name']);?></span>
-		<?php if($instock > 0){			
-			echo '<span class="label label-info">'.$instock.'</span>';				
-			
-		}else{
-			
-			echo '<span class="label">'.$instock.'</span>';				
-		}?>
-		</td>
-		<td><?php echo $this->escapeHtml($a['code']);?></td>
-		<td><?php echo $this->escapeHtml($a['location']);?></td>
-			<td>
-		<a href="#" onclick="openPRCart('<?php echo $this->escapeHtml($a['id'])?>');"><i class="icon-shopping-cart"></i>Order</a>
-			<a
-			href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Issue
-		</a>
-		<a
-			href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Receive
-		</a>
-		<!-- <a
-			href="<?php echo $this->baseUrl ?>/inventory/spareparts/add-category?id=<?php echo $this->escapeHtml($a['id']);?>">change category
-		</a>
-		-->
-			<a
-			href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $this->escapeHtml($a['id']);?>">Edit
-		</a>
+
+<table class="table table-striped table-bordered">
+	<thead>
+		<tr>
+			<td><b>PICTURE</b></td>
+			<td><b>TAG</b></td>
+			<td><b>SPARE-PART NAME</b></td>
+			<td><b>CODE</b></td>
+			<td><b>LOCATION</b></td>
+			<td><b data-toggle="tooltip" title="Current Balance">Cur.Bal.</b></td>
+			<td><b data-toggle="tooltip" title="Minimum Balance">Min.Bal.</b></td>
+			<td><b>ACTION</b></td>
+		</tr>
+	</thead>
+	<tbody>
+	  <?php
+	
+	$count = 0;
+	foreach ( $spareparts as $a ) :
+		// $count++;
+		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 		
-		<a
-			href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-				Detail </a></td>
-	</tr>
+		?>
+	<tr>
+			<td>
+			<?php 
+			if($a->sp_pic_id!==null):
+			?>			
+			<img class= "img-rounded" width="50" height="50" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"/>
+			<?php 
+			else:
+			?>
+		<img class= "img-rounded" width="50" height="50" src="/images/no-pic.jpg"/>
+				
+			<?php 
+			endif;
+			?>
+			
+			</td>
+			
+			
+			<td><?php echo $this->escapeHtml($a['tag']);?></td>
+			<td>
+
+				<div class="dropdown">
+					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
+						href="#"> <span
+						id="<?php echo $this->escapeHtml($a['id']);?>_name"><?php echo $this->escapeHtml($a['name']);?></span>
+						<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a
+							href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $this->escapeHtml($a['id']);?>">Edit</a>
+						</li>
+						<li><a
+							href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $this->escapeHtml($a['id']);?>">Detail</a>
+						</li>
+ 						<li class="divider"></li>
+ 						<li><a
+							href="<?php echo $this->baseUrl ?>/inventory/spareparts/upload-picture?id=<?php echo $this->escapeHtml($a['id']);?>">Upload Picture</a>
+						</li>
+ 	
+ 							<li class="divider"></li>
+ 						<li><a
+				href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Stock movement</a>
+						</li>
+						<li><a
+				href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Set Minimum Balance</a>
+						</li>
+					</ul>
+				</div>
+
+
+			</td>
+			<td><?php echo $this->escapeHtml($a['code']);?></td>
+			<td><?php echo $this->escapeHtml($a['location']);?></td>
+			<td><a
+				href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->current_balance;?>
+		</a></td>
+			<td><a
+				href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->mininum_balance;?>
+		</a></td>
+
+
+			<td><a href="#"
+				onclick="openPRCart('<?php echo $this->escapeHtml($a['id'])?>');"><i
+					class="icon-shopping-cart"></i>Order</a> <a
+				href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Issue
+			</a> <a
+				href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Receive
+			</a> 
+			</td>
+			</tr>
 <?php endforeach; ?>
 </tbody>
 </table>
@@ -82,120 +122,125 @@ if ($total_spareparts <= 0) {
 <br>
 
 <?php
-
-if (! is_null ( $paginator )) {
-
-	//change it only
-	$base=$this->baseUrl . '/inventory/spareparts/show-category?id='.$category->id;
-
-	$last 	= $base . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-	$first 	= $base . '&page=1&perPage=' . $paginator->resultsPerPage;
-
-	$p1 = ($paginator->page)-1;
-	$p2 = ($paginator->page)+1;
-
-	$prev = $base . '&page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-	$next = $base . '&page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-
-
-	echo '<ul class="pagination">';
-
-	if($paginator->page != 1 AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $first.'"> |< </a></li>';
-		echo '<li><a href="'.  $prev .'"> < </a></li>';
-	}
-
-	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-		$url = $base. '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-
-			
-		if ($i == $paginator->page) {
-			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
-		} else {
-			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
-		}
-	}
-	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $next.'"> > </a></li>';
-		echo '<li><a href="'.  $last .'"> >| </a></li>';
-	}
-	echo '</ul>';
-}
-
 	
+	if (! is_null ( $paginator )) {
+		
+		// change it only
+		$base = $this->baseUrl . '/inventory/spareparts/show-category?id=' . $category->id;
+		
+		$last = $base . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$first = $base . '&page=1&perPage=' . $paginator->resultsPerPage;
+		
+		$p1 = ($paginator->page) - 1;
+		$p2 = ($paginator->page) + 1;
+		
+		$prev = $base . '&page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . '&page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		
+		echo '<ul class="pagination">';
+		
+		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $first . '"> |< </a></li>';
+			echo '<li><a href="' . $prev . '"> < </a></li>';
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base . '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			
+			if ($i == $paginator->page) {
+				echo '<li><a class="active" href="#">' . $i . '</a></li>';
+			} else {
+				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+			}
+		}
+		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $next . '"> > </a></li>';
+			echo '<li><a href="' . $last . '"> >| </a></li>';
+		}
+		echo '</ul>';
+	}
 }
 ?>
 
 
 <!-- Modal -->
-	<div id="myModal" class="modal hide" role="dialog">
-	  <div class="modal-dialog">
-	  	 <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h5 class="modal-title">Mascot International (Laos)</h5>
-      </div>
-	      <div class="modal-body">
-	  <span id="_status"></span>
+<div id="myModal" class="modal hide" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h5 class="modal-title">Mascot International (Laos)</h5>
+		</div>
+		<div class="modal-body">
+			<span id="_status"></span>
 
-<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/select-item-2"	method="post" enctype="multipart/form-data" id="NewSP" >
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-<input type="hidden" name="article_id" id ="item_id" value="" />
- 	
-	 	 <div class="control-group">
-	        <label class="control-label" for="inputNameLocal">Priority:</label>
-        <div class="controls">
-        	<select name="priority" id ="item_priority">
-        		<option value="Low">Low</option>
-        		<option value="Medium" selected>Medium</option>
-        		<option value="High">High</option>
-        		<option value="Urgent">Urgent</option>
- 			</select>
-	     </div>
-      </div>
-      	
-      <div class="control-group">
-        <label class="control-label" for="inputTag">Name:</label>
-        <div class="controls">
-          <input type="text" id="item_name" placeholder="" name="name" value="article">
-        </div>
-      </div>
-      
-       <div class="control-group">
-        <label class="control-label" for="inputTag">Quantity:</label>
-        <div class="controls">
-          <input type="text" id="item_quantity" placeholder="" name="quantity" value="">
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Requested Delivery Date:</label>
-        <div class="controls">
-          <input type="text" id="end_date" placeholder="click to select" name="EDT" value="">
-        </div>
-      </div>
-      
-       <div class="control-group">
-        <label class="control-label" for="inputDescription">Reason /Note:</label>
-        <div class="controls">
-          <textarea id="item_remarks" placeholder="" rows="2" cols="5" name="remarks"></textarea>
-        </div>
-      </div>
-    </form>
-	      </div>
-	      
-		  <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	        <button onclick="addItemToCart('SPARE-PART');" type="button" class="btn btn-primary">Add To Cart</button>
-	      </div>
-	   </div>
+			<form class="form-horizontal"
+				action="<?php echo $this->baseUrl ?>/procurement/pr/select-item-2"
+				method="post" enctype="multipart/form-data" id="NewSP">
+				<input type="hidden" name="redirectUrl"
+					value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+					name="article_id" id="item_id" value="" />
+
+				<div class="control-group">
+					<label class="control-label" for="inputNameLocal">Priority:</label>
+					<div class="controls">
+						<select name="priority" id="item_priority">
+							<option value="Low">Low</option>
+							<option value="Medium" selected>Medium</option>
+							<option value="High">High</option>
+							<option value="Urgent">Urgent</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputTag">Name:</label>
+					<div class="controls">
+						<input type="text" id="item_name" placeholder="" name="name"
+							value="article">
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputTag">Quantity:</label>
+					<div class="controls">
+						<input type="text" id="item_quantity" placeholder=""
+							name="quantity" value="">
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputNameLocal">Requested
+						Delivery Date:</label>
+					<div class="controls">
+						<input type="text" id="end_date" placeholder="click to select"
+							name="EDT" value="">
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputDescription">Reason /Note:</label>
+					<div class="controls">
+						<textarea id="item_remarks" placeholder="" rows="2" cols="5"
+							name="remarks"></textarea>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			<button onclick="addItemToCart('SPARE-PART');" type="button"
+				class="btn btn-primary">Add To Cart</button>
+		</div>
 	</div>
-	
-	<!-- Modal -->
-	<div id="myModal1" class="modal hide" role="dialog">
-	  <div class="modal-dialog">
-	      <div class="modal-body">
-	        <p>Working on it........Please Wait!</p>
-	      </div>
-	   </div>
-	</div>		
+</div>
+
+<!-- Modal -->
+<div id="myModal1" class="modal hide" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-body">
+			<p>Working on it........Please Wait!</p>
+		</div>
+	</div>
+</div>

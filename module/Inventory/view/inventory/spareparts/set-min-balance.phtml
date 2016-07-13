@@ -1,0 +1,63 @@
+<h4>Set Minimum Balance:</h4>
+
+<?php if (count($errors)>0)
+{
+echo '<div class="alert alert-error">';
+	
+	echo '<ul>';
+	 foreach ($errors as $error) :
+	 echo '<li>'.$error . '</li>';
+	 
+	 endforeach;
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+	
+
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance"	method="post" enctype="multipart/form-data" id="NewSP" >
+ <input type="hidden" name="sparepart_id" value="<?php echo $sparepart!==null ? ($sparepart->id) :""?>" />
+ <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+ 
+      <div class="control-group">
+        <label class="control-label" for="inputTag">Tag</label>
+        <div class="controls">
+          <input readonly type="text" id="inputTag" placeholder="" name="tag" value="<?php echo $sparepart!==null ? ($sparepart->tag) :""?>">
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputName">Name</label>
+        <div class="controls">
+          <input readonly type="text" id="inputName" placeholder="" name="name" value="<?php echo $sparepart!==null ? ($sparepart->name) :""?>">
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputMinBalance">Minimum Balance</label>
+        <div class="controls">
+          <input type="text" id="inputMinBalance" placeholder="" name="minimum_balance" value="<?php echo $sparepart!==null ? ($sparepart->minimum_balance) :""?>">
+        </div>
+      </div>
+      
+       <div class="control-group">
+        <label class="control-label" for="inputTag">Status</label>
+        <div class="controls">
+        	<select name="status" >
+        		<option selected = "selected" value="Activated">Activated</option>
+        		<option value="Deactivated">Deactivated</option>
+     			</select>
+       </div>
+      </div>
+            
+      <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn"><i class="icon-plus">  </i> Set</button>
+        </div>
+      </div>
+    </form>
+
+
+
+<div id = "dialog" style="display: none;">Check code...</div>

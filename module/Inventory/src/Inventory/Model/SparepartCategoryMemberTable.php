@@ -67,24 +67,15 @@ class SparepartCategoryMemberTable {
 			";
 	
 	private $getSP_Cat_SQL = "
-	select
-    *
-    from
-    (
-    select 
-		mla_sparepart_cats_members.sparepart_cat_id,
-		mla_sparepart_cats.name as cat_name,
-		mla_spareparts.*
-		from mla_sparepart_cats_members
-    left join
-    (
-		select
-		*
-		from 
-		(
-			select 
+	      select
+          *
+          from
+          (
+          select 
+				mla_sparepart_cats.id as sparepart_cat_id,
+                mla_sparepart_cats.name as cat_name,
 				mla_spareparts.*,
-				ifnull(mla_spareparts_inflow.total_inflow,0) as total_inflow,
+                ifnull(mla_spareparts_inflow.total_inflow,0) as total_inflow,
 				ifnull(mla_spareparts_outflow.total_outflow,0) as total_outflow,
 				(ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) as current_balance,
 				ifnull(mla_sparepart_minimum_balance.minimum_balance,0) as mininum_balance,
@@ -92,8 +83,7 @@ class SparepartCategoryMemberTable {
                 mla_sparepart_pics.filename,
                 mla_sparepart_pics.url,
                 mla_sparepart_pics.folder
-  				
-			from mla_spareparts
+			from mla_sparepart_cats_members
 
 			/* inflow*/
 			left join
@@ -107,14 +97,14 @@ class SparepartCategoryMemberTable {
 				where mla_sparepart_movements.flow = 'IN' 
 				GROUP BY mla_sparepart_movements.sparepart_id
 			) as mla_spareparts_inflow
-			on mla_spareparts_inflow.id = mla_spareparts.id
+			on mla_spareparts_inflow.id = mla_sparepart_cats_members.sparepart_id
 
 			/* outflow*/
 			left join
 			(
 				select  
 				mla_spareparts.id, 
-					SUM(mla_sparepart_movements.quantity) AS total_outflow
+				SUM(mla_sparepart_movements.quantity) AS total_outflow
 				from mla_spareparts 
 				LEFT JOIN mla_sparepart_movements 
 				on mla_sparepart_movements.sparepart_id = mla_spareparts.id 
@@ -122,11 +112,11 @@ class SparepartCategoryMemberTable {
 				GROUP BY mla_sparepart_movements.sparepart_id
 			) 
 			as mla_spareparts_outflow
-			on mla_spareparts_outflow.id = mla_spareparts.id
+			on mla_spareparts_outflow.id = mla_sparepart_cats_members.sparepart_id
 
 			/*minimum_balance*/
 			left join mla_sparepart_minimum_balance
-			on mla_sparepart_minimum_balance.sparepart_id =  mla_spareparts.id
+			on mla_sparepart_minimum_balance.sparepart_id =  mla_sparepart_cats_members.sparepart_id
             
 			/*picture*/
             left join 
@@ -143,17 +133,16 @@ class SparepartCategoryMemberTable {
 				group by mla_sparepart_pics.sparepart_id
             )
             as mla_sparepart_pics
-            on mla_sparepart_pics.sparepart_id = mla_spareparts.id
-		)
-		as mla_spareparts
-	) 
-    as mla_spareparts
-    on mla_spareparts.id = mla_sparepart_cats_members.sparepart_id
-    left join mla_sparepart_cats
-    on mla_sparepart_cats.id = mla_sparepart_cats_members.sparepart_cat_id
-    )
-    as mla_sparepart_cats_members
-    Where 1
+            on mla_sparepart_pics.sparepart_id = mla_sparepart_cats_members.sparepart_id
+            
+            left join mla_spareparts
+            on mla_spareparts.id = mla_sparepart_cats_members.sparepart_id
+            
+            left join mla_sparepart_cats
+            on mla_sparepart_cats.id = mla_sparepart_cats_members.sparepart_cat_id
+            )
+            as mla_sparepart_cats_members
+            WHERE 1
 	";
 	
 	protected $tableGateway;

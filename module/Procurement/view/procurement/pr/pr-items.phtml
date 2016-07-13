@@ -79,10 +79,10 @@ endif;
 							<select name="balance">
 								<option value="-1">All</option>
 								<option
-									<?php echo $last_status=='Submitted'? "selected='selected'":"";?>
+									<?php echo $balance=='0'? "selected='selected'":"";?>
 									value="0">Balance=0</option>
 								<option
-									<?php echo $last_status=='Fulfilled'? "selected='selected'":"";?>
+									<?php echo $balance=='1'? "selected='selected'":"";?>
 									value="1">Balance>0</option>
 
 							</select>
@@ -146,50 +146,61 @@ if (count ( $pr_items ) > 0) :
 			<td><b>Curr.</b></td>
 		</tr>
 	</thead>
- <tbody>	
-  <?php	
+	<tbody>	
+  <?php
 	$count = 0;
 	foreach ( $pr_items as $item ) :
 		$count ++;
 		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 		?>
 		<tr>
-	 		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 		
-	<td>
-	<div class="dropdown">
-    <a class="dropdown-toggle" type="button" data-toggle="dropdown" href="#"><?php echo $item->name;?>
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+
+			<td>
+				<div class="dropdown">
+					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
+						href="#"><?php echo $item->name;?>
     <span class="caret"></span></a>
-    <ul class="dropdown-menu">
-     	<li><a href="#"><i class="icon-tag"> </i> Process</a></li>
-     	<li><a href="#"><i class="icon-check"> </i> Delivery</a></li>	
-     	<li class="divider"></li>
+					<ul class="dropdown-menu">
+						<li><a href="#"><i class="icon-tag"> </i> Process</a></li>
+     	
+    	<?php if ($item->confirmed_balance > 0) : ?>
+   			<li><a href="/procurement/delivery/add-to-cart?pr_item_id=<?php echo $item->id?>"><i class="icon-check"> </i> Delivery</a></li>	
+    	<?php endif; ?>
+	
+     	
+      	<li class="divider"></li>
         
         <?php
-		if ($item->article_id > 0) : ?>
-        <li><a href="/inventory/article/show?id=<?php echo $item->article_id;?>"><i class="icon-list"> </i> Detail</a></li>
+		if ($item->article_id > 0) :
+			?>
+        <li><a
+							href="/inventory/article/show?id=<?php echo $item->article_id;?>"><i
+								class="icon-list"> </i> Detail</a></li>
 		<?php endif; ?>
 		
 		 <?php if ($item->sparepart_id > 0) : ?>
-     	<li><a href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>"><i class="icon-list"> </i> Detail</a></li>
+     	<li><a
+							href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>"><i
+								class="icon-list"> </i> Detail</a></li>
 		<?php endif; ?>
 	
 		
 		     
          <li><a href="#"><i class="icon-signal"></i> Order History</a></li>
-      <li><a href="#"><i class="icon-film"></i> Picture</a></li>
-     </ul>
-  </div>			
-	 		
+						<li><a href="#"><i class="icon-film"></i> Picture</a></li>
+					</ul>
+				</div>
+			
 			<td><?php echo $item->pr_number;?></td>
 			<td><?php echo $item->pr_of_department;?></td>
 			<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. substr ($item->priority,0,1) .'</span>':substr ($item->priority,0,1);?></td>
 
-			
+
 			</td>
 			<td><?php echo $item->unit;?></td>
 			<td><?php echo $item->quantity;?></td>
-			<td><?php echo $item->confirmed_delivered_quantity;?></td>
+			<td><?php echo $item->confirmed_quantity;?></td>
 			<td><?php echo $item->confirmed_balance;?></td>
 			<td><?php echo $item->confirmed_free_balance;?></td>
 		
@@ -203,36 +214,44 @@ if (count ( $pr_items ) > 0) :
 
 			<td>
 			<?php if($item->article_id>0): ?>			
-<a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->article_vendor_id;?>" target="_blank"><?php echo $item->article_vendor_name;?></a>
+<a
+				href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->article_vendor_id;?>"
+				target="_blank"><?php echo $item->article_vendor_name;?></a>
 			<?php endif;?>
 			<?php if($item->sparepart_id>0): ?>			
-<a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->sp_vendor_id;?>" target="_blank"><?php echo $item->sp_vendor_name;?></a>
+<a
+				href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->sp_vendor_id;?>"
+				target="_blank"><?php echo $item->sp_vendor_name;?></a>
 			<?php endif;?>
 			</td>
 			<td>
 		<?php
 		if ($item->article_id > 0) :
 			echo $item->article_price;
+		
 		endif;
 		
 		if ($item->sparepart_id > 0) :
 			echo $item->sp_price;
+		
 		endif;
 		?>
 			</td>
-			
+
 			<td>
 		<?php
 		if ($item->article_id > 0) :
 			echo $item->article_currency;
+		
 		endif;
 		
 		if ($item->sparepart_id > 0) :
 			echo $item->sp_currency;
+		
 		endif;
 		?>
 		</td>
-	<script language="javascript">
+			<script language="javascript">
 			id_array.push(<?php echo $item->id;?>);
 		</script>
 		</tr>
@@ -292,7 +311,9 @@ if (count ( $pr_items ) > 0) :
 	
 
  
- <?php else :
+ 
+ <?php
+elseelse :
 	echo 'No Items found ...';
 
 

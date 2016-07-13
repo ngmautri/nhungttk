@@ -67,6 +67,9 @@ use Inventory\Model\SparepartLastDN;
 use Inventory\Model\SparepartLastDNTable;
 
 
+use Inventory\Model\SparepartMinimumBalance;
+use Inventory\Model\SparepartMinimumBalanceTable;
+
 
 class Module {
 	
@@ -367,6 +370,20 @@ class Module {
 						$resultSetPrototype = new ResultSet ();
 						$resultSetPrototype->setArrayObjectPrototype ( new SparepartLastDN() );
 						return new TableGateway ( 'mla_spareparts_last_dn', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// SP Minimum Balance Table
+						'Inventory\Model\SparepartMinimumBalanceTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'SparepartMinimumBalanceTableGateway' );
+						$table = new SparepartMinimumBalanceTable($tableGateway);
+						return $table;
+						},
+						
+						'SparepartMinimumBalanceTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new SparepartMinimumBalance() );
+						return new TableGateway ( 'mla_sparepart_minimum_balance', $dbAdapter, null, $resultSetPrototype );
 						},
 						
 						

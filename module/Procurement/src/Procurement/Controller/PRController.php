@@ -678,17 +678,17 @@ class PRController extends AbstractActionController {
 		$departments = $this->departmentTable->fetchAll ();
 		
 		if ($balance == null) :
-			$balance = - 1;
+			$balance = 1;
 		
 		endif;
 		
-		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN ( $department_id, $last_status, $balance, 0, 0 );
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V1( $department_id, $last_status, $balance, 0, 0 );
 		$totalResults = count ( $pr_items );
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN ( $department_id, $last_status, $balance, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V1 ( $department_id, $last_status, $balance, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -698,6 +698,7 @@ class PRController extends AbstractActionController {
 				'pr_items' => $pr_items,
 				'departments' => $departments,
 				'last_status' => $last_status,
+				'balance' => $balance,
 				'department_id' => $department_id,
 				'paginator' => $paginator,
 				'total_items' => $totalResults 

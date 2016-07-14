@@ -147,6 +147,13 @@ class SparepartCategoryMemberTable {
             WHERE 1
 	";
 	
+	private $getTotalCatMembers_SQL = "
+	select 
+	count(*) as total_members
+	from mla_sparepart_cats_members
+	where 1 	
+	";
+	
 	protected $tableGateway;
 	
 	public function __construct(TableGateway $tableGateway) {
@@ -299,6 +306,30 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 		$resultSet->initialize($result);
 		return $resultSet;
 	
+	}
+	
+	/**
+	 *
+	 * @param unknown $id
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getTotalMembersOfCatID($id)
+	{
+	
+		$sql = $this->getTotalCatMembers_SQL;
+	
+		$sql = $sql. " AND mla_sparepart_cats_members.sparepart_cat_id =" .$id;
+	
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return (int)$resultSet->current()->total_members;
 	}
 	
 	

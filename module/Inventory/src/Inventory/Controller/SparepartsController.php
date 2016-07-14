@@ -821,14 +821,14 @@ class SparepartsController extends AbstractActionController {
 		$id = $this->params ()->fromQuery ( 'id' );
 		
 		$category = $this->sparePartCategoryTable->get ( $id );
-		
-		$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
-		$totalResults = $spareparts->count ();
+		$totalResults =  $this->sparePartCategoryMemberTable->getTotalMembersOfCatID( $id);
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
 			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}else{
+			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
 		}
 		
 		return new ViewModel ( array (
@@ -867,6 +867,11 @@ class SparepartsController extends AbstractActionController {
 				
 		) );
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function picturesAction() {
 		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
 		$sp = $this->sparePartTable->get ( $id );
@@ -877,6 +882,11 @@ class SparepartsController extends AbstractActionController {
 				'pictures' => $pictures 
 		) );
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+	 */
 	public function showMovementAction() {
 		// $redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );

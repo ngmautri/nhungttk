@@ -566,7 +566,7 @@ function uploadSPPictures() {
 					return function(imageEvent) {
 
 						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1200, // TODO
+						var canvas = document.createElement('canvas'), max_size = 1300, // TODO
 																						// :
 																						// config
 						width = image.width, height = image.height;

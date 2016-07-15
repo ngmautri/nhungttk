@@ -67,11 +67,7 @@ class SparepartCategoryMemberTable {
 			";
 	
 	private $getSP_Cat_SQL = "
-	      select
-          *
-          from
-          (
-          select 
+	         select 
 				mla_sparepart_cats.id as sparepart_cat_id,
                 mla_sparepart_cats.name as cat_name,
 				mla_spareparts.*,
@@ -142,8 +138,6 @@ class SparepartCategoryMemberTable {
 			/* sp_cat*/
             left join mla_sparepart_cats
             on mla_sparepart_cats.id = mla_sparepart_cats_members.sparepart_cat_id
-            )
-            as mla_sparepart_cats_members
             WHERE 1
 	";
 	

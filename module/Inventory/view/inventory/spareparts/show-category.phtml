@@ -30,8 +30,6 @@ if ($total_spareparts <= 0) {
 			<td><b>PICTURE</b></td>
 			<td><b>TAG</b></td>
 			<td><b>SPARE-PART NAME</b></td>
-			<td><b>CODE</b></td>
-			<td><b>LOCATION</b></td>
 			<td><b data-toggle="tooltip" title="Current Balance">Cur.Bal.</b></td>
 			<td><b data-toggle="tooltip" title="Minimum Balance">Min.Bal.</b></td>
 			<td><b>ACTION</b></td>
@@ -52,12 +50,12 @@ if ($total_spareparts <= 0) {
 			if($a->sp_pic_id!==null):
 			?>
 			<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/pictures?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">
-			<img class= "img-rounded" width="60" height="60" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"/>
+			<img class= "img-rounded" width="70" height="70" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"/>
 		</a>			
 			<?php 
 			else:
 			?>
-			<img class= "img-rounded" width="60" height="60" src="/images/no-pic.jpg"/>
+			<img class= "img-rounded" width="70" height="70" src="/images/no-pic.jpg"/>
 				
 			<?php 
 			endif;
@@ -70,9 +68,8 @@ if ($total_spareparts <= 0) {
 			<td>
 
 				<div class="dropdown">
-					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
-						href="#"> <span
-						id="<?php echo $this->escapeHtml($a['id']);?>_name"><?php echo $this->escapeHtml($a['name']);?></span>
+					<a style="" class="dropdown-toggle" type="button" data-toggle="dropdown"
+						href="#"><span style="color:black;" id="<?php echo $this->escapeHtml($a['id']);?>_name"><b><?php echo $this->escapeHtml($a['name']);?></b></span>
 						<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a
@@ -95,16 +92,16 @@ if ($total_spareparts <= 0) {
 						</li>
 					</ul>
 				</div>
-
+				<div style="color: gray;">
+				Code: <?php echo $this->escapeHtml($a['code']);?><br>
+				Location: <?php echo $this->escapeHtml($a['location']);?>
+				</div>
 
 			</td>
-			<td><?php echo $this->escapeHtml($a['code']);?></td>
-			<td><?php echo $this->escapeHtml($a['location']);?></td>
-			<td><a
-				href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->current_balance;?>
+			
+			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->current_balance;?>
 		</a></td>
-			<td><a
-				href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->mininum_balance;?>
+			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->mininum_balance;?>
 		</a></td>
 
 

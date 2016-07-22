@@ -702,38 +702,32 @@ class SparepartsController extends AbstractActionController {
 	 * List all spare parts
 	 */
 	public function listAction() {
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
-		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 20;
+			$resultsPerPage = 15;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
-		;
 		
 		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
 			$page = 1;
 		} else {
 			$page = $this->params ()->fromQuery ( 'page' );
 		}
-		;
 		
-		$spareparts = $this->sparePartTable->getSpareparts ();
-		$totalResults = $spareparts->count ();
+		$totalResults =  $this->sparePartCategoryMemberTable->getTotalMembersOfCatID(0);
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$spareparts = $this->sparePartTable->getLimitedSpareParts ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( 0, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}else{
+			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( 0, 0, 0 );
 		}
-		$total_cart_items = $this->purchaseRequestCartItemTable->getTotalCartItems ( $user ['id'] );
 		
 		return new ViewModel ( array (
 				'total_spareparts' => $totalResults,
 				'spareparts' => $spareparts,
-				'paginator' => $paginator,
-				'total_cart_items' => $total_cart_items 
+				'paginator' => $paginator 
 		) );
 	}
 	
@@ -798,14 +792,12 @@ class SparepartsController extends AbstractActionController {
 		return $viewModel;
 	}
 	/**
-	 * >
+	 * 
 	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function showCategoryAction() {
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
-		
+			
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 15;
 		} else {

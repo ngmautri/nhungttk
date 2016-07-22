@@ -313,9 +313,10 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 	{
 	
 		$sql = $this->getTotalCatMembers_SQL;
-	
-		$sql = $sql. " AND mla_sparepart_cats_members.sparepart_cat_id =" .$id;
-	
+		
+		if($id>0){
+			$sql = $sql. " AND mla_sparepart_cats_members.sparepart_cat_id =" .$id;
+		}
 		$adapter = $this->tableGateway->adapter;
 		$statement = $adapter->query($sql);
 	
@@ -339,7 +340,10 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 	
 		$sql = $this->getSP_Cat_SQL;
 		
-		$sql = $sql. " AND mla_sparepart_cats_members.sparepart_cat_id =" .$id;
+		if($id>0)
+		{
+			$sql = $sql. " AND mla_sparepart_cats_members.sparepart_cat_id =" .$id;
+		}
 		
 	
 		if ($limit > 0) {

@@ -101,6 +101,29 @@ class SparepartPictureTable {
 	}
 	
 	
+	public function getSPPicturesById($id)
+	{
+	
+		$sql ="
+select 
+*
+from mla_sparepart_pics
+where 1 AND mla_sparepart_pics.sparepart_id = " . $id;
+				
+		$sql = $sql . " Order by mla_sparepart_pics.uploaded_on DESC"; 
+			
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return $resultSet;
+	}
+	
+	
+	
 	
 	public function delete($id) {
 		$where = 'id = ' . $id;

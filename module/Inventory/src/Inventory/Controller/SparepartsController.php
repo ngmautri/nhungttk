@@ -861,6 +861,24 @@ class SparepartsController extends AbstractActionController {
 	}
 	
 	/**
+	 * Show detail of a spare parts
+	 */
+	public function showPicturesAction() {
+	
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$sp = $this->sparePartTable->get ( $id );
+		$pictures = $this->sparePartPictureTable->getSPPicturesById ( $id );
+	
+		return new ViewModel ( array (
+				'sparepart' => $sp,
+				'pictures' => $pictures,
+				'redirectUrl' => $redirectUrl,
+
+		) );
+	}
+	
+	/**
 	 * 
 	 * @return \Zend\View\Model\ViewModel
 	 */

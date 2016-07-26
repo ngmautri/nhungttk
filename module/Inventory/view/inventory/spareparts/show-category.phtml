@@ -66,7 +66,7 @@ if ($total_spareparts <= 0) {
 			<?php 
 			if($a->sp_pic_id!==null):
 			?>
-			<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/pictures?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">
+			<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $this->escapeHtml($a['id']);?>">
 			<img class= "img-rounded" width="70" height="70" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"/>
 		</a>			
 			<?php 

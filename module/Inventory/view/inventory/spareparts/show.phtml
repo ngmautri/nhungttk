@@ -1,26 +1,18 @@
 
 <a href="<?php echo $redirectUrl?>"><i class="icon-arrow-left">  </i> BACK</a>
+<hr>
 
 <h4> <?php echo $this->escapeHtml($sparepart->name);?></h4>
-
  <b>Category:</b> <?php foreach ($categories as $category) : ?>
 
 <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($category->category_id);?>"><?php  echo $this->escapeHtml($category->category_name);?>
 </a> //
   	
 <?php endforeach; ?>
- <hr>
-<?php  echo '<ul><li>Total Inflow: ' .  $inflow.'</li>'; ?>
-	 <?php  echo '<li>Total Outflow: ' .  $outflow. '</li>'; ?>
-	 <?php  echo '<li>In stock: ' .  $instock.'</li></ul>';?>
-
-
 <h5>
-	<a
-		href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($sparepart->id);?>">Show
-		Stock Movements </a>
+	
 </h5>
-<hr>
+
 <table>
 
 	<tr>
@@ -52,6 +44,12 @@
 		<td><label for="comment">Comment:</label></td>
 		<td><?php echo $this->escapeHtml($sparepart->comment);?></td>
 	</tr>
+	
+	<tr>
+		<td><label for="comment">In stock:</label></td>
+		<td><a
+		href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($sparepart->id);?>"><?php  echo  $instock ?></a></td>
+	</tr>
 
 </table>
 
@@ -66,7 +64,7 @@
  <?php foreach ($pictures as $pic) : ?>
   	
     <a href="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
-    <img class= "img-rounded" width="80" height="80" src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+    <img class= "img-rounded" width="100" height="100" src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
     </a>
 	
 <?php endforeach; ?>

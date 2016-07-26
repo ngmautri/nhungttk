@@ -1,0 +1,28 @@
+
+<a href="<?php echo $redirectUrl?>"><i class="icon-arrow-left"> </i>
+	BACK</a>
+
+<h4> <?php echo $this->escapeHtml($sparepart->name);?></h4>
+<div style="color: gray;">
+				Code: <?php echo $this->escapeHtml($sparepart->code);?><br>
+				Location: <?php echo $this->escapeHtml($sparepart->location);?>
+				</div>
+<hr>
+
+<h5>
+	<a
+		href="/inventory/spareparts/pictures?sparepart_id=<?php echo $this->escapeHtml($sparepart->id);?>">Spare-part
+		pictures</a>
+</h5>
+
+
+<div id="lightgallery"">
+
+ <?php foreach ($pictures as $pic) : ?>
+    <a
+		href="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
+		<img class="img-rounded" width="100" height="100"
+		src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>" />
+	</a>
+<?php endforeach; ?>
+</div>

@@ -14,6 +14,8 @@ if ($status_name == '') :
 	$status_name = ' | PR status = ' . $last_status;
 endif;
 
+
+
 ?>
 
 <div class="panel-group">
@@ -24,10 +26,11 @@ endif;
 				</i> FILTER</a>
 			</h5>
 		</div>
+		
 		<div id="collapse1"
 			class="panel-collapse collapse <?php echo count($pr_items)>0?"":"in"?>">
 			<div class="panel-body">
-
+<hr>
 				<form class="form-horizontal"
 					action="<?php echo $this->baseUrl ?>/procurement/pr/pr-items"
 					method="get" enctype="multipart/form-data" id="ReportForm">
@@ -77,14 +80,49 @@ endif;
 						<label class="control-label" for="inputNameLocal">Balance: </label>
 						<div class="controls">
 							<select name="balance">
-								<option value="-1">All</option>
+								<option value="2">All</option>
 								<option
 									<?php echo $balance=='0'? "selected='selected'":"";?>
 									value="0">Balance=0</option>
 								<option
 									<?php echo $balance=='1'? "selected='selected'":"";?>
 									value="1">Balance>0</option>
+								<option
+									<?php echo $balance=='-1'? "selected='selected'":"";?>
+									value="-1">Balance<0 (Some Free)</option>
 
+							</select>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<label class="control-label" for="inputNameLocal">Delivery Notification: </label>
+						<div class="controls">
+							<select name="unconfirmed_quantity">
+								<option value="2">All</option>
+								<option
+									<?php echo $unconfirmed_quantity=='0'? "selected='selected'":"";?>
+									value="0">sent and confirmed</option>
+								<option
+									<?php echo $unconfirmed_quantity=='1'? "selected='selected'":"";?>
+									value="1">sent but unconfirmed</option>
+								
+
+							</select>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<label class="control-label" for="inputNameLocal">Added in Delivery List: </label>
+						<div class="controls">
+							<select name="added_delivery_list">
+								<option value="2">All</option>
+								<option
+									<?php echo $added_delivery_list=='0'? "selected='selected'":"";?>
+									value="0">NO</option>
+								<option
+									<?php echo $added_delivery_list=='1'? "selected='selected'":"";?>
+									value="1">YES</option>
 							</select>
 						</div>
 					</div>
@@ -120,9 +158,10 @@ endif;
 if (count ( $pr_items ) > 0) :
 	
 	if (! is_null ( $paginator )) :
-		echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_items . ' Items found | Deparment = ' . $department_name . '' . $status_name . '</h5>';
+		echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_items . ' Items found | Deparment = ' . $department_name . '' . $status_name . 
+		' | '. $balance . ' | ' . $unconfirmed_quantity. '</h5>';
 	 else :
-		echo '<h5>' . $total_items . ' Items found | Deparment = ' . $department_name . '' . $status_name . '</h5>';
+		echo '<h5>' . $total_items . ' Items found | Deparment = ' . $department_name . '' . $status_name . ' | '. $balance . ' | ' . $unconfirmed_quantity.'</h5>';
 	endif;
 	?>
 
@@ -137,12 +176,14 @@ if (count ( $pr_items ) > 0) :
 			<td><b>Unit</b></td>
 			<td><b data-toggle="tooltip" title="Ordred Quantity">Q'ty</b></td>
 			<td><b data-toggle="tooltip" title="Delivered Quantity">Del.</b></td>
+			<td><b data-toggle="tooltip" title="Rejected Quantity">Rejected</b></td>
 			<td><b data-toggle="tooltip" title="Balance">Bal.</b></td>
 			<td><b data-toggle="tooltip" title="Free">Free</b></td>
+			<td><b data-toggle="tooltip" title="Unconfirmed Quantity">Uncon.Q'ty</b></td>
 			<td><b>EDT</b></td>
 			<td><b>Count Down</b></td>
-			<td><b>Vendor</b></td>
-			<td><b>Price</b></td>
+			<td><b>Last Vendor</b></td>
+			<td><b>Last Price</b></td>
 			<td><b>Curr.</b></td>
 		</tr>
 	</thead>
@@ -165,7 +206,14 @@ if (count ( $pr_items ) > 0) :
 						<li><a href="#"><i class="icon-tag"> </i> Process</a></li>
      	
     	<?php if ($item->confirmed_balance > 0) : ?>
-   			<li><a href="/procurement/delivery/add-to-cart?pr_item_id=<?php echo $item->id?>"><i class="icon-check"> </i> Delivery</a></li>	
+   			
+   		<?php if ($item->total_saved_delivered_quantity > 0) : ?>
+   			<li><a href="/procurement/delivery/review-cart"><i class="icon-check"> </i> Review Delivery	</a></li>	
+    	<?php else: ?>
+    		<li><a href="/procurement/delivery/add-to-cart?pr_item_id=<?php echo $item->id?>"><i class="icon-check"> </i> Delivery</a></li>
+   	
+    	<?php endif; ?>
+   				
     	<?php endif; ?>
 	
      	
@@ -201,8 +249,10 @@ if (count ( $pr_items ) > 0) :
 			<td><?php echo $item->unit;?></td>
 			<td><?php echo $item->quantity;?></td>
 			<td><?php echo $item->confirmed_quantity;?></td>
+			<td><?php echo $item->rejected_quantity;?></td>
 			<td><?php echo $item->confirmed_balance;?></td>
 			<td><?php echo $item->confirmed_free_balance;?></td>
+			<td><?php echo $item->unconfirmed_quantity;?></td>
 		
 		<?php if($item->confirmed_balance == 0): ?>
 			<td><?php echo date_format(date_create($item->EDT),"Y-m-d");?></td>
@@ -266,7 +316,8 @@ if (count ( $pr_items ) > 0) :
 	if (! is_null ( $paginator )) {
 		
 		// change it only
-		$base = $this->baseUrl . '/procurement/pr/pr-items?department_id=' . $department_id . '&last_status=' . $last_status;
+		$base = $this->baseUrl . '/procurement/pr/pr-items?department_id=' . $department_id . '&last_status=' . $last_status
+		. '&balance=' . $balance . '&unconfirmed_quantity=' . $unconfirmed_quantity.'&added_delivery_list=' . $added_delivery_list;
 		
 		$_connector_symbol = '&';
 		
@@ -313,7 +364,7 @@ if (count ( $pr_items ) > 0) :
  
  
  <?php
-elseelse :
+else :
 	echo 'No Items found ...';
 
 

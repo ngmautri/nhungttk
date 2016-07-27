@@ -68,8 +68,7 @@ echo '<div class="alert alert-info">';
 	 	 $count++;
 	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 
-	 $to_delivery = $item->quantity - $item->delivered_quantity;
-	 
+		 
 	 	 
 	 ?>
 		<td><?php echo $count;?></td>
@@ -78,8 +77,8 @@ echo '<div class="alert alert-info">';
 		<td><?php echo $item->description;?></td>
 		<td><?php echo $item->unit;?></td>
 		<td><?php echo $item->quantity;?></td>
-		<td><?php echo $item->delivered_quantity;?></td>
-		<td><?php echo $to_delivery==0?'<span class="label label-success">0</span>':$to_delivery;?></td>
+		<td><?php echo $item->confirmed_quantity;?></td>
+		<td><?php echo $item->confirmed_balance==0?'<span class="label label-success">0</span>':$item->confirmed_balance	;?></td>
 		
 		
 		<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span></td>

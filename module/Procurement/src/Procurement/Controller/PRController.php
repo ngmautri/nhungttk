@@ -615,7 +615,7 @@ class PRController extends AbstractActionController {
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
 		$pr = $this->purchaseRequestTable->getPR ( $pr_id );
-		$pr_items = $this->purchaseRequestItemTable->getItemsByPR ( $pr_id );
+		$pr_items = $this->purchaseRequestItemTable->getItemsByPR2 ( $pr_id );
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
@@ -674,21 +674,32 @@ class PRController extends AbstractActionController {
 		$last_status = $this->params ()->fromQuery ( 'last_status' );
 		$department_id = $this->params ()->fromQuery ( 'department_id' );
 		$balance = $this->params ()->fromQuery ( 'balance' );
+		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
+		$added_delivery_list = $this->params ()->fromQuery ( 'added_delivery_list' );
+		
 		
 		$departments = $this->departmentTable->fetchAll ();
 		
 		if ($balance == null) :
 			$balance = 1;
-		
 		endif;
 		
-		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V1( $department_id, $last_status, $balance, 0, 0 );
+		if ($unconfirmed_quantity == null) :
+			$unconfirmed_quantity = 2;
+		endif;
+		
+		if ($added_delivery_list == null) :
+			$added_delivery_list = 2;
+		endif;
+		
+		
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2( $department_id, $last_status, $balance, $unconfirmed_quantity,$added_delivery_list,0, 0 );
 		$totalResults = count ( $pr_items );
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V1 ( $department_id, $last_status, $balance, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance,$unconfirmed_quantity, $added_delivery_list,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -699,6 +710,9 @@ class PRController extends AbstractActionController {
 				'departments' => $departments,
 				'last_status' => $last_status,
 				'balance' => $balance,
+				'unconfirmed_quantity' => $unconfirmed_quantity,
+				'added_delivery_list' => $added_delivery_list,
+				
 				'department_id' => $department_id,
 				'paginator' => $paginator,
 				'total_items' => $totalResults 

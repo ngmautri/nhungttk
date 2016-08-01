@@ -110,7 +110,7 @@ if ($total_spareparts <= 0) {
 					</ul>
 				</div>
 				<div style="color: gray;">
-				Code: <?php echo $this->escapeHtml($a['code']);?><br>
+				Code: <span id="<?php echo $this->escapeHtml($a['id']);?>_code"><?php echo $this->escapeHtml($a['code']);?></span><br>
 				Location: <?php echo $this->escapeHtml($a['location']);?>
 				</div>
 
@@ -216,6 +216,23 @@ if ($total_spareparts <= 0) {
 							value="article">
 					</div>
 				</div>
+	
+				<div class="control-group">
+					<label class="control-label" for="inputTag">Code:</label>
+					<div class="controls">
+						<input type="text" id="item_code" placeholder="" name="code"
+							value="">
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="inputTag">Unit:</label>
+					<div class="controls">
+						<input type="text" id="item_unit" placeholder="" name="unit"
+							value="">
+					</div>
+				</div>
+				
 
 				<div class="control-group">
 					<label class="control-label" for="inputTag">Quantity:</label>

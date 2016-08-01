@@ -615,14 +615,38 @@ class PRController extends AbstractActionController {
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
 		$pr = $this->purchaseRequestTable->getPR ( $pr_id );
-		$pr_items = $this->purchaseRequestItemTable->getItemsByPR2 ( $pr_id );
+		
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
+		$added_delivery_list = $this->params ()->fromQuery ( 'added_delivery_list' );
+		
+		
+		if ($balance == null) :
+			$balance = 2;
+		endif;
+		
+		if ($unconfirmed_quantity == null) :
+		$unconfirmed_quantity = 2;
+		endif;
+		
+		if ($added_delivery_list == null) :
+		$added_delivery_list = 2;
+		endif;
+		
+		
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V3( $pr_id,$balance,$unconfirmed_quantity,$added_delivery_list,0,0);
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
 				'user' => $user,
 				'errors' => null,
 				'pr' => $pr,
-				'pr_items' => $pr_items 
+				'pr_items' => $pr_items,
+				'paginator'=>null,
+				'balance' => $balance,
+				'unconfirmed_quantity' => $unconfirmed_quantity,
+				'added_delivery_list' => $added_delivery_list,
+				
 		) );
 	}
 	
@@ -742,7 +766,8 @@ class PRController extends AbstractActionController {
 				
 				$input->priority = $request->getPost ( 'priority' );
 				$input->name = $request->getPost ( 'name' );
-				
+				$input->code = $request->getPost ( 'code' );
+			
 				$input->quantity = $request->getPost ( 'quantity' );
 				$input->EDT = $request->getPost ( 'EDT' );
 				$input->unit = $request->getPost ( 'unit' );

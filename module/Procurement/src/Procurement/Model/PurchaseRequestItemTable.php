@@ -915,6 +915,8 @@ Where 1
 select
 	mla_purchase_request_items.*,
 	mla_purchase_requests.pr_number,
+    mla_purchase_requests.auto_pr_number as pr_auto_number,
+			
     mla_purchase_requests.name as pr_name,
 	mla_purchase_requests.description as pr_description,
     mla_purchase_requests.requested_by as pr_requested_by,
@@ -1919,7 +1921,7 @@ on TT1.purchase_request_id = TT3.id";
 			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.unconfimed_quantity,0)) > 0";
 		}
 		
-		// unconfirmed
+		// added into delivery list
 		if ($added_delivery_list == 0) {
 			$sql = $sql. " AND (ifnull(mla_delivery_cart.total_saved_delivered_quantity,0)) = 0";
 		}
@@ -1927,6 +1929,73 @@ on TT1.purchase_request_id = TT3.id";
 			$sql = $sql. " AND (ifnull(mla_delivery_cart.total_saved_delivered_quantity,0)) > 0";
 		}
 		
+	
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+	
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+	
+		//echo ($sql);
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	/**
+	 * 
+	 * @param unknown $pr_id
+	 * @param unknown $balance
+	 * @param unknown $unconfirmed_quantity
+	 * @param unknown $added_delivery_list
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getPRItemsWithLastDN_V3($pr_id,$balance,$unconfirmed_quantity,$added_delivery_list,$limit,$offset) {
+			
+		$adapter = $this->tableGateway->adapter;
+		$sql = $this->getPRItemsWithDN_SQL_V2;
+	
+	
+		$sql = $sql. " AND mla_purchase_requests.pr_last_status IS NOT NULL";
+	
+		if ($pr_id > 0) {
+			$sql = $sql. " AND mla_purchase_request_items.purchase_request_id = " . $pr_id;
+		}
+	
+		if ($balance == 0) {
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)) = 0";
+		}
+		if ($balance ==1) {
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)) > 0";
+		}
+		if ($balance ==-1) {
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)) < 0";
+		}
+	
+		// unconfirmed
+		if ($unconfirmed_quantity == 0) {
+			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.unconfimed_quantity,0)) = 0";
+		}
+		if ($unconfirmed_quantity ==1) {
+			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.unconfimed_quantity,0)) > 0";
+		}
+	
+		// unconfirmed
+		if ($added_delivery_list == 0) {
+			$sql = $sql. " AND (ifnull(mla_delivery_cart.total_saved_delivered_quantity,0)) = 0";
+		}
+		if ($added_delivery_list ==1) {
+			$sql = $sql. " AND (ifnull(mla_delivery_cart.total_saved_delivered_quantity,0)) > 0";
+		}
+	
 	
 		if ($limit > 0) {
 			$sql = $sql. " LIMIT " . $limit;

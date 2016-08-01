@@ -751,7 +751,9 @@ function selectVendor(id, name, tag) {
 function openPRCart(ID) {
 	var item_name_id;
 	var item_unit_id;
+	var item_code_id;
 	item_name_id = '#' + ID + '_name';
+	item_code_id = '#' + ID + '_code';
 	item_unit_id = '#' + ID + '_unit';
 
 	$('#end_date').val("");
@@ -759,6 +761,7 @@ function openPRCart(ID) {
 	$('#item_remarks').val("");
 
 	$('#item_name').val($(item_name_id).text());
+	$('#item_code').val($(item_code_id).text());
 	$('#item_unit').val($(item_unit_id).text());
 
 	$('#item_id').val(ID);
@@ -772,6 +775,7 @@ function addItemToCart(type) {
 	$('#myModal1').modal();
 
 	var item_name;
+	var item_code;
 	var item_priority;
 	var item_edt;
 	var item_unit;
@@ -782,6 +786,7 @@ function addItemToCart(type) {
 	ID = $('#item_id').val();
 	item_name = $('#item_name').val();
 	item_unit = $('#item_unit').val();
+	item_code = $('#item_code').val();
 	item_priority = $('#item_priority').val();
 
 	item_edt = $('#end_date').val();
@@ -794,6 +799,7 @@ function addItemToCart(type) {
 		item_type : type,
 		priority : item_priority,
 		name : item_name,
+		code : item_code,
 		unit:item_unit,
 		quantity : item_quantity,
 		EDT : item_edt,

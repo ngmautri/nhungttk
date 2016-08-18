@@ -15,6 +15,8 @@ use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
+use Zend\Http\Headers;
+
 use MLA\Paginator;
 use MLA\Files;
 use Inventory\Model\SparepartPicture;
@@ -90,22 +92,24 @@ class ReportController extends AbstractActionController {
 				// fputs($fh, implode($l, ',')."\n");
 			}
 			
-			$fileName = 'report.csv';
+			$fileName = 'report-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
 			fseek ( $fh, 0 );
 			$output = stream_get_contents ( $fh );
 			// file_put_contents($fileName, $output);
-			
+				
 			$response = $this->getResponse ();
-			$headers = $response->getHeaders ();
-			
+			$headers = new Headers();
+				
 			$headers->addHeaderLine ( 'Content-Type: text/csv' );
-			
-			$headers->addHeaderLine ( 'Content-Disposition: attachment; "' . $fileName . '"' );
+			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+				
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
 			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
 			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
 			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
-			
-			// $output = fread($fh, 8192);
+				
+			//$response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+			$response->setHeaders($headers);
 			$response->setContent ( $output );
 			
 			fclose ( $fh );

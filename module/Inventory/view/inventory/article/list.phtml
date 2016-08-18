@@ -28,15 +28,14 @@ if ($total_articles <= 0) {
 	
 ?>
 
-<table class="pure-table pure-table-bordered">
+<table class="table table-striped table-bordered">
 <thead>
 	<tr>
+		<td><b>Picture</b></td>
 		<td><b>Name</b></td>
 		<!-- td><b>Name-LA</b></td> -->
-		<td ><b data-toggle="tooltip" title = "Balance">Bal.</b></td>	
-		<td><b>Code</b></td>
-		<td><b>Unit</b></td>
-		<td><b>Remark</b></td>
+		<td ><b data-toggle="tooltip" title = "Balance">Current <br> Balance</b></td>	
+			<td><b>Remark</b></td>
 		<td><b>Action</b></td>
 	</tr>
 </thead>
@@ -48,14 +47,60 @@ if ($total_articles <= 0) {
 	 $count = 0;
 	 foreach ($articles as $a) : 
 	 	 $count++;
-	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
+	 		//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
 	 
 	 	 
 	 ?>
 	 
+	 <tr>
+	 	<td>
+			<?php 
+			if($a->article_pic_id!==null):
+			?>
+			<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a['id']);?>">
+			<img class= "img-rounded" width="80" height="80" src="/inventory/image/articlethumbnail200?id=<?php echo $a->article_pic_id;?>"/>
+		</a>			
+			<?php 
+			else:
+			?>
+			<img class= "img-rounded" width="70" height="70" src="/images/no-pic.jpg"/>
+				
+			<?php 
+			endif;
+			?>
+			
+			</td>
 	 
-		<td><span id="<?php echo $this->escapeHtml($a->id);?>_name"><?php echo $this->escapeHtml($a->name);?></span>
+	 
+		<td>
+		
+		<div class="dropdown">
+					<a style="" class="dropdown-toggle" type="button" data-toggle="dropdown"
+						href="#"><span style="color:black;" id="<?php echo $this->escapeHtml($a['id']);?>_name"><b><?php echo $this->escapeHtml($a['name']);?></b></span>
+						<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li>	<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>">Edit</a>
+
+						</li>
+						<li>		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a>
+	
+						</li>
+ 						<li class="divider"></li>
+ 						<li><a
+							href="<?php echo $this->baseUrl ?>/inventory/article/upload-picture1?id=<?php echo $this->escapeHtml($a['id']);?>">Upload Picture</a>
+						</li>
+ 	
+ 							<li class="divider"></li>
+ 						<li><a
+				href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a['id']);?>">Stock movement</a>
+						</li>
+						</ul>
+				</div>
+		<div style="color: gray;">
+				Code: <span id="<?php echo $this->escapeHtml($a->id);?>_code"><?php echo $this->escapeHtml($a->code);?></span><br>
+				Unit: <span id="<?php echo $this->escapeHtml($a->id);?>_unit"><?php echo $this->escapeHtml($a->unit);?></span>
+				</div>
+		
 		</td>
 		
 		<td>
@@ -65,8 +110,6 @@ if ($total_articles <= 0) {
 		
 		
 		<!-- <td><?php echo$this->escapeHtml($a->name_local);?> -->
-		<td><span id="<?php echo $this->escapeHtml($a->id);?>_code"><?php echo $this->escapeHtml($a->code);?></span></td> 
-		<td><span id="<?php echo $this->escapeHtml($a->id);?>_unit"><?php echo $this->escapeHtml($a->unit);?></span></td>
 		<td><?php echo $this->escapeHtml($a->remarks);?> </td>
 		 
 		<td>
@@ -74,8 +117,6 @@ if ($total_articles <= 0) {
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/receive?article_id=<?php echo $this->escapeHtml($a->id);?>">Receive</a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($a->id);?>">Issue</a>
 	
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>">Edit</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a>
 		
 		</td>
 	</tr>

@@ -574,6 +574,96 @@ class ArticleController extends AbstractActionController {
 	}
 	
 	/**
+	 * 
+	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+	 */
+	public function uploadPicture1Action() {
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+	
+		if ($request->isPost ()) {
+				
+			$pictures = $_POST ['pictures'];
+			$id = $_POST ['article_id'];
+				
+			foreach ( $pictures as $p ) {
+	
+				$filetype = $p [0];
+				if (preg_match ( '/(jpg|jpeg)$/', $filetype )) {
+					$ext = 'jpg';
+				} else if (preg_match ( '/(gif)$/', $filetype )) {
+					$ext = 'gif';
+				} else if (preg_match ( '/(png)$/', $filetype )) {
+					$ext = 'png';
+				}
+	
+				$tmp_name = md5 ( $id . uniqid ( microtime () ) ) . '.' . $ext;
+	
+				// remove "data:image/png;base64,"
+				$uri = substr ( $p [1], strpos ( $p [1], "," ) + 1 );
+	
+				// save to file
+				file_put_contents ( $tmp_name, base64_decode ( $uri ) );
+	
+				$checksum = md5_file ( $tmp_name );
+	
+				$root_dir = $this->articleService->getPicturesPath ();
+	
+				$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+				$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
+	
+				if (! $this->articlePictureTable->isChecksumExits ( $id, $checksum )) {
+					$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+						
+					$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+						
+					if (! is_dir ( $folder )) {
+						mkdir ( $folder, 0777, true ); // important
+					}
+						
+					rename ( $tmp_name, "$folder/$name" );
+						
+					// add pictures
+					$pic = new ArticlePicture ();
+					$pic->url = "$folder/$name";
+					$pic->filetype = $filetype;
+					$pic->article_id = $id;
+					$pic->filename = "$name";
+					$pic->folder = "$folder";
+					$pic->checksum = $checksum;
+					
+					$this->articlePictureTable->add ( $pic );
+						
+					// trigger uploadPicture
+					$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+							'picture_name' => $name,
+							'pictures_dir' => $folder
+					) );
+				}
+			}
+				
+			$data = array ();
+			$data ['id'] = $id;
+			// $data['filetype'] = $filetype;
+				
+			$response = $this->getResponse ();
+			$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+			$response->setContent ( json_encode ( $data ) );
+			return $response;
+		}
+	
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$article = $this->articleTable->get ( $id );
+	
+		return new ViewModel ( array (
+				'article' => $article,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null
+		) );
+	}
+	
+	/**
 	 * List all articles Ò usser
 	 */
 	public function listAction() {
@@ -581,7 +671,7 @@ class ArticleController extends AbstractActionController {
 		$user = $this->userTable->getUserByEmail ( $identity );
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 18;
+			$resultsPerPage = 15;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
@@ -598,13 +688,13 @@ class ArticleController extends AbstractActionController {
 		$user = $this->userTable->getUserByEmail ( $identity );
 		$user_id = $user ['id'];
 		
-		$articles = $this->articleTable->getArticles ( $user_id, 0, 0 );
+		$articles = $this->articleTable->getArticles_V01( $user_id, 0, 0 );
 		$totalResults = $articles->count ();
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$articles = $this->articleTable->getArticles ( $user_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$articles = $this->articleTable->getArticles_V01 ( $user_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (

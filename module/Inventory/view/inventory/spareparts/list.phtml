@@ -12,8 +12,14 @@
 			
     </ul>
   </div>
+  
+  
+ 
 <hr>
-
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
 <ul class="nav nav-pills">
 	<li><a
 		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>">Add

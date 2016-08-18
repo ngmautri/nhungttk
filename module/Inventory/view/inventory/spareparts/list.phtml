@@ -116,8 +116,8 @@ if ($total_spareparts <= 0) {
 					</ul>
 				</div>
 				<div style="color: gray;">
-				Code: <?php echo $this->escapeHtml($a['code']);?><br>
-				Location: <?php echo $this->escapeHtml($a['location']);?>
+					Code: <span id="<?php echo $this->escapeHtml($a['id']);?>_code"><?php echo $this->escapeHtml($a['code']);?></span><br>
+					Location: <?php echo $this->escapeHtml($a['location']);?>
 				<div style="color: gray;">
 				Category:<a style="font-size 8pt;color: black;" href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($a['sparepart_cat_id']);?>" target="_blank"><?php echo $this->escapeHtml($a['cat_name']);?></a>
 				</div>

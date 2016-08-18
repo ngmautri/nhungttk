@@ -18,7 +18,11 @@
 	<li><a
 		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>">Add
 			New Spare-part</a></li>
+			
+			<li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list?output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
+</li>
 </ul>
+
 
 
 <?php
@@ -108,13 +112,16 @@ if ($total_spareparts <= 0) {
 				<div style="color: gray;">
 				Code: <?php echo $this->escapeHtml($a['code']);?><br>
 				Location: <?php echo $this->escapeHtml($a['location']);?>
+				<div style="color: gray;">
+				Category:<a style="font-size 8pt;color: black;" href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($a['sparepart_cat_id']);?>"><?php echo $this->escapeHtml($a['cat_name']);?></a>
+				</div>
 				</div>
 
 			</td>
 			
 			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->current_balance;?>
 		</a></td>
-			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->mininum_balance;?>
+			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->minimum_balance;?>
 		</a></td>
 
 

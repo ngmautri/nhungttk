@@ -141,11 +141,102 @@ class SparepartCategoryMemberTable {
             WHERE 1
 	";
 	
+	private $getAllSP_SQL ="
+				           select 
+				mla_sparepart_cats.sparepart_cat_id as sparepart_cat_id,
+                mla_sparepart_cats.name as cat_name,
+				mla_spareparts.*,
+                ifnull(mla_spareparts_inflow.total_inflow,0) as total_inflow,
+				ifnull(mla_spareparts_outflow.total_outflow,0) as total_outflow,
+				(ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) as current_balance,
+				ifnull(mla_sparepart_minimum_balance.minimum_balance,0) as minimum_balance,
+                mla_sparepart_pics.id as sp_pic_id,
+                mla_sparepart_pics.filename,
+                mla_sparepart_pics.url,
+                mla_sparepart_pics.folder
+			from mla_spareparts
+
+			/* inflow*/
+			left join
+			(
+				select  
+					mla_spareparts.id, 
+					SUM(mla_sparepart_movements.quantity) AS total_inflow
+				from mla_spareparts 
+				LEFT JOIN mla_sparepart_movements 
+				on mla_sparepart_movements.sparepart_id = mla_spareparts.id 
+				where mla_sparepart_movements.flow = 'IN' 
+				GROUP BY mla_sparepart_movements.sparepart_id
+			) as mla_spareparts_inflow
+			on mla_spareparts_inflow.id = mla_spareparts.id
+
+			/* outflow*/
+			left join
+			(
+				select  
+				mla_spareparts.id, 
+				SUM(mla_sparepart_movements.quantity) AS total_outflow
+				from mla_spareparts 
+				LEFT JOIN mla_sparepart_movements 
+				on mla_sparepart_movements.sparepart_id = mla_spareparts.id 
+				where mla_sparepart_movements.flow = 'OUT' 
+				GROUP BY mla_sparepart_movements.sparepart_id
+			) 
+			as mla_spareparts_outflow
+			on mla_spareparts_outflow.id = mla_spareparts.id
+
+			/*minimum_balance*/
+			left join mla_sparepart_minimum_balance
+			on mla_sparepart_minimum_balance.sparepart_id =  mla_spareparts.id
+            
+			/*picture*/
+            left join 
+            (
+	            select
+				*
+				from 
+                (
+                select * from
+					mla_sparepart_pics
+                    order by mla_sparepart_pics.uploaded_on desc
+                )
+                as mla_sparepart_pics
+				group by mla_sparepart_pics.sparepart_id
+            )
+            as mla_sparepart_pics
+            on mla_sparepart_pics.sparepart_id = mla_spareparts.id
+
+            
+			/* sp_cat*/
+           left join 
+		   (
+			   select
+				mla_sparepart_cats.name,
+				mla_sparepart_cats_members.sparepart_id,
+				mla_sparepart_cats_members.sparepart_cat_id
+				from mla_sparepart_cats
+				left join mla_sparepart_cats_members
+				on mla_sparepart_cats_members.sparepart_cat_id = mla_sparepart_cats.id
+			)
+            as mla_sparepart_cats
+            
+            on mla_sparepart_cats.sparepart_id = mla_spareparts.id
+            WHERE 1
+ 			";
+	
+	
 	private $getTotalCatMembers_SQL = "
-	select 
-	count(*) as total_members
-	from mla_sparepart_cats_members
-	where 1 	
+		select 
+		count(*) as total_members
+		from mla_sparepart_cats_members
+		where 1 	
+	";
+	
+	private $getTotalSP_SQL = "
+		select 
+		count(*) as total_sp
+		from mla_spareparts
+		where 1 	
 	";
 	
 	protected $tableGateway;
@@ -327,6 +418,28 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 		return (int)$resultSet->current()->total_members;
 	}
 	
+	/**
+	 *
+	 * @param unknown $id
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getTotalSP()
+	{
+	
+		$sql = $this->getTotalSP_SQL;
+	
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return (int)$resultSet->current()->total_sp;
+	}
+	
 	
 	/**
 	 *
@@ -354,6 +467,37 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 			$sql = $sql. " OFFSET " . $offset;
 		}
 		
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return $resultSet;
+	}
+	
+	/**
+	 * 
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getAllSP($limit,$offset)
+	{
+	
+		$sql = $this->getAllSP_SQL;
+	
+		
+	
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+	
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+	
 		$adapter = $this->tableGateway->adapter;
 		$statement = $adapter->query($sql);
 	

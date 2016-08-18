@@ -15,6 +15,8 @@ use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
+use Zend\Http\Headers;
+
 use MLA\Paginator;
 use MLA\Files;
 use Inventory\Model\SparepartPicture;
@@ -702,6 +704,82 @@ class SparepartsController extends AbstractActionController {
 	 * List all spare parts
 	 */
 	public function listAction() {
+		$output = $this->params ()->fromQuery ( 'output' );
+		
+		if ($output === 'csv') {
+			
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+			
+			$h = array ();
+			$h [] = "CAGEGORY";
+			$h [] = "TAG";
+			$h [] = "NAME";
+			$h [] = "CODE";
+			$h [] = "LOCATION";
+			$h [] = "TOTAL IN";
+			$h [] = "TOTAL OUT";
+			$h [] = "CURRENT BALANCE";
+			$h [] = "MIN. BALANCE";
+			
+			$delimiter = ";";
+			
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+			
+			$spareparts = $this->sparePartCategoryMemberTable->getAllSP ( 0, 0 );
+			
+			foreach ( $spareparts as $m ) {
+				$l = array ();
+				$l [] = ( string ) $m->cat_name;
+				$l [] = ( string ) '"' . $m->tag . '"';
+				
+				$name = ( string ) $m->name;
+				
+				$name === '' ? $name = "-" : $name;
+				
+				$name = str_replace ( ',', '', $name );
+				$name = str_replace ( ';', '', $name );
+				
+				$l [] = $name;
+				$l [] = ( string ) $m->code;
+				$l [] = ( string ) $m->location;
+				$l [] = ( string ) $m->total_inflow;
+				$l [] = ( string ) $m->total_outflow;
+				$l [] = ( string ) $m->current_balance;
+				$l [] = ( string ) $m->minimum_balance;
+				
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+			
+			$fileName = 'spareparts-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+			
+			$response = $this->getResponse ();
+			$headers = new Headers();
+			
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+			
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+			
+			//$response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+			$response->setHeaders($headers);
+			// $output = fread($fh, 8192);
+			
+			$response->setContent ( $output );
+			
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
+		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 15;
 		} else {
@@ -713,15 +791,14 @@ class SparepartsController extends AbstractActionController {
 		} else {
 			$page = $this->params ()->fromQuery ( 'page' );
 		}
-		
-		$totalResults =  $this->sparePartCategoryMemberTable->getTotalMembersOfCatID(0);
+		$totalResults = $this->sparePartCategoryMemberTable->getTotalSP ();
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( 0, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
-		}else{
-			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( 0, 0, 0 );
+			$spareparts = $this->sparePartCategoryMemberTable->getAllSP ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		} else {
+			$spareparts = $this->sparePartCategoryMemberTable->getAllSP ( 0, 0 );
 		}
 		
 		return new ViewModel ( array (
@@ -792,12 +869,10 @@ class SparepartsController extends AbstractActionController {
 		return $viewModel;
 	}
 	/**
-	 * 
 	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function showCategoryAction() {
-			
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 15;
 		} else {
@@ -813,13 +888,13 @@ class SparepartsController extends AbstractActionController {
 		$id = $this->params ()->fromQuery ( 'id' );
 		
 		$category = $this->sparePartCategoryTable->get ( $id );
-		$totalResults =  $this->sparePartCategoryMemberTable->getTotalMembersOfCatID( $id);
+		$totalResults = $this->sparePartCategoryMemberTable->getTotalMembersOfCatID ( $id );
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
 			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
-		}else{
+		} else {
 			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
 		}
 		
@@ -835,9 +910,7 @@ class SparepartsController extends AbstractActionController {
 	 * Show detail of a spare parts
 	 */
 	public function showAction() {
-		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$sp = $this->sparePartTable->get ( $id );
@@ -855,31 +928,30 @@ class SparepartsController extends AbstractActionController {
 				'outflow' => $outflow,
 				'instock' => $instock,
 				'categories' => $categories,
-				'redirectUrl' => $redirectUrl,
-				
-		) );
+				'redirectUrl' => $redirectUrl 
+		)
+		 );
 	}
 	
 	/**
 	 * Show detail of a spare parts
 	 */
 	public function showPicturesAction() {
-	
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$sp = $this->sparePartTable->get ( $id );
 		$pictures = $this->sparePartPictureTable->getSPPicturesById ( $id );
-	
+		
 		return new ViewModel ( array (
 				'sparepart' => $sp,
 				'pictures' => $pictures,
-				'redirectUrl' => $redirectUrl,
-
-		) );
+				'redirectUrl' => $redirectUrl 
+		)
+		 );
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function picturesAction() {
@@ -894,7 +966,7 @@ class SparepartsController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
 	 */
 	public function showMovementAction() {

@@ -22,7 +22,7 @@
    </form>
 <ul class="nav nav-pills">
 	<li><a
-		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>">Add
+		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add
 			New Spare-part</a></li>
 			
 			<li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list?output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
@@ -53,8 +53,8 @@ if ($total_spareparts <= 0) {
 			<td><b>PICTURE</b></td>
 			<td><b>TAG</b></td>
 			<td><b>SPARE-PART NAME</b></td>
-			<td><b data-toggle="tooltip" title="Current Balance">Cur.Bal.</b></td>
-			<td><b data-toggle="tooltip" title="Minimum Balance">Min.Bal.</b></td>
+			<td><b data-toggle="tooltip" title="Current Balance">Current <br> Balance</b></td>
+			<td><b data-toggle="tooltip" title="Minimum Balance">Minimum <br> Balance</b></td>
 			<td><b>ACTION</b></td>
 		</tr>
 	</thead>
@@ -73,12 +73,12 @@ if ($total_spareparts <= 0) {
 			if($a->sp_pic_id!==null):
 			?>
 			<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-			<img class= "img-rounded" width="80" height="80" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"/>
+			<img class= "img-rounded" width="90" height="100" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"/>
 		</a>			
 			<?php 
 			else:
 			?>
-			<img class= "img-rounded" width="70" height="70" src="/images/no-pic.jpg"/>
+			<img class= "img-rounded" width="70" height="80" src="/images/no-pic.jpg"/>
 				
 			<?php 
 			endif;

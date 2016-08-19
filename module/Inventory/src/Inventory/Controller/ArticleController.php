@@ -15,6 +15,8 @@ use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
+use Zend\Http\Headers;
+
 use MLA\Paginator;
 use MLA\Files;
 use Inventory\Model\Article;
@@ -667,8 +669,95 @@ class ArticleController extends AbstractActionController {
 	 * List all articles Ò usser
 	 */
 	public function listAction() {
+			
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
+		$user_id = $user ['id'];
+		
+		
+		$output = $this->params ()->fromQuery ( 'output' );
+		
+		
+		if ($output === 'csv') {
+				
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+				
+			$h = array ();
+			$h [] = "Item SKU";
+			$h [] = "Item Name";
+			$h [] = "Item Name (LA)";
+			$h [] = "Description";
+			$h [] = "Keywords";
+			$h [] = "Type";
+			$h [] = "Unit";
+			$h [] = "Item Code";
+			$h [] = "Item BarCode";
+			$h [] = "Current Balace";
+			$h [] = "Department Name";
+			$h [] = "Remarks	";
+				
+			$delimiter = ";";
+				
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+				
+			$articles = $this->articleTable->getArticles_V01( $user_id, 0, 0 );
+				
+			foreach ( $articles as $m ) {
+				$l = array ();
+				$l [] = ( string ) $m->article_tag;
+				
+				$name = ( string ) $m->name;
+		
+				$name === '' ? $name = "-" : $name;
+		
+				$name = str_replace ( ',', '', $name );
+				$name = str_replace ( ';', '', $name );
+		
+				$l [] = $name;
+				$l [] = ( string ) $m->name_local;
+				
+				$l [] = ( string ) $m->description;
+				$l [] = ( string ) $m->keywords;
+				$l [] = ( string ) $m->type;
+				$l [] = ( string ) $m->unit;
+				$l [] = ( string ) $m->code;
+				$l [] = ( string ) $m->barcode;
+				$l [] = ( string ) $m->article_balance;
+				$l [] = ( string ) $m->department_name;
+				$l [] = ( string ) $m->remarks;
+		
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+				
+			$fileName = 'items-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+				
+			$response = $this->getResponse ();
+			$headers = new Headers();
+				
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+				
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+				
+			//$response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+			$response->setHeaders($headers);
+			// $output = fread($fh, 8192);
+				
+			$response->setContent ( $output );
+				
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 15;
@@ -684,9 +773,6 @@ class ArticleController extends AbstractActionController {
 		}
 		;
 		
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
-		$user_id = $user ['id'];
 		
 		$articles = $this->articleTable->getArticles_V01( $user_id, 0, 0 );
 		$totalResults = $articles->count ();

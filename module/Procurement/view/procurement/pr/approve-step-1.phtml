@@ -59,8 +59,7 @@ echo '<div class="alert alert-info">';
 			<td><b data-toggle="tooltip" title="Free">Free</b></td>
 			<td><b data-toggle="tooltip" title="Unconfirmed Quantity">Notified<br> Quantity</b></td>
 			<td><b>EDT</b></td>
-			<td><b>Last Vendor</b></td>
-			<td><b>Last Price</b></td>
+			<td><b>Last Purchase</b></td>
 		</tr>
 	</thead>
 	<tbody>	
@@ -80,8 +79,7 @@ echo '<div class="alert alert-info">';
 						
     <span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="#"><i class="icon-tag"> </i> Process</a></li>
-     	
+	 	
     	<?php if ($item->confirmed_balance > 0) : ?>
    			
    		<?php if ($item->total_saved_delivered_quantity > 0) : ?>
@@ -141,7 +139,7 @@ echo '<div class="alert alert-info">';
 		<?php else: ?>		
 			<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span>
 			<div>
-			<span style="color: gray; font-size: 8pt; font-style: italic; " id="<?php echo $item->id;?>_timer"></span>
+			<span style="color: gray; font-size: 8pt; font-style: italic; vertical-align: center " id="<?php echo $item->id;?>_timer"></span>
 			</div></td>
 		<?php endif; ?>	
 
@@ -156,20 +154,29 @@ echo '<div class="alert alert-info">';
 				href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->sp_vendor_id;?>"
 				target="_blank"><?php echo $item->sp_vendor_name;?></a>
 			<?php endif;?>
-			</td>
-			<td>
-		<?php
+			
+			<br> <span style="font-size: 9pt; font-style: italic;">
+			<?php
 		if ($item->article_id > 0) :
-			echo $item->article_price . ' '. $item->article_currency;;
-		
+			if ($item->article_price > 0) :
+				echo 'Unit price:' . $item->article_price . ' ' . $item->article_currency;
+				;
+				endif;
 		endif;
 		
 		if ($item->sparepart_id > 0) :
-			echo $item->sp_price . ' '. $item->sp_currency;
+			if ($item->sp_price > 0) :
+				echo 'Unit price:' . $item->sp_price . ' ' . $item->sp_currency;
+			
+			endif;
 		
 		endif;
 		?>
+			</span>	
+			
+			
 			</td>
+		
 
 	
 			<script language="javascript">
@@ -226,13 +233,6 @@ echo '<div class="alert alert-info">';
 	}
 	
 	?>
-
-
-
-
-	
-
- 
  
  <?php
 else :

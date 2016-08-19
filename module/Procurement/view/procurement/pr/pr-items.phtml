@@ -14,8 +14,6 @@ if ($status_name == '') :
 	$status_name = ' | PR status = ' . $last_status;
 endif;
 
-
-
 ?>
 
 <div class="panel-group">
@@ -26,11 +24,11 @@ endif;
 				</i> FILTER</a>
 			</h5>
 		</div>
-		
+
 		<div id="collapse1"
 			class="panel-collapse collapse <?php echo count($pr_items)>0?"":"in"?>">
 			<div class="panel-body">
-<hr>
+				<hr>
 				<form class="form-horizontal"
 					action="<?php echo $this->baseUrl ?>/procurement/pr/pr-items"
 					method="get" enctype="multipart/form-data" id="ReportForm">
@@ -81,22 +79,20 @@ endif;
 						<div class="controls">
 							<select name="balance">
 								<option value="2">All</option>
-								<option
-									<?php echo $balance=='0'? "selected='selected'":"";?>
+								<option <?php echo $balance=='0'? "selected='selected'":"";?>
 									value="0">Balance=0</option>
-								<option
-									<?php echo $balance=='1'? "selected='selected'":"";?>
+								<option <?php echo $balance=='1'? "selected='selected'":"";?>
 									value="1">Balance>0</option>
-								<option
-									<?php echo $balance=='-1'? "selected='selected'":"";?>
+								<option <?php echo $balance=='-1'? "selected='selected'":"";?>
 									value="-1">Balance<0 (Some Free)</option>
 
 							</select>
 						</div>
 					</div>
-					
+
 					<div class="control-group">
-						<label class="control-label" for="inputNameLocal">Delivery Notification: </label>
+						<label class="control-label" for="inputNameLocal">Delivery
+							Notification: </label>
 						<div class="controls">
 							<select name="unconfirmed_quantity">
 								<option value="2">All</option>
@@ -106,14 +102,15 @@ endif;
 								<option
 									<?php echo $unconfirmed_quantity=='1'? "selected='selected'":"";?>
 									value="1">sent but unconfirmed</option>
-								
+
 
 							</select>
 						</div>
 					</div>
-					
+
 					<div class="control-group">
-						<label class="control-label" for="inputNameLocal">Added in Delivery List: </label>
+						<label class="control-label" for="inputNameLocal">Added in
+							Delivery List: </label>
 						<div class="controls">
 							<select name="added_delivery_list">
 								<option value="2">All</option>
@@ -158,10 +155,9 @@ endif;
 if (count ( $pr_items ) > 0) :
 	
 	if (! is_null ( $paginator )) :
-		echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_items . ' Items found | Deparment = ' . $department_name . '' . $status_name . 
-		' | '. $balance . ' | ' . $unconfirmed_quantity. '</h5>';
+		echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_items . ' Items found | Deparment = ' . $department_name . '' . $status_name . ' | ' . $balance . ' | ' . $unconfirmed_quantity . '</h5>';
 	 else :
-		echo '<h5>' . $total_items . ' Items found | Deparment = ' . $department_name . '' . $status_name . ' | '. $balance . ' | ' . $unconfirmed_quantity.'</h5>';
+		echo '<h5>' . $total_items . ' Items found | Deparment = ' . $department_name . '' . $status_name . ' | ' . $balance . ' | ' . $unconfirmed_quantity . '</h5>';
 	endif;
 	?>
 
@@ -172,15 +168,19 @@ if (count ( $pr_items ) > 0) :
 			<td><b>Item Name</b></td>
 			<td><b>PR Number</b></td>
 			<td><b>Unit</b></td>
-			<td><b data-toggle="tooltip" title="Ordred Quantity">Requested <br>Quantity</b></td>
-			<td><b data-toggle="tooltip" title="Delivered Quantity">Delivered<br>Quantity</b></td>
-			<td><b data-toggle="tooltip" title="Rejected Quantity">Rejected <br>Quantity</b></td>
+			<td><b data-toggle="tooltip" title="Ordred Quantity">Requested <br>Quantity
+			</b></td>
+			<td><b data-toggle="tooltip" title="Delivered Quantity">Delivered<br>Quantity
+			</b></td>
+			<td><b data-toggle="tooltip" title="Rejected Quantity">Rejected <br>Quantity
+			</b></td>
 			<td><b data-toggle="tooltip" title="Balance">Balance</b></td>
 			<td><b data-toggle="tooltip" title="Free">Free</b></td>
-			<td><b data-toggle="tooltip" title="Unconfirmed Quantity">Notified<br> Quantity</b></td>
+			<td><b data-toggle="tooltip" title="Unconfirmed Quantity">Notified<br>
+					Quantity
+			</b></td>
 			<td><b>EDT</b></td>
-			<td><b>Last Vendor</b></td>
-			<td><b>Last Price</b></td>
+			<td><b>Last Purchase</b></td>
 		</tr>
 	</thead>
 	<tbody>	
@@ -196,18 +196,20 @@ if (count ( $pr_items ) > 0) :
 			<td>
 				<div class="dropdown">
 					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
-						href="#"><span style="color:black;"><b><?php echo $item->name;?></b></span>
-						
-    <span class="caret"></span></a>
+						href="#"><span style="color: black;"><b><?php echo $item->name;?></b></span>
+
+						<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="#"><i class="icon-tag"> </i> Process</a></li>
-     	
+	    	
     	<?php if ($item->confirmed_balance > 0) : ?>
    			
    		<?php if ($item->total_saved_delivered_quantity > 0) : ?>
-   			<li><a href="/procurement/delivery/review-cart"><i class="icon-check"> </i> Review Delivery	</a></li>	
+   			<li><a href="/procurement/delivery/review-cart"><i
+								class="icon-check"> </i> Review Delivery </a></li>	
     	<?php else: ?>
-    		<li><a href="/procurement/delivery/add-to-cart?pr_item_id=<?php echo $item->id?>"><i class="icon-check"> </i> Delivery</a></li>
+    		<li><a
+							href="/procurement/delivery/add-to-cart?pr_item_id=<?php echo $item->id?>"><i
+								class="icon-check"> </i> Delivery</a></li>
    	
     	<?php endif; ?>
    				
@@ -220,35 +222,32 @@ if (count ( $pr_items ) > 0) :
 		if ($item->article_id > 0) :
 			?>
         <li><a
-							href="/inventory/article/show?id=<?php echo $item->article_id;?>"><i
-								class="icon-list"> </i> Detail</a></li>
+							href="/inventory/article/show?id=<?php echo $item->article_id;?>" target="_blank"><i
+								class="icon-list" > </i> Detail</a></li>
 		<?php endif; ?>
 		
 		 <?php if ($item->sparepart_id > 0) : ?>
      	<li><a
-							href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>"><i
+							href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>" target="_blank"><i
 								class="icon-list"> </i> Detail</a></li>
 		<?php endif; ?>
 	
 		
 		     
          <li><a href="#"><i class="icon-signal"></i> Order History</a></li>
-						<li><a href="#"><i class="icon-film"></i> Picture</a></li>
 					</ul>
 				</div>
-			
-			<div style="color: gray;">
+
+				<div style="color: gray;">
 				Code: <?php echo $this->escapeHtml($item->code);?><br>
 				</div>
 			
 			<td><?php echo $item->pr_number;?>
-			<div style="color: gray; font-size:8pt;">
+			<div style="color: gray; font-size: 8pt;">
 			Dept.:<?php echo $item->pr_of_department;?><br>
 			Priority:<?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. $item->priority .'</span>':$item->priority;?><br>
 			#<?php echo $item->pr_auto_number;?>
-			</div>
-			
-			</td>
+			</div></td>
 
 
 			</td>
@@ -263,43 +262,49 @@ if (count ( $pr_items ) > 0) :
 		<?php if($item->confirmed_balance == 0): ?>
 			<td><?php echo date_format(date_create($item->EDT),"Y-m-d");?>
 			<div>
-			<span class="label label-success">Fulfilled</span>
-			</div>
-			</td>
+					<span class="label label-success">Fulfilled</span>
+				</div></td>
 		<?php else: ?>		
 			<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span>
-			<div>
-			<span style="color: gray; font-size: 8pt; font-style: italic; " id="<?php echo $item->id;?>_timer"></span>
-			</div></td>
+				<div>
+					<span style="color: gray; font-size: 8pt; font-style: italic;"
+						id="<?php echo $item->id;?>_timer"></span>
+				</div></td>
 		<?php endif; ?>	
 
 			<td>
-			<?php if($item->article_id>0): ?>			
+				<?php if($item->article_id>0): ?>			
 <a
 				href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->article_vendor_id;?>"
 				target="_blank"><?php echo $item->article_vendor_name;?></a>
 			<?php endif;?>
+			
 			<?php if($item->sparepart_id>0): ?>			
 <a
 				href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->sp_vendor_id;?>"
 				target="_blank"><?php echo $item->sp_vendor_name;?></a>
 			<?php endif;?>
-			</td>
-			<td>
-		<?php
+			
+			<br> <span style="font-size: 9pt; font-style: italic;">
+			<?php
 		if ($item->article_id > 0) :
-			echo $item->article_price . ' '. $item->article_currency;;
-		
+			if ($item->article_price > 0) :
+				echo 'Unit price:' . $item->article_price . ' ' . $item->article_currency;
+				;
+				endif;
 		endif;
 		
 		if ($item->sparepart_id > 0) :
-			echo $item->sp_price . ' '. $item->sp_currency;
+			if ($item->sp_price > 0) :
+				echo 'Unit price:' . $item->sp_price . ' ' . $item->sp_currency;
+			
+			endif;
 		
 		endif;
 		?>
+			</span>
 			</td>
 
-	
 			<script language="javascript">
 			id_array.push(<?php echo $item->id;?>);
 		</script>
@@ -315,8 +320,7 @@ if (count ( $pr_items ) > 0) :
 	if (! is_null ( $paginator )) {
 		
 		// change it only
-		$base = $this->baseUrl . '/procurement/pr/pr-items?department_id=' . $department_id . '&last_status=' . $last_status
-		. '&balance=' . $balance . '&unconfirmed_quantity=' . $unconfirmed_quantity.'&added_delivery_list=' . $added_delivery_list;
+		$base = $this->baseUrl . '/procurement/pr/pr-items?department_id=' . $department_id . '&last_status=' . $last_status . '&balance=' . $balance . '&unconfirmed_quantity=' . $unconfirmed_quantity . '&added_delivery_list=' . $added_delivery_list;
 		
 		$_connector_symbol = '&';
 		
@@ -362,12 +366,13 @@ if (count ( $pr_items ) > 0) :
 
  
  
+ 
  <?php
-else :
+ 
+ else :
 	echo 'No Items found ...';
 
-
 endif;
- ?>
+?>
  
  

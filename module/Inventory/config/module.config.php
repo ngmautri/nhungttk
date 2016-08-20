@@ -82,6 +82,22 @@ return array (
 						
 		),
 		
+		'console' => array(
+				'router' => array(
+						'routes' => array(									
+								'order_suggestion_console' => array(
+										'options' => array(
+												'route'    => 'suggest',
+												'defaults' => array(
+														'controller' => 'Inventory\Controller\Console',
+														'action'     => 'suggest'
+												)
+										)
+								)
+						)
+				)
+		),
+		
 		
 		
 		'service_manager' => array (
@@ -114,7 +130,7 @@ return array (
 						'Inventory\Controller\Count' => 'Inventory\Controller\CountControllerFactory',
 						'Inventory\Controller\Article' => 'Inventory\Controller\ArticleControllerFactory',
 						'Inventory\Controller\Search' => 'Inventory\Controller\SearchControllerFactory',
-						
+						'Inventory\Controller\Console' => 'Inventory\Controller\ConsoleControllerFactory',
 				)
 				
 				

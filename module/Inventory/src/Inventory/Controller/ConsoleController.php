@@ -122,7 +122,7 @@ class ConsoleController extends AbstractActionController {
 <p>Below is the sugguestion for ordering of spare parts!</p>
 <p> Please click <a href="http://laosit02/">http://laosit02/</a> to make order</p>
 
-$details
+
 <p>
 Regards,<br/>
 MLA Team

@@ -75,7 +75,7 @@ class ConsoleController extends AbstractActionController {
 		}
 		
 	
-		 $spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion (0,0);
+		 $spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion (15,0);
 		 
 		 $details = '
 				<table  style="font-size:10pt; border-spacing: 1px; padding:3px; border: 1px solid #cbcbcb;display: block;white-space: nowrap">';
@@ -120,8 +120,9 @@ class ConsoleController extends AbstractActionController {
 		 
 <p>Hello,</p>		 
 <p>Below is the sugguestion for ordering of spare parts!</p>
-<p> Please click <a href="http://laosit02/">http://laosit02/</a> to make order</p>
+<p> Please click <a href="http://laosit02/">http://laosit02/</a> for more detail!</p>
 
+$details
 
 <p>
 Regards,<br/>

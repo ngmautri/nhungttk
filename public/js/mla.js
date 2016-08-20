@@ -876,9 +876,14 @@ function openPRCart(ID) {
 	var item_name_id;
 	var item_unit_id;
 	var item_code_id;
+	var item_current_balance_id;
+	var item_min_balance_id;
+	
 	item_name_id = '#' + ID + '_name';
 	item_code_id = '#' + ID + '_code';
 	item_unit_id = '#' + ID + '_unit';
+	item_current_balance_id = '#' + ID + '_current_balance';
+	item_min_balance_id = '#' + ID + '_min_balance';
 
 	$('#end_date').val("");
 	$('#item_quantity').val("").select();
@@ -887,6 +892,8 @@ function openPRCart(ID) {
 	$('#item_name').val($(item_name_id).text());
 	$('#item_code').val($(item_code_id).text());
 	$('#item_unit').val($(item_unit_id).text());
+	
+	$('#item_balance').html('<span style="font-size 6px;"> Current Balance:' + $(item_current_balance_id).text() + '; Minimum Balance:' + $(item_min_balance_id).text()+ '</span>');
 
 	$('#item_id').val(ID);
 	$('#myModal').modal();

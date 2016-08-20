@@ -102,7 +102,8 @@ class Module {
 				'user_register',
 				'test_console',
 				'user_register_confirmation',
-				'access_denied' 
+				'access_denied',
+				'order_suggestion_console'
 		) )) {
 			return;
 		}
@@ -223,7 +224,8 @@ class Module {
 				'user_register',
 				'test_console',
 				'user_register_confirmation',
-				'access_denied' 
+				'access_denied',
+				'order_suggestion_console',
 		) )) {
 			return;
 		}

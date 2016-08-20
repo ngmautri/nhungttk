@@ -75,6 +75,7 @@ class SparepartCategoryMemberTable {
 				ifnull(mla_spareparts_outflow.total_outflow,0) as total_outflow,
 				(ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) as current_balance,
 				ifnull(mla_sparepart_minimum_balance.minimum_balance,0) as mininum_balance,
+				((ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) - ifnull(mla_sparepart_minimum_balance.minimum_balance,0)) as remaining_to_order,
                 mla_sparepart_pics.id as sp_pic_id,
                 mla_sparepart_pics.filename,
                 mla_sparepart_pics.url,
@@ -150,6 +151,7 @@ class SparepartCategoryMemberTable {
 				ifnull(mla_spareparts_outflow.total_outflow,0) as total_outflow,
 				(ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) as current_balance,
 				ifnull(mla_sparepart_minimum_balance.minimum_balance,0) as minimum_balance,
+				((ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) - ifnull(mla_sparepart_minimum_balance.minimum_balance,0)) as remaining_to_order,
                 mla_sparepart_pics.id as sp_pic_id,
                 mla_sparepart_pics.filename,
                 mla_sparepart_pics.url,
@@ -238,6 +240,20 @@ class SparepartCategoryMemberTable {
 		from mla_spareparts
 		where 1 	
 	";
+	
+	private $getTotalSPHavingMinBalance_SQL = "
+			select 
+				count(*)as total_sp
+			from mla_spareparts
+
+			/*minimum_balance*/
+			left join mla_sparepart_minimum_balance
+			on mla_sparepart_minimum_balance.sparepart_id =  mla_spareparts.id
+            
+		    WHERE 1
+            and mla_sparepart_minimum_balance.minimum_balance >0
+			
+			";
 	
 	protected $tableGateway;
 	
@@ -508,6 +524,58 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 		return $resultSet;
 	}
 	
+	/**
+	 * 
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getOrderSuggestion($limit,$offset)
+	{
+	
+		$sql = $this->getAllSP_SQL;
+		$sql = $sql . " AND mla_sparepart_minimum_balance.minimum_balance >0";
+		$sql = $sql . " Order by ((ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) - ifnull(mla_sparepart_minimum_balance.minimum_balance,0)) ";
+		
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+	
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+	
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return $resultSet;
+	}
+	
+	/**
+	 *
+	 * @param unknown $id
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getTotalSPHavingMinBalance()
+	{
+	
+		$sql = $this->getTotalSPHavingMinBalance_SQL;
+	
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return (int)$resultSet->current()->total_sp;
+	}
 	
 	/*
 	SELECT * FROM `mla_spareparts` as t1 WHERE t1.id NOT IN 

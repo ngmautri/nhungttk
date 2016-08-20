@@ -9,7 +9,9 @@
 						<li class="divider"></li>
  						<li><a href="/inventory/report/index">Reporting</a>
 						</li>
-			
+					<li class="divider"></li>
+ 						<li><a href="/inventory/spareparts/suggest">Order Suggestion</a>
+						</li>
     </ul>
   </div>
   
@@ -94,6 +96,14 @@ if ($total_spareparts <= 0) {
 					<a style="" class="dropdown-toggle" type="button" data-toggle="dropdown"
 						href="#"><span style="color:black;" id="<?php echo $this->escapeHtml($a['id']);?>_name"><b><?php echo $this->escapeHtml($a['name']);?></b></span>
 						<span class="caret"></span></a>
+						<?php
+						if($a->remaining_to_order <=0):
+			//echo '<div class="alert alert-danger" role="alert">Order now!</div>';
+		echo '<span  class="label label-warning">Please order!</span>';
+		else:
+		
+		endif;
+		?>
 					<ul class="dropdown-menu">
 						<li><a
 							href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $this->escapeHtml($a['id']);?>">Edit</a>

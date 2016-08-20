@@ -811,6 +811,114 @@ class SparepartsController extends AbstractActionController {
 	/**
 	 * List all spare parts
 	 */
+	public function suggestAction() {
+		$output = $this->params ()->fromQuery ( 'output' );
+	
+		if ($output === 'csv') {
+				
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+				
+			$h = array ();
+			$h [] = "CAGEGORY";
+			$h [] = "TAG";
+			$h [] = "NAME";
+			$h [] = "CODE";
+			$h [] = "LOCATION";
+			$h [] = "TOTAL IN";
+			$h [] = "TOTAL OUT";
+			$h [] = "CURRENT BALANCE";
+			$h [] = "MIN. BALANCE";
+				
+			$delimiter = ";";
+				
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+				
+			$spareparts = $this->sparePartCategoryMemberTable->getAllSP ( 0, 0 );
+				
+			foreach ( $spareparts as $m ) {
+				$l = array ();
+				$l [] = ( string ) $m->cat_name;
+				$l [] = ( string ) '"' . $m->tag . '"';
+	
+				$name = ( string ) $m->name;
+	
+				$name === '' ? $name = "-" : $name;
+	
+				$name = str_replace ( ',', '', $name );
+				$name = str_replace ( ';', '', $name );
+	
+				$l [] = $name;
+				$l [] = ( string ) $m->code;
+				$l [] = ( string ) $m->location;
+				$l [] = ( string ) $m->total_inflow;
+				$l [] = ( string ) $m->total_outflow;
+				$l [] = ( string ) $m->current_balance;
+				$l [] = ( string ) $m->minimum_balance;
+	
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+				
+			$fileName = 'spareparts-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+				
+			$response = $this->getResponse ();
+			$headers = new Headers();
+				
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+				
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+				
+			//$response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+			$response->setHeaders($headers);
+			// $output = fread($fh, 8192);
+				
+			$response->setContent ( $output );
+				
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
+	
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+	
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		$totalResults = $this->sparePartCategoryMemberTable->getTotalSPHavingMinBalance ();
+	
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		} else {
+			$spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion ( 0, 0 );
+		}
+	
+		return new ViewModel ( array (
+				'total_spareparts' => $totalResults,
+				'spareparts' => $spareparts,
+				'paginator' => $paginator
+		) );
+	}
+	
+	/**
+	 * List all spare parts
+	 */
 	public function list1Action() {
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 20;

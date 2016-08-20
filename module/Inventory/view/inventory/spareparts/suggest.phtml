@@ -9,24 +9,26 @@
 						<li class="divider"></li>
  						<li><a href="/inventory/report/index">Reporting</a>
 						</li>
-						
-						<li class="divider"></li>
- 						<li><a href="/inventory/spareparts/suggest">Order Suggestion</a>
-						</li>
 			
     </ul>
   </div>
+  
+  
+ 
 <hr>
-
-
-<h5>Category:  <?php echo $category->name ?></h5>
-
-
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
 <ul class="nav nav-pills">
 	<li><a
-		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>">Add
+		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add
 			New Spare-part</a></li>
+			
+			<li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list?output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
+</li>
 </ul>
+
 
 
 <?php
@@ -53,6 +55,8 @@ if ($total_spareparts <= 0) {
 			<td><b>SPARE-PART NAME</b></td>
 			<td><b data-toggle="tooltip" title="Current Balance">Current <br> Balance</b></td>
 			<td><b data-toggle="tooltip" title="Minimum Balance">Minimum <br> Balance</b></td>
+			<td><b data-toggle="tooltip" title="Minimum Balance">Remaining<br>To Order</b></td>
+			<td><b data-toggle="tooltip" title="Minimum Balance">Suggestion</b></td>
 			<td><b>ACTION</b></td>
 		</tr>
 	</thead>
@@ -76,7 +80,7 @@ if ($total_spareparts <= 0) {
 			<?php 
 			else:
 			?>
-			<img class= "img-rounded" width="70" height="70" src="/images/no-pic.jpg"/>
+			<img class= "img-rounded" width="70" height="80" src="/images/no-pic.jpg"/>
 				
 			<?php 
 			endif;
@@ -92,16 +96,6 @@ if ($total_spareparts <= 0) {
 					<a style="" class="dropdown-toggle" type="button" data-toggle="dropdown"
 						href="#"><span style="color:black;" id="<?php echo $this->escapeHtml($a['id']);?>_name"><b><?php echo $this->escapeHtml($a['name']);?></b></span>
 						<span class="caret"></span></a>
-						
-						<?php
-						if($a->remaining_to_order <=0):
-			//echo '<div class="alert alert-danger" role="alert">Order now!</div>';
-		echo '<span  class="label label-warning">Please order!</span>';
-		else:
-		
-		endif;
-		?>
-						
 					<ul class="dropdown-menu">
 						<li><a
 							href="<?php echo $this->baseUrl ?>/inventory/spareparts/edit?id=<?php echo $this->escapeHtml($a['id']);?>">Edit</a>
@@ -124,17 +118,34 @@ if ($total_spareparts <= 0) {
 					</ul>
 				</div>
 				<div style="color: gray;">
-				Code: <span id="<?php echo $this->escapeHtml($a['id']);?>_code"><?php echo $this->escapeHtml($a['code']);?></span><br>
-				Location: <?php echo $this->escapeHtml($a['location']);?>
+					Code: <span id="<?php echo $this->escapeHtml($a['id']);?>_code"><?php echo $this->escapeHtml($a['code']);?></span><br>
+					Location: <?php echo $this->escapeHtml($a['location']);?>
+				<div style="color: gray;">
+				Category:<a style="font-size 8pt;color: black;" href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($a['sparepart_cat_id']);?>" target="_blank"><?php echo $this->escapeHtml($a['cat_name']);?></a>
+				</div>
 				</div>
 
 			</td>
 			
 			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->current_balance;?>
 		</a></td>
-			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->mininum_balance;?>
+			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->minimum_balance;?>
 		</a></td>
-
+<td ><?php echo $a->remaining_to_order;?>
+		</td>
+		<td >
+		<?php
+		
+		if($a->remaining_to_order <=0):
+			//echo '<div class="alert alert-danger" role="alert">Order now!</div>';
+		echo '<span  class="label label-warning">Please order !</span>';
+		else:
+		
+		endif;
+		?>
+		
+		
+		</td>
 
 			<td><a href="#"
 				onclick="openPRCart('<?php echo $this->escapeHtml($a['id'])?>');"><i
@@ -156,16 +167,18 @@ if ($total_spareparts <= 0) {
 	if (! is_null ( $paginator )) {
 		
 		// change it only
-		$base = $this->baseUrl . '/inventory/spareparts/show-category?id=' . $category->id;
+		$base = $this->baseUrl . '/inventory/spareparts/list';
 		
-		$last = $base . '&page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . '&page=1&perPage=' . $paginator->resultsPerPage;
+		$_connector_symbol = '?';
+		
+		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
 		
 		$p1 = ($paginator->page) - 1;
 		$p2 = ($paginator->page) + 1;
 		
-		$prev = $base . '&page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . '&page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
 		
 		echo '<ul class="pagination">';
 		
@@ -176,7 +189,7 @@ if ($total_spareparts <= 0) {
 		
 		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
 			
-			$url = $base . '&page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
 			
 			if ($i == $paginator->page) {
 				echo '<li><a class="active" href="#">' . $i . '</a></li>';

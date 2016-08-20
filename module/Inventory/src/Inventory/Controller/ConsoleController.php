@@ -75,7 +75,7 @@ class ConsoleController extends AbstractActionController {
 		}
 		
 	
-		 $spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion (20,0);
+		 $spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion (18,0);
 		 
 		 $details = '
 				<table  style="font-size:10pt; border-spacing: 1px; padding:3px; border: 1px solid #cbcbcb;display: block;white-space: nowrap">';
@@ -118,7 +118,7 @@ class ConsoleController extends AbstractActionController {
 		 
 		 $emailText = <<<EOT
 		 
-<p>Hello,</p>		 
+<p>Hello Sparepart Controller,</p>		 
 <p>Below is the sugguestion for ordering of spare parts!</p>
 <p> Please click <a href="http://laosit02/">http://laosit02/</a> for more detail!</p>
 
@@ -139,8 +139,8 @@ EOT;
 		 // build message
 		 $message = new Message ();
 		 $message->addFrom ( 'mib-team@web.de' );
-		 $message->addTo ("nmt@mascot.dk");
-		 $message->addCc("ngmautri@gmail.com" );
+		 $message->addTo ("vvd@mascot.dk");
+		 $message->addCc("mlasparepart@mascot.dk" );
 		 $message->setSubject ( 'MLA - Sparepart Order Sugguest - '.date( "m-d-Y" )  );
 		 
 		 $type = new ContentType();

@@ -74,7 +74,7 @@ class SparepartCategoryMemberTable {
                 ifnull(mla_spareparts_inflow.total_inflow,0) as total_inflow,
 				ifnull(mla_spareparts_outflow.total_outflow,0) as total_outflow,
 				(ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) as current_balance,
-				ifnull(mla_sparepart_minimum_balance.minimum_balance,0) as mininum_balance,
+				ifnull(mla_sparepart_minimum_balance.minimum_balance,0) as minimum_balance,
 				((ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) - ifnull(mla_sparepart_minimum_balance.minimum_balance,0)) as remaining_to_order,
                 mla_sparepart_pics.id as sp_pic_id,
                 mla_sparepart_pics.filename,

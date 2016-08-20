@@ -135,9 +135,16 @@ if ($total_spareparts <= 0) {
 
 			</td>
 			
-			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->current_balance;?>
+			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">
+			
+			<span id="<?php echo $this->escapeHtml($a['id']);?>_current_balance"><?php echo $a->current_balance;?></span>
+			
+			
 		</a></td>
-			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>"><?php echo $a->minimum_balance;?>
+			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">
+			
+			<span id="<?php echo $this->escapeHtml($a['id']);?>_min_balance"><?php echo $a->minimum_balance;?></span>
+			
 		</a></td>
 
 
@@ -259,8 +266,10 @@ if ($total_spareparts <= 0) {
 					<label class="control-label" for="inputTag">Quantity:</label>
 					<div class="controls">
 						<input type="text" id="item_quantity" placeholder=""
-							name="quantity" value="">
+							name="quantity" value=""> 
+					<div style="color: gray;font-size 6pt" id="item_balance"></div>
 					</div>
+					
 				</div>
 
 				<div class="control-group">

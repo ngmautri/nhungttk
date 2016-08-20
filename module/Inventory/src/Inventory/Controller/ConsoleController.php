@@ -75,7 +75,7 @@ class ConsoleController extends AbstractActionController {
 		}
 		
 	
-		 $spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion (15,0);
+		 $spareparts = $this->sparePartCategoryMemberTable->getOrderSuggestion (20,0);
 		 
 		 $details = '
 				<table  style="font-size:10pt; border-spacing: 1px; padding:3px; border: 1px solid #cbcbcb;display: block;white-space: nowrap">';

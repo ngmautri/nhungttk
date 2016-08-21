@@ -179,9 +179,6 @@ Where 1
 	
 	private $getCatItems_SQL_V1 = 
 	"
-select *
-from
-(
 			select
             mla_delivery_cart.*,
             mla_vendors.name as vendor_name,
@@ -194,11 +191,6 @@ from
 			left join 
             (
 /* ALL PR ITEMS*/
-
-select
-*
-from
-(
 select
 	mla_purchase_request_items.id as pr_item_id_1,
 	mla_purchase_request_items.quantity as ordered_quantity,
@@ -316,18 +308,11 @@ left join
 as mla_delivery_items_rejected
 on mla_delivery_items_rejected.pr_item_id = mla_purchase_request_items.id
 )
-as mla_purchase_request_items
-Where 1
-
-/* ALL PR ITEMS*/			
-			)
+	
             as mla_purchase_request_items
 			on mla_purchase_request_items.pr_item_id_1 = mla_delivery_cart.pr_item_id
             where 1
 			and mla_delivery_cart.status ='SAVED'
-)
-as mla_delivery_cart
-Where 1
 			
 	";
 			
@@ -491,10 +476,18 @@ Where 1
 	 * @param unknown $offset
 	 * @return \Zend\Db\ResultSet\ResultSet|NULL
 	 */
-	public function getDNCartItems($limit, $offset) {
+	public function getDNCartItems($department_id,$vendor_id, $limit, $offset) {
 		$adapter = $this->tableGateway->adapter;
 	
 		$sql = $this->getCatItems_SQL_V1;
+		
+		if($vendor_id >0){
+				$sql=$sql." AND mla_vendors.id=". $vendor_id;
+		}
+		
+		if($department_id >0){
+			$sql=$sql." AND mla_purchase_request_items.pr_of_department_id=". $department_id;
+		}
 		
 		$sql = $sql. " ORDER BY pr_requested_by";
 		
@@ -507,6 +500,44 @@ Where 1
 		}
 		
 		
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		if ($resultSet->count () > 0) {
+			return $resultSet;
+		} else {
+			return null;
+		}
+	}
+	
+	
+	/**
+	 *
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet|NULL
+	 */
+	public function getVendorsInDeliveryList() {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = "
+	
+	
+			select
+				mla_delivery_cart.vendor_id,
+				mla_vendors.name as vendor_name,
+                count(mla_delivery_cart.pr_item_id) as items_by_vendor
+          	from mla_delivery_cart
+            
+			left join mla_vendors
+            on mla_vendors.id = mla_delivery_cart.vendor_id
+            where mla_delivery_cart.status='SAVED'
+            group by mla_delivery_cart.vendor_id
+            order by mla_vendors.name        		
+		";
 	
 		$statement = $adapter->query ( $sql );
 		$result = $statement->execute ();

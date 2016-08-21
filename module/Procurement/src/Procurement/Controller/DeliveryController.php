@@ -507,20 +507,24 @@ class DeliveryController extends AbstractActionController {
 		$department_id = $this->params ()->fromQuery ( 'department_id' );
 		$departments = $this->departmentTable->fetchAll ();
 		
-		if ($department_id == null) :
-			$department_id = '';
+		$vendor_id = $this->params ()->fromQuery ( 'vendor_id' );
+		$vendors = $this->deliveryCartTable->getVendorsInDeliveryList();
 		
-	
-	
+		if ($department_id == null) :
+			$department_id = 0;
 		endif;
 		
-		$cart_items = $this->deliveryCartTable->getDNCartItems ( 0, 0 );
+		if ($department_id == null) :
+		$department_id = 0;
+		endif;
+		
+		$cart_items = $this->deliveryCartTable->getDNCartItems ( $department_id,$vendor_id,0, 0 );
 		$totalResults = count ( $cart_items );
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$cart_items = $this->deliveryCartTable->getDNCartItems ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$cart_items = $this->deliveryCartTable->getDNCartItems ($department_id,$vendor_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -530,6 +534,8 @@ class DeliveryController extends AbstractActionController {
 				'cart_items' => $cart_items,
 				'departments' => $departments,
 				'department_id' => $department_id,
+				'vendors' => $vendors,
+				'vendor_id' => $vendor_id,
 				'paginator' => $paginator,
 				'total_items' => $totalResults 
 		) );

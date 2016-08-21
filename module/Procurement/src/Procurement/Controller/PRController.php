@@ -713,7 +713,7 @@ class PRController extends AbstractActionController {
 		endif;
 		
 		if ($added_delivery_list == null) :
-			$added_delivery_list = 2;
+			$added_delivery_list = 0;
 		endif;
 		
 		

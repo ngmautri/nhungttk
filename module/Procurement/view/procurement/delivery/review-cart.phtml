@@ -14,7 +14,7 @@
 			value="">
 	</div>
 </div>
-<?php  	if (count($cart_items) >0): ?>
+
 
 <div class="panel-group">
 	<div class="panel panel-default">
@@ -29,7 +29,7 @@
 			<div class="panel-body">
 
 				<form class="form-horizontal"
-					action="<?php echo $this->baseUrl ?>/procurement/pr/pr-items"
+					action="<?php echo $this->baseUrl ?>/procurement/delivery/review-cart"
 					method="get" enctype="multipart/form-data" id="ReportForm">
 					<div class="control-group">
 						<label class="control-label" for="inputNameLocal">PR by
@@ -55,35 +55,22 @@
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="inputNameLocal">PR by Status: </label>
+						<label class="control-label" for="inputNameLocal">Vendor: </label>
 						<div class="controls">
-							<select name="last_status">
-								<option value="">All</option>
-								<option
-									<?php echo $last_status=='Submitted'? "selected='selected'":"";?>
-									value="Submitted">Submitted</option>
-								<option
-									<?php echo $last_status=='Approved'? "selected='selected'":"";?>
-									value="Approved">Approved</option>
-								<option
-									<?php echo $last_status=='Fulfilled'? "selected='selected'":"";?>
-									value="Fulfilled">Fulfilled</option>
-
-							</select>
-						</div>
-					</div>
-
-					<div class="control-group">
-						<label class="control-label" for="inputNameLocal">Balance: </label>
-						<div class="controls">
-							<select name="balance">
+							<select name="vendor_id">
 								<option value="-1">All</option>
-								<option
-									<?php echo $last_status=='Submitted'? "selected='selected'":"";?>
-									value="0">Balance=0</option>
-								<option
-									<?php echo $last_status=='Fulfilled'? "selected='selected'":"";?>
-									value="1">Balance>0</option>
+								<?php
+									
+									foreach ( $vendors as $a ) :
+										if ($a->vendor_id === $vendor_id) :
+											$vendor_name = $a->vendor_name;
+											echo '<option selected="selected" value="' . $a->vendor_id . '">' . $a->vendor_name . ' ('.$a->items_by_vendor.')</option>';
+										else :
+											echo '<option value="' . $a->vendor_id . '">' . $a->vendor_name . ' ('.$a->items_by_vendor.')</option>';
+										endif;
+									endforeach
+									;
+									?>
 
 							</select>
 						</div>
@@ -105,6 +92,7 @@
 	</div>
 </div>
 
+<?php  	if (count($cart_items) >0): ?>
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -113,14 +101,13 @@
 
 		<td><b>Requester</b></td>
 		<td><b>Name</b></td>
-		<td ><b data-toggle="tooltip" title = "Ordered Quantity">Q'ty</b></td>
-		<td><b data-toggle="tooltip" title="Balance">Bal.</b></td>
-		<td ><b data-toggle="tooltip" title = "Delivered Quantity">Deliver</b></td>
-		<td><b>Unit Price</b></td>
+		<td ><b data-toggle="tooltip" title = "Ordered Quantity">Ordered <br> Quantity</b></td>
+		<td><b data-toggle="tooltip" title="Balance">Balance</b></td>
+		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Purchasing<br>Quantity</b></td>
+		<td><b>Unit <br>Price</b></td>
 		<td><b>Total</b></td>
 			<td><b data-toggle="tooltip" title="Currency">Curr.</b></td>
 	<td><b>Vendor</b></td>
-		<td><b>Payment Method</b></td>
 		<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -138,8 +125,18 @@
 	 	<td><input class="checkbox1" type="checkbox" name="cart_items[]"
 		value="<?php echo $item->id ;?>" /></td>
 
-		<td><?php echo $item->pr_requester_name;?></td>
-		<td><?php echo $item->name;?></td>
+		<td><?php echo $item->pr_requester_name;?>
+		
+		<div style="color: gray; font-size: 8pt;">
+			Dept.:<?php echo $item->pr_of_department;?><br>
+			#<?php echo $item->auto_pr_number;?>
+			</div>
+		</td>
+		<td><?php echo $item->name;?>
+		
+		
+		
+		</td>
 		<td><?php echo $item->ordered_quantity;?></td>
 		<td><?php echo $item->confirmed_balance;?></td>
 		<td><?php echo $item->delivered_quantity;?></td>
@@ -150,8 +147,11 @@
 		
 		<td>
 		<a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->vendor_id;?>" target="_blank"><?php echo $item->vendor_name;?></a>
+<div style="color: gray; font-size: 8pt;">
+			<?php echo $item->payment_method;?><br>
+			</div>
 </td>
-		<td><?php echo $item->payment_method;?></td>
+
 		<td>
 <a href="<?php echo $this->baseUrl ?>/procurement/pr/edit-cart-item?id=<?php echo $this->escapeHtml($item->id);?>">Edit</a>
 <a href="#" onclick="deleteDNCartItemDialog('<?php echo $this->escapeHtml($item->id)?>');">Delete</a>
@@ -196,7 +196,7 @@
 	if (! is_null ( $paginator )) {
 		
 		// change it only
-		$base = $this->baseUrl . '/procurement/delivery/review-cart';
+		$base = $this->baseUrl . '/procurement/delivery/review-cart?vendor_id='.$vendor_id;
 		
 		$_connector_symbol = '?';
 		

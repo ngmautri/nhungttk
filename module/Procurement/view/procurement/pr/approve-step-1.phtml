@@ -76,16 +76,20 @@ echo '<div class="alert alert-info">';
 				<div class="dropdown">
 					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
 						href="#"><span style="color:black;"><b><?php echo $item->name;?></b></span>
+	
+	
 						
     <span class="caret"></span></a>
-					<ul class="dropdown-menu">
+    
+    	
+		<ul class="dropdown-menu">
 	 	
     	<?php if ($item->confirmed_balance > 0) : ?>
    			
    		<?php if ($item->total_saved_delivered_quantity > 0) : ?>
-   			<li><a href="/procurement/delivery/review-cart"><i class="icon-check"> </i> Review Delivery	</a></li>	
+   			<li><a href="/procurement/delivery/review-cart"><i class="icon-check"> </i> Review Purchase	</a></li>	
     	<?php else: ?>
-    		<li><a href="/procurement/delivery/add-to-cart?pr_item_id=<?php echo $item->id?>"><i class="icon-check"> </i> Delivery</a></li>
+    		<li><a href="/procurement/delivery/add-to-cart?pr_item_id=<?php echo $item->id?>"><i class="icon-check"> </i> Purchase</a></li>
    	
     	<?php endif; ?>
    				
@@ -117,9 +121,16 @@ echo '<div class="alert alert-info">';
 			
 			<div style="color: gray;">
 				Code: <?php echo $this->escapeHtml($item->code);?><br>
-				</div>
+	<?php if ($item->confirmed_balance > 0) : ?>
+   				<?php if ($item->total_saved_delivered_quantity > 0) : ?>
+   				Status: <span class="label label-info">Processing...</span>
+   				<?php else: ?>
+   				Status: <span class="	">Pending</span>
+   				<?php endif; ?>
+   				<?php endif; ?>
+		</div>
 		
-
+		
 
 			</td>
 			<td><?php echo $item->unit;?></td>

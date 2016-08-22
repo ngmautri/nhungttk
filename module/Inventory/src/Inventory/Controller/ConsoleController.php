@@ -141,7 +141,7 @@ EOT;
 		 $message->addFrom ( 'mib-team@web.de' );
 		 $message->addTo ("vvd@mascot.dk");
 		 $message->addCc("mlasparepart@mascot.dk" );
-		 $message->setSubject ( 'MLA - Sparepart Order Sugguest - '.date( "m-d-Y" )  );
+		 $message->setSubject ( 'MLA - Sparepart Order Sugguestion - '.date( "m-d-Y" )  );
 		 
 		 $type = new ContentType();
 		 $type->setType('text/html');

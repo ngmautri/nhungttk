@@ -55,6 +55,8 @@ return array (
 				),
 				'factories' => array (
 						'Procurement\Controller\PR' => 'Procurement\Controller\PRControllerFactory',
+						'Procurement\Controller\PO' => 'Procurement\Controller\POControllerFactory',
+						'Procurement\Controller\DO' => 'Procurement\Controller\DOControllerFactory',
 						'Procurement\Controller\Delivery' => 'Procurement\Controller\DeliveryControllerFactory',
 						'Procurement\Controller\Vendor' => 'Procurement\Controller\VendorControllerFactory',
 						

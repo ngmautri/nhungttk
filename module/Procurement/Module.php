@@ -51,6 +51,9 @@ use Procurement\Model\DeliveryItemWorkFlowTable;
 use Procurement\Model\DeliveryCart;
 use Procurement\Model\DeliveryCartTable;
 
+use Procurement\Model\POItem;
+use Procurement\Model\POItemTable;
+
 
 class Module {
 	
@@ -249,6 +252,20 @@ class Module {
 						$resultSetPrototype = new ResultSet ();
 						$resultSetPrototype->setArrayObjectPrototype ( new DeliveryCart());
 						return new TableGateway ( 'mla_delivery_cart', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// POItemTable
+						'Procurement\Model\POItemTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'POItemTableGateway' );
+						$table = new POItemTable($tableGateway);
+						return $table;
+						},
+						
+						'POItemTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new POItem());
+						return new TableGateway ( 'mla_po_item', $dbAdapter, null, $resultSetPrototype );
 						},
 					)
 				);

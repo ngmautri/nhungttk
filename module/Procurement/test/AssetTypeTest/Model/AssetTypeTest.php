@@ -29,7 +29,7 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	
 	 public function testDBTest() {
-	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\DeliveryCartTable');
+	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\POItemTable');
 	 	 /*
 	 	 $input = new PRItemWorkFlow();
 	 	 $input->status = "Notified";

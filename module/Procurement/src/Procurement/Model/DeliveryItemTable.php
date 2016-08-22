@@ -98,42 +98,61 @@ as mla_purchase_request_items
 	}
 	
 	/*
-	 * public $id;
+	 * 
 	public $id;
+	public $receipt_date;
+	public $delivery_date;
+
 	public $delivery_id;
+	public $po_item_id;
 	public $pr_item_id;
 	
 	public $name;
 	public $code;
-	
 	public $unit;
-	public $delivered_quantity;
 
+	public $delivered_quantity;
 	public $price;
 	public $currency;
-	
+	public $payment_method;
 	public $vendor_id;
+
 	public $remarks;
 	
 	public $created_by;
 	public $created_on;
+	
+	public $last_workflow_id;
+	
+	public $invoice_no;
+	public $invoice_date;
 	 */
 	public function add(DeliveryItem $input) {
 		$data = array (
+				'receipt_date' => $input->receipt_date,
 				'delivery_date' => $input->delivery_date,
+				
 				'delivery_id' => $input->delivery_id,
+				'po_item_id' => $input->po_item_id,
 				'pr_item_id' => $input->pr_item_id,
+				
+				
 				'name' => $input->name,
 				'code' => $input->code,
 				'unit' => $input->unit,
+				
 				'delivered_quantity' => $input->delivered_quantity,
 				'price' => $input->price,
 				'currency' => $input->currency,
 				'payment_method' => $input->payment_method,
 				'vendor_id' => $input->vendor_id,
 				'remarks' => $input->remarks,
+				
 				'created_by' => $input->created_by,
 				'created_on' => date ( 'Y-m-d H:i:s' ),
+				
+				'invoice_no' => $input->invoice_no,
+				'invoice_date' => $input->invoice_date,
 				
 		);
 		
@@ -149,28 +168,88 @@ as mla_purchase_request_items
 	public function update(DeliveryItem $input, $id) {
 		
 		$data = array (
+				
+				'receipt_date' => $input->receipt_date,
 				'delivery_date' => $input->delivery_date,
+				
 				'delivery_id' => $input->delivery_id,
+				'po_item_id' => $input->po_item_id,
 				'pr_item_id' => $input->pr_item_id,
+				
+				
 				'name' => $input->name,
 				'code' => $input->code,
 				'unit' => $input->unit,
+				
 				'delivered_quantity' => $input->delivered_quantity,
 				'price' => $input->price,
 				'currency' => $input->currency,
 				'payment_method' => $input->payment_method,
 				'vendor_id' => $input->vendor_id,
 				'remarks' => $input->remarks,
+				
 				'created_by' => $input->created_by,
+				
+				'invoice_no' => $input->invoice_no,
+				'invoice_date' => $input->invoice_date,
 		);	
 		
 		$where = 'id = ' . $id;
 		$this->tableGateway->update( $data,$where);
 	}
 	
+	/**
+	 * 
+	 * @param unknown $id
+	 */
 	public function delete($id) {
 		$where = 'id = ' . $id;
 		$this->tableGateway->delete($where);
+	}
+	
+	
+	/**
+	 *
+	 * @param unknown $user_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getReceivedItemList(){
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql ="";
+		
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	
+	/**
+	 * 
+	 * @param unknown $seletect_items. $seletect_items must look like <code> (12,13,14)</code)
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function setReceivedItemsAsNotified($selected_items) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = "
+update
+(
+   mla_delivery_items
+)
+set  mla_delivery_items.status  = 'NOTIFIED'
+where 1
+AND mla_delivery_items.id  IN " . $selected_items;
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
 	}
 	
 

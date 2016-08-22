@@ -677,7 +677,7 @@ class PRController extends AbstractActionController {
 	 */
 	public function prItemsAction() {
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 20;
+			$resultsPerPage = 15;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}

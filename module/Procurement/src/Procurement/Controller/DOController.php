@@ -32,10 +32,8 @@ use Procurement\Model\DeliveryItemWorkFlow;
 use Procurement\Model\DeliveryItemWorkFlowTable;
 use Procurement\Model\DeliveryCart;
 use Procurement\Model\DeliveryCartTable;
-
 use Procurement\Model\POItem;
 use Procurement\Model\POItemTable;
-
 use Application\Model\DepartmentTable;
 use User\Model\UserTable;
 use Inventory\Model\ArticleMovement;
@@ -68,7 +66,6 @@ class DOController extends AbstractActionController {
 	protected $PRItemWorkflowTable;
 	protected $deliveryCartTable;
 	protected $authService;
-	
 	protected $poItemTable;
 	
 	/**
@@ -81,41 +78,38 @@ class DOController extends AbstractActionController {
 		return new ViewModel ();
 	}
 	
-	
 	/**
 	 * Receive goods.
-	 * this action will be done by procurement staff, when the good is purchased and arrived at MLA with invoice /pro-formal invoice 
+	 * this action will be done by procurement staff, when the good is purchased and arrived at MLA with invoice /pro-formal invoice
 	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function receiveAction() {
-		
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
-	
+		
 		if ($request->isPost ()) {
-				
+			
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
-			$input = new DeliveryItem();
-				
+			$input = new DeliveryItem ();
+			
 			$input->receipt_date = $request->getPost ( 'receipt_date' );
-			//$input->delivery_id = $request->getPost ( 'delivery_id' );
+			// $input->delivery_id = $request->getPost ( 'delivery_id' );
 			$input->po_item_id = $request->getPost ( 'po_item_id' );
 			$input->pr_item_id = $request->getPost ( 'pr_item_id' );
 			
-				
 			$input->name = $request->getPost ( 'name' );
 			$input->code = $request->getPost ( 'unit' );
 			$input->unit = $request->getPost ( 'unit' );
-				
+			
 			$input->vendor_id = $request->getPost ( 'vendor_id' );
-				
+			
 			$input->delivered_quantity = $request->getPost ( 'delivered_quantity' );
 			$input->price = $request->getPost ( 'price' );
 			$input->currency = $request->getPost ( 'curreny' );
 			$input->payment_method = $request->getPost ( 'payment_method' );
-				
+			
 			$input->remarks = $request->getPost ( 'remarks' );
 			$input->created_by = $user ['id'];
 			
@@ -123,63 +117,179 @@ class DOController extends AbstractActionController {
 			$input->invoice_date = $request->getPost ( 'invoice_date' );
 			
 			$input->status = "SAVED";
-				
+			
 			$pr_item = $this->purchaseRequestItemTable->getPRItem ( $input->pr_item_id );
-				
+			
 			// validator.
 			$errors = array ();
-				
+			
 			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
 			$validator = new Int ();
-				
+			
 			if (! $validator->isValid ( $input->delivered_quantity )) {
 				$errors [] = 'Deliver Quantity is not valid. It must be a number.';
 			} else {
-	
+				
 				/*
 				 * if ($input->delivered_quantity > $to_delivery) {
 				 * $errors [] = 'Deliver quantity is: ' . $input->delivered_quantity . ' pcs, which is bigger than amount to delivery';
 				 * }
 				 */
 			}
-				
+			
 			if (! is_numeric ( $input->price )) {
 				$errors [] = 'Price is not valid. It must be a number.';
 			}
-				
+			
 			if (count ( $errors ) > 0) {
 				$pr_item = $this->purchaseRequestItemTable->getPRItem ( $input->pr_item_id );
-				$po_item = $this->poItemTable->getPOItem($input->po_item_id);
-				
+				$po_item = $this->poItemTable->getPOItem ( $input->po_item_id );
 				
 				return new ViewModel ( array (
 						'redirectUrl' => $redirectUrl,
 						'user' => $user,
 						'errors' => $errors,
 						'pr_item' => $pr_item,
-						'po_item' => $po_item,
+						'po_item' => $po_item 
 				) );
 			}
-				
-			$this->deliveryItemTable->add( $input );
+			
+			$this->deliveryItemTable->add ( $input );
 			$this->redirect ()->toUrl ( $redirectUrl );
 		}
-	
+		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-	
+		
 		$po_item_id = ( int ) $this->params ()->fromQuery ( 'po_item_id' );
 		$pr_item_id = ( int ) $this->params ()->fromQuery ( 'pr_item_id' );
 		
 		$pr_item = $this->purchaseRequestItemTable->getPRItem ( $pr_item_id );
-		$po_item = $this->poItemTable->getPOItem($po_item_id);
+		$po_item = $this->poItemTable->getPOItem ( $po_item_id );
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
 				'user' => $user,
 				'errors' => null,
 				'pr_item' => $pr_item,
-				'po_item' => $po_item,
+				'po_item' => $po_item 
 		) );
+	}
+	public function receiveListAction() {
+		$id = ( int ) $this->params ()->fromQuery ( 'po_item_id' );
+		$receipts = $this->deliveryItemTable->getDOItemsByPOItem ( $id );
+		
+		$department_id = $this->params ()->fromQuery ( 'department_id' );
+		$departments = $this->departmentTable->fetchAll ();
+		
+		
+		return new ViewModel ( array (
+				'receipts' => $receipts,
+				'departments' => $departments,
+				'department_id' => $department_id,
+				
+		) );
+	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function listAction() {
+		$id = ( int ) $this->params ()->fromQuery ( 'po_item_id' );
+		
+		$department_id = $this->params ()->fromQuery ( 'department_id' );
+		$departments = $this->departmentTable->fetchAll ();
+		
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 10;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		$receipts = $this->deliveryItemTable->getDOItems(0,0);
+		$totalResults = count ( $receipts );
+				
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$receipts = $this->deliveryItemTable->getDOItems (($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+	
+		return new ViewModel ( array (
+				'receipts' => $receipts,
+				'departments' => $departments,
+				'department_id' => $department_id,
+				'paginator' => $paginator,
+				'total_items' => $totalResults
+				
+	
+		) );
+	}
+	
+	
+	/**
+	 * Notify action, whn procurement staff received goods, and notify the requester for confirmation.
+	 * Ajax
+	 */
+	public function notifyAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$user_id = $user ['id'];
+		
+		$dn_number = $this->params ()->fromQuery ( 'dn_number' );
+		$select_all_item = $this->params ()->fromQuery ( 'SelectAll' );
+		
+		// create DN
+		$dn = new Delivery ();
+		$dn->dn_number = $dn_number;
+		$dn->created_by = $user_id;
+		
+		$dn_id = $this->deliveryTable->add ( $dn );
+		
+		// update DN Workflow
+		$wf = new DeliveryWorkFlow ();
+		$wf->delivery_id = $dn_id;
+		$wf->status = "Notified";
+		$wf->updated_by = $user ['id'];
+		$last_workflow_id = $this->deliveryWorkFlowTable->add ( $wf );
+		$this->deliveryTable->updateLastWorkFlow ( $dn_id, $last_workflow_id );
+		
+		/// update delivery items
+		$selected_items = $this->params ()->fromQuery ( 'do_items' );
+		$this->deliveryItemTable->submitSelectedDOItems ( $selected_items, $dn_id );
+		
+		// Update or Delete Cart item status
+		//$this->deliveryCartTable->setSelectedCartItemsAsNotified ( $selected_items );
+		
+		// @todo: Update Delivery Item Workflow as notified
+		
+		$dn_items = $this->deliveryTable->getDeliveryItems ( $dn_id );
+		
+		
+		if (count ( $dn_items ) > 0) :
+			
+		foreach ( $dn_items as $dn_item ) {
+			$input = new DeliveryItemWorkFlow ();
+			$input->delivery_id = $dn_id;
+			$input->dn_item_id = $dn_item->dn_item_id;
+			$input->pr_item_id = $dn_item->pr_item_id;
+			$input->status = "Notified";
+			$input->updated_by = $user ['id'];
+			$last_workflow_id = $this->deliveryItemWorkFlowTable->add ( $input );
+			$this->deliveryItemTable->updateLastWorkFlow ( $dn_item->dn_item_id, $last_workflow_id );
+		}
+		endif;
+		
+		$this->redirect ()->toUrl ( '/procurement/pr/my-pr' );
 	}
 	
 	
@@ -196,13 +306,7 @@ class DOController extends AbstractActionController {
 	
 	
 	
-	
-	
-	
-	
-	
-	//==============================================
-	
+	// ==============================================
 	public function getNotificationAction() {
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
@@ -263,6 +367,7 @@ class DOController extends AbstractActionController {
 			$i->last_workflow_id = $last_workflow_id;
 			$this->articleLastDNTable->add ( $i );
 		
+		
 		endif;
 		
 		if ($sparepart_id > 0) :
@@ -280,6 +385,7 @@ class DOController extends AbstractActionController {
 			$i->sparepart_id = $sparepart_id;
 			$i->last_workflow_id = $last_workflow_id;
 			$this->sparepartLastDNTable->add ( $i );
+		
 		
 		endif;
 		
@@ -340,6 +446,7 @@ class DOController extends AbstractActionController {
 			$i->last_workflow_id = $last_workflow_id;
 			$this->articleLastDNTable->add ( $i );
 		
+		
 		endif;
 		
 		if ($sparepart_id > 0) :
@@ -357,6 +464,7 @@ class DOController extends AbstractActionController {
 			$i->sparepart_id = $sparepart_id;
 			$i->last_workflow_id = $last_workflow_id;
 			$this->sparepartLastDNTable->add ( $i );
+		
 		
 		endif;
 		$this->redirect ()->toUrl ( '/procurement/delivery/get-notification' );
@@ -463,6 +571,7 @@ class DOController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		$this->redirect ()->toUrl ( '/procurement/pr/all-pr' );
@@ -502,6 +611,7 @@ class DOController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		$pr_items = $this->purchaseRequestItemTable->getPRItemsToDeliver ( $department_id, 0, 0 );
@@ -525,9 +635,6 @@ class DOController extends AbstractActionController {
 				'total_items' => $totalResults 
 		) );
 	}
-	
-
-	
 	
 	/**
 	 *
@@ -557,23 +664,25 @@ class DOController extends AbstractActionController {
 		$departments = $this->departmentTable->fetchAll ();
 		
 		$vendor_id = $this->params ()->fromQuery ( 'vendor_id' );
-		$vendors = $this->deliveryCartTable->getVendorsInDeliveryList();
+		$vendors = $this->deliveryCartTable->getVendorsInDeliveryList ();
 		
 		if ($department_id == null) :
 			$department_id = 0;
+		
 		endif;
 		
 		if ($department_id == null) :
-		$department_id = 0;
+			$department_id = 0;
+		
 		endif;
 		
-		$cart_items = $this->deliveryCartTable->getDNCartItems ( $department_id,$vendor_id,0, 0 );
+		$cart_items = $this->deliveryCartTable->getDNCartItems ( $department_id, $vendor_id, 0, 0 );
 		$totalResults = count ( $cart_items );
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$cart_items = $this->deliveryCartTable->getDNCartItems ($department_id,$vendor_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$cart_items = $this->deliveryCartTable->getDNCartItems ( $department_id, $vendor_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -641,6 +750,7 @@ class DOController extends AbstractActionController {
 				$last_workflow_id = $this->deliveryItemWorkFlowTable->add ( $input );
 				$this->deliveryItemTable->updateLastWorkFlow ( $dn_item->dn_item_id, $last_workflow_id );
 			}
+		
 			endif;
 		
 		$this->redirect ()->toUrl ( '/procurement/pr/my-pr' );
@@ -702,6 +812,7 @@ class DOController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($last_status == null) :
@@ -711,10 +822,12 @@ class DOController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($department_id == null) :
 			$department_id = '';
+		
 		
 		
 		
@@ -972,7 +1085,6 @@ class DOController extends AbstractActionController {
 		$this->deliveryCartTable = $deliveryCartTable;
 		return $this;
 	}
-	
 	public function getPoItemTable() {
 		return $this->poItemTable;
 	}
@@ -980,5 +1092,4 @@ class DOController extends AbstractActionController {
 		$this->poItemTable = $poItemTable;
 		return $this;
 	}
-	
 }

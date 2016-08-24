@@ -699,7 +699,7 @@ class PRController extends AbstractActionController {
 		$department_id = $this->params ()->fromQuery ( 'department_id' );
 		$balance = $this->params ()->fromQuery ( 'balance' );
 		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
-		$added_delivery_list = $this->params ()->fromQuery ( 'added_delivery_list' );
+		$processing = $this->params ()->fromQuery ( 'processing' );
 		
 		
 		$departments = $this->departmentTable->fetchAll ();
@@ -712,18 +712,18 @@ class PRController extends AbstractActionController {
 			$unconfirmed_quantity = 2;
 		endif;
 		
-		if ($added_delivery_list == null) :
-			$added_delivery_list = 0;
+		if ($processing == null) :
+			$processing = 0;
 		endif;
 		
 		
-		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2( $department_id, $last_status, $balance, $unconfirmed_quantity,$added_delivery_list,0, 0 );
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2( $department_id, $last_status, $balance, $unconfirmed_quantity,$processing,0, 0 );
 		$totalResults = count ( $pr_items );
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance,$unconfirmed_quantity, $added_delivery_list,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance,$unconfirmed_quantity, $processing,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -735,7 +735,7 @@ class PRController extends AbstractActionController {
 				'last_status' => $last_status,
 				'balance' => $balance,
 				'unconfirmed_quantity' => $unconfirmed_quantity,
-				'added_delivery_list' => $added_delivery_list,
+				'processing' => $processing,
 				
 				'department_id' => $department_id,
 				'paginator' => $paginator,

@@ -97,8 +97,10 @@ if (count ( $errors ) > 0) {
 		<div class="controls">
 			<input type="text" id="inputTag" placeholder=""
 				name="delivered_quantity" value="">
-               <?php echo '<span class="label label-info">(To deliver: '. $pr_item->confirmed_balance.')</span>'?>
+				 <?php echo '<div style="color: gray;">To deliver: '. $pr_item->confirmed_balance.'. Total Received: '. $pr_item->total_received_quantity.'</div>'?>
+     
         </div>
+         
 	</div>
 
 	<div class="control-group">

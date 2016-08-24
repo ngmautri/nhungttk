@@ -931,6 +931,7 @@ select
 	mla_purchase_requests.pr_of_department,
  	mla_purchase_requests.pr_of_department_status,
    
+	 ifnull( mla_delivery_items.total_received_quantity,0) as total_received_quantity,
 	ifnull(mla_delivery_items_confirmed.confirmed_quantity,0) as confirmed_quantity,
 	ifnull(mla_delivery_items_rejected.rejected_quantity,0) as rejected_quantity,
 	
@@ -943,9 +944,10 @@ select
 	,ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)-mla_purchase_request_items.quantity) as confirmed_free_balance,
     
     ifnull(mla_delivery_items_notified.unconfimed_quantity,0) as unconfirmed_quantity,
-     mla_delivery_cart.total_saved_delivered_quantity as total_saved_delivered_quantity,
+	
+    
      
-     last_sparepart_dn.vendor_name as sp_vendor_name,
+	last_sparepart_dn.vendor_name as sp_vendor_name,
    	last_sparepart_dn.vendor_id as sp_vendor_id,
 	last_sparepart_dn.price as sp_price,
 	last_sparepart_dn.currency as sp_currency,
@@ -953,7 +955,8 @@ select
 	last_article_dn.vendor_name as article_vendor_name,
    	last_article_dn.vendor_id as article_vendor_id,
 	last_article_dn.price as article_price,
-	last_article_dn.currency as article_currency
+	last_article_dn.currency as article_currency,
+    mla_po_item.id as po_item_id
 	
 from mla_purchase_request_items
 	
@@ -1056,18 +1059,9 @@ left join
 as mla_delivery_items_notified
 on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
 
-/* Check Saved Delivery Cart */
-left join 
-(
-	select
-		*,
-		sum(mla_delivery_cart.delivered_quantity) as total_saved_delivered_quantity
-	from mla_delivery_cart
-	where mla_delivery_cart.status ='SAVED'
-	group by mla_delivery_cart.pr_item_id
-) 
-as mla_delivery_cart
-on mla_delivery_cart.pr_item_id = mla_purchase_request_items.id
+/* Check if Add it mla_po_item*/
+left join mla_po_item
+on mla_po_item.pr_item_id = mla_purchase_request_items.id
 
 
 /* Last Article DN */
@@ -1151,11 +1145,25 @@ on mla_vendors.id = mla_spareparts_last_dn.vendor_id
 as last_sparepart_dn
 on last_sparepart_dn.sparepart_id = mla_purchase_request_items.sparepart_id
 
+/* total_received_quantity*/
+left join
+(
+	select
+	mla_delivery_items.po_item_id,
+	mla_delivery_items.pr_item_id,
+	sum(mla_delivery_items.delivered_quantity) as total_received_quantity
+	from mla_delivery_items
+	group by mla_delivery_items.pr_item_id
+) 
+as mla_delivery_items
+on mla_delivery_items.pr_item_id = mla_purchase_request_items.id 
+ 
 
 Where 1
 AND mla_purchase_requests.pr_last_status IS NOT NULL
-	
+
 /* ALL PR ITEMS*/	
+			
 	";
 	
 	private $getPRItemsToDeliver_SQL ="
@@ -1632,7 +1640,7 @@ WHERE TT1.id = " . $id . " ORDER BY TT1.EDT ASC";
 	public function getPRItem($id) {
 		
 		$adapter = $this->tableGateway->adapter;
-		$sql = $this->getPRItems_SQL;
+		$sql = $this->getPRItemsWithDN_SQL_V2;
 		
 		$sql = $sql. " AND mla_purchase_request_items.id = ".$id;
 	
@@ -1887,7 +1895,7 @@ on TT1.purchase_request_id = TT3.id";
 	 * @param unknown $offset
 	 * @return \Zend\Db\ResultSet\ResultSet
 	 */
-	public function getPRItemsWithLastDN_V2($department,$last_status,$balance,$unconfirmed_quantity,$added_delivery_list,$limit,$offset) {
+	public function getPRItemsWithLastDN_V2($department,$last_status,$balance,$unconfirmed_quantity,$processing,$limit,$offset) {
 			
 		$adapter = $this->tableGateway->adapter;
 		$sql = $this->getPRItemsWithDN_SQL_V2;
@@ -1921,12 +1929,12 @@ on TT1.purchase_request_id = TT3.id";
 			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.unconfimed_quantity,0)) > 0";
 		}
 		
-		// added into delivery list
-		if ($added_delivery_list == 0) {
-			$sql = $sql. " AND (ifnull(mla_delivery_cart.total_saved_delivered_quantity,0)) = 0";
+		// added into po_items?
+		if ($processing == 0) {
+			$sql = $sql. " AND mla_po_item.id IS NULL";
 		}
-		if ($added_delivery_list ==1) {
-			$sql = $sql. " AND (ifnull(mla_delivery_cart.total_saved_delivered_quantity,0)) > 0";
+		if ($processing ==1) {
+			$sql = $sql. " AND mla_po_item.id >0";
 		}
 		
 	
@@ -1958,7 +1966,7 @@ on TT1.purchase_request_id = TT3.id";
 	 * @param unknown $offset
 	 * @return \Zend\Db\ResultSet\ResultSet
 	 */
-	public function getPRItemsWithLastDN_V3($pr_id,$balance,$unconfirmed_quantity,$added_delivery_list,$limit,$offset) {
+	public function getPRItemsWithLastDN_V3($pr_id,$balance,$unconfirmed_quantity,$processing,$limit,$offset) {
 			
 		$adapter = $this->tableGateway->adapter;
 		$sql = $this->getPRItemsWithDN_SQL_V2;
@@ -1988,12 +1996,12 @@ on TT1.purchase_request_id = TT3.id";
 			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.unconfimed_quantity,0)) > 0";
 		}
 	
-		// unconfirmed
-		if ($added_delivery_list == 0) {
-			$sql = $sql. " AND (ifnull(mla_delivery_cart.total_saved_delivered_quantity,0)) = 0";
+		// added into po_items?
+		if ($processing == 0) {
+			$sql = $sql. " AND mla_po_item.id IS NULL";
 		}
-		if ($added_delivery_list ==1) {
-			$sql = $sql. " AND (ifnull(mla_delivery_cart.total_saved_delivered_quantity,0)) > 0";
+		if ($processing ==1) {
+			$sql = $sql. " AND mla_po_item.id >0";
 		}
 	
 	

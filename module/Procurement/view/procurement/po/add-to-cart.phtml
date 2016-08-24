@@ -26,10 +26,23 @@ if (count ( $errors ) > 0) {
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Vendor:</label>
 		<div class="controls">
+
+ 		
 			<input readonly type="text" id="vendor" placeholder="" name="vendor"
-				value=""> <a href="javascript:;" onclick="loadVendorList();"
+				value=""> 
+			
+		
+		<a href="javascript:;" onclick="loadVendorList();"
 				class="helper"> Select Vendor <i class=" icon-folder-open"></i></a>
 
+		<?php 
+			if ($pr_item->article_id > 0) :
+			echo '<div style="color: gray;">Last vendor:' . $pr_item->article_vendor_name .'</div>';
+		endif;
+		
+		if ($pr_item->sparepart_id > 0) : 
+     		echo '<div style="color: gray;">Last vendor:' .$pr_item->sp_vendor_name.'</div>';
+		endif; ?>
 		</div>
 	</div>
 	<hr>
@@ -69,6 +82,14 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Price:</label>
 		<div class="controls">
 			<input  type="text" id="inputTag" placeholder="" name="price" value="">
+			<?php 
+			if ($pr_item->article_id > 0) :
+			echo '<span style="color: gray;">Last price:' . $pr_item->article_price.'</span>';
+		endif;
+		
+		if ($pr_item->sparepart_id > 0) : 
+     		echo '<span style="color: gray;">Last price:' .$pr_item->sp_price.'</span>';
+		endif; ?>
 		</div>
 	</div>
 
@@ -83,6 +104,15 @@ if (count ( $errors ) > 0) {
 				<option value="THB">THB</option>
 
 			</select>
+			
+			<?php 
+			if ($pr_item->article_id > 0) :
+			echo '<span style="color: gray;">Last price:' . $pr_item->article_currency;
+		endif;
+		
+		if ($pr_item->sparepart_id > 0) : 
+     		echo '<span style="color: gray;">Last currency:' .$pr_item->sp_currency;
+		endif; ?>
 		</div>
 	</div>
 

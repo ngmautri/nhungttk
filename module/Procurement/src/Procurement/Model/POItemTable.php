@@ -10,11 +10,26 @@ class POItemTable {
 	protected $tableGateway;
 	
 	private $getPOItems_SQL ="
+	
+
 			select
             mla_po_item.*,
             mla_vendors.name as vendor_name,
-            mla_purchase_request_items.*           
-			from mla_po_item
+            mla_purchase_request_items.*,
+            ifnull( mla_delivery_items.total_received_quantity,0) as total_received_quantity
+    		from mla_po_item
+    
+			left join
+            (
+            select
+				mla_delivery_items.po_item_id,
+				mla_delivery_items.pr_item_id,
+				sum(mla_delivery_items.delivered_quantity) as total_received_quantity
+				from mla_delivery_items
+				group by mla_delivery_items.po_item_id
+			) 
+			as mla_delivery_items
+            on mla_delivery_items.po_item_id = mla_po_item.id
             
             left join mla_vendors
             on mla_vendors.id = mla_po_item.vendor_id
@@ -57,7 +72,8 @@ select
     
 	 if ((mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0))>=0
 	, 0
-	,ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)-mla_purchase_request_items.quantity) as confirmed_free_balance
+	,ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)-mla_purchase_request_items.quantity) as confirmed_free_balance,
+     ifnull(mla_delivery_items_notified.unconfimed_quantity,0) as unconfimed_quantity
         
 from mla_purchase_request_items
 
@@ -143,9 +159,35 @@ left join
 )
 as mla_delivery_items_rejected
 on mla_delivery_items_rejected.pr_item_id = mla_purchase_request_items.id
+
+
+/* total notified /unconfirmed DN */
+left join
+(
+	select
+		mla_delivery_items.*,
+		sum(mla_delivery_items.delivered_quantity) as unconfimed_quantity
+	from
+	(
+		select 
+			mla_delivery_items.*,
+			mla_delivery_items_workflows.status as dn_last_status,
+			mla_delivery_items_workflows.updated_on as dn_last_status_on,
+			mla_delivery_items_workflows.updated_by as dn_last_status_by
+		from mla_delivery_items
+		left join mla_delivery_items_workflows
+		on mla_delivery_items_workflows.id = mla_delivery_items.last_workflow_id
+		)
+	as mla_delivery_items
+	where mla_delivery_items.dn_last_status = 'Notified'
+	group by mla_delivery_items.pr_item_id
 )
-	
-            as mla_purchase_request_items
+as mla_delivery_items_notified
+on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
+
+
+)
+           as mla_purchase_request_items
 			on mla_purchase_request_items.pr_item_id_1 = mla_po_item.pr_item_id
             where 1
 	";

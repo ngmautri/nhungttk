@@ -53,12 +53,13 @@ echo '<div class="alert alert-info">';
 			<td><b>Item Name</b></td>
 			<td><b>Unit</b></td>
 			<td><b data-toggle="tooltip" title="Ordred Quantity">Requested <br>Quantity</b></td>
-			<td><b data-toggle="tooltip" title="Delivered Quantity">Delivered<br>Quantity</b></td>
+			<td><b data-toggle="tooltip" title="Bought Quantity">Received<br>Quantity
+			<td><b data-toggle="tooltip" title="Notified Quantity">Notified<br>Quantity</b></td>
+			<td><b data-toggle="tooltip" title="Notified Quantity">Confirmed<br>Quantity</b></td>
 			<td><b data-toggle="tooltip" title="Rejected Quantity">Rejected <br>Quantity</b></td>
 			<td><b data-toggle="tooltip" title="Balance">Balance</b></td>
 			<td><b data-toggle="tooltip" title="Free">Free</b></td>
-			<td><b data-toggle="tooltip" title="Unconfirmed Quantity">Notified<br> Quantity</b></td>
-			<td><b>EDT</b></td>
+				<td><b>EDT</b></td>
 			<td><b>Last Purchase</b></td>
 		</tr>
 	</thead>
@@ -86,10 +87,13 @@ echo '<div class="alert alert-info">';
 	 	
     	<?php if ($item->confirmed_balance > 0) : ?>
    			
-   		<?php if ($item->total_saved_delivered_quantity > 0) : ?>
-   			<li><a href="/procurement/delivery/review-cart"><i class="icon-check"> </i> Review Purchase	</a></li>	
+   		<?php if ($item->po_item_id > 0) : ?>
+   			<li><a href="/procurement/do/receive?pr_item_id=<?php echo $item->id;?>&po_item_id=<?php echo $item->po_item_id;?>"><i
+								class="icon-check"> </i> Receive </a></li>	
     	<?php else: ?>
-    		<li><a href="/procurement/delivery/add-to-cart?pr_item_id=<?php echo $item->id?>"><i class="icon-check"> </i> Purchase</a></li>
+    		<li><a
+							href="/procurement/po/add-to-cart?pr_item_id=<?php echo $item->id?>"><i
+								class="icon-check"> </i> Purchase</a></li>
    	
     	<?php endif; ?>
    				
@@ -122,11 +126,15 @@ echo '<div class="alert alert-info">';
 			<div style="color: gray;">
 				Code: <?php echo $this->escapeHtml($item->code);?><br>
 	<?php if ($item->confirmed_balance > 0) : ?>
-   				<?php if ($item->total_saved_delivered_quantity > 0) : ?>
+   				<?php if ($item->po_item_id > 0) : ?>
    				Status: <span class="label label-info">Processing...</span>
    				<?php else: ?>
    				Status: <span class="	">Pending</span>
    				<?php endif; ?>
+   				
+   				  				<?php else: ?>
+   				Status: <span class="label label-success">Fulfilled</span>
+   				
    				<?php endif; ?>
 		</div>
 		
@@ -134,12 +142,13 @@ echo '<div class="alert alert-info">';
 
 			</td>
 			<td><?php echo $item->unit;?></td>
-			<td><?php echo $item->quantity;?></td>
+		<td><?php echo $item->quantity;?></td>
+			<td><?php echo $item->total_received_quantity;?></td>
+			<td><?php echo $item->unconfirmed_quantity;?></td>
 			<td><?php echo $item->confirmed_quantity;?></td>
 			<td><?php echo $item->rejected_quantity;?></td>
 			<td><?php echo $item->confirmed_balance;?></td>
 			<td><?php echo $item->confirmed_free_balance;?></td>
-			<td><?php echo $item->unconfirmed_quantity;?></td>
 		
 		<?php if($item->confirmed_balance == 0): ?>
 			<td><?php echo date_format(date_create($item->EDT),"Y-m-d");?>

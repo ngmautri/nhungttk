@@ -4,7 +4,7 @@
 });
  </script>
 
-<h5>Receiving Item:</h5>
+<h5>Good Receipt:</h5>
 
 <?php
 
@@ -22,7 +22,7 @@ if (count ( $errors ) > 0) {
 ?>
 
 
-<form class="form-horizontal" 	action="<?php echo $this->baseUrl ?>/procurement/do/receive"
+<form class="form-horizontal" 	action="<?php echo $this->baseUrl ?>/procurement/gr/receive"
 	method="post" enctype="multipart/form-data" id="NewSP">
 	<input type="hidden" name="redirectUrl"
 		value="<?php echo $redirectUrl ?>" /><input

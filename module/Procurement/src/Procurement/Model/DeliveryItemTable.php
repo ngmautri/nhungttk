@@ -227,6 +227,173 @@ on mla_purchase_request_items.id = mla_delivery_items.pr_item_id
     where 1
   		";
 	
+	private $getGRItem_SQL="
+	select
+	mla_delivery_items.*,
+    ifnull(mla_delivery_items_workflows.confirmed_quantity,0) as confirmed_quantity,
+    ifnull(mla_delivery_items_workflows.rejected_quantity,0) as rejected_quantity,
+    
+     if ((mla_purchase_request_items.ordered_quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))>=0
+    ,(mla_purchase_request_items.ordered_quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))
+    ,0) as confirmed_balance,
+	
+	 if ((mla_purchase_request_items.ordered_quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))>=0
+	, 0
+	,ifnull(mla_delivery_items_workflows.confirmed_quantity,0)-mla_purchase_request_items.ordered_quantity) as confirmed_free_balance,
+    
+       
+	ifnull(mla_delivery_items_notified.notified_quantity,0) as notified_quantity,
+    mla_delivery_items_notified.dn_last_status,
+    mla_vendors.name as vendor_name,
+	
+    mla_purchase_request_items.priority,
+    mla_purchase_request_items.name as pr_item_name,
+    mla_purchase_request_items.code as pr_item_code,
+     mla_purchase_request_items.unit as pr_item_unit,
+    mla_purchase_request_items.keywords as pr_item_keywords,
+	mla_purchase_request_items.ordered_quantity,
+
+	mla_purchase_request_items.seq_number_of_year,
+	mla_purchase_request_items.pr_number,
+	mla_purchase_request_items.auto_pr_number,    
+    mla_purchase_request_items.pr_name,
+	mla_purchase_request_items.pr_description,
+    mla_purchase_request_items.pr_requested_by,
+    mla_purchase_request_items.pr_requested_on,
+    mla_purchase_request_items.pr_last_status,
+	mla_purchase_request_items.pr_last_status_on,
+	mla_purchase_request_items.pr_last_status_by,
+ 	mla_purchase_request_items.pr_year,
+ 	mla_purchase_request_items.pr_requester_name,
+	
+    mla_purchase_request_items.pr_of_department_id,
+	mla_purchase_request_items.pr_of_department,
+ 	mla_purchase_request_items.pr_of_department_status
+ 
+   	from mla_delivery_items
+    
+  /* total confirmed and rejected DN */
+left join
+(
+	select
+	mla_delivery_items_workflows.pr_item_id,
+	sum(mla_delivery_items_workflows.confirmed_quantity) as confirmed_quantity,
+    sum(mla_delivery_items_workflows.rejected_quantity) as rejected_quantity
+	from mla_delivery_items_workflows
+	group by mla_delivery_items_workflows.pr_item_id
+)
+as mla_delivery_items_workflows
+on mla_delivery_items_workflows.pr_item_id = mla_delivery_items.pr_item_id
+
+/* total notified /unconfirmed DN */
+left join
+(
+		select
+			mla_delivery_items_workflows.dn_item_id,
+			mla_delivery_items_workflows.status as dn_last_status,
+			mla_delivery_items_workflows.updated_on as dn_last_status_on,
+			mla_delivery_items_workflows.updated_by as dn_last_status_by,
+         	mla_delivery_items.delivered_quantity  as notified_quantity
+	
+		from mla_delivery_items
+		left join mla_delivery_items_workflows
+		on mla_delivery_items_workflows.id = mla_delivery_items.last_workflow_id
+	    where mla_delivery_items_workflows.status = 'Notified'
+)
+as mla_delivery_items_notified
+on mla_delivery_items_notified.dn_item_id = mla_delivery_items.id
+
+     left join mla_vendors
+	on mla_vendors.id = mla_delivery_items.vendor_id
+
+/* Pr Items*/
+left join
+(
+
+/* PR ITEMS*/
+select
+	mla_purchase_request_items.id,
+    mla_purchase_request_items.priority,
+    mla_purchase_request_items.name,
+    mla_purchase_request_items.code,
+     mla_purchase_request_items.unit,
+    mla_purchase_request_items.keywords,
+	mla_purchase_request_items.quantity as ordered_quantity,
+
+	mla_purchase_requests.seq_number_of_year,
+	mla_purchase_requests.pr_number,
+	mla_purchase_requests.auto_pr_number,    
+    mla_purchase_requests.name as pr_name,
+	mla_purchase_requests.description as pr_description,
+    mla_purchase_requests.requested_by as pr_requested_by,
+    mla_purchase_requests.requested_on as pr_requested_on,
+    mla_purchase_requests.pr_last_status,
+	mla_purchase_requests.pr_last_status_on,
+	mla_purchase_requests.pr_last_status_by,
+ 	mla_purchase_requests.pr_year,
+ 	mla_purchase_requests.pr_requester_name,
+	
+    mla_purchase_requests.pr_of_department_id,
+	mla_purchase_requests.pr_of_department,
+ 	mla_purchase_requests.pr_of_department_status
+     
+	        
+from mla_purchase_request_items
+
+/* purchase requests*/
+left join
+(
+	select
+		mla_purchase_requests.*,
+		mla_purchase_requests_workflows.status as pr_last_status,
+		mla_purchase_requests_workflows.updated_by as pr_last_status_by,
+		mla_purchase_requests_workflows.updated_on as pr_last_status_on,
+		year(mla_purchase_requests.requested_on) as pr_year,
+		concat (mla_users.firstname,' ',mla_users.lastname ) as pr_requester_name,
+		mla_users.department_id as pr_of_department_id,
+		mla_users.department_name as pr_of_department,
+		mla_users.department_status as pr_of_department_status
+	from mla_purchase_requests
+
+	left join mla_purchase_requests_workflows
+		on mla_purchase_requests_workflows.id = mla_purchase_requests.last_workflow_id
+
+	left join
+	(
+	   select 
+			mla_users.title, 
+			mla_users.firstname, 
+			mla_users.lastname, 
+			mla_departments_members_1.*
+		from mla_users
+		join 
+		(	select 
+				mla_departments_members.department_id,
+				mla_departments_members.user_id,
+				mla_departments.name as department_name,
+				mla_departments.status as department_status
+			from mla_departments_members
+			join mla_departments on mla_departments_members.department_id = mla_departments.id
+		) as mla_departments_members_1 
+		on mla_users.id = mla_departments_members_1.user_id
+
+	) 
+	as mla_users
+	on mla_users.user_id = mla_purchase_requests.requested_by
+
+) 
+as mla_purchase_requests
+on mla_purchase_requests.id = mla_purchase_request_items.purchase_request_id
+
+/* PR ITEMS*/
+
+)
+as  mla_purchase_request_items
+on mla_purchase_request_items.id = mla_delivery_items.pr_item_id
+    
+    where 1
+    and mla_delivery_items.po_item_id>0	
+	";
 	
 	public function __construct(TableGateway $tableGateway) {
 		$this->tableGateway = $tableGateway;
@@ -576,6 +743,54 @@ and mla_delivery_cart.id  IN " . $seletect_items;
 			$sql = $sql. " OFFSET " . $offset;
 		}
 		
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	/**
+	 *
+	 * @param unknown $user_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getGRItems($balance,$notified,$notified_quantity,$limit,$offset) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = $this->getGRItem_SQL;
+		
+		if ($balance == 0) {
+			$sql = $sql. " AND (mla_purchase_request_items.ordered_quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) = 0";
+		}
+		if ($balance ==1) {
+			$sql = $sql. " AND (mla_purchase_request_items.ordered_quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) > 0";
+		}
+		
+		if ($notified ==1) {
+			$sql = $sql. " AND mla_delivery_items.last_workflow_id >0";
+		}
+		if ($notified ==0) {
+			$sql = $sql. " AND mla_delivery_items.last_workflow_id is null";;
+		}
+		
+		// unconfirmed
+		if ($notified_quantity == 0) {
+			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.notified_quantity,0)) = 0";
+		}
+		if ($notified_quantity ==1) {
+			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.notified_quantity,0)) > 0";
+		}
+	
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+	
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+	
 		$statement = $adapter->query ( $sql );
 		$result = $statement->execute ();
 	

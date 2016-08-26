@@ -12,8 +12,6 @@ namespace Procurement\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\I18n\Validator\Int;
-use Zend\Http\Headers;
-
 use MLA\Paginator;
 use MLA\Files;
 use Procurement\Model\PurchaseRequest;
@@ -56,7 +54,7 @@ use Inventory\Model\SparepartLastDNTableDNTable;
  * @author nmt
  *        
  */
-class POController extends AbstractActionController {
+class CashController extends AbstractActionController {
 	protected $userTable;
 	protected $purchaseRequestItemTable;
 	protected $purchaseRequestTable;
@@ -85,6 +83,9 @@ class POController extends AbstractActionController {
 		return new ViewModel ();
 	}
 	
+	public function requestAction() {
+		return new ViewModel ();
+	}
 	
 	
 	/**
@@ -163,137 +164,8 @@ class POController extends AbstractActionController {
 	 */
 	public function listAction() {
 		
-		// $request = $this->getRequest ();
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		
-		$department_id = $this->params ()->fromQuery ( 'department_id' );
-		$balance = $this->params ()->fromQuery ( 'balance' );
-		
-		$payment_method= $this->params ()->fromQuery ( 'payment_method' );
-		$currency = $this->params ()->fromQuery ( 'currency' );
-		
-		$departments = $this->departmentTable->fetchAll ();
-		
-		$vendor_id = $this->params ()->fromQuery ( 'vendor_id' );
-		$vendors = $this->poItemTable->getVendorsOfPOList();
-		
-		if ($department_id == null) :
-		$department_id = 0;
-		endif;
-		
-		if ($department_id == null) :
-		$department_id = 0;
-		endif;
-		
-		if ($balance == null) :
-		$balance = 1;
-		endif;
-		
-		$output = $this->params ()->fromQuery ( 'output' );
-		
-		$po_items = $this->poItemTable->getPOItems($balance, $department_id,$vendor_id,$payment_method, $currency,0, 0 );
-		$totalResults = count ( $po_items );
-		
-		
-		if ($output === 'csv') {				
-			$fh = fopen ( 'php://memory', 'w' );
-			// $myfile = fopen('ouptut.csv', 'a+');
-				
-			$h = array ();
-			$h [] = "Item ID";
-			$h [] = "Item Name";
-			$h [] = "Item Code";
-			$h [] = "Item Unit";
-			$h [] = "Item Keywords";
-			$h [] = "PR number";
-			$h [] = "PR auto number";
-			$h [] = "Requester";
-			$h [] = "Department";
-			
-			
-			$h [] = "Ordered Quantity";
-			$h [] = "Received Quantity";
-			$h [] = "Notified Quantity";
-			$h [] = "Confirmed Quantity";
-			$h [] = "Rejected Quantity";
-			$h [] = "Balance";
-			$h [] = "Free Quantity";
-
-			$h [] = "Vendor";
-			$h [] = "Unit Price";
-			$h [] = "Currency";
-			$h [] = "Payment Method";
-			
-			$h [] = "Remarks";
-				
-			$delimiter = ";";
-				
-			fputcsv ( $fh, $h, $delimiter, '"' );
-			// fputs($fh, implode($h, ',')."\n");
-				
-				
-			foreach ( $po_items as $m ) {
-				$l = array ();
-				$l [] = ( string ) $m->pr_item_id;
-				$l [] = ( string ) $m->pr_item_name;
-				$l [] = ( string ) $m->pr_item_code;
-				$l [] = ( string ) $m->pr_item_unit;
-				$l [] = ( string ) $m->pr_item_keywords;
-				$l [] = ( string ) $m->pr_number;
-				$l [] = ( string ) $m->auto_pr_number;
-				$l [] = ( string ) $m->pr_requester_name;
-				$l [] = ( string ) $m->pr_of_department;
-				
-				
-				$l [] = ( string ) $m->ordered_quantity;
-				$l [] = ( string ) $m->total_received_quantity;
-				$l [] = ( string ) $m->unconfirmed_quantity;
-				$l [] = ( string ) $m->confirmed_quantity;
-				$l [] = ( string ) $m->rejected_quantity;
-				$l [] = ( string ) $m->confirmed_balance;
-				$l [] = ( string ) $m->confirmed_free_balance;
-				
-				$l [] = ( string ) $m->vendor_name;
-				$l [] = ( string ) $m->price;
-				$l [] = ( string ) $m->currency;
-				$l [] = ( string ) $m->payment_method;
-				
-				$l [] = ( string ) $m->remarks;
-		
-				fputcsv ( $fh, $l, $delimiter, '"' );
-				// fputs($fh, implode($l, ',')."\n");
-			}
-				
-			$fileName = 'po-items-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
-			fseek ( $fh, 0 );
-			$output = stream_get_contents ( $fh );
-			// file_put_contents($fileName, $output);
-				
-			$response = $this->getResponse ();
-			$headers = new Headers();
-				
-			$headers->addHeaderLine ( 'Content-Type: text/csv' );
-			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
-				
-			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
-			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
-			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
-			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
-				
-			$response->setHeaders($headers);
-			// $output = fread($fh, 8192);
-				
-			$response->setContent ( $output );
-				
-			fclose ( $fh );
-			// unlink($fileName);
-			return $response;
-		}
-		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 10;
+			$resultsPerPage = 15;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
@@ -305,6 +177,37 @@ class POController extends AbstractActionController {
 			$page = $this->params ()->fromQuery ( 'page' );
 		}
 		;
+	
+		// $request = $this->getRequest ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+	
+		$department_id = $this->params ()->fromQuery ( 'department_id' );
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		
+		$payment_method= $this->params ()->fromQuery ( 'payment_method' );
+		$currency = $this->params ()->fromQuery ( 'currency' );
+		
+		$departments = $this->departmentTable->fetchAll ();
+	
+		$vendor_id = $this->params ()->fromQuery ( 'vendor_id' );
+		$vendors = $this->poItemTable->getVendorsOfPOList();
+	
+		if ($department_id == null) :
+			$department_id = 0;
+		endif;
+	
+		if ($department_id == null) :
+			$department_id = 0;
+		endif;
+		
+		if ($balance == null) :
+			$balance = 1;
+		endif;
+	
+		$po_items = $this->poItemTable->getPOItems($balance, $department_id,$vendor_id,$payment_method, $currency,0, 0 );
+		$totalResults = count ( $po_items );
 	
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {

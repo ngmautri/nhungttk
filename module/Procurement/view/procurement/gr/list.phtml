@@ -3,16 +3,8 @@
 			var id_array = [];
 </script>
 
-
 <?php
 
-if ($department_id == 0 or $department_id == null):
-	$department_selected = "Department = All";
-endif;
-
-if ($vendor_id <= 0 or $vendor_id == null):
-$vendor_selected = "Vendor = All";
-endif;
 
 if ($balance== 2 or $balance == null):
 $balance_selected = "Balance = All";
@@ -31,22 +23,23 @@ $balance_selected = "Balance <0 (Some free items)";
 endif;
 
 
-if ($currency == "" or $currency == null):
-$currency_selected = "Currency = all";
-	else:
-$currency_selected = "Currency = ".$currency;
+if ($notified == "" or $notified == null):
+	$notified_selected = "Notify status = all";
 endif;
 
-if ($payment_method == "" or $payment_method == null):
-	$payment_method_selected = "Payment method = All";
-else:
-	$payment_method_selected = "Payment method = ".$payment_method;
+
+if ($notified == "1" ):
+$notified_selected = "Notify status = YES";
+endif;
+
+if ($notified == "0"):
+$notified_selected = "Notify status = NO";
 endif;
 
 ?>
 
 
-<h4> Purchase Order Items:</h4>
+<h4> Received Items:</h4>
 <div class="panel-group">
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -62,7 +55,7 @@ endif;
 			<div class="panel-body">
 
 				<form class="form-horizontal"
-					action="<?php echo $this->baseUrl ?>/procurement/po/list"
+					action="<?php echo $this->baseUrl ?>/procurement/gr/list"
 					method="get" enctype="multipart/form-data" id="ReportForm">
 					<div class="control-group">
 						<label class="control-label" for="inputNameLocal">PR by
@@ -106,54 +99,34 @@ endif;
 						</div>
 					</div>
 						<div class="control-group">
-						<label class="control-label" for="inputTag">Currency:</label>
+						<label class="control-label" for="inputTag">Notified:</label>
 						<div class="controls">
-							<select style="wight: 10px" name="currency" id="currency">
-				
+							<select style="wight: 10px" name="notified" id="notified">
 								<option selected="selected" value="">All</option>
-								<option <?php echo $currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
-								<option <?php echo $currency=='LAK'? "selected='selected'":"";?> value="LAK">LAK</option>
-								<option <?php echo $currency=='THB'? "selected='selected'":"";?> value="THB">THB</option>
-				
+								<option <?php echo $notified=='1'? "selected='selected'":"";?> value="1">YES</option>
+								<option <?php echo $notified=='0'? "selected='selected'":"";?> value="0">NO</option>
 							</select>
 							</div>
 					</div>
 					
 					<div class="control-group">
-					<label class="control-label" for="inputTag">Payment Method:</label>
+						<label class="control-label" for="inputNameLocal">Confirmed By Requester:</label>
 						<div class="controls">
-							<select name="payment_method" id="payment_method">
-				
-								<option selected="selected" value="">All</option>
-								<option <?php echo $payment_method=='By Cash'? "selected='selected'":"";?> value="By Cash">By Cash</option>
-								<option <?php echo $payment_method=='Bank Transfer'? "selected='selected'":"";?> value="Bank Transfer">Bank Transfer</option>
-								<option <?php echo $payment_method=='Other'? "selected='selected'":"";?> alue="Other">Other Method</option>
+							<select name="notified_quantity">
+								<option value="2">All</option>
+								<option
+									<?php echo $notified_quantity=='0'? "selected='selected'":"";?>
+									value="0">YES</option>
+								<option
+									<?php echo $notified_quantity=='1'? "selected='selected'":"";?>
+									value="1">NO</option>
+
+
 							</select>
 						</div>
 					</div>
 					
-					<div class="control-group">
-						<label class="control-label" for="inputNameLocal">Vendor: </label>
-						<div class="controls">
-							<select name="vendor_id">
-								<option value="-1">All</option>
-								<?php
-									
-									foreach ( $vendors as $a ) :
-										if ($a->vendor_id === $vendor_id) :
-												$vendor_selected = "Vendor = All" . $a->vendor_name;;
-											echo '<option selected="selected" value="' . $a->vendor_id . '">' . $a->vendor_name .'</option>';
-										else :
-											echo '<option value="' . $a->vendor_id . '">' . $a->vendor_name . '</option>';
-										endif;
-									endforeach
-									;
-									?>
-
-							</select>
-						</div>
-					</div>
-
+			
 					<div class="control-group">
 						<div class="controls">
 							<button type="submit" class="btn">
@@ -168,42 +141,35 @@ endif;
 	</div>
 </div>
 
-<?php  	if (count($po_items) >0): ?>
-<ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl.'/procurement/po/list?output=csv&department_id='.$department_id.
- '&vendor_id='.$vendor_id.'&balance='.$balance.'&currency='.$currency.'&payment_method='.$payment_method;?>"><i class="icon-download-alt">  </i> Download (csv)</a> 
-</li>
- <?php if($payment_method=='By Cash'):?>
- 	<li><a href="<?php echo $this->baseUrl ?>/procurement/cash/request" target=>Cash Request</a>
- <?php endif;?> 
-</li>
-</ul>
-<?php endif;?> 
+<?php if($notified==0 and $balance>0):?>
+
+<div class="control-group">
+	<label class="control-label" for="inputTag">DN Number:</label>
+	<div class="controls">
+		<input type="text" id="dn_number" placeholder="" name="pr_number"
+			value="">
+	</div>
+</div>
+<?php endif;?>
+
 <?php  	
 
 	if (! is_null ( $paginator )) :
 		echo '<h5>'. $paginator->minInPage . ' to ' . $paginator->maxInPage . ' of ' . $total_items . 
-		' Item(s) found | <span class="label label-info">' . $department_selected . ' | ' . 
-	 $vendor_selected . ' | ' .
-	 $balance_selected . ' | ' .
-	 $currency_selected . ' | ' .
-	 $payment_method_selected. ' | ' .
+		' Item(s) found | <span class="label label-info">' . $balance_selected . ' | ' . 
+		$notified_selected. ' | ' .
 	 '<span></h5>';	
 	 else :
 	 echo '<h5>' . $total_items .
-	 ' Item(s)found | <span class="label label-info">' . $department_selected . ' | ' . 
-	 $vendor_selected . ' | ' .
-	 $balance_selected . ' | ' .
-	 $currency_selected . ' | ' .
-	 $payment_method_selected. ' | ' .
+	 ' Item(s) found | <span class="label label-info">' . $balance_selected . ' | ' .
+	 $notified_selected. ' | ' .
+	 
 	 '<span></h5>';		
 	 endif;
 	 ?>
-	
-
-<?php  	if (count($po_items) >0): ?>
 
 
+<?php  	if (count($receipts) >0): ?>
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -216,14 +182,16 @@ endif;
 		
 		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Purchasing<br>Quantity</b></td>
 		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Received<br>Quantity</b></td>
-		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Notified<br>Quantity</b></td>
+		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Notifed<br>Quantity</b></td>
 		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Confirmed<br>Quantity</b></td>
 		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Rejected<br>Quantity</b></td>
 		<td><b data-toggle="tooltip" title="Balance">Balance</b></td>
+	
 		<td><b>Unit <br>Price</b></td>
 		<td><b>Total</b></td>
 			<td><b data-toggle="tooltip" title="Currency">Curr.</b></td>
 	<td><b>Vendor</b></td>
+		<td><b>Flow</b></td>
 		</tr>
 	</thead>
 	<tbody>	
@@ -231,14 +199,23 @@ endif;
   <?php
 	
 	$count = 0;
-	foreach ( $po_items as $item ) :
+	foreach ( $receipts as $item ) :
 		$count ++;
 		//echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 		
 		?>
 		<tr>
-	 	<td><input class="checkbox1" type="checkbox" name="po_items[]"
-		value="<?php echo $item->id ;?>" /></td>
+		
+		
+	 	<td>
+	 	<?php if ($item->last_workflow_id ==null):?>
+	 	<input class="checkbox1" type="checkbox" name="do_items[]"
+		value="<?php echo $item->id ;?>" />
+		<?php else: ?>
+			Notified
+		<?php endif; ?>
+		
+		</td>
 
 		<td><?php echo $item->pr_requester_name;?>
 		
@@ -247,44 +224,25 @@ endif;
 			#<?php echo $item->auto_pr_number;?>
 			</div>
 		</td>
-		<td>
-			<div class="dropdown">
-					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
-						href="#"><span style="color: black;"><b><?php echo $item->name;?></b></span>
-					<span class="caret"></span></a>
-					<ul class="dropdown-menu">
-	    	     	
-    
-    	<?php if ($item->confirmed_balance > 0) : ?>
- <li class="divider"></li>	
- <li>  			
- <a href="<?php echo $this->baseUrl ?>/procurement/gr/receive?pr_item_id=<?php echo $this->escapeHtml($item->pr_item_id);?>&po_item_id=<?php echo $this->escapeHtml($item->id)?>">
- <i class="icon-check"></i> Receive</a>
-   	<li class="divider"></li>
- </li> 			
-    	<?php endif; ?>
-	
-
+		<td><b><?php echo $item->name;?></b>
 		
-		
+			
+			
 		</td>
 		<td><?php echo $item->ordered_quantity;?></td>
 		
 		<td><?php echo $item->ordered_quantity;?></td>
 		<td>
-		</a>
-		<a href="<?php echo $this->baseUrl ?>/procurement/gr/receive-list?po_item_id=<?php echo $item->id;?>" target="_blank"><?php echo $item->total_received_quantity;?></a>
+		<?php echo $item->delivered_quantity;?>
 		</td>
-		<td><?php echo $item->unconfirmed_quantity;?></td>
+		<td><?php echo $item->notified_quantity;?></td>
 		<td><?php echo $item->confirmed_quantity;?></td>
 		<td><?php echo $item->rejected_quantity;?></td>
-	<td><?php echo $item->confirmed_balance;?></td>
-		
+		<td><?php echo $item->confirmed_balance;?></td>
 		
 		<td><?php echo $item->price;?></td>
-		<td><?php echo ($item->price*$item->total_received_quantity);?></td>
+		<td><?php echo ($item->price*$item->delivered_quantity);?></td>
 		<td><?php echo $item->currency;?></td>
-		
 		
 		<td>
 		<a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->vendor_id;?>" target="_blank"><?php echo $item->vendor_name;?></a>
@@ -292,36 +250,23 @@ endif;
 			<?php echo $item->payment_method;?><br>
 			</div>
 </td>
-	
+
+		<td>
+		<div style="color: gray; font-size: 9pt;">
+					
+			
+			PR-Item: #<?php echo $item->pr_item_id;?><br>
+				PO-Item: #<?php echo $item->po_item_id;?><br>
+				DO:<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/delivery/create-step2?dn_id=<?php echo $item->delivery_id;?>" target="_blank">#<?php echo $item->delivery_id;?></a>
+		</div>
+		</td>
+
 <?php endforeach; ?>
 
  			
 
 </tbody>
 </table>
-<hr>
-
-<form class="form-search"
-	action="<?php echo $this->baseUrl ?>/inventory" method="get"
-	enctype="multipart/form-data">
-	<button type="submit" class="btn">
-		<i class="icon-arrow-left"> </i> Back
-	</button>
-</form>
-<?php else: echo 'Please change filter! <hr>'?>
-
-
-<form class="form-search"
-	action="<?php echo $this->baseUrl ?>/inventory" method="get"
-	enctype="multipart/form-data">
-	<button type="submit" class="btn">
-		<i class="icon-arrow-left"> </i> Back
-	</button>
-</form>
-
-<?php endif; ?>
-
-
 
 
 <?php
@@ -329,9 +274,9 @@ endif;
 	if (! is_null ( $paginator )) {
 		
 		// change it only
-		$base = $this->baseUrl . '/procurement/po/list?department_id='.$department_id.'&vendor_id='.$vendor_id.'&balance='.$balance.'&currency='.$currency.'&payment_method='.$payment_method;
+		$base = $this->baseUrl . '/procurement/gr/list';
 		
-		$_connector_symbol = '&';
+		$_connector_symbol = '?';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
 		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
@@ -367,7 +312,58 @@ endif;
 	}
 	
 	?>
+
+<hr>
+
+<form class="form-search"
+	action="<?php echo $this->baseUrl ?>/inventory" method="get"
+	enctype="multipart/form-data">
+	<button type="submit" class="btn">
+		<i class="icon-arrow-left"> </i> Back
+	</button>
+	<button title="Submit PR to Procurment" class="btn btn-default"
+		onclick="openConfirmation(1);" type="button">
+		<i class="icon-ok"> </i> Notify 
+	</button>
+</form>
+
+
+
 	
+
+
+
+
+
+
+
+
+<?php else: echo '<p> All goods receipt has been notified to requester! </p>'?>
+
+
+
+
+
+
+
+
+
+
+<form class="form-search"
+	action="<?php echo $this->baseUrl ?>/inventory" method="get"
+	enctype="multipart/form-data">
+	<button type="submit" class="btn">
+		<i class="icon-arrow-left"> </i> Back
+	</button>
+</form>
+
+<?php endif; ?>
+
+
+
+
+
+
 	
 	<!-- Modal -->
 	<div id="myModal" class="modal hide" role="dialog">
@@ -382,7 +378,7 @@ endif;
 	      
 		  <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	        <button onclick="submitDNCartItems();" type="button" class="btn btn-primary">OK</button>
+	        <button onclick="notifyDOItems();" type="button" class="btn btn-primary">OK</button>
 	      </div>
 	   </div>
 	</div>
@@ -414,3 +410,6 @@ endif;
 	      </div>
 	   </div>
 	</div>			
+
+	
+	

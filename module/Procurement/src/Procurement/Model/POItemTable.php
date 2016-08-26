@@ -10,8 +10,6 @@ class POItemTable {
 	protected $tableGateway;
 	
 	private $getPOItems_SQL ="
-	
-
 			select
             mla_po_item.*,
             mla_vendors.name as vendor_name,
@@ -40,10 +38,10 @@ class POItemTable {
 select
 	mla_purchase_request_items.id as pr_item_id_1,
     mla_purchase_request_items.priority,
-    mla_purchase_request_items.name,
-    mla_purchase_request_items.code,
-     mla_purchase_request_items.unit,
-    mla_purchase_request_items.keywords,
+    mla_purchase_request_items.name as pr_item_name,
+    mla_purchase_request_items.code as pr_item_code,
+     mla_purchase_request_items.unit as pr_item_unit,
+    mla_purchase_request_items.keywords as pr_item_keywords,
 	mla_purchase_request_items.quantity as ordered_quantity,
 
 	mla_purchase_requests.seq_number_of_year,
@@ -73,7 +71,7 @@ select
 	 if ((mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0))>=0
 	, 0
 	,ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)-mla_purchase_request_items.quantity) as confirmed_free_balance,
-     ifnull(mla_delivery_items_notified.unconfimed_quantity,0) as unconfimed_quantity
+     ifnull(mla_delivery_items_notified.unconfimed_quantity,0) as unconfirmed_quantity
         
 from mla_purchase_request_items
 
@@ -301,7 +299,7 @@ on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
 	 * @param unknown $offset
 	 * @return \Zend\Db\ResultSet\ResultSet|NULL
 	 */
-	public function getPOItems($balance,$department_id,$vendor_id, $limit, $offset) {
+	public function getPOItems($balance,$department_id,$vendor_id, $payment_methode, $currency, $limit, $offset) {
 		$adapter = $this->tableGateway->adapter;
 	
 		$sql = $this->getPOItems_SQL;
@@ -323,6 +321,15 @@ on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
 		}
 		if ($balance ==-1) {
 			$sql = $sql. " AND (mla_purchase_request_items.ordered_quantity - ifnull(mla_purchase_request_items.confirmed_quantity,0)) < 0";
+		}
+		
+
+		if ($payment_methode != null or $payment_methode != '') {
+			$sql = $sql. " AND mla_po_item.payment_method='".$payment_methode."'";
+		}
+		
+		if ($currency != null or $currency != '') {
+			$sql = $sql. " AND mla_po_item.currency='".$currency."'";
 		}
 		
 		$sql = $sql. " ORDER BY pr_requested_by";

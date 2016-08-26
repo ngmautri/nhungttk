@@ -932,21 +932,20 @@ select
  	mla_purchase_requests.pr_of_department_status,
    
 	 ifnull( mla_delivery_items.total_received_quantity,0) as total_received_quantity,
-	ifnull(mla_delivery_items_confirmed.confirmed_quantity,0) as confirmed_quantity,
-	ifnull(mla_delivery_items_rejected.rejected_quantity,0) as rejected_quantity,
+	ifnull(mla_delivery_items_workflows.confirmed_quantity,0) as confirmed_quantity,
+	ifnull(mla_delivery_items_workflows.rejected_quantity,0) as rejected_quantity,
 	
-    if ((mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0))>=0
-    ,(mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0))
+    if ((mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))>=0
+    ,(mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))
     ,0) as confirmed_balance,
 	
-	 if ((mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0))>=0
+	 if ((mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))>=0
 	, 0
-	,ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)-mla_purchase_request_items.quantity) as confirmed_free_balance,
+	,ifnull(mla_delivery_items_workflows.confirmed_quantity,0)-mla_purchase_request_items.quantity) as confirmed_free_balance,
     
     ifnull(mla_delivery_items_notified.unconfimed_quantity,0) as unconfirmed_quantity,
 	
-    
-     
+         
 	last_sparepart_dn.vendor_name as sp_vendor_name,
    	last_sparepart_dn.vendor_id as sp_vendor_id,
 	last_sparepart_dn.price as sp_price,
@@ -983,8 +982,7 @@ left join mla_purchase_requests_workflows
     
 left join
 (
-	
-	
+		
     /**USER-DEPARTMENT beginns*/
     select
         mla_users.title,
@@ -1011,30 +1009,19 @@ as mla_users
 as mla_purchase_requests
 on mla_purchase_requests.id = mla_purchase_request_items.purchase_request_id
 	
-/* total confirmed DN */
+/* total confirmed and rejected DN */
 left join
 (
 	select
 	mla_delivery_items_workflows.pr_item_id,
-	sum(mla_delivery_items_workflows.confirmed_quantity) as confirmed_quantity
+	sum(mla_delivery_items_workflows.confirmed_quantity) as confirmed_quantity,
+    sum(mla_delivery_items_workflows.rejected_quantity) as rejected_quantity
 	from mla_delivery_items_workflows
 	group by mla_delivery_items_workflows.pr_item_id
 )
-as mla_delivery_items_confirmed
-on mla_delivery_items_confirmed.pr_item_id = mla_purchase_request_items.id
+as mla_delivery_items_workflows
+on mla_delivery_items_workflows.pr_item_id = mla_purchase_request_items.id
 	
-/* total rejected DN */
-left join
-(
-	select
-	mla_delivery_items_workflows.pr_item_id,
-	sum(mla_delivery_items_workflows.rejected_quantity) as rejected_quantity
-	from mla_delivery_items_workflows
-	group by mla_delivery_items_workflows.pr_item_id
-)
-as mla_delivery_items_rejected
-on mla_delivery_items_rejected.pr_item_id = mla_purchase_request_items.id
-
 /* total notified /unconfirmed DN */
 left join
 (
@@ -1094,8 +1081,8 @@ from
 	on mla_delivery_items.id  = mla_articles_last_dn.dn_item_id
 ) 
 as mla_articles_last_dn
-join mla_vendors
 
+join mla_vendors
 on mla_vendors.id = mla_articles_last_dn.vendor_id 
 
 /* last article dn*/
@@ -1912,13 +1899,13 @@ on TT1.purchase_request_id = TT3.id";
 		}
 	
 		if ($balance == 0) {
-			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)) = 0";
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) = 0";
 		}
 		if ($balance ==1) {
-			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)) > 0";
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) > 0";
 		}
 		if ($balance ==-1) {
-			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)) < 0";
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) < 0";
 		}
 		
 		// unconfirmed

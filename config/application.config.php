@@ -1,4 +1,7 @@
 <?php
+
+//2nyAf8CT3hujzGLM
+
 return array (
 		// This should be an array of module namespaces used in the application.
 		'modules' => array (

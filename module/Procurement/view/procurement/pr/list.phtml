@@ -1,0 +1,228 @@
+<script language="javascript">
+			var id_array = [];
+</script>
+
+<h4>Purchase Request:</h4>        
+ <?php 
+	 
+ if ($department_id == 0 or $department_id == null):
+ $department_selected = "Department = All";
+ endif;
+ 
+ if ($flow== "all" or $flow == null):
+ $flow_selected = "Flow = all";
+ else:
+ $flow_selected = "Flow = ".$flow;
+ endif;
+
+
+ if ($last_status== "all" or $last_status == null):
+ $last_status_selected = "Last Status = All";
+ else:
+ $last_status_selected = "Last Status = ".$last_status;
+ endif;
+?>
+
+<div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h5 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1"><i class="icon-filter">  </i> FILTER</a>
+        </h5>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse <?php echo count($all_pr)>0?"":"in"?>">
+        <div class="panel-body">
+ 		<div style="padding:3px;background: url(/images/bg1.png); background-repeat:repeat-x; background-color: #FFFFFF;">
+	       
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/list"	method="get" enctype="multipart/form-data" id="ReportForm" >
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">PR by Department: </label>
+        <div class="controls">
+        	<select name="department_id" >
+        		<option value="">All departments</option>
+    	    <?php foreach ($departments as $dept) :
+        		if($dept->id === $department_id):
+        			$department_selected = "Department = ".  $dept->name;
+	   				echo '<option selected="selected" value="' . $dept->id. '">' .  $dept->name. '</option>';
+        		else:
+        			echo '<option value="' . $dept->id. '">' .  $dept->name. '</option>';
+        		endif;
+			endforeach; 
+			?>   		
+   			</select>
+	     </div>
+      </div>
+      
+      <div class="control-group">
+        <label class="control-label" for="inputNameLocal">PR Flow: </label>
+        <div class="controls">
+        	<select name="flow" >
+        		<option value="all">All</option>
+   	    		<option <?php echo $flow=='Submitted'? "selected='selected'":"";?> value="Submitted">Submitted</option>
+   	 	    	<option <?php echo $flow=='Approved'? "selected='selected'":"";?> value="Approved">Approved</option>
+  	 		</select>
+	     </div>
+      </div>
+      
+       <div class="control-group">
+        <label class="control-label" for="inputNameLocal">PR by Status: </label>
+        <div class="controls">
+        	<select name="last_status" >
+        		<option value="all">All</option>
+   	        	<option <?php echo $last_status=='Pending'? "selected='selected'":"";?> value="Pending">Pending</option>
+  	 	    	<option <?php echo $last_status=='Fulfilled'? "selected='selected'":"";?> value="Fulfilled">Fulfilled</option>
+  
+   			</select>
+	     </div>
+      </div>
+      
+       <div class="control-group">
+        <div class="controls">
+             <button type="submit" class="btn"><i class="icon-search">  </i> show</button>
+        </div>
+      </div>
+    </form>
+  </div>      
+        
+        
+        </div>
+     </div>
+    </div>
+  </div>
+
+<hr>
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/"	method="get" enctype="multipart/form-data">
+      <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
+</form>
+
+<?php 
+
+	if (! is_null ( $paginator )):
+		echo '<h5>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage . ' of ' .  $total_items. ' items found. |' .
+			$department_selected . ' | ' .
+			 $flow_selected. ' | ' .
+			 $last_status_selected . ' | ' .
+			 '<span></h5>';	
+	else:
+		echo '<h5>'. $total_items . ' Items found | '.
+				$department_selected . ' | ' .
+				$flow_selected . ' | ' .
+				$last_status_selected . ' | ' .
+				'<span></h5>';
+	endif;
+?>
+
+<?php if(count($all_pr) >0): 
+
+	?>
+<table class="table table-striped table-bordered">
+<thead>
+<tr>
+		<td><b>Internal No.</b></td>
+		<td><b>PR. Number</b></td>
+		<td><b>Requester</b></td>
+		<td><b>Department</b></td>			
+		<td><b>Created on</b></td>
+		<td><b>Flow</b></td>
+		<td><b>Updated on</b></td>
+		<td><b>Completion</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+<tbody>	
+ 
+  <?php 
+	 
+	 $count = 0;
+	 foreach ($all_pr as $item) : 
+	 	 $count++;
+	 //echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 ?>
+	 <tr>
+ 		<td><?php echo $item->auto_pr_number . ' <span class="badge"> '.$item->total_items.'</span>'?>
+ 		<td><?php echo $item->pr_number;?></td> 	
+		<td><?php echo $item->pr_requester_name;?></td>
+				<td><?php echo $item->pr_of_department;?></td>
+		
+		
+		<td><?php echo date_format(date_create($item->requested_on),"Y-m-d");?></td>
+		<td><?php echo $item->pr_last_status ===null?'Started':$item->pr_last_status;?></td>
+		<td><?php echo date_format(date_create($item->pr_last_status_on),"Y-m-d");?></td>
+		<td>
+		<div style="color: gray; font-size: 8pt;">
+		
+			<?php if( $item->total_pending_items>0):
+					echo round((($item->total_items-$item->total_pending_items)/$item->total_items) * 100,2). '%';;
+			else:
+					echo '<span class="label label-success">100%</span>';
+			endif;?>
+			<br>
+		</div>
+		</td>
+		<td>
+		<a
+		href="<?php echo $this->baseUrl ?>/procurement/pr/approve-step-1?pr_id=<?php echo $item->id;?>"><?php echo $item->pr_last_status ==='Approved'?'show':'approve';?>
+		</a>
+		
+		
+	</td>
+<?php endforeach; ?>
+</tbody>
+</table>
+<br>
+<?php
+	
+if (! is_null ( $paginator )) {
+		
+	
+	//change it only
+	$base=$this->baseUrl . '/procurement/pr/list?department_id='.$department_id.'&last_status='.$last_status.'&flow='.$flow;
+	
+	$_connector_symbol = '&';
+
+	$last 	= $base . $_connector_symbol.'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+	$first 	= $base . $_connector_symbol.'page=1&perPage=' . $paginator->resultsPerPage;
+
+	$p1 = ($paginator->page)-1;
+	$p2 = ($paginator->page)+1;
+
+	$prev = $base . $_connector_symbol.'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+	$next = $base . $_connector_symbol.'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+
+	echo '<ul class="pagination">';
+
+	if($paginator->page != 1 AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $first.'"> |< </a></li>';
+		echo '<li><a href="'.  $prev .'"> < </a></li>';
+	}
+
+	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+		$url = $base. $_connector_symbol.'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+			
+		if ($i == $paginator->page) {
+			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
+		} else {
+			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
+		}
+	}
+	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $next.'"> > </a></li>';
+		echo '<li><a href="'.  $last .'"> >| </a></li>';
+	}
+	echo '</ul>';
+}
+
+?>
+
+
+
+
+
+<?php else:
+echo 'No PRs found ...';
+
+endif;
+ ?>

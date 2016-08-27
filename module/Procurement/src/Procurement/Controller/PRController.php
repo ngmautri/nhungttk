@@ -52,7 +52,67 @@ class PRController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function listAction() {
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$last_status = $this->params ()->fromQuery ( 'last_status' );
+		$flow = $this->params ()->fromQuery ( 'flow' );
+		$department_id = $this->params ()->fromQuery ( 'department_id' );
+		$departments = $this->departmentTable->fetchAll ();
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		if ($flow == null) :
+			$flow = 'all';
+		endif;
+		
+		if ($last_status == null) :
+			$last_status = 'Pending';
+		endif;
+		
+		if ($department_id == null) :
+			$department_id = 0;
+		
+		endif;
+		
+		$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $flow,$last_status, $department_id, 0, 0 );
+		$totalResults = count ( $all_pr );
+		
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $flow,$last_status, $department_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		return new ViewModel ( array (
+				'redirectUrl' => $redirectUrl,
+				'errors' => null,
+				'all_pr' => $all_pr,
+				'departments' => $departments,
+				'last_status' => $last_status,
+				'flow' => $flow,
+				'department_id' => $department_id,
+				'paginator' => $paginator,
+				'total_items' => $totalResults 
+		) );
+	}
+	
+	/**
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function createStep1Action() {
@@ -123,7 +183,7 @@ class PRController extends AbstractActionController {
 	
 	/**
 	 * Submit PR
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function submitAction() {
@@ -232,8 +292,7 @@ class PRController extends AbstractActionController {
 			return new ViewModel ( array (
 					'hits' => null,
 					'pr' => $pr 
-			)
-			 );
+			) );
 		}
 		
 		if (strpos ( $q, '*' ) !== false) {
@@ -266,8 +325,7 @@ class PRController extends AbstractActionController {
 				'query' => $q,
 				'hits' => $hits,
 				'pr' => $pr 
-		)
-		 );
+		) );
 	}
 	
 	/*
@@ -485,11 +543,10 @@ class PRController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function myPRAction() {
-		
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
 		
@@ -531,8 +588,7 @@ class PRController extends AbstractActionController {
 				'pr_status' => $pr_status,
 				'pr_year' => $pr_year,
 				'order_by' => $order_by 
-		)
-		 );
+		) );
 	}
 	public function mySubmittedItemsAction() {
 		
@@ -549,13 +605,7 @@ class PRController extends AbstractActionController {
 				'pr_items' => $pr_items 
 		) );
 	}
-	
-	/**
-	 * 
-	 * @return \Zend\View\Model\ViewModel
-	 */
 	public function allPRAction() {
-	
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$last_status = $this->params ()->fromQuery ( 'last_status' );
 		$department_id = $this->params ()->fromQuery ( 'department_id' );
@@ -577,10 +627,12 @@ class PRController extends AbstractActionController {
 		
 		if ($last_status == null) :
 			$last_status = '';
+		
 		endif;
 		
 		if ($department_id == null) :
 			$department_id = 0;
+		
 		endif;
 		
 		$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $last_status, $department_id, 0, 0 );
@@ -601,8 +653,7 @@ class PRController extends AbstractActionController {
 				'department_id' => $department_id,
 				'paginator' => $paginator,
 				'total_items' => $totalResults 
-		)
-		 );
+		) );
 	}
 	
 	/**
@@ -620,21 +671,22 @@ class PRController extends AbstractActionController {
 		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
 		$added_delivery_list = $this->params ()->fromQuery ( 'added_delivery_list' );
 		
-		
 		if ($balance == null) :
 			$balance = 2;
+		
 		endif;
 		
 		if ($unconfirmed_quantity == null) :
-		$unconfirmed_quantity = 2;
+			$unconfirmed_quantity = 2;
+		
 		endif;
 		
 		if ($added_delivery_list == null) :
-		$added_delivery_list = 2;
+			$added_delivery_list = 2;
+		
 		endif;
 		
-		
-		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V3( $pr_id,$balance,$unconfirmed_quantity,$added_delivery_list,0,0);
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V3 ( $pr_id, $balance, $unconfirmed_quantity, $added_delivery_list, 0, 0 );
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
@@ -642,17 +694,17 @@ class PRController extends AbstractActionController {
 				'errors' => null,
 				'pr' => $pr,
 				'pr_items' => $pr_items,
-				'paginator'=>null,
+				'paginator' => null,
 				'balance' => $balance,
 				'unconfirmed_quantity' => $unconfirmed_quantity,
-				'added_delivery_list' => $added_delivery_list,
-				
-		) );
+				'added_delivery_list' => $added_delivery_list 
+		)
+		 );
 	}
 	
 	/**
 	 * Submit PR
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function approveAction() {
@@ -672,7 +724,7 @@ class PRController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function prItemsAction() {
@@ -701,29 +753,30 @@ class PRController extends AbstractActionController {
 		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
 		$processing = $this->params ()->fromQuery ( 'processing' );
 		
-		
 		$departments = $this->departmentTable->fetchAll ();
 		
 		if ($balance == null) :
 			$balance = 1;
+		
 		endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
+		
 		endif;
 		
 		if ($processing == null) :
 			$processing = 0;
+		
 		endif;
 		
-		
-		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2( $department_id, $last_status, $balance, $unconfirmed_quantity,$processing,0, 0 );
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance, $unconfirmed_quantity, $processing, 0, 0 );
 		$totalResults = count ( $pr_items );
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance,$unconfirmed_quantity, $processing,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance, $unconfirmed_quantity, $processing, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -736,12 +789,10 @@ class PRController extends AbstractActionController {
 				'balance' => $balance,
 				'unconfirmed_quantity' => $unconfirmed_quantity,
 				'processing' => $processing,
-				
 				'department_id' => $department_id,
 				'paginator' => $paginator,
 				'total_items' => $totalResults 
-		)
-		 );
+		) );
 	}
 	
 	/*
@@ -767,7 +818,7 @@ class PRController extends AbstractActionController {
 				$input->priority = $request->getPost ( 'priority' );
 				$input->name = $request->getPost ( 'name' );
 				$input->code = $request->getPost ( 'code' );
-			
+				
 				$input->quantity = $request->getPost ( 'quantity' );
 				$input->EDT = $request->getPost ( 'EDT' );
 				$input->unit = $request->getPost ( 'unit' );
@@ -873,7 +924,7 @@ class PRController extends AbstractActionController {
 	
 	/**
 	 * Submit PR
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function submitCartItemsAction() {

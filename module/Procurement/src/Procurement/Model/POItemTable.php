@@ -44,6 +44,7 @@ select
     mla_purchase_request_items.keywords as pr_item_keywords,
 	mla_purchase_request_items.quantity as ordered_quantity,
 
+	mla_purchase_requests.id as pr_id,
 	mla_purchase_requests.seq_number_of_year,
 	mla_purchase_requests.pr_number,
 	mla_purchase_requests.auto_pr_number,    

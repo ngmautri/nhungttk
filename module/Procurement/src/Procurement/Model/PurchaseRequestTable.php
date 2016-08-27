@@ -100,40 +100,29 @@ as mla_purchase_requests
 WHERE 1			
 ";
 	private $sql_GetPurchaseRequests = "
-			select
-*
-from 
-(
 select
 		mla_purchase_requests.*,
 		year(mla_purchase_requests.requested_on) as pr_year,
+        month(mla_purchase_requests.requested_on) as pr_month,
 		concat (mla_users.firstname,' ',mla_users.lastname ) as pr_requester_name,
 		mla_users.department_id as pr_of_department_id,
 		mla_users.department_name as pr_of_department,
 		mla_users.department_status as pr_of_department_status,
-        ifnull(mla_purchase_request_items.totalItems,0) as totalItems
+        ifnull(mla_purchase_request_items.total_items,0) as total_items,
+		ifnull( mla_purchase_request_items_pending.total_pending_items,0) as total_pending_items,
+        
+		mla_purchase_requests_workflows.status as pr_last_status,
+		mla_purchase_requests_workflows.updated_by as pr_last_status_by,
+		mla_purchase_requests_workflows.updated_on as pr_last_status_on
+		
+from mla_purchase_requests
 
-from 
-(
-		select
-			mla_purchase_requests.*,
-			mla_purchase_requests_workflows.status as pr_last_status,
-			mla_purchase_requests_workflows.updated_by as pr_last_status_by,
-			mla_purchase_requests_workflows.updated_on as pr_last_status_on
-
-			
-		from mla_purchase_requests
-
-		left join mla_purchase_requests_workflows
-			on mla_purchase_requests_workflows.id = mla_purchase_requests.last_workflow_id
-
-	)
-as mla_purchase_requests
+/* Last Status*/
+left join mla_purchase_requests_workflows
+	on mla_purchase_requests_workflows.id = mla_purchase_requests.last_workflow_id
 
 left join
 (
-
-			
 		/**USER-DEPARTMENT beginns*/
 		select 
 			mla_users.title, 
@@ -157,23 +146,55 @@ left join
 as mla_users
 on mla_users.user_id = mla_purchase_requests.requested_by
 
+/* total items*/
 left join
 (
 	select 
-	mla_purchase_requests.id as pr_id,
-	count(*) as totalItems
+		mla_purchase_requests.id as pr_id,
+		count(*) as total_items
 	from mla_purchase_request_items 
+    
 	join mla_purchase_requests 
 	on mla_purchase_request_items.purchase_request_id = mla_purchase_requests.id
 	group by mla_purchase_requests.id
 ) 
 as mla_purchase_request_items
 on mla_purchase_request_items.pr_id = mla_purchase_requests.id
+
+/* total pending items*/
+left join
+(
+   select 
+		mla_purchase_request_items.purchase_request_id as pr_id,
+        mla_purchase_request_items.quantity,
+		count(mla_purchase_request_items.id) as total_pending_items
+	       
+	from mla_purchase_request_items 
+    
+	/* total confirmed and rejected DN */
+	left join
+	(
+		select
+			mla_delivery_items_workflows.pr_item_id,
+			sum(mla_delivery_items_workflows.confirmed_quantity) as confirmed_quantity,
+			sum(mla_delivery_items_workflows.rejected_quantity) as rejected_quantity
+ 			from mla_delivery_items_workflows
+		group by mla_delivery_items_workflows.pr_item_id
+	)as mla_delivery_items_workflows
+	on mla_delivery_items_workflows.pr_item_id = mla_purchase_request_items.id
+    
+    /* pending*/
+	where (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))>0
+    
+    group by mla_purchase_request_items.purchase_request_id
 )
-as 
-mla_purchase_requests
+as mla_purchase_request_items_pending
+on mla_purchase_request_items_pending.pr_id = mla_purchase_requests.id
+
+
 WHERE 1
-And mla_purchase_requests.pr_last_status is not null
+And mla_purchase_requests_workflows.status is not null
+			
 			";
 	
 	/**
@@ -603,16 +624,24 @@ on TB4.id = TB1.requested_by
 	 * @param unknown $user_id        	
 	 * @return \Zend\Db\ResultSet\ResultSet
 	 */
-	public function getPurchaseRequests($last_status, $department_id, $limit, $offset) {
+	public function getPurchaseRequests($flow,$last_status, $department_id, $limit, $offset) {
 		$adapter = $this->tableGateway->adapter;
 		$sql = $this->sql_GetPurchaseRequests;
 		
 		if ($department_id > 0) {
-			$sql = $sql . " AND mla_purchase_requests.pr_of_department_id = " . $department_id;
+			$sql = $sql . " AND mla_users.department_id = " . $department_id;
 		}
 		
-		if ($last_status != "" || $last_status != null) {
-			$sql = $sql . " AND mla_purchase_requests.pr_last_status = '" . $last_status . "'";
+		if($last_status=='Fulfilled'){			
+			$sql = $sql . " AND ifnull( mla_purchase_request_items_pending.total_pending_items,0)=0";
+		}
+		
+		if($last_status=='Pending'){
+			$sql = $sql . " AND ifnull( mla_purchase_request_items_pending.total_pending_items,0)>0";
+		}
+		
+		if ($flow != "all") {
+			$sql = $sql . " AND mla_purchase_requests_workflows.status  = '" . $flow . "'";
 		}
 		
 		$sql = $sql . " ORDER BY  mla_purchase_requests.requested_on DESC";

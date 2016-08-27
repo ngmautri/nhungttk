@@ -221,8 +221,9 @@ endif;
 		
 		<div style="color: gray; font-size: 8pt;">
 			Dept.:<?php echo $item->pr_of_department;?><br>
-			#<?php echo $item->auto_pr_number;?>
-			</div>
+					<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/approve-step-1?pr_id=<?php echo $item->pr_id;?>"
+				target="_blank">#<?php echo $item->auto_pr_number;?></a>
+				</div>
 		</td>
 		<td><b><?php echo $item->name;?></b>
 		
@@ -252,7 +253,7 @@ endif;
 </td>
 
 		<td>
-		<div style="color: gray; font-size: 9pt;">
+		<div style="color: gray; font-size: 8pt;">
 					
 			
 			PR-Item: #<?php echo $item->pr_item_id;?><br>

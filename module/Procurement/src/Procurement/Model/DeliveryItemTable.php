@@ -253,6 +253,8 @@ on mla_purchase_request_items.id = mla_delivery_items.pr_item_id
     mla_purchase_request_items.keywords as pr_item_keywords,
 	mla_purchase_request_items.ordered_quantity,
 
+	mla_purchase_request_items.pr_id,
+
 	mla_purchase_request_items.seq_number_of_year,
 	mla_purchase_request_items.pr_number,
 	mla_purchase_request_items.auto_pr_number,    
@@ -319,6 +321,8 @@ select
      mla_purchase_request_items.unit,
     mla_purchase_request_items.keywords,
 	mla_purchase_request_items.quantity as ordered_quantity,
+
+	mla_purchase_requests.id as pr_id,
 
 	mla_purchase_requests.seq_number_of_year,
 	mla_purchase_requests.pr_number,

@@ -60,7 +60,7 @@ endif;
 		<div id="collapse1"
 			class="panel-collapse collapse">
 			<div class="panel-body">
-
+			<div style="padding:3px;background: url(/images/bg1.png); background-repeat:repeat-x; background-color: #FFFFFF;">
 				<form class="form-horizontal"
 					action="<?php echo $this->baseUrl ?>/procurement/po/list"
 					method="get" enctype="multipart/form-data" id="ReportForm">
@@ -164,6 +164,7 @@ endif;
 				</form>
 				<hr>
 			</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -244,7 +245,9 @@ endif;
 		
 		<div style="color: gray; font-size: 8pt;">
 			Dept.:<?php echo $item->pr_of_department;?><br>
-			#<?php echo $item->auto_pr_number;?>
+					<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/approve-step-1?pr_id=<?php echo $item->pr_id;?>"
+				target="_blank">#<?php echo $item->auto_pr_number;?></a>
+	
 			</div>
 		</td>
 		<td>
@@ -256,12 +259,13 @@ endif;
 	    	     	
     
     	<?php if ($item->confirmed_balance > 0) : ?>
- <li class="divider"></li>	
  <li>  			
  <a href="<?php echo $this->baseUrl ?>/procurement/gr/receive?pr_item_id=<?php echo $this->escapeHtml($item->pr_item_id);?>&po_item_id=<?php echo $this->escapeHtml($item->id)?>">
- <i class="icon-check"></i> Receive</a>
+ <i class="icon-check"></i> Receive</a></li>
    	<li class="divider"></li>
- </li> 			
+ <li>
+ <a href="<?php echo $this->baseUrl ?>/procurement/po/edit-item?id=<?php echo $this->escapeHtml($item->id)?>">
+ <i class="icon-pencil">  </i> Edit</a></li>  	
     	<?php endif; ?>
 	
 

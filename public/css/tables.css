@@ -100,3 +100,13 @@ striping:
     text-transform: capitalize;
  }
 .table a:hover{background-color: #0080c0;color: #ffffff;}
+.pdf a {
+	background-image: url("/images/pdf_sprite.png");
+}
+.pdf a:hover {
+	background-position: 0px -31px;
+}
+
+.csv a {
+	background-image: url("/images/csv_sprite.png");
+}

@@ -779,7 +779,7 @@ function submitPR(ID) {
 function approvePR(ID) {
 	$('#myModal').modal('hide');
 	$('#myModal1').modal();
-	redirectUrl = "/procurement/pr/all-pr"
+	redirectUrl = "/procurement/pr/list"
 	$.get("/procurement/pr/approve", {
 		pr_id : ID,
 	}, function(data, status) {
@@ -1270,4 +1270,44 @@ function submitDNCartItems() {
 	});
 }
 
+function notifyDOItems() {
 
+	// var all_options = [];
+	var selected_items = '';
+	var i = 0;
+
+	var dn_number = $('#dn_number').val();
+	var SelectAll = $('#select_ALL').prop('checked') ? "YES" : "NO";
+
+	selected_items = selected_items + '(';
+	$(".checkbox1").each(function() {
+		if (this.checked) {
+			i = i + 1;
+			selected_items = selected_items + this.value + ',';
+		}
+	});
+
+	// remove last ','
+	selected_items = selected_items.substring(selected_items.length - 1, 1);
+	selected_items = '(' + selected_items + ')';
+	
+
+	if (SelectAll === 'NO' && i === 0) {
+		$('#myModal').modal('hide');
+		alert('no item selected');
+		return;
+	}
+
+	$('#myModal').modal('hide');
+	$('#myModal1').modal();
+
+	redirectUrl = "/procurement/gr/list";
+	$.get("/procurement/gr/notify", {
+		dn_number : dn_number,
+		do_items : selected_items,
+		SelectAll : SelectAll,
+	}, function(data, status) {
+		updateCarts();
+		window.location = redirectUrl;
+	});
+}

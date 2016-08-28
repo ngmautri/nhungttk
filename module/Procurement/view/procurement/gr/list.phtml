@@ -144,7 +144,7 @@ endif;
 <?php if($notified==0 and $balance>0):?>
 
 <div class="control-group">
-	<label class="control-label" for="inputTag">DN Number:</label>
+	<label class="control-label" for="inputTag"><b>DN Number:</b></label>
 	<div class="controls">
 		<input type="text" id="dn_number" placeholder="" name="pr_number"
 			value="">
@@ -191,7 +191,7 @@ endif;
 		<td><b>Total</b></td>
 			<td><b data-toggle="tooltip" title="Currency">Curr.</b></td>
 	<td><b>Vendor</b></td>
-		<td><b>Flow</b></td>
+		<td><b>Work Flow</b></td>
 		</tr>
 	</thead>
 	<tbody>	
@@ -221,7 +221,7 @@ endif;
 		
 		<div style="color: gray; font-size: 8pt;">
 			Dept.:<?php echo $item->pr_of_department;?><br>
-					<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/approve-step-1?pr_id=<?php echo $item->pr_id;?>"
+					<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/process?pr_id=<?php echo $item->pr_id;?>"
 				target="_blank">#<?php echo $item->auto_pr_number;?></a>
 				</div>
 		</td>
@@ -254,11 +254,11 @@ endif;
 
 		<td>
 		<div style="color: gray; font-size: 8pt;">
-					
-			
-			PR-Item: #<?php echo $item->pr_item_id;?><br>
+				PR-Item: #<?php echo $item->pr_item_id;?><br>
 				PO-Item: #<?php echo $item->po_item_id;?><br>
-				DO:<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/delivery/create-step2?dn_id=<?php echo $item->delivery_id;?>" target="_blank">#<?php echo $item->delivery_id;?></a>
+				<?php if($item->delivery_id>0):?>
+				DO:<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/do/show?dn_id=<?php echo $item->delivery_id;?>" target="_blank">#<?php echo $item->delivery_id;?></a>
+				<?php endif;?>
 		</div>
 		</td>
 
@@ -322,10 +322,16 @@ endif;
 	<button type="submit" class="btn">
 		<i class="icon-arrow-left"> </i> Back
 	</button>
+	
+	
+	<?php if($notified==0 and $balance>0):?>
+
 	<button title="Submit PR to Procurment" class="btn btn-default"
-		onclick="openConfirmation(1);" type="button">
-		<i class="icon-ok"> </i> Notify 
-	</button>
+			onclick="openDOConfirmation(1);" type="button">
+			<i class="icon-ok"> </i> Notify 
+		</button>
+<?php endif;?>
+	
 </form>
 
 
@@ -374,7 +380,7 @@ endif;
         <h5 class="modal-title">Mascot International (Laos)</h5>
       </div>
 	      <div class="modal-body">
-	        <p>Do you want to Notify this delivery?</p>
+	        <p>Do you want to Notify delivery <span id="submitted_id"></span>?</p>
 	      </div>
 	      
 		  <div class="modal-footer">
@@ -413,4 +419,19 @@ endif;
 	</div>			
 
 	
+		<div id="message_modal" class="modal hide" role="dialog">
+	  <div class="modal-dialog">
+	  		  	 <div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title">Mascot International (Laos)</h5>
+      </div>
+	  	
+	      <div class="modal-body">
+	        <span id="message_modal_content">Working on it........Please Wait!</span>
+	      </div>
+	       <div class="modal-footer">
+	        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+	        </div>
+	   </div>
+	</div>
 	

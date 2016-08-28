@@ -238,6 +238,8 @@ endif;
 		
 		?>
 		<tr>
+		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+		
 	 	<td><input class="checkbox1" type="checkbox" name="po_items[]"
 		value="<?php echo $item->id ;?>" /></td>
 
@@ -245,7 +247,7 @@ endif;
 		
 		<div style="color: gray; font-size: 8pt;">
 			Dept.:<?php echo $item->pr_of_department;?><br>
-					<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/approve-step-1?pr_id=<?php echo $item->pr_id;?>"
+					<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/process?pr_id=<?php echo $item->pr_id;?>"
 				target="_blank">#<?php echo $item->auto_pr_number;?></a>
 	
 			</div>
@@ -264,7 +266,7 @@ endif;
  <i class="icon-check"></i> Receive</a></li>
    	<li class="divider"></li>
  <li>
- <a href="<?php echo $this->baseUrl ?>/procurement/po/edit-item?id=<?php echo $this->escapeHtml($item->id)?>">
+ <a href="<?php echo $this->baseUrl ?>/procurement/po/edit-item?id=<?php echo $this->escapeHtml($item->id)?>&pr_item_id=<?php echo $this->escapeHtml($item->pr_item_id);?>">
  <i class="icon-pencil">  </i> Edit</a></li>  	
     	<?php endif; ?>
 	
@@ -276,7 +278,6 @@ endif;
 		
 		<td><?php echo $item->ordered_quantity;?></td>
 		<td>
-		</a>
 		<a href="<?php echo $this->baseUrl ?>/procurement/gr/receive-list?po_item_id=<?php echo $item->id;?>" target="_blank"><?php echo $item->total_received_quantity;?></a>
 		</td>
 		<td><?php echo $item->unconfirmed_quantity;?></td>

@@ -3,18 +3,6 @@
 			var id_array = [];
 </script>
 
-<!--  
-<span class="label label-info"><?php echo count($pr_items) . ' PR - Items'?></span>
-
--->
-<div class="control-group">
-	<label class="control-label" for="inputTag">DN Number:</label>
-	<div class="controls">
-		<input type="text" id="dn_number" placeholder="" name="pr_number"
-			value="">
-	</div>
-</div>
-
 
 <div class="panel-group">
 	<div class="panel panel-default">
@@ -28,53 +16,10 @@
 			class="panel-collapse collapse">
 			<div class="panel-body">
 
-				<form class="form-horizontal"
-					action="<?php echo $this->baseUrl ?>/procurement/po/list"
+					<form class="form-horizontal"
+					action="<?php echo $this->baseUrl ?>/procurement/gr/list"
 					method="get" enctype="multipart/form-data" id="ReportForm">
-					<div class="control-group">
-						<label class="control-label" for="inputNameLocal">PR by
-							Department: </label>
-						<div class="controls">
-							<select name="department_id">
-								<option value="">All departments</option>
-   	    	<?php
-									
-									foreach ( $departments as $dept ) :
-										if ($dept->id === $department_id) :
-											$department_name = $dept->name;
-											echo '<option selected="selected" value="' . $dept->id . '">' . $dept->name . '</option>';
-										 else :
-											echo '<option value="' . $dept->id . '">' . $dept->name . '</option>';
-										endif;
-									endforeach
-									;
-									?>
-   	
-   			</select>
-						</div>
-					</div>
-
-					<div class="control-group">
-						<label class="control-label" for="inputNameLocal">Vendor: </label>
-						<div class="controls">
-							<select name="vendor_id">
-								<option value="-1">All</option>
-								<?php
-									
-									foreach ( $vendors as $a ) :
-										if ($a->vendor_id === $vendor_id) :
-											$vendor_name = $a->vendor_name;
-											echo '<option selected="selected" value="' . $a->vendor_id . '">' . $a->vendor_name . ' ('.$a->items_by_vendor.')</option>';
-										else :
-											echo '<option value="' . $a->vendor_id . '">' . $a->vendor_name . ' ('.$a->items_by_vendor.')</option>';
-										endif;
-									endforeach
-									;
-									?>
-
-							</select>
-						</div>
-					</div>
+					
 					
 					<div class="control-group">
 						<label class="control-label" for="inputNameLocal">Balance: </label>
@@ -82,16 +27,44 @@
 							<select name="balance">
 								<option value="2">All</option>
 								<option <?php echo $balance=='0'? "selected='selected'":"";?>
-									value="0">Balance=0</option>
+									value="0">Balance=0 (Fulfilled Items)</option>
 								<option <?php echo $balance=='1'? "selected='selected'":"";?>
-									value="1">Balance>0</option>
+									value="1">Balance>0 (Pending Items)</option>
 								<option <?php echo $balance=='-1'? "selected='selected'":"";?>
-									value="-1">Balance<0 (Some Free)</option>
+									value="-1">Balance<0 (Some Free Items)</option>
 
 							</select>
 						</div>
 					</div>
+						<div class="control-group">
+						<label class="control-label" for="inputTag">Notified:</label>
+						<div class="controls">
+							<select style="wight: 10px" name="notified" id="notified">
+								<option selected="selected" value="">All</option>
+								<option <?php echo $notified=='1'? "selected='selected'":"";?> value="1">YES</option>
+								<option <?php echo $notified=='0'? "selected='selected'":"";?> value="0">NO</option>
+							</select>
+							</div>
+					</div>
+					
+					<div class="control-group">
+						<label class="control-label" for="inputNameLocal">Confirmed By Requester:</label>
+						<div class="controls">
+							<select name="notified_quantity">
+								<option value="2">All</option>
+								<option
+									<?php echo $notified_quantity=='0'? "selected='selected'":"";?>
+									value="0">YES</option>
+								<option
+									<?php echo $notified_quantity=='1'? "selected='selected'":"";?>
+									value="1">NO</option>
 
+
+							</select>
+						</div>
+					</div>
+					
+			
 					<div class="control-group">
 						<div class="controls">
 							<button type="submit" class="btn">
@@ -100,6 +73,7 @@
 						</div>
 					</div>
 				</form>
+				<hr>
 
 
 
@@ -107,6 +81,17 @@
 		</div>
 	</div>
 </div>
+
+<?php if($notified==0 and $balance>0):?>
+
+<div class="control-group">
+	<label class="control-label" for="inputTag">DN Number:</label>
+	<div class="controls">
+		<input type="text" id="dn_number" placeholder="" name="pr_number"
+			value="">
+	</div>
+</div>
+<?php endif;?>
 
 <?php  	if (count($receipts) >0): ?>
 <table class="table table-striped table-bordered">

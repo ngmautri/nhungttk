@@ -181,9 +181,14 @@ class GRController extends AbstractActionController {
 	 */
 	public function receiveListAction() {
 		$id = ( int ) $this->params ()->fromQuery ( 'po_item_id' );
+			
 		$receipts = $this->deliveryItemTable->getDOItemsByPOItem ( $id );
 		
 		$department_id = $this->params ()->fromQuery ( 'department_id' );
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		$notified = $this->params ()->fromQuery ( 'notified' );
+		$notified_quantity = $this->params ()->fromQuery ( 'notified_quantity' );
+		
 		$departments = $this->departmentTable->fetchAll ();
 		
 		
@@ -191,6 +196,10 @@ class GRController extends AbstractActionController {
 				'receipts' => $receipts,
 				'departments' => $departments,
 				'department_id' => $department_id,
+				
+				'balance' => $balance,
+				'notified' => $notified,
+				'notified_quantity' => $notified_quantity,
 				
 		) );
 	}

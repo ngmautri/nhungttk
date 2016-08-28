@@ -12,10 +12,6 @@ class DeliveryItemTable {
 	
 	protected $getDNItems_SQL = 
 			"
-select
-*
-from 
-(
 select 
 	mla_delivery_items.id as dn_item_id,
     mla_delivery_items.delivery_id,
@@ -42,6 +38,7 @@ left join
 (
 	select 
 		mla_purchase_requests.pr_number as pr_number,
+        mla_purchase_requests.auto_pr_number,
   		mla_purchase_requests.name as pr_name,
         mla_purchase_requests.requested_by as pr_requester_id,
 		mla_purchase_request_items.*
@@ -51,17 +48,24 @@ left join
 )
 as mla_purchase_request_items
 on mla_purchase_request_items.id = mla_delivery_items.pr_item_id
-)
-as mla_purchase_request_items
+where 1
+			
 			";
 	
 	private $getDOItem_SQL="
-	select
+
+
+select
 	
 	mla_delivery_items.*,
-    ifnull(mla_delivery_items_confirmed.confirmed_quantity,0) as confirmed_quantity,
-    ifnull(mla_delivery_items_rejected.rejected_quantity,0) as rejected_quantity,
+    ifnull(mla_delivery_items_workflows.confirmed_quantity,0) as confirmed_quantity,
+    ifnull(mla_delivery_items_workflows.rejected_quantity,0) as rejected_quantity,
 	ifnull(mla_delivery_items_notified.notified_quantity,0) as notified_quantity,
+    
+     if ((mla_purchase_request_items.ordered_quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))>=0
+    ,(mla_purchase_request_items.ordered_quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))
+    ,0) as confirmed_balance,
+    
     mla_delivery_items_notified.dn_last_status,
     mla_vendors.name as vendor_name,
 	
@@ -71,7 +75,13 @@ as mla_purchase_request_items
      mla_purchase_request_items.unit as pr_item_unit,
     mla_purchase_request_items.keywords as pr_item_keywords,
 	mla_purchase_request_items.ordered_quantity,
+    mla_purchase_request_items.EDT,
+    mla_purchase_request_items.sparepart_id,
+    mla_purchase_request_items.article_id,
+    mla_purchase_request_items.asset_id,
 
+
+	mla_purchase_request_items.pr_id,
 	mla_purchase_request_items.seq_number_of_year,
 	mla_purchase_request_items.pr_number,
 	mla_purchase_request_items.auto_pr_number,    
@@ -91,32 +101,18 @@ as mla_purchase_request_items
  
    	from mla_delivery_items
     
-    /* total confirmed DN */
+/* total confirmed and rejected DN */
 left join
 (
 	select
-    mla_delivery_items_workflows.dn_item_id,
 	mla_delivery_items_workflows.pr_item_id,
-	sum(mla_delivery_items_workflows.confirmed_quantity) as confirmed_quantity
-   
+	sum(mla_delivery_items_workflows.confirmed_quantity) as confirmed_quantity,
+    sum(mla_delivery_items_workflows.rejected_quantity) as rejected_quantity
 	from mla_delivery_items_workflows
 	group by mla_delivery_items_workflows.pr_item_id
 )
-as mla_delivery_items_confirmed
-on mla_delivery_items_confirmed.dn_item_id = mla_delivery_items.id
-    
-    /* total rejected DN */
-left join
-(
-	select
-     mla_delivery_items_workflows.dn_item_id,
-	mla_delivery_items_workflows.pr_item_id,
-	sum(mla_delivery_items_workflows.rejected_quantity) as rejected_quantity
-	from mla_delivery_items_workflows
-	group by mla_delivery_items_workflows.pr_item_id
-)
-as mla_delivery_items_rejected
-on mla_delivery_items_rejected.dn_item_id = mla_delivery_items.id
+as mla_delivery_items_workflows
+on mla_delivery_items_workflows.pr_item_id = mla_delivery_items.pr_item_id
 
 /* total notified /unconfirmed DN */
 left join
@@ -152,7 +148,14 @@ select
      mla_purchase_request_items.unit,
     mla_purchase_request_items.keywords,
 	mla_purchase_request_items.quantity as ordered_quantity,
-
+	mla_purchase_request_items.EDT,
+    mla_purchase_request_items.sparepart_id,
+    mla_purchase_request_items.article_id,
+    mla_purchase_request_items.asset_id,
+    
+    
+	
+    mla_purchase_requests.id as pr_id,
 	mla_purchase_requests.seq_number_of_year,
 	mla_purchase_requests.pr_number,
 	mla_purchase_requests.auto_pr_number,    
@@ -599,19 +602,8 @@ AND mla_delivery_items.id  IN " . $selected_items;
 	public function getItemsByDN($dn) {
 		$adapter = $this->tableGateway->adapter;
 	
-		/*
-			$sql = "SELECT *
-			FROM mla_purchase_request_items
-			WHERE purchase_request_id = ". $pr .
-			" ORDER BY EDT ASC";
-			*/
-	
 	
 		$sql = "
-SELECT
-*
-From
-(
 	SELECT 
 		mla_delivery_items.*,
 		mla_purchase_request_items.purchase_request_id,
@@ -650,9 +642,9 @@ From
         
 	) as mla_purchase_request_items
 	ON mla_purchase_request_items.id = mla_delivery_items.pr_item_id
-)
-AS mla_delivery_items
-WHERE 1";
+
+WHERE 1
+		";
 		$sql = $sql . " AND mla_delivery_items.delivery_id =". $dn;	
 	
 		$statement = $adapter->query ( $sql );
@@ -671,10 +663,10 @@ WHERE 1";
 	public function getNotifiedDNItemsOf($user_id) {
 		$adapter = $this->tableGateway->adapter;
 	
-		$sql = $this->getDNItems_SQL;
+		$sql = $this->getDOItem_SQL;
 		$sql = $sql. 
-		" WHERE mla_purchase_request_items.dn_item_last_status  = 'notified'
-		  AND mla_purchase_request_items.pr_requester_id =" . $user_id;
+		" AND mla_delivery_items_notified.dn_last_status  = 'notified'
+		  AND mla_purchase_request_items.pr_requested_by =" . $user_id;
 		
 		$statement = $adapter->query ( $sql );
 		$result = $statement->execute ();

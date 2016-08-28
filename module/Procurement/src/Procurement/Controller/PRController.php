@@ -17,6 +17,7 @@ use Zend\Validator\EmailAddress;
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\Wildcard;
 use MLA\Paginator;
+use Zend\Http\Headers;
 use MLA\Files;
 use Procurement\Model\PurchaseRequest;
 use Procurement\Model\PurchaseRequestTable;
@@ -78,24 +79,33 @@ class PRController extends AbstractActionController {
 		
 		if ($flow == null) :
 			$flow = 'all';
+		
+		
+		
 		endif;
 		
 		if ($last_status == null) :
 			$last_status = 'Pending';
+		
+		
+		
 		endif;
 		
 		if ($department_id == null) :
 			$department_id = 0;
 		
+		
+		
+		
 		endif;
 		
-		$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $flow,$last_status, $department_id, 0, 0 );
+		$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $flow, $last_status, $department_id, 0, 0 );
 		$totalResults = count ( $all_pr );
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $flow,$last_status, $department_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $flow, $last_status, $department_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -105,6 +115,448 @@ class PRController extends AbstractActionController {
 				'departments' => $departments,
 				'last_status' => $last_status,
 				'flow' => $flow,
+				'department_id' => $department_id,
+				'paginator' => $paginator,
+				'total_items' => $totalResults 
+		) );
+	}
+	
+	/**
+	 * For Procurement Staff
+	 *
+	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+	 */
+	public function processAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
+		$pr = $this->purchaseRequestTable->getPR ( $pr_id );
+		$output = $this->params ()->fromQuery ( 'output' );
+		
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
+		$added_delivery_list = $this->params ()->fromQuery ( 'added_delivery_list' );
+		
+		if ($balance == null) :
+			$balance = 2;
+		
+		
+		
+		endif;
+		
+		if ($unconfirmed_quantity == null) :
+			$unconfirmed_quantity = 2;
+		
+		
+		
+		endif;
+		
+		if ($added_delivery_list == null) :
+			$added_delivery_list = 2;
+		
+		
+		
+		endif;
+		
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V3 ( $pr_id, $balance, $unconfirmed_quantity, $added_delivery_list, 0, 0 );
+		
+		if ($output === 'csv') {
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+			
+			$h = array ();
+			$h [] = "PR number";
+			$h [] = "PR auto number";
+			$h [] = "Requester";
+			$h [] = "Department";
+			
+			$h [] = "Item ID";
+			$h [] = "Item Name";
+			$h [] = "Item Code";
+			$h [] = "Item Unit";
+			$h [] = "Item Keywords";
+			$h [] = "EDT";
+			
+			$h [] = "Ordered Quantity";
+			$h [] = "Received Quantity";
+			$h [] = "Notified Quantity";
+			$h [] = "Confirmed Quantity";
+			$h [] = "Rejected Quantity";
+			$h [] = "Balance";
+			$h [] = "Free Quantity";
+			
+			$h [] = "Last Vendor";
+			$h [] = "Last Unit Price";
+			$h [] = "Last Currency";
+			
+			$h [] = "Remarks";
+			
+			$delimiter = ";";
+			
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+			
+			foreach ( $pr_items as $m ) {
+				$l = array ();
+				
+				$l [] = ( string ) $m->pr_number;
+				$l [] = ( string ) $m->pr_auto_number;
+				$l [] = ( string ) $m->pr_requester_name;
+				$l [] = ( string ) $m->pr_of_department;
+				
+				$l [] = ( string ) $m->id;
+				$l [] = ( string ) $m->name;
+				$l [] = ( string ) $m->code;
+				$l [] = ( string ) $m->unit;
+				$l [] = ( string ) $m->keywords;
+				$l [] = ( string ) $m->EDT;
+				
+				$l [] = ( string ) $m->quantity;
+				$l [] = ( string ) $m->total_received_quantity;
+				$l [] = ( string ) $m->unconfirmed_quantity;
+				$l [] = ( string ) $m->confirmed_quantity;
+				$l [] = ( string ) $m->rejected_quantity;
+				$l [] = ( string ) $m->confirmed_balance;
+				$l [] = ( string ) $m->confirmed_free_balance;
+				
+				if ($m->article_id > 0) {
+					$l [] = ( string ) $m->article_vendor_name;
+					$l [] = ( string ) $m->article_price;
+					$l [] = ( string ) $m->article_currency;
+				}
+				
+				if ($m->sparepart_id > 0) {
+					$l [] = ( string ) $m->sp_vendor_name;
+					$l [] = ( string ) $m->sp_price;
+					$l [] = ( string ) $m->sp_currency;
+				}
+				
+				$l [] = ( string ) $m->remarks;
+				
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+			
+			$fileName = 'pr-' . $m->pr_number . '-' . date ( "m-d-Y" ) . '-' . date ( "h:i:sa" ) . '.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+			
+			$response = $this->getResponse ();
+			$headers = new Headers ();
+			
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			// $headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+			
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+			
+			$response->setHeaders ( $headers );
+			// $output = fread($fh, 8192);
+			
+			$response->setContent ( $output );
+			
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
+		
+		return new ViewModel ( array (
+				'redirectUrl' => $redirectUrl,
+				'user' => $user,
+				'errors' => null,
+				'pr' => $pr,
+				'pr_items' => $pr_items,
+				'paginator' => null,
+				'balance' => $balance,
+				'unconfirmed_quantity' => $unconfirmed_quantity,
+				'added_delivery_list' => $added_delivery_list 
+		) );
+	}
+	
+	/**
+	 * For Request
+	 *
+	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+	 */
+	public function showAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
+		$pr = $this->purchaseRequestTable->getPR ( $pr_id );
+		$output = $this->params ()->fromQuery ( 'output' );
+		
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
+		$added_delivery_list = $this->params ()->fromQuery ( 'added_delivery_list' );
+		
+		if ($balance == null) :
+			$balance = 2;
+		
+		
+		
+		endif;
+		
+		if ($unconfirmed_quantity == null) :
+			$unconfirmed_quantity = 2;
+		
+		
+		
+		endif;
+		
+		if ($added_delivery_list == null) :
+			$added_delivery_list = 2;
+		
+		
+		
+		endif;
+		
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V3 ( $pr_id, $balance, $unconfirmed_quantity, $added_delivery_list, 0, 0 );
+		
+		if ($output === 'csv') {
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+			
+			$h = array ();
+			$h [] = "PR number";
+			$h [] = "PR auto number";
+			
+			$h [] = "Item ID";
+			$h [] = "Item Name";
+			$h [] = "Item Code";
+			$h [] = "Item Keywords";
+			
+			$h [] = "Item Unit";
+			$h [] = "Ordered Quantity";
+			$h [] = "EDT";
+			$h [] = "Remarks";
+			
+			$delimiter = ";";
+			
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+			
+			foreach ( $pr_items as $m ) {
+				$l = array ();
+				
+				$l [] = ( string ) $m->pr_number;
+				$l [] = ( string ) $m->pr_auto_number;
+				
+				$l [] = ( string ) $m->id;
+				$l [] = ( string ) $m->name;
+				$l [] = ( string ) '\'' . $m->code;
+				$l [] = ( string ) $m->keywords;
+				$l [] = ( string ) $m->unit;
+				$l [] = ( string ) $m->quantity;
+				$l [] = ( string ) $m->EDT;
+				$l [] = ( string ) $m->remarks;
+				
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+			
+			$fileName = 'pr-' . $m->pr_number . '-' . date ( "m-d-Y" ) . '-' . date ( "h:i:sa" ) . '.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+			
+			$response = $this->getResponse ();
+			$headers = new Headers ();
+			
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			// $headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+			
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+			
+			$response->setHeaders ( $headers );
+			// $output = fread($fh, 8192);
+			
+			$response->setContent ( $output );
+			
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
+		
+		return new ViewModel ( array (
+				'redirectUrl' => $redirectUrl,
+				'user' => $user,
+				'errors' => null,
+				'pr' => $pr,
+				'pr_items' => $pr_items,
+				'paginator' => null,
+				'balance' => $balance,
+				'unconfirmed_quantity' => $unconfirmed_quantity,
+				'added_delivery_list' => $added_delivery_list 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function mineAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$last_status = $this->params ()->fromQuery ( 'last_status' );
+		$flow = $this->params ()->fromQuery ( 'flow' );
+		$pr_year = $this->params ()->fromQuery ( 'pr_year' );
+		$order_by = $this->params ()->fromQuery ( 'order_by' );
+		
+		if ($flow == null) :
+			$flow = 'all';
+		
+		
+		
+		endif;
+		
+		if ($last_status == null) :
+			$last_status = 'Pending';
+		
+		
+		
+		endif;
+		
+		if ($pr_year == null) :
+			$pr_year = date ( 'Y' );
+		
+		
+		
+		endif;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		
+		// all my PR
+		$my_pr = $this->purchaseRequestTable->getPROf ( $user ['id'], $pr_year, $flow, $last_status, $order_by, 0, 0 );
+		$totalResults = count ( $my_pr );
+		
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$my_pr = $this->purchaseRequestTable->getPROf ( $user ['id'], $pr_year, $flow, $last_status, $order_by, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $order_by );
+		}
+		
+		return new ViewModel ( array (
+				'redirectUrl' => $redirectUrl,
+				'user' => $user,
+				'errors' => null,
+				'my_pr' => $my_pr,
+				'paginator' => $paginator,
+				'total_items' => $totalResults,
+				'last_status' => $last_status,
+				'flow' => $flow,
+				'pr_year' => $pr_year,
+				'order_by' => $order_by 
+		) );
+	}
+	
+	/**
+	 * List all PR items of a requester
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function myItemsAction() {
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		// $request = $this->getRequest ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		$last_status = $this->params ()->fromQuery ( 'last_status' );
+		$department_id = $this->params ()->fromQuery ( 'department_id' );
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
+		$processing = $this->params ()->fromQuery ( 'processing' );
+		
+		$pr_year = $this->params ()->fromQuery ( 'pr_year' );
+		$order_by = $this->params ()->fromQuery ( 'order_by' );
+		
+		if ($pr_year == null) :
+			$pr_year = date ( 'Y' );
+		
+		
+		
+		endif;
+		
+		$departments = $this->departmentTable->fetchAll ();
+		
+		if ($balance == null) :
+			$balance = 1;
+		
+		
+		
+	
+		endif;
+		
+		if ($unconfirmed_quantity == null) :
+			$unconfirmed_quantity = 2;
+		
+		
+		
+	
+		endif;
+		
+		if ($processing == null) :
+			$processing = 0;
+		
+		
+		
+	
+		endif;
+		
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsOf ( $user ['id'], $pr_year, $last_status, $balance, $unconfirmed_quantity, $processing, 0, 0 );
+		$totalResults = count ( $pr_items );
+		
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsOf ( $user ['id'], $pr_year, $last_status, $balance, $unconfirmed_quantity, $processing, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		return new ViewModel ( array (
+				'redirectUrl' => $redirectUrl,
+				'user' => $user,
+				'errors' => null,
+				'pr_items' => $pr_items,
+				'departments' => $departments,
+				'last_status' => $last_status,
+				'balance' => $balance,
+				'pr_year' => $pr_year,
+				'order_by' => $order_by,
+				'unconfirmed_quantity' => $unconfirmed_quantity,
+				'processing' => $processing,
 				'department_id' => $department_id,
 				'paginator' => $paginator,
 				'total_items' => $totalResults 
@@ -200,6 +652,11 @@ class PRController extends AbstractActionController {
 		$this->purchaseRequestTable->updateLastWorkFlow ( $pr_id, $last_workflow_id );
 		$this->redirect ()->toUrl ( '/procurement/pr/my-pr' );
 	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function addItemAction() {
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity ();
@@ -590,6 +1047,11 @@ class PRController extends AbstractActionController {
 				'order_by' => $order_by 
 		) );
 	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function mySubmittedItemsAction() {
 		
 		// $request = $this->getRequest ();
@@ -605,6 +1067,11 @@ class PRController extends AbstractActionController {
 				'pr_items' => $pr_items 
 		) );
 	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function allPRAction() {
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$last_status = $this->params ()->fromQuery ( 'last_status' );
@@ -628,10 +1095,16 @@ class PRController extends AbstractActionController {
 		if ($last_status == null) :
 			$last_status = '';
 		
+		
+		
+		
 		endif;
 		
 		if ($department_id == null) :
 			$department_id = 0;
+		
+		
+		
 		
 		endif;
 		
@@ -674,15 +1147,24 @@ class PRController extends AbstractActionController {
 		if ($balance == null) :
 			$balance = 2;
 		
+		
+		
+		
 		endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
 		
+		
+		
+		
 		endif;
 		
 		if ($added_delivery_list == null) :
 			$added_delivery_list = 2;
+		
+		
+		
 		
 		endif;
 		
@@ -698,8 +1180,7 @@ class PRController extends AbstractActionController {
 				'balance' => $balance,
 				'unconfirmed_quantity' => $unconfirmed_quantity,
 				'added_delivery_list' => $added_delivery_list 
-		)
-		 );
+		) );
 	}
 	
 	/**
@@ -758,15 +1239,24 @@ class PRController extends AbstractActionController {
 		if ($balance == null) :
 			$balance = 1;
 		
+		
+		
+		
 		endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
 		
+		
+		
+		
 		endif;
 		
 		if ($processing == null) :
 			$processing = 0;
+		
+		
+		
 		
 		endif;
 		
@@ -993,7 +1483,8 @@ class PRController extends AbstractActionController {
 	}
 	
 	/**
-	 * AJAX
+	 *
+	 * @return \Zend\Stdlib\ResponseInterface
 	 */
 	public function deleteCartItemAction() {
 		$identity = $this->authService->getIdentity ();
@@ -1016,12 +1507,81 @@ class PRController extends AbstractActionController {
 		$response->setContent ( json_encode ( $c ) );
 		return $response;
 	}
-	public function addItemPictureAction() {
-		return new ViewModel ();
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function editCartItemAction() {
+		$request = $this->getRequest ();
+		
+		if ($request->isPost ()) {
+			
+			$id = $request->getPost ( 'id' );
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			
+			$input = new PurchaseRequestCartItem ();
+			
+			$input->priority = $request->getPost ( 'priority' );
+			$input->name = $request->getPost ( 'name' );
+			$input->code = $request->getPost ( 'code' );
+			
+			$input->quantity = $request->getPost ( 'quantity' );
+			$input->EDT = $request->getPost ( 'EDT' );
+			$input->unit = $request->getPost ( 'unit' );
+			$input->remarks = $request->getPost ( 'remarks' );
+			
+			// validator.
+			$errors = array ();
+			
+			$validator = new Date ();
+			
+			if (! $validator->isValid ( $input->EDT )) {
+				$errors [] = 'requested delievery date is not correct!';
+			} else {
+				$today = date ( "Y-m-d H:i:s" );
+				if ($input->EDT < $today) {
+					$errors [] = 'requested delievery date is in the past!';
+				}
+			}
+			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
+			$validator = new Int ();
+			
+			if (! $validator->isValid ( $input->quantity )) {
+				$errors [] = 'Quantity is not valid. It must be a number.';
+			} else {
+				if ($input->quantity <= 0) {
+					$errors [] = 'Order Quantity muss be greater than 0!';
+				}
+			}
+			
+			if (count ( $errors ) > 0) {
+				$input->id = $id;
+				
+				return new ViewModel ( array (
+						'cart_item' => $input,
+						'redirectUrl' => $redirectUrl,
+						'errors' => $errors 
+				) );
+			}
+			
+			$this->purchaseRequestCartItemTable->update ( $input, $id );
+			$this->redirect ()->toUrl ( $redirectUrl );
+		}
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$cart_item = $this->purchaseRequestCartItemTable->get ( $id );
+		
+		return new ViewModel ( array (
+				'cart_item' => $cart_item,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null 
+		) );
 	}
-	public function showAction() {
-		return new ViewModel ();
-	}
+	
+	// +++++++++++++++++++++++++++++++++
 	public function getAuthService() {
 		return $this->authService;
 	}
@@ -1099,5 +1659,4 @@ class PRController extends AbstractActionController {
 		$this->purchaseRequestCartItemTable = $purchaseRequestCartItemTable;
 		return $this;
 	}
-
 }

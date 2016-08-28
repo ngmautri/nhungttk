@@ -77,25 +77,60 @@ class DOController extends AbstractActionController {
 	public function indexAction() {
 		return new ViewModel ();
 	}
-	
-	
 	public function listAction() {
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$my_deliveries = $this->deliveryTable->getDeliveries ( 0, $user ['id'], 0, 0 );
+		$deliveries = $this->deliveryTable->getDOList ( 0, 0 );
+		$totalResults = count ( $deliveries );
+		
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$deliveries = $this->deliveryTable->getDOList ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		return new ViewModel ( array (
+				'redirectUrl' => $redirectUrl,
+				'deliveries' => $deliveries,
+				'paginator' => $paginator,
+				'total_items' => $totalResults 
+		)
+		 );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function showAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$dn_id = ( int ) $this->params ()->fromQuery ( 'dn_id' );
+		$dn = $this->deliveryTable->getDeliveries ( $dn_id, 0, 0, 0 )->current ();
+		$dn_items = $this->deliveryItemTable->getItemsByDN ( $dn_id );
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
 				'user' => $user,
 				'errors' => null,
-				'my_delivery' => $my_deliveries
+				'dn' => $dn,
+				'dn_items' => $dn_items 
 		) );
 	}
-	
-	
-	
 	
 	// ==============================================
 	public function getNotificationAction() {
@@ -110,6 +145,80 @@ class DOController extends AbstractActionController {
 				'errors' => null,
 				'dn_items' => $notified_dn_items 
 		) );
+	}
+	
+	/**
+	 * Confirm DO by requester.
+	 */
+	public function confirmDOAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$dn_id = $this->params ()->fromQuery ( 'dn_id' );
+		$dn_item_id = $this->params ()->fromQuery ( 'dn_item_id' );
+		$pr_item_id = $this->params ()->fromQuery ( 'pr_item_id' );
+		$sparepart_id = $this->params ()->fromQuery ( 'sparepart_id' );
+		$article_id = ( int ) $this->params ()->fromQuery ( 'article_id' );
+		$asset_id = $this->params ()->fromQuery ( 'asset_id' );
+		$confirmed_quantity = ( int ) $this->params ()->fromQuery ( 'confirmed_quantity' );
+		$rejected_quantity = ( int ) $this->params ()->fromQuery ( 'rejected_quantity' );
+		
+		$dn_item = $this->deliveryItemTable->get ( $dn_item_id );
+		
+		$input = new DeliveryItemWorkFlow ();
+		$input->delivery_id = $dn_id;
+		$input->dn_item_id = $dn_item_id;
+		$input->pr_item_id = $pr_item_id;
+		$input->status = "Confirmed";
+		$input->updated_by = $user ['id'];
+		$input->confirmed_quantity = $confirmed_quantity;
+		$input->rejected_quantity = $rejected_quantity;
+		$input->remarks = $this->params ()->fromQuery ( 'remarks' );
+		;
+		
+		$last_workflow_id = $this->deliveryItemWorkFlowTable->add ( $input );
+		
+		$this->deliveryItemTable->updateLastWorkFlow ( $dn_item_id, $last_workflow_id );
+		
+		if ($article_id > 0) :
+			
+			// up-date-movement
+			$m = new ArticleMovement ();
+			$m->movement_date = $dn_item->created_on;
+			$m->article_id = $article_id;
+			
+			$m->flow = "IN";
+			$m->quantity = $dn_item->delivered_quantity;
+			$m->pr_item_id = $pr_item_id;
+			$m->dn_item_id = $dn_item_id;
+			$m->created_by = $user ['id'];
+			$m->comment = 'PR:' . $dn_item->pr_number;
+			
+			$this->articleMovementTable->add ( $m );
+			
+			$i = new ArticleLastDN ();
+			$i->article_id = $article_id;
+			$i->last_workflow_id = $last_workflow_id;
+			$this->articleLastDNTable->add ( $i );
+		endif;
+		
+		if ($sparepart_id > 0) :
+			$input = new SparepartMovement ();
+			$input->movement_date = $dn_item->created_on;
+			$input->sparepart_id = $sparepart_id;
+			$input->quantity = $dn_item->delivered_quantity;
+			$input->flow = 'IN';
+			$input->comment = 'PR:' . $dn_item->pr_number;
+			$input->created_by = $user ['id'];
+			
+			$this->sparepartMovementTable->add ( $input );
+			
+			$i = new SparepartLastDN ();
+			$i->sparepart_id = $sparepart_id;
+			$i->last_workflow_id = $last_workflow_id;
+			$this->sparepartLastDNTable->add ( $i );
+		
+		endif;
+		$this->redirect ()->toUrl ( '/procurement/do/get-notification' );
 	}
 	
 	/**
@@ -159,6 +268,7 @@ class DOController extends AbstractActionController {
 			$this->articleLastDNTable->add ( $i );
 		
 		
+		
 		endif;
 		
 		if ($sparepart_id > 0) :
@@ -176,6 +286,7 @@ class DOController extends AbstractActionController {
 			$i->sparepart_id = $sparepart_id;
 			$i->last_workflow_id = $last_workflow_id;
 			$this->sparepartLastDNTable->add ( $i );
+		
 		
 		
 		endif;
@@ -238,6 +349,7 @@ class DOController extends AbstractActionController {
 			$this->articleLastDNTable->add ( $i );
 		
 		
+		
 		endif;
 		
 		if ($sparepart_id > 0) :
@@ -255,6 +367,7 @@ class DOController extends AbstractActionController {
 			$i->sparepart_id = $sparepart_id;
 			$i->last_workflow_id = $last_workflow_id;
 			$this->sparepartLastDNTable->add ( $i );
+		
 		
 		
 		endif;
@@ -357,13 +470,11 @@ class DOController extends AbstractActionController {
 				$last_workflow_id = $this->deliveryItemWorkFlowTable->add ( $input );
 				$this->deliveryItemTable->updateLastWorkFlow ( $dn_item->dn_item_id, $last_workflow_id );
 			}
+		
 			endif;
 		
 		$this->redirect ()->toUrl ( '/procurement/pr/all-pr' );
 	}
-	
-	
-	
 	public function addItemAction() {
 		return new ViewModel ();
 	}

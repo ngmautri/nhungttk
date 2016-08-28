@@ -10,6 +10,57 @@ class DeliveryTable {
 	
 	protected $tableGateway;
 	
+	private $getDOList_SQL =
+	"
+select 
+	mla_delivery.*,
+	mla_delivery_workflows.status as last_status,
+	mla_delivery_workflows.updated_on as last_status_on,
+    mla_users.*,
+    ifnull(mla_delivery_items.total_items,0) as total_items
+from mla_delivery
+
+left join mla_delivery_workflows 
+on mla_delivery_workflows.delivery_id = mla_delivery.id
+
+left join 
+(
+		SELECT 
+        mla_users.title, 
+        mla_users.firstname, 
+        mla_users.lastname, 
+        mla_departments.*
+    FROM mla_users
+    JOIN 
+	(	SELECT 
+			mla_departments_members.department_id,
+            mla_departments_members.user_id,
+            mla_departments.name AS department_name,
+            mla_departments.status AS department_status
+		FROM mla_departments_members
+		JOIN mla_departments ON mla_departments_members.department_id = mla_departments.id
+	) AS mla_departments 
+    ON mla_users.id = mla_departments.user_id
+    
+) AS mla_users
+ON mla_users.user_id = mla_delivery.created_by
+
+left join
+(
+	select 
+		mla_delivery.id as dn_id, 
+		count(*) as total_items  
+	from mla_delivery_items
+	join mla_delivery 
+	on mla_delivery_items.delivery_id = mla_delivery.id
+	group by mla_delivery.id
+)
+as mla_delivery_items
+on mla_delivery_items.dn_id = mla_delivery.id	
+Where 1			
+
+	";
+	
 	public function __construct(TableGateway $tableGateway) {
 		$this->tableGateway = $tableGateway;
 	}
@@ -62,6 +113,42 @@ class DeliveryTable {
 		$this->tableGateway->delete($where);
 	}
 	
+	
+	/**
+	 *
+	 * @param unknown $dn_id
+	 * @param unknown $last_workflow_id
+	 */
+	public function getDOList($limit, $offset) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = $this->getDOList_SQL;
+		
+		$sql =$sql. ' ORDER BY mla_delivery.created_on DESC';
+		
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+		
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+		
+		
+	
+		//echo $sql;
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		if ($resultSet->count () > 0) {
+			return $resultSet;
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * 

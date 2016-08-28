@@ -12,9 +12,32 @@ class PurchaseRequestCartItemTable {
 	public function __construct(TableGateway $tableGateway) {
 		$this->tableGateway = $tableGateway;
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function fetchAll() {
 		$resultSet = $this->tableGateway->select ();
 		return $resultSet;
+	}
+	
+	/**
+	 * 
+	 * @param unknown $id
+	 * @throws \Exception
+	 * @return ArrayObject|NULL
+	 */
+	
+	public function get($id){
+		$id  = (int) $id;
+	
+		$rowset = $this->tableGateway->select(array('id' => $id));
+		$row = $rowset->current();
+		if (!$row) {
+			throw new \Exception("Could not find row $id");
+		}
+		return $row;
 	}
 	
 	/**
@@ -89,15 +112,7 @@ class PurchaseRequestCartItemTable {
 				'quantity' => $input->quantity,
 				'EDT' => $input->EDT,
 				
-				'article_id' => $input->article_id,
-				'sparepart_id' => $input->sparepart_id,
-				'asset_id' => $input->asset_id,
-				'other_res_id' => $input->other_res_id,
-				
 				'remarks' => $input->remarks,
-				'created_on' => date ( 'Y-m-d H:i:s' ),
-				'created_by' => $input->created_by,
-				'status' => $input->status 
 		);
 		
 		$where = 'id = ' . $id;

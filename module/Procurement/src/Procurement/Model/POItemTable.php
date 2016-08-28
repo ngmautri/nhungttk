@@ -197,6 +197,23 @@ on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
 	}
 	
 	/**
+	 * 
+	 * @param unknown $id
+	 * @throws \Exception
+	 * @return ArrayObject|NULL
+	 */
+	public function get($id){
+		$id  = (int) $id;
+	
+		$rowset = $this->tableGateway->select(array('id' => $id));
+		$row = $rowset->current();
+		if (!$row) {
+			throw new \Exception("Could not find row $id");
+		}
+		return $row;
+	}
+	
+	/**
 	 *
 	public $id;
 	public $po_id;
@@ -252,7 +269,7 @@ on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
 	 * @param DeliveryItem $input        	
 	 * @param unknown $id        	
 	 */
-	public function update(DeliveryItem $input, $id) {
+	public function update(POItem $input, $id) {
 		$data = array (
 				'po_id' => $input->po_id,
 				'pr_item_id' => $input->pr_item_id,
@@ -367,7 +384,6 @@ on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
 		$adapter = $this->tableGateway->adapter;
 	
 		$sql = "
-	
 	
 			select
 				mla_po_item.vendor_id,

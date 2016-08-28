@@ -34,9 +34,16 @@ echo '<div class="alert alert-info">';
 
 <?php  	if (count($pr_items) >0): ?>
 
+
+
+<?php  	if ($pr->status!=='Approved'): ?>
+<button title="Acknowledge the PR" class="btn btn-default" onclick="openConfirmation('<?php echo $pr->id?>');" type="button"><i class="icon-ok">  </i> Approve</button>
+<?php  	endif; ?>
+ <hr>
+
 <ul class="nav nav-pills">
  <li><a href="/application/pdf/pr?id=<?php echo $pr->id ?>"  target="_blank"><i class="icon-print">  </i> Print (PDF)</a> </li>
- <li><a href="/procurement/pr/show?output=csv&pr_id=<?php echo $pr->id ?>"><i class="icon-download-alt">  </i> Download (CSV)</a> </li>
+ <li><a href="/procurement/pr/process?output=csv&pr_id=<?php echo $pr->id ?>"><i class="icon-download-alt">  </i> Download (CSV)</a> </li>
  
 </ul>
 
@@ -55,8 +62,9 @@ echo '<div class="alert alert-info">';
 			<td><b data-toggle="tooltip" title="Rejected Quantity">Rejected <br>Quantity</b></td>
 			<td><b data-toggle="tooltip" title="Balance">Balance</b></td>
 			<td><b data-toggle="tooltip" title="Free">Free</b></td>
-				<td><b>EDT</b></td>
+			<td><b>EDT</b></td>
 			<td><b>Last Purchase</b></td>
+			<td><b>Work Flow</b></td>
 		</tr>
 	</thead>
 	<tbody>	
@@ -108,7 +116,7 @@ echo '<div class="alert alert-info">';
 		
 		 <?php if ($item->sparepart_id > 0) : ?>
      	<li><a
-							href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>" target="_blank"><i
+							href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>" targey="_blank"><i
 								class="icon-list"> </i> Detail</a></li>
 		<?php endif; ?>
 	
@@ -139,7 +147,16 @@ echo '<div class="alert alert-info">';
 			</td>
 			<td><?php echo $item->unit;?></td>
 		<td><?php echo $item->quantity;?></td>
-			<td><?php echo $item->total_received_quantity;?></td>
+			<td>
+			<?php if ($item->total_received_quantity>0): ?>
+		<a href="<?php echo $this->baseUrl ?>/procurement/gr/receive-list?po_item_id=<?php echo $item->po_item_id;?>" target="_blank"><?php echo $item->total_received_quantity;?></a>
+			<?php else: 
+				echo $item->total_received_quantity;
+			endif; ?>
+			</td>
+			
+			
+			
 			<td><?php echo $item->unconfirmed_quantity;?></td>
 			<td><?php echo $item->confirmed_quantity;?></td>
 			<td><?php echo $item->rejected_quantity;?></td>
@@ -170,17 +187,39 @@ echo '<div class="alert alert-info">';
 				href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->sp_vendor_id;?>"
 				target="_blank"><?php echo $item->sp_vendor_name;?></a>
 			<?php endif;?>
+			
+			<br> <span style="font-size: 9pt; font-style: italic;">
+			<?php
+		if ($item->article_id > 0) :
+			if ($item->article_price > 0) :
+				echo 'Unit price:' . $item->article_price . ' ' . $item->article_currency;
+				;
+				endif;
+		endif;
 		
+		if ($item->sparepart_id > 0) :
+			if ($item->sp_price > 0) :
+				echo 'Unit price:' . $item->sp_price . ' ' . $item->sp_currency;
+			
+			endif;
+		
+		endif;
+		?>
 			</span>	
-			
-			
 			</td>
-		
+			<td>
+			<div style="color: gray; font-size: 8pt;">
+				PR-Item: #<?php echo $item->id;?><br>
+			<?php if ($item->po_item_id>0):?>
+				PO-Item: #<?php echo $item->po_item_id;?><br>
+			<?php endif;?>
+			</div>
+			</td>
 
 	
 			<script language="javascript">
-			id_array.push(<?php echo $item->id;?>);
-		</script>
+				id_array.push(<?php echo $item->id;?>);
+			</script>
 		</tr>
 
 	<?php endforeach; ?>

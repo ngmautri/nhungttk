@@ -15,7 +15,7 @@
         <label class="control-label" for="inputNameLocal">PR by Year: </label>
         <div class="controls">
         	<select name="pr_year" >
-        		<option value="">All</option>
+        		<option value="0">All</option>
    	    		<option value="2016">2016</option>
    	    		<option value="2017">2017</option>
    	    		<option value="2018">2018</option>
@@ -92,7 +92,7 @@ endif;
 		<td><?php echo date_format(date_create($item->pr_updated_on),"Y-m-d");?></td>
 		<td><?php echo $item->pr_status;?></td>
 		<td>
-<a href="<?php echo $this->baseUrl ?>/procurement/pr/create-step2?pr_id=<?php echo $item->id;?>">show </a>
+<a href="<?php echo $this->baseUrl ?>/procurement/pr/show?pr_id=<?php echo $item->id;?>">show </a>
 		</td>
 		</tr>
 	

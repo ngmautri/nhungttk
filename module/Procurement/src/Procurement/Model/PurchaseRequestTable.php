@@ -489,53 +489,6 @@ FROM
 		return $resultSet;
 	}
 	
-	/**
-	 * Get all PR of User
-	 *
-	 * @param unknown $user_id        	
-	 * @return \Zend\Db\ResultSet\ResultSet
-	 */
-	public function getPRof($user_id) {
-		$adapter = $this->tableGateway->adapter;
-		
-		$sql = "SELECT TB1.*, TB2.*, TB3.*, concat(TB4.firstname, ' ', TB4.lastname) as requester		
-FROM mla_purchase_requests as TB1				
-LEFT JOIN 
-	(select count(*) as tItems, t2.id as pr_id from mla_purchase_request_items as t1 
-	join mla_purchase_requests as t2 
-	on t1.purchase_request_id = t2.id
-	group by t2.id) as TB2
-ON TB2.pr_id =  TB1.id        
-LEFT JOIN    
-	(select lt1.status,lt1.purchase_request_id, lt2.last_change, lt2.changed_by from mla_purchase_requests_workflows as lt1
-	join
-	(select tt1.purchase_request_id,max(tt1.updated_on) as last_change, tt1.updated_by, concat(tt2.firstname, ' ', tt2.lastname) as changed_by from mla_purchase_requests_workflows as tt1
-	left join mla_users as tt2
-	on tt2.id = tt1.updated_by
-	Group by tt1.purchase_request_id
-) as lt2
-ON lt1.updated_on = lt2.last_change) as TB3
-
-ON TB1.id =  TB3.purchase_request_id
-		
-LEFT join mla_users as TB4
-on TB4.id = TB1.requested_by
-				
-		WHERE TB1.requested_by = " . $user_id;
-		/*
-		 * $sql = "SELECT *
-		 * FROM mla_purchase_requests as t1
-		 * LEFT JOIN mla_purchase_request_items as t2
-		 * on t2.purchase_request_id = t1.id
-		 * WHERE requested_by = ". $user_id;
-		 */
-		$statement = $adapter->query ( $sql );
-		$result = $statement->execute ();
-		
-		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
-		$resultSet->initialize ( $result );
-		return $resultSet;
-	}
 	
 	/**
 	 * Get PR
@@ -662,6 +615,66 @@ on TB4.id = TB1.requested_by
 		$statement = $adapter->query ( $sql );
 		$result = $statement->execute ();
 		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		if ($resultSet->count () > 0) {
+			return $resultSet;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param unknown $user_id
+	 * @param unknown $pr_year
+	 * @param unknown $flow
+	 * @param unknown $last_status
+	 * @param unknown $order_by
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet|NULL
+	 */
+	public function getPROf($user_id, $pr_year, $flow,$last_status, $order_by, $limit, $offset) {
+		
+		$adapter = $this->tableGateway->adapter;
+		$sql = $this->sql_GetPurchaseRequests;
+	
+		if ($user_id > 0) {
+			$sql = $sql . " AND mla_purchase_requests.requested_by = " . $user_id;
+		}
+		if ($pr_year > 0) {
+			$sql = $sql . " AND year(mla_purchase_requests.requested_on)=" . $pr_year;
+		}
+	
+		if($last_status=='Fulfilled'){
+			$sql = $sql . " AND ifnull( mla_purchase_request_items_pending.total_pending_items,0)=0";
+		}
+	
+		if($last_status=='Pending'){
+			$sql = $sql . " AND ifnull( mla_purchase_request_items_pending.total_pending_items,0)>0";
+		}
+	
+		if ($flow != "all") {
+			$sql = $sql . " AND mla_purchase_requests_workflows.status  = '" . $flow . "'";
+		}
+	
+		$sql = $sql . " ORDER BY  mla_purchase_requests.requested_on DESC";
+	
+	
+		if ($limit > 0) {
+			$sql = $sql . " LIMIT " . $limit;
+		}
+	
+		if ($offset > 0) {
+			$sql = $sql . " OFFSET " . $offset;
+		}
+	
+	//	 echo $sql;
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
 		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
 		$resultSet->initialize ( $result );
 		if ($resultSet->count () > 0) {

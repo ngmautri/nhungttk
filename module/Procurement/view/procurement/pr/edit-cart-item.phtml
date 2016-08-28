@@ -1,0 +1,96 @@
+<h5>Edit Order Item: <?php echo $cart_item != null?'#'.$cart_item->id:""; ?></h5>
+
+<?php if (count($errors)>0)
+{
+echo '<div class="alert alert-error">';
+	
+	echo '<ul>';
+	 foreach ($errors as $error) :
+	 echo '<li>'.$error . '</li>';
+	 
+	 endforeach;
+	 echo '</ul>';
+	 echo '</div>';
+} 
+?>
+	
+
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/procurement/pr/edit-cart-item"
+	method="post" enctype="multipart/form-data" id="">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" /> <input type="hidden" name="id"
+		id="item_id"
+		value="<?php echo $cart_item != null?$cart_item->id:""; ?>" />
+
+	<div class="control-group">
+		<label class="control-label" for="inputNameLocal">Priority:</label>
+		<div class="controls">
+			<select name="priority" id="item_priority">
+				<option value="Low">Low</option>
+				<option value="Medium" selected>Medium</option>
+				<option value="High">High</option>
+				<option value="Urgent">Urgent</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Name:</label>
+		<div class="controls">
+			<input type="text" id="item_name" placeholder="" name="name"
+				value="<?php echo $cart_item != null?$cart_item->name:""; ?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Code:</label>
+		<div class="controls">
+			<input type="text" id="item_code" placeholder="" name="code"
+				value="<?php echo $cart_item != null?$cart_item->code:""; ?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Unit:</label>
+		<div class="controls">
+			<input type="text" id="item_unit" placeholder="" name="unit"
+				value="<?php echo $cart_item != null?$cart_item->unit:""; ?>">
+		</div>
+	</div>
+
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Quantity:</label>
+		<div class="controls">
+			<input type="text" id="item_quantity" placeholder="" name="quantity"
+				value="<?php echo $cart_item != null?$cart_item->quantity:""; ?>">
+			<div style="color: gray;font-size 6pt" id="item_balance"></div>
+		</div>
+
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputNameLocal">Requested Delivery
+			Date:</label>
+		<div class="controls">
+			<input type="text" id="end_date" placeholder="click to select"
+				name="EDT"
+				value="<?php echo $cart_item != null?date_format(date_create($cart_item->EDT),"Y-m-d"):""; ?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputDescription">Reason /Note:</label>
+		<div class="controls">
+			<textarea id="item_remarks" placeholder="" rows="2" cols="5"
+				name="remarks"><?php echo $cart_item != null?$cart_item->remarks:""; ?></textarea>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn">Update</button>
+		</div>
+	</div>
+</form>

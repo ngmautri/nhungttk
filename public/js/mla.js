@@ -985,7 +985,44 @@ function updateCarts() {
 }
 
 function openConfirmation(ID) {
-	$('#myModal').modal();
+	
+	var error='';
+	var selected_items = '';
+	var i = 0;
+	
+	var SelectAll = $('#select_ALL').prop('checked') ? "YES" : "NO";
+
+	selected_items = selected_items + '(';
+	$(".checkbox1").each(function() {
+		if (this.checked) {
+			i = i + 1;
+			selected_items = selected_items + this.value + ',';
+		}
+	});
+
+	// remove last ','
+	selected_items = selected_items.substring(selected_items.length - 1, 1);
+	selected_items = '(' + selected_items + ')';
+
+	if (SelectAll === 'NO' && i === 0) {
+		error = 'No items selected... Please select item(s) to submit!';
+	}
+	
+	var pr_number = $('#pr_number').val();
+	$('#submitted_pr_number').html('<b>#' +pr_number + ' - ' + i + ' Items</b>');
+
+		
+	if(pr_number.length==0){
+		error= error + '<br> PR Number is empty...Please enter PR Number!';
+	}
+	
+	
+	if(error.length>0){
+		$('#message_modal_content').html('<div class="alert alert-error">' + error +'</div>');
+		$('#message_modal').modal();
+	}else{
+		$('#myModal').modal();
+	}
 }
 
 function submitCartItems() {
@@ -995,6 +1032,7 @@ function submitCartItems() {
 	var i = 0;
 
 	var pr_number = $('#pr_number').val();
+	
 	var SelectAll = $('#select_ALL').prop('checked') ? "YES" : "NO";
 
 	selected_items = selected_items + '(';
@@ -1018,7 +1056,7 @@ function submitCartItems() {
 	$('#myModal').modal('hide');
 	$('#myModal1').modal();
 
-	redirectUrl = "/procurement/pr/my-pr";
+	redirectUrl = "/procurement/pr/mine";
 	$.get("/procurement/pr/submit-cart-items", {
 		pr_number : pr_number,
 		cart_items : selected_items,
@@ -1035,6 +1073,7 @@ function submitCartItems() {
  */
 function deleteCartItemDialog(ID) {
 	$('#cart_item_to_delete').val(ID);
+	$('#cart_item_to_delete_id').html('<b>#' + ID+'</b>');
 	$('#myModal2').modal();
 }
 
@@ -1190,7 +1229,7 @@ function doConfirmDelivery() {
 
 	$('#myModal').modal('hide');
 	$('#myModal1').modal();
-	redirectUrl = "/procurement/delivery/get-notification";
+	redirectUrl = "/procurement/do/get-notification";
 	$.get(uri, {
 	confirmed_quantity : confirmed_quantity,
 	rejected_quantity : rejected_quantity,
@@ -1268,6 +1307,48 @@ function submitDNCartItems() {
 		updateCarts();
 		window.location = redirectUrl;
 	});
+}
+
+
+function openDOConfirmation(ID) {
+	
+	var error='';
+	var selected_items = '';
+	var i = 0;
+	
+	var SelectAll = $('#select_ALL').prop('checked') ? "YES" : "NO";
+
+	selected_items = selected_items + '(';
+	$(".checkbox1").each(function() {
+		if (this.checked) {
+			i = i + 1;
+			selected_items = selected_items + this.value + ',';
+		}
+	});
+
+	// remove last ','
+	selected_items = selected_items.substring(selected_items.length - 1, 1);
+	selected_items = '(' + selected_items + ')';
+
+	if (SelectAll === 'NO' && i === 0) {
+		error = 'No items selected... Please select item(s) to notify!';
+	}
+	
+	var dn_number = $('#dn_number').val();
+	$('#submitted_id').html('<b>#' + dn_number + ' - ' + i + ' Items</b>');
+
+		
+	if(dn_number.length==0){
+		error= error + '<br> DO Number is empty...Please enter DO Number!';
+	}
+	
+	
+	if(error.length>0){
+		$('#message_modal_content').html('<div class="alert alert-error">' + error +'</div>');
+		$('#message_modal').modal();
+	}else{
+		$('#myModal').modal();
+	}
 }
 
 function notifyDOItems() {

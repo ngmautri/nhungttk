@@ -1882,7 +1882,7 @@ on TT1.purchase_request_id = TT3.id";
 	 * @param unknown $offset
 	 * @return \Zend\Db\ResultSet\ResultSet
 	 */
-	public function getPRItemsWithLastDN_V2($department,$last_status,$balance,$unconfirmed_quantity,$processing,$limit,$offset) {
+	public function getPRItemsWithLastDN_V2($department,$last_status,$balance,$unconfirmed_quantity,$processing,$sort_by,$limit,$offset) {
 			
 		$adapter = $this->tableGateway->adapter;
 		$sql = $this->getPRItemsWithDN_SQL_V2;
@@ -1922,6 +1922,23 @@ on TT1.purchase_request_id = TT3.id";
 		}
 		if ($processing ==1) {
 			$sql = $sql. " AND mla_po_item.id >0";
+		}
+		
+		
+		if ($sort_by =="pr_number") {
+			$sql = $sql. " order by mla_purchase_request_items.purchase_request_id desc";
+		}
+			
+		if ($sort_by == "item_name") {
+			$sql = $sql. " order by mla_purchase_request_items.name asc";
+		}
+		
+		if ($sort_by =="requester_name") {
+			$sql = $sql. " order by mla_purchase_requests.pr_requester_name asc";
+		}
+		
+		if ($sort_by =="EDT") {
+			$sql = $sql. " order by mla_purchase_request_items.edt asc";
 		}
 		
 	
@@ -2068,7 +2085,7 @@ on TT1.purchase_request_id = TT3.id";
 			$sql = $sql. " AND mla_po_item.id >0";
 		}
 	
-	
+		
 		if ($limit > 0) {
 			$sql = $sql. " LIMIT " . $limit;
 		}

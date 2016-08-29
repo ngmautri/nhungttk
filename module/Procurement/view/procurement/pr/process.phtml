@@ -1,3 +1,5 @@
+<?php include (ROOT.'\module\Procurement\view\procurement\menu.php'); ?>
+
 <script language="javascript">
 			var id_array = [];
 </script>
@@ -52,7 +54,8 @@ echo '<div class="alert alert-info">';
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
-			<td><b>No.</b></td>
+			<td><b>#</b></td>
+			<td><b>Status</b></td>
 			<td><b>Item Name</b></td>
 			<td><b>Unit</b></td>
 			<td><b data-toggle="tooltip" title="Ordred Quantity">Requested <br>Quantity</b></td>
@@ -76,7 +79,21 @@ echo '<div class="alert alert-info">';
 		?>
 		<tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-
+			<td>
+			<div style="font-size: 8pt;">
+			<?php if ($item->confirmed_balance > 0) : ?>
+   				<?php if ($item->po_item_id > 0) : ?>
+   					<span style="font-size: 7pt;" class="label label-info">Buying</span>
+   				<?php else: ?>
+   					<span style="color:red;"><b>Pending</b></span>
+   				<?php endif; ?>
+   				
+   				  				<?php else: ?>
+   				<span style="font-size: 7pt;" class="label label-success">Fulfilled</span>
+   				
+   				<?php endif; ?>
+   			</div>
+   			</td>
 			<td>
 				<div class="dropdown">
 					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
@@ -129,18 +146,7 @@ echo '<div class="alert alert-info">';
 			
 			<div style="color: gray;">
 				Code: <?php echo $this->escapeHtml($item->code);?><br>
-	<?php if ($item->confirmed_balance > 0) : ?>
-   				<?php if ($item->po_item_id > 0) : ?>
-   				Status: <span class="label label-info">Processing...</span>
-   				<?php else: ?>
-   				Status: <span class="	">Pending</span>
-   				<?php endif; ?>
-   				
-   				  				<?php else: ?>
-   				Status: <span class="label label-success">Fulfilled</span>
-   				
-   				<?php endif; ?>
-		</div>
+			</div>
 		
 		
 

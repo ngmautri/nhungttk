@@ -79,24 +79,14 @@ class PRController extends AbstractActionController {
 		
 		if ($flow == null) :
 			$flow = 'all';
-		
-		
-		
 		endif;
 		
 		if ($last_status == null) :
 			$last_status = 'Pending';
-		
-		
-		
 		endif;
 		
 		if ($department_id == null) :
 			$department_id = 0;
-		
-		
-		
-		
 		endif;
 		
 		$all_pr = $this->purchaseRequestTable->getPurchaseRequests ( $flow, $last_status, $department_id, 0, 0 );
@@ -140,22 +130,14 @@ class PRController extends AbstractActionController {
 		
 		if ($balance == null) :
 			$balance = 2;
-		
-		
-		
-		endif;
+			endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
-		
-		
-		
 		endif;
 		
 		if ($added_delivery_list == null) :
 			$added_delivery_list = 2;
-		
-		
 		
 		endif;
 		
@@ -172,6 +154,7 @@ class PRController extends AbstractActionController {
 			$h [] = "Department";
 			
 			$h [] = "Item ID";
+			$h [] = "Status";
 			$h [] = "Item Name";
 			$h [] = "Item Code";
 			$h [] = "Item Unit";
@@ -206,8 +189,23 @@ class PRController extends AbstractActionController {
 				$l [] = ( string ) $m->pr_of_department;
 				
 				$l [] = ( string ) $m->id;
+				
+				$item_status="";
+				
+				if($m->confirmed_balance <=0){
+					$item_status = "FULFILLED";
+				}else{
+					if($m->po_item_id>0){
+						$item_status = "BUYING";
+					}else{
+						$item_status = "PENDING";
+					}
+				}
+				$l [] = $item_status;
+				
+				
 				$l [] = ( string ) $m->name;
-				$l [] = ( string ) $m->code;
+				$l [] = ( string ) '\'' .$m->code;
 				$l [] = ( string ) $m->unit;
 				$l [] = ( string ) $m->keywords;
 				$l [] = ( string ) $m->EDT;
@@ -299,6 +297,7 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($unconfirmed_quantity == null) :
@@ -306,10 +305,12 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($added_delivery_list == null) :
 			$added_delivery_list = 2;
+		
 		
 		
 		
@@ -326,6 +327,7 @@ class PRController extends AbstractActionController {
 			$h [] = "PR auto number";
 			
 			$h [] = "Item ID";
+			$h [] = "Status";
 			$h [] = "Item Name";
 			$h [] = "Item Code";
 			$h [] = "Item Keywords";
@@ -347,6 +349,20 @@ class PRController extends AbstractActionController {
 				$l [] = ( string ) $m->pr_auto_number;
 				
 				$l [] = ( string ) $m->id;
+				
+				$item_status="";
+				
+				if($m->confirmed_balance <=0){
+					$item_status = "FULFILLED";
+				}else{
+					if($m->po_item_id>0){
+						$item_status = "BUYING";
+					}else{
+						$item_status = "PENDING";
+					}
+				}
+				$l [] = $item_status;
+				
 				$l [] = ( string ) $m->name;
 				$l [] = ( string ) '\'' . $m->code;
 				$l [] = ( string ) $m->keywords;
@@ -414,23 +430,14 @@ class PRController extends AbstractActionController {
 		
 		if ($flow == null) :
 			$flow = 'all';
-		
-		
-		
 		endif;
 		
 		if ($last_status == null) :
 			$last_status = 'Pending';
-		
-		
-		
 		endif;
 		
 		if ($pr_year == null) :
 			$pr_year = date ( 'Y' );
-		
-		
-		
 		endif;
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
@@ -508,12 +515,14 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		$departments = $this->departmentTable->fetchAll ();
 		
 		if ($balance == null) :
 			$balance = 1;
+		
 		
 		
 		
@@ -525,11 +534,13 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 	
 		endif;
 		
 		if ($processing == null) :
 			$processing = 0;
+		
 		
 		
 		
@@ -1098,10 +1109,12 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($department_id == null) :
 			$department_id = 0;
+		
 		
 		
 		
@@ -1150,6 +1163,7 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($unconfirmed_quantity == null) :
@@ -1158,10 +1172,12 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($added_delivery_list == null) :
 			$added_delivery_list = 2;
+		
 		
 		
 		
@@ -1209,6 +1225,7 @@ class PRController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function prItemsAction() {
+		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 15;
 		} else {
@@ -1233,40 +1250,176 @@ class PRController extends AbstractActionController {
 		$balance = $this->params ()->fromQuery ( 'balance' );
 		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
 		$processing = $this->params ()->fromQuery ( 'processing' );
+		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		
 		$departments = $this->departmentTable->fetchAll ();
 		
 		if ($balance == null) :
 			$balance = 1;
-		
-		
-		
-		
 		endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
-		
-		
-		
-		
 		endif;
 		
 		if ($processing == null) :
 			$processing = 0;
-		
-		
-		
-		
 		endif;
 		
-		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance, $unconfirmed_quantity, $processing, 0, 0 );
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance, $unconfirmed_quantity,$processing,$sort_by, 0, 0 );
 		$totalResults = count ( $pr_items );
+		
+		$output = $this->params ()->fromQuery ( 'output' );
+		
+		if ($output === 'csv') {
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+		
+			$h = array ();
+			
+			$h [] = "PR ID";
+			$h [] = "PR number";
+			$h [] = "Requester";
+			$h [] = "Department";
+			$h [] = "PR Created on";
+			
+			$h [] = "Item ID";
+			$h [] = "Status";
+			$h [] = "Item Name";
+			$h [] = "Item Code";
+			$h [] = "Item Unit";
+			$h [] = "Item EDT";
+			$h [] = "Spare-Parts";
+				
+			$h [] = "Ordered Quantity";
+			$h [] = "Received Quantity";
+			$h [] = "Notified Quantity";
+			$h [] = "Confirmed Quantity";
+			$h [] = "Rejected Quantity";
+			$h [] = "Balance";
+			$h [] = "Free Quantity";
+		
+			$h [] = "Last Vendor";
+			$h [] = "Last Price";
+			$h [] = "Last Currency";
+			$h [] = "Remarks";
+		
+			$delimiter = ";";
+		
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+		
+		
+			foreach ( $pr_items as $m ) {
+				$l = array ();
+				
+				$l [] = ( string ) $m->purchase_request_id;
+				$l [] = ( string ) $m->pr_number;
+				$l [] = ( string ) $m->pr_requester_name;
+				$l [] = ( string ) $m->pr_of_department;
+				$l [] = ( string ) $m->pr_requested_on;
+				
+				$l [] = ( string ) $m->id;
+				
+				$item_status="";
+				
+				if($m->confirmed_balance <=0){
+					$item_status = "FULFILLED";
+				}else{
+					if($m->po_item_id>0){
+						$item_status = "BUYING";
+					}else{
+						$item_status = "PENDING";
+					}
+				}
+				$l [] = $item_status;
+				
+				$l [] = ( string ) "'".$m->name;
+				
+				if($m->code =='' or $m->code == null){
+					$l [] = '-';
+				}else{
+					$l []= (string ) "'".$m->code;
+				}
+				
+				$l [] = ( string ) $m->unit;
+				$l [] = ( string ) $m->EDT;
+				
+				if($m->sparepart_id>0){
+					$l[]= "YES";
+				}else{
+					$l[]= "NO";
+				}
+		
+				$l [] = ( string ) $m->quantity;
+				$l [] = ( string ) $m->total_received_quantity;
+				$l [] = ( string ) $m->unconfirmed_quantity;
+				$l [] = ( string ) $m->confirmed_quantity;
+				$l [] = ( string ) $m->rejected_quantity;
+				$l [] = ( string ) $m->confirmed_balance;
+				$l [] = ( string ) $m->confirmed_free_balance;
+		
+				$last_vendor="";
+				$last_price="";
+				$last_currency="";
+				
+				if($m->sparepart_id>0){
+					$last_vendor = $m->sp_vendor_name;
+					$last_price = $m->sp_price;
+					$last_currency = $m->sp_currency;
+				}
+				
+				if($m->article_id>0){
+					$last_vendor = $m->article_vendor_name;
+					$last_price = $m->article_price;
+					$last_currency = $m->article_currency;
+				}
+					
+				$l [] = $last_vendor;
+				$l [] = $last_price;;
+				$l [] = $last_currency;;
+				
+				
+				
+		
+				$l [] = ( string ) $m->remarks;
+		
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+		
+			$fileName = 'PR-Items-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+		
+			$response = $this->getResponse ();
+			$headers = new Headers();
+		
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+		
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+		
+			$response->setHeaders($headers);
+			// $output = fread($fh, 8192);
+		
+			$response->setContent ( $output );
+		
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
+		
+		
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance, $unconfirmed_quantity, $processing, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance, $unconfirmed_quantity, $processing, $sort_by, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -1280,8 +1433,10 @@ class PRController extends AbstractActionController {
 				'unconfirmed_quantity' => $unconfirmed_quantity,
 				'processing' => $processing,
 				'department_id' => $department_id,
+				'sort_by'=>$sort_by,
 				'paginator' => $paginator,
-				'total_items' => $totalResults 
+				'total_items' => $totalResults,
+				'per_pape'=>$resultsPerPage,
 		) );
 	}
 	

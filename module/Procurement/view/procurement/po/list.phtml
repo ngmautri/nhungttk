@@ -1,4 +1,4 @@
-
+<?php include (ROOT.'\module\Procurement\view\procurement\menu.php'); ?>
 <script language="javascript">
 			var id_array = [];
 </script>
@@ -55,7 +55,6 @@ endif;
 				</i> FILTER</a>
 				
 			</h5>
-			<hr>
 		</div>
 		<div id="collapse1"
 			class="panel-collapse collapse">
@@ -168,6 +167,28 @@ endif;
 		</div>
 	</div>
 </div>
+<hr>
+
+<?php  	
+
+	if (! is_null ( $paginator )) :
+		echo '<h5>'. $paginator->minInPage . ' to ' . $paginator->maxInPage . ' of ' . $total_items . 
+		' Item(s) found | ' . $department_selected . ' | ' . 
+	 $vendor_selected . ' | ' .
+	 $balance_selected . ' | ' .
+	 $currency_selected . ' | ' .
+	 $payment_method_selected. ' | ' .
+	 '</h5>';	
+	 else :
+	 echo '<h5>' . $total_items .
+	 ' Item(s)found | <span class="label label-info">' . $department_selected . ' | ' . 
+	 $vendor_selected . ' | ' .
+	 $balance_selected . ' | ' .
+	 $currency_selected . ' | ' .
+	 $payment_method_selected. ' | ' .
+	 '</h5>';		
+	 endif;
+	 ?>
 
 <?php  	if (count($po_items) >0): ?>
 <ul class="nav nav-pills">
@@ -180,26 +201,7 @@ endif;
 </li>
 </ul>
 <?php endif;?> 
-<?php  	
 
-	if (! is_null ( $paginator )) :
-		echo '<h5>'. $paginator->minInPage . ' to ' . $paginator->maxInPage . ' of ' . $total_items . 
-		' Item(s) found | <span class="label label-info">' . $department_selected . ' | ' . 
-	 $vendor_selected . ' | ' .
-	 $balance_selected . ' | ' .
-	 $currency_selected . ' | ' .
-	 $payment_method_selected. ' | ' .
-	 '<span></h5>';	
-	 else :
-	 echo '<h5>' . $total_items .
-	 ' Item(s)found | <span class="label label-info">' . $department_selected . ' | ' . 
-	 $vendor_selected . ' | ' .
-	 $balance_selected . ' | ' .
-	 $currency_selected . ' | ' .
-	 $payment_method_selected. ' | ' .
-	 '<span></h5>';		
-	 endif;
-	 ?>
 	
 
 <?php  	if (count($po_items) >0): ?>
@@ -304,25 +306,8 @@ endif;
 
 </tbody>
 </table>
-<hr>
-
-<form class="form-search"
-	action="<?php echo $this->baseUrl ?>/inventory" method="get"
-	enctype="multipart/form-data">
-	<button type="submit" class="btn">
-		<i class="icon-arrow-left"> </i> Back
-	</button>
-</form>
 <?php else: echo 'Please change filter! <hr>'?>
 
-
-<form class="form-search"
-	action="<?php echo $this->baseUrl ?>/inventory" method="get"
-	enctype="multipart/form-data">
-	<button type="submit" class="btn">
-		<i class="icon-arrow-left"> </i> Back
-	</button>
-</form>
 
 <?php endif; ?>
 

@@ -63,20 +63,20 @@ endif;
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="inputNameLocal">Balance: </label>
-						<div class="controls">
-							<select name="balance">
-								<option value="2">All</option>
-								<option <?php echo $balance=='0'? "selected='selected'":"";?>
-									value="0">Balance=0</option>
-								<option <?php echo $balance=='1'? "selected='selected'":"";?>
-									value="1">Balance>0</option>
-								<option <?php echo $balance=='-1'? "selected='selected'":"";?>
-									value="-1">Balance<0 (Some Free)</option>
+							<label class="control-label" for="inputNameLocal">Balance: </label>
+							<div class="controls">
+								<select name="balance">
+									<option value="2">All</option>
+									<option <?php echo $balance=='0'? "selected='selected'":"";?>
+										value="0">Balance=0 (Fulfilled Items)</option>
+									<option <?php echo $balance=='1'? "selected='selected'":"";?>
+										value="1">Balance>0 (Pending Items)</option>
+									<option <?php echo $balance=='-1'? "selected='selected'":"";?>
+										value="-1">Balance<0(Some Free Items)</option>
 
-							</select>
+								</select>
+							</div>
 						</div>
-					</div>
 
 					<div class="control-group">
 						<label class="control-label" for="inputNameLocal">Delivery
@@ -150,10 +150,11 @@ if (count ( $pr_items ) > 0) :
 	?>
 
 <table class="table table-striped table-bordered">
-<thead style="background: url(/images/event_bg_blue.gif); background-repeat:repeat-x; background-color: #FFFFFF;">
+<thead>
 
 			<tr>
-			<td><b>No.</b></td>
+			<td><b>#</b></td>
+			<td><b>Status</b></td>
 			<td><b>Item Name</b></td>
 			<td><b>PR Number</b></td>
 			<td><b>Unit</b></td>
@@ -179,31 +180,27 @@ if (count ( $pr_items ) > 0) :
 		?>
 		<tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-
+			<td>
+			<div style="font-size: 8pt;">
+			    <?php if ($item->confirmed_balance > 0) : ?>
+   				<?php if ($item->po_item_id > 0) : ?>
+   					<span style="font-size: 7pt;" class="label label-info">Buying</span>
+   				<?php else: ?>
+   					<span style="color:red;"><b>Pending</b></span>
+   				<?php endif; ?>
+   				
+   				  				<?php else: ?>
+   				<span style="font-size: 7pt;" class="label label-success">Fulfilled</span>
+   				
+   				<?php endif; ?>
+   			</div>
 			<td>
 				<div class="dropdown">
 					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
 						href="#"><span style="color: black;"><b><?php echo $item->name;?></b></span>
 					<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-	    	
-    	<?php if ($item->confirmed_balance > 0) : ?>
-   			
-   		<?php if ($item->po_item_id > 0) : ?>
-   			<li><a href="/procurement/do/receive?pr_item_id=<?php echo $item->id;?>&po_item_id=<?php echo $item->po_item_id;?>"><i
-								class="icon-check"> </i> Receive </a></li>	
-    	<?php else: ?>
-    		<li><a
-							href="/procurement/po/add-to-cart?pr_item_id=<?php echo $item->id?>"><i
-								class="icon-check"> </i> Purchase</a></li>
-   	
-    	<?php endif; ?>
-   				
-    	<?php endif; ?>
-	
-     	
-      	<li class="divider"></li>
-        
+	    
         <?php
 		if ($item->article_id > 0) :
 			?>
@@ -224,20 +221,11 @@ if (count ( $pr_items ) > 0) :
 					</ul>
 				</div>
 
-				<div style="color: gray;">
-				Code: <?php echo $this->escapeHtml($item->code);?><br>
-				<?php if ($item->confirmed_balance > 0) : ?>
-   				<?php if ($item->po_item_id > 0) : ?>
-   				Status: <span class="label label-info">Processing...</span>
-   				<?php else: ?>
-   				Status: <span class="	">Pending</span>
-   				<?php endif; ?>
-   				<?php else: ?>
-   				Status: <span class="label label-success">Fulfilled</span>
-   				<?php endif; ?>
+				<div style="color: gray;font-size: 7pt;">
+					Code: <?php echo $this->escapeHtml($item->code);?><br>
 				</div>
 			
-			<td><?php echo $item->pr_number;?>
+			<td> <div style="font-size: 8pt;"><?php echo $item->pr_number;?></div>
 			<div style="color: gray; font-size: 8pt;">
 			<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/show?pr_id=<?php echo $item->purchase_request_id;?>"
 				target="_blank">#<?php echo $item->pr_auto_number;?></a><br>
@@ -259,7 +247,7 @@ if (count ( $pr_items ) > 0) :
 		<?php if($item->confirmed_balance == 0): ?>
 			<td><?php echo date_format(date_create($item->EDT),"Y-m-d");?>
 			<div>
-					<span class="label label-success">Fulfilled</span>
+					<span style="font-size: 7pt;" class="label label-success">Fulfilled</span>
 				</div></td>
 		<?php else: ?>		
 			<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span>

@@ -95,8 +95,17 @@ class PurchaseRequestCartItemTable {
 	}
 	
 	/**
+	 * Dont update below field
+	 * 
+	 * public $article_id;
+	 * public $sparepart_id;
+	 * public $asset_id;
+	 * public $other_res_id;
 	 *
+	 * public $remarks;
+	 * public $created_on;
 	 * @param PurchaseRequestItem $input        	
+	 * 
 	 * @param unknown $id        	
 	 */
 	public function update(PurchaseRequestCartItem $input, $id) {

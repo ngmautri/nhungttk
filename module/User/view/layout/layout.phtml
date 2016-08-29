@@ -100,7 +100,7 @@
 				 		<li class="dropdown"><a class="dropdown-toggle"
 							data-toggle="dropdown" href="#">MESSAGES <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/procurement/delivery/get-notification">Delivery
+								<li><a href="/procurement/do/get-notification">Delivery
 										Notification</a></li>
 
 							</ul></li>
@@ -128,8 +128,8 @@
 										class="icon-shopping-cart"> </i> Review Cart
 								</a></li>
 								<li class="divider"></li>
-								<li><a href="/procurement/pr/my-pr">My PR</a></li>
-								<li><a href="/procurement/pr/my-submitted_items">My PR Items</a></li>
+								<li><a href="/procurement/pr/mine">My PR</a></li>
+								<li><a href="/procurement/pr/my-items">My PR Items</a></li>
 							</ul></li>
 						  <?php endif;?>
 						  
@@ -167,7 +167,7 @@
 								<li class="divider"></li>
 								
 								<li><a href="<?php echo $this->baseUrl ?>/procurement/delivery/review-cart">Review
-										Delivery List </a></li>
+										Purchase List </a></li>
 							
 							<li class="divider"></li>
 								
@@ -197,14 +197,17 @@
 			</div>
 		</div>
 	</div>
-
+	
 	<div class="container">
+	
             <?php echo $this->content; ?>
             <hr>
+           
 		<footer>
 			<p>Email: nmt@mascot.dk</p>
 		</footer>
 	</div>
+	 </div>
 	<!-- /container -->
         <?php echo $this->inlineScript()?>
     </body>

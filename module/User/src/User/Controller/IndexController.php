@@ -56,55 +56,50 @@ class IndexController extends AbstractActionController {
 			
 			$input = new User ();
 			$input->firstname = $request->getPost ( 'firstname' );
-			$input->lastname = $request->getPost ( 'lastname' );			
+			$input->lastname = $request->getPost ( 'lastname' );
 			$input->password = $request->getPost ( 'password' );
 			$input->email = $request->getPost ( 'email' );
-			$input->block = 0;			
+			$input->block = 0;
 			$input->registration_key = Files::generate_random_string ();
 			
-			
-
 			$errors = array ();
 			
-			$validator = new EmailAddress();
+			$validator = new EmailAddress ();
 			
-			if ($input->firstname ==''){
+			if ($input->firstname == '') {
 				$errors [] = 'Please give your first name';
 			}
 			
-			if ($input->lastname ==''){
+			if ($input->lastname == '') {
 				$errors [] = 'Please give your last name';
 			}
 			
-			if (strlen($input->password) < 6) {
+			if (strlen ( $input->password ) < 6) {
 				$errors [] = 'Password is too short. Length muss be at least 6';
-			}else{
+			} else {
 				
-				if($input->password!= $request->getPost ( 'password1' )  ){
+				if ($input->password != $request->getPost ( 'password1' )) {
 					$errors [] = 'Password are not matched';
 				}
 			}
 			
-			
 			if (! $validator->isValid ( $input->email )) {
 				$errors [] = 'Email addresse is not correct!';
-			}else{
-				$u = $this->getUserTable()->getUserByEmail($input->email);
+			} else {
+				$u = $this->getUserTable ()->getUserByEmail ( $input->email );
 				
-				if (count($u)>0){
+				if (count ( $u ) > 0) {
 					$errors [] = 'Email exists already!';
 				}
 			}
-				
 			
-			if (count($errors) > 0) {
+			if (count ( $errors ) > 0) {
 				return new ViewModel ( array (
-						'messages' => $errors
-				));
+						'messages' => $errors 
+				) );
 			}
 			
-			$input->password = md5 ( $input->password);
-				
+			$input->password = md5 ( $input->password );
 			
 			$newId = $this->getUserTable ()->add ( $input );
 			
@@ -113,53 +108,49 @@ class IndexController extends AbstractActionController {
 			return $this->redirect ()->toRoute ( 'Inventory' );
 		}
 		
-		return new ViewModel ( array ('messages' => '') );
+		return new ViewModel ( array (
+				'messages' => '' 
+		) );
 	}
 	
+	
 	public function consoleAction() {
-	
-		$request = $this->getRequest();
-	
+		$request = $this->getRequest ();
+		
 		// Make sure that we are running in a console and the user has not tricked our
 		// application into running this action from a public web server.
-		if (!$request instanceof  \Zend\Console\Request){
-			throw new \RuntimeException('You can only use this action from a console-- NMT!');
+		if (! $request instanceof \Zend\Console\Request) {
+			throw new \RuntimeException ( 'You can only use this action from a console-- NMT!' );
 		}
-	
+		
 		// Get user email from console and check if the user used --verbose or -v flag
-		//$userEmail   = $request->getParam('userEmail');
-		//$verbose     = $request->getParam('verbose') || $request->getParam('v');
-	
+		// $userEmail = $request->getParam('userEmail');
+		// $verbose = $request->getParam('verbose') || $request->getParam('v');
+		
 		// reset new password
-		//$newPassword = Rand::getString(16);
-	
-		//  Fetch the user and change his password, then email him ...
+		// $newPassword = Rand::getString(16);
+		
+		// Fetch the user and change his password, then email him ...
 		// [...]
 		/*
-			if (!$verbose) {
-			return "Done! $userEmail has received an email with his new password.\n";
-			}else{
-			return "Done! New password for user $userEmail is '$newPassword'. It has also been emailed to him. \n";
-			}
-			*/
+		 * if (!$verbose) {
+		 * return "Done! $userEmail has received an email with his new password.\n";
+		 * }else{
+		 * return "Done! New password for user $userEmail is '$newPassword'. It has also been emailed to him. \n";
+		 * }
+		 */
 		
-		$users = $this->getUserTable()->fetchAll();
+		$users = $this->getUserTable ()->fetchAll ();
 		
-		foreach ($users as $user){
+		foreach ( $users as $user ) {
 			
 			echo $user->email;
 		}
 		
-		
 		return "test sucessfully";
-	
 	}
-	
-	
-	
 	public function confirmAction() {
 	}
-	
 	public function denyAction() {
 	}
 	

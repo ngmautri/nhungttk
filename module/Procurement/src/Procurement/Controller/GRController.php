@@ -12,6 +12,8 @@ namespace Procurement\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\I18n\Validator\Int;
+use Zend\Validator\Date;
+
 use MLA\Paginator;
 use MLA\Files;
 use Procurement\Model\PurchaseRequest;
@@ -115,30 +117,41 @@ class GRController extends AbstractActionController {
 			
 			$input->invoice_no = $request->getPost ( 'invoice_no' );
 			$input->invoice_date = $request->getPost ( 'invoice_date' );
-			
-			$input->status = "SAVED";
-			
+					
 			$pr_item = $this->purchaseRequestItemTable->getPRItem ( $input->pr_item_id );
 			
 			// validator.
 			$errors = array ();
 			
+			
+			// validator.
+			$validator = new Date ();
+			
+			if (! $validator->isValid ( $input->receipt_date )) {
+				$errors [] = 'receipt_date format is not correct!';
+			}
+			
+			if (! $validator->isValid ( $input->invoice_date )) {
+				$errors [] = 'invoice_date format is not correct!';
+			}
+			
 			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
 			$validator = new Int ();
 			
 			if (! $validator->isValid ( $input->delivered_quantity )) {
-				$errors [] = 'Deliver Quantity is not valid. It must be a number.';
+				$errors [] = 'Received Quantity is not valid. It must be a number.';
 			} else {
-				
-				/*
-				 * if ($input->delivered_quantity > $to_delivery) {
-				 * $errors [] = 'Deliver quantity is: ' . $input->delivered_quantity . ' pcs, which is bigger than amount to delivery';
-				 * }
-				 */
+				if ($input->delivered_quantity < 0) {
+					$errors [] = 'Received Quantity must be positiv';
+				}
 			}
 			
 			if (! is_numeric ( $input->price )) {
 				$errors [] = 'Price is not valid. It must be a number.';
+			}else {
+				if ($input->delivered_quantity < 0) {
+					$errors [] = 'Quantity must be positiv';
+				}
 			}
 			
 			if (count ( $errors ) > 0) {
@@ -177,11 +190,12 @@ class GRController extends AbstractActionController {
 	
 	/**
 	 * get Receipts List of PO Items
+	 * 
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function receiveListAction() {
 		$id = ( int ) $this->params ()->fromQuery ( 'po_item_id' );
-			
+		
 		$receipts = $this->deliveryItemTable->getDOItemsByPOItem ( $id );
 		
 		$department_id = $this->params ()->fromQuery ( 'department_id' );
@@ -191,7 +205,6 @@ class GRController extends AbstractActionController {
 		
 		$departments = $this->departmentTable->fetchAll ();
 		
-		
 		return new ViewModel ( array (
 				'receipts' => $receipts,
 				'departments' => $departments,
@@ -199,30 +212,30 @@ class GRController extends AbstractActionController {
 				
 				'balance' => $balance,
 				'notified' => $notified,
-				'notified_quantity' => $notified_quantity,
-				
-		) );
+				'notified_quantity' => $notified_quantity 
+		)
+		 );
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function listAction() {
-		
 		$department_id = $this->params ()->fromQuery ( 'department_id' );
 		$departments = $this->departmentTable->fetchAll ();
 		$balance = $this->params ()->fromQuery ( 'balance' );
 		$notified = $this->params ()->fromQuery ( 'notified' );
 		$notified_quantity = $this->params ()->fromQuery ( 'notified_quantity' );
 		
-		
 		if ($notified == null) :
 			$notified = 0;
+		
 		endif;
 		
 		if ($balance == null) :
 			$balance = 1;
+		
 		endif;
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
@@ -239,15 +252,15 @@ class GRController extends AbstractActionController {
 		}
 		;
 		
-		$receipts = $this->deliveryItemTable->getGRItems($balance,$notified,$notified_quantity,0,0);
+		$receipts = $this->deliveryItemTable->getGRItems ( $balance, $notified, $notified_quantity, 0, 0 );
 		$totalResults = count ( $receipts );
-				
+		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$receipts = $this->deliveryItemTable->getGRItems ($balance,$notified,$notified_quantity,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$receipts = $this->deliveryItemTable->getGRItems ( $balance, $notified, $notified_quantity, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
-	
+		
 		return new ViewModel ( array (
 				'receipts' => $receipts,
 				'departments' => $departments,
@@ -258,7 +271,7 @@ class GRController extends AbstractActionController {
 				'notified_quantity' => $notified_quantity,
 				
 				'paginator' => $paginator,
-				'total_items' => $totalResults
+				'total_items' => $totalResults 
 		) );
 	}
 	
@@ -272,7 +285,7 @@ class GRController extends AbstractActionController {
 		$user_id = $user ['id'];
 		
 		$dn_number = $this->params ()->fromQuery ( 'dn_number' );
-			
+		
 		// create DN
 		$dn = new Delivery ();
 		$dn->dn_number = $dn_number;
@@ -288,37 +301,134 @@ class GRController extends AbstractActionController {
 		$last_workflow_id = $this->deliveryWorkFlowTable->add ( $wf );
 		$this->deliveryTable->updateLastWorkFlow ( $dn_id, $last_workflow_id );
 		
-		/// update delivery items
+		// / update delivery items
 		$selected_items = $this->params ()->fromQuery ( 'do_items' );
 		$this->deliveryItemTable->submitSelectedDOItems ( $selected_items, $dn_id );
 		
 		// Update or Delete Cart item status
-		//$this->deliveryCartTable->setSelectedCartItemsAsNotified ( $selected_items );
+		// $this->deliveryCartTable->setSelectedCartItemsAsNotified ( $selected_items );
 		
 		// @todo: Update Delivery Item Workflow as notified
 		
 		$dn_items = $this->deliveryTable->getDeliveryItems ( $dn_id );
 		
-		
 		if (count ( $dn_items ) > 0) :
 			
-		foreach ( $dn_items as $dn_item ) {
-			$input = new DeliveryItemWorkFlow ();
-			$input->delivery_id = $dn_id;
-			$input->dn_item_id = $dn_item->dn_item_id;
-			$input->pr_item_id = $dn_item->pr_item_id;
-			$input->status = "Notified";
-			$input->updated_by = $user ['id'];
-			$last_workflow_id = $this->deliveryItemWorkFlowTable->add ( $input );
-			$this->deliveryItemTable->updateLastWorkFlow ( $dn_item->dn_item_id, $last_workflow_id );
-		}
+			foreach ( $dn_items as $dn_item ) {
+				$input = new DeliveryItemWorkFlow ();
+				$input->delivery_id = $dn_id;
+				$input->dn_item_id = $dn_item->dn_item_id;
+				$input->pr_item_id = $dn_item->pr_item_id;
+				$input->status = "Notified";
+				$input->updated_by = $user ['id'];
+				$last_workflow_id = $this->deliveryItemWorkFlowTable->add ( $input );
+				$this->deliveryItemTable->updateLastWorkFlow ( $dn_item->dn_item_id, $last_workflow_id );
+			}
+		
 		endif;
 		
 		$this->redirect ()->toUrl ( '/procurement/pr/my-pr' );
 	}
 	
-	
-	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function editItemAction() {
+		$request = $this->getRequest ();
+		
+		if ($request->isPost ()) {
+			
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$input = new DeliveryItem ();
+			
+			$id = $request->getPost ( 'do_item_id' );
+			
+			// not update pr_item_id
+			$pr_item_id = $request->getPost ( 'pr_item_id' );
+			
+			$input->name = $request->getPost ( 'name' );
+			$input->code = $request->getPost ( 'code' );
+			$input->unit = $request->getPost ( 'unit' );
+			
+			$input->vendor_id = $request->getPost ( 'vendor_id' );
+			
+			$input->delivered_quantity = $request->getPost ( 'delivered_quantity' );
+			$input->price = $request->getPost ( 'price' );
+			$input->currency = $request->getPost ( 'curreny' );
+			$input->payment_method = $request->getPost ( 'payment_method' );
+			
+			$input->receipt_date = $request->getPost ( 'receipt_date' );
+			$input->invoice_date = $request->getPost ( 'invoice_date' );
+			$input->invoice_no = $request->getPost ( 'invoice_no' );
+			
+			$input->remarks = $request->getPost ( 'remarks' );
+			
+			// validator.
+			$errors = array ();
+			
+			
+			// validator.
+			$validator = new Date ();
+				
+			if (! $validator->isValid ( $input->receipt_date )) {
+				$errors [] = 'receipt_date format is not correct!';
+			}
+				
+			if (! $validator->isValid ( $input->invoice_date )) {
+				$errors [] = 'invoice_date format is not correct!';
+			}
+			
+			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
+			// $validator = new Int ();
+			
+			if (! is_numeric ( $input->price )) {
+				$errors [] = 'Price is not valid. It must be a number.';
+			} else {
+				if ($input->price < 0) {
+					$errors [] = 'Price must be positiv';
+				}
+			}
+			
+			if (! is_numeric ( $input->delivered_quantity )) {
+				$errors [] = 'Quantity is not valid. It must be a number.';
+			} else {
+				if ($input->delivered_quantity < 0) {
+					$errors [] = 'Quantity must be positiv';
+				}
+			}
+			
+			if (count ( $errors ) > 0) {
+				$do_item = $this->deliveryItemTable->getDOItem ( $id);
+				$pr_item = $this->purchaseRequestItemTable->getPRItem ( $pr_item_id );
+				return new ViewModel ( array (
+						'redirectUrl' => $redirectUrl,
+						'errors' => $errors,
+						'pr_item' => $pr_item,
+						'do_item' => $do_item 
+				)
+				 );
+			}
+			
+			$this->deliveryItemTable->updateGR ( $input, $id );
+			$this->redirect ()->toUrl ( $redirectUrl );
+		}
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		$pr_item_id = ( int ) $this->params ()->fromQuery ( 'pr_item_id' );
+		$pr_item = $this->purchaseRequestItemTable->getPRItem ( $pr_item_id );
+		
+		$do_item_id = ( int ) $this->params ()->fromQuery ( 'do_item_id' );
+		$do_item = $this->deliveryItemTable->getDOItem ( $do_item_id );
+		
+		return new ViewModel ( array (
+				'do_item' => $do_item,
+				'pr_item' => $pr_item,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null 
+		) );
+	}
 	public function getAuthService() {
 		return $this->authService;
 	}

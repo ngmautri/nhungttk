@@ -209,16 +209,16 @@ endif;
 		
 		
 	 	<td>
-	 	<?php if ($item->last_workflow_id ==null):?>
-	 	<input class="checkbox1" type="checkbox" name="do_items[]"
-		value="<?php echo $item->id ;?>" />
-		<?php else: ?>
-			Notified
-		<?php endif; ?>
-		
+		 	<?php if ($item->last_workflow_id ==null):?>
+		 	<input class="checkbox1" type="checkbox" name="do_items[]"
+			value="<?php echo $item->id ;?>" />
+			<?php else: ?>
+				Notified
+			<?php endif; ?>
 		</td>
 
 		<td><?php echo $item->pr_requester_name;?>
+		
 		
 		<div style="color: gray; font-size: 8pt;">
 			Dept.:<?php echo $item->pr_of_department;?><br>
@@ -226,9 +226,26 @@ endif;
 				target="_blank">#<?php echo $item->auto_pr_number;?></a>
 				</div>
 		</td>
-		<td><b><?php echo $item->name;?></b>
 		
-			
+		<td>
+		
+			<div class="dropdown">
+					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
+						href="#"><span style="color: black;"><b><?php echo $item->name;?></b></span>
+					<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+	    	     	
+    
+    		<?php if ($item->last_workflow_id ==null):?>
+ <li>  			
+ <a href="<?php echo $this->baseUrl ?>/procurement/gr/edit-item?do_item_id=<?php echo $this->escapeHtml($item->id)?>&pr_item_id=<?php echo $this->escapeHtml($item->pr_item_id);?>">
+ <i class="icon-pencil"></i> Edit Good Receipt</a></li>
+   	<li class="divider"></li>
+ <?php endif; ?>
+ 	
+	
+	</ul>
+	</div>	
 			
 		</td>
 		<td><?php echo $item->ordered_quantity;?></td>

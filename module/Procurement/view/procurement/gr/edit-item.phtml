@@ -6,7 +6,7 @@
 });
  </script>
 
-<h5>Good Receipt:</h5>
+<h5>Updating Good Receipt:</h5>
 
 <?php
 
@@ -24,20 +24,19 @@ if (count ( $errors ) > 0) {
 ?>
 
 
-<form class="form-horizontal" 	action="<?php echo $this->baseUrl ?>/procurement/gr/receive"
+<form class="form-horizontal" 	action="<?php echo $this->baseUrl ?>/procurement/gr/edit-item"
 	method="post" enctype="multipart/form-data" id="NewSP">
 	<input type="hidden" name="redirectUrl"
 		value="<?php echo $redirectUrl ?>" /><input
-		type="hidden" name="pr_item_id" value="<?php echo $pr_item->id ?>" />
-		
-	<input type="hidden" name="vendor_id" id="vendor_id" value="<?php echo $po_item->vendor_id ?>" />
-	<input type="hidden" name="po_item_id" id="" value="<?php echo $po_item->id ?>" />
+		type="hidden" name="pr_item_id" value="<?php echo $pr_item->id ?>" />		
+	<input type="hidden" name="vendor_id" id="vendor_id" value="<?php echo $do_item->vendor_id ?>" />
+	<input type="hidden" name="do_item_id" id="" value="<?php echo $do_item->id ?>" />
 
 	<div class="control-group">
 		<label class="control-label" for="inputNameLocal">Receipt Date:</label>
 		<div class="controls">
 			<input type="text" id="end_date" placeholder="click to select"
-				name="receipt_date" value="">
+				name="receipt_date" value="<?php echo date_format(date_create($do_item->receipt_date),"Y-m-d");?>">
 		</div>
 	</div>
 	
@@ -45,7 +44,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputNameLocal">Invoice Date:</label>
 		<div class="controls">
 			<input type="text" id="invoice_date" placeholder="click to select"
-				name="invoice_date" value="">
+				name="invoice_date" value="<?php echo date_format(date_create($do_item->invoice_date),"Y-m-d");?>">
 		</div>
 	</div>
 	
@@ -53,7 +52,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Invoice No.:</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="invoice_no"
-				value="">
+				value="<?php echo $do_item->invoice_no ?>">
 		</div>
 	</div>
 	
@@ -61,8 +60,8 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Vendor:</label>
 		<div class="controls">
 			<input readonly type="text" id="vendor" placeholder="" name="vendor"
-				value="<?php echo $po_item->vendor_name ?>"> 
-				<span style="color: gray;">PO: <?php echo $po_item->vendor_name?></span> |
+				value="<?php echo $do_item->vendor_name ?>"> 
+				<span style="color: gray;">PO: <?php echo $do_item->vendor_name?></span> |
 				<a href="javascript:;" onclick="loadVendorList();"
 				class="helper"> Select Other Vendor <i class=" icon-folder-open"></i></a>
 		</div>
@@ -75,14 +74,14 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Items:</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="name"
-				value="<?php echo $pr_item->name ?>">
+				value="<?php echo $do_item->name ?>">
 		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Item Code (if any):</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="code"
-				value="<?php echo $pr_item->code ?>">
+				value="<?php echo $do_item->code ?>">
 		</div>
 	</div>
 
@@ -90,7 +89,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Item Unit:</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="unit"
-				value="<?php echo $pr_item->unit ?>">
+				value="<?php echo $do_item->unit ?>">
 		</div>
 	</div>
 
@@ -98,7 +97,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Received Quantity:</label>
 		<div class="controls">
 			<input type="text" id="inputTag" placeholder=""
-				name="delivered_quantity" value="">
+				name="delivered_quantity" value="<?php echo $do_item->delivered_quantity; ?>">
 				 <?php echo '<div style="color: gray;">To deliver: '. $pr_item->confirmed_balance.'. Total Received: '. $pr_item->total_received_quantity.'</div>'?>
      
         </div>
@@ -108,8 +107,8 @@ if (count ( $errors ) > 0) {
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Price:</label>
 		<div class="controls">
-			<input type="text" id="inputTag" placeholder="" name="price" value="<?php echo $po_item->price ?>">
-			<span style="color: gray;">on PO: <?php echo $po_item->price?></span>
+			<input type="text" id="inputTag" placeholder="" name="price" value="<?php echo $do_item->price ?>">
+			<span style="color: gray;">on PO: <?php echo $do_item->price?></span>
 		</div>
 	</div>
 
@@ -119,12 +118,12 @@ if (count ( $errors ) > 0) {
 			<select style="wight: 10px" name="curreny" id="curreny">
 
 				<option selected="selected" value="">---Please select---</option>
-				<option <?php echo $po_item->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
-				<option <?php echo $po_item->currency=='LAK'? "selected='selected'":"";?>value="LAK">LAK</option>
-				<option <?php echo $po_item->currency=='THB'? "selected='selected'":"";?>value="THB">THB</option>
+				<option <?php echo $do_item->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
+				<option <?php echo $do_item->currency=='LAK'? "selected='selected'":"";?>value="LAK">LAK</option>
+				<option <?php echo $do_item->currency=='THB'? "selected='selected'":"";?>value="THB">THB</option>
 
 			</select>
-			<span style="color: gray;">on PO: <?php echo $po_item->currency?></span>
+			<span style="color: gray;">on PO: <?php echo $do_item->currency?></span>
 		</div>
 	</div>
 
@@ -134,11 +133,11 @@ if (count ( $errors ) > 0) {
 			<select name="payment_method" id="payment_method">
 
 				<option selected="selected" value="">---Please select---</option>
-				<option <?php echo $po_item->payment_method=='By Cash'? "selected='selected'":"";?> value="By Cash">By Cash</option>
-				<option <?php echo $po_item->payment_method=='Bank Transfer'? "selected='selected'":"";?> value="Bank Transfer">Bank Transfer</option>
-				<option <?php echo $po_item->payment_method=='Other'? "selected='selected'":"";?> value="Other">Other Method</option>
+				<option <?php echo $do_item->payment_method=='By Cash'? "selected='selected'":"";?> value="By Cash">By Cash</option>
+				<option <?php echo $do_item->payment_method=='Bank Transfer'? "selected='selected'":"";?> value="Bank Transfer">Bank Transfer</option>
+				<option <?php echo $do_item->payment_method=='Other'? "selected='selected'":"";?> value="Other">Other Method</option>
 			</select>
-			<span style="color: gray;">on PO: <?php echo $po_item->payment_method?></span>
+			<span style="color: gray;">on PO: <?php echo $do_item->payment_method?></span>
 		</div>
 	</div>
 
@@ -148,14 +147,13 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputDescription">Remarks:</label>
 		<div class="controls">
 			<textarea id="inputDescription" placeholder="" rows="2" cols="5"
-				name="remarks"></textarea>
+				name="remarks"><?php echo $do_item->remarks ?></textarea>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<div class="controls">
-			<button type="submit" class="btn">
-				<i class="icon-plus"> </i> Add
+			<button type="submit" class="btn"> Update
 			</button>
 		</div>
 	</div>

@@ -412,6 +412,12 @@ on mla_purchase_request_items.id = mla_delivery_items.pr_item_id
 	}
 	
 	
+	/**
+	 * 
+	 * @param unknown $id
+	 * @throws \Exception
+	 * @return ArrayObject|NULL
+	 */
 	public function get($id){
 		
 		$id  = (int) $id;
@@ -422,6 +428,38 @@ on mla_purchase_request_items.id = mla_delivery_items.pr_item_id
 			throw new \Exception("Could not find row $id");
 		}
 		return $row;
+	}
+	
+	
+	/**
+	 *
+	 * @param unknown $dn_item_id
+	 * @param unknown $last_workflow_id
+	 */
+	public function getDOItem($do_item_id) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql ="
+		select 
+			mla_delivery_items.*,
+			mla_vendors.name as vendor_name
+		from mla_delivery_items
+		join mla_vendors
+		on mla_vendors.id = mla_delivery_items.vendor_id where mla_delivery_items.id = " . $do_item_id;
+	
+		//echo $sql;
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		
+		if(count($resultSet)>0){
+			return $resultSet->current();
+		}else{
+			return null;
+		}
 	}
 	
 	/**
@@ -545,6 +583,36 @@ on mla_purchase_request_items.id = mla_delivery_items.pr_item_id
 	}
 	
 	/**
+	 *
+	 * @param DeliveryItem $input
+	 * @param unknown $id
+	 */
+	public function updateGR(DeliveryItem $input, $id) {
+	
+		$data = array (
+				'receipt_date' => $input->receipt_date,
+				'delivery_date' => $input->delivery_date,
+	
+				'name' => $input->name,
+				'code' => $input->code,
+				'unit' => $input->unit,
+	
+				'delivered_quantity' => $input->delivered_quantity,
+				'price' => $input->price,
+				'currency' => $input->currency,
+				'payment_method' => $input->payment_method,
+				'vendor_id' => $input->vendor_id,
+				'remarks' => $input->remarks,
+	
+				'invoice_no' => $input->invoice_no,
+				'invoice_date' => $input->invoice_date,
+		);
+	
+		$where = 'id = ' . $id;
+		$this->tableGateway->update( $data,$where);
+	}
+	
+	/**
 	 * 
 	 * @param unknown $id
 	 */
@@ -621,7 +689,8 @@ AND mla_delivery_items.id  IN " . $selected_items;
 		mla_purchase_request_items.created_by as requested_by,
 		mla_purchase_request_items.firstname,
 		mla_purchase_request_items.lastname,
-		mla_purchase_request_items.email
+		mla_purchase_request_items.email,
+        mla_delivery_items_workflows.status as do_item_status
 		
 	FROM mla_delivery_items
 	JOIN
@@ -642,6 +711,10 @@ AND mla_delivery_items.id  IN " . $selected_items;
         
 	) as mla_purchase_request_items
 	ON mla_purchase_request_items.id = mla_delivery_items.pr_item_id
+
+	left join mla_delivery_items_workflows
+    on mla_delivery_items_workflows.id = mla_delivery_items.last_workflow_id
+
 
 WHERE 1
 		";

@@ -148,17 +148,18 @@ class PRController extends AbstractActionController {
 			// $myfile = fopen('ouptut.csv', 'a+');
 			
 			$h = array ();
+			$h [] = "PR#";
 			$h [] = "PR number";
-			$h [] = "PR auto number";
 			$h [] = "Requester";
 			$h [] = "Department";
 			
-			$h [] = "Item ID";
+			$h [] = "Item#";
 			$h [] = "Status";
 			$h [] = "Item Name";
 			$h [] = "Item Code";
 			$h [] = "Item Unit";
 			$h [] = "Item Keywords";
+			$h [] = "Spare Part";
 			$h [] = "EDT";
 			
 			$h [] = "Ordered Quantity";
@@ -183,9 +184,9 @@ class PRController extends AbstractActionController {
 			foreach ( $pr_items as $m ) {
 				$l = array ();
 				
+				$l [] = ( string ) $m->purchase_request_id;
 				$l [] = ( string ) $m->pr_number;
-				$l [] = ( string ) $m->pr_auto_number;
-				$l [] = ( string ) $m->pr_requester_name;
+					$l [] = ( string ) $m->pr_requester_name;
 				$l [] = ( string ) $m->pr_of_department;
 				
 				$l [] = ( string ) $m->id;
@@ -208,7 +209,13 @@ class PRController extends AbstractActionController {
 				$l [] = ( string ) '\'' .$m->code;
 				$l [] = ( string ) $m->unit;
 				$l [] = ( string ) $m->keywords;
-				$l [] = ( string ) $m->EDT;
+				if($m->sparepart_id>0){
+					$l[]= "YES";
+				}else{
+					$l[]= "NO";
+				}
+				
+				$l [] = ( string ) date_format(date_create($m->EDT),"Y-m-d");
 				
 				$l [] = ( string ) $m->quantity;
 				$l [] = ( string ) $m->total_received_quantity;
@@ -236,7 +243,7 @@ class PRController extends AbstractActionController {
 				// fputs($fh, implode($l, ',')."\n");
 			}
 			
-			$fileName = 'pr-' . $m->pr_number . '-' . date ( "m-d-Y" ) . '-' . date ( "h:i:sa" ) . '.csv';
+			$fileName = 'PR-' . $m->pr_number . '-' . date ( "m-d-Y" ) . '-' . date ( "h:i:sa" ) . '.csv';
 			fseek ( $fh, 0 );
 			$output = stream_get_contents ( $fh );
 			// file_put_contents($fileName, $output);
@@ -294,26 +301,14 @@ class PRController extends AbstractActionController {
 		
 		if ($balance == null) :
 			$balance = 2;
-		
-		
-		
-		
-		endif;
+			endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
-		
-		
-		
-		
 		endif;
 		
 		if ($added_delivery_list == null) :
 			$added_delivery_list = 2;
-		
-		
-		
-		
 		endif;
 		
 		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V3 ( $pr_id, $balance, $unconfirmed_quantity, $added_delivery_list, 0, 0 );
@@ -323,14 +318,17 @@ class PRController extends AbstractActionController {
 			// $myfile = fopen('ouptut.csv', 'a+');
 			
 			$h = array ();
+			$h [] = "PR#";
 			$h [] = "PR number";
-			$h [] = "PR auto number";
+			$h [] = "Requester";
+			$h [] = "Department";
 			
-			$h [] = "Item ID";
+			$h [] = "Item#";
 			$h [] = "Status";
 			$h [] = "Item Name";
 			$h [] = "Item Code";
 			$h [] = "Item Keywords";
+			$h [] = "Spare Part";
 			
 			$h [] = "Item Unit";
 			$h [] = "Ordered Quantity";
@@ -345,8 +343,11 @@ class PRController extends AbstractActionController {
 			foreach ( $pr_items as $m ) {
 				$l = array ();
 				
+				$l [] = ( string ) $m->purchase_request_id;
 				$l [] = ( string ) $m->pr_number;
-				$l [] = ( string ) $m->pr_auto_number;
+				$l [] = ( string ) $m->pr_requester_name;
+				$l [] = ( string ) $m->pr_of_department;
+					
 				
 				$l [] = ( string ) $m->id;
 				
@@ -366,16 +367,25 @@ class PRController extends AbstractActionController {
 				$l [] = ( string ) $m->name;
 				$l [] = ( string ) '\'' . $m->code;
 				$l [] = ( string ) $m->keywords;
+				
+				if($m->sparepart_id>0){
+					$l[]= "YES";
+				}else{
+					$l[]= "NO";
+				}
+				
 				$l [] = ( string ) $m->unit;
+				
+				
 				$l [] = ( string ) $m->quantity;
-				$l [] = ( string ) $m->EDT;
+				$l [] = ( string ) date_format(date_create($m->EDT),"Y-m-d");
 				$l [] = ( string ) $m->remarks;
 				
 				fputcsv ( $fh, $l, $delimiter, '"' );
 				// fputs($fh, implode($l, ',')."\n");
 			}
 			
-			$fileName = 'pr-' . $m->pr_number . '-' . date ( "m-d-Y" ) . '-' . date ( "h:i:sa" ) . '.csv';
+			$fileName = 'PR-' . $m->pr_number . '-' . date ( "m-d-Y" ) . '-' . date ( "h:i:sa" ) . '.csv';
 			fseek ( $fh, 0 );
 			$output = stream_get_contents ( $fh );
 			// file_put_contents($fileName, $output);
@@ -1277,13 +1287,13 @@ class PRController extends AbstractActionController {
 		
 			$h = array ();
 			
-			$h [] = "PR ID";
+			$h [] = "PR#";
 			$h [] = "PR number";
 			$h [] = "Requester";
 			$h [] = "Department";
-			$h [] = "PR Created on";
+			$h [] = "PR Date";
 			
-			$h [] = "Item ID";
+			$h [] = "Item#";
 			$h [] = "Status";
 			$h [] = "Item Name";
 			$h [] = "Item Code";
@@ -1300,6 +1310,7 @@ class PRController extends AbstractActionController {
 			$h [] = "Free Quantity";
 		
 			$h [] = "Last Vendor";
+			$h [] = "Last Vendor#";
 			$h [] = "Last Price";
 			$h [] = "Last Currency";
 			$h [] = "Remarks";
@@ -1317,8 +1328,7 @@ class PRController extends AbstractActionController {
 				$l [] = ( string ) $m->pr_number;
 				$l [] = ( string ) $m->pr_requester_name;
 				$l [] = ( string ) $m->pr_of_department;
-				$l [] = ( string ) $m->pr_requested_on;
-				
+				$l [] = ( string ) date_format(date_create($m->pr_requested_on),"Y-m-d");				
 				$l [] = ( string ) $m->id;
 				
 				$item_status="";
@@ -1343,7 +1353,7 @@ class PRController extends AbstractActionController {
 				}
 				
 				$l [] = ( string ) $m->unit;
-				$l [] = ( string ) $m->EDT;
+				$l [] = ( string )date_format(date_create($m->EDT),"Y-m-d");
 				
 				if($m->sparepart_id>0){
 					$l[]= "YES";
@@ -1360,22 +1370,26 @@ class PRController extends AbstractActionController {
 				$l [] = ( string ) $m->confirmed_free_balance;
 		
 				$last_vendor="";
+				$last_vendor_id="";
 				$last_price="";
 				$last_currency="";
 				
 				if($m->sparepart_id>0){
 					$last_vendor = $m->sp_vendor_name;
+					$last_vendor_id = $m->sp_vendor_id;
 					$last_price = $m->sp_price;
 					$last_currency = $m->sp_currency;
 				}
 				
 				if($m->article_id>0){
 					$last_vendor = $m->article_vendor_name;
+					$last_vendor_id = $m->article_vendor_id;
 					$last_price = $m->article_price;
 					$last_currency = $m->article_currency;
 				}
 					
 				$l [] = $last_vendor;
+				$l [] = $last_vendor_id;
 				$l [] = $last_price;;
 				$l [] = $last_currency;;
 				

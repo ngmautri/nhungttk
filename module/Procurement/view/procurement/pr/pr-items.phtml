@@ -11,30 +11,35 @@
 if ($department_id == 0 or $department_id == null) :
 	$department_selected = "Department = All";
 
+
 endif;
 
 if ($balance == 2 or $balance == null) :
 	$balance_selected = "Balance = All";
+
 
 endif;
 
 if ($balance == 0) :
 	$balance_selected = "Balance = 0 (Fulfilled Items)";
 
+
 endif;
 
 if ($balance == 1) :
 	$balance_selected = "Balance >0 (Pending Items)";
+
 
 endif;
 
 if ($balance == - 1) :
 	$balance_selected = "Balance <0 (Some free items)";
 
+
 endif;
 
-if ($processing == "" or $processing == null) :
-	$processing_selected = "Processing status = All";
+if ($processing == "2") :
+	$processing_selected = "Processing Status = All";
  else :
 	$processing_selected = "Processing = " . $processing;
 endif;
@@ -181,7 +186,8 @@ endif;
 						</div>
 
 						<div class="control-group">
-							<label class="control-label" for="inputNameLocal">Result per page: </label>
+							<label class="control-label" for="inputNameLocal">Result per
+								page: </label>
 							<div class="controls">
 								<select name="perPage">
 									<option value="">None</option>
@@ -196,8 +202,9 @@ endif;
 
 									<option <?php echo $per_pape=='50'? "selected='selected'":"";?>
 										value="50">50</option>
-									<option <?php echo $per_pape=='100'? "selected='selected'":"";?>
-									value="100">100</option>
+									<option
+										<?php echo $per_pape=='100'? "selected='selected'":"";?>
+										value="100">100</option>
 								</select>
 
 							</div>
@@ -246,9 +253,8 @@ endif;
 			<td><b>Item Name</b></td>
 			<td><b>PR Number</b></td>
 			<td><b>Unit</b></td>
-			<td><b data-toggle="tooltip" title="Ordred Quantity">Requested <br>Quantity
-			</b></td>
-			<td><b data-toggle="tooltip" title="Bought Quantity">Received<br>Quantity
+			<td><b data-toggle="tooltip" title="Ordred Quantity">Requested <br>Quantity</b></td>
+			<td><b data-toggle="tooltip" title="Bought Quantity">Received<br>Quantity</b></td>
 					<td><b data-toggle="tooltip" title="Notified Quantity">Notified<br>Quantity
 					</b></td>
 					<td><b data-toggle="tooltip" title="Notified Quantity">Confirmed<br>Quantity
@@ -257,8 +263,6 @@ endif;
 					</b></td>
 					<td><b data-toggle="tooltip" title="Balance">Balance</b></td>
 					<td><b data-toggle="tooltip" title="Free">Free</b></td>
-
-			</b></td>
 			<td><b>EDT</b></td>
 			<td><b>Last Purchase</b></td>
 		</tr>
@@ -273,19 +277,24 @@ endif;
 		<tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 			<td>
-			<div style="font-size: 8pt;">
+				<div style="font-size: 8pt;">
 			    <?php if ($item->confirmed_balance > 0) : ?>
    				<?php if ($item->po_item_id > 0) : ?>
    					<span style="font-size: 7pt;" class="label label-info">Buying</span>
    				<?php else: ?>
-   					<span style="color:red;"><b>Pending</b></span>
+   					<span style="color: red;"><b>Pending</b></span>
    				<?php endif; ?>
    				
    				  				<?php else: ?>
    				<span style="font-size: 7pt;" class="label label-success">Fulfilled</span>
    				
    				<?php endif; ?>
-   			</div>
+   				
+   					<div style="color: gray; font-size: 8pt;">
+						Priority:<?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. $item->priority .'</span>':$item->priority;?><br>
+					</div>
+				</div>
+			
 			<td>
 				<div class="dropdown">
 					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
@@ -331,21 +340,16 @@ endif;
 					</ul>
 				</div>
 
-					<div style="color: gray; font-size: 8pt;">
+				<div style="color: gray; font-size: 8pt;">
 				Code: <?php echo $this->escapeHtml($item->code);?><br>
 				</div>
 			
-			<td><?php echo $item->pr_number;?>
-			<div style="color: gray; font-size: 8pt;">
-			Dept.:<?php echo $item->pr_of_department;?><br>
-			Priority:<?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. $item->priority .'</span>':$item->priority;?><br>
-					<a style="color: black; font-size: 8pt;"
+			<td><span data-toggle="tooltip" title="<?php echo $item->pr_requester_name;?>"><?php echo $item->pr_number;?></span>
+				<div style="color: gray; font-size: 8pt;">
+					<a data-toggle="tooltip" title="Detail of PR#<?php echo $item->purchase_request_id;?> by <?php echo $item->pr_requester_name;?> - <?php echo $item->pr_of_department;?>" style="font-size: 8pt;"
 						href="<?php echo $this->baseUrl ?>/procurement/pr/process?pr_id=<?php echo $item->purchase_request_id;?>"
-						target="_blank">#<?php echo $item->pr_auto_number;?></a>
+						target="_blank">PR#<?php echo $item->purchase_request_id;?></a>
 				</div></td>
-
-
-			</td>
 			<td><?php echo $item->unit;?></td>
 			<td><?php echo $item->quantity;?></td>
 			<td><?php echo $item->total_received_quantity;?></td>
@@ -359,7 +363,7 @@ endif;
 			<td><?php echo date_format(date_create($item->EDT),"Y-m-d");?>
 			<div>
 					<span style="font-size: 7pt;" class="label label-success">Fulfilled</span>
-			</div></td>
+				</div></td>
 		<?php else: ?>		
 			<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span>
 				<div>
@@ -388,7 +392,9 @@ endif;
 				echo 'Unit price:' . $item->article_price . ' ' . $item->article_currency;
 				;
 			
+			
 				endif;
+		
 		
 		endif;
 		
@@ -397,7 +403,9 @@ endif;
 				echo 'Unit price:' . $item->sp_price . ' ' . $item->sp_currency;
 			
 			
+			
 			endif;
+		
 		
 		
 		endif;
@@ -467,9 +475,10 @@ endif;
  
  
  
- <?php
  
- else :
+ <?php
+
+else :
 	echo 'No Items found ...';
 
 endif;

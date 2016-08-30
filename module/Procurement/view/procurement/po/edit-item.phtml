@@ -136,14 +136,14 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputDescription">Remarks:</label>
 		<div class="controls">
 			<textarea id="inputDescription" placeholder="" rows="2" cols="5"
-				name="remarks"></textarea>
+				name="remarks"><?php echo $po_item->remarks;?></textarea>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<div class="controls">
 			<button type="submit" class="btn">
-				<i class="icon-plus"> </i> Add
+				Update
 			</button>
 		</div>
 	</div>

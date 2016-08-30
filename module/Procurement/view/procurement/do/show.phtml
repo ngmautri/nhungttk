@@ -53,7 +53,8 @@ echo '<div class="alert alert-info">';
 <table class="table table-striped table-bordered">
 <thead>
 	<tr>	
-		<td><b>No.</b></td>
+		<td><b>#</b></td>
+		<td><b>Status</b></td>
 		<td><b>Requester</b></td>
 		<td><b>Name</b></td>
 		<td ><b data-toggle="tooltip" title = "Ordered Quantity">Q'ty</b></td>
@@ -75,6 +76,13 @@ echo '<div class="alert alert-info">';
 	 ?>
 	  <tr>
  		<td><?php echo $count;?></td>
+ 		<td><?php if ($item->do_item_status =="Confirmed"):?>
+ 		<span  style="font-size: 7pt;" class="label label-success"><?php echo $item->do_item_status;?></span>
+ 		<?php else:?>
+ 		<span  style="font-size: 9pt;"><?php echo $item->do_item_status;?></span>
+ 		
+ 		<?php endif;?>
+ 		
 		<td><?php echo $item->firstname . ' ' . $item->lastname ;?>
 			<div style="color: gray; font-size: 8pt;">
 			<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/show?pr_id=<?php echo $item->purchase_request_id;?>"

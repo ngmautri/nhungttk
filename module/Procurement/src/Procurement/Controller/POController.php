@@ -9,42 +9,25 @@
  */
 namespace Procurement\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\I18n\Validator\Int;
-use Zend\Http\Headers;
+use Application\Model\DepartmentTable;
+use Inventory\Model\ArticleLastDNTable;
+use Inventory\Model\ArticleMovementTable;
 use MLA\Paginator;
-use MLA\Files;
-use Procurement\Model\PurchaseRequest;
-use Procurement\Model\PurchaseRequestTable;
-use Procurement\Model\PurchaseRequestItem;
-use Procurement\Model\PurchaseRequestItemTable;
-use Procurement\Model\PurchaseRequestItemPic;
-use Procurement\Model\PurchaseRequestItemPicTable;
-use Procurement\Model\Delivery;
-use Procurement\Model\DeliveryTable;
-use Procurement\Model\DeliveryItem;
-use Procurement\Model\DeliveryItemTable;
-use Procurement\Model\PRItemWorkFlow;
-use Procurement\Model\PRItemWorkFlowTable;
-use Procurement\Model\DeliveryWorkFlow;
-use Procurement\Model\DeliveryWorkFlowTable;
-use Procurement\Model\DeliveryItemWorkFlow;
-use Procurement\Model\DeliveryItemWorkFlowTable;
-use Procurement\Model\DeliveryCart;
 use Procurement\Model\DeliveryCartTable;
+use Procurement\Model\DeliveryItemTable;
+use Procurement\Model\DeliveryItemWorkFlowTable;
+use Procurement\Model\DeliveryTable;
+use Procurement\Model\DeliveryWorkFlowTable;
 use Procurement\Model\POItem;
 use Procurement\Model\POItemTable;
-use Application\Model\DepartmentTable;
+use Procurement\Model\PRItemWorkFlowTable;
+use Procurement\Model\PurchaseRequestItemTable;
+use Procurement\Model\PurchaseRequestTable;
 use User\Model\UserTable;
-use Inventory\Model\ArticleMovement;
-use Inventory\Model\ArticleMovementTable;
-use Inventory\Model\ArticleLastDN;
-use Inventory\Model\ArticleLastDNTable;
-use Inventory\Model\SparepartMovement;
-use Inventory\Model\SparepartMovementsTableTable;
-use Inventory\Model\SparepartLastDN;
-use Inventory\Model\SparepartLastDNTableDNTable;
+use Zend\Http\Headers;
+use Zend\I18n\Validator\Int;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 /**
  *
@@ -58,7 +41,7 @@ class POController extends AbstractActionController {
 	protected $deliveryTable;
 	protected $deliveryItemTable;
 	protected $deliveryWorkFlowTable;
-	protected $deliveryItemWorkFlowTable;
+	protected $deliveryItemWorkFlowTable;	
 	protected $articleMovementTable;
 	protected $articleLastDNTable;
 	protected $sparepartMovementTable;
@@ -115,7 +98,7 @@ class POController extends AbstractActionController {
 			$errors = array ();
 			
 			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
-			$validator = new Int ();
+			//$validator = new Int ();
 			
 			if (! is_numeric ( $input->price )) {
 				$errors [] = 'Price is not valid. It must be a number.';
@@ -197,16 +180,18 @@ class POController extends AbstractActionController {
 			// $myfile = fopen('ouptut.csv', 'a+');
 				
 			$h = array ();
-			$h [] = "Item ID";
+			$h [] = "PR#";
+			$h [] = "PR number";
+			$h [] = "Requester";
+			$h [] = "Department";
+			
+			$h [] = "PO-Item#";
+			$h [] = "Item#";
 			$h [] = "Item Name";
 			$h [] = "Item Code";
 			$h [] = "Item Unit";
 			$h [] = "Item Keywords";
-			$h [] = "PR number";
-			$h [] = "PR auto number";
-			$h [] = "Requester";
-			$h [] = "Department";
-			
+			$h [] = "Spare Part";
 			
 			$h [] = "Ordered Quantity";
 			$h [] = "Received Quantity";
@@ -217,6 +202,7 @@ class POController extends AbstractActionController {
 			$h [] = "Free Quantity";
 
 			$h [] = "Vendor";
+			$h [] = "Vendor#";
 			$h [] = "Unit Price";
 			$h [] = "Currency";
 			$h [] = "Payment Method";
@@ -231,16 +217,24 @@ class POController extends AbstractActionController {
 				
 			foreach ( $po_items as $m ) {
 				$l = array ();
+				
+				$l [] = ( string ) $m->pr_id;
+				$l [] = ( string ) $m->pr_number;
+				$l [] = ( string ) $m->pr_requester_name;
+				$l [] = ( string ) $m->pr_of_department;
+					
+				$l [] = ( string ) $m->id;
 				$l [] = ( string ) $m->pr_item_id;
 				$l [] = ( string ) $m->pr_item_name;
 				$l [] = ( string ) $m->pr_item_code;
 				$l [] = ( string ) $m->pr_item_unit;
 				$l [] = ( string ) $m->pr_item_keywords;
-				$l [] = ( string ) $m->pr_number;
-				$l [] = ( string ) $m->auto_pr_number;
-				$l [] = ( string ) $m->pr_requester_name;
-				$l [] = ( string ) $m->pr_of_department;
 				
+				if($m->sparepart_id>0){
+					$l[]= "YES";
+				}else{
+					$l[]= "NO";
+				}
 				
 				$l [] = ( string ) $m->ordered_quantity;
 				$l [] = ( string ) $m->total_received_quantity;
@@ -251,6 +245,7 @@ class POController extends AbstractActionController {
 				$l [] = ( string ) $m->confirmed_free_balance;
 				
 				$l [] = ( string ) $m->vendor_name;
+				$l [] = ( string ) $m->vendor_id;
 				$l [] = ( string ) $m->price;
 				$l [] = ( string ) $m->currency;
 				$l [] = ( string ) $m->payment_method;
@@ -261,7 +256,7 @@ class POController extends AbstractActionController {
 				// fputs($fh, implode($l, ',')."\n");
 			}
 				
-			$fileName = 'po-items-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
+			$fileName = 'PO-items-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
 			fseek ( $fh, 0 );
 			$output = stream_get_contents ( $fh );
 			// file_put_contents($fileName, $output);
@@ -325,13 +320,17 @@ class POController extends AbstractActionController {
 	}
 	
 	/**
-	 * Edit PO Item
+	 * Update PO Item
+	 * No need to change pr_item_id
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	
 	public function editItemAction() {
 		
 		$request = $this->getRequest ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		
 		
 		if ($request->isPost ()) {
 				
@@ -339,6 +338,8 @@ class POController extends AbstractActionController {
 			$input = new POItem ();
 				
 			$id = $request->getPost ( 'id' );
+			
+			// not update pr_item_id
 			$input->pr_item_id = $request->getPost ( 'pr_item_id' );
 				
 			$input->name = $request->getPost ( 'name' );
@@ -350,30 +351,32 @@ class POController extends AbstractActionController {
 			$input->currency = $request->getPost ( 'curreny' );
 			$input->payment_method = $request->getPost ( 'payment_method' );
 			$input->remarks = $request->getPost ( 'remarks' );
-			
 			$input->created_by = $user ['id'];
-			$input->status = "SAVED";
+			$input->status = "SAVED";			
 			
-				
-				
 			// validator.
 			$errors = array ();
 				
 			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
-			$validator = new Int ();
+			//$validator = new Int ();
 				
 			if (! is_numeric ( $input->price )) {
 				$errors [] = 'Price is not valid. It must be a number.';
+			}else {
+				if ($input->price < 0) {
+					$errors [] = 'Price must be positiv!';
+				}
 			}
 				
 			if (count ( $errors ) > 0) {
 				$pr_item = $this->purchaseRequestItemTable->getPRItem ( $input->pr_item_id );
-			
+				$po_item = $this->poItemTable->getPOItem($id );
+				
 				return new ViewModel ( array (
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'pr_item' => $pr_item,
-						'po_item' => $input,
+						'po_item' => $po_item,
 						
 				) );
 			}

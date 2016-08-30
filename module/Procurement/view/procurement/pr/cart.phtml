@@ -26,6 +26,7 @@
 		<td><b>Priority</b></td>
 		<td><b>Name</b></td>
 		<td><b>Unit</b></td>
+		<td><b>Code</b></td>
 		<td><b>Quantity</b></td>
 	<td><b>EDT</b></td>
 		<td><b>Count Down</b></td>
@@ -49,6 +50,7 @@
 		<td><?php echo $count;?></td>
 		<td><?php echo $item->priority=='Urgent'? '<span class="label label-warning">'. $item->priority .'</span>':$item->priority;?></td> 	
 		<td><?php echo $item->name;?></td>
+			<td><?php echo $item->code;?></td>
 			<td><?php echo $item->unit;?></td>
 		<td><?php echo $item->quantity;?></td>
 			<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span></td>
@@ -76,7 +78,7 @@
 
  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory"	method="get" enctype="multipart/form-data">
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
-      <button title="Submit PR to Procurment" class="btn btn-default" onclick="openConfirmation(1);" type="button"><i class="icon-ok">  </i> Submit</button>
+      <button title="Submit PR to Procurment" class="btn btn-default" onclick="openSubmitCartConfirmation(1);" type="button"><i class="icon-ok">  </i> Submit</button>
 </form>
 <?php else: echo '<div class="alert alert-warning">
   Order List is currently empty!</div>' ?>
@@ -97,7 +99,7 @@
         <h5 class="modal-title">Mascot International (Laos)</h5>
       </div>
 	      <div class="modal-body">
-	        <p>Do you want to complete and submit Purchase Request <span id="submitted_pr_number"></span>?</p>
+	        <p>Do you want to complete and submit Purchase Request <span id="submitted_id"></span>?</p>
 	      </div>
 		  <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

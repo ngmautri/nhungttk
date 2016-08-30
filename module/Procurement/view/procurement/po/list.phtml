@@ -210,8 +210,7 @@ endif;
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
-			<td><input type="checkbox" id="select_ALL" name="SelectAll"
-				value="YES" /> <b>All</b></td>
+			<td>#</td>
 
 		<td><b>Requester</b></td>
 		<td><b>Item Name</b></td>
@@ -241,10 +240,7 @@ endif;
 		?>
 		<tr>
 		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-		
-	 	<td><input class="checkbox1" type="checkbox" name="po_items[]"
-		value="<?php echo $item->id ;?>" /></td>
-
+	
 		<td><?php echo $item->pr_requester_name;?>
 		
 		<div style="color: gray; font-size: 8pt;">
@@ -269,10 +265,10 @@ endif;
    	<li class="divider"></li>
  <li>
  <a href="<?php echo $this->baseUrl ?>/procurement/po/edit-item?id=<?php echo $this->escapeHtml($item->id)?>&pr_item_id=<?php echo $this->escapeHtml($item->pr_item_id);?>">
- <i class="icon-pencil">  </i> Edit</a></li>  	
+ <i class="icon-pencil">  </i> Edit PO Item</a></li>  	
     	<?php endif; ?>
 	
-
+	</ul>
 		
 		
 		</td>

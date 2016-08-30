@@ -41,25 +41,24 @@ echo '<div class="alert alert-info">';
 <?php  	if ($pr->status!=='Approved'): ?>
 <button title="Acknowledge the PR" class="btn btn-default" onclick="openConfirmation('<?php echo $pr->id?>');" type="button"><i class="icon-ok">  </i> Approve</button>
 <?php  	endif; ?>
- <hr>
+ 
 
 <ul class="nav nav-pills">
- <li><a href="/application/pdf/pr?id=<?php echo $pr->id ?>"  target="_blank"><i class="icon-print">  </i> Print (PDF)</a> </li>
- <li><a href="/procurement/pr/process?output=csv&pr_id=<?php echo $pr->id ?>"><i class="icon-download-alt">  </i> Download (CSV)</a> </li>
- 
+	 <li><a href="/application/pdf/pr?id=<?php echo $pr->id ?>"  target="_blank"><i class="icon-print">  </i> Print (PDF)</a> </li>
+ 	<li><a href="/procurement/pr/process?output=csv&pr_id=<?php echo $pr->id ?>"><i class="icon-download-alt">  </i> Download (CSV)</a> </li>
 </ul>
 
 
 
-<table class="table table-striped table-bordered">
+<table id="pr_item_tbl" class="table table-striped table-bordered">
 	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Status</b></td>
+		<tr style="font-size: 10pt;">
+			<td><span>#</span></td>
+			<td>Status</td>
 			<td><b>Item Name</b></td>
 			<td><b>Unit</b></td>
 			<td><b data-toggle="tooltip" title="Ordred Quantity">Requested <br>Quantity</b></td>
-			<td><b data-toggle="tooltip" title="Bought Quantity">Received<br>Quantity
+			<td><b data-toggle="tooltip" title="Bought Quantity">Received<br>Quantity</b></td>
 			<td><b data-toggle="tooltip" title="Notified Quantity">Notified<br>Quantity</b></td>
 			<td><b data-toggle="tooltip" title="Notified Quantity">Confirmed<br>Quantity</b></td>
 			<td><b data-toggle="tooltip" title="Rejected Quantity">Rejected <br>Quantity</b></td>
@@ -68,7 +67,7 @@ echo '<div class="alert alert-info">';
 			<td><b>EDT</b></td>
 			<td><b>Last Purchase</b></td>
 			<td><b>Work Flow</b></td>
-		</tr>
+			</tr>
 	</thead>
 	<tbody>	
   <?php
@@ -77,8 +76,8 @@ echo '<div class="alert alert-info">';
 		$count ++;
 		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 		?>
-		<tr>
-			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+		<tr id="3">
+			<td contenteditable='true'><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 			<td>
 			<div style="font-size: 8pt;">
 			<?php if ($item->confirmed_balance > 0) : ?>
@@ -111,17 +110,22 @@ echo '<div class="alert alert-info">';
    		<?php if ($item->po_item_id > 0) : ?>
    			<li><a href="/procurement/gr/receive?pr_item_id=<?php echo $item->id;?>&po_item_id=<?php echo $item->po_item_id;?>"><i
 								class="icon-check"> </i> Receive </a></li>	
+   				<li class="divider"></li>
+   			<li><a href="/procurement/po/edit-item?pr_item_id=<?php echo $item->id;?>&id=<?php echo $item->po_item_id;?>"><i
+								class="icon-pencil"> </i> Edit PO Item </a></li>	
+			<li class="divider"></li>
     	<?php else: ?>
     		<li><a
 							href="/procurement/po/add-to-cart?pr_item_id=<?php echo $item->id?>"><i
 								class="icon-check"> </i> Purchase</a></li>
    	
+    						<li class="divider"></li>
     	<?php endif; ?>
    				
     	<?php endif; ?>
 	
      	
-      	<li class="divider"></li>
+      	
         
         <?php
 		if ($item->article_id > 0) :
@@ -172,7 +176,7 @@ echo '<div class="alert alert-info">';
 		<?php if($item->confirmed_balance == 0): ?>
 			<td><?php echo date_format(date_create($item->EDT),"Y-m-d");?>
 			<div>
-			<span class="label label-success">Fulfilled</span>
+			<span style="font-size: 7pt;" class="label label-success">Fulfilled</span>
 			</div>
 			</td>
 		<?php else: ?>		
@@ -221,8 +225,6 @@ echo '<div class="alert alert-info">';
 			<?php endif;?>
 			</div>
 			</td>
-
-	
 			<script language="javascript">
 				id_array.push(<?php echo $item->id;?>);
 			</script>

@@ -10,7 +10,7 @@ class POItemTable {
 	protected $tableGateway;
 	
 	private $getPOItems_SQL ="
-			select
+		select
             mla_po_item.*,
             mla_vendors.name as vendor_name,
             mla_purchase_request_items.*,
@@ -43,6 +43,9 @@ select
      mla_purchase_request_items.unit as pr_item_unit,
     mla_purchase_request_items.keywords as pr_item_keywords,
 	mla_purchase_request_items.quantity as ordered_quantity,
+    mla_purchase_request_items.sparepart_id,
+    mla_purchase_request_items.article_id,
+    mla_purchase_request_items.asset_id,
 
 	mla_purchase_requests.id as pr_id,
 	mla_purchase_requests.seq_number_of_year,
@@ -265,14 +268,14 @@ on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
 	}
 	
 	/**
-	 *
-	 * @param DeliveryItem $input        	
-	 * @param unknown $id        	
+	 * No need to update pr_item_id
+	 * 
+	 * @param POItem $input
+	 * @param unknown $id
 	 */
 	public function update(POItem $input, $id) {
 		$data = array (
 				'po_id' => $input->po_id,
-				'pr_item_id' => $input->pr_item_id,
 				
 				'name' => $input->name,
 				'code' => $input->code,
@@ -282,10 +285,7 @@ on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
 				'currency' => $input->currency,
 				'payment_method' => $input->payment_method,
 				'vendor_id' => $input->vendor_id,
-				
 				'remarks' => $input->remarks,
-				
-				'created_by' => $input->created_by,
 				'status' => $input->status 
 		);
 		

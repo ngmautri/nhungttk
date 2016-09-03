@@ -253,7 +253,6 @@ WHERE 1
 				'unit' => $input->unit,
 				'code' => $input->code,				
 				'barcode' => $input->barcode,
-				'created_on' => date ( 'Y-m-d H:i:s' ),
 				'status' => $input->status,
 				'visibility' => $input->visibility,
 				'remarks' => $input->remarks,
@@ -321,7 +320,7 @@ WHERE 1
 		return $resultSet;
 	}
 	
-	public function getArticles_V01($user_id,$limit, $offset){
+	public function getArticles_V01($user_id,$item_type,$item_status,$sort_by, $limit, $offset){
 	
 		$adapter = $this->tableGateway->adapter;
 		$sql = $this->getArticles_SQL_V01;
@@ -330,9 +329,27 @@ WHERE 1
 			$sql = $sql. " AND mla_users.department_id
 				IN (SELECT department_id from mla_departments_members
 				where user_id = ".$user_id.")
-				ORDER BY mla_articles.name ";
+				";
 		}
-	
+		
+		// Type
+		if ($item_type != null) {
+				$sql = $sql. " AND  mla_articles.type ='" . $item_type . "'";
+		}
+		
+		// Status
+		if ($item_status != null) {
+			$sql = $sql. " AND  mla_articles.status ='" . $item_status . "'";
+		}
+		
+		if ($sort_by =="item_name") {
+			$sql = $sql. " ORDER BY mla_articles.name asc";
+		}
+		
+		if ($sort_by =="created_date") {
+			$sql = $sql. " ORDER BY mla_articles.created_on desc";
+		}
+			
 		if ($limit > 0) {
 			$sql = $sql. " LIMIT " . $limit;
 		}
@@ -340,6 +357,11 @@ WHERE 1
 		if ($offset > 0) {
 			$sql = $sql. " OFFSET " . $offset;
 		}
+		
+		$sql = $sql.";";
+		
+		//echo $sql;
+		
 		$statement = $adapter->query($sql);
 	
 		$result = $statement->execute();

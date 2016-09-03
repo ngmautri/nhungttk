@@ -550,11 +550,12 @@ class SparepartsController extends AbstractActionController {
 	}
 	
 	/**
+	 * @todo: Check Pending PR for this Spare Part
 	 * receive spare part
 	 */
 	public function receiveAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		//$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		if ($request->isPost ()) {
 			
@@ -612,7 +613,7 @@ class SparepartsController extends AbstractActionController {
 							'pictures' => $pictures,
 							'instock' => $instock,
 							'errors' => $errors,
-							'redirectUrl' => $redirectUrl,
+							//'redirectUrl' => $redirectUrl,
 							'movement' => $input 
 					) );
 				} else {
@@ -645,16 +646,173 @@ class SparepartsController extends AbstractActionController {
 		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
 		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
 		$instock = $inflow - $outflow;
+		$pending_pr_item = $this->sparePartTable->getPendingPRItems($id);
 		
 		return new ViewModel ( array (
 				'sp' => $sp,
 				'pictures' => $pictures,
 				'instock' => $instock,
 				'errors' => null,
-				'redirectUrl' => $redirectUrl,
-				'movement' => null 
+				//'redirectUrl' => $redirectUrl,
+				'movement' => null,
+				'pending_pr_item' =>$pending_pr_item,
+				'paginator' =>null,
+				
 		) );
 	}
+	
+	/**
+	 * @todo: Check Pending PR for this Spare Part
+	 * receive spare part
+	 */
+	public function grAction() {
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+	
+		if ($request->isPost ()) {
+				
+			$request = $this->getRequest ();
+				
+			if ($request->isPost ()) {
+	
+				$input = new SparepartMovement ();
+				$input->sparepart_id = $request->getPost ( 'sparepart_id' );
+				$input->movement_date = $request->getPost ( 'movement_date' );
+	
+				$input->sparepart_id = $request->getPost ( 'sparepart_id' );
+				$input->asset_id = $request->getPost ( 'asset_id' );
+				$input->quantity = $request->getPost ( 'quantity' );
+	
+				$input->flow = 'IN';
+	
+				$input->reason = $request->getPost ( 'reason' );
+				$input->requester = $request->getPost ( 'requester' );
+				$input->comment = $request->getPost ( 'comment' );
+				$input->created_on = $request->getPost ( 'created_on' );
+				$email = $request->getPost ( 'email' );
+	
+				$instock = $request->getPost ( 'instock' );
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+	
+				$errors = array ();
+	
+				// validator.
+				$validator = new Date ();
+	
+				if (! $validator->isValid ( $input->movement_date )) {
+					$errors [] = 'Transaction date format is not correct!';
+				}
+	
+				// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
+				$validator = new Int ();
+	
+				if (! $validator->isValid ( $input->quantity )) {
+					$errors [] = 'Quantity is not valid. It must be a number.';
+				}
+	
+				$validator = new EmailAddress ();
+				if (! $validator->isValid ( $email )) {
+					$errors [] = 'Email is not correct.';
+				}
+	
+				$id = ( int ) $request->getPost ( 'sparepart_id' );
+				$sp = $this->sparePartTable->get ( $id );
+				$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
+	
+				if (count ( $errors ) > 0) {
+					return new ViewModel ( array (
+							'sp' => $sp,
+							'pictures' => $pictures,
+							'instock' => $instock,
+							'errors' => $errors,
+							'redirectUrl' => $redirectUrl,
+							'movement' => $input
+					) );
+				} else {
+						
+					// Validated
+					$newId = $this->sparepartMovementsTable->add ( $input );
+						
+					/*
+					 * do not send email
+					 * if ($newId > 0) {
+					 * // sent email;
+					 *
+					 * $transport = $this->getServiceLocator ()->get ( 'SmtpTransportService' );
+					 * $message = new Message ();
+					 * $body = $input->quantity . ' pcs of Spare parts ' . $sp->name . ' (ID' . $sp->tag . ') received!';
+					 * $message->addTo ( $email )->addFrom ( 'mib-team@web.de' )->setSubject ( 'Mascot Laos - Spare Part Movements' )->setBody ( $body );
+					 * $transport->send ( $message );
+					 * }
+					 */
+						
+					$redirectUrl = $request->getPost ( 'redirectUrl' );
+					$this->redirect ()->toUrl ( $redirectUrl );
+				}
+			}
+		}
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
+		$sp = $this->sparePartTable->get ( $id );
+		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
+		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
+		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
+		$instock = $inflow - $outflow;
+		$pending_pr_item = $this->sparePartTable->getPendingPRItems($id);
+	
+		return new ViewModel ( array (
+				'sp' => $sp,
+				'pictures' => $pictures,
+				'instock' => $instock,
+				'errors' => null,
+				'redirectUrl' => $redirectUrl,
+				'movement' => null,
+				'pending_pr_item' =>$pending_pr_item,
+				'paginator' =>null,
+	
+		) );
+	}
+	
+
+	/**
+	 * Issue sparepart
+	 */
+	public function consumptionAction() {
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'asset_id' );
+		$sp_consumption = $this->sparePartTable->getSPConsumptionByAsset( $id );
+		
+		return new ViewModel ( array (
+				'movements' => $sp_consumption,
+		) );
+	}
+	
+	
+	/**
+	 * Issue sparepart
+	 */
+	public function reportAction() {
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
+		$year = ( int ) $this->params ()->fromQuery ( 'year' );
+		
+		if($year==null):
+			$year=2016;
+		endif;
+	
+		$sp_consumption = $this->sparepartMovementsTable->getMovementSummary( $year,$id );
+		$sp=$this->sparePartTable->get($id);
+	
+		return new ViewModel ( array (
+				'movements' => $sp_consumption,
+				'year' =>$year,
+				'sp'=>$sp
+		) );
+	}
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function addCategoryAction() {
 		$request = $this->getRequest ();
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
@@ -793,14 +951,15 @@ class SparepartsController extends AbstractActionController {
 		}
 		$totalResults = $this->sparePartCategoryMemberTable->getTotalSP ();
 		
+		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
 			$spareparts = $this->sparePartCategoryMemberTable->getAllSP ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		} else {
-			$spareparts = $this->sparePartCategoryMemberTable->getAllSP ( 0, 0 );
+			$spareparts = $this->sparePartCategoryMemberTable->getAllSP (0,0 );
 		}
-		
+			
 		return new ViewModel ( array (
 				'total_spareparts' => $totalResults,
 				'spareparts' => $spareparts,

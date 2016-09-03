@@ -9,6 +9,28 @@ use Inventory\Model\SparepartMovement;
 
 class SparepartMovementsTable {
 	protected $tableGateway;
+	
+	private $movement_period_SQL = "
+select
+	mla_sparepart_movements.sparepart_id,
+    sum(mla_sparepart_movements.quantity) as total_quantity,
+
+    mla_sparepart_movements.flow,
+    mla_sparepart_movements.quantity,
+	year(mla_sparepart_movements.movement_date) as movement_year,
+	month(mla_sparepart_movements.movement_date) as movement_month,
+	concat(month(mla_sparepart_movements.movement_date),'.', year(mla_sparepart_movements.movement_date) ) as movement_period
+from mla_sparepart_movements
+where mla_sparepart_movements.sparepart_id =3
+group by mla_sparepart_movements.sparepart_id, mla_sparepart_movements.flow,concat(month(mla_sparepart_movements.movement_date),'.', year(mla_sparepart_movements.movement_date) )
+order by concat(month(mla_sparepart_movements.movement_date),'.', year(mla_sparepart_movements.movement_date) ) desc			
+	";
+	
+	private $movement_year_SQL =
+	"
+			
+			";
+	
 	public function __construct(TableGateway $tableGateway) {
 		$this->tableGateway = $tableGateway;
 	}
@@ -329,6 +351,69 @@ WHERE 1
 		$statement = $adapter->query ( $sql );
 		$result = $statement->execute ();
 		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	/**
+	 *
+	 * @param unknown $fromDate
+	 * @param unknown $toDate
+	 * @param unknown $flow
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getMovementSummary($year, $sparepart_id ){
+		
+			$select="";
+			for ($i=1; $i<=12; $i++){
+				$select = $select. " SUM(CASE WHEN mla_sparepart_movements.movement_period = '".$i.".".$year."' THEN mla_sparepart_movements.total_quantity ELSE 0 END) AS 'p".$i.$year."',";
+			}
+			
+			
+		
+	
+			$sql = "
+select
+
+	mla_spareparts.id as sp_id,
+"
+.$select.
+
+"   mla_sparepart_movements.flow
+					
+from mla_spareparts
+inner join
+(
+	select
+		mla_sparepart_movements.sparepart_id,
+	    sum(mla_sparepart_movements.quantity) as total_quantity,	
+	    mla_sparepart_movements.flow,
+	    mla_sparepart_movements.quantity,
+		year(mla_sparepart_movements.movement_date) as movement_year,
+		month(mla_sparepart_movements.movement_date) as movement_month,
+		concat(month(mla_sparepart_movements.movement_date),'.', year(mla_sparepart_movements.movement_date) ) as movement_period
+	from mla_sparepart_movements
+	group by mla_sparepart_movements.sparepart_id, mla_sparepart_movements.flow,concat(month(mla_sparepart_movements.movement_date),'.', year(mla_sparepart_movements.movement_date) )
+	order by concat(month(mla_sparepart_movements.movement_date),'.', year(mla_sparepart_movements.movement_date) ) desc
+) 
+as mla_sparepart_movements
+on mla_sparepart_movements.sparepart_id = mla_spareparts.id
+
+where 1
+					";
+			
+		$sql=$sql." AND mla_sparepart_movements.sparepart_id=".$sparepart_id;
+		$sql=$sql." GROUP BY mla_sparepart_movements.flow, mla_sparepart_movements.sparepart_id";
+		$sql=$sql." ORDER BY mla_spareparts.id";
+		$sql=$sql.";";
+		
+		//echo $sql;
+		
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
 		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
 		$resultSet->initialize ( $result );
 		return $resultSet;

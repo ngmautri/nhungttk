@@ -1,0 +1,51 @@
+<h4><?php echo $sp->name;?></h4>
+
+  
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>Spare-part Name	</b></td>
+		<td><b>Flow	</b></td>
+		<?php 
+		for ($i=1; $i<=12; $i++){?>
+				<td><b><?php echo $i.'-'.$year; ?></b></td>
+		<?php } ?>
+		
+	
+			
+	</tr>
+</thead>
+<tbody>
+
+<?php 
+	
+
+	$count = 0;
+	foreach ($movements as $a) :
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+		
+		<td><?php echo $a->sp_id;?></td>
+		<td><?php echo $a->flow;?></td>
+		
+		<?php 
+		for ($i=1; $i<=12; $i++){
+			$k="p".$i.$year;
+		?>
+				<td>
+				
+				
+				<?php echo $a[$k]; ?>
+				
+				</td>
+		<?php } ?>
+	
+	</tr>
+
+<?php endforeach; ?>
+</tbody>
+</table>
+
+<br>

@@ -1,3 +1,7 @@
+<script language="javascript">
+			var id_array = [];
+</script>
+
 <h4>Receiving: <span class="label label-success"><?php echo $sp->tag; ?></span> <?php echo $sp->name; ?> </h4>
 
 <hr>
@@ -18,7 +22,7 @@ echo '<div class="alert alert-error">';
 
 <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/spareparts/receive"	method="post" enctype="multipart/form-data" id="NewSP" >
 	<input type="hidden" name="sparepart_id" value="<?php echo (int) $sp->id; ?>" />
-	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+	<!-- <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" /> -->
 
       <div class="control-group">
         <label class="control-label" for="inputName">Receipt date:</label>
@@ -89,3 +93,4 @@ echo '<div class="alert alert-error">';
 <?php endforeach; ?>
 </div>
 </div>
+

@@ -1,30 +1,9 @@
- <div class="btn-group">
-    <button type="button" class="btn btn-defaultdropdown-toggle" data-toggle="dropdown">
-    Spare-Part Management <span class="caret"></span></button>
-    <ul class="dropdown-menu" role="menu">
- 				<li><a href="/inventory/spareparts/category">Spare-part category</a>
-						</li>
-						<li><a href="/inventory/spareparts/list">Show all spare-parts</a>
-						</li>
-						<li class="divider"></li>
- 						<li><a href="/inventory/report/index">Reporting</a>
-						</li>
-					<li class="divider"></li>
- 						<li><a href="/inventory/spareparts/suggest">Order Suggestion</a>
-						</li>
-    </ul>
-  </div>
+<?php include (ROOT.'\module\Inventory\view\inventory\sp_menu.php'); ?> 
+
   
-  
- 
-<hr>
- <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
-      <input type="text" name = "query" class="">
-      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
-   </form>
 <ul class="nav nav-pills">
 	<li><a
-		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add
+		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add"><i class="icon-plus">  </i> Add
 			New Spare-part</a></li>
 			
 			<li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list?output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
@@ -52,6 +31,7 @@ if ($total_spareparts <= 0) {
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
+			<td><b>#</b></td>
 			<td><b>PICTURE</b></td>
 			<td><b>TAG</b></td>
 			<td><b>SPARE-PART NAME</b></td>
@@ -65,11 +45,12 @@ if ($total_spareparts <= 0) {
 	
 	$count = 0;
 	foreach ( $spareparts as $a ) :
-		// $count++;
+		 $count++;
 		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 		
 		?>
 	<tr>
+		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 			<td>
 			<?php 
 			if($a->sp_pic_id!==null):
@@ -118,21 +99,26 @@ if ($total_spareparts <= 0) {
  	
  							<li class="divider"></li>
  						<li><a
+				href="<?php echo $this->baseUrl ?>/inventory/spareparts/report?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Stock movement Summary</a>
+						</li>
+						<li><a
 				href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Stock movement</a>
 						</li>
 						<li><a
 				href="<?php echo $this->baseUrl ?>/inventory/spareparts/set-min-balance?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Set Minimum Balance</a>
 						</li>
+ <li><a href="/procurement/pr/history?sparepart_id=<?php echo $a->id;?>" target="_blank"><i class="icon-signal"></i> Order History</a></li>
+						
 					</ul>
 				</div>
 				<div style="color: gray;">
 					Code: <span id="<?php echo $this->escapeHtml($a['id']);?>_code"><?php echo $this->escapeHtml($a['code']);?></span><br>
 					Location: <?php echo $this->escapeHtml($a['location']);?>
 				<div style="color: gray;">
-				Category:<a style="font-size 8pt;color: black;" href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($a['sparepart_cat_id']);?>" target="_blank"><?php echo $this->escapeHtml($a['cat_name']);?></a>
+					Category:<a style="font-size 8pt;color: black;" href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $this->escapeHtml($a['sparepart_cat_id']);?>" target="_blank"><?php echo $this->escapeHtml($a['cat_name']);?></a>
+					</div>
 				</div>
-				</div>
-
+				<div id="<?php echo $this->escapeHtml($a['id']);?>_on_cart" style="display: none;"><?php echo $this->escapeHtml($a['ordering_sp_id']) == null?"NO":"YES";?></div>				
 			</td>
 			
 			<td ><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">
@@ -153,7 +139,7 @@ if ($total_spareparts <= 0) {
 					class="icon-shopping-cart"></i>Order</a> <a
 				href="<?php echo $this->baseUrl ?>/inventory/spareparts/issue?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Issue
 			</a> <a
-				href="<?php echo $this->baseUrl ?>/inventory/spareparts/receive?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Receive
+				href="<?php echo $this->baseUrl ?>/inventory/spareparts/gr?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Receive
 			</a> 
 			</td>
 			</tr>
@@ -210,7 +196,7 @@ if ($total_spareparts <= 0) {
 
 <!-- Modal -->
 <div id="myModal" class="modal hide" role="dialog">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<h5 class="modal-title">Mascot International (Laos)</h5>
@@ -301,7 +287,7 @@ if ($total_spareparts <= 0) {
 
 <!-- Modal -->
 <div id="myModal1" class="modal hide" role="dialog">
-	<div class="modal-dialog">
+	<div class="modal-dialog ">
 		<div class="modal-body">
 			<p>Working on it........Please Wait!</p>
 		</div>

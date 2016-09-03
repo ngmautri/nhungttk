@@ -1,0 +1,65 @@
+<h4>Stock Movement</h4>
+
+
+<?php if(count($movements)>0){
+	
+
+?>
+<hr>
+
+
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>Date</b></td>
+		<td><b>Spare-part Name	</b></td>
+		<td><b>Tag	</b></td>
+		<td><b>Flow</b></td>
+		<td><b>Quantity</b></td>
+		<td><b>Requester</b></td>
+	
+		<td><b>Reason</b></td>
+		<td><b>Comment</b></td>
+		<td><b>Asset Tag</b></td>	
+		<td><b>Asset</b></td>
+		<td><b>Action</b></td>	
+			
+	</tr>
+</thead>
+<tbody>
+
+<?php 
+	
+
+	$count = 0;
+	foreach ($movements as $a) :
+	 	 $count++;
+	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+
+		<td><?php echo date_format(date_create($a->movement_date),"Y-m-d");?></td>
+		<td><?php echo $a->sp_name;?></td>
+		<td><?php echo $a->sp_tag;?></td>
+		<td><?php echo $a->flow;?></td>
+		<td><?php echo $a->quantity;?></td>
+		<td><?php echo $a->requester;?></td>
+
+		<td><?php echo $a->reason;?></td>
+		
+		<td><?php echo $a->comment;?></td>
+		<td><?php echo $a->asset_name;?></td>
+			
+		<td><?php echo $a->a_name;?></td>
+		<td><?php echo $a->id;?></td>
+	</tr>
+
+<?php endforeach; ?>
+</tbody>
+</table>
+
+<br>
+
+
+
+<?php }; ?>

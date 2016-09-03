@@ -1,6 +1,6 @@
 
 <ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl ?>/inventory/article/add">Add New Item</a></li>
+ <li><a href="<?php echo $this->baseUrl ?>/inventory/article/add"><i class="icon-plus">  </i> Add New Item</a></li>
  <li><a href="<?php echo $this->baseUrl ?>/inventory/article/list?output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
 </li>
 </ul>
@@ -12,7 +12,115 @@
       <button type="submit" class="btn"><i class="icon-search"></i>Search</button>
    </form>
  
+<div class="panel-group">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h5 class="panel-title">
+				<a data-toggle="collapse" href="#collapse1"><i class="icon-filter">
+				</i> FILTER</a>
+			</h5>
+		</div>
 
+		<div id="collapse1"
+			class="panel-collapse collapse <?php echo count($articles)>0?"":"in"?>">
+			<div class="panel-body">
+				<div
+					style="padding: 3px; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+					<form class="form-horizontal"
+						action="<?php echo $this->baseUrl ?>/inventory/article/list"
+						method="get" enctype="multipart/form-data" id="ReportForm">
+						
+						<div class="control-group">
+							<label class="control-label" for="inputNameLocal">Item Type: </label>
+							<div class="controls">
+								<select name="item_type">
+									<option value="">All</option>
+									<option
+										<?php echo $item_type=='Stocked Product'? "selected='selected'":"";?>
+										value="Stocked Product">Stocked Products</option>
+									<option
+										<?php echo $item_type=='Unstocked Product'? "selected='selected'":"";?>
+										value="Unstocked Product">Unstocked Products</option>
+									<option
+										<?php echo $item_type=='Service'? "selected='selected'":"";?>
+										value="Service">Service</option>
+									</select>
+							</div>
+						</div>
+						
+
+						<div class="control-group">
+							<label class="control-label" for="inputNameLocal">Item Status: </label>
+							<div class="controls">
+								<select name="item_status">
+									<option value="">All</option>
+									<option
+										<?php echo $item_status=='Activated'? "selected='selected'":"";?>
+										value="Activated">Activated</option>
+									<option
+										<?php echo $item_status=='Deactivated'? "selected='selected'":"";?>
+										value="Deactivated">Deactivated</option>
+									</select>
+							</div>
+						</div>
+
+						
+						<div class="control-group">
+							<label class="control-label" for="inputNameLocal">Sort by: </label>
+							<div class="controls">
+								<select name="sort_by">
+									<option value="">None</option>
+									<option
+										<?php echo $sort_by=='item_name'? "selected='selected'":"";?>
+										value="item_name">Item Name</option>
+						
+									<option <?php echo $sort_by=='created_date'? "selected='selected'":"";?>
+										value="created_date">Created Date</option>
+								</select>
+
+							</div>
+						</div>
+
+						<div class="control-group">
+							<label class="control-label" for="inputNameLocal">Result per
+								page: </label>
+							<div class="controls">
+								<select name="perPage">
+									<option value="">None</option>
+									<option <?php echo $per_pape=='10'? "selected='selected'":"";?>
+										value="10">10</option>
+
+									<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
+										value="15">15</option>
+
+									<option <?php echo $per_pape=='20'? "selected='selected'":"";?>
+										value="20">20</option>
+
+									<option <?php echo $per_pape=='50'? "selected='selected'":"";?>
+										value="50">50</option>
+									<option
+										<?php echo $per_pape=='100'? "selected='selected'":"";?>
+										value="100">100</option>
+								</select>
+
+							</div>
+						</div>
+
+						<div class="control-group">
+							<div class="controls">
+								<button type="submit" class="btn">
+									<i class="icon-search"> </i> show
+								</button>
+							</div>
+						</div>
+					</form>
+				<hr>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
 
 <?php
 
@@ -32,11 +140,15 @@ if ($total_articles <= 0) {
 <table class="table table-striped table-bordered">
 <thead>
 	<tr>
+		<td><b>#</b></td>
 		<td><b>Picture</b></td>
 		<td><b>Name</b></td>
 		<!-- td><b>Name-LA</b></td> -->
+		<td><b>Item Type</b></td>
+		<td><b>Created Date</b></td>
+		
 		<td ><b data-toggle="tooltip" title = "Balance">Current <br> Balance</b></td>	
-			<td><b>Remark</b></td>
+		<td><b>Remark</b></td>
 		<td><b>Action</b></td>
 	</tr>
 </thead>
@@ -48,12 +160,10 @@ if ($total_articles <= 0) {
 	 $count = 0;
 	 foreach ($articles as $a) : 
 	 	 $count++;
-	 		//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
-	 
-	 	 
-	 ?>
+ ?>
 	 
 	 <tr>
+	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 	 	<td>
 			<?php 
 			if($a->article_pic_id!==null):
@@ -80,10 +190,10 @@ if ($total_articles <= 0) {
 						href="#"><span style="color:black;" id="<?php echo $this->escapeHtml($a['id']);?>_name"><b><?php echo $this->escapeHtml($a['name']);?></b></span>
 						<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li>	<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>">Edit</a>
+						<li><a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $this->escapeHtml($a->id);?>"><i class="icon-pencil"></i> Edit</a>
 
 						</li>
-						<li>		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a>
+						<li>	<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a->id);?>"><i class="icon-list"></i> Detail</a>
 	
 						</li>
  						<li class="divider"></li>
@@ -103,6 +213,8 @@ if ($total_articles <= 0) {
 				</div>
 		
 		</td>
+		<td><?php echo $this->escapeHtml($a->type);?> </td>
+		<td><?php echo $this->escapeHtml($a->created_on);?> </td>
 		
 		<td>
 		
@@ -262,8 +374,7 @@ endif;
 
 		<div class="modal-footer">
 			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			<button onclick="addItemToCart('ARTICLE');" type="button"
-				class="btn btn-primary">Add To Cart</button>
+			<button onclick="addItemToCart('ARTICLE');" type="button" class="btn btn-primary">Add To Cart</button>
 		</div>
 	</div>
 </div>

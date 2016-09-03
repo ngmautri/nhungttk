@@ -1,34 +1,4 @@
- <div class="btn-group">
-    <button type="button" class="btn btn-defaultdropdown-toggle" data-toggle="dropdown">
-    Spare-Part Management <span class="caret"></span></button>
-    <ul class="dropdown-menu" role="menu">
- 				<li><a href="/inventory/spareparts/category">Spare-part category</a>
-						</li>
-						<li><a href="/inventory/spareparts/list">Show all spare-parts</a>
-						</li>
-						<li class="divider"></li>
- 						<li><a href="/inventory/report/index">Reporting</a>
-						</li>
-			
-    </ul>
-  </div>
-  
-  
- 
-<hr>
- <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
-      <input type="text" name = "query" class="">
-      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
-   </form>
-<ul class="nav nav-pills">
-	<li><a
-		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add">Add
-			New Spare-part</a></li>
-			
-			<li><a href="<?php echo $this->baseUrl ?>/inventory/spareparts/list?output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
-</li>
-</ul>
-
+<?php include (ROOT.'\module\Inventory\view\inventory\sp_menu.php'); ?> 
 
 
 <?php

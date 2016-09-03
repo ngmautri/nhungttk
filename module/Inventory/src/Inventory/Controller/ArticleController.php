@@ -676,7 +676,17 @@ class ArticleController extends AbstractActionController {
 		
 		
 		$output = $this->params ()->fromQuery ( 'output' );
+		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
+		$item_status = $this->params ()->fromQuery ( 'item_status' );
+		$item_type = $this->params ()->fromQuery ( 'item_type' );
 		
+		if($item_status==null):
+			$item_status="Activated";
+		endif; 
+		
+		if($sort_by==null):
+			$sort_by="item_name";
+		endif;
 		
 		if ($output === 'csv') {
 				
@@ -695,6 +705,8 @@ class ArticleController extends AbstractActionController {
 			$h [] = "Item BarCode";
 			$h [] = "Current Balace";
 			$h [] = "Department Name";
+			$h [] = "Status";
+				
 			$h [] = "Remarks	";
 				
 			$delimiter = ";";
@@ -702,7 +714,7 @@ class ArticleController extends AbstractActionController {
 			fputcsv ( $fh, $h, $delimiter, '"' );
 			// fputs($fh, implode($h, ',')."\n");
 				
-			$articles = $this->articleTable->getArticles_V01( $user_id, 0, 0 );
+			$articles = $this->articleTable->getArticles_V01( $user_id,null,null,'item_name',0, 0 );
 				
 			foreach ( $articles as $m ) {
 				$l = array ();
@@ -726,13 +738,14 @@ class ArticleController extends AbstractActionController {
 				$l [] = ( string ) $m->barcode;
 				$l [] = ( string ) $m->article_balance;
 				$l [] = ( string ) $m->department_name;
+				$l [] = ( string ) $m->status;
 				$l [] = ( string ) $m->remarks;
 		
 				fputcsv ( $fh, $l, $delimiter, '"' );
 				// fputs($fh, implode($l, ',')."\n");
 			}
 				
-			$fileName = 'items-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
+			$fileName = 'Items-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
 			fseek ( $fh, 0 );
 			$output = stream_get_contents ( $fh );
 			// file_put_contents($fileName, $output);
@@ -774,19 +787,24 @@ class ArticleController extends AbstractActionController {
 		;
 		
 		
-		$articles = $this->articleTable->getArticles_V01( $user_id, 0, 0 );
+		$articles = $this->articleTable->getArticles_V01( $user_id,$item_type,$item_status,$sort_by, 0, 0 );
 		$totalResults = $articles->count ();
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$articles = $this->articleTable->getArticles_V01 ( $user_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$articles = $this->articleTable->getArticles_V01 ( $user_id,$item_type,$item_status,$sort_by, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
 				'total_articles' => $totalResults,
 				'articles' => $articles,
-				'paginator' => $paginator 
+				'paginator' => $paginator,
+				'sort_by' => $sort_by,
+				'item_status' => $item_status,
+				'per_pape'=>$resultsPerPage,
+				'item_type' => $item_type,
+				
 		) );
 	}
 	

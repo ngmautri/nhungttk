@@ -4,49 +4,16 @@
 			var id_array = [];
 </script>
 
-<div class="panel-group">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a data-toggle="collapse" href="#collapse1"><?php echo $pr!==null ? '<h5>Purchase Request (PR): '. $pr->pr_number.'</h5>':"" ?></a>
-        </h5>
-      </div>
-      <div id="collapse1" class="panel-collapse collapse <?php echo $pr->status === null?'':'in';?>">
-        <div class="panel-body">
-        
-     <?php if ($pr!==null)
-{
-echo '<div class="alert alert-info">';
-	
-	 echo '<ul>';
-	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' . $pr->requester . '</strong></li>';
-	 echo '<li>Updated on		: <strong>' .$pr->last_change . '</strong></li>';
-	 echo '<li>Latest Status		: <strong>' .$pr->status .  '</strong> by <strong>' .$pr->changed_by . '</strong></li>';
-	 
-	 echo '</ul>';
-	 echo '</div>';
-} 
-?>
-        </div>
-     </div>
-    </div>
-  </div>        
-
  
 
 <?php  	if (count($pr_items) >0): ?>
 
 
 
-<?php  	if ($pr->status!=='Approved'): ?>
-<button title="Acknowledge the PR" class="btn btn-default" onclick="openConfirmation('<?php echo $pr->id?>');" type="button"><i class="icon-ok">  </i> Approve</button>
-<?php  	endif; ?>
- 
 
 <ul class="nav nav-pills">
-	<li><a href="/application/pdf/pr?id=<?php echo $pr->id ?>"  target="_blank"><i class="icon-print">  </i> Print PR(PDF)</a> </li>
- 	<li><a href="/procurement/pr/process?output=csv&pr_id=<?php echo $pr->id ?>"><i class="icon-download-alt">  </i> Download PR(CSV)</a> </li>
- 	<li><a href="/application/pdf/po?pr_id=<?php echo $pr->id ?>" target="_blank"><i class="icon-print">  </i> Print PO(PDF)</a> </li>
+	<li><a href="/application/pdf/po?pr_id=<?php echo $pr->id ?>"  target="_blank"><i class="icon-print">  </i> Print PO (PDF)</a> </li>
+ 	<li><a href="/procurement/pr/process?output=csv&pr_id=<?php echo $pr->id ?>"><i class="icon-download-alt">  </i> Download PO(CSV)</a> </li>
 </ul>
 
 
@@ -67,7 +34,7 @@ echo '<div class="alert alert-info">';
 			<td><b data-toggle="tooltip" title="Free">Free</b></td>
 			<td><b>EDT</b></td>
 			<td><b>Last Purchase</b></td>
-			<td><b>Work Flow</b></td>
+			<td><b>This PO</b></td>
 			</tr>
 	</thead>
 	<tbody>	
@@ -78,7 +45,7 @@ echo '<div class="alert alert-info">';
 		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 		?>
 		<tr id="3">
-			<td contenteditable='true'><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td contenteditable='true'><?php echo $count;?></td>
 			<td>
 			<div style="font-size: 8pt;">
 			<?php if ($item->confirmed_balance > 0) : ?>
@@ -218,14 +185,23 @@ echo '<div class="alert alert-info">';
 		?>
 			</span>	
 			</td>
+			
 			<td>
-			<div style="color: gray; font-size: 8pt;">
-				PR-Item: #<?php echo $item->id;?><br>
-			<?php if ($item->po_item_id>0):?>
-				PO-Item: #<?php echo $item->po_item_id;?><br>
-			<?php endif;?>
-			</div>
+					
+<a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->po_vendor_id;?>"
+				target="_blank"><?php echo $item->po_vendor_name;?></a>
+		
+			<br> <span style="font-size: 8pt; font-style: italic;">
+			<?php
+				echo 'Unit price:' . $item->po_price . ' ' . $item->po_currency;
+			?>
+			</span>
+			<br> <span style="font-size: 8pt; font-style: italic;">
+			<?php echo  $item->po_payment_method;?>
+			</span>	
 			</td>
+			
+			
 			<script language="javascript">
 				id_array.push(<?php echo $item->id;?>);
 			</script>
@@ -236,51 +212,7 @@ echo '<div class="alert alert-info">';
 </table>
 <br>
 
-<?php
-	
-	if (! is_null ( $paginator )) {
-		
-		// change it only
-		$base = $this->baseUrl . '/procurement/pr/pr-items?department_id=' . $department_id . '&last_status=' . $last_status
-		. '&balance=' . $balance . '&unconfirmed_quantity=' . $unconfirmed_quantity.'&added_delivery_list=' . $added_delivery_list;
-		
-		$_connector_symbol = '&';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
-	}
-	
-	?>
- 
+
  <?php
 else :
 	echo 'No Items found ...';

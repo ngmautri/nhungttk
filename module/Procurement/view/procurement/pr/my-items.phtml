@@ -33,7 +33,7 @@ endif;
 					action="<?php echo $this->baseUrl ?>/procurement/pr/my-items"
 					method="get" enctype="multipart/form-data" id="ReportForm">
 					
-					<div class="control-group">
+	  <div class="control-group">
         <label class="control-label" for="inputNameLocal">PR by Year: </label>
         <div class="controls">
         	<select name="pr_year" >
@@ -41,7 +41,8 @@ endif;
    	    		<option <?php echo $pr_year=='2016'? "selected='selected'":"";?> value="2016">2016</option>
    	    		<option <?php echo $pr_year=='2017'? "selected='selected'":"";?> value="2017">2017</option>
    	    		<option <?php echo $pr_year=='2018'? "selected='selected'":"";?> value="2018">2018</option>
-   	 
+   	 			<option <?php echo $pr_year=='2019'? "selected='selected'":"";?> value="2019">2019</option>
+   	 			<option <?php echo $pr_year=='2020'? "selected='selected'":"";?> value="2020">2020</option>
    			</select>
 	     </div>
       </div>

@@ -20,8 +20,11 @@
 
  if ($last_status== "all" or $last_status == null):
  $last_status_selected = "Last Status = All";
- else:
- $last_status_selected = "Last Status = ".$last_status;
+ elseif ($last_status == "Pending"):
+ 	$last_status_selected = 'Last Status = <span style="color:red;">'.$last_status.'</span>';
+ elseif ($last_status == "Fulfilled"):
+ $last_status_selected = 'Last Status = <span class="label label-success">'.$last_status.'</span>';
+ 
  endif;
 ?>
 
@@ -117,7 +120,7 @@
 <thead>
 <tr>
 		<td><b>No.</b></td>
-		<td><b>Internal No.</b></td>
+		<td><b>PR#.</b></td>
 		<td><b>PR. Number</b></td>
 		<td><b>Requester</b></td>
 		<td><b>Department</b></td>			
@@ -140,7 +143,7 @@
 	 <tr>
 	 	<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 	
- 		<td><?php echo $item->auto_pr_number . ' <span class="badge"> '.$item->total_items.'</span>'?>
+ 		<td><?php echo "PR#".$item->id . ' <span class="badge"> '.$item->total_items.'</span>'?>
  		<td><?php echo $item->pr_number;?></td> 	
 		<td><?php echo $item->pr_requester_name;?></td>
 				<td><?php echo $item->pr_of_department;?></td>

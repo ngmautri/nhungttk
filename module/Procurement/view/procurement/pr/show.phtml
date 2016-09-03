@@ -49,7 +49,7 @@ echo '<div class="alert alert-info">';
 			<td><b>Status</b></td>
 			<td><b>Item Name</b></td>
 			<td><b>Unit</b></td>
-			<td><b data-toggle="tooltip" title="Ordred Quantity">Requested <br>Quantity</b></td>
+			<td><b data-toggle="tooltip" title="Ordred Quantity">Ordered <br>Quantity</b></td>
 			<td><b data-toggle="tooltip" title="Bought Quantity">Received<br>Quantity</b></td>
 			<td><b data-toggle="tooltip" title="Notified Quantity">Notified<br>Quantity</b></td>
 			<td><b data-toggle="tooltip" title="Notified Quantity">Confirmed<br>Quantity</b></td>
@@ -129,8 +129,8 @@ echo '<div class="alert alert-info">';
 	
 		
 		     
-         <li><a href="#"><i class="icon-signal"></i> Order History</a></li>
-						<li><a href="#"><i class="icon-film"></i> Picture</a></li>
+      <li><a href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i class="icon-signal"></i> Order History</a></li>
+								<li><a href="#"><i class="icon-film"></i> Picture</a></li>
 					</ul>
 				</div>
 			

@@ -29,7 +29,7 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	
 	 public function testDBTest() {
-	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\DeliveryItemTable');
+	 	 //$tbl = Bootstrap::getServiceManager()->get('Procurement\Model\PRItemSelfConfirmationTable');
 	 	 /*
 	 	 $input = new PRItemWorkFlow();
 	 	 $input->status = "Notified";
@@ -48,14 +48,28 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	 	 //$result = $tbl->getPRItems(2,null,1,0,0);
 	 	 
-	 	  $result = $tbl->submitSelectedDOItems((54),42);
-	 	  var_dump($result);
+	 	  //$result = $tbl->fetchAll();
+	 	  //var_dump($result);
 	 	
 	 	  /*
 	 	 foreach ($result as$user) {
 	 	 	var_dump ($user);
 	 	 }
 	 	 */
+	 	$filename =ROOT . '\nmt.csv';
+	 	
+	 	$rtn = array();
+	 	
+	 	if (($handle = fopen($filename, "r")) !== FALSE) {
+	 		while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+	 			$item = array();
+	 			$item[] = $data[0];
+	 			$item[] = $data[1];
+	 			$rtn[] = $item;
+	 		}
+	 	}
+	 	var_dump($rtn);
+	 	
 	 	 
 	 }
 

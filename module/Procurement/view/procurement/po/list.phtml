@@ -52,7 +52,7 @@ endif;
 		<div class="panel-heading">
 			<h5 class="panel-title">
 				<a data-toggle="collapse" href="#collapse1"><i class="icon-filter">
-				</i> FILTER</a>
+				</i>FILTER</a>
 				
 			</h5>
 		</div>
@@ -152,6 +152,56 @@ endif;
 							</select>
 						</div>
 					</div>
+					
+										<div class="control-group">
+							<label class="control-label" for="inputNameLocal">Sort by: </label>
+							<div class="controls">
+								<select name="sort_by">
+									<option value="">None</option>
+									<option
+										<?php echo $sort_by=='pr_number'? "selected='selected'":"";?>
+										value="pr_number">PR Number</option>
+
+									<option
+										<?php echo $sort_by=='requester_name'? "selected='selected'":"";?>
+										value="requester_name">Requester Name</option>
+
+									<option
+										<?php echo $sort_by=='item_name'? "selected='selected'":"";?>
+										value="item_name">Item Name</option>
+
+									<option <?php echo $sort_by=='EDT'? "selected='selected'":"";?>
+										value="EDT">Expected Delivery Date</option>
+								</select>
+
+							</div>
+						</div>
+
+						<div class="control-group">
+							<label class="control-label" for="inputNameLocal">Result per
+								page: </label>
+							<div class="controls">
+								<select name="perPage">
+									<option value="">None</option>
+									<option <?php echo $per_pape=='10'? "selected='selected'":"";?>
+										value="10">10</option>
+
+									<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
+										value="15">15</option>
+
+									<option <?php echo $per_pape=='20'? "selected='selected'":"";?>
+										value="20">20</option>
+
+									<option <?php echo $per_pape=='50'? "selected='selected'":"";?>
+										value="50">50</option>
+									<option
+										<?php echo $per_pape=='100'? "selected='selected'":"";?>
+										value="100">100</option>
+								</select>
+
+							</div>
+						</div>
+					
 
 					<div class="control-group">
 						<div class="controls">
@@ -181,7 +231,7 @@ endif;
 	 '</h5>';	
 	 else :
 	 echo '<h5>' . $total_items .
-	 ' Item(s)found | <span class="label label-info">' . $department_selected . ' | ' . 
+	 ' Item(s)found |' . $department_selected . ' | ' . 
 	 $vendor_selected . ' | ' .
 	 $balance_selected . ' | ' .
 	 $currency_selected . ' | ' .
@@ -210,13 +260,11 @@ endif;
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
-			<td>#</td>
-
+		<td>#</td>
+		<td>Status</td>
 		<td><b>Requester</b></td>
 		<td><b>Item Name</b></td>
 		<td ><b data-toggle="tooltip" title = "Ordered Quantity">Ordered <br> Quantity</b></td>
-		
-		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Purchasing<br>Quantity</b></td>
 		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Received<br>Quantity</b></td>
 		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Notified<br>Quantity</b></td>
 		<td ><b data-toggle="tooltip" title = "Purchasing Quantity">Confirmed<br>Quantity</b></td>
@@ -224,9 +272,9 @@ endif;
 		<td><b data-toggle="tooltip" title="Balance">Balance</b></td>
 		<td><b>Unit <br>Price</b></td>
 		<td><b>Total</b></td>
-			<td><b data-toggle="tooltip" title="Currency">Curr.</b></td>
-	<td><b>Vendor</b></td>
-		</tr>
+		<td><b data-toggle="tooltip" title="Currency">Curr.</b></td>
+		<td><b>Vendor</b></td>
+	</tr>
 	</thead>
 	<tbody>	
  
@@ -240,16 +288,35 @@ endif;
 		?>
 		<tr>
 		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	
-		<td><?php echo $item->pr_requester_name;?>
+		<td>
+				<div style="font-size: 8pt;">
+			    <?php if ($item->confirmed_balance > 0) : ?>
+   				<?php if ($item->po_item_id > 0) : ?>
+   					<span style="font-size: 7pt;" class="label label-info">Buying</span>
+   				<?php else: ?>
+   					<span style="color: red;"><b>Pending</b></span>
+   				<?php endif; ?>
+   				
+   				  				<?php else: ?>
+   				<span style="font-size: 7pt;" class="label label-success">Fulfilled</span>
+   				
+   				<?php endif; ?>
+   				
+   					<div style="color: gray; font-size: 8pt;">
+						<span data-toggle="tooltip" title="Priotiry"><?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. $item->priority .'</span>':$item->priority;?></span><br>
+					</div>
+				</div>		 
+		</td>	
+		
+		<td><span data-toggle="tooltip" title="Department:<?php echo $item->pr_of_department;?>"><?php echo $item->pr_requester_name;?></span>
 		
 		<div style="color: gray; font-size: 8pt;">
-			Dept.:<?php echo $item->pr_of_department;?><br>
-					<a style="color: black; font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/process?pr_id=<?php echo $item->pr_id;?>"
-				target="_blank">#<?php echo $item->auto_pr_number;?></a>
+				<a data-toggle="tooltip" title="<?php echo $item->pr_number;?>" style="font-size: 8pt;" href="<?php echo $this->baseUrl ?>/procurement/pr/process?pr_id=<?php echo $item->purchase_request_id;?>"
+				target="_blank">PR#<?php echo $item->purchase_request_id;?></a>
 	
 			</div>
 		</td>
+		
 		<td>
 			<div class="dropdown">
 					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
@@ -260,22 +327,40 @@ endif;
     
     	<?php if ($item->confirmed_balance > 0) : ?>
  <li>  			
- <a href="<?php echo $this->baseUrl ?>/procurement/gr/receive?pr_item_id=<?php echo $this->escapeHtml($item->pr_item_id);?>&po_item_id=<?php echo $this->escapeHtml($item->id)?>">
+ <a href="<?php echo $this->baseUrl ?>/procurement/gr/receive?pr_item_id=<?php echo $this->escapeHtml($item->id);?>&po_item_id=<?php echo $this->escapeHtml($item->po_item_id)?>">
  <i class="icon-check"></i> Receive</a></li>
    	<li class="divider"></li>
  <li>
- <a href="<?php echo $this->baseUrl ?>/procurement/po/edit-item?id=<?php echo $this->escapeHtml($item->id)?>&pr_item_id=<?php echo $this->escapeHtml($item->pr_item_id);?>">
+ <a href="<?php echo $this->baseUrl ?>/procurement/po/edit-item?id=<?php echo $this->escapeHtml($item->po_item_id)?>&pr_item_id=<?php echo $this->escapeHtml($item->id);?>">
  <i class="icon-pencil">  </i> Edit PO Item</a></li>  	
     	<?php endif; ?>
-	
-	</ul>
+    	
+    	<li class="divider"></li>
+        
+        <?php
+		if ($item->article_id > 0) :?>
+        <li><a href="/inventory/article/show?id=<?php echo $item->article_id;?>"
+							target="_blank"><i class="icon-list"> </i> Detail</a></li>
+		<?php endif; ?>
 		
+		 <?php if ($item->sparepart_id > 0) : ?>
+     	<li><a href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>"
+							target="_blank"><i class="icon-list"> </i> Detail</a></li>
+		<?php endif; ?>
+		     
+        	 <li><a target="_blank"	href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i
+								class="icon-signal" ></i> Order History</a></li>
+					</ul>
+				</div>
+
+				<div style="color: gray; font-size: 8pt;">
+				Code: <?php echo $this->escapeHtml($item->code);?><br>
+				</div>
+    
+    	</td>
+		<td><?php echo $item->quantity;?></td>
 		
-		</td>
-		<td><?php echo $item->ordered_quantity;?></td>
-		
-		<td><?php echo $item->ordered_quantity;?></td>
-		<td>
+			<td>
 		<a href="<?php echo $this->baseUrl ?>/procurement/gr/receive-list?po_item_id=<?php echo $item->id;?>" target="_blank"><?php echo $item->total_received_quantity;?></a>
 		</td>
 		<td><?php echo $item->unconfirmed_quantity;?></td>
@@ -284,15 +369,15 @@ endif;
 	<td><?php echo $item->confirmed_balance;?></td>
 		
 		
-		<td><?php echo $item->price;?></td>
-		<td><?php echo ($item->price*$item->total_received_quantity);?></td>
-		<td><?php echo $item->currency;?></td>
+		<td><?php echo $item->po_price;?></td>
+		<td><?php echo number_format(($item->po_price*$item->quantity),0,",",".");?></td>
+		<td><?php echo $item->po_currency;?></td>
 		
 		
 		<td>
-		<a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->vendor_id;?>" target="_blank"><?php echo $item->vendor_name;?></a>
+		<a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $item->po_vendor_id;?>" target="_blank"><?php echo $item->po_vendor_name;?></a>
 <div style="color: gray; font-size: 8pt;">
-			<?php echo $item->payment_method;?><br>
+			<?php echo $item->po_payment_method;?><br>
 			</div>
 </td>
 	

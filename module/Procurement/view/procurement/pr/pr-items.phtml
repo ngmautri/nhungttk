@@ -8,34 +8,32 @@
 
 <?php
 
+if ($pr_year == 0 or $balance == $pr_year) :
+	$pr_year_selected = "PR Year = All";
+else:
+	$pr_year_selected = "PR Year =" . $pr_year;
+endif;
+
+
+
 if ($department_id == 0 or $department_id == null) :
 	$department_selected = "Department = All";
-
-
 endif;
 
 if ($balance == 2 or $balance == null) :
 	$balance_selected = "Balance = All";
-
-
 endif;
 
 if ($balance == 0) :
 	$balance_selected = "Balance = 0 (Fulfilled Items)";
-
-
 endif;
 
 if ($balance == 1) :
-	$balance_selected = "Balance >0 (Pending Items)";
-
-
+	$balance_selected = 'Balance >0 <span style="color:red;">(Pending Items)</span>';
 endif;
 
 if ($balance == - 1) :
 	$balance_selected = "Balance <0 (Some free items)";
-
-
 endif;
 
 if ($processing == "2") :
@@ -70,6 +68,21 @@ endif;
 					<form class="form-horizontal"
 						action="<?php echo $this->baseUrl ?>/procurement/pr/pr-items"
 						method="get" enctype="multipart/form-data" id="ReportForm">
+						
+		<div class="control-group">
+        <label class="control-label" for="inputNameLocal">PR by Year: </label>
+        <div class="controls">
+        	<select name="pr_year" >
+        		<option value="0">All</option>
+   	    		<option <?php echo $pr_year=='2016'? "selected='selected'":"";?> value="2016">2016</option>
+   	    		<option <?php echo $pr_year=='2017'? "selected='selected'":"";?> value="2017">2017</option>
+   	    		<option <?php echo $pr_year=='2018'? "selected='selected'":"";?> value="2018">2018</option>
+   	 			<option <?php echo $pr_year=='2019'? "selected='selected'":"";?> value="2019">2019</option>
+   	 			<option <?php echo $pr_year=='2020'? "selected='selected'":"";?> value="2020">2020</option>
+   			</select>
+	     </div>
+      </div>
+						
 						<div class="control-group">
 							<label class="control-label" for="inputNameLocal">PR by
 								Department: </label>
@@ -80,7 +93,7 @@ endif;
 									
 									foreach ( $departments as $dept ) :
 										if ($dept->id === $department_id) :
-											$department_name = $dept->name;
+											$department_selected = "Department = " . $dept->name;
 											echo '<option selected="selected" value="' . $dept->id . '">' . $dept->name . '</option>';
 										 else :
 											echo '<option value="' . $dept->id . '">' . $dept->name . '</option>';
@@ -90,25 +103,6 @@ endif;
 									?>
    	
    			</select>
-							</div>
-						</div>
-
-						<div class="control-group">
-							<label class="control-label" for="inputNameLocal">PR by Status: </label>
-							<div class="controls">
-								<select name="last_status">
-									<option value="">All</option>
-									<option
-										<?php echo $last_status=='Submitted'? "selected='selected'":"";?>
-										value="Submitted">Submitted</option>
-									<option
-										<?php echo $last_status=='Approved'? "selected='selected'":"";?>
-										value="Approved">Approved</option>
-									<option
-										<?php echo $last_status=='Fulfilled'? "selected='selected'":"";?>
-										value="Fulfilled">Fulfilled</option>
-
-								</select>
 							</div>
 						</div>
 
@@ -128,26 +122,10 @@ endif;
 							</div>
 						</div>
 
-						<div class="control-group">
-							<label class="control-label" for="inputNameLocal">Delivery
-								Notification: </label>
-							<div class="controls">
-								<select name="unconfirmed_quantity">
-									<option value="2">All</option>
-									<option
-										<?php echo $unconfirmed_quantity=='0'? "selected='selected'":"";?>
-										value="0">sent and confirmed</option>
-									<option
-										<?php echo $unconfirmed_quantity=='1'? "selected='selected'":"";?>
-										value="1">sent but unconfirmed</option>
-
-
-								</select>
-							</div>
-						</div>
 
 						<div class="control-group">
-							<label class="control-label" for="inputNameLocal">Processing: </label>
+							<label class="control-label" for="inputNameLocal">In processing:
+							</label>
 							<div class="controls">
 								<select name="processing">
 									<option value="2">All</option>
@@ -229,9 +207,11 @@ endif;
 
 <?php
 if (! is_null ( $paginator )) :
-	echo '<h5>' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' of ' . $total_items . ' Item(s) found | ' . $department_selected . ' | ' . $balance_selected . ' | ' . $processing_selected . ' | ' . $sort_by_selected . ' | ' . '</h5>';
+	echo '<h5>' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' of ' . $total_items . ' Item(s) found | ' . 
+	$pr_year_selected. ' | '. $department_selected . ' | ' . $balance_selected . ' | ' . $processing_selected . ' | ' . $sort_by_selected . ' | ' . '</h5>';
  else :
-	echo '<h5>' . $total_items . ' Item(s) found | ' . $department_selected . ' | ' . $balance_selected . ' | ' . $processing_selected . ' | ' . $sort_by_selected . ' | ' . '</h5>';
+	echo '<h5>' . $total_items . ' Item(s) found | ' . 
+	$pr_year_selected. ' | ' . $department_selected . ' | ' . $balance_selected . ' | ' . $processing_selected . ' | ' . $sort_by_selected . ' | ' . '</h5>';
 endif;
 ?>
 <?php if (count ( $pr_items ) > 0) : ?>
@@ -253,16 +233,18 @@ endif;
 			<td><b>Item Name</b></td>
 			<td><b>PR Number</b></td>
 			<td><b>Unit</b></td>
-			<td><b data-toggle="tooltip" title="Ordred Quantity">Requested <br>Quantity</b></td>
-			<td><b data-toggle="tooltip" title="Bought Quantity">Received<br>Quantity</b></td>
-					<td><b data-toggle="tooltip" title="Notified Quantity">Notified<br>Quantity
-					</b></td>
-					<td><b data-toggle="tooltip" title="Notified Quantity">Confirmed<br>Quantity
-					</b></td>
-					<td><b data-toggle="tooltip" title="Rejected Quantity">Rejected <br>Quantity
-					</b></td>
-					<td><b data-toggle="tooltip" title="Balance">Balance</b></td>
-					<td><b data-toggle="tooltip" title="Free">Free</b></td>
+			<td><b data-toggle="tooltip" title="Ordred Quantity">Ordered <br>Quantity
+			</b></td>
+			<td><b data-toggle="tooltip" title="Bought Quantity">Received<br>Quantity
+			</b></td>
+			<td><b data-toggle="tooltip" title="Notified Quantity">Notified<br>Quantity
+			</b></td>
+			<td><b data-toggle="tooltip" title="Notified Quantity">Confirmed<br>Quantity
+			</b></td>
+			<td><b data-toggle="tooltip" title="Rejected Quantity">Rejected <br>Quantity
+			</b></td>
+			<td><b data-toggle="tooltip" title="Balance">Balance</b></td>
+			<td><b data-toggle="tooltip" title="Free">Free</b></td>
 			<td><b>EDT</b></td>
 			<td><b>Last Purchase</b></td>
 		</tr>
@@ -291,10 +273,10 @@ endif;
    				<?php endif; ?>
    				
    					<div style="color: gray; font-size: 8pt;">
-						Priority:<?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. $item->priority .'</span>':$item->priority;?><br>
+						<span data-toggle="tooltip" title="Priotiry"><?php echo $item->priority=='Urgent'? '<span class="label label-warning" >'. $item->priority .'</span>':$item->priority;?></span><br>
 					</div>
 				</div>
-			
+			</td>
 			<td>
 				<div class="dropdown">
 					<a class="dropdown-toggle" type="button" data-toggle="dropdown"
@@ -305,20 +287,18 @@ endif;
     	<?php if ($item->confirmed_balance > 0) : ?>
    			
    		<?php if ($item->po_item_id > 0) : ?>
-   			<li><a
-							href="/procurement/do/receive?pr_item_id=<?php echo $item->id;?>&po_item_id=<?php echo $item->po_item_id;?>"><i
-								class="icon-check"> </i> Receive </a></li>	
+   			<li><a href="/procurement/do/receive?pr_item_id=<?php echo $item->id;?>&po_item_id=<?php echo $item->po_item_id;?>"><iclass="icon-check"> </i> Receive </a></li>
+			<li class="divider"></li>
+			<li><a href="<?php echo $this->baseUrl ?>/procurement/po/edit-item?id=<?php echo $this->escapeHtml($item->po_item_id)?>&pr_item_id=<?php echo $this->escapeHtml($item->id);?>"><i class="icon-pencil"></i> Edit PO Item</a></li>  	
+    	
     	<?php else: ?>
-    		<li><a
-							href="/procurement/po/add-to-cart?pr_item_id=<?php echo $item->id?>"><i
-								class="icon-check"> </i> Purchase</a></li>
+    		<li><a href="/procurement/po/add-to-cart?pr_item_id=<?php echo $item->id?>"><i class="icon-check"> </i> Purchase</a></li>
    	
     	<?php endif; ?>
    				
     	<?php endif; ?>
-	
-     	
-      	<li class="divider"></li>
+	  
+	  	<li class="divider"></li>
         
         <?php
 		if ($item->article_id > 0) :
@@ -336,17 +316,22 @@ endif;
 	
 		
 		     
-         <li><a href="#"><i class="icon-signal"></i> Order History</a></li>
+        	 <li><a
+							href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i
+								class="icon-signal"></i> Order History</a></li>
 					</ul>
 				</div>
 
 				<div style="color: gray; font-size: 8pt;">
 				Code: <?php echo $this->escapeHtml($item->code);?><br>
 				</div>
-			
-			<td><span data-toggle="tooltip" title="<?php echo $item->pr_requester_name;?>"><?php echo $item->pr_number;?></span>
+			</td>
+			<td><span data-toggle="tooltip"
+				title="<?php echo $item->pr_requester_name;?>"><?php echo $item->pr_number;?></span>
 				<div style="color: gray; font-size: 8pt;">
-					<a data-toggle="tooltip" title="Detail of PR#<?php echo $item->purchase_request_id;?> by <?php echo $item->pr_requester_name;?> - <?php echo $item->pr_of_department;?>" style="font-size: 8pt;"
+					<a data-toggle="tooltip"
+						title="Detail of PR#<?php echo $item->purchase_request_id;?> by <?php echo $item->pr_requester_name;?> - <?php echo $item->pr_of_department;?>"
+						style="font-size: 8pt;"
 						href="<?php echo $this->baseUrl ?>/procurement/pr/process?pr_id=<?php echo $item->purchase_request_id;?>"
 						target="_blank">PR#<?php echo $item->purchase_request_id;?></a>
 				</div></td>
@@ -393,7 +378,11 @@ endif;
 				;
 			
 			
+			
+			
 				endif;
+		
+		
 		
 		
 		endif;
@@ -404,7 +393,11 @@ endif;
 			
 			
 			
+			
+			
 			endif;
+		
+		
 		
 		
 		
@@ -476,10 +469,13 @@ endif;
  
  
  
+ 
+ 
  <?php
 
 else :
 	echo 'No Items found ...';
+
 
 endif;
 ?>

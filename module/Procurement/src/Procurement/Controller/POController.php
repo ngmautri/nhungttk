@@ -102,6 +102,16 @@ class POController extends AbstractActionController {
 			
 			if (! is_numeric ( $input->price )) {
 				$errors [] = 'Price is not valid. It must be a number.';
+			}else 
+			{
+				if($input->price<0){
+					$errors [] = 'Price is not valid. It must be a positive number!';
+				}
+				
+			}
+			
+			if($input->vendor_id<0 or $input->vendor_id ==null ){
+				$errors [] = 'Please select a vendor. And create new vendor, if not found!';
 			}
 			
 			if (count ( $errors ) > 0) {
@@ -148,6 +158,7 @@ class POController extends AbstractActionController {
 		
 		$payment_method = $this->params ()->fromQuery ( 'payment_method' );
 		$currency = $this->params ()->fromQuery ( 'currency' );
+		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		
 		$departments = $this->departmentTable->fetchAll ();
 		
@@ -171,7 +182,7 @@ class POController extends AbstractActionController {
 		
 		$output = $this->params ()->fromQuery ( 'output' );
 		
-		$po_items = $this->poItemTable->getPOItems ( $balance, $department_id, $vendor_id, $payment_method, $currency, 0, 0 );
+		$po_items = $this->purchaseRequestItemTable->getPOItems($department_id, $balance, $payment_method,$currency, $vendor_id,$sort_by, 0, 0 );
 		$totalResults = count ( $po_items );
 		
 		
@@ -204,6 +215,7 @@ class POController extends AbstractActionController {
 			$h [] = "Vendor";
 			$h [] = "Vendor#";
 			$h [] = "Unit Price";
+			$h [] = "Total Price";
 			$h [] = "Currency";
 			$h [] = "Payment Method";
 			
@@ -218,17 +230,17 @@ class POController extends AbstractActionController {
 			foreach ( $po_items as $m ) {
 				$l = array ();
 				
-				$l [] = ( string ) $m->pr_id;
+				$l [] = ( string ) $m->purchase_request_id;
 				$l [] = ( string ) $m->pr_number;
 				$l [] = ( string ) $m->pr_requester_name;
 				$l [] = ( string ) $m->pr_of_department;
 					
+				$l [] = ( string ) $m->po_item_id;
 				$l [] = ( string ) $m->id;
-				$l [] = ( string ) $m->pr_item_id;
-				$l [] = ( string ) $m->pr_item_name;
-				$l [] = ( string ) $m->pr_item_code;
-				$l [] = ( string ) $m->pr_item_unit;
-				$l [] = ( string ) $m->pr_item_keywords;
+				$l [] = ( string ) $m->name;
+				$l [] = ( string ) $m->code;
+				$l [] = ( string ) $m->unit;
+				$l [] = ( string ) $m->keywords;
 				
 				if($m->sparepart_id>0){
 					$l[]= "YES";
@@ -236,7 +248,7 @@ class POController extends AbstractActionController {
 					$l[]= "NO";
 				}
 				
-				$l [] = ( string ) $m->ordered_quantity;
+				$l [] = ( string ) $m->quantity;
 				$l [] = ( string ) $m->total_received_quantity;
 				$l [] = ( string ) $m->unconfirmed_quantity;
 				$l [] = ( string ) $m->confirmed_quantity;
@@ -244,13 +256,14 @@ class POController extends AbstractActionController {
 				$l [] = ( string ) $m->confirmed_balance;
 				$l [] = ( string ) $m->confirmed_free_balance;
 				
-				$l [] = ( string ) $m->vendor_name;
-				$l [] = ( string ) $m->vendor_id;
-				$l [] = ( string ) $m->price;
-				$l [] = ( string ) $m->currency;
-				$l [] = ( string ) $m->payment_method;
+				$l [] = ( string ) $m->po_vendor_name;
+				$l [] = ( string ) $m->po_vendor_id;
+				$l [] = ( string ) $m->po_price;
+				$l [] = ( string ) $m->po_price*$m->quantity;
+				$l [] = ( string ) $m->po_currency;
+				$l [] = ( string ) $m->po_payment_method;
 				
-				$l [] = ( string ) $m->remarks;
+				$l [] = ( string ) $m->po_remarks;
 		
 				fputcsv ( $fh, $l, $delimiter, '"' );
 				// fputs($fh, implode($l, ',')."\n");
@@ -299,7 +312,7 @@ class POController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$po_items = $this->poItemTable->getPOItems ($balance,$department_id,$vendor_id, $payment_method, $currency,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$po_items = $this->purchaseRequestItemTable->getPOItems ($department_id, $balance, $payment_method,$currency, $vendor_id,$sort_by,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 	
 		return new ViewModel ( array (
@@ -315,7 +328,9 @@ class POController extends AbstractActionController {
 				'vendors' => $vendors,
 				'vendor_id' => $vendor_id,
 				'paginator' => $paginator,
-				'total_items' => $totalResults
+				'total_items' => $totalResults,
+				'per_pape'=>$resultsPerPage,
+				'sort_by'=>$sort_by,
 		) );
 	}
 	
@@ -367,6 +382,10 @@ class POController extends AbstractActionController {
 					$errors [] = 'Price must be positiv!';
 				}
 			}
+			
+			if($input->vendor_id<0 or $input->vendor_id ==null ){
+				$errors [] = 'Please select a vendor. And create new vendor, if not found!';
+			}
 				
 			if (count ( $errors ) > 0) {
 				$pr_item = $this->purchaseRequestItemTable->getPRItem ( $input->pr_item_id );
@@ -400,6 +419,25 @@ class POController extends AbstractActionController {
 				'errors' => null
 		) 
 		);
+	}
+	
+	
+	/**
+	 * For Procurement Staff
+	 *
+	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+	 */
+	public function showAction() {
+		
+		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V3 ( $pr_id, 9, 9, 9, 0, 0 );
+			$pr = $this->purchaseRequestTable->get ( $pr_id );
+		
+	
+		return new ViewModel ( array (
+				'pr_items' => $pr_items,
+				'pr'=>$pr
+		) );
 	}
 
 	//+++++++++++++++++++++++++++++++++++

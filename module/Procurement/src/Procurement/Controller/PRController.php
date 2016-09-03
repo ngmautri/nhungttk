@@ -151,6 +151,7 @@ class PRController extends AbstractActionController {
 			$h [] = "PR#";
 			$h [] = "PR number";
 			$h [] = "Requester";
+			$h [] = "Email";
 			$h [] = "Department";
 			
 			$h [] = "Item#";
@@ -160,6 +161,7 @@ class PRController extends AbstractActionController {
 			$h [] = "Item Unit";
 			$h [] = "Item Keywords";
 			$h [] = "Spare Part";
+			$h [] = "SparePart Tag";
 			$h [] = "EDT";
 			
 			$h [] = "Ordered Quantity";
@@ -186,7 +188,8 @@ class PRController extends AbstractActionController {
 				
 				$l [] = ( string ) $m->purchase_request_id;
 				$l [] = ( string ) $m->pr_number;
-					$l [] = ( string ) $m->pr_requester_name;
+				$l [] = ( string ) $m->pr_requester_name;
+				$l [] = ( string ) $m->requester_email;
 				$l [] = ( string ) $m->pr_of_department;
 				
 				$l [] = ( string ) $m->id;
@@ -211,8 +214,11 @@ class PRController extends AbstractActionController {
 				$l [] = ( string ) $m->keywords;
 				if($m->sparepart_id>0){
 					$l[]= "YES";
+					$l[]= "'".$m->sp_tag;
+					
 				}else{
 					$l[]= "NO";
+					$l[]= "-";
 				}
 				
 				$l [] = ( string ) date_format(date_create($m->EDT),"Y-m-d");
@@ -329,6 +335,7 @@ class PRController extends AbstractActionController {
 			$h [] = "Item Code";
 			$h [] = "Item Keywords";
 			$h [] = "Spare Part";
+			$h [] = "SparePart Tag";
 			
 			$h [] = "Item Unit";
 			$h [] = "Ordered Quantity";
@@ -370,8 +377,10 @@ class PRController extends AbstractActionController {
 				
 				if($m->sparepart_id>0){
 					$l[]= "YES";
+					$l[]= "'".$m->sp_tag;
 				}else{
 					$l[]= "NO";
+					$l[]= "-";
 				}
 				
 				$l [] = ( string ) $m->unit;
@@ -522,40 +531,21 @@ class PRController extends AbstractActionController {
 		
 		if ($pr_year == null) :
 			$pr_year = date ( 'Y' );
-		
-		
-		
-		
 		endif;
 		
 		$departments = $this->departmentTable->fetchAll ();
 		
 		if ($balance == null) :
 			$balance = 1;
-		
-		
-		
-		
-	
-		endif;
+			endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
-		
-		
-		
-		
-	
-		endif;
+			endif;
 		
 		if ($processing == null) :
 			$processing = 0;
-		
-		
-		
-		
-	
-		endif;
+			endif;
 		
 		$pr_items = $this->purchaseRequestItemTable->getPRItemsOf ( $user ['id'], $pr_year, $last_status, $balance, $unconfirmed_quantity, $processing, 0, 0 );
 		$totalResults = count ( $pr_items );
@@ -584,6 +574,16 @@ class PRController extends AbstractActionController {
 		) );
 	}
 	
+	public function historyAction()
+	{
+		$sparepart_id= $this->params ()->fromQuery ( 'sparepart_id' );
+		$article_id= $this->params ()->fromQuery ( 'article_id' );
+		$pr_items = $this->purchaseRequestItemTable->getOrderHistory($sparepart_id,$article_id);
+		
+		return new ViewModel ( array (
+				'pr_items' => $pr_items,
+		) );
+	}
 	/**
 	 *
 	 * @return \Zend\View\Model\ViewModel
@@ -1260,6 +1260,7 @@ class PRController extends AbstractActionController {
 		$balance = $this->params ()->fromQuery ( 'balance' );
 		$unconfirmed_quantity = $this->params ()->fromQuery ( 'unconfirmed_quantity' );
 		$processing = $this->params ()->fromQuery ( 'processing' );
+		$pr_year = $this->params ()->fromQuery ( 'pr_year' );
 		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		
 		$departments = $this->departmentTable->fetchAll ();
@@ -1276,7 +1277,11 @@ class PRController extends AbstractActionController {
 			$processing = 0;
 		endif;
 		
-		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance, $unconfirmed_quantity,$processing,$sort_by, 0, 0 );
+		if ($pr_year == null) :
+			$pr_year = date ( 'Y' );
+		endif;
+		
+		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $pr_year,$department_id, $last_status, $balance, $unconfirmed_quantity,$processing,$sort_by, 0, 0 );
 		$totalResults = count ( $pr_items );
 		
 		$output = $this->params ()->fromQuery ( 'output' );
@@ -1290,6 +1295,7 @@ class PRController extends AbstractActionController {
 			$h [] = "PR#";
 			$h [] = "PR number";
 			$h [] = "Requester";
+			$h [] = "Email";
 			$h [] = "Department";
 			$h [] = "PR Date";
 			
@@ -1299,7 +1305,8 @@ class PRController extends AbstractActionController {
 			$h [] = "Item Code";
 			$h [] = "Item Unit";
 			$h [] = "Item EDT";
-			$h [] = "Spare-Parts";
+			$h [] = "Spare-Part";
+			$h [] = "SparePart Tag";
 				
 			$h [] = "Ordered Quantity";
 			$h [] = "Received Quantity";
@@ -1327,6 +1334,7 @@ class PRController extends AbstractActionController {
 				$l [] = ( string ) $m->purchase_request_id;
 				$l [] = ( string ) $m->pr_number;
 				$l [] = ( string ) $m->pr_requester_name;
+				$l [] = ( string ) $m->requester_email;
 				$l [] = ( string ) $m->pr_of_department;
 				$l [] = ( string ) date_format(date_create($m->pr_requested_on),"Y-m-d");				
 				$l [] = ( string ) $m->id;
@@ -1357,8 +1365,10 @@ class PRController extends AbstractActionController {
 				
 				if($m->sparepart_id>0){
 					$l[]= "YES";
+					$l[]= "'".$m->sp_tag;
 				}else{
 					$l[]= "NO";
+					$l[]= "";
 				}
 		
 				$l [] = ( string ) $m->quantity;
@@ -1433,7 +1443,7 @@ class PRController extends AbstractActionController {
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ( $department_id, $last_status, $balance, $unconfirmed_quantity, $processing, $sort_by, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V2 ($pr_year,$department_id, $last_status, $balance, $unconfirmed_quantity, $processing, $sort_by, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (
@@ -1451,6 +1461,7 @@ class PRController extends AbstractActionController {
 				'paginator' => $paginator,
 				'total_items' => $totalResults,
 				'per_pape'=>$resultsPerPage,
+				'pr_year'=>$pr_year,
 		) );
 	}
 	

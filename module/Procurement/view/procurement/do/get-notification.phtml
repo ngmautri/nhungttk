@@ -11,8 +11,9 @@
 <thead>
 <tr>	
 		<td><b>No.</b></td>
+		<td><b>DOItem# </b></td>
 		<td><b>PR </b></td>
-			<td><b>Item Name</b></td>
+		<td><b>Item Name</b></td>
 		<td><b>Item <br> Unit</b></td>
 		<td><b>Ordered <br>Quantity</b></td>
 		<td><b>Notified <br>Quantity</b></td>
@@ -33,6 +34,7 @@
 	 ?>
 	 <tr>
 		<td><?php echo $count;?></td>
+		<td><?php echo $item->id?></td>
 		<td><?php echo $item->pr_number;?>
 		
 		<div style="color: gray; font-size: 8pt;">

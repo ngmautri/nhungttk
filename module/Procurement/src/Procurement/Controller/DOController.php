@@ -112,7 +112,7 @@ class DOController extends AbstractActionController {
 	}
 	
 	/**
-	 *
+	 * 
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function showAction() {
@@ -132,12 +132,19 @@ class DOController extends AbstractActionController {
 		) );
 	}
 	
-	// ==============================================
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function getNotificationAction() {
+		
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$notified_dn_items = $this->deliveryItemTable->getNotifiedDNItemsOf ( $user ['id'] );
+		
+		$pr_item_id = $this->params ()->fromQuery ( 'pr_item_id' );
+		
+		$notified_dn_items = $this->deliveryItemTable->getNotifiedDNItemsOf ( $user ['id'], $pr_item_id );
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
@@ -148,6 +155,7 @@ class DOController extends AbstractActionController {
 	}
 	
 	/**
+	 * AJAXT
 	 * Confirm DO by requester.
 	 */
 	public function confirmDOAction() {
@@ -179,6 +187,8 @@ class DOController extends AbstractActionController {
 		
 		$this->deliveryItemTable->updateLastWorkFlow ( $dn_item_id, $last_workflow_id );
 		
+		
+		// @TODO: Check before update movement. 
 		if ($article_id > 0) :
 			
 			// up-date-movement
@@ -191,7 +201,7 @@ class DOController extends AbstractActionController {
 			$m->pr_item_id = $pr_item_id;
 			$m->dn_item_id = $dn_item_id;
 			$m->created_by = $user ['id'];
-			$m->comment = 'PR:' . $dn_item->pr_number;
+			$m->comment = 'Good Receipt with DO-Items#:' . $dn_item_id;
 			
 			$this->articleMovementTable->add ( $m );
 			
@@ -207,7 +217,7 @@ class DOController extends AbstractActionController {
 			$input->sparepart_id = $sparepart_id;
 			$input->quantity = $dn_item->delivered_quantity;
 			$input->flow = 'IN';
-			$input->comment = 'PR:' . $dn_item->pr_number;
+			$input->comment = 'Good Receipt with DO-Items#:' . $dn_item_id;
 			$input->created_by = $user ['id'];
 			
 			$this->sparepartMovementTable->add ( $input );

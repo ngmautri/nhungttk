@@ -910,247 +910,168 @@ Where 1
 			";
 	
 	private $getPRItemsWithDN_SQL_V2="
+			
 /* ALL PR ITEMS*/
 
-select
-	mla_purchase_request_items.*,
-	mla_purchase_requests.pr_number,
-    mla_purchase_requests.auto_pr_number as pr_auto_number,
-			
-    mla_purchase_requests.name as pr_name,
-	mla_purchase_requests.description as pr_description,
-    mla_purchase_requests.requested_by as pr_requested_by,
-    mla_purchase_requests.requested_on as pr_requested_on,
-    mla_purchase_requests.pr_last_status,
-	mla_purchase_requests.pr_last_status_on,
-	mla_purchase_requests.pr_last_status_by,
- 	mla_purchase_requests.pr_year,
- 	mla_purchase_requests.pr_requester_name,
+SELECT
+	mla_purchase_request_items.*,    
+    mla_purchase_requests.pr_number,
+    mla_purchase_requests.auto_pr_number AS pr_auto_number,
+    mla_purchase_requests.name AS pr_name,
+	mla_purchase_requests.description AS pr_description,
+    mla_purchase_requests.requested_by AS pr_requested_by,
+    mla_purchase_requests.requested_on AS pr_requested_on,
+    
+    mla_purchase_requests_workflows.status AS pr_last_status,
+	mla_purchase_requests_workflows.updated_on AS pr_last_status_on,
+	mla_purchase_requests_workflows.updated_by AS pr_last_status_by,
+    
+ 	YEAR(mla_purchase_requests.requested_on) AS pr_year,
+    MONTH(mla_purchase_requests.requested_on) AS pr_month,
+    
+    mla_users.email AS requester_email,
+ 	CONCAT (mla_users.firstname,' ',mla_users.lastname ) AS pr_requester_name,
+    mla_departments.id AS pr_of_department_id,
+	mla_departments.name AS pr_of_department,
+ 	mla_departments.status AS pr_of_department_status,
+    
+    IFNULL(mla_delivery_items_workflows.total_received_quantity,0) AS total_received_quantity,
+    IFNULL(mla_delivery_items_workflows.unconfirmed_quantity,0) AS unconfirmed_quantity,
+	IFNULL(mla_delivery_items_workflows.confirmed_quantity,0) AS confirmed_quantity,
+	IFNULL(mla_delivery_items_workflows.rejected_quantity,0) AS rejected_quantity,
 	
-    mla_purchase_requests.pr_of_department_id,
-	mla_purchase_requests.pr_of_department,
- 	mla_purchase_requests.pr_of_department_status,
-   
-	 ifnull( mla_delivery_items.total_received_quantity,0) as total_received_quantity,
-	ifnull(mla_delivery_items_workflows.confirmed_quantity,0) as confirmed_quantity,
-	ifnull(mla_delivery_items_workflows.rejected_quantity,0) as rejected_quantity,
+    IF ((mla_purchase_request_items.quantity - IFNULL(mla_delivery_items_workflows.confirmed_quantity,0))>=0
+    ,(mla_purchase_request_items.quantity - IFNULL(mla_delivery_items_workflows.confirmed_quantity,0))
+    ,0) AS confirmed_balance,
 	
-    if ((mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))>=0
-    ,(mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))
-    ,0) as confirmed_balance,
-	
-	 if ((mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0))>=0
+	 IF ((mla_purchase_request_items.quantity - IFNULL(mla_delivery_items_workflows.confirmed_quantity,0))>=0
 	, 0
-	,ifnull(mla_delivery_items_workflows.confirmed_quantity,0)-mla_purchase_request_items.quantity) as confirmed_free_balance,
+	,IFNULL(mla_delivery_items_workflows.confirmed_quantity,0)-mla_purchase_request_items.quantity) AS confirmed_free_balance,
+ 	
+    mla_spareparts.tag AS sp_tag,     
+	
+    mla_delivery_items_workflows_article.dn_item_id AS article_last_dn_item_id,
+	mla_delivery_items_workflows_article.status AS article_dn_last_status,   
+	mla_delivery_items_workflows_article.updated_by AS article_dn_last_status_by,   
+	mla_delivery_items_workflows_article.updated_on AS article_dn_last_status_on,
+            
+    mla_delivery_items_article.vendor_id AS article_vendor_id,
+    mla_delivery_items_article.price AS article_price,
+    mla_delivery_items_article.currency AS article_currency,
+
+    mla_vendor_article.name AS article_vendor_name,
     
-    ifnull(mla_delivery_items_notified.unconfimed_quantity,0) as unconfirmed_quantity,
-	
-         
-	last_sparepart_dn.vendor_name as sp_vendor_name,
-   	last_sparepart_dn.vendor_id as sp_vendor_id,
-	last_sparepart_dn.price as sp_price,
-	last_sparepart_dn.currency as sp_currency,
+            
+	mla_delivery_items_workflows_sp.dn_item_id AS sp_last_dn_item_id,
+	mla_delivery_items_workflows_sp.status AS sp_dn_last_status,   
+	mla_delivery_items_workflows_sp.updated_by AS sp_dn_last_status_by,   
+	mla_delivery_items_workflows_sp.updated_on AS sp_dn_last_status_on,
     
-	last_article_dn.vendor_name as article_vendor_name,
-   	last_article_dn.vendor_id as article_vendor_id,
-	last_article_dn.price as article_price,
-	last_article_dn.currency as article_currency,
-    mla_po_item.id as po_item_id
+	mla_delivery_items_sp.vendor_id AS sp_vendor_id,
+	mla_vendor_sp.name AS sp_vendor_name,
+    mla_delivery_items_sp.price AS sp_price,
+    mla_delivery_items_sp.currency AS sp_currency,
 	
-from mla_purchase_request_items
+    mla_po_item.id AS po_item_id,
+    mla_po_item.vendor_id AS po_vendor_id,
+    mla_po_item.price AS po_price,
+    mla_po_item.currency AS po_currency,
+    mla_po_item.payment_method AS po_payment_method,
+    mla_vendors_po.name AS po_vendor_name,
+    mla_po_item.remarks AS po_remarks
+  
+FROM mla_purchase_request_items
+
+/* PURCHASE REQUEST */
+LEFT JOIN mla_purchase_requests
+ON mla_purchase_requests.id = mla_purchase_request_items.purchase_request_id
+
+/* 1 - 1 ONLY*/
+LEFT JOIN mla_purchase_requests_workflows
+ON mla_purchase_requests_workflows.id = mla_purchase_requests.last_workflow_id
+
+/* 1 - 1 ONLY*/
+LEFT JOIN mla_users
+ON mla_users.id = mla_purchase_requests.requested_by
+
+/* 1 - 1 ONLY*/
+LEFT JOIN mla_departments_members
+ON mla_users.id = mla_departments_members.user_id
+
+/* 1 - 1 ONLY*/
+LEFT JOIN mla_departments
+ON mla_departments_members.department_id = mla_departments.id
+/* PURCHASE REQUEST */	
 	
-/* purchase requests*/
-left join
+/* total confirmed, rejected and unconfirmed DN */
+LEFT JOIN
 (
-select
-	mla_purchase_requests.*,
-	mla_purchase_requests_workflows.status as pr_last_status,
-    mla_purchase_requests_workflows.updated_by as pr_last_status_by,
-	mla_purchase_requests_workflows.updated_on as pr_last_status_on,
-	
-    year(mla_purchase_requests.requested_on) as pr_year,
-	
-    concat (mla_users.firstname,' ',mla_users.lastname ) as pr_requester_name,
-	mla_users.department_id as pr_of_department_id,
-	mla_users.department_name as pr_of_department,
-	mla_users.department_status as pr_of_department_status
-	
-from mla_purchase_requests
-	
-left join mla_purchase_requests_workflows
-	on mla_purchase_requests_workflows.id = mla_purchase_requests.last_workflow_id
-    
-left join
-(
+	SELECT
+		mla_delivery_items.pr_item_id,
+		mla_delivery_items.po_item_id,
+        mla_delivery_items_workflows.status AS last_dn_status,
 		
-    /**USER-DEPARTMENT beginns*/
-    select
-        mla_users.title,
-        mla_users.firstname,
-        mla_users.lastname,
-        mla_departments_members_1.*
-    from mla_users
-    join
-	(	select
-			mla_departments_members.department_id,
-            mla_departments_members.user_id,
-            mla_departments.name as department_name,
-            mla_departments.status as department_status
-		from mla_departments_members
-		join mla_departments on mla_departments_members.department_id = mla_departments.id
-	) as mla_departments_members_1
-    on mla_users.id = mla_departments_members_1.user_id
-    /**USER-DEPARTMENT ends*/
+		SUM(mla_delivery_items.delivered_quantity) AS total_received_quantity,
+        IFNULL(SUM(CASE WHEN mla_delivery_items_workflows.status='Notified' THEN  mla_delivery_items.delivered_quantity ELSE 0 END),0) AS unconfirmed_quantity,
+		IFNULL(SUM(mla_delivery_items_workflows.confirmed_quantity),0) AS confirmed_quantity,
+		IFNULL(SUM(mla_delivery_items_workflows.rejected_quantity),0) AS rejected_quantity
+	FROM mla_delivery_items
+    
+    LEFT JOIN mla_delivery_items_workflows
+    ON mla_delivery_items_workflows.id = mla_delivery_items.last_workflow_id
+    
+	GROUP BY mla_delivery_items.pr_item_id
+)
+AS mla_delivery_items_workflows
+ON mla_delivery_items_workflows.pr_item_id = mla_purchase_request_items.id
 	
-)
-as mla_users
-	on mla_users.user_id = mla_purchase_requests.requested_by
-)
-as mla_purchase_requests
-on mla_purchase_requests.id = mla_purchase_request_items.purchase_request_id
-	
-/* total confirmed and rejected DN */
-left join
-(
-	select
-	mla_delivery_items_workflows.pr_item_id,
-	sum(mla_delivery_items_workflows.confirmed_quantity) as confirmed_quantity,
-    sum(mla_delivery_items_workflows.rejected_quantity) as rejected_quantity
-	from mla_delivery_items_workflows
-	group by mla_delivery_items_workflows.pr_item_id
-)
-as mla_delivery_items_workflows
-on mla_delivery_items_workflows.pr_item_id = mla_purchase_request_items.id
-	
-/* total notified /unconfirmed DN */
-left join
-(
-	select
-		mla_delivery_items.*,
-		sum(mla_delivery_items.delivered_quantity) as unconfimed_quantity
-	from
-	(
-		select 
-			mla_delivery_items.*,
-			mla_delivery_items_workflows.status as dn_last_status,
-			mla_delivery_items_workflows.updated_on as dn_last_status_on,
-			mla_delivery_items_workflows.updated_by as dn_last_status_by
-		from mla_delivery_items
-		left join mla_delivery_items_workflows
-		on mla_delivery_items_workflows.id = mla_delivery_items.last_workflow_id
-		)
-	as mla_delivery_items
-	where mla_delivery_items.dn_last_status = 'Notified'
-	group by mla_delivery_items.pr_item_id
-)
-as mla_delivery_items_notified
-on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
-
-/* Check if Add it mla_po_item*/
-left join mla_po_item
-on mla_po_item.pr_item_id = mla_purchase_request_items.id
-
-
 /* Last Article DN */
-left join
-(
-/* last article dn*/
-select
-	mla_articles_last_dn.*,
-	mla_vendors.name as vendor_name
-from 
-(
-	select
-	*
-	from
-	(
-		select
-			mla_articles_last_dn.article_id,
-			mla_delivery_items_workflows.dn_item_id,
-			mla_delivery_items_workflows.status as article_dn_last_status,   
-			mla_delivery_items_workflows.updated_by as article_dn_last_status_by,   
-			mla_delivery_items_workflows.updated_on as article_dn_last_status_on
+LEFT JOIN mla_articles_last_dn
+ON mla_articles_last_dn.article_id = mla_purchase_request_items.article_id
 
-		from mla_articles_last_dn
-		left join mla_delivery_items_workflows
-		on mla_delivery_items_workflows.id = mla_articles_last_dn.last_workflow_id
-	) 
-	as mla_articles_last_dn
+LEFT JOIN mla_delivery_items_workflows AS mla_delivery_items_workflows_article
+ON mla_delivery_items_workflows_article.id = mla_articles_last_dn.last_workflow_id
+		
+LEFT JOIN mla_delivery_items AS mla_delivery_items_article
+ON mla_delivery_items_article.id = mla_delivery_items_workflows_article.dn_item_id
+       
+LEFT JOIN mla_vendors AS mla_vendor_article
+ON mla_delivery_items_article.vendor_id = mla_vendor_article.id
+/* Last Article DN */
 
-	left join mla_delivery_items
-	on mla_delivery_items.id  = mla_articles_last_dn.dn_item_id
-) 
-as mla_articles_last_dn
-
-join mla_vendors
-on mla_vendors.id = mla_articles_last_dn.vendor_id 
-
-/* last article dn*/
-
-) 
-as last_article_dn
-on last_article_dn.article_id = mla_purchase_request_items.article_id
 
 /* Last SP DN */
-left join
-(
-/* last article dn*/
-select
-	mla_spareparts_last_dn.*,
-	mla_vendors.name as vendor_name
-from 
-(
-	select
-	*
-	from
-	(
-		select
-			mla_spareparts_last_dn.sparepart_id,
-			mla_delivery_items_workflows.dn_item_id,
-			mla_delivery_items_workflows.status as sp_dn_last_status,   
-			mla_delivery_items_workflows.updated_by as sp_dn_last_status_by,   
-			mla_delivery_items_workflows.updated_on as sp_dn_last_status_on
+LEFT JOIN mla_spareparts_last_dn
+ON mla_spareparts_last_dn.sparepart_id = mla_purchase_request_items.sparepart_id
 
-		from mla_spareparts_last_dn
-		left join mla_delivery_items_workflows
-		on mla_delivery_items_workflows.id = mla_spareparts_last_dn.last_workflow_id
-	) 
-	as mla_spareparts_last_dn
-
-	left join mla_delivery_items
-	on mla_delivery_items.id  = mla_spareparts_last_dn.dn_item_id
-) 
-as mla_spareparts_last_dn
-join mla_vendors
-
-on mla_vendors.id = mla_spareparts_last_dn.vendor_id 
-
-/* last article dn*/
-
-
-) 
-as last_sparepart_dn
-on last_sparepart_dn.sparepart_id = mla_purchase_request_items.sparepart_id
-
-/* total_received_quantity*/
-left join
-(
-	select
-	mla_delivery_items.po_item_id,
-	mla_delivery_items.pr_item_id,
-	sum(mla_delivery_items.delivered_quantity) as total_received_quantity
-	from mla_delivery_items
-	group by mla_delivery_items.pr_item_id
-) 
-as mla_delivery_items
-on mla_delivery_items.pr_item_id = mla_purchase_request_items.id 
+LEFT JOIN mla_delivery_items_workflows AS mla_delivery_items_workflows_sp
+ON mla_delivery_items_workflows_sp.id = mla_spareparts_last_dn.last_workflow_id
+		
+LEFT JOIN mla_delivery_items AS mla_delivery_items_sp
+ON mla_delivery_items_sp.id = mla_delivery_items_workflows_sp.dn_item_id
+        
+LEFT JOIN mla_vendors AS mla_vendor_sp
+ON mla_delivery_items_sp.vendor_id = mla_vendor_sp.id
+/* Last SP DN */
  
+/* SP */
+LEFT JOIN mla_spareparts
+ON mla_spareparts.id = mla_purchase_request_items.sparepart_id
 
-Where 1
-AND mla_purchase_requests.pr_last_status IS NOT NULL
+/* PO ITEMS 1-1*/
+LEFT JOIN mla_po_item
+ON mla_po_item.pr_item_id = mla_purchase_request_items.id
 
-/* ALL PR ITEMS*/	
+LEFT JOIN mla_vendors AS mla_vendors_po
+ON mla_vendors_po.id = mla_po_item.vendor_id
+/* PO ITEMS 1-1*/
+
+WHERE 1
+AND mla_purchase_requests_workflows.status IS NOT NULL
+/* ALL PR ITEMS*/
 			
+			
+				
 	";
 	
 	private $getPRItemsToDeliver_SQL ="
@@ -1743,6 +1664,28 @@ WHERE TT1.purchase_request_id = " . $pr . " ORDER BY TT1.EDT ASC";
 	}
 	
 	/**
+	 *
+	 * @param unknown $pr
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getItemsByPR3($pr_id) {
+	
+		$adapter = $this->tableGateway->adapter;
+		$sql = $this->getPRItemsWithDN_SQL_V2;
+	
+		$sql = $sql . " AND mla_purchase_request_items.purchase_request_id = ". $pr_id;
+		
+		$sql = $sql .";";
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	/**
 	 * 
 	 * @return \Zend\Db\ResultSet\ResultSet
 	 */
@@ -1882,20 +1825,22 @@ on TT1.purchase_request_id = TT3.id";
 	 * @param unknown $offset
 	 * @return \Zend\Db\ResultSet\ResultSet
 	 */
-	public function getPRItemsWithLastDN_V2($department,$last_status,$balance,$unconfirmed_quantity,$processing,$sort_by,$limit,$offset) {
+	public function getPRItemsWithLastDN_V2($pr_year,$department,$last_status,$balance,$unconfirmed_quantity,$processing,$sort_by,$limit,$offset) {
 			
 		$adapter = $this->tableGateway->adapter;
 		$sql = $this->getPRItemsWithDN_SQL_V2;
 	
-	
-		$sql = $sql. " AND mla_purchase_requests.pr_last_status IS NOT NULL";
-	
+		if ($pr_year > 0) {
+			$sql = $sql . " AND year(mla_purchase_requests.requested_on)=" . $pr_year;
+		}
+		
+		
 		if ($department > 0) {
-			$sql = $sql. " AND mla_purchase_requests.pr_of_department_id = " . $department;
+			$sql = $sql. " AND mla_departments.id = " . $department;
 		}
 	
 		if ($last_status != "" || $last_status !=null) {
-			$sql = $sql. " AND mla_purchase_requests.pr_last_status = '" . $last_status . "'";
+			$sql = $sql. " AND mla_purchase_requests_workflows.status= '" . $last_status . "'";
 		}
 	
 		if ($balance == 0) {
@@ -1910,10 +1855,10 @@ on TT1.purchase_request_id = TT3.id";
 		
 		// unconfirmed
 		if ($unconfirmed_quantity == 0) {
-			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.unconfimed_quantity,0)) = 0";
+			$sql = $sql. " AND (ifnull(mla_delivery_items_workflows.unconfimed_quantity,0)) = 0";
 		}
 		if ($unconfirmed_quantity ==1) {
-			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.unconfimed_quantity,0)) > 0";
+			$sql = $sql. " AND (ifnull(mla_delivery_items_workflows.unconfimed_quantity,0)) > 0";
 		}
 		
 		// added into po_items?
@@ -1934,7 +1879,7 @@ on TT1.purchase_request_id = TT3.id";
 		}
 		
 		if ($sort_by =="requester_name") {
-			$sql = $sql. " order by mla_purchase_requests.pr_requester_name asc";
+			$sql = $sql. " order by mla_users.lastname asc";
 		}
 		
 		if ($sort_by =="EDT") {
@@ -1949,7 +1894,91 @@ on TT1.purchase_request_id = TT3.id";
 		if ($offset > 0) {
 			$sql = $sql. " OFFSET " . $offset;
 		}
+		$sql = $sql.";";
+			
+		//echo ($sql);
 	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
+	/**
+	 * 
+	 * @param unknown $department
+	 * @param unknown $balance
+	 * @param unknown $payment_method
+	 * @param unknown $currency
+	 * @param unknown $vendor_id
+	 * @param unknown $sort_by
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getPOItems($department,$balance,$payment_method,$currency,$vendor_id,$sort_by,$limit,$offset) {
+			
+		$adapter = $this->tableGateway->adapter;
+		$sql = $this->getPRItemsWithDN_SQL_V2;
+	
+		$sql = $sql. " AND mla_po_item.id > 0";
+		
+		
+		if ($department > 0) {
+			$sql = $sql. " AND mla_departments.id = " . $department;
+		}
+	
+		if ($balance == 0) {
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) = 0";
+		}
+		if ($balance ==1) {
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) > 0";
+		}
+		if ($balance ==-1) {
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) < 0";
+		}
+	
+		if ($vendor_id > 0) {
+			$sql = $sql. " AND mla_po_item.vendor_id = " . $vendor_id;
+		}
+		
+	
+		if ($sort_by =="pr_number") {
+			$sql = $sql. " order by mla_purchase_request_items.purchase_request_id desc";
+		}
+		
+		if ($payment_method != null or $payment_method != '') {
+			$sql = $sql. " AND mla_po_item.payment_method='".$payment_method."'";
+		}
+		
+		if ($currency != null or $currency != '') {
+			$sql = $sql. " AND mla_po_item.currency='".$currency."'";
+		}
+			
+		if ($sort_by == "item_name") {
+			$sql = $sql. " order by mla_purchase_request_items.name asc";
+		}
+	
+		if ($sort_by =="requester_name") {
+			$sql = $sql. " order by mla_users.lastname asc";
+		}
+	
+		if ($sort_by =="EDT") {
+			$sql = $sql. " order by mla_purchase_request_items.edt asc";
+		}
+	
+	
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+	
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+		$sql = $sql.";";
+			
 		//echo ($sql);
 	
 		$statement = $adapter->query ( $sql );
@@ -1976,9 +2005,7 @@ on TT1.purchase_request_id = TT3.id";
 		$adapter = $this->tableGateway->adapter;
 		$sql = $this->getPRItemsWithDN_SQL_V2;
 	
-	
-		$sql = $sql. " AND mla_purchase_requests.pr_last_status IS NOT NULL";
-	
+		
 		if ($user_id > 0) {
 			$sql = $sql. " AND mla_purchase_requests.requested_by= " . $user_id;
 		}
@@ -1989,7 +2016,7 @@ on TT1.purchase_request_id = TT3.id";
 		
 	
 		if ($last_status != "" || $last_status !=null) {
-			$sql = $sql. " AND mla_purchase_requests.pr_last_status = '" . $last_status . "'";
+			$sql = $sql. " AND mla_purchase_requests_workflows.status = '" . $last_status . "'";
 		}
 	
 		if ($balance == 0) {
@@ -2004,10 +2031,10 @@ on TT1.purchase_request_id = TT3.id";
 	
 		// unconfirmed
 		if ($unconfirmed_quantity == 0) {
-			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.unconfimed_quantity,0)) = 0";
+			$sql = $sql. " AND (ifnull(mla_delivery_items_workflows.unconfimed_quantity,0)) = 0";
 		}
 		if ($unconfirmed_quantity ==1) {
-			$sql = $sql. " AND (ifnull(mla_delivery_items_notified.unconfimed_quantity,0)) > 0";
+			$sql = $sql. " AND (ifnull(mla_delivery_items_workflows.unconfimed_quantity,0)) > 0";
 		}
 	
 		// added into po_items?
@@ -2037,36 +2064,36 @@ on TT1.purchase_request_id = TT3.id";
 		return $resultSet;
 	}
 	
-	/**
-	 * 
-	 * @param unknown $pr_id
-	 * @param unknown $balance
-	 * @param unknown $unconfirmed_quantity
-	 * @param unknown $added_delivery_list
-	 * @param unknown $limit
-	 * @param unknown $offset
-	 * @return \Zend\Db\ResultSet\ResultSet
-	 */
+/**
+ * 
+ * @param unknown $pr_id
+ * @param unknown $balance
+ * @param unknown $unconfirmed_quantity
+ * @param unknown $processing
+ * @param unknown $limit
+ * @param unknown $offset
+ * @return \Zend\Db\ResultSet\ResultSet
+ */
 	public function getPRItemsWithLastDN_V3($pr_id,$balance,$unconfirmed_quantity,$processing,$limit,$offset) {
 			
 		$adapter = $this->tableGateway->adapter;
 		$sql = $this->getPRItemsWithDN_SQL_V2;
 	
 	
-		$sql = $sql. " AND mla_purchase_requests.pr_last_status IS NOT NULL";
+		$sql = $sql. " AND mla_purchase_requests_workflows.status IS NOT NULL";
 	
 		if ($pr_id > 0) {
 			$sql = $sql. " AND mla_purchase_request_items.purchase_request_id = " . $pr_id;
 		}
 	
 		if ($balance == 0) {
-			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)) = 0";
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) = 0";
 		}
 		if ($balance ==1) {
-			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)) > 0";
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) > 0";
 		}
 		if ($balance ==-1) {
-			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_confirmed.confirmed_quantity,0)) < 0";
+			$sql = $sql. " AND (mla_purchase_request_items.quantity - ifnull(mla_delivery_items_workflows.confirmed_quantity,0)) < 0";
 		}
 	
 		// unconfirmed
@@ -2093,7 +2120,8 @@ on TT1.purchase_request_id = TT3.id";
 		if ($offset > 0) {
 			$sql = $sql. " OFFSET " . $offset;
 		}
-	
+		$sql = $sql.";";
+		
 		//echo ($sql);
 	
 		$statement = $adapter->query ( $sql );
@@ -3223,5 +3251,51 @@ on mla_purchase_requests_items_workflows_2.pr_item_id_lastchange_on = mla_purcha
 		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
 		$resultSet->initialize ( $result );
 		return $resultSet;	
+	}
+	
+	/**
+	 * ======================
+	 *
+	 * @param unknown $item
+	 */
+	public function getOrderHistory($sparepart_id,$article_id) {
+		$adapter = $this->tableGateway->adapter;
+	
+		$sql = "
+select
+	mla_purchase_request_items.*,
+	mla_purchase_requests.id as pr_id,
+	mla_purchase_requests.pr_number
+from mla_purchase_request_items
+left join mla_purchase_requests
+on mla_purchase_requests.id = mla_purchase_request_items.purchase_request_id
+where 1
+		";
+		
+		if($sparepart_id>0){
+			$sql= $sql .' AND  mla_purchase_request_items.sparepart_id = '.$sparepart_id;
+		}
+		
+		if($article_id>0){
+			$sql= $sql .' AND mla_purchase_request_items.article_id = '.$article_id;
+		}
+		
+		$sql= $sql. ' ORDER BY mla_purchase_request_items.created_on DESC';
+		
+		$sql= $sql.";";
+		
+		//echo $sql;
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		if (count($resultSet)>0) {
+			return $resultSet;
+		}else {
+			return null;
+		}
+		
 	}
 }

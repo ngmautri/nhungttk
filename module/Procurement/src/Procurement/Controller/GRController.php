@@ -252,13 +252,13 @@ class GRController extends AbstractActionController {
 		}
 		;
 		
-		$receipts = $this->deliveryItemTable->getGRItems ( $balance, $notified, $notified_quantity, 0, 0 );
+		$receipts = $this->deliveryItemTable->getGRItems_V1 ( $balance, $notified, $notified_quantity, 0, 0 );
 		$totalResults = count ( $receipts );
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$receipts = $this->deliveryItemTable->getGRItems ( $balance, $notified, $notified_quantity, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$receipts = $this->deliveryItemTable->getGRItems_V1 ( $balance, $notified, $notified_quantity, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		return new ViewModel ( array (

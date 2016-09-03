@@ -313,6 +313,8 @@ on mla_delivery_items_notified.pr_item_id = mla_purchase_request_items.id
 	 * @param unknown $balance
 	 * @param unknown $department_id
 	 * @param unknown $vendor_id
+	 * @param unknown $payment_methode
+	 * @param unknown $currency
 	 * @param unknown $limit
 	 * @param unknown $offset
 	 * @return \Zend\Db\ResultSet\ResultSet|NULL

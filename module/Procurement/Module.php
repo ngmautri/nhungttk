@@ -54,6 +54,8 @@ use Procurement\Model\DeliveryCartTable;
 use Procurement\Model\POItem;
 use Procurement\Model\POItemTable;
 
+use Procurement\Model\PRItemSelfConfirmation;
+use Procurement\Model\PRItemSelfConfirmationTable;
 
 class Module {
 	
@@ -266,6 +268,20 @@ class Module {
 						$resultSetPrototype = new ResultSet ();
 						$resultSetPrototype->setArrayObjectPrototype ( new POItem());
 						return new TableGateway ( 'mla_po_item', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// PRItem Self Confirmation Table
+						'Procurement\Model\PRItemSelfConfirmationTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'PRItemSelfConfirmationTableGateway' );
+						$table = new PRItemSelfConfirmationTable($tableGateway);
+						return $table;
+						},
+						
+						'PRItemSelfConfirmationTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new PRItemSelfConfirmation());
+						return new TableGateway ( 'mla_pr_item_self_confirmation', $dbAdapter, null, $resultSetPrototype );
 						},
 					)
 				);

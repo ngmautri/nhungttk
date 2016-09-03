@@ -533,7 +533,7 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 	
 		$sql = $this->getAllSP_SQL;
 		$sql = $sql . " AND mla_sparepart_minimum_balance.minimum_balance >0";
-		$sql = $sql . " Order by ((ifnull(mla_spareparts_inflow.total_inflow,0) - ifnull(mla_spareparts_outflow.total_outflow,0)) - ifnull(mla_sparepart_minimum_balance.minimum_balance,0)) ";
+		$sql = $sql . " Order by (  IFNULL(mla_sparepart_movements.total_inflow,0) - IFNULL(mla_sparepart_movements.total_outflow,0) - IFNULL(mla_sparepart_minimum_balance.minimum_balance,0)) ";
 		
 		if ($limit > 0) {
 			$sql = $sql. " LIMIT " . $limit;
@@ -542,7 +542,10 @@ WHERE lt1.sparepart_cat_id ='". $id ."' limit " . $limit . ' offset '. $offset ;
 		if ($offset > 0) {
 			$sql = $sql. " OFFSET " . $offset;
 		}
-	
+		
+		$sql = $sql.";";
+		//echo $sql;
+		
 		$adapter = $this->tableGateway->adapter;
 		$statement = $adapter->query($sql);
 	

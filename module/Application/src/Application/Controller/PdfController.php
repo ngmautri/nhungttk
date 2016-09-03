@@ -24,7 +24,10 @@ use Application\Model\DepartmentMemberTable;
 use Application\Service\PdfService;
 
 use Procurement\Model\PurchaseRequestTable;
+use Procurement\Model\PurchaseRequestItemTableTable;
+
 use Procurement\Model\DeliveryItemTable;
+use Procurement\Model\PurchaseRequestItemTable;
 /*
  * Control Panel Controller
  */
@@ -32,6 +35,7 @@ class PdfController extends AbstractActionController {
 	
 	Protected $pdfService;
 	Protected $prTable;
+	Protected $prItemTable;
 	
 	Protected $dnTable;
 	Protected $dnItemTable;	
@@ -48,9 +52,16 @@ class PdfController extends AbstractActionController {
 		return $response;
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\Stdlib\ResponseInterface|NULL
+	 */
 	public function prAction(){
 		$pr_id = $this->params ()->fromQuery ( 'id' );
-		$pr_items=$this->prTable->getSubmittedPR($pr_id);
+		//$pr_items=$this->prTable->getSubmittedPR($pr_id);
+		
+		$pr_items=$this->prItemTable->getItemsByPR3($pr_id);
+		
 		
 		if(count($pr_items)>0){
 			
@@ -63,22 +74,20 @@ class PdfController extends AbstractActionController {
 			
 			*/
 			
-		
-			$details = '<div style="with=100%">
+				$details = '<div style="with=100%">
 					<table  style="font-size:9pt;
     border-spacing: 0; padding:3px;
     border: 1px solid #cbcbcb;	width:100%;display: block;max-width: 100%;white-space: nowrap">';
 			
-			$details=$details.'<tr style="line-height: 15em;border: 1px solid #cbcbcb; background-color: #f2f2f2; font-weight: bold; text-align: center;">';
+			$details=$details.'<tr style="line-height: 12em;border: 1px solid #cbcbcb; background-color: #f2f2f2; font-weight: bold; text-align: center;">';
 			
 			$details=$details.'<td style="border: 1pt solid #cbcbcb;width:30px " > No.</td>';
-			$details=$details.'<td style="border: 1pt solid #cbcbcb;width:50px " > Priority</td>';
-			$details=$details.'<td style="border: 1px solid #cbcbcb;width:120px "> Name</td>';
-			$details=$details.'<td style="border: 1px solid #cbcbcb;"> Code</td>';
+			$details=$details.'<td style="border: 1pt solid #cbcbcb;width:65px " >EDT<br> /Priority</td>';
+						$details=$details.'<td style="border: 1px solid #cbcbcb;width:150px "> Item Name / Code</td>';
 			$details=$details.'<td style="border: 1px solid #cbcbcb;width:45px "> Unit</td>';
 			$details=$details.'<td style="border: 1px solid #cbcbcb;width:45px; text-align: right;"> Q\'Ty</td>';
 			$details=$details.'<td style="border: 1px solid #cbcbcb;"> Unit Price</td>';
-			$details=$details.'<td style="border: 1px solid #cbcbcb; width:65px"> EDT</td>';
+			$details=$details.'<td style="border: 1px solid #cbcbcb;"> Total Price</td>';
 			$details=$details.'<td style="border: 1px solid #cbcbcb;width:auto"> Remarks</td>';
 			$details=$details.'</tr>';
 			
@@ -88,25 +97,36 @@ class PdfController extends AbstractActionController {
 				$n=$n+1;
 				
 				if($n == 1){
-					$requester = $item->pr_requester_name . ' (' . $item->email.')';
+					$requester = $item->pr_requester_name . ' (' . $item->requester_email.')';
 					$department = $item->pr_of_department;
-					$date =  date_format(date_create($item->updated_on),"d-m-Y");
+					$date =  date_format(date_create($item->created_on),"d-m-Y");
 					$pr_number = $item->pr_number;
-					$pr_auto_number =$item->auto_pr_number;
+					$pr_auto_number =$item->pr_auto_number;
 				}
 				
 				
-				$details=$details.'<tr style="border: 1px solid #cbcbcb;line-height: 12em;vertical-align:middle" >';
-			
+				$details=$details.'<tr style="border: 1px solid #cbcbcb;line-height: 13em;vertical-align:middle" >';
+					
 				$details=$details.'<td style="border: 1px solid #cbcbcb;">'. $n.'</td>';
-				$details=$details.'<td style="border: 1px solid #cbcbcb;">'. $item->priority.'</td>';
-				$details=$details.'<td style="border: 1px solid #cbcbcb;">'. $item->name.'</td>';
-					$details=$details.'<td style="border: 1px solid #cbcbcb;">'. $item->code.'</td>';
+				$details=$details.'<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">'.date_format(date_create($item->EDT),"d-m-Y").'<br><span style="color: gray; font-style: italic; font-size: 7pt;">'.$item->priority.'</span></td>';
+				
+				$tag ='';
+				if($item->sp_tag>0){
+					$tag = '- Tag:'.$item->sp_tag;
+				}
+				
+				
+				if ($item->code != null):
+				$details=$details.'<td style="border: 1px solid #cbcbcb;line-height: 15em;">'. $item->name. '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;"> <b>Code: </b>' . $item->code.''.$tag.'.</div></td>';
+				else:
+				$details=$details.'<td style="border: 1px solid #cbcbcb;line-height: 15em;">'. $item->name. '<div style="padding-top: 50px;color: gray; font-style: italic; font-size: 8pt;">'.$tag.'</div></td>';
+				endif;
+				
 				$details=$details.'<td style="border: 1px solid #cbcbcb;text-align: center;">'. $item->unit.'</td>';
 				$details=$details.'<td style="border: 1px solid #cbcbcb;text-align: right;">'. $item->quantity.'</td>';
 				$details=$details.'<td style="border: 1px solid #cbcbcb;"> </td>';
-				$details=$details.'<td style="border: 1px solid #cbcbcb;text-align: right;">'. date_format(date_create($item->EDT),"d-m-Y").'</td>';
-					$details=$details.'<td style="border: 1px solid #cbcbcb;">'. $item->remarks.'</td>';
+				$details=$details.'<td style="border: 1px solid #cbcbcb;"> </td>';
+				$details=$details.'<td style="border: 1px solid #cbcbcb;">'. $item->remarks.'</td>';
 				
 				
 				$details=$details.'</tr>';
@@ -124,6 +144,101 @@ class PdfController extends AbstractActionController {
 		return null;
 	}
 	
+	
+	/**
+	 *
+	 * @return \Zend\Stdlib\ResponseInterface|NULL
+	 */
+	public function poAction(){
+		$pr_id = $this->params ()->fromQuery ( 'pr_id' );
+		//$pr_items=$this->prTable->getSubmittedPR($pr_id);
+	
+		$pr_items=$this->prItemTable->getItemsByPR3($pr_id);
+	
+	
+		if(count($pr_items)>0){
+				
+			/*
+				$requester = $pr_items->current()->pr_requester_name;
+				$department = $pr_items->current()->pr_requester_name;
+				$date = $pr_items->current()->pr_requester_name;
+				$pr_number = $pr_items->current()->pr_requester_name;
+				$pr_auto_number =$pr_items->current()->pr_requester_name;
+					
+				*/
+				
+	
+			$details = '<div style="with=100%">
+					<table  style="font-size:9pt;
+    border-spacing: 0; padding:3px;
+    border: 1px solid #cbcbcb;	width:100%;display: block;max-width: 100%;white-space: nowrap">';
+				
+			$details=$details.'<tr style="line-height: 12em;border: 1px solid #cbcbcb; background-color: #f2f2f2; font-weight: bold; text-align: center;">';
+				
+			$details=$details.'<td style="border: 1pt solid #cbcbcb;width:30px " > No.</td>';
+			$details=$details.'<td style="border: 1pt solid #cbcbcb;width:65px " >EDT<br> /Priority</td>';
+			$details=$details.'<td style="border: 1px solid #cbcbcb;width:150px "> Item Name <br> /Item Code</td>';
+			$details=$details.'<td style="border: 1px solid #cbcbcb;width:45px "> Unit</td>';
+			$details=$details.'<td style="border: 1px solid #cbcbcb;width:45px; text-align: right;"> Q\'Ty</td>';
+			$details=$details.'<td style="border: 1px solid #cbcbcb;"> Unit <br> Price</td>';
+			$details=$details.'<td style="border: 1px solid #cbcbcb;"> Total <br>Price</td>';
+			$details=$details.'<td style="border: 1px solid #cbcbcb; width:38px"> Curr.</td>';
+			$details=$details.'<td style="border: 1px solid #cbcbcb;width:auto"> Remarks</td>';
+			$details=$details.'</tr>';
+				
+				
+			$n=0;
+			foreach ($pr_items as $item){
+				$n=$n+1;
+	
+				if($n == 1){
+					$requester = $item->pr_requester_name . ' (' . $item->requester_email.')';
+					$department = $item->pr_of_department;
+					$date =  date_format(date_create($item->created_on),"d-m-Y");
+					$pr_number = $item->pr_number;
+					$pr_auto_number =$item->pr_auto_number;
+				}
+	
+	
+				$details=$details.'<tr style="border: 1px solid #cbcbcb;line-height: 13em;vertical-align:middle" >';
+					
+				$details=$details.'<td style="border: 1px solid #cbcbcb;">'. $n.'</td>';
+				$details=$details.'<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">'.date_format(date_create($item->EDT),"d-m-Y").'<br><span style="color: gray; font-style: italic; font-size: 7pt;">'.$item->priority.'</span></td>';
+	
+				$tag ='';
+				if($item->sp_tag>0){
+					$tag = '- Tag:'.$item->sp_tag;
+				}
+	
+	
+				if ($item->code != null):
+					$details=$details.'<td style="border: 1px solid #cbcbcb;line-height: 15em; ">'. $item->name. '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;"> <b>Code: </b>' . $item->code.''.$tag.'.</div></td>';
+				else:
+					$details=$details.'<td style="border: 1px solid #cbcbcb;line-height: 15em;">'. $item->name. '<div style="padding-top: 50px;color: gray; font-style: italic; font-size: 8pt;">'.$tag.'</div></td>';
+				endif;
+	
+				$details=$details.'<td style="border: 1px solid #cbcbcb;text-align: center;">'. $item->unit.'</td>';
+				$details=$details.'<td style="border: 1px solid #cbcbcb;text-align: right;">'. $item->quantity.'</td>';
+				$details=$details.'<td style="border: 1px solid #cbcbcb;text-align: right;">'. number_format($item->po_price,0,",","."). '</td>';
+				$details=$details.'<td style="border: 1px solid #cbcbcb;text-align: right;">' . number_format($item->po_price* $item->quantity,0,",",".") .'</td>';
+				$details=$details.'<td style="border: 1px solid #cbcbcb;text-align: right;">'. $item->po_currency.'</td>';
+				$details=$details.'<td style="border: 1px solid #cbcbcb;font-size: 8pt;">'. $item->po_vendor_name.' - '.  $item->po_payment_method. '<br>'. $item->po_remarks.'</td>';
+	
+	
+				$details=$details.'</tr>';
+			}
+			$details = $details.'</table></div>';
+				
+			$content = $this->pdfService->savePOAsPdf($requester, $department, $date, $pr_number, $pr_auto_number, $details);
+				
+			$response = $this->getResponse();
+			$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/x-pdf' );
+			$response->setContent($content);
+			return $response;
+				
+		}
+		return null;
+	}
 	
 	public function dnAction(){
 		$dn_id = $this->params ()->fromQuery ( 'id' );
@@ -218,6 +333,14 @@ class PdfController extends AbstractActionController {
 		$this->dnItemTable = $dnItemTable;
 		return $this;
 	}
+	public function getPrItemTable() {
+		return $this->prItemTable;
+	}
+	public function setPrItemTable(PurchaseRequestItemTable $prItemTable) {
+		$this->prItemTable = $prItemTable;
+		return $this;
+	}
+	
 	
 	
 	

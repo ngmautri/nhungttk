@@ -1,14 +1,33 @@
 $(document).ready(function() {
+	
+	$('[data-toggle="tooltip"]').tooltip();
+	$('[data-toggle="popover"]').popover();   
+	
 	$(document).ready(function() {
 		$("#lightgallery").lightGallery();
 		countdown();
+		
+		/*
+		$('#pr_item_tbl').Tabledit({
+		    url: 'example.php',
+		    eventType: 'dblclick',
+		    editButton: true,
+		    columns: {
+		        identifier: [0, 'id'],
+		        editable: [[3, 'nickname'], [4, 'firstname'], [5, 'lastname'],[6, 'avatar', '{"1": "Black Widow", "2": "Captain America", "3": "Iron Man"}']]
+		    }
+		});
+		*/
+		
+		
 	});
 
-	$('[data-toggle="tooltip"]').tooltip();
-
+	
 	$("#select_ALL").change(function() {
 		$(".checkbox1").prop('checked', $(this).prop("checked"));
 	});
+	
+	
 });
 
 /**
@@ -31,7 +50,7 @@ function showDialog() {
 					var i;
 					s = "";
 					if (n_hits > 0) {
-						s = '<table class="pure-table pure-table-bordered"><thead><tr><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td></thead></tr>';
+						s = '<table class="pure-table pure-table-bordered"><thead><tr><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td><td>SHOW CONSUMPTION</td></thead></tr>';
 						for (i = 0; i < n_hits; i++) {
 							s = s + "<tr>"
 							var id = obj[i]["id"];
@@ -44,9 +63,14 @@ function showDialog() {
 									+ '<td><a href="javascript:;" onclick="selectAsset(\''
 									+ id + '\',\'' + name + '\',\'' + tag
 									+ '\')">  Select  </a></td>';
+							
 							s = s + '<td><a href="/inventory/asset/show?id='
 									+ id
 									+ '" target="_blank">  Detail  </a></td>';
+							
+							s = s + '<td><a href="/inventory/spareparts/consumption?asset_id='
+									+ id
+									+ '" target="_blank">show consumption </a></td>';
 							s = s + "</tr>";
 
 						}
@@ -878,13 +902,26 @@ function openPRCart(ID) {
 	var item_code_id;
 	var item_current_balance_id;
 	var item_min_balance_id;
+	var item_on_cart_id;
+	var isOnCart;
+	
 	
 	item_name_id = '#' + ID + '_name';
 	item_code_id = '#' + ID + '_code';
 	item_unit_id = '#' + ID + '_unit';
 	item_current_balance_id = '#' + ID + '_current_balance';
 	item_min_balance_id = '#' + ID + '_min_balance';
-
+	item_on_cart_id = '#' + ID + '_on_cart';
+	
+	isOnCart =$(item_on_cart_id).text();
+	
+	if (isOnCart=="YES"){
+		$('#_status').html('<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> Item is already on Order List. Please review it!</div>');
+	}else{
+		$('#_status').text("");
+	}
+	
+	
 	$('#end_date').val("");
 	$('#item_quantity').val("").select();
 	$('#item_remarks').val("");
@@ -892,6 +929,8 @@ function openPRCart(ID) {
 	$('#item_name').val($(item_name_id).text());
 	$('#item_code').val($(item_code_id).text());
 	$('#item_unit').val($(item_unit_id).text());
+	
+	
 	
 	$('#item_balance').html('<span style="font-size 6px;"> Current Balance:' + $(item_current_balance_id).text() + '; Minimum Balance:' + $(item_min_balance_id).text()+ '</span>');
 
@@ -985,7 +1024,15 @@ function updateCarts() {
 }
 
 function openConfirmation(ID) {
-	
+		$('#myModal').modal();
+}
+
+
+/**
+ * 
+ * @param ID
+ */
+function openSubmitCartConfirmation(ID) {
 	var error='';
 	var selected_items = '';
 	var i = 0;
@@ -1009,7 +1056,7 @@ function openConfirmation(ID) {
 	}
 	
 	var pr_number = $('#pr_number').val();
-	$('#submitted_pr_number').html('<b>#' +pr_number + ' - ' + i + ' Items</b>');
+	$('#submitted_id').html('<b>#' + pr_number + ' - ' + i + ' Items</b>');
 
 		
 	if(pr_number.length==0){

@@ -169,7 +169,7 @@ if ($total_articles <= 0) {
 			if($a->article_pic_id!==null):
 			?>
 			<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-			<img class= "img-rounded" width="90" height="100" src="/inventory/image/articlethumbnail200?id=<?php echo $a->article_pic_id;?>"/>
+			<img class= "img-rounded" width="80" height="80" src="/inventory/image/articlethumbnail200?id=<?php echo $a->article_pic_id;?>"/>
 		</a>			
 			<?php 
 			else:

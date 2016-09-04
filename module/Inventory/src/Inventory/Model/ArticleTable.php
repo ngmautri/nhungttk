@@ -320,6 +320,16 @@ WHERE 1
 		return $resultSet;
 	}
 	
+	/**
+	 * 
+	 * @param unknown $user_id
+	 * @param unknown $item_type
+	 * @param unknown $item_status
+	 * @param unknown $sort_by
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
 	public function getArticles_V01($user_id,$item_type,$item_status,$sort_by, $limit, $offset){
 	
 		$adapter = $this->tableGateway->adapter;

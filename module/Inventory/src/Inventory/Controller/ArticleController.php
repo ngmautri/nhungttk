@@ -694,6 +694,7 @@ class ArticleController extends AbstractActionController {
 			// $myfile = fopen('ouptut.csv', 'a+');
 				
 			$h = array ();
+			$h [] = "Item#";
 			$h [] = "Item SKU";
 			$h [] = "Item Name";
 			$h [] = "Item Name (LA)";
@@ -718,6 +719,7 @@ class ArticleController extends AbstractActionController {
 				
 			foreach ( $articles as $m ) {
 				$l = array ();
+				$l [] = ( string ) $m->id;
 				$l [] = ( string ) $m->article_tag;
 				
 				$name = ( string ) $m->name;
@@ -734,7 +736,7 @@ class ArticleController extends AbstractActionController {
 				$l [] = ( string ) $m->keywords;
 				$l [] = ( string ) $m->type;
 				$l [] = ( string ) $m->unit;
-				$l [] = ( string ) $m->code;
+				$l [] = ( string ) "'".$m->code;
 				$l [] = ( string ) $m->barcode;
 				$l [] = ( string ) $m->article_balance;
 				$l [] = ( string ) $m->department_name;
@@ -767,6 +769,76 @@ class ArticleController extends AbstractActionController {
 				
 			$response->setContent ( $output );
 				
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
+		
+		if ($output === 'order_template') {
+		
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+		
+			$h = array ();
+			$h [] = "Item#";
+			$h [] = "Item Name";
+			$h [] = "Item Code";
+			$h [] = "Item Unit";
+			$h [] = "Order Quantity";
+			$h [] = "EDT (Delivery Date)";
+			$h [] = "Remarks";
+		
+			$delimiter = ";";
+		
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+		
+			$articles = $this->articleTable->getArticles_V01( $user_id,null,'Activated','item_name',0, 0 );
+		
+			foreach ( $articles as $m ) {
+				$l = array ();
+				$l [] = ( string ) $m->id;
+		
+				$name = ( string ) $m->name;
+		
+				$name === '' ? $name = "-" : $name;
+		
+				$name = str_replace ( ',', '', $name );
+				$name = str_replace ( ';', '', $name );
+		
+				$l [] = $name;
+				$l [] = ( string ) "'".$m->code;
+				$l [] = ( string ) $m->unit;
+				$l [] = ( string ) '';
+				$l [] = ( string ) '';
+				$l [] = ( string ) '';
+		
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+		
+			$fileName = 'Order_Template.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+		
+			$response = $this->getResponse ();
+			$headers = new Headers();
+		
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+		
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+		
+			//$response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+			$response->setHeaders($headers);
+			// $output = fread($fh, 8192);
+		
+			$response->setContent ( $output );
+		
 			fclose ( $fh );
 			// unlink($fileName);
 			return $response;

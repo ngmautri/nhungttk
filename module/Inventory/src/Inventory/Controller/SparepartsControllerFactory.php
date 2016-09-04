@@ -49,6 +49,11 @@ class SparepartsControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestCartItemTable' );
 		$controller->setPurchaseRequestCartItemTable($tbl);
 		
+		// Purchase Request Cart Item table
+		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemTable' );
+		$controller->setPrItemTable($tbl);
+		
+		
 		// SP Minumum Balance table
 		$tbl =  $sm->get ('Inventory\Model\SparepartMinimumBalanceTable' );
 		$controller->setSpMinimumBalanceTable($tbl);

@@ -177,11 +177,11 @@ class SearchController extends AbstractActionController {
 			));
 		}
 	
-		if (strpos($q,'*') !== false) {
+		if (strpos($q,'*') != false) {
 			$pattern = new Term($q);
 			$query = new Wildcard($pattern);
 			$hits = $this->articleSearchService->search($query,$department);
-	
+			
 		}else{
 			$hits = $this->articleSearchService->search($q,$department);
 		}

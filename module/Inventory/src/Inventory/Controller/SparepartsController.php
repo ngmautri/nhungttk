@@ -29,10 +29,13 @@ use Inventory\Model\SparepartCategoryTable;
 use Inventory\Model\SparepartMovement;
 use Inventory\Model\SparepartMovementsTable;
 use Inventory\Services\SparepartService;
-use Procurement\Model\PurchaseRequestCartItem;
-use Procurement\Model\PurchaseRequestCartItemTable;
 use Inventory\Model\SparepartMinimumBalance;
 use Inventory\Model\SparepartMinimumBalanceTable;
+
+use Procurement\Model\PurchaseRequestCartItem;
+use Procurement\Model\PurchaseRequestCartItemTable;
+
+use Procurement\Model\PurchaseRequestItemTable;
 
 class SparepartsController extends AbstractActionController {
 	protected $authService;
@@ -47,6 +50,8 @@ class SparepartsController extends AbstractActionController {
 	protected $purchaseRequestCartItemTable;
 	protected $spMinimumBalanceTable;
 	protected $massage = 'NULL';
+	
+	private $prItemTable;
 	
 	/*
 	 * Defaul Action
@@ -466,6 +471,8 @@ class SparepartsController extends AbstractActionController {
 		$request = $this->getRequest ();
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
+	
+		
 		if ($request->isPost ()) {
 			
 			$input = new SparepartMovement ();
@@ -488,6 +495,17 @@ class SparepartsController extends AbstractActionController {
 			$instock = $request->getPost ( 'instock' );
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			
+			
+			$pending_pr_item = $this->prItemTable->getPendingPRItemsOfSparepart($input->sparepart_id);
+			$total_confirmed_balance =0;
+			if(count($pending_pr_item)>0)
+			{
+				foreach($pending_pr_item as $item){
+					$total_confirmed_balance =  $total_confirmed_balance+$item->confirmed_balance;
+				}
+			}
+			
+		
 			// validator.
 			$validator = new Date ();
 			
@@ -504,7 +522,7 @@ class SparepartsController extends AbstractActionController {
 				$errors [] = 'Quantity is not valid. It must be a number.';
 			} else {
 				
-				if ($input->quantity > $instock) {
+				if ($input->quantity > $instock+$total_confirmed_balance) {
 					$errors [] = 'Issue quantity is: ' . $input->quantity . ' pcs, which is bigger than availabe stock';
 				}
 			}
@@ -514,6 +532,7 @@ class SparepartsController extends AbstractActionController {
 				$id = ( int ) $request->getPost ( 'sparepart_id' );
 				$sp = $this->sparePartTable->get ( $id );
 				$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
+				$asset_name = $request->getPost ( 'asset_name' );
 				
 				return new ViewModel ( array (
 						'sp' => $sp,
@@ -521,7 +540,10 @@ class SparepartsController extends AbstractActionController {
 						'instock' => $instock,
 						'errors' => $errors,
 						'redirectUrl' => $redirectUrl,
-						'movement' => $input 
+						'movement' => $input,
+						'pending_pr_item' =>$pending_pr_item,
+						'total_confirmed_balance' =>$total_confirmed_balance,
+						'asset_name' =>$asset_name,
 				) );
 			} else {
 				
@@ -533,11 +555,26 @@ class SparepartsController extends AbstractActionController {
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
-		$sp = $this->sparePartTable->get ( $id );
+		$sp = $this->sparePartTable->getSP( $id );
 		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
-		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
-		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
+		$inflow=0;
+		$outflow=0;
+		
+		if($sp != null){;
+			$inflow = $sp->total_inflow;
+			$outflow = $sp->total_outflow;
+		}
+		
 		$instock = $inflow - $outflow;
+
+		$pending_pr_item = $this->prItemTable->getPendingPRItemsOfSparepart($id);
+		$total_confirmed_balance =0;
+		if(count($pending_pr_item)>0)
+		{
+			foreach($pending_pr_item as $item){
+				$total_confirmed_balance =  $total_confirmed_balance+$item->confirmed_balance;
+			}
+		}
 		
 		return new ViewModel ( array (
 				'sp' => $sp,
@@ -545,7 +582,10 @@ class SparepartsController extends AbstractActionController {
 				'instock' => $instock,
 				'errors' => null,
 				'redirectUrl' => $redirectUrl,
-				'movement' => null 
+				'movement' => null,
+				'pending_pr_item' =>$pending_pr_item,
+				'total_confirmed_balance' =>$total_confirmed_balance,
+				'asset_name' =>null,
 		) );
 	}
 	
@@ -758,7 +798,7 @@ class SparepartsController extends AbstractActionController {
 		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
 		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
 		$instock = $inflow - $outflow;
-		$pending_pr_item = $this->sparePartTable->getPendingPRItems($id);
+		$pending_pr_item = $this->prItemTable->getPendingPRItemsOfSparepart($id);
 	
 		return new ViewModel ( array (
 				'sp' => $sp,
@@ -1481,4 +1521,12 @@ class SparepartsController extends AbstractActionController {
 		$this->spMinimumBalanceTable = $spMinimumBalanceTable;
 		return $this;
 	}
+	public function getPrItemTable() {
+		return $this->prItemTable;
+	}
+	public function setPrItemTable(PurchaseRequestItemTable $prItemTable) {
+		$this->prItemTable = $prItemTable;
+		return $this;
+	}
+	
 }

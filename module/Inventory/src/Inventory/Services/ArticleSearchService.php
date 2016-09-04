@@ -11,7 +11,7 @@ use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
-
+use ZendSearch\Lucene\Search\Query\Wildcard;
 
 use MLA\Service\AbstractService;
 use Inventory\Model\ArticleTable;
@@ -112,19 +112,22 @@ class ArticleSearchService extends AbstractService {
 		Lucene::setDefaultSearchField('name');
 		if($department_id >0):
 			$query = new Boolean();
-			$subquery = new MultiTerm();
-			$subquery->addTerm(new Term($q));
+			if ($q instanceof Wildcard){
+				$query->addSubquery($q,true);
+			}else{
+				$subquery = new MultiTerm();
+				$subquery->addTerm(new Term($q));
+				$query->addSubquery($subquery,true);
+			}
 			
 			$subquery1 = new MultiTerm();
 			$subquery1->addTerm(new Term($department_id,'department_id'));
 			
-			$query->addSubquery($subquery,true);
 			$query->addSubquery($subquery1,true);
 				
 			//var_dump($query);
 			$hits = $index->find ($query);
 			return $hits;
-			
 		endif;
 		
 		$hits = $index->find ($q);

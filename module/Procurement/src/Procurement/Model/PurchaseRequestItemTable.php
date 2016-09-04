@@ -3296,6 +3296,31 @@ where 1
 		}else {
 			return null;
 		}
+	}
+	
+	/**
+	 * 
+	 * @param unknown $sp_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getPendingPRItemsOfSparepart($sp_id){
+	
+		$adapter = $this->tableGateway->adapter;
+		$sql = $this->getPRItemsWithDN_SQL_V2;
 		
+		$sql=$sql." AND (CASE WHEN (mla_purchase_request_items.quantity - IFNULL(mla_delivery_items_workflows.confirmed_quantity,0))>=0
+				THEN mla_purchase_request_items.quantity - IFNULL(mla_delivery_items_workflows.confirmed_quantity,0)  ELSE 0 END) >0";
+		
+		$sql = $sql . " AND mla_purchase_request_items.sparepart_id= ".$sp_id;
+	
+		//echo ($sql);
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	
 	}
 }

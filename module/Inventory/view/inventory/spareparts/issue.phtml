@@ -1,7 +1,5 @@
 <h4>Issuing: <span class="label label-success"><?php echo $sp->tag; ?></span> <?php echo $sp->name; ?> </h4>
-
 <hr>
-
 <?php if (count($errors)>0)
 {
 echo '<div class="alert alert-error">';
@@ -19,7 +17,7 @@ echo '<div class="alert alert-error">';
 
 
 
-<?php if ($instock > 0){
+<?php if ($instock + $total_confirmed_balance>0 ){
 	
 ?>
 
@@ -27,21 +25,26 @@ echo '<div class="alert alert-error">';
  <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/spareparts/issue"	method="post" enctype="multipart/form-data" id="NewSP" >
  	<input type="hidden" name="sparepart_id" value="<?php echo (int) $sp->id; ?>" />
 	<input type="hidden" name="instock" value="<?php echo (int) $instock ?>" />
-	<input type="hidden" name="asset_id" id="asset_id" value="" />
+	<input type="hidden" name="asset_id" id="asset_id" value="<?php echo $movement!==null ? ($movement->asset_id) :""?>" />
 	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
- 
- 
-      <div class="control-group">
+ 	
+ 	 <div class="control-group">
         <label class="control-label" for="inputAsset">Issue for Asset:</label>
         <div class="controls">
-<input type="text" name="asset" id="asset" value=""/>
-<a href="javascript:;" onclick="showDialog()" class="helper"> Select Asset</a>        </div>
+<input readonly type="text" name="asset_name" id="asset_name" value="<?php echo $asset_name!==null ? $asset_name :""?>"/>
+<a href="javascript:;" onclick="openAssetSearchDialog()" class="helper"> Select Asset <i class=" icon-folder-open"></i></a>        </div>
+      </div>
+ 
+      <div class="control-group">
+         <div class="controls">
+<input readonly type="text" name="asset" id="asset" value="<?php echo $movement!==null ? ($movement->asset_name) :""?>"/>
+</div>
       </div>
       
       <div class="control-group">
         <label class="control-label" for="inputName">Issue date:</label>
         <div class="controls">
-  			<input type="text" name="movement_date" value="" placeholder =" please select" id="movement_date" />
+  			<input type="text" name="movement_date" placeholder =" please select" id="movement_date" value="<?php echo $movement!==null ? ($movement->movement_date) :""?>" />
          </div>
       </div>
       
@@ -49,7 +52,7 @@ echo '<div class="alert alert-error">';
         <label class="control-label" for="inputNameLocal">Quantity:</label>
         <div class="controls">
 			<input type="text" name="quantity" value="<?php echo $movement!==null ? ($movement->quantity) :""?>" /> <span class="label label-info">
-			(In stock: <?php echo (int) $instock . ' pcs.'; ?>)</span>        
+			In stock: <?php echo (int) $instock . ' Pcs' ; ?><?php echo $total_confirmed_balance>0?" - Pending Order: ".$total_confirmed_balance . "Pcs":"";?></span>        
 		</div>
       </div>
       
@@ -67,13 +70,6 @@ echo '<div class="alert alert-error">';
         </div>
       </div>
       
-         
-      <div class="control-group">
-        <label class="control-label" for="inputDescription">Comment:</label>
-        <div class="controls">
-          <textarea class="form-control" id="inputDescription" placeholder="" rows="2" name="comment"><?php echo $movement!==null ? ($movement->comment) :""?></textarea>
-        </div>
-      </div>
       
       <div class="control-group">
         <div class="controls">
@@ -82,7 +78,7 @@ echo '<div class="alert alert-error">';
       </div>
     </form>
 
-<div id = "dialog" style="display: none;">No asset found...</div>
+
 
 
 <?php }else {
@@ -109,6 +105,76 @@ echo '<div class="alert alert-error">';
 <?php endforeach; ?>
 </div>
 
-
 <?php }?>
-	
+
+
+<!-- Modal -->
+<div id="myModal" class="modal hide" role="dialog">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h5 class="modal-title">Mascot International (Laos) - Asset Search</h5>
+		</div>
+		<div class="modal-body">
+			<span id="_status"></span>
+			<form class="form-horizontal"
+				action=""
+				method="post" enctype="multipart/form-data" id="NewSP">
+				<input type="hidden" name="redirectUrl"
+					value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+					name="article_id" id="item_id" value="" />
+
+				<div class="control-group">
+					<label class="control-label" for="inputTag">Asset Search:</label>
+					<div class="controls">
+						<input type="text" id="asset_search_term1" placeholder="Please enter search term" name="name"
+							value="">
+					</div>
+				</div>
+				
+				 <div class="control-group">
+		        <div class="controls">
+		             <button type="button" class="btn" onclick ="showDialog()"><i class="icon-search">  </i> Search...</button>
+		        </div>
+      			</div>
+			</form>
+		</div>
+		
+		<!-- 
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			<button onclick="addItemToCart('SPARE-PART');" type="button"
+				class="btn btn-primary">Add To Cart</button>
+		</div>
+		 -->
+	</div>
+</div>	
+
+
+<div id = "dialog" style="display: none; padding-top:4px">
+
+				<form class="form-horizontal"
+				action=""
+				method="post" enctype="multipart/form-data" id="NewSP">
+				<input type="hidden" name="redirectUrl"
+					value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+					name="article_id" id="item_id" value="" />
+
+				<div class="control-group">
+					<label class="control-label" for="inputTag">Asset Search:</label>
+					<div class="controls">
+						<input type="text" id="asset_search_term" placeholder="" name="name"
+							value="">
+					</div>
+				</div>
+				
+				 <div class="control-group">
+		        <div class="controls">
+		             <button type="button" class="btn" onclick ="showDialog()"><i class="icon-search">  </i> Search...</button>
+		        </div>
+      			</div>
+			</form>
+
+<div id="search_result"></div>
+
+</div>

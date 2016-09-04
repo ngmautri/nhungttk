@@ -1,3 +1,4 @@
+
 <h4>Create New Item:</h4>
 
 <?php if (count($errors)>0)
@@ -74,14 +75,14 @@ echo '<div class="alert alert-error">';
         </div>
       </div>
       
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Barcode</label>
+      <div class="control-group" style="display: none;">
+        <label class="control-label" for="inputNameLocal" >Barcode</label>
         <div class="controls">
           <input type="text" id="sparepart_code" placeholder="Code of supplier" name="barcode" value="<?php echo $article!==null ? ($article->barcode) :""?>"> 
         </div>
       </div>
       
-      <div class="control-group">
+      <div class="control-group" style="display: none;">
         <label class="control-label" for="inputTag">Visibility</label>
         <div class="controls">
         	<select name="visibility" >
@@ -91,7 +92,7 @@ echo '<div class="alert alert-error">';
        </div>
       </div>
       
-    <div class="control-group">
+    <div class="control-group" style="display: none;">
         <label class="control-label" for="inputTag">Status</label>
         <div class="controls">
         	<select name="status" >
@@ -112,10 +113,7 @@ echo '<div class="alert alert-error">';
         <label class="control-label" for="inputLocation">Pictures	</label>
         <div class="controls">
           <input type="file" name="pictures[]" /><br>
-   		<input type="file" name="pictures[]" /><br>
-			<input type="file" name="pictures[]" /><br>
-
-        </div>
+   	    </div>
       </div>
       
       <div class="control-group">

@@ -9,12 +9,14 @@
       <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
    </form>
 
+<div class="alert alert-info">You can search wildcard*. e.g enter <em>cof*</em> to search for Coffee</div>
+
 <?php if (!$hits==null): 
 echo '<span class="label label-info">';
 echo count($hits).' result(s) found for query: "' . $query;
 echo '</span><hr>';
 ?>
-<table class="pure-table pure-table-bordered">
+<table class="table table-striped table-bordered">
 <thead>
 	<tr>
 		<td><b>Name</b></td>

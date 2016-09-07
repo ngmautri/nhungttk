@@ -151,29 +151,13 @@ echo '<div class="alert alert-error">';
 </div>	
 
 
-<div id = "dialog" style="display: none; padding-top:4px">
+<div id = "dialog" style="display: none;">
 
-				<form class="form-horizontal"
-				action=""
-				method="post" enctype="multipart/form-data" id="NewSP">
-				<input type="hidden" name="redirectUrl"
-					value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-					name="article_id" id="item_id" value="" />
-
-				<div class="control-group">
-					<label class="control-label" for="inputTag">Asset Search:</label>
-					<div class="controls">
-						<input type="text" id="asset_search_term" placeholder="" name="name"
-							value="">
-					</div>
-				</div>
-				
-				 <div class="control-group">
-		        <div class="controls">
-		             <button type="button" class="btn" onclick ="showDialog()"><i class="icon-search">  </i> Search...</button>
-		        </div>
-      			</div>
-			</form>
+   <form style="padding-top:10pt" class="form-search" action="/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
+      <input type="text" id="asset_search_term" placeholder="" name="name">
+      <button type="button" class="btn" onclick ="showDialog()"><i class="icon-search">  </i>Search</button>
+   </form>
+<hr>
 
 <div id="search_result"></div>
 

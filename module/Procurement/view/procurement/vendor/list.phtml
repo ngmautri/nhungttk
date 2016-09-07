@@ -1,24 +1,28 @@
 <h4>Vendor list</h4>
 
+
+
+ <form class="form-search" action="<?php echo $this->baseUrl ?>/procurement/vendor/search"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
+
+
 <?php
 
 if ($total_articles <= 0) {
 	
-	echo 'No articles found!';
+	echo 'No Vendor found!';
 } else {
 
 	if (! is_null ( $paginator )) {
 		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_articles . ' spare parts found!';
 	}else{	
-		echo $total_articles . ' articles found!';
+		echo $total_articles . ' Vendor found!';
 	}
 	
 ?>
-
-
-
-
-<table class="pure-table pure-table-bordered">
+<table class="table table-striped table-bordered">
 <thead>
 	<tr>
 		<td><b>Vendor Name</b></td>

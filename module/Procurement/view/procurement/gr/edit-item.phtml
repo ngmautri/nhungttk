@@ -41,6 +41,20 @@ if (count ( $errors ) > 0) {
 	</div>
 	
 	<div class="control-group">
+		<label class="control-label" for="inputTag">Vendor:</label>
+		<div class="controls">
+			<input readonly type="text" id="vendor" placeholder="" name="vendor"
+				value="<?php echo $do_item->vendor_name ?>"> 
+				<span style="color: gray;">PO: <?php echo $do_item->vendor_name?></span> |
+				<a href="javascript:;" onclick="showVendorDialog();"
+				class="helper"> Select Other Vendor <i class=" icon-folder-open"></i></a>
+		</div>
+				
+		
+	</div>
+	
+	
+	<div class="control-group">
 		<label class="control-label" for="inputNameLocal">Invoice Date:</label>
 		<div class="controls">
 			<input type="text" id="invoice_date" placeholder="click to select"
@@ -56,20 +70,7 @@ if (count ( $errors ) > 0) {
 		</div>
 	</div>
 	
-	<div class="control-group">
-		<label class="control-label" for="inputTag">Vendor:</label>
-		<div class="controls">
-			<input readonly type="text" id="vendor" placeholder="" name="vendor"
-				value="<?php echo $do_item->vendor_name ?>"> 
-				<span style="color: gray;">PO: <?php echo $do_item->vendor_name?></span> |
-				<a href="javascript:;" onclick="loadVendorList();"
-				class="helper"> Select Other Vendor <i class=" icon-folder-open"></i></a>
-		</div>
-				
-		
-	</div>
-	<hr>
-
+	
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Items:</label>
 		<div class="controls">
@@ -161,90 +162,7 @@ if (count ( $errors ) > 0) {
 
 
 
-<div id="dialog" style="display: none;">Check code...</div>
-
-<!-- Modal -->
-	<div id="myModal" class="modal hide" role="dialog">
-	  <div class="modal-dialog">
-	  	 <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h5 class="modal-title">Add To Cart</h5>
-      </div>
-	      <div class="modal-body">
-	  <div>
-	  <span id="_status"></span>
-	  </div>
-
-<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procurement/pr/select-item-2"	method="post" enctype="multipart/form-data" id="NewSP" >
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-<input type="hidden" name="article_id" id ="item_id" value="" />
- 	
-	 	 <div class="control-group">
-	        <label class="control-label" for="inputNameLocal">Priority:</label>
-        <div class="controls">
-        	<select name="priority" id ="item_priority">
-        		<option value="Low">Low</option>
-        		<option value="Medium" selected>Medium</option>
-        		<option value="High">High</option>
-        		<option value="Urgent">Urgent</option>
- 			</select>
-	     </div>
-      </div>
-      	
-      <div class="control-group">
-        <label class="control-label" for="inputTag">Name:</label>
-        <div class="controls">
-          <input type="text" id="item_name" placeholder="" name="name" value="article">
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputTag">Unit</label>
-        <div class="controls">
-          <input type="text" id="item_unit" placeholder="" name="unit" value="">
-        </div>
-      </div>
-      
-       <div class="control-group">
-        <label class="control-label" for="inputTag">Quantity:</label>
-        <div class="controls">
-          <input type="text" id="item_quantity" placeholder="" name="quantity" value="">
-        </div>
-      </div>
-      
-     
-      
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Requested Delivery Date:</label>
-        <div class="controls">
-          <input type="text" id="end_date" placeholder="click to select" name="EDT" value="">
-        </div>
-      </div>
-      
-       <div class="control-group">
-        <label class="control-label" for="inputDescription">Reason /Note:</label>
-        <div class="controls">
-          <textarea id="item_remarks" placeholder="" rows="2" cols="5" name="remarks"></textarea>
-        </div>
-      </div>
-    </form>
-	      </div>
-	      
-		  <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	        <button onclick="addItemToCart('ARTICLE');" type="button" class="btn btn-primary">Add To Cart</button>
-	      </div>
-	   </div>
-	</div>
-	
-	<!-- Modal -->
-	<div id="myModal1" class="modal hide" role="dialog">
-	  <div class="modal-dialog">
-	      <div class="modal-body">
-	        <p>Working on it........Please Wait!</p>
-	      </div>
-	   </div>
-	</div>		
+<?php include (ROOT.'\module\Procurement\view\procurement\select_vendor.php'); ?>
 
 
 

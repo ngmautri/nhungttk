@@ -160,6 +160,8 @@ endif;
 <?php  	if (count($receipts) >0): ?>
 
 <?php if($notified==0 and $balance>0):?>
+<div class="alert alert-warning"> Please notify requester!
+</div>
 
 <div class="control-group">
 	<label class="control-label" for="inputTag"><b>DN Number:</b></label>
@@ -340,8 +342,7 @@ endif;
 			<i class="icon-ok"> </i> Notify 
 		</button>
 <?php endif;?>
-	
-</form>
+
 
 
 

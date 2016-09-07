@@ -39,6 +39,8 @@ class VendorControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('AuthService' );
 		$controller->setAuthService($sv );
 		
+		$sv =  $sm->get ('Procurement\Services\VendorSearchService' );
+		$controller->setVendorSearchService($sv );
 			
 		return $controller;
 	}

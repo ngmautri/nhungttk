@@ -74,4 +74,28 @@ class VendorTable {
 		$where = 'id = ' . $id;
 		$this->tableGateway->delete($where);
 	}
+	
+	/**
+	 *
+	 * @param unknown $sp_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getVendors(){
+	
+		$adapter = $this->tableGateway->adapter;
+		$sql = "
+select
+*
+from mla_vendors
+order by mla_vendors.name ";
+		
+			//echo ($sql);
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
 }

@@ -26,6 +26,7 @@ if ($total_articles <= 0) {
 <thead>
 	<tr>
 		<td><b>Vendor Name</b></td>
+		<td><b>Keywords</b></td>
 		<td><b>Status</b></td>
 		<td><b>Action</b></td>
 	</tr>
@@ -38,14 +39,12 @@ if ($total_articles <= 0) {
 	 $count = 0;
 	 foreach ($vendors as $a) : 
 	 	 $count++;
-	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
-	 
-	 	 
 	 ?>
+	 <tr>
 		<td><?php echo $this->escapeHtml($a->name);?></td>
-			<td><?php echo $this->escapeHtml($a->status);?> 
-		<td><a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</td>
+		<td><?php echo $this->escapeHtml($a->keywords);?></td>
+		<td><?php echo $this->escapeHtml($a->status);?> 
+		<td><a href="<?php echo $this->baseUrl ?>/procurement/vendor/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a></td>
 	</tr>
 <?php endforeach; ?>
 

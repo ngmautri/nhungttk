@@ -159,13 +159,13 @@ class VendorController extends AbstractActionController {
 		}
 		;
 		
-		$vendors = $this->vendorTable->fetchAll ();
+		$vendors = $this->vendorTable->getVendors();
 		$totalResults = $vendors->count ();
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$vendors = $this->articleTable->getLimitArticles ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$vendors = $this->vendorTable->getVendors();
 		}
 		
 		return new ViewModel ( array (

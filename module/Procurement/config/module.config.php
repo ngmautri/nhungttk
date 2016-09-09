@@ -61,7 +61,8 @@ return array (
 						'Procurement\Controller\Cash' => 'Procurement\Controller\CashControllerFactory',
 						'Procurement\Controller\Delivery' => 'Procurement\Controller\DeliveryControllerFactory',
 						'Procurement\Controller\Vendor' => 'Procurement\Controller\VendorControllerFactory',
-						
+	
+												
 				)
 		),
 		'view_manager' => array (

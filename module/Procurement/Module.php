@@ -283,6 +283,9 @@ class Module {
 						$resultSetPrototype->setArrayObjectPrototype ( new PRItemSelfConfirmation());
 						return new TableGateway ( 'mla_pr_item_self_confirmation', $dbAdapter, null, $resultSetPrototype );
 						},
+						
+						'Procurement\Services\VendorSearchService' => 'Procurement\Services\VendorSearchServiceFactory',
+						
 					)
 				);
 	}

@@ -30,15 +30,35 @@ $(document).ready(function() {
 	
 });
 
+function openAssetSearchDialog() {
+	$("#dialog").dialog({
+		width : 950,
+		height : 530,
+		title : "Select asset",
+		modal : true,
+		dialogClass : 'dialogClass'
+	});
+	
+	$('#asset_search_term').keypress(function(event){
+
+	    if (event.keyCode === 10 || event.keyCode === 13) 
+	        event.preventDefault();
+	    	//showDialog();
+	  });
+}
+
+
+
 /**
  * function on calendar dialog
  */
 function showDialog() {
-	q = $("#asset").val();
+	//$('#myModal').modal('hide');
+	q = $("#asset_search_term").val();
+	$("#search_result").html('Searching.....');
 
-	$("#dialog").html('Please wait ...');
-	$
-			.ajax({
+	//$("#dialog").html('Please wait ...');
+	$.ajax({
 				url : "/inventory/search/asset?json=1&query=" + q,
 
 				success : function(text) {
@@ -48,15 +68,15 @@ function showDialog() {
 					// var html = "No asset found"
 					var s;
 					var i;
-					s = "";
+					s = n_hits + ' Result(s) for "' + q + '"';
 					if (n_hits > 0) {
-						s = '<table class="pure-table pure-table-bordered"><thead><tr><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td><td>SHOW CONSUMPTION</td></thead></tr>';
+						s = s+ '<table class="table table-striped table-bordered"><thead><tr style="font-weight: bold;"><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td><td>SHOW CONSUMPTION</td></thead></tr>';
 						for (i = 0; i < n_hits; i++) {
 							s = s + "<tr>"
 							var id = obj[i]["id"];
 							var name = obj[i]["name"];
 							var tag = obj[i]["tag"];
-							s = s + '<td>' + id + '</td>';
+							s = s + '<td>' + i+ '</td>';
 							s = s + '<td>' + name + '</td>';
 							s = s + '<td>' + tag + '</td>';
 							s = s
@@ -78,29 +98,26 @@ function showDialog() {
 
 					} else {
 
-						s = "No asset found!";
+						s = s+" <p> No asset found!</p>";
 					}
 
 					// alert(s);
 
-					$("#dialog").html(s);
+					$("#search_result").html(s);
 				}
 			});
 
 	// $( "#dialog" ).text(t);
-	$("#dialog").dialog({
-		width : 860,
-		height : 500,
-		title : "Select asset",
-		modal : true,
-		dialogClass : 'dialogClass'
-	});
+	
 }
 
 function selectAsset(id, name, tag) {
 	$("#asset_id").val(id);
 	$("#asset").val(tag);
+	$("#asset_name").val(name);
 	$("#dialog").dialog("close");
+	$("#asset_search_term").val("");
+	$("#search_result").html('');
 
 }
 
@@ -827,13 +844,34 @@ function completeNotifyDN(ID) {
 	});
 }
 
+
+function showVendorDialog() {
+	// $( "#dialog" ).text(t);
+	$("#dialog").dialog({
+		width : 950,
+		height : 550,
+		title : "Select Vendor",
+		modal : true,
+		dialogClass : 'dialogClass'
+	});
+	
+	$('#search_term').keypress(function(event){
+
+	    if (event.keyCode === 10 || event.keyCode === 13) 
+	        event.preventDefault();
+	    	//showDialog();
+	  });
+	
+	loadVendorList();
+}
 /**
  * function on calendar dialog
  */
 function loadVendorList() {
-	$("#dialog").html('Please wait ...');
-	$
-			.ajax({
+	
+	$("#search_result").html('Loading....');
+	
+	$.ajax({
 				url : "/procurement/vendor/list-json",
 				success : function(text) {
 					var obj = eval(text);
@@ -842,7 +880,7 @@ function loadVendorList() {
 					// var html = "No asset found"
 					var s;
 					var i;
-					s = '<span><a href="/procurement/vendor/add"><i class="icon-plus"> </i> <b>CREATE NEW VENDOR</b></a></span>';
+					s = '';
 					
 					if (n_hits > 0) {
 						
@@ -872,21 +910,81 @@ function loadVendorList() {
 						s = "No Vendors found!";
 					}
 
-					// alert(s);
+					//alert(s);
 
-					$("#dialog").html(s);
+					$("#search_result").html(s);
 				}
 			});
 
-	// $( "#dialog" ).text(t);
-	$("#dialog").dialog({
-		width : 860,
-		height : 500,
-		title : "Select Vendor",
-		modal : true,
-		dialogClass : 'dialogClass'
-	});
+
 }
+
+/**
+ * function on calendar dialog
+ */
+function searchVendor() {
+	// $( "#dialog" ).text(t);
+	var q;
+	
+	
+	
+	q = $("#search_term").val();
+	
+	if (q.length ==0) {
+		q = $("#search_term").val();
+		$("#search_result").html('please enter search term');
+		return;
+	}
+	
+	$("#search_result").html('Searching...');
+	$.ajax({
+				url : "/procurement/vendor/search?json=1&query="+q,
+				success : function(text) {
+					var obj = eval(text);
+					var n_hits = obj.length;
+					// alert(n_hits);
+					// var html = "No asset found"
+					var s;
+					var i;
+					s = '';
+					
+					if (n_hits > 0) {
+						
+						s = s +'<div><table class="table table-striped table-bordered"><thead><tr><td><b>ID</b></td><td><b>NAME</b></td><td><b>KEY-WORDS</b></td><td><b>ACTION</b></td><td><b>DETAIL</b></td></thead></tr>';
+						for (i = 0; i < n_hits; i++) {
+							s = s + "<tr>"
+							var id = obj[i]["id"];
+							var name = obj[i]["name"];
+							var keywords = obj[i]["keywords"];
+							s = s + '<td>' + id + '</td>';
+							s = s + '<td>' + name + '</td>';
+							s = s + '<td>' + keywords + '</td>';
+							s = s
+									+ '<td><a href="javascript:;" onclick="selectVendor(\''
+									+ id + '\',\'' + name + '\',\'' + keywords
+									+ '\')">  Select  </a></td>';
+							s = s + '<td><a href="/procurement/vendor/show?id='
+									+ id
+									+ '" target="_blank">  Detail  </a></td>';
+							s = s + "</tr>";
+
+						}
+						s = s + "</table></div>";
+
+					} else {
+
+						s = "No Vendors found!";
+					}
+
+					//alert(s);
+
+					$("#search_result").html(s);
+				}
+			});
+
+
+}
+
 
 function selectVendor(id, name, tag) {
 	$("#vendor_id").val(id);

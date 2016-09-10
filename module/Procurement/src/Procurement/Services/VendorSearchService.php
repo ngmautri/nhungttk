@@ -63,7 +63,7 @@ class VendorSearchService extends AbstractService {
 				
 				$index->addDocument ( $doc );
 			}
-			return 'vendor index is created successfully!';
+			return 'Vendor index is created successfully!';
 		} else {
 			return 'Nothing for indexing!';
 		}

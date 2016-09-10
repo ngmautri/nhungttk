@@ -522,6 +522,10 @@ class SparepartsController extends AbstractActionController {
 				$errors [] = 'Quantity is not valid. It must be a number.';
 			} else {
 				
+				if ($input->quantity <= 0) {
+					$errors [] = 'Quantity must be greater than 0!';
+				}
+				
 				if ($input->quantity > $instock+$total_confirmed_balance) {
 					$errors [] = 'Issue quantity is: ' . $input->quantity . ' pcs, which is bigger than availabe stock';
 				}
@@ -636,6 +640,11 @@ class SparepartsController extends AbstractActionController {
 				
 				if (! $validator->isValid ( $input->quantity )) {
 					$errors [] = 'Quantity is not valid. It must be a number.';
+				}else{
+					if ($input->quantity <= 0) {
+						$errors [] = 'Quantity must be greater than 0!';
+					}
+					
 				}
 				
 				$validator = new EmailAddress ();

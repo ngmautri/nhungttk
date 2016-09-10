@@ -96,23 +96,6 @@ echo '<div class="alert alert-info">';
     	
 		<ul class="dropdown-menu">
 	 	
-    	<?php if ($item->confirmed_balance > 0) : ?>
-   			
-   		<?php if ($item->po_item_id > 0) : ?>
-   			<li><a href="/procurement/gr/receive?pr_item_id=<?php echo $item->id;?>&po_item_id=<?php echo $item->po_item_id;?>"><i
-								class="icon-check"> </i> Receive </a></li>	
-    	<?php else: ?>
-    		<li><a
-							href="/procurement/po/add-to-cart?pr_item_id=<?php echo $item->id?>"><i
-								class="icon-check"> </i> Purchase</a></li>
-   	
-    	<?php endif; ?>
-   				
-    	<?php endif; ?>
-	
-     	
-      	<li class="divider"></li>
-        
         <?php
 		if ($item->article_id > 0) :
 			?>
@@ -127,10 +110,9 @@ echo '<div class="alert alert-info">';
 								class="icon-list"> </i> Detail</a></li>
 		<?php endif; ?>
 	
-		
+		<li class="divider"></li>
 		     
-      <li><a href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i class="icon-signal"></i> Order History</a></li>
-								<li><a href="#"><i class="icon-film"></i> Picture</a></li>
+      <li><a target="_blank" href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i class="icon-signal"></i> Order History</a></li>
 					</ul>
 				</div>
 			

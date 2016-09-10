@@ -22,15 +22,13 @@ if (count ( $errors ) > 0) {
 	<input type="hidden" name="redirectUrl"
 		value="<?php echo $redirectUrl ?>" /><input
 		type="hidden" name="pr_item_id" value="<?php echo $pr_item->id ?>" />
-	<input type="hidden" name="vendor_id" id="vendor_id" value="" />
+	<input type="hidden" name="vendor_id" id="vendor_id" value="<?php echo $submitted_po_item !=null ? $submitted_po_item->vendor_id : ""?>" />
 	
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Vendor:</label>
 		<div class="controls">
-
- 		
 			<input readonly type="text" id="vendor" placeholder="" name="vendor"
-				value=""> 
+				value="<?php echo $vendor_name; ?>"> 
 			
 		
 		<a href="javascript:;" onclick="showVendorDialog();"
@@ -38,11 +36,11 @@ if (count ( $errors ) > 0) {
 
 		<?php 
 			if ($pr_item->article_id > 0) :
-			echo '<div style="color: gray;">Last vendor:' . $pr_item->article_vendor_name .'</div>';
+			echo '<div style="color: gray; font-size: 9pt">Last vendor: ' . $pr_item->article_vendor_name .'</div>';
 		endif;
 		
 		if ($pr_item->sparepart_id > 0) : 
-     		echo '<div style="color: gray;">Last vendor:' .$pr_item->sp_vendor_name.'</div>';
+     		echo '<div style="color: gray; font-size: 9pt">Last vendor:' .$pr_item->sp_vendor_name.'</div>';
 		endif; ?>
 		</div>
 	</div>
@@ -81,14 +79,14 @@ if (count ( $errors ) > 0) {
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Price:</label>
 		<div class="controls">
-			<input  type="text" id="inputTag" placeholder="" name="price" value="">
+			<input  type="text" id="inputTag" placeholder="" name="price" value="<?php echo $submitted_po_item !=null ? $submitted_po_item->price : ""?>">
 			<?php 
 			if ($pr_item->article_id > 0) :
-			echo '<span style="color: gray;">Last price:' . $pr_item->article_price.'</span>';
+			echo '<span style="color: gray;font-size: 9pt">Last price: ' . $pr_item->article_price.'</span>';
 		endif;
 		
 		if ($pr_item->sparepart_id > 0) : 
-     		echo '<span style="color: gray;">Last price:' .$pr_item->sp_price.'</span>';
+     		echo '<span style="color: gray; font-size: 9pt">Last price: ' .$pr_item->sp_price.'</span>';
 		endif; ?>
 		</div>
 	</div>
@@ -97,21 +95,27 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Currency:</label>
 		<div class="controls">
 			<select style="wight: 10px" name="curreny" id="curreny">
-
-				<option selected="selected" value="">---Please select---</option>
-				<option value="USD">USD</option>
-				<option value="LAK">LAK</option>
-				<option value="THB">THB</option>
-
+				<option value="">---Please select---</option>
+				
+				<?php if($submitted_po_item!=null):?>
+					
+					<option <?php echo $submitted_po_item->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
+					<option <?php echo $submitted_po_item->currency=='LAK'? "selected='selected'":"";?> value="LAK">LAK</option>
+					<option <?php echo $submitted_po_item->currency=='THB'? "selected='selected'":"";?> value="THB">THB</option>
+				<?php else:?>
+					<option value="USD">USD</option>
+					<option value="LAK">LAK</option>
+					<option value="THB">THB</option>
+				<?php endif;?>
 			</select>
 			
 			<?php 
 			if ($pr_item->article_id > 0) :
-			echo '<span style="color: gray;">Last price:' . $pr_item->article_currency;
+			echo '<span style="color: gray; font-size: 9pt">Last currency: ' . $pr_item->article_currency;
 		endif;
 		
 		if ($pr_item->sparepart_id > 0) : 
-     		echo '<span style="color: gray;">Last currency:' .$pr_item->sp_currency;
+     		echo '<span style="color: gray; font-size: 9pt">Last currency: ' .$pr_item->sp_currency;
 		endif; ?>
 		</div>
 	</div>
@@ -120,11 +124,18 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Payment Method:</label>
 		<div class="controls">
 			<select name="payment_method" id="payment_method">
-
 				<option selected="selected" value="">---Please select---</option>
+	
+				<?php if($submitted_po_item!=null):?>
+					<option <?php echo $submitted_po_item->payment_method=='By Cash'? "selected='selected'":"";?> value="By Cash">By Cash</option>
+				<option <?php echo $submitted_po_item->payment_method=='Bank Transfer'? "selected='selected'":"";?> value="Bank Transfer">Bank Transfer</option>
+				<option <?php echo $submitted_po_item->payment_method=='Other'? "selected='selected'":"";?> value="Other">Other Method</option>
+			<?php else:?>
 				<option value="By Cash">By Cash</option>
 				<option value="Bank Transfer">Bank Transfer</option>
 				<option value="Other">Other Method</option>
+			<?php endif;?>
+			
 			</select>
 		</div>
 	</div>
@@ -135,7 +146,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputDescription">Remarks:</label>
 		<div class="controls">
 			<textarea id="inputDescription" placeholder="" rows="2" cols="5"
-				name="remarks"></textarea>
+				name="remarks"><?php echo $submitted_po_item !=null ? $submitted_po_item->remarks : ""?></textarea>
 		</div>
 	</div>
 

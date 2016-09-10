@@ -36,7 +36,9 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputNameLocal">Receipt Date:</label>
 		<div class="controls">
 			<input type="text" id="end_date" placeholder="click to select"
-				name="receipt_date" value="<?php echo date_format(date_create($do_item->receipt_date),"Y-m-d");?>">
+				name="receipt_date" value="<?php echo $submitted_do_item!=null?date_format(date_create($submitted_do_item->receipt_date),"Y-m-d"):date_format(date_create($do_item->receipt_date),"Y-m-d");?>">
+						<span style="color: gray;font-size: 8pt">Old Value: <?php echo date_format(date_create($do_item->receipt_date),"Y-m-d");?></span>
+	
 		</div>
 	</div>
 	
@@ -45,7 +47,7 @@ if (count ( $errors ) > 0) {
 		<div class="controls">
 			<input readonly type="text" id="vendor" placeholder="" name="vendor"
 				value="<?php echo $do_item->vendor_name ?>"> 
-				<span style="color: gray;">PO: <?php echo $do_item->vendor_name?></span> |
+				<span style="color: gray; font-size: 8pt">Old Value: <?php echo $do_item->vendor_name?></span> |
 				<a href="javascript:;" onclick="showVendorDialog();"
 				class="helper"> Select Other Vendor <i class=" icon-folder-open"></i></a>
 		</div>
@@ -58,7 +60,9 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputNameLocal">Invoice Date:</label>
 		<div class="controls">
 			<input type="text" id="invoice_date" placeholder="click to select"
-				name="invoice_date" value="<?php echo date_format(date_create($do_item->invoice_date),"Y-m-d");?>">
+				name="invoice_date" value="<?php echo $submitted_do_item!=null?date_format(date_create($submitted_do_item->invoice_date),"Y-m-d"):date_format(date_create($do_item->invoice_date),"Y-m-d");?>">
+						<span style="color: gray;font-size: 8pt">Old Value: <?php echo date_format(date_create($do_item->invoice_date),"Y-m-d");?></span>
+	
 		</div>
 	</div>
 	
@@ -66,7 +70,9 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Invoice No.:</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="invoice_no"
-				value="<?php echo $do_item->invoice_no ?>">
+				value="<?php echo $submitted_do_item!=null ? $submitted_do_item->invoice_no : $do_item->invoice_no; ?>">
+						<span style="color: gray;font-size: 8pt">Old Value: <?php echo $do_item->invoice_no?></span>
+	
 		</div>
 	</div>
 	
@@ -75,14 +81,18 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Items:</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="name"
-				value="<?php echo $do_item->name ?>">
+				value="<?php echo $submitted_do_item!=null ? $submitted_do_item->name : $do_item->name ?>">
+								<span style="color: gray;font-size: 8pt">Old Value: <?php echo $do_item->name?></span>
+	
 		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Item Code (if any):</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="code"
-				value="<?php echo $do_item->code ?>">
+				value="<?php echo $submitted_do_item!=null ? $submitted_do_item->code : $do_item->code ?>">
+						<span style="color: gray;font-size: 8pt">Old Value: <?php echo $do_item->code?></span>
+	
 		</div>
 	</div>
 
@@ -90,7 +100,9 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Item Unit:</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="unit"
-				value="<?php echo $do_item->unit ?>">
+				value="<?php echo $submitted_do_item!=null ? $submitted_do_item->unit : $do_item->unit ?>">
+					<span style="color: gray;font-size: 8pt">Old Value: <?php echo $do_item->unit?></span>
+		
 		</div>
 	</div>
 
@@ -98,8 +110,8 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Received Quantity:</label>
 		<div class="controls">
 			<input type="text" id="inputTag" placeholder=""
-				name="delivered_quantity" value="<?php echo $do_item->delivered_quantity; ?>">
-				 <?php echo '<div style="color: gray;">To deliver: '. $pr_item->confirmed_balance.'. Total Received: '. $pr_item->total_received_quantity.'</div>'?>
+				name="delivered_quantity" value="<?php echo $submitted_do_item!=null ? $submitted_do_item->delivered_quantity : $do_item->delivered_quantity; ?>">
+				 <?php echo '<span style="color: gray;font-size: 8pt">To deliver: '. $pr_item->confirmed_balance.'. Total Received: '. $pr_item->total_received_quantity.'</span>'?>
      
         </div>
          
@@ -108,23 +120,33 @@ if (count ( $errors ) > 0) {
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Price:</label>
 		<div class="controls">
-			<input type="text" id="inputTag" placeholder="" name="price" value="<?php echo $do_item->price ?>">
-			<span style="color: gray;">on PO: <?php echo $do_item->price?></span>
+			<input type="text" id="inputTag" placeholder="" name="price" value="<?php echo $submitted_do_item!=null ? $submitted_do_item->price : $do_item->price?>">
+			<span style="color: gray;font-size: 8pt">Old Value: <?php echo $do_item->price?></span>
 		</div>
 	</div>
 
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Currency:</label>
 		<div class="controls">
-			<select style="wight: 10px" name="curreny" id="curreny">
+			<select name="curreny" id="curreny">
 
+			<?php if($submitted_do_item!=null): ?>
+				<option selected="selected" value="">---Please select---</option>
+				<option <?php echo $submitted_do_item->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
+				<option <?php echo $submitted_do_item->currency=='LAK'? "selected='selected'":"";?>value="LAK">LAK</option>
+				<option <?php echo $submitted_do_item->currency=='THB'? "selected='selected'":"";?>value="THB">THB</option>
+			<?php else: ?>
+			
 				<option selected="selected" value="">---Please select---</option>
 				<option <?php echo $do_item->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
 				<option <?php echo $do_item->currency=='LAK'? "selected='selected'":"";?>value="LAK">LAK</option>
 				<option <?php echo $do_item->currency=='THB'? "selected='selected'":"";?>value="THB">THB</option>
-
+			
+			<?php endif;?>
 			</select>
-			<span style="color: gray;">on PO: <?php echo $do_item->currency?></span>
+			
+			
+			<span style="color: gray;font-size: 8pt">Old Value: <?php echo $do_item->currency?></span>
 		</div>
 	</div>
 
@@ -132,13 +154,19 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Payment Method:</label>
 		<div class="controls">
 			<select name="payment_method" id="payment_method">
-
+			<?php if($submitted_do_item!=null): ?>
+				<option selected="selected" value="">---Please select---</option>
+				<option <?php echo $submitted_do_item->payment_method=='By Cash'? "selected='selected'":"";?> value="By Cash">By Cash</option>
+				<option <?php echo $submitted_do_item->payment_method=='Bank Transfer'? "selected='selected'":"";?> value="Bank Transfer">Bank Transfer</option>
+				<option <?php echo $submitted_do_item->payment_method=='Other'? "selected='selected'":"";?> value="Other">Other Method</option>
+			<?php else: ?>
 				<option selected="selected" value="">---Please select---</option>
 				<option <?php echo $do_item->payment_method=='By Cash'? "selected='selected'":"";?> value="By Cash">By Cash</option>
 				<option <?php echo $do_item->payment_method=='Bank Transfer'? "selected='selected'":"";?> value="Bank Transfer">Bank Transfer</option>
 				<option <?php echo $do_item->payment_method=='Other'? "selected='selected'":"";?> value="Other">Other Method</option>
+			<?php endif;?>
 			</select>
-			<span style="color: gray;">on PO: <?php echo $do_item->payment_method?></span>
+			<span style="color: gray;font-size: 8pt">Old Value: <?php echo $do_item->payment_method?></span>
 		</div>
 	</div>
 
@@ -148,7 +176,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputDescription">Remarks:</label>
 		<div class="controls">
 			<textarea id="inputDescription" placeholder="" rows="2" cols="5"
-				name="remarks"><?php echo $do_item->remarks ?></textarea>
+				name="remarks"><?php echo $submitted_do_item!=null ? $submitted_do_item->remarks : $do_item->remarks; ?></textarea>
 		</div>
 	</div>
 

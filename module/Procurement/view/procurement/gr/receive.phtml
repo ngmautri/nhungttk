@@ -3,6 +3,7 @@
 <script>
     $(function() {
 	    $( "input[id='invoice_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+	    $( "input[id='receipt_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
 });
  </script>
 
@@ -30,14 +31,14 @@ if (count ( $errors ) > 0) {
 		value="<?php echo $redirectUrl ?>" /><input
 		type="hidden" name="pr_item_id" value="<?php echo $pr_item->id ?>" />
 		
-	<input type="hidden" name="vendor_id" id="vendor_id" value="<?php echo $po_item->vendor_id ?>" />
-	<input type="hidden" name="po_item_id" id="" value="<?php echo $po_item->id ?>" />
+	<input type="hidden" name="vendor_id" id="vendor_id" value="<?php echo $submitted_po_item!=null ? $submitted_po_item->vendor_id: $po_item->vendor_id ?>" />
+	<input type="hidden" name="po_item_id" id="" value="<?php echo $po_item->id?>" />
 
 	<div class="control-group">
 		<label class="control-label" for="inputNameLocal">Receipt Date:</label>
 		<div class="controls">
-			<input type="text" id="end_date" placeholder="click to select"
-				name="receipt_date" value="">
+			<input type="text" id="receipt_date" placeholder="click to select"
+				name="receipt_date" value="<?php echo $submitted_po_item!=null?$submitted_po_item->receipt_date:"" ?>">
 		</div>
 	</div>
 	
@@ -45,8 +46,8 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Vendor:</label>
 		<div class="controls">
 			<input readonly type="text" id="vendor" placeholder="" name="vendor"
-				value="<?php echo $po_item->vendor_name ?>"> 
-				<span style="color: gray;">PO: <?php echo $po_item->vendor_name?></span> |
+				value="<?php echo $vendor_name;?>"> 
+				<span style="color: gray; font-size: 8pt;">PO: <?php echo $po_item->vendor_name?></span> |
 				<a href="javascript:;" onclick="showVendorDialog();"
 				class="helper"> Select Other Vendor <i class=" icon-folder-open"></i></a>
 		</div>
@@ -57,7 +58,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputNameLocal">Invoice Date:</label>
 		<div class="controls">
 			<input type="text" id="invoice_date" placeholder="click to select"
-				name="invoice_date" value="">
+				name="invoice_date" value="<?php echo $submitted_po_item!=null?$submitted_po_item->invoice_date:"" ?>">
 		</div>
 	</div>
 	
@@ -65,7 +66,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Invoice No.:</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="invoice_no"
-				value="">
+				value="<?php echo $submitted_po_item!=null?$submitted_po_item->invoice_no:"" ?>">
 		</div>
 	</div>
 
@@ -73,14 +74,16 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Items:</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="name"
-				value="<?php echo $pr_item->name ?>">
+				value="<?php echo $submitted_po_item!=null?$submitted_po_item->name:$pr_item->name ?>">
+				<span style="color: gray; font-size: 8pt;">on PR: <?php echo $pr_item->name?></span>
 		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Item Code (if any):</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="code"
-				value="<?php echo $pr_item->code ?>">
+				value="<?php echo $submitted_po_item!=null?$submitted_po_item->code:$pr_item->code ?>">
+				<span style="color: gray;font-size: 8pt;">on PR: <?php echo $pr_item->code?></span>
 		</div>
 	</div>
 
@@ -88,7 +91,8 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Item Unit:</label>
 		<div class="controls">
 			<input type="text" placeholder="" name="unit"
-				value="<?php echo $pr_item->unit ?>">
+				value="<?php echo $submitted_po_item!=null?$submitted_po_item->unit:$pr_item->unit ?>">
+				<span style="color: gray; font-size: 8pt;">on PR: <?php echo $pr_item->unit?></span>
 		</div>
 	</div>
 
@@ -96,8 +100,8 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Received Quantity:</label>
 		<div class="controls">
 			<input type="text" id="inputTag" placeholder=""
-				name="delivered_quantity" value="">
-				 <?php echo '<div style="color: gray;">To deliver: '. $pr_item->confirmed_balance.'. Total Received: '. $pr_item->total_received_quantity.'</div>'?>
+				name="delivered_quantity" value="<?php echo $submitted_po_item!=null?$submitted_po_item->delivered_quantity:""?>">
+				 <?php echo '<span style="color: gray; font-size: 8pt;">To deliver: '. $pr_item->confirmed_balance.'. Total Received: '. $pr_item->total_received_quantity.'</span>'?>
      
         </div>
          
@@ -106,8 +110,8 @@ if (count ( $errors ) > 0) {
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Price:</label>
 		<div class="controls">
-			<input type="text" id="inputTag" placeholder="" name="price" value="<?php echo $po_item->price ?>">
-			<span style="color: gray;">on PO: <?php echo $po_item->price?></span>
+			<input type="text" id="inputTag" placeholder="" name="price" value="<?php echo $submitted_po_item!=null?$submitted_po_item->price:"$po_item->price" ?>">
+			<span style="color: gray; font-size: 8pt;">on PO: <?php echo $po_item->price?></span>
 		</div>
 	</div>
 
@@ -117,12 +121,18 @@ if (count ( $errors ) > 0) {
 			<select style="wight: 10px" name="curreny" id="curreny">
 
 				<option selected="selected" value="">---Please select---</option>
-				<option <?php echo $po_item->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
-				<option <?php echo $po_item->currency=='LAK'? "selected='selected'":"";?>value="LAK">LAK</option>
-				<option <?php echo $po_item->currency=='THB'? "selected='selected'":"";?>value="THB">THB</option>
-
+				
+				<?php if($submitted_po_item!=null):?>
+					<option <?php echo $submitted_po_item->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
+					<option <?php echo $submitted_po_item->currency=='LAK'? "selected='selected'":"";?> value="LAK">LAK</option>
+					<option <?php echo $submitted_po_item->currency=='THB'? "selected='selected'":"";?> value="THB">THB</option>
+				<?php else:?>
+					<option <?php echo $po_item->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
+					<option <?php echo $po_item->currency=='LAK'? "selected='selected'":"";?> value="LAK">LAK</option>
+					<option <?php echo $po_item->currency=='THB'? "selected='selected'":"";?> value="THB">THB</option>
+				<?php endif;?>
 			</select>
-			<span style="color: gray;">on PO: <?php echo $po_item->currency?></span>
+			<span style="color: gray; font-size: 8pt;">on PO: <?php echo $po_item->currency?></span>
 		</div>
 	</div>
 
@@ -130,13 +140,19 @@ if (count ( $errors ) > 0) {
 		<label class="control-label" for="inputTag">Payment Method:</label>
 		<div class="controls">
 			<select name="payment_method" id="payment_method">
-
+			<?php if($submitted_po_item!=null):?>
 				<option selected="selected" value="">---Please select---</option>
+				<option <?php echo $submitted_po_item->payment_method=='By Cash'? "selected='selected'":"";?> value="By Cash">By Cash</option>
+				<option <?php echo $submitted_po_item->payment_method=='Bank Transfer'? "selected='selected'":"";?> value="Bank Transfer">Bank Transfer</option>
+				<option <?php echo $submitted_po_item->payment_method=='Other'? "selected='selected'":"";?> value="Other">Other Method</option>
+			<?php else:?>
+						<option selected="selected" value="">---Please select---</option>
 				<option <?php echo $po_item->payment_method=='By Cash'? "selected='selected'":"";?> value="By Cash">By Cash</option>
 				<option <?php echo $po_item->payment_method=='Bank Transfer'? "selected='selected'":"";?> value="Bank Transfer">Bank Transfer</option>
 				<option <?php echo $po_item->payment_method=='Other'? "selected='selected'":"";?> value="Other">Other Method</option>
+			<?php endif;?>
 			</select>
-			<span style="color: gray;">on PO: <?php echo $po_item->payment_method?></span>
+			<span style="color: gray; font-size: 8pt;">on PO: <?php echo $po_item->payment_method?></span>
 		</div>
 	</div>
 

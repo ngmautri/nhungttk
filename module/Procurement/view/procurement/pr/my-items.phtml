@@ -216,10 +216,10 @@ if (count ( $pr_items ) > 0) :
 								class="icon-list"> </i> Detail</a></li>
 		<?php endif; ?>
 	
-		
+		<li class="divider"></li>
 		     
-         <li><a href="#"><i class="icon-signal"></i> Order History</a></li>
-					</ul>
+    <li><a target="_blank" href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i class="icon-signal"></i> Order History</a></li>
+						</ul>
 				</div>
 
 				<div style="color: gray;font-size: 7pt;">

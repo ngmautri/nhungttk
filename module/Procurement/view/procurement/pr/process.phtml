@@ -138,14 +138,13 @@ echo '<div class="alert alert-info">';
 		
 		 <?php if ($item->sparepart_id > 0) : ?>
      	<li><a
-							href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>" targey="_blank"><i
+							href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>" target="_blank"><i
 								class="icon-list"> </i> Detail</a></li>
 		<?php endif; ?>
 	
 		
 		     
-  <li><a href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i class="icon-signal"></i> Order History</a></li>
-									<li><a href="#"><i class="icon-film"></i> Picture</a></li>
+  <li><a target="_blank" href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i class="icon-signal"></i> Order History</a></li>
 					</ul>
 				</div>
 			

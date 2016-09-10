@@ -22,6 +22,7 @@ class AdminController extends AbstractActionController {
 	protected $assetSearchService;
 	protected $sparePartSearchService;
 	protected $articleSearchService;
+	protected $vendorSearchService;
 	
 	protected $mesage;
 	
@@ -53,6 +54,17 @@ class AdminController extends AbstractActionController {
 		$searcher = $this->getSparePartSearchService();
 		$message = $searcher->createIndex();
 		
+		return new ViewModel ( array (
+				'message' => $message,
+		) );
+	
+	}
+	
+	public function vendorIndexAction() {
+	
+		$searcher = $this->getVendorSearchService();
+		$message = $searcher->createIndex();
+	
 		return new ViewModel ( array (
 				'message' => $message,
 		) );
@@ -120,6 +132,16 @@ class AdminController extends AbstractActionController {
 			$this->articleSearchService = $this->getServiceLocator ()->get ( 'Inventory\Services\ArticleSearchService' );
 		}
 		return $this->articleSearchService;
+	}
+	
+	/**
+	 * Get asset search service
+	 */
+	public function getVendorSearchService() {
+		if (! $this->vendorSearchService) {
+			$this->vendorSearchService = $this->getServiceLocator ()->get ( 'Procurement\Services\VendorSearchService' );
+		}
+		return $this->vendorSearchService;
 	}
 	
 }

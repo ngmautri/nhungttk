@@ -55,6 +55,12 @@ function openAssetSearchDialog() {
 function showDialog() {
 	//$('#myModal').modal('hide');
 	q = $("#asset_search_term").val();
+	
+	if (q.length ==0) {
+		$("#search_result").html('Please enter search term');
+		return;
+	}
+	
 	$("#search_result").html('Searching.....');
 
 	//$("#dialog").html('Please wait ...');
@@ -862,6 +868,7 @@ function showVendorDialog() {
 	    	//showDialog();
 	  });
 	
+	
 	loadVendorList();
 }
 /**
@@ -1003,7 +1010,6 @@ function openPRCart(ID) {
 	var item_on_cart_id;
 	var isOnCart;
 	
-	
 	item_name_id = '#' + ID + '_name';
 	item_code_id = '#' + ID + '_code';
 	item_unit_id = '#' + ID + '_unit';
@@ -1028,19 +1034,17 @@ function openPRCart(ID) {
 	$('#item_code').val($(item_code_id).text());
 	$('#item_unit').val($(item_unit_id).text());
 	
-	
-	
 	$('#item_balance').html('<span style="font-size 6px;"> Current Balance:' + $(item_current_balance_id).text() + '; Minimum Balance:' + $(item_min_balance_id).text()+ '</span>');
 
 	$('#item_id').val(ID);
-	$('#myModal').modal();
+	$('#sp_order_modal').modal();
 	$('#item_quantity').select();
 
 }
 
 function addItemToCart(type) {
-	$('#myModal').modal('hide');
-	$('#myModal1').modal();
+	$('#sp_order_modal').modal('hide');
+	$('#info_modal').modal();
 
 	var item_name;
 	var item_code;
@@ -1079,11 +1083,11 @@ function addItemToCart(type) {
 		var status = obj['status'];
 		var messages = obj['messages'];
 		if (status == 1) {
-			$('#myModal1').modal('hide');
+			$('#info_modal').modal('hide');
 			$('#_status').show();
 			updateCarts();
 		} else {
-			$('#myModal1').modal('hide');
+			$('#info_modal').modal('hide');
 			var n_errors = messages.length;
 			if (n_errors > 0) {
 				s = '<div class="alert alert-error">';
@@ -1096,7 +1100,7 @@ function addItemToCart(type) {
 
 			$('#_status').html(s);
 			$('#_status').show();
-			$('#myModal').modal();
+			$('#sp_order_modal').modal();
 			$('#_status').fadeOut(6000);
 		}
 	});

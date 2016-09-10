@@ -91,21 +91,18 @@ echo '<div class="alert alert-error">';
 <hr>
 <h5>    <a href="/inventory/spareparts/pictures?sparepart_id=<?php echo (int) $sp->id; ?>">Spare-part pictures</a></h5>
 
-
-
+<?php if (count($pictures)>0): ?>
 <div id="lightgallery">
 
- <?php if ($pictures->count()>0){ ?>
  <?php foreach ($pictures as $pic) : ?>
   	
     <a href="/inventory/image/sparepart?id=<?php  echo $this->escapeHtml($pic->id);?>">
     <img class= "img-rounded" width="100" height="100" src="/inventory/image/sparepartthumbnail200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
     </a>
-	
 <?php endforeach; ?>
 </div>
 
-<?php }?>
+<?php endif;?>
 
 
 <!-- Modal -->

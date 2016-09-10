@@ -19,4 +19,4 @@
 <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/sparepart"	method="get" enctype="multipart/form-data">
       <input type="text" name = "query" class="">
       <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
-   </form>
+</form>

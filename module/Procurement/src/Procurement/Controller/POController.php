@@ -83,6 +83,7 @@ class POController extends AbstractActionController {
 			$input->unit = $request->getPost ( 'unit' );
 			
 			$input->vendor_id = $request->getPost ( 'vendor_id' );
+			$vendor_name = $request->getPost ( 'vendor' );
 			
 			$input->price = $request->getPost ( 'price' );
 			$input->currency = $request->getPost ( 'curreny' );
@@ -97,6 +98,11 @@ class POController extends AbstractActionController {
 			// validator.
 			$errors = array ();
 			
+			if($input->vendor_id<0 or $input->vendor_id ==null ){
+				$errors [] = 'Please select a vendor, or create new vendor, if not found!';
+			}
+				
+			
 			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
 			//$validator = new Int ();
 			
@@ -104,14 +110,17 @@ class POController extends AbstractActionController {
 				$errors [] = 'Price is not valid. It must be a number.';
 			}else 
 			{
-				if($input->price<0){
-					$errors [] = 'Price is not valid. It must be a positive number!';
+				if($input->price<=0){
+					$errors [] = 'Price is not valid. It must be greater than 0!';
 				}
+			}
 				
+			if ($input->currency =="") {
+				$errors [] = 'Please select currency!';
 			}
 			
-			if($input->vendor_id<0 or $input->vendor_id ==null ){
-				$errors [] = 'Please select a vendor. And create new vendor, if not found!';
+			if ($input->payment_method =="") {
+				$errors [] = 'Please select payment method!';
 			}
 			
 			if (count ( $errors ) > 0) {
@@ -121,7 +130,9 @@ class POController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'user' => $user,
 						'errors' => $errors,
-						'pr_item' => $pr_item 
+						'pr_item' => $pr_item,
+						'submitted_po_item' => $input,
+						'vendor_name' => $vendor_name,
 				) );
 			}
 			
@@ -138,7 +149,9 @@ class POController extends AbstractActionController {
 				'redirectUrl' => $redirectUrl,
 				'user' => $user,
 				'errors' => null,
-				'pr_item' => $pr_item 
+				'pr_item' => $pr_item,
+				'submitted_po_item' => null,
+				'vendor_name' => null,
 		) );
 	}
 	
@@ -361,6 +374,7 @@ class POController extends AbstractActionController {
 			$input->code = $request->getPost ( 'unit' );
 				
 			$input->vendor_id = $request->getPost ( 'vendor_id' );
+			$vendor_name = $request->getPost ( 'vendor' );
 				
 			$input->price = $request->getPost ( 'price' );
 			$input->currency = $request->getPost ( 'curreny' );
@@ -378,13 +392,21 @@ class POController extends AbstractActionController {
 			if (! is_numeric ( $input->price )) {
 				$errors [] = 'Price is not valid. It must be a number.';
 			}else {
-				if ($input->price < 0) {
-					$errors [] = 'Price must be positiv!';
+				if ($input->price <= 0) {
+					$errors [] = 'Price must be greate than 0!';
 				}
 			}
 			
-			if($input->vendor_id<0 or $input->vendor_id ==null ){
-				$errors [] = 'Please select a vendor. And create new vendor, if not found!';
+			if($input->vendor_id< 0 or $input->vendor_id ==null ){
+				$errors [] = 'Please select a vendor, or create new vendor, if not found!';
+			}
+			
+			if ($input->currency =="") {
+				$errors [] = 'Please select currency!';
+			}
+				
+			if ($input->payment_method =="") {
+				$errors [] = 'Please select payment method!';
 			}
 				
 			if (count ( $errors ) > 0) {
@@ -396,6 +418,8 @@ class POController extends AbstractActionController {
 						'errors' => $errors,
 						'pr_item' => $pr_item,
 						'po_item' => $po_item,
+						'submitted_po_item' => $input,
+						'vendor_name' => $vendor_name,
 						
 				) );
 			}
@@ -416,7 +440,9 @@ class POController extends AbstractActionController {
 				'po_item' => $po_item,
 				'pr_item' => $pr_item,
 				'redirectUrl' => $redirectUrl,
-				'errors' => null
+				'errors' => null,
+				'submitted_po_item' => null,
+				'vendor_name' => $po_item->vendor_name,
 		) 
 		);
 	}

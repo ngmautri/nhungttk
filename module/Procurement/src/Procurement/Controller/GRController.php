@@ -98,11 +98,13 @@ class GRController extends AbstractActionController {
 			
 			$input->receipt_date = $request->getPost ( 'receipt_date' );
 			// $input->delivery_id = $request->getPost ( 'delivery_id' );
-			$input->po_item_id = $request->getPost ( 'po_item_id' );
+			
+			$po_item_id = $request->getPost ( 'po_item_id' );
+			$input->po_item_id = $po_item_id;
 			$input->pr_item_id = $request->getPost ( 'pr_item_id' );
 			
 			$input->name = $request->getPost ( 'name' );
-			$input->code = $request->getPost ( 'unit' );
+			$input->code = $request->getPost ( 'code' );
 			$input->unit = $request->getPost ( 'unit' );
 			
 			$input->vendor_id = $request->getPost ( 'vendor_id' );
@@ -128,30 +130,38 @@ class GRController extends AbstractActionController {
 			$validator = new Date ();
 			
 			if (! $validator->isValid ( $input->receipt_date )) {
-				$errors [] = 'receipt_date format is not correct!';
+				$errors [] = 'Receipt date format is not correct!';
 			}
 			
 			if (! $validator->isValid ( $input->invoice_date )) {
-				$errors [] = 'invoice_date format is not correct!';
+				$errors [] = 'Invoice date format is not correct!';
 			}
 			
 			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
 			$validator = new Int ();
 			
 			if (! $validator->isValid ( $input->delivered_quantity )) {
-				$errors [] = 'Received Quantity is not valid. It must be a number.';
+				$errors [] = 'Received quantity is not valid. It must be a number.';
 			} else {
 				if ($input->delivered_quantity < 0) {
-					$errors [] = 'Received Quantity must be positiv';
+					$errors [] = 'Received quantity must greater than 0';
 				}
 			}
 			
 			if (! is_numeric ( $input->price )) {
 				$errors [] = 'Price is not valid. It must be a number.';
 			}else {
-				if ($input->delivered_quantity < 0) {
-					$errors [] = 'Quantity must be positiv';
+				if ($input->price <= 0) {
+					$errors [] = 'Price must be greater than 0!';
 				}
+			}
+			
+			if ($input->currency =="") {
+				$errors [] = 'Please select currency!';
+			}
+			
+			if ($input->payment_method =="") {
+				$errors [] = 'Please select payment method!';
 			}
 			
 			if (count ( $errors ) > 0) {
@@ -163,7 +173,9 @@ class GRController extends AbstractActionController {
 						'user' => $user,
 						'errors' => $errors,
 						'pr_item' => $pr_item,
-						'po_item' => $po_item 
+						'po_item' => $po_item,
+						'submitted_po_item' => $input,
+						'vendor_name' => $request->getPost ( 'vendor' ),
 				) );
 			}
 			
@@ -184,7 +196,9 @@ class GRController extends AbstractActionController {
 				'user' => $user,
 				'errors' => null,
 				'pr_item' => $pr_item,
-				'po_item' => $po_item 
+				'po_item' => $po_item,
+				'vendor_name' => $po_item->vendor_name,
+				'submitted_po_item' => null,
 		) );
 	}
 	
@@ -372,11 +386,11 @@ class GRController extends AbstractActionController {
 			$validator = new Date ();
 				
 			if (! $validator->isValid ( $input->receipt_date )) {
-				$errors [] = 'receipt_date format is not correct!';
+				$errors [] = 'Receipt date format is not correct!';
 			}
 				
 			if (! $validator->isValid ( $input->invoice_date )) {
-				$errors [] = 'invoice_date format is not correct!';
+				$errors [] = 'Invoice date format is not correct!';
 			}
 			
 			// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
@@ -386,7 +400,7 @@ class GRController extends AbstractActionController {
 				$errors [] = 'Price is not valid. It must be a number.';
 			} else {
 				if ($input->price < 0) {
-					$errors [] = 'Price must be positiv';
+					$errors [] = 'Price must be greater than 0';
 				}
 			}
 			
@@ -394,8 +408,16 @@ class GRController extends AbstractActionController {
 				$errors [] = 'Quantity is not valid. It must be a number.';
 			} else {
 				if ($input->delivered_quantity < 0) {
-					$errors [] = 'Quantity must be positiv';
+					$errors [] = 'Quantity must be greate than 0';
 				}
+			}
+			
+			if ($input->currency =="") {
+				$errors [] = 'Please select currency!';
+			}
+				
+			if ($input->payment_method =="") {
+				$errors [] = 'Please select payment method!';
 			}
 			
 			if (count ( $errors ) > 0) {
@@ -405,7 +427,9 @@ class GRController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'pr_item' => $pr_item,
-						'do_item' => $do_item 
+						'do_item' => $do_item,
+						'submitted_do_item' => $input,
+						'vendor_name' => $request->getPost ( 'vendor' ),
 				)
 				 );
 			}
@@ -426,7 +450,9 @@ class GRController extends AbstractActionController {
 				'do_item' => $do_item,
 				'pr_item' => $pr_item,
 				'redirectUrl' => $redirectUrl,
-				'errors' => null 
+				'errors' => null,
+				'submitted_do_item' => null,
+				'vendor_name' => $do_item->vendor_name,
 		) );
 	}
 	public function getAuthService() {

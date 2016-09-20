@@ -35,6 +35,9 @@ use Procurement\Model\PurchaseRequestCartItem;
 use Procurement\Model\PurchaseRequestCartItemTable;
 use Procurement\Model\PurchaseRequestItemTable;
 
+use Application\Model\DepartmentTable;
+
+
 class ArticleController extends AbstractActionController {
 	protected $SmtpTransportService;
 	protected $authService;
@@ -48,6 +51,8 @@ class ArticleController extends AbstractActionController {
 	protected $articlePictureTable;
 	protected $articleMovementTable;
 	protected $purchaseRequestCartItemTable;
+	
+	protected $departmentTable;
 	
 	/*
 	 * Defaul Action
@@ -884,37 +889,217 @@ class ArticleController extends AbstractActionController {
 	 * List all articles ADMIN
 	 */
 	public function allAction() {
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
-	
+		
+		$departments = $this->departmentTable->fetchAll ();
+		
+		$output = $this->params ()->fromQuery ( 'output' );
+		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
+		$item_status = $this->params ()->fromQuery ( 'item_status' );
+		$item_type = $this->params ()->fromQuery ( 'item_type' );
+		$department_id = $this->params ()->fromQuery ( 'department_id' );
+		
+		
+		if($item_status==null):
+			$item_status="Activated";
+		elseif ($item_status=="all"):
+			$item_status=null;
+		endif;
+		
+		if($sort_by==null):
+		$sort_by="item_name";
+		endif;
+		
+		if ($output === 'csv') {
+		
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+		
+			$h = array ();
+			$h [] = "Item#";
+			$h [] = "Item SKU";
+			$h [] = "Item Name";
+			$h [] = "Item Name (LA)";
+			$h [] = "Description";
+			$h [] = "Keywords";
+			$h [] = "Type";
+			$h [] = "Unit";
+			$h [] = "Item Code";
+			$h [] = "Item BarCode";
+			$h [] = "Current Balace";
+			$h [] = "Department Name";
+			$h [] = "Status";
+		
+			$h [] = "Remarks	";
+		
+			$delimiter = ";";
+		
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+		
+			$articles = $this->articleTable->getArticles_V02( 0,null,null,'item_name',0, 0 );
+		
+			foreach ( $articles as $m ) {
+				$l = array ();
+				$l [] = ( string ) $m->id;
+				$l [] = ( string ) $m->article_tag;
+		
+				$name = ( string ) $m->name;
+		
+				$name === '' ? $name = "-" : $name;
+		
+				$name = str_replace ( ',', '', $name );
+				$name = str_replace ( ';', '', $name );
+		
+				$l [] = $name;
+				$l [] = ( string ) $m->name_local;
+		
+				$l [] = ( string ) $m->description;
+				$l [] = ( string ) $m->keywords;
+				$l [] = ( string ) $m->type;
+				$l [] = ( string ) $m->unit;
+				$l [] = ( string ) "'".$m->code;
+				$l [] = ( string ) $m->barcode;
+				$l [] = ( string ) $m->article_balance;
+				$l [] = ( string ) $m->department_name;
+				$l [] = ( string ) $m->status;
+				$l [] = ( string ) $m->remarks;
+		
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+		
+			$fileName = 'Items-'.date( "m-d-Y" ) .'-' . date("h:i:sa").'.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+		
+			$response = $this->getResponse ();
+			$headers = new Headers();
+		
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+		
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+		
+			//$response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+			$response->setHeaders($headers);
+			// $output = fread($fh, 8192);
+		
+			$response->setContent ( $output );
+		
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
+		
+		if ($output === 'order_template') {
+		
+			$fh = fopen ( 'php://memory', 'w' );
+			// $myfile = fopen('ouptut.csv', 'a+');
+		
+			$h = array ();
+			$h [] = "Item#";
+			$h [] = "Item Name";
+			$h [] = "Item Code";
+			$h [] = "Item Unit";
+			$h [] = "Order Quantity";
+			$h [] = "EDT (Delivery Date)";
+			$h [] = "Remarks";
+		
+			$delimiter = ";";
+		
+			fputcsv ( $fh, $h, $delimiter, '"' );
+			// fputs($fh, implode($h, ',')."\n");
+		
+			$articles = $this->articleTable->getArticles_V02( $department_id,null,'Activated','item_name',0, 0 );
+		
+			foreach ( $articles as $m ) {
+				$l = array ();
+				$l [] = ( string ) $m->id;
+		
+				$name = ( string ) $m->name;
+		
+				$name === '' ? $name = "-" : $name;
+		
+				$name = str_replace ( ',', '', $name );
+				$name = str_replace ( ';', '', $name );
+		
+				$l [] = $name;
+				$l [] = ( string ) "'".$m->code;
+				$l [] = ( string ) $m->unit;
+				$l [] = ( string ) '';
+				$l [] = ( string ) '';
+				$l [] = ( string ) '';
+		
+				fputcsv ( $fh, $l, $delimiter, '"' );
+				// fputs($fh, implode($l, ',')."\n");
+			}
+		
+			$fileName = 'Order_Template.csv';
+			fseek ( $fh, 0 );
+			$output = stream_get_contents ( $fh );
+			// file_put_contents($fileName, $output);
+		
+			$response = $this->getResponse ();
+			$headers = new Headers();
+		
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+		
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+		
+			//$response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+			$response->setHeaders($headers);
+			// $output = fread($fh, 8192);
+		
+			$response->setContent ( $output );
+		
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
+		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 18;
+			$resultsPerPage = 15;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
 		;
-	
+		
 		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
 			$page = 1;
 		} else {
 			$page = $this->params ()->fromQuery ( 'page' );
 		}
 		;
-	
-	
-		$articles = $this->articleTable->getArticles ( 0, 0, 0 );
+		
+		
+		$articles = $this->articleTable->getArticles_V02( $department_id,$item_type,$item_status,$sort_by, 0, 0 );
 		$totalResults = $articles->count ();
-	
+		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$articles = $this->articleTable->getArticles ( 0, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$articles = $this->articleTable->getArticles_V02 ( $department_id,$item_type,$item_status,$sort_by, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
-	
+		
 		return new ViewModel ( array (
 				'total_articles' => $totalResults,
 				'articles' => $articles,
-				'paginator' => $paginator
+				'paginator' => $paginator,
+				'sort_by' => $sort_by,
+				'item_status' => $item_status,
+				'per_pape'=>$resultsPerPage,
+				'item_type' => $item_type,
+				'departments'=>$departments,
+				'department_id'=>$department_id,
+				
 		) );
 	}
 	
@@ -1406,4 +1591,12 @@ class ArticleController extends AbstractActionController {
 		$this->articleCategoryService = $articleCategoryService;
 		return $this;
 	}
+	public function getDepartmentTable() {
+		return $this->departmentTable;
+	}
+	public function setDepartmentTable(DepartmentTable $departmentTable) {
+		$this->departmentTable = $departmentTable;
+		return $this;
+	}
+	
 }

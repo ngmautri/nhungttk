@@ -380,7 +380,55 @@ WHERE 1
 		$resultSet->initialize($result);
 		return $resultSet;
 	}
-
+	
+	
+	public function getArticles_V02($department_id,$item_type,$item_status,$sort_by, $limit, $offset){
+	
+		$adapter = $this->tableGateway->adapter;
+		$sql = $this->getArticles_SQL_V01;
+	
+		if ($department_id > 0) {
+			$sql = $sql. " AND mla_users.department_id = ".$department_id;
+		}
+	
+		// Type
+		if ($item_type != null) {
+			$sql = $sql. " AND  mla_articles.type ='" . $item_type . "'";
+		}
+	
+		// Status
+		if ($item_status != null) {
+			$sql = $sql. " AND  mla_articles.status ='" . $item_status . "'";
+		}
+	
+		if ($sort_by =="item_name") {
+			$sql = $sql. " ORDER BY mla_articles.name asc";
+		}
+	
+		if ($sort_by =="created_date") {
+			$sql = $sql. " ORDER BY mla_articles.created_on desc";
+		}
+			
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+	
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+	
+		$sql = $sql.";";
+	
+		//echo $sql;
+	
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return $resultSet;
+	}
 	public function getLimitArticles($limit,$offset){
 		$adapter = $this->tableGateway->adapter;
 		

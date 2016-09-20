@@ -52,6 +52,10 @@ class ArticleControllerFactory implements FactoryInterface {
 		// Purchase Request Cart Item table
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestCartItemTable' );
 		$controller->setPurchaseRequestCartItemTable($tbl );
+	
+		// Department table
+		$tbl =  $sm->get ('Application\Model\DepartmentTable' );
+		$controller->setDepartmentTable($tbl );
 		
 			
 		//Auth Service

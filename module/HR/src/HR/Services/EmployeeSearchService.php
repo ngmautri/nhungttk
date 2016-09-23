@@ -18,21 +18,27 @@ use MLA\Service\AbstractService;
 use ZendSearch\Lucene\Index\Term;
 use HR\Model\VendorTable;
 use \Exception;
-
+use HR\Model\Employee;
+use HR\Model\EmployeeTable;
+use HR\Model\EmployeePicture;
+use HR\Model\EmployeePictureTable;
 /*
  * @author nmt
  *
  */
-class VendorSearchService extends AbstractService {
+class EmployeeSearchService extends AbstractService {
 	
-	protected $vendorTable;
+	protected $employeeTable;
+	protected $employeePictureTable;
+	protected $employeeService;
+	
 	protected $eventManager = null;
 	
 	//Production
-	private $index_path = "module/Procurement/data/index/vendor";
+	private $index_path = "module/HR/data/index/employee";
 	
 	//Test
-	//private $index_path = "data/index/vendor";
+	//private $index_path = "data/index/employee";
 	
 	
 	/**
@@ -51,19 +57,27 @@ class VendorSearchService extends AbstractService {
 		$index = Lucene::create ( ROOT . DIRECTORY_SEPARATOR . $this->index_path );
 		Analyzer::setDefault ( new CaseInsensitive () );
 		
-		$rows = $this->vendorTable->fetchAll();
+		$rows = $this->employeeTable->fetchAll();
 		echo count ( $rows );
 		
 		if (count ( $rows ) > 0) {
 			foreach ( $rows as $row ) {
 				$doc = new Document ();
-				$doc->addField ( Field::UnIndexed ( 'vendor_id', $row->id ) );
-				$doc->addField ( Field::Text ( 'name', mb_strtolower ( $row->name ) ) );
-				$doc->addField ( Field::Text ( 'keywords', mb_strtolower ( $row->keywords ) ) );
+				$doc->addField ( Field::UnIndexed ( 'employee_id', $row->id ) );
+				
+				$doc->addField(Field::Text('employee_code', $row->employee_code));
+				$doc->addField(Field::Keyword('employee_code', $row->employee_code));
+				
+				$doc->addField(Field::Text('employee_code1', $row->employee_code*1));
+				
+				
+				$doc->addField ( Field::Text ( 'employee_name', mb_strtolower ( $row->employee_name ) ) );
+				$doc->addField ( Field::Text ( 'employee_name_local', mb_strtolower ( $row->employee_name_local ) ) );
+				$doc->addField ( Field::Text ( 'employee_dob', mb_strtolower ( $row->employee_dob ) ) );
 				
 				$index->addDocument ( $doc );
 			}
-			return 'Vendor index is created successfully!';
+			return 'Employee index is created successfully!';
 		} else {
 			return 'Nothing for indexing!';
 		}
@@ -106,7 +120,7 @@ class VendorSearchService extends AbstractService {
 	 */
 	public function search($q) {
 			$index = Lucene::open (  ROOT . DIRECTORY_SEPARATOR . $this->index_path );
-			Lucene::setDefaultSearchField('name');
+			//Lucene::setDefaultSearchField('name');
 			$hits = $index->find ($q);
 			return $hits;
 	}
@@ -129,6 +143,28 @@ class VendorSearchService extends AbstractService {
 		$this->vendorTable = $vendorTable;
 		return $this;
 	}
+	public function getEmployeeTable() {
+		return $this->employeeTable;
+	}
+	public function setEmployeeTable(EmployeeTable $employeeTable) {
+		$this->employeeTable = $employeeTable;
+		return $this;
+	}
+	public function getEmployeePictureTable() {
+		return $this->employeePictureTable;
+	}
+	public function setEmployeePictureTable($employeePictureTable) {
+		$this->employeePictureTable = $employeePictureTable;
+		return $this;
+	}
+	public function getEmployeeService() {
+		return $this->employeeService;
+	}
+	public function setEmployeeService($employeeService) {
+		$this->employeeService = $employeeService;
+		return $this;
+	}
+	
 	
 
 	

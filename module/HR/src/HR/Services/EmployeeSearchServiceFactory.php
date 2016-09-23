@@ -7,15 +7,11 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use HR\Services\VendorSearchService;
 
-
-
 /*
  * @author nmt
  *
  */
-class VendorSearchServiceFactory implements FactoryInterface {
-	
-	
+class EmployeeSearchServiceFactory implements FactoryInterface {
 	
 	/**
 	 * 
@@ -26,12 +22,12 @@ class VendorSearchServiceFactory implements FactoryInterface {
 		
 		$eventManager = $serviceLocator->get ( 'EventManager' );
 				
-		$searchService = new VendorSearchService();
+		$searchService = new EmployeeSearchService();
 		$searchService->setEventManager ( $eventManager );
 		
-		$tbl =  $serviceLocator->get ('HR\Model\VendorTable' );
+		$tbl =  $serviceLocator->get ('HR\Model\EmployeeTable' );
 		
-		$searchService->setVendorTable($tbl);
+		$searchService->setEmployeeTable($tbl);
 		
 		return $searchService;
 	}

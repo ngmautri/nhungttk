@@ -47,6 +47,9 @@ return array (
 						'HR\Controller\Index' => 'HR\Controller\IndexController',
 				),
 				'factories' => array (
+						'HR\Controller\Employee' => 'HR\Controller\EmployeeControllerFactory',
+						'HR\Controller\Image' => 'HR\Controller\ImageControllerFactory',
+						
 				)
 		),
 		'view_manager' => array (

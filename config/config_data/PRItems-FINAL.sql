@@ -62,12 +62,11 @@ SELECT
     mla_po_item.id AS po_item_id,
     mla_po_item.vendor_id AS po_vendor_id,
     mla_po_item.price AS po_price,
-     mla_po_item.currency AS po_currency,
+    mla_po_item.currency AS po_currency,
     mla_po_item.payment_method AS po_payment_method,
     mla_vendors_po.name AS po_vendor_name,
-    mla_sparepart_pics.filename AS sp_picture,
-    mla_sparepart_pics.id AS sp_picture_id
-	
+    mla_po_item.remarks AS po_remarks
+  
 FROM mla_purchase_request_items
 
 /* PURCHASE REQUEST */
@@ -146,17 +145,6 @@ ON mla_delivery_items_sp.vendor_id = mla_vendor_sp.id
 LEFT JOIN mla_spareparts
 ON mla_spareparts.id = mla_purchase_request_items.sparepart_id
 
-LEFT JOIN
-(
-	SELECT 	
-    * 
-    FROM mla_sparepart_pics
-	ORDER BY mla_sparepart_pics.uploaded_on DESC
-	LIMIT 1
-) 
-AS mla_sparepart_pics
-ON mla_sparepart_pics.sparepart_id =  mla_purchase_request_items.id 
-
 /* PO ITEMS 1-1*/
 LEFT JOIN mla_po_item
 ON mla_po_item.pr_item_id = mla_purchase_request_items.id
@@ -167,6 +155,9 @@ ON mla_vendors_po.id = mla_po_item.vendor_id
 
 WHERE 1
 AND mla_purchase_requests_workflows.status IS NOT NULL
-AND mla_purchase_request_items.purchase_request_id=164
+and IF ((mla_purchase_request_items.quantity - IFNULL(mla_delivery_items_workflows.confirmed_quantity,0))>=0
+    ,(mla_purchase_request_items.quantity - IFNULL(mla_delivery_items_workflows.confirmed_quantity,0))
+    ,0) >0
 
+AND mla_purchase_request_items.sparepart_id=3
 /* ALL PR ITEMS*/

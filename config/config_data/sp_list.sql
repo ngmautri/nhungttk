@@ -1,4 +1,4 @@
-			explain
+              explain
               SELECT 
 				mla_sparepart_cats.sparepart_cat_id AS sparepart_cat_id,
                 mla_sparepart_cats.name AS cat_name,
@@ -8,10 +8,7 @@
 				(IFNULL(mla_sparepart_movements.total_inflow,0) - IFNULL(mla_sparepart_movements.total_outflow,0)) AS current_balance,
 				IFNULL(mla_sparepart_minimum_balance.minimum_balance,0) AS minimum_balance,
 				((IFNULL(mla_sparepart_movements.total_inflow,0) - IFNULL(mla_sparepart_movements.total_outflow,0)) - IFNULL(mla_sparepart_minimum_balance.minimum_balance,0)) AS remaining_to_order,
-                mla_sparepart_pics.id AS sp_pic_id,
-                mla_sparepart_pics.filename,
-                mla_sparepart_pics.url,
-                mla_sparepart_pics.folder,
+                mla_sparepart_pics.sp_picture_id,
                 mla_purchase_cart.*
 			FROM mla_spareparts
 			LEFT JOIN
@@ -33,11 +30,11 @@
 			/*picture*/
             LEFT JOIN 
             (
-	            SELECT 	
-				* 
+	           SELECT
+					mla_sparepart_pics.sparepart_id,
+					MAX(mla_sparepart_pics.id) AS sp_picture_id
 				FROM mla_sparepart_pics
-				ORDER BY mla_sparepart_pics.uploaded_on DESC
-				LIMIT 1
+				GROUP BY mla_sparepart_pics.sparepart_id
             )
             AS mla_sparepart_pics
             ON mla_sparepart_pics.sparepart_id = mla_spareparts.id
@@ -61,18 +58,18 @@
             
             /* check order cart*/
           
-            left join
+            LEFT JOIN
             (
-				select
-					mla_purchase_cart.id as cart_item_id,
-					ifnull(mla_purchase_cart.sparepart_id,0) as ordering_sp_id,
-					mla_purchase_cart.article_id as ordering_artice_id,
-					mla_purchase_cart.asset_id as ordering_asset_id
-				from mla_purchase_cart
-				where mla_purchase_cart.status is null
+				SELECT
+					mla_purchase_cart.id AS cart_item_id,
+					IFNULL(mla_purchase_cart.sparepart_id,0) AS ordering_sp_id,
+					mla_purchase_cart.article_id AS ordering_artice_id,
+					mla_purchase_cart.asset_id AS ordering_asset_id
+				FROM mla_purchase_cart
+				WHERE mla_purchase_cart.status IS NULL
             )
-            as mla_purchase_cart
-            on mla_purchase_cart.ordering_sp_id = mla_spareparts.id
+            AS mla_purchase_cart
+            ON mla_purchase_cart.ordering_sp_id = mla_spareparts.id
            
             WHERE 1
        

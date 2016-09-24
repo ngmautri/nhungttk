@@ -65,12 +65,25 @@ SELECT
      mla_po_item.currency AS po_currency,
     mla_po_item.payment_method AS po_payment_method,
     mla_vendors_po.name AS po_vendor_name,
-    mla_sparepart_pics.filename AS sp_picture,
-    mla_sparepart_pics.id AS sp_picture_id,
-    mla_delivery_items.id as dn_item_id,
-    mla_delivery_items_workflows_received.confirmed_quantity as dn_item_confirmed_quantity,
-    mla_delivery_items_workflows_received.rejected_quantity as dn_item_rejected_quantity,
-    mla_delivery_items_workflows_received.status as dn_item_status
+    
+     
+    mla_delivery_items.id AS dn_item_id,
+    mla_delivery_items.vendor_id AS dn_vendor_id,
+    mla_delivery_items.price AS dn_price,
+    mla_delivery_items.currency AS dn_currency,
+    mla_delivery_items.payment_method AS dn_payment_method,
+    mla_vendors_dn.name AS  dn_vendor_name,
+    
+	mla_delivery_items.delivery_id,
+    mla_delivery_items.delivered_quantity,
+    mla_delivery_items.last_workflow_id AS dn_item_last_workflow_id,
+    
+    IFNULL(CASE WHEN mla_delivery_items_workflows_received.status='Notified' THEN  mla_delivery_items.delivered_quantity ELSE 0 END,0) AS dn_item_unconfirmed_quantity,
+    
+    
+    mla_delivery_items_workflows_received.confirmed_quantity AS dn_item_confirmed_quantity,
+    mla_delivery_items_workflows_received.rejected_quantity AS dn_item_rejected_quantity,
+    mla_delivery_items_workflows_received.status AS dn_item_status
     
 	
 FROM mla_purchase_request_items
@@ -151,16 +164,6 @@ ON mla_delivery_items_sp.vendor_id = mla_vendor_sp.id
 LEFT JOIN mla_spareparts
 ON mla_spareparts.id = mla_purchase_request_items.sparepart_id
 
-LEFT JOIN
-(
-	SELECT 	
-    * 
-    FROM mla_sparepart_pics
-	ORDER BY mla_sparepart_pics.uploaded_on DESC
-	LIMIT 1
-) 
-AS mla_sparepart_pics
-ON mla_sparepart_pics.sparepart_id =  mla_purchase_request_items.id 
 
 /* PO ITEMS 1-1*/
 LEFT JOIN mla_po_item
@@ -169,15 +172,25 @@ ON mla_po_item.pr_item_id = mla_purchase_request_items.id
 LEFT JOIN mla_vendors AS mla_vendors_po
 ON mla_vendors_po.id = mla_po_item.vendor_id
 
-left join mla_delivery_items
-on mla_delivery_items.po_item_id = mla_po_item.id
+LEFT JOIN mla_delivery_items
+ON mla_delivery_items.po_item_id = mla_po_item.id
 
-left join mla_delivery_items_workflows as mla_delivery_items_workflows_received
-on mla_delivery_items_workflows_received.dn_item_id = mla_delivery_items.id
+LEFT JOIN mla_delivery_items_workflows AS mla_delivery_items_workflows_received
+ON mla_delivery_items_workflows_received.id = mla_delivery_items.last_workflow_id
+
+LEFT JOIN mla_vendors AS mla_vendors_dn
+ON mla_vendors_dn.id = mla_delivery_items.vendor_id
+
 /* PO ITEMS 1-1*/
 
 WHERE 1
 AND mla_purchase_requests_workflows.status IS NOT NULL
-AND mla_purchase_request_items.id=67
+AND mla_delivery_items.po_item_id>0	
+
 
 /* ALL PR ITEMS*/
+
+AND (CASE WHEN (mla_purchase_request_items.quantity - IFNULL(mla_delivery_items_workflows.confirmed_quantity,0))>=0  
+	THEN mla_purchase_request_items.quantity - IFNULL(mla_delivery_items_workflows.confirmed_quantity,0)  ELSE 0 END) >0
+
+

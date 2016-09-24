@@ -7,6 +7,7 @@ return array (
 		'modules' => array (
 				'Application',
 				'Procurement',
+				'Hr',
 				'Inventory',
 				'User', // load last				
 		),

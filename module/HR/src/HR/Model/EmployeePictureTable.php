@@ -85,32 +85,17 @@ class EmployeePictureTable {
 		$this->tableGateway->update( $data,$where);
 	}
 	
-	/**
-	 * 
-	 * @param unknown $id
-	 * @return \Zend\Db\ResultSet\ResultSet
-	 */
-	
-	public function getSparepartPicturesById($id)
-	{		
-		$id  = (int) $id;
 		
-		$where = 'sparepart_id = ' . $id;
-		$rowset = $this->tableGateway->select($where);
-		return $rowset;
-	}
-	
-	
-	public function getSPPicturesById($id)
+	public function getPicturesById($id)
 	{
 	
 		$sql ="
 select 
 *
-from mla_sparepart_pics
-where 1 AND mla_sparepart_pics.sparepart_id = " . $id;
+from hr_employee_picture
+where 1 AND hr_employee_picture.employee_id = " . $id;
 				
-		$sql = $sql . " Order by mla_sparepart_pics.uploaded_on DESC"; 
+		$sql = $sql . " Order by hr_employee_picture.uploaded_on DESC"; 
 			
 		$adapter = $this->tableGateway->adapter;
 		$statement = $adapter->query($sql);

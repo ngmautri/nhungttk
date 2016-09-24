@@ -745,23 +745,13 @@ class EmployeeController extends AbstractActionController {
 	 */
 	public function showAction() {
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$sp = $this->sparePartTable->get ( $id );
-		$pictures = $this->sparePartPictureTable->getSparepartPicturesById ( $id );
-		$inflow = $this->sparepartMovementsTable->getTotalInflowOf ( $id );
-		$outflow = $this->sparepartMovementsTable->getTotalOutflowOf ( $id );
-		$categories = $this->sparePartCategoryTable->getCategoriesOf ( $id );
-		
-		$instock = $inflow - $outflow;
+		$employee = $this->employeeTable->get ( $id );
+		$pictures = $this->employeePictureTable->getPicturesById($id);
 		
 		return new ViewModel ( array (
-				'sparepart' => $sp,
+				'employee' => $employee,
 				'pictures' => $pictures,
-				'inflow' => $inflow,
-				'outflow' => $outflow,
-				'instock' => $instock,
-				'categories' => $categories,
 				'redirectUrl' => $redirectUrl 
 		) );
 	}

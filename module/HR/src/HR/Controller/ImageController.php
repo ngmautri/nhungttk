@@ -53,11 +53,10 @@ class ImageController extends AbstractActionController {
 	/*
 	 * Defaul Action
 	 */
-	public function sparepartAction() {	
+	public function employeeAction() {	
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 	
-		$pic = $this->getSparepartPictureTable()->get( $id);
-	
+		$pic = $this->employeePictureTable->get($id);
 		$response = $this->getResponse();
 	
 		$imageContent =  file_get_contents($pic->url);
@@ -69,29 +68,8 @@ class ImageController extends AbstractActionController {
 		return $response;
 	}
 	
-
 	/**
-	 * 
-	 * @return \Zend\Stdlib\ResponseInterface
-	 */
-	public function articleAction() {
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-	
-		$pic = $this->getArticlePictureTable()->get( $id);
-	
-		$response = $this->getResponse();
-	
-		$imageContent =  file_get_contents($pic->url);
-		$response->setContent($imageContent);
-		$response->getHeaders()
-		->addHeaderLine('Content-Transfer-Encoding', 'binary')
-		->addHeaderLine('Content-Type', 'image/jpeg')
-		->addHeaderLine('Content-Length', mb_strlen($imageContent));
-		return $response;
-	}
-	
-	/**
-	 * 
+	 *
 	 * @return \Zend\Stdlib\ResponseInterface
 	 */
 	public function employeeThumbnail200Action() {
@@ -107,206 +85,8 @@ class ImageController extends AbstractActionController {
 		->addHeaderLine('Content-Length', mb_strlen($imageContent));
 		return $response;
 	}
-	
-	/**
-	 * 
-	 * @return \Zend\Stdlib\ResponseInterface
-	 */
-	public function articleThumbnail200Action() {
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-	
-		$pic = $this->getArticlePictureTable()->get( $id);
-	
-		$response = $this->getResponse();
-	
-		$imageContent =  file_get_contents($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_200_'.$pic->filename);
-		$response->setContent($imageContent);
-		$response->getHeaders()
-		->addHeaderLine('Content-Transfer-Encoding', 'binary')
-		->addHeaderLine('Content-Type', 'image/jpeg')
-		->addHeaderLine('Content-Length', mb_strlen($imageContent));
-		return $response;
-	}
-	
-	
-	public function assetThumbnail150Action() {
-		
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$pic = $this->getAssetPictureTable ()->get( $id);
-		$response = $this->getResponse();
-		$imageContent =  file_get_contents($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_150_'.$pic->filename);
-		$response->setContent($imageContent);
-		$response->getHeaders()
-		->addHeaderLine('Content-Transfer-Encoding', 'binary')
-		->addHeaderLine('Content-Type', 'image/jpeg')
-		->addHeaderLine('Content-Length', mb_strlen($imageContent));
-		
-		return $response;		
-	}
-	
-	public function articleThumbnail150Action() {
-	
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$pic = $this->getArticlePictureTable()->get( $id);
-		$response = $this->getResponse();
-		$imageContent =  file_get_contents($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_150_'.$pic->filename);
-		$response->setContent($imageContent);
-		$response->getHeaders()
-		->addHeaderLine('Content-Transfer-Encoding', 'binary')
-		->addHeaderLine('Content-Type', 'image/jpeg')
-		->addHeaderLine('Content-Length', mb_strlen($imageContent));
-	
-		return $response;
-	}
-	
-	/**
-	 * 
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	public function deleteSparePartPictureAction() {
-		
-		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		
-		
-	
-		if ($request->isPost ()) {
-			$del = $request->getPost ( 'delete_confirmation', 'NO' );
-				
-			if ($del === 'YES') {
-				
-				$id = ( int ) $request->getPost ( 'id' );
-				$pic= $this->getSparepartPictureTable ()->get ( $id );
-				$filename = $pic->url;
-				
-				if (file_exists($filename)) {
-					unlink($filename);
-				}
-				$this->getSparepartPictureTable ()->delete ($id);
-				
-			}
-			
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			$this->redirect()->toUrl($redirectUrl);
-		}
-	
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$pic= $this->getSparepartPictureTable ()->get ( $id );
-		
-		
-	
-		return new ViewModel ( array (
-				'picture' => $pic,
-				'redirectUrl'=>$redirectUrl,
-				
-		) );
-	}
-	
-	/**
-	 * 
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	public function deleteArticlePictureAction() {
-	
-		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		
-		if ($request->isPost ()) {
-			$del = $request->getPost ( 'delete_confirmation', 'NO' );
-	
-			if ($del === 'YES') {
-	
-				$id = ( int ) $request->getPost ( 'id' );
-				$pic= $this->getArticlePictureTable ()->get ( $id );
-				$filename = $pic->url;
-	
-				if (file_exists($filename)) {
-					unlink($filename);
-				}
-				$this->getArticlePictureTable ()->delete ($id);
-	
-			}
-				
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			$this->redirect()->toUrl($redirectUrl);
-		}
-	
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$pic= $this->getArticlePictureTable ()->get ( $id );
-		
-		return new ViewModel ( array (
-				'picture' => $pic,
-				'redirectUrl'=>$redirectUrl,
-	
-		) );
-	}
-	
-	/**
-	 * 
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	public function deleteAssetPictureAction() {
-	
-		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
-		
-	
-		if ($request->isPost ()) {
-			$del = $request->getPost ( 'delete_confirmation', 'NO' );
-	
-			if ($del === 'YES') {
-	
-				$id = ( int ) $request->getPost ( 'id' );
-				$pic= $this->getAssetPictureTable ()->get ( $id );
-				$filename = $pic->url;
-	
-				if (file_exists($filename)) {
-					unlink($filename);
-				}
-				$this->getAssetPictureTable ()->delete ($id);
-	
-			}
-			$redirectUrl  = $request->getPost ( 'redirectUrl' );
-			$this->redirect()->toUrl($redirectUrl);
-		}
-	
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$pic= $this->getAssetPictureTable ()->get ( $id );
-	
-	
-	
-		return new ViewModel ( array (
-				'picture' => $pic,
-				'redirectUrl'=>$redirectUrl,
-		) );
-	}
-	
-	
-	// get AssetPictureTable
-	private function getAssetPictureTable() {
-		if (! $this->assetPictureTable) {
-			$sm = $this->getServiceLocator ();
-			$this->assetPictureTable = $sm->get ( 'Inventory\Model\AssetPictureTable' );
-		}
-		return $this->assetPictureTable;
-	}
-	
-	
-	private function getSparepartPictureTable() {
-		if (! $this->sparepartPictureTable) {
-			$sm = $this->getServiceLocator ();
-			$this->sparepartPictureTable = $sm->get ( 'Inventory\Model\SparepartPictureTable' );
-		}
-		return $this->sparepartPictureTable;
-	}
-	
-	private function getArticlePictureTable() {
-		if (! $this->articlePictureTable) {
-			$sm = $this->getServiceLocator ();
-			$this->articlePictureTable = $sm->get ( 'Inventory\Model\ArticlePictureTable' );
-		}
-		return $this->articlePictureTable;
-	}
+
+	// Getter and Setter
 	public function getUserTable() {
 		return $this->userTable;
 	}

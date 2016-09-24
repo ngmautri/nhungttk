@@ -1,0 +1,54 @@
+
+<a href="<?php echo $redirectUrl?>"><i class="icon-arrow-left">  </i> BACK</a>
+<hr>
+
+
+<table>
+
+	<tr>
+		<td><label for="tag">Code:</label></td>
+		<td><?php echo $this->escapeHtml($employee->employee_code);?></td>
+	</tr>
+
+	<tr>
+		<td><label for="name_local">Name:</label>
+		
+		<td><?php echo $this->escapeHtml($employee->employee_name);?></td>
+	</tr>
+	<tr>
+		<td><label for="description">Name Local: </label></td>
+		<td><?php echo $this->escapeHtml($employee->employee_name_local);?></td>
+	</tr>
+
+	<tr>
+		<td><label for="code">Gender:</label></td>
+		<td><?php echo $this->escapeHtml($employee->employee_gender);?></td>
+	</tr>
+
+
+	<tr>
+		<td><label for="location">Location:</label></td>
+		<td><?php echo $this->escapeHtml($employee->employee_dob);?></td>
+	</tr>
+	<tr>
+		<td><label for="comment">Remarks:</label></td>
+		<td><?php echo $this->escapeHtml($employee->remarks);?></td>
+	</tr>
+
+</table>
+
+<hr>
+<?php if(count($pictures) >0) : ?>
+<div id="lightgallery">
+
+ 
+ <?php foreach ($pictures as $pic) : ?>
+  	
+    <a href="/hr/image/employee?id=<?php  echo $this->escapeHtml($pic->id);?>">
+    <img class= "img-rounded" width="100" height="100" src="/hr/image/employee-thumbnail-200?id=<?php  echo $this->escapeHtml($pic->id);?>"/>
+    </a>
+	
+<?php endforeach; ?>
+
+</div>
+<?php endif;?>

@@ -69,6 +69,8 @@ echo '</span><br>';
 	
 		<td>
 <a href="<?php echo $this->baseUrl ?>/hr/employee/upload-picture1?id=<?php echo $this->escapeHtml($hit->employee_id);?>">upload picture</a>
+<a href="<?php echo $this->baseUrl ?>/hr/employee/show?id=<?php echo $this->escapeHtml($hit->employee_id);?>">Detail</a>
+
 		</td>
 	</tr>
 <?php endforeach; ?>

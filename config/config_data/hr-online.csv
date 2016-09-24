@@ -1,4 +1,3 @@
-id,employee_code,employee_name,employee_name_local,employee_gender,employee_dob,employee_last_status_id,created_by,created_on,remark
 1,0001,Thomas Bo PEDERSEN,ໂທມາສ ໂບປີເດິເຊັນ,M,1955-06-01,,1,2016-09-20,
 2,0002,Latdavanh Silaphet ,ລັດດາວັນ ສິລາເພັດ,F,1982-02-12,,1,2016-09-20,
 3,0003,Alistair,ອາລິດສະແຕ ສະຈວດເຮີຣອນ,M,1954-05-14,,1,2016-09-20,

@@ -57,23 +57,26 @@ class EmployeeSearchService extends AbstractService {
 		$index = Lucene::create ( ROOT . DIRECTORY_SEPARATOR . $this->index_path );
 		Analyzer::setDefault ( new CaseInsensitive () );
 		
-		$rows = $this->employeeTable->fetchAll();
+		$rows = $this->employeeTable->getEmployees(0, 0);
 		echo count ( $rows );
 		
 		if (count ( $rows ) > 0) {
 			foreach ( $rows as $row ) {
 				$doc = new Document ();
 				$doc->addField ( Field::UnIndexed ( 'employee_id', $row->id ) );
+			
+				$doc->addField ( Field::UnIndexed ( 'sp_pic_id', $row->sp_pic_id) );
 				
 				$doc->addField(Field::Text('employee_code', $row->employee_code));
 				$doc->addField(Field::Keyword('employee_code', $row->employee_code));
-				
 				$doc->addField(Field::Text('employee_code1', $row->employee_code*1));
 				
 				
 				$doc->addField ( Field::Text ( 'employee_name', mb_strtolower ( $row->employee_name ) ) );
 				$doc->addField ( Field::Text ( 'employee_name_local', mb_strtolower ( $row->employee_name_local ) ) );
 				$doc->addField ( Field::Text ( 'employee_dob', mb_strtolower ( $row->employee_dob ) ) );
+				$doc->addField ( Field::Text ( 'employee_gender', mb_strtolower ( $row->employee_gender ) ) );
+				
 				
 				$index->addDocument ( $doc );
 			}

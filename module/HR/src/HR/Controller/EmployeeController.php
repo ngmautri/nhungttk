@@ -117,6 +117,20 @@ class EmployeeController extends AbstractActionController {
 	}
 	
 	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function createIndexAction() {
+		$searcher = $this->employeeSearchService;
+		$message = $searcher->createIndex();
+	
+		return new ViewModel ( array (
+				'message' => $message,
+		) );
+	
+	}
+	
+	/**
 	 * create new spare part
 	 */
 	public function addAction() {
@@ -533,48 +547,37 @@ class EmployeeController extends AbstractActionController {
 			// $myfile = fopen('ouptut.csv', 'a+');
 			
 			$h = array ();
-			$h [] = "CAGEGORY";
-			$h [] = "TAG";
-			$h [] = "NAME";
-			$h [] = "CODE";
-			$h [] = "LOCATION";
-			$h [] = "TOTAL IN";
-			$h [] = "TOTAL OUT";
-			$h [] = "CURRENT BALANCE";
-			$h [] = "MIN. BALANCE";
+			$h [] = "ID";
+			$h [] = "Code";
+			$h [] = "Name";
+			$h [] = "Name Local";
+			$h [] = "Gender";
+			$h [] = "Birthday";
+			$h [] = "Remarks";
+			
 			
 			$delimiter = ";";
 			
 			fputcsv ( $fh, $h, $delimiter, '"' );
 			// fputs($fh, implode($h, ',')."\n");
 			
-			$employees = $this->employeeTable->fetchAll ();
+			$employees = $this->employeeTable->getEmployees(0, 0);
 			
-			foreach ( $spareparts as $m ) {
+			foreach ( $employees as $m ) {
 				$l = array ();
-				$l [] = ( string ) $m->cat_name;
-				$l [] = ( string ) '"' . $m->tag . '"';
-				
-				$name = ( string ) $m->name;
-				
-				$name === '' ? $name = "-" : $name;
-				
-				$name = str_replace ( ',', '', $name );
-				$name = str_replace ( ';', '', $name );
-				
-				$l [] = $name;
-				$l [] = ( string ) $m->code;
-				$l [] = ( string ) $m->location;
-				$l [] = ( string ) $m->total_inflow;
-				$l [] = ( string ) $m->total_outflow;
-				$l [] = ( string ) $m->current_balance;
-				$l [] = ( string ) $m->minimum_balance;
+				$l [] = ( string ) $m->id;
+				$l [] = ( string ) "'" . $m->employee_code;
+				$l [] = ( string ) $m->employee_name;
+				$l [] = ( string ) $m->employee_name_local;
+				$l [] = ( string ) $m->employee_gender;
+				$l [] = ( string ) date_format(date_create($m->employee_dob),"d-m-Y");
+				$l [] = ( string ) $m->remarks;
 				
 				fputcsv ( $fh, $l, $delimiter, '"' );
 				// fputs($fh, implode($l, ',')."\n");
 			}
 			
-			$fileName = 'spareparts-' . date ( "m-d-Y" ) . '-' . date ( "h:i:sa" ) . '.csv';
+			$fileName = 'employees-' . date ( "m-d-Y" ) . '-' . date ( "h:i:sa" ) . '.xls';
 			fseek ( $fh, 0 );
 			$output = stream_get_contents ( $fh );
 			// file_put_contents($fileName, $output);
@@ -582,8 +585,8 @@ class EmployeeController extends AbstractActionController {
 			$response = $this->getResponse ();
 			$headers = new Headers ();
 			
-			$headers->addHeaderLine ( 'Content-Type: text/csv' );
-			// $headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+			//$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
 			
 			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
 			$headers->addHeaderLine ( 'Content-Description: File Transfer' );

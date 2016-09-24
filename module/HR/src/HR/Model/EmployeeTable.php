@@ -109,7 +109,7 @@ class EmployeeTable {
 	{
 	
 		$sql = "
-				select
+		select
 			hr_employee.*,
             hr_employee_picture.id as sp_pic_id
 		from hr_employee

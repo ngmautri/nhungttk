@@ -16,6 +16,7 @@ use Zend\Validator\EmailAddress;
 use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
 use Zend\Http\Headers;
+
 use MLA\Paginator;
 use MLA\Files;
 use Inventory\Model\SparepartPicture;
@@ -57,6 +58,8 @@ class EmployeeController extends AbstractActionController {
 	protected $employeePictureTable;
 	protected $employeeService;
 	protected $employeeSearchService;
+	
+	private $tmp_path = "module/HR/data/tmp";
 	
 	/*
 	 * Defaul Action
@@ -542,65 +545,131 @@ class EmployeeController extends AbstractActionController {
 		$output = $this->params ()->fromQuery ( 'output' );
 		
 		if ($output === 'csv') {
-			
+				
 			$fh = fopen ( 'php://memory', 'w' );
 			// $myfile = fopen('ouptut.csv', 'a+');
-			
+				
 			$h = array ();
-			$h [] = "ID";
+			$h [] = "No.";
 			$h [] = "Code";
 			$h [] = "Name";
 			$h [] = "Name Local";
 			$h [] = "Gender";
 			$h [] = "Birthday";
 			$h [] = "Remarks";
-			
-			
+				
 			$delimiter = ";";
-			
+				
 			fputcsv ( $fh, $h, $delimiter, '"' );
 			// fputs($fh, implode($h, ',')."\n");
-			
-			$employees = $this->employeeTable->getEmployees(0, 0);
-			
+				
+			$employees = $this->employeeTable->getEmployees( 0, 0 );
+				
 			foreach ( $employees as $m ) {
 				$l = array ();
 				$l [] = ( string ) $m->id;
-				$l [] = ( string ) "'" . $m->employee_code;
+				
+				$str = $m->employee_code;
+				// force certain number/date formats to be imported as strings
+				if(preg_match("/^0/", $str) || preg_match("/^\+?\d{8,}$/", $str) || preg_match("/^\d{4}.\d{1,2}.\d{1,2}/", $str)) {
+					$str = "'$str";
+				}
+				
+				$l [] = ( string ) $str;
 				$l [] = ( string ) $m->employee_name;
-				$l [] = ( string ) $m->employee_name_local;
+				$l [] = ( string ) utf8_encode($m->employee_name_local);
 				$l [] = ( string ) $m->employee_gender;
-				$l [] = ( string ) date_format(date_create($m->employee_dob),"d-m-Y");
+				$l [] = ( string ) date_format(date_create($m->employee_dob),"d-m-Y") ;
 				$l [] = ( string ) $m->remarks;
 				
 				fputcsv ( $fh, $l, $delimiter, '"' );
 				// fputs($fh, implode($l, ',')."\n");
 			}
-			
-			$fileName = 'employees-' . date ( "m-d-Y" ) . '-' . date ( "h:i:sa" ) . '.xls';
+				
+			$fileName = 'spareparts-'.date( "m-d-Y" ) .'-' . date("h:i:s").'.csv';
 			fseek ( $fh, 0 );
 			$output = stream_get_contents ( $fh );
 			// file_put_contents($fileName, $output);
-			
+				
 			$response = $this->getResponse ();
-			$headers = new Headers ();
-			
-			//$headers->addHeaderLine ( 'Content-Type: text/csv' );
-			$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
-			
+			$headers = new Headers();
+				
+			$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			//$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+				
 			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
 			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
 			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
 			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+				
+			//$response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+			$response->setHeaders($headers);
+			// $output = fread($fh, 8192);
+				
+			$response->setContent ( $output );
+				
+			fclose ( $fh );
+			// unlink($fileName);
+			return $response;
+		}
+		
+		if ($output === 'xls') {
+				
+			$filename = $this->tmp_path . "/employees-".date( "m-d-Y" ) . ".xls";
+
+			$realPath = realpath( $filename );
+			if ( false === $realPath )
+			{
+				touch( $filename );
+				chmod( $filename, 0777 );
+			}
+			$filename = realpath( $filename );
 			
+			
+			$handle = fopen( $filename, "w" );
+			
+			$finalData = array();
+			
+			$employees = $this->employeeTable->getEmployees(0, 0);
+			
+			$delimiter = ";";
+			
+			foreach ( $employees as $m ) {
+				$finalData = array ();
+				$finalData [] = ( string ) $m->id;
+				$finalData [] = ( string ) "'" . $m->employee_code;
+				$finalData [] = ( string ) $m->employee_name;
+				$finalData [] = ( string ) $m->employee_name_local;
+				$finalData [] = ( string ) $m->employee_gender;
+				$finalData [] = ( string ) date_format(date_create($m->employee_dob),"d-m-Y");
+				$finalData [] = ( string ) $m->remarks;
+					
+				fputcsv( $handle, $finalData,$delimiter );
+			}
+			
+			
+			
+			fclose( $handle );
+			
+			$output = readfile( $filename );
+			
+			$response = $this->getResponse ();
+			$headers = new Headers ();
+				
+			//$headers->addHeaderLine ( 'Content-Type: text/csv' );
+			$headers->addHeaderLine ( 'Content-Type: application/vnd.ms-excel; charset=UTF-8' );
+				
+			$headers->addHeaderLine ( 'Content-Disposition: attachment; filename=employee.xls' );
+			$headers->addHeaderLine ( 'Content-Description: File Transfer' );
+			$headers->addHeaderLine ( 'Content-Transfer-Encoding: binary' );
+			$headers->addHeaderLine ( 'Content-Encoding: UTF-8' );
+				
 			// $response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
 			$response->setHeaders ( $headers );
 			// $output = fread($fh, 8192);
-			
+					
 			$response->setContent ( $output );
-			
-			fclose ( $fh );
-			// unlink($fileName);
+							
 			return $response;
 		}
 		

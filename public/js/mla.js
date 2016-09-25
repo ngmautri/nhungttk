@@ -348,7 +348,12 @@ function countAsset() {
 		reader.onload = (function(p, pic_to_upload_resized, n) {
 			return function(e) {
 				var contents = e.target.result;
-
+				
+				// EXIF.jS
+				EXIF.getData(p, function () {
+					var pic_orientation; 
+					pic_orientation=this.exifdata.Orientation;
+					
 				// resize
 				var image = new Image();
 
@@ -369,10 +374,22 @@ function countAsset() {
 								height = max_size;
 							}
 						}
+						
+						var ctx = canvas.getContext('2d')
+						ctx.save();	
+							
 						canvas.width = width;
 						canvas.height = height;
-						canvas.getContext('2d').drawImage(image, 0, 0, width,
-								height);
+						
+						if(pic_orientation == 6){
+							canvas.width = height;
+							canvas.height = width;
+							ctx.rotate(0.5 * Math.PI);
+					        ctx.translate(0, -height);
+						}
+						
+						ctx.drawImage(image, 0, 0, width,height);
+						ctx.restore();
 
 						switch (filetype) {
 						case "image/jpeg":
@@ -403,6 +420,8 @@ function countAsset() {
 				})(p, pic_to_upload_resized, n);
 
 				image.src = contents;
+				
+				});;
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length);
@@ -480,18 +499,22 @@ function uploadAssetPictures() {
 		reader.onload = (function(p, pic_to_upload_resized, n) {
 			return function(e) {
 				var contents = e.target.result;
-
-				// resize
+				
+				// EXIF.jS
+				EXIF.getData(p, function () {
+					var pic_orientation; 
+					pic_orientation=this.exifdata.Orientation;
+					// resize
+					
 				var image = new Image();
 
 				image.onload = (function(p, pic_to_upload_resized, n) {
 					return function(imageEvent) {
 
 						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1200, // TODO
-																						// :
-																						// config
+						var canvas = document.createElement('canvas'), max_size = 1350, 
 						width = image.width, height = image.height;
+						
 						if (width > height) {
 							if (width > max_size) {
 								height *= max_size / width;
@@ -503,11 +526,23 @@ function uploadAssetPictures() {
 								height = max_size;
 							}
 						}
+						
+						var ctx = canvas.getContext('2d')
+						ctx.save();	
+							
 						canvas.width = width;
 						canvas.height = height;
-						canvas.getContext('2d').drawImage(image, 0, 0, width,
-								height);
-
+						
+						if(pic_orientation == 6){
+							canvas.width = height;
+							canvas.height = width;
+							ctx.rotate(0.5 * Math.PI);
+					        ctx.translate(0, -height);
+						}
+						
+						ctx.drawImage(image, 0, 0, width,height);
+						ctx.restore();
+						
 						switch (filetype) {
 						case "image/jpeg":
 							var dataUrl = canvas.toDataURL('image/jpeg');
@@ -537,6 +572,8 @@ function uploadAssetPictures() {
 				})(p, pic_to_upload_resized, n);
 
 				image.src = contents;
+				
+				});;
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length);
@@ -605,8 +642,12 @@ function uploadSPPictures() {
 		reader.onload = (function(p, pic_to_upload_resized, n) {
 			return function(e) {
 				var contents = e.target.result;
-
-				// resize
+		
+				// EXIF.jS
+				EXIF.getData(p, function () {
+					var pic_orientation; 
+					pic_orientation=this.exifdata.Orientation;
+					// resize
 				var image = new Image();
 
 				image.onload = (function(p, pic_to_upload_resized, n) {
@@ -628,12 +669,22 @@ function uploadSPPictures() {
 								height = max_size;
 							}
 						}
+						var ctx = canvas.getContext('2d')
+						ctx.save();	
+							
 						canvas.width = width;
 						canvas.height = height;
-						canvas.getContext('2d').drawImage(image, 0, 0, width,
-								height);
-
-						switch (filetype) {
+						
+						if(pic_orientation == 6){
+							canvas.width = height;
+							canvas.height = width;
+							ctx.rotate(0.5 * Math.PI);
+					        ctx.translate(0, -height);
+						}
+						
+						ctx.drawImage(image, 0, 0, width,height);
+						ctx.restore();
+								switch (filetype) {
 						case "image/jpeg":
 							var dataUrl = canvas.toDataURL('image/jpeg');
 							break;
@@ -662,6 +713,8 @@ function uploadSPPictures() {
 				})(p, pic_to_upload_resized, n);
 
 				image.src = contents;
+				
+				});;
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length);
@@ -733,16 +786,19 @@ function uploadArticlePictures() {
 			return function(e) {
 				var contents = e.target.result;
 
+				// EXIF.jS
+				EXIF.getData(p, function () {
+					var pic_orientation; 
+					pic_orientation=this.exifdata.Orientation;
+					
 				// resize
 				var image = new Image();
 
 				image.onload = (function(p, pic_to_upload_resized, n) {
 					return function(imageEvent) {
-
+			
 						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1300, // TODO
-																						// :
-																						// config
+						var canvas = document.createElement('canvas'), max_size = 1350,
 						width = image.width, height = image.height;
 						if (width > height) {
 							if (width > max_size) {
@@ -755,10 +811,22 @@ function uploadArticlePictures() {
 								height = max_size;
 							}
 						}
+						
+						var ctx = canvas.getContext('2d')
+						ctx.save();	
+							
 						canvas.width = width;
 						canvas.height = height;
-						canvas.getContext('2d').drawImage(image, 0, 0, width,
-								height);
+						
+						if(pic_orientation == 6){
+							canvas.width = height;
+							canvas.height = width;
+							ctx.rotate(0.5 * Math.PI);
+					        ctx.translate(0, -height);
+						}
+						
+						ctx.drawImage(image, 0, 0, width,height);
+						ctx.restore();
 
 						switch (filetype) {
 						case "image/jpeg":
@@ -789,6 +857,8 @@ function uploadArticlePictures() {
 				})(p, pic_to_upload_resized, n);
 
 				image.src = contents;
+				
+				});;
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length);

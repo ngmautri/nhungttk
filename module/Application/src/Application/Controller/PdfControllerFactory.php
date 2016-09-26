@@ -44,7 +44,14 @@ class PdfControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemTable' );
 		$controller->setPrItemTable($tbl);
 		
+		// setAssetCountingItemTable
+		$tbl =  $sm->get ('Inventory\Model\AssetCountingItemTable' );
+		$controller->setAssetCountingItemTable($tbl);
 		
+		// setAssetCountingItemTable
+		$tbl =  $sm->get ('Inventory\Model\AssetPictureTable' );
+		$controller->setAssetPictureTable($tbl);
+	
 		return $controller;
 	}
 }

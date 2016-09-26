@@ -8,6 +8,8 @@ use Zend\Mvc\Controller\ControllerManager;
 use MLA\Service\AbstractService;
 use Application\Utility\MLAPdf;
 
+
+
 /*
  * @author nmt
  *
@@ -19,6 +21,83 @@ class PdfService extends AbstractService {
 	public function initAcl(Acl $acl) {
 		// TODO
 	}
+	
+	/**
+	 *
+	 * @param unknown $requester
+	 * @param unknown $department
+	 * @param unknown $date
+	 * @param unknown $pr_number
+	 * @param unknown $pr_auto_number
+	 * @param unknown $detail
+	 */
+	public function saveAssetCountingPdf(
+				$detail
+			) {
+	
+				define ('PDF_HEADER_LOGO', ROOT.'\public\images\mascot.gif');
+	
+				include_once ROOT.'\vendor\tcpdf\tcpdf.php';
+				// create new PDF document
+	
+				// create new PDF document
+				$pdf = new MLAPdf ( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
+	
+				// set document information
+				$pdf->SetCreator ( PDF_CREATOR );
+				$pdf->SetAuthor ( 'Mascot Laos ' );
+				$pdf->SetTitle ( 'Purchase Request ' . "");
+				$pdf->SetSubject ( 'TCPDF Tutorial' );
+				$pdf->SetKeywords ( 'TCPDF, PDF, example, test, guide' );
+	
+				// set default monospaced font
+				$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+	
+				// set margins
+				$pdf->SetMargins(20, 33, 15);
+				$pdf->SetHeaderMargin(9);
+				$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+	
+				// set auto page breaks
+				$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+	
+				// set image scale factor
+				$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+	
+				// set some language-dependent strings (optional)
+				if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+					require_once(dirname(__FILE__).'/lang/eng.php');
+					$pdf->setLanguageArray($l);
+				}
+	
+				// ---------------------------------------------------------
+	
+				// set font
+				$pdf->SetFont('helvetica', 'B', 14);
+	
+				// add a page
+				$pdf->AddPage();
+	
+		
+				$pdf->Ln(5);
+				$pdf->SetFont('helvetica', '', 10);
+	
+				$pdf->Ln(5);
+				// -----------------------------------------------------------------------------
+	
+				$tbl = $detail;
+				$pdf->SetFont('helvetica', '', 10);
+				$pdf->writeHTML($tbl, true, false, false, false, '');
+	
+	
+				$pdf->SetFont('helvetica', '', 9);
+	
+				// -----------------------------------------------------------------------------
+	
+				//Close and output PDF document
+				$pdf->Output('report.pdf', 'I');
+	}
+	
 	
 	
 	/**

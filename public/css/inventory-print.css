@@ -1,0 +1,38 @@
+@media print {
+	body {
+		background: white;
+		color: black;
+		margin: 0;
+		font-size: 8pt;
+	}
+	#header {
+		
+	}
+	#content {
+		
+	}
+	#comments {
+		
+	}
+	#sidebar {
+		
+	}
+	#footer {
+		
+	}
+
+	/* Print Style Sheet */
+	@page {
+		size: A4;
+	}
+	@page :left {
+		margin-left: 5cm;
+	}
+	@page :right {
+		margin-left: 3cm;
+	}
+	@page :left { @bottom-left { content:"Page "counter(page)" of "counter(pages);
+		
+	}
+}
+}

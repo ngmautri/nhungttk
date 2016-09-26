@@ -1,0 +1,46 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+        <?php echo $this->headTitle('Mascot International (Lao) Sole co., Ltd')?>
+
+        <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')?>
+
+        <!-- Le styles -->
+        <?php
+								
+								echo $this->headLink ( array (
+										'rel' => 'shortcut icon',
+										'type' => 'image/vnd.microsoft.icon',
+										'href' => $this->basePath () . '/img/favicon.ico' 
+								) )->prependStylesheet ( $this->basePath () . '/css/bootstrap-responsive.min.css' )->prependStylesheet ( $this->basePath () . '/css/style.css' )->prependStylesheet ( $this->basePath () . '/css/bootstrap.min.css' )?>
+
+   <link rel="stylesheet" href="/jquery/jquery-ui.css">
+   <link rel="stylesheet" media="print"  href="/css/inventory-print.css">
+  
+<!-- Scripts -->
+        <?php
+								
+								echo $this->headScript ()->prependFile ( $this->basePath () . '/js/html5.js', 'text/javascript', array (
+										'conditional' => 'lt IE 9' 
+								) )->prependFile ( $this->basePath () . '/js/mla.js' )->prependFile ( $this->basePath () . '/js/jquery.js' )?>
+	<script src="/js/lightgallery-all.min.js"></script>
+    <script src="/js/lg-thumbnail.js"></script>
+    <script src="/js/lg-fullscreen.min.js"></script>
+    <script src="/jquery/jquery-ui.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/Observer.js"></script>
+    <script src="/js/NMT.js"></script>
+    
+</head>
+<body>
+	<div class="container">
+            <?php echo $this->content; ?>
+            <hr>
+		<footer>
+			<p>Email: nmt@mascot.dk</p>
+		</footer>
+	</div>
+</body>
+</html>

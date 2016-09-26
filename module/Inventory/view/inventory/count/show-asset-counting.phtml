@@ -8,21 +8,26 @@ echo '<div class="alert alert-info">';
 	 echo '<li>Task Name	: <strong>' . $counting->name . '</strong></li>';
 	 echo '<li>Start date	: <strong>' .$counting-> start_date . '</strong> - End date	: <strong>' .$counting->end_date . '</strong></li>';
 	 echo '<li>Status	: <strong>' .$counting-> status . '</strong></li>';
-	 
+	 echo '<li>Counted	: <strong>' .$total_counted . ' /' . $total_to_count  . '</strong></li>';
 	 echo '</ul>';
 	 echo '</div>';
 } 
 ?>
+
+<ul class="nav nav-pills">
+	<li><a href="/application/pdf/asset-counting?id=<?php echo $counting->id ?>&category_id=<?php echo $counting->asset_cat_id ?>"  target="_blank"><i class="icon-print">  </i> Print PR(PDF)</a> </li>
+ </ul>
 		<h5>
 		<a
-			href="<?php echo $this->baseUrl ?>/inventory/count/select-location?id=<?php echo $counting->id?>"> Count
+			href="<?php echo $this->baseUrl ?>/inventory/count/select-location?id=<?php echo $counting->id?>"> COUNT NOW
 		</a>
 		</h5>
 
-<table class="pure-table pure-table-bordered">
+<table class="table table-striped table-bordered">
 <thead>
 	<tr>
 		<td><b>N0.</b></td>
+		<td><b>Picture</b></td>
 		<td><b>ASSET TAG</b></td>
 		<td><b>LOCATION</b></td>
 		<td><b>COUNTED BY</b></td>
@@ -39,21 +44,58 @@ echo '<div class="alert alert-info">';
 	 $count = 0;
 	 foreach ($items as $a) : 
 	 	 $count++;
-	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	//echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 	 
 	 ?>
-	
+		<tr>
   		<td><b><?php echo $count;?></b></td>
+  		
+  			 	<td>
+			<?php 
+			if($a->asset_picture_id!=null):
+			?>
+			<a target="_blank" href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($a['id']);?>">
+			<img class= "img-rounded" width="50" height="50" src="/inventory/image/asset-thumbnail-200?id=<?php echo $a->asset_picture_id;?>"/>
+		</a>			
+			<?php 
+			else:
+			?>
+			<img class= "img-rounded" width="50" height="50" src="/images/no-pic.jpg"/>
+				
+			<?php 
+			endif;
+			?>
+			
+			</td>
   	
- 		<td><?php echo $a['counted_on']!==null? '<span class="label label-success">'.$a['tag'].'</span>': $a['tag'];?></td>
-		<td><?php echo $a['location'];?></td>
+ 		<td><?php echo $a['counted_on']!==null? '<span class="label label-success">'.$a['tag'].'</span>': '<b>'. $a['tag'].'</b>';?>
+ 				<div style="color: gray; font-size: 8pt;	">
+ <?php	
+ 				$asset_name = $a->name;
+ 				if (strlen($asset_name) > 45) {
+
+				    // truncate string
+				    $stringCut = substr($asset_name, 0, 45);
+				
+				    // make sure it ends in a word so assassinate doesn't become ass...
+				    $asset_name = substr($stringCut, 0, strrpos($stringCut, ' ')).'<a title="'. $a->name.'">... </a>'; 
+				}
+?>
+ 				
+ 				Name: <span id="<?php echo $this->escapeHtml($a->id);?>_name"><?php echo $asset_name ;?></span><br>
+				Model: <span id="<?php echo $this->escapeHtml($a->id);?>_model"><?php echo $this->escapeHtml($a->model);?></span><br>
+				Serial: <span id="<?php echo $this->escapeHtml($a->id);?>_serial"><?php echo $this->escapeHtml($a->serial);?></span>
+				</div>
+ 		
+ 		</td>
+		<td><?php echo $a['counted_location'];?></td>
 
 		<td><?php echo $a['counted_by'];?></td>
 		<td><?php echo $a['verified_by'];?></td>
 		<td><?php echo $a['acknowledged_by'];?></td>
 		<td><?php echo $a['counted_on'];?></td>
 		<td>
-		<a href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($a['asset_id']);?>">
+		<a target="_blank"  href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($a['id']);?>">
 		Detail </a></td>
 	</tr>
 <?php endforeach; ?>

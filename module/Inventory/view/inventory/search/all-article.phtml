@@ -1,0 +1,65 @@
+
+<?php // var_dump( $hits) ?>
+<ul class="nav nav-pills">
+ <li><a href="<?php echo $this->baseUrl ?>/inventory/article/list">Item List</a></li>
+</ul>
+
+  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/article"	method="get" enctype="multipart/form-data">
+      <input type="text" name = "query" class="">
+      <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>
+   </form>
+
+<div class="alert alert-info">You can search wildcard*. e.g enter <em>cof*</em> to search for Coffee</div>
+
+<?php if (!$hits==null): 
+echo '<span class="label label-info">';
+echo count($hits).' result(s) found for query: "' . $query;
+echo '</span><hr>';
+?>
+<table class="table table-striped table-bordered">
+<thead>
+	<tr>
+		<td><b>#</b></td>
+		<td><b>Name</b></td>
+		<td><b>Code</b></td>
+		<td><b>Unit</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+<tbody>
+
+	 <?php 
+	 
+	 $count = 0;
+	foreach ($hits as $hit) :
+	 	 $count++;
+	// echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	 
+	 ?>
+	 <tr>
+	 	<td> <?php echo $count;?></td>
+ 		<td><span id="<?php echo $hit->article_id?>_name"><?php echo $this->escapeHtml($hit->name);?></span></td>
+ 		<td><span id="<?php echo $hit->article_id?>_code"><?php echo $this->escapeHtml($hit->code);?></span></td>
+		<td><span id="<?php echo $hit->article_id;?>_unit"><?php echo $hit->unit;?></span>
+	
+		<td>
+			<a href="#" onclick="openPRCart('<?php echo $hit->article_id?>');"><i class="icon-shopping-cart"></i>Order</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/receive?article_id=<?php echo $this->escapeHtml($hit->article_id);?>">Receive</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($hit->article_id);?>">Issue</a>
+	
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/edit?id=<?php echo $hit->article_id?>">  Edit</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/upload-picture1?id=<?php echo $hit->article_id?>">  Picture</a>
+		
+		<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $hit->article_id?>">  Detail</a>
+						
+		</td>
+	</tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+
+
+<?php endif; ?>
+
+
+<?php include (ROOT.'\module\Inventory\view\inventory\article_order_form.php'); ?>

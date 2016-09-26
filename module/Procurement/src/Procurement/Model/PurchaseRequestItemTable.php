@@ -1685,6 +1685,39 @@ WHERE TT1.purchase_request_id = " . $pr . " ORDER BY TT1.EDT ASC";
 		return $resultSet;
 	}
 	
+	
+	/**
+	 *
+	 * @param unknown $pr
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getPOGrandTotal($pr_id) {
+	
+		$adapter = $this->tableGateway->adapter;
+		$sql = "
+/* PO ITEMS 1-1*/
+SELECT
+	mla_purchase_request_items.purchase_request_id,
+		SUM(mla_po_item.price*mla_purchase_request_items.quantity) AS grand_total,
+	mla_po_item.currency
+FROM mla_purchase_request_items
+LEFT JOIN mla_po_item
+ON mla_po_item.pr_item_id = mla_purchase_request_items.id
+WHERE mla_purchase_request_items.purchase_request_id = " . $pr_id; 
+				
+		$sql = $sql. " GROUP BY mla_po_item.currency";
+	
+		
+		$sql = $sql .";";
+	
+		$statement = $adapter->query ( $sql );
+		$result = $statement->execute ();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		return $resultSet;
+	}
+	
 	/**
 	 * 
 	 * @return \Zend\Db\ResultSet\ResultSet

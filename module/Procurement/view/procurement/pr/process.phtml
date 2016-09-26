@@ -19,11 +19,19 @@
 echo '<div class="alert alert-info">';
 	
 	 echo '<ul>';
-	 echo '<li>Created on		: <strong>' .$pr->requested_on . '</strong> by <strong>' . $pr->requester . '</strong></li>';
-	 echo '<li>Updated on		: <strong>' .$pr->last_change . '</strong></li>';
-	 echo '<li>Latest Status		: <strong>' .$pr->status .  '</strong> by <strong>' .$pr->changed_by . '</strong></li>';
+	 echo '<li>Created on		: ' .$pr->requested_on . ' by ' . $pr->requester . '</li>';
+	 echo '<li>Updated on		: ' .$pr->last_change . ' ' .$pr->status .  ' by ' .$pr->changed_by . '</li>';
 	 
 	 echo '</ul>';
+	 if (count ( $po_grand_total ) > 0):
+	 echo "<b>Grand Total:</b>";
+	 echo "<ul>";
+	 foreach ( $po_grand_total as $a ) {
+	 	echo '<li><b>' . number_format ( $a->grand_total, 0, ",", "." ) .' '. $a->currency. '</b></li>';
+	 }
+	 echo "</ul>";
+	 endif;
+	 
 	 echo '</div>';
 } 
 ?>
@@ -48,6 +56,7 @@ echo '<div class="alert alert-info">';
  	<li><a href="/procurement/pr/process?output=csv&pr_id=<?php echo $pr->id ?>"><i class="icon-download-alt">  </i> Download PR(CSV)</a> </li>
  	<li><a href="/application/pdf/po?pr_id=<?php echo $pr->id ?>" target="_blank"><i class="icon-print">  </i> Print PO(PDF)</a> </li>
 </ul>
+
 
 
 
@@ -143,8 +152,9 @@ echo '<div class="alert alert-info">';
 		<?php endif; ?>
 	
 		
+<!-- <li><a href="javascript:;" onclick="OrderHistoryDialog('<?php echo $item->sparepart_id;?>','<?php echo $item->article_id;?>')"><i class="icon-signal"></i> Order History</a></li> -->
 		     
-  <li><a target="_blank" href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i class="icon-signal"></i> Order History</a></li>
+<li><a target="_blank" href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i class="icon-signal"></i> Order History</a></li> 
 					</ul>
 				</div>
 			
@@ -315,3 +325,6 @@ endif;
 	      </div>
 	   </div>
 	</div>
+	
+<?php include (ROOT.'\module\Procurement\view\procurement\order_history.php'); ?>
+

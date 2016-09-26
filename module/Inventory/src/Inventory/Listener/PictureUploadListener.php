@@ -30,7 +30,25 @@ class PictureUploadListener implements ListenerAggregateInterface {
 	}
 	
 	/**
-	 * 
+	 * 	$exif = exif_read_data ("$pictures_dir/$name", NULL, true, true );
+		$o = $exif ['IFD0'] ['Orientation'];
+			case 3 : // 180 rotate left
+					$rotate = imagerotate ($im, 180, 0 );
+					imagejpeg($rotate,"$pictures_dir/$name");
+					break;
+			
+				case 6 : // 90 rotate right
+					$rotate = imagerotate ($im, -90, 0 );
+					var_dump(imagejpeg($rotate,"$pictures_dir/$name"));
+					
+					break;
+			
+				case 8 : // 90 rotate left
+					$rotate = imagerotate ($im, 90, 0 );
+					imagejpeg($rotate,"$pictures_dir/$name");
+					break;
+			}
+
 	 * @param EventInterface $e
 	 */
 	public function createThumbnail(EventInterface $e) {
@@ -38,16 +56,17 @@ class PictureUploadListener implements ListenerAggregateInterface {
 		
 		$name = $e->getParam ('picture_name');
 		$pictures_dir = $e->getParam ('pictures_dir');
-		
-
+	
+	
 		if(preg_match('/[.](jpg|jpeg)$/', $name)) {
 			$im = imagecreatefromjpeg("$pictures_dir/$name");
 		} else if (preg_match('/[.](gif)$/', $name)) {
 			$im = imagecreatefromgif("$pictures_dir/$name");
+			
 		} else if (preg_match('/[.](png)$/', $name)) {
 			$im = imagecreatefrompng("$pictures_dir/$name");
 		}
-			
+		
 		$ox = imagesx($im);
 		$oy = imagesy($im);
 		

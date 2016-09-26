@@ -153,6 +153,10 @@ class SearchController extends AbstractActionController {
 		));
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel|\Zend\Stdlib\ResponseInterface
+	 */
 	public function articleAction() {
 		
 		//$query = $this->params ()->fromQuery ( 'query' );
@@ -209,6 +213,58 @@ class SearchController extends AbstractActionController {
 		}
 		
 			return new ViewModel ( array (
+				'query' => $q,
+				'hits' => $hits,
+		));
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel|\Zend\Stdlib\ResponseInterface
+	 */
+	public function allArticleAction() {
+	
+		$q = $this->params ()->fromQuery ( 'query' );
+		$json = (int) $this->params ()->fromQuery ( 'json' );
+	
+		if($q==''){
+			return new ViewModel ( array (
+					'hits' => null,
+			));
+		}
+	
+		if (strpos($q,'*') != false) {
+			$pattern = new Term($q);
+			$query = new Wildcard($pattern);
+			$hits = $this->articleSearchService->search($query,0);
+				
+		}else{
+			$hits = $this->articleSearchService->search($q,0);
+		}
+	
+	
+		if ($json === 1){
+	
+			$data = array();
+	
+			foreach ($hits as $key => $value)
+			{
+				$n = (int)$key;
+				$data[$n]['id'] = $value->article_id;
+				$data[$n]['name'] =  $value->name;
+				$data[$n]['description'] =  $value->description;
+				$data[$n]['code'] =  $value->code;
+	
+			}
+	
+	
+			$response = $this->getResponse();
+			$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
+			$response->setContent(json_encode($data));
+			return $response;
+		}
+	
+		return new ViewModel ( array (
 				'query' => $q,
 				'hits' => $hits,
 		));

@@ -58,7 +58,7 @@ class CountController extends AbstractActionController {
 			"LINE-07", "LINE-08",
 			"LINE-08", "LINE-A",
 			"LINE-SPE", "CUTTING",
-			"WORK-SHOP", "ADMIN","CANTEEN", "OTHER"
+			"WORK-SHOP", "ADMIN","CANTEEN","NOT-USED", "OTHER",
 				
 	);
 	
@@ -162,16 +162,26 @@ class CountController extends AbstractActionController {
 	}
 	
 	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function showAssetCountingAction() {
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		
 		$counting = $this->assetCountingTable->get($id);
 		$asset_cat_id = (int) $counting->asset_cat_id;
 		$items = $this->assetCountingItemTable->getCountedItems($id,$asset_cat_id);
-	
+		$total_counted = $this->assetCountingItemTable->getTotalCounted($id);
+		$total_to_count = $this->assetCountingItemTable->getTotalToCount($asset_cat_id);
+		
+		$this->layout("layout/inventory/print");
 		return new ViewModel ( array (
 				'counting'=> $counting,
 				'items'=> $items,
+				'total_counted' =>$total_counted,
+				'total_to_count' =>$total_to_count,
 		));
 	}
 	
@@ -345,6 +355,7 @@ class CountController extends AbstractActionController {
 					$pic->filename = "$name";
 					$pic->folder = "$folder";
 					$pic->checksum = $checksum;
+					$pic->comments ="counted by " . $user;
 						
 					$this->getAssetPictureTable ()->add ( $pic );
 						

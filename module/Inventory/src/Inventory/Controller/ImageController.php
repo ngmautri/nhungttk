@@ -87,6 +87,25 @@ class ImageController extends AbstractActionController {
 	 * 
 	 * @return \Zend\Stdlib\ResponseInterface
 	 */
+	public function assetThumbnail200Action() {
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$pic = $this->getAssetPictureTable ()->get( $id);
+		$response = $this->getResponse();
+		$imageContent =  file_get_contents($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_200_'.$pic->filename);
+		$response->setContent($imageContent);
+		$response->getHeaders()
+		->addHeaderLine('Content-Transfer-Encoding', 'binary')
+		->addHeaderLine('Content-Type', $pic->filetype)
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+		
+		return $response;		
+	}
+	
+	/**
+	 * 
+	 * @return \Zend\Stdlib\ResponseInterface
+	 */
 	public function sparepartThumbnail200Action() {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 	

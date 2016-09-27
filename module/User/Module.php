@@ -57,12 +57,18 @@ class Module {
 				'checkIdentity' 
 		), - 100 );
 		
+		
 		$eventManager->attach ( MvcEvent::EVENT_DISPATCH, array (
 				$this,
 				'checkACL' 
 		), 100 );
 		
 	}
+	
+	/**
+	 * 
+	 * @return unknown
+	 */
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
 	}

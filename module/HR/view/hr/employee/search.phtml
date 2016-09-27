@@ -50,8 +50,10 @@ echo '</span><br>';
 			<?php 
 			if($hit->sp_pic_id!==""):
 			?>
-			<img class= "img-rounded" width="90" height="100" src="/hr/image/employee-thumbnail-200?id=<?php echo $hit->sp_pic_id;?>"/>
-			<?php 
+		<a href="<?php echo $this->baseUrl ?>/hr/employee/show?id=<?php echo $this->escapeHtml($hit->employee_id);?>">
+			<img class= "img-rounded" width="60" height="60" src="/hr/image/employee-thumbnail-200?id=<?php echo $hit->sp_pic_id;?>"/>
+		</a>			
+				<?php 
 			else:
 			?>
 			<img class= "img-rounded" width="70" height="80" src="/images/no-pic.jpg"/>

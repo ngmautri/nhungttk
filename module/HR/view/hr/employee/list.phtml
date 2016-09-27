@@ -58,13 +58,13 @@ if ($total_employees<= 0) {
 			<?php 
 			if($a->sp_pic_id!==null):
 			?>
-			<a href="<?php echo $this->baseUrl ?>/inventory/spareparts/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-			<img class= "img-rounded" width="90" height="100" src="/hr/image/employee-thumbnail-200?id=<?php echo $a->sp_pic_id;?>"/>
+			<a href="<?php echo $this->baseUrl ?>/hr/employee/show?id=<?php echo $this->escapeHtml($a['id']);?>">
+			<img title="ID_<?php echo $this->escapeHtml($a['employee_code']);?>" class= "img-rounded" width="60" height="60" src="/hr/image/employee-thumbnail-200?id=<?php echo $a->sp_pic_id;?>"/>
 		</a>			
 			<?php 
 			else:
 			?>
-			<img class= "img-rounded" width="70" height="80" src="/images/no-pic.jpg"/>
+			<img class= "img-rounded" width="60" height="60" src="/images/no-pic.jpg"/>
 				
 			<?php 
 			endif;

@@ -17,8 +17,7 @@
 								) )->prependStylesheet ( $this->basePath () . '/css/bootstrap-responsive.min.css' )->prependStylesheet ( $this->basePath () . '/css/style.css' )->prependStylesheet ( $this->basePath () . '/css/bootstrap.min.css' )?>
 
    <link rel="stylesheet" href="/jquery/jquery-ui.css">
-   <link rel="stylesheet" media="print"  href="/css/inventory-print.css">
-  
+   <link rel="stylesheet" media="print"  href="/css/inventory-print.css"> 
 <!-- Scripts -->
         <?php
 								
@@ -35,12 +34,8 @@
     
 </head>
 <body>
-	<div class="container">
-            <?php echo $this->content; ?>
-            <hr>
-		<footer>
-			<p>Email: nmt@mascot.dk</p>
-		</footer>
-	</div>
+	<!-- <div class="container">-->
+      <?php echo $this->content; ?>
+	<!-- </div> -->
 </body>
 </html>

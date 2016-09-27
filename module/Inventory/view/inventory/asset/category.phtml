@@ -1,12 +1,13 @@
 <h3>Asset Categories</h3>
 
 
+<ul class="nav nav-pills">
+ <li><a href="<?php echo $this->baseUrl ?>/inventory/asset/addcategory"><i class="icon-download-plus"> </i> Add new category</a> </li>
+ <li><a href="<?php echo $this->baseUrl ?>/inventory/count/create-asset-counting">Create New Checking Task</a></li>
+  <li><a href="<?php echo $this->baseUrl ?>/inventory/count/list-asset-counting">Checking Overview </a></li>
 
- <a href="<?php echo $this->baseUrl ?>/inventory/asset/addcategory">Add new category</a> | 
- <a href="<?php echo $this->baseUrl ?>/inventory/count/create-asset-counting">Create New Checking Task</a> | 
- <a href="<?php echo $this->baseUrl ?>/inventory/count/list-asset-counting">Checking Overview </a>
-<hr> 
- 
+</ul>
+<hr>
   <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/search/asset"	method="get" enctype="multipart/form-data">
       <input type="text" name = "query" class="">
       <button type="submit" class="btn"><i class="icon-search">  </i>Search</button>

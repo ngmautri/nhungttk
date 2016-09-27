@@ -1,4 +1,4 @@
-<h4>Asset Counting:</h4>
+<h3>Asset Counting Report:</h3>
 
 <?php if ($counting!==null)
 {
@@ -14,29 +14,16 @@ echo '<div class="alert alert-info">';
 } 
 ?>
 
-<ul class="nav nav-pills">
-	<li><a href="/application/pdf/asset-counting?id=<?php echo $counting->id ?>&category_id=<?php echo $counting->asset_cat_id ?>"  target="_blank"><i class="icon-print">  </i> Print PR(PDF)</a> </li>
-	<li><a href="/inventory/count/print-asset-counting?id=<?php echo $counting->id ?>" target="_blank"><i class="icon-print">  </i> Print Preview(HTML)</a> </li>
-
- </ul>
-		<h5>
-		<a
-			href="<?php echo $this->baseUrl ?>/inventory/count/select-location?id=<?php echo $counting->id?>"> COUNT NOW
-		</a>
-		</h5>
-
-<table class="table table-striped table-bordered">
+<table class="pure-table pure-table-bordered">
 <thead>
 	<tr>
 		<td><b>N0.</b></td>
-		<td><b>Picture</b></td>
-		<td><b>ASSET TAG</b></td>
-		<td><b>LOCATION</b></td>
-		<td><b>COUNTED BY</b></td>
-		<td><b>VERIFED BY</b></td>
-		<td><b>ACKNOWLEDED BY</b></td>
-		<td><b>COUNTED ON</b></td>
-		<td><b>ACTION</b></td>
+		<td><b>Picture </b></td>
+		<td><b>Asset </b></td>
+		<td><b>Location</b></td>
+		<td><b>Counted by <br> /Counted on</b></td>
+		<td><b>Verified by</b></td>
+		<td><b>Remarks</b></td>
 		
 	</tr>
 </thead>
@@ -70,7 +57,7 @@ echo '<div class="alert alert-info">';
 			
 			</td>
   	
- 		<td><?php echo $a['counted_on']!==null? '<span class="label label-success">'.$a['tag'].'</span>': '<b>'. $a['tag'].'</b>';?>
+ 		<td><?php echo $a['counted_on']!==null? '<span class="label label-success">'.'<b>'. $a['tag'].'</b>'.'</span>': '<b>'. $a['tag'].'</b>';?>
  				<div style="color: gray; font-size: 8pt;	">
  <?php	
  				$asset_name = $a->name;
@@ -91,14 +78,9 @@ echo '<div class="alert alert-info">';
  		
  		</td>
 		<td><?php echo $a['counted_location'];?></td>
-
-		<td><?php echo $a['counted_by'];?></td>
+		<td><?php echo $a['counted_by'];?><br>/<?php echo $a['counted_on'];?></td>
 		<td><?php echo $a['verified_by'];?></td>
-		<td><?php echo $a['acknowledged_by'];?></td>
-		<td><?php echo $a['counted_on'];?></td>
-		<td>
-		<a target="_blank"  href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-		Detail </a></td>
+		<td>	</td>
 	</tr>
 <?php endforeach; ?>
 

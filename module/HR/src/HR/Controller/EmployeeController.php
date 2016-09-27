@@ -517,6 +517,10 @@ class EmployeeController extends AbstractActionController {
 				}
 			}
 			
+			// update index
+			$e = $this->employeeTable->get ( $id );
+			$this->employeeSearchService->updateIndexOfEmployee($e->employee_code);
+			
 			$data = array ();
 			$data ['id'] = $id;
 			// $data['filetype'] = $filetype;

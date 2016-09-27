@@ -154,5 +154,56 @@ on hr_employee_picture.employee_id = hr_employee.id
 		return $resultSet;
 	}
 	
+	/**
+	 *
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return number
+	 */
+	public function getEmployeeByCode($employee_code)
+	{
+	
+		$sql = "
+		select
+			hr_employee.*,
+            hr_employee_picture.id as sp_pic_id
+		from hr_employee
+	
+        left join
+(
+				select
+				*
+				from
+                (
+                select * from
+					hr_employee_picture
+                    order by hr_employee_picture.uploaded_on desc
+                )
+                as hr_employee_picture
+				group by hr_employee_picture.employee_id
+)
+as hr_employee_picture
+on hr_employee_picture.employee_id = hr_employee.id
+		
+		where 1
+	
+				";
+		$sql = $sql." AND hr_employee.employee_code='".$employee_code ."'";
+		
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		if(($resultSet->count())==1)
+		{
+			return $resultSet->current();
+		}else{
+			return null;
+		}
+		
+	}
 
 }

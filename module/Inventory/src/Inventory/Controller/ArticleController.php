@@ -486,13 +486,15 @@ class ArticleController extends AbstractActionController {
 				}
 			}
 			
-			// $this->redirect ()->toUrl ( $redirectUrl );
+			$this->redirect ()->toUrl ( $redirectUrl );
 			
+			/*
 			return new ViewModel ( array (
 					'article' => $article,
 					'redirectUrl' => $redirectUrl,
 					'errors' => null 
 			) );
+			*/
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();

@@ -1,0 +1,70 @@
+<?php include (ROOT.'\module\Inventory\view\inventory\sp_menu.php'); ?>
+
+
+<h5>Category:  <?php echo $category->name ?></h5>
+
+
+<ul class="nav nav-pills">
+	<li><a
+		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>"><i
+			class="icon-plus"> </i> Add New Spare-part</a></li>
+</ul>
+
+
+<?php
+
+if ($total_spareparts <= 0) {
+	
+	echo 'No spare part found!';
+} else {
+	
+	if (! is_null ( $paginator )) {
+		echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_spareparts . ' members found! </h5>';
+		;
+	} else {
+		echo '<h5>' . $total_spareparts . ' spare parts found! </h5>';
+	}
+}
+?>
+
+
+ <?php
+ /*
+ $spareparts1=$spareparts; 
+ foreach ($spareparts1 as $a1 ) : ?>
+  	
+  	<div id="caption<?php echo $this->escapeHtml($a1['id']);?>" style="display:none">
+    	<h4><?php echo $this->escapeHtml($a1['tag']);?></h4><p><?php echo $this->escapeHtml($a1['name']);?></p>
+	</div>				
+	<?php
+	endforeach
+	;
+	*/
+?>
+<div class="demo-gallery">
+<div id="lightgallery" class="justified-gallery">
+
+ 
+ <?php foreach ( $spareparts as $a ) : ?>
+  	
+  		<?php
+		if ($a->sp_pic_id !== null) :
+			?>
+		<a  data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4>" class="jg-entry" href="/inventory/image/sparepart?id=<?php echo $a->sp_pic_id;?>">
+	    	<img class="img-rounded" title="<?php echo $this->escapeHtml($a['tag']);?>" class= "img-rounded" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>">
+		 </a>
+		 <?php else :?>
+		<a class="jg-entry" href="/images/no-pic.jpg">
+  		<img  src="/images/no-pic.jpg">
+  		  		</a>
+  				
+			
+	<?php endif;
+	endforeach
+	;
+	?>
+</div>
+</div>
+
+
+<?php include (ROOT.'\module\Inventory\view\inventory\sp_order_form.php'); ?>

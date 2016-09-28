@@ -43,6 +43,7 @@ if ($total_spareparts <= 0) {
 	endforeach
 	;
 	*/
+$no_pics=0;
 ?>
 <div class="demo-gallery">
 <div id="lightgallery" class="justified-gallery">
@@ -56,12 +57,24 @@ if ($total_spareparts <= 0) {
 		<a data-toggle="tooltip" data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4>" class="jg-entry" href="/inventory/image/sparepart?id=<?php echo $a->sp_pic_id;?>">
 	    	<img class="img-rounded" title="<?php echo $this->escapeHtml($a['tag']);?>: <?php echo $this->escapeHtml($a['name']);?>" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>">
 		 </a>
-  	<?php endif;
+		<?php else:
+			$no_pics=$no_pics+1;
+		
+ 		endif;
 	endforeach
 	;
 	?>
 </div>
 </div>
+
+<?php if ($no_pics>0)
+{
+echo '<div class="alert alert-error">';
+	echo $no_pics . ' spare part has no picture!';
+echo '</div>';
+} 
+?>
+
 
 
 <?php include (ROOT.'\module\Inventory\view\inventory\sp_order_form.php'); ?>

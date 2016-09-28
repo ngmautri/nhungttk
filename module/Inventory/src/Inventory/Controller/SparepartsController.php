@@ -1223,6 +1223,44 @@ class SparepartsController extends AbstractActionController {
 	}
 	
 	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function showCategoryAlbumAction() {
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+	
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+	
+		$id = $this->params ()->fromQuery ( 'id' );
+	
+		$category = $this->sparePartCategoryTable->get ( $id );
+		$totalResults = $this->sparePartCategoryMemberTable->getTotalMembersOfCatID ( $id );
+	
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		} else {
+			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
+		}
+	
+		return new ViewModel ( array (
+				'category' => $category,
+				'total_spareparts' => $totalResults,
+				'spareparts' => $spareparts,
+				'paginator' => $paginator
+		) );
+	}
+	
+	/**
 	 * Show detail of a spare parts
 	 */
 	public function showAction() {

@@ -54,6 +54,8 @@ class ImageController extends AbstractActionController {
 		$response = $this->getResponse();
 	
 		$imageContent =  file_get_contents($pic->url);
+		
+		
 		$response->setContent($imageContent);
 		$response->getHeaders()
 		->addHeaderLine('Content-Transfer-Encoding', 'binary')
@@ -112,13 +114,43 @@ class ImageController extends AbstractActionController {
 		$pic = $this->getSparepartPictureTable()->get( $id);
 	
 		$response = $this->getResponse();
-	
+		
+		/*
+		// Create Image From Existing File
+		$jpg_image = imagecreatefromjpeg($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_200_'.$pic->filename);
+		
+		// Allocate A Color For The Text
+		$white = imagecolorallocate($jpg_image, 255, 255, 255);
+		
+		// Set Path to Font File
+		$font_path = 'arial.ttf';
+		
+		// Set Text to Be Printed On Image
+		$text = "This is a sunset!";
+		
+		// Print Text On Image
+		imagettftext($jpg_image, 25, 0, 75, 300, $white, $font_path, $text);
+		
+		// Send Image to Browser
+		imagejpeg($jpg_image);
+		
+		
+		//$imageContent =  file_get_contents($jpg_image);
+		
+		*/
+		
 		$imageContent =  file_get_contents($pic->folder.DIRECTORY_SEPARATOR.'thumbnail_200_'.$pic->filename);
+		
+		
 		$response->setContent($imageContent);
 		$response->getHeaders()
 		->addHeaderLine('Content-Transfer-Encoding', 'binary')
 		->addHeaderLine('Content-Type', 'image/png')
 		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+		
+		// Clear Memory
+		//imagedestroy($jpg_image);
+		
 		return $response;
 	}
 	

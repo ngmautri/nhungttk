@@ -53,10 +53,6 @@ if ($total_spareparts <= 0) {
 		<a data-toggle="tooltip" data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4>" class="jg-entry" href="/inventory/image/sparepart?id=<?php echo $a->sp_pic_id;?>">
 	    	<img class="img-rounded" title="<?php echo $this->escapeHtml($a['tag']);?>: <?php echo $this->escapeHtml($a['name']);?>" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>">
 		 </a>
-		 <?php else :?>
-		<a data-toggle="tooltip" title="Hooray!" data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4>" class="jg-entry" href="/images/no-pic.jpg">
-  		<img class="img-rounded" title="<?php echo $this->escapeHtml($a['tag']);?>: <?php echo $this->escapeHtml($a['name']);?>" src="/images/no-pic.jpg">
-   		</a>
   	<?php endif;
 	endforeach
 	;

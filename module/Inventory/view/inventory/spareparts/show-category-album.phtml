@@ -50,11 +50,11 @@ if ($total_spareparts <= 0) {
   		<?php
 		if ($a->sp_pic_id !== null) :
 			?>
-		<a  data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4>" class="jg-entry" href="/inventory/image/sparepart?id=<?php echo $a->sp_pic_id;?>">
+		<a data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4>" class="jg-entry" href="/inventory/image/sparepart?id=<?php echo $a->sp_pic_id;?>">
 	    	<img class="img-rounded" title="<?php echo $this->escapeHtml($a['tag']);?>" class= "img-rounded" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>">
 		 </a>
 		 <?php else :?>
-		<a class="jg-entry" href="/images/no-pic.jpg">
+		<a data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4>" class="jg-entry" href="/images/no-pic.jpg">
   		<img  src="/images/no-pic.jpg">
   		  		</a>
   				

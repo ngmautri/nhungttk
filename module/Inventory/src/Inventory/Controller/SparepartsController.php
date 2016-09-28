@@ -1245,18 +1245,21 @@ class SparepartsController extends AbstractActionController {
 		$totalResults = $this->sparePartCategoryMemberTable->getTotalMembersOfCatID ( $id );
 	
 		$paginator = null;
+		/*
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			//$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
 		} else {
 			$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
 		}
-	
+		*/
+		$spareparts = $this->sparePartCategoryMemberTable->getMembersOfCatID ( $id, 0, 0 );
 		return new ViewModel ( array (
 				'category' => $category,
 				'total_spareparts' => $totalResults,
 				'spareparts' => $spareparts,
-				'paginator' => $paginator
+				'paginator' => null
 		) );
 	}
 	

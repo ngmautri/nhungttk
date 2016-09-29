@@ -81,6 +81,14 @@ echo '<div class="alert alert-error">';
 	</div>
 
 	<div class="control-group">
+		<label class="control-label" for="inputTag">Asset name (if any):</label>
+		<div class="controls">
+			<input type="text" id="item_name" placeholder="" name="asset_name"
+				value="<?php echo $cart_item != null?$cart_item->asset_name:""; ?>">
+		</div>
+	</div>
+	
+	<div class="control-group">
 		<label class="control-label" for="inputDescription">Reason /Note:</label>
 		<div class="controls">
 			<textarea id="item_remarks" placeholder="" rows="2" cols="5"

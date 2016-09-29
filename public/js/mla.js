@@ -1122,6 +1122,8 @@ function addItemToCart(type) {
 	var item_edt;
 	var item_unit;
 	var item_quantity;
+	var item_asset_name;
+	var item_purpose;
 	var item_remarks;
 	var ID;
 
@@ -1133,6 +1135,8 @@ function addItemToCart(type) {
 
 	item_edt = $('#end_date').val();
 	item_quantity = $('#item_quantity').val();
+	item_asset_name = $('#item_asset_name').val();
+	item_purpose = $('#item_purpose').val();
 	item_remarks = $('#item_remarks').val();
 	$('#_status').text("");
 
@@ -1145,6 +1149,8 @@ function addItemToCart(type) {
 		unit:item_unit,
 		quantity : item_quantity,
 		EDT : item_edt,
+		asset_name : item_asset_name,
+		purpose : item_purpose,
 		remarks : item_remarks,
 
 	}, function(data, status) {

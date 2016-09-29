@@ -162,8 +162,8 @@ class PdfController extends AbstractActionController {
 			$details = $details . '<tr style="line-height: 12em;border: 1px solid #cbcbcb; background-color: #f2f2f2; font-weight: bold; text-align: center;">';
 			
 			$details = $details . '<td style="border: 1pt solid #cbcbcb;width:30px " > No.</td>';
-			$details = $details . '<td style="border: 1pt solid #cbcbcb;width:65px " >EDT<br> /Priority</td>';
-			$details = $details . '<td style="border: 1px solid #cbcbcb;width:150px "> Item Name / Code</td>';
+			$details = $details . '<td style="border: 1pt solid #cbcbcb;width:55px " >EDT<br> /Priority</td>';
+			$details = $details . '<td style="border: 1px solid #cbcbcb;width:200px "> Item Name / Code</td>';
 			$details = $details . '<td style="border: 1px solid #cbcbcb;width:45px "> Unit</td>';
 			$details = $details . '<td style="border: 1px solid #cbcbcb;width:45px; text-align: right;"> Q\'Ty</td>';
 			$details = $details . '<td style="border: 1px solid #cbcbcb;"> Unit Price</td>';
@@ -186,18 +186,25 @@ class PdfController extends AbstractActionController {
 				$details = $details . '<tr style="border: 1px solid #cbcbcb;line-height: 13em;vertical-align:middle" >';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
-				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-Y" ) . '<br><span style="color: gray; font-style: italic; font-size: 7pt;">' . $item->priority . '</span></td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="color: gray; font-style: italic; font-size: 7pt;">' . $item->priority . '</span></td>';
+
+				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;">';
 				
-				$tag = '';
 				if ($item->sp_tag > 0) {
-					$tag = '- Tag:' . $item->sp_tag;
+					$more = $more . '- Tag: ' . $item->sp_tag . '<br>';
 				}
 				
-				if ($item->code != null) :
-					$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;">' . $item->name . '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;"> <b>Code: </b>' . $item->code . '' . $tag . '.</div></td>';
-				 else :
-					$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;">' . $item->name . '<div style="padding-top: 50px;color: gray; font-style: italic; font-size: 8pt;">' . $tag . '</div></td>';
-				endif;
+				if ($item->code !=null) {
+					$more = $more . '- Code: ' . $item->code . '<br>';
+				}
+				if ($item->asset_name !=null) {
+					$more = $more .'- Model: ' . $item->asset_name;
+				}
+				
+				
+				$more=$more.'</div>';
+				
+				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . $item->name .'</b>'. $more. '</td>';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: center;">' . $item->unit . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: right;">' . $item->quantity . '</td>';
@@ -249,8 +256,8 @@ class PdfController extends AbstractActionController {
 			$details = $details . '<tr style="line-height: 12em;border: 1px solid #cbcbcb; background-color: #f2f2f2; font-weight: bold; text-align: center;">';
 			
 			$details = $details . '<td style="border: 1pt solid #cbcbcb;width:30px " > No.</td>';
-			$details = $details . '<td style="border: 1pt solid #cbcbcb;width:65px " >EDT<br> /Priority</td>';
-			$details = $details . '<td style="border: 1px solid #cbcbcb;width:150px "> Item Name <br> /Item Code</td>';
+			$details = $details . '<td style="border: 1pt solid #cbcbcb;width:55px " >EDT<br> /Priority</td>';
+			$details = $details . '<td style="border: 1px solid #cbcbcb;width:180px "> Item Name <br> /Item Code</td>';
 			$details = $details . '<td style="border: 1px solid #cbcbcb;width:45px "> Unit</td>';
 			$details = $details . '<td style="border: 1px solid #cbcbcb;width:45px; text-align: right;"> Q\'Ty</td>';
 			$details = $details . '<td style="border: 1px solid #cbcbcb;"> Unit <br> Price</td>';
@@ -274,18 +281,26 @@ class PdfController extends AbstractActionController {
 				$details = $details . '<tr style="border: 1px solid #cbcbcb;line-height: 13em;vertical-align:middle" >';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
-				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-Y" ) . '<br><span style="color: gray; font-style: italic; font-size: 7pt;">' . $item->priority . '</span></td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="color: gray; font-style: italic; font-size: 7pt;">' . $item->priority . '</span></td>';
+				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;">';
 				
-				$tag = '';
+				/*
 				if ($item->sp_tag > 0) {
-					$tag = '- Tag:' . $item->sp_tag;
+					$more = $more . '- Tag: ' . $item->sp_tag . '<br>';
+				}
+				*/
+				
+				if ($item->code !=null) {
+					$more = $more . '- Code: ' . $item->code . '<br>';
+				}
+				if ($item->asset_name !=null) {
+					$more = $more .'- Model: ' . $item->asset_name;
 				}
 				
-				if ($item->code != null) :
-					$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em; ">' . $item->name . '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;"> <b>Code: </b>' . $item->code . '' . $tag . '.</div></td>';
-				 else :
-					$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;">' . $item->name . '<div style="padding-top: 50px;color: gray; font-style: italic; font-size: 8pt;">' . $tag . '</div></td>';
-				endif;
+				
+				$more=$more.'</div>';
+				
+				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . $item->name .'</b>'. $more. '</td>';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: center;">' . $item->unit . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: right;">' . $item->quantity . '</td>';

@@ -26,6 +26,8 @@ class PurchaseRequestCartItem{
 	public $asset_id;
 	public $other_res_id;
 	
+	public $asset_name;
+	public $purpose;
 	public $remarks;
 	public $created_on;
 	public $created_by;
@@ -51,6 +53,8 @@ class PurchaseRequestCartItem{
 		$this->asset_id = (! empty ( $data ['asset_id'] )) ? $data ['asset_id'] : null;
 		$this->other_res_id = (! empty ( $data ['other_res_id'] )) ? $data ['other_res_id'] : null;
 		
+		$this->asset_name = (! empty ( $data ['asset_name'] )) ? $data ['asset_name'] : null;
+		$this->purpose = (! empty ( $data ['purpose'] )) ? $data ['purpose'] : null;
 		$this->remarks = (! empty ( $data ['remarks'] )) ? $data ['remarks'] : null;
 		$this->created_on = (! empty ( $data ['created_on'] )) ? $data ['created_on'] : null;
 		$this->created_by = (! empty ( $data ['created_by'] )) ? $data ['created_by'] : null;

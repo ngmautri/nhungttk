@@ -1455,6 +1455,8 @@ WHERE mla_delivery_items_2.article_do_last_change  IS NOT NULL OR mla_delivery_i
 				'asset_id' => $input->asset_id,
 				'other_res_id' => $input->other_res_id,
 				
+				'asset_name' => $input->asset_name,				
+				'purpose' => $input->purpose,
 				'remarks' => $input->remarks,
 				'created_on' => date ( 'Y-m-d H:i:s' ),
 				'created_by' => $input->created_by 
@@ -1489,6 +1491,8 @@ WHERE mla_delivery_items_2.article_do_last_change  IS NOT NULL OR mla_delivery_i
 				'asset_id' => $input->asset_id,
 				'other_res_id' => $input->other_res_id,
 				
+				'asset_name' => $input->asset_name,				
+				'purpose' => $input->purpose,
 				'remarks' => $input->remarks,
 				'created_on' => date ( 'Y-m-d H:i:s' ),
 				'created_by' => $input->created_by 

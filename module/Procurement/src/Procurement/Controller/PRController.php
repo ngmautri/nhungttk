@@ -169,6 +169,7 @@ class PRController extends AbstractActionController {
 			$h [] = "Item Keywords";
 			$h [] = "Spare Part";
 			$h [] = "SparePart Tag";
+			$h [] = "Asset Name";
 			$h [] = "EDT";
 			
 			$h [] = "Ordered Quantity";
@@ -225,7 +226,7 @@ class PRController extends AbstractActionController {
 					$l [] = "NO";
 					$l [] = "-";
 				}
-				
+				$l [] = ( string ) $m->asset_name;
 				$l [] = ( string ) date_format ( date_create ( $m->EDT ), "Y-m-d" );
 				
 				$l [] = ( string ) $m->quantity;
@@ -345,6 +346,7 @@ class PRController extends AbstractActionController {
 			$h [] = "Item Keywords";
 			$h [] = "Spare Part";
 			$h [] = "SparePart Tag";
+			$h [] = "Asset Name";
 			
 			$h [] = "Item Unit";
 			$h [] = "Ordered Quantity";
@@ -390,6 +392,7 @@ class PRController extends AbstractActionController {
 					$l [] = "NO";
 					$l [] = "-";
 				}
+				$l [] = ( string ) $m->asset_name;
 				
 				$l [] = ( string ) $m->unit;
 				
@@ -1525,6 +1528,8 @@ class PRController extends AbstractActionController {
 				$input->quantity = $request->getPost ( 'quantity' );
 				$input->EDT = $request->getPost ( 'EDT' );
 				$input->unit = $request->getPost ( 'unit' );
+				$input->asset_name = $request->getPost ( 'asset_name' );
+				$input->purpose = $request->getPost ( 'purpose' );
 				$input->remarks = $request->getPost ( 'remarks' );
 				$input->created_by = $user ['id'];
 				
@@ -1742,6 +1747,7 @@ class PRController extends AbstractActionController {
 			$input->quantity = $request->getPost ( 'quantity' );
 			$input->EDT = $request->getPost ( 'EDT' );
 			$input->unit = $request->getPost ( 'unit' );
+			$input->asset_name = $request->getPost ( 'asset_name' );
 			$input->remarks = $request->getPost ( 'remarks' );
 			
 			// validator.

@@ -84,6 +84,8 @@ class PurchaseRequestCartItemTable {
 				'asset_id' => $input->asset_id,
 				'other_res_id' => $input->other_res_id,
 				
+				'asset_name' => $input->asset_name,
+				'purpose' => $input->purpose,
 				'remarks' => $input->remarks,
 				'created_on' => date ( 'Y-m-d H:i:s' ),
 				'created_by' => $input->created_by,
@@ -121,6 +123,8 @@ class PurchaseRequestCartItemTable {
 				'quantity' => $input->quantity,
 				'EDT' => $input->EDT,
 				
+				'asset_name' => $input->asset_name,				
+				'purpose' => $input->purpose,
 				'remarks' => $input->remarks,
 		);
 		
@@ -277,6 +281,7 @@ insert into mla_purchase_request_items
     mla_purchase_request_items.sparepart_id,
     mla_purchase_request_items.asset_id,
     mla_purchase_request_items.other_res_id,
+	mla_purchase_request_items.asset_name,
     mla_purchase_request_items.remarks,    
     mla_purchase_request_items.created_on,
     mla_purchase_request_items.created_by
@@ -293,6 +298,7 @@ select
     mla_purchase_cart.sparepart_id,
     mla_purchase_cart.asset_id,
     mla_purchase_cart.other_res_id,
+	mla_purchase_cart.asset_name,		
     mla_purchase_cart.remarks,    
     mla_purchase_cart.created_on,
     mla_purchase_cart.created_by

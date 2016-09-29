@@ -120,4 +120,6 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 font-size: 10pt !important; 
 }
 
-
+.modal-body {
+    max-height: 860px;
+}

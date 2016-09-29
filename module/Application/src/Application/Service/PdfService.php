@@ -296,13 +296,14 @@ $pdf->Output('example_048.pdf', 'I');
 		$pdf->SetFont('freeserif', '', 12,false);
 		$pdf->writeHTML($tbl, true, false, false, false, '');
 	
+		$pdf->SetFont('times', '', 10);
 		$pdf->Write(0, '- Reason: ', '', 0, 'L', true, 0, false, false, 0);
 		$pdf->Ln(15);
 	
 		$pdf->Write(0, '- Check Budget: ', '', 0, 'L', true, 0, false, false, 0);
 		$pdf->Ln(25);
 		
-		$pdf->SetFont('times', '', 9);
+		$pdf->SetFont('times', '', 10);
 		$tbl2 = <<<EOD
 <div style="border: none; with=100%">
 <table style="border: none; with=100%">
@@ -410,16 +411,17 @@ EOD;
 				$tbl = $detail;
 				
 				// most lang is supported!
-				$pdf->SetFont('freeserif', '', 13,false);
+				$pdf->SetFont('freeserif', '', 12,false);
 				$pdf->writeHTML($tbl, true, false, false, false, '');
-	
+				
+				$pdf->SetFont('times', '', 10);
 				$pdf->Write(0, '- Reason: ', '', 0, 'L', true, 0, false, false, 0);
 				$pdf->Ln(15);
 	
 				$pdf->Write(0, '- Check Budget: ', '', 0, 'L', true, 0, false, false, 0);
-				$pdf->Ln(25);
+				$pdf->Ln(20);
 	
-				$pdf->SetFont('helvetica', '', 9);
+				$pdf->SetFont('times', '', 10);
 				$tbl2 = <<<EOD
 <div style="border: none; with=100%">
 <table style="border: none; with=100%">

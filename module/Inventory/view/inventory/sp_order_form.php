@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div id="sp_order_modal" class="modal hide" role="dialog" s>
+<div id="sp_order_modal" class="modal hide" role="dialog">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-header" style="height: 25px">
 			<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -68,7 +68,15 @@
 				</div>
 
 				<div class="control-group">
-					<label class="control-label" for="inputDescription">Reason /Note:</label>
+					<label class="control-label" for="inputTag">Asset Name (if any):</label>
+					<div class="controls">
+						<input type="text" id="item_asset_name" placeholder="" name="asset_name"
+							value="">
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="inputDescription">Remarks:</label>
 					<div class="controls">
 						<textarea id="item_remarks" placeholder="" rows="2" cols="5"
 							name="remarks"></textarea>

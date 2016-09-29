@@ -6,7 +6,7 @@
 			<h5 class="modal-title">Mascot International (Laos)</h5>
 		</div>
 		<div class="modal-body">
-			<span id="_status"></span>
+			<div id="_status"></div>
 
 			<form class="form-horizontal"
 				action="" method="post" enctype="multipart/form-data" id="">
@@ -66,9 +66,17 @@
 							name="EDT" value="">
 					</div>
 				</div>
-
+				
 				<div class="control-group">
-					<label class="control-label" for="inputDescription">Reason /Note:</label>
+					<label class="control-label" for="inputTag">Asset Name (if any):</label>
+					<div class="controls">
+						<input type="text" id="item_asset_name" placeholder="" name="asset_name"
+							value="">
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="inputDescription">Remarks:</label>
 					<div class="controls">
 						<textarea id="item_remarks" placeholder="" rows="2" cols="5"
 							name="remarks"></textarea>

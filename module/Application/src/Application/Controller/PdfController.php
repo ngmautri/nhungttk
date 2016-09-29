@@ -191,14 +191,14 @@ class PdfController extends AbstractActionController {
 				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;">';
 				
 				if ($item->sp_tag > 0) {
-					$more = $more . '- Tag: ' . $item->sp_tag . '<br>';
+					$more = $more . '- Tag: ' . $item->sp_tag;
 				}
 				
 				if ($item->code !=null) {
-					$more = $more . '- Code: ' . $item->code . '<br>';
+					$more = $more . '<br>- Code: ' . $item->code;
 				}
 				if ($item->asset_name !=null) {
-					$more = $more .'- Model: ' . $item->asset_name;
+					$more = $more .'<br>- Model: ' . $item->asset_name;
 				}
 				
 				
@@ -291,10 +291,10 @@ class PdfController extends AbstractActionController {
 				*/
 				
 				if ($item->code !=null) {
-					$more = $more . '- Code: ' . $item->code . '<br>';
+					$more = $more . '- Code: ' . $item->code;
 				}
 				if ($item->asset_name !=null) {
-					$more = $more .'- Model: ' . $item->asset_name;
+					$more = $more .'<br>- Model: ' . $item->asset_name;
 				}
 				
 				

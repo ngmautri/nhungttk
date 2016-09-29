@@ -106,15 +106,14 @@ class PdfController extends AbstractActionController {
 				}
 				$details = $details . '<tr style="border: 1px solid #cbcbcb;line-height: 13em;vertical-align:middle" >';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
-				if($pic_file!=""){
-					//$details = $details . '<td style="border: 1px solid #cbcbcb;"><img width="50" height="50" src="' . $pic_file . '"></td>';
+				if ($pic_file != "") {
+					// $details = $details . '<td style="border: 1px solid #cbcbcb;"><img width="50" height="50" src="' . $pic_file . '"></td>';
 					$details = $details . '<td style="border: 1px solid #cbcbcb;">-</td>';
-				}else{
+				} else {
 					$details = $details . '<td style="border: 1px solid #cbcbcb;">-</td>';
 				}
 				
-				$details = $details . '<td style="border: 1px solid #cbcbcb;"><b>' . $item->name . '</br><br>Tag:' . 
-				$item->tag . '<br>Model:' . $item->model . '<br>Serial:' . $item->serial .'<br>Location:' . $item->counted_location . '</td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb;"><b>' . $item->name . '</br><br>Tag:' . $item->tag . '<br>Model:' . $item->model . '<br>Serial:' . $item->serial . '<br>Location:' . $item->counted_location . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $item->counted_by . '<br>/' . $item->counted_on . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;"></td>';
 				$details = $details . '</tr>';
@@ -186,25 +185,33 @@ class PdfController extends AbstractActionController {
 				$details = $details . '<tr style="border: 1px solid #cbcbcb;line-height: 13em;vertical-align:middle" >';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
-				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="color: gray; font-style: italic; font-size: 7pt;">' . $item->priority . '</span></td>';
-
-				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;">';
+				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="color: gray; font-style: italic; font-size: 9pt;">' . $item->priority . '</span></td>';
 				
+				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 9pt;">';
+				
+				$d = '';
 				if ($item->sp_tag > 0) {
-					$more = $more . '- Tag: ' . $item->sp_tag;
+					$d = $d . '- Tag: ' . $item->sp_tag;
 				}
 				
-				if ($item->code !=null) {
-					$more = $more . '<br>- Code: ' . $item->code;
+				if ($item->code != null) {
+					if ($d === '') {
+						$d = $d . '- Code: ' . $item->code;
+					} else {
+						$d = $d . '<br>- Code: ' . $item->code;
+					}
 				}
-				if ($item->asset_name !=null) {
-					$more = $more .'<br>- Model: ' . $item->asset_name;
+				if ($item->asset_name != null) {
+					if ($d === '') {
+						$d = $d . '- Code: ' . $item->asset_name;
+					} else {
+						$d = $d . '<br>- Code: ' . $item->asset_name;
+					}
 				}
 				
+				$more =$more. $d . '</div>';
 				
-				$more=$more.'</div>';
-				
-				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . $item->name .'</b>'. $more. '</td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . ucwords ( $item->name ) . '</b>' . $more . '</td>';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: center;">' . $item->unit . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: right;">' . $item->quantity . '</td>';
@@ -281,26 +288,34 @@ class PdfController extends AbstractActionController {
 				$details = $details . '<tr style="border: 1px solid #cbcbcb;line-height: 13em;vertical-align:middle" >';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
-				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="color: gray; font-style: italic; font-size: 7pt;">' . $item->priority . '</span></td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="color: gray; font-style: italic; font-size: 8pt;">' . $item->priority . '</span></td>';
 				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;">';
 				
-				/*
+				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 9pt;">';
+				$d = '';
 				if ($item->sp_tag > 0) {
-					$more = $more . '- Tag: ' . $item->sp_tag . '<br>';
-				}
-				*/
-				
-				if ($item->code !=null) {
-					$more = $more . '- Code: ' . $item->code;
-				}
-				if ($item->asset_name !=null) {
-					$more = $more .'<br>- Model: ' . $item->asset_name;
+					$d = $d . '- Tag: ' . $item->sp_tag;
 				}
 				
+				if ($item->code != null) {
+					if ($d == '') {
+						$d = $d . '- Code: ' . $item->code;
+					} else {
+						$d = $d . '<br>- Code: ' . $item->code;
+					}
+				}
 				
-				$more=$more.'</div>';
+				if ($item->asset_name != null) {
+					if ($d == '') {
+						$d = $d . '- Code: ' . $item->asset_name;
+					} else {
+						$d = $d . '<br>- Code: ' . $item->asset_name;
+					}
+				}
 				
-				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . $item->name .'</b>'. $more. '</td>';
+				$more =$more. $d . '</div>';
+				
+				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . ucwords ( $item->name ) . '</b>' . $more . '</td>';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: center;">' . $item->unit . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: right;">' . $item->quantity . '</td>';

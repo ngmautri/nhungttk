@@ -185,11 +185,10 @@ class PdfController extends AbstractActionController {
 				$details = $details . '<tr style="border: 1px solid #cbcbcb;line-height: 13em;vertical-align:middle" >';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="color: gray; font-style: italic; font-size: 8pt;">' . $item->priority . '</span></td>';
 				
-				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="font-style: italic; font-size: 8pt;">' . $item->priority . '</span></td>';
-				
+					
 				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 9pt;">';
-				
 				$d = '';
 				if ($item->sp_tag > 0) {
 					$d = $d . '- Tag: ' . $item->sp_tag;
@@ -290,8 +289,7 @@ class PdfController extends AbstractActionController {
 				$details = $details . '<tr style="border: 1px solid #cbcbcb;line-height: 13em;vertical-align:middle" >';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
-				
-				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="font-style: italic; font-size: 8pt;">' . $item->priority . '</span></td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="color: gray; font-style: italic; font-size: 8pt;">' . $item->priority . '</span></td>';
 				
 				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;">';
 				

@@ -216,7 +216,7 @@ class PdfController extends AbstractActionController {
 				
 				$more =$more. $d . '</div>';
 				
-				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><div><b>' . ucwords ( $item->name ) . '</b></div>' . $more . '</td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . ucwords ( $item->name ) . '</b>' . $more . '</td>';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: center;">' . $item->unit . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: right;">' . $item->quantity . '</td>';
@@ -321,7 +321,7 @@ class PdfController extends AbstractActionController {
 				
 				$more =$more. $d . '</div>';
 				
-				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . ucwords ( $item->name ) . '</b>' . $more . '</td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 13em;"><b>' . ucwords ( $item->name ) . '</b>' . $more . '</td>';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: center;">' . $item->unit . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: right;">' . $item->quantity . '</td>';

@@ -216,7 +216,7 @@ class PdfController extends AbstractActionController {
 				
 				$more =$more. $d . '</div>';
 				
-				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . ucwords ( $item->name ) . '</b>' . $more . '</td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><div><b>' . ucwords ( $item->name ) . '</b></div>' . $more . '</td>';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: center;">' . $item->unit . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: right;">' . $item->quantity . '</td>';
@@ -294,6 +294,7 @@ class PdfController extends AbstractActionController {
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb; vertical-align: middle; line-height: 13em;">' . date_format ( date_create ( $item->EDT ), "d-m-y" ) . '<br><span style="color: gray; font-style: italic; font-size: 8pt;">' . $item->priority . '</span></td>';
+				
 				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 8pt;">';
 				$more = '<div style="padding-top: 50px;font-style: italic; font-size: 9pt;">';
 				

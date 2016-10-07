@@ -187,7 +187,6 @@ class PdfController extends AbstractActionController {
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
 				
 				$priority='<span style="color: gray; font-style: italic; font-size: 9pt;">' . $item->priority . '</span>';
-				
 				if($item->priority =="Urgent"){
 					$priority='<span style="color: red; font-style: italic; font-size: 9pt;">' . $item->priority . '</span>';
 				}
@@ -295,6 +294,7 @@ class PdfController extends AbstractActionController {
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;">' . $n . '</td>';
 				
+				$priority='<span style="color: gray; font-style: italic; font-size: 9pt;">' . $item->priority . '</span>';
 				if($item->priority =="Urgent"){
 					$priority='<span style="color: red; font-style: italic; font-size: 9pt;">' . $item->priority . '</span>';
 				}

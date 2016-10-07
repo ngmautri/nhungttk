@@ -138,7 +138,7 @@ EOT;
 		 
 		 // build message
 		 $message = new Message ();
-		 $message->addFrom ( 'mib-team@web.de' );
+		 $message->addFrom ( 'mla-app@outlook.com' );
 		 $message->addTo ("vvd@mascot.dk");
 		 $message->addCc("mlasparepart@mascot.dk" );
 		 $message->setSubject ( 'MLA - Sparepart Order Sugguestion - '.date( "m-d-Y" )  );

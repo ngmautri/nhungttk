@@ -152,12 +152,12 @@ class PdfController extends AbstractActionController {
 			 *
 			 */
 			// $details='<img src="/images/bg1.png"/>';
-			$details = '';
-			$details = $details . '<div style="with=100%">
+	
+			$details = '<div style="with=100%">
 					<table  style="font-size:9pt;
     border-spacing: 0; padding:3px;
     border: 1px solid #cbcbcb;	width:100%;display: block;max-width: 100%;white-space: nowrap">';
-			
+				
 			$details = $details . '<tr style="line-height: 12em;border: 1px solid #cbcbcb; background-color: #f2f2f2; font-weight: bold; text-align: center;">';
 			
 			$details = $details . '<td style="border: 1pt solid #cbcbcb;width:30px " > No.</td>';
@@ -216,7 +216,7 @@ class PdfController extends AbstractActionController {
 				
 				$more =$more. $d . '</div>';
 				
-				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 15em;"><b>' . ucwords ( $item->name ) . '</b>' . $more . '</td>';
+				$details = $details . '<td style="border: 1px solid #cbcbcb;line-height: 13em;"><b>' . ucwords ( $item->name ) . '</b>' . $more . '</td>';
 				
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: center;">' . $item->unit . '</td>';
 				$details = $details . '<td style="border: 1px solid #cbcbcb;text-align: right;">' . $item->quantity . '</td>';

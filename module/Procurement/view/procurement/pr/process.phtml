@@ -76,7 +76,6 @@ echo '<div class="alert alert-info">';
 			<td><b data-toggle="tooltip" title="Free">Free</b></td>
 			<td><b>EDT</b></td>
 			<td><b>Last Purchase</b></td>
-			<td><b>Work Flow</b></td>
 			</tr>
 	</thead>
 	<tbody>	
@@ -226,14 +225,6 @@ echo '<div class="alert alert-info">';
 		endif;
 		?>
 			</span>	
-			</td>
-			<td>
-			<div style="color: gray; font-size: 8pt;">
-				PR-Item: #<?php echo $item->id;?><br>
-			<?php if ($item->po_item_id>0):?>
-				PO-Item: #<?php echo $item->po_item_id;?><br>
-			<?php endif;?>
-			</div>
 			</td>
 			<script language="javascript">
 				id_array.push(<?php echo $item->id;?>);

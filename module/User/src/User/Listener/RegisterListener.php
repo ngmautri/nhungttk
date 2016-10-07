@@ -78,7 +78,7 @@ EOT;
 	
 		// build message
 		$message = new Message ();
-		$message->addFrom ( 'mib-team@web.de' );
+		$message->addFrom ( 'mla-app@outlook.com' );
 		$message->addTo ($user->email);
 		$message->setSubject ( 'Mascot Laos Plattform Register' );
 		

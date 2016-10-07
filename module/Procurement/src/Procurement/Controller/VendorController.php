@@ -20,6 +20,7 @@ use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Search\Query\Wildcard;
 use Procurement\Services\VendorSearchService;
 use \Exception;
+use Procurement\Model\Vendor;
 use Procurement\Model\VendorTable;
 
 /**

@@ -27,7 +27,9 @@ echo '<div class="alert alert-info">';
 	 echo "<b>Grand Total:</b>";
 	 echo "<ul>";
 	 foreach ( $po_grand_total as $a ) {
-	 	echo '<li><b>' . number_format ( $a->grand_total, 0, ",", "." ) .' '. $a->currency. '</b></li>';
+	 	if($a->currency!=null){
+	 		echo '<li><b>' . number_format ( $a->grand_total, 0, ",", "." ) .' '. $a->currency. '</b></li>';
+	 	}
 	 }
 	 echo "</ul>";
 	 endif;

@@ -98,7 +98,12 @@ if ($total_spareparts <= 0) {
  						<li><a
 							href="<?php echo $this->baseUrl ?>/inventory/spareparts/upload-picture1?id=<?php echo $this->escapeHtml($a['id']);?>">Upload Picture</a>
 						</li>
- 	
+						
+						<li class="divider"></li>
+ 						<li><a
+							href="<?php echo $this->baseUrl ?>/inventory/purchasing/list?type=spare-part&id=<?php echo $this->escapeHtml($a['id']);?>">Purchasing Data</a>
+						</li>
+			
  							<li class="divider"></li>
  							<li><a
 				href="<?php echo $this->baseUrl ?>/inventory/spareparts/report?sparepart_id=<?php echo $this->escapeHtml($a['id']);?>">Stock movement Summary</a>

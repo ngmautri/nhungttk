@@ -1,9 +1,5 @@
-<h3>Stock Movement</h3>
-
-<h4> <?php echo $this->escapeHtml($article->name);?> </h4>
-
-<hr>
-<table class="pure-table pure-table-bordered">
+<h5>Stock Movement: <?php echo $this->escapeHtml($article->name);?></h5>
+<table class="table table-striped table-bordered">
 <thead>
 	<tr>
 		<td><b>id</b></td>
@@ -21,10 +17,10 @@
 	 $count = 0;
 	foreach ($movements as $a) :
 	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 //echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 	 
 	 ?>
-
+	<tr>
 		<td><?php echo $a->id;?></td>
 		<td><?php echo date_format(date_create($a->movement_date),"Y-m-d");?></td>
 		<td><?php echo $a->flow;?></td>

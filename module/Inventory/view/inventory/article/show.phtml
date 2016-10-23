@@ -1,15 +1,23 @@
  <form class="form-search" action="<?php echo $this->baseUrl ?>/inventory/article/list"	method="get" enctype="multipart/form-data">
       <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
 </form>
-
-<h4> <?php echo $this->escapeHtml($article->name);?></h4>
- <hr>
-<h5>
-	<a
-		href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($article->id);?>">Show
-		Stock Movements </a>
-</h5>
 <hr>
+<h4> <?php echo $this->escapeHtml($article->name);?></h4>
+
+<div id="tabs">
+  <ul>
+  <li ><a href="#general">General</a></li>
+  <li><a href="/inventory/purchasing/list?id=<?php echo $this->escapeHtml($article->id);?>&type=article&layout=ajax">Purchasing Data</a></li>
+  
+  <li><a href="/inventory/article/movements?article_id=<?php echo $this->escapeHtml($article->id);?>&layout=ajax">Stock Movemements</a></li>
+ <li><a href="/procurement/pr/history?article_id=<?php echo $this->escapeHtml($article->id);?>&layout=ajax">Orders History</a></li>
+ 
+ <li><a href="#attachments">Attachments</a></li>
+
+ 
+  </ul>
+ <div id="attachments">No data found!</div>
+<div id="general">
 <table>
 
 	<tr>
@@ -44,13 +52,10 @@
 
 </table>
 
-<hr>
-
-<h5>    <a href="/inventory/article/pictures?article_id=<?php echo $this->escapeHtml($article->id);?>">Item pictures:</a></h5>
-
+<div id="pictures">
+ <h5>    <a href="/inventory/article/pictures?article_id=<?php echo $this->escapeHtml($article->id);?>">Item pictures:</a></h5>
 
 <div id="lightgallery">
-
  
  <?php foreach ($pictures as $pic) : ?>
   	
@@ -59,4 +64,10 @@
     </a>
 	
 <?php endforeach; ?>
+ </div>	
+</div>
+</div>
+
+
+
 </div>

@@ -1,7 +1,7 @@
 <h4><?php echo $sp->name;?></h4>
 
   
-<table class="pure-table pure-table-bordered">
+<table class="table table-striped table-bordered">
 <thead>
 	<tr>
 		<td><b>Spare-part Name	</b></td>
@@ -23,10 +23,10 @@
 	$count = 0;
 	foreach ($movements as $a) :
 	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 //echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 	 
 	 ?>
-		
+	<tr>	
 		<td><?php echo $a->sp_id;?></td>
 		<td><?php echo $a->flow;?></td>
 		

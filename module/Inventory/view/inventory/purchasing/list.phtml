@@ -1,0 +1,122 @@
+<?php 
+$item_name ='';
+
+if($article!=null):
+$item_name = $item_name . "Purchasing Data for item: " . $article->name; 
+endif;
+
+if($sp!=null):
+$item_name = $item_name . "Purchasing Data for item: " . $sp->name;
+endif;
+?>
+
+<h5> <?php echo $item_name;?></h5>
+
+<?php  	if ($type=="article"): ?>
+<?php  	if (count($article_purchasing) >0): ?>
+
+<ul class="nav nav-pills">
+ <li><a href="/inventory/purchasing/add?id=<?php echo $id?>&type=article"><i class="icon-plus">  </i> Add Purchasing Data</a></li>
+</ul>  
+ 
+	
+<table class="table table-striped table-bordered">
+<thead>
+<tr>	
+  		<td><b>Vendor</b></td>
+		<td><b>Unit</b></td>
+		<td><b>Unit Price</b></td>
+		<td><b>Currency</b></td>
+	</tr>
+</thead>
+<tbody>	
+ 
+  <?php 
+   	
+	 $count = 0;
+	 foreach ($article_purchasing as $item) : 
+	 	 $count++;
+	// echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 
+	 	 
+	 ?>
+	 <tr>
+		<td><?php echo $item->vendor_name?></td>
+		<td><?php echo $item->vendor_unit?></td>
+		<td><?php echo $item->vendor_unit_price?></td>
+		<td><?php echo $item->currency?></td>
+		</tr>
+	
+<?php endforeach; ?>
+
+</tbody>
+</table>
+<hr>
+
+<?php else: ?>
+
+<ul class="nav nav-pills">
+ <li><a href="/inventory/purchasing/add?id=<?php echo $id?>&type=article"><i class="icon-plus">  </i> Add Purchasing Data</a></li>
+</ul>
+
+No purchasing data...
+<?php endif; ?>
+<?php endif; ?>
+
+
+
+
+
+<?php  	if ($type=="spare-part"): ?>
+<?php  	if (count($sp_purchasing) >0): ?>
+<ul class="nav nav-pills">
+ <li><a href="/inventory/purchasing/add?id=<?php echo $id?>&type=spare-part"><i class="icon-plus">  </i> Add Purchasing Data</a></li>
+</ul>  
+ 
+	
+<table class="table table-striped table-bordered">
+<thead>
+<tr>	
+  		<td><b>Vendor</b></td>
+		<td><b>Unit</b></td>
+		<td><b>Unit Price</b></td>
+		<td><b>Currency</b></td>
+	</tr>
+</thead>
+<tbody>	
+ 
+  <?php 
+   	
+	 $count = 0;
+	 foreach ($sp_purchasing as $item) : 
+	 	 $count++;
+	 //echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 
+	 	 
+	 ?>
+	 <tr>
+		<td><?php echo $item->vendor_name?></td>
+		<td><?php echo $item->vendor_unit?></td>
+		<td><?php echo $item->vendor_unit_price?></td>
+		<td><?php echo $item->currency?></td>
+		</tr>
+	
+<?php endforeach; ?>
+
+
+</tbody>
+</table>
+<hr>
+
+<?php else: ?>
+
+<ul class="nav nav-pills">
+ <li><a href="/inventory/purchasing/add?id=<?php echo $id?>&type=spare-part"><i class="icon-plus">  </i> Add Purchasing Data</a></li>
+</ul> 
+No purchasing data...
+<?php endif; ?>
+<?php endif; ?>
+
+
+
+

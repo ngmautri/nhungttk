@@ -204,6 +204,10 @@ if ($total_articles <= 0) {
 						</li>
  	
  							<li class="divider"></li>
+					<li><a
+				href="<?php echo $this->baseUrl ?>/inventory/purchasing/list?id=<?php echo $this->escapeHtml($a['id']);?>&type=article">Purchasing data</a>
+						</li>
+	 						
  						<li><a
 				href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a['id']);?>">Stock movement</a>
 						</li>

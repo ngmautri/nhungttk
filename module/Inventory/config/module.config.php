@@ -131,6 +131,8 @@ return array (
 						'Inventory\Controller\Article' => 'Inventory\Controller\ArticleControllerFactory',
 						'Inventory\Controller\Search' => 'Inventory\Controller\SearchControllerFactory',
 						'Inventory\Controller\Console' => 'Inventory\Controller\ConsoleControllerFactory',
+						'Inventory\Controller\Purchasing' => 'Inventory\Controller\PurchasingControllerFactory',
+						
 				)
 				
 				
@@ -148,6 +150,7 @@ return array (
 						'error/404' => __DIR__ . '/../view/error/404.phtml',
 						'error/index' => __DIR__ . '/../view/error/index.phtml',
 						'layout/inventory/print' => __DIR__ . '/../view/layout/print.phtml',
+						'layout/inventory/ajax' => __DIR__ . '/../view/layout/ajax.phtml',
 				),
 				'template_path_stack' => array (
 						__DIR__ . '/../view' 

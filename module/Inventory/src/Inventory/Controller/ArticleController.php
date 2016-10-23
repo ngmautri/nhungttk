@@ -202,7 +202,11 @@ class ArticleController extends AbstractActionController {
 		$id = ( int ) $this->params ()->fromQuery ( 'article_id' );
 		$movements = $this->articleMovementTable->getMovements ( $id );
 		$article = $this->articleTable->getArticleByID ( $id );
+		$layout = $this->params ()->fromQuery ( 'layout' );
 		
+		if($layout=="ajax"){
+			$this->layout("layout/inventory/ajax");
+		}
 		return new ViewModel ( array (
 				'article' => $article,
 				'movements' => $movements 

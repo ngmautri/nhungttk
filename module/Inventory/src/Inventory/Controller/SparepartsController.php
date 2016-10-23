@@ -844,6 +844,7 @@ class SparepartsController extends AbstractActionController {
 	
 		$id = ( int ) $this->params ()->fromQuery ( 'sparepart_id' );
 		$year = ( int ) $this->params ()->fromQuery ( 'year' );
+		$layout = $this->params ()->fromQuery ( 'layout' );
 		
 		if($year==null):
 			$year=2016;
@@ -852,6 +853,10 @@ class SparepartsController extends AbstractActionController {
 		$sp_consumption = $this->sparepartMovementsTable->getMovementSummary( $year,$id );
 		$sp=$this->sparePartTable->get($id);
 	
+		if($layout=="ajax"){
+			$this->layout("layout/inventory/ajax");
+		}
+		
 		return new ViewModel ( array (
 				'movements' => $sp_consumption,
 				'year' =>$year,
@@ -1333,6 +1338,8 @@ class SparepartsController extends AbstractActionController {
 		$toDate = $this->params ()->fromQuery ( 'end_date' );
 		$flow = $this->params ()->fromQuery ( 'flow' );
 		$output = $this->params ()->fromQuery ( 'output' );
+		$layout = $this->params ()->fromQuery ( 'layout' );
+		
 		
 		$movements = $this->sparepartMovementsTable->getSparePartMovementsByID ( $id, $fromDate, $toDate, $flow, 0, 0 );
 		
@@ -1417,6 +1424,10 @@ class SparepartsController extends AbstractActionController {
 			if ($totalResults > $resultsPerPage) {
 				$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
 				$movements = $this->sparepartMovementsTable->getSparePartMovementsByID ( $id, $fromDate, $toDate, $flow, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			}
+			
+			if($layout=="ajax"){
+				$this->layout("layout/inventory/ajax");
 			}
 			
 			return new ViewModel ( array (

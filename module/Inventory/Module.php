@@ -70,7 +70,11 @@ use Inventory\Model\SparepartLastDNTable;
 use Inventory\Model\SparepartMinimumBalance;
 use Inventory\Model\SparepartMinimumBalanceTable;
 
+use Inventory\Model\ArticlePurchasing;
+use Inventory\Model\ArticlePurchasingTable;
 
+use Inventory\Model\SparepartPurchasing;
+use Inventory\Model\SparepartPurchasingTable;
 class Module {
 	
 	/*
@@ -384,6 +388,35 @@ class Module {
 						$resultSetPrototype = new ResultSet ();
 						$resultSetPrototype->setArrayObjectPrototype ( new SparepartMinimumBalance() );
 						return new TableGateway ( 'mla_sparepart_minimum_balance', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+
+						// ArticlePurchasingTable
+						'Inventory\Model\ArticlePurchasingTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'ArticlePurchasingTableGateway' );
+						$table = new ArticlePurchasingTable($tableGateway);
+						return $table;
+						},
+						
+						'ArticlePurchasingTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new ArticlePurchasing() );
+						return new TableGateway ( 'mla_articles_purchasing', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// SparepartPurchasingTable
+						'Inventory\Model\SparepartPurchasingTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'SparepartPurchasingTableGateway' );
+						$table = new SparepartPurchasingTable($tableGateway);
+						return $table;
+						},
+						
+						'SparepartPurchasingTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new SparepartPurchasing() );
+						return new TableGateway ( 'mla_spareparts_purchasing', $dbAdapter, null, $resultSetPrototype );
 						},
 						
 						

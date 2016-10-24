@@ -86,13 +86,16 @@ if (count ( $errors ) > 0) {
 				<option value="">---Please select---</option>
 					
 					<?php if($submitted_purchasing!=null):?>
-					<option <?php echo $submitted_purchasing->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
 					<option <?php echo $submitted_purchasing->currency=='LAK'? "selected='selected'":"";?> value="LAK">LAK</option>
 					<option <?php echo $submitted_purchasing->currency=='THB'? "selected='selected'":"";?> value="THB">THB</option>
+					<option <?php echo $submitted_purchasing->currency=='USD'? "selected='selected'":"";?> value="USD">USD</option>
+					<option <?php echo $submitted_purchasing->currency=='VND'? "selected='selected'":"";?> value="VND">VND</option>
+					
 					<?php else:?>
-					<option value="USD">USD</option>
 					<option value="LAK">LAK</option>
 					<option value="THB">THB</option>
+					<option value="USD">USD</option>
+					<option value="VND">VND</option>
 					<?php endif;?>
 			</select>
 			

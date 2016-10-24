@@ -963,20 +963,31 @@ function loadVendorList() {
 						
 						s = s +'<div><table class="table table-striped table-bordered"><thead><tr><td><b>ID</b></td><td><b>NAME</b></td><td><b>KEY-WORDS</b></td><td><b>ACTION</b></td><td><b>DETAIL</b></td></thead></tr>';
 						for (i = 0; i < n_hits; i++) {
-							s = s + "<tr>"
+							s = s + "<tr>"	
 							var id = obj[i]["id"];
 							var name = obj[i]["name"];
 							var keywords = obj[i]["keywords"];
 							s = s + '<td>' + id + '</td>';
 							s = s + '<td>' + name + '</td>';
 							s = s + '<td>' + keywords + '</td>';
+							
+							/*
+							s = s +
+							'<td><ul style="padding:0px;" class="nav nav-pills">'
+							+ '<li><a style="color: #0080ff;" href="javascript:;" onclick="selectVendor(\''
+							+ id + '\',\'' + name + '\',\'' + keywords + '\')"> <i class="icon-chevron-right"></i> SELECT  </a></li>'							
+							+ '<li><a style="color: #0080ff;" href="/procurement/vendor/show?id=' + id+ '" target="_blank">  DETAIL	  </a></li>'
+							+'</ul></td>';
+							*/
+							
 							s = s
 									+ '<td><a href="javascript:;" onclick="selectVendor(\''
 									+ id + '\',\'' + name + '\',\'' + keywords
-									+ '\')">  Select  </a></td>';
+									+ '\')"> <i class="icon-chevron-right"></i> Select  </a></td>';
 							s = s + '<td><a href="/procurement/vendor/show?id='
 									+ id
-									+ '" target="_blank">  Detail  </a></td>';
+									+ '" target="_blank">  Detail	  </a></td>';
+							
 							s = s + "</tr>";
 
 						}
@@ -1037,13 +1048,15 @@ function searchVendor() {
 							s = s + '<td>' + name + '</td>';
 							s = s + '<td>' + keywords + '</td>';
 							s = s
-									+ '<td><a href="javascript:;" onclick="selectVendor(\''
-									+ id + '\',\'' + name + '\',\'' + keywords
-									+ '\')">  Select  </a></td>';
+							+ '<td><a href="javascript:;" onclick="selectVendor(\''
+							+ id + '\',\'' + name + '\',\'' + keywords
+							+ '\')"> <i class="icon-chevron-right"></i> Select  </a></td>';
 							s = s + '<td><a href="/procurement/vendor/show?id='
 									+ id
-									+ '" target="_blank">  Detail  </a></td>';
+									+ '" target="_blank">  Detail	  </a></td>';
+							
 							s = s + "</tr>";
+
 
 						}
 						s = s + "</table></div>";

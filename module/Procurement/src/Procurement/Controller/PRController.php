@@ -596,6 +596,7 @@ class PRController extends AbstractActionController {
 		$pr_items = $this->purchaseRequestItemTable->getOrderHistory ( $sparepart_id, $article_id );
 		
 		$output = ( int ) $this->params ()->fromQuery ( 'output' );
+		$layout = ( int ) $this->params ()->fromQuery ( 'layout' );
 		if ($output === 'json') {
 			
 			$data = array ();
@@ -612,10 +613,17 @@ class PRController extends AbstractActionController {
 			return $response;
 		}
 		
+		if($layout=="ajax"){
+			$this->layout("layout/inventory/ajax");
+		}
+		
 		return new ViewModel ( array (
-				'pr_items' => $pr_items 
+				'pr_items' => $pr_items,
+				'layout'=>$layout
 		) );
 	}
+	
+	
 	/**
 	 *
 	 * @return \Zend\View\Model\ViewModel

@@ -144,15 +144,20 @@ echo '<div class="alert alert-info">';
         <li><a
 							href="/inventory/article/show?id=<?php echo $item->article_id;?>" target="_blank"><i
 								class="icon-list"> </i> Detail</a></li>
+								<li><a target="_blank" href="/inventory/purchasing/list?id=<?php echo $item->article_id;?>&type=article"><i class="icon-list-alt"></i> Purchasing Data</a></li> 
+								
 		<?php endif; ?>
 		
 		 <?php if ($item->sparepart_id > 0) : ?>
      	<li><a
 							href="/inventory/spareparts/show?id=<?php echo $item->sparepart_id;?>" target="_blank"><i
 								class="icon-list"> </i> Detail</a></li>
+							<li><a target="_blank" href="/inventory/purchasing/list?id=<?php echo $item->sparepart_id;?>&type=spare-part"><i class="icon-list-alt"></i> Purchasing Data</a></li> 
+	
 		<?php endif; ?>
 	
-		
+<li class="divider"></li>
+			
 <!-- <li><a href="javascript:;" onclick="OrderHistoryDialog('<?php echo $item->sparepart_id;?>','<?php echo $item->article_id;?>')"><i class="icon-signal"></i> Order History</a></li> -->
 		     
 <li><a target="_blank" href="/procurement/pr/history?sparepart_id=<?php echo $item->sparepart_id;?>&article_id=<?php echo $item->article_id;?>"><i class="icon-signal"></i> Order History</a></li> 

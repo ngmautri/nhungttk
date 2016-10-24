@@ -1,5 +1,10 @@
 
-<?php include (ROOT.'\module\Procurement\view\procurement\menu.php'); ?>
+<?php 
+if($layout!="ajax"):
+	include (ROOT.'\module\Procurement\view\procurement\menu.php'); 
+endif;
+?>
+
 <script language="javascript">
 			var id_array = [];
 </script>

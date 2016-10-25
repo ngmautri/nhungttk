@@ -151,9 +151,16 @@ class IndexController extends AbstractActionController {
 	}
 	public function confirmAction() {
 	}
+	/**
+	 * 
+	 */
 	public function denyAction() {
 		
-		$this->layout("layout/inventory/ajax");
+		$request = $this->getRequest();
+		if($request->isXmlHttpRequest()){
+				$this->layout("layout/inventory/ajax");
+		}
+		
 	}
 	
 	// get UserTable

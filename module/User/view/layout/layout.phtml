@@ -13,6 +13,8 @@
 <link href="/css/style.css" media="screen" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="/css/tables.css" type="text/css">
 <link rel="stylesheet" href="/css/lightgallery.css" type="text/css">
+<link rel="stylesheet" href="/css/lg-transitions.min.css" type="text/css">
+
 <link rel="stylesheet" href="/css/jstree/style.css" type="text/css">
 
 <link rel="stylesheet" href="/jquery/jquery-ui.min.css" type="text/css">
@@ -59,13 +61,7 @@
 
   $(function() {
 	    $( "#tabs" ).tabs({
-	      beforeLoad: function( event, ui ) {
-	        ui.jqXHR.fail(function() {
-	          ui.panel.html(
-	            "Couldn't load this tab. We'll try to fix this as soon as possible. " +
-	            "If this wouldn't be a demo." );
-	        });
-	      }
+	     
 	    });
 	  });
   

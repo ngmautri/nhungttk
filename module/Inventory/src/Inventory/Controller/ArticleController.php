@@ -896,6 +896,9 @@ class ArticleController extends AbstractActionController {
 	 * List all articles ADMIN
 	 */
 	public function allAction() {
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
 		$departments = $this->departmentTable->fetchAll ();
 		
 		$output = $this->params ()->fromQuery ( 'output' );
@@ -1103,7 +1106,7 @@ class ArticleController extends AbstractActionController {
 				'per_pape' => $resultsPerPage,
 				'item_type' => $item_type,
 				'departments' => $departments,
-				'department_id' => $department_id 
+				'department_id' => $department_id,
 		)
 		 );
 	}
@@ -1488,13 +1491,16 @@ class ArticleController extends AbstractActionController {
 	 * Show detail of a spare parts
 	 */
 	public function showAction() {
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
 		$article = $this->articleTable->get ( $id );
 		$pictures = $this->articlePictureTable->getArticlePicturesById ( $id );
 		
 		return new ViewModel ( array (
 				'article' => $article,
-				'pictures' => $pictures 
+				'pictures' => $pictures,
+				'back' =>$redirectUrl
 		) );
 	}
 	public function showMovementAction() {

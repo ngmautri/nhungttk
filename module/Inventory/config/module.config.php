@@ -132,6 +132,7 @@ return array (
 						'Inventory\Controller\Search' => 'Inventory\Controller\SearchControllerFactory',
 						'Inventory\Controller\Console' => 'Inventory\Controller\ConsoleControllerFactory',
 						'Inventory\Controller\Purchasing' => 'Inventory\Controller\PurchasingControllerFactory',
+						'Inventory\Controller\Warehouse' => 'Inventory\Controller\WarehouseControllerFactory',
 						
 				)
 				

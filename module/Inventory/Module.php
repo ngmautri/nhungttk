@@ -75,6 +75,10 @@ use Inventory\Model\ArticlePurchasingTable;
 
 use Inventory\Model\SparepartPurchasing;
 use Inventory\Model\SparepartPurchasingTable;
+
+use Inventory\Model\Warehouse;
+use Inventory\Model\WarehouseTable;
+
 class Module {
 	
 	/*
@@ -417,6 +421,20 @@ class Module {
 						$resultSetPrototype = new ResultSet ();
 						$resultSetPrototype->setArrayObjectPrototype ( new SparepartPurchasing() );
 						return new TableGateway ( 'mla_spareparts_purchasing', $dbAdapter, null, $resultSetPrototype );
+						},
+						
+						// WarehouseTable
+						'Inventory\Model\WarehouseTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'WarehouseTableTableGateway' );
+						$table = new WarehouseTable($tableGateway);
+						return $table;
+						},
+						
+						'WarehouseTableTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new Warehouse() );
+						return new TableGateway ( 'nmt_inventory_warehouse', $dbAdapter, null, $resultSetPrototype );
 						},
 						
 						

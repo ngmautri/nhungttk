@@ -27,6 +27,7 @@ endif;
 		<td><b>Unit</b></td>
 		<td><b>Unit Price</b></td>
 		<td><b>Currency</b></td>
+		<td><b>Valid From</b></td>
 	</tr>
 </thead>
 <tbody>	
@@ -43,9 +44,10 @@ endif;
 	 <tr>
 		<td><?php echo $item->vendor_name?></td>
 		<td><?php echo $item->vendor_unit?></td>
-		<td><?php echo $item->vendor_unit_price?></td>
+		<td><?php echo number_format ( $item->vendor_unit_price, 0, ",", "." ) ?></td>
 		<td><?php echo $item->currency?></td>
-		</tr>
+		<td><?php echo $item->price_valid_from==null?"N/A":date_format ( date_create ( $item->price_valid_from ), "d-m-Y" );?></td>
+			</tr>
 	
 <?php endforeach; ?>
 
@@ -81,6 +83,8 @@ No purchasing data...
 		<td><b>Unit</b></td>
 		<td><b>Unit Price</b></td>
 		<td><b>Currency</b></td>
+				<td><b>Valid From</b></td>
+		
 	</tr>
 </thead>
 <tbody>	
@@ -99,6 +103,7 @@ No purchasing data...
 		<td><?php echo $item->vendor_unit?></td>
 		<td><?php echo number_format ( $item->vendor_unit_price, 0, ",", "." ) ?></td>
 		<td><?php echo $item->currency?></td>
+			<td><?php echo $item->price_valid_from==null?"N/A":date_format ( date_create ( $item->price_valid_from ), "d-m-Y" );?></td>
 		</tr>
 	
 <?php endforeach; ?>

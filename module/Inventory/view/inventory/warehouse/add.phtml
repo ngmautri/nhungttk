@@ -1,0 +1,85 @@
+<h4>Create Warehouse</h4>
+<hr>
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-error">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/inventory/warehouse/add"
+	method="post" enctype="multipart/form-data" id="new_wh">
+	<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" />
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Warehouse Code:</label>
+		<div class="controls">
+			<input type="text" placeholder="" name="wh_code"
+				value="<?php echo $submitted_data !=null ? $submitted_data->wh_code : ""?>">
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Warehouse Name:</label>
+		<div class="controls">
+			<input type="text" placeholder="" name="wh_name"
+				value="<?php echo $submitted_data !=null ? $submitted_data->wh_name : ""?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Warehouse Address:</label>
+		<div class="controls">
+			<input type="text" placeholder="" name="wh_address"
+				value="<?php echo $submitted_data !=null ? $submitted_data->wh_address : ""?>">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Warehouse Country:</label>
+		<div class="controls">
+			<input type="text" placeholder="Laos" name="wh_country"
+				value="<?php echo $submitted_data !=null ? $submitted_data->wh_country : ""?>">
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Contact person:</label>
+		<div class="controls">
+			<input type="text" placeholder="" name="wh_contract_person"
+				value="<?php echo $submitted_data !=null ? $submitted_data->wh_contract_person : ""?>">
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Email:</label>
+		<div class="controls">
+			<input type="text" placeholder="" name="wh_email"
+				value="<?php echo $submitted_data !=null ? $submitted_data->wh_email : ""?>">
+		</div>
+	</div>
+	<div class="control-group" style="display: none;">
+		<label class="control-label" for="inputTag">Status</label>
+		<div class="controls">
+			<select name="wh_status">
+				<option selected="selected" value="Activated">Activated</option>
+				<option value="Deactivated">Deactivated</option>
+			</select>
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn">
+				<i class="icon-plus"> </i> Add
+			</button>
+		</div>
+	</div>
+</form>
+
+<?php include (ROOT.'\module\Procurement\view\procurement\select_vendor.php'); ?>

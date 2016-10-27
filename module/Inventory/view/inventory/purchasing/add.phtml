@@ -49,6 +49,7 @@ if (count ( $errors ) > 0) {
 		</div>
 	</div>
 	
+	
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Default Vendor:</label>
 		<div class="controls">
@@ -64,6 +65,13 @@ if (count ( $errors ) > 0) {
 			</select>
 			
 			</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputTag">Vendor Item Code:</label>
+		<div class="controls">
+			<input type="text" placeholder="" name="vendor_article_code"
+				value="<?php echo $submitted_purchasing !=null ? $submitted_purchasing->vendor_article_code : ""?>">
+		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label" for="inputTag">Vendor Item Unit:</label>
@@ -102,15 +110,12 @@ if (count ( $errors ) > 0) {
 			</div>
 	</div>
 	
-	<div class="control-group">
-		<label class="control-label" for="inputTag">Vendor Item Code:</label>
-		<div class="controls">
-			<input type="text" placeholder="" name="vendor_article_code"
-				value="<?php echo $submitted_purchasing !=null ? $submitted_purchasing->vendor_article_code : ""?>">
-		</div>
-	</div>
-
-	
+	 <div class="control-group">
+        <label class="control-label" for="inputName">Price Valid From:</label>
+        <div class="controls">
+  			<input type="text" name=price_valid_from value="" placeholder =" please select" id="price_valid_from" />
+         </div>
+      </div>
 
 	<div class="control-group">
 		<div class="controls">
@@ -120,5 +125,10 @@ if (count ( $errors ) > 0) {
 		</div>
 	</div>
 </form>
-
+<script type="text/javascript">
+$(function() {
+    $( "input[id='price_valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+});
+</script>
+  
 <?php include (ROOT.'\module\Procurement\view\procurement\select_vendor.php'); ?>

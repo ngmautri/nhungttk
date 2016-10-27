@@ -130,6 +130,8 @@ join mla_spareparts
 on mla_spareparts.id = mla_spareparts_purchasing.article_id Where 1";
 		
 		$sql = $sql. " AND mla_spareparts_purchasing.article_id=".$id;
+		$sql = $sql." Order by mla_articles_purchasing.price_valid_from DESC;";
+		
 		
 		$adapter = $this->tableGateway->adapter;
 		$statement = $adapter->query($sql);

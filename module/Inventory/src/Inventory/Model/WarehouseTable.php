@@ -5,9 +5,9 @@ namespace Inventory\Model;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
-use Inventory\Model\ArticlePurchasing;
+use Inventory\Model\Warehouse;
 
-class ArticlePurchasingTable {
+class WarehouseTable {
 	protected $tableGateway;
 	
 	/**
@@ -45,30 +45,29 @@ class ArticlePurchasingTable {
 	
 	/*
 	public $id;
-	public $article_id;
-	public $vendor_id;
-	
-	public $vendor_article_code;
-	public $vendor_unit;
-	public $vendor_unit_price;
-	public $currency;
-	public $price_valid_from;
-	public $is_preferred;
+	public $wh_code;
+	public $wh_name;
+
+	public $wh_address;
+	public $wh_country;
+	public $wh_contract_person;
+	public $wh_telephone;
+	public $wh_email;
+	public $wh_status;
 	
 	public $created_on;
 	public $created_by;
-	*/
-	public function add(ArticlePurchasing $input) {
+	 */
+	public function add(Warehouse $input) {
 		$data = array (
-				'article_id' => $input->article_id,
-				'vendor_id' => $input->vendor_id,
-				
-				'vendor_article_code' => $input->vendor_article_code,
-				'vendor_unit' => $input->vendor_unit,
-				'vendor_unit_price' => $input->vendor_unit_price,
-				'currency' => $input->currency,
-				'price_valid_from' => $input->price_valid_from,
-				'is_preferred' => $input->is_preferred,
+				'wh_code' => $input->wh_code,
+				'wh_name' => $input->wh_name,				
+				'wh_address' => $input->wh_address,
+				'wh_country' => $input->wh_country,
+				'wh_contact_person' => $input->wh_contact_person,
+				'wh_telephone' => $input->wh_telephone,
+				'wh_email' => $input->wh_email,
+				'wh_status' => $input->wh_status,
 				'created_on' => date ( 'Y-m-d H:i:s' ),
 				'created_by' => $input->created_by,
 		);
@@ -81,17 +80,16 @@ class ArticlePurchasingTable {
 	 * @param SparepartPicture $input        	
 	 * @param unknown $id        	
 	 */
-	public function update(ArticlePurchasing $input, $id) {
+	public function update(Warehouse $input, $id) {
 		$data = array (
-				'article_id' => $input->article_id,
-				'vendor_id' => $input->vendor_id,
-		
-				'vendor_article_code' => $input->vendor_article_code,
-				'vendor_unit' => $input->vendor_unit,
-				'vendor_unit_price' => $input->vendor_unit_price,
-				'currency' => $input->currency,
-				'price_valid_from' => $input->price_valid_from,
-				'is_preferred' => $input->is_preferred,
+				'wh_code' => $input->wh_code,
+				'wh_name' => $input->wh_name,
+				'wh_address' => $input->wh_address,
+				'wh_country' => $input->wh_country,
+				'wh_contract_person' => $input->wh_contact_person,
+				'wh_telephone' => $input->wh_telephone,
+				'wh_email' => $input->wh_email,
+				'wh_status' => $input->wh_status,
 				'created_on' => date ( 'Y-m-d H:i:s' ),
 				'created_by' => $input->created_by,
 		);
@@ -109,6 +107,35 @@ class ArticlePurchasingTable {
 		$this->tableGateway->delete ( $where );
 	}
 	
+	/**
+	 * 
+	 * @param unknown $id
+	 * @param unknown $checksum
+	 * @return boolean
+	 */
+	public function isWHCodeExits($wh_code)
+	{
+		$adapter = $this->tableGateway->adapter;
+	
+		$where = array(
+				'wh_code=?'		=>$wh_code,
+		);
+	
+		$sql = new Sql($adapter);
+		$select = $sql->select();
+	
+		$select->from(array('t1'=>'nmt_inventory_warehouse'));
+		$select->where($where);
+	
+		$statement = $sql->prepareStatementForSqlObject($select);
+		$results = $statement->execute();
+	
+		if($results->count()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 	/**
 	 *
@@ -116,7 +143,6 @@ class ArticlePurchasingTable {
 	 */
 	public function getPurchasingDataOf($id)
 	{
-	
 		$sql ="select 
 	mla_articles_purchasing.*,
 	mla_vendors.name as vendor_name,
@@ -130,7 +156,6 @@ join mla_articles
 on mla_articles.id = mla_articles_purchasing.article_id Where 1";
 		
 		$sql = $sql. " AND mla_articles_purchasing.article_id=".$id;
-		$sql = $sql." Order by mla_articles_purchasing.price_valid_from DESC";
 		
 		$adapter = $this->tableGateway->adapter;
 		$statement = $adapter->query($sql);

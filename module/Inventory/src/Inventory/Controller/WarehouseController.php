@@ -35,8 +35,10 @@ use Inventory\Model\ArticlePurchasingTable;
 use Application\Model\DepartmentTable;
 use Inventory\Model\SparepartPurchasing;
 use Inventory\Model\SparepartPurchasingTable;
+use Inventory\Model\Warehouse;
+use Inventory\Model\WarehouseTable;
 
-class PurchasingController extends AbstractActionController {
+class WarehouseController extends AbstractActionController {
 	protected $SmtpTransportService;
 	protected $authService;
 	protected $userTable;
@@ -45,6 +47,7 @@ class PurchasingController extends AbstractActionController {
 	protected $spPurchasingTable;
 	protected $sparePartTable;
 	protected $departmentTable;
+	protected $whTable;
 	
 	/*
 	 * Defaul Action
@@ -56,159 +59,77 @@ class PurchasingController extends AbstractActionController {
 	 * Add new purchase data
 	 */
 	public function listAction() {
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$type = $this->params ()->fromQuery ( 'type' );
-		$layout = $this->params ()->fromQuery ( 'layout' );
-		
-		$sp = null;
-		$article = null;
-		$article_purchasing = null;
-		$sp_purchasing=null;
-		
-		if ($type === "article") {
-			$article = $this->articleTable->get ( $id );
-			$article_purchasing = $this->articlePurchasingTable->getPurchasingDataOf ( $id );
+		$request = $this->getRequest ();
+		if ($request->isXmlHttpRequest ()) {
+			$this->layout ( "layout/inventory/ajax" );
 		}
 		
-		if ($type === "spare-part") {
-			$sp = $this->sparePartTable->get ( $id );
-			$sp_purchasing = $this->spPurchasingTable->getPurchasingDataOf ( $id );
-		}
-		if($layout=="ajax"){
-			$this->layout("layout/inventory/ajax");
-		}
+		$warehouses = $this->whTable->fetchAll ();
 		return new ViewModel ( array (
-				'article' => $article,
-				'sp' => $sp,
-				'id' => $id,
-				'type' => $type,
-				'errors' => null,
-				'vendor_name' => null,
-				'article_purchasing' => $article_purchasing,
-				'sp_purchasing' => $sp_purchasing 
+				'warehouses' => $warehouses 
 		) );
 	}
 	
+	
 	/**
-	 * Add new purchase data
+	 * 
+	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function addAction() {
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
-		$sp = null;
-		$article = null;
 		
 		if ($request->isPost ()) {
 			
 			if ($request->isPost ()) {
 				
-				$type = $request->getPost ( 'type' );
-				$id = $request->getPost ( 'id' );
-				$vendor_name = $request->getPost ( 'vendor_name' );
 				$redirectUrl = $request->getPost ( 'redirectUrl' );
-				$input = null;
 				
-				if ($type == "article") {
+				$input = new Warehouse();
+				$input->wh_code = $request->getPost ( 'wh_code' );
+				$input->wh_name = $request->getPost ( 'wh_name' );
+				$input->wh_address = $request->getPost ( 'wh_address' );
+				$input->wh_country = $request->getPost ( 'wh_country' );
+				$input->wh_contract_person = $request->getPost ( 'wh_contract_person' );
+				$input->wh_email = $request->getPost ( 'wh_email' );
+				$input->wh_status = $request->getPost ( 'wh_status' );
 					
-					$input = new ArticlePurchasing ();
-					$input->article_id = $id;
-					$input->vendor_id = $request->getPost ( 'vendor_id' );
-					
-					$input->vendor_unit_price = $request->getPost ( 'vendor_unit_price' );
-					$input->vendor_unit = $request->getPost ( 'vendor_unit' );
-					$input->vendor_article_code = $request->getPost ( 'vendor_article_code' );
-					$input->currency = $request->getPost ( 'currency' );
-					$input->is_preferred = $request->getPost ( 'is_preferred' );
-					$input->price_valid_from = $request->getPost ( 'price_valid_from' );
-					
-					
-					$article = $article = $this->articleTable->get ( $id );
-				}
-				
-				if ($type == "spare-part") {
-					
-					$input = new SparepartPurchasing ();
-					$input->article_id = $id;
-					$input->vendor_id = $request->getPost ( 'vendor_id' );
-					
-					$input->vendor_unit_price = $request->getPost ( 'vendor_unit_price' );
-					$input->vendor_unit = $request->getPost ( 'vendor_unit' );
-					$input->vendor_article_code = $request->getPost ( 'vendor_article_code' );
-					$input->currency = $request->getPost ( 'currency' );
-					$input->is_preferred = $request->getPost ( 'is_preferred' );
-					$input->price_valid_from = $request->getPost ( 'price_valid_from' );
-					
-					$article = $article = $this->sparePartTable->get ( $id );
-				}
-				
 				$errors = array ();
-				if ($input->vendor_id < 0 or $input->vendor_id == null) {
-					$errors [] = 'Please select a vendor, or create new vendor, if not found!';
-				}
 				
-				if (! is_numeric ( $input->vendor_unit_price )) {
-					$errors [] = 'Price is not valid. It must be a number.';
-				} else {
-					if ($input->vendor_unit_price <= 0) {
-						$errors [] = 'Price must be greate than 0!';
+					
+				if ($input->wh_code == "") {
+					$errors [] = 'Please give warehouse code!';
+				}else{
+					if($this->whTable->isWHCodeExits($input->wh_code)){
+						$errors [] = 'Warehouse code ' . $input->wh_code .' exits already';
 					}
 				}
 				
-				if ($input->currency == "") {
-					$errors [] = 'Please select currency!';
-				}
-				
-				if ($input->vendor_unit == "") {
-					$errors [] = 'Please give vendor unit for the item!';
+				if ($input->wh_name == "") {
+					$errors [] = 'Please give warehouse name!';
 				}
 				
 				if (count ( $errors ) > 0) {
 					return new ViewModel ( array (
 							'redirectUrl' => $redirectUrl,
-							'article' => $article,
-							'sp' => $sp,
-							'id' => $id,
-							'type' => $type,
-							'errors' => $errors,
-							'vendor_name' => $vendor_name,
-							'submitted_purchasing' => $input 
+							'submitted_data' => $input,
+							'errors' =>$errors
 					) );
 				}
 				
-				if ($type == "article") {
-					$this->articlePurchasingTable->add ( $input );
-				}
-				
-				if ($type == "spare-part") {
-					$this->spPurchasingTable->add ( $input );
-				}
-				
+				$this->whTable->add($input);			
 				$this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$type = $this->params ()->fromQuery ( 'type' );
 		
-		if ($type == "article") {
-			$article = $this->articleTable->get ( $id );
-		}
-		
-		if ($type == "spare-part") {
-			$article = $this->sparePartTable->get ( $id );
-		}
-		
+			
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
-				'article' => $article,
-				'sp' => $sp,
-				'id' => $id,
-				'type' => $type,
-				'errors' => null,
-				'vendor_name' => null,
-				'submitted_purchasing' => null 
+				'submitted_data' => null,
+				'errors'=>null
 		) );
 	}
 	public function getSmtpTransportService() {
@@ -267,6 +188,14 @@ class PurchasingController extends AbstractActionController {
 		$this->spPurchasingTable = $spPurchasingTable;
 		return $this;
 	}
+	public function getWhTable() {
+		return $this->whTable;
+	}
+	public function setWhTable(WarehouseTable $whTable) {
+		$this->whTable = $whTable;
+		return $this;
+	}
+	
 	
 	// SETTER AND GETTER
 }

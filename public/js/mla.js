@@ -981,7 +981,7 @@ function loadVendorList() {
 							*/
 							
 							s = s
-									+ '<td><a href="javascript:;" onclick="selectVendor(\''
+									+ '<td><a class ="" href="javascript:;" onclick="selectVendor(\''
 									+ id + '\',\'' + name + '\',\'' + keywords
 									+ '\')"> <i class="icon-chevron-right"></i> Select  </a></td>';
 							s = s + '<td><a href="/procurement/vendor/show?id='

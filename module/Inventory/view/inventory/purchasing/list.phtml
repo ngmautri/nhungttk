@@ -44,7 +44,7 @@ endif;
 	 <tr>
 		<td><?php echo $item->vendor_name?></td>
 		<td><?php echo $item->vendor_unit?></td>
-		<td><?php echo number_format ( $item->vendor_unit_price, 0, ",", "." ) ?></td>
+		<td><?php echo number_format ( $item->vendor_unit_price, 2, ",", "." ) ?></td>
 		<td><?php echo $item->currency?></td>
 		<td><?php echo $item->price_valid_from==null?"N/A":date_format ( date_create ( $item->price_valid_from ), "d-m-Y" );?></td>
 			</tr>
@@ -101,7 +101,7 @@ No purchasing data...
 	 <tr>
 		<td><?php echo $item->vendor_name?></td>
 		<td><?php echo $item->vendor_unit?></td>
-		<td><?php echo number_format ( $item->vendor_unit_price, 0, ",", "." ) ?></td>
+		<td><?php echo number_format ( $item->vendor_unit_price, 2, ",", "." ) ?></td>
 		<td><?php echo $item->currency?></td>
 			<td><?php echo $item->price_valid_from==null?"N/A":date_format ( date_create ( $item->price_valid_from ), "d-m-Y" );?></td>
 		</tr>

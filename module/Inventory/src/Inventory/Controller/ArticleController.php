@@ -1143,8 +1143,8 @@ class ArticleController extends AbstractActionController {
 		
 		$list = $this->articleCategoryService;
 		$list = $list->initCategory ();
-		$list = $list->updateCategory ( 42, 0 );
-		$list = $list->generateJSTree ( 42 );
+		$list = $list->updateCategory ( 1, 0 );
+		$list = $list->generateJSTree ( 1 );
 		
 		return new ViewModel ( array (
 				'jsTree' => $list->getJSTree () 

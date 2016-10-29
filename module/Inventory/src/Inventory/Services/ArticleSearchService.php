@@ -55,6 +55,9 @@ class ArticleSearchService extends AbstractService {
 				$doc = new Document ();
 				$doc->addField ( Field::UnIndexed ( 'article_id', $row->id ) );
 				$doc->addField ( Field::Keyword ( 'department_id', $row->department_id ) );
+				$doc->addField ( Field::Keyword ( 'article_tag', $row->article_tag) );
+				
+				
 				$doc->addField ( Field::UnIndexed ( 'unit', $row->unit ) );
 				
 				$doc->addField ( Field::Text ( 'name', mb_strtolower ( $row->name ) ) );
@@ -109,7 +112,7 @@ class ArticleSearchService extends AbstractService {
 	public function search($q,$department_id) {
 			
 		$index = Lucene::open (  ROOT . DIRECTORY_SEPARATOR . $this->index_path );
-		Lucene::setDefaultSearchField('name');
+		//Lucene::setDefaultSearchField('name');
 		if($department_id >0):
 			$query = new Boolean();
 			if ($q instanceof Wildcard){

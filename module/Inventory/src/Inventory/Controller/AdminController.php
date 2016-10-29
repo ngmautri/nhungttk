@@ -31,12 +31,22 @@ class AdminController extends AbstractActionController {
 	 */
 	public function indexAction() {
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function sparepartCategoryAction() {
 		$categories = $this->sparePartCategoryTable->fetchAll ();
 		return new ViewModel ( array (
 				'categories' => $categories 
 		) );
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function editSparepartCategoryAction() {
 		$request = $this->getRequest ();
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
@@ -141,6 +151,57 @@ class AdminController extends AbstractActionController {
 		);
 	}
 	
+	/*
+	 * 
+	 */
+	public function addArticleCategoryMemberAction() {
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+	
+	
+		if ($request->isPost ()) {
+				
+			$category_id = ( int ) $request->getPost ( 'id' );
+			$spareparts = $request->getPost ( 'sparepart' );
+				
+			if (count ( $spareparts ) > 0) {
+	
+				foreach ( $spareparts as $sp ) {
+					$member = new SparepartCategoryMember ();
+					$member->sparepart_cat_id = $category_id;
+					$member->sparepart_id = $sp;
+						
+					if ($this->sparePartCategoryMemberTable->isMember ( $sp, $category_id ) == false) {
+						$this->sparePartCategoryMemberTable->add ( $member );
+					}
+				}
+	
+				/*
+				 * return new ViewModel ( array (
+				 * 'sparepart' => null,
+				 * 'categories' => $categories,
+				 *
+				 * ) );
+				 */
+					
+				$redirectUrl  = $request->getPost ( 'redirectUrl' );
+				$this->redirect()->toUrl($redirectUrl);
+	
+			}
+		}
+	
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		$category = $this->sparePartCategoryTable->get ( $id );
+	
+		$spareparts = $this->sparePartCategoryMemberTable->getNoneMembersOfCatId($id);
+	
+		return new ViewModel ( array (
+				'category' => $category,
+				'spareparts' => $spareparts,
+				'redirectUrl'=>$redirectUrl,
+		)
+				);
+	}
 		
 	// Setter and getter
 		

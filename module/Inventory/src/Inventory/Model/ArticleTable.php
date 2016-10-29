@@ -177,6 +177,104 @@ on mla_articles_pics.article_id = mla_articles.id
 WHERE 1	
 			";
 	
+	private $getArticles_SQL_V02="
+select
+	mla_articles.*,
+    mla_users.*,
+	(mla_articles.total_inflow-mla_articles.total_outflow) as article_balance,
+     mla_articles_pics.id as article_pic_id,
+	 mla_articles_pics.filename,
+     mla_articles_pics.url,
+     mla_articles_pics.folder
+from
+(
+select 
+		mla_articles.*,
+		ifnull(article_total_inflow.total_inflow,0) as total_inflow,
+		ifnull(article_total_outflow.total_outflow,0) as total_outflow,
+        mla_articles_categories_members.article_cat_id,
+        mla_articles_categories.name as category_name
+	from mla_articles
+
+	/*total infow*/
+	left join
+	(
+		select 
+		mla_articles_movements.article_id,
+		ifnull(sum(mla_articles_movements.quantity),0) as total_inflow
+		from mla_articles_movements
+		where mla_articles_movements.flow = 'IN'
+		group by article_id
+	)
+	as article_total_inflow
+	on article_total_inflow.article_id = mla_articles.id
+    
+    left join mla_articles_categories_members
+    on mla_articles.id = mla_articles_categories_members.article_id
+    
+    left join mla_articles_categories
+    on mla_articles_categories.id = mla_articles_categories_members.article_cat_id
+    
+
+	/*total outflow*/
+	left join
+	(
+		select 
+		mla_articles_movements.article_id,
+		ifnull(sum(mla_articles_movements.quantity),0)as total_outflow
+		from mla_articles_movements
+		where mla_articles_movements.flow = 'OUT'
+		group by article_id
+	)
+	as article_total_outflow
+	on article_total_outflow.article_id = mla_articles.id
+)
+as mla_articles
+
+join
+(
+	
+    /**USER-DEPARTMENT beginns*/
+    select 
+        mla_users.title, 
+        mla_users.firstname, 
+        mla_users.lastname, 
+        mla_departments_members_1.*
+    from mla_users
+    join 
+	(	select 
+			mla_departments_members.department_id,
+            mla_departments_members.user_id,
+            mla_departments.name as department_name,
+            mla_departments.status as department_status
+		from mla_departments_members
+		join mla_departments on mla_departments_members.department_id = mla_departments.id
+	) as mla_departments_members_1 
+    on mla_users.id = mla_departments_members_1.user_id
+    /**USER-DEPARTMENT ends*/
+)
+as mla_users
+on mla_users.user_id = mla_articles.created_by
+
+left join
+(
+	select
+				*
+				from 
+                (
+                select * from
+					mla_articles_pics
+                    order by mla_articles_pics.uploaded_on desc
+                )
+                as mla_articles_pics
+				group by mla_articles_pics.article_id
+)
+as mla_articles_pics
+on mla_articles_pics.article_id = mla_articles.id
+WHERE 1
+			
+			
+			";
 	
 	public function __construct(TableGateway $tableGateway) {
 		$this->tableGateway = $tableGateway;
@@ -429,6 +527,43 @@ WHERE 1
 		$resultSet->initialize($result);
 		return $resultSet;
 	}
+	
+	public function getArticlesOfCategory($cat_id,$limit, $offset){
+	
+		$adapter = $this->tableGateway->adapter;
+		$sql = $this->getArticles_SQL_V02;
+	
+		if ($cat_id > 0) {
+			$sql = $sql. " AND mla_articles.article_cat_id = ".$cat_id;
+		}
+		
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+		
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+	
+		$sql = $sql.";";
+	
+		//echo $sql;
+	
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return $resultSet;
+	}
+	
+	/**
+	 * 
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\Adapter\Driver\ResultInterface
+	 */
 	public function getLimitArticles($limit,$offset){
 		$adapter = $this->tableGateway->adapter;
 		
@@ -519,209 +654,6 @@ Where T1.created_by = " . $id .
 		return $resultSet;
 	}
 	
-	/**
-	 *
-	 * @param unknown User $id
-	 */
-	public function getLimitedArticlesOfMyDepartment($id,$limit,$offset)
-	{
-	
-		$sql ="
-		SELECT * FROM
-		(select T1.*, T2.department_id from mla_articles as T1
-				left join mla_departments_members as T2
-				on T2.user_id = T1.created_by) AS TT1
-				where TT1.department_id IN (select department_id from mla_departments_members
-						where user_id = " . $id .") limit " . $limit . ' offset '. $offset; 
-	
-		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-	/**
-	 *
-	 * @param unknown $id
-	 */
-	public function getAllWithLastDO()
-	{
-	
-		$sql = "
-select 
-	mla_articles.*,
-	mla_delivery_items_1_1.delivery_id,
-    mla_delivery_items_1_1.pr_item_id,
-	mla_delivery_items_1_1.delivered_quantity,
-	mla_delivery_items_1_1.price,
-    mla_delivery_items_1_1.currency,
-    mla_delivery_items_1_1.vendor_id,
-	mla_delivery_items_1_1.vendor_name,
-	mla_delivery_items_1_1.created_on  as last_do_date
-
-from mla_articles
-
-
-left join
-
-(
-	select 
-	mla_delivery_items_1.*,
-    mla_delivery_items_1_1_1.*
-    
-	from (
-		select
-			mla_purchase_request_items.article_id,
-			concat(mla_purchase_request_items.article_id, '+++',mla_delivery_items.created_on) as article_do, 
-			mla_delivery_items.*
-		from mla_delivery_items
-		join mla_purchase_request_items 
-		on mla_purchase_request_items.id =  mla_delivery_items.pr_item_id
-	) as mla_delivery_items_1
-
-	JOIN
-		(   
-	 /*Last DO Item*/
-	select 
-	  mla_delivery_items_1_1.vendor_name,
-      concat(mla_delivery_items_1_1.article_id, '+++',mla_delivery_items_1_1.last_do_item_created_on) as last_article_do
-
-	from 
-	 
-	 (select MAX(mla_delivery_items_1.do_item_created_on) AS last_do_item_created_on, 
-	 mla_delivery_items_1.do_item_id,
-	 mla_delivery_items_1.article_id,		
-	 mla_vendors.name as vendor_name
-
-		from  
-
-			(select 
-				mla_delivery_items.id as do_item_id,
-				mla_delivery_items.created_on as do_item_created_on, 
-				mla_delivery_items.pr_item_id, 
-				mla_delivery_items.vendor_id, 
-				mla_delivery_items.price,
-				mla_delivery_items.currency,
-				mla_delivery_items.created_by as do_item_created_by_user_id,
-				mla_purchase_request_items.* 
-			from mla_delivery_items 
-			join mla_purchase_request_items
-			on mla_purchase_request_items.id = mla_delivery_items.pr_item_id) as mla_delivery_items_1 /* DELIVERY - PR*/
-
-		join mla_vendors 
-		on mla_vendors.id = mla_delivery_items_1.vendor_id /* DELIVERY - PR - VENDOR*/
 		
-	group by mla_delivery_items_1.article_id) as mla_delivery_items_1_1
-			
-			) as mla_delivery_items_1_1_1 /* Last DO Article */
-		
-	ON mla_delivery_items_1_1_1.last_article_do = mla_delivery_items_1.article_do ) AS mla_delivery_items_1_1
-    
-ON mla_delivery_items_1_1.article_id = mla_articles.id
-";
 	
-		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
-	
-	/**
-	 *
-	 * @param unknown $id
-	 */
-	public function getAllWithLastDOWithLimit($limit, $offset)
-	{
-	
-		$sql = "
-select 
-	mla_articles.*,
-	mla_delivery_items_1_1.delivery_id,
-    mla_delivery_items_1_1.pr_item_id,
-	mla_delivery_items_1_1.delivered_quantity,
-	mla_delivery_items_1_1.price,
-    mla_delivery_items_1_1.currency,
-    mla_delivery_items_1_1.vendor_id,
-	mla_delivery_items_1_1.vendor_name,
-	mla_delivery_items_1_1.created_on  as last_do_date
-
-from mla_articles
-
-
-left join
-
-(
-	select 
-	mla_delivery_items_1.*,
-    mla_delivery_items_1_1_1.*
-    
-	from (
-		select
-			mla_purchase_request_items.article_id,
-			concat(mla_purchase_request_items.article_id, '+++',mla_delivery_items.created_on) as article_do, 
-			mla_delivery_items.*
-		from mla_delivery_items
-		join mla_purchase_request_items 
-		on mla_purchase_request_items.id =  mla_delivery_items.pr_item_id
-	) as mla_delivery_items_1
-
-	JOIN
-		(   
-	 /*Last DO Item*/
-	select 
-	  mla_delivery_items_1_1.vendor_name,
-      concat(mla_delivery_items_1_1.article_id, '+++',mla_delivery_items_1_1.last_do_item_created_on) as last_article_do
-
-	from 
-	 
-	 (select MAX(mla_delivery_items_1.do_item_created_on) AS last_do_item_created_on, 
-	 mla_delivery_items_1.do_item_id,
-	 mla_delivery_items_1.article_id,		
-	 mla_vendors.name as vendor_name
-
-		from  
-
-			(select 
-				mla_delivery_items.id as do_item_id,
-				mla_delivery_items.created_on as do_item_created_on, 
-				mla_delivery_items.pr_item_id, 
-				mla_delivery_items.vendor_id, 
-				mla_delivery_items.price,
-				mla_delivery_items.currency,
-				mla_delivery_items.created_by as do_item_created_by_user_id,
-				mla_purchase_request_items.* 
-			from mla_delivery_items 
-			join mla_purchase_request_items
-			on mla_purchase_request_items.id = mla_delivery_items.pr_item_id) as mla_delivery_items_1 /* DELIVERY - PR*/
-
-		join mla_vendors 
-		on mla_vendors.id = mla_delivery_items_1.vendor_id /* DELIVERY - PR - VENDOR*/
-		
-	group by mla_delivery_items_1.article_id) as mla_delivery_items_1_1
-			
-			) as mla_delivery_items_1_1_1 /* Last DO Article */
-		
-	ON mla_delivery_items_1_1_1.last_article_do = mla_delivery_items_1.article_do ) AS mla_delivery_items_1_1
-    
-ON mla_delivery_items_1_1.article_id = mla_articles.id
-limit " . $limit . ' offset '. $offset;	
-				
-	
-		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-		return $resultSet;
-	}
 }

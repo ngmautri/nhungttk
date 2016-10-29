@@ -34,6 +34,7 @@ use Procurement\Model\PurchaseRequestCartItem;
 use Procurement\Model\PurchaseRequestCartItemTable;
 use Procurement\Model\PurchaseRequestItemTable;
 use Application\Model\DepartmentTable;
+use User\Model\UserTable;
 
 class ArticleController extends AbstractActionController {
 	protected $SmtpTransportService;
@@ -1110,11 +1111,40 @@ class ArticleController extends AbstractActionController {
 		)
 		 );
 	}
-	public function categoryAction() {
+	
+	/*
+	 * 
+	 */
+	public function myCategoryAction() {
+	
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$user_id = $user ['id'];
+		
+		//var_dump($this->userTable->getUserDepartment($user_id));
+		$root=$this->userTable->getUserDepartment($user_id)->article_root_category;
+		//$root=43;
+		
 		$list = $this->articleCategoryService;
 		$list = $list->initCategory ();
-		$list = $list->updateCategory ( 1, 0 );
-		$list = $list->generateJSTree ( 1 );
+		$list = $list->updateCategory ( $root, 0 );
+		$list = $list->generateJSTree ( $root );
+		
+		$this->layout ( "layout/fluid" );
+		return new ViewModel ( array (
+				'jsTree' => $list->getJSTree ()
+		) );
+	}
+	
+	
+	
+	public function categoryAction() {
+				
+		
+		$list = $this->articleCategoryService;
+		$list = $list->initCategory ();
+		$list = $list->updateCategory ( 42, 0 );
+		$list = $list->generateJSTree ( 42 );
 		
 		return new ViewModel ( array (
 				'jsTree' => $list->getJSTree () 
@@ -1453,37 +1483,30 @@ class ArticleController extends AbstractActionController {
 		
 		return $viewModel;
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function showCategoryAction() {
-		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 20;
-		} else {
-			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
-		}
 		
-		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
-			$page = 1;
-		} else {
-			$page = $this->params ()->fromQuery ( 'page' );
-		}
+		$request = $this->getRequest ();
 		
-		$id = $this->params ()->fromQuery ( 'id' );
+		$cat_id = $this->params ()->fromQuery ( 'cat_id' );
 		
-		$category = $this->sparePartCategoryTable->get ( $id );
+		$articles = $this->articleTable->getArticlesOfCategory( $cat_id,0,0 );
+		$total_articles = count($articles);
+		$paginator =null;
 		
-		$spareparts = $this->sparePartCategoryMemberTable->getMembersByCatIdWithBalance ( $id );
-		$totalResults = $spareparts->count ();
-		
-		$paginator = null;
-		if ($totalResults > $resultsPerPage) {
-			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$spareparts = $this->sparePartCategoryMemberTable->getLimitMembersByCatIdWithBalance ( $id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		if ($request->isXmlHttpRequest ()) {
+			$this->layout ( "layout/inventory/ajax" );
 		}
 		
 		return new ViewModel ( array (
-				'category' => $category,
-				'total_spareparts' => $totalResults,
-				'spareparts' => $spareparts,
-				'paginator' => $paginator 
+				'articles' => $articles,
+				'total_articles' =>$total_articles,
+				'paginator' =>$paginator,
+				
 		) );
 	}
 	
@@ -1535,7 +1558,7 @@ class ArticleController extends AbstractActionController {
 	public function getUserTable() {
 		return $this->userTable;
 	}
-	public function setUserTable($userTable) {
+	public function setUserTable(UserTable $userTable) {
 		$this->userTable = $userTable;
 		return $this;
 	}

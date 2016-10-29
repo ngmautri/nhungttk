@@ -53,8 +53,8 @@ $no_pics=0;
   		<?php
 		if ($a->sp_pic_id !== null) :
 			?>
-		<a data-toggle="tooltip" data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4>" class="jg-entry" href="/inventory/image/sparepart?id=<?php echo $a->sp_pic_id;?>">
-	    	<img class="img-rounded" title="<?php echo $this->escapeHtml($a['tag']);?>: <?php echo $this->escapeHtml($a['name']);?>" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>">
+		<a data-toggle="tooltip" data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4><h4><?php echo $this->escapeHtml($a['location']);?></h4>" class="jg-entry" href="/inventory/image/sparepart?id=<?php echo $a->sp_pic_id;?>">
+	    	<img class="img-rounded" title="<?php echo $this->escapeHtml($a['tag']);?>: <?php echo $this->escapeHtml($a['name']);?> - Location: <?php echo $a['location']!=null?$a['location']:"N/A"?>" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"
 		 </a>
 		<?php else:
 			$no_pics=$no_pics+1;

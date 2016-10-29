@@ -1121,7 +1121,7 @@ class ArticleController extends AbstractActionController {
 		$user = $this->userTable->getUserByEmail ( $identity );
 		$user_id = $user ['id'];
 		
-		//var_dump($this->userTable->getUserDepartment($user_id));
+		var_dump($this->userTable->getUserDepartment($user_id));
 		$root=$this->userTable->getUserDepartment($user_id)->article_root_category;
 		//$root=43;
 		

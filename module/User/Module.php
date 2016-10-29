@@ -87,8 +87,13 @@ class Module {
 		$app = $e->getApplication ();
 		$sm = $app->getServiceManager ();
 		$viewModel = $app->getMvcEvent ()->getViewModel ();
+	
+		//$request = $sm->get('Request');
+		//var_dump($request->isXmlHttpRequest());
 		
-		$controller = $e->getTarget ();
+		//$controller = $e->getTarget ();
+		//$layout =  $e->getRouteMatch ()->getParams();
+		//var_dump($layout);
 		
 		$controller = $e->getRouteMatch ()->getParam ( 'controller' );
 		$action = $e->getRouteMatch ()->getParam ( 'action' );

@@ -1630,3 +1630,17 @@ function notifyDOItems() {
 		window.location = redirectUrl;
 	});
 }
+
+
+
+function loadArticles(cat_id, cat_name) {
+	$('#content').text("Loading...");
+		//alert(cat_id);
+		$.get("/inventory/article/show-category", {
+		cat_id : cat_id,
+	}, function(data, status) {
+		//updateCarts();
+		$('#content').html("<h5>"+cat_name+"</h5>"+data);
+
+	});
+}

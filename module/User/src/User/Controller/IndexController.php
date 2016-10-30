@@ -161,6 +161,10 @@ class IndexController extends AbstractActionController {
 				$this->layout("layout/inventory/ajax");
 		}
 		
+		return new ViewModel ( array (
+				'isAjax' => $request->isXmlHttpRequest(),
+		) );
+		
 	}
 	
 	// get UserTable

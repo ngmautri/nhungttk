@@ -180,6 +180,35 @@ abstract class AbstractCategory {
 		return $this;
 	}
 	
+	// JS TREE
+	public function generateJSTreeWithTotalMember($root) {
+		$tree = $this->categories [$root];
+		$children = $tree ['children'];
+	
+		//inorder travesal
+		if (count ( $children ) > 0) {
+			$this->jsTree = $this->jsTree . '<li id="' . $root . '" data-jstree=\'{ "opened" : true}\'> ' .
+					ucwords($tree['instance']->name)."\n";
+						
+					$this->jsTree = $this->jsTree . '<ul>' . "\n";
+					foreach ( $children as $key => $value ) {
+	
+						if (count ( $value ['children'] ) > 0) {
+							$this->generateJSTreeWithTotalMember ($key);
+						} else {
+							$this->jsTree = $this->jsTree . '<li id="' . $key . '" data-jstree=\'{}\'>' . $value ['instance']->name . ' (' . $value ['instance']->totalMembers.')'.
+							'</li>' . "\n";
+							$this->generateJSTreeWithTotalMember ($key);
+						}
+					}
+					$this->jsTree = $this->jsTree . '</ul>' . "\n";
+	
+					$this->jsTree = $this->jsTree . '</li>' . "\n";
+		}
+	
+		return $this;
+	}
+	
 	// Getter Setter
 	
 	public function getCategories() {

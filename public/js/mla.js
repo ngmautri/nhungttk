@@ -1634,6 +1634,7 @@ function notifyDOItems() {
 
 
 function loadArticles(cat_id, cat_name) {
+	//alert(cat_id);
 	$('#content').text("Loading...");
 		//alert(cat_id);
 		$.get("/inventory/article/show-category", {

@@ -133,7 +133,7 @@ return array (
 						'Inventory\Controller\Console' => 'Inventory\Controller\ConsoleControllerFactory',
 						'Inventory\Controller\Purchasing' => 'Inventory\Controller\PurchasingControllerFactory',
 						'Inventory\Controller\Warehouse' => 'Inventory\Controller\WarehouseControllerFactory',
-						
+						'Inventory\Controller\Transaction' => 'Inventory\Controller\TransactionControllerFactory',
 				)
 				
 				

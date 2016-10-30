@@ -2,7 +2,9 @@
 <ul class="nav nav-pills">
  <li><a href="<?php echo $this->baseUrl ?>/inventory/article/add"><i class="icon-plus">  </i> Add New Item</a></li>
  <li><a href="<?php echo $this->baseUrl ?>/inventory/article/list?output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
+
  <li><a href="<?php echo $this->baseUrl ?>/inventory/article/list?output=order_template"><i class="icon-download-alt">  </i> Order Template(csv)</a> 
+ <li><a href="<?php echo $this->baseUrl ?>/inventory/article/my-category"><i class="icon-list">  </i> Category</a> 
 
 </li>
 </ul>
@@ -55,7 +57,7 @@
 							<label class="control-label" for="inputNameLocal">Item Status: </label>
 							<div class="controls">
 								<select name="item_status">
-									<option value="">All</option>
+									<option value="All">All</option>
 									<option
 										<?php echo $item_status=='Activated'? "selected='selected'":"";?>
 										value="Activated">Activated</option>
@@ -234,7 +236,10 @@ if ($total_articles <= 0) {
 		<td>
 		<a href="#" onclick="openPRCart('<?php echo $a->id?>');"><i class="icon-shopping-cart"></i>Order</a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/receive?article_id=<?php echo $this->escapeHtml($a->id);?>">Receive</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($a->id);?>">Issue</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/transaction/gi?article_id=<?php echo $this->escapeHtml($a->id);?>">Issue</a>
+		
+		<!-- <a href="<?php echo $this->baseUrl ?>/inventory/article/issue?article_id=<?php echo $this->escapeHtml($a->id);?>">Issue</a>  -->
+		<a href="<?php echo $this->baseUrl ?>/inventory/transaction/transfer?article_id=<?php echo $this->escapeHtml($a->id);?>">Transfer</a>
 	
 		
 		</td>

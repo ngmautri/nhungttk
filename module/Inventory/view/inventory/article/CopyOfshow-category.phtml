@@ -19,10 +19,12 @@ if ($total_articles <= 0) {
 <thead>
 	<tr>
 		<td><b>#</b></td>
-		<td><b>SKU</b></td>
-		<td><b>Item Name</b></td>
-		<td><b>Item Code</b></td>
-		<td><b>Item Unit</b></td>
+		<td><b>Picture</b></td>
+		<td><b>Name</b></td>
+		<!-- td><b>Name-LA</b></td> -->
+		<td><b>Item Type</b></td>
+		<td><b>Created Date</b></td>
+		
 		<td ><b data-toggle="tooltip" title = "Balance">Current <br> Balance</b></td>	
 		<td><b>Remark</b></td>
 		<td><b>Action</b></td>
@@ -41,9 +43,26 @@ if ($total_articles <= 0) {
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 	 	<td>
-	<?php echo $this->escapeHtml($a['article_tag']);?>
-		</td>
-	<td>
+			<?php 
+			if($a->article_pic_id!==null):
+			?>
+			<a href="<?php echo $this->baseUrl ?>/inventory/article/show?id=<?php echo $this->escapeHtml($a['id']);?>">
+			<img class= "img-rounded" width="80" height="80" src="/inventory/image/articlethumbnail200?id=<?php echo $a->article_pic_id;?>"/>
+		</a>			
+			<?php 
+			else:
+			?>
+			<img class= "img-rounded" width="70" height="70" src="/images/no-pic.jpg"/>
+				
+			<?php 
+			endif;
+			?>
+			
+			</td>
+	 
+	 
+		<td>
+		
 		<div class="dropdown">
 					<a style="" class="dropdown-toggle" type="button" data-toggle="dropdown"
 						href="#"><span style="color:black;" id="<?php echo $this->escapeHtml($a['id']);?>_name"><b><?php echo $this->escapeHtml($a['name']);?></b></span>
@@ -70,16 +89,17 @@ if ($total_articles <= 0) {
 						</li>
 						</ul>
 				</div>
-	
+		<div style="color: gray;">
+				Code: <span id="<?php echo $this->escapeHtml($a->id);?>_code"><?php echo $this->escapeHtml($a->code);?></span><br>
+				Unit: <span id="<?php echo $this->escapeHtml($a->id);?>_unit"><?php echo $this->escapeHtml($a->unit);?></span>
+				</div>
+		
 		</td>
+		<td><?php echo $this->escapeHtml($a->type);?> </td>
+		<td><?php echo $this->escapeHtml($a->created_on);?> </td>
+		
 		<td>
-	<span id="<?php echo $this->escapeHtml($a->id);?>_code"><?php echo $this->escapeHtml($a->code);?></span>
-		</td>		
-	
-				<td>
-<span id="<?php echo $this->escapeHtml($a->id);?>_unit"><?php echo $this->escapeHtml($a->unit);?></span>
-		</td>
-		<td>	
+		
 		<a href="<?php echo $this->baseUrl ?>/inventory/article/movements?article_id=<?php echo $this->escapeHtml($a->id);?>"><?php echo $this->escapeHtml($a->article_balance);?></a>
 		</td>
 		

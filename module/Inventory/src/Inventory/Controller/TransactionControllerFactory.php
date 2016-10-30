@@ -4,13 +4,13 @@ namespace Inventory\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Inventory\Controller\AdminController;
+use Inventory\Controller\TransactionController;
 
 /*
  * @author nmt
  *
  */
-class AdminControllerFactory implements FactoryInterface {
+class TransactionControllerFactory implements FactoryInterface {
 	
 	/**
 	 *
@@ -22,7 +22,7 @@ class AdminControllerFactory implements FactoryInterface {
 		
 		$sm = $serviceLocator->getServiceLocator();
 			
-		$controller = new AdminController ();
+		$controller = new TransactionController ();
 		$tbl =  $sm->get ('Inventory\Model\SparepartCategoryTable' );
 		$controller->setSparePartCategoryTable ( $tbl );
 		
@@ -40,6 +40,19 @@ class AdminControllerFactory implements FactoryInterface {
 		
 		$tbl =  $sm->get ('Inventory\Model\ArticleTable' );
 		$controller->setArticleTable( $tbl );
+		
+		//Warehouse Table
+		$tbl =  $sm->get ('Inventory\Model\WarehouseTable' );
+		$controller->setWhTable( $tbl );
+		
+		//Article Movemebt Table
+		$tbl =  $sm->get ('Inventory\Model\ArticleMovementTable' );
+		$controller->setArticleMovementTable( $tbl );
+		
+		//Article Movemebt Table
+		$tbl =  $sm->get ('Inventory\Model\ArticlePictureTable' );
+		$controller->setArticlePictureTable( $tbl );
+		
 		
 		//User Table
 		$tbl =  $sm->get ('User\Model\UserTable' );

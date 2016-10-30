@@ -19,12 +19,23 @@ use Inventory\Model\MLASparepart;
 use Inventory\Model\MLASparepartTable;
 
 use MLA\Paginator;
+use Inventory\Model\ArticleCategoryMember;
+use Inventory\Model\ArticleCategoryMemberTable;
+use Inventory\Model\ArticleCategoryTable;
 
-
+use Application\Model\DepartmentTable;
+use User\Model\UserTable;
 class AdminController extends AbstractActionController {
 	protected $sparePartCategoryTable;
 	protected $sparePartCategoryMemberTable;
 	protected $sparepartTable;
+	
+	protected $articleCategoryTable;
+	protected $articleCategoryMemberTable;
+	protected $articleTable;
+	
+	protected $authService;
+	protected $userTable;
 	
 	/*
 	 * Defaul Action
@@ -156,23 +167,27 @@ class AdminController extends AbstractActionController {
 	 */
 	public function addArticleCategoryMemberAction() {
 		$request = $this->getRequest ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$user_id = $user ['id'];
 		$redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
 	
 	
 		if ($request->isPost ()) {
 				
-			$category_id = ( int ) $request->getPost ( 'id' );
-			$spareparts = $request->getPost ( 'sparepart' );
+			$category_id = ( int ) $request->getPost ( 'cat_id' );
+			$articles = $request->getPost ( 'articles' );
 				
-			if (count ( $spareparts ) > 0) {
+			if (count ( $articles ) > 0) {
 	
-				foreach ( $spareparts as $sp ) {
-					$member = new SparepartCategoryMember ();
-					$member->sparepart_cat_id = $category_id;
-					$member->sparepart_id = $sp;
+				foreach ( $articles as $sp ) {
+					$member = new ArticleCategoryMember();
+					$member->article_cat_id = $category_id;
+					$member->article_id = $sp;
+					$member->updated_by = $user_id;
 						
-					if ($this->sparePartCategoryMemberTable->isMember ( $sp, $category_id ) == false) {
-						$this->sparePartCategoryMemberTable->add ( $member );
+					if ($this->articleCategoryMemberTable->isMember ( $sp, $category_id ) == false) {
+						$this->articleCategoryMemberTable->add ( $member );
 					}
 				}
 	
@@ -190,14 +205,14 @@ class AdminController extends AbstractActionController {
 			}
 		}
 	
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$category = $this->sparePartCategoryTable->get ( $id );
+		$id = ( int ) $this->params ()->fromQuery ( 'cat_id' );
+		$category = $this->articleCategoryTable->get ( $id );
 	
-		$spareparts = $this->sparePartCategoryMemberTable->getNoneMembersOfCatId($id);
+		$articles = $this->articleTable->getUncategorizedArticlesOfUser( $user_id,0,0 );
 	
 		return new ViewModel ( array (
 				'category' => $category,
-				'spareparts' => $spareparts,
+				'articles' => $articles,
 				'redirectUrl'=>$redirectUrl,
 		)
 				);
@@ -226,4 +241,42 @@ class AdminController extends AbstractActionController {
 		$this->sparepartTable = $sparepartTable;
 		return $this;
 	}
+	public function getArticleCategoryTable() {
+		return $this->articleCategoryTable;
+	}
+	public function setArticleCategoryTable(ArticleCategoryTable $articleCategoryTable) {
+		$this->articleCategoryTable = $articleCategoryTable;
+		return $this;
+	}
+	public function getArticleCategoryMemberTable() {
+		return $this->articleCategoryMemberTable;
+	}
+	public function setArticleCategoryMemberTable(ArticleCategoryMemberTable $articleCategoryMemberTable) {
+		$this->articleCategoryMemberTable = $articleCategoryMemberTable;
+		return $this;
+	}
+	public function getArticleTable() {
+		return $this->articleTable;
+	}
+	public function setArticleTable($articleTable) {
+		$this->articleTable = $articleTable;
+		return $this;
+	}
+	public function getAuthService() {
+		return $this->authService;
+	}
+	public function setAuthService($authService) {
+		$this->authService = $authService;
+		return $this;
+	}
+	public function getUserTable() {
+		return $this->userTable;
+	}
+	public function setUserTable(UserTable $userTable) {
+		$this->userTable = $userTable;
+		return $this;
+	}
+	
+	
+	
 }

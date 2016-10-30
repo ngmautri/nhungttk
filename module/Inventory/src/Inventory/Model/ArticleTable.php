@@ -440,8 +440,12 @@ WHERE 1
 				";
 		}
 		
+		
+		if ($item_status == "All") :
+		$item_status = null;
+				endif;
 		// Type
-		if ($item_type != null) {
+		if ($item_type != null ) {
 				$sql = $sql. " AND  mla_articles.type ='" . $item_type . "'";
 		}
 		
@@ -507,6 +511,48 @@ WHERE 1
 			$sql = $sql. " ORDER BY mla_articles.created_on desc";
 		}
 			
+		if ($limit > 0) {
+			$sql = $sql. " LIMIT " . $limit;
+		}
+	
+		if ($offset > 0) {
+			$sql = $sql. " OFFSET " . $offset;
+		}
+	
+		$sql = $sql.";";
+	
+		//echo $sql;
+	
+		$statement = $adapter->query($sql);
+	
+		$result = $statement->execute();
+	
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return $resultSet;
+	}
+	
+	/**
+	 * 
+	 * @param unknown $cat_id
+	 * @param unknown $limit
+	 * @param unknown $offset
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getUncategorizedArticlesOfUser($user_id,$limit, $offset){
+	
+		$adapter = $this->tableGateway->adapter;
+		$sql = $this->getArticles_SQL_V02;
+	
+		if ($user_id > 0) {
+			$sql = $sql. " AND mla_users.department_id
+				IN (SELECT department_id from mla_departments_members
+				where user_id = ".$user_id.")
+				";
+		}
+		
+		$sql = $sql. "And mla_articles.article_cat_id is null";
+	
 		if ($limit > 0) {
 			$sql = $sql. " LIMIT " . $limit;
 		}

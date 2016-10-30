@@ -23,6 +23,10 @@ class ArticleMovement {
 	public $dn_item_id;
 	public $pr_item_id;
 	
+	public $wh_id;
+	public $movement_type;
+	
+	
 	public function exchangeArray($data) {
 		$this->id = (! empty ( $data ['id'] )) ? $data ['id'] : null;
 		$this->movement_date = (! empty ( $data ['sparepart_id'] )) ? $data ['movement_date'] : null;
@@ -40,6 +44,9 @@ class ArticleMovement {
 		
 		$this->dn_item_id = (! empty ( $data ['dn_item_id'] )) ? $data ['dn_item_id'] : null;
 		$this->pr_item_id = (! empty ( $data ['pr_item_id'] )) ? $data ['pr_item_id'] : null;
+		
+		$this->wh_id = (! empty ( $data ['wh_id'] )) ? $data ['wh_id'] : null;
+		$this->movement_type = (! empty ( $data ['movement_type'] )) ? $data ['movement_type'] : null;
 		
 	}
 }

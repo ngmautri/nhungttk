@@ -70,6 +70,25 @@ class WarehouseController extends AbstractActionController {
 		) );
 	}
 	
+	/**
+	 * Add new purchase data
+	 */
+	public function selectListAction() {
+		$request = $this->getRequest ();
+		$wh= $this->params ()->fromQuery ( 'wh' );
+		
+		
+		if ($request->isXmlHttpRequest ()) {
+			$this->layout ( "layout/inventory/ajax" );
+		}
+	
+		$warehouses = $this->whTable->fetchAll ();
+		return new ViewModel ( array (
+				'warehouses' => $warehouses,
+				'wh'=>$wh
+		) );
+	}
+	
 	
 	/**
 	 * 

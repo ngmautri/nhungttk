@@ -14,11 +14,9 @@ class ArticleCategoryTable {
 	
 	protected $tableGateway;
 	
-	protected $sql_GetCategory = "select
-*
-from
-(
-select
+	protected $sql_GetCategory = "
+	
+	select
 	mla_articles_categories.*,
 	ifnull(mla_articles_categories_members.totalMembers,0) as totalMembers,
     mla_articles_categories_1.totalChildren
@@ -43,9 +41,9 @@ select
 	) 
     as mla_articles_categories_1
     on mla_articles_categories_1.article_cat_id = mla_articles_categories.id
-) 
-as mla_articles_categories
-WHERE 1";
+
+WHERE 1
+";
 	
 	public function __construct(TableGateway $tableGateway) {
 		$this->tableGateway = $tableGateway;

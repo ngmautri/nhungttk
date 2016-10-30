@@ -200,13 +200,14 @@ class ArticleController extends AbstractActionController {
 	 * Show Movement of Article
 	 */
 	public function movementsAction() {
+		$request = $this->getRequest ();
+		
 		$id = ( int ) $this->params ()->fromQuery ( 'article_id' );
 		$movements = $this->articleMovementTable->getMovements ( $id );
 		$article = $this->articleTable->getArticleByID ( $id );
-		$layout = $this->params ()->fromQuery ( 'layout' );
 		
-		if($layout=="ajax"){
-			$this->layout("layout/inventory/ajax");
+		if ($request->isXmlHttpRequest ()) {
+			$this->layout ( "layout/inventory/ajax" );
 		}
 		return new ViewModel ( array (
 				'article' => $article,
@@ -1128,7 +1129,7 @@ class ArticleController extends AbstractActionController {
 		$list = $this->articleCategoryService;
 		$list = $list->initCategory ();
 		$list = $list->updateCategory ( $root, 0 );
-		$list = $list->generateJSTree ( $root );
+		$list = $list->generateJSTreeWithTotalMember ( $root );
 		
 		$this->layout ( "layout/fluid" );
 		return new ViewModel ( array (
@@ -1491,10 +1492,17 @@ class ArticleController extends AbstractActionController {
 	public function showCategoryAction() {
 		
 		$request = $this->getRequest ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$user_id = $user ['id'];
 		
 		$cat_id = $this->params ()->fromQuery ( 'cat_id' );
-		
-		$articles = $this->articleTable->getArticlesOfCategory( $cat_id,0,0 );
+		if($cat_id >0){
+			$articles = $this->articleTable->getArticlesOfCategory( $cat_id,0,0 );
+			
+		}else {
+			$articles = $this->articleTable->getUncategorizedArticlesOfUser( $user_id,0,0 );
+		}
 		$total_articles = count($articles);
 		$paginator =null;
 		

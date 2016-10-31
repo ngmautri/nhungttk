@@ -27,6 +27,18 @@ echo '<div class="alert alert-error">';
 	<input type="hidden" name="instock" value="<?php echo (int) $instock ?>" />
 	<input type="hidden" name="asset_id" id="asset_id" value="<?php echo $movement!==null ? ($movement->asset_id) :""?>" />
 	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+	
+	<div class="control-group">
+        <label class="control-label" for="inputNameLocal">Movement Type: </label>
+        <div class="controls">
+        	<select name="movement_type">
+      	    <?php foreach ($movement_types as $key =>$a) :
+        		echo '<option value="'.$a . '">'. $a . '</option>';
+	    		endforeach; 
+			?>   		
+   			</select>
+	     </div>
+      </div>
  	
  	 <div class="control-group">
         <label class="control-label" for="inputAsset">Issue for Asset:</label>

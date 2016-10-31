@@ -29,6 +29,7 @@ use Inventory\Model\ArticleMovementTable;
 use Application\Model\DepartmentTable;
 use User\Model\UserTable;
 use Inventory\Model\ArticlePictureTable;
+use Inventory\Model\ArticleTable;
 
 class TransactionController extends AbstractActionController {
 	protected $sparePartCategoryTable;
@@ -37,7 +38,7 @@ class TransactionController extends AbstractActionController {
 	protected $articleCategoryTable;
 	protected $articleCategoryMemberTable;
 	protected $articleTable;
-		protected $articleMovementTable;
+	protected $articleMovementTable;
 	protected $articlePictureTable;
 	
 	protected $whTable;
@@ -103,7 +104,7 @@ class TransactionController extends AbstractActionController {
 					$errors [] = 'Quantity must be greater than 0!';
 				}else{
 					if($currect_wh_balance<$quantity){
-						$errors [] = 'There are only ' . $currect_wh_balance . ' in stock';
+						$errors [] = $quantity . ' is transferred' . ' But there are only ' . $currect_wh_balance . ' in stock';
 					}
 					
 				}
@@ -208,7 +209,6 @@ class TransactionController extends AbstractActionController {
 			if (! $validator->isValid ( $input->movement_date )) {
 				$errors [] = 'Transaction date format is not correct!';
 			}
-				
 						
 			if (! is_numeric ( $quantity )) {
 				$errors [] = 'Quantity is not valid. It must be a number.';
@@ -226,6 +226,8 @@ class TransactionController extends AbstractActionController {
 		
 				$id = ( int ) $request->getPost ( 'article_id' );
 				$article = $this->articleTable->getArticleByID ( $id );
+				$instock=$this->articleMovementTable->getBalanceOfWH(NUll,$id);
+				
 				$pictures = $this->articlePictureTable->getArticlePicturesById ( $id );
 		
 				return new ViewModel ( array (
@@ -247,7 +249,8 @@ class TransactionController extends AbstractActionController {
 		$id = ( int ) $this->params ()->fromQuery ( 'article_id' );
 		$article = $this->articleTable->getArticleByID ( $id );
 		$pictures = $this->articlePictureTable->getArticlePicturesById ( $id );
-		$instock = $article->article_balance;
+		
+		$instock=$this->articleMovementTable->getBalanceOfWH(NUll,$id);
 		
 		return new ViewModel ( array (
 				'article' => $article,
@@ -330,7 +333,7 @@ class TransactionController extends AbstractActionController {
 	public function getArticleTable() {
 		return $this->articleTable;
 	}
-	public function setArticleTable($articleTable) {
+	public function setArticleTable(ArticleTable $articleTable) {
 		$this->articleTable = $articleTable;
 		return $this;
 	}

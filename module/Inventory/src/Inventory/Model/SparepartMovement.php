@@ -20,6 +20,9 @@ class SparepartMovement {
 	public $comment;
 	public $created_on;
 	
+	public $wh_id;
+	public $movement_type;
+	
 	public function exchangeArray($data) {
 		$this->id = (! empty ( $data ['id'] )) ? $data ['id'] : null;
 		$this->movement_date = (! empty ( $data ['sparepart_id'] )) ? $data ['movement_date'] : null;
@@ -35,6 +38,9 @@ class SparepartMovement {
 		$this->requester = (! empty ( $data ['requester'] )) ? $data ['requester'] : null;
 		$this->comment = (! empty ( $data ['comment'] )) ? $data ['comment'] : null;
 		$this->created_on = (! empty ( $data ['created_on'] )) ? $data ['created_on'] : null;
+		
+		$this->wh_id = (! empty ( $data ['comment'] )) ? $data ['wh_id'] : null;
+		$this->movement_type = (! empty ( $data ['created_on'] )) ? $data ['movement_type'] : null;
 	}
 }
 

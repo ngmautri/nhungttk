@@ -73,7 +73,12 @@ order by concat(month(mla_sparepart_movements.movement_date),'.', year(mla_spare
 				'requester' => $input->requester,
 				
 				'comment' => $input->comment,
-				'created_on' => date ( 'Y-m-d H:i:s' ) 
+				'created_on' => date ( 'Y-m-d H:i:s' ),
+				
+				'wh_id' => $input->wh_id,
+				'movement_type' => $input->movement_type,
+				
+				
 		);
 		$this->tableGateway->insert ( $data );
 		return $this->tableGateway->lastInsertValue;

@@ -53,6 +53,12 @@ class SparepartsController extends AbstractActionController {
 	
 	private $prItemTable;
 	
+	protected $movement_type_issue=array(
+			'01' => 'FOR_REPLACEMENT',
+			'02' => 'FOR_IE_PROJECT',
+			'03' => 'FOR_INSTALLMENT',
+	);
+	
 	/*
 	 * Defaul Action
 	 */
@@ -491,6 +497,7 @@ class SparepartsController extends AbstractActionController {
 			$input->requester = $request->getPost ( 'requester' );
 			$input->comment = $request->getPost ( 'comment' );
 			$input->created_on = $request->getPost ( 'created_on' );
+			$input->movement_type = $request->getPost ( 'movement_type' );
 			
 			$instock = $request->getPost ( 'instock' );
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
@@ -548,6 +555,7 @@ class SparepartsController extends AbstractActionController {
 						'pending_pr_item' =>$pending_pr_item,
 						'total_confirmed_balance' =>$total_confirmed_balance,
 						'asset_name' =>$asset_name,
+						'movement_types'=>$this->movement_type_issue,
 				) );
 			} else {
 				
@@ -590,6 +598,8 @@ class SparepartsController extends AbstractActionController {
 				'pending_pr_item' =>$pending_pr_item,
 				'total_confirmed_balance' =>$total_confirmed_balance,
 				'asset_name' =>null,
+				'movement_types'=>$this->movement_type_issue,
+				
 		) );
 	}
 	

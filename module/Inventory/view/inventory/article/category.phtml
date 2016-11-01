@@ -1,6 +1,6 @@
 
 <div class="row">
-    <div class="span4" id="html"  style="background-color:lavender;">
+    <div class="span5" id="html"  style="background-color:lavender;">
 
 	<ul>
 		<?php echo $jsTree?>
@@ -90,7 +90,8 @@
 		   var id = $("#html").jstree(true).get_node($(this)).id;
 		   var cat_name = $("#html").jstree(true).get_node($(this)).text;
 		   //alert(cat_name);
-		   $("#content").text(cat_name);
+		   //$("#content").text(cat_name);
+		   loadArticles(id,cat_name);
 	});
 	
 </script>

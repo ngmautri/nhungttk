@@ -1,0 +1,108 @@
+
+<ul class="nav nav-pills">
+ <li><a href="<?php echo $this->baseUrl ?>/application/uom/add">Add new unit</a></li>
+ <li class="active"><a href="#">Unit List</a></li>
+
+</ul>
+
+
+<?php
+
+if ($total_departments <= 0) {
+	
+	echo 'No articles found!';
+} else {
+
+	if (! is_null ( $paginator )) {
+		echo 'Result '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_departments . ' members found!';
+	}else{	
+		echo $total_departments . ' members found!';
+	}
+	
+?>
+
+
+
+
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>Department</b></td>
+		<td><b>Detail</b></td>
+		<td><b>Created on</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+
+ <tbody>
+ 
+	 <?php 
+	 
+	 $count = 0;
+	 foreach ($departments as $a) : 
+	 	 $count++;
+	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
+	 
+	 	 
+	 ?>
+		<td><?php echo $this->escapeHtml($a->name);?> <span class="label label-info"><?php echo $this->escapeHtml($a->total_members);?></span></td>
+		<td><?php echo $this->escapeHtml($a->description);?> 
+		<td>
+		<td>
+		<a href="<?php echo $this->baseUrl ?>/application/department/show?id=<?php echo $this->escapeHtml($a->id);?>">Detail</a> 
+		<a href="<?php echo $this->baseUrl ?>/application/department/add-member?id=<?php echo $this->escapeHtml($a->id);?>">Add-member</a>
+		</td>
+	</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+
+<br>
+
+<?php
+	
+	if (! is_null ( $paginator )) {
+		
+		//change it only
+		$base=$this->baseUrl . '/application/department/list';
+		
+		$last 	= $base . '?page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;		
+		$first 	= $base . '?page=1&perPage=' . $paginator->resultsPerPage;
+		
+		$p1 = ($paginator->page)-1;
+		$p2 = ($paginator->page)+1;
+		
+		$prev = $base . '?page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . '?page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		
+		
+		echo '<ul class="pagination">';
+		
+		if($paginator->page != 1){
+			echo '<li><a href="'.  $first.'"> |< </a></li>';
+			echo '<li><a href="'.  $prev .'"> < </a></li>';
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base. '?page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+		
+			
+			if ($i == $paginator->page) {
+				echo   '<li><a class="active" href="#">'.$i.'</a></li>';
+			} else {
+				echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
+			}
+		}
+		if($paginator->page != $paginator->totalPages){
+			echo '<li><a href="'.  $next.'"> > </a></li>';
+			echo '<li><a href="'.  $last .'"> >| </a></li>';
+		}
+		echo '</ul>';
+	}
+}
+?>
+

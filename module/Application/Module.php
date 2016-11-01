@@ -17,8 +17,16 @@ use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
 use Application\Model\Department;
 use Application\Model\DepartmentTable;
+
 use Application\Model\DepartmentMember;
 use Application\Model\DepartmentMemberTable;
+
+use Application\Model\UOM;
+use Application\Model\UOMTable;
+
+use Application\Model\Currency;
+use Application\Model\CurrencyableTable;
+use Application\Model\CurrencyTable;
 
 class Module {
 	
@@ -82,7 +90,33 @@ class Module {
 						return new TableGateway ( 'mla_departments_members', $dbAdapter, null, $resultSetPrototype );
 						} ,
 						
+						// CurrencyTable
+						'Application\Model\CurrencyTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'CurrencyTableGateway' );
+						$table = new CurrencyTable( $tableGateway );
+						return $table;
+						},
 						
+						'CurrencyTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new Currency() );
+						return new TableGateway ( 'nmt_application_currency', $dbAdapter, null, $resultSetPrototype );
+						} ,
+						
+						// UOM Table
+						'Application\Model\UOMTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'UOMTableGateway' );
+						$table = new UOMTable( $tableGateway );
+						return $table;
+						},
+						
+						'UOMTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new UOM() );
+						return new TableGateway ( 'nmt_application_uom', $dbAdapter, null, $resultSetPrototype );
+						} ,
 						
 						
 						

@@ -69,6 +69,8 @@ return array (
 						'Application\Controller\Department' => 'Application\Controller\DepartmentControllerFactory',
 						'Application\Controller\ACL' => 'Application\Controller\ACLControllerFactory',
 						'Application\Controller\Pdf' => 'Application\Controller\PdfControllerFactory',
+						'Application\Controller\UOM' => 'Application\Controller\UOMControllerFactory',
+						'Application\Controller\Currency' => 'Application\Controller\CurrencyControllerFactory',
 						
 				)
 		),

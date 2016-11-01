@@ -31,14 +31,14 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	 public function testSparepartCatergoryTest() {
 		
-	 	 $sv = Bootstrap::getServiceManager()->get('Application\Service\PdfService');
+	 	 $sv = Bootstrap::getServiceManager()->get('Application\Model\CurrencyTable');
 	 	 //$sv->createPdf();
-	 	 echo base64_encode('1234THMMLA-'.'15'.'-POndsfdsy');
-	 	 echo base64_decode('MTIzNFRITU1MQS0xNS1QT25kc2Zkc3k');
-	 	
+	 	 //echo base64_encode('1234THMMLA-'.'15'.'-POndsfdsy');
+	 	 //echo base64_decode('MTIzNFRITU1MQS0xNS1QT25kc2Zkc3k');
+	 	 var_dump($sv->fetchALL());
+	 	 
 	 	 /*
 	 	 $c = $sv->getControllerManager();
-	 	 //var_dump($c);
 	 	 foreach($c->getRegisteredServices() as $a){
 	 	 	var_dump($a);
 	 	 }

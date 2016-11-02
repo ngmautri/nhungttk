@@ -22,7 +22,13 @@ echo '<div class="alert alert-error">';
  <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/article/edit"	method="post" enctype="multipart/form-data" id="NewSP" >
  <input type="hidden" name="id" value="<?php echo $article!==null ? ($article->id) :""?>" />
  <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-
+	
+	<div class="control-group">
+        <label class="control-label" for="inputTag">Item Code</label>
+        <div class="controls">
+          <input type="text" id="inputTag" placeholder="" name="article_tag" value="<?php echo $article!==null ? ($article->article_tag) :""?>">
+        </div>
+      </div>	
  
       <div class="control-group">
         <label class="control-label" for="inputTag">Name</label>

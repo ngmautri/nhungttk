@@ -71,6 +71,7 @@ class ArticleController extends AbstractActionController {
 				$redirectUrl = $request->getPost ( 'redirectUrl' );
 				
 				$input = new Article ();
+				$input->article_tag = $request->getPost ( 'article_tag' );
 				$input->name = $request->getPost ( 'name' );
 				$input->name_local = $request->getPost ( 'name_local' );
 				

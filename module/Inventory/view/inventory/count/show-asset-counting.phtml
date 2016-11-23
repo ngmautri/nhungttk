@@ -57,8 +57,8 @@ echo '<div class="alert alert-info">';
 			if($a->asset_picture_id!=null):
 			?>
 			<a target="_blank" href="<?php echo $this->baseUrl ?>/inventory/asset/show?id=<?php echo $this->escapeHtml($a['id']);?>">
-			<img class= "img-rounded" width="50" height="50" src="/inventory/image/asset-thumbnail-200?id=<?php echo $a->asset_picture_id;?>"/>
-		</a>			
+			<img class= "img-rounded" style="min-height:100px;height:100px;min-width:100px;width:100px;" src="/inventory/image/asset-thumbnail-200?id=<?php echo $a->asset_picture_id;?>"/>
+			</a>
 			<?php 
 			else:
 			?>

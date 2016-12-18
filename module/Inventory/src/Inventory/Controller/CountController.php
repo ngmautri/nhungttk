@@ -58,7 +58,7 @@ class CountController extends AbstractActionController {
 			"LINE-07", "LINE-08",
 			"LINE-08", "LINE-A",
 			"LINE-SPE", "CUTTING",
-			"WORK-SHOP", "ADMIN","CANTEEN","NOT-USED", "OTHER",
+			"WORK-SHOP", "ADMIN","CANTEEN","NOT-USED", "ON-RACK","OTHER",
 				
 	);
 	

@@ -77,6 +77,7 @@ order by concat(month(mla_sparepart_movements.movement_date),'.', year(mla_spare
 				
 				'wh_id' => $input->wh_id,
 				'movement_type' => $input->movement_type,
+				'asset_location' => $input->asset_location,
 				
 				
 		);
@@ -101,7 +102,9 @@ order by concat(month(mla_sparepart_movements.movement_date),'.', year(mla_spare
 				'reason' => $input->reason,
 				'requester' => $input->requester,
 				'comment' => $input->comment,
-				'created_on' => date ( 'Y-m-d H:i:s' ) 
+				'created_on' => date ( 'Y-m-d H:i:s' ) ,
+				'asset_location' => $input->asset_location,
+				
 		);
 		
 		$where = 'id = ' . $id;

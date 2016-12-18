@@ -59,6 +59,15 @@ class SparepartsController extends AbstractActionController {
 			'03' => 'FOR_INSTALLMENT',
 	);
 	
+	protected $locations = array("LINE-01", "LINE-02",
+			"LINE-03", "LINE-04",
+			"LINE-05", "LINE-06",
+			"LINE-07", "LINE-08","LINE-10","LINE-09","LINE-A",
+			"LINE-SPE", "CUTTING",
+			"OTHER",
+	
+	);
+	
 	/*
 	 * Defaul Action
 	 */
@@ -498,6 +507,7 @@ class SparepartsController extends AbstractActionController {
 			$input->comment = $request->getPost ( 'comment' );
 			$input->created_on = $request->getPost ( 'created_on' );
 			$input->movement_type = $request->getPost ( 'movement_type' );
+			$input->asset_location = $request->getPost ( 'asset_location' );
 			
 			$instock = $request->getPost ( 'instock' );
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
@@ -556,6 +566,7 @@ class SparepartsController extends AbstractActionController {
 						'total_confirmed_balance' =>$total_confirmed_balance,
 						'asset_name' =>$asset_name,
 						'movement_types'=>$this->movement_type_issue,
+						'locations'=>$this->locations,
 				) );
 			} else {
 				
@@ -599,7 +610,7 @@ class SparepartsController extends AbstractActionController {
 				'total_confirmed_balance' =>$total_confirmed_balance,
 				'asset_name' =>null,
 				'movement_types'=>$this->movement_type_issue,
-				
+				'locations'=>$this->locations,
 		) );
 	}
 	

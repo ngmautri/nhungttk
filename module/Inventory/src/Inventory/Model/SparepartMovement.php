@@ -22,6 +22,9 @@ class SparepartMovement {
 	
 	public $wh_id;
 	public $movement_type;
+	public $asset_location;
+	
+	
 	
 	public function exchangeArray($data) {
 		$this->id = (! empty ( $data ['id'] )) ? $data ['id'] : null;
@@ -41,6 +44,8 @@ class SparepartMovement {
 		
 		$this->wh_id = (! empty ( $data ['comment'] )) ? $data ['wh_id'] : null;
 		$this->movement_type = (! empty ( $data ['created_on'] )) ? $data ['movement_type'] : null;
+		$this->asset_location = (! empty ( $data ['asset_location'] )) ? $data ['asset_location'] : null;
+		
 	}
 }
 

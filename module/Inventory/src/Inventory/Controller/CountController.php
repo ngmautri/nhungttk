@@ -55,8 +55,7 @@ class CountController extends AbstractActionController {
 	protected $locations = array("LINE-01", "LINE-02", 
 			"LINE-03", "LINE-04",
 			"LINE-05", "LINE-06",
-			"LINE-07", "LINE-08",
-			"LINE-08", "LINE-A",
+			"LINE-07", "LINE-08","LINE-A",
 			"LINE-SPE", "CUTTING",
 			"WORK-SHOP", "ADMIN","CANTEEN","NOT-USED", "ON-RACK","OTHER",
 				

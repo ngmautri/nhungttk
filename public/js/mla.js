@@ -360,8 +360,8 @@ function countAsset() {
 				image.onload = (function(p, pic_to_upload_resized, n) {
 					return function(imageEvent) {
 
-						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1200,
+						// Resize the image - change to 1000
+						var canvas = document.createElement('canvas'), max_size = 1000,
 						width = image.width, height = image.height;
 						if (width > height) {
 							if (width > max_size) {

@@ -1,3 +1,14 @@
+<?php 
+
+$asset_locaction_selected=null;
+
+if($movement!==null):
+	$asset_locaction_selected=$movement->asset_location ;
+endif;
+
+echo $asset_locaction_selected;
+?>
+
 <h4>Issuing: <span class="label label-success"><?php echo $sp->tag; ?></span> <?php echo $sp->name; ?> </h4>
 <hr>
 <?php if (count($errors)>0)
@@ -51,6 +62,25 @@ echo '<div class="alert alert-error">';
          <div class="controls">
 <input readonly type="text" name="asset" id="asset" value="<?php echo $movement!==null ? ($movement->asset_name) :""?>"/>
 </div>
+      </div>
+      
+        <div class="control-group">
+        <label class="control-label" for="inputTag">Asset Location:</label>
+        <div class="controls">
+        	<select name="asset_location" >
+        		<option value="">---Please select---</option>
+  									
+   			<?php foreach ($locations as $location) :
+   				if($location==$asset_locaction_selected):
+   				echo '<option selected value="' . $location. '">' .  $location. '</option>';
+   				else:
+   				echo '<option  value="' . $location. '">' .  $location. '</option>';
+   				endif;
+   			endforeach; 
+   			?>
+			</select>
+                    
+        </div>
       </div>
       
       <div class="control-group">

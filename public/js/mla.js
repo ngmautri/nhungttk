@@ -1,5 +1,7 @@
 $(document).ready(function() {
 	
+	
+	
 	$('[data-toggle="tooltip"]').tooltip();
 	
 	$(document).ready(function() {
@@ -19,6 +21,8 @@ $(document).ready(function() {
 		});
 		*/
 		
+	
+		
 		
 	});
 
@@ -26,6 +30,9 @@ $(document).ready(function() {
 	$("#select_ALL").change(function() {
 		$(".checkbox1").prop('checked', $(this).prop("checked"));
 	});
+	
+	$.fn.editable.defaults.mode = 'popup';     
+	
 	
 	
 });

@@ -1,0 +1,15 @@
+<h4>My Profile:</h4> 
+
+<ul class="nav nav-pills">
+ <li><a href="<?php echo $this->baseUrl ?>/user/profile/change-password">change password</a></li>
+ <li><a href="<?php echo $this->baseUrl ?>/user/profile/privileges">Show-Privileges</a></li>
+
+</ul>
+<hr>    
+<ul>
+<li><?php echo 'Name: '. $user->firstname . ' '.$user->firstname ;?></li>
+<li><?php echo 'Email: '. $user->email ;?></li>
+<li><?php echo 'Department: '.$user->department_name;?></li>
+
+</ul>
+

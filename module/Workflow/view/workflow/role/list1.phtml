@@ -1,0 +1,51 @@
+
+<ul class="nav nav-pills">
+ <li><a href="<?php echo $this->baseUrl ?>/user/role/add">Add new role</a></li>
+</ul>
+
+
+
+
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>Role</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+
+ <tbody>
+ 
+	 <?php 
+	 
+	 $count = 0;
+	 foreach ($roles as $a) : 
+	 	 $count++;
+	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
+	 
+	 	 
+	 ?>
+		<td><?php 
+			$n = (int) $a['level'];
+			
+			for ($i = 2; $i <= $n; $i++) {
+				echo '<span style="margin-left: 20px;">&nbsp;&nbsp;</span>';
+			}
+			echo '- '.strtoupper($this->escapeHtml($a['role']));
+		?>
+		</td>
+		
+		<td>
+		<a href="<?php echo $this->baseUrl ?>/user/role/add?id=<?php echo $this->escapeHtml($a['role_id']);?>">add-role</a> 
+		<a href="<?php echo $this->baseUrl ?>/user/role/add-member?id=<?php echo $this->escapeHtml($a['role_id']);?>">add-member</a> 
+		<a href="<?php echo $this->baseUrl ?>/user/role/grant-access?id=<?php echo $this->escapeHtml($a['role_id']);?>">Grant-Access</a> 
+
+		</td>
+	</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<br>

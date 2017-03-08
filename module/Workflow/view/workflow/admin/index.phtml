@@ -1,0 +1,43 @@
+<h5>User Manager:</h5>
+
+
+<h2> <?php echo $this->massage; ?></h2>
+
+<div class="table-responsive">
+<table class="table table table-responsive table-bordered table-striped ">
+  <thead>
+      <tr>
+      	<th>Firstname</th>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Email</th>
+        <th>Email</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+ <?php foreach ($users as $user) : ?>
+    <tr>
+		<td><?php echo $this->escapeHtml($user->id);?></td>
+		<td><?php echo $this->escapeHtml($user->firstname);?></td>
+		<td><?php echo $this->escapeHtml($user->lastname);?></td>
+		<td><?php echo $this->escapeHtml($user->email);?> </td>
+		<td><div class="dropdown">
+						    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+						    Action
+						    <span class="caret"></span></a>
+						    <ul class="dropdown-menu">
+						    	<li> <a href="/user/profile">Block</a></li>
+						    	<li class="divider"></li>
+						      	<li> <a href="/user/profile">Edit</a></li>
+						      	<li> <a href="/user/profile">Invite</a></li>
+	 					    </ul>
+						  </div>		
+		
+		</td>
+	</tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+</div>
+

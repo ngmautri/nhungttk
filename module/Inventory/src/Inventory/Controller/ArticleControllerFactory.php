@@ -78,8 +78,8 @@ class ArticleControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('User\Service\ArticleCategory' );
 		$controller->setArticleCategoryService($sv );
 		
-		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
-		$controller->setDoctrineEM($sv );
+		// sv =  $sm->get ('doctrine.entitymanager.orm_default' );
+		// $controller->setDoctrineEM($sv );
 		
 		return $controller;
 	}

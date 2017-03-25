@@ -9,6 +9,9 @@
  */
 namespace Inventory\Controller;
 
+use PHPExcel;
+use PHPExcel_IOFactory;
+use Doctrine\ORM\EntityManager;
 use Zend\I18n\Validator\Int;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
@@ -28,12 +31,15 @@ use Inventory\Model\ArticleCategory;
 use Inventory\Model\ArticleCategoryTable;
 use Inventory\Model\ArticleCategoryMember;
 use Inventory\Model\ArticleCategoryMemberTable;
+
 use Inventory\Model\ArticleMovement;
 use Inventory\Model\ArticleMovementTable;
-use Procurement\Model\PurchaseRequestCartItem;
+
+use Inventory\Model\MlaArticleDepartment;
+use Inventory\Model\MlaArticleDepartmentTable;
 use Procurement\Model\PurchaseRequestCartItemTable;
-use Procurement\Model\PurchaseRequestItemTable;
 use Application\Model\DepartmentTable;
+
 use User\Model\UserTable;
 
 class ArticleController extends AbstractActionController {
@@ -50,6 +56,9 @@ class ArticleController extends AbstractActionController {
 	protected $articleMovementTable;
 	protected $purchaseRequestCartItemTable;
 	protected $departmentTable;
+	protected $doctrineEM;
+	
+	protected $mlaArticleDepartmentTable;
 	
 	/*
 	 * Defaul Action
@@ -194,6 +203,173 @@ class ArticleController extends AbstractActionController {
 				'redirectUrl' => $redirectUrl,
 				'errors' => null,
 				'article' => null 
+		) );
+	}
+	/**
+	 * create New Article
+	 */
+	public function adminAddAction() {
+		$request = $this->getRequest ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		
+		if ($request->isPost ()) {
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			
+			$input = new Article ();
+			$input->article_tag = $request->getPost ( 'article_tag' );
+			$input->name = $request->getPost ( 'name' );
+			$input->name_local = $request->getPost ( 'name_local' );
+			
+			$input->description = $request->getPost ( 'description' );
+			
+			$input->keywords = $request->getPost ( 'keywords' );
+			$input->unit = $request->getPost ( 'unit' );
+			
+			$input->type = $request->getPost ( 'type' );
+			$input->code = $request->getPost ( 'code' );
+			
+			$input->barcode = $request->getPost ( 'barcode' );
+			
+			$input->created_by = $user ['id'];
+			
+			$input->visibility = $request->getPost ( 'visibility' );
+			$input->status = $request->getPost ( 'status' );
+			$input->remarks = $request->getPost ( 'remarks' );
+			
+			$category_id = ( int ) $request->getPost ( 'category_id' );
+			$department_id = $request->getPost ( 'department_id' );
+			
+			$errors = array ();
+			
+			if ($input->name == '') {
+				$errors [] = 'Please give article name';
+			}
+			
+			if (count ( $errors ) > 0) {
+				return new ViewModel ( array (
+						'errors' => $errors,
+						'redirectUrl' => $redirectUrl,
+						'category_id' => $category_id,
+						'article' => $input,
+						'department_id' => $department_id 
+				) );
+			}
+			
+			$newId = $this->articleTable->add ( $input );
+			$row = $this->articleTable->getArticleByID ( $newId );
+			$this->articleSearchService->updateIndex ( $row );
+			
+			// update search index
+			
+			$root_dir = $this->articleService->getPicturesPath ();
+			
+			// $files = $request->getFiles ()->toArray ();
+			
+			$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
+			$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
+			
+			$id = $newId;
+			
+			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
+				if ($error == UPLOAD_ERR_OK) {
+					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
+					
+					$ext = strtolower ( pathinfo ( $_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION ) );
+					
+					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png') {
+						
+						$checksum = md5_file ( $tmp_name );
+						
+						if (! $this->articlePictureTable->isChecksumExits ( $id, $checksum )) {
+							
+							$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
+							$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+							
+							if (! is_dir ( $folder )) {
+								mkdir ( $folder, 0777, true ); // important
+							}
+							
+							$ftype = $_FILES ["pictures"] ["type"] [$key];
+							move_uploaded_file ( $tmp_name, "$folder/$name" );
+							
+							// add pictures
+							$pic = new ArticlePicture ();
+							$pic->url = "$folder/$name";
+							$pic->filetype = $ftype;
+							$pic->article_id = $id;
+							$pic->filename = "$name";
+							$pic->folder = "$folder";
+							$pic->checksum = $checksum;
+							
+							$this->articlePictureTable->add ( $pic );
+							
+							// trigger uploadPicture
+							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+									'picture_name' => $name,
+									'pictures_dir' => $folder 
+							) );
+						}
+					}
+				}
+			}
+			
+			// add category
+			if ($category_id > 1) {
+				$m = new ArticleCategoryMember ();
+				$m->article_id = $newId;
+				$m->article_cat_id = $category_id;
+				$this->articleCategoryMemberTable->add ( $m );
+			}
+			
+			// adding department
+			// Get Department
+			
+			
+			if ($department_id > 1) {
+				
+				/**
+				$em = $this->doctrineEM;
+				$d = new MlaArticleDepartment ();
+				
+				$article = $this->doctrineEM->find( 'Application\Entity\MlaArticles', $id );
+				$d->setArticle ( $article );
+				$dep = $this->doctrineEM->find ('Application\Entity\MlaDepartments', $department_id );
+				$d->setDepartment ( $dep );
+				$em->persist ( $d );
+				$em->flush ();
+				*/
+				$input = new MlaArticleDepartment();
+				$input->article_id = $id;
+				$input->department_id = $department_id;
+				$input->updated_by =  $user ['id'];
+				$this->mlaArticleDepartmentTable->add($input);			
+			}
+			
+			$this->redirect ()->toUrl ( $redirectUrl );
+			
+			
+		}
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$category_id = ( int ) $this->params ()->fromQuery ( 'category_id' );
+		
+		// add category
+		if ($category_id > 1) {
+			$category = $this->articleCategoryTable->get ( $category_id );
+		} else {
+			$category = null;
+		}
+		$departments = $this->departmentTable->fetchAll ();
+		
+		return new ViewModel ( array (
+				'message' => 'Add new article',
+				'category' => $category,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null,
+				'article' => null,
+				'departments' => $departments,
+				'department_id' => null 
+		
 		) );
 	}
 	
@@ -482,8 +658,6 @@ class ArticleController extends AbstractActionController {
 							
 							$this->articlePictureTable->add ( $pic );
 							
-							
-							
 							// trigger uploadPicture
 							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
 									'picture_name' => $name,
@@ -497,12 +671,12 @@ class ArticleController extends AbstractActionController {
 			$this->redirect ()->toUrl ( $redirectUrl );
 			
 			/*
-			return new ViewModel ( array (
-					'article' => $article,
-					'redirectUrl' => $redirectUrl,
-					'errors' => null 
-			) );
-			*/
+			 * return new ViewModel ( array (
+			 * 'article' => $article,
+			 * 'redirectUrl' => $redirectUrl,
+			 * 'errors' => null
+			 * ) );
+			 */
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
@@ -892,15 +1066,13 @@ class ArticleController extends AbstractActionController {
 				'item_status' => $item_status,
 				'per_pape' => $resultsPerPage,
 				'item_type' => $item_type 
-		)
-		 );
+		) );
 	}
 	
 	/**
 	 * List all articles ADMIN
 	 */
 	public function allAction() {
-		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		$departments = $this->departmentTable->fetchAll ();
@@ -1008,6 +1180,35 @@ class ArticleController extends AbstractActionController {
 			return $response;
 		}
 		
+		if ($output === 'xlxs') {
+			// Create new PHPExcel object
+			$objPHPExcel = new PHPExcel ();
+			// Set document properties
+			$objPHPExcel->getProperties ()->setCreator ( "nmt@mascot.dl" )->setLastModifiedBy ( "Nguyen Mau Tri" )->setTitle ( "Office 2007 XLSX Test Document" )->setSubject ( "Office 2007 XLSX Test Document" )->setDescription ( "Test document for Office 2007 XLSX, generated using PHP classes." )->setKeywords ( "office 2007 openxml php" )->setCategory ( "Test result file" );
+			// Add some data
+			$objPHPExcel->setActiveSheetIndex ( 0 )->setCellValue ( 'A1', 'Hello' )->setCellValue ( 'B2', 'world!' )->setCellValue ( 'C1', 'Hello' )->setCellValue ( 'D2', 'world!' );
+			// Miscellaneous glyphs, UTF-8
+			$objPHPExcel->setActiveSheetIndex ( 0 )->setCellValue ( 'A4', 'Miscellaneous glyphs' )->setCellValue ( 'A5', 'éàèùâêîôûëïüÿäöüç' );
+			// Rename worksheet
+			$objPHPExcel->getActiveSheet ()->setTitle ( 'Items' );
+			// Set active sheet index to the first sheet, so Excel opens this as the first sheet
+			$objPHPExcel->setActiveSheetIndex ( 0 );
+			// Redirect output to a client’s web browser (Excel2007)
+			header ( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
+			header ( 'Content-Disposition: attachment;filename="01simple.xlsx"' );
+			header ( 'Cache-Control: max-age=0' );
+			// If you're serving to IE 9, then the following may be needed
+			header ( 'Cache-Control: max-age=1' );
+			// If you're serving to IE over SSL, then the following may be needed
+			header ( 'Expires: Mon, 26 Jul 1997 05:00:00 GMT' ); // Date in the past
+			header ( 'Last-Modified: ' . gmdate ( 'D, d M Y H:i:s' ) . ' GMT' ); // always modified
+			header ( 'Cache-Control: cache, must-revalidate' ); // HTTP/1.1
+			header ( 'Pragma: public' ); // HTTP/1.0
+			$objWriter = PHPExcel_IOFactory::createWriter ( $objPHPExcel, 'Excel2007' );
+			$objWriter->save ( 'php://output' );
+			exit ();
+		}
+		
 		if ($output === 'order_template') {
 			
 			$fh = fopen ( 'php://memory', 'w' );
@@ -1110,23 +1311,21 @@ class ArticleController extends AbstractActionController {
 				'per_pape' => $resultsPerPage,
 				'item_type' => $item_type,
 				'departments' => $departments,
-				'department_id' => $department_id,
-		)
-		 );
+				'department_id' => $department_id 
+		) );
 	}
 	
 	/*
-	 * 
+	 *
 	 */
 	public function myCategoryAction() {
-	
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
 		$user_id = $user ['id'];
 		
-		//var_dump($this->userTable->getUserDepartment($user_id));
-		$root=$this->userTable->getUserDepartment($user_id)->article_root_category;
-		//$root=43;
+		// var_dump($this->userTable->getUserDepartment($user_id));
+		$root = $this->userTable->getUserDepartment ( $user_id )->article_root_category;
+		// $root=43;
 		
 		$list = $this->articleCategoryService;
 		$list = $list->initCategory ();
@@ -1135,15 +1334,10 @@ class ArticleController extends AbstractActionController {
 		
 		$this->layout ( "layout/fluid" );
 		return new ViewModel ( array (
-				'jsTree' => $list->getJSTree ()
+				'jsTree' => $list->getJSTree () 
 		) );
 	}
-	
-	
-	
 	public function categoryAction() {
-				
-		
 		$list = $this->articleCategoryService;
 		$list = $list->initCategory ();
 		$list = $list->updateCategory ( 2, 0 );
@@ -1203,12 +1397,12 @@ class ArticleController extends AbstractActionController {
 					
 					endif;
 					
-					// get path of parent and update new role
+						// get path of parent and update new role
 					if ($input->parent_id !== null) :
 						$path = $this->articleCategoryTable->get ( $input->parent_id )->path;
 						$path = $path . $new_role_id . '/';
 						$input->path = $path;
-					 else :
+					else :
 						$input->path = $new_role_id . '/';
 					endif;
 					
@@ -1489,25 +1683,23 @@ class ArticleController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function showCategoryAction() {
-		
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
 		$user_id = $user ['id'];
 		
 		$cat_id = $this->params ()->fromQuery ( 'cat_id' );
-		if($cat_id >0){
-			$articles = $this->articleTable->getArticlesOfCategory( $cat_id,0,0 );
-			
-		}else {
-			$articles = $this->articleTable->getUncategorizedArticlesOfUser( $user_id,0,0 );
+		if ($cat_id > 0) {
+			$articles = $this->articleTable->getArticlesOfCategory ( $cat_id, 0, 0 );
+		} else {
+			$articles = $this->articleTable->getUncategorizedArticlesOfUser ( $user_id, 0, 0 );
 		}
-		$total_articles = count($articles);
-		$paginator =null;
+		$total_articles = count ( $articles );
+		$paginator = null;
 		
 		if ($request->isXmlHttpRequest ()) {
 			$this->layout ( "layout/inventory/ajax" );
@@ -1515,9 +1707,9 @@ class ArticleController extends AbstractActionController {
 		
 		return new ViewModel ( array (
 				'articles' => $articles,
-				'total_articles' =>$total_articles,
-				'paginator' =>$paginator,
-				
+				'total_articles' => $total_articles,
+				'paginator' => $paginator 
+		
 		) );
 	}
 	
@@ -1534,7 +1726,7 @@ class ArticleController extends AbstractActionController {
 		return new ViewModel ( array (
 				'article' => $article,
 				'pictures' => $pictures,
-				'back' =>$redirectUrl
+				'back' => $redirectUrl 
 		) );
 	}
 	public function showMovementAction() {
@@ -1641,6 +1833,20 @@ class ArticleController extends AbstractActionController {
 	}
 	public function setDepartmentTable(DepartmentTable $departmentTable) {
 		$this->departmentTable = $departmentTable;
+		return $this;
+	}
+	public function getDoctrineEM() {
+		return $this->doctrineEM;
+	}
+	public function setDoctrineEM(EntityManager $doctrineEM) {
+		$this->doctrineEM = $doctrineEM;
+		return $this;
+	}
+	public function getMlaArticleDepartmentTable() {
+		return $this->mlaArticleDepartmentTable;
+	}
+	public function setMlaArticleDepartmentTable(MlaArticleDepartmentTable $mlaArticleDepartmentTable) {
+		$this->mlaArticleDepartmentTable = $mlaArticleDepartmentTable;
 		return $this;
 	}
 	

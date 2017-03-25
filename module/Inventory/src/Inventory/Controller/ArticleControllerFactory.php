@@ -45,6 +45,10 @@ class ArticleControllerFactory implements FactoryInterface {
 		$tbl =  $sm->get ('Inventory\Model\ArticleCategoryMemberTable' );
 		$controller->setArticleCategoryMemberTable($tbl );
 
+		//mla_article_table
+		$tbl =  $sm->get ('Inventory\Model\MlaArticleDepartmentTable' );
+		$controller->setMlaArticleDepartmentTable($tbl );
+		
 		//Article Category Member Table
 		$tbl =  $sm->get ('Inventory\Model\ArticleMovementTable' );
 		$controller->setArticleMovementTable($tbl );
@@ -73,6 +77,10 @@ class ArticleControllerFactory implements FactoryInterface {
 		//Article Service
 		$sv =  $sm->get ('User\Service\ArticleCategory' );
 		$controller->setArticleCategoryService($sv );
+		
+		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
+		$controller->setDoctrineEM($sv );
+		
 		return $controller;
 	}
 }

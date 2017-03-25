@@ -11,6 +11,9 @@ namespace Inventory\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Inventory\Model\ArticlePictureTable;
+use Inventory\Model\AssetPictureTable;
+use Inventory\Model\SparepartPictureTable;
 
 class ImageController extends AbstractActionController {
 	
@@ -327,33 +330,44 @@ class ImageController extends AbstractActionController {
 		) );
 	}
 	
-	
-	// get AssetPictureTable
-	private function getAssetPictureTable() {
-		if (! $this->assetPictureTable) {
-			$sm = $this->getServiceLocator ();
-			$this->assetPictureTable = $sm->get ( 'Inventory\Model\AssetPictureTable' );
-		}
+	public function getUserTable() {
+		return $this->userTable;
+	}
+	public function setUserTable($userTable) {
+		$this->userTable = $userTable;
+		return $this;
+	}
+	public function getAuthService() {
+		return $this->authService;
+	}
+	public function setAuthService($authService) {
+		$this->authService = $authService;
+		return $this;
+	}
+	public function getAssetPictureTable() {
 		return $this->assetPictureTable;
 	}
-	
-	
-	private function getSparepartPictureTable() {
-		if (! $this->sparepartPictureTable) {
-			$sm = $this->getServiceLocator ();
-			$this->sparepartPictureTable = $sm->get ( 'Inventory\Model\SparepartPictureTable' );
-		}
+	public function setAssetPictureTable(AssetPictureTable $assetPictureTable) {
+		$this->assetPictureTable = $assetPictureTable;
+		return $this;
+	}
+	public function getSparepartPictureTable() {
 		return $this->sparepartPictureTable;
 	}
-	
-	private function getArticlePictureTable() {
-		if (! $this->articlePictureTable) {
-			$sm = $this->getServiceLocator ();
-			$this->articlePictureTable = $sm->get ( 'Inventory\Model\ArticlePictureTable' );
-		}
+	public function setSparepartPictureTable(SparepartPictureTable $sparepartPictureTable) {
+		$this->sparepartPictureTable = $sparepartPictureTable;
+		return $this;
+	}
+	public function getArticlePictureTable() {
 		return $this->articlePictureTable;
 	}
+	public function setArticlePictureTable(ArticlePictureTable $articlePictureTable) {
+		$this->articlePictureTable = $articlePictureTable;
+		return $this;
+	}
 	
+	
+
 }
 
 

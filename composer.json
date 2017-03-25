@@ -10,6 +10,9 @@
     "homepage": "http://framework.zend.com/",
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zendframework": ">2.2.0rc1"
+        "PHPOffice/PHPExcel": "1.8.*",
+        "zendframework/zendframework": ">2.1.3",
+        "doctrine/doctrine-orm-module":"0.8.*",
+        "florianv/petrinet":"2.0.0"     
     }
 }

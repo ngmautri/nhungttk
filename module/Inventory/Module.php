@@ -79,6 +79,10 @@ use Inventory\Model\SparepartPurchasingTable;
 use Inventory\Model\Warehouse;
 use Inventory\Model\WarehouseTable;
 
+use Inventory\Model\MlaArticleDepartment;
+use Inventory\Model\MlaArticleDepartmentTable;
+
+
 class Module {
 	
 	/*
@@ -437,19 +441,28 @@ class Module {
 						return new TableGateway ( 'nmt_inventory_warehouse', $dbAdapter, null, $resultSetPrototype );
 						},
 						
+						// mla_article_department
+						'Inventory\Model\MlaArticleDepartmentTable' => function ($sm) {
+						$tableGateway = $sm->get ( 'MlaArticleDepartmentTableGateway' );
+						$table = new  MlaArticleDepartmentTable($tableGateway);
+						return $table;
+						},
+						
+						'MlaArticleDepartmentTableGateway' => function ($sm) {
+						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
+						$resultSetPrototype = new ResultSet ();
+						$resultSetPrototype->setArrayObjectPrototype ( new MlaArticleDepartment() );
+						return new TableGateway ( 'mla_article_department', $dbAdapter, null, $resultSetPrototype );
+						},
+						
 						
 						'Inventory\Services\AssetSearchService'  => 'Inventory\Services\AssetSearchServiceFactory',
 						'Inventory\Services\SparePartsSearchService'  => 'Inventory\Services\SparePartsSearchServiceFactory',
-						'Inventory\Services\ArticleSearchService'  => 'Inventory\Services\ArticleSearchServiceFactory',
 						'Inventory\Listener\PictureUploadListener' => 'Inventory\Listener\PictureUploadListenerFactory',
 				)
 				,
 				
-				'invokables' => array (
-						'Inventory\Services\AssetService' => 'Inventory\Services\AssetService',
-						'Inventory\Services\SparepartService' => 'Inventory\Services\SparepartService',
-						'Inventory\Services\ArticleService' => 'Inventory\Services\ArticleService',
-						
+				'invokables' => array (						
 				) 
 		);
 	}

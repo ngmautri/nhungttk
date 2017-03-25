@@ -16,6 +16,7 @@
   <li><a href="/inventory/purchasing/list?id=<?php echo $this->escapeHtml($sparepart->id);?>&type=spare-part&layout=ajax">Purchasing Data</a></li>
   <li><a href="/inventory/spareparts/showmovement?sparepart_id=<?php echo $this->escapeHtml($sparepart->id);?>&layout=ajax">Stock Movemements</a></li>
   <li><a href="/inventory/spareparts/report?sparepart_id=<?php echo $this->escapeHtml($sparepart->id);?>&layout=ajax">Consumptions</a></li>
+  <li><a href="/procurement/pr/pending?sparepart_id=<?php echo $this->escapeHtml($sparepart->id);?>">Pending Orders</a></li>
   <li><a href="/procurement/pr/history?sparepart_id=<?php echo $this->escapeHtml($sparepart->id);?>&layout=ajax">Orders History</a></li>
   <li><a href="#attachments">Attachments</a></li>
  

@@ -102,7 +102,13 @@ return array (
 		
 		'service_manager' => array (
 				'factories' => array (
-						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory' 
+						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+						'Inventory\Services\ArticleService'  => 'Inventory\Services\ArticleServiceFactory',
+						'Inventory\Services\ArticleSearchService'  => 'Inventory\Services\ArticleSearchServiceFactory',
+						
+						'Inventory\Services\AssetService' => 'Inventory\Services\AssetServiceFactory',
+						'Inventory\Services\SparepartService' => 'Inventory\Services\SparepartServiceFactory',
+						
 				) 
 		),
 		
@@ -120,7 +126,7 @@ return array (
 				'invokables' => array (
 						'Inventory\Controller\Index' => 'Inventory\Controller\IndexController',
 						'Inventory\Controller\Asset' => 'Inventory\Controller\AssetController',
-						'Inventory\Controller\Image' => 'Inventory\Controller\ImageController',
+						
 				),
 				
 				'factories' => array (
@@ -134,6 +140,7 @@ return array (
 						'Inventory\Controller\Purchasing' => 'Inventory\Controller\PurchasingControllerFactory',
 						'Inventory\Controller\Warehouse' => 'Inventory\Controller\WarehouseControllerFactory',
 						'Inventory\Controller\Transaction' => 'Inventory\Controller\TransactionControllerFactory',
+						'Inventory\Controller\Image' => 'Inventory\Controller\ImageControllerFactory',
 				)
 				
 				

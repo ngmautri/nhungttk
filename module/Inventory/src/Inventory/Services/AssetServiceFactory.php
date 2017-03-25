@@ -11,7 +11,7 @@ use Inventory\Services\AssetService;
  * @author nmt
  *
  */
-class ArticleServiceFactory implements FactoryInterface {
+class AssetServiceFactory implements FactoryInterface {
 	
 	
 	

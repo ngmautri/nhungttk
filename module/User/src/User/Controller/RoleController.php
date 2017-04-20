@@ -131,8 +131,8 @@ class RoleController extends AbstractActionController {
 		
 		if ($request->isPost ()) {
 			
-			// $input->status = $request->getPost ( 'status' );
-			// $input->remarks = $request->getPost ( 'description' );
+			 $input->status = $request->getPost ( 'status' );
+			 $input->remarks = $request->getPost ( 'description' );
 			
 			$role_name = $request->getPost ( 'role' );
 			
@@ -206,6 +206,8 @@ class RoleController extends AbstractActionController {
 				return $response;
 			}
 		}
+		
+		
 	}
 	
 	/**

@@ -7,7 +7,6 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\Driver\Pdo\Result;
 
 class UserTable {
-	
 	protected $tableGateway;
 	public function __construct(TableGateway $tableGateway) {
 		$this->tableGateway = $tableGateway;
@@ -37,22 +36,26 @@ class UserTable {
 		return $row;
 	}
 	
+	/**
+	 * 
+	 * @param unknown $email
+	 * @return NULL|unknown
+	 */
 	public function getUserByEmail($email) {
-		
 		$adapter = $this->tableGateway->adapter;
 		
-		$sql = new Sql($adapter);
-		$select = $sql->select();
+		$sql = new Sql ( $adapter );
+		$select = $sql->select ();
 		
-		$where = 'email =\''.$email.'\'';
-			
-		$select->from('mla_users');
-		$select->where($where);
+		$where = 'email =\'' . $email . '\'';
 		
-		$statement = $sql->prepareStatementForSqlObject($select);
-		$results = $statement->execute();
+		$select->from ( 'mla_users' );
+		$select->where ( $where );
 		
-		$row = $results->current();
+		$statement = $sql->prepareStatementForSqlObject ( $select );
+		$results = $statement->execute ();
+		
+		$row = $results->current ();
 		
 		if (! $row) {
 			return null;
@@ -60,48 +63,28 @@ class UserTable {
 		return $row;
 	}
 	
+		
 	/**
-	 * 
-	 * @param unknown $email
+	 *
+	 * @param unknown $user_id        	
+	 * @param unknown $new_password        	
+	 * @return NULL
 	 */
-	public function getUserDetailByEmail($email) {
-	
-				$sql =
-			"
-	select
-	*
-	from mla_acl_roles
-	where 1
-	AND mla_acl_roles.id = " . $id ;
-			
-			$adapter = $this->tableGateway->adapter;
-			$statement = $adapter->query($sql);
-		
-			$result = $statement->execute();
-		
-			$resultSet = new \Zend\Db\ResultSet\ResultSet();
-			$resultSet->initialize($result);
-			return $resultSet->current();
-	}
-	
-	
 	public function changePassword($user_id, $new_password) {
-	
-		$sql =
-	"
+		$sql = "
 	update
 	mla_users
-	set password = '" . $new_password ."'
+	set password = '" . $new_password . "'
 	where 1
-	AND id = " . $user_id ;
-			
+	AND id = " . $user_id;
+		
 		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
+		$statement = $adapter->query ( $sql );
+		
+		$result = $statement->execute ();
+		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
 		return null;
 	}
 	
@@ -121,7 +104,7 @@ class UserTable {
 				'register_date' => $input->register_date,
 				'lastvisit_date' => $input->lastvisit_date,
 				'register_date' => $input->register_date,
-				'block' => $input->block,				 
+				'block' => $input->block 
 		);
 		
 		$this->tableGateway->insert ( $data );
@@ -137,12 +120,10 @@ class UserTable {
 	
 	/**
 	 *
-	 * @param unknown $email
+	 * @param unknown $email        	
 	 */
 	public function getUserDepartment($id) {
-	
-		$sql =
-		"
+		$sql = "
      select
 		mla_users.id,
         mla_users.title,
@@ -165,32 +146,29 @@ class UserTable {
     as mla_departments_members
     on mla_users.id = mla_departments_members.user_id
     
-    where 1 AND mla_users.id = " . $id ;
-			
-		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
+    where 1 AND mla_users.id = " . $id;
 		
-		if(count($resultSet)>0){
-			return $resultSet->current();
-		}else{
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query ( $sql );
+		
+		$result = $statement->execute ();
+		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		
+		if (count ( $resultSet ) > 0) {
+			return $resultSet->current ();
+		} else {
 			return null;
 		}
 	}
 	
-	
 	/**
 	 *
-	 * @param unknown $email
+	 * @param unknown $email        	
 	 */
 	public function getUserDepartmentByEmail($email) {
-	
-		$sql =
-		"
+		$sql = "
  /**USER-DEPARTMENT beginns*/
     select
 		mla_users.id,
@@ -211,21 +189,86 @@ class UserTable {
 	) as mla_departments_members_1
     on mla_users.id = mla_departments_members_1.user_id
 	
-    where 1 AND mla_users.email = '".$email . "'";
-			
+    where 1 AND mla_users.email = '" . $email . "'";
+		
 		$adapter = $this->tableGateway->adapter;
-		$statement = $adapter->query($sql);
-	
-		$result = $statement->execute();
-	
-		$resultSet = new \Zend\Db\ResultSet\ResultSet();
-		$resultSet->initialize($result);
-	
-		if(count($resultSet)>0){
-			return $resultSet->current();
-		}else{
+		$statement = $adapter->query ( $sql );
+		
+		$result = $statement->execute ();
+		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result );
+		
+		if (count ( $resultSet ) > 0) {
+			return $resultSet->current ();
+		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 *
+	 * @param unknown $user_id        	
+	 * @return array
+	 */
+	public function getRoleByUserId($user_id) {
+		$sql = "
+		select
+				nmt_application_acl_user_role. *,
+				nmt_application_acl_role.role as role,
+				nmt_application_acl_role.parent_id,
+				nmt_application_acl_role.path
+		from nmt_application_acl_user_role
+		join nmt_application_acl_role
+		on nmt_application_acl_role.id = nmt_application_acl_user_role.role_id
+        where 1 AND nmt_application_acl_user_role.user_id = " . $user_id;
+		
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query ( $sql );
+		
+		$result = $statement->execute ();
+		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet ();
+		$resultSet->initialize ( $result);
+		return $resultSet->toArray();
+		
+	}
+	
+	/**
+	 * 
+	 * @param unknown $company_id
+	 * @return \Zend\Db\ResultSet\ResultSet
+	 */
+	public function getNoneMembersOfCompany($company_id)
+	{
+		$sql_MemberOfCompany =
+		"
+	SELECT
+		mla_users.id
+	FROM nmt_application_company_member
+	LEFT JOIN mla_users
+		on mla_users.id = nmt_application_company_member.user_id
+	WHERE 1
+	AND nmt_application_company_member.company_id = " . $company_id;
+		
+		$sql =
+	"SELECT
+	*
+	FROM mla_users
+	where mla_users.id NOT IN
+		(".
+		$sql_MemberOfCompany
+		.
+		")";
+		
+		$adapter = $this->tableGateway->adapter;
+		$statement = $adapter->query($sql);
+		
+		$result = $statement->execute();
+		
+		$resultSet = new \Zend\Db\ResultSet\ResultSet();
+		$resultSet->initialize($result);
+		return $resultSet;
 	}
 	
 	

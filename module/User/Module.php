@@ -57,7 +57,6 @@ class Module {
 				'checkIdentity' 
 		), - 100 );
 		
-		
 		$eventManager->attach ( MvcEvent::EVENT_DISPATCH, array (
 				$this,
 				'checkACL' 
@@ -81,6 +80,12 @@ class Module {
 				) 
 		);
 	}
+	
+	/**
+	 * 
+	 * @param MvcEvent $e
+	 * @return void|\Zend\Stdlib\ResponseInterface
+	 */
 	function checkACL(MvcEvent $e) {
 		
 		$match = $e->getRouteMatch ();
@@ -115,10 +120,12 @@ class Module {
 				'test_console',
 				'user_register_confirmation',
 				'access_denied',
-				'order_suggestion_console'
+				'order_suggestion_console',				 
 		) )) {
 			return;
 		}
+		
+		
 		
 		if ($hasUser) {
 			
@@ -138,7 +145,7 @@ class Module {
 			
 			if (! $hasACL) {
 				// get ACL
-				$acl = $sm->get ( 'User\Service\Acl' );
+				$acl = $sm->get ( 'Application\Service\AclService');
 				$acl = $acl->initAcl ();
 				$session->offsetSet ( 'ACL', $acl );
 			} else {
@@ -147,27 +154,43 @@ class Module {
 			}
 			
 			
-			$aclUserRole = $sm->get ( 'User\Model\AclUserRoleTable' );
-			$roles = $aclUserRole->getRoleByUserId ( $user_id );
+			$hasRoles = $session->offsetExists ( 'roles' );
+			
+			if (! $hasRoles) {
+				$aclUserRole = $sm->get ( 'User\Model\UserTable' );
+				$roles = $aclUserRole->getRoleByUserId ( $user_id );
+				$session->offsetSet ( 'roles', $roles );
+			} else {
+				$roles = $session->offsetGet ( 'roles' );
+				//var_dump ( $roles );
+			}
+			
+			
+			/* $aclUserRole = $sm->get ( 'User\Model\AclUserRoleTable' );
+			$roles = $aclUserRole->getRoleByUserId ( $user_id ); */
 			
 			$isAllowedAccess = false;
 			$viewModel->isAdmin = false;
 			$viewModel->isProcurement = false;
 			
-			if ($roles->count () > 0) {
+			
+			
+			
+			if (count ( $roles ) > 0) {
 				
 				foreach ( $roles as $role ) {
-					$isAllowed = $acl->isAccessAllowed ( $role->role, $requestedResourse, null );
-					// var_dump($requestedResourse);
-					// var_dump($role->role);
+					$isAllowed = $acl->isAccessAllowed ( $role ['role'], $requestedResourse, null );
+					//var_dump($requestedResourse);
+					//var_dump($role ['role']);
+					
 					if ($isAllowed) {
 						$isAllowedAccess = true;
 						
-						if (strtoupper ( $role->role ) == 'ADMINISTRATOR') {
+						if (strtoupper ( $role ['role'] ) == 'ADMINISTRATOR') {
 							$viewModel->isAdmin = true;
 						}
 						
-						if (strtoupper ( $role->role ) == 'PROCUREMENT-MEMBER') {
+						if (strtoupper ( $role ['role'] ) == 'PROCUREMENT-MEMBER') {
 							$viewModel->isProcurement = true;
 						}
 						
@@ -184,10 +207,11 @@ class Module {
 				}
 			}
 			
+				
 			//var_dump($user);
 			
 			if ($isAllowedAccess === false) {
-				// die('<h3>Permission denied</h3>' . $requestedResourse);
+				//die('<h3>Permission denied</h3>' . $requestedResourse);
 				
 				// Redirect to the user login page, as an example
 				
@@ -204,6 +228,7 @@ class Module {
 			}
 		} else {
 			// Redirect to the user login page, as an example
+			
 			$router = $e->getRouter ();
 			$url = $router->assemble ( array (), array (
 					'name' => 'login' 
@@ -216,10 +241,17 @@ class Module {
 			return $response;
 		}
 	}
+	
+	/**
+	 * 
+	 * @param MvcEvent $e
+	 * @return void|\Zend\Stdlib\ResponseInterface
+	 */
 	function checkIdentity(MvcEvent $e) {
 		$match = $e->getRouteMatch ();
 		$app = $e->getApplication ();
 		$sm = $app->getServiceManager ();
+		
 		
 		$auth = $sm->get ( 'AuthService' );
 		
@@ -244,6 +276,9 @@ class Module {
 		
 		// User is authenticated
 		if ($auth->hasIdentity ()) {
+			
+			$session = new Container ( 'MLA_USER' );
+			$hasUser = $session->offsetExists ( 'user' );			
 			return;
 		}
 		

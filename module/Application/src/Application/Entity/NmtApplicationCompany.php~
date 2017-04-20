@@ -1,0 +1,98 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtApplicationCompany
+ *
+ * @ORM\Table(name="nmt_application_company", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_company_company_name_UNIQUE", columns={"company_name"}), @ORM\UniqueConstraint(name="company_code_UNIQUE", columns={"company_code"})}, indexes={@ORM\Index(name="nmt_application_company_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_company_FK1_idx", columns={"default_currency_id"}), @ORM\Index(name="nmt_application_company_FK4_idx", columns={"default_address_id"})})
+ * @ORM\Entity
+ */
+class NmtApplicationCompany
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="company_code", type="integer", nullable=false)
+     */
+    private $companyCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="company_name", type="string", length=100, nullable=false)
+     */
+    private $companyName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="default_logo_id", type="integer", nullable=true)
+     */
+    private $defaultLogoId;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     */
+    private $createdOn = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_default", type="boolean", nullable=true)
+     */
+    private $isDefault;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="default_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $defaultCurrency;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompanyAddress
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompanyAddress")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="default_address_id", referencedColumnName="id")
+     * })
+     */
+    private $defaultAddress;
+
+
+}
+

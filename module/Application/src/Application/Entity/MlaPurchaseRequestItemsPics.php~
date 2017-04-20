@@ -1,0 +1,88 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaPurchaseRequestItemsPics
+ *
+ * @ORM\Table(name="mla_purchase_request_items_pics", indexes={@ORM\Index(name="mla_purchase_request_item_pics_FK1_idx", columns={"request_item_id"}), @ORM\Index(name="mla_purchase_request_item_pics_FK2_idx", columns={"uploaded_by"})})
+ * @ORM\Entity
+ */
+class MlaPurchaseRequestItemsPics
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255, nullable=true)
+     */
+    private $url;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="size", type="string", length=50, nullable=true)
+     */
+    private $size;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="filetype", type="string", length=50, nullable=true)
+     */
+    private $filetype;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="visibility", type="boolean", nullable=true)
+     */
+    private $visibility;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comments", type="text", nullable=true)
+     */
+    private $comments;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="uploaded_on", type="datetime", nullable=true)
+     */
+    private $uploadedOn;
+
+    /**
+     * @var \Application\Entity\MlaPurchaseRequestItems
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="request_item_id", referencedColumnName="id")
+     * })
+     */
+    private $requestItem;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="uploaded_by", referencedColumnName="id")
+     * })
+     */
+    private $uploadedBy;
+
+
+}
+

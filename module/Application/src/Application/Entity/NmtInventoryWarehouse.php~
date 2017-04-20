@@ -1,0 +1,133 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtInventoryWarehouse
+ *
+ * @ORM\Table(name="nmt_inventory_warehouse", indexes={@ORM\Index(name="nmt_inventory_warehouse_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_FK2_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_warehouse_FK3_idx", columns={"wh_country"})})
+ * @ORM\Entity
+ */
+class NmtInventoryWarehouse
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="wh_code", type="string", length=45, nullable=false)
+     */
+    private $whCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="wh_name", type="string", length=100, nullable=false)
+     */
+    private $whName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="wh_address", type="string", length=100, nullable=true)
+     */
+    private $whAddress;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="wh_contact_person", type="string", length=45, nullable=true)
+     */
+    private $whContactPerson;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="wh_telephone", type="string", length=45, nullable=true)
+     */
+    private $whTelephone;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="wh_email", type="string", length=45, nullable=true)
+     */
+    private $whEmail;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_locked", type="boolean", nullable=true)
+     */
+    private $isLocked;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="wh_status", type="string", length=45, nullable=true)
+     */
+    private $whStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_default", type="boolean", nullable=true)
+     */
+    private $isDefault;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     */
+    private $createdOn = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCountry
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="wh_country", referencedColumnName="id")
+     * })
+     */
+    private $whCountry;
+
+
+}
+

@@ -1,0 +1,94 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtInventoryWarehouseJournal
+ *
+ * @ORM\Table(name="nmt_inventory_warehouse_journal", indexes={@ORM\Index(name="nmt_inventory_warehouse_journal_idx", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_warehouse_journal_FK2_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_warehouse_journal_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_journal_FK4_idx", columns={"currency"})})
+ * @ORM\Entity
+ */
+class NmtInventoryWarehouseJournal
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="quantity_in", type="integer", nullable=true)
+     */
+    private $quantityIn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="quantity_out", type="integer", nullable=true)
+     */
+    private $quantityOut;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="price", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $price;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="wh_id", referencedColumnName="id")
+     * })
+     */
+    private $wh;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="currency", referencedColumnName="id")
+     * })
+     */
+    private $currency;
+
+
+}
+

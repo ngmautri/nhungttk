@@ -1,0 +1,129 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaArticlesMovements
+ *
+ * @ORM\Table(name="mla_articles_movements", indexes={@ORM\Index(name="mla_article_movements_FK1_idx", columns={"article_id"}), @ORM\Index(name="mla_article_movements_FK1_idx1", columns={"dn_item_id"}), @ORM\Index(name="mla_article_movements_FK1_idx2", columns={"pr_item_id"}), @ORM\Index(name="mla_articles_movements_FK4_idx", columns={"wh_id"})})
+ * @ORM\Entity
+ */
+class MlaArticlesMovements
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="movement_date", type="datetime", nullable=false)
+     */
+    private $movementDate = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="flow", type="string", length=45, nullable=true)
+     */
+    private $flow;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="quantity", type="integer", nullable=true)
+     */
+    private $quantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reason", type="string", length=45, nullable=true)
+     */
+    private $reason;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="requester", type="string", length=50, nullable=true)
+     */
+    private $requester;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
+     */
+    private $comment;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="created_by", type="integer", nullable=true)
+     */
+    private $createdBy;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="movement_type", type="string", length=100, nullable=true)
+     */
+    private $movementType;
+
+    /**
+     * @var \Application\Entity\MlaArticles
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticles")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     * })
+     */
+    private $article;
+
+    /**
+     * @var \Application\Entity\MlaDeliveryItems
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDeliveryItems")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="dn_item_id", referencedColumnName="id")
+     * })
+     */
+    private $dnItem;
+
+    /**
+     * @var \Application\Entity\MlaPurchaseRequestItems
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="pr_item_id", referencedColumnName="id")
+     * })
+     */
+    private $prItem;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="wh_id", referencedColumnName="id")
+     * })
+     */
+    private $wh;
+
+
+}
+

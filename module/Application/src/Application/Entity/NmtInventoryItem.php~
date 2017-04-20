@@ -1,0 +1,245 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtInventoryItem
+ *
+ * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"})})
+ * @ORM\Entity
+ */
+class NmtInventoryItem
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_sku", type="string", length=45, nullable=false)
+     */
+    private $itemSku;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_name", type="string", length=100, nullable=false)
+     */
+    private $itemName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_name_foreign", type="string", length=100, nullable=true)
+     */
+    private $itemNameForeign;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_description", type="string", length=255, nullable=true)
+     */
+    private $itemDescription;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_type", type="string", length=1, nullable=true)
+     */
+    private $itemType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_group", type="string", length=45, nullable=true)
+     */
+    private $itemGroup;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_category", type="string", length=45, nullable=true)
+     */
+    private $itemCategory;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_stocked", type="boolean", nullable=true)
+     */
+    private $isStocked;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_sale_item", type="boolean", nullable=true)
+     */
+    private $isSaleItem;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_purchased", type="boolean", nullable=true)
+     */
+    private $isPurchased;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_fixed_asset", type="boolean", nullable=true)
+     */
+    private $isFixedAsset;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uom", type="string", length=45, nullable=true)
+     */
+    private $uom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="barcode", type="string", length=45, nullable=true)
+     */
+    private $barcode;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="status", type="integer", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="manufacturer_code", type="string", length=100, nullable=true)
+     */
+    private $manufacturerCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="manufacturer_catalog", type="string", length=45, nullable=true)
+     */
+    private $manufacturerCatalog;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="manufacturer_model", type="string", length=45, nullable=true)
+     */
+    private $manufacturerModel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="manufacturer_serial", type="string", length=45, nullable=true)
+     */
+    private $manufacturerSerial;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="serial_number", type="string", length=45, nullable=true)
+     */
+    private $serialNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="last_purchase_price", type="decimal", precision=19, scale=6, nullable=true)
+     */
+    private $lastPurchasePrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="last_purchase_currency", type="string", length=3, nullable=true)
+     */
+    private $lastPurchaseCurrency;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_purchase_date", type="datetime", nullable=true)
+     */
+    private $lastPurchaseDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lead_time", type="string", length=50, nullable=true)
+     */
+    private $leadTime;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="valid_from_date", type="datetime", nullable=true)
+     */
+    private $validFromDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="valid_to_date", type="datetime", nullable=true)
+     */
+    private $validToDate;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
+     * })
+     */
+    private $warehouse;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
+
+
+}
+

@@ -1,0 +1,98 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaDeliveryItemsWorkflows
+ *
+ * @ORM\Table(name="mla_delivery_items_workflows", indexes={@ORM\Index(name="mla_delivery_items_workflows_FK1_idx", columns={"delivery_id"}), @ORM\Index(name="mla_delivery_items_workflows_FK2_idx", columns={"dn_item_id"}), @ORM\Index(name="mla_delivery_items_workflows_FK3_idx", columns={"pr_item_id"}), @ORM\Index(name="mla_delivery_items_workflows_idx1", columns={"status"})})
+ * @ORM\Entity
+ */
+class MlaDeliveryItemsWorkflows
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="updated_by", type="integer", nullable=true)
+     */
+    private $updatedBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_on", type="datetime", nullable=true)
+     */
+    private $updatedOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="confirmed_quantity", type="integer", nullable=true)
+     */
+    private $confirmedQuantity;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="rejected_quantity", type="integer", nullable=true)
+     */
+    private $rejectedQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var \Application\Entity\MlaDelivery
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDelivery")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="delivery_id", referencedColumnName="id")
+     * })
+     */
+    private $delivery;
+
+    /**
+     * @var \Application\Entity\MlaDeliveryItems
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDeliveryItems")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="dn_item_id", referencedColumnName="id")
+     * })
+     */
+    private $dnItem;
+
+    /**
+     * @var \Application\Entity\MlaPurchaseRequestItems
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="pr_item_id", referencedColumnName="id")
+     * })
+     */
+    private $prItem;
+
+
+}
+

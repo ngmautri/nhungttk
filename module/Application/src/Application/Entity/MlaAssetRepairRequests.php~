@@ -1,0 +1,85 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaAssetRepairRequests
+ *
+ * @ORM\Table(name="mla_asset_repair_requests", indexes={@ORM\Index(name="asset_id_idx", columns={"asset_id"})})
+ * @ORM\Entity
+ */
+class MlaAssetRepairRequests
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=45, nullable=true)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=45, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="requested_by", type="integer", nullable=true)
+     */
+    private $requestedBy;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="approved_by", type="integer", nullable=true)
+     */
+    private $approvedBy;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="assigned_to", type="integer", nullable=true)
+     */
+    private $assignedTo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="assigned_to_name", type="string", length=45, nullable=true)
+     */
+    private $assignedToName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="result", type="string", length=100, nullable=true)
+     */
+    private $result;
+
+    /**
+     * @var \Application\Entity\MlaAsset
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAsset")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="asset_id", referencedColumnName="id")
+     * })
+     */
+    private $asset;
+
+
+}
+

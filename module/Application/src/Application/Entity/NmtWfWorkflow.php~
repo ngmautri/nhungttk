@@ -1,0 +1,85 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtWfWorkflow
+ *
+ * @ORM\Table(name="nmt_wf_workflow", indexes={@ORM\Index(name="nmt_wf_workflow_idx", columns={"workflow_created_by"})})
+ * @ORM\Entity
+ */
+class NmtWfWorkflow
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="workflow_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $workflowId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_name", type="string", length=80, nullable=false)
+     */
+    private $workflowName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_description", type="text", length=65535, nullable=true)
+     */
+    private $workflowDescription;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_valid", type="boolean", nullable=true)
+     */
+    private $isValid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_errors", type="text", length=65535, nullable=true)
+     */
+    private $workflowErrors;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="start_date", type="datetime", nullable=true)
+     */
+    private $startDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="end_date", type="datetime", nullable=true)
+     */
+    private $endDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="workflow_created_on", type="datetime", nullable=true)
+     */
+    private $workflowCreatedOn;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="workflow_created_by", referencedColumnName="id")
+     * })
+     */
+    private $workflowCreatedBy;
+
+
+}
+

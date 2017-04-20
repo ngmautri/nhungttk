@@ -1,0 +1,124 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtWfToken
+ *
+ * @ORM\Table(name="nmt_wf_token", indexes={@ORM\Index(name="nmt_wf_token_idx", columns={"case_id"}), @ORM\Index(name="nmt_wf_token_FK2_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_token_FK3_idx", columns={"place_id"}), @ORM\Index(name="nmt_wf_token_FK4_idx", columns={"token_enabled_by"}), @ORM\Index(name="nmt_wf_token_FK5_idx", columns={"token_cancelled_by"}), @ORM\Index(name="nmt_wf_token_FK6_idx", columns={"token_consumed_by"}), @ORM\Index(name="nmt_wf_token_FK6_idx1", columns={"note_id"})})
+ * @ORM\Entity
+ */
+class NmtWfToken
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="token_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $tokenId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token_status", type="string", length=45, nullable=true)
+     */
+    private $tokenStatus;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="enabled_date", type="datetime", nullable=true)
+     */
+    private $enabledDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="cancelled_date", type="datetime", nullable=true)
+     */
+    private $cancelledDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="consumed_date", type="datetime", nullable=true)
+     */
+    private $consumedDate;
+
+    /**
+     * @var \Application\Entity\NmtWfCase
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfCase")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="case_id", referencedColumnName="case_id")
+     * })
+     */
+    private $case;
+
+    /**
+     * @var \Application\Entity\NmtWfWorkflow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
+     * })
+     */
+    private $workflow;
+
+    /**
+     * @var \Application\Entity\NmtWfPlace
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfPlace")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="place_id", referencedColumnName="place_id")
+     * })
+     */
+    private $place;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="token_enabled_by", referencedColumnName="id")
+     * })
+     */
+    private $tokenEnabledBy;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="token_cancelled_by", referencedColumnName="id")
+     * })
+     */
+    private $tokenCancelledBy;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="token_consumed_by", referencedColumnName="id")
+     * })
+     */
+    private $tokenConsumedBy;
+
+    /**
+     * @var \Application\Entity\NmtWfNode
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfNode")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="note_id", referencedColumnName="node_id")
+     * })
+     */
+    private $note;
+
+
+}
+

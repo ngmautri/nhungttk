@@ -1,0 +1,57 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaAclPermissions
+ *
+ * @ORM\Table(name="mla_acl_permissions", indexes={@ORM\Index(name="mla_acl_permissions_FK1_idx", columns={"resource_id"})})
+ * @ORM\Entity
+ */
+class MlaAclPermissions
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="permission", type="string", length=100, nullable=false)
+     */
+    private $permission;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var \Application\Entity\MlaAclResources
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAclResources")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="resource_id", referencedColumnName="id")
+     * })
+     */
+    private $resource;
+
+
+}
+

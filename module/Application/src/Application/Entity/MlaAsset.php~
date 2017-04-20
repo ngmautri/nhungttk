@@ -1,0 +1,127 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaAsset
+ *
+ * @ORM\Table(name="mla_asset", indexes={@ORM\Index(name="_idx", columns={"category_id"})})
+ * @ORM\Entity
+ */
+class MlaAsset
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="group_id", type="integer", nullable=true)
+     */
+    private $groupId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tag", type="string", length=45, nullable=true)
+     */
+    private $tag;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="brand", type="string", length=45, nullable=true)
+     */
+    private $brand;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="model", type="string", length=45, nullable=true)
+     */
+    private $model;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="serial", type="string", length=45, nullable=true)
+     */
+    private $serial;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="origin", type="string", length=45, nullable=true)
+     */
+    private $origin;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="received_on", type="datetime", nullable=true)
+     */
+    private $receivedOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="location", type="string", length=45, nullable=true)
+     */
+    private $location;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
+     */
+    private $comment;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var \Application\Entity\MlaAssetCategories
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAssetCategories")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     * })
+     */
+    private $category;
+
+
+}
+

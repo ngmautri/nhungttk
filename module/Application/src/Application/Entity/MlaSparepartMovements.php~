@@ -1,0 +1,123 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaSparepartMovements
+ *
+ * @ORM\Table(name="mla_sparepart_movements", indexes={@ORM\Index(name="mla_spartpart_movements_FK1_idx", columns={"sparepart_id"}), @ORM\Index(name="mla_sparepart_movements_FK2_idx", columns={"wh_id"})})
+ * @ORM\Entity
+ */
+class MlaSparepartMovements
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="movement_date", type="datetime", nullable=false)
+     */
+    private $movementDate = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="asset_id", type="integer", nullable=true)
+     */
+    private $assetId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="flow", type="string", length=45, nullable=true)
+     */
+    private $flow;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="quantity", type="integer", nullable=true)
+     */
+    private $quantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reason", type="string", length=45, nullable=true)
+     */
+    private $reason;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="requester", type="string", length=50, nullable=true)
+     */
+    private $requester;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="text", length=65535, nullable=true)
+     */
+    private $comment;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="asset_name", type="string", length=100, nullable=true)
+     */
+    private $assetName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="movement_type", type="string", length=100, nullable=true)
+     */
+    private $movementType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="asset_location", type="string", length=100, nullable=true)
+     */
+    private $assetLocation;
+
+    /**
+     * @var \Application\Entity\MlaSpareparts
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSpareparts")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="sparepart_id", referencedColumnName="id")
+     * })
+     */
+    private $sparepart;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="wh_id", referencedColumnName="id")
+     * })
+     */
+    private $wh;
+
+
+}
+

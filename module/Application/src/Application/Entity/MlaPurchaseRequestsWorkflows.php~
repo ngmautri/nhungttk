@@ -1,0 +1,57 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaPurchaseRequestsWorkflows
+ *
+ * @ORM\Table(name="mla_purchase_requests_workflows", indexes={@ORM\Index(name="mla_purchase_requests_workflows_idx", columns={"purchase_request_id"})})
+ * @ORM\Entity
+ */
+class MlaPurchaseRequestsWorkflows
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="updated_by", type="integer", nullable=true)
+     */
+    private $updatedBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_on", type="datetime", nullable=true)
+     */
+    private $updatedOn;
+
+    /**
+     * @var \Application\Entity\MlaPurchaseRequests
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequests")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="purchase_request_id", referencedColumnName="id")
+     * })
+     */
+    private $purchaseRequest;
+
+
+}
+

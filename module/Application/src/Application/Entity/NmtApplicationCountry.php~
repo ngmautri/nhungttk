@@ -1,0 +1,78 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtApplicationCountry
+ *
+ * @ORM\Table(name="nmt_application_country", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_country_country_name_UNIQUE", columns={"country_name"})}, indexes={@ORM\Index(name="nmt_application_country_idx", columns={"created_by"})})
+ * @ORM\Entity
+ */
+class NmtApplicationCountry
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="country_name", type="string", length=100, nullable=true)
+     */
+    private $countryName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="country_code_2", type="string", length=2, nullable=false)
+     */
+    private $countryCode2;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="country_code_3", type="string", length=3, nullable=false)
+     */
+    private $countryCode3;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="country_numeric_code", type="integer", nullable=true)
+     */
+    private $countryNumericCode;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     */
+    private $createdOn = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+
+}
+

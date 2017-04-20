@@ -1,0 +1,56 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaAssetLocation
+ *
+ * @ORM\Table(name="mla_asset_location", indexes={@ORM\Index(name="department_id_idx", columns={"department_id"}), @ORM\Index(name="user_id_idx", columns={"user_id"}), @ORM\Index(name="asset_id_idx", columns={"asset_id"})})
+ * @ORM\Entity
+ */
+class MlaAssetLocation
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \Application\Entity\MlaDepartments
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaDepartments")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="department_id", referencedColumnName="id")
+     * })
+     */
+    private $department;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
+    /**
+     * @var \Application\Entity\MlaAsset
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAsset")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="asset_id", referencedColumnName="id")
+     * })
+     */
+    private $asset;
+
+
+}
+

@@ -1,0 +1,81 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaPrItemSelfConfirmation
+ *
+ * @ORM\Table(name="mla_pr_item_self_confirmation", indexes={@ORM\Index(name="mla_delivery_items_workflows_FK3_idx", columns={"pr_item_id"}), @ORM\Index(name="mla_delivery_items_workflows_idx1", columns={"status"}), @ORM\Index(name="mla_pr_item_self_confirmation_FK2_idx", columns={"updated_by"})})
+ * @ORM\Entity
+ */
+class MlaPrItemSelfConfirmation
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_on", type="datetime", nullable=true)
+     */
+    private $updatedOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="confirmed_quantity", type="integer", nullable=true)
+     */
+    private $confirmedQuantity;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="rejected_quantity", type="integer", nullable=true)
+     */
+    private $rejectedQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var \Application\Entity\MlaPurchaseRequestItems
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPurchaseRequestItems")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="pr_item_id", referencedColumnName="id")
+     * })
+     */
+    private $prItem;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
+     * })
+     */
+    private $updatedBy;
+
+
+}
+

@@ -1,0 +1,56 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaArticlesCategoriesMembers
+ *
+ * @ORM\Table(name="mla_articles_categories_members", indexes={@ORM\Index(name="mla_articles_categories_members_FK1_idx", columns={"article_id"}), @ORM\Index(name="mla_articles_categories_members_FK2_idx", columns={"article_cat_id"}), @ORM\Index(name="mla_articles_categories_members_FK2_idx1", columns={"updated_by"})})
+ * @ORM\Entity
+ */
+class MlaArticlesCategoriesMembers
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \Application\Entity\MlaArticles
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticles")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     * })
+     */
+    private $article;
+
+    /**
+     * @var \Application\Entity\MlaArticlesCategories
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticlesCategories")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="article_cat_id", referencedColumnName="id")
+     * })
+     */
+    private $articleCat;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
+     * })
+     */
+    private $updatedBy;
+
+
+}
+

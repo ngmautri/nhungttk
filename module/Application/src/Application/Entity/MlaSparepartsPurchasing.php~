@@ -1,0 +1,112 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaSparepartsPurchasing
+ *
+ * @ORM\Table(name="mla_spareparts_purchasing", indexes={@ORM\Index(name="mla_spareparts_purchasing_FK2_idx", columns={"vendor_id"}), @ORM\Index(name="mla_spareparts_purchasing_FK2_idx1", columns={"created_by"}), @ORM\Index(name="mla_spareparts_purchasing_FK1_idx", columns={"article_id"})})
+ * @ORM\Entity
+ */
+class MlaSparepartsPurchasing
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="vendor_article_code", type="string", length=100, nullable=true)
+     */
+    private $vendorArticleCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="vendor_unit", type="string", length=45, nullable=true)
+     */
+    private $vendorUnit;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="vendor_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $vendorUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="currency", type="string", length=45, nullable=true)
+     */
+    private $currency;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="price_valid_from", type="datetime", nullable=true)
+     */
+    private $priceValidFrom;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_preferred", type="boolean", nullable=true)
+     */
+    private $isPreferred;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=3, nullable=true)
+     */
+    private $conversionFactor;
+
+    /**
+     * @var \Application\Entity\MlaSpareparts
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSpareparts")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     * })
+     */
+    private $article;
+
+    /**
+     * @var \Application\Entity\MlaVendors
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaVendors")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="vendor_id", referencedColumnName="id")
+     * })
+     */
+    private $vendor;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+
+}
+

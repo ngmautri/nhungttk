@@ -1,0 +1,111 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtWfWorkitem
+ *
+ * @ORM\Table(name="nmt_wf_workitem", indexes={@ORM\Index(name="nmt_wf_workitem_FK1_idx", columns={"case_id"}), @ORM\Index(name="nmt_wf_workitem_FK2_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_workitem_FK3_idx", columns={"transition_id"}), @ORM\Index(name="nmt_wf_workitem_FK4_idx", columns={"workitem_use_id"}), @ORM\Index(name="nmt_wf_workitem_FK5_idx", columns={"node_id"})})
+ * @ORM\Entity
+ */
+class NmtWfWorkitem
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="workitem_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $workitemId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workitem_status", type="string", length=45, nullable=true)
+     */
+    private $workitemStatus;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="deadline", type="datetime", nullable=true)
+     */
+    private $deadline;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="enabled_date", type="datetime", nullable=true)
+     */
+    private $enabledDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="cancelled_date", type="datetime", nullable=true)
+     */
+    private $cancelledDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="finished_date", type="datetime", nullable=true)
+     */
+    private $finishedDate;
+
+    /**
+     * @var \Application\Entity\NmtWfCase
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfCase")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="case_id", referencedColumnName="case_id")
+     * })
+     */
+    private $case;
+
+    /**
+     * @var \Application\Entity\NmtWfWorkflow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
+     * })
+     */
+    private $workflow;
+
+    /**
+     * @var \Application\Entity\NmtWfTransition
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfTransition")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="transition_id", referencedColumnName="transition_id")
+     * })
+     */
+    private $transition;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="workitem_use_id", referencedColumnName="id")
+     * })
+     */
+    private $workitemUse;
+
+    /**
+     * @var \Application\Entity\NmtWfNode
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfNode")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="node_id", referencedColumnName="node_id")
+     * })
+     */
+    private $node;
+
+
+}
+

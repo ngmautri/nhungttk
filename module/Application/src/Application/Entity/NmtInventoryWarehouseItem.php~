@@ -1,0 +1,77 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtInventoryWarehouseItem
+ *
+ * @ORM\Table(name="nmt_inventory_warehouse_item", indexes={@ORM\Index(name="nmt_inventory_warehouse_item_KF1_idx", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_warehouse_item_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_item_FK2_idx", columns={"item_id"})})
+ * @ORM\Entity
+ */
+class NmtInventoryWarehouseItem
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="on_hand", type="integer", nullable=true)
+     */
+    private $onHand;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="on_order", type="integer", nullable=true)
+     */
+    private $onOrder;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="wh_id", referencedColumnName="id")
+     * })
+     */
+    private $wh;
+
+
+}
+

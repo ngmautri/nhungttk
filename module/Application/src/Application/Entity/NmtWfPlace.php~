@@ -1,0 +1,76 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtWfPlace
+ *
+ * @ORM\Table(name="nmt_wf_place", indexes={@ORM\Index(name="nmt_wf_place_FK1_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_place_FK2_idx", columns={"place_created_by"})})
+ * @ORM\Entity
+ */
+class NmtWfPlace
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="place_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $placeId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="place_name", type="string", length=80, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $placeName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="place_type", type="string", length=45, nullable=true)
+     */
+    private $placeType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="place_description", type="text", length=65535, nullable=true)
+     */
+    private $placeDescription;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="place_created_on", type="datetime", nullable=true)
+     */
+    private $placeCreatedOn;
+
+    /**
+     * @var \Application\Entity\NmtWfWorkflow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
+     * })
+     */
+    private $workflow;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="place_created_by", referencedColumnName="id")
+     * })
+     */
+    private $placeCreatedBy;
+
+
+}
+

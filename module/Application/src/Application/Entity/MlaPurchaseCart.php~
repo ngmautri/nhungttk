@@ -1,0 +1,164 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaPurchaseCart
+ *
+ * @ORM\Table(name="mla_purchase_cart", indexes={@ORM\Index(name="mla_purchase_cart_FK2_idx", columns={"asset_id"}), @ORM\Index(name="mla_purchase_cart_FK1_idx", columns={"sparepart_id"}), @ORM\Index(name="mla_purchase_cart_FK3_idx", columns={"article_id"}), @ORM\Index(name="mla_purchase_cart_FK4_idx1", columns={"created_by"})})
+ * @ORM\Entity
+ */
+class MlaPurchaseCart
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="priority", type="string", length=45, nullable=true)
+     */
+    private $priority;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=45, nullable=true)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="code", type="string", length=150, nullable=true)
+     */
+    private $code;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="keywords", type="string", length=255, nullable=true)
+     */
+    private $keywords;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="unit", type="string", length=45, nullable=true)
+     */
+    private $unit;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="quantity", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $quantity;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="EDT", type="datetime", nullable=true)
+     */
+    private $edt;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="other_res_id", type="integer", nullable=true)
+     */
+    private $otherResId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="asset_name", type="string", length=255, nullable=true)
+     */
+    private $assetName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="purpose", type="text", length=65535, nullable=true)
+     */
+    private $purpose;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var \Application\Entity\MlaSpareparts
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSpareparts")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="sparepart_id", referencedColumnName="id")
+     * })
+     */
+    private $sparepart;
+
+    /**
+     * @var \Application\Entity\MlaAsset
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAsset")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="asset_id", referencedColumnName="id")
+     * })
+     */
+    private $asset;
+
+    /**
+     * @var \Application\Entity\MlaArticles
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaArticles")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     * })
+     */
+    private $article;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+
+}
+

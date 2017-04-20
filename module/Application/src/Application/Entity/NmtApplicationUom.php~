@@ -1,0 +1,92 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtApplicationUom
+ *
+ * @ORM\Table(name="nmt_application_uom", uniqueConstraints={@ORM\UniqueConstraint(name="uom_name_UNIQUE", columns={"uom_name"})}, indexes={@ORM\Index(name="nmt_application_uom_FK1_idx", columns={"created_by"})})
+ * @ORM\Entity
+ */
+class NmtApplicationUom
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uom_code", type="string", length=45, nullable=false)
+     */
+    private $uomCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uom_name", type="string", length=100, nullable=true)
+     */
+    private $uomName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uom_description", type="text", length=65535, nullable=true)
+     */
+    private $uomDescription;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="conversion_factor", type="string", length=45, nullable=true)
+     */
+    private $conversionFactor;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sector", type="string", length=45, nullable=true)
+     */
+    private $sector;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="symbol", type="string", length=45, nullable=true)
+     */
+    private $symbol;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     */
+    private $createdOn = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+
+}
+

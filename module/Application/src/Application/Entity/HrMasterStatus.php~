@@ -1,0 +1,57 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * HrMasterStatus
+ *
+ * @ORM\Table(name="hr_master_status", indexes={@ORM\Index(name="hr_master_status_FK1_idx", columns={"created_by"})})
+ * @ORM\Entity
+ */
+class HrMasterStatus
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status_name", type="string", length=100, nullable=false)
+     */
+    private $statusName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status_description", type="text", length=65535, nullable=false)
+     */
+    private $statusDescription;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     */
+    private $createdOn = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+
+}
+

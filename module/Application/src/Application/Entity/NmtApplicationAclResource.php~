@@ -1,0 +1,85 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtApplicationAclResource
+ *
+ * @ORM\Table(name="nmt_application_acl_resource", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_acl_resource_resource_UNIQUE", columns={"resource"})}, indexes={@ORM\Index(name="nmt_application_acl_resource_FK1_idx", columns={"created_by"})})
+ * @ORM\Entity
+ */
+class NmtApplicationAclResource
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="module", type="string", length=100, nullable=true)
+     */
+    private $module;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="controller", type="string", length=100, nullable=true)
+     */
+    private $controller;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="action", type="string", length=45, nullable=true)
+     */
+    private $action;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="resource", type="string", length=255, nullable=false)
+     */
+    private $resource;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=45, nullable=true)
+     */
+    private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     */
+    private $createdOn = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+
+}
+

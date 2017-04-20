@@ -1,0 +1,82 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtInventoryTransaction
+ *
+ * @ORM\Table(name="nmt_inventory_transaction")
+ * @ORM\Entity
+ */
+class NmtInventoryTransaction
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="item_id", type="integer", nullable=false)
+     */
+    private $itemId;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="transaction_date", type="datetime", nullable=false)
+     */
+    private $transactionDate = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="transaction_type_id", type="integer", nullable=false)
+     */
+    private $transactionTypeId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="flow", type="string", length=10, nullable=false)
+     */
+    private $flow;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="quantity", type="integer", nullable=true)
+     */
+    private $quantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="created_by", type="integer", nullable=false)
+     */
+    private $createdBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+
+}
+

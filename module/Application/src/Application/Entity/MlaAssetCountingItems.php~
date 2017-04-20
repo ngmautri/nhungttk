@@ -1,0 +1,81 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaAssetCountingItems
+ *
+ * @ORM\Table(name="mla_asset_counting_items", indexes={@ORM\Index(name="mla_asset_counting_items_FK_idx", columns={"counting_id"}), @ORM\Index(name="mla_asset_counting_items_FK2_idx", columns={"asset_id"})})
+ * @ORM\Entity
+ */
+class MlaAssetCountingItems
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="location", type="string", length=100, nullable=true)
+     */
+    private $location;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="counted_by", type="string", length=45, nullable=true)
+     */
+    private $countedBy;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="verified_by", type="string", length=45, nullable=true)
+     */
+    private $verifiedBy;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="acknowledged_by", type="string", length=45, nullable=true)
+     */
+    private $acknowledgedBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="counted_on", type="datetime", nullable=true)
+     */
+    private $countedOn;
+
+    /**
+     * @var \Application\Entity\MlaAssetCounting
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAssetCounting")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="counting_id", referencedColumnName="id")
+     * })
+     */
+    private $counting;
+
+    /**
+     * @var \Application\Entity\MlaAsset
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaAsset")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="asset_id", referencedColumnName="id")
+     * })
+     */
+    private $asset;
+
+
+}
+

@@ -1,0 +1,70 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtInventoryItemCategoryMember
+ *
+ * @ORM\Table(name="nmt_inventory_item_category_member", indexes={@ORM\Index(name="nmt_inventory_item_category_memberFK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_category_memberFK2_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_category_memberFK3_idx", columns={"category_id"})})
+ * @ORM\Entity
+ */
+class NmtInventoryItemCategoryMember
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     */
+    private $createdOn = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItemCategory
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemCategory")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="category_id", referencedColumnName="node_id")
+     * })
+     */
+    private $category;
+
+
+}
+

@@ -1,0 +1,43 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaArticlesMeasurements
+ *
+ * @ORM\Table(name="mla_articles_measurements")
+ * @ORM\Entity
+ */
+class MlaArticlesMeasurements
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="weight", type="string", length=45, nullable=true)
+     */
+    private $weight;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="length", type="string", length=45, nullable=true)
+     */
+    private $length;
+
+    /**
+     * @var \Application\Entity\MlaArticles
+     *
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\OneToOne(targetEntity="Application\Entity\MlaArticles")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     * })
+     */
+    private $article;
+
+
+}
+

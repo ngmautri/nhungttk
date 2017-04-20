@@ -1,0 +1,81 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NmtWfTransition
+ *
+ * @ORM\Table(name="nmt_wf_transition", indexes={@ORM\Index(name="nmt_wf_transition_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_transition_FK1_idx", columns={"transition_created_by"})})
+ * @ORM\Entity
+ */
+class NmtWfTransition
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="transition_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $transitionId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transition_name", type="string", length=100, nullable=false)
+     */
+    private $transitionName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transition_description", type="text", length=65535, nullable=true)
+     */
+    private $transitionDescription;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transition_trigger", type="string", length=45, nullable=true)
+     */
+    private $transitionTrigger;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="role", type="string", length=45, nullable=true)
+     */
+    private $role;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="transition_created_on", type="datetime", nullable=false)
+     */
+    private $transitionCreatedOn = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \Application\Entity\NmtWfWorkflow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
+     * })
+     */
+    private $workflow;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="transition_created_by", referencedColumnName="id")
+     * })
+     */
+    private $transitionCreatedBy;
+
+
+}
+

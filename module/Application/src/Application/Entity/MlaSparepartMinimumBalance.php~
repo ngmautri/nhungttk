@@ -1,0 +1,74 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * MlaSparepartMinimumBalance
+ *
+ * @ORM\Table(name="mla_sparepart_minimum_balance", indexes={@ORM\Index(name="mla_sparepart_minimum_balance_FK1_idx", columns={"sparepart_id"}), @ORM\Index(name="mla_sparepart_minimum_balance_FK2_idx", columns={"created_by"})})
+ * @ORM\Entity
+ */
+class MlaSparepartMinimumBalance
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="minimum_balance", type="integer", nullable=false)
+     */
+    private $minimumBalance;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var \Application\Entity\MlaSpareparts
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaSpareparts")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="sparepart_id", referencedColumnName="id")
+     * })
+     */
+    private $sparepart;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+
+}
+

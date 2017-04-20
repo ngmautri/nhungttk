@@ -1,20 +1,19 @@
-
-<ul class="nav nav-pills">
- <li class="active"><a href="#">Add department member:</a></li>
+ 	<h4>Adding nember for role: <?php echo $role->getRole(); ?></h4>
 
 
-</ul>
-
-
-<form action="<?php echo $this->baseUrl ?>/application/department/add-member"	method="post" enctype="multipart/form-data" id="New Sparepart">
+<form action="<?php echo $this->baseUrl ?>/application/role/add-member"	method="post" enctype="multipart/form-data" >
 	
-<input type="hidden" name="id" value="<?php echo (int) $department->id; ?>" />
+<input type="hidden" name="id" value="<?php echo $role->getId(); ?>" />
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
-<table class="pure-table pure-table-bordered">
+
+
+
+
+<table class="table table-bordered table-striped">
 <thead>
 	<tr>
-		<td></td>
+		<td>Select</td>
 		<td>First Name</td>
 		<td>Last Name</td>
 		<td>Email</td>		
@@ -27,12 +26,10 @@
 	 $count = 0;
 	foreach ($users as $user) :
 	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 	 	 
 	 ?>	
- 	
-
-    	<td><input type="checkbox" name="users[]" value="<?php echo $this->escapeHtml($user['id']);?>" class="checkbox"/></td>
+ 		<tr>
+	   	<td><input type="checkbox" name="users[]" value="<?php echo $this->escapeHtml($user['id']);?>" class="checkbox"/></td>
     	<td><?php echo $this->escapeHtml($user['firstname']);?></td>
     	<td><?php echo $this->escapeHtml($user['lastname']);?></td>
     	<td><?php echo $this->escapeHtml($user['email']);?></td>
@@ -44,5 +41,8 @@
 	<td></td> 
 	<td><input type="submit" name="add" value="Add" />	</td>
 </tr>
+
+
+
 </tbody>	
 </table>

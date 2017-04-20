@@ -49,6 +49,8 @@ class Bootstrap {
 						'Application',
 						'Inventory',
 						'Procurement',
+						'DoctrineModule',
+						'DoctrineORMModule',
 						'User',
 				) 
 		)

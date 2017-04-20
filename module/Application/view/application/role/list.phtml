@@ -1,0 +1,137 @@
+<!--  
+	<div id="html1" class="demo">
+		<ul>
+			<li data-jstree='{ "opened" : true }'>Root node
+				<ul>
+					<li data-jstree='{ "selected" : true }'>Child node 1</li>
+					<li class="dropdown">
+						    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="label label-info" title="76 items"><i class="icon-user"> </i> </span> Tri Tri						    <span class="caret"></span></a>
+						    <ul class="dropdown-menu">
+						    	<li> <a href="#">My Profile</a></li>
+							      	<li> <a href="/user/auth/logout">Logout</a></li>
+	 					    </ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+		 
+
+-->
+	
+<div id="html" class="demo">
+	<ul>
+	<?php echo $jsTree ?>;
+</ul>
+</div>
+
+
+
+<script>	
+// html demo
+	$('#html').jstree({
+		"core" : {
+		       // so that create works
+		       "check_callback" : true
+		     },
+		    "plugins" : [ "contextmenu" ],
+
+		    "contextmenu":{         
+		        "items": function($node) {
+		            var tree = $("#html").jstree(true);
+		            return {
+		                "Create": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Create New Role",
+		                    "action": function (obj) { 
+		                    	var ref = $.jstree.reference(obj.reference);
+                                sel = ref.get_selected();
+        	                    $node = tree.create_node($node);
+			                    tree.edit($node);
+		                    }
+		                },
+		                "Rename": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Rename Role",
+		                    "action": function (obj) { 
+		                        tree.edit($node);
+		                    }
+		                },                         
+		                "Remove": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Remove Role",
+		                    "action": function (obj) { 
+		                        tree.delete_node($node);
+		                    }
+		                },
+		                "Add Member": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Add Member",
+		                    "action": function (obj) {
+		                    	var redirectUrl = "/application/role/add-member?id="+$node.id; 
+		                    	window.location = redirectUrl;
+		                   }
+		                },
+		                "Grant Access": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Grand Access",
+		                    "action": function (obj) {
+		                    	var redirectUrl = "/application/role/grant-access1?role="+$node.id; 
+		                    	window.location = redirectUrl;
+	 
+		                   }
+		                }
+		            };
+		        }
+		    }
+		    
+    });
+
+	// When the jsTree is ready, add two more records.
+	$('#html').on('create_node.jstree', function (e, data) {
+		//alert(data.node.parent +  data.node.id);
+	});
+	
+	$('#html').on('rename_node.jstree', function (e, data) {
+		//alert(data.node.parent +  data.node.id);
+		createRole(data.node.parent,data.node.id,data.node.text);
+    });
+
+	$('#html').on('delete_node.jstree', function (e, data) {
+		//alert(data.node.parent +  data.node.id);
+		//createRole(data.node.parent,data.node.id,data.node.text);
+    });
+</script>
+
+<!-- Modal -->
+<div id="myModal" class="modal hide" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h5 class="modal-title">Message:</h5>
+		</div>
+		<div class="modal-body">
+			<div>
+				<span id="_status"></span>
+			</div>
+		</div>
+
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div id="myModal1" class="modal hide" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-body">
+			<p>Working on it........Please Wait!</p>
+		</div>
+	</div>
+</div>

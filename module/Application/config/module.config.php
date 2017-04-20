@@ -223,11 +223,16 @@ return array (
 				) 
 		),
 		'controllers' => array (
-				'invokables' => array (
-						'Application\Controller\Index' => 'Application\Controller\IndexController' 
+				/**
+				 * @deprecated in zf3
+				 */
+				'invokables' => array (						
+						//'Application\Controller\Index' => 'Application\Controller\IndexController' 
 				),
 				
 				'factories' => array (
+						'Application\Controller\Index' => 'Application\Controller\IndexControllerFactory',
+						
 						'Application\Controller\Department' => 'Application\Controller\DepartmentControllerFactory',
 						'Application\Controller\Acl' => 'Application\Controller\AclControllerFactory',
 						'Application\Controller\Role' => 'Application\Controller\RoleControllerFactory',

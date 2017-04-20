@@ -13,7 +13,7 @@ if ($total_records <= 0) {
 	
 	?>
 
-<table class="table table-bordered table-hover">
+<table style="font-size: 10pt" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>Select</b></td>
@@ -33,7 +33,7 @@ if ($total_records <= 0) {
 	 <tr>
 	 		<td>		
 <a href="javascript:;"
-	onclick="selectId('<?php echo $this->escapeHtml($a->getId());?>','item_uom_id','<?php echo $this->escapeHtml($a->getUomCode());?>','item_uom_name');">Select
+	onclick="selectId('<?php echo $this->escapeHtml($a->getId());?>','item_uom_id','<?php echo $this->escapeHtml($a->getUomCode());?>','item_uom_name');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
 </a></td>
 	 		<td><?php echo $this->escapeHtml($a->getUomName());?></td>
 			<td><?php echo $this->escapeHtml($a->getUomCode());?></td>

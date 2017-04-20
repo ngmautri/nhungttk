@@ -18,11 +18,11 @@ if ($total_resources <= 0) {
 	
 <input type="hidden" name="role_id" value="<?php echo (int) $role_id; ?>" />
 
-<table class="table table-bordered table-striped">
+<table  class="table table-bordered table-striped">
 	<thead>
 		<tr>
-			<td><b>Select</b></td>
-			<td><b>Module</b></td>
+			<td><input type="checkbox" id="select_ALL" name="SelectAll" value="YES"/> <b>All</b> </td>
+ 			<td><b>Module</b></td>
 			<td><b>Action</b></td>
 			<td><b>Resource</b></td>
 			<td><b>Type</b></td>

@@ -190,16 +190,19 @@ class ItemCategoryController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function list1Action() {
-		$this->itemCategoryService->initCategory();
-		$this->itemCategoryService->updateCategory(2,0);
-		$jsTree = $this->itemCategoryService->generateJSTree(2);
 		
 		$request = $this->getRequest ();
 		
-		if ($request->isXmlHttpRequest ()) {
-			$this->layout ( "layout/user/ajax" );
+		// accepted only ajax request
+		if (!$request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 		
+		$this->layout ( "layout/user/ajax" );
+		$this->itemCategoryService->initCategory();
+		$this->itemCategoryService->updateCategory(2,0);
+		$jsTree = $this->itemCategoryService->generateJSTree(2);
+	
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (
 				'jsTree' => $jsTree

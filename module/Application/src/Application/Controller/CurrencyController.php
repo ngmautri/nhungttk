@@ -174,10 +174,21 @@ class CurrencyController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function list1Action() {
-		$roles = $this->departmentService->returnAclTree ();
+		$request = $this->getRequest ();
 		
+		// accepted only ajax request
+		if (!$request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$this->layout ( "layout/user/ajax" );
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findAll();
+		$total_records= count($list);
+		//$jsTree = $this->tree;
 		return new ViewModel ( array (
-				'roles' => $roles 
+				'list' => $list,
+				'total_records'=>$total_records,
+				'paginator'=>null,
 		) );
 	}
 	

@@ -12,7 +12,6 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Model\AclRoleTable;
-use Nmt\Paginator;
 use Application\Service\DepartmentService;
 
 use Application\Entity\NmtApplicationAclRole;
@@ -145,14 +144,17 @@ class UomController extends AbstractActionController {
 	 * 
 	 */
 	public function list1Action() {
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationUom' )->findAll();
-		$total_records= count($list);
-		
 		$request = $this->getRequest ();
 		
-		if ($request->isXmlHttpRequest ()) {
-			$this->layout ( "layout/user/ajax" );
+		// accepted only ajax request
+		if (!$request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
+		
+		
+		$this->layout ( "layout/user/ajax" );		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationUom' )->findAll();
+		$total_records= count($list);
 		
 		return new ViewModel ( array (
 				'list' => $list,
@@ -594,7 +596,7 @@ class UomController extends AbstractActionController {
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
-			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$paginator = new Paginator( $totalResults, $page, $resultsPerPage );
 			$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		

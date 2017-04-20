@@ -1,50 +1,95 @@
+<?php
 
-<ul class="nav nav-pills">
- <li><a href="<?php echo $this->baseUrl ?>/application/role/add">Add new role</a></li>
-</ul>
+if ($total_records <= 0) {
+	
+	echo 'No record found!';
+} else {
+	
+	if (! is_null ( $paginator )) {
+		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
+	} else {
+		echo $total_records. ' records found!';
+	}
+	
+	?>
 
+<table style="font-size: 10pt" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>Pmt Methode Code</b></td>
+			<td><b>Pmt Methode Name	</b></td>
+			<td><b>Description</b></td>
+			<td><b>Status</b></td>
+			<td><b>Date</b></td>
+		</tr>
+	</thead>
 
-
-
-<table class="table table-bordered table-striped">
-<thead>
-	<tr>
-		<td><b>Role</b></td>
-		<td><b>Action</b></td>
-	</tr>
-</thead>
-
- <tbody>
+	<tbody>
  
-	 <?php 
-	 
-	 $count = 0;
-	 foreach ($roles as $a) : 
-	 	 $count++;
-	 	//echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 ?>
-	 	<tr>
-		<td><?php 
-			$n = (int) $a['level'];
-			
-			for ($i = 2; $i <= $n; $i++) {
-				echo '<span style="margin-left: 20px;">&nbsp;&nbsp;</span>';
-			}
-			//echo '- '.strtoupper($this->escapeHtml($a['role']));
-			echo '- '.$this->escapeHtml($a['role']);
-		?>
-		</td>
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $a ) :
+		$count ++;
+		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+		// $instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
 		
-		<td>
-		<a href="<?php echo $this->baseUrl ?>/application/role/add?parent_id=<?php echo $this->escapeHtml($a['role_id']);?>">add-role</a> 
-		<a href="<?php echo $this->baseUrl ?>/application/role/add-member?id=<?php echo $this->escapeHtml($a['role_id']);?>">add-member</a> 
-		<a href="<?php echo $this->baseUrl ?>/application/role/grant-access?id=<?php echo $this->escapeHtml($a['role_id']);?>">Grant-Access</a> 
-
-		</td>
-	</tr>
+		?>
+	 <tr>
+			<td><?php echo $this->escapeHtml($a->getMethodCode());?></td>
+			<td><?php echo $this->escapeHtml($a->getMethodName());?></td>
+			<td><?php echo $this->escapeHtml($a->getDescription());?></td>
+			<td><?php echo $this->escapeHtml($a->getStatus());?></td>
+			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/Y");?> </td>
+		
+		</tr>
 <?php endforeach; ?>
 
  </tbody>
 </table>
 
-<br>
+<?php
+	
+	// ===============================
+	if (! is_null ( $paginator )) :
+		
+		// change it only
+		$base = $this->baseUrl . '/application/uom/list';
+		$_connector_symbol = '?';
+		
+		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+		
+		$p1 = ($paginator->page) - 1;
+		$p2 = ($paginator->page) + 1;
+		
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		
+		echo '<ul class="pagination pagination-sm">';
+		
+		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $first . '"> |< </a></li>';
+			echo '<li><a href="' . $prev . '"> < </a></li>';
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			
+			if ($i == $paginator->page) {
+				echo '<li><a class="active" href="#">' . $i . '</a></li>';
+			} else {
+				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+			}
+		}
+		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $next . '"> > </a></li>';
+			echo '<li><a href="' . $last . '"> >| </a></li>';
+		}
+		echo '</ul>';
+endif;
+	
+}
+// ===============================
+?>

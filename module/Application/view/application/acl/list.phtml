@@ -1,0 +1,42 @@
+<h5>Application Structure</h5>
+
+ <?php echo $e->getRouteMatch()->getParam('controller').'-'.$e->getRouteMatch()->getParam('action')
+ ;?>
+
+<table class="pure-table pure-table-bordered">
+<thead>
+	<tr>
+		<td><b>Module</b></td>
+	</tr>
+</thead>
+
+ <tbody>
+ 
+	 <?php 
+	 
+	 $count = 0;
+	 foreach ($modules as $a) : 
+	 	 $count++;
+	 	echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+	 	//$instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
+	 ?>
+		<td><?php 
+			 echo ('<h5>'. $this->escapeHtml($a['Module']) . '</h5>');
+			 $controllers = $a['Controller'];
+			 foreach ($controllers as $c):
+			 	echo $c['Controller'] . '<br>';
+			 	$actions = $c['Actions'];
+			 	echo "(";
+			 	foreach ($actions as $action):
+			 		echo $action . ';';
+			 	endforeach;
+			 	echo ")<br>";
+			
+			 endforeach; ?>
+		</td>
+	</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+

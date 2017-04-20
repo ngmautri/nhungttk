@@ -1,17 +1,17 @@
-<h4>Item Category</h4>
+<h4>Department List</h4>
 
 <a style="color: #0080ff;" href="javascript:;"
-	onclick="showBootstrapDialog('Item Category','/application/item-category/list1','loaded_data');"> <i class="icon-list"> </i> Test Ajax List
+	onclick="showBootstrapDialog('Department List','/application/department/list1','loaded_data');"> <i class="icon-list"> </i> Test Ajax List
 </a>
 
-
 <hr>
-
+	
 <div id="html" class="demo">
 	<ul>
-	<?php echo $jsTree ?>
+	<?php echo $jsTree ?>;
 </ul>
 </div>
+
 
 
 <script>	
@@ -102,27 +102,6 @@
 		   loadArticles(id,cat_name);
 	});
 </script>
-
-<!-- Modal -->
-<div id="myModal" class="modal hide" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">&times;</button>
-			<h5 class="modal-title">Message:</h5>
-		</div>
-		<div class="modal-body">
-			<div>
-				<span id="_status"></span>
-			</div>
-		</div>
-
-		<div class="modal-footer">
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-		</div>
-	</div>
-</div>
-
-
 
 <!-- Modal -->
 <div class="modal" id="modal1" role="dialog">

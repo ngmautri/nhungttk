@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemPicture
  *
- * @ORM\Table(name="nmt_inventory_item_picture")
+ * @ORM\Table(name="nmt_inventory_item_picture", indexes={@ORM\Index(name="nmt_inventory_item_picture_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_picture_FK2_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class NmtInventoryItemPicture
@@ -20,6 +20,110 @@ class NmtInventoryItemPicture
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255, nullable=true)
+     */
+    private $url;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="filename", type="string", length=255, nullable=true)
+     */
+    private $filename;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="original_filename", type="string", length=100, nullable=true)
+     */
+    private $originalFilename;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="filetype", type="string", length=45, nullable=true)
+     */
+    private $filetype;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="size", type="string", length=50, nullable=true)
+     */
+    private $size;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="visibility", type="boolean", nullable=true)
+     */
+    private $visibility;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="folder", type="string", length=255, nullable=true)
+     */
+    private $folder;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="folder_relative", type="string", length=100, nullable=true)
+     */
+    private $folderRelative;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=100, nullable=true)
+     */
+    private $checksum;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_default", type="boolean", nullable=true)
+     */
+    private $isDefault;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
 
 
 }

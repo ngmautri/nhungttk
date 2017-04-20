@@ -187,10 +187,22 @@ class DepartmentController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function list1Action() {
-		$roles = $this->departmentService->returnAclTree ();
 		
+		$request = $this->getRequest ();
+		
+		// accepted only ajax request
+		if (!$request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		$this->layout ( "layout/user/ajax" );
+		
+		$this->departmentService->initCategory();
+		$this->departmentService->updateCategory(1,0);
+		$jsTree = $this->departmentService->generateJSTree(1);
+		
+		//$jsTree = $this->tree;
 		return new ViewModel ( array (
-				'roles' => $roles 
+				'jsTree' => $jsTree
 		) );
 	}
 	

@@ -139,6 +139,28 @@ class PmtMethodController extends AbstractActionController {
 	}
 	
 	
+	/**
+	 */
+	public function list1Action() {
+		
+		$request = $this->getRequest ();
+		
+		// accepted only ajax request
+		if (!$request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		$this->layout ( "layout/user/ajax" );
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationPmtMethod' )->findAll();
+		$total_records= count($list);
+		//$jsTree = $this->tree;
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records'=>$total_records,
+				'paginator'=>null,
+		) );
+	}
+	
 
 	public function getSmtpTransportService() {
 		return $this->SmtpTransportService;

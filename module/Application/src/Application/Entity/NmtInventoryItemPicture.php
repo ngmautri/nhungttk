@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemPicture
  *
- * @ORM\Table(name="nmt_inventory_item_picture")
+ * @ORM\Table(name="nmt_inventory_item_picture", indexes={@ORM\Index(name="nmt_inventory_item_picture_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_picture_FK2_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class NmtInventoryItemPicture
@@ -21,6 +21,110 @@ class NmtInventoryItemPicture
      */
     private $id;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255, nullable=true)
+     */
+    private $url;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="filename", type="string", length=255, nullable=true)
+     */
+    private $filename;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="original_filename", type="string", length=100, nullable=true)
+     */
+    private $originalFilename;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="filetype", type="string", length=45, nullable=true)
+     */
+    private $filetype;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="size", type="string", length=50, nullable=true)
+     */
+    private $size;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="visibility", type="boolean", nullable=true)
+     */
+    private $visibility;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="folder", type="string", length=255, nullable=true)
+     */
+    private $folder;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="folder_relative", type="string", length=100, nullable=true)
+     */
+    private $folderRelative;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=100, nullable=true)
+     */
+    private $checksum;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_default", type="boolean", nullable=true)
+     */
+    private $isDefault;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
 
 
     /**
@@ -31,5 +135,341 @@ class NmtInventoryItemPicture
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set url
+     *
+     * @param string $url
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set filename
+     *
+     * @param string $filename
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+    /**
+     * Get filename
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
+     * Set originalFilename
+     *
+     * @param string $originalFilename
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setOriginalFilename($originalFilename)
+    {
+        $this->originalFilename = $originalFilename;
+
+        return $this;
+    }
+
+    /**
+     * Get originalFilename
+     *
+     * @return string
+     */
+    public function getOriginalFilename()
+    {
+        return $this->originalFilename;
+    }
+
+    /**
+     * Set filetype
+     *
+     * @param string $filetype
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setFiletype($filetype)
+    {
+        $this->filetype = $filetype;
+
+        return $this;
+    }
+
+    /**
+     * Get filetype
+     *
+     * @return string
+     */
+    public function getFiletype()
+    {
+        return $this->filetype;
+    }
+
+    /**
+     * Set size
+     *
+     * @param string $size
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * Get size
+     *
+     * @return string
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * Set visibility
+     *
+     * @param boolean $visibility
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    /**
+     * Get visibility
+     *
+     * @return boolean
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * Set folder
+     *
+     * @param string $folder
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setFolder($folder)
+    {
+        $this->folder = $folder;
+
+        return $this;
+    }
+
+    /**
+     * Get folder
+     *
+     * @return string
+     */
+    public function getFolder()
+    {
+        return $this->folder;
+    }
+
+    /**
+     * Set folderRelative
+     *
+     * @param string $folderRelative
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setFolderRelative($folderRelative)
+    {
+        $this->folderRelative = $folderRelative;
+
+        return $this;
+    }
+
+    /**
+     * Get folderRelative
+     *
+     * @return string
+     */
+    public function getFolderRelative()
+    {
+        return $this->folderRelative;
+    }
+
+    /**
+     * Set checksum
+     *
+     * @param string $checksum
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+
+        return $this;
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
+
+    /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * Set isDefault
+     *
+     * @param boolean $isDefault
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
+
+        return $this;
+    }
+
+    /**
+     * Get isDefault
+     *
+     * @return boolean
+     */
+    public function getIsDefault()
+    {
+        return $this->isDefault;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }

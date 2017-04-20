@@ -28,6 +28,7 @@ use Application\Model\AclRoleTable;
 use Application\Model\AclRole;
 
 class Module {
+	
 	public function onBootstrap(MvcEvent $e) {
 		$eventManager = $e->getApplication ()->getEventManager ();
 		$moduleRouteListener = new ModuleRouteListener ();
@@ -50,8 +51,8 @@ class Module {
 			//Version 2
 			$pictureUploadListener = $sm->get ( 'Application\Listener\PictureUploadListener' );
 			$controller->getEventManager()->attachAggregate ( $pictureUploadListener );
-		}, 2 );
-		
+		}, 101 );
+			
 	}
 	
 	

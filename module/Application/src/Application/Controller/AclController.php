@@ -39,10 +39,6 @@ class AclController extends AbstractActionController {
 	public function indexAction() {
 	}
 	
-	public function denyAction() {
-	}
-	
-	
 	/**
 	 * 
 	 * @return \Application\Controller\ViewModel
@@ -90,13 +86,13 @@ class AclController extends AbstractActionController {
 		
 		 
     	
-		$resources=$this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy(array(),array('module'=>'ASC'));
+		$resources=$this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy(array(),array('module'=>'ASC','controller'=>'ASC','action'=>'ASC'));
 		$totalResults=count($resources);
 		$paginator = null;
 		
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new  Paginator( $totalResults, $page, $resultsPerPage );
-			$resources=$this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy(array(),array('module'=>'ASC'),($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$resources=$this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy(array(),array('module'=>'ASC','controller'=>'ASC','action'=>'ASC'),($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 	
 		return new  ViewModel( array (

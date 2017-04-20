@@ -21,7 +21,7 @@ use Application\Entity\NmtApplicationAclUserRole;
 use User\Model\UserTable;
 use Application\Entity\NmtApplicationAclRoleResource;
 use Application\Entity\NmtApplicationDepartment;
-use Application\Entity\NmtApplicationCurrency;
+use Application\Entity\NmtApplicationUom;
 
 
 /**
@@ -29,8 +29,8 @@ use Application\Entity\NmtApplicationCurrency;
  * @author nmt
  *        
  */
-class CurrencyController extends AbstractActionController {
-	const ROOT_NODE = '_COMPANY_';
+class UomController extends AbstractActionController {
+
 	protected $SmtpTransportService;
 	protected $authService;
 	protected $userTable;
@@ -49,35 +49,7 @@ class CurrencyController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function initAction() {
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
-		
-		$status = "initial...";
-		
-		// create ROOT NODE
-		$e = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationDepartment' )->findBy ( array (
-				'nodeName' => self::ROOT_NODE 
-		) );
-		if (count ( $e ) == 0) {
-			// create super admin
-			
-			$input = new NmtApplicationDepartment ();
-			$input->setNodeName ( self::ROOT_NODE );
-			$input->setPathDepth ( 1 );
-			$input->setRemarks( 'Node Root' );
-			$input->setNodeCreatedBy ( $u );
-			$input->setNodeCreatedOn ( new \DateTime () );
-			$this->doctrineEM->persist ( $input );
-			$this->doctrineEM->flush ( $input );
-			$root_id = $input->getNodeId ();
-			$root_node = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $root_id );
-			$root_node->setPath ( $root_id . '/' );
-			$this->doctrineEM->flush ();
-			$status = 'Root node has been created successfully: ' . $root_id;
-		} else {
-			$status = 'Root node has been created already.';
-		}
+		//$identity = $this->authService->getIdentity ();
 		return new ViewModel ( array (
 				'status' => $status 
 		
@@ -102,24 +74,26 @@ class CurrencyController extends AbstractActionController {
 			// $input->status = $request->getPost ( 'status' );
 			// $input->remarks = $request->getPost ( 'description' );
 			
-			$currency = $request->getPost ( 'currency' );
-			$currency_numeric_code= $request->getPost ( 'currency_numeric_code' );
-			$description= $request->getPost ( 'description' );
-			$currency_entity= $request->getPost ( 'entity' );
+			$uom_name = $request->getPost ( 'uom_name' );
+			$uom_code = $request->getPost ( 'uom_code' );
+			$uom_description= $request->getPost ( 'uom_description' );
 			$status= $request->getPost ( 'status' );
-			
+			$converstion_factor= $request->getPost ( 'converstion_factor' );
+/* 			$sector= $request->getPost ( 'sector' );
+			$symbol= $request->getPost ( 'symbol' );
+ */			
 			$errors = array ();
 			
-			if ($currency=== '' or $currency=== null) {
-				$errors [] = 'Please give the name!';
+			if ($uom_name=== '' or $uom_name=== null) {
+				$errors [] = 'Please give the name';
 			}
 			
-			$r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findBy ( array (
-					'currency' => $currency
+			$r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationUom' )->findBy ( array (
+					'uomName' => $uom_name
 			) );
 			
 			if (count($r)>=1) {
-				$errors [] = $currency. ' exists';
+				$errors [] = $uom_name. ' exists';
 			}
 			
 			
@@ -130,20 +104,19 @@ class CurrencyController extends AbstractActionController {
 			}
 			
 			// No Error
-			$entity = new NmtApplicationCurrency();
-			
-			$entity->setCurrency( $currency);
-			$entity->setCurrencyNumericCode( $currency_numeric_code);
-			$entity->setStatus ( $status);
-			$entity->setEntity( $currency_entity);
-			$entity->setDescription( $description);
-			
+		
+			$entity = new NmtApplicationUom();
+			$entity->setUomName( $uom_name);
+			$entity->setUomCode( $uom_code);
+			$entity->setUomDescription($uom_description);
+			$entity->setConverstionFactor( $converstion_factor);
+			$entity->setStatus( $status);
 			$entity->setCreatedOn( new \DateTime() );
 			$entity->setCreatedBy( $u );
-				
+			
 			$this->doctrineEM->persist ( $entity );
 			$this->doctrineEM->flush ();
-		}
+			}
 		
 		/*
 		 * if ($request->isXmlHttpRequest ()) {
@@ -152,14 +125,13 @@ class CurrencyController extends AbstractActionController {
 		 */
 		return new ViewModel ( array (
 				'errors' => null,
-		
 		) );
 	}
 	
 	/**
 	 */
 	public function listAction() {
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findAll();
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationUom' )->findAll();
 		$total_records= count($list);
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (
@@ -170,16 +142,25 @@ class CurrencyController extends AbstractActionController {
 	}
 	
 	/**
-	 *
-	 * @return \Zend\View\Model\ViewModel
+	 * 
 	 */
 	public function list1Action() {
-		$roles = $this->departmentService->returnAclTree ();
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationUom' )->findAll();
+		$total_records= count($list);
+		
+		$request = $this->getRequest ();
+		
+		if ($request->isXmlHttpRequest ()) {
+			$this->layout ( "layout/user/ajax" );
+		}
 		
 		return new ViewModel ( array (
-				'roles' => $roles 
+				'list' => $list,
+				'total_records'=>$total_records,
+				'paginator'=>null,
 		) );
 	}
+	
 	
 	/**
 	 *

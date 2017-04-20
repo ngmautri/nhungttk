@@ -12,31 +12,35 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Model\AclRoleTable;
-use Nmt\Paginator;
-use Application\Service\DepartmentService;
-
+use MLA\Paginator;
+use Application\Service\AclService;
 use Application\Entity\NmtApplicationAclRole;
 use Doctrine\ORM\EntityManager;
 use Application\Entity\NmtApplicationAclUserRole;
 use User\Model\UserTable;
 use Application\Entity\NmtApplicationAclRoleResource;
-use Application\Entity\NmtApplicationDepartment;
-use Application\Entity\NmtApplicationCurrency;
-
 
 /**
- *
+ * 
  * @author nmt
- *        
+ *
  */
-class CurrencyController extends AbstractActionController {
-	const ROOT_NODE = '_COMPANY_';
+class RoleController extends AbstractActionController {
+	const SUPER_ADMIN = 'super-administrator';
+	const ADMIN = 'administrator';
+	const MEMBER = 'member';
+	
 	protected $SmtpTransportService;
 	protected $authService;
+	protected $aclService;
 	protected $userTable;
+	protected $aclRoleTable;
 	protected $tree;
-	protected $departmentService;
+	
+	
+	
 	protected $doctrineEM;
+	
 	
 	/*
 	 * Defaul Action
@@ -46,135 +50,173 @@ class CurrencyController extends AbstractActionController {
 	
 	/**
 	 * 
-	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function initAction() {
+		
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
+		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user['id']);
 		
-		$status = "initial...";
 		
-		// create ROOT NODE
-		$e = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationDepartment' )->findBy ( array (
-				'nodeName' => self::ROOT_NODE 
-		) );
-		if (count ( $e ) == 0) {
+		// create super-administrator		
+		$e = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclRole')->findBy(array('role'=>'super-administrator'));
+		if(count($e)==0){
 			// create super admin
 			
-			$input = new NmtApplicationDepartment ();
-			$input->setNodeName ( self::ROOT_NODE );
-			$input->setPathDepth ( 1 );
-			$input->setRemarks( 'Node Root' );
-			$input->setNodeCreatedBy ( $u );
-			$input->setNodeCreatedOn ( new \DateTime () );
-			$this->doctrineEM->persist ( $input );
-			$this->doctrineEM->flush ( $input );
-			$root_id = $input->getNodeId ();
-			$root_node = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $root_id );
-			$root_node->setPath ( $root_id . '/' );
-			$this->doctrineEM->flush ();
-			$status = 'Root node has been created successfully: ' . $root_id;
-		} else {
-			$status = 'Root node has been created already.';
+			$input = new NmtApplicationAclRole();
+			$input->setRole(self::SUPER_ADMIN);
+			$input->setStatus("activated");
+			$input->setPathDepth(1);
+			$input->setRemarks("default role");
+			$input->setCreatedBy($u);
+			$input->setCreatedOn(new \DateTime ());			
+			$this->doctrineEM->persist ( $input);
+			$this->doctrineEM->flush( $input);
+			$supper_admin_id = $input->getId();
+			$super_admin_role=$this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $supper_admin_id);
+			$super_admin_role->setPath($supper_admin_id.'/');
+			$this->doctrineEM->flush();
+			
+			// create admin
+			$input = new NmtApplicationAclRole();
+			$input->setRole(self::ADMIN);
+			$input->setStatus("activated");
+			$input->setParentId($supper_admin_id);			
+			$input->setPathDepth(2);
+			$input->setRemarks("default role");
+			$input->setCreatedBy($u);
+			$input->setCreatedOn(new \DateTime ());
+			$this->doctrineEM->persist ( $input);
+			$this->doctrineEM->flush( $input);
+			$new_id = $input->getId();
+			echo $new_id;
+			
+			$new_role=$this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $new_id);
+			$new_role->setPath($super_admin_role->getPath().$new_id.'/');
+			$this->doctrineEM->flush();
 		}
-		return new ViewModel ( array (
-				'status' => $status 
 		
-		) );
+		// create member
+		$e = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclRole')->findBy(array('role'=>self::MEMBER));
+		if(count($e)==0){
+			
+			$input = new NmtApplicationAclRole();
+			$input->setRole(self::MEMBER);
+			$input->setStatus("activated");
+			$input->setPathDepth(1);
+			$input->setRemarks("default role");
+			$input->setCreatedBy($u);
+			$input->setCreatedOn(new \DateTime ());
+			$this->doctrineEM->persist ( $input);
+			$this->doctrineEM->flush( $input);
+			$member_id = $input->getId();
+			$member_role=$this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $member_id);
+			$member_role->setPath($member_id.'/');
+			$this->doctrineEM->flush();
+		}
 	}
 	
 	/**
-	 *
 	 * @version 3.0
 	 * @author Ngmautri
-	 *        
-	 *  Create new Department
+	 * 
+	 * create New Role
 	 */
 	public function addAction() {
+		
 		$request = $this->getRequest ();
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
-			
+		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user['id']);
+		$parent_id = ( int ) $this->params ()->fromQuery ( 'parent_id' );
+		
+		
 		if ($request->isPost ()) {
 			
 			// $input->status = $request->getPost ( 'status' );
 			// $input->remarks = $request->getPost ( 'description' );
 			
-			$currency = $request->getPost ( 'currency' );
-			$currency_numeric_code= $request->getPost ( 'currency_numeric_code' );
-			$description= $request->getPost ( 'description' );
-			$currency_entity= $request->getPost ( 'entity' );
-			$status= $request->getPost ( 'status' );
+			$role_name = $request->getPost ( 'role' );
 			
 			$errors = array ();
 			
-			if ($currency=== '' or $currency=== null) {
-				$errors [] = 'Please give the name!';
+			if ($role_name === '' or $role_name === null) {
+				$errors [] = 'Please give role name';
 			}
 			
-			$r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findBy ( array (
-					'currency' => $currency
-			) );
-			
-			if (count($r)>=1) {
-				$errors [] = $currency. ' exists';
-			}
-			
+			$r = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclRole')->findBy(array('role'=>$role_name));
+			/* if (count($r)>=1) {
+				$errors [] = $role_name . ' exists';
+			} */
+				
+			$response = $this->getResponse ();
 			
 			if (count ( $errors ) > 0) {
 				return new ViewModel ( array (
 						'errors' => $errors,
+						'roles' => null,
+						'parent_id' => null,
+						
 				) );
 			}
+			// Now Error
+			$parent_id = $request->getPost ( 'parent_id');
+			$parent_entity = $this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $parent_id);
+			//var_dump($parent_entity->getPath());
 			
-			// No Error
-			$entity = new NmtApplicationCurrency();
+			$entity= new NmtApplicationAclRole();
+			$entity->setRole($role_name);			
+			$entity->setParentId($parent_entity->getId());
+			$entity->setCreatedOn(new \Datetime());
+			$entity->setCreatedBy($u);
+			$entity->setStatus("activated");
+			$entity->setRemarks('Role created by '. $user['firstname'] . ' '. $user['lastname']);
 			
-			$entity->setCurrency( $currency);
-			$entity->setCurrencyNumericCode( $currency_numeric_code);
-			$entity->setStatus ( $status);
-			$entity->setEntity( $currency_entity);
-			$entity->setDescription( $description);
 			
-			$entity->setCreatedOn( new \DateTime() );
-			$entity->setCreatedBy( $u );
-				
-			$this->doctrineEM->persist ( $entity );
-			$this->doctrineEM->flush ();
+			$this->doctrineEM->persist($entity);
+			$this->doctrineEM->flush();
+			$new_id = $entity->getId();
+	//		var_dump($new_id);
+			
+			$new_entity=$this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $new_id);
+			$new_entity->setPath($parent_entity->getPath().$new_id.'/');
+			
+			$a = explode ( '/', $new_entity->getPath() );
+			$new_entity->setPathDepth(count ( $a ) - 1);
+			
+			$this->doctrineEM->flush();
 		}
 		
-		/*
-		 * if ($request->isXmlHttpRequest ()) {
-		 * $this->layout ( "layout/inventory/ajax" );
-		 * }
-		 */
-		return new ViewModel ( array (
-				'errors' => null,
-		
-		) );
+		$roles = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclRole')->findAll();
+/* 		if ($request->isXmlHttpRequest ()) {
+			$this->layout ( "layout/inventory/ajax" );
+		}	
+ */		return new ViewModel ( array (
+					'errors' => null,
+					'roles' => $roles,
+ 					'parent_id' => $parent_id,
+ 					
+			) );
 	}
 	
 	/**
 	 */
 	public function listAction() {
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findAll();
-		$total_records= count($list);
-		//$jsTree = $this->tree;
+		$data = $this->aclService->returnAclTree1 ();
+		
+		$this->tree ( $data, 'Super-administrator' );
+		$jsTree = $this->tree;
 		return new ViewModel ( array (
-				'list' => $list,
-				'total_records'=>$total_records,
-				'paginator'=>null,
+				'jsTree' => $jsTree 
 		) );
 	}
 	
 	/**
-	 *
+	 * 
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function list1Action() {
-		$roles = $this->departmentService->returnAclTree ();
+		$roles = $this->aclService->returnAclTree ();
 		
 		return new ViewModel ( array (
 				'roles' => $roles 
@@ -190,42 +232,39 @@ class CurrencyController extends AbstractActionController {
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
+		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user['id']);
+		
 		
 		if ($request->isPost ()) {
 			
 			$role_id = ( int ) $request->getPost ( 'id' );
 			$user_id_list = $request->getPost ( 'users' );
 			
-			if (count ( $user_id_list ) > 0) {
+			if (count ( $user_id_list ) > 0) {				
 				foreach ( $user_id_list as $member_id ) {
 					
-					/*
-					 * $member = new AclUserRole ();
-					 * $member->role_id = $role_id;
-					 * $member->user_id = $user_id;
-					 * $member->updated_by = $user ['id'];
-					 */
-					// echo $member_id;
+					/* $member = new AclUserRole ();
+					$member->role_id = $role_id;
+					$member->user_id = $user_id;
+					$member->updated_by = $user ['id']; */
+					//echo $member_id;
 					
-					$criteria = array (
-							'user' => $member_id,
-							'role' => $role_id 
-					);
+					$criteria = array('user'=>$member_id,
+									'role'=>$role_id);
 					
-					$isMember = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAclUserRole' )->findBy ( $criteria );
-					// var_dump($isMember);
-					if (count ( $isMember ) == 0) {
-						$member = new NmtApplicationAclUserRole ();
-						$role = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationAclRole', $role_id );
-						$member->setRole ( $role );
-						$m = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $member_id );
-						$member->setUser ( $m );
-						$member->setUpdatedBy ( $u );
-						$member->setUpdatedOn ( new \DateTime () );
-						$this->doctrineEM->persist ( $member );
-						$this->doctrineEM->flush ();
-					}
+					$isMember = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclUserRole')->findBy($criteria);
+					//var_dump($isMember);
+					if(count($isMember) == 0){
+						$member = new  NmtApplicationAclUserRole();
+						$role = $this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $role_id);
+						$member->setRole($role);
+						$m = $this->doctrineEM->find('Application\Entity\MlaUsers', $member_id);
+						$member->setUser($m);
+						$member->setUpdatedBy($u);
+						$member->setUpdatedOn(new \DateTime());
+						$this->doctrineEM->persist($member);
+						$this->doctrineEM->flush();					}
+					
 				}
 				
 				$redirectUrl = $request->getPost ( 'redirectUrl' );
@@ -234,10 +273,10 @@ class CurrencyController extends AbstractActionController {
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		// $role = $this->aclRoleTable->getRole ( $id );
-		$role = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationAclRole', $id );
+		//$role = $this->aclRoleTable->getRole ( $id );
+		$role = $this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $id);		
 		
-		// No Doctrine
+		//No Doctrine
 		$users = $this->aclRoleTable->getNoneMembersOfRole ( $id );
 		
 		return new ViewModel ( array (
@@ -248,9 +287,7 @@ class CurrencyController extends AbstractActionController {
 	}
 	
 	/**
-	 *
 	 * @deprecated
-	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function addMemberActionOld() {
@@ -298,13 +335,13 @@ class CurrencyController extends AbstractActionController {
 		return new ViewModel ( array (
 				'role' => $role,
 				'users' => $users,
-				'redirectUrl' => $redirectUrl 
+				'redirectUrl' => $redirectUrl
 		) );
 	}
 	
 	/**
-	 *
-	 * @deprecated create New Role
+	 * @deprecated
+	 * create New Role
 	 */
 	public function addActionOld() {
 		$request = $this->getRequest ();
@@ -369,7 +406,7 @@ class CurrencyController extends AbstractActionController {
 					$path = $this->aclRoleTable->getRole ( $input->parent_id )->path;
 					$path = $path . $new_role_id . '/';
 					$input->path = $path;
-				else :
+				 else :
 					$input->path = $new_role_id . '/';
 				endif;
 				
@@ -388,6 +425,9 @@ class CurrencyController extends AbstractActionController {
 				return $response;
 			}
 		}
+		
+		
+		
 	}
 	
 	/**
@@ -400,6 +440,7 @@ class CurrencyController extends AbstractActionController {
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
 		
+		
 		if ($request->isPost ()) {
 			
 			$role_id = ( int ) $request->getPost ( 'role_id' );
@@ -409,39 +450,35 @@ class CurrencyController extends AbstractActionController {
 				
 				foreach ( $resources as $r ) {
 					
-					// if not granted
-					$criteria = array (
-							'role' => $role_id,
-							'resource' => $r 
-					);
+					// if not granted 
+					$criteria = array('role'=>$role_id,
+							'resource'=>$r);
 					
-					$isGranted = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAclRoleResource' )->findBy ( $criteria );
+					$isGranted = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclRoleResource')->findBy($criteria);
 					
-					if (count ( $isGranted ) == 0) {
-						$e = new NmtApplicationAclRoleResource ();
+					if(count($isGranted)==0){
+						$e =  new NmtApplicationAclRoleResource();
 						
-						$role = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationAclRole', $role_id );
-						$e->setRole ( $role );
+						$role = $this->doctrineEM->find('Application\Entity\NmtApplicationAclRole', $role_id);
+						$e->setRole($role);
 						
-						$resources = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationAclResource', $r );
-						$e->setResource ( $resources );
+						$resources = $this->doctrineEM->find('Application\Entity\NmtApplicationAclResource', $r);
+						$e->setResource($resources);
 						
-						$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
-						$e->setUpdatedBy ( $u );
+						$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user['id']);
+						$e->setUpdatedBy($u);
 						
-						$e->setUpdatedOn ( new \DateTime () );
-						$this->doctrineEM->persist ( $e );
-						$this->doctrineEM->flush ();
+						$e->setUpdatedOn(new \DateTime());
+						$this->doctrineEM->persist($e);
+						$this->doctrineEM->flush();
 					}
 					
-					/*
-					 * if ($this->aclRoleResourceTable->isGrantedAccess ( $role_id, $r ) == false) {
-					 * $access = new AclRoleResource ();
-					 * $access->resource_id = $r;
-					 * $access->role_id = $role_id;
-					 * $this->aclRoleResourceTable->add ( $access );
-					 * }
-					 */
+					/* if ($this->aclRoleResourceTable->isGrantedAccess ( $role_id, $r ) == false) {
+						$access = new AclRoleResource ();
+						$access->resource_id = $r;
+						$access->role_id = $role_id;
+						$this->aclRoleResourceTable->add ( $access );
+					} */
 				}
 				
 				/*
@@ -472,7 +509,7 @@ class CurrencyController extends AbstractActionController {
 		
 		$resources = $this->aclRoleTable->getNoneResourcesOfRole ( $role_id, 0, 0 );
 		
-		$totalResults = count ( $resources );
+		$totalResults = count($resources);
 		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
@@ -485,14 +522,12 @@ class CurrencyController extends AbstractActionController {
 				'role_id' => $role_id,
 				
 				'resources' => $resources,
-				'paginator' => $paginator 
-		) );
+				'paginator' => $paginator
+		) );	
 	}
 	
 	/**
-	 *
-	 * @deprecated
-	 *
+	 *@deprecated
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function grantAccessActionOld() {
@@ -554,7 +589,7 @@ class CurrencyController extends AbstractActionController {
 				'role_id' => $role_id,
 				
 				'resources' => $resources,
-				'paginator' => $paginator 
+				'paginator' => $paginator
 		) );
 	}
 	
@@ -632,6 +667,7 @@ class CurrencyController extends AbstractActionController {
 		$this->aclRoleTable = $aclRoleTable;
 		return $this;
 	}
+
 	public function getSmtpTransportService() {
 		return $this->SmtpTransportService;
 	}
@@ -654,18 +690,42 @@ class CurrencyController extends AbstractActionController {
 		return $this;
 	}
 	
+	public function getAclService() {
+		return $this->aclService;
+	}
+	public function setAclService(AclService $aclService) {
+		$this->aclService = $aclService;
+		return $this;
+	}
+	
+	// JS TREE
+	protected function tree($data, $root) {
+		$tree = $data->categories [$root];
+		$children = $tree ['children'];
+		
+		// inorder travesal
+		
+		if (count ( $children ) > 0) {
+			$this->tree = $this->tree . '<li id="' . $root . '" data-jstree=\'{ "opened" : true}\'> ' . ucwords ( $root ) . '(' . count ( $children ) . ")\n";
+			$this->tree = $this->tree . '<ul>' . "\n";
+			foreach ( $children as $c ) {
+				if (count ( $c ['children'] ) > 0) {
+					$this->tree ( $data, $c ['instance'] );
+				} else {
+					$this->tree = $this->tree . '<li id="' . $c ['instance'] . '" data-jstree=\'{}\'>' . $c ['instance'] . ' </li>' . "\n";
+					$this->tree ( $data, $c ['instance'] );
+				}
+			}
+			$this->tree = $this->tree . '</ul>' . "\n";
+			
+			$this->tree = $this->tree . '</li>' . "\n";
+		}
+	}
 	public function getDoctrineEM() {
 		return $this->doctrineEM;
 	}
 	public function setDoctrineEM(EntityManager $doctrineEM) {
 		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
-	public function getDepartmentService() {
-		return $this->departmentService;
-	}
-	public function setDepartmentService(DepartmentService $departmentService) {
-		$this->departmentService = $departmentService;
 		return $this;
 	}
 	

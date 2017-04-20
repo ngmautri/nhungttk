@@ -9,28 +9,33 @@
  */
 namespace Application\Controller;
 
-use Zend\I18n\Validator\Int;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Date;
-use Zend\Validator\EmailAddress;
-use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
-use MLA\Files;
-use Application\Model\Department;
-use Application\Model\DepartmentTable;
-use Application\Model\DepartmentMember;
-use Application\Model\DepartmentMemberTable;
+use Application\Model\AclRoleTable;
+use Nmt\Paginator;
+use Application\Service\DepartmentService;
 
-/*
- * Control Panel Controller
+use Application\Entity\NmtApplicationAclRole;
+use Doctrine\ORM\EntityManager;
+use Application\Entity\NmtApplicationAclUserRole;
+use User\Model\UserTable;
+use Application\Entity\NmtApplicationAclRoleResource;
+use Application\Entity\NmtApplicationDepartment;
+
+
+/**
+ *
+ * @author nmt
+ *        
  */
 class DepartmentController extends AbstractActionController {
+	const ROOT_NODE = '_COMPANY_';
 	protected $SmtpTransportService;
 	protected $authService;
 	protected $userTable;
-	protected $departmentTable;
-	protected $departmentMemberTable;
+	protected $tree;
+	protected $departmentService;
+	protected $doctrineEM;
 	
 	/*
 	 * Defaul Action
@@ -39,221 +44,249 @@ class DepartmentController extends AbstractActionController {
 	}
 	
 	/**
-	 * create New Article
+	 * 
+	 * @return \Zend\View\Model\ViewModel
 	 */
-	public function addAction() {
-		$request = $this->getRequest ();
+	public function initAction() {
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
+		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
 		
-		if ($request->isPost ()) {
+		$status = "initial...";
+		
+		// create ROOT NODE
+		$e = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationDepartment' )->findBy ( array (
+				'nodeName' => self::ROOT_NODE 
+		) );
+		if (count ( $e ) == 0) {
+			// create super admin
 			
-			if ($request->isPost ()) {
-				$redirectUrl = $request->getPost ( 'redirectUrl' );
-				
-				$input = new Department ();
-				$input->name = $request->getPost ( 'name' );
-				$input->short_name = $request->getPost ( 'short_name' );
-				
-				$input->description = $request->getPost ( 'description' );
-				$input->status = $request->getPost ( 'status' );
-				$input->created_by = $user ["id"];
-				
-				$errors = array ();
-				
-				if ($input->name == '') {
-					$errors [] = 'Please give department name';
-				}
-				
-				if (count ( $errors ) > 0) {
-					return new ViewModel ( array (
-							'errors' => $errors,
-							'redirectUrl' => $redirectUrl,
-							'department' => $input 
-					) );
-				}
-				
-				$this->departmentTable->add ( $input );
-				$this->redirect ()->toUrl ( $redirectUrl );
-			}
+			$input = new NmtApplicationDepartment ();
+			$input->setNodeName ( self::ROOT_NODE );
+			$input->setPathDepth ( 1 );
+			$input->setRemarks( 'Node Root' );
+			$input->setNodeCreatedBy ( $u );
+			$input->setNodeCreatedOn ( new \DateTime () );
+			$this->doctrineEM->persist ( $input );
+			$this->doctrineEM->flush ( $input );
+			$root_id = $input->getNodeId ();
+			$root_node = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $root_id );
+			$root_node->setPath ( $root_id . '/' );
+			$this->doctrineEM->flush ();
+			$status = 'Root node has been created successfully: ' . $root_id;
+		} else {
+			$status = 'Root node has been created already.';
 		}
-		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		
 		return new ViewModel ( array (
-				'message' => 'Add new department',
-				'redirectUrl' => $redirectUrl,
-				'errors' => null,
-				'department' => null 
+				'status' => $status 
+		
 		) );
 	}
 	
 	/**
-	 * Edit Spare part
-	 * 
-	 * @return \Zend\View\Model\ViewModel
+	 *
+	 * @version 3.0
+	 * @author Ngmautri
+	 *        
+	 *  Create new Department
 	 */
-	public function editAction() {
+	public function addAction() {
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
+		$parent_id = ( int ) $this->params ()->fromQuery ( 'parent_id' );
+		
 		$request = $this->getRequest ();
 		
 		if ($request->isPost ()) {
 			
-			$id = $request->getPost ( 'id' );
+			// $input->status = $request->getPost ( 'status' );
+			// $input->remarks = $request->getPost ( 'description' );
 			
-			$input = new MLASparepart ();
-			$input->id = $id;
-			$input->name = $request->getPost ( 'name' );
-			$input->name_local = $request->getPost ( 'name_local' );
-			
-			$input->description = $request->getPost ( 'description' );
-			$input->code = $request->getPost ( 'code' );
-			$input->tag = $request->getPost ( 'tag' );
-			
-			$input->location = $request->getPost ( 'location' );
-			$input->comment = $request->getPost ( 'comment' );
+			$node_name = $request->getPost ( 'node_name' );
 			
 			$errors = array ();
 			
-			if ($input->name == '') {
-				$errors [] = 'Please give spare-part name';
+			if ($node_name=== '' or $node_name=== null) {
+				$errors [] = 'Please give the name of department';
 			}
 			
-			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationDepartment' )->findBy ( array (
+					'nodeName' => $node_name
+			) );
+			
+			if (count($r)>=1) {
+				$errors [] = $node_name. ' exists';
+			}
+			
 			
 			if (count ( $errors ) > 0) {
-				// return current sp
-				$sparepart = $this->sparePartTable->get ( $input->id );
-				
 				return new ViewModel ( array (
 						'errors' => $errors,
-						'redirectUrl' => $redirectUrl,
-						'sparepart' => $sparepart 
+						'nodes' => null,
+						'parent_id' => null 
+				
 				) );
 			}
 			
-			$this->sparePartTable->update ( $input, $input->id );
-			$root_dir = $this->sparePartService->getPicturesPath ();
+			// No Error
+			$parent_id = $request->getPost ( 'parent_id' );
+			$parent_entity = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $parent_id );
+			// var_dump($parent_entity->getPath());
 			
-			$pictureUploadListener = $this->getServiceLocator ()->get ( 'Inventory\Listener\PictureUploadListener' );
-			$this->getEventManager ()->attachAggregate ( $pictureUploadListener );
+			$entity = new NmtApplicationDepartment();
+			$entity->setNodeName( $node_name );
+			$entity->setNodeParentId ( $parent_entity->getNodeId () );
+			$entity->setCreatedOn( new \DateTime() );
+			$entity->setCreatedBy( $u );
+			$entity->setStatus ( "activated" );
+			$entity->setRemarks ( 'item created by ' . $user ['firstname'] . ' ' . $user ['lastname'] );
 			
-			foreach ( $_FILES ["pictures"] ["error"] as $key => $error ) {
-				if ($error == UPLOAD_ERR_OK) {
-					$tmp_name = $_FILES ["pictures"] ["tmp_name"] [$key];
-					
-					$ext = strtolower ( pathinfo ( $_FILES ["pictures"] ["name"] [$key], PATHINFO_EXTENSION ) );
-					
-					if ($ext == 'jpeg' || $ext == 'jpg' || $ext == 'gif' || $ext == 'png') {
-						
-						$checksum = md5_file ( $tmp_name );
-						
-						if (! $this->sparePartPictureTable->isChecksumExits ( $id, $checksum )) {
-							
-							$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
-							$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
-							
-							if (! is_dir ( $folder )) {
-								mkdir ( $folder, 0777, true ); // important
-							}
-							
-							$ftype = $_FILES ["pictures"] ["type"] [$key];
-							move_uploaded_file ( $tmp_name, "$folder/$name" );
-							
-							// add pictures
-							$pic = new SparepartPicture ();
-							$pic->url = "$folder/$name";
-							$pic->filetype = $ftype;
-							$pic->sparepart_id = $id;
-							$pic->filename = "$name";
-							$pic->folder = "$folder";
-							$pic->checksum = $checksum;
-							
-							$this->sparePartPictureTable->add ( $pic );
-							
-							// trigger uploadPicture
-							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
-									'picture_name' => $name,
-									'pictures_dir' => $folder 
-							) );
-						}
-					}
-				}
-			}
+			$this->doctrineEM->persist ( $entity );
+			$this->doctrineEM->flush ();
+			$new_id = $entity->getNodeId ();
 			
-			$this->redirect ()->toUrl ( $redirectUrl );
+			$new_entity = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $new_id );
+			$new_entity->setPath ( $parent_entity->getPath () . $new_id . '/' );
 			
-			// return $this->redirect ()->toRoute ( 'Spareparts_Category');
+			$a = explode ( '/', $new_entity->getPath () );
+			$new_entity->setPathDepth ( count ( $a ) - 1 );
+			
+			$this->doctrineEM->flush ();
 		}
 		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$sparepart = $this->sparePartTable->get ( $id );
-		
+		$node = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationDepartment' )->findAll ();
+		/*
+		 * if ($request->isXmlHttpRequest ()) {
+		 * $this->layout ( "layout/inventory/ajax" );
+		 * }
+		 */
 		return new ViewModel ( array (
-				'sparepart' => $sparepart,
-				'redirectUrl' => $redirectUrl,
-				'errors' => null 
+				'errors' => null,
+				'nodes' => $node,
+				'parent_id' => $parent_id 
+		
 		) );
 	}
 	
 	/**
 	 */
 	public function listAction() {
-		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 20;
-		} else {
-			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
-		}
-		;
+		$this->departmentService->initCategory();
+		$this->departmentService->updateCategory(1,0);
+		$jsTree = $this->departmentService->generateJSTree(1);
 		
-		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
-			$page = 1;
-		} else {
-			$page = $this->params ()->fromQuery ( 'page' );
-		}
-		;
-		
-		$departments = $this->departmentTable->getDepartments();
-		$totalResults = $departments->count ();
-		
-		$paginator = null;
-		if ($totalResults > $resultsPerPage) {
-			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$departments = $this->departmentTable->getLimitDepartments ( ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
-		}
-		
+		//$jsTree = $this->tree;
 		return new ViewModel ( array (
-				'total_departments' => $totalResults,
-				'departments' => $departments,
-				'paginator' => $paginator 
+				'jsTree' => $jsTree 
 		) );
 	}
 	
 	/**
-	 * 
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function list1Action() {
+		$roles = $this->departmentService->returnAclTree ();
+		
+		return new ViewModel ( array (
+				'roles' => $roles 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function addMemberAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
-		
+		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
 		
 		if ($request->isPost ()) {
 			
-			$department_id = ( int ) $request->getPost ( 'id' );
+			$role_id = ( int ) $request->getPost ( 'id' );
+			$user_id_list = $request->getPost ( 'users' );
+			
+			if (count ( $user_id_list ) > 0) {
+				foreach ( $user_id_list as $member_id ) {
+					
+					/*
+					 * $member = new AclUserRole ();
+					 * $member->role_id = $role_id;
+					 * $member->user_id = $user_id;
+					 * $member->updated_by = $user ['id'];
+					 */
+					// echo $member_id;
+					
+					$criteria = array (
+							'user' => $member_id,
+							'role' => $role_id 
+					);
+					
+					$isMember = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAclUserRole' )->findBy ( $criteria );
+					// var_dump($isMember);
+					if (count ( $isMember ) == 0) {
+						$member = new NmtApplicationAclUserRole ();
+						$role = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationAclRole', $role_id );
+						$member->setRole ( $role );
+						$m = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $member_id );
+						$member->setUser ( $m );
+						$member->setUpdatedBy ( $u );
+						$member->setUpdatedOn ( new \DateTime () );
+						$this->doctrineEM->persist ( $member );
+						$this->doctrineEM->flush ();
+					}
+				}
+				
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				$this->redirect ()->toUrl ( $redirectUrl );
+			}
+		}
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		// $role = $this->aclRoleTable->getRole ( $id );
+		$role = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationAclRole', $id );
+		
+		// No Doctrine
+		$users = $this->aclRoleTable->getNoneMembersOfRole ( $id );
+		
+		return new ViewModel ( array (
+				'role' => $role,
+				'users' => $users,
+				'redirectUrl' => $redirectUrl 
+		) );
+	}
+	
+	/**
+	 *
+	 * @deprecated
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function addMemberActionOld() {
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		
+		if ($request->isPost ()) {
+			
+			$role_id = ( int ) $request->getPost ( 'id' );
 			$user_id_list = $request->getPost ( 'users' );
 			
 			if (count ( $user_id_list ) > 0) {
 				
 				foreach ( $user_id_list as $user_id ) {
-					$member = new DepartmentMember();
-					$member->department_id = $department_id;
+					$member = new AclUserRole ();
+					$member->role_id = $role_id;
 					$member->user_id = $user_id;
-					$member->updated_by = $user['id'];
+					$member->updated_by = $user ['id'];
 					
-					if ($this->departmentMemberTable->isMember ( $user_id, $department_id ) == false) {
-						$this->departmentMemberTable->add ( $member );
+					if ($this->aclUserRoleTable->isMember ( $user_id, $role_id ) == false) {
+						$this->aclUserRoleTable->add ( $member );
 					}
 				}
 				
@@ -271,56 +304,347 @@ class DepartmentController extends AbstractActionController {
 		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
-		$department = $this->departmentTable->get ( $id );
+		$role = $this->aclRoleTable->getRole ( $id );
 		
-		$users = $this->departmentMemberTable->getNoneMembersOfDepartment ( $id );
+		$users = $this->aclUserRoleTable->getNoneMembersOfRole ( $id );
 		
 		return new ViewModel ( array (
-				'department' => $department,
+				'role' => $role,
 				'users' => $users,
 				'redirectUrl' => $redirectUrl 
 		) );
 	}
 	
 	/**
-	 * 
+	 *
+	 * @deprecated create New Role
+	 */
+	public function addActionOld() {
+		$request = $this->getRequest ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		
+		if ($request->isPost ()) {
+			
+			// $input->status = $request->getPost ( 'status' );
+			// $input->remarks = $request->getPost ( 'description' );
+			
+			$role_name = $request->getPost ( 'role' );
+			
+			$errors = array ();
+			
+			if ($role_name === '' or $role_name === null) {
+				$errors [] = 'Please give role name';
+			}
+			
+			if ($this->aclRoleTable->isRoleExits ( $role_name ) === true) {
+				$errors [] = $role_name . ' exists';
+			}
+			
+			$response = $this->getResponse ();
+			
+			if (count ( $errors ) > 0) {
+				$c = array (
+						'status' => '0',
+						'messages' => $errors 
+				);
+				$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+				$response->setContent ( json_encode ( $c ) );
+				return $response;
+			}
+			
+			$input = new AclRole ();
+			$input->role = $role_name;
+			$input->parent_id = $this->aclRoleTable->getRoleIDByName ( $request->getPost ( 'parent_name' ) );
+			$input->created_by = $user ["id"];
+			
+			// actually Role_name
+			$role_id = $request->getPost ( 'role_id' );
+			
+			if ($this->aclRoleTable->isRoleExits ( $role_id ) === true) {
+				$this->aclRoleTable->updateByRole ( $input, $role_id );
+				
+				$c = array (
+						'status' => '1',
+						'messages' => array (
+								"Updated" 
+						) 
+				);
+				$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+				$response->setContent ( json_encode ( $c ) );
+				return $response;
+			} else {
+				// role name must unique
+				$new_role_id = $this->aclRoleTable->add ( $input );
+				
+				// get path of parent and update new role
+				if ($input->parent_id !== null) :
+					$path = $this->aclRoleTable->getRole ( $input->parent_id )->path;
+					$path = $path . $new_role_id . '/';
+					$input->path = $path;
+				else :
+					$input->path = $new_role_id . '/';
+				endif;
+				
+				$a = explode ( '/', $input->path );
+				$input->path_depth = count ( $a ) - 1;
+				$new_role_id = $this->aclRoleTable->update ( $input, $new_role_id );
+				
+				$c = array (
+						'status' => '1',
+						'messages' => array (
+								"Created" 
+						) 
+				);
+				$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+				$response->setContent ( json_encode ( $c ) );
+				return $response;
+			}
+		}
+	}
+	
+	/**
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
-	public function showAction() {
+	public function grantAccessAction() {
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		
+		if ($request->isPost ()) {
+			
+			$role_id = ( int ) $request->getPost ( 'role_id' );
+			$resources = $request->getPost ( 'resources' );
+			
+			if (count ( $resources ) > 0) {
+				
+				foreach ( $resources as $r ) {
+					
+					// if not granted
+					$criteria = array (
+							'role' => $role_id,
+							'resource' => $r 
+					);
+					
+					$isGranted = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAclRoleResource' )->findBy ( $criteria );
+					
+					if (count ( $isGranted ) == 0) {
+						$e = new NmtApplicationAclRoleResource ();
+						
+						$role = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationAclRole', $role_id );
+						$e->setRole ( $role );
+						
+						$resources = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationAclResource', $r );
+						$e->setResource ( $resources );
+						
+						$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
+						$e->setUpdatedBy ( $u );
+						
+						$e->setUpdatedOn ( new \DateTime () );
+						$this->doctrineEM->persist ( $e );
+						$this->doctrineEM->flush ();
+					}
+					
+					/*
+					 * if ($this->aclRoleResourceTable->isGrantedAccess ( $role_id, $r ) == false) {
+					 * $access = new AclRoleResource ();
+					 * $access->resource_id = $r;
+					 * $access->role_id = $role_id;
+					 * $this->aclRoleResourceTable->add ( $access );
+					 * }
+					 */
+				}
+				
+				/*
+				 * return new ViewModel ( array (
+				 * 'sparepart' => null,
+				 * 'categories' => $categories,
+				 *
+				 * ) );
+				 */
+				$this->redirect ()->toUrl ( "/application/role/grant-access?id=" . $role_id );
+			}
+		}
+		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 20;
+			$resultsPerPage = 18;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
-	
+		;
+		
 		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
 			$page = 1;
 		} else {
 			$page = $this->params ()->fromQuery ( 'page' );
 		}
-	
-		$id = $this->params ()->fromQuery ( 'id' );
-	
-		$department= $this->departmentTable->get ( $id );
-	
-		$users = $this->departmentMemberTable->getMembersOf($id );
-		$totalResults = $users->count ();
-	
+		;
+		$role_id = $this->params ()->fromQuery ( 'id' );
+		
+		$resources = $this->aclRoleTable->getNoneResourcesOfRole ( $role_id, 0, 0 );
+		
+		$totalResults = count ( $resources );
+		
 		$paginator = null;
 		if ($totalResults > $resultsPerPage) {
 			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$users = $this->departmentMemberTable->getLimitMembersOf($id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$resources = $this->aclRoleTable->getNoneResourcesOfRole ( $role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
-	
+		
 		return new ViewModel ( array (
-				'department' => $department,
-				'total_users' => $totalResults,
-				'users' => $users,
-				'paginator' => $paginator
+				'total_resources' => $totalResults,
+				'role_id' => $role_id,
+				
+				'resources' => $resources,
+				'paginator' => $paginator 
 		) );
 	}
 	
-	// SETTER AND GETTER
+	/**
+	 *
+	 * @deprecated
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function grantAccessActionOld() {
+		$request = $this->getRequest ();
+		
+		if ($request->isPost ()) {
+			
+			$role_id = ( int ) $request->getPost ( 'role_id' );
+			$resources = $request->getPost ( 'resources' );
+			
+			if (count ( $resources ) > 0) {
+				
+				foreach ( $resources as $r ) {
+					if ($this->aclRoleResourceTable->isGrantedAccess ( $role_id, $r ) == false) {
+						$access = new AclRoleResource ();
+						$access->resource_id = $r;
+						$access->role_id = $role_id;
+						$this->aclRoleResourceTable->add ( $access );
+					}
+				}
+				
+				/*
+				 * return new ViewModel ( array (
+				 * 'sparepart' => null,
+				 * 'categories' => $categories,
+				 *
+				 * ) );
+				 */
+				$this->redirect ()->toUrl ( "/user/role/grant-access?id=" . $role_id );
+			}
+		}
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 18;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		$role_id = $this->params ()->fromQuery ( 'id' );
+		
+		$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, 0, 0 );
+		$totalResults = $resources->count ();
+		
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		return new ViewModel ( array (
+				'total_resources' => $totalResults,
+				'role_id' => $role_id,
+				
+				'resources' => $resources,
+				'paginator' => $paginator 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function grantAccess1Action() {
+		$request = $this->getRequest ();
+		
+		if ($request->isPost ()) {
+			
+			$role_id = ( int ) $request->getPost ( 'role_id' );
+			$resources = $request->getPost ( 'resources' );
+			
+			if (count ( $resources ) > 0) {
+				
+				foreach ( $resources as $r ) {
+					if ($this->aclRoleResourceTable->isGrantedAccess ( $role_id, $r ) == false) {
+						$access = new AclRoleResource ();
+						$access->resource_id = $r;
+						$access->role_id = $role_id;
+						$this->aclRoleResourceTable->add ( $access );
+					}
+				}
+				
+				/*
+				 * return new ViewModel ( array (
+				 * 'sparepart' => null,
+				 * 'categories' => $categories,
+				 *
+				 * ) );
+				 */
+				$this->redirect ()->toUrl ( "/user/role/grant-access?id=" . $role_id );
+			}
+		}
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 18;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		$role = $this->params ()->fromQuery ( 'role' );
+		$role_id = $this->aclRoleTable->getRoleIDByName ( $role );
+		
+		$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, 0, 0 );
+		$totalResults = $resources->count ();
+		
+		$paginator = null;
+		if ($totalResults > $resultsPerPage) {
+			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
+			$resources = $this->aclResourceTable->getNoneResourcesOfRole ( $role_id, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		return new ViewModel ( array (
+				'total_resources' => $totalResults,
+				'role_id' => $role_id,
+				
+				'resources' => $resources,
+				'paginator' => $paginator 
+		) );
+	}
+	public function getAclRoleTable() {
+		return $this->aclRoleTable;
+	}
+	public function setAclRoleTable(AclRoleTable $aclRoleTable) {
+		$this->aclRoleTable = $aclRoleTable;
+		return $this;
+	}
 	public function getSmtpTransportService() {
 		return $this->SmtpTransportService;
 	}
@@ -338,24 +662,24 @@ class DepartmentController extends AbstractActionController {
 	public function getUserTable() {
 		return $this->userTable;
 	}
-	public function setUserTable($userTable) {
+	public function setUserTable(UserTable $userTable) {
 		$this->userTable = $userTable;
 		return $this;
 	}
-	public function getDepartmentTable() {
-		return $this->departmentTable;
+	
+	public function getDoctrineEM() {
+		return $this->doctrineEM;
 	}
-	public function setDepartmentTable(DepartmentTable $departmentTable) {
-		$this->departmentTable = $departmentTable;
+	public function setDoctrineEM(EntityManager $doctrineEM) {
+		$this->doctrineEM = $doctrineEM;
 		return $this;
 	}
-	public function getDepartmentMemberTable() {
-		return $this->departmentMemberTable;
+	public function getDepartmentService() {
+		return $this->departmentService;
 	}
-	public function setDepartmentMemberTable(DepartmentMemberTable $departmentMemberTable) {
-		$this->departmentMemberTable = $departmentMemberTable;
+	public function setDepartmentService(DepartmentService $departmentService) {
+		$this->departmentService = $departmentService;
 		return $this;
 	}
 	
-
 }

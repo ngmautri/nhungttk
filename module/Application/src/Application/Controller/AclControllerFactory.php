@@ -2,9 +2,9 @@
 
 namespace Application\Controller;
 
-use Zend\ServiceManager\FactoryInterface;
+use Application\Controller\AclController;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Application\Controller\ACLController;
+use Zend\ServiceManager\FactoryInterface;
 
 /*
  * @author nmt
@@ -13,32 +13,30 @@ use Application\Controller\ACLController;
 class AclControllerFactory implements FactoryInterface {
 	
 	/**
-	 *
+	 * 
 	 * {@inheritDoc}
-	 *
 	 * @see \Zend\ServiceManager\FactoryInterface::createService()
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		
-		$sm = $serviceLocator->getServiceLocator();
+		$container = $serviceLocator->getServiceLocator ();
 			
 		$controller = new AclController();
 		
 		//User Table
-		$tbl =  $sm->get ('User\Model\UserTable' );
+		$tbl =  $container->get ('User\Model\UserTable' );
 		$controller->setUserTable($tbl);
 		
-		//User Table
-		$tbl =  $sm->get ('User\Model\AclResourceTable' );
-		$controller->setAclResourceTable($tbl);
-		
 		//Auth Service
-		$sv =  $sm->get ('AuthService' );
+		$sv =  $container->get ('AuthService' );
 		$controller->setAuthService($sv );
 		
-		//Auth Service
-		$sv =  $sm->get ('Application\Service\ApplicationService' );
+		//Applicatation Service
+		$sv =  $container->get ('Application\Service\ApplicationService' );
 		$controller->setAppService($sv );
+		
+		$sv =  $container->get('doctrine.entitymanager.orm_default');
+		$controller->setDoctrineEM($sv);
 		
 		
 		return $controller;

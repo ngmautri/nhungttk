@@ -21,7 +21,7 @@ use Application\Entity\NmtApplicationAclUserRole;
 use User\Model\UserTable;
 use Application\Entity\NmtApplicationAclRoleResource;
 use Application\Entity\NmtApplicationDepartment;
-use Application\Entity\NmtApplicationCurrency;
+use Application\Entity\NmtApplicationCountry;
 
 
 /**
@@ -29,7 +29,7 @@ use Application\Entity\NmtApplicationCurrency;
  * @author nmt
  *        
  */
-class CurrencyController extends AbstractActionController {
+class CountryController extends AbstractActionController {
 	const ROOT_NODE = '_COMPANY_';
 	protected $SmtpTransportService;
 	protected $authService;
@@ -96,70 +96,69 @@ class CurrencyController extends AbstractActionController {
 		$identity = $this->authService->getIdentity ();
 		$user = $this->userTable->getUserByEmail ( $identity );
 		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
-			
+	
 		if ($request->isPost ()) {
 			
 			// $input->status = $request->getPost ( 'status' );
 			// $input->remarks = $request->getPost ( 'description' );
 			
-			$currency = $request->getPost ( 'currency' );
-			$currency_numeric_code= $request->getPost ( 'currency_numeric_code' );
-			$description= $request->getPost ( 'description' );
-			$currency_entity= $request->getPost ( 'entity' );
-			$status= $request->getPost ( 'status' );
+			$country_name = $request->getPost ( 'country_name' );
+			$country_code_2 = $request->getPost ( 'country_code_2' );
+			$country_code_3 = $request->getPost ( 'country_code_3' );
+			$country_numeric_code = $request->getPost ( 'country_numeric_code' );
+			$status = $request->getPost ( 'status' );
 			
 			$errors = array ();
 			
-			if ($currency=== '' or $currency=== null) {
-				$errors [] = 'Please give the name!';
+			if ($country_name=== '' or $country_name=== null) {
+				$errors [] = 'Please give the name of country';
 			}
-			
-			$r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findBy ( array (
-					'currency' => $currency
+				
+			$r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCountry' )->findBy ( array (
+					'countryName' => $country_name
 			) );
 			
 			if (count($r)>=1) {
-				$errors [] = $currency. ' exists';
+				$errors [] = $country_name. ' exists';
 			}
 			
 			
 			if (count ( $errors ) > 0) {
 				return new ViewModel ( array (
 						'errors' => $errors,
-				) );
+					) );
 			}
 			
 			// No Error
-			$entity = new NmtApplicationCurrency();
+
 			
-			$entity->setCurrency( $currency);
-			$entity->setCurrencyNumericCode( $currency_numeric_code);
-			$entity->setStatus ( $status);
-			$entity->setEntity( $currency_entity);
-			$entity->setDescription( $description);
-			
+			$entity = new NmtApplicationCountry();
+			$entity->setCountryName( $country_name);
+			$entity->setCountryCode2( $country_code_2);
+			$entity->setCountryCode3( $country_code_3);
+			$entity->setCountryNumericCode($country_numeric_code);
 			$entity->setCreatedOn( new \DateTime() );
 			$entity->setCreatedBy( $u );
-				
+			$entity->setStatus ( $status);
 			$this->doctrineEM->persist ( $entity );
 			$this->doctrineEM->flush ();
+			
 		}
 		
-		/*
+			/*
 		 * if ($request->isXmlHttpRequest ()) {
 		 * $this->layout ( "layout/inventory/ajax" );
 		 * }
 		 */
 		return new ViewModel ( array (
 				'errors' => null,
-		
 		) );
 	}
 	
 	/**
 	 */
 	public function listAction() {
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findAll();
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCountry' )->findAll();
 		$total_records= count($list);
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (

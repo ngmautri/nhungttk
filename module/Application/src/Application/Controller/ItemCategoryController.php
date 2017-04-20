@@ -13,15 +13,14 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Model\AclRoleTable;
 use Nmt\Paginator;
-use Application\Service\DepartmentService;
+use Application\Service\ItemCategoryService;
 
 use Application\Entity\NmtApplicationAclRole;
 use Doctrine\ORM\EntityManager;
 use Application\Entity\NmtApplicationAclUserRole;
 use User\Model\UserTable;
 use Application\Entity\NmtApplicationAclRoleResource;
-use Application\Entity\NmtApplicationDepartment;
-use Application\Entity\NmtApplicationCurrency;
+use Application\Entity\NmtInventoryItemCategory;
 
 
 /**
@@ -29,13 +28,13 @@ use Application\Entity\NmtApplicationCurrency;
  * @author nmt
  *        
  */
-class CurrencyController extends AbstractActionController {
-	const ROOT_NODE = '_COMPANY_';
+class ItemCategoryController extends AbstractActionController {
+	const ROOT_NODE = '_ROOT_';
 	protected $SmtpTransportService;
 	protected $authService;
 	protected $userTable;
 	protected $tree;
-	protected $departmentService;
+	protected $itemCategoryService;
 	protected $doctrineEM;
 	
 	/*
@@ -49,20 +48,19 @@ class CurrencyController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function initAction() {
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
+		$identity = $this->identity();
+		$u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers' )->findOneBy(array('email'=>$identity));
 		
 		$status = "initial...";
 		
 		// create ROOT NODE
-		$e = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationDepartment' )->findBy ( array (
+		$e = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemCategory' )->findBy ( array (
 				'nodeName' => self::ROOT_NODE 
 		) );
 		if (count ( $e ) == 0) {
-			// create super admin
+			// create ROOT
 			
-			$input = new NmtApplicationDepartment ();
+			$input = new NmtInventoryItemCategory();
 			$input->setNodeName ( self::ROOT_NODE );
 			$input->setPathDepth ( 1 );
 			$input->setRemarks( 'Node Root' );
@@ -71,7 +69,7 @@ class CurrencyController extends AbstractActionController {
 			$this->doctrineEM->persist ( $input );
 			$this->doctrineEM->flush ( $input );
 			$root_id = $input->getNodeId ();
-			$root_node = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $root_id );
+			$root_node = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $root_id );
 			$root_node->setPath ( $root_id . '/' );
 			$this->doctrineEM->flush ();
 			$status = 'Root node has been created successfully: ' . $root_id;
@@ -93,58 +91,68 @@ class CurrencyController extends AbstractActionController {
 	 */
 	public function addAction() {
 		$request = $this->getRequest ();
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
-			
+		$identity = $this->identity();
+		$u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers' )->findOneBy(array('email'=>$identity));
+		$parent_id = ( int ) $this->params ()->fromQuery ( 'parent_id' );
+		
 		if ($request->isPost ()) {
 			
 			// $input->status = $request->getPost ( 'status' );
 			// $input->remarks = $request->getPost ( 'description' );
 			
-			$currency = $request->getPost ( 'currency' );
-			$currency_numeric_code= $request->getPost ( 'currency_numeric_code' );
-			$description= $request->getPost ( 'description' );
-			$currency_entity= $request->getPost ( 'entity' );
-			$status= $request->getPost ( 'status' );
+			$node_name = $request->getPost ( 'node_name' );
 			
 			$errors = array ();
 			
-			if ($currency=== '' or $currency=== null) {
-				$errors [] = 'Please give the name!';
+			if ($node_name=== '' or $node_name=== null) {
+				$errors [] = 'Please give the name of department';
 			}
 			
-			$r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findBy ( array (
-					'currency' => $currency
+			$r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemCategory' )->findBy ( array (
+					'nodeName' => $node_name
 			) );
 			
 			if (count($r)>=1) {
-				$errors [] = $currency. ' exists';
+				$errors [] = $node_name. ' exists';
 			}
 			
 			
 			if (count ( $errors ) > 0) {
 				return new ViewModel ( array (
 						'errors' => $errors,
+						'nodes' => null,
+						'parent_id' => null 
+				
 				) );
 			}
 			
 			// No Error
-			$entity = new NmtApplicationCurrency();
+			$parent_id = $request->getPost ( 'parent_id' );
+			$parent_entity = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $parent_id );
+			// var_dump($parent_entity->getPath());
 			
-			$entity->setCurrency( $currency);
-			$entity->setCurrencyNumericCode( $currency_numeric_code);
-			$entity->setStatus ( $status);
-			$entity->setEntity( $currency_entity);
-			$entity->setDescription( $description);
+			$entity = new NmtInventoryItemCategory();
+			$entity->setNodeName( $node_name );
+			$entity->setNodeParentId ( $parent_entity->getNodeId () );
+			$entity->setNodeCreatedOn( new \DateTime() );
+			$entity->setNodeCreatedby( $u );
+			$entity->setStatus ( "activated" );
+			$entity->setRemarks ( 'created');
 			
-			$entity->setCreatedOn( new \DateTime() );
-			$entity->setCreatedBy( $u );
-				
 			$this->doctrineEM->persist ( $entity );
+			$this->doctrineEM->flush ();
+			$new_id = $entity->getNodeId ();
+			
+			$new_entity = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $new_id );
+			$new_entity->setPath ( $parent_entity->getPath () . $new_id . '/' );
+			
+			$a = explode ( '/', $new_entity->getPath () );
+			$new_entity->setPathDepth ( count ( $a ) - 1 );
+			
 			$this->doctrineEM->flush ();
 		}
 		
+		$node = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemCategory' )->findAll ();
 		/*
 		 * if ($request->isXmlHttpRequest ()) {
 		 * $this->layout ( "layout/inventory/ajax" );
@@ -152,6 +160,8 @@ class CurrencyController extends AbstractActionController {
 		 */
 		return new ViewModel ( array (
 				'errors' => null,
+				'nodes' => $node,
+				'parent_id' => $parent_id 
 		
 		) );
 	}
@@ -159,28 +169,44 @@ class CurrencyController extends AbstractActionController {
 	/**
 	 */
 	public function listAction() {
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findAll();
-		$total_records= count($list);
+		$this->itemCategoryService->initCategory();
+		$this->itemCategoryService->updateCategory(2,0);
+		$jsTree = $this->itemCategoryService->generateJSTree(2);
+		
+		$request = $this->getRequest ();
+		
+		 if ($request->isXmlHttpRequest ()) {
+		 $this->layout ( "layout/user/ajax" );
+		 }
+		
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (
-				'list' => $list,
-				'total_records'=>$total_records,
-				'paginator'=>null,
+				'jsTree' => $jsTree 
 		) );
 	}
 	
 	/**
-	 *
+	 * 
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function list1Action() {
-		$roles = $this->departmentService->returnAclTree ();
+		$this->itemCategoryService->initCategory();
+		$this->itemCategoryService->updateCategory(2,0);
+		$jsTree = $this->itemCategoryService->generateJSTree(2);
 		
+		$request = $this->getRequest ();
+		
+		if ($request->isXmlHttpRequest ()) {
+			$this->layout ( "layout/user/ajax" );
+		}
+		
+		//$jsTree = $this->tree;
 		return new ViewModel ( array (
-				'roles' => $roles 
+				'jsTree' => $jsTree
 		) );
 	}
 	
+		
 	/**
 	 *
 	 * @return \Zend\View\Model\ViewModel
@@ -668,5 +694,13 @@ class CurrencyController extends AbstractActionController {
 		$this->departmentService = $departmentService;
 		return $this;
 	}
+	public function getItemCategoryService() {
+		return $this->itemCategoryService;
+	}
+	public function setItemCategoryService(ItemCategoryService $itemCategoryService) {
+		$this->itemCategoryService = $itemCategoryService;
+		return $this;
+	}
+	
 	
 }

@@ -9,22 +9,18 @@
  */
 namespace Application\Controller;
 
-use Zend\I18n\Validator\Int;
+
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Date;
-use Zend\Validator\EmailAddress;
-use Zend\Mail\Message;
+use Application\Service\ApplicationService;
+use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
 use MLA\Paginator;
-use MLA\Files;
-
-use Application\Service\ApplicationService;
-use User\Model\AclResource;
-use User\Model\AclResourceTable;
 
 
-/*
- * Control Panel Controller
+/**
+ * 
+ * @author nmt
+ *
  */
 class AclController extends AbstractActionController {
 	
@@ -33,6 +29,9 @@ class AclController extends AbstractActionController {
 	
 	protected $userTable;
 	protected $aclResourceTable;
+	
+	protected $doctrineEM;
+	
 	
 	/*
 	 * Defaul Action
@@ -43,8 +42,16 @@ class AclController extends AbstractActionController {
 	public function denyAction() {
 	}
 	
+	
+	/**
+	 * 
+	 * @return \Application\Controller\ViewModel
+	 */
 	public function listAction() {
 		$modules = $this->appService->getLoadedModules();
+		
+		//var_dump($modules);
+		
 		return new ViewModel ( array (
 				'modules' => $modules,
 				'e' => $this->getEvent(),
@@ -52,6 +59,11 @@ class AclController extends AbstractActionController {
 		) );
 	}
 	
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function listResourcesAction() {
 		
 
@@ -68,39 +80,75 @@ class AclController extends AbstractActionController {
 			$page = $this->params ()->fromQuery ( 'page' );
 		}
 		;
+				
+		/* $resources = $this->aclResourceTable->getResources(0, 0);
+		$totalResults = $resources->count (); */
+		/* $sql="select count(*) as total_resources from nmt_application_acl_resource where 1";
+
+		$result = $this->doctrineEM->getConnection()->query($sql)->fetchAll();
+		var_dump($result); */
 		
-		
-		$resources = $this->aclResourceTable->getResources(0, 0);
-		$totalResults = $resources->count ();
-		
+		 
+    	
+		$resources=$this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy(array(),array('module'=>'ASC'));
+		$totalResults=count($resources);
 		$paginator = null;
+		
 		if ($totalResults > $resultsPerPage) {
-			$paginator = new Paginator ( $totalResults, $page, $resultsPerPage );
-			$resources = $this->aclResourceTable->getResources(($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$paginator = new  Paginator( $totalResults, $page, $resultsPerPage );
+			$resources=$this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findBy(array(),array('module'=>'ASC'),($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 	
-		return new ViewModel ( array (
+		return new  ViewModel( array (
 				'total_resources' => $totalResults,
 				'resources' => $resources,
 				'paginator' => $paginator,
 		) );
 	}
 	
+	
+	/**
+	 * @copyright nmt@mascot.dk
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function updateResourcesAction() {
-		$resources = $this->appService->getResources();
+		
+		$identity = $this->authService->getIdentity ();
+		$user = $this->userTable->getUserByEmail ( $identity );
+		$resources= $this->appService->getAppLoadedResources();
+		
+		
+		$counter=0;
 		foreach($resources as $res){
+			$saved_res =$this->doctrineEM->getRepository( 'Application\Entity\NmtApplicationAclResource')->findBy(array('resource'=>$res['resource']));
 			
-			if(!$this->aclResourceTable->isResourceExits($res))
+			if($saved_res == null){
+				$counter++;
+				$input = new \Application\Entity\NmtApplicationAclResource();
+				$input->setModule($res['module']);
+				$input->setController($res['controller']);
+				$input->setController($res['controller']);
+				$input->setAction($res['action']);
+				$input->setResource($res['resource']);
+				$input->setCreatedOn(new \DateTime ());
+				$input->setType("ROUTE");
+				$input->setRemarks("created by " . $user['firstname'] . " ". $user['lastname']);
+				$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user['id']);
+				$input->setCreatedBy($u);
+				$this->doctrineEM->persist ( $input);
+				$this->doctrineEM->flush ();
+			}
+		
+			/* if(!$this->aclResourceTable->isResourceExits($res))
 			{
 				$input= new AclResource();
 				$input->resource = $res;
 				$input->type = "ROUTE";
 				$this->aclResourceTable->add($input);
-			}
+			} */
 		}
 		return new ViewModel ( array (
-				'modules' => $modules,
-				'e' => $this->getEvent(),
+					'counter'=>$counter,
 	
 		) );
 	}
@@ -134,6 +182,14 @@ class AclController extends AbstractActionController {
 		$this->aclResourceTable = $aclResourceTable;
 		return $this;
 	}
+	public function getDoctrineEM() {
+		return $this->doctrineEM;
+	}
+	public function setDoctrineEM(EntityManager $doctrineEM) {
+		$this->doctrineEM = $doctrineEM;
+		return $this;
+	}
+	
 	
 	
 	

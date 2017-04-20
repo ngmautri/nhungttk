@@ -2,41 +2,42 @@
 
 namespace Application\Controller;
 
-use Application\Controller\CurrencyController;
-use Zend\ServiceManager\FactoryInterface;
+use Application\Controller\SearchController;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\FactoryInterface;
 
 /*
  * @author nmt
  *
  */
-class CurrencyControllerFactory implements FactoryInterface {
+class SearchControllerFactory implements FactoryInterface {
 	
 	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 * @see \Zend\ServiceManager\FactoryInterface::createService()
-	 */
+	*
+	* {@inheritDoc}
+	* @see \Zend\ServiceManager\FactoryInterface::createService()
+	*/
 	public function createService(ServiceLocatorInterface $serviceLocator) {
-		$container = $serviceLocator->getServiceLocator ();
+		
+		$container = $serviceLocator->getServiceLocator();
 			
-		$controller = new CurrencyController();
+		$controller = new SearchController();
 		
 		//User Table
 		$tbl =  $container->get ('User\Model\UserTable' );
 		$controller->setUserTable($tbl);
 		
-		$tbl =  $container->get ('Application\Model\AclRoleTable' );
-		$controller->setAclRoleTable($tbl);
-		
+		//User Table
+		/* $tbl =  $sm->get ('User\Model\AclResourceTable' );
+		$controller->setAclResourceTable($tbl);
+		 */
 		//Auth Service
 		$sv =  $container->get ('AuthService' );
 		$controller->setAuthService($sv );
 		
 		//Auth Service
-		$sv =  $container->get ('Application\Service\DepartmentService' );
-		$controller->setDepartmentService($sv );
+		$sv =  $container->get ('Application\Service\AppSearchService' );
+		$controller->setAppSearchService($sv );
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);

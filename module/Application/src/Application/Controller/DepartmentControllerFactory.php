@@ -2,9 +2,10 @@
 
 namespace Application\Controller;
 
-use Zend\ServiceManager\FactoryInterface;
+use Application\Controller\DepartmentController;
+
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Application\Controller\DepartmentControllerController;
+use Zend\ServiceManager\FactoryInterface;
 
 /*
  * @author nmt
@@ -13,33 +14,35 @@ use Application\Controller\DepartmentControllerController;
 class DepartmentControllerFactory implements FactoryInterface {
 	
 	/**
-	 *
+	 * 
 	 * {@inheritDoc}
-	 *
 	 * @see \Zend\ServiceManager\FactoryInterface::createService()
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		
-		$sm = $serviceLocator->getServiceLocator();
+		$container = $serviceLocator->getServiceLocator ();
+			
 			
 		$controller = new DepartmentController();
 		
 		//User Table
-		$tbl =  $sm->get ('User\Model\UserTable' );
+		$tbl =  $container->get ('User\Model\UserTable' );
 		$controller->setUserTable($tbl);
 		
-		//Department Table
-		$tbl =  $sm->get ('Application\Model\DepartmentTable' );
-		$controller->setDepartmentTable( $tbl );
-
-		//Department Member Table
-		$tbl =  $sm->get ('Application\Model\DepartmentMemberTable' );
-		$controller->setDepartmentMemberTable($tbl );
-		
+		$tbl =  $container->get ('Application\Model\AclRoleTable' );
+		$controller->setAclRoleTable($tbl);
 		
 		//Auth Service
-		$sv =  $sm->get ('AuthService' );
+		$sv =  $container->get ('AuthService' );
 		$controller->setAuthService($sv );
+		
+		//Auth Service
+		$sv =  $container->get ('Application\Service\DepartmentService' );
+		$controller->setDepartmentService($sv );
+		
+		$sv =  $container->get('doctrine.entitymanager.orm_default');
+		$controller->setDoctrineEM($sv);
+		
 		
 		return $controller;
 	}

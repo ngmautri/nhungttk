@@ -2,26 +2,25 @@
 
 namespace Application\Controller;
 
-use Application\Controller\CurrencyController;
-use Zend\ServiceManager\FactoryInterface;
+use Application\Controller\RoleController;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\FactoryInterface;
 
 /*
  * @author nmt
  *
  */
-class CurrencyControllerFactory implements FactoryInterface {
-	
+class RoleControllerFactory implements FactoryInterface {
 	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 * @see \Zend\ServiceManager\FactoryInterface::createService()
-	 */
+	*
+	* {@inheritDoc}
+	* @see \Zend\ServiceManager\FactoryInterface::createService()
+	*/
 	public function createService(ServiceLocatorInterface $serviceLocator) {
-		$container = $serviceLocator->getServiceLocator ();
+		
+		$container = $serviceLocator->getServiceLocator();
 			
-		$controller = new CurrencyController();
+		$controller = new RoleController();
 		
 		//User Table
 		$tbl =  $container->get ('User\Model\UserTable' );
@@ -35,8 +34,8 @@ class CurrencyControllerFactory implements FactoryInterface {
 		$controller->setAuthService($sv );
 		
 		//Auth Service
-		$sv =  $container->get ('Application\Service\DepartmentService' );
-		$controller->setDepartmentService($sv );
+		$sv =  $container->get ('Application\Service\AclService' );
+		$controller->setAclService($sv );
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);

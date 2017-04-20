@@ -80,6 +80,28 @@ class Bootstrap {
 							
 						$transport->setOptions ( $options );
 						return $transport;
+						},
+						
+						
+						// Email Service
+						'mla-web@outlook.com' => function ($sm) {
+							
+						$transport = new SmtpTransport ();
+						$options = new SmtpOptions ( array (
+								'name' => 'Outlook.com',
+								'host' => 'smtp-mail.outlook.com',
+								'port' => '587',
+								'connection_class' => 'login',
+								'connection_config' => array (
+										'username' => 'mla-app@outlook.com',
+										'password' => 'MLA#2016',
+										'ssl' => 'tls'
+								)
+						) );
+							
+							
+						$transport->setOptions ( $options );
+						return $transport;
 						}
 						
 				)

@@ -1,43 +1,51 @@
 
 <h3>Login</h3>
-<?php if (!$messages== null)
-{
-echo '<div class="alert alert-error">';
+<?php
+
+if (! $messages == null) {
+	echo '<div class="alert alert-danger">';
 	
 	echo '<ul';
-	 foreach ($messages as $m) :
-	 echo '<li>'.$m . '</li>';
-	 
-	 endforeach;
-	 echo '</ul>';
-	 echo '</div>';
-	 
-} 
+	foreach ( $messages as $m ) :
+		echo '<li>' . $m . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
 ?>
 
 
 
-      <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/user/auth/authenticate"	method="post" enctype="multipart/form-data" id="authentication">
-      <div class="control-group">
-        <label class="control-label" for="inputEmail">Email</label>
-        <div class="controls">
-          <input type="text" id="inputEmail" placeholder="Email" name="email">
-        </div>
-      </div>
-      <div class="control-group">
-        <label class="control-label" for="inputPassword">Password</label>
-        <div class="controls">
-          <input type="password" id="inputPassword" placeholder="Password" name="password">
-        </div>
-      </div>
-      <div class="control-group">
-        <div class="controls">
-             <button type="submit" class="btn">Sign in</button>
-        </div>
-      </div>
-    </form>
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/user/auth/authenticate"
+	method="post" enctype="multipart/form-data" id="authentication">
 
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputEmail">Email</label>
+		<div class="col-sm-3">
+			<input type="text" class="form-control" id="inputEmail"
+				placeholder="Email" name="email">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputPassword">Password</label>
+		<div class="col-sm-3">
+			<input type="password" class="form-control" id="inputPassword"
+				placeholder="Password" name="password">
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-default">Login</button>
+		</div>
+	</div>
+</form>
 
 <div class="alert alert-warning">
-<Strong>Info: </Strong>If you're new user, please <a href="<?php echo $this->baseUrl ?>/user/index/register">click here</a> to register.
+	<Strong>Info: </Strong>If you're new user, please <a
+		href="<?php echo $this->baseUrl ?>/user/index/register">click here</a>
+	to register.
 </div>

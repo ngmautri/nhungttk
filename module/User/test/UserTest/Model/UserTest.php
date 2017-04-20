@@ -23,8 +23,19 @@ use User\Service\Acl;
 
 class UserTest extends PHPUnit_Framework_TestCase {
  	 protected $tree;
-		
 	
+ 	 public function testArticleCatergoryTest() {
+ 	 	$list = Bootstrap::getServiceManager()->get('User\Service\ArticleCategory');
+ 	 	//$list = $this->articleCategoryService;
+ 	 	$list = $list->initCategory ();
+ 	 	$list = $list->updateCategory ( 42, 0 );
+ 	 	//var_dump($list);
+ 	 	$list = $list->generateJSTreeWithTotalMember ( 42 );
+ 	 	var_dump($list->getCategories ()[43]);
+ 	 
+ 	 }
+	
+ 	 /*
 	public function testUserTable() {
 		//$userTable = Bootstrap::getServiceManager ()->get ( 'User\Model\AclRoleTable' );
 		 //var_dump($userTable->getAclRoleResources());
@@ -53,7 +64,8 @@ class UserTest extends PHPUnit_Framework_TestCase {
 		var_dump($index);
 		*/
 		
-		$userTable = Bootstrap::getServiceManager ()->get ( 'User\Model\AclUserRoleTable' );
+	//	$userTable = Bootstrap::getServiceManager ()->get ( 'User\Model\AclUserRoleTable' );
+		//$userTable = Bootstrap::getServiceManager ()->get ( 'User\Model\AclUserRoleTable' );
 		
 		/*
 		$results  = $userTable->initCategory();
@@ -62,14 +74,15 @@ class UserTest extends PHPUnit_Framework_TestCase {
 		$results =$results->generateJSTree(1);
 		*/
 		
-		var_dump($userTable->getRoleByUserId(39)->Count());
+		//var_dump($userTable->getRoleByUserId(39)->Count());
 		//var_dump($results->getCategories()[1]);
 		
 		//$root= $results->categories['adm-hr-manager '];
 		//$this->tree($data,'administrator');
 		//echo $this->tree;
-		}
-		
+	//	}
+	
+	
 	public function tree($data,$root){
 		$tree = $data->categories[$root];
 		$children = $tree['children'];
@@ -112,7 +125,7 @@ class UserTest extends PHPUnit_Framework_TestCase {
 	}
 	*/
 	
-	/*
+	
 	public function testSendingMail() {
 		
 $emailText = <<<EOT
@@ -136,7 +149,7 @@ EOT;
 		
 		// build message
 		$message = new Message ();
-		$message->addFrom ( 'mib-team@web.de' );
+		$message->addFrom ( 'mla-app@outlook.com' );
 		$message->addTo ('ngmautri@outlook.com');
 		$message->setSubject ( 'Mascot Laos Plattform Register' );
 		
@@ -146,14 +159,14 @@ EOT;
 		$message->getHeaders()->addHeader($type);
 		$message->setBody ($emailText);
 		
-		$mailTransport = Bootstrap::getServiceManager ()->get ( 'SmtpTransportService' );
+		$mailTransport = Bootstrap::getServiceManager ()->get ( 'mla-web@outlook.com' );
 		
 		// send message
 		$mailTransport->send ( $message );
 		echo $emailText;
 	
 	}
-	*/
+	
 	
 	function display_tree($index,$data,$parent_id, $level)
 	{

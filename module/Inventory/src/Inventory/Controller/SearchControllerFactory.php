@@ -47,7 +47,10 @@ class SearchControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('Inventory\Services\SparePartsSearchService' );
 		$controller->setSparePartSearchService($sv );
 		
-
+		//Spare-Part Search Service
+		$sv =  $sm->get ('Inventory\Service\ItemSearchService' );
+		$controller->setItemSearchService($sv );
+		
 		//Auth Service
 		$sv =  $sm->get ('AuthService' );
 		$controller->setAuthService($sv );

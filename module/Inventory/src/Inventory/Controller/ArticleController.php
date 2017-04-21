@@ -11,6 +11,7 @@ namespace Inventory\Controller;
 
 use PHPExcel;
 use PHPExcel_IOFactory;
+
 use Doctrine\ORM\EntityManager;
 use Zend\I18n\Validator\Int;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -35,10 +36,13 @@ use Inventory\Model\ArticleCategoryMemberTable;
 use Inventory\Model\ArticleMovement;
 use Inventory\Model\ArticleMovementTable;
 
-use Inventory\Model\MlaArticleDepartment;
+//use Inventory\Model\MlaArticleDepartment;
 use Inventory\Model\MlaArticleDepartmentTable;
 use Procurement\Model\PurchaseRequestCartItemTable;
 use Application\Model\DepartmentTable;
+
+use Application\Entity\MlaArticleDepartment;
+
 
 use User\Model\UserTable;
 
@@ -328,25 +332,31 @@ class ArticleController extends AbstractActionController {
 			
 			if ($department_id > 1) {
 				
-				/**
+				
 				$em = $this->doctrineEM;
-				$d = new MlaArticleDepartment ();
+				$d = new MlaArticleDepartment();
 				
 				$article = $this->doctrineEM->find( 'Application\Entity\MlaArticles', $id );
 				$d->setArticle ( $article );
 				$dep = $this->doctrineEM->find ('Application\Entity\MlaDepartments', $department_id );
-				$d->setDepartment ( $dep );
+				$d->setDepartment( $dep );
+				
+				$u = $this->doctrineEM->find ('Application\Entity\MlaUsers', $user ['id']);
+				$d->setUpdatedBy( $u);
+				$d->setUpdatedOn(new \DateTime());
+								
 				$em->persist ( $d );
 				$em->flush ();
-				*/
-				$input = new MlaArticleDepartment();
+				//echo $d->getId();
+				
+	/* 			$input = new MlaArticleDepartment();
 				$input->article_id = $id;
 				$input->department_id = $department_id;
 				$input->updated_by =  $user ['id'];
-				$this->mlaArticleDepartmentTable->add($input);			
+				$this->mlaArticleDepartmentTable->add($input); */			
 			}
 			
-			$this->redirect ()->toUrl ( $redirectUrl );
+			//$this->redirect ()->toUrl ( $redirectUrl );
 			
 			
 		}

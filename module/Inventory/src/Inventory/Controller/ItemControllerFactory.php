@@ -2,15 +2,17 @@
 
 namespace Inventory\Controller;
 
-use Zend\ServiceManager\FactoryInterface;
+use Inventory\Controller\ItemController;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Inventory\Controller\WarehouseController;
+use Zend\ServiceManager\FactoryInterface;
 
-/*
+/**
+ * 
  * @author nmt
  *
  */
-class WarehouseControllerFactory implements FactoryInterface {
+class ItemControllerFactory implements FactoryInterface{
+	
 	
 	/**
 	 *
@@ -21,12 +23,19 @@ class WarehouseControllerFactory implements FactoryInterface {
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		
 		$container= $serviceLocator->getServiceLocator();
-			
-		$controller = new WarehouseController();
+		
+		
+		$controller= new ItemController();
+		
+		
+		// User Table
+		$tbl = $container->get ( 'User\Model\UserTable' );
+		$controller->setUserTable ( $tbl );
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
 		
 		return $controller;
-	}
+	}	
+	
 }

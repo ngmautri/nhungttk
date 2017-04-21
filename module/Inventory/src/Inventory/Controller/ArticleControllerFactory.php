@@ -58,8 +58,8 @@ class ArticleControllerFactory implements FactoryInterface {
 		$controller->setPurchaseRequestCartItemTable($tbl );
 	
 		// Department table
-		$tbl =  $sm->get ('Application\Model\DepartmentTable' );
-		$controller->setDepartmentTable($tbl );
+		//$tbl =  $sm->get ('Application\Model\DepartmentTable' );
+		//$controller->setDepartmentTable($tbl );
 		
 			
 		//Auth Service
@@ -78,8 +78,8 @@ class ArticleControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('User\Service\ArticleCategory' );
 		$controller->setArticleCategoryService($sv );
 		
-		// sv =  $sm->get ('doctrine.entitymanager.orm_default' );
-		// $controller->setDoctrineEM($sv );
+		 $sv =  $sm->get ('doctrine.entitymanager.orm_default' );
+		 $controller->setDoctrineEM($sv );
 		
 		return $controller;
 	}

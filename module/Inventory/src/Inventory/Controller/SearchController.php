@@ -11,18 +11,16 @@ namespace Inventory\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-
 use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
-
 use ZendSearch\Lucene\Search\Query\Wildcard;
-
 use Inventory\Services\ArticleSearchService;
 use Inventory\Services\AssetSearchService;
 use Inventory\Services\SparePartsSearchService;
-
 use Procurement\Model\PurchaseRequestCartItemTable;
 use User\Model\UserTable;
+
+use Inventory\Service\ItemSearchService;
 
 class SearchController extends AbstractActionController {
 	
@@ -33,79 +31,120 @@ class SearchController extends AbstractActionController {
 	private $authService;
 	private $userTable;
 	
+	protected $itemSearchService;
+	
 	/*
 	 * Defaul Action
 	 */
 	public function indexAction() {
-	
 	}
 	
-	/*
-	 * Defaul Action
+	/**
+	 * 
+	 */
+	public function itemAction() {
+		
+		$q = $this->params ()->fromQuery ( 'q' );
+		
+		if ($q !== "") {
+			$results = $this->itemSearchService->searchAllItem( $q );
+		} else {
+			$results = [
+					"message"=> "",
+					"hits"=>null,
+			];
+		}
+		
+		//var_dump($results);
+		return new ViewModel ( array (
+				'message' => $results["message"],
+				'hits' => $results["hits"]
+		) );
+	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function createIndexAction() {
+		$message = $this->itemSearchService->createItemIndex();
+		
+		return new ViewModel ( array (
+				'message' => $message
+		) );
+		
+	}
+	
+	/**
+	 *
+	 * @deprecated
+	 *
+	 * @return \Zend\View\Model\ViewModel|\Zend\Stdlib\ResponseInterface
 	 */
 	public function assetAction() {
 		
-		//$query = $this->params ()->fromQuery ( 'query' );
+		// $query = $this->params ()->fromQuery ( 'query' );
+		$q = $this->params ()->fromQuery ( 'query' );
+		$json = ( int ) $this->params ()->fromQuery ( 'json' );
 		
-		$q = $this->params ()->fromQuery ( 'query' );		
-		$json = (int) $this->params ()->fromQuery ( 'json' );
-		
-	
-		if($q==''){
+		if ($q == '') {
 			return new ViewModel ( array (
-					'hits' => null,	
-			));
+					'hits' => null 
+			) );
 		}
 		
-		if (strpos($q,'*') !== false) {
-			$pattern = new Term($q);
-			$query = new Wildcard($pattern);
-			$hits = $this->assetSearchService->search($query);
-		
-		}else{
-			$hits = $this->assetSearchService->search($q);
+		if (strpos ( $q, '*' ) !== false) {
+			$pattern = new Term ( $q );
+			$query = new Wildcard ( $pattern );
+			$hits = $this->assetSearchService->search ( $query );
+		} else {
+			$hits = $this->assetSearchService->search ( $q );
 		}
 		
-		
-		if ($json === 1){
+		if ($json === 1) {
 			
-			$data = array();
+			$data = array ();
 			
-			foreach ($hits as $key => $value)
-			{
-				$n = (int)$key;
-				$data[$n]['id'] = $value->asset_id;
-				$data[$n]['name'] =  $value->name;
-				$data[$n]['tag'] =  $value->tag;
+			foreach ( $hits as $key => $value ) {
+				$n = ( int ) $key;
+				$data [$n] ['id'] = $value->asset_id;
+				$data [$n] ['name'] = $value->name;
+				$data [$n] ['tag'] = $value->tag;
 			}
 			
-			
-			$response = $this->getResponse();
-            $response->getHeaders()->addHeaderLine( 'Content-Type', 'application/json' );
-            $response->setContent(json_encode($data));
-            return $response;
+			$response = $this->getResponse ();
+			$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+			$response->setContent ( json_encode ( $data ) );
+			return $response;
 		}
-					
+		
 		return new ViewModel ( array (
 				'query' => $q,
-				'hits' => $hits,
-		));
+				'hits' => $hits 
+		) );
 	}
 	
-
-	
+	/**
+	 *
+	 * @deprecated
+	 *
+	 * @return \Zend\Stdlib\ResponseInterface
+	 */
 	public function asset1Action() {
-			$response = $this->getResponse();
-			$response->getHeaders()->addHeaderLine( 'Content-Type', 'application/text' );
-			$response->setContent('Test');
-			return $response;
-			
+		$response = $this->getResponse ();
+		$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/text' );
+		$response->setContent ( 'Test' );
+		return $response;
 	}
 	
+	/**
+	 *
+	 * @deprecated
+	 *
+	 */
 	public function sparepartAction() {
-			
-		//$query = $this->params ()->fromQuery ( 'query' );
-	
+		
+		// $query = $this->params ()->fromQuery ( 'query' );
 		$q = $this->params ()->fromQuery ( 'query' );		
 		$json = (int) $this->params ()->fromQuery ( 'json' );
 		
@@ -154,7 +193,7 @@ class SearchController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 * @deprecated
 	 * @return \Zend\View\Model\ViewModel|\Zend\Stdlib\ResponseInterface
 	 */
 	public function articleAction() {
@@ -219,7 +258,7 @@ class SearchController extends AbstractActionController {
 	}
 	
 	/**
-	 *
+	 * @deprecated
 	 * @return \Zend\View\Model\ViewModel|\Zend\Stdlib\ResponseInterface
 	 */
 	public function allArticleAction() {
@@ -296,13 +335,17 @@ class SearchController extends AbstractActionController {
 		$this->articleSearchService = $articleSearchService;
 		return $this;
 	}
+	
+	
 	public function getPurchaseRequestCartItemTable() {
 		return $this->purchaseRequestCartItemTable;
 	}
+	
 	public function setPurchaseRequestCartItemTable($purchaseRequestCartItemTable) {
 		$this->purchaseRequestCartItemTable = $purchaseRequestCartItemTable;
 		return $this;
 	}
+	
 	public function getAuthService() {
 		return $this->authService;
 	}
@@ -317,8 +360,13 @@ class SearchController extends AbstractActionController {
 		$this->userTable = $userTable;
 		return $this;
 	}
-	
-	
+	public function getItemSearchService() {
+		return $this->itemSearchService;
+	}
+	public function setItemSearchService(ItemSearchService $itemSearchService) {
+		$this->itemSearchService = $itemSearchService;
+		return $this;
+	}
 	
 	
 	

@@ -9,45 +9,16 @@
  */
 namespace Inventory\Controller;
 
-use Zend\I18n\Validator\Int;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Date;
-use Zend\Validator\EmailAddress;
-use Zend\Mail\Message;
+use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
-use Zend\Http\Headers;
-use MLA\Paginator;
-use MLA\Files;
-use Inventory\Model\MLASparepart;
-use Inventory\Model\MLASparepartTable;
-use Inventory\Model\Article;
-use Inventory\Model\ArticleTable;
-use Inventory\Services\ArticleService;
-use Inventory\Services\ArticleSearchService;
-use Inventory\Model\ArticlePicture;
-use Inventory\Model\ArticlePictureTable;
-use Inventory\Model\ArticleCategory;
-use Inventory\Model\ArticleCategoryTable;
-use Inventory\Model\ArticleCategoryMember;
-use Inventory\Model\ArticleCategoryMemberTable;
-use Inventory\Model\ArticlePurchasing;
-use Inventory\Model\ArticlePurchasingTable;
-use Application\Model\DepartmentTable;
-use Inventory\Model\SparepartPurchasing;
-use Inventory\Model\SparepartPurchasingTable;
-use Inventory\Model\Warehouse;
-use Inventory\Model\WarehouseTable;
+use Application\Entity\NmtInventoryWarehouse;
 
+/*
+ * Control Panel Controller
+ */
 class WarehouseController extends AbstractActionController {
-	protected $SmtpTransportService;
-	protected $authService;
-	protected $userTable;
-	protected $articleTable;
-	protected $articlePurchasingTable;
-	protected $spPurchasingTable;
-	protected $sparePartTable;
-	protected $departmentTable;
-	protected $whTable;
+	protected $doctrineEM;
 	
 	/*
 	 * Defaul Action
@@ -55,37 +26,141 @@ class WarehouseController extends AbstractActionController {
 	public function indexAction() {
 	}
 	
-	/**
-	 * Add new purchase data
+	/*
+	 * Defaul Action
 	 */
-	public function listAction() {
+	public function addAction() {
+		$identity = $this->identity();
+		$u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array('email'=>$identity));
+		
 		$request = $this->getRequest ();
-		if ($request->isXmlHttpRequest ()) {
-			$this->layout ( "layout/inventory/ajax" );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		
+		if ($request->isPost ()) {
+			
+			// $input->status = $request->getPost ( 'status' );
+			// $input->remarks = $request->getPost ( 'description' );
+			
+			
+			$company_id= $request->getPost ( 'company_id' );
+			$wh_code= $request->getPost ( 'wh_code' );
+			$is_locked= $request->getPost ( 'is_locked' );
+			
+			$is_default= $request->getPost ( 'is_default' );
+			$wh_name= $request->getPost ( 'wh_name' );
+			
+			$wh_address= $request->getPost ( 'wh_address' );
+			$country_id= $request->getPost ( 'country_id' );
+			$wh_contract_person= $request->getPost ( 'wh_contact_person' );
+			$status = $request->getPost ( 'wh_status' );
+			
+			$errors = array ();
+			
+			if ($wh_code=== '' or $wh_code=== null) {
+				$errors [] = 'Please give code';
+			}
+			
+			if ($wh_name=== '' or $wh_name=== null) {
+				$errors [] = 'Please give the code';
+			}
+			
+			$r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryWarehouse' )->findBy ( array (
+					'whCode' => $wh_code
+			) );
+			
+			if (count ( $r ) >= 1) {
+				$errors [] = $wh_code. ' exists';
+			}
+			
+			if (count ( $errors ) > 0) {
+				return new ViewModel ( array (
+						'errors' => $errors
+				) );
+			}
+			
+			// No Error
+			
+			$entity = new NmtInventoryWarehouse();
+			$entity->setWhCode( $wh_code);
+			$entity->setWhName( $wh_name);
+			$entity->setWhAddress( $wh_address);
+			$company = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCompany', $company_id );
+			
+			$entity->setCompany( $company);
+			$country = $this->doctrineEM->find('Application\Entity\NmtApplicationCountry',$country_id);
+			$entity->setWhCountry($country);
+			$entity->setWhContactPerson($wh_contract_person);
+			
+			$entity->setIsDefault( $is_default);
+			$entity->setIsLocked( $is_locked);
+			
+			$entity->setCreatedOn ( new \DateTime () );
+			$entity->setCreatedBy ( $u );
+			$entity->setWhStatus( $status );
+			$this->doctrineEM->persist ( $entity );
+			$this->doctrineEM->flush ();
+			
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$this->redirect ()->toUrl ( $redirectUrl );
+			
 		}
 		
-		$warehouses = $this->whTable->fetchAll ();
+		/*
+		 * if ($request->isXmlHttpRequest ()) {
+		 * $this->layout ( "layout/inventory/ajax" );
+		 * }
+		 */
+		$company_id = ( int ) $this->params ()->fromQuery ( 'company_id' );
+		$company = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCompany', $company_id );
+		$countries= $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCountry')->findAll();
 		return new ViewModel ( array (
-				'warehouses' => $warehouses 
+				'errors' => null,
+				'identity'=>$u,
+				'company'=>$company,
+				'countries'=>$countries,
+				'redirectUrl' => $redirectUrl
+				
+				
+		) );
+	}
+	
+	public function listAction() {
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryWarehouse' )->findBy(array(),array('whName'=>'ASC'));
+		$total_records = count ( $list );
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => null
 		) );
 	}
 	
 	/**
-	 * Add new purchase data
+	 *
+	 * @return \Zend\View\Model\ViewModel
 	 */
-	public function selectListAction() {
+	public function list1Action() {
+		
 		$request = $this->getRequest ();
-		$wh= $this->params ()->fromQuery ( 'wh' );
 		
-		
-		if ($request->isXmlHttpRequest ()) {
-			$this->layout ( "layout/inventory/ajax" );
+		// accepted only ajax request
+		if (!$request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
-	
-		$warehouses = $this->whTable->fetchAll ();
+		$this->layout ( "layout/user/ajax" );
+		$target_id = $_GET['target_id'];
+		$target_name = $_GET['target_name'];
+		
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryWarehouse' )->findBy(array(),array('whName'=>'ASC'));
+		$total_records = count ( $list );
 		return new ViewModel ( array (
-				'warehouses' => $warehouses,
-				'wh'=>$wh
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => null,
+				'target_id' => $target_id,
+				'target_name' => $target_name,
+				
 		) );
 	}
 	
@@ -94,127 +169,29 @@ class WarehouseController extends AbstractActionController {
 	 * 
 	 * @return \Zend\View\Model\ViewModel
 	 */
-	public function addAction() {
+	public function transferAction() {
+		
 		$request = $this->getRequest ();
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserByEmail ( $identity );
+		$redirectUrl = $request->getHeader ( 'Referer' )->getUri ();
 		
-		if ($request->isPost ()) {
-			
-			if ($request->isPost ()) {
-				
-				$redirectUrl = $request->getPost ( 'redirectUrl' );
-				
-				$input = new Warehouse();
-				$input->wh_code = $request->getPost ( 'wh_code' );
-				$input->wh_name = $request->getPost ( 'wh_name' );
-				$input->wh_address = $request->getPost ( 'wh_address' );
-				$input->wh_country = $request->getPost ( 'wh_country' );
-				$input->wh_contract_person = $request->getPost ( 'wh_contract_person' );
-				$input->wh_email = $request->getPost ( 'wh_email' );
-				$input->wh_status = $request->getPost ( 'wh_status' );
-					
-				$errors = array ();
-				
-					
-				if ($input->wh_code == "") {
-					$errors [] = 'Please give warehouse code!';
-				}else{
-					if($this->whTable->isWHCodeExits($input->wh_code)){
-						$errors [] = 'Warehouse code ' . $input->wh_code .' exits already';
-					}
-				}
-				
-				if ($input->wh_name == "") {
-					$errors [] = 'Please give warehouse name!';
-				}
-				
-				if (count ( $errors ) > 0) {
-					return new ViewModel ( array (
-							'redirectUrl' => $redirectUrl,
-							'submitted_data' => $input,
-							'errors' =>$errors
-					) );
-				}
-				
-				$this->whTable->add($input);			
-				$this->redirect ()->toUrl ( $redirectUrl );
-			}
-		}
+		$item_id= ( int ) $this->params ()->fromQuery ( 'item_id' );
 		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$item = $this->doctrineEM->find('Application\Entity\NmtInventoryItem', $item_id);
 		
-			
 		return new ViewModel ( array (
+				"item"=>$item,
+				"errors"=>null,
 				'redirectUrl' => $redirectUrl,
-				'submitted_data' => null,
-				'errors'=>null
 		) );
 	}
-	public function getSmtpTransportService() {
-		return $this->SmtpTransportService;
+	
+	
+	public function getDoctrineEM() {
+		return $this->doctrineEM;
 	}
-	public function setSmtpTransportService($SmtpTransportService) {
-		$this->SmtpTransportService = $SmtpTransportService;
-		return $this;
-	}
-	public function getAuthService() {
-		return $this->authService;
-	}
-	public function setAuthService($authService) {
-		$this->authService = $authService;
-		return $this;
-	}
-	public function getUserTable() {
-		return $this->userTable;
-	}
-	public function setUserTable($userTable) {
-		$this->userTable = $userTable;
-		return $this;
-	}
-	public function getArticleTable() {
-		return $this->articleTable;
-	}
-	public function setArticleTable(ArticleTable $articleTable) {
-		$this->articleTable = $articleTable;
-		return $this;
-	}
-	public function getSparePartTable() {
-		return $this->sparePartTable;
-	}
-	public function setSparePartTable(MLASparepartTable $sparePartTable) {
-		$this->sparePartTable = $sparePartTable;
-		return $this;
-	}
-	public function getDepartmentTable() {
-		return $this->departmentTable;
-	}
-	public function setDepartmentTable($departmentTable) {
-		$this->departmentTable = $departmentTable;
-		return $this;
-	}
-	public function getArticlePurchasingTable() {
-		return $this->articlePurchasingTable;
-	}
-	public function setArticlePurchasingTable(ArticlePurchasingTable $articlePurchasingTable) {
-		$this->articlePurchasingTable = $articlePurchasingTable;
-		return $this;
-	}
-	public function getSpPurchasingTable() {
-		return $this->spPurchasingTable;
-	}
-	public function setSpPurchasingTable(SparepartPurchasingTable $spPurchasingTable) {
-		$this->spPurchasingTable = $spPurchasingTable;
-		return $this;
-	}
-	public function getWhTable() {
-		return $this->whTable;
-	}
-	public function setWhTable(WarehouseTable $whTable) {
-		$this->whTable = $whTable;
+	public function setDoctrineEM(EntityManager $doctrineEM) {
+		$this->doctrineEM = $doctrineEM;
 		return $this;
 	}
 	
-	
-	// SETTER AND GETTER
 }

@@ -45,8 +45,8 @@ class PurchasingControllerFactory implements FactoryInterface {
 		
 		
 		// Department table
-		$tbl =  $sm->get ('Application\Model\DepartmentTable' );
-		$controller->setDepartmentTable($tbl );
+		//$tbl =  $sm->get ('Application\Model\DepartmentTable' );
+		//$controller->setDepartmentTable($tbl );
 			
 		//Auth Service
 		$sv =  $sm->get ('AuthService' );

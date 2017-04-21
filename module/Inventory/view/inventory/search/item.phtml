@@ -1,0 +1,61 @@
+ <ul class="nav nav-pills">
+	<li><a href="<?php echo $this->baseUrl ?>/inventory/item/list">Item List</a></li>
+</ul>
+ 
+ <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
+  <div class="form-group">
+    	<input class="form-control" size="28" type="text" name = "q" class="">
+  </div>
+  <div class="form-group">
+     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
+  </div>
+  
+</form>
+<hr>
+
+
+<?php
+
+echo '<span>';
+echo $message;
+echo '</span>';
+
+if (! $hits == null) :
+	
+	?>
+<table style = "font-size: 10pt;" class="table table-hover table-bordered">
+	<thead>
+		<tr style = "">
+			<td><b>#</b></td>
+			<td><b>Module</b></td>
+			<td><b>Controller</b></td>
+			<td><b>Action</b></td>
+			<td><b>Resource</b></td>
+			<td><b>Resource</b></td>
+		</tr>
+	</thead>
+	<tbody>
+
+	 <?php
+	
+	$count = 0;
+	foreach ( $hits as $hit ) :
+		$count ++;
+		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+		
+		?>
+	 <tr>
+			<td> <?php echo $count;?></td>
+			<td><span id=""><?php echo $this->escapeHtml($hit->item_name	);?></span></td>
+				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_serial);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_model);?></span></td>
+	
+		</tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+
+
+<?php endif; ?>

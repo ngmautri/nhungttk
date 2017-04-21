@@ -14,6 +14,19 @@
       <input type="text" name = "query" class="">
       <button type="submit" class="btn"><i class="icon-search"></i>Search</button>
    </form>
+   
+ 
+ <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  Link with href
+</a>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  Button with data-target
+</button>
+<div class="collapse" id="collapseExample">
+  <div class="well">
+    ...
+  </div>
+</div>
  
 <div class="panel-group">
 	<div class="panel panel-default">
@@ -27,8 +40,7 @@
 		<div id="collapse1"
 			class="panel-collapse collapse <?php echo count($articles)>0?"":"in"?>">
 			<div class="panel-body">
-				<div
-					style="padding: 3px; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+				<div style="background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 					<form class="form-horizontal"
 						action="<?php echo $this->baseUrl ?>/inventory/article/all"
 						method="get" enctype="multipart/form-data" id="ReportForm">

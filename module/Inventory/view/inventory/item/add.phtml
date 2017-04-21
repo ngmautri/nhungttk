@@ -1,0 +1,186 @@
+ <h4>Create Item:</h4>
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/add"
+	method="post" enctype="multipart/form-data">
+
+
+<div id="tabs" style="font-size: 10pt"> 
+  <ul>
+  <li ><a href="#general">Item</a></li>
+   </ul>
+
+<div id="general"> 
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Item ID</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="item_sku" value="">
+		</div>		
+		<div class="col-sm-4">
+	  	     <input checked type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
+			 <input checked type="checkbox" name="is_stocked" value="1">&nbsp;Stocked &nbsp;&nbsp;
+			 <input checked type="checkbox" name="is_purchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
+			 <input type="checkbox" name="is_fixed_asset" value="0">&nbsp;Fixed Asset
+		
+		</div>
+		
+		<div class="col-sm-3">
+			<img alt="" height="" src="/inventory/item/barcode?barcode=22011979">
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Item  Name</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="item_name" value="">
+		</div>
+		
+		<label class="control-label col-sm-2" for="inputTag">Item Foreign Name</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="item_name_en" value="">
+		</div>
+	</div>
+		<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Item  Description</label>
+		<div class="col-sm-8">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="item_description" value="">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Bar Code</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="item_barcode" value="">
+			
+		</div>		
+		<label class="control-label col-sm-2" for="inputTag">Keyworks</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="keywords" value="">
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Item Type</label>
+		<div class="col-sm-3">
+			<select class="form-control"  name="item_type" >
+        		<option value="Unstocked Product">Item</option>
+   	     		<option value="Service">Service</option>
+    			</select>
+		</div>
+		
+		<label class="control-label col-sm-2" for="inputTag">Measurement</label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="item_uom_name" placeholder="Please select standard unit"
+				name="item_uom_name" value="">
+			<input type="hidden" id="item_uom_id" placeholder="" name="item_uom_id" value="">	
+			
+		</div>
+		
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showBootstrapDialog('Unit of Measurement','/application/uom/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Item Category</label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="item_category_name" placeholder="Please select item category"
+				name="country_code_2" value="">
+			<input type="hidden" id="item_category_name_selected" placeholder="" name="item_category_id" value="">	
+		</div>
+		
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showBootstrapDialog('Item Category','/application/item-category/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Department</label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="department_name" placeholder="Please select!"
+				name="deparment_name" value="">
+			<input type="hidden" id="department_name_selected" placeholder="" name="deparment_id" value="">	
+		</div>
+		
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showBootstrapDialog('Deparment List','/application/department/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+	</div>
+	
+	
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Manufacturer Code</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="manufacturer_code" value="">
+		</div>
+		<label class="control-label col-sm-2" for="inputTag">Manufacturer Serial</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="manufacturer_Serial" value="">
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Lead time</label>
+		<div class="col-sm-3">
+			<input  class="form-control" type="text" placeholder=""
+				name="lead_time" value="">
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-default">Save</button>
+		</div>
+	</div>
+</div>
+	
+</div>	
+	
+
+</form>
+
+<!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<b><h5 class="modal-title" id = "modal_title" >Mascot International Laos</h5></b>
+			</div>
+			<div class="modal-body">
+				<div id="loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected">No thing selected</span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="dialog" style="display: none;">Check code...</div>
+

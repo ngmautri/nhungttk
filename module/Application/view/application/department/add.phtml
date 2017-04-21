@@ -1,5 +1,4 @@
 <h4>Create New Deparment:</h4>
-<hr>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -15,6 +14,12 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
+<div id="tabs"> 
+  <ul>
+  <li ><a href="#general">Department</a></li>
+   </ul>
+
+<div id="general">
 
 <form class="form-horizontal"
 	action="<?php echo $this->baseUrl ?>/application/department/add"
@@ -75,7 +80,8 @@ if (count ( $errors ) > 0) {
 		</div>
 	</div>
 </form>
-
+</div>
+</div>
 
 
 <div id="dialog" style="display: none;">Check code...</div>

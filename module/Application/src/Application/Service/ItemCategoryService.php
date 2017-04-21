@@ -21,7 +21,7 @@ class ItemCategoryService extends AbstractCategory {
 	 * @see \Workflow\Service\AbstractCategory::init()
 	 */
 	public function initCategory() {
-		$nodes = $this->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryItemCategory')->findAll();
+		$nodes = $this->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryItemCategory')->findBy(array(),array('nodeName'=>'ASC'));
 		
 	/* 	$n = new NmtApplicationDepartment();
 		$n->getNodeParentId(); */

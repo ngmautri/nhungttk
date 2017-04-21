@@ -1,5 +1,4 @@
 <h4>Create Currency:</h4>
-<hr>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -14,7 +13,12 @@ if (count ( $errors ) > 0) {
 	echo '</div>';
 }
 ?>
+<div id="tabs"> 
+  <ul>
+  <li ><a href="#general">Currency</a></li>
+   </ul>
 
+<div id="general">
 
 <form class="form-horizontal"
 	action="<?php echo $this->baseUrl ?>/application/currency/add"
@@ -72,6 +76,7 @@ if (count ( $errors ) > 0) {
 	</div>
 </form>
 
-
+</div>
+</div>
 
 <div id="dialog" style="display: none;">Check code...</div>

@@ -1,4 +1,4 @@
-<div id="html1" class="demo">
+<div style="font-size: 10pt" id="html1" class="demo">
 	<ul>
 	<?php echo $jsTree ?>;
 </ul>
@@ -92,6 +92,11 @@
 		   $("#node_selected").html('"' + cat_name + '" selected');
 		   $("#department_name").val(cat_name);
 		   $("#department_name_selected").val(id);
+
+			$('#modal1 .close').click();
+			$('#global-notice').show();
+			$('#global-notice').html('"' + cat_name + '" selected');
+			$('#global-notice').fadeOut(3000);
 		   
 	});
 </script>

@@ -1,6 +1,4 @@
 <h4>Create new unit of measurement (UoM):</h4>
-<hr>
-
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert">';
@@ -14,7 +12,12 @@ if (count ( $errors ) > 0) {
 	echo '</div>';
 }
 ?>
+<div id="tabs"> 
+  <ul>
+  <li ><a href="#general">Unit</a></li>
+   </ul>
 
+<div id="general">
 
 <form class="form-horizontal"
 	action="<?php echo $this->baseUrl ?>/application/uom/add"
@@ -73,6 +76,8 @@ if (count ( $errors ) > 0) {
 		</div>
 	</div>
 </form>
+</div>
+</div>
 
 
 

@@ -196,6 +196,21 @@ return array (
 												'action' => 'index'
 										]
 								]
+						],
+						// For indexController
+						'app_index' => [
+								'type' => 'segment',
+								'options' => [
+										'route' => '/application/index[/:action]', // to update
+										'constraints' => [
+												'action' => '[a-zA-Z][a-zA-Z0-9_-]+'
+										],
+										'defaults' => [
+												'__NAMESPACE__' => 'Application\Controller',
+												'controller' => 'Index', // to update
+												'action' => 'index'
+										]
+								]
 						]
 				) 
 		),

@@ -1,6 +1,4 @@
 <h4>Create Payment Method:</h4>
-<hr>
-
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert">';
@@ -15,7 +13,12 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
+<div id="tabs"> 
+  <ul>
+  <li ><a href="#general">Method</a></li>
+   </ul>
 
+<div id="general">
 <form class="form-horizontal"
 	action="<?php echo $this->baseUrl ?>/application/pmt-method/add"
 	method="post" enctype="multipart/form-data">
@@ -65,6 +68,8 @@ if (count ( $errors ) > 0) {
 		</div>
 	</div>
 </form>
+</div>
+</div>
 
 
 

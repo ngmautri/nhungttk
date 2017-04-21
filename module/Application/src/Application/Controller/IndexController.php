@@ -22,4 +22,15 @@ class IndexController extends AbstractActionController {
 	public function indexAction() {
 		return new ViewModel ();
 	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+	 */
+	public function infoAction() {
+		$this->layout ( "layout/user/ajax" );
+		
+		return new ViewModel ();
+	}
 }

@@ -108,7 +108,7 @@ class UomController extends AbstractActionController {
 			$entity->setUomName( $uom_name);
 			$entity->setUomCode( $uom_code);
 			$entity->setUomDescription($uom_description);
-			$entity->setConverstionFactor( $converstion_factor);
+			$entity->setConversionFactor( $converstion_factor);
 			$entity->setStatus( $status);
 			$entity->setCreatedOn( new \DateTime() );
 			$entity->setCreatedBy( $u );
@@ -153,9 +153,8 @@ class UomController extends AbstractActionController {
 		
 		
 		$this->layout ( "layout/user/ajax" );		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationUom' )->findAll();
-		$total_records= count($list);
-		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationUom' )->findBy(array(),array('uomCode'=>'ASC'));
+		$total_records = count($list);
 		return new ViewModel ( array (
 				'list' => $list,
 				'total_records'=>$total_records,

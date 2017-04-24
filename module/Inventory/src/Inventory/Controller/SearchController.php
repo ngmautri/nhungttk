@@ -41,13 +41,41 @@ class SearchController extends AbstractActionController {
 	
 	/**
 	 * 
+	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function itemAction() {
 		
 		$q = $this->params ()->fromQuery ( 'q' );
 		
 		if ($q !== "") {
-			$results = $this->itemSearchService->searchAllItem( $q );
+			$results = $this->itemSearchService->searchAllItem($q );
+		} else {
+			$results = [
+					"message"=> "",
+					"query"=> null,
+					"hits"=>null,
+			];
+		}
+		
+		//var_dump($results);
+		return new ViewModel ( array (
+				'message' => $results["message"],
+				"query"=> $results["query"],
+				'hits' => $results["hits"],
+		) );
+	}
+	
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function assetItemAction() {
+		
+		$q = $this->params ()->fromQuery ( 'q' );
+		
+		if ($q !== "") {
+			$results = $this->itemSearchService->searchAssetItem($q );
 		} else {
 			$results = [
 					"message"=> "",
@@ -62,6 +90,30 @@ class SearchController extends AbstractActionController {
 		) );
 	}
 	
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function sparepartItemAction() {
+		
+		$q = $this->params ()->fromQuery ( 'q' );
+		
+		if ($q !== "") {
+			$results = $this->itemSearchService->searchSPItem($q );
+		} else {
+			$results = [
+					"message"=> "",
+					"hits"=>null,
+			];
+		}
+		
+		//var_dump($results);
+		return new ViewModel ( array (
+				'message' => $results["message"],
+				'hits' => $results["hits"]
+		) );
+	}
 	/**
 	 * 
 	 * @return \Zend\View\Model\ViewModel

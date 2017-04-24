@@ -37,6 +37,10 @@ class ImageControllerFactory implements FactoryInterface {
 		
 		$tbl =  $sm->get ('Inventory\Model\ArticlePictureTable' );
 		$controller->setArticlePictureTable($tbl );
+		
+		$sv =  $sm->get('doctrine.entitymanager.orm_default');
+		$controller->setDoctrineEM($sv);
+		
 				
 		//Auth Service
 		$sv =  $sm->get ('AuthService' );

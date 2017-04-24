@@ -14,7 +14,7 @@ use Zend\View\Model\ViewModel;
 use Inventory\Model\ArticlePictureTable;
 use Inventory\Model\AssetPictureTable;
 use Inventory\Model\SparepartPictureTable;
-
+use Doctrine\ORM\EntityManager;
 class ImageController extends AbstractActionController {
 	
 	public $userTable;
@@ -23,6 +23,8 @@ class ImageController extends AbstractActionController {
 	public $assetPictureTable;
 	public $sparepartPictureTable;
 	public $articlePictureTable;
+	
+	protected $doctrineEM;
 	
 	
 	/*
@@ -45,6 +47,56 @@ class ImageController extends AbstractActionController {
 		
 		return $response;		
 	}
+	
+	
+	/*
+	 * Defaul Action
+	 */
+	public function itemAction() {
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+			
+		
+		$pic = New \Application\Entity\NmtInventoryItemPicture();
+		$pic = $this->doctrineEM->find("Application\Entity\NmtInventoryItemPicture", $id);
+		$pic_folder= getcwd() . "/data/inventory/picture/item/".$pic->getFolderRelative().$pic->getFileName();
+		$imageContent =  file_get_contents($pic_folder);
+		
+		$response = $this->getResponse();
+		
+		$response->setContent($imageContent);
+		$response->getHeaders()
+		->addHeaderLine('Content-Transfer-Encoding', 'binary')
+		->addHeaderLine('Content-Type', $pic->getFiletype())
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+		return $response;
+	}
+	
+	
+	/**
+	 *
+	 * @return \Zend\Stdlib\ResponseInterface
+	 */
+	public function itemThumbnail200Action() {
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'id' );
+		
+		
+		$pic = New \Application\Entity\NmtInventoryItemPicture();
+		$pic = $this->doctrineEM->find("Application\Entity\NmtInventoryItemPicture", $id);
+		$pic_folder= getcwd() . "/data/inventory/picture/item/".$pic->getFolderRelative()."thumbnail_200_" . $pic->getFileName();
+		$imageContent =  file_get_contents($pic_folder);
+		
+		$response = $this->getResponse();
+		
+		$response->setContent($imageContent);
+		$response->getHeaders()
+		->addHeaderLine('Content-Transfer-Encoding', 'binary')
+		->addHeaderLine('Content-Type', $pic->getFiletype())
+		->addHeaderLine('Content-Length', mb_strlen($imageContent));
+		return $response;
+	}
+	
+	
 	
 	/*
 	 * Defaul Action
@@ -365,6 +417,14 @@ class ImageController extends AbstractActionController {
 		$this->articlePictureTable = $articlePictureTable;
 		return $this;
 	}
+	public function getDoctrineEM() {
+		return $this->doctrineEM;
+	}
+	public function setDoctrineEM(EntityManager $doctrineEM) {
+		$this->doctrineEM = $doctrineEM;
+		return $this;
+	}
+	
 	
 	
 

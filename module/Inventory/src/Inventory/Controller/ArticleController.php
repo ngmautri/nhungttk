@@ -46,6 +46,11 @@ use Application\Entity\MlaArticleDepartment;
 
 use User\Model\UserTable;
 
+/**
+ * @deprecated
+ * @author nmt
+ *
+ */
 class ArticleController extends AbstractActionController {
 	protected $SmtpTransportService;
 	protected $authService;

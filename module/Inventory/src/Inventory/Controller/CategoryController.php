@@ -21,7 +21,7 @@ use MLA\Paginator;
 /*
  * Control Panel Controller
  */
-class ItemController extends AbstractActionController {
+class CategoryController extends AbstractActionController {
 	protected $doctrineEM;
 	protected $userTable;
 	
@@ -216,9 +216,6 @@ class ItemController extends AbstractActionController {
 			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
-		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
-		// var_dump (count($all));
-		
 		return new ViewModel ( array (
 				'list' => $list,
 				'total_records' => $total_records,
@@ -230,158 +227,7 @@ class ItemController extends AbstractActionController {
 		) );
 	}
 	
-	/**
-	 *
-	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
-	 */
-	public function uploadPictureAction() {
-		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$user = $this->userTable->getUserByEmail ( $this->identity () );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
-		
-		if ($request->isPost ()) {
-			
-			$pictures = $_POST ['pictures'];
-			$id = $_POST ['target_id'];
-			
-			$result = "";
-			
-			foreach ( $pictures as $p ) {
-				$filetype = $p [0];
-				$result = $result . $p [2];
-				$original_filename = $p [2];
-				
-				if (preg_match ( '/(jpg|jpeg)$/', $filetype )) {
-					$ext = 'jpg';
-				} else if (preg_match ( '/(gif)$/', $filetype )) {
-					$ext = 'gif';
-				} else if (preg_match ( '/(png)$/', $filetype )) {
-					$ext = 'png';
-				}
-				
-				$tmp_name = md5 ( $id . uniqid ( microtime () ) ) . '.' . $ext;
-				
-				// remove "data:image/png;base64,"
-				$uri = substr ( $p [1], strpos ( $p [1], "," ) + 1 );
-				
-				// save to file
-				file_put_contents ( $tmp_name, base64_decode ( $uri ) );
-				
-				$checksum = md5_file ( $tmp_name );
-				
-				// $root_dir = $this->articleService->getPicturesPath ();
-				$root_dir = ROOT . "/data/inventory/picture/item/";
-				
-				$criteria = array (
-						"checksum" => $checksum,
-						"item" => $id 
-				);
-				
-				$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findby ( $criteria );
-				
-				if (count ( $ck ) == 0) {
-					$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
-					$folder = $root_dir . DIRECTORY_SEPARATOR . $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
-					
-					if (! is_dir ( $folder )) {
-						mkdir ( $folder, 0777, true ); // important
-					}
-					
-					rename ( $tmp_name, "$folder/$name" );
-					
-					try {
-						$entity = new NmtInventoryItemPicture ();
-						$entity->setUrl ( $folder . DIRECTORY_SEPARATOR . $name );
-						$entity->setFiletype ( $filetype );
-						$entity->setFilename ( $name );
-						$entity->setOriginalFilename ( $original_filename );
-						$entity->setFolder ( $folder );
-						$entity->setChecksum ( $checksum );
-						$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
-						$entity->setItem ( $item );
-						$entity->setCreatedBy ( $u );
-						$entity->setCreatedOn ( new \DateTime () );
-						
-						$this->doctrineEM->persist ( $entity );
-						$this->doctrineEM->flush ();
-					} catch ( Exception $e ) {
-						$result = $e->getMessage ();
-					}
-					
-					// trigger uploadPicture. AbtractController is EventManagerAware.
-					$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
-							'picture_name' => $name,
-							'pictures_dir' => $folder 
-					) );
-					
-					$result = $result . ' uploaded. //';
-				} else {
-					$result = $result . ' exits. //';
-				}
-			}
-			// $data['filetype'] = $filetype;
-			$data = array ();
-			$data ['message'] = $result;
-			$response = $this->getResponse ();
-			$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
-			$response->setContent ( json_encode ( $data ) );
-			return $response;
-		}
-		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		// $company = $this->articleTable->get ( $id );
-		// $company = $this->doctrineEM->find('Application\Entity\NmtApplicationCompanyLogo',$id);
-		$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
-		
-		return new ViewModel ( array (
-				'item' => $item,
-				'redirectUrl' => $redirectUrl,
-				'errors' => null 
-		) );
-	}
 	
-	/**
-	 */
-	public function getPictureAction() {
-		$item_id = ( int ) $this->params ()->fromQuery ( 'item_id' );
-		$pic1 = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array('item'=>$item_id));
-		
-		if($pic1 instanceof NmtInventoryItemPicture){
-			
-			$pic = new NmtInventoryItemPicture ();
-			$pic = $pic1;
-			$pic_folder = getcwd () . "/data/inventory/picture/item/" . $pic->getFolderRelative () . "thumbnail_450_" . $pic->getFileName ();
-			$imageContent = file_get_contents ( $pic_folder );
-			
-			$response = $this->getResponse ();
-			
-			$response->setContent ( $imageContent );
-			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )->addHeaderLine ( 'Content-Type', $pic->getFiletype () )->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
-			return $response;
-		}else {
-			return;
-		}
-		
-	}
-	
-	/**
-	 */
-	public function barcodeAction() {
-		$barcode = ( int ) $this->params ()->fromQuery ( 'barcode' );
-		
-		// Only the text to draw is required
-		$barcodeOptions = array (
-				'text' => $barcode 
-		);
-		
-		// No required options
-		$rendererOptions = array ();
-		
-		// Draw the barcode in a new image,
-		Barcode::factory ( 'code39', 'image', $barcodeOptions, $rendererOptions )->render ();
-	}
 	public function getDoctrineEM() {
 		return $this->doctrineEM;
 	}

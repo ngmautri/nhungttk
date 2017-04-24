@@ -1,0 +1,41 @@
+ <form class="form-search" action="<?php echo $back ?>"	method="get" enctype="multipart/form-data">
+      <button type="submit" class="btn"><i class="icon-arrow-left">  </i> Back</button>
+</form>
+<hr>
+<h4> <?php echo $this->escapeHtml($item->getItemName());?></h4>
+
+<div id="tabs">
+  <ul>
+  <li ><a href="#general">General</a></li>
+  <li><a href="/inventory/purchasing/list?id=<?php echo $this->escapeHtml($article->id);?>&type=article&layout=ajax">Purchasing Data</a></li>
+  <li><a href="/inventory/transaction/balance?article_id=<?php echo $this->escapeHtml($article->id);?>">Inventory</a></li>
+  
+  <li><a href="/inventory/article/movements?article_id=<?php echo $this->escapeHtml($article->id);?>">Stock Movemements</a></li>
+ <li><a href="/procurement/pr/history?article_id=<?php echo $this->escapeHtml($article->id);?>&layout=ajax">Orders History</a></li>
+ 
+ <li><a href="#attachments">Attachments</a></li>
+
+ 
+  </ul>
+ <div id="attachments">No data found!</div>
+<div id="general">
+<table>
+<?php echo $this->escapeHtml($item->getAssetLabel());?>
+</table>
+
+<div id="lightgallery">
+ 
+ <?php foreach ($pictures as $pic) : ?>
+  	
+    <a href="/inventory/image/item?id=<?php  echo $this->escapeHtml($pic->getId());?>">
+    <img class= "img-rounded" width="150" height="150" src="/inventory/image/item-thumbnail200?id=<?php  echo $this->escapeHtml($pic->getId());?>"/>
+    </a>
+	
+<?php endforeach; ?>
+ </div>	
+</div>
+</div>
+
+
+
+</div>

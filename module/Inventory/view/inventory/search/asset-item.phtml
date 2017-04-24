@@ -2,7 +2,7 @@
 	<li><a href="<?php echo $this->baseUrl ?>/inventory/item/list">Item List</a></li>
 </ul>
  
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
+ <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/asset-item"	method="get" enctype="multipart/form-data">
   <div class="form-group">
     	<input class="form-control" size="28" type="text" name = "q" class="">
   </div>
@@ -32,7 +32,8 @@ if (! $hits == null) :
 			<td><b>Action</b></td>
 			<td><b>Resource</b></td>
 			<td><b>Resource</b></td>
-			<td><b>Resource</b></td>
+						<td><b>Resource</b></td>
+			
 		</tr>
 	</thead>
 	<tbody>
@@ -47,17 +48,15 @@ if (! $hits == null) :
 		?>
 	 <tr>
 			<td> <?php echo $count;?></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
-				
-				<!-- <td><span id=""><?php echo $query->highlightMatches($hit->item_name);?></span></td>  -->
+			<td><span id=""><?php echo $this->escapeHtml($hit->item_name	);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_serial);?></span></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_model);?></span></td>
-<td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_serial);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_model);?></span></td>
+	<td>
 	<a href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($hit->item_id);?>">Show</a>
 		
-	</td>	
+	</td>
 		</tr>
 <?php endforeach; ?>
 </tbody>

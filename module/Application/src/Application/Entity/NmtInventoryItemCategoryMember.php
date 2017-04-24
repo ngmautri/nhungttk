@@ -31,9 +31,9 @@ class NmtInventoryItemCategoryMember
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
-    private $createdOn = 'CURRENT_TIMESTAMP';
+    private $createdOn;
 
     /**
      * @var \Application\Entity\MlaUsers

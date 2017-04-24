@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MlaPoItem
  *
- * @ORM\Table(name="mla_po_item", uniqueConstraints={@ORM\UniqueConstraint(name="pr_item_id_UNIQUE", columns={"pr_item_id"})}, indexes={@ORM\Index(name="mla_delivery_items_FK1_idx1", columns={"pr_item_id"}), @ORM\Index(name="mla_delivery_items_FK3_idx", columns={"vendor_id"}), @ORM\Index(name="mla_delivery_items_FK4_idx", columns={"created_by"}), @ORM\Index(name="mla_po_item_FK4_idx", columns={"po_id"})})
+ * @ORM\Table(name="mla_po_item", uniqueConstraints={@ORM\UniqueConstraint(name="pr_item_id_UNIQUE", columns={"pr_item_id"})}, indexes={@ORM\Index(name="mla_delivery_items_FK1_idx1", columns={"pr_item_id"}), @ORM\Index(name="mla_delivery_items_FK3_idx", columns={"vendor_id"}), @ORM\Index(name="mla_delivery_items_FK4_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class MlaPoItem
@@ -20,6 +20,13 @@ class MlaPoItem
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="po_id", type="integer", nullable=true)
+     */
+    private $poId;
 
     /**
      * @var string
@@ -114,16 +121,6 @@ class MlaPoItem
      */
     private $createdBy;
 
-    /**
-     * @var \Application\Entity\MlaPo
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPo")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="po_id", referencedColumnName="id")
-     * })
-     */
-    private $po;
-
 
 
     /**
@@ -134,6 +131,30 @@ class MlaPoItem
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set poId
+     *
+     * @param integer $poId
+     *
+     * @return MlaPoItem
+     */
+    public function setPoId($poId)
+    {
+        $this->poId = $poId;
+
+        return $this;
+    }
+
+    /**
+     * Get poId
+     *
+     * @return integer
+     */
+    public function getPoId()
+    {
+        return $this->poId;
     }
 
     /**
@@ -422,29 +443,5 @@ class MlaPoItem
     public function getCreatedBy()
     {
         return $this->createdBy;
-    }
-
-    /**
-     * Set po
-     *
-     * @param \Application\Entity\MlaPo $po
-     *
-     * @return MlaPoItem
-     */
-    public function setPo(\Application\Entity\MlaPo $po = null)
-    {
-        $this->po = $po;
-
-        return $this;
-    }
-
-    /**
-     * Get po
-     *
-     * @return \Application\Entity\MlaPo
-     */
-    public function getPo()
-    {
-        return $this->po;
     }
 }

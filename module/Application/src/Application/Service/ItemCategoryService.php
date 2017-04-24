@@ -72,6 +72,37 @@ class ItemCategoryService extends AbstractCategory {
 		return $this->jsTree;
 	}
 	
+	
+	/**
+	 * with node ID
+	 * @param unknown $root
+	 * @return string|unknown
+	 */
+	public function generateJSTree1($root) {
+		$tree = $this->categories [$root];
+		$children = $tree ['children'];
+		
+		//inorder travesal
+		if (count ( $children ) > 0) {
+			$this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true}\'> ' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")\n";
+			$this->jsTree = $this->jsTree . '<ul>' . "\n";
+			foreach ( $children as $key => $value ) {
+				
+				if (count ( $value ['children'] ) > 0) {
+					$this->generateJSTree1 ($key);
+				} else {
+					$this->jsTree = $this->jsTree . '<li id="' .  $value['instance']->getNodeId().'" data-jstree=\'{}\'>' . $value ['instance']->getNodeName() . ' </li>' . "\n";
+					$this->generateJSTree1 ($key);
+				}
+			}
+			$this->jsTree = $this->jsTree . '</ul>' . "\n";
+			
+			$this->jsTree = $this->jsTree . '</li>' . "\n";
+		}
+		
+		return $this->jsTree;
+	}
+	
 	/**
 	 * 
 	 * @param EntityManager $doctrineEM

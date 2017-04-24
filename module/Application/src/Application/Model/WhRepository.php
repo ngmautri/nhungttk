@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityRepository;
  * @author nmt
  *        
  */
-class WhRepository extends EntityRepository{
+class NmtInventoryCategoryItemRepository extends EntityRepository{
 	
 	/**
 	 * 

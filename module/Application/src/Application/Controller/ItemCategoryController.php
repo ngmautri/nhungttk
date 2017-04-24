@@ -87,7 +87,7 @@ class ItemCategoryController extends AbstractActionController {
 	 * @version 3.0
 	 * @author Ngmautri
 	 *        
-	 *  Create new Department
+	 *  Creat
 	 */
 	public function addAction() {
 		$request = $this->getRequest ();
@@ -169,9 +169,12 @@ class ItemCategoryController extends AbstractActionController {
 	/**
 	 */
 	public function listAction() {
+		
+		$root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array("nodeName"=>"_ROOT_"));
+		
 		$this->itemCategoryService->initCategory();
-		$this->itemCategoryService->updateCategory(2,0);
-		$jsTree = $this->itemCategoryService->generateJSTree(2);
+		$this->itemCategoryService->updateCategory($root->getNodeId(),0);
+		$jsTree = $this->itemCategoryService->generateJSTree1($root->getNodeId());
 		
 		$request = $this->getRequest ();
 		
@@ -199,13 +202,43 @@ class ItemCategoryController extends AbstractActionController {
 		}
 		
 		$this->layout ( "layout/user/ajax" );
+		$root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategory')->findOneBy(array("nodeName"=>"_ROOT_"));
+		
 		$this->itemCategoryService->initCategory();
-		$this->itemCategoryService->updateCategory(2,0);
-		$jsTree = $this->itemCategoryService->generateJSTree(2);
-	
+		$this->itemCategoryService->updateCategory($root->getNodeId(),0);
+		$jsTree = $this->itemCategoryService->generateJSTree($root->getNodeId());
+		
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (
 				'jsTree' => $jsTree
+		) );
+	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function showAction() {
+		$request = $this->getRequest ();
+		//$user = $this->userTable->getUserByEmail ( $this->identity());
+	
+		$cat_id = $this->params ()->fromQuery ( 'cat_id' );
+		if ($cat_id > 0) {
+			$records = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategoryMember')->findBy(array('category'=>$cat_id));
+		}
+		
+		$total_records= count ( $records);
+		$paginator = null;
+		
+		if ($request->isXmlHttpRequest ()) {
+			$this->layout ( "layout/inventory/ajax" );
+		}
+		
+		return new ViewModel ( array (
+				'records' => $records,
+				'total_records' => $total_records,
+				'paginator' => $paginator
+				
 		) );
 	}
 	

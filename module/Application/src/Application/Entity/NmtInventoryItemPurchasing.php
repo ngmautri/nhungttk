@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemPurchasing
  *
- * @ORM\Table(name="nmt_inventory_item_purchasing", indexes={@ORM\Index(name="nmt_inventory_item_purchasing_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK2_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK3_idx", columns={"currency"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK4_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_inventory_item_purchasing", indexes={@ORM\Index(name="nmt_inventory_item_purchasing_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK3_idx", columns={"currency"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK4_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class NmtInventoryItemPurchasing
@@ -20,6 +20,13 @@ class NmtInventoryItemPurchasing
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="vendor_id", type="integer", nullable=false)
+     */
+    private $vendorId;
 
     /**
      * @var string
@@ -81,16 +88,6 @@ class NmtInventoryItemPurchasing
     private $item;
 
     /**
-     * @var \Application\Entity\NmtVendor
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtVendor")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="vendor_id", referencedColumnName="id")
-     * })
-     */
-    private $vendor;
-
-    /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -120,6 +117,30 @@ class NmtInventoryItemPurchasing
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set vendorId
+     *
+     * @param integer $vendorId
+     *
+     * @return NmtInventoryItemPurchasing
+     */
+    public function setVendorId($vendorId)
+    {
+        $this->vendorId = $vendorId;
+
+        return $this;
+    }
+
+    /**
+     * Get vendorId
+     *
+     * @return integer
+     */
+    public function getVendorId()
+    {
+        return $this->vendorId;
     }
 
     /**
@@ -312,30 +333,6 @@ class NmtInventoryItemPurchasing
     public function getItem()
     {
         return $this->item;
-    }
-
-    /**
-     * Set vendor
-     *
-     * @param \Application\Entity\NmtVendor $vendor
-     *
-     * @return NmtInventoryItemPurchasing
-     */
-    public function setVendor(\Application\Entity\NmtVendor $vendor = null)
-    {
-        $this->vendor = $vendor;
-
-        return $this;
-    }
-
-    /**
-     * Get vendor
-     *
-     * @return \Application\Entity\NmtVendor
-     */
-    public function getVendor()
-    {
-        return $this->vendor;
     }
 
     /**

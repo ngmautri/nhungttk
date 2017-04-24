@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MlaPoWorkflow
  *
- * @ORM\Table(name="mla_po_workflow", indexes={@ORM\Index(name="mla_po_workflow_FK1_idx", columns={"po_id"})})
+ * @ORM\Table(name="mla_po_workflow")
  * @ORM\Entity
  */
 class MlaPoWorkflow
@@ -20,6 +20,13 @@ class MlaPoWorkflow
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="po_id", type="integer", nullable=false)
+     */
+    private $poId;
 
     /**
      * @var string
@@ -42,16 +49,6 @@ class MlaPoWorkflow
      */
     private $updatedOn;
 
-    /**
-     * @var \Application\Entity\MlaPo
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaPo")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="po_id", referencedColumnName="id")
-     * })
-     */
-    private $po;
-
 
 
     /**
@@ -62,6 +59,30 @@ class MlaPoWorkflow
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set poId
+     *
+     * @param integer $poId
+     *
+     * @return MlaPoWorkflow
+     */
+    public function setPoId($poId)
+    {
+        $this->poId = $poId;
+
+        return $this;
+    }
+
+    /**
+     * Get poId
+     *
+     * @return integer
+     */
+    public function getPoId()
+    {
+        return $this->poId;
     }
 
     /**
@@ -134,29 +155,5 @@ class MlaPoWorkflow
     public function getUpdatedOn()
     {
         return $this->updatedOn;
-    }
-
-    /**
-     * Set po
-     *
-     * @param \Application\Entity\MlaPo $po
-     *
-     * @return MlaPoWorkflow
-     */
-    public function setPo(\Application\Entity\MlaPo $po = null)
-    {
-        $this->po = $po;
-
-        return $this;
-    }
-
-    /**
-     * Get po
-     *
-     * @return \Application\Entity\MlaPo
-     */
-    public function getPo()
-    {
-        return $this->po;
     }
 }

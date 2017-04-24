@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItem
  *
- * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"})})
+ * @ORM\Table(name="nmt_inventory_item", uniqueConstraints={@ORM\UniqueConstraint(name="asset_label_UNIQUE", columns={"asset_label"}), @ORM\UniqueConstraint(name="internal_label_UNIQUE", columns={"item_internal_label"})}, indexes={@ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx1", columns={"standard_uom_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItem
@@ -52,7 +52,7 @@ class NmtInventoryItem
     /**
      * @var string
      *
-     * @ORM\Column(name="item_type", type="string", length=1, nullable=true)
+     * @ORM\Column(name="item_type", type="string", nullable=true)
      */
     private $itemType;
 
@@ -69,6 +69,13 @@ class NmtInventoryItem
      * @ORM\Column(name="item_category", type="string", length=45, nullable=true)
      */
     private $itemCategory;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
+     */
+    private $keywords;
 
     /**
      * @var boolean
@@ -106,6 +113,13 @@ class NmtInventoryItem
     private $isFixedAsset;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_sparepart", type="boolean", nullable=true)
+     */
+    private $isSparepart;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="uom", type="string", length=45, nullable=true)
@@ -115,14 +129,28 @@ class NmtInventoryItem
     /**
      * @var string
      *
-     * @ORM\Column(name="barcode", type="string", length=45, nullable=true)
+     * @ORM\Column(name="barcode", type="string", length=40, nullable=true)
      */
     private $barcode;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="status", type="integer", nullable=true)
+     * @ORM\Column(name="barcode39", type="string", length=40, nullable=true)
+     */
+    private $barcode39;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="barcode128", type="string", length=50, nullable=true)
+     */
+    private $barcode128;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
      */
     private $status;
 
@@ -132,6 +160,13 @@ class NmtInventoryItem
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="manufacturer", type="string", length=50, nullable=true)
+     */
+    private $manufacturer;
 
     /**
      * @var string
@@ -160,6 +195,13 @@ class NmtInventoryItem
      * @ORM\Column(name="manufacturer_serial", type="string", length=45, nullable=true)
      */
     private $manufacturerSerial;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="origin", type="string", length=45, nullable=true)
+     */
+    private $origin;
 
     /**
      * @var string
@@ -211,6 +253,41 @@ class NmtInventoryItem
     private $validToDate;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="location", type="string", length=45, nullable=true)
+     */
+    private $location;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_internal_label", type="string", length=50, nullable=true)
+     */
+    private $itemInternalLabel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="asset_label", type="string", length=45, nullable=true)
+     */
+    private $assetLabel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sparepart_label", type="string", length=45, nullable=true)
+     */
+    private $sparepartLabel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     */
+    private $remarks;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -239,6 +316,16 @@ class NmtInventoryItem
      * })
      */
     private $company;
+
+    /**
+     * @var \Application\Entity\NmtApplicationUom
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="standard_uom_id", referencedColumnName="id")
+     * })
+     */
+    private $standardUom;
 
 
 }

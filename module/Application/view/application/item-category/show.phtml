@@ -1,0 +1,115 @@
+
+
+<?php
+
+if ($total_records <= 0) {
+	
+	echo 'No records found!';
+} else {
+
+	if (! is_null ( $paginator )) {
+		echo 'Record '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_records. ' records found!';
+	}else{	
+		echo $total_records. ' records found!';
+	}
+	
+?>
+
+<table class="table table-hover table-bordered" style="font-size: 10pt">
+<thead>
+	<tr>
+		<td><b>#</b></td>
+		<td><b>SKU</b></td>
+		<td><b>Name</b></td>
+		<td><b>Code</b></td>
+		<td><b>Location</b></td>
+		<td><b>Picture</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+
+ <tbody>
+ 
+	 <?php 
+	 
+	 $count = 0;
+	 foreach ($records as $record) : 
+	 	 $count++;
+ ?>
+	 
+	 <tr>
+	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	  <td><?php echo $record->getItem()->getItemSku();?></td>
+	 
+	 <td><?php echo $record->getItem()->getItemName();?>
+	 </td>
+	 
+	 <td><?php echo $record->getItem()->getManufacturerCode();?></td>
+	 <td><?php echo $record->getItem()->getLocation();?></td>
+	 
+	 <td>
+	 <span style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($record->getItem()->getId());?>" item_name="<?php echo $this->escapeHtml($record->getItem()->getItemName());?>" class="glyphicon glyphicon-picture"></span>
+	 <td>
+	<a target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($record->getItem()->getId());?>">Show</a>
+	 </td>
+	 
+	</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+
+<br>
+
+<?php
+
+//===============================
+if (! is_null ( $paginator )):
+		
+	
+	//change it only
+	$base=$this->baseUrl . '/inventory/article/list';
+	$_connector_symbol = '?';
+
+	$last 	= $base . $_connector_symbol.'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+	$first 	= $base . $_connector_symbol.'page=1&perPage=' . $paginator->resultsPerPage;
+
+	$p1 = ($paginator->page)-1;
+	$p2 = ($paginator->page)+1;
+
+	$prev = $base . $_connector_symbol.'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+	$next = $base . $_connector_symbol.'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+
+	echo '<ul class="pagination">';
+
+	if($paginator->page != 1 AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $first.'"> |< </a></li>';
+		echo '<li><a href="'.  $prev .'"> < </a></li>';
+	}
+
+	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+		$url = $base. $_connector_symbol.'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+			
+		if ($i == $paginator->page) {
+			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
+		} else {
+			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
+		}
+	}
+	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
+		echo '<li><a href="'.  $next.'"> > </a></li>';
+		echo '<li><a href="'.  $last .'"> >| </a></li>';
+	}
+	echo '</ul>';
+endif;
+
+}
+//===============================
+?>
+
+
+<?php include (ROOT.'\module\Inventory\view\inventory\article_order_form.php'); ?>

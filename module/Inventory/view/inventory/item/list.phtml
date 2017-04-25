@@ -119,6 +119,7 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>SKU</b></td>
 			<td><b>Item Name</b></td>
 			<td><b>Item Code</b></td>
 			<td><b>ID</b></td>
@@ -136,13 +137,14 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><?php echo $this->escapeHtml($a->getItemSku());?></td>
 			<td><?php echo $this->escapeHtml($a->getItemName());?></td>
 			<td><?php echo $this->escapeHtml($a->getManufacturerModel());?></td>
 			<td><?php echo $this->escapeHtml($a->getSerialNumber());?></td>
 	
 			<!-- <td><?php echo date_format ( $a->getCreatedOn(), "d/m/y");?> </td>  -->
 			<td>
-		<a href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
+	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($a->getId());?>" item_name="<?php echo $this->escapeHtml($a->getItemName());?>" target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($a->getId());?>">Show</a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?target_id=<?php echo $this->escapeHtml($a->getID());?>">upload picture</a>
 		<a href="<?php echo $this->baseUrl ?>/inventory/warehouse/transfer?item_id=<?php echo $this->escapeHtml($a->getID());?>">transfer</a>
 

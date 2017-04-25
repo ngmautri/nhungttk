@@ -459,7 +459,9 @@ class Module {
 						'Inventory\Services\AssetSearchService'  => 'Inventory\Services\AssetSearchServiceFactory',
 						'Inventory\Services\SparePartsSearchService'  => 'Inventory\Services\SparePartsSearchServiceFactory',
 						'Inventory\Listener\PictureUploadListener' => 'Inventory\Listener\PictureUploadListenerFactory',
-				)
+						'Inventory\Service\ItemSearchService'  => 'Inventory\Service\ItemSearchServiceFactory',
+						
+					)
 				,
 				
 				'invokables' => array (						

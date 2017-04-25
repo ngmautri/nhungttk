@@ -55,7 +55,9 @@ if (! $hits == null) :
 				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_serial);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_model);?></span></td>
 <td>
-	<a href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($hit->item_id);?>">Show</a>
+
+	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($hit->item_id);?>" item_name="<?php echo $this->escapeHtml($hit->item_name);?>" target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($hit->item_id);?>">Show</a>
+
 		
 	</td>	
 		</tr>

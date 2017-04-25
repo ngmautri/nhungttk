@@ -142,6 +142,7 @@ return array (
 						'Inventory\Controller\Image' => 'Inventory\Controller\ImageControllerFactory',
 						//refactory
 						'Inventory\Controller\Item' => 'Inventory\Controller\ItemControllerFactory',
+						'Inventory\Controller\Category' => 'Inventory\Controller\CategoryControllerFactory',
 						
 				)
 				

@@ -39,6 +39,21 @@ class SearchController extends AbstractActionController {
 	public function indexAction() {
 	}
 	
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function optimizeItemIndexAction() {
+		
+		$results = $this->itemSearchService->optimizeIndex();
+		
+		return new ViewModel ( array (
+				'message' => $results
+			) );
+	}
+	
+	
 	/**
 	 * 
 	 * @return \Zend\View\Model\ViewModel

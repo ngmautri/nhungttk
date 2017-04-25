@@ -42,7 +42,7 @@ class IndexController extends AbstractActionController {
 		*/
 		
 		return new ViewModel ( array (
-				'user' => $this->UserPlugin()->getUser(),
+				'message' => $this->flashMessenger()->getCurrentInfoMessages(),
 		) );
 	}
 	

@@ -78,6 +78,20 @@ class NmtInventoryItemCategory
     private $companyId;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="node_type", type="string", length=45, nullable=true)
+     */
+    private $nodeType;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="has_member", type="boolean", nullable=true)
+     */
+    private $hasMember;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

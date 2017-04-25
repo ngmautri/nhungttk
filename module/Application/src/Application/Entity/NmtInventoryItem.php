@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * NmtInventoryItem
  *
  * @ORM\Table(name="nmt_inventory_item", uniqueConstraints={@ORM\UniqueConstraint(name="asset_label_UNIQUE", columns={"asset_label"}), @ORM\UniqueConstraint(name="internal_label_UNIQUE", columns={"item_internal_label"})}, indexes={@ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx1", columns={"standard_uom_id"})})
- * @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
+ * @ORM\Entity
  */
 class NmtInventoryItem
 {

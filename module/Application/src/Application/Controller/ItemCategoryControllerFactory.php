@@ -28,7 +28,6 @@ class ItemCategoryControllerFactory implements FactoryInterface {
 		$sv =  $container->get ('AuthService' );
 		$controller->setAuthService($sv );
 		
-		
 			
 		//Auth Service
 		$sv =  $container->get ('Application\Service\ItemCategoryService' );

@@ -87,18 +87,24 @@
     });
 
 	$("#html1").on("click", ".jstree-anchor", function(e) {
+		   var node = $("#html1").jstree(true).get_node($(this));
+		   		
 		   var id = $("#html1").jstree(true).get_node($(this)).id;
 		   var cat_name = $("#html1").jstree(true).get_node($(this)).text;
+
+		   if (!node.state.disabled)
+   		   {
 		   $("#node_selected").html('"' + cat_name + '" selected');
 		   $("#department_name").val(cat_name);
 		   $("#department_name_selected").val(id);
-
+		   
 			$('#modal1 .close').click();
 			$('#global-notice').show();
 			$('#global-notice').html('"' + cat_name + '" selected');
 			$('#global-notice').fadeOut(3000);
-		   
+   		   }
 	});
+	
 </script>
 
 <!-- Modal -->

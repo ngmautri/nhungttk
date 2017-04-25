@@ -14,6 +14,15 @@
    </ul>
 
 <div id="general"> 
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="$('#html').jstree('open_all');">Expand all
+</a>
+
+&nbsp;|&nbsp;
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="$('#html').jstree('close_all');">Collapse all
+</a>
+
 
 <div id="html" class="demo">
 	<ul>
@@ -95,12 +104,17 @@
     });
 
 	$("#html").on("click", ".jstree-anchor", function(e) {
+
+		   var node = $("#html").jstree(true).get_node($(this));
 		   var id = $("#html").jstree(true).get_node($(this)).id;
 		   var cat_name = $("#html").jstree(true).get_node($(this)).text;
-		   //alert(cat_name);
-		   //$("#content").text(cat_name);
-		   loadCategory(id,cat_name);
-		   //alert(cat_name);
+		   //var node = $("#html").jstree(true).get_node($(this)).data.ic.hasMember;
+			if (node.state.disabled)
+    		{
+        		//alert('disabled');
+    		}else{        		
+    			loadCategory(id,cat_name);
+        	}
 	});
 </script>
 

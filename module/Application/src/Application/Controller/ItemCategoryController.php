@@ -83,24 +83,25 @@ class ItemCategoryController extends AbstractActionController {
 	}
 	
 	/**
-	 *
-	 * @version 3.0
-	 * @author Ngmautri
-	 *        
-	 *  Creat
+	 * @version 1
+	 * @copyright
+	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
 	 */
 	public function addAction() {
+		
 		$request = $this->getRequest ();
-		$identity = $this->identity();
-		$u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers' )->findOneBy(array('email'=>$identity));
-		$parent_id = ( int ) $this->params ()->fromQuery ( 'parent_id' );
+		if ($request->getHeader ( 'Referer' ) == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers' )->findOneBy(array('email'=>$this->identity()));
 		
 		if ($request->isPost ()) {
 			
-			// $input->status = $request->getPost ( 'status' );
-			// $input->remarks = $request->getPost ( 'description' );
-			
 			$node_name = $request->getPost ( 'node_name' );
+			$has_member = $request->getPost ( 'has_member' );
+			$status = $request->getPost ( 'status' );
+			$remarks= $request->getPost ( 'remarks' );
 			
 			$errors = array ();
 			
@@ -122,22 +123,22 @@ class ItemCategoryController extends AbstractActionController {
 						'errors' => $errors,
 						'nodes' => null,
 						'parent_id' => null 
-				
 				) );
 			}
 			
 			// No Error
 			$parent_id = $request->getPost ( 'parent_id' );
 			$parent_entity = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $parent_id );
-			// var_dump($parent_entity->getPath());
 			
 			$entity = new NmtInventoryItemCategory();
 			$entity->setNodeName( $node_name );
 			$entity->setNodeParentId ( $parent_entity->getNodeId () );
 			$entity->setNodeCreatedOn( new \DateTime() );
 			$entity->setNodeCreatedby( $u );
-			$entity->setStatus ( "activated" );
-			$entity->setRemarks ( 'created');
+			
+			$entity->setHasMember( $has_member);
+			$entity->setStatus ( $status);
+			$entity->setRemarks ( $remarks);
 			
 			$this->doctrineEM->persist ( $entity );
 			$this->doctrineEM->flush ();
@@ -150,18 +151,21 @@ class ItemCategoryController extends AbstractActionController {
 			$new_entity->setPathDepth ( count ( $a ) - 1 );
 			
 			$this->doctrineEM->flush ();
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$this->redirect ()->toUrl ( $redirectUrl );
+			
 		}
 		
-		$node = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemCategory' )->findAll ();
-		/*
-		 * if ($request->isXmlHttpRequest ()) {
-		 * $this->layout ( "layout/inventory/ajax" );
-		 * }
-		 */
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$parent_id = ( int ) $this->params ()->fromQuery ( 'parent_id' );
+		
+		$nodes = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemCategory' )->findAll ();
+		
 		return new ViewModel ( array (
 				'errors' => null,
-				'nodes' => $node,
-				'parent_id' => $parent_id 
+				'nodes' => $nodes,
+				'parent_id' => $parent_id,
+				'redirectUrl' => $redirectUrl 
 		
 		) );
 	}
@@ -174,7 +178,7 @@ class ItemCategoryController extends AbstractActionController {
 		
 		$this->itemCategoryService->initCategory();
 		$this->itemCategoryService->updateCategory($root->getNodeId(),0);
-		$jsTree = $this->itemCategoryService->generateJSTree1($root->getNodeId());
+		$jsTree = $this->itemCategoryService->generateJSTreeNew($root->getNodeId(),false);
 		
 		$request = $this->getRequest ();
 		
@@ -206,7 +210,7 @@ class ItemCategoryController extends AbstractActionController {
 		
 		$this->itemCategoryService->initCategory();
 		$this->itemCategoryService->updateCategory($root->getNodeId(),0);
-		$jsTree = $this->itemCategoryService->generateJSTree($root->getNodeId());
+		$jsTree = $this->itemCategoryService->generateJSTreeForAddingMember($root->getNodeId(),false);
 		
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (
@@ -220,6 +224,14 @@ class ItemCategoryController extends AbstractActionController {
 	 */
 	public function showAction() {
 		$request = $this->getRequest ();
+		
+		// accepted only ajax request
+		if (!$request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		$this->layout ( "layout/user/ajax" );
+		
+		
 		//$user = $this->userTable->getUserByEmail ( $this->identity());
 	
 		$cat_id = $this->params ()->fromQuery ( 'cat_id' );
@@ -229,10 +241,6 @@ class ItemCategoryController extends AbstractActionController {
 		
 		$total_records= count ( $records);
 		$paginator = null;
-		
-		if ($request->isXmlHttpRequest ()) {
-			$this->layout ( "layout/inventory/ajax" );
-		}
 		
 		return new ViewModel ( array (
 				'records' => $records,

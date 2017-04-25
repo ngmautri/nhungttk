@@ -1,11 +1,10 @@
-<!-- <a style="color: #0080ff;" href="javascript:;"
-	onclick="$('#html1').jstree('close_all');">Close all
+<a style="" href="javascript:;"
+	onclick="$('#html1').jstree('open_all');">Expand all
 </a>
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="$('#html1').jstree('open_all');">Open all
+&nbsp;|&nbsp;
+<a style="color:" href="javascript:;"
+	onclick="$('#html1').jstree('close_all');">Collapse all
 </a>
- -->
-
 
 <div style="font-size: 10pt" id="html1" class="demo">
 	<ul>
@@ -95,19 +94,25 @@
     });
 
 	$("#html1").on("click", ".jstree-anchor", function(e) {
+
+		   var node = $("#html1").jstree(true).get_node($(this));	
 		   var id = $("#html1").jstree(true).get_node($(this)).id;
 		   var cat_name = $("#html1").jstree(true).get_node($(this)).text;
-		   
-		   $("#node_selected").html('"' + cat_name + '" selected');
-		   $("#item_category_name").val(cat_name);
-		   $("#item_category_name_selected").val(cat_name);
-		   
-		   //$("#content").text(cat_name);
-		   //loadArticles(id,cat_name);
 
-		  	$('#modal1 .close').click();
-			$('#global-notice').show();
-			$('#global-notice').html('"' + cat_name + '" selected');
-			$('#global-notice').fadeOut(3000);
+		   if (!node.state.disabled)
+   		   {
+		   	   $("#node_selected").html('"' + cat_name + '" selected');
+			   $("#item_category_name").val(cat_name);
+			   $("#item_category_name_selected").val(id);
+			   //alert(id);
+			   
+			   //$("#content").text(cat_name);
+			   //loadArticles(id,cat_name);
+		
+			  	$('#modal1 .close').click();
+				$('#global-notice').show();
+				$('#global-notice').html('"' + cat_name + '" selected');
+				$('#global-notice').fadeOut(3000);
+   		   }
 	});
 </script>

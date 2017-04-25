@@ -53,14 +53,19 @@ class DepartmentService extends AbstractCategory {
 		
 		//inorder travesal
 		if (count ( $children ) > 0) {
-			$this->jsTree = $this->jsTree . '<li data-jstree=\'{ "opened" : true}\'> ' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")\n";
+			
+			if($tree['instance']->getNodeName() == "_COMPANY_"){
+				$this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true,"disabled":true}\'><span  style="cursor:not-allowed">Departments:</span>';
+			}else{	
+				$this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true}\'> ' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")\n";
+			}
 			$this->jsTree = $this->jsTree . '<ul>' . "\n";
 			foreach ( $children as $key => $value ) {
 				
 				if (count ( $value ['children'] ) > 0) {
 					$this->generateJSTree ($key);
 				} else {
-					$this->jsTree = $this->jsTree . '<li data-jstree=\'{}\'>' . $value ['instance']->getNodeName() . ' </li>' . "\n";
+					$this->jsTree = $this->jsTree . '<li id="' .  $value['instance']->getNodeId().'" data-jstree=\'{}\'>' . $value ['instance']->getNodeName() . ' </li>' . "\n";
 					$this->generateJSTree ($key);
 				}
 			}

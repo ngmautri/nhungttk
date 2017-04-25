@@ -153,7 +153,11 @@ abstract class AbstractCategory {
 		return isset ( $this->categories [$cat] );
 	}
 	
-	// JS TREE
+	/**
+	 * 
+	 * @param unknown $root
+	 * @return string|unknown
+	 */
 	public function generateJSTree($root) {
 		$tree = $this->categories [$root];
 		$children = $tree ['children'];

@@ -23,7 +23,6 @@ if ($total_records <= 0) {
 		<td><b>Name</b></td>
 		<td><b>Code</b></td>
 		<td><b>Location</b></td>
-		<td><b>Picture</b></td>
 		<td><b>Action</b></td>
 	</tr>
 </thead>
@@ -46,11 +45,8 @@ if ($total_records <= 0) {
 	 
 	 <td><?php echo $record->getItem()->getManufacturerCode();?></td>
 	 <td><?php echo $record->getItem()->getLocation();?></td>
-	 
-	 <td>
-	 <span style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($record->getItem()->getId());?>" item_name="<?php echo $this->escapeHtml($record->getItem()->getItemName());?>" class="glyphicon glyphicon-picture"></span>
-	 <td>
-	<a target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($record->getItem()->getId());?>">Show</a>
+	<td>
+	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($record->getItem()->getId());?>" item_name="<?php echo $this->escapeHtml($record->getItem()->getItemName());?>" target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($record->getItem()->getId());?>">Show</a>
 	 </td>
 	 
 	</tr>

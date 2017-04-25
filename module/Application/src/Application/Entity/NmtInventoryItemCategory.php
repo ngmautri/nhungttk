@@ -78,6 +78,20 @@ class NmtInventoryItemCategory
     private $companyId;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="node_type", type="string", length=45, nullable=true)
+     */
+    private $nodeType;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="has_member", type="boolean", nullable=true)
+     */
+    private $hasMember;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -289,6 +303,54 @@ class NmtInventoryItemCategory
     public function getCompanyId()
     {
         return $this->companyId;
+    }
+
+    /**
+     * Set nodeType
+     *
+     * @param string $nodeType
+     *
+     * @return NmtInventoryItemCategory
+     */
+    public function setNodeType($nodeType)
+    {
+        $this->nodeType = $nodeType;
+
+        return $this;
+    }
+
+    /**
+     * Get nodeType
+     *
+     * @return string
+     */
+    public function getNodeType()
+    {
+        return $this->nodeType;
+    }
+
+    /**
+     * Set hasMember
+     *
+     * @param boolean $hasMember
+     *
+     * @return NmtInventoryItemCategory
+     */
+    public function setHasMember($hasMember)
+    {
+        $this->hasMember = $hasMember;
+
+        return $this;
+    }
+
+    /**
+     * Get hasMember
+     *
+     * @return boolean
+     */
+    public function getHasMember()
+    {
+        return $this->hasMember;
     }
 
     /**

@@ -67,7 +67,6 @@ class SearchController extends AbstractActionController {
 		} else {
 			$results = [
 					"message"=> "",
-					"query"=> null,
 					"hits"=>null,
 			];
 		}
@@ -75,7 +74,6 @@ class SearchController extends AbstractActionController {
 		//var_dump($results);
 		return new ViewModel ( array (
 				'message' => $results["message"],
-				"query"=> $results["query"],
 				'hits' => $results["hits"],
 		) );
 	}

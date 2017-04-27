@@ -43,7 +43,11 @@ class ItemSearchService {
 			$records = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findAll ();
 			
 			if (count ( $records ) > 0) {
+				
+				$log =  array();
 				foreach ( $records as $r ) {
+					
+					try{
 					$doc = new Document ();
 					$row = $r;
 					$doc->addField ( Field::UnIndexed ( 'item_id', $row->getId () ) );
@@ -64,6 +68,9 @@ class ItemSearchService {
 					$doc->addField ( Field::Keyword ( 'uom', $row->getUom () ) );
 					$doc->addField ( Field::Keyword ( 'sp_label_key', $row->getSparepartLabel () ) );
 					$doc->addField ( Field::Keyword ( 'asset_label_key', $row->getAssetLabel () ) );
+					
+					
+					//echo  $row->getId () ."::".$row->getItemName () . '::: ' . mb_detect_encoding($row->getItemName ()) . '<br>'; // false
 					
 					$doc->addField ( Field::text ( 'item_sku', $row->getItemSku () ), 'UTF-8' );
 					$doc->addField ( Field::text ( 'item_name', $row->getItemName () ) );
@@ -87,14 +94,21 @@ class ItemSearchService {
 					$doc->addField ( Field::Text ( 'asset_label_lastnumber', substr ( $s, $p, $l - $p ) * 1 ) );
 					
 					$index->addDocument ( $doc );
+						$log[] = "Doc added";
+					}catch(Exception $e){
+						$log[] = $e->getMessage();
+					}
 				}
 				$index->optimize ();
-				return 'Item resource indexes is created successfully!<br> Index Size:' . $index->count () . '<br>Documents: ' . $index->numDocs ();
+				$log[] = 'Item resource indexes is created successfully!<br> Index Size:' . $index->count () . '<br>Documents: ' . $index->numDocs ();
+				return $log;
 			} else {
-				return 'Nothing for indexing!';
+				$log[] = 'Nothing for indexing!';
+				return $log;
 			}
 		} catch ( Exception $e ) {
-			return $e->getMessage ();
+				$log[] = 'Nothing for indexing!';
+				return $log;
 		}
 	}
 	
@@ -195,36 +209,46 @@ class ItemSearchService {
 	 * @param unknown $department_id        	
 	 */
 	public function searchAllItem($q) {
-		$index = Lucene::open ( getcwd () . self::ITEM_INDEX );
 		
 		try {
+			
+			$index = Lucene::open ( getcwd () . self::ITEM_INDEX );
+			
 			if (strpos ( $q, '*' ) != false) {
 				$pattern = new Term ( $q );
 				$query = new Wildcard ( $pattern );
 				$hits = $index->find ( $query );
 			} else {
-				$query = QueryParser::parse ( $q );
-				$hits = $index->find ( $query );
+				//$query = QueryParser::parse ( $q );
+				$hits = $index->find ( $q);
 			}
 			
-			/*
-			 * foreach ($hits as $h){
-			 * echo $query->highlightMatches($h->item_name);
-			 * }
-			 */
+		/* 	echo count ( $hits ) . " result(s) found for query: <b>" . $q . "</b>";
+			
+			$n=0;
+			foreach($hits as $h){
+				$n++;
+				echo $n. ": " . $h->getDocument()->getFieldUtf8Value("item_id") . "<br>";
+				$fields = $h->getDocument()->getFieldNames();
+				
+				foreach ($fields as $f){
+					echo $n. "--" . $f . "<br>";
+				}
+				
+				
+			} */
 			
 			$result = [ 
 					"message" => count ( $hits ) . " result(s) found for query: <b>" . $q . "</b>",
-					"query" => $query,
-					"hits" => $hits 
+					"hits" => $hits,
 			];
 			
 			return $result;
+				
 		} catch ( \Exception $e ) {
 			$result = [ 
 					"message" => 'Query: <b>' . $q . '</b> sent , but exception catched: <b>' . $e->getMessage () . "</b>\n",
-					"query" => $query,
-					"hits" => null 
+					"hits" => null,
 			];
 			return $result;
 		}
@@ -317,6 +341,28 @@ class ItemSearchService {
 			return $result;
 		}
 	}
+	
+	
+	//Analyzer::setDefault ( new CaseInsensitive () );
+	//$analyzer = Analyzer::getDefault ( new CaseInsensitive () );
+	
+	/*   foreach ($hits as $h){
+	
+	echo $query->htmlFragmentHighlightMatches($h->item_sku);
+	$token = $analyzer->tokenize($h->item_sku);
+	echo "TOKEN" . count($token);
+	foreach ($token as $t){
+	var_dump("T::" .  $t->getTermText());
+	}
+	}; */
+	
+	/* foreach ($hits as $h){
+	 var_dump($h->getDocument());
+	 break;
+	 } */
+	
+	
+	
 	
 	/**
 	 *

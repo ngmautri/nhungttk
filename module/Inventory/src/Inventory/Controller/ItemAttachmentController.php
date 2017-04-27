@@ -20,11 +20,12 @@ use MLA\Paginator;
 use Application\Entity\NmtInventoryItemCategoryMember;
 use Application\Entity\NmtInventoryItemDepartment;
 use Inventory\Service\ItemSearchService;
+use Application\Entity\NmtInventoryItemAttachment;
 
 /*
  * Control Panel Controller
  */
-class ItemController extends AbstractActionController {
+class ItemAttachmentController extends AbstractActionController {
 	protected $doctrineEM;
 	protected $itemSearchService;
 	protected $userTable;
@@ -417,7 +418,7 @@ class ItemController extends AbstractActionController {
 			try {
 				
 				$entity->setLastChangeOn ( new \DateTime () );
-				$entity->setLastChangeBy( $u );
+				$entity->setLastChangeBy ( $u );
 				$this->doctrineEM->flush ();
 				
 				$new_item = $entity;
@@ -495,67 +496,11 @@ class ItemController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function listAction() {
-		$sort_criteria= array ();
+		
 		$criteria = array ();
+		// var_dump($criteria);
 		
-		$item_type = $this->params ()->fromQuery ( 'item_type' );
-		$is_active = $this->params ()->fromQuery ( 'is_active' );
-		$is_fixed_asset= $this->params ()->fromQuery ( 'is_fixed_asset' );
-		
-		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
-		$sort = $this->params ()->fromQuery ( 'sort' );
-		
-		
-		$criteria1 = array ();
-		if (! $item_type == null) {
-			$criteria1 = array (
-					"itemType" => $item_type
-			);
-		}
-		
-		
-		$criteria2 = array ();
-		if (!$is_active == null) {
-			$criteria2 = array (
-				"isActive" =>$is_active
-			);
-			
-			if ($is_active==-1) {
-				$criteria2 = array (
-						"isActive" => '0'
-				);
-			}
-		}
-		
-		$criteria3 = array ();
-		if (!$is_fixed_asset=='') {
-			$criteria3 = array (
-					"isFixedAsset" => $is_fixed_asset
-			);
-			
-			if ($is_fixed_asset==-1) {
-				$criteria3 = array (
-						"isFixedAsset" =>"0"
-				);
-			}
-		}
-		
-		if ($sort_by == null) :
-			$sort_by = "itemName";		
-		endif;
-		
-		if ($sort== null) :
-			$sort= "ASC";
-		endif;
-		
-		$sort_criteria = array (
-				$sort_by => $sort
-		);
-		
-		
-		
-		$criteria = array_merge ( $criteria1, $criteria2, $criteria3);
-		//var_dump($criteria);
+		$sort_criteria = array();
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 15;
@@ -571,13 +516,13 @@ class ItemController extends AbstractActionController {
 		}
 		;
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria);
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemAttachment' )->findBy ( $criteria, $sort_criteria );
 		$total_records = count ( $list );
 		$paginator = null;
 		
 		if ($total_records > $resultsPerPage) {
 			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
-			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemAttachment' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
@@ -586,13 +531,42 @@ class ItemController extends AbstractActionController {
 		return new ViewModel ( array (
 				'list' => $list,
 				'total_records' => $total_records,
+				'paginator' => $paginator,				
+		) );
+	}
+
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function list1Action() {
+		
+		$request = $this->getRequest ();
+		
+		// accepted only ajax request
+		/* if (!$request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}; */
+		
+		$this->layout ( "layout/user/ajax" );
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'item_id' );
+		$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
+		
+		$criteria= array('item'=>$id);
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemAttachment' )->findBy($criteria);
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
+		// var_dump (count($all));
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
 				'paginator' => $paginator,
-				'sort_by' => $sort_by,
-				'sort' => $sort,
-				'is_active' => $is_active,
-				'is_fixed_asset' => $is_fixed_asset,
-				'per_pape' => $resultsPerPage,
-				'item_type' => $item_type 
 		) );
 	}
 	
@@ -600,7 +574,7 @@ class ItemController extends AbstractActionController {
 	 *
 	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
 	 */
-	public function uploadPictureAction() {
+	public function uploadAction() {
 		$request = $this->getRequest ();
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$user = $this->userTable->getUserByEmail ( $this->identity () );
@@ -608,108 +582,221 @@ class ItemController extends AbstractActionController {
 		
 		if ($request->isPost ()) {
 			
-			$pictures = $_POST ['pictures'];
-			$id = $_POST ['target_id'];
+			$item_id = $request->getPost ( 'item_id' );
+			$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
 			
-			$result = "";
+			$document_type = $request->getPost ( 'document_type' );
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			
-			foreach ( $pictures as $p ) {
-				$filetype = $p [0];
-				$result = $result . $p [2];
-				$original_filename = $p [2];
+			if (isset ( $_FILES ['attachments'] )) {
+				$file_name = $_FILES ['attachments'] ['name'];
+				$file_size = $_FILES ['attachments'] ['size'];
+				$file_tmp = $_FILES ['attachments'] ['tmp_name'];
+				$file_type = $_FILES ['attachments'] ['type'];
+				// $file_ext = strtolower ( end ( explode ( '.', $_FILES ['attachments'] ['name'] ) ) );
 				
-				if (preg_match ( '/(jpg|jpeg)$/', $filetype )) {
+				$ext = '';
+				if (preg_match ( '/(jpg|jpeg)$/', $file_type )) {
 					$ext = 'jpg';
-				} else if (preg_match ( '/(gif)$/', $filetype )) {
+				} else if (preg_match ( '/(gif)$/', $file_type )) {
 					$ext = 'gif';
-				} else if (preg_match ( '/(png)$/', $filetype )) {
+				} else if (preg_match ( '/(png)$/', $file_type )) {
 					$ext = 'png';
+				} else if (preg_match ( '/(pdf)$/', $file_type )) {
+					$ext = 'pdf';
+				} else if (preg_match ( '/(vnd.ms-excel)$/', $file_type )) {
+					$ext = 'xls';
+				} else if (preg_match ( '/(vnd.openxmlformats-officedocument.spreadsheetml.sheet)$/', $file_type )) {
+					$ext = 'xlsx';
+				}
+				$expensions = array (
+						"jpeg",
+						"jpg",
+						"png",
+						"pdf",
+						"xlsx",
+						"xls",
+				);
+				
+				
+				$errors = array ();
+				
+				if (in_array ( $ext, $expensions ) === false) {
+					$errors [] = 'Extension file not support, please choose a "jpeg","jpg","png","pdf","xlsx","xlx"!';
 				}
 				
-				$tmp_name = md5 ( $id . uniqid ( microtime () ) ) . '.' . $ext;
+				if ($file_size > 2097152) {
+					$errors [] = 'File size must be excately 2 MB';
+				}
 				
-				// remove "data:image/png;base64,"
-				$uri = substr ( $p [1], strpos ( $p [1], "," ) + 1 );
-				
-				// save to file
-				file_put_contents ( $tmp_name, base64_decode ( $uri ) );
-				
-				$checksum = md5_file ( $tmp_name );
-				
-				// $root_dir = $this->articleService->getPicturesPath ();
-				$root_dir = ROOT . "/data/inventory/picture/item/";
+				$checksum = md5_file ( $file_tmp );
 				
 				$criteria = array (
 						"checksum" => $checksum,
-						"item" => $id 
+						"item" => $item_id
 				);
+				$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemAttachment' )->findby ( $criteria );
 				
-				$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findby ( $criteria );
-				
-				if (count ( $ck ) == 0) {
-					$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
-					$folder_relative =  $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
-					
-					$folder = $root_dir . DIRECTORY_SEPARATOR . $folder_relative;
-					
-					if (! is_dir ( $folder )) {
-						mkdir ( $folder, 0777, true ); // important
-					}
-					
-					rename ( $tmp_name, "$folder/$name" );
-					
-					try {
-						$entity = new NmtInventoryItemPicture ();
-						$entity->setUrl ( $folder . DIRECTORY_SEPARATOR . $name );
-						$entity->setFiletype ( $filetype );
-						$entity->setFilename ( $name );
-						$entity->setOriginalFilename ( $original_filename );
-						$entity->setFolder ( $folder );
-						$entity->setFolderRelative( $folder_relative . DIRECTORY_SEPARATOR);		
-						
-						$entity->setChecksum ( $checksum );
-						$entity->setVisibility(1);
-						$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
-						$entity->setItem ( $item );
-						$entity->setCreatedBy ( $u );
-						$entity->setCreatedOn ( new \DateTime () );
-						
-						$this->doctrineEM->persist ( $entity );
-						$this->doctrineEM->flush ();
-					} catch ( Exception $e ) {
-						$result = $e->getMessage ();
-					}
-					
-					// trigger uploadPicture. AbtractController is EventManagerAware.
-					$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
-							'picture_name' => $name,
-							'pictures_dir' => $folder 
-					) );
-					
-					$result = $result . ' uploaded. //';
-				} else {
-					$result = $result . ' exits. //';
+				if (count ( $ck ) > 0) {
+					$errors [] = 'Document: "' . $file_name .'"  exits already';
 				}
+				
+				if (count ( $errors ) > 0) {
+					
+					return new ViewModel ( array (
+							'item' => $item,
+							'redirectUrl' => $redirectUrl,
+							'errors' => $errors,
+							'entity' => null 
+					) );
+				}
+				;
+				
+				$name = md5 ( $item_id . $checksum . uniqid ( microtime () ) ) . '_' . $this->generateRandomString () . '_' . $this->generateRandomString ( 10 ) . '.' . $ext;
+				
+				$root_dir = ROOT . "/data/inventory/attachment";
+				$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+				$folder = $root_dir . DIRECTORY_SEPARATOR . $folder_relative;
+				
+				if (! is_dir ( $folder )) {
+					mkdir ( $folder, 0777, true ); // important
+				}
+				
+				//echo ("$folder/$name");
+				
+				move_uploaded_file ( $file_tmp, "$folder/$name" );
+					
+				$pdf_box = ROOT."/vendor/pdfbox/";
+				//java -jar pdfbox-app-2.0.5.jar Encrypt [OPTIONS] <password> <inputfile>
+				exec('java -jar ' . $pdf_box.'/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U mla2017 '."$folder/$name");
+				echo('java -jar ' . $pdf_box.'/pdfbox-app-2.0.5.jar Encrypt -O nmt -U nmt '."$folder/$name");
+					
+				// update database
+				
+				$entity = new NmtInventoryItemAttachment ();
+				$entity->setDocumentType ( $document_type );
+				$entity->setFilename ( $name );
+				$entity->setFiletype ( $file_type );
+				$entity->setFilenameOriginal ( $file_name );
+				$entity->setSize ( $file_size );
+				$entity->setFolder ( $folder );
+				$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
+				$entity->setChecksum ( $checksum );
+				
+				$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item );
+				$entity->setItem ( $item );
+				$entity->setCreatedBy ( $u );
+				$entity->setCreatedOn ( new \DateTime () );
+				$this->doctrineEM->persist ( $entity );
+				$this->doctrineEM->flush ();
+				//return $this->redirect ()->toUrl ( $redirectUrl );
 			}
-			// $data['filetype'] = $filetype;
-			$data = array ();
-			$data ['message'] = $result;
-			$response = $this->getResponse ();
-			$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
-			$response->setContent ( json_encode ( $data ) );
-			return $response;
+			
+			return new ViewModel ( array (
+					'item' => $item,
+					'redirectUrl' => $redirectUrl,
+					'errors' => null,
+					'entity' => null 
+			) );
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		// $company = $this->articleTable->get ( $id );
-		// $company = $this->doctrineEM->find('Application\Entity\NmtApplicationCompanyLogo',$id);
 		$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
 		
 		return new ViewModel ( array (
 				'item' => $item,
 				'redirectUrl' => $redirectUrl,
-				'errors' => null 
+				'errors' => null,
+				'entity' => null 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function uploadPdfAction() {
+		$request = $this->getRequest ();
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$user = $this->userTable->getUserByEmail ( $this->identity () );
+		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
+		
+		if ($request->isPost ()) {
+			
+			$item_id = $request->getPost ( 'item_id' );
+			$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
+			
+			if (isset ( $_FILES ['attachments'] )) {
+				$errors = array ();
+				$file_name = $_FILES ['attachments'] ['name'];
+				$file_size = $_FILES ['attachments'] ['size'];
+				$file_tmp = $_FILES ['attachments'] ['tmp_name'];
+				$file_type = $_FILES ['attachments'] ['type'];
+				// $file_ext = strtolower ( end ( explode ( '.', $_FILES ['attachments'] ['name'] ) ) );
+				
+				$ext = '';
+				if (preg_match ( '/(jpg|jpeg)$/', $file_type )) {
+					$ext = 'jpg';
+				} else if (preg_match ( '/(gif)$/', $file_type )) {
+					$ext = 'gif';
+				} else if (preg_match ( '/(png)$/', $file_type )) {
+					$ext = 'png';
+				} else if (preg_match ( '/(pdf)$/', $file_type )) {
+					$ext = 'pdf';
+				} else if (preg_match ( '/(vnd.ms-excel)$/', $file_type )) {
+					$ext = 'xls';
+				} else if (preg_match ( '/(vnd.openxmlformats-officedocument.spreadsheetml.sheet)$/', $file_type )) {
+					$ext = 'xlsx';
+				}
+				
+				var_dump ( $file_name );
+				var_dump ( $file_size );
+				var_dump ( $file_tmp );
+				var_dump ( $file_type );
+				var_dump ( $ext );
+				
+				/*
+				 * $expensions = array (
+				 * "jpeg",
+				 * "jpg",
+				 * "png"
+				 * );
+				 *
+				 * if (in_array ( $file_ext, $expensions ) === false) {
+				 * $errors [] = "extension not allowed, please choose a JPEG or PNG file.";
+				 * }
+				 *
+				 * if ($file_size > 2097152) {
+				 * $errors [] = 'File size must be excately 2 MB';
+				 * }
+				 *
+				 * if (empty ( $errors ) == true) {
+				 * move_uploaded_file ( $file_tmp, "images/" . $file_name );
+				 * echo "Success";
+				 * } else {
+				 * print_r ( $errors );
+				 * }
+				 */
+			}
+			
+			return new ViewModel ( array (
+					'item' => $item,
+					'redirectUrl' => $redirectUrl,
+					'errors' => null,
+					'attachment' => null 
+			) );
+		}
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
+		
+		return new ViewModel ( array (
+				'item' => $item,
+				'redirectUrl' => $redirectUrl,
+				'errors' => null,
+				'attachment' => null 
 		) );
 	}
 	
@@ -754,23 +841,6 @@ class ItemController extends AbstractActionController {
 			return $response;
 		}
 	}
-	
-	/**
-	 */
-	public function barcodeAction() {
-		$barcode = ( int ) $this->params ()->fromQuery ( 'barcode' );
-		
-		// Only the text to draw is required
-		$barcodeOptions = array (
-				'text' => $barcode 
-		);
-		
-		// No required options
-		$rendererOptions = array ();
-		
-		// Draw the barcode in a new image,
-		Barcode::factory ( 'code39', 'image', $barcodeOptions, $rendererOptions )->render ();
-	}
 	public function getDoctrineEM() {
 		return $this->doctrineEM;
 	}
@@ -791,5 +861,14 @@ class ItemController extends AbstractActionController {
 	public function setItemSearchService(ItemSearchService $itemSearchService) {
 		$this->itemSearchService = $itemSearchService;
 		return $this;
+	}
+	
+	/**
+	 *
+	 * @param number $length        	
+	 * @return string
+	 */
+	private function generateRandomString($length = 6) {
+		return substr ( str_shuffle ( str_repeat ( $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil ( $length / strlen ( $x ) ) ) ), 1, $length );
 	}
 }

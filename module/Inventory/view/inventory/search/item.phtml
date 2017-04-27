@@ -11,11 +11,10 @@
   </div>
   
 </form>
-<hr>
 
 
 <?php
-
+echo '<hr>';
 echo '<span>';
 echo $message;
 echo '</span>';
@@ -27,11 +26,12 @@ if (! $hits == null) :
 	<thead>
 		<tr style = "">
 			<td><b>#</b></td>
-			<td><b>Module</b></td>
-			<td><b>Controller</b></td>
-			<td><b>Action</b></td>
-			<td><b>Resource</b></td>
-			<td><b>Resource</b></td>
+			<td><b>Name</b></td>
+			<td><b>SKU</b></td>
+			<td><b>Manufacturer Code</b></td>
+			<td><b>Manufacturer Serial</b></td>
+			<td><b>Manufacturer Model</b></td>
+			<td><b>Matched</b></td>
 			<td><b>Resource</b></td>
 		</tr>
 	</thead>
@@ -46,18 +46,20 @@ if (! $hits == null) :
 		
 		?>
 	 <tr>
+	
 			<td> <?php echo $count;?></td>
+	
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
-				
-				<!-- <td><span id=""><?php echo $query->highlightMatches($hit->item_name);?></span></td>  -->
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_serial);?></span></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_model);?></span></td>
-<td>
-
+				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_serial);?></span></td>
+				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_model);?></span></td>
+    
+			<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>
+	<td>
 	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($hit->item_id);?>" item_name="<?php echo $this->escapeHtml($hit->item_name);?>" target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($hit->item_id);?>">Show</a>
-
+	<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?target_id=<?php echo $this->escapeHtml($hit->item_id);?>">Upload picture</a>
+	<a href="<?php echo $this->baseUrl ?>/inventory/item/edit?item_id=<?php echo $this->escapeHtml($hit->item_id);?>">Edit</a>
 		
 	</td>	
 		</tr>

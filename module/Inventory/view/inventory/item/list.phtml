@@ -1,6 +1,8 @@
  <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
   <div class="form-group">
-    	<input class="form-control" size="28" type="text" name = "q" class="">
+    	<input class="form-control" size="28" type="text" name = "q">
+ 
+ 
   </div>
   <div class="form-group">
      <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
@@ -23,8 +25,7 @@
   <div
 					style="padding: 3px; font-size:10pt; background:url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 					    
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/list"
-	method="get" enctype="multipart/form-data">
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/list" method="get" enctype="multipart/form-data">
 	
 	 <div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag">Item  Type</label>
@@ -42,8 +43,44 @@
 										value="SOFTWARE">Software</option>
 									</select>
 		</div>
+		<div class="col-sm-4">
+	 	</div>
 	</div>
 	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Active Items</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="is_active">
+									<option
+									<?php echo $is_active ==''? "selected='selected'":"";?>
+										value="">All</option>
+									<option
+									<?php echo $is_active=='1'? "selected='selected'":"";?>
+										value="1">Active</option>
+									<option
+									<?php echo $is_active=='-1'? "selected='selected'":"";?>
+										value="-1">Inactive</option>
+									</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Fixed Asset</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="is_fixed_asset">
+									<option
+									<?php echo $is_fixed_asset==''? "selected='selected'":"";?>
+										value="">All</option>
+									<option
+									<?php echo $is_fixed_asset=='1'? "selected='selected'":"";?>
+										value="1">Fixed Asset</option>
+									<option
+									<?php echo $is_fixed_asset=='-1'? "selected='selected'":"";?>
+										value="-1">None Fixed Asset</option>
+									</select>
+		</div>
+	</div>
+
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag">Sort by</label>
 		<div class="col-sm-3">
@@ -55,7 +92,10 @@
 						
 									<option <?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
 										value="createdOn">Created Date</option>
-								</select>
+ 			</select>
+ 			<input <?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?> type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp;
+ 			<input <?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?> type="radio" name="sort" value="DESC">&nbsp;DESC&nbsp;&nbsp;
+ 							
 		</div>
 	</div>
 	
@@ -145,8 +185,14 @@ if ($total_records <= 0) {
 			<!-- <td><?php echo date_format ( $a->getCreatedOn(), "d/m/y");?> </td>  -->
 			<td>
 	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($a->getId());?>" item_name="<?php echo $this->escapeHtml($a->getItemName());?>" target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?item_id=<?php echo $this->escapeHtml($a->getId());?>">Show</a>
+	<a href="<?php echo $this->baseUrl ?>/inventory/item/edit?item_id=<?php echo $this->escapeHtml($a->getId());?>">Edit</a>
+
 		<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?target_id=<?php echo $this->escapeHtml($a->getID());?>">upload picture</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload?target_id=<?php echo $this->escapeHtml($a->getID());?>">upload Attachment</a>
+		<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload-pdf?target_id=<?php echo $this->escapeHtml($a->getID());?>">upload Attachment</a>
+
 		<a href="<?php echo $this->baseUrl ?>/inventory/warehouse/transfer?item_id=<?php echo $this->escapeHtml($a->getID());?>">transfer</a>
+
 
 			</td>
 		
@@ -162,7 +208,7 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-		$base = $this->baseUrl . '/inventory/item/list?item_type='. $item_type.'&sort_by='.$sort_by;
+	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
 		$_connector_symbol = '&';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;

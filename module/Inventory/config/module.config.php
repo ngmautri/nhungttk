@@ -143,6 +143,7 @@ return array (
 						//refactory
 						'Inventory\Controller\Item' => 'Inventory\Controller\ItemControllerFactory',
 						'Inventory\Controller\Category' => 'Inventory\Controller\CategoryControllerFactory',
+						'Inventory\Controller\ItemAttachment' => 'Inventory\Controller\ItemAttachmentControllerFactory',
 						
 				)
 				

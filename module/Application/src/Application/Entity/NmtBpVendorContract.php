@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtBpVendorContract
  *
- * @ORM\Table(name="nmt_bp_vendor_contract", uniqueConstraints={@ORM\UniqueConstraint(name="vendor_id_UNIQUE", columns={"vendor_id"})}, indexes={@ORM\Index(name="nmt_bp_vendor_contract_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_bp_vendor_contract_FK3_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_bp_vendor_contract", indexes={@ORM\Index(name="nmt_bp_vendor_contract_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_bp_vendor_contract_FK3_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_bp_vendor_contract_FK1", columns={"vendor_id"})})
  * @ORM\Entity
  */
 class NmtBpVendorContract
@@ -24,7 +24,7 @@ class NmtBpVendorContract
     /**
      * @var string
      *
-     * @ORM\Column(name="contract_subject", type="string", length=100, nullable=true)
+     * @ORM\Column(name="contract_subject", type="string", length=100, nullable=false)
      */
     private $contractSubject;
 
@@ -155,16 +155,6 @@ class NmtBpVendorContract
     private $markedForDeletion;
 
     /**
-     * @var \Application\Entity\NmtBpVendor
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="vendor_id", referencedColumnName="id")
-     * })
-     */
-    private $vendor;
-
-    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -183,6 +173,16 @@ class NmtBpVendorContract
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtBpVendor
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="vendor_id", referencedColumnName="id")
+     * })
+     */
+    private $vendor;
 
 
 
@@ -653,30 +653,6 @@ class NmtBpVendorContract
     }
 
     /**
-     * Set vendor
-     *
-     * @param \Application\Entity\NmtBpVendor $vendor
-     *
-     * @return NmtBpVendorContract
-     */
-    public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
-    {
-        $this->vendor = $vendor;
-
-        return $this;
-    }
-
-    /**
-     * Get vendor
-     *
-     * @return \Application\Entity\NmtBpVendor
-     */
-    public function getVendor()
-    {
-        return $this->vendor;
-    }
-
-    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -722,5 +698,29 @@ class NmtBpVendorContract
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set vendor
+     *
+     * @param \Application\Entity\NmtBpVendor $vendor
+     *
+     * @return NmtBpVendorContract
+     */
+    public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
+    {
+        $this->vendor = $vendor;
+
+        return $this;
+    }
+
+    /**
+     * Get vendor
+     *
+     * @return \Application\Entity\NmtBpVendor
+     */
+    public function getVendor()
+    {
+        return $this->vendor;
     }
 }

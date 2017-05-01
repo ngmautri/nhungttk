@@ -1,4 +1,3 @@
-<h4>Edit vendor contract:</h4>
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert">';
@@ -13,31 +12,24 @@ if (count ( $errors ) > 0) {
 }
 ?>
 <div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Vendor Contract</a></li>
-   </ul>
+	<ul>
+	  <li ><a href="#general">Vendor Contract</a></li>
+	</ul>
 
 <div id="general"> 
+	<form id="vendor_contract_form" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
-<form id="" class="form-horizontal" action="/bp/vendor-contract/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="target_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-
-<div class="form-group">
+	<div class="form-group">
 		<label class="control-label col-sm-2" >Vendor:</label>
 		<div class="col-sm-3">
 			<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor!"
 				name="vendor_name" value="<?php echo (!$vendor == null)? $vendor->getVendorName():"";?>">
-			<input type="hidden" id="vendor_id" placeholder="" 	name="vendor_id*" value="<?php echo (!$vendor== null)? $vendor->getId():"";?>">
-<input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-	
-		</div>
+			<input type="hidden" id="vendor_id" placeholder="" 
+			name="vendor_id" value="<?php echo (!$vendor== null)? $vendor->getId():"";?>">	
+		     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 		
-<!-- 		
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Vendor','750','450', '/bp/vendor/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>
- -->
+		</div>
 
 	</div>
 	
@@ -80,59 +72,28 @@ if (count ( $errors ) > 0) {
 	</div>
 	
 	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Attachment(*.pdf):</label>
-		<div class="col-sm-3">
-			<input style="" type="file" id="attachments" name="attachments" />
-		</div>		
-	</div>
-	
-	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputDescription">Remarks:</label>
 		<div class="col-sm-3">
 			<textarea class="form-control" id="inputDescription" placeholder=""
 				rows="3" name="remarks"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 		</div>
-		
-		<label class="control-label col-sm-3" for="inputTag">Current Attachment: </label>
+
+		<label class="control-label col-sm-2" for="inputTag">Attachment: </label>
 		<div class="col-sm-3">
-	<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/download?target_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
-		</div>	
+		
+		<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/bp/vendor-contract/download?target_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
+		</div>
 	</div>
-		
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-	   	<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i> SAVE</button>
-  		</div>
-	</div> 
-		
 	
 </form>
+
 </div>
 </div>
 
 <script type="text/javascript">
-$('#attachments').bind('change', function() {
-	var file_size;
-	file_size = this.files[0].size
-	if (file_size > 2097152){
-		$('#b_loaded_data').text('Attachment size is too large : ' + file_size + "MB. Please select new file");
-		$('#modal1').modal();
-		$("#attachments").val("");
-		 	
-	}else{
-		//alert('This file size is: ' + file_size + "MB, OKE");
-		 //$('#save').removeAttr('disabled');
-	}
-});
-
-$(function() {
-	$( "input[id='signing_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
-    $( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
-    $( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
-});
-
+	$("#vendor_contract_form :input").attr("disabled", "disabled");
 </script>
+
 
 <!-- Modal -->
 <div class="modal" id="modal1" role="dialog">
@@ -146,8 +107,8 @@ $(function() {
 				<div id="b_loaded_data">loading</div>
 			</div>
 			<div class="modal-footer">
-				<span id="node_selected"></span>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+				<span id="node_selected">No thing selected</span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
 			</div>
 		</div>
 	</div>
@@ -157,6 +118,4 @@ $(function() {
 <div id="jquery_dialog" style="display: none; padding-top: 10pt">
 	<div id="j_loaded_data"></div>
 </div>
-
-
 

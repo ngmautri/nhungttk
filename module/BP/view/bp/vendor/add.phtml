@@ -1,0 +1,109 @@
+<h4>Create new Vendor:</h4>
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general">Vendor</a></li>
+   </ul>
+
+<div id="general">
+
+<form class="form-horizontal"
+	action="<?php echo $this->baseUrl ?>/bp/vendor/add" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Vendor Name</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="vendor_name" value="<?php echo (!$entity == null)? $entity->getVendorName():"";?>">
+		</div>
+		
+		<div class="col-sm-4">
+	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()==="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Short name</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="vendor_short_name" value="<?php echo (!$entity == null)? $entity->getVendorShortname():"";?>">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Keywords</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" id="inputTag" placeholder=""
+				name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Country</label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="country_name" placeholder="Please select country"
+				name="country_name" value="<?php echo (!$country == null)? $country->getCountryName():"";?>">
+			<input type="hidden" id="country_id" placeholder="" 
+			name="country_id" value="<?php echo (!$country== null)? $country->getId():"";?>">	
+			
+		</div>
+		
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showBootstrapDialog('Select Country','/application/country/list1','b_loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+		
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputDescription">remarks</label>
+		<div class="col-sm-3">
+			<textarea class="form-control" id="inputDescription" placeholder=""
+				rows="3" name="remarks"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-default">Submit</button>
+		</div>
+	</div>
+</form>
+</div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
+			</div>
+			<div class="modal-body">
+				<div id="loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected">No thing selected</span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="dialog" style="display: none;">Check code...</div>
+

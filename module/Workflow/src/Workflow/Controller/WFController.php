@@ -9,60 +9,90 @@
  */
 namespace Workflow\Controller;
 
-use Zend\I18n\Validator\Int;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Date;
-use Zend\Validator\EmailAddress;
-use Zend\Mail\Message;
-use Zend\View\Model\ViewModel;
-use MLA\Paginator;
-use MLA\Files;
-
-use Workflow\Model\Workflow;
-use Workflow\Model\WorkflowTable;
-
+use Workflow\Model\NmtWfWorkflowTable;
+use Workflow\Model\NmtWfWorkflow;
+use Doctrine\ORM\EntityManager;
 
 /*
  * Control Panel Controller
  */
 class WFController extends AbstractActionController {
-	protected $SmtpTransportService;
-	protected $authService;
-	protected $aclService;
-	protected $userTable;
-	protected $aclRoleTable;
-	protected $aclResourceTable;
-	protected $aclUserRoleTable;
-	protected $aclRoleResourceTable;
-	protected $tree;
-	protected $workflowTable;
+	
+	protected$nmtWfWorkflowTable;
+	protected $doctrineEM;
 	
 	/*
 	 * Defaul Action
 	 */
-	public function indexAction() {
+	public function indexAction()
+	{
+		$em = $this->doctrineEM;
+		$data = $em->getRepository('Application\Entity\NmtWfWorkflow')->findAll();
+		foreach($data as $row)
+		{
+			echo $row->getWorkflowName();
+			echo '<br />';
+		}
 	}
-
-	public function getAuthService() {
-		return $this->authService;
+	
+	
+	
+	/*
+	 * Defaul Action
+	 */
+	public function addAction()
+	{
+		$request = $this->getRequest ();
+		if ($request->isPost ()) {
+			$em = $this->doctrineEM;
+			$input = new \Application\Entity\NmtWfWorkflow();
+			$input->setWorkflowName($request->getPost ( 'workflow_name' ));
+			$input->setWorkflowDescription($request->getPost ( 'workflow_description' ));
+			
+			
+			$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', 39 );
+			$input->setWorkflowCreatedBy( $u );
+			$input->setWorkflowCreatedOn( new \DateTime () );
+			
+			$em->persist ( $input);
+			$em->flush ();
+			
+		}
+		
+		//$this->redirect ()->toUrl ( 'home' );
+		
 	}
-	public function setAuthService($authService) {
-		$this->authService = $authService;
+	
+	/*
+	 * Defaul Action
+	 */
+	public function listAction()
+	{
+		$this->nmtWfWorkflowTable->fetchAll();
+		var_dump($this->nmtWfWorkflowTable->fetchAll());
+	}
+	
+	public function deleteAction()
+	{
+		$this->nmtWfWorkflowTable->fetchAll();
+		var_dump($this->nmtWfWorkflowTable->fetchAll());
+	}
+	
+	public function getNmtWfWorkflowTable() {
+		return $this->nmtWfWorkflowTable;
+	}
+	public function setNmtWfWorkflowTable(NmtWfWorkflowTable $nmtWfWorkflowTable) {
+		$this->nmtWfWorkflowTable = $nmtWfWorkflowTable;
 		return $this;
 	}
-	public function getUserTable() {
-		return $this->userTable;
+	public function getDoctrineEM() {
+		return $this->doctrineEM;
 	}
-	public function setUserTable($userTable) {
-		$this->userTable = $userTable;
+	public function setDoctrineEM(EntityManager $doctrineEM) {
+		$this->doctrineEM = $doctrineEM;
 		return $this;
 	}
-		public function getWorkflowTable() {
-		return $this->workflowTable;
-	}
-	public function setWorkflowTable(WorkflowTable $workflowTable) {
-		$this->workflowTable = $workflowTable;
-		return $this;
-	}
+	
 	
 }

@@ -7,6 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 return array (
+		
 		'router' => array (
 				'routes' => array (
 						
@@ -42,7 +43,8 @@ return array (
 		
 		'service_manager' => array (
 				'factories' => array (
-						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory' 
+						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+						'Workflow\Service\WorkflowService' => 'Workflow\Service\WorkflowServiceFactory',
 				) 
 		),
 		'translator' => array (

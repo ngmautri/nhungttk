@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemDepartment
  *
- * @ORM\Table(name="nmt_inventory_item_department", indexes={@ORM\Index(name="nmt_inventory_item_department_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_department_FK2_idx", columns={"department_id"}), @ORM\Index(name="nmt_inventory_item_department_FK3_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_inventory_item_department", indexes={@ORM\Index(name="nmt_inventory_item_department_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_department_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_department_FK2_idx", columns={"department"})})
  * @ORM\Entity
  */
 class NmtInventoryItemDepartment
@@ -46,6 +46,16 @@ class NmtInventoryItemDepartment
     private $item;
 
     /**
+     * @var \Application\Entity\NmtApplicationDepartment
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="department", referencedColumnName="node_id")
+     * })
+     */
+    private $department;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -54,16 +64,6 @@ class NmtInventoryItemDepartment
      * })
      */
     private $createdBy;
-
-    /**
-     * @var \Application\Entity\NmtApplicationDepartment
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="department_id", referencedColumnName="node_id")
-     * })
-     */
-    private $department;
 
 
 
@@ -150,30 +150,6 @@ class NmtInventoryItemDepartment
     }
 
     /**
-     * Set createdBy
-     *
-     * @param \Application\Entity\MlaUsers $createdBy
-     *
-     * @return NmtInventoryItemDepartment
-     */
-    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    /**
-     * Get createdBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getCreatedBy()
-    {
-        return $this->createdBy;
-    }
-
-    /**
      * Set department
      *
      * @param \Application\Entity\NmtApplicationDepartment $department
@@ -195,5 +171,29 @@ class NmtInventoryItemDepartment
     public function getDepartment()
     {
         return $this->department;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtInventoryItemDepartment
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }

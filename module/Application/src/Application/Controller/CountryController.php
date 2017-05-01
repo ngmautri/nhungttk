@@ -179,11 +179,15 @@ class CountryController extends AbstractActionController {
 		$request = $this->getRequest ();
 		
 		// accepted only ajax request
-		/* if (!$request->isXmlHttpRequest ()) {
+		if (!$request->isXmlHttpRequest ()) {
 			return $this->redirect ()->toRoute ( 'access_denied' );
-		} */
+		}
 		$this->layout ( "layout/user/ajax" );
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCountry' )->findAll();
+		
+		$criteria=array("isActive"=>1);
+		$sort_criteria=array("countryName"=>"ASC");
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCountry' )->findBy ( $criteria,$sort_criteria);
 		$total_records= count($list);
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (

@@ -9,6 +9,10 @@
  */
 namespace Procurement\Controller;
 
+
+use PHPExcel;
+use PHPExcel_IOFactory;
+
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\I18n\Validator\Int;
@@ -80,15 +84,18 @@ class PRController extends AbstractActionController {
 		if ($flow == null) :
 			$flow = 'all';
 		
+		
 		endif;
 		
 		if ($last_status == null) :
 			$last_status = 'Pending';
 		
+		
 		endif;
 		
 		if ($department_id == null) :
 			$department_id = 0;
+		
 		
 		endif;
 		
@@ -134,10 +141,12 @@ class PRController extends AbstractActionController {
 		if ($balance == null) :
 			$balance = 2;
 		
+		
 			endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
+		
 		
 		endif;
 		
@@ -145,10 +154,11 @@ class PRController extends AbstractActionController {
 			$added_delivery_list = 2;
 		
 		
+		
 		endif;
 		
 		$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V3 ( $pr_id, $balance, $unconfirmed_quantity, $added_delivery_list, 0, 0 );
-		$po_grand_total = $this->purchaseRequestItemTable->getPOGrandTotal($pr_id);
+		$po_grand_total = $this->purchaseRequestItemTable->getPOGrandTotal ( $pr_id );
 		
 		if ($output === 'csv') {
 			$fh = fopen ( 'php://memory', 'w' );
@@ -281,6 +291,92 @@ class PRController extends AbstractActionController {
 			return $response;
 		}
 		
+		/*  
+		 
+		 	$h [] = "PR#";
+			$h [] = "PR number";
+			$h [] = "Requester";
+			$h [] = "Email";
+			$h [] = "Department";
+			
+			$h [] = "Item#";
+			$h [] = "Status";
+			$h [] = "Item Name";
+			$h [] = "Item Code";
+			$h [] = "Item Unit";
+			$h [] = "Item Keywords";
+			$h [] = "Spare Part";
+			$h [] = "SparePart Tag";
+			$h [] = "Asset Name";
+			$h [] = "EDT";
+			
+			$h [] = "Ordered Quantity";
+			$h [] = "Received Quantity";
+			$h [] = "Notified Quantity";
+			$h [] = "Confirmed Quantity";
+			$h [] = "Rejected Quantity";
+			$h [] = "Balance";
+			$h [] = "Free Quantity";
+			
+			$h [] = "Last Vendor";
+			$h [] = "Last Unit Price";
+			$h [] = "Last Currency";
+			
+			$h [] = "Remarks";
+		*/
+		if ($output === 'xlsx') {
+			
+			$pr_items = $this->purchaseRequestItemTable->getPRItemsWithLastDN_V3 ( $pr_id, $balance, $unconfirmed_quantity, $added_delivery_list, 0, 0 );
+			
+			
+			// Create new PHPExcel object
+			$objPHPExcel = new PHPExcel();
+			// Set document properties
+			$objPHPExcel->getProperties()->setCreator("nmt@mascot.dK")
+			->setLastModifiedBy("Nguyen Mau Tri")
+			->setTitle("Office 2007 XLSX Test Document")
+			->setSubject("Office 2007 XLSX Test Document")
+			->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+			->setKeywords("office 2007 openxml php")
+			->setCategory("Test result file");
+			// Add some data
+			
+			$row=1;
+			$objPHPExcel->setActiveSheetIndex(0)
+			->setCellValue('A'.$row, 'PR#')
+			->setCellValue('B'.$row, 'Name')
+			->setCellValue('C'.$row, 'Part No.');
+			
+			foreach ( $pr_items as $m ) {
+				$row=$row+1;				
+				$objPHPExcel->setActiveSheetIndex(0)
+				->setCellValue('A'.$row, $m->purchase_request_id)				
+				->setCellValue('B'.$row, $m->name)
+				->setCellValue('C'.$row, $m->code);
+			}				
+			
+			// Miscellaneous glyphs, UTF-8
+			$objPHPExcel->setActiveSheetIndex(0);
+			// Rename worksheet
+			$objPHPExcel->getActiveSheet()->setTitle('Items');
+			// Set active sheet index to the first sheet, so Excel opens this as the first sheet
+			$objPHPExcel->setActiveSheetIndex(0);
+			// Redirect output to a client’s web browser (Excel2007)
+			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+			header('Content-Disposition: attachment;filename="pr.xlsx"');
+			header('Cache-Control: max-age=0');
+			// If you're serving to IE 9, then the following may be needed
+			header('Cache-Control: max-age=1');
+			// If you're serving to IE over SSL, then the following may be needed
+			header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+			header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+			header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+			header ('Pragma: public'); // HTTP/1.0
+			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+			$objWriter->save('php://output');
+			exit;
+		}
+		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
 				'user' => $user,
@@ -291,7 +387,7 @@ class PRController extends AbstractActionController {
 				'balance' => $balance,
 				'unconfirmed_quantity' => $unconfirmed_quantity,
 				'added_delivery_list' => $added_delivery_list,
-				'po_grand_total' =>$po_grand_total
+				'po_grand_total' => $po_grand_total 
 		) );
 	}
 	
@@ -315,15 +411,18 @@ class PRController extends AbstractActionController {
 		if ($balance == null) :
 			$balance = 2;
 		
+		
 			endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
 		
+		
 		endif;
 		
 		if ($added_delivery_list == null) :
 			$added_delivery_list = 2;
+		
 		
 		endif;
 		
@@ -460,15 +559,18 @@ class PRController extends AbstractActionController {
 		if ($flow == null) :
 			$flow = 'all';
 		
+		
 		endif;
 		
 		if ($last_status == null) :
 			$last_status = 'Pending';
 		
+		
 		endif;
 		
 		if ($pr_year == null) :
 			$pr_year = date ( 'Y' );
+		
 		
 		endif;
 		
@@ -545,6 +647,7 @@ class PRController extends AbstractActionController {
 		if ($pr_year == null) :
 			$pr_year = date ( 'Y' );
 		
+		
 		endif;
 		
 		$departments = $this->departmentTable->fetchAll ();
@@ -552,15 +655,18 @@ class PRController extends AbstractActionController {
 		if ($balance == null) :
 			$balance = 1;
 		
+		
 			endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
 		
+		
 			endif;
 		
 		if ($processing == null) :
 			$processing = 0;
+		
 		
 			endif;
 		
@@ -613,16 +719,39 @@ class PRController extends AbstractActionController {
 			return $response;
 		}
 		
-		if($layout=="ajax"){
-			$this->layout("layout/inventory/ajax");
+		if ($layout == "ajax") {
+			$this->layout ( "layout/inventory/ajax" );
 		}
 		
 		return new ViewModel ( array (
 				'pr_items' => $pr_items,
-				'layout'=>$layout
+				'layout' => $layout 
 		) );
 	}
 	
+	/**
+	 * Get Pending Order of items
+	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+	 */
+	public function pendingAction() {
+		$request = $this->getRequest ();
+		
+		$sparepart_id = $this->params ()->fromQuery ( 'sparepart_id' );
+		//$article_id = $this->params ()->fromQuery ( 'article_id' );
+		//$in_cart = null;
+		$pendings = $this->purchaseRequestItemTable->getPendingPRItemsOfSparepart($sparepart_id);
+		$layout = "";
+		
+		if ($request->isXmlHttpRequest ()) {
+			$this->layout ( "layout/inventory/ajax" );
+			$layout="ajax";
+		}
+		
+		return new ViewModel ( array (
+				'pendings' => $pendings,
+				'layout'=>$layout
+		) );
+	}
 	
 	/**
 	 *
@@ -1161,10 +1290,12 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($department_id == null) :
 			$department_id = 0;
+		
 		
 		
 		
@@ -1217,6 +1348,7 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($unconfirmed_quantity == null) :
@@ -1227,10 +1359,12 @@ class PRController extends AbstractActionController {
 		
 		
 		
+		
 		endif;
 		
 		if ($added_delivery_list == null) :
 			$added_delivery_list = 2;
+		
 		
 		
 		
@@ -1312,20 +1446,24 @@ class PRController extends AbstractActionController {
 		if ($balance == null) :
 			$balance = 1;
 		
+		
 		endif;
 		
 		if ($unconfirmed_quantity == null) :
 			$unconfirmed_quantity = 2;
+		
 		
 		endif;
 		
 		if ($processing == null) :
 			$processing = 0;
 		
+		
 		endif;
 		
 		if ($pr_year == null) :
 			$pr_year = date ( 'Y' );
+		
 		
 		endif;
 		
@@ -1618,6 +1756,82 @@ class PRController extends AbstractActionController {
 		$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
 		$response->setContent ( json_encode ( $c ) );
 		return $response;
+	}
+	
+	/*
+	 * Request for new spare parts
+	 * step1: search the spare part
+	 *
+	 */
+	public function updateCartQuantityAction() {
+			$request = $this->getRequest ();
+			
+			if ($request->isPost ()) {
+				// $redirectUrl = $request->getPost ( 'redirectUrl' );
+					$pk= $request->getPost ( 'pk' );
+					
+					$id = $pk['id'];
+					$key = $pk['key'];					
+					$value = $request->getPost ( 'value' );
+							
+					$input = $this->purchaseRequestCartItemTable->get($id);
+					
+					// validator.
+					$errors = array ();
+					switch ($key){
+						case 'quantity':
+							$input->quantity=$value;
+							
+							// Fixed it by going to php.ini and uncommenting extension=php_intl.dll
+							$validator = new Int ();
+							
+							if (! $validator->isValid ( $input->quantity )) {
+								$errors [] = 'Quantity is not valid. It must be a number.';
+							} else {
+								if ($input->quantity <= 0) {
+									$errors [] = 'Order Quantity muss be greater than 0!';
+								}
+							}
+							break;
+							
+						case 'EDT':
+							$input->EDT = $value;
+							$validator = new Date ();
+							
+							if (! $validator->isValid ( $input->EDT )) {
+								$errors [] = 'requested delievery date is not correct!' . $input->EDT;
+							}else{
+								
+								$today = date ( "Y-m-d H:i:s" );
+								if ($input->EDT < $today) {
+									$errors [] = 'requested delievery date is in the past!';
+								}
+							}
+							break;
+					}
+				
+						
+					if (count ( $errors ) > 0) {
+						$c = array (
+								'status' => 'error',
+								'msg'=>$errors[0],
+						);							
+					}else {
+						$this->purchaseRequestCartItemTable->update ( $input, $id );
+						$c = array (
+								'status' => 'ok',
+								'msg'=>$key . ' has been updated sucessfully! New value = ' . $value,
+						);
+					}
+						
+					
+			}
+			
+			
+			$response = $this->getResponse ();
+			$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+			$response->setContent ( json_encode ( $c ) );
+			return $response;
 	}
 	
 	/**

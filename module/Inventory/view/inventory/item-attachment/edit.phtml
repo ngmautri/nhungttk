@@ -1,7 +1,10 @@
- <h4>Edit Item:</h4>
+<h4>
+	 <?php echo (!$item == null)? $item->getItemName():"";?>
+</h4>
+
 <?php
 if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert">';
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
 	
 	echo '<ul>';
 	foreach ( $errors as $error ) :
@@ -13,192 +16,105 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-<input type="hidden" name="item_id" value="<?php echo $item_id;?>" />
-
-
-<div id="tabs" style="font-size: 9.5pt"> 
+<div id="tabs" style="font-size: 10pt"> 
   <ul>
-  <li ><a href="#general">Item</a></li>
+  <li ><a href="#general">Attachment Edit</a></li>
    </ul>
 
 <div id="general"> 
-	
+
+<form id="attachment_upload_form" class="form-horizontal" action="/inventory/item-attachment/edit" method="post" enctype="multipart/form-data">
+<input type="hidden" name="entity_id" value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+
 	<div class="form-group">
-		<label class="control-label col-sm-2" >Item ID</label>
+		<label class="control-label col-sm-2" >Document Type</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="item_sku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
-		</div>		
+				name="document_type" value="<?php echo (!$entity== null)? $entity->getDocumentType():"";?>">
+	
+		</div>
+		<label class="control-label col-sm-1" for="inputTag"></label>
 		<div class="col-sm-4">
-	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_stocked" value="1">&nbsp;Stocked &nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_purchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
-	 		 <input <?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_sale_item" value="1">&nbsp;For Sale &nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_fixed_asset" value="1">&nbsp;Fixed Asset
-		
-		</div>
-		
-		<div class="col-sm-3">
-			<img alt="" height="" src="/inventory/item/barcode?barcode=22011979">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Item  Name</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="item_name" value="<?php echo (!$entity == null)? $entity->getItemName():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" >Item Foreign Name</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="item_name_foreign" value="<?php echo (!$entity == null)? $entity->getItemNameForeign():"";?>">
-		</div>
-	</div>
-		<div class="form-group">
-		<label class="control-label col-sm-2" >Item  Description</label>
-		<div class="col-sm-8">
-			<input class="form-control" type="text"  placeholder=""
-				name="item_description" value="<?php echo (!$entity == null)? $entity->getItemDescription():"";?>">
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Bar Code</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="item_barcode" value="<?php echo (!$entity == null)? $entity->getBarcode():"";?>">
-			
+					  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
 		</div>		
-		<label class="control-label col-sm-2" >Keyworks</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
-		</div>
 	</div>
-	
+		
 	<div class="form-group">
-		<label class="control-label col-sm-2" >Item Type</label>
+		<label class="control-label col-sm-2" for="inputTag">Attachment</label>
 		<div class="col-sm-3">
-			<select class="form-control"  name="item_type" >
-        		<option <?php if(!$entity == null): echo ($entity->getItemType()=="ITEM")?"selected":""; endif;?> value="ITEM">Item</option>
-   	     		<option <?php if(!$entity == null): echo ($entity->getItemType()=="SERVICE")?"selected":""; endif;?> value="SERVICE">Service</option>
-   	     		<option <?php if(!$entity == null): echo ($entity->getItemType()=="SOFTWARE")?"selected":""; endif;?> value="SOFTWARE">Software</option>
-    		</select>
+			<input style=";" type="file" id= "attachments" name="attachments" />
 		</div>
 		
-		<label class="control-label col-sm-2" >Measurement</label>
+		<label class="control-label col-sm-3" for="inputTag">Current Attachment: </label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="standard_uom_name" placeholder="Please select standard unit" name="item_uom_name" value="<?php echo (!$uom == null)? $uom->getUomCode():"";?>">
-			<input type="hidden" id="standard_uom_id" placeholder="" name="standard_uom_id" value="<?php echo (!$uom == null)? $uom->getId():"";?>">	
+		
+	<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/download?target_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
+		
 			
-		</div>
-		
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showBootstrapDialog('Select Unit of Measurement','/application/uom/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>
-		
+		</div>			
 	</div>
 	
+	
+	
 	<div class="form-group">
-		<label class="control-label col-sm-2" >Item Category</label>
+		<label class="control-label col-sm-2" >Vendor (optional)</label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="item_category_name" placeholder="Please select item category"
-				name="country_code_2" value="<?php echo (!$category == null)? $category->getNodeName():"";?>">
-			<input type="hidden" id="item_category_name_selected" placeholder="" 
-			name="item_category_id" value="<?php echo (!$category == null)? $category->getNodeId():"";?>">	
+			<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor, if any"
+				name="vendor_name" value="<?php echo (!$vendor == null)? $vendor->getVendorName():"";?>">
+			<input type="hidden" id="vendor_id" placeholder="" 
+			name="vendor_id" value="<?php echo (!$vendor== null)? $vendor->getId():"";?>">	
 		</div>
 		
+
 <a style="color: #0080ff;" href="javascript:;"
-	onclick="showBootstrapDialog('Select Item Category','/application/item-category/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+	onclick="showJqueryDialog('Select Vendor','750','450', '/bp/vendor/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
 
 	</div>
 	
 	<div class="form-group">
-		<label class="control-label col-sm-2" >Department</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="department_name" placeholder="Please select!"
-				name="deparment_name" value="<?php echo (!$department == null)? $department->getNodeName():"";?>">
-			<input type="hidden" id="department_name_selected" placeholder="" 
-			name="department_id" value="<?php echo (!$department == null)? $department->getNodeId():"";?>">	
-		</div>
 		
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showBootstrapDialog('Select Deparment','/application/department/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>
-
-</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2">Location</label>
+	<label class="control-label col-sm-2" >Remarks</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="location" value="<?php echo (!$entity == null)? $entity->getLocation():"";?>">
-		</div>
-		
-	</div>
-	
-	
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Manufacturer</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="manufacturer" value="<?php echo (!$entity == null)? $entity->getManufacturer():"";?>">
-		</div>
-		<label class="control-label col-sm-2" >Manufacturer Model</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="manufacturer_model" value="<?php echo (!$entity == null)? $entity->getManufacturerModel():"";?>">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Manufacturer's Item Code</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="manufacturer_code" value="<?php echo (!$entity == null)? $entity->getManufacturerCode():"";?>">
-		</div>
-		
-		
-		<label class="control-label col-sm-2" >Manufacturer Serial</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" placeholder=""
-				name="manufacturer_serial" value="<?php echo (!$entity == null)? $entity->getManufacturerSerial():"";?>">
-		</div>
-		
-	</div>
-	
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Lead time</label>
-		<div class="col-sm-3">
-			<input  class="form-control" type="text" placeholder=""
-				name="lead_time" value="<?php echo (!$entity == null)? $entity->getLeadTime():"";?>">
-				 <input <?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="local_availability" value="1">&nbsp;Local Availability
-		
-		</div>
-		<label class="control-label col-sm-2" >Remarks</label>
-		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="5" placeholder=""
+			<textarea  class="form-control" type="text" rows="4" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-		</div>
+		</div>		
 	</div>
 	
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-default">Save</button>
-		</div>
-	</div>
-</div>
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	   	<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-upload"> </i> Save</button>
+  		</div>
+	</div> 
+		
 	
-</div>	
-	
-
 </form>
+</div>
+</div>
+
+<script type="text/javascript">
+$('#attachments').bind('change', function() {
+	var file_size;
+	file_size = this.files[0].size
+	if (file_size > 2097152){
+		//alert('This file size is too large : ' + file_size + "MB. Please select new file");
+		
+		$('#b_loaded_data').text('This file size is too large : ' + file_size + "MB. Please select new file");
+		$('#modal1').modal();
+
+		 $("#attachments").val("");
+		 	
+	}else{
+		//alert('This file size is: ' + file_size + "MB, OKE");
+		 //$('#save').removeAttr('disabled');
+	}
+
+});
+
+</script>
 
 <!-- Modal -->
 <div class="modal" id="modal1" role="dialog">
@@ -209,10 +125,10 @@ if (count ( $errors ) > 0) {
 				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
 			</div>
 			<div class="modal-body">
-				<div id="loaded_data">loading</div>
+				<div id="b_loaded_data">loading</div>
 			</div>
 			<div class="modal-footer">
-				<span id="node_selected">No thing selected</span>&nbsp;&nbsp;
+				<span id="node_selected"></span>&nbsp;&nbsp;
 				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
 			</div>
 		</div>
@@ -220,5 +136,11 @@ if (count ( $errors ) > 0) {
 </div>
 
 
-<div id="dialog" style="display: none;">Check code...</div>
+
+
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
+
+
 

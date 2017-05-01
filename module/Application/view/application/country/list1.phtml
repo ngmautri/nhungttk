@@ -17,12 +17,9 @@ if ($total_records <= 0) {
 <table style="font-size: 10pt" class="table table-bordered table-hover">
 	<thead>
 		<tr>
+			<td><b>Select</b></td>
 			<td><b>Country Name</b></td>
 			<td><b>Code 2</b></td>
-			<td><b>Code 3</b></td>
-			<td><b>Numeric Code</b></td>
-			<td><b>Status</b></td>
-			<td><b>Date</b></td>
 		</tr>
 	</thead>
 
@@ -33,18 +30,14 @@ if ($total_records <= 0) {
 	$count = 0;
 	foreach ( $list as $a ) :
 		$count ++;
-		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-		// $instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
-		
 		?>
 	 <tr>
+	<td>		
+<a href="javascript:;"
+	onclick="selectId('<?php echo $this->escapeHtml($a->getId());?>','country_id','<?php echo $this->escapeHtml($a->getCountryName());?>','country_name');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
+</a></td>	 
 			<td><?php echo $this->escapeHtml($a->getCountryName());?></td>
 			<td><?php echo $this->escapeHtml($a->getCountryCode2());?></td>
-			<td><?php echo $this->escapeHtml($a->getCountryCode3());?></td>
-			<td><?php echo $this->escapeHtml($a->getCountryNumericCode());?></td>
-			<td><?php echo $this->escapeHtml($a->getStatus());?></td>
-			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/Y  h:m");?> </td>
-		
 		</tr>
 <?php endforeach; ?>
 

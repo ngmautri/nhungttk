@@ -42,7 +42,21 @@ echo '<div class="alert alert-info">';
     </div>
   </div>        
 
- 
+<div>
+
+        <span>Username:</span>
+        <a href="#" id="username">21321310</a>
+      </div>
+
+<script language="javascript">
+$('#username').editable({
+    type: 'text',
+    pk: 1,
+    url: '/post',
+    title: 'Update Price'
+});		   
+			 
+</script>
 
 <?php  	if (count($pr_items) >0): ?>
 
@@ -56,6 +70,8 @@ echo '<div class="alert alert-info">';
 <ul class="nav nav-pills">
 	<li><a href="/application/pdf/pr?id=<?php echo $pr->id ?>"  target="_blank"><i class="icon-print">  </i> Print PR(PDF)</a> </li>
  	<li><a href="/procurement/pr/process?output=csv&pr_id=<?php echo $pr->id ?>"><i class="icon-download-alt">  </i> Download PR(CSV)</a> </li>
+ 	<li><a href="/procurement/pr/process?output=xlsx&pr_id=<?php echo $pr->id ?>"><i class="icon-download-alt">  </i> Download PR(.xlsx)</a> </li>
+ 
  	<li><a href="/application/pdf/po?pr_id=<?php echo $pr->id ?>" target="_blank"><i class="icon-print">  </i> Print PO(PDF)</a> </li>
 </ul>
 

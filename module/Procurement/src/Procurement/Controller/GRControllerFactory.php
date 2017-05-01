@@ -79,8 +79,8 @@ class GRControllerFactory implements FactoryInterface {
 		$controller->setSparepartLastDNTable($tbl);
 		
 		// Department table
-		$tbl =  $sm->get ('Application\Model\DepartmentTable' );
-		$controller->setDepartmentTable($tbl);
+		//$tbl =  $sm->get ('Application\Model\DepartmentTable' );
+		//$controller->setDepartmentTable($tbl);
 		
 		// User table
 		$tbl =  $sm->get ('User\Model\UserTable' );

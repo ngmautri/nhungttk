@@ -144,6 +144,7 @@ return array (
 						'Inventory\Controller\Item' => 'Inventory\Controller\ItemControllerFactory',
 						'Inventory\Controller\Category' => 'Inventory\Controller\CategoryControllerFactory',
 						'Inventory\Controller\ItemAttachment' => 'Inventory\Controller\ItemAttachmentControllerFactory',
+						'Inventory\Controller\ItemPurchase' => 'Inventory\Controller\ItemPurchaseControllerFactory',
 						
 				)
 				

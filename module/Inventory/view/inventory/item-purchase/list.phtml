@@ -1,0 +1,220 @@
+ <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
+  <div class="form-group">
+    	<input class="form-control" size="28" type="text" name = "q">
+ 
+ 
+  </div>
+  <div class="form-group">
+     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
+  </div>
+  
+</form>
+<hr>
+
+ 
+
+<?php
+
+if ($total_records <= 0) {
+	
+	echo 'No record found!';
+} else {
+	
+	if (! is_null ( $paginator )) {
+		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
+	} else {
+		echo $total_records. ' records found!';
+	}
+	
+	?>
+
+<table style="font-size: 10pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>item</b></td>
+			<td><b>Vendor</b></td>
+			<td><b>Price</b></td>
+			<td><b>Currency</b></td>
+			<td><b>Payment Method</b></td>
+			<td><b>Unit</b></td>
+			<td><b>Conversion</b></td>
+			<td><b>Valid From</b></td>
+			<td><b>Valid To</b></td>
+			<td><b>Created Date</b></td>
+			<td><b>Attachment</b></td>
+			</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $a ) :
+		$count ++;
+		?>
+	 <tr>
+	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	  		<td><?php echo ($a->getItem()!==null )? $a->getItem()->getItemName():"N/A";?> </td>
+			<td><?php echo $this->escapeHtml($a->getVendor()->getVendorName());?></td>
+			<td><?php echo number_format( $this->escapeHtml($a->getVendorUnitPrice()), 2);?></td>
+			<td><?php echo $this->escapeHtml($a->getCurrency()->getCurrency());?></td>
+			<td><?php echo ($a->getPmtMethod() !==null)? $this->escapeHtml($a->getPmtMethod()->getMethodCode()):"N/A";?></td>
+			<td><?php echo $this->escapeHtml($a->getVendorItemUnit());?></td>
+			<td><?php echo $this->escapeHtml($a->getConversionText());?></td>
+			<td><?php echo ($a->getPriceValidFrom()!==null )? date_format ( $a->getPriceValidFrom(), "d/m/y"):"N/A";?> </td>
+			<td><?php echo ($a->getPriceValidTo()!==null )? date_format ( $a->getPriceValidTo(), "d/m/y"):"N/A";?> </td>
+			<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d/m/y"):"N/A";?> </td>
+			<td><?php echo $this->escapeHtml($a->getID());?></td>
+		 <td>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/show?target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
+</td>
+		
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<?php
+	
+	// ===============================
+	if (! is_null ( $paginator )) :
+		
+		// change it only
+	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
+		$_connector_symbol = '&';
+		
+		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+		
+		$p1 = ($paginator->page) - 1;
+		$p2 = ($paginator->page) + 1;
+		
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		
+		echo '<ul class="pagination pagination-sm">';
+		
+		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $first . '"> |< </a></li>';
+			echo '<li><a href="' . $prev . '"> < </a></li>';
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			
+			if ($i == $paginator->page) {
+				echo '<li><a class="active" href="#">' . $i . '</a></li>';
+			} else {
+				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+			}
+		}
+		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $next . '"> > </a></li>';
+			echo '<li><a href="' . $last . '"> >| </a></li>';
+		}
+		echo '</ul>';
+endif;
+	
+}
+// ===============================
+?>
+
+
+
+<!-- Modal -->
+<div id="myModal" class="modal hide" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h5 class="modal-title">Add To Cart</h5>
+		</div>
+		<div class="modal-body">
+			<div>
+				<span id="_status"></span>
+			</div>
+
+			<form class="form-horizontal"
+				action="<?php echo $this->baseUrl ?>/procurement/pr/select-item-2"
+				method="post" enctype="multipart/form-data" id="NewSP">
+				<input type="hidden" name="redirectUrl"
+					value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+					name="article_id" id="item_id" value="" />
+
+				<div class="control-group">
+					<label class="control-label" for="inputNameLocal">Priority:</label>
+					<div class="controls">
+						<select name="priority" id="item_priority">
+							<option value="Low">Low</option>
+							<option value="Medium" selected>Medium</option>
+							<option value="High">High</option>
+							<option value="Urgent">Urgent</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputTag">Name:</label>
+					<div class="controls">
+						<input type="text" id="item_name" placeholder="" name="name"
+							value="article">
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputTag">Unit</label>
+					<div class="controls">
+						<input type="text" id="item_unit" placeholder="" name="quantity"
+							value="">
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputTag">Quantity:</label>
+					<div class="controls">
+						<input type="text" id="item_quantity" placeholder=""
+							name="quantity" value="">
+					</div>
+				</div>
+
+
+
+				<div class="control-group">
+					<label class="control-label" for="inputNameLocal">Requested
+						Delivery Date:</label>
+					<div class="controls">
+						<input type="text" id="end_date" placeholder="click to select"
+							name="EDT" value="">
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputDescription">Reason /Note:</label>
+					<div class="controls">
+						<textarea id="item_remarks" placeholder="" rows="2" cols="5"
+							name="remarks"></textarea>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			<button onclick="addItemToCart('ARTICLE');" type="button"
+				class="btn btn-primary">Add To Cart</button>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div id="myModal1" class="modal hide" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-body">
+			<p>Working on it........Please Wait!</p>
+		</div>
+	</div>
+</div>

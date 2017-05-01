@@ -32,6 +32,8 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>Vendor</b></td>
+			<td><b>Purchasing</b></td>
 			<td><b>Doc. Type</b></td>
 			<td><b>Doc. Name</b></td>
 			<td><b>Doc. Size</b></td>
@@ -50,14 +52,20 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	 
+	 		<td><?php echo ($this->escapeHtml($a->getVendor()!==null)? $this->escapeHtml($a->getVendor()->getVendorName()):"N/A");?></td>
+			<td><?php echo ($this->escapeHtml($a->getItemPurchasing()!==null)? $this->escapeHtml($a->getItemPurchasing()->getID()):"N/A");?></td>
 			<td><?php echo $this->escapeHtml($a->getDocumentType());?></td>
 			<td><?php echo $this->escapeHtml($a->getFileNameOriginal());?></td>
 			<td><?php echo $this->escapeHtml($a->getSize());?></td>
 	
-			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y h:m");?> </td>
+			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y");?> </td>
 			<td>
+	<i class="glyphicon glyphicon-download-alt"></i><a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/download?target_id=<?php echo $this->escapeHtml($a->getID());?>">download</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
+
 			</td>
-		
+			
 		</tr>
 <?php endforeach; ?>
 

@@ -1,5 +1,6 @@
 <script language="javascript">
 			var id_array = [];
+			$.fn.editable.defaults.mode = 'inline';  
 </script>
 
 <!--  
@@ -54,7 +55,7 @@
 		<td><?php echo $item->name;?></td>
 		<td><?php echo $item->code;?></td>
 		<td><?php echo $item->unit;?></td>
-		<td><?php echo $item->quantity;?></td>
+		<td><a href="#" id="quantity_<?php echo $item->id ;?>"><?php echo $item->quantity;?></a></td>
 		<td><span id="<?php echo $item->id;?>_EDT"><?php echo date_format(date_create($item->EDT),"Y-m-d");?></span></td>
 		<td><span id="<?php echo $item->id;?>_timer"></span></td>
 		<td><?php echo $item->asset_name;?></td>
@@ -68,6 +69,47 @@
 		
 		<script language="javascript">
 			id_array.push(<?php echo $item->id;?>);
+
+			$('#quantity_<?php echo $item->id ;?>').editable({
+			    type: 'text',
+			    showbuttons: false,
+			    pk: {id:<?php echo $item->id ;?>,key:'quantity'},
+			    url: '/procurement/pr/update-cart-quantity',
+			    title: '<?php echo $item->name;?>',
+			        success: function(response, newValue) {
+			        	if(response.status == 'error') 
+				        {
+					        return response.msg; //msg will be shown in editable form
+				        }else{
+				        	$('#global-notice').show();
+				        	$('#global-notice').text(response.msg).fadeOut(3800);
+				        	
+				        }
+				        
+			        }    
+			});
+
+
+			$('#<?php echo $item->id;?>_EDT').editable({
+			    type: 'date',
+			    showbuttons: true,
+			    pk: {id:<?php echo $item->id ;?>,key:'EDT'},
+			    url: '/procurement/pr/update-cart-quantity',
+			    title: '<?php echo $item->name;?>',
+			    success: function(response, newValue) {
+		        	if(response.status == 'error') 
+			        {
+				        return response.msg; //msg will be shown in editable form
+			        }else{
+			        	$('#global-notice').show();
+			        	$('#global-notice').text(response.msg).fadeOut(3800);
+			        	
+			        }
+			        
+		        }    
+			});
+
+									 
 		</script>
 		
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace User\Service;
+namespace Workflow\Service;
 
 /**
  *
@@ -14,7 +14,7 @@ abstract class AbstractCategory {
 	protected $index = array ();
 	protected $jsTree;
 	
-	abstract protected function initCategory();
+	abstract protected function init();
 	
 	
 	/**
@@ -159,7 +159,7 @@ abstract class AbstractCategory {
 		//inorder travesal	
 		if (count ( $children ) > 0) {
 			$this->jsTree = $this->jsTree . '<li id="' . $root . '" data-jstree=\'{ "opened" : true}\'> ' . 
-			ucwords($tree['instance']->name)."\n";
+			ucwords($tree['instance']->node_name)."\n";
 					
 				$this->jsTree = $this->jsTree . '<ul>' . "\n";
 			foreach ( $children as $key => $value ) {
@@ -167,7 +167,7 @@ abstract class AbstractCategory {
 				if (count ( $value ['children'] ) > 0) {
 					$this->generateJSTree ($key);
 				} else {
-					$this->jsTree = $this->jsTree . '<li id="' . $key . '" data-jstree=\'{}\'>' . $value ['instance']->name .
+					$this->jsTree = $this->jsTree . '<li id="' . $key . '" data-jstree=\'{}\'>' . $value ['instance']->node_name .
 					'</li>' . "\n";
 					$this->generateJSTree ($key);
 				}

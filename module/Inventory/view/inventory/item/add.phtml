@@ -96,9 +96,14 @@ if (count ( $errors ) > 0) {
 			name="standard_uom_id" value="<?php echo (!$uom == null)? $uom->getId():"";?>">	
 			
 		</div>
-		
+<!-- 		
 <a style="color: #0080ff;" href="javascript:;"
 	onclick="showBootstrapDialog('Select Unit of Measurement','/application/uom/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+ -->
+ 
+ <a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Select Unit of Measurement','450','500', '/application/uom/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
 		
 	</div>
@@ -113,7 +118,7 @@ if (count ( $errors ) > 0) {
 		</div>
 		
 <a style="color: #0080ff;" href="javascript:;"
-	onclick="showBootstrapDialog('Select Item Category','/application/item-category/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+	onclick="showBootstrapDialog('Select Item Category','/application/item-category/list1','b_loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
 
 	</div>
@@ -128,8 +133,9 @@ if (count ( $errors ) > 0) {
 		</div>
 		
 <a style="color: #0080ff;" href="javascript:;"
-	onclick="showBootstrapDialog('Select Deparment','/application/department/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+	onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
+
 
 </div>
 	
@@ -210,7 +216,7 @@ if (count ( $errors ) > 0) {
 				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
 			</div>
 			<div class="modal-body">
-				<div id="loaded_data">loading</div>
+				<div id="b_loaded_data">loading</div>
 			</div>
 			<div class="modal-footer">
 				<span id="node_selected">No thing selected</span>&nbsp;&nbsp;
@@ -221,5 +227,8 @@ if (count ( $errors ) > 0) {
 </div>
 
 
-<div id="dialog" style="display: none;">Check code...</div>
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
+
 

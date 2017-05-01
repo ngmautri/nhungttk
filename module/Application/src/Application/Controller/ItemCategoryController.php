@@ -160,7 +160,6 @@ class ItemCategoryController extends AbstractActionController {
 		$parent_id = ( int ) $this->params ()->fromQuery ( 'parent_id' );
 		
 		$nodes = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemCategory' )->findAll ();
-		
 		return new ViewModel ( array (
 				'errors' => null,
 				'nodes' => $nodes,

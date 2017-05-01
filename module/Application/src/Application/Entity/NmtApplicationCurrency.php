@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationCurrency
  *
- * @ORM\Table(name="nmt_application_currency", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_currency_currency_UNIQUE", columns={"currency"})}, indexes={@ORM\Index(name="nmt_application_currency_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_application_currency", indexes={@ORM\Index(name="nmt_application_currency_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class NmtApplicationCurrency
@@ -29,18 +29,25 @@ class NmtApplicationCurrency
     private $currency;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="currency_numeric_code", type="integer", nullable=true)
+     * @ORM\Column(name="currency_numeric_code", type="string", length=3, nullable=false)
      */
     private $currencyNumericCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     * @ORM\Column(name="description", type="string", length=100, nullable=true)
      */
     private $description;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="minor_unit", type="integer", nullable=true)
+     */
+    private $minorUnit;
 
     /**
      * @var string
@@ -64,11 +71,18 @@ class NmtApplicationCurrency
     private $status;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
-    private $createdOn = 'CURRENT_TIMESTAMP';
+    private $createdOn;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -119,7 +133,7 @@ class NmtApplicationCurrency
     /**
      * Set currencyNumericCode
      *
-     * @param integer $currencyNumericCode
+     * @param string $currencyNumericCode
      *
      * @return NmtApplicationCurrency
      */
@@ -133,7 +147,7 @@ class NmtApplicationCurrency
     /**
      * Get currencyNumericCode
      *
-     * @return integer
+     * @return string
      */
     public function getCurrencyNumericCode()
     {
@@ -162,6 +176,30 @@ class NmtApplicationCurrency
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set minorUnit
+     *
+     * @param integer $minorUnit
+     *
+     * @return NmtApplicationCurrency
+     */
+    public function setMinorUnit($minorUnit)
+    {
+        $this->minorUnit = $minorUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get minorUnit
+     *
+     * @return integer
+     */
+    public function getMinorUnit()
+    {
+        return $this->minorUnit;
     }
 
     /**
@@ -234,6 +272,30 @@ class NmtApplicationCurrency
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtApplicationCurrency
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 
     /**

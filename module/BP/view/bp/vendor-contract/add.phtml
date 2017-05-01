@@ -1,0 +1,142 @@
+<h4>Create new vendor contract:</h4>
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general">Vendor Contract</a></li>
+   </ul>
+
+<div id="general"> 
+
+<form id="" class="form-horizontal" action="/bp/vendor-contract/add" method="post" enctype="multipart/form-data">
+<input type="hidden" name="vendor_id" value="<?php echo (!$vendor == null)? $vendor->getId():"";?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+<div class="form-group">
+		<label class="control-label col-sm-2" >Vendor:</label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor!"
+				name="vendor_name" value="<?php echo (!$vendor == null)? $vendor->getVendorName():"";?>">
+			<input type="hidden" id="vendor_id" placeholder="" 
+			name="vendor_id" value="<?php echo (!$vendor== null)? $vendor->getId():"";?>">	
+			  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()==="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+	
+		</div>
+		
+		
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Select Vendor','750','450', '/bp/vendor/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+
+
+	</div>
+	
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Contract Subject:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="contractSubject" value="<?php echo (!$entity == null)? $entity->getContractSubject():"";?>">
+		</div>
+		<label class="control-label col-sm-2" >Keywords:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
+		</div>
+					
+	</div>
+	
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Signing Date:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" 
+			name="signingDate" value="<?php if(!$entity == null): echo ($entity->getSigningDate() !== null)? date_format($entity->getSigningDate(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="signing_date" />
+		</div>		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Valid From:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" name="validFrom" 
+			value="<?php if(!$entity == null): echo ($entity->getValidFrom() !== null)? date_format($entity->getValidFrom(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_from" />
+		</div>
+		
+		<label class="control-label col-sm-2" >Valid To:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" name="validTo" 
+			value="<?php if(!$entity == null): echo ($entity->getValidTo() !== null)? date_format($entity->getValidTo(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_to" />
+		</div>		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Attachment(*.pdf):</label>
+		<div class="col-sm-3">
+			<input style=";" type="file" name="attachments" />
+		</div>		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputDescription">Remarks:</label>
+		<div class="col-sm-3">
+			<textarea class="form-control" id="inputDescription" placeholder=""
+				rows="3" name="remarks"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	   	<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-plus"> </i> Add</button>
+  		</div>
+	</div> 
+		
+	
+</form>
+</div>
+</div>
+
+<script>
+$(function() {
+	$( "input[id='signing_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+    $( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+    $( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+});
+
+</script>
+
+<!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
+			</div>
+			<div class="modal-body">
+				<div id="b_loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected">No thing selected</span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
+

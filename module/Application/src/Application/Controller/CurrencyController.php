@@ -181,8 +181,49 @@ class CurrencyController extends AbstractActionController {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 		
+		
 		$this->layout ( "layout/user/ajax" );
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findAll();
+		$criteria=array(
+				'isActive'=>1,
+		);
+		$sort_criteria=array(
+				'currency'=>'ASC',
+		);
+		
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findBy($criteria,$sort_criteria);
+		$total_records= count($list);
+		//$jsTree = $this->tree;
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records'=>$total_records,
+				'paginator'=>null,
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function selectAction() {
+		$request = $this->getRequest ();
+		
+		// accepted only ajax request
+		if (!$request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		
+		$this->layout ( "layout/user/ajax" );
+		$criteria=array(
+				'isActive'=>1,
+		);
+		$sort_criteria=array(
+				'currency'=>'ASC',
+		);
+		
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findBy($criteria,$sort_criteria);
 		$total_records= count($list);
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (

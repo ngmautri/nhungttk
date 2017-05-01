@@ -29,17 +29,22 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	
 	
 	 public function testDBTest() {
-	 	 //$tbl = Bootstrap::getServiceManager()->get('Procurement\Model\PRItemSelfConfirmationTable');
+	 	 $tbl = Bootstrap::getServiceManager()->get('Procurement\Model\PurchaseRequestItemTable');
 	 	 /*
 	 	 $input = new PRItemWorkFlow();
 	 	 $input->status = "Notified";
 	 	 $input->pr_item_id= 1;
 	 	 $input->updated_by = 39;
 	 	 $tbl->add($input);
+	 	 */
 	 	  	 
 	 	 
-	  	 $result = $tbl->updateLastWorkFlow(25,6);
-	  	 var_dump ($result);
+	  	 $result = $tbl->getPendingPRItemsOfSparepart(3);
+	  	 
+	  	 foreach ($result as $user) {
+	  	 	var_dump ($user);
+	  	 }
+	  	 
 	  	 /*
 	   	 foreach ($result as $user) {
 	 	 	var_dump ($user);
@@ -56,6 +61,8 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	 	 	var_dump ($user);
 	 	 }
 	 	 */
+	 	
+	 	/*
 	 	$filename =ROOT . '\nmt.csv';
 	 	
 	 	$rtn = array();
@@ -69,7 +76,11 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	 		}
 	 	}
 	 	var_dump($rtn);
+	 	*/
 	 	
+	 	//$sv = Bootstrap::getServiceManager ()->get ( 'Procurement\Services\VendorSearchService' );
+	 	
+	 	//var_dump($sv->createIndex());
 	 	 
 	 }
 

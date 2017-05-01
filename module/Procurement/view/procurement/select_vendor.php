@@ -17,11 +17,7 @@
 			onclick="loadVendorList();"> <i class="icon-list"> </i> SHOW ALL
 				VENDORS
 		</a>
-		
-	
-	</ul>
+		</ul>
 	<hr>
-
 	<div id="search_result"></div>
-
 </div>

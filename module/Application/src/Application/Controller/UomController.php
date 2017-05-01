@@ -145,6 +145,8 @@ class UomController extends AbstractActionController {
 	 */
 	public function list1Action() {
 		$request = $this->getRequest ();
+		$context = $this->params ()->fromQuery ( 'context' );
+		
 		
 		// accepted only ajax request
 		if (!$request->isXmlHttpRequest ()) {
@@ -159,6 +161,7 @@ class UomController extends AbstractActionController {
 				'list' => $list,
 				'total_records'=>$total_records,
 				'paginator'=>null,
+				'context' =>$context,
 		) );
 	}
 	

@@ -1,194 +1,118 @@
-<form class="form-search" action="<?php echo $back ?>"	method="get" enctype="multipart/form-data">
-	<button type="submit" class="btn btn-default"><i class="icon-arrow-left">  </i> Back</button>
-</form>
+<h4>
+	 <?php echo (!$item == null)? $item->getItemName():"";?>
+</h4>
 
-<h4><?php echo $this->escapeHtml($entity->getItemName()) .  $entity->getIsActive();?></h4>
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
 
 <div id="tabs" style="font-size: 10pt"> 
-<ul>
-	 <li ><a href="#general">General</a></li>
-   	 <li><a href="#picture">Picture</a></li>
-</ul>
+  <ul>
+  <li ><a href="#general">Attachment</a></li>
+   </ul>
 
 <div id="general"> 
-	
-	<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
 
-	 <div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Item ID</label>
+<form id="item_attachment_form" class="form-horizontal" action="/inventory/item-attachment/upload" method="post" enctype="multipart/form-data">
+<input type="hidden" name="item_id" value="<?php echo (!$item == null)? $item->getId():"";?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Document Type</label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="item_sku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
-		</div>		
+			<input class="form-control" type="text"  placeholder=""
+				name="document_type" value="<?php echo (!$entity== null)? $entity->getDocumentType():"";?>">
+	
+		</div>
+		<label class="control-label col-sm-1" for="inputTag"></label>
 		<div class="col-sm-4">
-	  	     <input disabled <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
-			 <input disabled <?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_stocked" value="1">&nbsp;Stocked &nbsp;&nbsp;
-			 <input disabled <?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_purchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
-	 		 <input disabled <?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_sale_item" value="1">&nbsp;For Sale &nbsp;&nbsp;
-			 <input disabled <?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_fixed_asset" value="1">&nbsp;Fixed Asset
-		
-		</div>
-		
-		<div class="col-sm-3">
-			<img alt="" height="" src="/inventory/item/barcode?barcode=<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Item  Name</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="item_name" value="<?php echo (!$entity == null)? $entity->getItemName():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" for="inputTag">Item Foreign Name</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="item_name_foreign" value="<?php echo (!$entity == null)? $entity->getItemNameForeign():"";?>">
-		</div>
-	</div>
-		<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Item  Description</label>
-		<div class="col-sm-8">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="item_description" value="<?php echo (!$entity == null)? $entity->getItemDescription():"";?>">
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Bar Code</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="item_barcode" value="<?php echo (!$entity == null)? $entity->getBarcode():"";?>">
-			
+					  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
 		</div>		
-		<label class="control-label col-sm-2" for="inputTag">Keyworks</label>
-		<div class="col-sm-3">
-			<input disabled  class="form-control" type="text" id="inputTag" placeholder=""
-				name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
-		</div>
 	</div>
-	
+		
 	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Item Type</label>
-		<div class="col-sm-3">
-			<select disabled class="form-control"  name="item_type" >
-        		<option disabled<?php if(!$entity == null): echo ($entity->getItemType()=="ITEM")?"selected":""; endif;?> value="ITEM">Item</option>
-   	     		<option <?php if(!$entity == null): echo ($entity->getItemType()=="SERVICE")?"selected":""; endif;?> value="SERVICE">Service</option>
-   	     		<option <?php if(!$entity == null): echo ($entity->getItemType()=="SOFTWARE")?"selected":""; endif;?> value="SOFTWARE">Software</option>
-    		</select>
-		</div>
-		
-		<label class="control-label col-sm-2" for="inputTag">Measurement</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="standard_uom_name" placeholder="Please select standard unit"
-				name="item_uom_name" value="<?php echo (!$uom == null)? $uom->getUomCode():"";?>">
-			<input disabled type="hidden" id="standard_uom_id" placeholder="" 
-			name="standard_uom_id" value="<?php echo (!$uom == null)? $uom->getId():"";?>">	
-			
-		</div>
-		
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Item Category</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="item_category_name" placeholder="Please select item category"
-				name="country_code_2" value="<?php echo (!$category == null)? $category->getNodeName():"";?>">
-			<input type="hidden" id="item_category_name_selected" placeholder="" 
-			name="item_category_id" value="<?php echo (!$category == null)? $category->getNodeId():"";?>">	
-		</div>
-		
-
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Department</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="department_name" placeholder="Please select!"
-				name="deparment_name" value="<?php echo (!$department == null)? $department->getNodeName():"";?>">
-			<input type="hidden" id="department_name_selected" placeholder="" 
-			name="department_id" value="<?php echo (!$department == null)? $department->getNodeId():"";?>">	
-		</div>
-		
-		<label class="control-label col-sm-2">Location</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="location" value="<?php echo (!$entity == null)? $entity->getLocation():"";?>">
-		</div>
-		
-	</div>
-	
-	
-	
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Manufacturer</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="manufacturer_code" value="<?php echo (!$entity == null)? $entity->getManufacturer():"";?>">
-		</div>
-		<label class="control-label col-sm-2" for="inputTag">Manufacturer Model</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="manufacturer_code" value="<?php echo (!$entity == null)? $entity->getManufacturerModel():"";?>">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Manufacturer's Item Code</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="manufacturer_code" value="<?php echo (!$entity == null)? $entity->getManufacturerCode():"";?>">
-		</div>
-		
-		
-		<label class="control-label col-sm-2" for="inputTag">Manufacturer Serial</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="inputTag" placeholder=""
-				name="manufacturer_serial" value="<?php echo (!$entity == null)? $entity->getManufacturerSerial():"";?>">
-		</div>
-		
-	</div>
-	
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Lead time</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" placeholder=""
-				name="lead_time" value="<?php echo (!$entity == null)? $entity->getLeadTime():"";?>">
-				 <input disabled <?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="local_availability" value="1">&nbsp;Local Availability
-		
-			
-				<div style="color: gray;padding-top: 10pt; font-size: 8pt"><?php if(!$entity == null): echo ($entity->getCreatedOn() !== null)?'Created date: ' . date_format($entity->getCreatedOn(),"Y/m/d H:i:s"):""; endif;?></div>
-				<div style="color: gray;padding-top: 2pt; font-size: 8pt"><?php if(!$entity == null): echo  ($entity->getLastChangeOn() !== null)?'Last Change: ' . date_format($entity->getLastChangeOn(),"Y/m/d H:i:s"):""; endif;?></div>
 				
-		</div>
+		<label class="control-label col-sm-2" for="inputTag">Current Attachment: </label>
+		<div class="col-sm-3">
 		
+	<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/download?target_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
 		
-		<label class="control-label col-sm-1" for="inputTag">Remarks</label>
-		<div class="col-sm-4">
-			<textarea disabled class="form-control" type="text" rows="5" placeholder=""
-				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-		</div>
-
-
+			
+		</div>				
 	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Vendor (optional)</label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor, if any"
+				name="vendor_name" value="<?php echo (!$vendor == null)? $vendor->getVendorName():"";?>">
+			<input type="hidden" id="vendor_id" placeholder="" 
+			name="vendor_id" value="<?php echo (!$vendor== null)? $vendor->getId():"";?>">	
+		</div>
+	</div>
+	
+	<div class="form-group">
+		
+	<label class="control-label col-sm-2" >Remarks</label>
+		<div class="col-sm-3">
+			<textarea  class="form-control" type="text" rows="4" placeholder=""
+				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	   	<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-upload"> </i> Upload</button>
+  		</div>
+	</div> 
+		
+	
 </form>
-</div>	
-	
-
-<div id="picture" style="padding: 20pt">
-	<div id="lightgallery">
-	 
-	 <?php foreach ($pictures as $pic) : ?>
-	    <a href="/inventory/image/item?id=<?php  echo $this->escapeHtml($pic->getId());?>">
-	    <img class= "img-rounded" width="150" height="150" src="/inventory/image/item-thumbnail200?id=<?php  echo $this->escapeHtml($pic->getId());?>"/>
-	    </a>
-	<?php endforeach; ?>
-	 </div>
 </div>
-	
-
 </div>
+
+<script type="text/javascript">
+	$("#item_attachment_form :input").attr("disabled", "disabled");
+
+</script>
+
+<!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
+			</div>
+			<div class="modal-body">
+				<div id="b_loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected"></span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
+
 
 

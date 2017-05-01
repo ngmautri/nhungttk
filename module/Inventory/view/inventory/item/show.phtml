@@ -2,12 +2,13 @@
 	<button type="submit" class="btn btn-default"><i class="icon-arrow-left">  </i> Back</button>
 </form>
 
-<h4><?php echo $this->escapeHtml($entity->getItemName()) .  $entity->getIsActive();?></h4>
+<h4><?php echo $this->escapeHtml($entity->getItemName());?></h4>
 
 <div id="tabs" style="font-size: 10pt"> 
 <ul>
 	 <li ><a href="#general">General</a></li>
-   	 <li><a href="#picture">Picture</a></li>
+	 <li><a href="/inventory/item-purchase/list1?item_id=<?php if(!$entity == null): echo ($entity->getId()); endif;?>">Purchasing</a></li>
+	 <li><a href="#picture">Picture</a></li>
    	 <li><a href="/inventory/item-attachment/list1?item_id=<?php if(!$entity == null): echo ($entity->getId()); endif;?>">Attachment</a></li>
 </ul>
 

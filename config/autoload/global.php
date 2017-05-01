@@ -10,6 +10,9 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
+
+//SQL: 2nyAf8CT3hujzGLM
+
 use Zend\Db\Adapter\Adapter;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
@@ -19,8 +22,11 @@ use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Zend\Mail\Transport\SmtpOptions;
 
 return array (
-		
 		'service_manager' => array (
+				
+				'aliases' => array(
+						'Zend\Authentication\AuthenticationService' => 'AuthService',
+				),
 				
 				'factories' => array (
 						
@@ -30,12 +36,7 @@ return array (
 									'hostname' => 'localhost',
 									'database' => 'mla',
 									'username' => 'root',
-									'password' => '',
-									'charset' => 'utf-8',
-									'driver_options' => array(
-											\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
-									),
-									
+									'password' => 'kflg79',									
 							) );
 						},
 						
@@ -64,30 +65,8 @@ return array (
 									) 
 							) );
 							
-							
 							$transport->setOptions ( $options );
 							return $transport;						
-						},
-						
-						// Email Service
-						'mla-web@outlook.com' => function ($sm) {
-							
-						$transport = new SmtpTransport ();
-						$options = new SmtpOptions ( array (
-								'name' => 'Outlook.com',
-								'host' => 'smtp-mail.outlook.com',
-								'port' => '587',
-								'connection_class' => 'login',
-								'connection_config' => array (
-										'username' => 'mla-web@outlook.com',
-										'password' => 'MLA#2016',
-										'ssl' => 'tls'
-								)
-						) );
-							
-							
-						$transport->setOptions ( $options );
-						return $transport;
 						}
 				) 
 		),

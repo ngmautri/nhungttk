@@ -34,6 +34,8 @@ if (is_dir ( 'vendor/ZF2/library' )) {
 	$zf2Path = get_cfg_var ( 'zf2_path' );
 }
 
+
+
 if ($zf2Path) {
 	if (isset ( $loader )) {
 		$loader->add ( 'Zend', $zf2Path );
@@ -47,19 +49,20 @@ if ($zf2Path) {
 	}
 }
 
+
 if (! class_exists ( 'Zend\Loader\AutoloaderFactory' )) {
 	throw new RuntimeException ( 'Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.' );
 }
 
 // by NMT
+
 Zend\Loader\AutoloaderFactory::factory ( array (
 		'Zend\Loader\StandardAutoloader' => array (
 				'autoregister_zf' => true,
 				'namespaces' => array (
 						__NAMESPACE__ => __DIR__ . '/' . __NAMESPACE__,
+						'ZendSearch' =>  __DIR__ . '/vendor/' . DIRECTORY_SEPARATOR . 'ZendSearch' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'ZendSearch',
 						'MLA' =>  __DIR__ . '/vendor/' . DIRECTORY_SEPARATOR . 'MLA' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'MLA',
-						'ZendSearch' =>  __DIR__ . '/vendor/' . DIRECTORY_SEPARATOR . 'ZendSearch' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'ZendSearch'
-						
 				)
 					
 		)

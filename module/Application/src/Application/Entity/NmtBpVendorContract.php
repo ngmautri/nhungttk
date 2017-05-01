@@ -148,6 +148,13 @@ class NmtBpVendorContract
     private $lastChangeOn;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="marked_for_deletion", type="boolean", nullable=true)
+     */
+    private $markedForDeletion;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -619,6 +626,30 @@ class NmtBpVendorContract
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
+    }
+
+    /**
+     * Set markedForDeletion
+     *
+     * @param boolean $markedForDeletion
+     *
+     * @return NmtBpVendorContract
+     */
+    public function setMarkedForDeletion($markedForDeletion)
+    {
+        $this->markedForDeletion = $markedForDeletion;
+
+        return $this;
+    }
+
+    /**
+     * Get markedForDeletion
+     *
+     * @return boolean
+     */
+    public function getMarkedForDeletion()
+    {
+        return $this->markedForDeletion;
     }
 
     /**

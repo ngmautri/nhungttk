@@ -134,6 +134,13 @@ class NmtInventoryItemAttachment
     private $lastChangeOn;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="marked_for_deletion", type="boolean", nullable=true)
+     */
+    private $markedForDeletion;
+
+    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -577,6 +584,30 @@ class NmtInventoryItemAttachment
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
+    }
+
+    /**
+     * Set markedForDeletion
+     *
+     * @param boolean $markedForDeletion
+     *
+     * @return NmtInventoryItemAttachment
+     */
+    public function setMarkedForDeletion($markedForDeletion)
+    {
+        $this->markedForDeletion = $markedForDeletion;
+
+        return $this;
+    }
+
+    /**
+     * Get markedForDeletion
+     *
+     * @return boolean
+     */
+    public function getMarkedForDeletion()
+    {
+        return $this->markedForDeletion;
     }
 
     /**

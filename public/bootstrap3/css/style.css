@@ -100,9 +100,9 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
 }
 
 
-.navbar-nav{
-margin-left:-10px;
+select.ui-datepicker-month,
+select.ui-datepicker-year {
+  color:#000000;font-size: 9px;
 }
-
 
 

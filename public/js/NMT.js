@@ -17,7 +17,7 @@ function loadCategory(cat_id, cat_name) {
 	
 	$("#dialog1").dialog({
 		width : width,
-		height : 550,
+		height : 580,
 		title : cat_name,
 		modal : true,
 		dialogClass : 'dialogClass'
@@ -263,8 +263,9 @@ function DatumZeigen() {
 	 * monat[8]="September" monat[9]="Oktober" monat[10]="November"
 	 * monat[11]="Dezember"
 	 */
-	return (tag[T.getDay()] + ", " + T.getDate() + ". " + monat[T.getMonth()]
-			+ " " + T.getFullYear());
+	//return (tag[T.getDay()] + ", " + T.getDate() + ". " + monat[T.getMonth()]	+ " " + T.getFullYear());
+	return (T.getDate() + ". " + monat[T.getMonth()]	+ " " + T.getFullYear());
+	
 }
 
 /*

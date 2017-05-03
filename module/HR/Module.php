@@ -15,16 +15,6 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
 use Zend\Mvc\MvcEvent;
 
-
-use HR\Model\Vendor;
-use HR\Model\VendorTable;
-
-use HR\Model\Employee;
-use HR\Model\EmployeeTable;
-
-use HR\Model\EmployeePicture;
-use HR\Model\EmployeePictureTable;
-
 class Module {
 	
 	
@@ -51,59 +41,5 @@ class Module {
 	
 	// Add this method:
 	public function getServiceConfig() {
-	
-		return array (
-				'factories' => array (
-
-						// VendorTable
-						'HR\Model\VendorTable' => function ($sm) {
-						$tableGateway = $sm->get ( 'VendorTableGateway' );
-						$table = new VendorTable($tableGateway);
-						return $table;
-						},
-						
-						'VendorTableGateway' => function ($sm) {
-						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
-						$resultSetPrototype = new ResultSet ();
-						$resultSetPrototype->setArrayObjectPrototype ( new Vendor());
-						return new TableGateway ( 'mla_vendors', $dbAdapter, null, $resultSetPrototype );
-						},
-						
-						// EmployeeTable
-						'HR\Model\EmployeeTable' => function ($sm) {
-						$tableGateway = $sm->get ( 'EmployeeTableGateway' );
-						$table = new EmployeeTable($tableGateway);
-						return $table;
-						},
-						
-						'EmployeeTableGateway' => function ($sm) {
-						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
-						$resultSetPrototype = new ResultSet ();
-						$resultSetPrototype->setArrayObjectPrototype ( new Employee());
-						return new TableGateway ('hr_employee', $dbAdapter, null, $resultSetPrototype );
-						},
-						
-						// EmployeeTable
-						'HR\Model\EmployeePictureTable' => function ($sm) {
-						$tableGateway = $sm->get ( 'EmployeePictureTableGateway' );
-						$table = new EmployeePictureTable($tableGateway);
-						return $table;
-						},
-						
-						'EmployeePictureTableGateway' => function ($sm) {
-						$dbAdapter = $sm->get ( 'Zend\Db\Adapter\Adapter' );
-						$resultSetPrototype = new ResultSet ();
-						$resultSetPrototype->setArrayObjectPrototype ( new EmployeePicture());
-						return new TableGateway ('hr_employee_picture', $dbAdapter, null, $resultSetPrototype );
-						},
-						
-						'HR\Services\EmployeeSearchService' => 'HR\Services\EmployeeSearchServiceFactory',
-						
-						
-					),
-					'invokables' => array (
-							'HR\Services\EmployeeService' => 'HR\Services\EmployeeService',
-					)
-				);
 	}
 }

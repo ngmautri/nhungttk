@@ -4,14 +4,13 @@ namespace HR\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use HR\Controller\EmployeeController;
-
+use HR\Controller\IndexController;
 /**
  * 
  * @author nmt
  *
  */
-class EmployeeControllerFactory implements FactoryInterface {
+class IndexControllerFactory implements FactoryInterface {
 	
 	/**
 	 *
@@ -21,9 +20,9 @@ class EmployeeControllerFactory implements FactoryInterface {
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		$container= $serviceLocator->getServiceLocator();
-		$controller = new EmployeeController();
-		$sv =  $container->get('doctrine.entitymanager.orm_default');
-		$controller->setDoctrineEM($sv);
+		$controller = new IndexController();
+		//$sv =  $container->get('doctrine.entitymanager.orm_default');
+		//$controller->setDoctrineEM($sv);
 		return $controller;
 	}
 }

@@ -33,10 +33,10 @@ if ($total_records <= 0) {
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Name</b></td>
-			<td><b>Name local</b></td>
-			<td><b>Birthday</b></td>
-			<td><b>Gender</b></td>
-			<td><b>Attachment</b></td>
+			<td><b>Keywords	</b></td>
+			<td><b>Start Date</b></td>
+			<td><b>End Date</b></td>
+			<td><b>Status</b></td>
 			</tr>
 	</thead>
 
@@ -50,13 +50,14 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	  		<td><?php echo $this->escapeHtml($a->getEmployeeName());?></td>
-			<td><?php echo $this->escapeHtml($a->getEmployeeNameLocal());?></td>
-			<td><?php echo ($a->getBirthday()!==null )? date_format ( $a->getBirthday(), "d-m-y"):"";?> </td>
-			<td><?php echo $this->escapeHtml($a->getGender());?></td>
+	  		<td><?php echo $this->escapeHtml($a->getProjectname());?></td>
+			<td><?php echo $this->escapeHtml($a->getKeyWords());?></td>
+			<td><?php echo ($a->getStartDate()!==null )? date_format ( $a->getStartDate(), "d-m-y"):"";?> </td>
+			<td><?php echo ($a->getEndDate()!==null )? date_format ( $a->getEndDate(), "d-m-y"):"";?> </td>
+			<td><?php echo $this->escapeHtml($a->getStatus());?></td>
 		 <td>
-<a href="<?php echo $this->baseUrl ?>/hr/employee/show?target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/hr/employee/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
+<a href="<?php echo $this->baseUrl ?>/pm/project/show?target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/pm/project/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
 </td>
 		
 		</tr>

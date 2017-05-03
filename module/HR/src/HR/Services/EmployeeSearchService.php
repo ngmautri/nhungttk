@@ -1,6 +1,6 @@
 <?php
 
-namespace HR\Services;
+namespace HR\Service;
 
 use Zend\Permissions\Acl\Acl;
 use Zend\EventManager\EventManagerInterface;

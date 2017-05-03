@@ -34,37 +34,19 @@ class IndexController extends AbstractActionController {
 	}
 	
 	
-	
-	/*
-	 * Defaul Action
+	/**
+	 * 
+	 * @return \Doctrine\ORM\EntityManager
 	 */
-	public function addAction()
-	{
-		$request = $this->getRequest ();
-		if ($request->isPost ()) {
-			$em = $this->doctrineEM;
-			$input = new \Application\Entity\NmtWfWorkflow();
-			$input->setWorkflowName($request->getPost ( 'workflow_name' ));
-			$input->setWorkflowDescription($request->getPost ( 'workflow_description' ));
-			
-			
-			$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', 39 );
-			$input->setWorkflowCreatedBy( $u );
-			$input->setWorkflowCreatedOn( new \DateTime () );
-			
-			$em->persist ( $input);
-			$em->flush ();
-			
-		}
-		
-		//$this->redirect ()->toUrl ( 'home' );
-		
-	}
-	
-	
 	public function getDoctrineEM() {
 		return $this->doctrineEM;
 	}
+	
+	/**
+	 * 
+	 * @param EntityManager $doctrineEM
+	 * @return \PM\Controller\IndexController
+	 */
 	public function setDoctrineEM(EntityManager $doctrineEM) {
 		$this->doctrineEM = $doctrineEM;
 		return $this;

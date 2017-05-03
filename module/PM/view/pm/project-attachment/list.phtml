@@ -1,0 +1,122 @@
+ <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
+  <div class="form-group">
+    	<input class="form-control" size="28" type="text" name = "q">
+ 
+ 
+  </div>
+  <div class="form-group">
+     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
+  </div>
+  
+</form>
+<hr>
+
+ 
+
+<?php
+
+if ($total_records <= 0) {
+	
+	echo 'No record found!';
+} else {
+	
+	if (! is_null ( $paginator )) {
+		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
+	} else {
+		echo $total_records. ' records found!';
+	}
+	
+	?>
+
+<table style="font-size: 10pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Item</b></td>
+			<td><b>Doc. Type</b></td>
+			<td><b>Doc. Name</b></td>
+			<td><b>Doc. Size</b></td>
+			<td><b>Vendor</b></td>
+			<td><b>Date</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $a ) :
+		$count ++;
+		?>
+	 <tr>
+	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	 		<td><?php echo ($a->getItem()!==null)?$a->getItem()->getItemName():"";?></td>
+		
+			<td><?php echo $this->escapeHtml($a->getDocumentType());?></td>
+			<td><?php echo $this->escapeHtml($a->getFileNameOriginal());?></td>
+			<td><?php echo $this->escapeHtml($a->getSize());?></td>
+			<td><?php echo ($a->getVendor()!==null)?$a->getVendor()->getVendorName():"";?></td>
+				<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y h:m");?> </td>
+			<td>
+	<i class="glyphicon glyphicon-download-alt"></i><a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/download?target_id=<?php echo $this->escapeHtml($a->getID());?>">download</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/show?target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
+
+			</td>
+		
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<?php
+	
+	// ===============================
+	if (! is_null ( $paginator )) :
+		
+		// change it only
+		$base = $this->baseUrl . '/inventory/item-attachment/list';
+		$_connector_symbol = '?';
+		
+		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+		
+		$p1 = ($paginator->page) - 1;
+		$p2 = ($paginator->page) + 1;
+		
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		
+		echo '<ul class="pagination pagination-sm">';
+		
+		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $first . '"> |< </a></li>';
+			echo '<li><a href="' . $prev . '"> < </a></li>';
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			
+			if ($i == $paginator->page) {
+				echo '<li><a class="active" href="#">' . $i . '</a></li>';
+			} else {
+				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+			}
+		}
+		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $next . '"> > </a></li>';
+			echo '<li><a href="' . $last . '"> >| </a></li>';
+		}
+		echo '</ul>';
+endif;
+	
+}
+// ===============================
+?>
+
+
+

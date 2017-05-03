@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtHrEmployee
+ * NmtPmProject
  *
- * @ORM\Table(name="nmt_hr_employee", uniqueConstraints={@ORM\UniqueConstraint(name="employee_code_UNIQUE", columns={"employee_code"})}, indexes={@ORM\Index(name="nmt_hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_employee_FK2_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_pm_project", indexes={@ORM\Index(name="nmt_pm_project_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_pm_project_FK2_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
-class NmtHrEmployee
+class NmtPmProject
 {
     /**
      * @var integer
@@ -24,37 +24,51 @@ class NmtHrEmployee
     /**
      * @var string
      *
-     * @ORM\Column(name="employee_code", type="string", length=10, nullable=false)
+     * @ORM\Column(name="project_name", type="string", length=100, nullable=false)
      */
-    private $employeeCode;
+    private $projectName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="employee_name", type="string", length=80, nullable=false)
+     * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
      */
-    private $employeeName;
+    private $keywords;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="employee_name_local", type="string", length=80, nullable=true)
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
-    private $employeeNameLocal;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="gender", type="string", nullable=true)
-     */
-    private $gender;
+    private $description;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="birthday", type="datetime", nullable=true)
+     * @ORM\Column(name="start_date", type="datetime", nullable=true)
      */
-    private $birthday;
+    private $startDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="end_date", type="datetime", nullable=true)
+     */
+    private $endDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
 
     /**
      * @var string
@@ -110,123 +124,171 @@ class NmtHrEmployee
     }
 
     /**
-     * Set employeeCode
+     * Set projectName
      *
-     * @param string $employeeCode
+     * @param string $projectName
      *
-     * @return NmtHrEmployee
+     * @return NmtPmProject
      */
-    public function setEmployeeCode($employeeCode)
+    public function setProjectName($projectName)
     {
-        $this->employeeCode = $employeeCode;
+        $this->projectName = $projectName;
 
         return $this;
     }
 
     /**
-     * Get employeeCode
+     * Get projectName
      *
      * @return string
      */
-    public function getEmployeeCode()
+    public function getProjectName()
     {
-        return $this->employeeCode;
+        return $this->projectName;
     }
 
     /**
-     * Set employeeName
+     * Set keywords
      *
-     * @param string $employeeName
+     * @param string $keywords
      *
-     * @return NmtHrEmployee
+     * @return NmtPmProject
      */
-    public function setEmployeeName($employeeName)
+    public function setKeywords($keywords)
     {
-        $this->employeeName = $employeeName;
+        $this->keywords = $keywords;
 
         return $this;
     }
 
     /**
-     * Get employeeName
+     * Get keywords
      *
      * @return string
      */
-    public function getEmployeeName()
+    public function getKeywords()
     {
-        return $this->employeeName;
+        return $this->keywords;
     }
 
     /**
-     * Set employeeNameLocal
+     * Set description
      *
-     * @param string $employeeNameLocal
+     * @param string $description
      *
-     * @return NmtHrEmployee
+     * @return NmtPmProject
      */
-    public function setEmployeeNameLocal($employeeNameLocal)
+    public function setDescription($description)
     {
-        $this->employeeNameLocal = $employeeNameLocal;
+        $this->description = $description;
 
         return $this;
     }
 
     /**
-     * Get employeeNameLocal
+     * Get description
      *
      * @return string
      */
-    public function getEmployeeNameLocal()
+    public function getDescription()
     {
-        return $this->employeeNameLocal;
+        return $this->description;
     }
 
     /**
-     * Set gender
+     * Set startDate
      *
-     * @param string $gender
+     * @param \DateTime $startDate
      *
-     * @return NmtHrEmployee
+     * @return NmtPmProject
      */
-    public function setGender($gender)
+    public function setStartDate($startDate)
     {
-        $this->gender = $gender;
+        $this->startDate = $startDate;
 
         return $this;
     }
 
     /**
-     * Get gender
-     *
-     * @return string
-     */
-    public function getGender()
-    {
-        return $this->gender;
-    }
-
-    /**
-     * Set birthday
-     *
-     * @param \DateTime $birthday
-     *
-     * @return NmtHrEmployee
-     */
-    public function setBirthday($birthday)
-    {
-        $this->birthday = $birthday;
-
-        return $this;
-    }
-
-    /**
-     * Get birthday
+     * Get startDate
      *
      * @return \DateTime
      */
-    public function getBirthday()
+    public function getStartDate()
     {
-        return $this->birthday;
+        return $this->startDate;
+    }
+
+    /**
+     * Set endDate
+     *
+     * @param \DateTime $endDate
+     *
+     * @return NmtPmProject
+     */
+    public function setEndDate($endDate)
+    {
+        $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    /**
+     * Get endDate
+     *
+     * @return \DateTime
+     */
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return NmtPmProject
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtPmProject
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 
     /**
@@ -234,7 +296,7 @@ class NmtHrEmployee
      *
      * @param string $remarks
      *
-     * @return NmtHrEmployee
+     * @return NmtPmProject
      */
     public function setRemarks($remarks)
     {
@@ -258,7 +320,7 @@ class NmtHrEmployee
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtHrEmployee
+     * @return NmtPmProject
      */
     public function setCreatedOn($createdOn)
     {
@@ -282,7 +344,7 @@ class NmtHrEmployee
      *
      * @param \DateTime $lastChangeOn
      *
-     * @return NmtHrEmployee
+     * @return NmtPmProject
      */
     public function setLastChangeOn($lastChangeOn)
     {
@@ -306,7 +368,7 @@ class NmtHrEmployee
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtHrEmployee
+     * @return NmtPmProject
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
@@ -330,7 +392,7 @@ class NmtHrEmployee
      *
      * @param \Application\Entity\MlaUsers $lastChangeBy
      *
-     * @return NmtHrEmployee
+     * @return NmtPmProject
      */
     public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {

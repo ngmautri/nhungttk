@@ -59,6 +59,7 @@ return array (
 		'controllers' => array (
 				'factories' => array (
 						'PM\Controller\Index' => 'PM\Controller\IndexControllerFactory',
+						'PM\Controller\Project' => 'PM\Controller\ProjectControllerFactory',
 				) 
 		
 		),

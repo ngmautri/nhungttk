@@ -23,8 +23,8 @@ if (count ( $errors ) > 0) {
 
 <div id="general"> 
 
-<form id="" class="form-horizontal" action="/inventory/item-purchase/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="entity_id" value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
+<form id="" class="form-horizontal" action="/inventory/item-purchase/add" method="post" enctype="multipart/form-data">
+<input type="hidden" name="item_id" value="<?php echo (!$item == null)? $item->getId():"";?>" />
 <input type="hidden" name="new_entity_id" value="<?php echo $new_entity_id;?>" />
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
@@ -36,7 +36,7 @@ if (count ( $errors ) > 0) {
 			<input type="hidden" id="vendor_id" placeholder="" 
 			name="vendor_id" value="<?php echo (!$vendor== null)? $vendor->getId():"";?>">
 				 <input <?php if(!$entity== null): echo ($entity->getIsPreferredVendor()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_preferred_vendor" value="1">&nbsp;Is Preferred&nbsp;&nbsp;
-		  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
+		  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()==="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
 		
 		</div>
 		
@@ -67,7 +67,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label col-sm-2" >Conversion Factor:</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				id="conversion_factor" name="conversion_factor" value="<?php echo (!$entity == null)? number_format($entity->getConversionFactor(), 0):"";?>">
+				id="conversion_factor" name="conversion_factor" value="<?php echo (!$entity == null)? $entity->getConversionFactor():"";?>">
 		</div>
 		<span style="font-size: 9.5pt" id="conversion_text"></span> <span><?php echo (!$item == null)? $item->getStandardUom()->getUomCode():"";?></span>			
 	</div>
@@ -77,8 +77,8 @@ if (count ( $errors ) > 0) {
 		<label class="control-label col-sm-2" >Unit Price</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-			name="vendor_unit_price" value="<?php echo (!$entity == null)? number_format($entity->getVendorUnitPrice(), 2):"";?>">
-			</div>
+				name="vendor_unit_price" value="<?php echo (!$entity == null)? $entity->getVendorUnitPrice():"";?>">
+		</div>
 		
 		<label class="control-label col-sm-2" >Currency:</label>
 		<div class="col-sm-3">

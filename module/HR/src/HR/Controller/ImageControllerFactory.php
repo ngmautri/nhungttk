@@ -6,7 +6,8 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Inventory\Controller\SparepartsController;
 
-/*
+/**
+ * @deprecated
  * @author nmt
  *
  */

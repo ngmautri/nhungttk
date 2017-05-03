@@ -1,0 +1,124 @@
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+	echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general">Edit Project</a></li>
+   </ul>
+
+<div id="general"> 
+
+<form id="" class="form-horizontal" action="/pm/project/edit" method="post" enctype="multipart/form-data">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
+
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Project Name:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="projectName" value="<?php echo (!$entity == null)? $entity->getProjectName():"";?>">
+		</div>		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Keywords:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				id = "keywords" name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Start Date:</label>
+		<div class="col-sm-3">
+		<input class="form-control" type="text" name="startDate" 
+		value="<?php if(!$entity == null): echo ($entity->getStartDate() !== null)? date_format($entity->getStartDate(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="startDate" />
+		</div>
+		
+		<label class="control-label col-sm-2" >End Date:</label>
+		<div class="col-sm-3">
+		<input class="form-control" type="text" name="endDate" 
+		value="<?php if(!$entity == null): echo ($entity->getEndDate() !== null)? date_format($entity->getEndDate(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="endDate" />
+		</div>
+		
+		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Status:</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="status">
+				<option value="">Please select</option>
+				<option <?php if(!$entity == null):	echo ($entity->getStatus()=='STARTED')?'selected="selected"':''; endif;?> value="STARTED">STARTED</option>
+				<option <?php if(!$entity == null):	echo ($entity->getStatus()=='PENDING')?'selected="selected"':''; endif;?> value="PENDING">PENDING</option>
+				<option <?php if(!$entity == null):	echo ($entity->getStatus()=='COMPLETED')?'selected="selected"':''; endif;?> value="COMPLETED">COMPLETED</option>
+				
+			</select>
+		</div>
+		
+		<label class="control-label col-sm-2" >Remarks:</label>
+		<div class="col-sm-3">
+			<textarea  class="form-control" type="text" rows="4" placeholder=""
+				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	   	<button type="submit" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-plus"> </i> Update</button>
+  		</div>
+	</div> 
+		
+	
+</form>
+</div>
+</div>
+
+<script>
+$(function() {
+   $( "input[id='startDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+   $( "input[id='endDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+});
+
+</script>
+
+
+<!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
+			</div>
+			<div class="modal-body">
+				<div id="b_loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected">No thing selected</span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
+
+
+

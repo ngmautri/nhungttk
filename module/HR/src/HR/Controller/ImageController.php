@@ -1,4 +1,4 @@
-<?php
+/* <?php
 
 /**
  * Zend Framework (http://framework.zend.com/)
@@ -17,7 +17,7 @@ use HR\Model\EmployeePicture;
 use HR\Model\EmployeePictureTable;
 
 /**
- * 
+ * @deprecated
  * @author nmt
  *
  */
@@ -129,3 +129,4 @@ class ImageController extends AbstractActionController {
 
 
 
+ */

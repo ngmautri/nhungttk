@@ -1,29 +1,30 @@
 <?php
 
-namespace HR\Controller;
+namespace HR\Service;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use HR\Controller\EmployeeController;
+use HR\Service\EmployeeSearchService;
 
-/**
- * 
+/*
  * @author nmt
  *
  */
-class EmployeeControllerFactory implements FactoryInterface {
+class EmployeeSearchServiceFactory implements FactoryInterface {
 	
 	/**
-	 *
+	 * 
 	 * {@inheritDoc}
-	 *
 	 * @see \Zend\ServiceManager\FactoryInterface::createService()
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
-		$container= $serviceLocator->getServiceLocator();
-		$controller = new EmployeeController();
+		
+		$container = $serviceLocator;
+		
+		$service = new EmployeeSearchService();
+		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
-		$controller->setDoctrineEM($sv);
-		return $controller;
+		$service->setDoctrineEM($sv);
+		return $service;
 	}
 }

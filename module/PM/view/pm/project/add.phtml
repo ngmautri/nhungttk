@@ -14,59 +14,59 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
-  <li ><a href="#general">New Employee</a></li>
+  <li ><a href="#general">New Project</a></li>
    </ul>
 
 <div id="general"> 
 
-<form id="" class="form-horizontal" action="/hr/employee/add" method="post" enctype="multipart/form-data">
+<form id="" class="form-horizontal" action="/pm/project/add" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
 	<div class="form-group">
-		<label class="control-label col-sm-2" >Employee Code</label>
+		<label class="control-label col-sm-2" >Project Name:</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="employeeCode" value="<?php echo (!$entity == null)? $entity->getEmployeeCode():"";?>">
+				name="projectName" value="<?php echo (!$entity == null)? $entity->getProjectName():"";?>">
 		</div>		
 	</div>
 	
 	<div class="form-group">
-		<label class="control-label col-sm-2" >Employee Name</label>
+		<label class="control-label col-sm-2" >Keywords:</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeName" value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" >Employee Name Local:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeNameLocal" value="<?php echo (!$entity == null)? $entity->getEmployeeNameLocal():"";?>">
+				id = "keywords" name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
 		</div>
 	</div>
 	
-
 	<div class="form-group">
-		<label class="control-label col-sm-2" >Birthday</label>
+		<label class="control-label col-sm-2" >Start Date:</label>
 		<div class="col-sm-3">
-		<input class="form-control" type="text" name="birthday" 
-		value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="birthday" />
+		<input class="form-control" type="text" name="startDate" 
+		value="<?php if(!$entity == null): echo ($entity->getStartDate() !== null)? date_format($entity->getStartDate(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="startDate" />
 		</div>
 		
-		<label class="control-label col-sm-2" for="inputTag">Gender</label>
+		<label class="control-label col-sm-2" >End Date:</label>
 		<div class="col-sm-3">
-			<select class="form-control" name="gender">
+		<input class="form-control" type="text" name="endDate" 
+		value="<?php if(!$entity == null): echo ($entity->getEndDate() !== null)? date_format($entity->getEndDate(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="endDate" />
+		</div>
+		
+		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Status:</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="status">
 				<option value="">Please select</option>
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?> value="M">Male</option>
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?> value="F">Female</option>
+				<option <?php if(!$entity == null):	echo ($entity->getStatus()=='STARTED')?'selected="selected"':''; endif;?> value="STARTED">STARTED</option>
+				<option <?php if(!$entity == null):	echo ($entity->getStatus()=='PENDING')?'selected="selected"':''; endif;?> value="PENDING">PENDING</option>
+				<option <?php if(!$entity == null):	echo ($entity->getStatus()=='COMPLETED')?'selected="selected"':''; endif;?> value="COMPLETED">COMPLETED</option>
+				
 			</select>
 		</div>
 		
-		
-	</div>
-	
-	<div class="form-group">
-		
-		<label class="control-label col-sm-2" >Remarks</label>
+		<label class="control-label col-sm-2" >Remarks:</label>
 		<div class="col-sm-3">
 			<textarea  class="form-control" type="text" rows="4" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
@@ -87,7 +87,8 @@ if (count ( $errors ) > 0) {
 
 <script>
 $(function() {
-   $( "input[id='birthday']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+   $( "input[id='startDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+   $( "input[id='endDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
 });
 
 </script>

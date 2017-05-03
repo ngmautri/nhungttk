@@ -1,17 +1,17 @@
 <?php
 
-namespace HR\Controller;
+namespace PM\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use HR\Controller\EmployeeController;
+use PM\Controller\ProjectController;
 
 /**
  * 
  * @author nmt
  *
  */
-class EmployeeControllerFactory implements FactoryInterface {
+class ProjectControllerFactory implements FactoryInterface {
 	
 	/**
 	 *
@@ -20,10 +20,15 @@ class EmployeeControllerFactory implements FactoryInterface {
 	 * @see \Zend\ServiceManager\FactoryInterface::createService()
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
-		$container= $serviceLocator->getServiceLocator();
-		$controller = new EmployeeController();
-		$sv =  $container->get('doctrine.entitymanager.orm_default');
-		$controller->setDoctrineEM($sv);
+		
+		$sm = $serviceLocator->getServiceLocator();
+			
+		$controller = new ProjectController();
+			
+		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
+		$controller->setDoctrineEM($sv );
+		
+		
 		return $controller;
 	}
 }

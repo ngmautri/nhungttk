@@ -7,13 +7,13 @@
  * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-namespace HR\Controller;
+namespace PM\Controller;
 
-use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
+use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
 use MLA\Paginator;
-use Application\Entity\NmtHrEmployee;
+use Application\Entity\NmtPmProject;
 use Zend\Validator\Date;
 
 /**
@@ -21,17 +21,11 @@ use Zend\Validator\Date;
  * @author nmt
  *        
  */
-class EmployeeController extends AbstractActionController {
-	protected $authService;
-	protected $SmtpTransportService;
-	protected $userTable;
+class ProjectController extends AbstractActionController {
 	protected $doctrineEM;
 	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+	/*
+	 * Defaul Action
 	 */
 	public function indexAction() {
 	}
@@ -57,37 +51,60 @@ class EmployeeController extends AbstractActionController {
 			$errors = array ();
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			
-			$employeeCode = $request->getPost ( 'employeeCode' );
-			$employeeName = $request->getPost ( 'employeeName' );
-			$employeeNameLocal = $request->getPost ( 'employeeNameLocal' );
-			$birthday = $request->getPost ( 'birthday' );
-			$gender = $request->getPost ( 'gender' );
+			$projectName = $request->getPost ( 'projectName' );
+			$keywords = $request->getPost ( 'keywords' );
+			
+			$description = $request->getPost ( 'description' );
+			
+			$startDate = $request->getPost ( 'startDate' );
+			$endDate = $request->getPost ( 'endDate' );
+			$isActive = $request->getPost ( 'isActive' );
+			
+			if ($isActive == "") {
+				$isActive = 0;
+			}
+			
+			$status = $request->getPost ( 'status' );
 			$remarks = $request->getPost ( 'remarks' );
 			
-			$entity = new NmtHrEmployee ();
+			$entity = new NmtPmProject ();
 			
-			if ($employeeCode == null) {
-				$errors [] = 'Please enter employee code!';
+			if ($projectName == null) {
+				$errors [] = 'Please enter project name!';
 			}
 			
-			if ($employeeName == null) {
-				$errors [] = 'Please enter employee name!';
-			}
-			
-			if ($gender == null) {
-				$errors [] = 'Please select gender!';
-			}
 			$validator = new Date ();
-			if (! $validator->isValid ( $birthday )) {
-				$errors [] = 'Birthday is not correct or empty!';
-			} else {
-				$entity->setBirthday ( new \DateTime ( $birthday ) );
+			$validated_date = 0;
+			
+			if ($startDate !== "") {
+				if (! $validator->isValid ( $startDate )) {
+					$errors [] = 'Start date is not correct or empty!';
+				} else {
+					$entity->setStartDate ( new \DateTime ( $startDate ) );
+					$validated_date ++;
+				}
 			}
 			
-			$entity->setEmployeeCode ( $employeeCode );
-			$entity->setEmployeeName ( $employeeName );
-			$entity->setEmployeeNameLocal ( $employeeNameLocal );
-			$entity->setGender ( $gender );
+			if ($endDate !== "") {
+				if (! $validator->isValid ( $endDate )) {
+					$errors [] = 'End date is not correct or empty!';
+				} else {
+					$entity->setEndDate ( new \DateTime ( $endDate ) );
+					$validated_date ++;
+				}
+			}
+			
+			if ($validated_date == 2) {
+				if (new \DateTime ( $endDate ) < new \DateTime ( $startDate )) {
+					$errors [] = 'End date must be future!';
+				}
+			}
+			
+			$entity->setProjectName ( $projectName );
+			$entity->setKeywords ( $keywords );
+			$entity->setDescription ( $description );
+			$entity->setIsActive ( $isActive );
+			$entity->setStatus ( $status );
 			$entity->setRemarks ( $remarks );
 			$entity->setCreatedBy ( $u );
 			$entity->setCreatedOn ( new \DateTime () );
@@ -141,13 +158,13 @@ class EmployeeController extends AbstractActionController {
 		}
 		;
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findBy ( $criteria, $sort_criteria );
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findBy ( $criteria, $sort_criteria );
 		$total_records = count ( $list );
 		$paginator = null;
 		
 		if ($total_records > $resultsPerPage) {
 			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
-			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
@@ -175,7 +192,7 @@ class EmployeeController extends AbstractActionController {
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$entity = $this->doctrineEM->find ( 'Application\Entity\NmtHrEmployee', $id );
+		$entity = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $id );
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
@@ -204,50 +221,75 @@ class EmployeeController extends AbstractActionController {
 			$errors = array ();
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			$entity_id = $request->getPost ( 'entity_id' );
-			$entity = $this->doctrineEM->find ( 'Application\Entity\NmtHrEmployee', $entity_id );
+			$entity = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $entity_id );
 			
 			if ($entity == null) {
 				
-				$errors [] = 'Employee not found';
+				$errors [] = 'Project not found';
 				
 				return new ViewModel ( array (
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
-						'entity' => $entity,
+						'entity' => $entity 
 				) );
-			
-			}else{
-				$employeeCode = $request->getPost ( 'employeeCode' );
-				$employeeName = $request->getPost ( 'employeeName' );
-				$employeeNameLocal = $request->getPost ( 'employeeNameLocal' );
-				$birthday = $request->getPost ( 'birthday' );
-				$gender = $request->getPost ( 'gender' );
+			} else {
+	
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				
+				$projectName = $request->getPost ( 'projectName' );
+				$keywords = $request->getPost ( 'keywords' );
+				
+				$description = $request->getPost ( 'description' );
+				
+				$startDate = $request->getPost ( 'startDate' );
+				$endDate = $request->getPost ( 'endDate' );
+				$isActive = $request->getPost ( 'isActive' );
+				
+				if ($isActive == "") {
+					$isActive = 0;
+				}
+				
+				$status = $request->getPost ( 'status' );
 				$remarks = $request->getPost ( 'remarks' );
 				
-				//$entity = new NmtHrEmployee (); // NEED COMMENTED
+				//$entity = new NmtPmProject ();
 				
-				if ($employeeCode == null) {
-					$errors [] = 'Please enter employee code!';
+				if ($projectName == null) {
+					$errors [] = 'Please enter project name!';
 				}
 				
-				if ($employeeName == null) {
-					$errors [] = 'Please enter employee name!';
-				}
-				
-				if ($gender == null) {
-					$errors [] = 'Please select gender!';
-				}
 				$validator = new Date ();
-				if (! $validator->isValid ( $birthday )) {
-					$errors [] = 'Birthday is not correct or empty!';
-				} else {
-					$entity->setBirthday ( new \DateTime ( $birthday ) );
+				$validated_date = 0;
+				
+				if ($startDate !== "") {
+					if (! $validator->isValid ( $startDate )) {
+						$errors [] = 'Start date is not correct or empty!';
+					} else {
+						$entity->setStartDate ( new \DateTime ( $startDate ) );
+						$validated_date ++;
+					}
 				}
 				
-				$entity->setEmployeeCode ( $employeeCode );
-				$entity->setEmployeeName ( $employeeName );
-				$entity->setEmployeeNameLocal ( $employeeNameLocal );
-				$entity->setGender ( $gender );
+				if ($endDate !== "") {
+					if (! $validator->isValid ( $endDate )) {
+						$errors [] = 'End date is not correct or empty!';
+					} else {
+						$entity->setEndDate ( new \DateTime ( $endDate ) );
+						$validated_date ++;
+					}
+				}
+				
+				if ($validated_date == 2) {
+					if (new \DateTime ( $endDate ) < new \DateTime ( $startDate )) {
+						$errors [] = 'End date must be future!';
+					}
+				}
+				
+				$entity->setProjectName ( $projectName );
+				$entity->setKeywords ( $keywords );
+				$entity->setDescription ( $description );
+				$entity->setIsActive ( $isActive );
+				$entity->setStatus ( $status );
 				$entity->setRemarks ( $remarks );
 				
 				if (count ( $errors ) > 0) {
@@ -255,26 +297,25 @@ class EmployeeController extends AbstractActionController {
 					return new ViewModel ( array (
 							'redirectUrl' => $redirectUrl,
 							'errors' => $errors,
-							'entity' => $entity
+							'entity' => $entity 
 					) );
 				}
 				
+				// NO ERROR
 				$entity->setLastChangeBy( $u );
 				$entity->setLastChangeOn( new \DateTime () );
-				// NO ERROR
+				
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
 				// $new_entity_id = $entity->getId();
 				
 				return $this->redirect ()->toUrl ( $redirectUrl );
-				
-			
 			}
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$entity = $this->doctrineEM->find ( 'Application\Entity\NmtHrEmployee', $id );
+		$entity = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $id );
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
@@ -283,10 +324,19 @@ class EmployeeController extends AbstractActionController {
 		) );
 	}
 	
-	// SETTER AND GETTER
+	/**
+	 *
+	 * @return \Doctrine\ORM\EntityManager
+	 */
 	public function getDoctrineEM() {
 		return $this->doctrineEM;
 	}
+	
+	/**
+	 *
+	 * @param EntityManager $doctrineEM        	
+	 * @return \PM\Controller\IndexController
+	 */
 	public function setDoctrineEM(EntityManager $doctrineEM) {
 		$this->doctrineEM = $doctrineEM;
 		return $this;

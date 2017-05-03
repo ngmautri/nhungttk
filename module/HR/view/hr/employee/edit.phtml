@@ -1,89 +1,122 @@
-<h4><i class="icon-pencil">  </i> Edit Spare-part</h4>
- <hr>
-
-<?php if (count($errors)>0)
-{
-echo '<div class="alert alert-error">';
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
 	
 	echo '<ul>';
-	 foreach ($errors as $error) :
-	 echo '<li>'.$error . '</li>';
-	 
-	 endforeach;
-	 echo '</ul>';
-	 echo '</div>';
-} 
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
 ?>
+
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general">New Employee</a></li>
+   </ul>
+
+<div id="general"> 
+
+<form id="" class="form-horizontal" action="/hr/employee/edit" method="post" enctype="multipart/form-data">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Employee Code</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="employeeCode" value="<?php echo (!$entity == null)? $entity->getEmployeeCode():"";?>">
+		</div>		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Employee Name</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				id = "employeeName" name="employeeName" value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
+		</div>
+		
+		<label class="control-label col-sm-2" >Employee Name Local:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				id = "employeeName" name="employeeNameLocal" value="<?php echo (!$entity == null)? $entity->getEmployeeNameLocal():"";?>">
+		</div>
+	</div>
 	
 
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/spareparts/edit"	method="post" enctype="multipart/form-data" id="NewSP" >
- <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
- <input type="hidden" name="id" value="<?php echo $sparepart!==null ? ($sparepart->id) :""?>"/>
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Birthday</label>
+		<div class="col-sm-3">
+		<input class="form-control" type="text" name="birthday" 
+		value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="birthday" />
+		</div>
+		
+		<label class="control-label col-sm-2" for="inputTag">Gender</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="gender">
+				<option value="">Please select</option>
+				<option <?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?> value="M">Male</option>
+				<option <?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?> value="F">Female</option>
+			</select>
+		</div>
+		
+		
+	</div>
+	
+	<div class="form-group">
+		
+		<label class="control-label col-sm-2" >Remarks</label>
+		<div class="col-sm-3">
+			<textarea  class="form-control" type="text" rows="4" placeholder=""
+				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	   	<button type="submit" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-plus"> </i> Add</button>
+  		</div>
+	</div> 
+		
+	
+</form>
+</div>
+</div>
 
- 
-      <div class="control-group">
-        <label class="control-label" for="inputTag">Tag</label>
-        <div class="controls">
-          <input readonly type="text" id="inputTag" placeholder="" name="tag" value="<?php echo $sparepart!==null ? ($sparepart->tag) :""?>">
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputName">Name</label>
-        <div class="controls">
-          <input type="text" id="inputName" placeholder="" name="name" value="<?php echo $sparepart!==null ? ($sparepart->name) :""?>">
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Name</label>
-        <div class="controls">
-          <input type="text" id="inputNameLocal" placeholder="" name="name_local" value="<?php echo $sparepart!==null ? ($sparepart->name_local) :""?>">
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputDescription">Description</label>
-        <div class="controls">
-          <textarea id="inputDescription" placeholder="" rows="3" name="description"><?php echo $sparepart!==null ? ($sparepart->description):""?></textarea>
-        </div>
-      </div>
-      
-       <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Code /Serial</label>
-        <div class="controls">
-          <input type="text" id="sparepart_code" placeholder="Code of supplier" name="code" value="<?php echo $sparepart!==null ? ($sparepart->code) :""?>"> 
-          <a href="javascript:;" onclick="checkSparePartCode()" class="helper">check code</a>
-        </div>
-      </div>
-      
-       <div class="control-group">
-        <label class="control-label" for="inputLocation">Location</label>
-        <div class="controls">
-          <input type="text" id="inputLocation" placeholder="" name="location" value="<?php echo $sparepart!==null ? ($sparepart->location) :""?>">
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <label class="control-label" for="inputLocation">Pictures	</label>
-        <div class="controls">
-          <input type="file" name="pictures[]" /><br>
-   		<input type="file" name="pictures[]" /><br>
-			<input type="file" name="pictures[]" /><br>
+<script>
+$(function() {
+   $( "input[id='birthday']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+});
 
-        </div>
-      </div>
-      
-      <div class="control-group">
-        <div class="controls">
-             <button type="submit" class="btn"><i class="icon-ok">  </i> Update</button>
-        </div>
-      </div>
-    </form>
+</script>
 
 
+<!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
+			</div>
+			<div class="modal-body">
+				<div id="b_loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected">No thing selected</span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
 
-<div id = "dialog" style="display: none;">Check code...</div>
+
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
 
 
 

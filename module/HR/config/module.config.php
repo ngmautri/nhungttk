@@ -42,13 +42,26 @@ return array (
 				) 
 		),
 		
+		
+		'service_manager' => array (
+				'factories' => array (
+						'HR\Service\EmployeeSearchService' => 'HR\Service\EmployeeSearchServiceFactory',
+				)
+		),
+		
 		'controllers' => array (
 				'invokables' => array (
-						'HR\Controller\Index' => 'HR\Controller\IndexController',
+						//'HR\Controller\Index' => 'HR\Controller\IndexController',
 				),
+				
 				'factories' => array (
+						// 'HR\Controller\Image' => 'HR\Controller\ImageControllerFactory',
+					
+						'HR\Controller\Index' => 'HR\Controller\IndexControllerFactory',
 						'HR\Controller\Employee' => 'HR\Controller\EmployeeControllerFactory',
-						'HR\Controller\Image' => 'HR\Controller\ImageControllerFactory',
+						'HR\Controller\Employee' => 'HR\Controller\EmployeeControllerFactory',
+						'HR\Controller\EmployeePicture' => 'HR\Controller\EmployeePictureControllerFactory',
+						'HR\Controller\EmployeeSearch' => 'HR\Controller\EmployeeSearchControllerFactory',
 						
 				)
 		),

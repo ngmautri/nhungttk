@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtBpVendorContract
+ * NmtApplicationAttachment
  *
- * @ORM\Table(name="nmt_bp_vendor_contract", indexes={@ORM\Index(name="nmt_bp_vendor_contract_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_bp_vendor_contract_FK3_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_bp_vendor_contract_FK1_idx", columns={"vendor_id"})})
+ * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_changed_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"})})
  * @ORM\Entity
  */
-class NmtBpVendorContract
+class NmtApplicationAttachment
 {
     /**
      * @var integer
@@ -24,44 +24,16 @@ class NmtBpVendorContract
     /**
      * @var string
      *
-     * @ORM\Column(name="contract_subject", type="string", length=100, nullable=false)
+     * @ORM\Column(name="document_type", type="string", length=45, nullable=false)
      */
-    private $contractSubject;
+    private $documentType;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
+     * @ORM\Column(name="url", type="string", length=150, nullable=true)
      */
-    private $keywords;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="signing_date", type="datetime", nullable=true)
-     */
-    private $signingDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="valid_from", type="datetime", nullable=true)
-     */
-    private $validFrom;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="valid_to", type="datetime", nullable=true)
-     */
-    private $validTo;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_active", type="boolean", nullable=true)
-     */
-    private $isActive;
+    private $url;
 
     /**
      * @var string
@@ -80,21 +52,14 @@ class NmtBpVendorContract
     /**
      * @var string
      *
-     * @ORM\Column(name="filename_original", type="string", length=255, nullable=true)
+     * @ORM\Column(name="filename_original", type="string", length=150, nullable=true)
      */
     private $filenameOriginal;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="file_pwd", type="string", length=45, nullable=true)
-     */
-    private $filePwd;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="size", type="integer", nullable=true)
+     * @ORM\Column(name="size", type="string", length=45, nullable=true)
      */
     private $size;
 
@@ -108,14 +73,14 @@ class NmtBpVendorContract
     /**
      * @var string
      *
-     * @ORM\Column(name="folder", type="string", length=255, nullable=true)
+     * @ORM\Column(name="folder", type="string", length=105, nullable=true)
      */
     private $folder;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="folder_relative", type="string", length=80, nullable=true)
+     * @ORM\Column(name="folder_relative", type="string", length=150, nullable=true)
      */
     private $folderRelative;
 
@@ -143,9 +108,23 @@ class NmtBpVendorContract
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     * @ORM\Column(name="valid_from", type="datetime", nullable=true)
      */
-    private $lastChangeOn;
+    private $validFrom;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="valid_to", type="datetime", nullable=true)
+     */
+    private $validTo;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
 
     /**
      * @var boolean
@@ -155,14 +134,18 @@ class NmtBpVendorContract
     private $markedForDeletion;
 
     /**
-     * @var \Application\Entity\NmtBpVendor
+     * @var \DateTime
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="vendor_id", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
-    private $vendor;
+    private $lastChangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="item_id", type="integer", nullable=true)
+     */
+    private $itemId;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -179,10 +162,40 @@ class NmtBpVendorContract
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="last_changed_by", referencedColumnName="id")
      * })
      */
-    private $lastChangeBy;
+    private $lastChangedBy;
+
+    /**
+     * @var \Application\Entity\NmtPmProject
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtPmProject")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * })
+     */
+    private $project;
+
+    /**
+     * @var \Application\Entity\NmtHrEmployee
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
+     * })
+     */
+    private $employee;
+
+    /**
+     * @var \Application\Entity\NmtBpVendor
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="vendor_id", referencedColumnName="id")
+     * })
+     */
+    private $vendor;
 
 
 
@@ -197,147 +210,51 @@ class NmtBpVendorContract
     }
 
     /**
-     * Set contractSubject
+     * Set documentType
      *
-     * @param string $contractSubject
+     * @param string $documentType
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
-    public function setContractSubject($contractSubject)
+    public function setDocumentType($documentType)
     {
-        $this->contractSubject = $contractSubject;
+        $this->documentType = $documentType;
 
         return $this;
     }
 
     /**
-     * Get contractSubject
+     * Get documentType
      *
      * @return string
      */
-    public function getContractSubject()
+    public function getDocumentType()
     {
-        return $this->contractSubject;
+        return $this->documentType;
     }
 
     /**
-     * Set keywords
+     * Set url
      *
-     * @param string $keywords
+     * @param string $url
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
-    public function setKeywords($keywords)
+    public function setUrl($url)
     {
-        $this->keywords = $keywords;
+        $this->url = $url;
 
         return $this;
     }
 
     /**
-     * Get keywords
+     * Get url
      *
      * @return string
      */
-    public function getKeywords()
+    public function getUrl()
     {
-        return $this->keywords;
-    }
-
-    /**
-     * Set signingDate
-     *
-     * @param \DateTime $signingDate
-     *
-     * @return NmtBpVendorContract
-     */
-    public function setSigningDate($signingDate)
-    {
-        $this->signingDate = $signingDate;
-
-        return $this;
-    }
-
-    /**
-     * Get signingDate
-     *
-     * @return \DateTime
-     */
-    public function getSigningDate()
-    {
-        return $this->signingDate;
-    }
-
-    /**
-     * Set validFrom
-     *
-     * @param \DateTime $validFrom
-     *
-     * @return NmtBpVendorContract
-     */
-    public function setValidFrom($validFrom)
-    {
-        $this->validFrom = $validFrom;
-
-        return $this;
-    }
-
-    /**
-     * Get validFrom
-     *
-     * @return \DateTime
-     */
-    public function getValidFrom()
-    {
-        return $this->validFrom;
-    }
-
-    /**
-     * Set validTo
-     *
-     * @param \DateTime $validTo
-     *
-     * @return NmtBpVendorContract
-     */
-    public function setValidTo($validTo)
-    {
-        $this->validTo = $validTo;
-
-        return $this;
-    }
-
-    /**
-     * Get validTo
-     *
-     * @return \DateTime
-     */
-    public function getValidTo()
-    {
-        return $this->validTo;
-    }
-
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     *
-     * @return NmtBpVendorContract
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return boolean
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
+        return $this->url;
     }
 
     /**
@@ -345,7 +262,7 @@ class NmtBpVendorContract
      *
      * @param string $filetype
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setFiletype($filetype)
     {
@@ -369,7 +286,7 @@ class NmtBpVendorContract
      *
      * @param string $filename
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setFilename($filename)
     {
@@ -393,7 +310,7 @@ class NmtBpVendorContract
      *
      * @param string $filenameOriginal
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setFilenameOriginal($filenameOriginal)
     {
@@ -413,35 +330,11 @@ class NmtBpVendorContract
     }
 
     /**
-     * Set filePwd
-     *
-     * @param string $filePwd
-     *
-     * @return NmtBpVendorContract
-     */
-    public function setFilePwd($filePwd)
-    {
-        $this->filePwd = $filePwd;
-
-        return $this;
-    }
-
-    /**
-     * Get filePwd
-     *
-     * @return string
-     */
-    public function getFilePwd()
-    {
-        return $this->filePwd;
-    }
-
-    /**
      * Set size
      *
-     * @param integer $size
+     * @param string $size
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setSize($size)
     {
@@ -453,7 +346,7 @@ class NmtBpVendorContract
     /**
      * Get size
      *
-     * @return integer
+     * @return string
      */
     public function getSize()
     {
@@ -465,7 +358,7 @@ class NmtBpVendorContract
      *
      * @param boolean $visibility
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setVisibility($visibility)
     {
@@ -489,7 +382,7 @@ class NmtBpVendorContract
      *
      * @param string $folder
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setFolder($folder)
     {
@@ -513,7 +406,7 @@ class NmtBpVendorContract
      *
      * @param string $folderRelative
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setFolderRelative($folderRelative)
     {
@@ -537,7 +430,7 @@ class NmtBpVendorContract
      *
      * @param string $checksum
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setChecksum($checksum)
     {
@@ -561,7 +454,7 @@ class NmtBpVendorContract
      *
      * @param string $remarks
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setRemarks($remarks)
     {
@@ -585,7 +478,7 @@ class NmtBpVendorContract
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setCreatedOn($createdOn)
     {
@@ -605,27 +498,75 @@ class NmtBpVendorContract
     }
 
     /**
-     * Set lastChangeOn
+     * Set validFrom
      *
-     * @param \DateTime $lastChangeOn
+     * @param \DateTime $validFrom
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
-    public function setLastChangeOn($lastChangeOn)
+    public function setValidFrom($validFrom)
     {
-        $this->lastChangeOn = $lastChangeOn;
+        $this->validFrom = $validFrom;
 
         return $this;
     }
 
     /**
-     * Get lastChangeOn
+     * Get validFrom
      *
      * @return \DateTime
      */
-    public function getLastChangeOn()
+    public function getValidFrom()
     {
-        return $this->lastChangeOn;
+        return $this->validFrom;
+    }
+
+    /**
+     * Set validTo
+     *
+     * @param \DateTime $validTo
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setValidTo($validTo)
+    {
+        $this->validTo = $validTo;
+
+        return $this;
+    }
+
+    /**
+     * Get validTo
+     *
+     * @return \DateTime
+     */
+    public function getValidTo()
+    {
+        return $this->validTo;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 
     /**
@@ -633,7 +574,7 @@ class NmtBpVendorContract
      *
      * @param boolean $markedForDeletion
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setMarkedForDeletion($markedForDeletion)
     {
@@ -653,27 +594,51 @@ class NmtBpVendorContract
     }
 
     /**
-     * Set vendor
+     * Set lastChangeOn
      *
-     * @param \Application\Entity\NmtBpVendor $vendor
+     * @param \DateTime $lastChangeOn
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
-    public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
+    public function setLastChangeOn($lastChangeOn)
     {
-        $this->vendor = $vendor;
+        $this->lastChangeOn = $lastChangeOn;
 
         return $this;
     }
 
     /**
-     * Get vendor
+     * Get lastChangeOn
      *
-     * @return \Application\Entity\NmtBpVendor
+     * @return \DateTime
      */
-    public function getVendor()
+    public function getLastChangeOn()
     {
-        return $this->vendor;
+        return $this->lastChangeOn;
+    }
+
+    /**
+     * Set itemId
+     *
+     * @param integer $itemId
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
+
+        return $this;
+    }
+
+    /**
+     * Get itemId
+     *
+     * @return integer
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
     }
 
     /**
@@ -681,7 +646,7 @@ class NmtBpVendorContract
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
@@ -701,26 +666,98 @@ class NmtBpVendorContract
     }
 
     /**
-     * Set lastChangeBy
+     * Set lastChangedBy
      *
-     * @param \Application\Entity\MlaUsers $lastChangeBy
+     * @param \Application\Entity\MlaUsers $lastChangedBy
      *
-     * @return NmtBpVendorContract
+     * @return NmtApplicationAttachment
      */
-    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    public function setLastChangedBy(\Application\Entity\MlaUsers $lastChangedBy = null)
     {
-        $this->lastChangeBy = $lastChangeBy;
+        $this->lastChangedBy = $lastChangedBy;
 
         return $this;
     }
 
     /**
-     * Get lastChangeBy
+     * Get lastChangedBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getLastChangeBy()
+    public function getLastChangedBy()
     {
-        return $this->lastChangeBy;
+        return $this->lastChangedBy;
+    }
+
+    /**
+     * Set project
+     *
+     * @param \Application\Entity\NmtPmProject $project
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setProject(\Application\Entity\NmtPmProject $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return \Application\Entity\NmtPmProject
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * Set employee
+     *
+     * @param \Application\Entity\NmtHrEmployee $employee
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setEmployee(\Application\Entity\NmtHrEmployee $employee = null)
+    {
+        $this->employee = $employee;
+
+        return $this;
+    }
+
+    /**
+     * Get employee
+     *
+     * @return \Application\Entity\NmtHrEmployee
+     */
+    public function getEmployee()
+    {
+        return $this->employee;
+    }
+
+    /**
+     * Set vendor
+     *
+     * @param \Application\Entity\NmtBpVendor $vendor
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
+    {
+        $this->vendor = $vendor;
+
+        return $this;
+    }
+
+    /**
+     * Get vendor
+     *
+     * @return \Application\Entity\NmtBpVendor
+     */
+    public function getVendor()
+    {
+        return $this->vendor;
     }
 }

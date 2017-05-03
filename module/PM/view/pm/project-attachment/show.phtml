@@ -1,0 +1,118 @@
+<h4>
+	 <?php echo (!$item == null)? $item->getItemName():"";?>
+</h4>
+
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 10pt"> 
+  <ul>
+  <li ><a href="#general">Attachment</a></li>
+   </ul>
+
+<div id="general"> 
+
+<form id="item_attachment_form" class="form-horizontal" action="/inventory/item-attachment/upload" method="post" enctype="multipart/form-data">
+<input type="hidden" name="item_id" value="<?php echo (!$item == null)? $item->getId():"";?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Document Type</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="document_type" value="<?php echo (!$entity== null)? $entity->getDocumentType():"";?>">
+	
+		</div>
+		<label class="control-label col-sm-1" for="inputTag"></label>
+		<div class="col-sm-4">
+					  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
+		</div>		
+	</div>
+		
+	<div class="form-group">
+				
+		<label class="control-label col-sm-2" for="inputTag">Current Attachment: </label>
+		<div class="col-sm-3">
+		
+	<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/download?target_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
+		
+			
+		</div>				
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Vendor (optional)</label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor, if any"
+				name="vendor_name" value="<?php echo (!$vendor == null)? $vendor->getVendorName():"";?>">
+			<input type="hidden" id="vendor_id" placeholder="" 
+			name="vendor_id" value="<?php echo (!$vendor== null)? $vendor->getId():"";?>">	
+		</div>
+	</div>
+	
+	<div class="form-group">
+		
+	<label class="control-label col-sm-2" >Remarks</label>
+		<div class="col-sm-3">
+			<textarea  class="form-control" type="text" rows="4" placeholder=""
+				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	   	<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-upload"> </i> Upload</button>
+  		</div>
+	</div> 
+		
+	
+</form>
+</div>
+</div>
+
+<script type="text/javascript">
+	$("#item_attachment_form :input").attr("disabled", "disabled");
+
+</script>
+
+<!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
+			</div>
+			<div class="modal-body">
+				<div id="b_loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected"></span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
+
+
+

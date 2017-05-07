@@ -1,8 +1,4 @@
-<?php
-echo '<div id="flash_messages" class="global-notice">';
-echo $this->flashMessenger()->render();
-echo '</div>';
-?>
+
 <h4>
 	 <?php 
 	 // target:EMPLOYEE
@@ -102,7 +98,14 @@ if (count ( $errors ) > 0) {
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-	   	<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-upload"> </i> Upload</button>
+<a class="btn btn-default" style="" href="javascript:;"
+	onClick="doUploadAttachment('attachment_upload_form','attachments','/hr/employee-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>','0');">
+	<small><i class="glyphicon glyphicon-pencil"> </i></small>&nbsp; Edit
+</a>
+
+<a class="btn btn-default" href="<?php echo $redirectUrl ?>"><i class="icon-back"> </i> << Back</a>
+		
+ 		
   		</div>
 	</div> 
 		
@@ -135,32 +138,4 @@ $( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',clos
 
 
 </script>
-
-<!-- Modal -->
-<div class="modal" id="modal1" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
-			</div>
-			<div class="modal-body">
-				<div id="b_loaded_data">loading</div>
-			</div>
-			<div class="modal-footer">
-				<span id="node_selected"></span>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-
-
-<div id="jquery_dialog" style="display: none; padding-top: 10pt">
-	<div id="j_loaded_data"></div>
-</div>
-
-
 

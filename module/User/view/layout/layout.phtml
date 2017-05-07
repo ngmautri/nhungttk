@@ -333,14 +333,75 @@
         <?= $this->inlineScript() ?>
     
 
+
+
+<div id="flash_messages" class="global-notice" style="display: none;"><?php
+if($this->flashMessenger()!==null){
+	echo $this->flashMessenger()->render();
+}?></div>;
+
 <script>
 		var flash_message = $( "#flash_messages" ).text();
-		$( "#flash_messages" ).hide();
 		if(flash_message!=''){
 			$( "#flash_messages" ).show();
-			$( "#flash_messages" ).fadeOut(5500);
+			$( "#flash_messages" ).delay(2200).fadeOut(1000);
 		}
 </script>
+ 
+ <!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
+			</div>
+			<div class="modal-body">
+				<div id="b_loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected"></span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
+
+
+<!-- Modal -->
+<div id="b_modal_no_header" class="modal" role="dialog">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-body">
+			<p>Processing........Please Wait!</p>
+		</div>
+	</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="b_modal_sm" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h5 class="modal-title" id="b_modal_sm_title">Mascot International Laos</h5>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<p>No attachment selected!</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
     
     
     </body>

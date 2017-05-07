@@ -1,10 +1,4 @@
 <?php
-echo '<div id="flash_messages" class="global-notice">';
-echo $this->flashMessenger()->render();
-echo '</div>';
-?>
-
-<?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
 	

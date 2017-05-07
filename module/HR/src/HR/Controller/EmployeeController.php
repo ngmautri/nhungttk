@@ -124,10 +124,9 @@ class EmployeeController extends AbstractActionController {
 			
 			/** @todo: update index*/
 			$this->employeeSearchService->addDocument($entity, false);
-				return $this->redirect ()->toUrl ( $redirectUrl );
+			$this->flashMessenger()->addMessage("Employee '" . $employeeCode. "' has been created!");
+			return $this->redirect ()->toUrl ( $redirectUrl );
 		}
-		
-		$this->flashMessenger()->addMessage("Employee '" . $employeeCode. "' has been created!");
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		

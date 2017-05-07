@@ -1333,6 +1333,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 			} else {
 				
 				$result = "";
+				$success = 0;
 				
 				foreach ( $pictures as $p ) {
 					
@@ -1413,15 +1414,19 @@ class EmployeeAttachmentController extends AbstractActionController {
 						) );
 						
 						$result = $result . ' uploaded. //';
+						$this->flashMessenger()->addMessage("'" . $original_filename. "' has been uploaded sucessfully" );
+						$success=1;
+						
 					} else {
-						$result = $result . ' exits. //';
+						$result = " '" . $original_filename. "' exits already. Please select other file!";
+						$success=0;
+						//$this->flashMessenger()->addMessage("'" . $original_filename. "' exits already. Please select other file!" );
 					}
-					
-					$this->flashMessenger()->addMessage("'" . $original_filename. "' has been uploaded sucessfully" );
 					
 					// $data['filetype'] = $filetype;
 					$data = array ();
 					$data ['message'] = $result;
+					$data ['success'] = $success;
 					$response = $this->getResponse ();
 					$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
 					$response->setContent ( json_encode ( $data ) );

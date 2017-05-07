@@ -1,8 +1,14 @@
+<?php
+echo '<div id="flash_messages" class="global-notice">';
+echo $this->flashMessenger()->render();
+echo '</div>';
+?>
+
 <h4>
 	 <?php 
-	 // target:PROJECT
-	 echo (!$target== null)? 'Project: ' . $target->getProjectName():"";?>
-</h4>
+	 // target:EMPLOYEE
+ 	echo (!$target== null)? 'Employee: ' . $target->getEmployeeName():"";?>
+</</h4>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -20,7 +26,7 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 10pt"> 
   <ul>
-  <li ><a href="#general">Attachment upload</a></li>
+  <li ><a href="#general">Attachment</a></li>
    </ul>
 
 <div id="general"> 
@@ -55,15 +61,8 @@ value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity
 			name="vendor_id" 
 value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity->getVendor()->getID(); endif;endif;?>">
 		</div>
-		
-
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Vendor','750','450', '/bp/vendor/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>
 
 	</div>
-	
-	<div class="form-group">
 	
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Valid From:</label>
@@ -78,24 +77,27 @@ value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity
 			value="<?php if(!$entity == null): echo ($entity->getValidTo() !== null)? date_format($entity->getValidTo(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_to" />
 		</div>		
 	</div>
-		
+		<div class="form-group">
+	
+	
 	<label class="control-label col-sm-2" >Remarks</label>
 		<div class="col-sm-3">
 			<textarea  class="form-control" type="text" rows="4" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 		</div>
 		
-		<label class="control-label col-sm-2" for="inputTag">Attachment</label>
+		<label class="control-label col-sm-2" for="inputTag">Attachment: </label>
 		<div class="col-sm-3">
-			<input style=";" type="file" id= "attachments" name="attachments" />
-		</div>			
+	<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/hr/employee-attachment/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
+		</div>				
 	</div>
 	
 		
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-			<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/pm/project-attachment/edit?entity_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Edit</a>
+ <a class="btn btn-default" href="<?php echo $this->baseUrl ?>/hr/employee-attachment/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+ 
   		</div>
 	</div> 
 		

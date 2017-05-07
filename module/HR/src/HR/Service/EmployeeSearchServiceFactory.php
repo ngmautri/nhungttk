@@ -25,6 +25,8 @@ class EmployeeSearchServiceFactory implements FactoryInterface {
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$service->setDoctrineEM($sv);
+		
+		
 		return $service;
 	}
 }

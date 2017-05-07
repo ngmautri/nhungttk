@@ -320,10 +320,10 @@
 		</div>
 	</nav>
 	<div class="container" id="main_container">
-		
-	
-		
-            <?= $this->content ?>
+	        <?= $this->content ?>
+    
+    
+    
             <hr>
 		<footer>
 
@@ -331,5 +331,17 @@
 		</footer>
 	</div>
         <?= $this->inlineScript() ?>
+    
+
+<script>
+		var flash_message = $( "#flash_messages" ).text();
+		$( "#flash_messages" ).hide();
+		if(flash_message!=''){
+			$( "#flash_messages" ).show();
+			$( "#flash_messages" ).fadeOut(5500);
+		}
+</script>
+    
+    
     </body>
 </html>

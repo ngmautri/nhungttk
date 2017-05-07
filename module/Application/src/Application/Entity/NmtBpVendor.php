@@ -64,6 +64,20 @@ class NmtBpVendor
     private $remarks;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
+     */
+    private $checksum;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -237,6 +251,54 @@ class NmtBpVendor
     public function getRemarks()
     {
         return $this->remarks;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtBpVendor
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set checksum
+     *
+     * @param string $checksum
+     *
+     * @return NmtBpVendor
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+
+        return $this;
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
     }
 
     /**

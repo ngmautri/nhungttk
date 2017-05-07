@@ -15,6 +15,8 @@ use Zend\View\Model\ViewModel;
 use MLA\Paginator;
 use Application\Entity\NmtHrEmployee;
 use Zend\Validator\Date;
+use Zend\Math\Rand;
+use HR\Service\EmployeeSearchService;
 
 /**
  *
@@ -22,10 +24,11 @@ use Zend\Validator\Date;
  *        
  */
 class EmployeeController extends AbstractActionController {
-	protected $authService;
-	protected $SmtpTransportService;
-	protected $userTable;
+	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+	
 	protected $doctrineEM;
+	protected $employeeSearchService;
+	
 	
 	/**
 	 *
@@ -47,7 +50,6 @@ class EmployeeController extends AbstractActionController {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
 				"email" => $this->identity () 
 		) );
@@ -84,7 +86,18 @@ class EmployeeController extends AbstractActionController {
 				$entity->setBirthday ( new \DateTime ( $birthday ) );
 			}
 			
-			$entity->setEmployeeCode ( $employeeCode );
+			// change target
+			$criteria = array (
+					"employeeCode" => $employeeCode 
+			);
+			$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findby ( $criteria );
+			
+			if (count ( $ck ) > 0) {
+				$errors [] = 'Employee Code: "' . $employeeCode . '"  exits already';
+			} else {
+				$entity->setEmployeeCode ( $employeeCode );
+			}
+			
 			$entity->setEmployeeName ( $employeeName );
 			$entity->setEmployeeNameLocal ( $employeeNameLocal );
 			$entity->setGender ( $gender );
@@ -102,17 +115,81 @@ class EmployeeController extends AbstractActionController {
 			}
 			
 			// NO ERROR
+			$entity->setChecksum ( md5 ( uniqid ( "employee_" . $entity->getId () ) . microtime () ) );
+			$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			
 			$this->doctrineEM->persist ( $entity );
 			$this->doctrineEM->flush ();
 			// $new_entity_id = $entity->getId();
 			
-			return $this->redirect ()->toUrl ( $redirectUrl );
+			/** @todo: update index*/
+			$this->employeeSearchService->addDocument($entity, false);
+				return $this->redirect ()->toUrl ( $redirectUrl );
 		}
+		
+		$this->flashMessenger()->addMessage("Employee '" . $employeeCode. "' has been created!");
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
 				'errors' => null,
 				'entity' => null 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function updateTokenAction() {
+		$criteria = array ();
+		
+		// var_dump($criteria);
+		
+		$sort_criteria = array ();
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findBy ( $criteria, $sort_criteria );
+		
+		if (count ( $list ) > 0) {
+			foreach ( $list as $entity ) {
+				$entity->setChecksum ( md5 ( uniqid ( "employee_" . $entity->getId () ) . microtime () ) );
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			}
+		}
+		
+		$this->doctrineEM->flush ();
+		
+		/** @todo: update index*/
+		$this->employeeSearchService->createEmployeeIndex();
+		
+		
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		if ($total_records > $resultsPerPage) {
+			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => $paginator 
 		) );
 	}
 	
@@ -174,15 +251,28 @@ class EmployeeController extends AbstractActionController {
 		// $u = $this->doctrineEM->getRepository( 'Application\Entity\MlaUsers')->findOneBy(array("email"=>$this->identity() ));
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$entity = $this->doctrineEM->find ( 'Application\Entity\NmtHrEmployee', $id );
+		$id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
 		
-		return new ViewModel ( array (
-				'redirectUrl' => $redirectUrl,
-				'entity' => $entity,
-				'errors' => null 
-		) );
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
+		
+		if ($entity !== null) {
+			return new ViewModel ( array (
+					'redirectUrl' => $redirectUrl,
+					'entity' => $entity,
+					'errors' => null,
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 	}
+	
 	/**
 	 *
 	 * @return \Zend\View\Model\ViewModel
@@ -204,19 +294,25 @@ class EmployeeController extends AbstractActionController {
 			$errors = array ();
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			$entity_id = $request->getPost ( 'entity_id' );
-			$entity = $this->doctrineEM->find ( 'Application\Entity\NmtHrEmployee', $entity_id );
+			$token = $request->getPost ( 'token' );
+			
+			$criteria = array (
+					'id' => $entity_id,
+					'token' => $token
+			);
+			
+			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
 			
 			if ($entity == null) {
 				
-				$errors [] = 'Employee not found';
+				$errors [] = 'Employee not found or token key is not valid. Please try again!';
 				
 				return new ViewModel ( array (
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
-						'entity' => $entity,
+						'entity' => $entity 
 				) );
-			
-			}else{
+			} else {
 				$employeeCode = $request->getPost ( 'employeeCode' );
 				$employeeName = $request->getPost ( 'employeeName' );
 				$employeeNameLocal = $request->getPost ( 'employeeNameLocal' );
@@ -224,7 +320,7 @@ class EmployeeController extends AbstractActionController {
 				$gender = $request->getPost ( 'gender' );
 				$remarks = $request->getPost ( 'remarks' );
 				
-				//$entity = new NmtHrEmployee (); // NEED COMMENTED
+				// $entity = new NmtHrEmployee (); // NEED COMMENTED
 				
 				if ($employeeCode == null) {
 					$errors [] = 'Please enter employee code!';
@@ -255,31 +351,70 @@ class EmployeeController extends AbstractActionController {
 					return new ViewModel ( array (
 							'redirectUrl' => $redirectUrl,
 							'errors' => $errors,
-							'entity' => $entity
+							'entity' => $entity 
 					) );
 				}
 				
-				$entity->setLastChangeBy( $u );
-				$entity->setLastChangeOn( new \DateTime () );
-				// NO ERROR
+				// NO ERROR Do Not change Checksum			
+				
+				$entity->setLastChangeBy ( $u );
+				$entity->setLastChangeOn ( new \DateTime () );
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
 				// $new_entity_id = $entity->getId();
 				
-				return $this->redirect ()->toUrl ( $redirectUrl );
-				
+				/** @todo: need to update search index*/
 			
+				$this->flashMessenger()->addMessage("Employee " . $employeeCode . " has been updated!");
+				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$entity = $this->doctrineEM->find ( 'Application\Entity\NmtHrEmployee', $id );
 		
+		$id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
+		
+		if ($entity !== null) {
+			return new ViewModel ( array (
+					'redirectUrl' => $redirectUrl,
+					'errors' => null,
+					'entity' => $entity 
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function selectAction() {
+		$request = $this->getRequest ();
+		$context = $this->params ()->fromQuery ( 'context' );
+		
+		// accepted only ajax request
+		if (! $request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$this->layout ( "layout/user/ajax" );
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findAll ();
+		$total_records = count ( $list );
 		return new ViewModel ( array (
-				'redirectUrl' => $redirectUrl,
-				'errors' => null,
-				'entity' => $entity 
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => null,
+				'context' =>$context,
 		) );
 	}
 	
@@ -291,4 +426,12 @@ class EmployeeController extends AbstractActionController {
 		$this->doctrineEM = $doctrineEM;
 		return $this;
 	}
+	public function getEmployeeSearchService() {
+		return $this->employeeSearchService;
+	}
+	public function setEmployeeSearchService(EmployeeSearchService $employeeSearchService) {
+		$this->employeeSearchService = $employeeSearchService;
+		return $this;
+	}
+	
 }

@@ -1,7 +1,13 @@
+<?php
+echo '<div id="flash_messages" class="global-notice">';
+echo $this->flashMessenger()->render();
+echo '</div>';
+?>
+
 <h4>
 	 <?php 
-	 // target:PROJECT
-	 echo (!$target== null)? 'Project: ' . $target->getProjectName():"";?>
+	 // target:EMPLOYEE
+	 echo (!$target== null)? 'Employee: ' . $target->getEmployeeName():"";?>
 </h4>
 
 <?php
@@ -25,8 +31,11 @@ if (count ( $errors ) > 0) {
 
 <div id="general"> 
 
-<form id="attachment_show_form" class="form-horizontal" action="/pm/project-attachment/upload" method="post" enctype="multipart/form-data">
+<!-- TO UPDATE ACTION -->
+<form id="attachment_upload_form" class="form-horizontal" action="/hr/employee-attachment/upload" method="post" enctype="multipart/form-data">
 <input type="hidden" name="target_id" value="<?php echo (!$target == null)? $target->getId():"";?>" />
+<input type="hidden" name="token" value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
 
@@ -43,6 +52,13 @@ if (count ( $errors ) > 0) {
 		</div>		
 	</div>
 		
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Attachment</label>
+		<div class="col-sm-3">
+			<input style=";" type="file" id= "attachments" name="attachments" />
+		</div>		
+	</div>
+	
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Vendor (optional)</label>
 		<div class="col-sm-3">
@@ -64,8 +80,6 @@ value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity
 	</div>
 	
 	<div class="form-group">
-	
-	<div class="form-group">
 		<label class="control-label col-sm-2" >Valid From:</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text" name="validFrom" 
@@ -78,24 +92,18 @@ value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity
 			value="<?php if(!$entity == null): echo ($entity->getValidTo() !== null)? date_format($entity->getValidTo(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_to" />
 		</div>		
 	</div>
-		
-	<label class="control-label col-sm-2" >Remarks</label>
+	<div class="form-group">
+	<label class="control-label col-sm-2" >Remarks:</label>
 		<div class="col-sm-3">
 			<textarea  class="form-control" type="text" rows="4" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-		</div>
-		
-		<label class="control-label col-sm-2" for="inputTag">Attachment</label>
-		<div class="col-sm-3">
-			<input style=";" type="file" id= "attachments" name="attachments" />
-		</div>			
+		</div>		
 	</div>
 	
-		
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-			<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/pm/project-attachment/edit?entity_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Edit</a>
+	   	<button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp; Upload</button>
   		</div>
 	</div> 
 		
@@ -105,10 +113,26 @@ value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity
 </div>
 
 <script type="text/javascript">
-$("#attachment_show_form :input").attr("disabled", "disabled");
+$('#attachments').bind('change', function() {
+	var file_size;
+	file_size = this.files[0].size
+	if (file_size > 2097152){
+		//alert('This file size is too large : ' + file_size + "MB. Please select new file");
+		
+		$('#b_loaded_data').text('This file size is too large : ' + file_size + "MB. Please select new file");
+		$('#modal1').modal();
 
-$( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
-$( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+		 $("#attachments").val("");
+		 	
+	}else{
+		//alert('This file size is: ' + file_size + "MB, OKE");
+		 //$('#save').removeAttr('disabled');
+	}
+
+});
+
+$( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 
 </script>

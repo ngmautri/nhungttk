@@ -52,7 +52,7 @@ if (! $hits == null) :
 				<td><span id=""></span></td>
 				<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>
 	<td>
-	<a href="<?php echo $this->baseUrl ?>/hr/employee/show?target_id=<?php echo $this->escapeHtml($hit->employee_id);?>">show</a>
+	<a href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo $hit->token;?>&checksum=<?php echo $hit->checksum;?>&target_id=<?php echo $this->escapeHtml($hit->employee_id);?>">show</a>
 	</td>	
 		</tr>
 <?php endforeach; ?>

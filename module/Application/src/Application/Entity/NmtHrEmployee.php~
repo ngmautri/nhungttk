@@ -24,6 +24,20 @@ class NmtHrEmployee
     /**
      * @var string
      *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
+     */
+    private $checksum;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="employee_code", type="string", length=10, nullable=false)
      */
     private $employeeCode;

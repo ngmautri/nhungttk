@@ -1,4 +1,10 @@
 <?php
+echo '<div id="flash_messages" class="global-notice">';
+echo $this->flashMessenger()->render();
+echo '</div>';
+?>
+
+<?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
 	
@@ -14,7 +20,7 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
-  <li ><a href="#general">New Employee</a></li>
+  <li ><a href="#general">Edit Employee</a></li>
    </ul>
 
 <div id="general"> 
@@ -22,6 +28,7 @@ if (count ( $errors ) > 0) {
 <form id="" class="form-horizontal" action="/hr/employee/edit" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 <input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
+<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
 
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Employee Code</label>

@@ -59,9 +59,9 @@ return array (
 					
 						'HR\Controller\Index' => 'HR\Controller\IndexControllerFactory',
 						'HR\Controller\Employee' => 'HR\Controller\EmployeeControllerFactory',
-						'HR\Controller\Employee' => 'HR\Controller\EmployeeControllerFactory',
 						'HR\Controller\EmployeePicture' => 'HR\Controller\EmployeePictureControllerFactory',
 						'HR\Controller\EmployeeSearch' => 'HR\Controller\EmployeeSearchControllerFactory',
+						'HR\Controller\EmployeeAttachment' => 'HR\Controller\EmployeeAttachmentControllerFactory',
 						
 				)
 		),

@@ -15,6 +15,7 @@ use Zend\View\Model\ViewModel;
 use MLA\Paginator;
 use Application\Entity\NmtPmProject;
 use Zend\Validator\Date;
+use Zend\Math\Rand;
 
 /**
  *
@@ -22,12 +23,70 @@ use Zend\Validator\Date;
  *        
  */
 class ProjectController extends AbstractActionController {
+	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 	protected $doctrineEM;
 	
 	/*
 	 * Defaul Action
 	 */
 	public function indexAction() {
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function updateTokenAction() {
+		$criteria = array ();
+		
+		// var_dump($criteria);
+		
+		$sort_criteria = array ();
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findBy ( $criteria, $sort_criteria );
+		
+		if (count ( $list ) > 0) {
+			foreach ( $list as $entity ) {
+				$entity->setChecksum ( md5 ( uniqid ( "project_" . $entity->getId () ) . microtime () ) );
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			}
+		}
+		
+		$this->doctrineEM->flush ();
+		
+		/**
+		 *
+		 * @todo : update index
+		 */
+		// $this->employeeSearchService->createEmployeeIndex();
+		
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		if ($total_records > $resultsPerPage) {
+			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => $paginator 
+		) );
 	}
 	
 	/**
@@ -60,7 +119,7 @@ class ProjectController extends AbstractActionController {
 			$endDate = $request->getPost ( 'endDate' );
 			$isActive = $request->getPost ( 'isActive' );
 			
-			if ($isActive == "") {
+			if ($isActive != 1) {
 				$isActive = 0;
 			}
 			
@@ -191,14 +250,26 @@ class ProjectController extends AbstractActionController {
 		// $u = $this->doctrineEM->getRepository( 'Application\Entity\MlaUsers')->findOneBy(array("email"=>$this->identity() ));
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$entity = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $id );
+		$id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
 		
-		return new ViewModel ( array (
-				'redirectUrl' => $redirectUrl,
-				'entity' => $entity,
-				'errors' => null 
-		) );
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+		if ($entity !== null) {
+			
+			return new ViewModel ( array (
+					'redirectUrl' => $redirectUrl,
+					'entity' => $entity,
+					'errors' => null 
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 	}
 	/**
 	 *
@@ -207,11 +278,6 @@ class ProjectController extends AbstractActionController {
 	public function editAction() {
 		$request = $this->getRequest ();
 		
-		if ($request->getHeader ( 'Referer' ) == null) {
-			return $this->redirect ()->toRoute ( 'access_denied' );
-		}
-		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
 				"email" => $this->identity () 
 		) );
@@ -233,7 +299,8 @@ class ProjectController extends AbstractActionController {
 						'entity' => $entity 
 				) );
 			} else {
-	
+				
+				
 				$redirectUrl = $request->getPost ( 'redirectUrl' );
 				
 				$projectName = $request->getPost ( 'projectName' );
@@ -252,7 +319,7 @@ class ProjectController extends AbstractActionController {
 				$status = $request->getPost ( 'status' );
 				$remarks = $request->getPost ( 'remarks' );
 				
-				//$entity = new NmtPmProject ();
+				// $entity = new NmtPmProject ();
 				
 				if ($projectName == null) {
 					$errors [] = 'Please enter project name!';
@@ -302,8 +369,8 @@ class ProjectController extends AbstractActionController {
 				}
 				
 				// NO ERROR
-				$entity->setLastChangeBy( $u );
-				$entity->setLastChangeOn( new \DateTime () );
+				$entity->setLastChangeBy ( $u );
+				$entity->setLastChangeOn ( new \DateTime () );
 				
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
@@ -313,15 +380,31 @@ class ProjectController extends AbstractActionController {
 			}
 		}
 		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$entity = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $id );
+		if ($request->getHeader ( 'Referer' ) == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 		
-		return new ViewModel ( array (
-				'redirectUrl' => $redirectUrl,
-				'errors' => null,
-				'entity' => $entity 
-		) );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $id,
+				'checksum' => $checksum,
+				'token' => $token
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+		if ($entity !== null) {
+			
+			return new ViewModel ( array (
+					'redirectUrl' => $redirectUrl,
+					'entity' => $entity,
+					'errors' => null
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 	}
 	
 	/**

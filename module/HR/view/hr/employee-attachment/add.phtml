@@ -1,4 +1,9 @@
- <h4>Edit Item:</h4>
+<?php
+echo '<div id="flash_messages" class="global-notice">';
+echo $this->flashMessenger()->render();
+echo '</div>';
+?>
+ <h4>Create Item:</h4>
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert">';
@@ -13,10 +18,9 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-<input type="hidden" name="item_id" value="<?php echo $item_id;?>" />
-
+<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/add" method="post" enctype="multipart/form-data">
+<input type="hidden" name="redirectUrl"
+		value="<?php echo $redirectUrl ?>" />
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
@@ -32,12 +36,11 @@ if (count ( $errors ) > 0) {
 				name="item_sku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
 		</div>		
 		<div class="col-sm-4">
-	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_stocked" value="1">&nbsp;Stocked &nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_purchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
-	 		 <input <?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_sale_item" value="1">&nbsp;For Sale &nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_fixed_asset" value="1">&nbsp;Fixed Asset
-		
+	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()==="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
+			 <input <?php if(!$entity == null): echo ($entity->getIsStocked()==="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_stocked" value="1">&nbsp;Stocked &nbsp;&nbsp;
+			 <input <?php if(!$entity == null): echo ($entity->getIsPurchased()==="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_purchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
+	 		 <input <?php if(!$entity == null): echo ($entity->getIsSaleItem()==="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_sale_item" value="1">&nbsp;For Sale &nbsp;&nbsp;
+			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()==="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_fixed_asset" value="1">&nbsp;Fixed Asset
 		</div>
 		
 		<div class="col-sm-3">
@@ -91,8 +94,10 @@ if (count ( $errors ) > 0) {
 		
 		<label class="control-label col-sm-2" >Measurement</label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="standard_uom_name" placeholder="Please select standard unit" name="item_uom_name" value="<?php echo (!$uom == null)? $uom->getUomCode():"";?>">
-			<input type="hidden" id="standard_uom_id" placeholder="" name="standard_uom_id" value="<?php echo (!$uom == null)? $uom->getId():"";?>">	
+			<input disabled class="form-control" type="text" id="standard_uom_name" placeholder="Please select standard unit"
+				name="item_uom_name" value="<?php echo (!$uom == null)? $uom->getUomCode():"";?>">
+			<input type="hidden" id="standard_uom_id" placeholder="" 
+			name="standard_uom_id" value="<?php echo (!$uom == null)? $uom->getId():"";?>">	
 			
 		</div>
 		
@@ -152,7 +157,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label col-sm-2" >Manufacturer Model</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="manufacturer_model" value="<?php echo (!$entity == null)? $entity->getManufacturerModel():"";?>">
+				name="manufacturer_code" value="<?php echo (!$entity == null)? $entity->getManufacturerModel():"";?>">
 		</div>
 	</div>
 	
@@ -178,7 +183,7 @@ if (count ( $errors ) > 0) {
 		<div class="col-sm-3">
 			<input  class="form-control" type="text" placeholder=""
 				name="lead_time" value="<?php echo (!$entity == null)? $entity->getLeadTime():"";?>">
-				 <input <?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="local_availability" value="1">&nbsp;Local Availability
+				 <input <?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()==="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="local_availability" value="1">&nbsp;Local Availability
 		
 		</div>
 		<label class="control-label col-sm-2" >Remarks</label>
@@ -209,7 +214,7 @@ if (count ( $errors ) > 0) {
 				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
 			</div>
 			<div class="modal-body">
-				<div id="b_loaded_data">loading</div>
+				<div id="loaded_data">loading</div>
 			</div>
 			<div class="modal-footer">
 				<span id="node_selected">No thing selected</span>&nbsp;&nbsp;
@@ -220,6 +225,5 @@ if (count ( $errors ) > 0) {
 </div>
 
 
-<div id="jquery_dialog" style="display: none; padding-top: 10pt">
-	<div id="j_loaded_data"></div>
-</div>
+<div id="dialog" style="display: none;">Check code...</div>
+

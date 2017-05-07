@@ -20,11 +20,13 @@ use MLA\Paginator;
 use Application\Entity\NmtInventoryItemCategoryMember;
 use Application\Entity\NmtInventoryItemDepartment;
 use Inventory\Service\ItemSearchService;
+use Zend\Math\Rand;
 
 /*
  * Control Panel Controller
  */
 class ItemController extends AbstractActionController {
+	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 	protected $doctrineEM;
 	protected $itemSearchService;
 	protected $userTable;
@@ -53,26 +55,36 @@ class ItemController extends AbstractActionController {
 		
 		$redirectUrl = $request->getHeader ( 'Referer' )->getUri ();
 		
-		$item_id = ( int ) $this->params ()->fromQuery ( 'item_id' );
-		$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
+		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $entity_id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+		
 		$pictures = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findBy ( array (
-				"item" => $item_id 
+				"item" => $entity_id 
 		) );
 		
-		$uom = null;
-		if (! $item == null) {
-			$uom = $item->getStandardUom ();
+		if (! $entity == null) {
+			$uom = $entity->getStandardUom ();
+			
+			return new ViewModel ( array (
+					'entity' => $entity,
+					'pictures' => $pictures,
+					'back' => $redirectUrl,
+					'category' => null,
+					'uom' => $uom,
+					'department' => null 
+			
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
-		
-		return new ViewModel ( array (
-				'entity' => $item,
-				'pictures' => $pictures,
-				'back' => $redirectUrl,
-				'category' => null,
-				'uom' => $uom,
-				'department' => null 
-		
-		) );
 	}
 	
 	/**
@@ -417,7 +429,7 @@ class ItemController extends AbstractActionController {
 			try {
 				
 				$entity->setLastChangeOn ( new \DateTime () );
-				$entity->setLastChangeBy( $u );
+				$entity->setLastChangeBy ( $u );
 				$this->doctrineEM->flush ();
 				
 				$new_item = $entity;
@@ -470,24 +482,38 @@ class ItemController extends AbstractActionController {
 		// Not Post
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$item_id = ( int ) $this->params ()->fromQuery ( 'item_id' );
-		$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
-		$uom = $item->getStandardUom ();
-		/*
-		 * $pictures = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findBy ( array (
-		 * "item" => $item_id
-		 * ) );
-		 */
 		
-		return new ViewModel ( array (
-				'errors' => null,
-				'redirectUrl' => $redirectUrl,
-				'entity' => $item,
-				'category' => null,
-				'uom' => $uom,
-				'department' => null,
-				'item_id' => $item_id 
-		) );
+		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $entity_id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+		
+		if (! $entity == null) {
+			$uom = $entity->getStandardUom ();
+			/*
+			 * $pictures = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findBy ( array (
+			 * "item" => $item_id
+			 * ) );
+			 */
+			
+			return new ViewModel ( array (
+					'errors' => null,
+					'redirectUrl' => $redirectUrl,
+					'entity' => $entity,
+					'category' => null,
+					'uom' => $uom,
+					'department' => null,
+					'item_id' => $entity->getId(),
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 	}
 	
 	/**
@@ -495,47 +521,45 @@ class ItemController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function listAction() {
-		$sort_criteria= array ();
+		$sort_criteria = array ();
 		$criteria = array ();
 		
 		$item_type = $this->params ()->fromQuery ( 'item_type' );
 		$is_active = $this->params ()->fromQuery ( 'is_active' );
-		$is_fixed_asset= $this->params ()->fromQuery ( 'is_fixed_asset' );
+		$is_fixed_asset = $this->params ()->fromQuery ( 'is_fixed_asset' );
 		
 		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		$sort = $this->params ()->fromQuery ( 'sort' );
 		
-		
 		$criteria1 = array ();
 		if (! $item_type == null) {
 			$criteria1 = array (
-					"itemType" => $item_type
+					"itemType" => $item_type 
 			);
 		}
 		
-		
 		$criteria2 = array ();
-		if (!$is_active == null) {
+		if (! $is_active == null) {
 			$criteria2 = array (
-				"isActive" =>$is_active
+					"isActive" => $is_active 
 			);
 			
-			if ($is_active==-1) {
+			if ($is_active == - 1) {
 				$criteria2 = array (
-						"isActive" => '0'
+						"isActive" => '0' 
 				);
 			}
 		}
 		
 		$criteria3 = array ();
-		if (!$is_fixed_asset=='') {
+		if (! $is_fixed_asset == '') {
 			$criteria3 = array (
-					"isFixedAsset" => $is_fixed_asset
+					"isFixedAsset" => $is_fixed_asset 
 			);
 			
-			if ($is_fixed_asset==-1) {
+			if ($is_fixed_asset == - 1) {
 				$criteria3 = array (
-						"isFixedAsset" =>"0"
+						"isFixedAsset" => "0" 
 				);
 			}
 		}
@@ -544,18 +568,16 @@ class ItemController extends AbstractActionController {
 			$sort_by = "itemName";		
 		endif;
 		
-		if ($sort== null) :
-			$sort= "ASC";
+		if ($sort == null) :
+			$sort = "ASC";
 		endif;
 		
 		$sort_criteria = array (
-				$sort_by => $sort
+				$sort_by => $sort 
 		);
 		
-		
-		
-		$criteria = array_merge ( $criteria1, $criteria2, $criteria3);
-		//var_dump($criteria);
+		$criteria = array_merge ( $criteria1, $criteria2, $criteria3 );
+		// var_dump($criteria);
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 15;
@@ -571,7 +593,7 @@ class ItemController extends AbstractActionController {
 		}
 		;
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria);
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria );
 		$total_records = count ( $list );
 		$paginator = null;
 		
@@ -603,8 +625,10 @@ class ItemController extends AbstractActionController {
 	public function uploadPictureAction() {
 		$request = $this->getRequest ();
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$user = $this->userTable->getUserByEmail ( $this->identity () );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+				"email" => $this->identity () 
+		) );
 		
 		if ($request->isPost ()) {
 			
@@ -648,7 +672,7 @@ class ItemController extends AbstractActionController {
 				
 				if (count ( $ck ) == 0) {
 					$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
-					$folder_relative =  $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+					$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
 					
 					$folder = $root_dir . DIRECTORY_SEPARATOR . $folder_relative;
 					
@@ -665,10 +689,10 @@ class ItemController extends AbstractActionController {
 						$entity->setFilename ( $name );
 						$entity->setOriginalFilename ( $original_filename );
 						$entity->setFolder ( $folder );
-						$entity->setFolderRelative( $folder_relative . DIRECTORY_SEPARATOR);		
+						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						
 						$entity->setChecksum ( $checksum );
-						$entity->setVisibility(1);
+						$entity->setVisibility ( 1 );
 						$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
 						$entity->setItem ( $item );
 						$entity->setCreatedBy ( $u );
@@ -771,6 +795,62 @@ class ItemController extends AbstractActionController {
 		// Draw the barcode in a new image,
 		Barcode::factory ( 'code39', 'image', $barcodeOptions, $rendererOptions )->render ();
 	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function updateTokenAction() {
+		$criteria = array ();
+		
+		// var_dump($criteria);
+		
+		$sort_criteria = array ();
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria );
+		
+		if (count ( $list ) > 0) {
+			foreach ( $list as $entity ) {
+				$entity->setChecksum ( md5 ( uniqid ( "item_" . $entity->getId () ) . microtime () ) );
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			}
+		}
+		
+		$this->doctrineEM->flush ();
+		
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		if ($total_records > $resultsPerPage) {
+			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => $paginator 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Doctrine\ORM\EntityManager
+	 */
 	public function getDoctrineEM() {
 		return $this->doctrineEM;
 	}

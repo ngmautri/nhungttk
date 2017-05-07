@@ -302,6 +302,20 @@ class NmtInventoryItem
     private $lastChangeOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
+     */
+    private $checksum;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

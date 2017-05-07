@@ -1,8 +1,8 @@
 <?php
 
-namespace Inventory\Controller;
+namespace PM\Controller;
 
-use Inventory\Controller\ItemAttachmentController;
+use PM\Controller\ProjectAttachmentController;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
 
@@ -25,18 +25,10 @@ class ProjectAttachmentControllerFactory implements FactoryInterface{
 		$container= $serviceLocator->getServiceLocator();
 		
 		
-		$controller= new ItemAttachmentController();
-		
-		
-		// User Table
-		$tbl = $container->get ( 'User\Model\UserTable' );
-		$controller->setUserTable ( $tbl );
-		
+		$controller= new ProjectAttachmentController();
+			
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
-		
-		$sv =  $container->get('Inventory\Service\ItemSearchService');
-		$controller->setItemSearchService($sv);
 		
 		return $controller;
 	}	

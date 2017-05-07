@@ -3,18 +3,17 @@
     	<input class="form-control" size="25" type="text" id ="search_term_<?php echo $context;?>" name = "query">
    </div>
   <div class="form-group">
-     <button type="submit" class="btn btn-default" onclick="searchEntity('/bp/vendor-search/do1','<?php echo $context;?>');"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
+     <button type="submit" class="btn btn-default" onclick="searchEntity('/hr/employee-search/do1','<?php echo $context;?>');"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
   </div>
   
 </form>
 <div>
 <ul class="nav nav-pills">
 		<li><a style="color: #0080ff;" href="/procurement/vendor/add"><i
-				class="icon-plus"> </i> CREATE NEW VENDOR </a>
+				class="glyphicon glyphicon-plus"> </i>&nbsp;New Employee </a>
 		
 		<li><a style="color: #0080ff;" href="javascript:;"
-			onclick="loadData1('/bp/vendor/list1','<?php echo $context;?>');"> <i class="icon-list"> </i> SHOW ALL
-				VENDORS
+			onclick="loadData1('/hr/employee/select','<?php echo $context;?>');"><i class="glyphicon glyphicon-list"> </i>&nbsp;All Employees
 		</a>
 		</ul>
 </div>
@@ -39,9 +38,11 @@ if ($total_records <= 0) {
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Select</b></td>
-			<td><b>Vendor	</b></td>
-			<td><b>Keywords</b></td>
-			<td><b>Country</b></td>
+			<td><b>Code</b></td>
+			<td><b>Employee</b></td>
+			<!--  <td><b>Birthday</b></td>-->
+			<td></td>
+			
 		</tr>
 	</thead>
 
@@ -52,12 +53,12 @@ if ($total_records <= 0) {
 	 
 	 		<td>		
 <a href="javascript:;"
-	onclick="selectId('0','vendor_id','','vendor_name');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
+	onclick="selectId('0','employee_id','','employee_name');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
 </a></td>
 			<td>NONE</td>
 	 		<td>NONE</td>
-	 		<td>NONE</td>
-		</tr>
+	 		<td></td>
+	 	</tr>
  
 	 <?php
 	
@@ -70,11 +71,18 @@ if ($total_records <= 0) {
 	 
 	 		<td>		
 <a href="javascript:;"
-	onclick="selectId('<?php echo $this->escapeHtml($a->getId());?>','vendor_id','<?php echo $this->escapeHtml($a->getVendorName());?>','vendor_name');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
+	onclick="selectId('<?php echo $a->getId();?>','employee_id','<?php echo $a->getEmployeeName();?>','employee_name');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
 </a></td>
-			<td><?php echo $this->escapeHtml($a->getVendorName());?></td>
-	 		<td><?php echo $this->escapeHtml($a->getKeywords());?></td>
-	 		<td><?php echo $this->escapeHtml($a->getCountry()->getCountryname());?></td>
+			<td><?php echo $a->getEmployeeCode();?></td>
+	 		<td><?php echo $a->getEmployeeName();?></td>
+	 		<!-- <td>
+<?php // echo  ($a->getBirthday()!== null)? date_format($a->getBirthday(),"d-m-Y"):""?>
+	 		</td>
+	 		 -->
+	 		 <td>
+<a target="blank" href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $a->getChecksum();?>&target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>&nbsp;
+<small><i class="glyphicon glyphicon-new-window"> </i></small>
+	 		</td>
 		</tr>
 <?php endforeach; ?>
 

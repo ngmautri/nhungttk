@@ -4,7 +4,7 @@ echo $this->flashMessenger()->render();
 echo '</div>';
 ?>
 
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/hr/employee-search/do"	method="get" enctype="multipart/form-data">
+ <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
   <div class="form-group">
     	<input class="form-control" size="28" type="text" name = "q">
  
@@ -17,11 +17,6 @@ echo '</div>';
 </form>
 <hr>
 
-
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Employee','750','520', '/hr/employee/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>
-<br>
  
 
 <?php
@@ -45,8 +40,8 @@ if ($total_records <= 0) {
 			<td><b>#</b></td>
 			<td><b>Name</b></td>
 			<td><b>Name local</b></td>
-			<td><b>Birthday</b></td>
-			<td><b>Gender</b></td>
+			<td><b>checksum</b></td>
+			<td><b>token</b></td>
 			<td><b>Attachment</b></td>
 			</tr>
 	</thead>
@@ -64,11 +59,12 @@ if ($total_records <= 0) {
 	  		<td><?php echo $this->escapeHtml($a->getEmployeeName());?></td>
 			<td><?php echo $this->escapeHtml($a->getEmployeeNameLocal());?></td>
 			<td><?php echo ($a->getBirthday()!==null )? date_format ( $a->getBirthday(), "d-m-y"):"";?> </td>
-			<td><?php echo $this->escapeHtml($a->getGender());?></td>
+			<td><?php echo $a->getChecksum();?></td>
+			<td><?php echo $a->getToken();?></td>
 		 <td>
-<a href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $a->getChecksum();?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/hr/employee/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $a->getChecksum();?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
-<a href="<?php echo $this->baseUrl ?>/hr/employee-attachment/upload?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $a->getChecksum();?>&target_id=<?php echo $this->escapeHtml($a->getID());?>">Attach</a>
+<a href="<?php echo $this->baseUrl ?>/hr/employee/show?target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/hr/employee/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
+<a href="<?php echo $this->baseUrl ?>/hr/employee-attachment/upload?target_id=<?php echo $this->escapeHtml($a->getID());?>">Attach</a>
 
 </td>
 		
@@ -218,33 +214,3 @@ endif;
 		</div>
 	</div>
 </div>
-
-<!-- Modal -->
-<div class="modal" id="modal1" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
-			</div>
-			<div class="modal-body">
-				<div id="b_loaded_data">loading</div>
-			</div>
-			<div class="modal-footer">
-				<span id="node_selected"></span>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-
-
-<div id="jquery_dialog" style="display: none; padding-top: 10pt">
-	<div id="j_loaded_data"></div>
-</div>
-
-
-
-

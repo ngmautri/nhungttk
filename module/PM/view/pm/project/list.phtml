@@ -56,8 +56,10 @@ if ($total_records <= 0) {
 			<td><?php echo ($a->getEndDate()!==null )? date_format ( $a->getEndDate(), "d-m-y"):"";?> </td>
 			<td><?php echo $this->escapeHtml($a->getStatus());?></td>
 		 <td>
-<a href="<?php echo $this->baseUrl ?>/pm/project/show?target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/pm/project/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
+<a href="<?php echo $this->baseUrl ?>/pm/project/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getCheckSum();?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/pm/project/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getCheckSum();?>">Edit</a>
+<a href="<?php echo $this->baseUrl ?>/pm/employee-attachment/upload?token=<?php echo $a->getToken();?>&target_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $a->getCheckSum();?>">Attach</a>
+
 </td>
 		
 		</tr>

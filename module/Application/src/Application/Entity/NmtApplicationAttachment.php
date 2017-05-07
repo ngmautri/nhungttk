@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationAttachment
  *
- * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_changed_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"})})
+ * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_application_attachment_FK6_idx", columns={"item_purchasing_id"})})
  * @ORM\Entity
  */
 class NmtApplicationAttachment
@@ -24,9 +24,44 @@ class NmtApplicationAttachment
     /**
      * @var string
      *
-     * @ORM\Column(name="document_type", type="string", length=45, nullable=false)
+     * @ORM\Column(name="document_subject", type="string", length=100, nullable=false)
      */
-    private $documentType;
+    private $documentSubject;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="keywords", type="string", length=150, nullable=true)
+     */
+    private $keywords;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_picture", type="boolean", nullable=true)
+     */
+    private $isPicture;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="signing_date", type="datetime", nullable=true)
+     */
+    private $signingDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="valid_from", type="datetime", nullable=true)
+     */
+    private $validFrom;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="valid_to", type="datetime", nullable=true)
+     */
+    private $validTo;
 
     /**
      * @var string
@@ -38,7 +73,7 @@ class NmtApplicationAttachment
     /**
      * @var string
      *
-     * @ORM\Column(name="filetype", type="string", length=45, nullable=true)
+     * @ORM\Column(name="filetype", type="string", length=150, nullable=true)
      */
     private $filetype;
 
@@ -59,6 +94,13 @@ class NmtApplicationAttachment
     /**
      * @var string
      *
+     * @ORM\Column(name="file_password", type="string", length=45, nullable=true)
+     */
+    private $filePassword;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="size", type="string", length=45, nullable=true)
      */
     private $size;
@@ -73,7 +115,7 @@ class NmtApplicationAttachment
     /**
      * @var string
      *
-     * @ORM\Column(name="folder", type="string", length=105, nullable=true)
+     * @ORM\Column(name="folder", type="string", length=150, nullable=true)
      */
     private $folder;
 
@@ -94,30 +136,9 @@ class NmtApplicationAttachment
     /**
      * @var string
      *
-     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
-    private $remarks;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_on", type="datetime", nullable=true)
-     */
-    private $createdOn;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="valid_from", type="datetime", nullable=true)
-     */
-    private $validFrom;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="valid_to", type="datetime", nullable=true)
-     */
-    private $validTo;
+    private $token;
 
     /**
      * @var boolean
@@ -134,11 +155,32 @@ class NmtApplicationAttachment
     private $markedForDeletion;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="change_for", type="integer", nullable=true)
+     */
+    private $changeFor;
 
     /**
      * @var integer
@@ -162,10 +204,10 @@ class NmtApplicationAttachment
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="last_changed_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
      * })
      */
-    private $lastChangedBy;
+    private $lastChangeBy;
 
     /**
      * @var \Application\Entity\NmtPmProject
@@ -197,6 +239,16 @@ class NmtApplicationAttachment
      */
     private $vendor;
 
+    /**
+     * @var \Application\Entity\NmtInventoryItemPurchasing
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemPurchasing")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_purchasing_id", referencedColumnName="id")
+     * })
+     */
+    private $itemPurchasing;
+
 
 
     /**
@@ -210,27 +262,147 @@ class NmtApplicationAttachment
     }
 
     /**
-     * Set documentType
+     * Set documentSubject
      *
-     * @param string $documentType
+     * @param string $documentSubject
      *
      * @return NmtApplicationAttachment
      */
-    public function setDocumentType($documentType)
+    public function setDocumentSubject($documentSubject)
     {
-        $this->documentType = $documentType;
+        $this->documentSubject = $documentSubject;
 
         return $this;
     }
 
     /**
-     * Get documentType
+     * Get documentSubject
      *
      * @return string
      */
-    public function getDocumentType()
+    public function getDocumentSubject()
     {
-        return $this->documentType;
+        return $this->documentSubject;
+    }
+
+    /**
+     * Set keywords
+     *
+     * @param string $keywords
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setKeywords($keywords)
+    {
+        $this->keywords = $keywords;
+
+        return $this;
+    }
+
+    /**
+     * Get keywords
+     *
+     * @return string
+     */
+    public function getKeywords()
+    {
+        return $this->keywords;
+    }
+
+    /**
+     * Set isPicture
+     *
+     * @param boolean $isPicture
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setIsPicture($isPicture)
+    {
+        $this->isPicture = $isPicture;
+
+        return $this;
+    }
+
+    /**
+     * Get isPicture
+     *
+     * @return boolean
+     */
+    public function getIsPicture()
+    {
+        return $this->isPicture;
+    }
+
+    /**
+     * Set signingDate
+     *
+     * @param \DateTime $signingDate
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setSigningDate($signingDate)
+    {
+        $this->signingDate = $signingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get signingDate
+     *
+     * @return \DateTime
+     */
+    public function getSigningDate()
+    {
+        return $this->signingDate;
+    }
+
+    /**
+     * Set validFrom
+     *
+     * @param \DateTime $validFrom
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setValidFrom($validFrom)
+    {
+        $this->validFrom = $validFrom;
+
+        return $this;
+    }
+
+    /**
+     * Get validFrom
+     *
+     * @return \DateTime
+     */
+    public function getValidFrom()
+    {
+        return $this->validFrom;
+    }
+
+    /**
+     * Set validTo
+     *
+     * @param \DateTime $validTo
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setValidTo($validTo)
+    {
+        $this->validTo = $validTo;
+
+        return $this;
+    }
+
+    /**
+     * Get validTo
+     *
+     * @return \DateTime
+     */
+    public function getValidTo()
+    {
+        return $this->validTo;
     }
 
     /**
@@ -327,6 +499,30 @@ class NmtApplicationAttachment
     public function getFilenameOriginal()
     {
         return $this->filenameOriginal;
+    }
+
+    /**
+     * Set filePassword
+     *
+     * @param string $filePassword
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setFilePassword($filePassword)
+    {
+        $this->filePassword = $filePassword;
+
+        return $this;
+    }
+
+    /**
+     * Get filePassword
+     *
+     * @return string
+     */
+    public function getFilePassword()
+    {
+        return $this->filePassword;
     }
 
     /**
@@ -450,99 +646,27 @@ class NmtApplicationAttachment
     }
 
     /**
-     * Set remarks
+     * Set token
      *
-     * @param string $remarks
+     * @param string $token
      *
      * @return NmtApplicationAttachment
      */
-    public function setRemarks($remarks)
+    public function setToken($token)
     {
-        $this->remarks = $remarks;
+        $this->token = $token;
 
         return $this;
     }
 
     /**
-     * Get remarks
+     * Get token
      *
      * @return string
      */
-    public function getRemarks()
+    public function getToken()
     {
-        return $this->remarks;
-    }
-
-    /**
-     * Set createdOn
-     *
-     * @param \DateTime $createdOn
-     *
-     * @return NmtApplicationAttachment
-     */
-    public function setCreatedOn($createdOn)
-    {
-        $this->createdOn = $createdOn;
-
-        return $this;
-    }
-
-    /**
-     * Get createdOn
-     *
-     * @return \DateTime
-     */
-    public function getCreatedOn()
-    {
-        return $this->createdOn;
-    }
-
-    /**
-     * Set validFrom
-     *
-     * @param \DateTime $validFrom
-     *
-     * @return NmtApplicationAttachment
-     */
-    public function setValidFrom($validFrom)
-    {
-        $this->validFrom = $validFrom;
-
-        return $this;
-    }
-
-    /**
-     * Get validFrom
-     *
-     * @return \DateTime
-     */
-    public function getValidFrom()
-    {
-        return $this->validFrom;
-    }
-
-    /**
-     * Set validTo
-     *
-     * @param \DateTime $validTo
-     *
-     * @return NmtApplicationAttachment
-     */
-    public function setValidTo($validTo)
-    {
-        $this->validTo = $validTo;
-
-        return $this;
-    }
-
-    /**
-     * Get validTo
-     *
-     * @return \DateTime
-     */
-    public function getValidTo()
-    {
-        return $this->validTo;
+        return $this->token;
     }
 
     /**
@@ -594,6 +718,54 @@ class NmtApplicationAttachment
     }
 
     /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
      * Set lastChangeOn
      *
      * @param \DateTime $lastChangeOn
@@ -615,6 +787,30 @@ class NmtApplicationAttachment
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
+    }
+
+    /**
+     * Set changeFor
+     *
+     * @param integer $changeFor
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setChangeFor($changeFor)
+    {
+        $this->changeFor = $changeFor;
+
+        return $this;
+    }
+
+    /**
+     * Get changeFor
+     *
+     * @return integer
+     */
+    public function getChangeFor()
+    {
+        return $this->changeFor;
     }
 
     /**
@@ -666,27 +862,27 @@ class NmtApplicationAttachment
     }
 
     /**
-     * Set lastChangedBy
+     * Set lastChangeBy
      *
-     * @param \Application\Entity\MlaUsers $lastChangedBy
+     * @param \Application\Entity\MlaUsers $lastChangeBy
      *
      * @return NmtApplicationAttachment
      */
-    public function setLastChangedBy(\Application\Entity\MlaUsers $lastChangedBy = null)
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
-        $this->lastChangedBy = $lastChangedBy;
+        $this->lastChangeBy = $lastChangeBy;
 
         return $this;
     }
 
     /**
-     * Get lastChangedBy
+     * Get lastChangeBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getLastChangedBy()
+    public function getLastChangeBy()
     {
-        return $this->lastChangedBy;
+        return $this->lastChangeBy;
     }
 
     /**
@@ -759,5 +955,29 @@ class NmtApplicationAttachment
     public function getVendor()
     {
         return $this->vendor;
+    }
+
+    /**
+     * Set itemPurchasing
+     *
+     * @param \Application\Entity\NmtInventoryItemPurchasing $itemPurchasing
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setItemPurchasing(\Application\Entity\NmtInventoryItemPurchasing $itemPurchasing = null)
+    {
+        $this->itemPurchasing = $itemPurchasing;
+
+        return $this;
+    }
+
+    /**
+     * Get itemPurchasing
+     *
+     * @return \Application\Entity\NmtInventoryItemPurchasing
+     */
+    public function getItemPurchasing()
+    {
+        return $this->itemPurchasing;
     }
 }

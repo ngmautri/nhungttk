@@ -14,8 +14,9 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
-  <li ><a href="#general">New Project</a></li>
-   </ul>
+  	<li ><a href="#general">Project</a></li>
+   	<li ><a href="/pm/project-attachment/list1?target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Attachment</a></li>
+  </ul>
 
 <div id="general"> 
 

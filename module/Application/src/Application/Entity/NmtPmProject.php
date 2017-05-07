@@ -92,6 +92,20 @@ class NmtPmProject
     private $lastChangeOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
+     */
+    private $checksum;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -361,6 +375,54 @@ class NmtPmProject
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
+    }
+
+    /**
+     * Set checksum
+     *
+     * @param string $checksum
+     *
+     * @return NmtPmProject
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+
+        return $this;
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtPmProject
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 
     /**

@@ -200,7 +200,7 @@ function selectId(id, target, name, target_name, context = null){
 	$('#modal1 .close').click();
 	$('#global-notice').show();
 	$('#global-notice').html('"' + name + '" selected');
-	$('#global-notice').fadeOut(2500);
+	$('#global-notice').fadeOut(5000);
 	$("#jquery_dialog").dialog("close");
 }
 /**
@@ -271,7 +271,7 @@ function DatumZeigen() {
 /*
  * 
  */
-function uploadImages(url, target_id, redirectUrl) {
+function uploadImages(url, target_id, redirectUrl, checksum = null, token = null) {
 
 	var pic_to_upload = [];
 	var pic_to_upload_resized = [];
@@ -284,7 +284,6 @@ function uploadImages(url, target_id, redirectUrl) {
 		var pic_file = pic.files[0];
 		// resize pic
 		if (typeof pic_file !== "undefined") {
-
 			// Ensure it's an image
 			if (pic_file.type.match(/image.*/)) {
 				pic_to_upload.push(pic_file);
@@ -303,7 +302,7 @@ function uploadImages(url, target_id, redirectUrl) {
 	for (var j = 0; j < pic_to_upload.length; j++) {
 		var p = pic_to_upload[j];
 
-		console.log(p.size);
+		//console.log(p.size);
 		var filetype = p.type;
 		var filename = p.name;
 
@@ -311,12 +310,12 @@ function uploadImages(url, target_id, redirectUrl) {
 		var reader = new FileReader();
 
 		reader.onload = (function(p, pic_to_upload_resized, n, url, target_id,
-				redirectUrl) {
+				redirectUrl,checksum, token) {
 			return function(e) {
 				var contents = e.target.result;
 
-				// alert('URL' + url);
-
+				
+				//alert('URL:' + token);
 				// EXIF.jS
 				EXIF
 						.getData(
@@ -336,7 +335,7 @@ function uploadImages(url, target_id, redirectUrl) {
 										return function(imageEvent) {
 
 											// alert('URL' + target_id);
-											// alert('URL:::' + url);
+											// alert('URL:::' + token);
 
 											// Resize the image
 											var canvas = document
@@ -402,14 +401,12 @@ function uploadImages(url, target_id, redirectUrl) {
 
 											isUploadImagesCompleted(
 													pic_to_upload_resized, n,
-													url, target_id, redirectUrl)
-											// alert(n+'URL:::' + url);
+													url, target_id, redirectUrl,checksum, token)
+													//alert(n+'URL:::' + token);
 										};
 
 									})(p, pic_to_upload_resized, n, url,
-											target_id, redirectUrl); // must
-									// the
-									// same
+											target_id, redirectUrl,checksum, token); // must the // same
 
 									image.src = contents;
 
@@ -418,7 +415,7 @@ function uploadImages(url, target_id, redirectUrl) {
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length, url, target_id,
-				redirectUrl); // must the same
+				redirectUrl, checksum, token); // must the same
 
 		reader.readAsDataURL(p);
 	}
@@ -426,8 +423,8 @@ function uploadImages(url, target_id, redirectUrl) {
 }
 
 function isUploadImagesCompleted(pic_to_upload_resized, n, url, target_id,
-		redirectUrl) {
-	// alert('URL complete' + url);
+		redirectUrl,checksum, token) {
+		//alert('URL complete' + token);
 
 	if (pic_to_upload_resized.length >= n) {
 		// $('#myModal').modal(hide);
@@ -438,10 +435,11 @@ function isUploadImagesCompleted(pic_to_upload_resized, n, url, target_id,
 		 */
 		$.post(url, {
 			target_id : target_id,
+			checksum: checksum,
+			token: token,
 			pictures : pic_to_upload_resized,
 		}, function(data, status, dataType) {
-			 // alert(data);
-			// alert(dataType);
+			//alert(status);
 			window.location = redirectUrl;
 			// $('#global-notice').show();
 			// $('#global-notice').text(data.message).fadeOut(3800);

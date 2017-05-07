@@ -99,10 +99,70 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}
   background-color: rgb(50, 50, 50) !important; /* This will make it darker */
 }
 
-
 select.ui-datepicker-month,
 select.ui-datepicker-year {
-  color:#000000;font-size: 9px;
+  color:#000000;font-size: 8px;
 }
 
+.ui-tabs-panel{
+	min-height: 350px;
+}
 
+/* #global-notice{position:absolute; background: #FFFFCC; top:55px; left: 40%;
+border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:bold; font-size:10pt 
+ */
+
+#global-notice{
+	
+ background-color: #FFFFCC;
+    position: absolute;
+    border:1px #999999 solid;
+    right: 20px;
+    top: 60px;
+    color: black;
+    padding: 15px 15px 15px 30px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-repeat: no-repeat;
+    background-position: 7px center;
+    /* opacity: 0.9;
+    filter: alpha(opacity=90); */
+    vertical-align: middle;
+    box-shadow: 4px 4px 4px #000;
+    -webkit-box-shadow: 4px 4px 4px #000;
+    -moz-box-shadow: 4px 4px 4px #000;
+    z-index:99999;
+ }
+
+
+.global-notice{
+	
+ 	background-color: #FFFFCC;
+    position: absolute;
+    border:1px #999999 solid;
+  /*   right: 20px;
+    top: 60px; */
+    
+    right: 20px;
+    bottom: 50px;
+    color: black;
+    padding: 15px 15px 15px 0px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-repeat: no-repeat;
+    background-position: 7px center;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    vertical-align: middle;
+    box-shadow: 4px 4px 4px #000;
+    -webkit-box-shadow: 4px 4px 4px #000;
+    -moz-box-shadow: 4px 4px 4px #000;
+    z-index:99999;
+ }
+ 
+ 
+ /* .global-notice{position:absolute; background: #FFFFCC; top:55px; left: 40%;
+border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:bold; font-size:10pt  }
+ */

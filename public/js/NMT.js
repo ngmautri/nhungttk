@@ -1,3 +1,11 @@
+function submitForm(form_id){
+	var form_id_tmp;
+	$('#b_modal_no_header').modal();
+	form_id_tmp = '#' + form_id;
+	$(form_id_tmp).submit();
+}
+
+
 /**
  * 
  * @param cat_id
@@ -56,6 +64,29 @@ function showDialog1(title, source, target) {
 	loadData(title, source, target);
 }
 
+
+/**
+ * 
+ * @param modal_id
+ * @param title
+ * @param body
+ * @returns
+ */
+function showBootstrapModal(modal_id, title, body) {
+	var modal_id_tmp;
+	var title_id;
+	var body_id;
+	
+	modal_id_tmp = '#' + modal_id;
+	title_id= modal_id_tmp+ "_title";
+	body_id= modal_id_tmp+ "_body";
+	
+	$(title_id).html(title);
+	$(body_id).html(body);
+	$(modal_id_tmp).modal();
+}
+
+
 /**
  * 
  * @param title
@@ -94,7 +125,7 @@ function showJqueryDialog(title, width, height, source, target, reponsive = true
 		title : title,
 		modal : true,
 		dialogClass : 'dialogClass',
-		//position: ['center', 'center'],
+		// position: ['center', 'center'],
 	});
 	loadData(title, source, target, "J");
 }
@@ -114,13 +145,13 @@ function searchEntity(source, context = null) {
 	}
 	
 	$(target_id).text("Loading...");
-	//$('#b_loaded_data').empty()
-	//alert(q);
+	// $('#b_loaded_data').empty()
+	// alert(q);
 	
 	$.ajax({
 		url : source + '?context='+ context + '&q='+ q,
 		success : function(text) {
-			//alert(text);
+			// alert(text);
 			$(target_id).html(text);
 			$("#search_term_"+context).focus();
 			
@@ -150,7 +181,7 @@ function loadData(title, source, target, context = null) {
 		$.ajax({
 		url : source + "?context="+ context,
 		success : function(text) {
-			//alert(target_id);
+			// alert(target_id);
 			$(target_id).html(text);
 			$(search_term_id).focus();
 		}
@@ -263,20 +294,57 @@ function DatumZeigen() {
 	 * monat[8]="September" monat[9]="Oktober" monat[10]="November"
 	 * monat[11]="Dezember"
 	 */
-	//return (tag[T.getDay()] + ", " + T.getDate() + ". " + monat[T.getMonth()]	+ " " + T.getFullYear());
+	// return (tag[T.getDay()] + ", " + T.getDate() + ". " + monat[T.getMonth()]
+	// + " " + T.getFullYear());
 	return (T.getDate() + ". " + monat[T.getMonth()]	+ " " + T.getFullYear());
 	
 }
 
-/*
+
+function doUploadAttachment(form_id, attachment_id, url=null, target_id=null, redirectUrl=null, checksum = null, token = null, attachmentRequired = 1){
+	var attachment_id_tmp;
+	var form_id_tmp;
+	var attachment;
+	attachment_id_tmp = '#'+ attachment_id;
+	form_id_tmp = '#'+ form_id;
+	attachment = $(attachment_id_tmp)[0].files[0];
+		
+	if (typeof attachment !== "undefined") {
+		// Ensure it's an image
+		if (attachment.type.match(/image.*/)) {
+			//alert(form_id_tmp);
+			uploadImages(url, target_id, redirectUrl, checksum, token,form_id)
+		}else{
+			$('#b_modal_no_header').modal();
+			$(form_id_tmp).submit();
+		}
+	}else{
+		if(attachmentRequired==0){
+			$('#b_modal_no_header').modal();
+			$(form_id_tmp).submit();
+		}else{
+			showBootstrapModal('b_modal_sm','<b>Info</b>','<p>Please select attachment</p>');
+		}
+	}
+}
+
+
+/**
  * 
  */
-function uploadImages(url, target_id, redirectUrl, checksum = null, token = null) {
+function uploadImages(url, target_id, redirectUrl, checksum = null, token = null,form_id=null) {
 
 	var pic_to_upload = [];
 	var pic_to_upload_resized = [];
+	var pics;
 
-	var pics = $('#sp_upload_pic_form input[type=file]');
+	if(form_id==null){
+		var pics = $('#sp_upload_pic_form input[type=file]');
+	}else{
+		var form_file_id;
+		form_file_id = '#'+ form_id + ' input[type=file]';
+		pics = $(form_file_id);
+	}
 
 	// checking input
 	for (var i = 0; i < pics.length; i++) {
@@ -292,17 +360,17 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 	}
 
 	if (pic_to_upload.length < 1) {
-		$('#modal1').modal();
+		showBootstrapModal('b_modal_sm','<b>Info</b>','<p>Please select picture</p>');
 		return;
 	}
 
-	$('#myModal').modal();
+	$('#b_modal_no_header').modal();
 
 	// checking input
 	for (var j = 0; j < pic_to_upload.length; j++) {
 		var p = pic_to_upload[j];
 
-		//console.log(p.size);
+		// console.log(p.size);
 		var filetype = p.type;
 		var filename = p.name;
 
@@ -315,7 +383,7 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 				var contents = e.target.result;
 
 				
-				//alert('URL:' + token);
+				// alert('URL:' + token);
 				// EXIF.jS
 				EXIF
 						.getData(
@@ -402,11 +470,15 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 											isUploadImagesCompleted(
 													pic_to_upload_resized, n,
 													url, target_id, redirectUrl,checksum, token)
-													//alert(n+'URL:::' + token);
+													// alert(n+'URL:::' +
+													// token);
 										};
 
 									})(p, pic_to_upload_resized, n, url,
-											target_id, redirectUrl,checksum, token); // must the // same
+											target_id, redirectUrl,checksum, token); // must
+																						// the
+																						// //
+																						// same
 
 									image.src = contents;
 
@@ -424,7 +496,7 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 
 function isUploadImagesCompleted(pic_to_upload_resized, n, url, target_id,
 		redirectUrl,checksum, token) {
-		//alert('URL complete' + token);
+		// alert('URL complete' + token);
 
 	if (pic_to_upload_resized.length >= n) {
 		// $('#myModal').modal(hide);
@@ -439,10 +511,16 @@ function isUploadImagesCompleted(pic_to_upload_resized, n, url, target_id,
 			token: token,
 			pictures : pic_to_upload_resized,
 		}, function(data, status, dataType) {
-			//alert(status);
-			window.location = redirectUrl;
-			// $('#global-notice').show();
-			// $('#global-notice').text(data.message).fadeOut(3800);
+			// alert(status);
+			if(data.success==1){
+				window.location = redirectUrl;
+			}else{
+				$('#b_modal_no_header').modal('toggle'); 
+				$( "#flash_messages" ).html(data.message);
+				$( "#flash_messages" ).show();
+				$( "#flash_messages" ).delay(2200).fadeOut(1000);
+				//location.reload();
+			}
 		});
 	}
 }

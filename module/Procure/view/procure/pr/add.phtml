@@ -19,11 +19,11 @@ if (count ( $errors ) > 0) {
 
 <div id="general"> 
 
-<form id="Create_Project_Form" class="form-horizontal" action="/pm/project/add" method="post" enctype="multipart/form-data">
+<form id="Create_Project_Form" class="form-horizontal" action="/procure/pr/add" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
 	<div class="form-group">
-		<label class="control-label col-sm-2" >Project Name:</label>
+		<label class="control-label col-sm-2" >PR Number:</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
 				name="projectName" value="<?php echo (!$entity == null)? $entity->getProjectName():"";?>">

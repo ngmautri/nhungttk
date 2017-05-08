@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-namespace HR\Controller;
+namespace Procure\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
@@ -21,15 +21,15 @@ use Zend\Math\Rand;
 /**
  *
  * @author nmt
- *        
+ *
  */
-class EmployeeAttachmentController extends AbstractActionController {
+class PrAttachmentController extends AbstractActionController {
 	
 	/**
 	 *
 	 * @todo : TO UPDATE
 	 */
-	const ATTACHMENT_FOLDER = "/data/hr/attachment/employee";
+	const ATTACHMENT_FOLDER = "/data/pm/attachment/project";
 	const PDFBOX_FOLDER = "/vendor/pdfbox/";
 	const PDF_PASSWORD = "mla2017";
 	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
@@ -61,7 +61,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $entity_id,
 				'checksum' => $checksum,
-				'token' => $token 
+				'token' => $token
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
@@ -72,13 +72,13 @@ class EmployeeAttachmentController extends AbstractActionController {
 			 *
 			 * @todo Update Target
 			 */
-			$target = $entity->getEmployee ();
+			$target = $entity->getProject ();
 			
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => $entity 
+					'entity' => $entity
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -95,7 +95,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 		if ($request->isPost ()) {
 			
 			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-					"email" => $this->identity () 
+					"email" => $this->identity ()
 			) );
 			
 			$errors = array ();
@@ -105,7 +105,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 			
 			$criteria = array (
 					'id' => $entity_id,
-					'token' => $token 
+					'token' => $token
 			);
 			
 			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
@@ -117,7 +117,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null 
+						'entity' => null
 				) );
 				
 				// might need redirect
@@ -137,7 +137,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 				 *
 				 * @todo : Change Target
 				 */
-				$target = $entity->getEmployee ();
+				$target = $entity->getProject ();
 				
 				// to Add
 				$target_id = null;
@@ -245,7 +245,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
 									'target' => $target,
-									'entity' => $entity 
+									'entity' => $entity
 							) );
 						}
 						
@@ -295,7 +295,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 								"docx",
 								"doc",
 								"zip",
-								"msg" 
+								"msg"
 						);
 						
 						if (in_array ( $ext, $expensions ) === false) {
@@ -314,7 +314,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						 */
 						$criteria = array (
 								"checksum" => $checksum,
-								"employee" => $target_id 
+								"project" => $target_id
 						);
 						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 						
@@ -328,7 +328,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
 									'target' => $target,
-									'entity' => $entity 
+									'entity' => $entity
 							) );
 						}
 						;
@@ -405,7 +405,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $entity_id,
 				'checksum' => $checksum,
-				'token' => $token 
+				'token' => $token
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
@@ -416,13 +416,13 @@ class EmployeeAttachmentController extends AbstractActionController {
 			 *
 			 * @todo : Update Target
 			 */
-			$target = $entity->getEmployee ();
+			$target = $entity->getProject ();
 			
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => $entity 
+					'entity' => $entity
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -458,14 +458,14 @@ class EmployeeAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $target_id,
 				'checksum' => $checksum,
-				'token' => $token 
+				'token' => $token
 		);
 		
 		/**
 		 *
 		 * @todo : Change Target
 		 */
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			
@@ -474,9 +474,9 @@ class EmployeeAttachmentController extends AbstractActionController {
 			 * @todo : Change Target
 			 */
 			$criteria = array (
-					'employee' => $target_id,
+					'project' => $target_id,
 					'isActive' => 1,
-					'markedForDeletion' => 0 
+					'markedForDeletion' => 0
 			);
 			
 			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findBy ( $criteria );
@@ -487,7 +487,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 					'list' => $list,
 					'total_records' => $total_records,
 					'paginator' => $paginator,
-					'target' => $target 
+					'target' => $target
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -515,14 +515,14 @@ class EmployeeAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $target_id,
 				'checksum' => $checksum,
-				'token' => $token 
+				'token' => $token
 		);
 		
 		/**
 		 *
 		 * @todo : Update Target
 		 */
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			
@@ -531,10 +531,10 @@ class EmployeeAttachmentController extends AbstractActionController {
 			 * @todo : Update Target
 			 */
 			$criteria = array (
-					'employee' => $target_id,
+					'project' => $target_id,
 					'isActive' => 1,
 					'markedForDeletion' => 0,
-					'isPicture' => 1 
+					'isPicture' => 1
 			);
 			
 			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findBy ( $criteria );
@@ -545,7 +545,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 					'list' => $list,
 					'total_records' => $total_records,
 					'paginator' => $paginator,
-					'target' => $target 
+					'target' => $target
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -565,17 +565,13 @@ class EmployeeAttachmentController extends AbstractActionController {
 			$token = null;
 		}
 		
-		/**
-		 *
-		 * @todo : Update Target
-		 */
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
 				'token' => $token,
 				'markedForDeletion' => 0,
-				'isPicture' => 1 
-		
+				'isPicture' => 1
+				
 		);
 		
 		$pic = new \Application\Entity\NmtApplicationAttachment ();
@@ -611,8 +607,8 @@ class EmployeeAttachmentController extends AbstractActionController {
 				'checksum' => $checksum,
 				'token' => $token,
 				'markedForDeletion' => 0,
-				'isPicture' => 1 
-		
+				'isPicture' => 1
+				
 		);
 		
 		$pic = new \Application\Entity\NmtApplicationAttachment ();
@@ -649,8 +645,8 @@ class EmployeeAttachmentController extends AbstractActionController {
 				'checksum' => $checksum,
 				'token' => $token,
 				'markedForDeletion' => 0,
-				'isPicture' => 1 
-		
+				'isPicture' => 1
+				
 		);
 		
 		$pic = new \Application\Entity\NmtApplicationAttachment ();
@@ -680,7 +676,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 		if ($request->isPost ()) {
 			
 			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-					"email" => $this->identity () 
+					"email" => $this->identity ()
 			) );
 			
 			$errors = array ();
@@ -690,14 +686,14 @@ class EmployeeAttachmentController extends AbstractActionController {
 			
 			$criteria = array (
 					'id' => $target_id,
-					'token' => $token 
+					'token' => $token
 			);
 			
 			/**
 			 *
 			 * @todo : Update Target
 			 */
-			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
+			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
 			
 			if ($target == null) {
 				
@@ -707,7 +703,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null 
+						'entity' => null
 				) );
 				
 				// might need redirect
@@ -730,7 +726,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 				 *
 				 * @todo : Update Target
 				 */
-				$entity->setEmployee ( $target );
+				$entity->setProject ( $target );
 				
 				$remarks = $request->getPost ( 'remarks' );
 				
@@ -822,7 +818,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 								'redirectUrl' => $redirectUrl,
 								'errors' => $errors,
 								'target' => $target,
-								'entity' => $entity 
+								'entity' => $entity
 						) );
 					} else {
 						
@@ -863,7 +859,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 								"docx",
 								"doc",
 								"zip",
-								"msg" 
+								"msg"
 						);
 						
 						if (in_array ( $ext, $expensions ) === false) {
@@ -882,7 +878,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						 */
 						$criteria = array (
 								"checksum" => $checksum,
-								"employee" => $target_id 
+								"project" => $target_id
 						);
 						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 						
@@ -896,7 +892,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
 									'target' => $target,
-									'entity' => $entity 
+									'entity' => $entity
 							) );
 						}
 						;
@@ -919,7 +915,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 							// trigger uploadPicture. AbtractController is EventManagerAware.
 							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
 									'picture_name' => $name,
-									'pictures_dir' => $folder 
+									'pictures_dir' => $folder
 							) );
 						}
 						
@@ -967,14 +963,14 @@ class EmployeeAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
-				'token' => $token 
+				'token' => $token
 		);
 		
 		/**
 		 *
 		 * @todo : Update Target
 		 */
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			
@@ -982,7 +978,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => null 
+					'entity' => null
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -1006,7 +1002,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 		}
 		
 		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				"email" => $this->identity () 
+				"email" => $this->identity ()
 		) );
 		
 		if ($request->isPost ()) {
@@ -1018,7 +1014,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 			
 			$criteria = array (
 					'id' => $target_id,
-					'token' => $token 
+					'token' => $token
 			);
 			
 			// Target: Employee
@@ -1031,7 +1027,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null 
+						'entity' => null
 				) );
 				
 				// might need redirect
@@ -1149,7 +1145,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 								'redirectUrl' => $redirectUrl,
 								'errors' => $errors,
 								'target' => $target,
-								'entity' => $entity 
+								'entity' => $entity
 						) );
 					} else {
 						
@@ -1184,7 +1180,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 								"jpeg",
 								"jpg",
 								"png",
-								"gif" 
+								"gif"
 						);
 						
 						if (in_array ( $ext, $expensions ) === false) {
@@ -1200,7 +1196,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						// change target
 						$criteria = array (
 								"checksum" => $checksum,
-								"employee" => $target_id 
+								"employee" => $target_id
 						);
 						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 						
@@ -1214,7 +1210,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
 									'target' => $target,
-									'entity' => $entity 
+									'entity' => $entity
 							) );
 						}
 						;
@@ -1235,7 +1231,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						// trigger uploadPicture. AbtractController is EventManagerAware.
 						$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
 								'picture_name' => $name,
-								'pictures_dir' => $folder 
+								'pictures_dir' => $folder
 						) );
 						
 						/*
@@ -1282,7 +1278,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
-				'token' => $token 
+				'token' => $token
 		);
 		
 		// Target: Employee
@@ -1294,7 +1290,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => null 
+					'entity' => null
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -1321,14 +1317,14 @@ class EmployeeAttachmentController extends AbstractActionController {
 			$criteria = array (
 					'id' => $target_id,
 					'token' => $token,
-					'checksum' => $checksum 
+					'checksum' => $checksum
 			);
 			
 			/**
 			 *
 			 * @todo : Update Target
 			 */
-			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
+			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
 			
 			if ($target == null) {
 				
@@ -1339,7 +1335,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						'redirectUrl' => null,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null 
+						'entity' => null
 				) );
 				
 				// might need redirect
@@ -1377,7 +1373,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 					 */
 					$criteria = array (
 							"checksum" => $checksum,
-							"employee" => $target_id 
+							"project" => $target_id
 					);
 					$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 					
@@ -1402,7 +1398,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						 *
 						 * @todo : CHANGE: target
 						 */
-						$entity->setEmployee ( $target );
+						$entity->setProject ( $target );
 						
 						// $entity->setFilePassword ( $filePassword );
 						if ($documentSubject == null) {
@@ -1423,7 +1419,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 						
 						$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-								"email" => $this->identity () 
+								"email" => $this->identity ()
 						) );
 						
 						$entity->setCreatedBy ( $u );
@@ -1497,21 +1493,21 @@ class EmployeeAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
-				'token' => $token 
+				'token' => $token
 		);
 		
 		/**
 		 *
-		 * @todo Target: Employee
+		 * @todo Update target
 		 */
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => null 
+					'entity' => null
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -1542,8 +1538,8 @@ class EmployeeAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $entity_id,
 				'checksum' => $checksum,
-				'token' => $token 
-			// 'markedForDeletion' => 0,
+				'token' => $token
+				// 'markedForDeletion' => 0,
 		);
 		
 		$attachment = new NmtApplicationAttachment ();
@@ -1580,19 +1576,19 @@ class EmployeeAttachmentController extends AbstractActionController {
 	public function updateTokenAction() {
 		
 		/** @todo: update target */
-		$query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.employee > :n';
+		$query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.project > :n';
 		
 		$list = $this->doctrineEM->createQuery($query)
 		->setParameter('n', 0)
 		->getResult();
-			
+		
 		if (count ( $list ) > 0) {
 			foreach ( $list as $entity ) {
 				/**
 				 *
 				 * @todo Update Targnet
 				 */
-				$entity->setChecksum ( md5 ( uniqid ( "employee_a_" . $entity->getId () ) . microtime () ) );
+				$entity->setChecksum ( md5 ( uniqid ( "project_a_" . $entity->getId () ) . microtime () ) );
 				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 			}
 		}

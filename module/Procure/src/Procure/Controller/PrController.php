@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-namespace PM\Controller;
+namespace Procure\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
@@ -22,7 +22,8 @@ use Zend\Math\Rand;
  * @author nmt
  *        
  */
-class ProjectController extends AbstractActionController {
+class PrController extends AbstractActionController {
+	
 	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 	protected $doctrineEM;
 	

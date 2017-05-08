@@ -1,3 +1,4 @@
+
  <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
   <div class="form-group">
     	<input class="form-control" size="28" type="text" name = "q">
@@ -32,10 +33,18 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>Name</b></td>
-			<td><b>checksum</b></td>
-			<td><b>token</b></td>
-			</tr>
+			<td><b>Item</b></td>
+			<td><b>Doc. Type</b></td>
+			<td><b>Doc. Name</b></td>
+			<td><b>Doc. Size</b></td>
+			<td><b>Vendor</b></td>
+					<td><b>A</b></td>
+	
+			<td><b>D</b></td>
+	
+			<td><b>Date</b></td>
+			<td><b>Action</b></td>
+		</tr>
 	</thead>
 
 	<tbody>
@@ -47,16 +56,23 @@ if ($total_records <= 0) {
 		$count ++;
 		?>
 	 <tr>
-	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	  		<td><?php echo $this->escapeHtml($a->getProjectName());?></td>
-			<td><?php echo $a->getChecksum();?></td>
-			<td><?php echo $a->getToken();?></td>
-		 <td>
-<a href="<?php echo $this->baseUrl ?>/pm/project/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getCheckSum();?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/pm/project/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getCheckSum();?>">Edit</a>
-<a href="<?php echo $this->baseUrl ?>/pm/employee-attachment/upload?token=<?php echo $a->getToken();?>&target_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $a->getCheckSum();?>">Attach</a>
+	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	 		<td><?php echo ($a->getItem()!==null)?$a->getItem()->getItemName():"";?></td>
+		
+			<td><?php echo $this->escapeHtml($a->getDocumentType());?></td>
+			<td><?php echo $this->escapeHtml($a->getFileNameOriginal());?></td>
+			<td><?php echo $this->escapeHtml($a->getSize());?></td>
+			<td><?php echo ($a->getVendor()!==null)?$a->getVendor()->getVendorName():"";?></td>
+			<td><?php echo ($a->getIsActive()=='1')?'<small><i class="glyphicon glyphicon-ok"></i></small>':"";?></td>
+			<td><?php echo ($a->getMarkedForDeletion()=='1')?'<small><i class="glyphicon glyphicon-remove"></i></small>':"";?></td>
+			
+			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y h:m");?> </td>
+			<td>
+	<i class="glyphicon glyphicon-download-alt"></i><a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/download?target_id=<?php echo $this->escapeHtml($a->getID());?>">download</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/show?target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
 
-</td>
+			</td>
 		
 		</tr>
 <?php endforeach; ?>
@@ -70,8 +86,8 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
-		$_connector_symbol = '&';
+		$base = $this->baseUrl . '/inventory/item-attachment/list';
+		$_connector_symbol = '?';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
 		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
@@ -109,4 +125,6 @@ endif;
 }
 // ===============================
 ?>
+
+
 

@@ -1,0 +1,214 @@
+<?php echo $this->doctype(); ?>
+
+<html>
+<head>
+<meta charset="UTF-8">
+        <?php echo $this->headTitle('Mascot International (Lao) Sole co., Ltd')?>
+
+        <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')?>
+
+ <link rel="icon" href="/img/favicon.ico">
+ <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+ <link href="/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/css/style.css" media="screen" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/css/tables.css" type="text/css">
+<link rel="stylesheet" href="/css/lightgallery.css" type="text/css">
+<link rel="stylesheet" href="/css/lg-transitions.min.css" type="text/css">
+
+<link rel="stylesheet" href="/css/jstree/style.css" type="text/css">
+
+<link rel="stylesheet" href="/jquery/jquery-ui.min.css" type="text/css">
+<link rel="stylesheet" href="/jquery/jquery-ui.theme.min.css" type="text/css">
+<link rel="stylesheet" href="/jquery/jquery-ui.structure.min.css" type="text/css">
+
+
+<!-- Scripts -->
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/mla.js"></script>
+<script type="text/javascript" src="/js/mla-hr.js"></script>
+<script type="text/javascript" src="/js/mla-proc.js"></script>
+<script type="text/javascript" src="/js/exif.js"></script>											
+<script src="/js/lightgallery-all.min.js"></script>
+<script src="/js/lg-thumbnail.js"></script>
+<script src="/js/lg-fullscreen.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/Observer.js"></script>
+<script src="/js/NMT.js"></script>
+<script src="/js/jstree.min.js"></script>
+<script src="/js/jquery.tabledit.min.js"></script>
+<script src="/jquery/jquery-ui.min.js"></script>
+
+
+<script>
+  var timerSubject = new Subject();
+
+  $(function() {
+	    $( "input[id='movement_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+   });
+
+
+  $(function() {
+	    $( "input[id='start_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+ });
+
+  $(function() {
+	    $( "input[id='end_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+});
+
+  $(function() {
+	   // $( "input[type=submit], button" ).button();
+  });
+
+  $(function() {
+	    $( "#tabs" ).tabs({
+	     
+	    });
+	  });
+  
+  $(function() {
+	    $( "#menu" ).menu();
+	  });
+
+  </script>
+
+
+</head>
+<body>
+
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="btn btn-navbar" data-toggle="collapse"
+					data-target=".nav-collapse"> <span class="icon-bar"></span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span>
+				</a> <a class="brand" href="<?php echo $this->url('Inventory') ?>">Mascot
+					International (Lao) Sole Co., Ltd</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<!-- <li class="active"><a href="<?php echo $this->url('Inventory') ?>"><?php echo $this->translate('Home') ?></a></li> -->
+							
+						 
+							
+						  
+						  <?php if ($this->user !== null): ?>
+				
+				 		<li class="dropdown"><a class="dropdown-toggle"
+							data-toggle="dropdown" href="#">MESSAGES <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/procurement/do/get-notification">Delivery
+										Notification</a></li>
+
+							</ul></li>
+						  
+						  <?php if ($this->cart_items !== null): ?>
+						  
+						  <li class="dropdown"><a class="dropdown-toggle"
+							data-toggle="dropdown" href="#"> <span class="label"><i
+									class="icon-shopping-cart"> </i></span>
+						    
+						   
+						    <?php if ($this->cart_items >0): ?>
+						    <span id="cart_items" class="label label-warning">
+						    <?php
+											
+											echo $this->cart_items;
+										 else :
+											?>
+	  					    <span id="cart_items" class="">
+						    <?php endif;?>
+						    
+						    </span> ORDER LIST <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/procurement/pr/cart"> <i
+										class="icon-shopping-cart"> </i> Review Cart
+								</a></li>
+								<li class="divider"></li>
+								<li><a href="/procurement/pr/mine">My PR</a></li>
+								<li><a href="/procurement/pr/my-items">My PR Items</a></li>
+							</ul></li>
+						  <?php endif;?>
+						  
+						   	<?php if ($this->isAdmin==true): ?>
+							<li class="dropdown"><a class="dropdown-toggle"
+							data-toggle="dropdown" href="#"><span class="label label-default"><i
+									class="icon-lock"> </i> </span> Admin <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="<?php echo $this->baseUrl ?>/user/index/index">User
+										Manager</a></li>
+								<li><a
+									href="<?php echo $this->baseUrl ?>/application/department/list">Department</a>
+								</li>
+								<li><a
+									href="<?php echo $this->baseUrl ?>/application/acl/list-resources">ACL
+										Management</a></li>
+								<li class="divider"></li>
+								<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all">Show
+										all articles</a></li>
+								<li class="divider"></li>
+								<li><a href="<?php echo $this->baseUrl ?>/user/admin/asset-index">Update Asset Index</a></li>
+								<li><a href="<?php echo $this->baseUrl ?>/user/admin/sparepart-index">Update Sparepart Index</a></li>
+								
+							<li><a href="<?php echo $this->baseUrl ?>/user/admin/article-index">Update Item Index</a></li>
+							<li><a href="<?php echo $this->baseUrl ?>/user/admin/vendor-index">Update Vendor Index</a></li>
+							<li class="divider"></li>
+							<li><a href="<?php echo $this->baseUrl ?>/hr/employee/create-index">Update Employee Index</a></li>
+	
+	
+							</ul></li>
+						  <?php endif;?>
+						  
+						  	<?php if ($this->isProcurement==true): ?>
+							<li class="dropdown"><a class="dropdown-toggle"
+							data-toggle="dropdown" href="#"><span class="label label-default"></span> PROCUREMENT <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li> <a href="<?php echo $this->baseUrl ?>/procurement/pr/all-pr">All PR</a> </li>
+								<li> <a href="<?php echo $this->baseUrl ?>/procurement/pr/pr-items">All PR Items</a> </li>
+								<li class="divider"></li>
+								
+								<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all">Show all items</a></li>
+							
+							<li class="divider"></li>
+								
+								<li><a href="<?php echo $this->baseUrl ?>/procurement/vendor/list">Show all vendors
+									 </a></li>
+							
+							</ul></li>
+						  <?php endif;?>
+						
+				
+						  <li class="dropdown"><a class="dropdown-toggle"
+							data-toggle="dropdown" href="#"><span class="label label-info"
+								title="76 items"><i class="icon-user"> </i> </span> <?php echo $this->user?>
+						    <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="/user/profile">My Profile</a></li>
+								<li class="divider"></li>
+								<li><a href="/user/auth/logout"><i class="icon-off"></i> Logout</a>
+								</li>
+							</ul></li>
+						  <?php endif;?>
+		
+						  
+					</ul>
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+	
+            <?php echo $this->content; ?>
+            <hr>
+           
+		<footer>
+			<p>Email: nmt@mascot.dk</p>
+		</footer>
+	</div>
+	<!-- /container -->
+        <?php echo $this->inlineScript()?>
+    </body>
+
+
+</html>

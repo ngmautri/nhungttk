@@ -99,7 +99,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
 <a class="btn btn-default" style="" href="javascript:;"
-	onClick="doUploadAttachment('attachment_upload_form','attachments','/hr/employee-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>','0');">
+	onClick="doUploadAttachment('attachment_upload_form','attachments','/hr/employee-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>','0','<?php echo (!$entity== null)? $entity->getId():"";?>','<?php echo (!$entity== null)? $entity->getToken():"";?>');">
 	<small><i class="glyphicon glyphicon-pencil"> </i></small>&nbsp; Edit
 </a>
 

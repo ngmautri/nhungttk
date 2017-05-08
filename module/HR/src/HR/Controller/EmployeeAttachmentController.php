@@ -18,12 +18,17 @@ use Zend\Http\Headers;
 use Zend\Validator\Date;
 use Zend\Math\Rand;
 
-/*
- * Control Panel Controller
+/**
+ *
+ * @author nmt
+ *        
  */
 class EmployeeAttachmentController extends AbstractActionController {
 	
-	// to Change;
+	/**
+	 *
+	 * @todo : TO UPDATE
+	 */
 	const ATTACHMENT_FOLDER = "/data/hr/attachment/employee";
 	const PDFBOX_FOLDER = "/vendor/pdfbox/";
 	const PDF_PASSWORD = "mla2017";
@@ -34,7 +39,6 @@ class EmployeeAttachmentController extends AbstractActionController {
 	 * Defaul Action
 	 */
 	public function indexAction() {
-		
 	}
 	
 	/**
@@ -61,20 +65,20 @@ class EmployeeAttachmentController extends AbstractActionController {
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
-		$flash_message = $this->flashMessenger ()->getMessages();
-		$this->flashMessenger ()->clearMessages();
 		
 		if (! $entity == null) {
 			
-			// Target: EMPLOYEE
+			/**
+			 *
+			 * @todo Update Target
+			 */
 			$target = $entity->getEmployee ();
 			
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => $entity,
-					'flash_message'=>$flash_message,
+					'entity' => $entity 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -87,13 +91,12 @@ class EmployeeAttachmentController extends AbstractActionController {
 	 */
 	public function editAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = null;
-		
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				"email" => $this->identity () 
-		) );
 		
 		if ($request->isPost ()) {
+			
+			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+					"email" => $this->identity () 
+			) );
 			
 			$errors = array ();
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
@@ -144,9 +147,6 @@ class EmployeeAttachmentController extends AbstractActionController {
 				
 				// to Comment
 				// $entity = new NmtApplicationAttachment ();
-				
-				// Target: PROJECT
-				// $entity->setEmployee ( $target );
 				
 				$remarks = $request->getPost ( 'remarks' );
 				
@@ -239,6 +239,8 @@ class EmployeeAttachmentController extends AbstractActionController {
 						
 						// $errors [] = 'Attachment can\'t be empby!';
 						if (count ( $errors ) > 0) {
+							
+							$this->flashMessenger ()->addMessage ( 'Something wrong!' );
 							return new ViewModel ( array (
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
@@ -247,11 +249,12 @@ class EmployeeAttachmentController extends AbstractActionController {
 							) );
 						}
 						
+						$entity->setLastChangeBy ( $u );
+						$entity->setLastChangeOn ( new \DateTime () );
+						
 						// update last change, without Attachment
 						$this->doctrineEM->flush ();
-						
-						
-						$this->flashMessenger()->addMessage("Attachment has been uploaded sucessfully" );
+						$this->flashMessenger ()->addMessage ( 'Attachment "' . $entity_id . '" has been updated. File is not changed!' );
 						return $this->redirect ()->toUrl ( $redirectUrl );
 					} else {
 						
@@ -320,7 +323,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						}
 						
 						if (count ( $errors ) > 0) {
-							
+							$this->flashMessenger ()->addMessage ( 'Something wrong!' );
 							return new ViewModel ( array (
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
@@ -381,12 +384,14 @@ class EmployeeAttachmentController extends AbstractActionController {
 						$this->doctrineEM->persist ( $cloned_entity );
 						$this->doctrineEM->flush ();
 						
-						$this->flashMessenger()->addMessage("Attachment has been updated!");
+						$this->flashMessenger ()->addMessage ( 'Attachment "' . $entity_id . '" has been updated with new file uploaded' );
 						return $this->redirect ()->toUrl ( $redirectUrl );
 					}
 				}
 			}
 		}
+		
+		$redirectUrl = null;
 		
 		if ($request->getHeader ( 'Referer' ) == null) {
 			// return $this->redirect ()->toRoute ( 'access_denied' );
@@ -407,8 +412,12 @@ class EmployeeAttachmentController extends AbstractActionController {
 		
 		if (! $entity == null) {
 			
-			// Target: EMPLOYEE
+			/**
+			 *
+			 * @todo : Update Target
+			 */
 			$target = $entity->getEmployee ();
+			
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
@@ -425,42 +434,10 @@ class EmployeeAttachmentController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function listAction() {
-		$criteria = array ();
-		// var_dump($criteria);
-		
-		$sort_criteria = array ();
-		
-		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 10;
-		} else {
-			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
-		}
-		;
-		
-		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
-			$page = 1;
-		} else {
-			$page = $this->params ()->fromQuery ( 'page' );
-		}
-		;
-		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemAttachment' )->findBy ( $criteria, $sort_criteria );
-		$total_records = count ( $list );
-		$paginator = null;
-		
-		if ($total_records > $resultsPerPage) {
-			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
-			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemAttachment' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
-		}
-		
-		return new ViewModel ( array (
-				'list' => $list,
-				'total_records' => $total_records,
-				'paginator' => $paginator 
-		) );
 	}
 	
 	/**
+	 * Return attachment of a target
 	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
@@ -484,12 +461,18 @@ class EmployeeAttachmentController extends AbstractActionController {
 				'token' => $token 
 		);
 		
-		// check Target
+		/**
+		 *
+		 * @todo : Change Target
+		 */
 		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			
-			// target: Employee
+			/**
+			 *
+			 * @todo : Change Target
+			 */
 			$criteria = array (
 					'employee' => $target_id,
 					'isActive' => 1,
@@ -535,12 +518,18 @@ class EmployeeAttachmentController extends AbstractActionController {
 				'token' => $token 
 		);
 		
-		// check Target
+		/**
+		 *
+		 * @todo : Update Target
+		 */
 		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			
-			// Target: Employee
+			/**
+			 *
+			 * @todo : Update Target
+			 */
 			$criteria = array (
 					'employee' => $target_id,
 					'isActive' => 1,
@@ -563,8 +552,9 @@ class EmployeeAttachmentController extends AbstractActionController {
 		}
 	}
 	
-	/*
-	 * Defaul Action
+	/**
+	 *
+	 * @return void|\Zend\Stdlib\ResponseInterface
 	 */
 	public function pictureAction() {
 		$id = ( int ) $this->params ()->fromQuery ( 'id' );
@@ -575,7 +565,10 @@ class EmployeeAttachmentController extends AbstractActionController {
 			$token = null;
 		}
 		
-		// Target: Employee
+		/**
+		 *
+		 * @todo : Update Target
+		 */
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
@@ -613,7 +606,6 @@ class EmployeeAttachmentController extends AbstractActionController {
 			$token = null;
 		}
 		
-		// Target: Employee
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
@@ -636,6 +628,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )->addHeaderLine ( 'Content-Type', $pic->getFiletype () )->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
 			return $response;
 		} else {
+			return;
 		}
 	}
 	
@@ -651,7 +644,6 @@ class EmployeeAttachmentController extends AbstractActionController {
 			$token = null;
 		}
 		
-		// Target: Employee
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
@@ -684,13 +676,12 @@ class EmployeeAttachmentController extends AbstractActionController {
 	 */
 	public function uploadAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				"email" => $this->identity () 
-		) );
 		
 		if ($request->isPost ()) {
+			
+			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+					"email" => $this->identity () 
+			) );
 			
 			$errors = array ();
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
@@ -702,12 +693,16 @@ class EmployeeAttachmentController extends AbstractActionController {
 					'token' => $token 
 			);
 			
-			// Target: Employee
+			/**
+			 *
+			 * @todo : Update Target
+			 */
 			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
 			
 			if ($target == null) {
 				
 				$errors [] = 'Target object can\'t be empty. Or token key is not valid!';
+				$this->flashMessenger ()->addMessage ( 'Something wrong!' );
 				return new ViewModel ( array (
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
@@ -731,7 +726,10 @@ class EmployeeAttachmentController extends AbstractActionController {
 				
 				$entity = new NmtApplicationAttachment ();
 				
-				// Target: EMPLOYEE
+				/**
+				 *
+				 * @todo : Update Target
+				 */
 				$entity->setEmployee ( $target );
 				
 				$remarks = $request->getPost ( 'remarks' );
@@ -819,6 +817,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 					if ($file_tmp == "" or $file_tmp === null) {
 						
 						$errors [] = 'Attachment can\'t be empty!';
+						$this->flashMessenger ()->addMessage ( 'Something wrong!' );
 						return new ViewModel ( array (
 								'redirectUrl' => $redirectUrl,
 								'errors' => $errors,
@@ -877,7 +876,10 @@ class EmployeeAttachmentController extends AbstractActionController {
 						
 						$checksum = md5_file ( $file_tmp );
 						
-						// change target
+						/**
+						 *
+						 * @todo : Update Targert
+						 */
 						$criteria = array (
 								"checksum" => $checksum,
 								"employee" => $target_id 
@@ -889,7 +891,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						}
 						
 						if (count ( $errors ) > 0) {
-							
+							$this->flashMessenger ()->addMessage ( 'Something wrong!' );
 							return new ViewModel ( array (
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
@@ -946,15 +948,18 @@ class EmployeeAttachmentController extends AbstractActionController {
 						$entity->setCreatedOn ( new \DateTime () );
 						$this->doctrineEM->persist ( $entity );
 						$this->doctrineEM->flush ();
-					
-						$this->flashMessenger()->addMessage("'" . $file_name. "' has been uploaded!");
+						
+						$this->flashMessenger ()->addMessage ( "'" . $file_name . "' has been uploaded successfully!" );
 						return $this->redirect ()->toUrl ( $redirectUrl );
 					}
 				}
 			}
 		}
 		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$redirectUrl = null;
+		if ($this->getRequest ()->getHeader ( 'Referer' ) !== null) {
+			$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		}
 		
 		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
 		$checksum = $this->params ()->fromQuery ( 'checksum' );
@@ -965,7 +970,10 @@ class EmployeeAttachmentController extends AbstractActionController {
 				'token' => $token 
 		);
 		
-		// Target: Employee
+		/**
+		 *
+		 * @todo : Update Target
+		 */
 		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
@@ -983,11 +991,12 @@ class EmployeeAttachmentController extends AbstractActionController {
 	
 	/**
 	 *
+	 * @deprecated
+	 *
 	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
 	 */
 	public function uploadPictureAction() {
 		$request = $this->getRequest ();
-		
 		$redirectUrl = null;
 		
 		if ($request->getHeader ( 'Referer' ) == null) {
@@ -1258,7 +1267,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 						$this->doctrineEM->persist ( $entity );
 						$this->doctrineEM->flush ();
 						
-						$this->flashMessenger()->addMessage("'" . $file_name. "' has been uploaded!");
+						$this->flashMessenger ()->addMessage ( "'" . $file_name . "' has been uploaded!" );
 						return $this->redirect ()->toUrl ( $redirectUrl );
 					}
 				}
@@ -1298,10 +1307,6 @@ class EmployeeAttachmentController extends AbstractActionController {
 	public function uploadPicturesAction() {
 		$request = $this->getRequest ();
 		
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				"email" => $this->identity () 
-		) );
-		
 		if ($request->isPost ()) {
 			
 			$errors = array ();
@@ -1309,19 +1314,27 @@ class EmployeeAttachmentController extends AbstractActionController {
 			$target_id = $_POST ['target_id'];
 			$checksum = $_POST ['checksum'];
 			$token = $_POST ['token'];
+			$documentSubject = $_POST ['subject'];
+			$entity_id = $_POST ['entity_id'];
+			$entity_token = $_POST ['entity_token'];
 			
 			$criteria = array (
 					'id' => $target_id,
 					'token' => $token,
-					'checksum'=>$checksum, 
+					'checksum' => $checksum 
 			);
 			
-			// Target: Employee
+			/**
+			 *
+			 * @todo : Update Target
+			 */
 			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
 			
 			if ($target == null) {
 				
 				$errors [] = 'Target object can\'t be empty. Token key might be not valid. Please try again!!';
+				$this->flashMessenger ()->addMessage ( 'Something wrong!' );
+				
 				return new ViewModel ( array (
 						'redirectUrl' => null,
 						'errors' => $errors,
@@ -1332,13 +1345,13 @@ class EmployeeAttachmentController extends AbstractActionController {
 				// might need redirect
 			} else {
 				
-				$result = "";
+				$result = array ();
 				$success = 0;
-				
+				$failed = 0;
+				$n = 0;
 				foreach ( $pictures as $p ) {
-					
+					$n ++;
 					$filetype = $p [0];
-					$result = $result . $p [2];
 					$original_filename = $p [2];
 					
 					if (preg_match ( '/(jpg|jpeg)$/', $filetype )) {
@@ -1380,16 +1393,23 @@ class EmployeeAttachmentController extends AbstractActionController {
 						}
 						
 						// echo ("$folder/$name");
-						//move_uploaded_file ( $tmp_name, "$folder/$name" );
+						// move_uploaded_file ( $tmp_name, "$folder/$name" );
 						rename ( $tmp_name, "$folder/$name" );
 						
 						$entity = new NmtApplicationAttachment ();
 						
-						/**@todo: CHANGE: target: Employee */
+						/**
+						 *
+						 * @todo : CHANGE: target
+						 */
 						$entity->setEmployee ( $target );
-												
+						
 						// $entity->setFilePassword ( $filePassword );
-						$entity->setDocumentSubject ( "Picture for employee: " . $target_id );
+						if ($documentSubject == null) {
+							$documentSubject = "Picture for " . $target_id;
+						}
+						$entity->setDocumentSubject ( $documentSubject );
+						
 						$entity->setIsPicture ( 1 );
 						$entity->setIsActive ( 1 );
 						$entity->setMarkedForDeletion ( 0 );
@@ -1402,38 +1422,64 @@ class EmployeeAttachmentController extends AbstractActionController {
 						$entity->setChecksum ( $checksum );
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 						
+						$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+								"email" => $this->identity () 
+						) );
+						
 						$entity->setCreatedBy ( $u );
 						$entity->setCreatedOn ( new \DateTime () );
+						
+						
+						// get Old Entity, if any
+						$criteria = array (
+								'id' => $entity_id,
+								'token' => $entity_token,
+						);
+						$old_entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
+						
+						if($old_entity !== null){
+							$old_entity->setIsActive(0);
+							$old_entity->setMarkedForDeletion(1);
+							$old_entity->setLastChangeBy($u);
+							$old_entity->setLastChangeOn(new \DateTime ());
+							$entity->setChangeFor($old_entity->getId());
+							
+							$this->flashMessenger ()->addMessage ( "'" . $old_entity->getDocumentSubject(). "' has been update with new file!" );
+						}else {
+							$this->flashMessenger ()->addMessage ( "'" . $original_filename . "' has been uploaded sucessfully" );
+						}
+						
 						$this->doctrineEM->persist ( $entity );
 						$this->doctrineEM->flush ();
+						
+						
+						$result [] = $original_filename . ' uploaded sucessfully';
+						$success ++;
 						
 						// trigger uploadPicture. AbtractController is EventManagerAware.
 						$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
 								'picture_name' => $name,
-								'pictures_dir' => $folder 
+								'pictures_dir' => $folder
 						) );
 						
-						$result = $result . ' uploaded. //';
-						$this->flashMessenger()->addMessage("'" . $original_filename. "' has been uploaded sucessfully" );
-						$success=1;
 						
 					} else {
-						$result = " '" . $original_filename. "' exits already. Please select other file!";
-						$success=0;
-						//$this->flashMessenger()->addMessage("'" . $original_filename. "' exits already. Please select other file!" );
+						$this->flashMessenger ()->addMessage ( "'" . $original_filename . "' exits already!" );
+						$result [] = $original_filename . ' exits already. Please select other file!';
+						$failed ++;
 					}
-					
-					// $data['filetype'] = $filetype;
-					$data = array ();
-					$data ['message'] = $result;
-					$data ['success'] = $success;
-					$response = $this->getResponse ();
-					$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
-					$response->setContent ( json_encode ( $data ) );
-					return $response;
 				}
 				
-				
+				// $data['filetype'] = $filetype;
+				$data = array ();
+				$data ['message'] = $result;
+				$data ['total_uploaded'] = $n;
+				$data ['success'] = $success;
+				$data ['failed'] = $failed;
+				$response = $this->getResponse ();
+				$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+				$response->setContent ( json_encode ( $data ) );
+				return $response;
 			}
 		}
 		
@@ -1454,11 +1500,13 @@ class EmployeeAttachmentController extends AbstractActionController {
 				'token' => $token 
 		);
 		
-		// Target: Employee
+		/**
+		 *
+		 * @todo Target: Employee
+		 */
 		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
-			
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
@@ -1469,6 +1517,8 @@ class EmployeeAttachmentController extends AbstractActionController {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 	}
+	
+	
 	
 	/**
 	 *
@@ -1489,7 +1539,6 @@ class EmployeeAttachmentController extends AbstractActionController {
 			$token = null;
 		}
 		
-		// Target: Employee
 		$criteria = array (
 				'id' => $entity_id,
 				'checksum' => $checksum,
@@ -1553,6 +1602,10 @@ class EmployeeAttachmentController extends AbstractActionController {
 		
 		if (count ( $list ) > 0) {
 			foreach ( $list as $entity ) {
+				/**
+				 *
+				 * @todo Update Targnet
+				 */
 				$entity->setChecksum ( md5 ( uniqid ( "employee_a_" . $entity->getId () ) . microtime () ) );
 				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 			}
@@ -1590,14 +1643,5 @@ class EmployeeAttachmentController extends AbstractActionController {
 	public function setDoctrineEM(EntityManager $doctrineEM) {
 		$this->doctrineEM = $doctrineEM;
 		return $this;
-	}
-	
-	/**
-	 *
-	 * @param number $length        	
-	 * @return string
-	 */
-	private function generateRandomString($length = 6) {
-		return substr ( str_shuffle ( str_repeat ( $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil ( $length / strlen ( $x ) ) ) ), 1, $length );
 	}
 }

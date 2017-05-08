@@ -37,7 +37,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label col-sm-2" >Document Subject</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="documentSubject" value="<?php echo (!$entity== null)? $entity->getDocumentSubject():"";?>">
+				name="documentSubject" id="documentSubject" value="<?php echo (!$entity== null)? $entity->getDocumentSubject():"";?>">
 	
 		</div>
 		<label class="control-label col-sm-1" for="inputTag"></label>

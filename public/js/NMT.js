@@ -301,7 +301,7 @@ function DatumZeigen() {
 }
 
 
-function doUploadAttachment(form_id, attachment_id, url=null, target_id=null, redirectUrl=null, checksum = null, token = null, attachmentRequired = 1){
+function doUploadAttachment(form_id, attachment_id, url=null, target_id=null, redirectUrl=null, checksum = null, token = null, attachmentRequired = 1,entity_id = null, entity_token=null){
 	var attachment_id_tmp;
 	var form_id_tmp;
 	var attachment;
@@ -313,7 +313,7 @@ function doUploadAttachment(form_id, attachment_id, url=null, target_id=null, re
 		// Ensure it's an image
 		if (attachment.type.match(/image.*/)) {
 			//alert(form_id_tmp);
-			uploadImages(url, target_id, redirectUrl, checksum, token,form_id)
+			uploadImages(url, target_id, redirectUrl, checksum, token,form_id,$('#documentSubject').val(),entity_id,entity_token);
 		}else{
 			$('#b_modal_no_header').modal();
 			$(form_id_tmp).submit();
@@ -323,7 +323,7 @@ function doUploadAttachment(form_id, attachment_id, url=null, target_id=null, re
 			$('#b_modal_no_header').modal();
 			$(form_id_tmp).submit();
 		}else{
-			showBootstrapModal('b_modal_sm','<b>Info</b>','<p>Please select attachment</p>');
+			showBootstrapModal('b_modal_sm','<b>Warning!</b>','<p>Please select attachment</p>');
 		}
 	}
 }
@@ -332,7 +332,7 @@ function doUploadAttachment(form_id, attachment_id, url=null, target_id=null, re
 /**
  * 
  */
-function uploadImages(url, target_id, redirectUrl, checksum = null, token = null,form_id=null) {
+function uploadImages(url, target_id, redirectUrl, checksum = null, token = null,form_id=null, subject =null,entity_id = null, entity_token=null) {
 
 	var pic_to_upload = [];
 	var pic_to_upload_resized = [];
@@ -371,14 +371,14 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 		var p = pic_to_upload[j];
 
 		// console.log(p.size);
-		var filetype = p.type;
-		var filename = p.name;
-
+		//var filetype = p.type;
+		//var filename = p.name;
+		//alert(filename);
 		// Load the image
 		var reader = new FileReader();
 
 		reader.onload = (function(p, pic_to_upload_resized, n, url, target_id,
-				redirectUrl,checksum, token) {
+				redirectUrl,checksum, token,subject,entity_id,entity_token) {
 			return function(e) {
 				var contents = e.target.result;
 
@@ -402,10 +402,15 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 
 										return function(imageEvent) {
 
+											var filetype = p.type;
+											var filename = p.name;
+										
 											// alert('URL' + target_id);
 											// alert('URL:::' + token);
 
 											// Resize the image
+											
+											
 											var canvas = document
 													.createElement('canvas'), max_size = 1350, width = image.width, height = image.height;
 											if (width > height) {
@@ -436,7 +441,8 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 											ctx.drawImage(image, 0, 0, width,
 													height);
 											ctx.restore();
-
+											
+											
 											switch (filetype) {
 											case "image/jpeg":
 												var dataUrl = canvas
@@ -459,7 +465,7 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 														.toDataURL('image/jpeg');
 												break;
 											}
-
+											
 											var p_tmp = [];
 											p_tmp.push(filetype);
 											p_tmp.push(dataUrl);
@@ -469,13 +475,12 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 
 											isUploadImagesCompleted(
 													pic_to_upload_resized, n,
-													url, target_id, redirectUrl,checksum, token)
-													// alert(n+'URL:::' +
-													// token);
+													url, target_id, redirectUrl,checksum, token,subject,entity_id,entity_token)
+													// alert(n+'URL:::' + subject);
 										};
 
 									})(p, pic_to_upload_resized, n, url,
-											target_id, redirectUrl,checksum, token); // must
+											target_id, redirectUrl,checksum, token,subject,entity_id,entity_token); // must
 																						// the
 																						// //
 																						// same
@@ -487,7 +492,7 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length, url, target_id,
-				redirectUrl, checksum, token); // must the same
+				redirectUrl, checksum, token,subject,entity_id,entity_token); // must the same
 
 		reader.readAsDataURL(p);
 	}
@@ -495,7 +500,9 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 }
 
 function isUploadImagesCompleted(pic_to_upload_resized, n, url, target_id,
-		redirectUrl,checksum, token) {
+		redirectUrl,checksum, token,subject,entity_id,entity_token) {
+	
+		
 		// alert('URL complete' + token);
 
 	if (pic_to_upload_resized.length >= n) {
@@ -509,17 +516,32 @@ function isUploadImagesCompleted(pic_to_upload_resized, n, url, target_id,
 			target_id : target_id,
 			checksum: checksum,
 			token: token,
+			subject: subject,
+			entity_id:entity_id,
+			entity_token:entity_token,
 			pictures : pic_to_upload_resized,
 		}, function(data, status, dataType) {
-			// alert(status);
-			if(data.success==1){
+			//alert(data);
+			//alert(data.success);
+			if(data.success > 0){
 				window.location = redirectUrl;
 			}else{
-				$('#b_modal_no_header').modal('toggle'); 
-				$( "#flash_messages" ).html(data.message);
+				var index;
+				var result = "";
+				
+				if(data.message.length>0){
+  				    result = "<ul>";
+					for (index = 0; index < data.message.length; ++index) {
+						result = result + "<li>" + data.message[index] + "</li>";
+					}
+					result = result + "</ul>"
+				}
+					
+				/*$('#b_modal_no_header').modal('toggle'); 
+				$( "#flash_messages" ).html(result);
 				$( "#flash_messages" ).show();
-				$( "#flash_messages" ).delay(2200).fadeOut(1000);
-				//location.reload();
+				$( "#flash_messages" ).delay(2200).fadeOut(1000);*/
+				location.reload();
 			}
 		});
 	}

@@ -2,7 +2,7 @@
 <h4>
 	 <?php 
 	 // target
-	 echo (!$target== null)? 'Employee: ' . $target->getProjectName():"";?>
+	 echo (!$target== null)? 'PR: ' . $target->getPrNumber():"";?>
 </h4>
 
 <?php
@@ -27,7 +27,7 @@ if (count ( $errors ) > 0) {
 <div id="general"> 
 
 <!-- TO UPDATE ACTION -->
-<form id="attachment_upload_form" class="form-horizontal" action="/pm/project-attachment/upload" method="post" enctype="multipart/form-data">
+<form id="attachment_upload_form" class="form-horizontal" action="/procure/pr-attachment/upload" method="post" enctype="multipart/form-data">
 <input type="hidden" name="target_id" value="<?php echo (!$target == null)? $target->getId():"";?>" />
 <input type="hidden" name="token" value="<?php echo (!$target== null)? $target->getToken():"";?>" />
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
@@ -99,7 +99,7 @@ value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity
 		<div class="col-sm-3">
 	
  <a class="btn btn-default" style="" href="javascript:;"
-	onClick="doUploadAttachment('attachment_upload_form','attachments','/pm/project-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>');">
+	onClick="doUploadAttachment('attachment_upload_form','attachments','/procure/prattachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>');">
 	<small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp; Upload
 </a>
    		</div>

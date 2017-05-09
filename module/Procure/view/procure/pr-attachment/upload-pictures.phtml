@@ -1,7 +1,7 @@
 <h4>
 	 <?php 
 	 // target:Project
-	 echo (!$target== null)? 'Project: ' . $target->getProjectname():"";?>
+	 echo (!$target== null)? 'PR: ' . $target->getPrNumber():"";?>
 </h4>
 
 <?php
@@ -45,7 +45,7 @@ if (count ( $errors ) > 0) {
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-			<button type="button"  onclick="uploadImages('/pm/project-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>')" class="btn btn-primary"
+			<button type="button"  onclick="uploadImages('/procure/pr-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>')" class="btn btn-primary"
 				id="upload">
 				<i class="glyphicon glyphicon-upload"> </i> Upload
 			</button>

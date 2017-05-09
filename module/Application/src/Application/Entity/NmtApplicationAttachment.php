@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationAttachment
  *
- * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_application_attachment_FK6_idx", columns={"item_purchasing_id"})})
+ * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_application_attachment_FK6_idx", columns={"item_purchasing_id"}), @ORM\Index(name="nmt_application_attachment_FK7_idx", columns={"pr_id"})})
  * @ORM\Entity
  */
 class NmtApplicationAttachment
@@ -190,6 +190,13 @@ class NmtApplicationAttachment
     private $itemId;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="pr_row_id", type="integer", nullable=true)
+     */
+    private $prRowId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -248,6 +255,16 @@ class NmtApplicationAttachment
      * })
      */
     private $itemPurchasing;
+
+    /**
+     * @var \Application\Entity\NmtProcurePr
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePr")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="pr_id", referencedColumnName="id")
+     * })
+     */
+    private $pr;
 
 
 
@@ -838,6 +855,30 @@ class NmtApplicationAttachment
     }
 
     /**
+     * Set prRowId
+     *
+     * @param integer $prRowId
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setPrRowId($prRowId)
+    {
+        $this->prRowId = $prRowId;
+
+        return $this;
+    }
+
+    /**
+     * Get prRowId
+     *
+     * @return integer
+     */
+    public function getPrRowId()
+    {
+        return $this->prRowId;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -979,5 +1020,29 @@ class NmtApplicationAttachment
     public function getItemPurchasing()
     {
         return $this->itemPurchasing;
+    }
+
+    /**
+     * Set pr
+     *
+     * @param \Application\Entity\NmtProcurePr $pr
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setPr(\Application\Entity\NmtProcurePr $pr = null)
+    {
+        $this->pr = $pr;
+
+        return $this;
+    }
+
+    /**
+     * Get pr
+     *
+     * @return \Application\Entity\NmtProcurePr
+     */
+    public function getPr()
+    {
+        return $this->pr;
     }
 }

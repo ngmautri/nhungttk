@@ -1588,7 +1588,6 @@ class ProjectAttachmentController extends AbstractActionController {
 				 *
 				 * @todo Update Targnet
 				 */
-				$entity->setChecksum ( md5 ( uniqid ( "project_a_" . $entity->getId () ) . microtime () ) );
 				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 			}
 		}

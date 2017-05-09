@@ -96,15 +96,6 @@ class ProjectController extends AbstractActionController {
 	public function addAction() {
 		$request = $this->getRequest ();
 		
-		if ($request->getHeader ( 'Referer' ) == null) {
-			return $this->redirect ()->toRoute ( 'access_denied' );
-		}
-		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				"email" => $this->identity () 
-		) );
-		
 		if ($request->isPost ()) {
 			
 			$errors = array ();
@@ -165,11 +156,9 @@ class ProjectController extends AbstractActionController {
 			$entity->setIsActive ( $isActive );
 			$entity->setStatus ( $status );
 			$entity->setRemarks ( $remarks );
-			$entity->setCreatedBy ( $u );
-			$entity->setCreatedOn ( new \DateTime () );
 			
 			if (count ( $errors ) > 0) {
-				$this->flashMessenger ()->addMessage ( 'Something went wrong!' );
+				//$this->flashMessenger ()->addMessage ( 'Something went wrong!' );
 				
 				return new ViewModel ( array (
 						'redirectUrl' => $redirectUrl,
@@ -179,13 +168,35 @@ class ProjectController extends AbstractActionController {
 			}
 			
 			// NO ERROR
+			$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+					"email" => $this->identity () 
+			) );
+			
+			$entity->setCreatedBy ( $u );
+			$entity->setCreatedOn ( new \DateTime () );
+			
 			$this->doctrineEM->persist ( $entity );
 			$this->doctrineEM->flush ();
 			// $new_entity_id = $entity->getId();
 			
-			$this->flashMessenger ()->addMessage ( 'Project "' . $projectName .'" is created successfully!' );
+			/** @todo: UPDATE */
+			$entity->setChecksum ( md5 ( uniqid ( "project_" . $entity->getId () ) . microtime () ) );
+			$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			$this->doctrineEM->flush ();
+			
+			
+			$this->flashMessenger ()->addMessage ( 'Project "' . $projectName . '" is created successfully!' );
 			
 			return $this->redirect ()->toUrl ( $redirectUrl );
+		}
+		
+		$redirectUrl = null;
+		if ($request->getHeader ( 'Referer' ) == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		} else {
+			
+			$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		}
 		
 		return new ViewModel ( array (
@@ -304,7 +315,6 @@ class ProjectController extends AbstractActionController {
 				) );
 			} else {
 				
-				
 				$redirectUrl = $request->getPost ( 'redirectUrl' );
 				
 				$projectName = $request->getPost ( 'projectName' );
@@ -364,7 +374,7 @@ class ProjectController extends AbstractActionController {
 				$entity->setRemarks ( $remarks );
 				
 				if (count ( $errors ) > 0) {
-					$this->flashMessenger ()->addMessage ( 'Something wrong!' );
+					//$this->flashMessenger ()->addMessage ( 'Something wrong!' );
 					
 					return new ViewModel ( array (
 							'redirectUrl' => $redirectUrl,
@@ -374,6 +384,7 @@ class ProjectController extends AbstractActionController {
 				}
 				
 				// NO ERROR
+				
 				$entity->setLastChangeBy ( $u );
 				$entity->setLastChangeOn ( new \DateTime () );
 				
@@ -381,7 +392,7 @@ class ProjectController extends AbstractActionController {
 				$this->doctrineEM->flush ();
 				// $new_entity_id = $entity->getId();
 				
-				$this->flashMessenger ()->addMessage ( 'Project "'. $projectName .'" has been updated!' );
+				$this->flashMessenger ()->addMessage ( 'Project "' . $projectName . '" has been updated!' );
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
@@ -397,7 +408,7 @@ class ProjectController extends AbstractActionController {
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
@@ -406,7 +417,7 @@ class ProjectController extends AbstractActionController {
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'entity' => $entity,
-					'errors' => null
+					'errors' => null 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );

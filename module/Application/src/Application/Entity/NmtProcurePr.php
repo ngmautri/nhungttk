@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePr
  *
- * @ORM\Table(name="nmt_procure_pr", indexes={@ORM\Index(name="nmt_procure_pr_FK1_idx", columns={"department_id"}), @ORM\Index(name="nmt_procure_pr_FK1_idx1", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_FK3_idx", columns={"last_changed_by"})})
+ * @ORM\Table(name="nmt_procure_pr", indexes={@ORM\Index(name="nmt_procure_pr_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_KF2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_pr_KF3_idx", columns={"department_id"})})
  * @ORM\Entity
  */
 class NmtProcurePr
@@ -31,23 +31,30 @@ class NmtProcurePr
     /**
      * @var string
      *
-     * @ORM\Column(name="pr_number", type="string", length=50, nullable=true)
+     * @ORM\Column(name="pr_number", type="string", length=45, nullable=false)
      */
     private $prNumber;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="pr_name", type="string", length=50, nullable=true)
+     * @ORM\Column(name="pr_name", type="string", length=45, nullable=false)
      */
     private $prName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=200, nullable=true)
+     * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
      */
-    private $description;
+    private $keywords;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     */
+    private $remarks;
 
     /**
      * @var \DateTime
@@ -64,14 +71,39 @@ class NmtProcurePr
     private $lastChangeOn;
 
     /**
-     * @var \Application\Entity\NmtApplicationDepartment
+     * @var boolean
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="department_id", referencedColumnName="node_id")
-     * })
+     * @ORM\Column(name="is_draft", type="boolean", nullable=true)
      */
-    private $department;
+    private $isDraft;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=45, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
+     */
+    private $checksum;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -88,10 +120,20 @@ class NmtProcurePr
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="last_changed_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
      * })
      */
-    private $lastChangedBy;
+    private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationDepartment
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="department_id", referencedColumnName="node_id")
+     * })
+     */
+    private $department;
 
 
 
@@ -178,27 +220,51 @@ class NmtProcurePr
     }
 
     /**
-     * Set description
+     * Set keywords
      *
-     * @param string $description
+     * @param string $keywords
      *
      * @return NmtProcurePr
      */
-    public function setDescription($description)
+    public function setKeywords($keywords)
     {
-        $this->description = $description;
+        $this->keywords = $keywords;
 
         return $this;
     }
 
     /**
-     * Get description
+     * Get keywords
      *
      * @return string
      */
-    public function getDescription()
+    public function getKeywords()
     {
-        return $this->description;
+        return $this->keywords;
+    }
+
+    /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return NmtProcurePr
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
     }
 
     /**
@@ -250,27 +316,123 @@ class NmtProcurePr
     }
 
     /**
-     * Set department
+     * Set isDraft
      *
-     * @param \Application\Entity\NmtApplicationDepartment $department
+     * @param boolean $isDraft
      *
      * @return NmtProcurePr
      */
-    public function setDepartment(\Application\Entity\NmtApplicationDepartment $department = null)
+    public function setIsDraft($isDraft)
     {
-        $this->department = $department;
+        $this->isDraft = $isDraft;
 
         return $this;
     }
 
     /**
-     * Get department
+     * Get isDraft
      *
-     * @return \Application\Entity\NmtApplicationDepartment
+     * @return boolean
      */
-    public function getDepartment()
+    public function getIsDraft()
     {
-        return $this->department;
+        return $this->isDraft;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtProcurePr
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return NmtProcurePr
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtProcurePr
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set checksum
+     *
+     * @param string $checksum
+     *
+     * @return NmtProcurePr
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+
+        return $this;
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
     }
 
     /**
@@ -298,26 +460,50 @@ class NmtProcurePr
     }
 
     /**
-     * Set lastChangedBy
+     * Set lastChangeBy
      *
-     * @param \Application\Entity\MlaUsers $lastChangedBy
+     * @param \Application\Entity\MlaUsers $lastChangeBy
      *
      * @return NmtProcurePr
      */
-    public function setLastChangedBy(\Application\Entity\MlaUsers $lastChangedBy = null)
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
-        $this->lastChangedBy = $lastChangedBy;
+        $this->lastChangeBy = $lastChangeBy;
 
         return $this;
     }
 
     /**
-     * Get lastChangedBy
+     * Get lastChangeBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getLastChangedBy()
+    public function getLastChangeBy()
     {
-        return $this->lastChangedBy;
+        return $this->lastChangeBy;
+    }
+
+    /**
+     * Set department
+     *
+     * @param \Application\Entity\NmtApplicationDepartment $department
+     *
+     * @return NmtProcurePr
+     */
+    public function setDepartment(\Application\Entity\NmtApplicationDepartment $department = null)
+    {
+        $this->department = $department;
+
+        return $this;
+    }
+
+    /**
+     * Get department
+     *
+     * @return \Application\Entity\NmtApplicationDepartment
+     */
+    public function getDepartment()
+    {
+        return $this->department;
     }
 }

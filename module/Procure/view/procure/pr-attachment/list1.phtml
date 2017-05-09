@@ -1,4 +1,4 @@
-<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/pm/project-attachment/upload?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;New Attachment</a>
+<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/procure/pr-attachment/upload?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;New Attachment</a>
   
 <hr>
 
@@ -52,15 +52,15 @@ if ($total_records <= 0) {
 			<td><?php echo $this->escapeHtml($a->getDocumentSubject());?></td>
 			<td><?php echo $this->escapeHtml($a->getFileNameOriginal());?></td>
 			<td><?php echo $this->escapeHtml($a->getSize());?></td>
-			<td><?php echo ($a->getIsActive()=='1')?'<small><i class="glyphicon glyphicon-ok"></i></small>':"";?></td>
-			<td><?php echo ($a->getMarkedForDeletion()=='1')?'<small><i class="glyphicon glyphicon-remove"></i></small>':"";?></td>
-			<td><?php echo ($a->getisPicture()=='1')?'<small><i class="glyphicon glyphicon-ok"></i></small>':"";?></td>
+			<td><?php echo ($a->getIsActive()=='1')?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+			<td><?php echo ($a->getMarkedForDeletion()=='1')?'<small><i class="glyphicon glyphicon-remove"></i></small>':'';?></td>
+			<td><?php echo ($a->getisPicture()=='1')?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
 	
 			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y");?> </td>
 			<td>
-<small><i class="glyphicon glyphicon-download-alt"></i></small>&nbsp;<a href="<?php echo $this->baseUrl ?>/pm/project-attachment/download?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">download</a>
-<a href="<?php echo $this->baseUrl ?>/pm/project-attachment/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/pm/project-attachment/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Edit</a>
+<small><i class="glyphicon glyphicon-download-alt"></i></small>&nbsp;<a href="<?php echo $this->baseUrl ?>/procure/pr-attachment/download?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">download</a>
+<a href="<?php echo $this->baseUrl ?>/procure/pr-attachment/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/procure/pr-attachment/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Edit</a>
 
 			</td>
 			

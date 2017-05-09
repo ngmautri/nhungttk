@@ -11,7 +11,7 @@ return array (
 		'router' => array (
 				'routes' => array (
 						
-						'pm' => array (
+						'procure' => array (
 								'type' => 'Literal',
 								'options' => array (
 										'route' => '/procure',

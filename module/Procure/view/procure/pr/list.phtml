@@ -32,11 +32,11 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>Name</b></td>
-			<td><b>Keywords	</b></td>
-			<td><b>Start Date</b></td>
-			<td><b>End Date</b></td>
+			<td><b>PR Number</b></td>
+			<td><b>PR Name	</b></td>
+			<td><b>Created</b></td>
 			<td><b>Status</b></td>
+			<td><b>Action</b></td>
 			</tr>
 	</thead>
 
@@ -50,15 +50,14 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	  		<td><?php echo $this->escapeHtml($a->getProjectname());?></td>
-			<td><?php echo $this->escapeHtml($a->getKeyWords());?></td>
-			<td><?php echo ($a->getStartDate()!==null )? date_format ( $a->getStartDate(), "d-m-y"):"";?> </td>
-			<td><?php echo ($a->getEndDate()!==null )? date_format ( $a->getEndDate(), "d-m-y"):"";?> </td>
+	  		<td><?php echo $this->escapeHtml($a->getPrNumber());?></td>
+			<td><?php echo $this->escapeHtml($a->getPrName());?></td>
+			<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d-m-y"):"";?> </td>
 			<td><?php echo $this->escapeHtml($a->getStatus());?></td>
 		 <td>
-<a href="<?php echo $this->baseUrl ?>/pm/project/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getCheckSum();?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/pm/project/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getCheckSum();?>">Edit</a>
-<a href="<?php echo $this->baseUrl ?>/pm/project-attachment/upload?token=<?php echo $a->getToken();?>&target_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $a->getCheckSum();?>">Attach</a>
+<a href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getCheckSum();?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getCheckSum();?>">Edit</a>
+<a href="<?php echo $this->baseUrl ?>/procure/pr-attachment/upload?token=<?php echo $a->getToken();?>&target_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $a->getCheckSum();?>">Attach</a>
 
 </td>
 		

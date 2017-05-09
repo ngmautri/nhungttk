@@ -29,7 +29,7 @@ class PrAttachmentController extends AbstractActionController {
 	 *
 	 * @todo : TO UPDATE
 	 */
-	const ATTACHMENT_FOLDER = "/data/pm/attachment/project";
+	const ATTACHMENT_FOLDER = "/data/procure/attachment/pr";
 	const PDFBOX_FOLDER = "/vendor/pdfbox/";
 	const PDF_PASSWORD = "mla2017";
 	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
@@ -72,7 +72,7 @@ class PrAttachmentController extends AbstractActionController {
 			 *
 			 * @todo Update Target
 			 */
-			$target = $entity->getProject ();
+			$target = $entity->getPr ();
 			
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
@@ -137,7 +137,7 @@ class PrAttachmentController extends AbstractActionController {
 				 *
 				 * @todo : Change Target
 				 */
-				$target = $entity->getProject ();
+				$target = $entity->getPr ();
 				
 				// to Add
 				$target_id = null;
@@ -314,7 +314,7 @@ class PrAttachmentController extends AbstractActionController {
 						 */
 						$criteria = array (
 								"checksum" => $checksum,
-								"project" => $target_id
+								"pr" => $target_id
 						);
 						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 						
@@ -416,7 +416,7 @@ class PrAttachmentController extends AbstractActionController {
 			 *
 			 * @todo : Update Target
 			 */
-			$target = $entity->getProject ();
+			$target = $entity->getPr ();
 			
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
@@ -465,7 +465,7 @@ class PrAttachmentController extends AbstractActionController {
 		 *
 		 * @todo : Change Target
 		 */
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			
@@ -474,7 +474,7 @@ class PrAttachmentController extends AbstractActionController {
 			 * @todo : Change Target
 			 */
 			$criteria = array (
-					'project' => $target_id,
+					'pr' => $target_id,
 					'isActive' => 1,
 					'markedForDeletion' => 0
 			);
@@ -522,7 +522,7 @@ class PrAttachmentController extends AbstractActionController {
 		 *
 		 * @todo : Update Target
 		 */
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			
@@ -531,7 +531,7 @@ class PrAttachmentController extends AbstractActionController {
 			 * @todo : Update Target
 			 */
 			$criteria = array (
-					'project' => $target_id,
+					'pr' => $target_id,
 					'isActive' => 1,
 					'markedForDeletion' => 0,
 					'isPicture' => 1
@@ -693,7 +693,7 @@ class PrAttachmentController extends AbstractActionController {
 			 *
 			 * @todo : Update Target
 			 */
-			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 			
 			if ($target == null) {
 				
@@ -726,7 +726,7 @@ class PrAttachmentController extends AbstractActionController {
 				 *
 				 * @todo : Update Target
 				 */
-				$entity->setProject ( $target );
+				$entity->setPr ( $target );
 				
 				$remarks = $request->getPost ( 'remarks' );
 				
@@ -878,7 +878,7 @@ class PrAttachmentController extends AbstractActionController {
 						 */
 						$criteria = array (
 								"checksum" => $checksum,
-								"project" => $target_id
+								"pr" => $target_id
 						);
 						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 						
@@ -970,7 +970,7 @@ class PrAttachmentController extends AbstractActionController {
 		 *
 		 * @todo : Update Target
 		 */
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			
@@ -1324,7 +1324,7 @@ class PrAttachmentController extends AbstractActionController {
 			 *
 			 * @todo : Update Target
 			 */
-			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 			
 			if ($target == null) {
 				
@@ -1373,7 +1373,7 @@ class PrAttachmentController extends AbstractActionController {
 					 */
 					$criteria = array (
 							"checksum" => $checksum,
-							"project" => $target_id
+							"pr" => $target_id
 					);
 					$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 					
@@ -1398,7 +1398,7 @@ class PrAttachmentController extends AbstractActionController {
 						 *
 						 * @todo : CHANGE: target
 						 */
-						$entity->setProject ( $target );
+						$entity->setPr ( $target );
 						
 						// $entity->setFilePassword ( $filePassword );
 						if ($documentSubject == null) {
@@ -1500,7 +1500,7 @@ class PrAttachmentController extends AbstractActionController {
 		 *
 		 * @todo Update target
 		 */
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			return new ViewModel ( array (
@@ -1576,7 +1576,7 @@ class PrAttachmentController extends AbstractActionController {
 	public function updateTokenAction() {
 		
 		/** @todo: update target */
-		$query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.project > :n';
+		$query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.pr > :n';
 		
 		$list = $this->doctrineEM->createQuery($query)
 		->setParameter('n', 0)
@@ -1586,9 +1586,8 @@ class PrAttachmentController extends AbstractActionController {
 			foreach ( $list as $entity ) {
 				/**
 				 *
-				 * @todo Update Targnet
+				 * @todo Update Target
 				 */
-				$entity->setChecksum ( md5 ( uniqid ( "project_a_" . $entity->getId () ) . microtime () ) );
 				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 			}
 		}

@@ -16,6 +16,7 @@ use MLA\Paginator;
 use Application\Entity\NmtPmProject;
 use Zend\Validator\Date;
 use Zend\Math\Rand;
+use Application\Entity\NmtProcurePr;
 
 /**
  *
@@ -23,7 +24,6 @@ use Zend\Math\Rand;
  *        
  */
 class PrController extends AbstractActionController {
-	
 	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 	protected $doctrineEM;
 	
@@ -102,77 +102,58 @@ class PrController extends AbstractActionController {
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				"email" => $this->identity () 
-		) );
 		
 		if ($request->isPost ()) {
 			
 			$errors = array ();
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			
-			$projectName = $request->getPost ( 'projectName' );
+			$prNumber = $request->getPost ( 'prNumber' );
+			$prName = $request->getPost ( 'prName' );
 			$keywords = $request->getPost ( 'keywords' );
-			
-			$description = $request->getPost ( 'description' );
-			
-			$startDate = $request->getPost ( 'startDate' );
-			$endDate = $request->getPost ( 'endDate' );
+			$remarks = $request->getPost ( 'remarks' );
+			$isDraft = $request->getPost ( 'isDraft' );
 			$isActive = $request->getPost ( 'isActive' );
+			$status = $request->getPost ( 'status' );
+			$remarks = $request->getPost ( 'remarks' );
+			$department_id = $request->getPost ( 'department_id' );
 			
 			if ($isActive != 1) {
 				$isActive = 0;
 			}
 			
-			$status = $request->getPost ( 'status' );
-			$remarks = $request->getPost ( 'remarks' );
-			
-			$entity = new NmtPmProject ();
-			
-			if ($projectName == null) {
-				$errors [] = 'Please enter project name!';
+			if ($isDraft != 1) {
+				$isDraft = 0;
 			}
 			
-			$validator = new Date ();
-			$validated_date = 0;
+			$prAutoNumber = 'later';
 			
-			if ($startDate !== "") {
-				if (! $validator->isValid ( $startDate )) {
-					$errors [] = 'Start date is not correct or empty!';
-				} else {
-					$entity->setStartDate ( new \DateTime ( $startDate ) );
-					$validated_date ++;
-				}
+			if ($prNumber == null) {
+				$errors [] = 'Please enter PR Number!';
 			}
 			
-			if ($endDate !== "") {
-				if (! $validator->isValid ( $endDate )) {
-					$errors [] = 'End date is not correct or empty!';
-				} else {
-					$entity->setEndDate ( new \DateTime ( $endDate ) );
-					$validated_date ++;
-				}
+			if ($prName == null) {
+				$errors [] = 'Please enter PR Name!';
 			}
 			
-			if ($validated_date == 2) {
-				if (new \DateTime ( $endDate ) < new \DateTime ( $startDate )) {
-					$errors [] = 'End date must be future!';
-				}
-			}
-			
-			$entity->setProjectName ( $projectName );
+			$entity = new NmtProcurePr ();
+			$entity->setPrAutoNumber ( $prAutoNumber );
+			$entity->setPrNumber ( $prNumber );
+			$entity->setPrName ( $prName );
 			$entity->setKeywords ( $keywords );
-			$entity->setDescription ( $description );
-			$entity->setIsActive ( $isActive );
-			$entity->setStatus ( $status );
 			$entity->setRemarks ( $remarks );
-			$entity->setCreatedBy ( $u );
-			$entity->setCreatedOn ( new \DateTime () );
+			$entity->setIsActive ( $isActive );
+			$entity->setIsDraft ( $isDraft );
+			$entity->setStatus ( $status );
+			
+			if ($department_id > 0) {
+				$department = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $department_id );
+				$entity->setDepartment ( $department );
+			}
 			
 			if (count ( $errors ) > 0) {
-				$this->flashMessenger ()->addMessage ( 'Something went wrong!' );
-				
 				return new ViewModel ( array (
+						
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'entity' => $entity 
@@ -180,11 +161,25 @@ class PrController extends AbstractActionController {
 			}
 			
 			// NO ERROR
+			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+					"email" => $this->identity () 
+			) );
+			
+			$entity->setCreatedBy ( $u );
+			$entity->setCreatedOn ( new \DateTime () );
+			
 			$this->doctrineEM->persist ( $entity );
 			$this->doctrineEM->flush ();
-			// $new_entity_id = $entity->getId();
 			
-			$this->flashMessenger ()->addMessage ( 'Project "' . $projectName .'" is created successfully!' );
+			/**
+			 *
+			 * @todo : UPDATE
+			 */
+			$entity->setChecksum ( md5 ( uniqid ( "pr_" . $entity->getId () ) . microtime () ) );
+			$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			$this->doctrineEM->flush ();
+			
+			$this->flashMessenger ()->addMessage ( 'Purchase Request "' . $prNumber . '" is created successfully!' );
 			
 			return $this->redirect ()->toUrl ( $redirectUrl );
 		}
@@ -221,17 +216,14 @@ class PrController extends AbstractActionController {
 		}
 		;
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findBy ( $criteria, $sort_criteria );
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findBy ( $criteria, $sort_criteria );
 		$total_records = count ( $list );
 		$paginator = null;
 		
 		if ($total_records > $resultsPerPage) {
 			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
-			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
-		
-		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
-		// var_dump (count($all));
 		
 		return new ViewModel ( array (
 				'list' => $list,
@@ -263,7 +255,7 @@ class PrController extends AbstractActionController {
 				'token' => $token 
 		);
 		
-		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 		if ($entity !== null) {
 			
 			return new ViewModel ( array (
@@ -282,16 +274,20 @@ class PrController extends AbstractActionController {
 	public function editAction() {
 		$request = $this->getRequest ();
 		
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				"email" => $this->identity () 
-		) );
-		
 		if ($request->isPost ()) {
 			
 			$errors = array ();
+			
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			$entity_id = $request->getPost ( 'entity_id' );
-			$entity = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $entity_id );
+			$token = $request->getPost ( 'token' );
+			
+			$criteria = array (
+					'id' => $entity_id,
+					'token' => $token 
+			);
+			
+			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 			
 			if ($entity == null) {
 				
@@ -305,84 +301,71 @@ class PrController extends AbstractActionController {
 				) );
 			} else {
 				
-				
-				$redirectUrl = $request->getPost ( 'redirectUrl' );
-				
-				$projectName = $request->getPost ( 'projectName' );
+				$prNumber = $request->getPost ( 'prNumber' );
+				$prName = $request->getPost ( 'prName' );
 				$keywords = $request->getPost ( 'keywords' );
-				
-				$description = $request->getPost ( 'description' );
-				
-				$startDate = $request->getPost ( 'startDate' );
-				$endDate = $request->getPost ( 'endDate' );
+				$remarks = $request->getPost ( 'remarks' );
+				$isDraft = $request->getPost ( 'isDraft' );
 				$isActive = $request->getPost ( 'isActive' );
+				$status = $request->getPost ( 'status' );
+				$remarks = $request->getPost ( 'remarks' );
+				$department_id = $request->getPost ( 'department_id' );
 				
-				if ($isActive == "") {
+				if ($isActive != 1) {
 					$isActive = 0;
 				}
 				
-				$status = $request->getPost ( 'status' );
-				$remarks = $request->getPost ( 'remarks' );
-				
-				// $entity = new NmtPmProject ();
-				
-				if ($projectName == null) {
-					$errors [] = 'Please enter project name!';
+				if ($isDraft != 1) {
+					$isDraft = 0;
 				}
 				
-				$validator = new Date ();
-				$validated_date = 0;
+				$prAutoNumber = 'later';
 				
-				if ($startDate !== "") {
-					if (! $validator->isValid ( $startDate )) {
-						$errors [] = 'Start date is not correct or empty!';
-					} else {
-						$entity->setStartDate ( new \DateTime ( $startDate ) );
-						$validated_date ++;
-					}
+				if ($prNumber == null) {
+					$errors [] = 'Please enter PR Number!';
 				}
 				
-				if ($endDate !== "") {
-					if (! $validator->isValid ( $endDate )) {
-						$errors [] = 'End date is not correct or empty!';
-					} else {
-						$entity->setEndDate ( new \DateTime ( $endDate ) );
-						$validated_date ++;
-					}
+				if ($prName == null) {
+					$errors [] = 'Please enter PR Name!';
 				}
 				
-				if ($validated_date == 2) {
-					if (new \DateTime ( $endDate ) < new \DateTime ( $startDate )) {
-						$errors [] = 'End date must be future!';
-					}
-				}
+				//$entity = new NmtProcurePr ();
 				
-				$entity->setProjectName ( $projectName );
+				$entity->setPrAutoNumber ( $prAutoNumber );
+				$entity->setPrNumber ( $prNumber );
+				$entity->setPrName ( $prName );
 				$entity->setKeywords ( $keywords );
-				$entity->setDescription ( $description );
-				$entity->setIsActive ( $isActive );
-				$entity->setStatus ( $status );
 				$entity->setRemarks ( $remarks );
+				$entity->setIsActive ( $isActive );
+				$entity->setIsDraft ( $isDraft );
+				$entity->setStatus ( $status );
+				
+				if ($department_id > 0) {
+					$department = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $department_id );
+					$entity->setDepartment ( $department );
+				}
 				
 				if (count ( $errors ) > 0) {
-					$this->flashMessenger ()->addMessage ( 'Something wrong!' );
-					
 					return new ViewModel ( array (
+							
 							'redirectUrl' => $redirectUrl,
 							'errors' => $errors,
-							'entity' => $entity 
+							'entity' => $entity
 					) );
 				}
 				
 				// NO ERROR
-				$entity->setLastChangeBy ( $u );
-				$entity->setLastChangeOn ( new \DateTime () );
+				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+						"email" => $this->identity ()
+				) );
+				
+				$entity->setLastChangeBy($u);
+				$entity->setLastChangeOn(new \DateTime());
 				
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
-				// $new_entity_id = $entity->getId();
 				
-				$this->flashMessenger ()->addMessage ( 'Project "'. $projectName .'" has been updated!' );
+				$this->flashMessenger ()->addMessage ( 'Purchase Request "'. $prName .'" has been updated!' );
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
@@ -401,7 +384,7 @@ class PrController extends AbstractActionController {
 				'token' => $token
 		);
 		
-		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findOneBy ( $criteria );
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 		if ($entity !== null) {
 			
 			return new ViewModel ( array (

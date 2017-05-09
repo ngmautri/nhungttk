@@ -2,7 +2,7 @@
 <h4>
 	 <?php 
 	 // target:Project
- 	echo (!$target== null)? 'Project: ' . $target->getProjectName():"";?>
+ 	echo (!$target== null)? 'PR: ' . $target->getPrNumber():"";?>
 </h4>
 
 <?php
@@ -27,7 +27,7 @@ if (count ( $errors ) > 0) {
 <div id="general"> 
 
 <!--UPDATE -->
-<form id="attachment_upload_form" class="form-horizontal" action="/pm/project-attachment/edit" method="post" enctype="multipart/form-data">
+<form id="attachment_upload_form" class="form-horizontal" action="/procure/pr-attachment/edit" method="post" enctype="multipart/form-data">
 <input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
 <input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
@@ -92,7 +92,7 @@ if (count ( $errors ) > 0) {
 		</div>
 			<label class="control-label col-sm-2" for="inputTag">Attachment: </label>
 		<div class="col-sm-3">
-	<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/pm/project-attachment/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
+	<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/procure/pr-attachment/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
 		</div>		
 	</div>
 	
@@ -100,7 +100,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
 <a class="btn btn-default" style="" href="javascript:;"
-	onClick="doUploadAttachment('attachment_upload_form','attachments','/pm/project-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>','0','<?php echo (!$entity== null)? $entity->getId():"";?>','<?php echo (!$entity== null)? $entity->getToken():"";?>');">
+	onClick="doUploadAttachment('attachment_upload_form','attachments','/procure/pr-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>','0','<?php echo (!$entity== null)? $entity->getId():"";?>','<?php echo (!$entity== null)? $entity->getToken():"";?>');">
 	<small><i class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp; Edit
 </a>
 

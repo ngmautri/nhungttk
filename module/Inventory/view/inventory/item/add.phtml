@@ -1,4 +1,3 @@
- <h4>Create Item:</h4>
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert">';
@@ -13,29 +12,29 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-<form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/add" method="post" enctype="multipart/form-data">
-<input type="hidden" name="redirectUrl"
-		value="<?php echo $redirectUrl ?>" />
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
-  <li ><a href="#general">Item</a></li>
+  <li ><a href="#general">New Item</a></li>
    </ul>
 
 <div id="general"> 
-	
-	<div class="form-group">
+
+<form id= "create_item_form" class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/add" method="post" enctype="multipart/form-data">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+		
+	<div class="form-group required">
 		<label class="control-label col-sm-2" >Item ID</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="item_sku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
+				name="itemSku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
 		</div>		
 		<div class="col-sm-4">
-	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()==="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_active" value="1">&nbsp;Active&nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsStocked()==="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_stocked" value="1">&nbsp;Stocked &nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsPurchased()==="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="is_purchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
-	 		 <input <?php if(!$entity == null): echo ($entity->getIsSaleItem()==="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_sale_item" value="1">&nbsp;For Sale &nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()==="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="is_fixed_asset" value="1">&nbsp;Fixed Asset
+	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+			 <input <?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isStocked" value="1">&nbsp;Stocked &nbsp;&nbsp;
+			 <input <?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isPurchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
+	 		 <input <?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isSaleItem" value="1">&nbsp;For Sale &nbsp;&nbsp;
+			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset
 		
 		</div>
 		
@@ -44,31 +43,31 @@ if (count ( $errors ) > 0) {
 		</div>
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group required">
 		<label class="control-label col-sm-2" >Item  Name</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="item_name" value="<?php echo (!$entity == null)? $entity->getItemName():"";?>">
+				name="itemName" value="<?php echo (!$entity == null)? $entity->getItemName():"";?>">
 		</div>
 		
 		<label class="control-label col-sm-2" >Item Foreign Name</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="item_name_foreign" value="<?php echo (!$entity == null)? $entity->getItemNameForeign():"";?>">
+				name="itemNameForeign" value="<?php echo (!$entity == null)? $entity->getItemNameForeign():"";?>">
 		</div>
 	</div>
 		<div class="form-group">
 		<label class="control-label col-sm-2" >Item  Description</label>
 		<div class="col-sm-8">
 			<input class="form-control" type="text"  placeholder=""
-				name="item_description" value="<?php echo (!$entity == null)? $entity->getItemDescription():"";?>">
+				name="itemDescription" value="<?php echo (!$entity == null)? $entity->getItemDescription():"";?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="control-label col-sm-2" >Bar Code</label>
+		<label class="control-label col-sm-2" >Barcode</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="item_barcode" value="<?php echo (!$entity == null)? $entity->getBarcode():"";?>">
+				name="barcode" value="<?php echo (!$entity == null)? $entity->getBarcode():"";?>">
 			
 		</div>		
 		<label class="control-label col-sm-2" >Keyworks</label>
@@ -78,10 +77,10 @@ if (count ( $errors ) > 0) {
 		</div>
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group required">
 		<label class="control-label col-sm-2" >Item Type</label>
 		<div class="col-sm-3">
-			<select class="form-control"  name="item_type" >
+			<select class="form-control"  name="itemType" >
         		<option <?php if(!$entity == null): echo ($entity->getItemType()=="ITEM")?"selected":""; endif;?> value="ITEM">Item</option>
    	     		<option <?php if(!$entity == null): echo ($entity->getItemType()=="SERVICE")?"selected":""; endif;?> value="SERVICE">Service</option>
    	     		<option <?php if(!$entity == null): echo ($entity->getItemType()=="SOFTWARE")?"selected":""; endif;?> value="SOFTWARE">Software</option>
@@ -90,11 +89,10 @@ if (count ( $errors ) > 0) {
 		
 		<label class="control-label col-sm-2" >Measurement</label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="standard_uom_name" placeholder="Please select standard unit"
-				name="item_uom_name" value="<?php echo (!$uom == null)? $uom->getUomCode():"";?>">
-			<input type="hidden" id="standard_uom_id" placeholder="" 
-			name="standard_uom_id" value="<?php echo (!$uom == null)? $uom->getId():"";?>">	
-			
+			<input disabled class="form-control" type="text" id="standard_uom_name" placeholder="Please select standard unit" name="item_uom_name" 
+value="<?php if($entity !== null):if($entity->getStandardUom()!==null):echo $entity->getStandardUom()->getUomCode() . " - ". $entity->getStandardUom()->getUomName();endif;endif;?>">
+			<input type="hidden" class="form-control" id="standard_uom_id" name="standard_uom_id" 
+value="<?php if($entity !== null):if($entity->getStandardUom()!==null):echo $entity->getStandardUom()->getId();endif;endif;?>">
 		</div>
 <!-- 		
 <a style="color: #0080ff;" href="javascript:;"
@@ -110,34 +108,35 @@ if (count ( $errors ) > 0) {
 	
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Item Category</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="item_category_name" placeholder="Please select item category"
-				name="country_code_2" value="<?php echo (!$category == null)? $category->getNodeName():"";?>">
-			<input type="hidden" id="item_category_name_selected" placeholder="" 
-			name="item_category_id" value="<?php echo (!$category == null)? $category->getNodeId():"";?>">	
-		</div>
+		<div class="col-sm-3">		
+
+<input disabled class="form-control" type="text" id="item_category_name" placeholder="Please select item category" name="country_code_2" 
+value="<?php if($category !== null):echo $category->getNodeName();endif;?>">
+<input type="hidden" class="form-control" id="item_category_name_selected" name="item_category_id" 
+value="<?php if($category!== null):echo $category->getNodeId();endif;?>">
+	</div>		
 		
 <a style="color: #0080ff;" href="javascript:;"
 	onclick="showBootstrapDialog('Select Item Category','/application/item-category/list1','b_loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
-
 	</div>
 	
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Department</label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="department_name" placeholder="Please select!"
-				name="deparment_name" value="<?php echo (!$department == null)? $department->getNodeName():"";?>">
-			<input type="hidden" id="department_name_selected" placeholder="" 
-			name="department_id" value="<?php echo (!$department == null)? $department->getNodeId():"";?>">	
+		
+<input disabled class="form-control" type="text" id="department_name" placeholder="Please select!" name="deparment_name" 
+value="<?php if($department !== null):echo $department->getNodeName();endif;?>">
+<input type="hidden" class="form-control" type="text" id="department_name_selected" placeholder="Please select standard unit" name="department_id" 
+value="<?php if($department!== null):echo $department->getNodeId();endif;?>">	
+
 		</div>
 		
 <a style="color: #0080ff;" href="javascript:;"
 	onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
 
-
-</div>
+	</div>
 	
 	<div class="form-group">
 		<label class="control-label col-sm-2">Location</label>
@@ -145,10 +144,7 @@ if (count ( $errors ) > 0) {
 			<input class="form-control" type="text"  placeholder=""
 				name="location" value="<?php echo (!$entity == null)? $entity->getLocation():"";?>">
 		</div>
-		
 	</div>
-	
-	
 	
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Manufacturer</label>
@@ -159,7 +155,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label col-sm-2" >Manufacturer Model</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="manufacturer_code" value="<?php echo (!$entity == null)? $entity->getManufacturerModel():"";?>">
+				name="manufacturerModel" value="<?php echo (!$entity == null)? $entity->getManufacturerModel():"";?>">
 		</div>
 	</div>
 	
@@ -167,27 +163,27 @@ if (count ( $errors ) > 0) {
 		<label class="control-label col-sm-2" >Manufacturer's Item Code</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="manufacturer_code" value="<?php echo (!$entity == null)? $entity->getManufacturerCode():"";?>">
+				name="manufacturerCode" value="<?php echo (!$entity == null)? $entity->getManufacturerCode():"";?>">
 		</div>
 		
 		
 		<label class="control-label col-sm-2" >Manufacturer Serial</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text" placeholder=""
-				name="manufacturer_serial" value="<?php echo (!$entity == null)? $entity->getManufacturerSerial():"";?>">
+				name="manufacturerSerial" value="<?php echo (!$entity == null)? $entity->getManufacturerSerial():"";?>">
 		</div>
-		
 	</div>
-	
 	
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Lead time</label>
 		<div class="col-sm-3">
-			<input  class="form-control" type="text" placeholder=""
-				name="lead_time" value="<?php echo (!$entity == null)? $entity->getLeadTime():"";?>">
-				 <input <?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()==="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="local_availability" value="1">&nbsp;Local Availability
-		
+<input  class="form-control" type="text" placeholder="" name="leadTime" 
+			value="<?php echo (!$entity == null)? $entity->getLeadTime():"";?>">
+
+<input  name="localAvailabiliy" <?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" value="1">&nbsp;Local Availability
+
 		</div>
+
 		<label class="control-label col-sm-2" >Remarks</label>
 		<div class="col-sm-3">
 			<textarea  class="form-control" type="text" rows="5" placeholder=""
@@ -197,13 +193,13 @@ if (count ( $errors ) > 0) {
 	
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-default">Save</button>
+			<button onclick="submitForm('create_item_form');" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
 		</div>
 	</div>
+	
+	</form>
 </div>
-	
 </div>	
-	
 
-</form>
+
 

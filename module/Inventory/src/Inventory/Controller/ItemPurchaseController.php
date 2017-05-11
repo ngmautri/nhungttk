@@ -12,37 +12,29 @@ namespace Inventory\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
-use Zend\Barcode\Barcode;
 use Application\Entity\NmtInventoryItem;
-use Application\Entity\NmtInventoryItemPicture;
 use User\Model\UserTable;
 use MLA\Paginator;
-use Application\Entity\NmtInventoryItemCategoryMember;
-use Application\Entity\NmtInventoryItemDepartment;
 use Inventory\Service\ItemSearchService;
 use Application\Entity\NmtInventoryItemAttachment;
-use Zend\Http\Headers;
 use Zend\Validator\Date;
 use Application\Entity\NmtInventoryItemPurchasing;
+use Zend\Math\Rand;
 
-/*
- * Control Panel Controller
+/**
+ *
+ * @author nmt
+ *        
  */
 class ItemPurchaseController extends AbstractActionController {
+	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 	protected $doctrineEM;
 	protected $itemSearchService;
-	protected $userTable;
 	
 	/*
 	 * Defaul Action
 	 */
 	public function indexAction() {
-		$message = $this->flashMessenger ()->getSuccessMessages ();
-		$this->flashMessenger ()->clearCurrentMessages ();
-		
-		return new ViewModel ( array (
-				'message' => $message 
-		) );
 	}
 	
 	/**
@@ -52,33 +44,66 @@ class ItemPurchaseController extends AbstractActionController {
 	public function addAction() {
 		$request = $this->getRequest ();
 		
-		if ($request->getHeader ( 'Referer' ) == null) {
-			return $this->redirect ()->toRoute ( 'access_denied' );
-		}
-		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$user = $this->userTable->getUserByEmail ( $this->identity () );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
-		
 		if ($request->isPost ()) {
 			$errors = array ();
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$target_id = $request->getPost ( 'target_id' );
+			$token = $request->getPost ( 'token' );
 			
-			$new_entity_id = $request->getPost ( 'new_entity_id' );
-			$item_id = $request->getPost ( 'item_id' );
-			$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
+			$criteria = array (
+					'id' => $target_id,
+					'token' => $token 
+			);
 			
-			// create new if, no entity_id found
-			if ($new_entity_id == null) {
+			/**
+			 *
+			 * @todo Update Target
+			 */
+			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+			
+			if ($target == null) {
+				
+				$errors [] = 'Target object can\'t be empty. Or token key is not valid!';
+				$this->flashMessenger ()->addMessage ( 'Something wrong!' );
+				return new ViewModel ( array (
+						'redirectUrl' => $redirectUrl,
+						'errors' => $errors,
+						'target' => null,
+						'entity' => null 
+				) );
+				
+				// might need redirect
+			} else {
+				
+				$vendor_id = $request->getPost ( 'vendor_id' );
+				$currency_id = $request->getPost ( 'currency_id' );
+				$pmt_method_id = $request->getPost ( 'pmt_method_id' );
+				
+				$isActive = ( int ) $request->getPost ( 'isActive' );
+				$isPreferredVendor = ( int ) $request->getPost ( 'isPreferredVendor' );
+				$leadTime = $request->getPost ( 'leadTime' );
+				
+				$conversionFactor = $request->getPost ( 'conversionFactor' );
+				$priceValidFrom = $request->getPost ( 'priceValidFrom' );
+				$priceValidTo = $request->getPost ( 'priceValidTo' );
+				$remarks = $request->getPost ( 'remarks' );
+				$vendorItemCode = $request->getPost ( 'vendorItemCode' );
+				$vendorItemUnit = $request->getPost ( 'vendorItemUnit' );
+				$vendorUnitPrice = $request->getPost ( 'vendorUnitPrice' );
+				
+				if ($isActive !== 1) {
+					$isActive = 0;
+				}
+				
+				if ($isPreferredVendor !== 1) {
+					$isPreferredVendor = 0;
+				}
 				
 				$entity = new NmtInventoryItemPurchasing ();
 				
-				if ($item == null) {
-					$errors [] = 'Item not found!';
-				} else {
-					$entity->setItem ( $item );
-				}
+				$entity->setIsActive ( $isActive );
+				$entity->setIsPreferredVendor ( $isPreferredVendor );
 				
-				$vendor_id = $request->getPost ( 'vendor_id' );
 				$vendor = $this->doctrineEM->find ( 'Application\Entity\NmtBpVendor', $vendor_id );
 				
 				if ($vendor == null) {
@@ -87,301 +112,138 @@ class ItemPurchaseController extends AbstractActionController {
 					$entity->setVendor ( $vendor );
 				}
 				
-				$is_preferred_vendor = $request->getPost ( 'is_preferred_vendor' );
-				$entity->setIsPreferredVendor ( $is_preferred_vendor );
-				
-				$is_active = $request->getPost ( 'is_active' );
-				if($is_active==null){
-					$is_active=0;
-				}
-				$entity->setIsActive($is_active);
-				
-				$vendor_item_code = $request->getPost ( 'vendor_item_code' );
-				$entity->setVendorItemCode ( $vendor_item_code );
-				
-				$vendor_item_unit = $request->getPost ( 'vendor_item_unit' );
-				
-				if ($vendor_item_unit == null) {
+				if ($vendorItemUnit == null) {
 					$errors [] = 'Please enter unit of purchase';
 				} else {
-					$entity->setVendorItemUnit ( $vendor_item_unit );
+					$entity->setVendorItemUnit ( $vendorItemUnit );
+					$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
 				}
 				
-				$conversion_factor= $request->getPost ( 'conversion_factor' );
-				if ($conversion_factor== null) {
+				if ($conversionFactor == null) {
 					$errors [] = 'Please  enter conversion factor';
 				} else {
 					
-					if (! is_numeric ( $conversion_factor)) {
+					if (! is_numeric ( $conversionFactor )) {
 						$errors [] = 'converstion_factor must be a number.';
 					} else {
-						if ($conversion_factor<= 0) {
+						if ($conversionFactor <= 0) {
 							$errors [] = 'converstion_factor must be greater than 0!';
 						}
-						$entity->setConversionFactor ( $conversion_factor);
+						$entity->setConversionFactor ( $conversionFactor );
 					}
 				}
 				
-				$vendor_unit_price = $request->getPost ( 'vendor_unit_price' );
-				
-				if (! is_numeric ( $vendor_unit_price )) {
+				if (! is_numeric ( $vendorUnitPrice )) {
 					$errors [] = 'Price is not valid. It must be a number.';
 				} else {
-					if ($vendor_unit_price <= 0) {
+					if ($vendorUnitPrice <= 0) {
 						$errors [] = 'Price must be greate than 0!';
 					}
-					$entity->setVendorUnitPrice ( $vendor_unit_price );
+					$entity->setVendorUnitPrice ( $vendorUnitPrice );
 				}
 				
-				$currency_id = $request->getPost ( 'currency_id' );
 				$currency = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCurrency', $currency_id );
-				
 				if ($currency == null) {
 					$errors [] = 'Curency can\'t be empty. Please select a currency!';
 				} else {
 					$entity->setCurrency ( $currency );
 				}
 				
-				$price_valid_from = $request->getPost ( 'price_valid_from' );
-				$price_valid_to = $request->getPost ( 'price_valid_to' );
-				
-				$date_validated = 0;
-				$validator = new Date ();
-				if (! $validator->isValid ( $price_valid_from )) {
-					$errors [] = 'Price valid  date is not correct or empty!';
-				} else {
-					$entity->setPriceValidFrom ( new \DateTime ( $price_valid_from ) );
-					$date_validated ++;
-				}
-				
-				if ($price_valid_to !== "") {
-					if (! $validator->isValid ( $price_valid_to )) {
-						$errors [] = 'Price valid  to is not correct or empty!';
-					} else {
-						$entity->setPriceValidTo ( new \DateTime ( $price_valid_to ) );
-						$date_validated ++;
-					}
-					
-					if ($date_validated == 2) {
-						
-						if ($price_valid_from > $price_valid_to) {
-							$errors [] = 'To date must > from date!';
-						}
-					}
-				}
-				
-				$lead_time = $request->getPost ( 'lead_time' );
-				$entity->setLeadTime ( $lead_time );
-				
-				$pmt_method_id = $request->getPost ( 'pmt_method_id' );
 				$pmt_method = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationPmtMethod', $pmt_method_id );
 				if (! $pmt_method == null) {
 					$entity->setPmtMethod ( $pmt_method );
 				}
 				
-				$remarks = $request->getPost ( 'remarks' );
-				$entity->setRemarks ( $remarks );
+				$date_validated = 0;
+				$validator = new Date ();
+				if (! $validator->isValid ( $priceValidFrom )) {
+					$errors [] = 'Start date is not correct or empty!';
+				} else {
+					$entity->setPriceValidFrom ( new \DateTime ( $priceValidFrom ) );
+					$date_validated ++;
+				}
 				
-				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				if ($priceValidTo !== "") {
+					if (! $validator->isValid ( $priceValidTo )) {
+						$errors [] = 'End Date  to is not correct or empty!';
+					} else {
+						$entity->setPriceValidTo ( new \DateTime ( $priceValidTo ) );
+						$date_validated ++;
+					}
+					
+					if ($date_validated == 2) {
+						
+						if ($priceValidFrom > $priceValidTo) {
+							$errors [] = 'End date must be in the future!';
+						}
+					}
+				}
+				
+				$entity->setItem ( $target );
+				$entity->setLeadTime ( $leadTime );
+				// $entity->setPmtTerm();
+				$entity->setRemarks ( $remarks );
+				$entity->setVendorItemCode ( $vendorItemCode );
 				
 				if (count ( $errors ) > 0) {
 					
 					return new ViewModel ( array (
 							'redirectUrl' => $redirectUrl,
 							'errors' => $errors,
-							'item' => $item,
-							'entity' => $entity,
-							'vendor' => $vendor,
-							'currency' => $currency,
-							'pmt_method' => $pmt_method,
-							'new_entity_id' => null 
-					
+							'target' => $target,
+							'entity' => $entity 
 					) );
 				}
 				;
 				
-				// create purchase first
-				$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $item->getStandardUom ()->getUomCode () );
+				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+						'email' => $this->identity () 
+				) );
+				
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+				
 				$entity->setCreatedBy ( $u );
 				$entity->setCreatedOn ( new \DateTime () );
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
-				$new_entity_id = $entity->getId();
-			}
-			
-			$new_entity =  new NmtInventoryItemPurchasing();
-			$new_entity_tmp = $pmt_method = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemPurchasing', $new_entity_id );
-			$new_entity = $new_entity_tmp;
-			
-			// adding attachment
-			if ($new_entity !== null) {
+				$new_entity_id = $entity->getId ();
 				
-				if (isset ( $_FILES ['attachments'] )) {
-					$file_name = $_FILES ['attachments'] ['name'];
-					$file_size = $_FILES ['attachments'] ['size'];
-					$file_tmp = $_FILES ['attachments'] ['tmp_name'];
-					$file_type = $_FILES ['attachments'] ['type'];
-					$file_ext = strtolower ( end ( explode ( '.', $_FILES ['attachments'] ['name'] ) ) );
-					echo ($file_name);
-					
-					// NOT empty attachment
-					if ($file_tmp !== "" and $file_size < 2097152) {
-						$ext = '';
-						if (preg_match ( '/(jpg|jpeg)$/', $file_type )) {
-							$ext = 'jpg';
-						} else if (preg_match ( '/(gif)$/', $file_type )) {
-							$ext = 'gif';
-						} else if (preg_match ( '/(png)$/', $file_type )) {
-							$ext = 'png';
-						} else if (preg_match ( '/(pdf)$/', $file_type )) {
-							$ext = 'pdf';
-						} else if (preg_match ( '/(vnd.ms-excel)$/', $file_type )) {
-							$ext = 'xls';
-						} else if (preg_match ( '/(vnd.openxmlformats-officedocument.spreadsheetml.sheet)$/', $file_type )) {
-							$ext = 'xlsx';
-						} else if (preg_match ( '/(msword)$/', $file_type )) {
-							$ext = 'doc';
-						} else if (preg_match ( '/(vnd.openxmlformats-officedocument.wordprocessingml.document)$/', $file_type )) {
-							$ext = 'docx';
-						} else if (preg_match ( '/(x-zip-compressed)$/', $file_type )) {
-							$ext = 'zip';
-						} else if (preg_match ( '/(octet-stream)$/', $file_type )) {
-							$ext = $file_ext;
-						}
-						
-						$expensions = array (
-								"jpeg",
-								"jpg",
-								"png",
-								"pdf",
-								"xlsx",
-								"xls",
-								"docx",
-								"doc",
-								"zip",
-								"msg" 
-						);
-						
-						$errors = array ();
-						
-						if (in_array ( $ext, $expensions ) === false) {
-							$errors [] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg",
-							"jpg",
-							"png",
-							"pdf",
-							"xlsx",
-							"xls",
-							"docx",
-							"doc",
-							"zip",
-							"msg" !';
-						}
-						
-						if ($file_size > 2097152) {
-							$errors [] = 'File size must be excately 2 MB';
-						}
-						
-						$checksum = md5_file ( $file_tmp );
-						$criteria = array (
-								"checksum" => $checksum,
-								"item" => $item_id 
-						);
-						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemAttachment' )->findby ( $criteria );
-						
-						if (count ( $ck ) > 0) {
-							// update attachment with new_entity_id;
-						}
-						
-						if ($item == null) {
-							$errors [] = 'Item not found!';
-						}
-						
-						if (count ( $errors ) > 0) {
-							
-							return new ViewModel ( array (
-									'redirectUrl' => $redirectUrl,
-									'errors' => $errors,
-									'item' => $item,
-									'entity' => $new_entity,
-									'vendor' => $new_entity->getVendor(),
-									'currency' => $new_entity->getCurrency(),
-									'pmt_method' => $new_entity->getPmtMethod(),
-									'new_entity_id' => $new_entity_id 
-							) );
-						}
-						;
-						
-						$name = md5 ( $item_id . $checksum . uniqid ( microtime () ) ) . '_' . $this->generateRandomString () . '_' . $this->generateRandomString ( 10 ) . '.' . $ext;
-						
-						$root_dir = ROOT . "/data/inventory/attachment/item";
-						$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
-						$folder = $root_dir . DIRECTORY_SEPARATOR . $folder_relative;
-						
-						if (! is_dir ( $folder )) {
-							mkdir ( $folder, 0777, true ); // important
-						}
-						
-						// echo ("$folder/$name");
-						
-						move_uploaded_file ( $file_tmp, "$folder/$name" );
-						
-						$pdf_box = ROOT . "/vendor/pdfbox/";
-						
-						// java -jar pdfbox-app-2.0.5.jar Encrypt [OPTIONS] <password> <inputfile>
-						exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U mla2017 ' . "$folder/$name" );
-						
-						// extract text:
-						exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar ExtractText -password mla2017 ' . "$folder/$name" . ' ' . "$folder/$name" . '.txt' );
-						
-						// echo('java -jar ' . $pdf_box.'/pdfbox-app-2.0.5.jar Encrypt -O nmt -U nmt '."$folder/$name");
-						
-						// update database
-						$entity = new NmtInventoryItemAttachment ();
-						$entity->setDocumentType ( "Attachment Puchasing: ". $new_entity->getID());
-						
-						//$entity->setDocumentType ( "Purchasing attachment: " . $new_entity->getItem()->getID());
-						$entity->setFilename ( $name );
-						$entity->setFiletype ( $file_type );
-						$entity->setFilenameOriginal ( $file_name );
-						$entity->setSize ( $file_size );
-						$entity->setFolder ( $folder );
-						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
-						$entity->setChecksum ( $checksum );
-						
-						$entity->setItem ( $item );
-						$entity->setVendor ( $new_entity->getVendor());
-						$entity->setItemPurchasing($new_entity);
-						
-						$entity->setCreatedBy ( $u );
-						$entity->setCreatedOn ( new \DateTime () );
-						$this->doctrineEM->persist ( $entity );
-						$this->doctrineEM->flush ();
-						//$new_attachement_id = $entity->getId();
-						
-						
-						return $this->redirect ()->toUrl ( $redirectUrl );
-					}
-				}
+				$entity->setChecksum ( md5 ( $new_entity_id . uniqid ( microtime () ) ) );
+				$this->doctrineEM->flush ();
+				
+				$this->flashMessenger ()->addMessage ( "Purchasing data has been created successfully!" );
+				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
-			
-			return $this->redirect ()->toUrl ( $redirectUrl );
+		}
+		
+		$redirectUrl = Null;
+		if ($request->getHeader ( 'Referer' ) == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
+		$target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
 		
-		return new ViewModel ( array (
-				'redirectUrl' => $redirectUrl,
-				'errors' => null,
-				'item' => $item,
-				'entity' => null,
-				'vendor' => null,
-				'currency' => null,
-				'pmt_method' => null,
-				'new_entity_id' => null 
+		$criteria = array (
+				'id' => $target_id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
 		
-		) );
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+		
+		if ($target !== null) {
+			return new ViewModel ( array (
+					'redirectUrl' => $redirectUrl,
+					'errors' => null,
+					'entity' => null,
+					'target' => $target 
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 	}
 	
 	/**
@@ -392,39 +254,32 @@ class ItemPurchaseController extends AbstractActionController {
 		$request = $this->getRequest ();
 		
 		if ($request->getHeader ( 'Referer' ) == null) {
-		 return $this->redirect ()->toRoute ( 'access_denied' );
-		 }
-		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$user = $this->userTable->getUserByEmail ( $this->identity () );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
-		
-		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$item_purchasing = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemPurchasing', $id );
-		
-		$vendor=null;
-		$currency=null;
-		$pmt_method=null;
-		$item=null;
-		if($item_purchasing!==null){
-			$vendor=$item_purchasing->getVendor();
-			$currency=$item_purchasing->getCurrency();
-			$pmt_method=$item_purchasing->getPmtMethod();
-			$item=$item_purchasing->getItem();
+			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$checksum= $this->params ()->fromQuery ( 'checksum' );
+		
+		$criteria = array (
+				'id' => $entity_id,
+				'token' => $token,
+				'checksum' => $checksum
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findOneBy ( $criteria );
+		if ($entity == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$target = $entity->getItem ();
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
 				'errors' => null,
-				'item' => $item,
-				'entity' => $item_purchasing,
-				'vendor' => $vendor,
-				'currency' => $currency,
-				'pmt_method' => $pmt_method,
-				'new_entity_id' => null
-				
+				'target' => $target,
+				'entity' => $entity 
 		) );
 	}
 	/**
@@ -434,36 +289,69 @@ class ItemPurchaseController extends AbstractActionController {
 	public function editAction() {
 		$request = $this->getRequest ();
 		
-		/* if ($request->getHeader ( 'Referer' ) == null) {
-			return $this->redirect ()->toRoute ( 'access_denied' );
-		} */
-		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$user = $this->userTable->getUserByEmail ( $this->identity () );
-		$u = $this->doctrineEM->find ( 'Application\Entity\MlaUsers', $user ['id'] );
-		
 		if ($request->isPost ()) {
 			$errors = array ();
 			
-			$entity_id = $request->getPost ( 'entity_id' );
-			//$item_id = $request->getPost ( 'item_id' );
-			$entity= $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemPurchasing', $entity_id);
-			//echo($entity->getVendorItemCode());
+			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+					"email" => $this->identity () 
+			) );
 			
-			// create new if, no entity_id found
-			if ($entity !== null) {
-		
-				// need commented
-				//$entity = new NmtInventoryItemPurchasing ();
+			$errors = array ();
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$entity_id = ( int ) $request->getPost ( 'entity_id' );
+			$token = $request->getPost ( 'token' );
+			
+			$criteria = array (
+					'id' => $entity_id,
+					'token' => $token 
+			);
+			
+			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findOneBy ( $criteria );
+			
+			if ($entity == null) {
 				
-				$item = $entity->getItem();
+				$errors [] = 'Entity object can\'t be empty!';
+				return new ViewModel ( array (
+						'redirectUrl' => $redirectUrl,
+						'errors' => $errors,
+						'target' => null,
+						'entity' => null 
+				) );
 				
-				$item_id=null;
-				if($item!==null){
-					$item_id =  $item->getId();
-				}
-												
+				// might need redirect
+			} else {
+				
+				$target = $entity->getItem ();
+				
 				$vendor_id = $request->getPost ( 'vendor_id' );
+				$currency_id = $request->getPost ( 'currency_id' );
+				$pmt_method_id = $request->getPost ( 'pmt_method_id' );
+				
+				$isActive = ( int ) $request->getPost ( 'isActive' );
+				$isPreferredVendor = ( int ) $request->getPost ( 'isPreferredVendor' );
+				$leadTime = $request->getPost ( 'leadTime' );
+				
+				$conversionFactor = $request->getPost ( 'conversionFactor' );
+				$priceValidFrom = $request->getPost ( 'priceValidFrom' );
+				$priceValidTo = $request->getPost ( 'priceValidTo' );
+				$remarks = $request->getPost ( 'remarks' );
+				$vendorItemCode = $request->getPost ( 'vendorItemCode' );
+				$vendorItemUnit = $request->getPost ( 'vendorItemUnit' );
+				$vendorUnitPrice = $request->getPost ( 'vendorUnitPrice' );
+				
+				if ($isActive !== 1) {
+					$isActive = 0;
+				}
+				
+				if ($isPreferredVendor !== 1) {
+					$isPreferredVendor = 0;
+				}
+				
+				// $entity = new NmtInventoryItemPurchasing ();
+				
+				$entity->setIsActive ( $isActive );
+				$entity->setIsPreferredVendor ( $isPreferredVendor );
+				
 				$vendor = $this->doctrineEM->find ( 'Application\Entity\NmtBpVendor', $vendor_id );
 				
 				if ($vendor == null) {
@@ -472,315 +360,140 @@ class ItemPurchaseController extends AbstractActionController {
 					$entity->setVendor ( $vendor );
 				}
 				
-				$is_preferred_vendor = $request->getPost ( 'is_preferred_vendor' );
-				$entity->setIsPreferredVendor ( $is_preferred_vendor );
-				
-				$is_active = $request->getPost ( 'is_active' );
-				if($is_active==null){
-					$is_active=0;
-				}
-				$entity->setIsActive($is_active);
-				
-				$vendor_item_code = $request->getPost ( 'vendor_item_code' );
-				$entity->setVendorItemCode ( $vendor_item_code );
-				
-				$vendor_item_unit = $request->getPost ( 'vendor_item_unit' );
-				
-				if ($vendor_item_unit == null) {
+				if ($vendorItemUnit == null) {
 					$errors [] = 'Please enter unit of purchase';
 				} else {
-					$entity->setVendorItemUnit ( $vendor_item_unit );
+					$entity->setVendorItemUnit ( $vendorItemUnit );
+					
+					if ($target !== null) {
+						$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
+					}
 				}
 				
-				$conversion_factor= $request->getPost ( 'conversion_factor' );
-				if ($conversion_factor== null) {
+				if ($conversionFactor == null) {
 					$errors [] = 'Please  enter conversion factor';
 				} else {
 					
-					if (! is_numeric ( $conversion_factor)) {
+					if (! is_numeric ( $conversionFactor )) {
 						$errors [] = 'converstion_factor must be a number.';
 					} else {
-						if ($conversion_factor<= 0) {
-							$errors [] = 'converstion_factor must be greater than 0!';
+						if ($conversionFactor <= 0) {
+							$errors [] = 'conversion_factor must be greater than 0!';
 						}
-						$entity->setConversionFactor ( $conversion_factor);
+						$entity->setConversionFactor ( $conversionFactor );
 					}
 				}
 				
-				$vendor_unit_price = $request->getPost ( 'vendor_unit_price' );
-				
-				if (! is_numeric ( $vendor_unit_price )) {
+				if (! is_numeric ( $vendorUnitPrice )) {
 					$errors [] = 'Price is not valid. It must be a number.';
 				} else {
-					if ($vendor_unit_price <= 0) {
+					if ($vendorUnitPrice <= 0) {
 						$errors [] = 'Price must be greate than 0!';
 					}
-					$entity->setVendorUnitPrice ( $vendor_unit_price );
+					$entity->setVendorUnitPrice ( $vendorUnitPrice );
 				}
 				
-				$currency_id = $request->getPost ( 'currency_id' );
 				$currency = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCurrency', $currency_id );
-				
 				if ($currency == null) {
 					$errors [] = 'Curency can\'t be empty. Please select a currency!';
 				} else {
 					$entity->setCurrency ( $currency );
 				}
 				
-				$price_valid_from = $request->getPost ( 'price_valid_from' );
-				$price_valid_to = $request->getPost ( 'price_valid_to' );
-				
-				$date_validated = 0;
-				$validator = new Date ();
-				if (! $validator->isValid ( $price_valid_from )) {
-					$errors [] = 'Price valid  date is not correct or empty!';
-				} else {
-					$entity->setPriceValidFrom ( new \DateTime ( $price_valid_from ) );
-					$date_validated ++;
-				}
-				
-				if ($price_valid_to !== "") {
-					if (! $validator->isValid ( $price_valid_to )) {
-						$errors [] = 'Price valid  to is not correct or empty!';
-					} else {
-						$entity->setPriceValidTo ( new \DateTime ( $price_valid_to ) );
-						$date_validated ++;
-					}
-					
-					if ($date_validated == 2) {
-						
-						if ($price_valid_from > $price_valid_to) {
-							$errors [] = 'To date must > from date!';
-						}
-					}
-				}
-				
-				$lead_time = $request->getPost ( 'lead_time' );
-				$entity->setLeadTime ( $lead_time );
-				
-				$pmt_method_id = $request->getPost ( 'pmt_method_id' );
 				$pmt_method = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationPmtMethod', $pmt_method_id );
 				if (! $pmt_method == null) {
 					$entity->setPmtMethod ( $pmt_method );
 				}
 				
-				$remarks = $request->getPost ( 'remarks' );
-				$entity->setRemarks ( $remarks );
+				$date_validated = 0;
+				$validator = new Date ();
+				if (! $validator->isValid ( $priceValidFrom )) {
+					$errors [] = 'Start date is not correct or empty!';
+				} else {
+					$entity->setPriceValidFrom ( new \DateTime ( $priceValidFrom ) );
+					$date_validated ++;
+				}
 				
-				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				if ($priceValidTo !== "") {
+					if (! $validator->isValid ( $priceValidTo )) {
+						$errors [] = 'End Date  to is not correct or empty!';
+					} else {
+						$entity->setPriceValidTo ( new \DateTime ( $priceValidTo ) );
+						$date_validated ++;
+					}
+					
+					if ($date_validated == 2) {
+						
+						if ($priceValidFrom > $priceValidTo) {
+							$errors [] = 'End date must be in the future!';
+						}
+					}
+				}
+				
+				// $entity->setItem ( $target );
+				
+				$entity->setLeadTime ( $leadTime );
+				// $entity->setPmtTerm();
+				$entity->setRemarks ( $remarks );
+				$entity->setVendorItemCode ( $vendorItemCode );
 				
 				if (count ( $errors ) > 0) {
 					
 					return new ViewModel ( array (
 							'redirectUrl' => $redirectUrl,
 							'errors' => $errors,
-							'item' => $item,
-							'entity' => $entity,
-							'vendor' => $vendor,
-							'currency' => $currency,
-							'pmt_method' => $pmt_method,
-							'new_entity_id' => null
-							
+							'target' => $target,
+							'entity' => $entity 
 					) );
 				}
 				;
 				
-				// create purchase first
-				$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $item->getStandardUom ()->getUomCode () );
+				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+						'email' => $this->identity () 
+				) );
 				
+				// $entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+				
+				$entity->setLastChangeBy ( $u );
 				$entity->setLastChangeOn ( new \DateTime () );
-				$entity->setLastChangeBy( $u );
+				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
-				//$new_entity_id = $entity->getId();
-			}
-			
-			/* $new_entity =  new NmtInventoryItemPurchasing();
-			$new_entity_tmp = $pmt_method = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemPurchasing', $new_entity_id );
-			$new_entity = $new_entity_tmp;
-			 */
-			
-			$new_entity = $entity;
-			
-			// adding attachment
-			if ($new_entity !== null) {
 				
-				if (isset ( $_FILES ['attachments'] )) {
-					$file_name = $_FILES ['attachments'] ['name'];
-					$file_size = $_FILES ['attachments'] ['size'];
-					$file_tmp = $_FILES ['attachments'] ['tmp_name'];
-					$file_type = $_FILES ['attachments'] ['type'];
-					$file_ext = strtolower ( end ( explode ( '.', $_FILES ['attachments'] ['name'] ) ) );
-					echo ($file_name);
-					
-					// NOT empty attachment
-					if ($file_tmp !== "" and $file_size < 2097152) {
-						$ext = '';
-						if (preg_match ( '/(jpg|jpeg)$/', $file_type )) {
-							$ext = 'jpg';
-						} else if (preg_match ( '/(gif)$/', $file_type )) {
-							$ext = 'gif';
-						} else if (preg_match ( '/(png)$/', $file_type )) {
-							$ext = 'png';
-						} else if (preg_match ( '/(pdf)$/', $file_type )) {
-							$ext = 'pdf';
-						} else if (preg_match ( '/(vnd.ms-excel)$/', $file_type )) {
-							$ext = 'xls';
-						} else if (preg_match ( '/(vnd.openxmlformats-officedocument.spreadsheetml.sheet)$/', $file_type )) {
-							$ext = 'xlsx';
-						} else if (preg_match ( '/(msword)$/', $file_type )) {
-							$ext = 'doc';
-						} else if (preg_match ( '/(vnd.openxmlformats-officedocument.wordprocessingml.document)$/', $file_type )) {
-							$ext = 'docx';
-						} else if (preg_match ( '/(x-zip-compressed)$/', $file_type )) {
-							$ext = 'zip';
-						} else if (preg_match ( '/(octet-stream)$/', $file_type )) {
-							$ext = $file_ext;
-						}
-						
-						$expensions = array (
-								"jpeg",
-								"jpg",
-								"png",
-								"pdf",
-								"xlsx",
-								"xls",
-								"docx",
-								"doc",
-								"zip",
-								"msg"
-						);
-						
-						$errors = array ();
-						
-						if (in_array ( $ext, $expensions ) === false) {
-							$errors [] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg",
-							"jpg",
-							"png",
-							"pdf",
-							"xlsx",
-							"xls",
-							"docx",
-							"doc",
-							"zip",
-							"msg" !';
-						}
-						
-						if ($file_size > 2097152) {
-							$errors [] = 'File size must be excately 2 MB';
-						}
-						
-						$checksum = md5_file ( $file_tmp );
-						$criteria = array (
-								"checksum" => $checksum,
-								"item" => $item_id
-						);
-						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemAttachment' )->findby ( $criteria );
-						
-						if (count ( $ck ) > 0) {
-							// update attachment with new_entity_id;
-						}
-						
-						if ($item == null) {
-							$errors [] = 'Item not found!';
-						}
-						
-						if (count ( $errors ) > 0) {
-							
-							return new ViewModel ( array (
-									'redirectUrl' => $redirectUrl,
-									'errors' => $errors,
-									'item' => $item,
-									'entity' => $new_entity,
-									'vendor' => $new_entity->getVendor(),
-									'currency' => $new_entity->getCurrency(),
-									'pmt_method' => $new_entity->getPmtMethod(),
-									'new_entity_id' => $new_entity_id
-							) );
-						}
-						;
-						
-						$name = md5 ( $item_id . $checksum . uniqid ( microtime () ) ) . '_' . $this->generateRandomString () . '_' . $this->generateRandomString ( 10 ) . '.' . $ext;
-						
-						$root_dir = ROOT . "/data/inventory/attachment/item";
-						$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
-						$folder = $root_dir . DIRECTORY_SEPARATOR . $folder_relative;
-						
-						if (! is_dir ( $folder )) {
-							mkdir ( $folder, 0777, true ); // important
-						}
-						
-						// echo ("$folder/$name");
-						
-						move_uploaded_file ( $file_tmp, "$folder/$name" );
-						
-						$pdf_box = ROOT . "/vendor/pdfbox/";
-						
-						// java -jar pdfbox-app-2.0.5.jar Encrypt [OPTIONS] <password> <inputfile>
-						exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U mla2017 ' . "$folder/$name" );
-						
-						// extract text:
-						exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar ExtractText -password mla2017 ' . "$folder/$name" . ' ' . "$folder/$name" . '.txt' );
-						
-						// echo('java -jar ' . $pdf_box.'/pdfbox-app-2.0.5.jar Encrypt -O nmt -U nmt '."$folder/$name");
-						
-						// update database
-						$entity = new NmtInventoryItemAttachment ();
-						$entity->setDocumentType ( "Attachment Puchasing: ". $new_entity->getID());
-						
-						//$entity->setDocumentType ( "Purchasing attachment: " . $new_entity->getItem()->getID());
-						$entity->setFilename ( $name );
-						$entity->setFiletype ( $file_type );
-						$entity->setFilenameOriginal ( $file_name );
-						$entity->setSize ( $file_size );
-						$entity->setFolder ( $folder );
-						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
-						$entity->setChecksum ( $checksum );
-						
-						$entity->setItem ( $item );
-						$entity->setVendor ( $new_entity->getVendor());
-						$entity->setItemPurchasing($new_entity);
-						
-						$entity->setCreatedBy ( $u );
-						$entity->setCreatedOn ( new \DateTime () );
-						$this->doctrineEM->persist ( $entity );
-						$this->doctrineEM->flush ();
-						//$new_attachement_id = $entity->getId();
-						
-						
-						//return $this->redirect ()->toUrl ( $redirectUrl );
-					}
-				}
+				$this->flashMessenger ()->addMessage ( "Purchasing '" . $entity->getId () . "' data has been updated successfully!" );
+				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
-			//echo("dsfdfs");
+			
 			return $this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$item_purchasing = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemPurchasing', $id );
-		
-		$vendor=null;
-		$currency=null;
-		$pmt_method=null;
-		$item=null;
-		
-		if($item_purchasing!==null){
-			$vendor=$item_purchasing->getVendor();
-			$currency=$item_purchasing->getCurrency();
-			$pmt_method=$item_purchasing->getPmtMethod();
-			$item=$item_purchasing->getItem();
+		$redirectUrl = null;
+		if ($request->getHeader ( 'Referer' ) == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$checksum= $this->params ()->fromQuery ( 'checksum' );
+		
+		$criteria = array (
+				'id' => $entity_id,
+				'token' => $token,
+				'checksum' => $checksum
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findOneBy ( $criteria );
+		if ($entity == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$target = $entity->getItem ();
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
 				'errors' => null,
-				'item' => $item,
-				'entity' => $item_purchasing,
-				'vendor' => $vendor,
-				'currency' => $currency,
-				'pmt_method' => $pmt_method,
-				'new_entity_id' => null
-				
+				'target' => $target,
+				'entity' => $entity 
 		) );
 	}
 	
@@ -789,10 +502,7 @@ class ItemPurchaseController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function listAction() {
-		
-		$criteria = array (
-				
-		);
+		$criteria = array ();
 		
 		// var_dump($criteria);
 		
@@ -843,33 +553,71 @@ class ItemPurchaseController extends AbstractActionController {
 		 * if (! $request->isXmlHttpRequest ()) {
 		 * return $this->redirect ()->toRoute ( 'access_denied' );
 		 * }
-		 * ;
 		 */
 		
 		$this->layout ( "layout/user/ajax" );
 		
-		$id = ( int ) $this->params ()->fromQuery ( 'item_id' );
-		// $item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
+		$target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
 		
 		$criteria = array (
-				'item' => $id 
+				'id' => $target_id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+		
+		if ($target == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$criteria = array (
+				'item' => $target 
 		);
 		
 		$sort_criteria = array (
-				'priceValidFrom' => "DESC"
+				'priceValidFrom' => "DESC" 
 		);
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findBy ( $criteria,$sort_criteria);
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findBy ( $criteria, $sort_criteria );
 		$total_records = count ( $list );
 		$paginator = null;
-		
-		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
-		// var_dump (count($all));
 		
 		return new ViewModel ( array (
 				'list' => $list,
 				'total_records' => $total_records,
-				'paginator' => $paginator 
+				'paginator' => $paginator,
+				'target' => $target 
+		) );
+	}
+	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function updateTokenAction() {
+		
+		/** @todo: update target */
+		$query = 'SELECT e FROM Application\Entity\NmtInventoryItemPurchasing e';
+		
+		$list = $this->doctrineEM->createQuery($query)
+		->getResult();
+		
+		if (count ( $list ) > 0) {
+			foreach ( $list as $entity ) {
+				$entity->setChecksum ( md5 ( $entity->getId(). uniqid ( microtime () ) ) );
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			}
+		}
+		
+		$this->doctrineEM->flush ();
+		
+		$total_records = count ( $list );
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
 		) );
 	}
 	

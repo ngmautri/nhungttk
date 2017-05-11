@@ -51,6 +51,8 @@ class ItemSearchService {
 					$doc = new Document ();
 					$row = $r;
 					$doc->addField ( Field::UnIndexed ( 'item_id', $row->getId () ) );
+					$doc->addField ( Field::UnIndexed ( 'token', $row->getToken() ) );
+					$doc->addField ( Field::UnIndexed ( 'checksum', $row->getChecksum() ) );
 					
 					$doc->addField ( Field::Keyword ( 'item_sku_key', $row->getItemSku () ) );
 					
@@ -131,7 +133,10 @@ class ItemSearchService {
 				$doc = new Document ();
 				
 				$row = $item;
-				$doc->addField ( Field::UnIndexed ( 'item_id', $row->getId () ) );				
+				$doc->addField ( Field::UnIndexed ( 'item_id', $row->getId () ) );
+				$doc->addField ( Field::UnIndexed ( 'token', $row->getToken() ) );
+				$doc->addField ( Field::UnIndexed ( 'checksum', $row->getToken() ) );
+				
 				$doc->addField ( Field::Keyword ( 'item_sku_key', $row->getItemSku () ) );
 				
 				$doc->addField ( Field::Keyword ( 'manufacturer_key', $row->getManufacturer () ) );

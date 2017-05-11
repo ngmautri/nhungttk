@@ -1,8 +1,7 @@
-
 <h4>
 	 <?php 
-	 // target: Item
-	 echo (!$target== null)? 'ITEM: ' . $target->getItemName():"";?>
+	 // target:EMPLOYEE
+	 echo (!$target== null)? 'Employee: ' . $target->getEmployeeName():"";?>
 </h4>
 
 <?php
@@ -21,56 +20,24 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 10pt"> 
   <ul>
-  <li ><a href="#general">Attachment upload</a></li>
+  <li ><a href="#general">Picture Upload</a></li>
    </ul>
 
 <div id="general"> 
 
 <!-- TO UPDATE ACTION -->
-<form id="attachment_upload_form" class="form-horizontal" action="/inventory/item-attachment/upload" method="post" enctype="multipart/form-data">
+<form id="attachment_upload_form" class="form-horizontal" action="/hr/employee-attachment/upload-picture" method="post" enctype="multipart/form-data">
 <input type="hidden" name="target_id" value="<?php echo (!$target == null)? $target->getId():"";?>" />
 <input type="hidden" name="token" value="<?php echo (!$target== null)? $target->getToken():"";?>" />
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Document Subject</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="documentSubject" id="documentSubject" value="<?php echo (!$entity== null)? $entity->getDocumentSubject():"";?>">
-	
-		</div>
-		<label class="control-label col-sm-1" for="inputTag"></label>
-		<div class="col-sm-4">
-					  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-		</div>		
-	</div>
 		
 	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Attachment</label>
+		<label class="control-label col-sm-2" for="inputTag">Piture:</label>
 		<div class="col-sm-3">
 			<input style=";" type="file" id= "attachments" name="attachments" />
 		</div>		
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Vendor (optional)</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor, if any"
-				name="vendor_name" 
-value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity->getVendor()->getVendorName(); endif;endif;?>">
-	
-	
-			<input type="hidden" id="vendor_id" placeholder="" 
-			name="vendor_id" 
-value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity->getVendor()->getID(); endif;endif;?>">
-		</div>
-		
-
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Vendor','750','450', '/bp/vendor/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>
-
 	</div>
 	
 	<div class="form-group">
@@ -97,12 +64,8 @@ value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-	
- <a class="btn btn-default" style="" href="javascript:;"
-	onClick="doUploadAttachment('attachment_upload_form','attachments','/inventory/item/upload-picture','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>');">
-	<small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp; Upload
-</a>
-   		</div>
+	   	<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-upload"> </i> Upload</button>
+  		</div>
 	</div> 
 		
 	
@@ -134,4 +97,32 @@ $( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',clos
 
 
 </script>
+
+<!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
+			</div>
+			<div class="modal-body">
+				<div id="b_loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected"></span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
+
+
 

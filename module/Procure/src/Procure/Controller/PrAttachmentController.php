@@ -1548,7 +1548,6 @@ class PrAttachmentController extends AbstractActionController {
 		
 		if ($attachment !== null) {
 			$f = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $attachment->getFolderRelative () . $attachment->getFilename ();
-			echo $f;
 			$output = file_get_contents ( $f );
 			
 			$response = $this->getResponse ();

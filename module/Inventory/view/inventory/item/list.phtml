@@ -160,7 +160,6 @@ if ($total_records <= 0) {
 		<tr>
 			<td><b>#</b></td>
 			<td><b>SKU</b></td>
-			<td><b>SKU</b></td>
 			<td><b>Item Name</b></td>
 			<td><b>Item Code</b></td>
 			<td><b>ID</b></td>
@@ -178,19 +177,34 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 
-	 	<td>
-				 		<li class="dropdown"><a class="dropdown-toggle"
-						data-toggle="dropdown" href="#" style="padding-left: 20px;padding-right: 10px; ">My Inbox <span class="caret"></span></a>
-						<ul class="dropdown-menu">
-							<li>
-<a href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Edit</a>
-									</li>
-						</ul></li>
-						
-		</td>
 			<td><?php echo $this->escapeHtml($a->getItemSku());?></td>
-			<td><?php echo $this->escapeHtml($a->getItemName());?></td>
+			<td>
+			 	<span class="dropdown"><a class="dropdown-toggle"	data-toggle="dropdown" href="#" style="padding-left: 20px;padding-right: 10px; "><?php echo $this->escapeHtml($a->getItemName());?> <span class="caret"></span></a>
+<ul class="dropdown-menu">
+<li>
+	<a href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Show</a>
+</li>
+<li>
+	<a href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><i class="glyphicon glyphicon-pencil"> </i>&nbsp;Edit</a>
+</li>
+
+			<li class="divider"></li>
+				
+<li>
+		<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo $this->escapeHtml($a->getToken());?>&target_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Upload picture</a>
+</li><li>
+		<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload?token=<?php echo $this->escapeHtml($a->getToken());?>&target_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Attach Document</a>
+</li><li>
+
+		<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/add?token=<?php echo $this->escapeHtml($a->getToken());?>&target_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Add Purchase</a>
+</li><li>
+		<a href="<?php echo $this->baseUrl ?>/inventory/warehouse/transfer?token=<?php echo $this->escapeHtml($a->getToken());?>&target_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;transfer</a>
+</li>
+
+						</ul></span>
+				
+			
+			</td>
 			<td><?php echo $this->escapeHtml($a->getManufacturerModel());?></td>
 			<td><?php echo $this->escapeHtml($a->getSerialNumber());?></td>
 	
@@ -198,15 +212,6 @@ if ($total_records <= 0) {
 			<td>
 	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($a->getId());?>" item_name="<?php echo $this->escapeHtml($a->getItemName());?>" target="blank" 
 	href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Show</a>
-	<a href="<?php echo $this->baseUrl ?>/inventory/item/edit?item_id=<?php echo $this->escapeHtml($a->getId());?>">Edit</a>
-
-		<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?target_id=<?php echo $this->escapeHtml($a->getID());?>">upload picture</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload?target_id=<?php echo $this->escapeHtml($a->getID());?>">upload Attachment</a>
-		<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/add?target_id=<?php echo $this->escapeHtml($a->getID());?>">Add Purchase</a>
-
-		<a href="<?php echo $this->baseUrl ?>/inventory/warehouse/transfer?item_id=<?php echo $this->escapeHtml($a->getID());?>">transfer</a>
-
-
 			</td>
 		
 		</tr>
@@ -262,96 +267,3 @@ endif;
 ?>
 
 
-
-<!-- Modal -->
-<div id="myModal" class="modal hide" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">&times;</button>
-			<h5 class="modal-title">Add To Cart</h5>
-		</div>
-		<div class="modal-body">
-			<div>
-				<span id="_status"></span>
-			</div>
-
-			<form class="form-horizontal"
-				action="<?php echo $this->baseUrl ?>/procurement/pr/select-item-2"
-				method="post" enctype="multipart/form-data" id="NewSP">
-				<input type="hidden" name="redirectUrl"
-					value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-					name="article_id" id="item_id" value="" />
-
-				<div class="control-group">
-					<label class="control-label" for="inputNameLocal">Priority:</label>
-					<div class="controls">
-						<select name="priority" id="item_priority">
-							<option value="Low">Low</option>
-							<option value="Medium" selected>Medium</option>
-							<option value="High">High</option>
-							<option value="Urgent">Urgent</option>
-						</select>
-					</div>
-				</div>
-
-				<div class="control-group">
-					<label class="control-label" for="inputTag">Name:</label>
-					<div class="controls">
-						<input type="text" id="item_name" placeholder="" name="name"
-							value="article">
-					</div>
-				</div>
-
-				<div class="control-group">
-					<label class="control-label" for="inputTag">Unit</label>
-					<div class="controls">
-						<input type="text" id="item_unit" placeholder="" name="quantity"
-							value="">
-					</div>
-				</div>
-
-				<div class="control-group">
-					<label class="control-label" for="inputTag">Quantity:</label>
-					<div class="controls">
-						<input type="text" id="item_quantity" placeholder=""
-							name="quantity" value="">
-					</div>
-				</div>
-
-
-
-				<div class="control-group">
-					<label class="control-label" for="inputNameLocal">Requested
-						Delivery Date:</label>
-					<div class="controls">
-						<input type="text" id="end_date" placeholder="click to select"
-							name="EDT" value="">
-					</div>
-				</div>
-
-				<div class="control-group">
-					<label class="control-label" for="inputDescription">Reason /Note:</label>
-					<div class="controls">
-						<textarea id="item_remarks" placeholder="" rows="2" cols="5"
-							name="remarks"></textarea>
-					</div>
-				</div>
-			</form>
-		</div>
-
-		<div class="modal-footer">
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			<button onclick="addItemToCart('ARTICLE');" type="button"
-				class="btn btn-primary">Add To Cart</button>
-		</div>
-	</div>
-</div>
-
-<!-- Modal -->
-<div id="myModal1" class="modal hide" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-body">
-			<p>Working on it........Please Wait!</p>
-		</div>
-	</div>
-</div>

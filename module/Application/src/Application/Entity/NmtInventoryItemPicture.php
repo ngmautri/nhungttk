@@ -24,6 +24,13 @@ class NmtInventoryItemPicture
     /**
      * @var string
      *
+     * @ORM\Column(name="document_subject", type="string", length=50, nullable=true)
+     */
+    private $documentSubject;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="url", type="string", length=255, nullable=true)
      */
     private $url;
@@ -87,6 +94,13 @@ class NmtInventoryItemPicture
     /**
      * @var string
      *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
@@ -97,6 +111,20 @@ class NmtInventoryItemPicture
      * @ORM\Column(name="is_default", type="boolean", nullable=true)
      */
     private $isDefault;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="marked_for_deletion", type="boolean", nullable=true)
+     */
+    private $markedForDeletion;
 
     /**
      * @var \DateTime
@@ -135,6 +163,30 @@ class NmtInventoryItemPicture
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set documentSubject
+     *
+     * @param string $documentSubject
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setDocumentSubject($documentSubject)
+    {
+        $this->documentSubject = $documentSubject;
+
+        return $this;
+    }
+
+    /**
+     * Get documentSubject
+     *
+     * @return string
+     */
+    public function getDocumentSubject()
+    {
+        return $this->documentSubject;
     }
 
     /**
@@ -354,6 +406,30 @@ class NmtInventoryItemPicture
     }
 
     /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
      * Set remarks
      *
      * @param string $remarks
@@ -399,6 +475,54 @@ class NmtInventoryItemPicture
     public function getIsDefault()
     {
         return $this->isDefault;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set markedForDeletion
+     *
+     * @param boolean $markedForDeletion
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setMarkedForDeletion($markedForDeletion)
+    {
+        $this->markedForDeletion = $markedForDeletion;
+
+        return $this;
+    }
+
+    /**
+     * Get markedForDeletion
+     *
+     * @return boolean
+     */
+    public function getMarkedForDeletion()
+    {
+        return $this->markedForDeletion;
     }
 
     /**

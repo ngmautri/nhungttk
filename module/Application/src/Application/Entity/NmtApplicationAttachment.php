@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationAttachment
  *
- * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_application_attachment_FK6_idx", columns={"item_purchasing_id"}), @ORM\Index(name="nmt_application_attachment_FK7_idx", columns={"pr_id"})})
+ * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_application_attachment_FK6_idx", columns={"item_purchasing_id"}), @ORM\Index(name="nmt_application_attachment_FK7_idx", columns={"pr_id"}), @ORM\Index(name="nmt_application_attachment_FK8_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class NmtApplicationAttachment
@@ -185,13 +185,6 @@ class NmtApplicationAttachment
     /**
      * @var integer
      *
-     * @ORM\Column(name="item_id", type="integer", nullable=true)
-     */
-    private $itemId;
-
-    /**
-     * @var integer
-     *
      * @ORM\Column(name="pr_row_id", type="integer", nullable=true)
      */
     private $prRowId;
@@ -265,6 +258,16 @@ class NmtApplicationAttachment
      * })
      */
     private $pr;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
 
 
 
@@ -831,30 +834,6 @@ class NmtApplicationAttachment
     }
 
     /**
-     * Set itemId
-     *
-     * @param integer $itemId
-     *
-     * @return NmtApplicationAttachment
-     */
-    public function setItemId($itemId)
-    {
-        $this->itemId = $itemId;
-
-        return $this;
-    }
-
-    /**
-     * Get itemId
-     *
-     * @return integer
-     */
-    public function getItemId()
-    {
-        return $this->itemId;
-    }
-
-    /**
      * Set prRowId
      *
      * @param integer $prRowId
@@ -1044,5 +1023,29 @@ class NmtApplicationAttachment
     public function getPr()
     {
         return $this->pr;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
     }
 }

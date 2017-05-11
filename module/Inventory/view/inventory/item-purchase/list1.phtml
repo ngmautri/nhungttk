@@ -1,18 +1,5 @@
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
-  <div class="form-group">
-    	<input class="form-control" size="28" type="text" name = "q">
- 
- 
-  </div>
-  <div class="form-group">
-     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
-  </div>
-  
-</form>
+<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/inventory/item-purchase/add?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;New Purchase Record</a>
 <hr>
-
- 
-
 <?php
 
 if ($total_records <= 0) {
@@ -64,10 +51,9 @@ if ($total_records <= 0) {
 			<td><?php echo ($a->getPriceValidFrom()!==null )? date_format ( $a->getPriceValidFrom(), "d/m/y"):"N/A";?> </td>
 			<td><?php echo ($a->getPriceValidTo()!==null )? date_format ( $a->getPriceValidTo(), "d/m/y"):"N/A";?> </td>
 			<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d/m/y"):"N/A";?> </td>
-			<td><?php echo $this->escapeHtml($a->getID());?></td>
 		 <td>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/show?target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Edit</a>
 </td>
 						
 		</tr>

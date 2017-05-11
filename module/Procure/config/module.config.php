@@ -61,6 +61,7 @@ return array (
 						'Procure\Controller\Index' => 'Procure\Controller\IndexControllerFactory',
 						'Procure\Controller\Pr' => 'Procure\Controller\PrControllerFactory',
 						'Procure\Controller\PrAttachment' => 'Procure\Controller\PrAttachmentControllerFactory',
+						'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
 						
 				) 
 		

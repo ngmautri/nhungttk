@@ -1,0 +1,28 @@
+
+<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;Upload picture</a>
+   
+<hr>
+
+
+<?php if( count($list)>0): ?>
+
+<div id="picture" style="padding: 10pt">
+	<div id="lightgallery">
+		 <?php foreach ($list as $pic) : ?>
+	    <a href="/inventory/item-picture/get?token=<?php echo $pic->getToken();?>&entity_id=<?php  echo $pic->getId();?>&checksum=<?php echo $pic->getChecksum();?>">
+	    <img class= "img-rounded" width="150" height="150" src="/inventory/item-picture/thumbnail200?token=<?php echo $pic->getToken();?>&entity_id=<?php  echo $pic->getId();?>&checksum=<?php echo $pic->getChecksum();?>"/>
+	    </a>
+	<?php endforeach; ?>
+	 </div>
+</div>
+
+<?php else:?>
+No record found!
+<?php endif; ?>
+
+
+<script>
+
+$("#lightgallery").lightGallery({});
+
+</script>

@@ -35,12 +35,6 @@ class ItemController extends AbstractActionController {
 	 * Defaul Action
 	 */
 	public function indexAction() {
-		$message = $this->flashMessenger ()->getSuccessMessages ();
-		$this->flashMessenger ()->clearCurrentMessages ();
-		
-		return new ViewModel ( array (
-				'message' => $message 
-		) );
 	}
 	
 	/**
@@ -49,11 +43,13 @@ class ItemController extends AbstractActionController {
 	 */
 	public function showAction() {
 		$request = $this->getRequest ();
-		if ($request->getHeader ( 'Referer' ) == null) {
-			return $this->redirect ()->toRoute ( 'access_denied' );
-		}
 		
-		$redirectUrl = $request->getHeader ( 'Referer' )->getUri ();
+		$redirectUrl = null;
+		if ($request->getHeader ( 'Referer' ) == null) {
+			// return $this->redirect ()->toRoute ( 'access_denied' );
+		} else {
+			$redirectUrl = $request->getHeader ( 'Referer' )->getUri ();
+		}
 		
 		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
 		$checksum = $this->params ()->fromQuery ( 'checksum' );
@@ -65,26 +61,22 @@ class ItemController extends AbstractActionController {
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
-		
 		$pictures = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findBy ( array (
 				"item" => $entity_id 
 		) );
 		
 		if (! $entity == null) {
-			$uom = $entity->getStandardUom ();
-			
 			return new ViewModel ( array (
 					'entity' => $entity,
-					'pictures' => $pictures,
-					'back' => $redirectUrl,
+					'department' => null,
 					'category' => null,
-					'uom' => $uom,
-					'department' => null 
+					'pictures' => $pictures,
+					'back' => $redirectUrl 
 			
 			) );
-		} else {
-			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
+		
+		return $this->redirect ()->toRoute ( 'access_denied' );
 	}
 	
 	/**
@@ -93,116 +85,140 @@ class ItemController extends AbstractActionController {
 	 */
 	public function addAction() {
 		$request = $this->getRequest ();
-		if ($request->getHeader ( 'Referer' ) == null) {
-			return $this->redirect ()->toRoute ( 'access_denied' );
-		}
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				'email' => $this->identity () 
-		) );
 		
 		if ($request->isPost ()) {
 			
-			$item_sku = $request->getPost ( 'item_sku' );
-			$item_name = $request->getPost ( 'item_name' );
-			$item_name_foreign = $request->getPost ( 'item_name_foreign' );
-			$item_description = $request->getPost ( 'item_description' );
-			
-			$item_barcode = $request->getPost ( 'item_barcode' );
-			$keywords = $request->getPost ( 'keywords' );
-			
-			$item_type = $request->getPost ( 'item_type' );
-			$item_category_id = $request->getPost ( 'item_category_id' );
-			$department_id = $request->getPost ( 'department_id' );
-			$location = $request->getPost ( 'location' );
-			
-			$standard_uom_id = $request->getPost ( 'standard_uom_id' );
-			$item_leadtime = $request->getPost ( 'lead_time' );
-			$local_availability = $request->getPost ( 'local_availability' );
-			
-			$is_active = $request->getPost ( 'is_active' );
-			$is_stocked = $request->getPost ( 'is_stocked' );
-			$is_purchased = $request->getPost ( 'is_purchased' );
-			$is_sale_item = $request->getPost ( 'is_sale_item' );
-			$is_fixed_asset = $request->getPost ( 'is_fixed_asset' );
-			
-			$manufacturer = $request->getPost ( 'manufacturer' );
-			$manufacturer_code = $request->getPost ( 'manufacturer_code' );
-			$manufacturer_model = $request->getPost ( 'manufacturer_model' );
-			$manufacturer_serial = $request->getPost ( 'manufacturer_serial' );
-			$remarks = $request->getPost ( 'remarks' );
-			
+			$errors = array ();
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			
-			/*
-			 * $r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( array (
-			 * 'itemSku' => $item_sku
-			 * ) );
-			 *
-			 * if (count ( $r ) >= 1) {
-			 * $errors [] = $item_sku . ' exists';
-			 * }
-			 */
+			$itemSku = $request->getPost ( 'itemSku' );
+			$itemName = $request->getPost ( 'itemName' );
+			$itemNameForeign = $request->getPost ( 'itemNameForeign' );
+			$itemDescription = $request->getPost ( '$itemDescription' );
 			
-			$errors = array ();
+			$barcode = $request->getPost ( '$barcode' );
+			$keywords = $request->getPost ( 'keywords' );
 			
+			$itemType = $request->getPost ( 'itemType' );
+			
+			$item_category_id = $request->getPost ( 'item_category_id' );
+			$department_id = $request->getPost ( 'department_id' );
+			$standard_uom_id = $request->getPost ( 'standard_uom_id' );
+			
+			$leadTime = $request->getPost ( 'leadTime' );
+			
+			$isActive = ( int ) $request->getPost ( 'isActive' );
+			$isFixedAsset = ( int ) $request->getPost ( 'isFixedAsset' );
+			$isPurchased = ( int ) $request->getPost ( 'isPurchased' );
+			$isSaleItem = ( int ) $request->getPost ( 'isSaleItem' );
+			$isSparepart = ( int ) $request->getPost ( 'isSparepart' );
+			$isStocked = ( int ) $request->getPost ( 'isStocked' );
+			
+			$manufacturer = $request->getPost ( 'manufacturer' );
+			$manufacturerCatalog = $request->getPost ( 'manufacturerCatalog' );
+			$manufacturerCode = $request->getPost ( 'manufacturerCode' );
+			$manufacturerModel = $request->getPost ( 'manufacturerModel' );
+			$manufacturerSerial = $request->getPost ( 'manufacturerSerial' );
+			
+			$location = $request->getPost ( 'location' );
+			$localAvailabiliy = ( int ) $request->getPost ( 'localAvailabiliy' );
+			
+			$remarks = $request->getPost ( 'remarks' );
+			
+			// Create NEW ITEM
 			$entity = new NmtInventoryItem ();
 			
-			if ($item_sku === '' or $item_sku === null) {
-				$errors [] = 'Please give ID';
+			if ($itemSku === '' or $itemSku === null) {
+				$errors [] = 'Please give Item ID';
+			} else {
+				$entity->setItemSku ( $itemSku );
 			}
-			$entity->setItemSku ( $item_sku );
 			
-			if ($item_name === '' or $item_name === null) {
+			if ($itemName === '' or $itemName === null) {
 				$errors [] = 'Please give item name';
+			} else {
+				$entity->setItemName ( $itemName );
 			}
-			$entity->setItemName ( $item_name );
 			
-			$entity->setItemNameForeign ( $item_name_foreign );
-			$entity->setItemDescription ( $item_description );
-			$entity->setBarcode ( $item_barcode );
+			if ($isActive !== 1) {
+				$isActive = 0;
+			}
+			
+			if ($isFixedAsset !== 1) {
+				$isFixedAsset = 0;
+			}
+			if ($isPurchased !== 1) {
+				$isPurchased = 0;
+			}
+			if ($isSaleItem !== 1) {
+				$isSaleItem = 0;
+			}
+			
+			if ($isSparepart !== 1) {
+				$isSparepart = 0;
+			}
+			
+			if ($isStocked !== 1) {
+				$isStocked = 0;
+			}
+			
+			if ($localAvailabiliy !== 1) {
+				$localAvailabiliy = 0;
+			}
+			$entity->setItemNameForeign ( $itemNameForeign );
+			$entity->setItemDescription ( $itemDescription );
 			$entity->setKeywords ( $keywords );
-			$entity->setItemType ( $item_type );
+			$entity->setBarcode ( $barcode );
+			$entity->setCompany ();
+			
+			$entity->setIsActive ( $isActive );
+			$entity->setIsFixedAsset ( $isFixedAsset );
+			$entity->setIsPurchased ( $isPurchased );
+			$entity->setIsSaleItem ( $isSaleItem );
+			$entity->setIsSparepart ( $isSparepart );
+			$entity->setIsStocked ( $isStocked );
+			
+			// $entity->setItemGroup ( $itemGroup );
+			// $entity->setItemInternalLabel ( $itemInternalLabel );
+			
+			$entity->setItemType ( $itemType );
+			
+			$entity->setManufacturer ( $manufacturer );
+			$entity->setManufacturerCatalog ( $manufacturerCatalog );
+			$entity->setManufacturerCode ( $manufacturerCode );
+			$entity->setManufacturerModel ( $manufacturerModel );
+			$entity->setManufacturerSerial ( $manufacturerSerial );
+			
+			// $entity->setOrigin($origin);
+			// $entity->setSerialNumber($serialNumber);
 			
 			if ($standard_uom_id === '' or $standard_uom_id === null) {
 				$errors [] = 'Please give standard measurement!';
-				$uom = null;
 			} else {
 				$uom = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationUom', $standard_uom_id );
-				$entity->setStandardUom ( $uom );
+				if ($uom !== null) {
+					$entity->setStandardUom ( $uom );
+				}
 			}
 			
-			// category
-			$category = null;
-			
-			if ($item_category_id > 0) {
-				$category = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $item_category_id );
-			}
-			
-			// add department member
 			$department = null;
 			if ($department_id > 0) {
 				$department = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $department_id );
 			}
 			
-			$entity->setLocation ( $location );
+			$category = null;
+			if ($item_category_id > 0) {
+				$category = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $item_category_id );
+			}
+			// $entity->setStatus($status);
+			// $entity->setValidFromDate($validFromDate);
+			// $entity->setValidToDate($validToDate);
+			// $entity->setWarehouse ();
 			
-			$entity->setManufacturer ( $manufacturer );
-			
-			$entity->setManufacturerCode ( $manufacturer_code );
-			$entity->setManufacturerModel ( $manufacturer_model );
-			$entity->setManufacturerSerial ( $manufacturer_serial );
-			
-			$entity->setIsActive ( $is_active );
-			$entity->setIsStocked ( $is_stocked );
-			$entity->setIsPurchased ( $is_purchased );
-			$entity->setIsSaleItem ( $is_sale_item );
-			$entity->setIsFixedAsset ( $is_fixed_asset );
-			
-			$entity->setLeadTime ( $item_leadtime );
-			$entity->setLocalAvailabiliy ( $local_availability );
 			$entity->setRemarks ( $remarks );
+			$entity->setLocation ( $location );
+			$entity->setLocalAvailabiliy ( $localAvailabiliy );
+			$entity->setLeadTime ( $leadTime );
 			
 			$company_id = 1;
 			$company = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCompany', $company_id );
@@ -213,31 +229,36 @@ class ItemController extends AbstractActionController {
 						'errors' => $errors,
 						'redirectUrl' => $redirectUrl,
 						'entity' => $entity,
-						'category' => $category,
-						'uom' => $uom,
-						'department' => $department 
-				
+						'department' => $department,
+						'category' => $category 
 				) );
 			}
 			
 			// No Error
 			try {
 				
+				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+						'email' => $this->identity () 
+				) );
+				
 				$entity->setCreatedOn ( new \DateTime () );
 				$entity->setCreatedBy ( $u );
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 				
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
 				$new_id = $entity->getId ();
-				
 				$new_item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $new_id );
+				$entity->setChecksum ( md5 ( $new_id . uniqid ( microtime () ) ) );
+				$this->doctrineEM->flush ();
 				
 				// add category member
-				
 				if ($item_category_id > 0) {
+					
+					$itemCategory = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $item_category_id );
 					$entity = new NmtInventoryItemCategoryMember ();
 					$entity->setItem ( $new_item );
-					$entity->setCategory ( $category );
+					$entity->setCategory ( $itemCategory );
 					
 					$entity->setCreatedBy ( $u );
 					$entity->setCreatedOn ( new \DateTime () );
@@ -249,6 +270,8 @@ class ItemController extends AbstractActionController {
 				// add department member
 				if ($department_id > 0) {
 					$entity = new NmtInventoryItemDepartment ();
+					
+					$department = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $department_id );
 					$entity->setDepartment ( $department );
 					$entity->setItem ( $new_item );
 					
@@ -265,27 +288,28 @@ class ItemController extends AbstractActionController {
 				return new ViewModel ( array (
 						'errors' => $e->getMessage (),
 						'redirectUrl' => $redirectUrl,
-						'entity' => null,
-						'category' => null,
-						'uom' => null,
-						'department' => null 
-				
+						'entity' => $entity,
+						'department' => $department,
+						'category' => $category 
 				) );
 			}
 			
-			$this->flashMessenger ()->addSuccessMessage ( "Item " . $item_name . " has been created sucessfully" );
-			
+			$this->flashMessenger ()->addMessage ( "Item " . $itemName . " has been created sucessfully" );
 			return $this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
+		$redirectUrl = null;
+		if ($request->getHeader ( 'Referer' ) == null) {
+			// return $this->redirect ()->toRoute ( 'access_denied' );
+		} else {
+			$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		}
 		return new ViewModel ( array (
 				'errors' => null,
 				'redirectUrl' => $redirectUrl,
 				'entity' => null,
-				'category' => null,
-				'uom' => null,
-				'department' => null 
-		
+				'department' => null,
+				'category' => null 
 		) );
 	}
 	
@@ -296,192 +320,245 @@ class ItemController extends AbstractActionController {
 	public function editAction() {
 		$request = $this->getRequest ();
 		
-		if ($request->getHeader ( 'Referer' ) == null) {
-			return $this->redirect ()->toRoute ( 'access_denied' );
-		}
-		
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				'email' => $this->identity () 
-		) );
-		
 		if ($request->isPost ()) {
 			
-			$item_id = $request->getPost ( 'item_id' );
-			
-			$item_sku = $request->getPost ( 'item_sku' );
-			$item_name = $request->getPost ( 'item_name' );
-			$item_name_foreign = $request->getPost ( 'item_name_foreign' );
-			$item_description = $request->getPost ( 'item_description' );
-			
-			$item_barcode = $request->getPost ( 'item_barcode' );
-			$keywords = $request->getPost ( 'keywords' );
-			
-			$item_type = $request->getPost ( 'item_type' );
-			$item_category_id = $request->getPost ( 'item_category_id' );
-			$department_id = $request->getPost ( 'department_id' );
-			$location = $request->getPost ( 'location' );
-			
-			$standard_uom_id = $request->getPost ( 'standard_uom_id' );
-			$item_leadtime = $request->getPost ( 'lead_time' );
-			$local_availability = $request->getPost ( 'local_availability' );
-			
-			$is_active = $request->getPost ( 'is_active' );
-			$is_stocked = $request->getPost ( 'is_stocked' );
-			$is_purchased = $request->getPost ( 'is_purchased' );
-			$is_sale_item = $request->getPost ( 'is_sale_item' );
-			$is_fixed_asset = $request->getPost ( 'is_fixed_asset' );
-			
-			$manufacturer = $request->getPost ( 'manufacturer' );
-			$manufacturer_code = $request->getPost ( 'manufacturer_code' );
-			$manufacturer_model = $request->getPost ( 'manufacturer_model' );
-			$manufacturer_serial = $request->getPost ( 'manufacturer_serial' );
-			$remarks = $request->getPost ( 'remarks' );
-			
-			$redirectUrl = $request->getPost ( 'redirectUrl' );
-			
-			/*
-			 * $r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( array (
-			 * 'itemSku' => $item_sku
-			 * ) );
-			 *
-			 * if (count ( $r ) >= 1) {
-			 * $errors [] = $item_sku . ' exists';
-			 * }
-			 */
-			
 			$errors = array ();
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$entity_id = ( int ) $request->getPost ( 'entity_id' );
+			$token = $request->getPost ( 'token' );
 			
-			$entity = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
+			$criteria = array (
+					'id' => $entity_id,
+					'token' => $token 
+			);
 			
-			if ($item_sku === '' or $item_sku === null) {
-				$errors [] = 'Please give ID';
-			}
-			$entity->setItemSku ( $item_sku );
+			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
 			
-			if ($item_name === '' or $item_name === null) {
-				$errors [] = 'Please give item name';
-			}
-			$entity->setItemName ( $item_name );
-			
-			$entity->setItemNameForeign ( $item_name_foreign );
-			$entity->setItemDescription ( $item_description );
-			$entity->setBarcode ( $item_barcode );
-			$entity->setKeywords ( $keywords );
-			$entity->setItemType ( $item_type );
-			
-			if ($standard_uom_id === '' or $standard_uom_id === null) {
-				$errors [] = 'Please give standard measurement!';
-				$uom = null;
-			} else {
-				$uom = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationUom', $standard_uom_id );
-				$entity->setStandardUom ( $uom );
-			}
-			
-			// category
-			$category = null;
-			
-			if ($item_category_id > 0) {
-				$category = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $item_category_id );
-			}
-			
-			// add department member
-			$department = null;
-			if ($department_id > 0) {
-				$department = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $department_id );
-			}
-			
-			$entity->setLocation ( $location );
-			
-			$entity->setManufacturer ( $manufacturer );
-			
-			$entity->setManufacturerCode ( $manufacturer_code );
-			$entity->setManufacturerModel ( $manufacturer_model );
-			$entity->setManufacturerSerial ( $manufacturer_serial );
-			
-			$entity->setIsActive ( $is_active );
-			$entity->setIsStocked ( $is_stocked );
-			$entity->setIsPurchased ( $is_purchased );
-			$entity->setIsSaleItem ( $is_sale_item );
-			$entity->setIsFixedAsset ( $is_fixed_asset );
-			
-			$entity->setLeadTime ( $item_leadtime );
-			$entity->setLocalAvailabiliy ( $local_availability );
-			$entity->setRemarks ( $remarks );
-			
-			$company_id = 1;
-			$company = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCompany', $company_id );
-			$entity->setCompany ( $company );
-			
-			if (count ( $errors ) > 0) {
+			if ($entity == null) {
+				
+				$errors [] = 'Entity object can\'t be empty!';
 				return new ViewModel ( array (
+						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
-						'redirectUrl' => $redirectUrl,
-						'entity' => $entity,
-						'category' => $category,
-						'uom' => $uom,
-						'department' => $department,
-						'item_id' => $item_id 
-				
-				) );
-			}
-			
-			// No Error
-			try {
-				
-				$entity->setLastChangeOn ( new \DateTime () );
-				$entity->setLastChangeBy ( $u );
-				$this->doctrineEM->flush ();
-				
-				$new_item = $entity;
-				
-				// add category member
-				if ($item_category_id > 0) {
-					$entity = new NmtInventoryItemCategoryMember ();
-					$entity->setItem ( $new_item );
-					$entity->setCategory ( $category );
-					
-					$entity->setCreatedBy ( $u );
-					$entity->setCreatedOn ( new \DateTime () );
-					
-					$this->doctrineEM->persist ( $entity );
-					$this->doctrineEM->flush ();
-				}
-				
-				// add department member
-				if ($department_id > 0) {
-					$entity = new NmtInventoryItemDepartment ();
-					$entity->setDepartment ( $department );
-					$entity->setItem ( $new_item );
-					
-					$entity->setCreatedBy ( $u );
-					$entity->setCreatedOn ( new \DateTime () );
-					
-					$this->doctrineEM->persist ( $entity );
-					$this->doctrineEM->flush ();
-				}
-				
-				// update search index.
-				// $this->itemSearchService->addDocument ( $new_item, true );
-			} catch ( Exception $e ) {
-				return new ViewModel ( array (
-						'errors' => $e->getMessage (),
-						'redirectUrl' => $redirectUrl,
 						'entity' => null,
-						'category' => null,
-						'uom' => null,
 						'department' => null,
-						'item_id' => $item_id 
-				
+						'category' => null 
 				) );
+				
+				// might need redirect
+			} else {
+				
+				$itemSku = $request->getPost ( 'itemSku' );
+				$itemName = $request->getPost ( 'itemName' );
+				$itemNameForeign = $request->getPost ( 'itemNameForeign' );
+				$itemDescription = $request->getPost ( '$itemDescription' );
+				
+				$barcode = $request->getPost ( '$barcode' );
+				$keywords = $request->getPost ( 'keywords' );
+				
+				$itemType = $request->getPost ( 'itemType' );
+				
+				$item_category_id = $request->getPost ( 'item_category_id' );
+				$department_id = $request->getPost ( 'department_id' );
+				$standard_uom_id = $request->getPost ( 'standard_uom_id' );
+				
+				$leadTime = $request->getPost ( 'leadTime' );
+				
+				$isActive = ( int ) $request->getPost ( 'isActive' );
+				$isFixedAsset = ( int ) $request->getPost ( 'isFixedAsset' );
+				$isPurchased = ( int ) $request->getPost ( 'isPurchased' );
+				$isSaleItem = ( int ) $request->getPost ( 'isSaleItem' );
+				$isSparepart = ( int ) $request->getPost ( 'isSparepart' );
+				$isStocked = ( int ) $request->getPost ( 'isStocked' );
+				
+				$manufacturer = $request->getPost ( 'manufacturer' );
+				$manufacturerCatalog = $request->getPost ( 'manufacturerCatalog' );
+				$manufacturerCode = $request->getPost ( 'manufacturerCode' );
+				$manufacturerModel = $request->getPost ( 'manufacturerModel' );
+				$manufacturerSerial = $request->getPost ( 'manufacturerSerial' );
+				
+				$location = $request->getPost ( 'location' );
+				$localAvailabiliy = ( int ) $request->getPost ( 'localAvailabiliy' );
+				
+				$remarks = $request->getPost ( 'remarks' );
+				
+				// Create NEW ITEM
+				// $entity = new NmtInventoryItem ();
+				
+				if ($itemSku === '' or $itemSku === null) {
+					$errors [] = 'Please give Item ID';
+				} else {
+					$entity->setItemSku ( $itemSku );
+				}
+				
+				if ($itemName === '' or $itemName === null) {
+					$errors [] = 'Please give item name';
+				} else {
+					$entity->setItemName ( $itemName );
+				}
+				
+				if ($isActive !== 1) {
+					$isActive = 0;
+				}
+				
+				if ($isFixedAsset !== 1) {
+					$isFixedAsset = 0;
+				}
+				if ($isPurchased !== 1) {
+					$isPurchased = 0;
+				}
+				if ($isSaleItem !== 1) {
+					$isSaleItem = 0;
+				}
+				
+				if ($isSparepart !== 1) {
+					$isSparepart = 0;
+				}
+				
+				if ($isStocked !== 1) {
+					$isStocked = 0;
+				}
+				
+				if ($localAvailabiliy !== 1) {
+					$localAvailabiliy = 0;
+				}
+				
+				$entity->setItemNameForeign ( $itemNameForeign );
+				$entity->setItemDescription ( $itemDescription );
+				$entity->setKeywords ( $keywords );
+				$entity->setBarcode ( $barcode );
+				$entity->setCompany ();
+				
+				$entity->setIsActive ( $isActive );
+				$entity->setIsFixedAsset ( $isFixedAsset );
+				$entity->setIsPurchased ( $isPurchased );
+				$entity->setIsSaleItem ( $isSaleItem );
+				$entity->setIsSparepart ( $isSparepart );
+				$entity->setIsStocked ( $isStocked );
+				
+				// $entity->setItemGroup ( $itemGroup );
+				// $entity->setItemInternalLabel ( $itemInternalLabel );
+				
+				$entity->setItemType ( $itemType );
+				
+				$entity->setManufacturer ( $manufacturer );
+				$entity->setManufacturerCatalog ( $manufacturerCatalog );
+				$entity->setManufacturerCode ( $manufacturerCode );
+				$entity->setManufacturerModel ( $manufacturerModel );
+				$entity->setManufacturerSerial ( $manufacturerSerial );
+				
+				// $entity->setOrigin($origin);
+				// $entity->setSerialNumber($serialNumber);
+				
+				if ($standard_uom_id === '' or $standard_uom_id === null) {
+					$errors [] = 'Please give standard measurement!';
+				} else {
+					$uom = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationUom', $standard_uom_id );
+					if ($uom !== null) {
+						$entity->setStandardUom ( $uom );
+					}
+				}
+				
+				$department = null;
+				if ($department_id > 0) {
+					$department = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $department_id );
+				}
+				
+				$category = null;
+				if ($item_category_id > 0) {
+					$category = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $item_category_id );
+				}
+				// $entity->setStatus($status);
+				// $entity->setValidFromDate($validFromDate);
+				// $entity->setValidToDate($validToDate);
+				// $entity->setWarehouse ();
+				
+				$entity->setRemarks ( $remarks );
+				$entity->setLocation ( $location );
+				$entity->setLocalAvailabiliy ( $localAvailabiliy );
+				$entity->setLeadTime ( $leadTime );
+				
+				$company_id = 1;
+				$company = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCompany', $company_id );
+				$entity->setCompany ( $company );
+				
+				if (count ( $errors ) > 0) {
+					return new ViewModel ( array (
+							'errors' => $errors,
+							'redirectUrl' => $redirectUrl,
+							'entity' => $entity,
+							'department' => $department,
+							'category' => $category 
+					) );
+				}
+				
+				// No Error
+				try {
+					
+					$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+							'email' => $this->identity () 
+					) );
+					
+					$entity->setLastChangeOn ( new \DateTime () );
+					$entity->setLastChangeBy ( $u );
+					$this->doctrineEM->flush ();
+					
+					$new_item = $entity;
+					
+					// add category member
+					if ($item_category_id > 0) {
+						$entity = new NmtInventoryItemCategoryMember ();
+						$entity->setItem ( $new_item );
+						$entity->setCategory ( $category );
+						
+						$entity->setCreatedBy ( $u );
+						$entity->setCreatedOn ( new \DateTime () );
+						
+						$this->doctrineEM->persist ( $entity );
+						$this->doctrineEM->flush ();
+					}
+					
+					// add department member
+					if ($department_id > 0) {
+						$entity = new NmtInventoryItemDepartment ();
+						$entity->setDepartment ( $department );
+						$entity->setItem ( $new_item );
+						
+						$entity->setCreatedBy ( $u );
+						$entity->setCreatedOn ( new \DateTime () );
+						
+						$this->doctrineEM->persist ( $entity );
+						$this->doctrineEM->flush ();
+					}
+				
+				/**
+				 *
+				 * @todo : update search index.
+				 */
+					// $this->itemSearchService->addDocument ( $new_item, true );
+				} catch ( Exception $e ) {
+					return new ViewModel ( array (
+							'errors' => $e->getMessage (),
+							'redirectUrl' => $redirectUrl,
+							'entity' => $entity,
+							'department' => $department,
+							'category' => $category 
+					
+					) );
+				}
+				
+				$this->flashMessenger ()->addMessage ( "Item " . $itemName . " has been updated sucessfully" );
+				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
-			
-			$this->flashMessenger ()->addSuccessMessage ( "Item " . $item_name . " has been updated sucessfully" );
-			return $this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
-		// Not Post
-		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		// NO POST
+		$redirectUrl = null;
+		if ($request->getHeader ( 'Referer' ) == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		} else {
+			$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		}
 		
 		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
 		$checksum = $this->params ()->fromQuery ( 'checksum' );
@@ -495,25 +572,15 @@ class ItemController extends AbstractActionController {
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
 		
 		if (! $entity == null) {
-			$uom = $entity->getStandardUom ();
-			/*
-			 * $pictures = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findBy ( array (
-			 * "item" => $item_id
-			 * ) );
-			 */
-			
 			return new ViewModel ( array (
 					'errors' => null,
 					'redirectUrl' => $redirectUrl,
 					'entity' => $entity,
 					'category' => null,
-					'uom' => $uom,
-					'department' => null,
-					'item_id' => $entity->getId(),
+					'department' => null 
 			) );
-		} else {
-			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
+		return $this->redirect ()->toRoute ( 'access_denied' );
 	}
 	
 	/**
@@ -624,22 +691,21 @@ class ItemController extends AbstractActionController {
 	 */
 	public function uploadPictureAction() {
 		$request = $this->getRequest ();
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				"email" => $this->identity () 
-		) );
 		
 		if ($request->isPost ()) {
 			
 			$pictures = $_POST ['pictures'];
 			$id = $_POST ['target_id'];
+			$documentSubject = $_POST ['subject'];
 			
-			$result = "";
+			$result = array ();
+			$success = 0;
+			$failed = 0;
+			$n = 0;
 			
 			foreach ( $pictures as $p ) {
+				$n ++;
 				$filetype = $p [0];
-				$result = $result . $p [2];
 				$original_filename = $p [2];
 				
 				if (preg_match ( '/(jpg|jpeg)$/', $filetype )) {
@@ -660,7 +726,6 @@ class ItemController extends AbstractActionController {
 				
 				$checksum = md5_file ( $tmp_name );
 				
-				// $root_dir = $this->articleService->getPicturesPath ();
 				$root_dir = ROOT . "/data/inventory/picture/item/";
 				
 				$criteria = array (
@@ -671,19 +736,28 @@ class ItemController extends AbstractActionController {
 				$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findby ( $criteria );
 				
 				if (count ( $ck ) == 0) {
-					$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '.' . $ext;
-					$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
-					
-					$folder = $root_dir . DIRECTORY_SEPARATOR . $folder_relative;
-					
-					if (! is_dir ( $folder )) {
-						mkdir ( $folder, 0777, true ); // important
-					}
-					
-					rename ( $tmp_name, "$folder/$name" );
-					
 					try {
+						$name_part1 = Rand::getString ( 6, self::CHAR_LIST, true ) . "_" . Rand::getString ( 10, self::CHAR_LIST, true );
+						$name = md5 ( $id . $checksum . uniqid ( microtime () ) ) . '_' . $name_part1 . '.' . $ext;
+						
+						$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+						
+						$folder = $root_dir . DIRECTORY_SEPARATOR . $folder_relative;
+						
+						if (! is_dir ( $folder )) {
+							mkdir ( $folder, 0777, true ); // important
+						}
+						
+						rename ( $tmp_name, "$folder/$name" );
+						
 						$entity = new NmtInventoryItemPicture ();
+						
+						if ($documentSubject == null) {
+							$documentSubject = "Picture for " . $id;
+						}
+						$entity->setDocumentSubject ( $documentSubject );
+						$entity->setIsActive ( 1 );
+						
 						$entity->setUrl ( $folder . DIRECTORY_SEPARATOR . $name );
 						$entity->setFiletype ( $filetype );
 						$entity->setFilename ( $name );
@@ -695,29 +769,45 @@ class ItemController extends AbstractActionController {
 						$entity->setVisibility ( 1 );
 						$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
 						$entity->setItem ( $item );
+						
+						$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+								"email" => $this->identity () 
+						) );
+						
+						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 						$entity->setCreatedBy ( $u );
 						$entity->setCreatedOn ( new \DateTime () );
 						
 						$this->doctrineEM->persist ( $entity );
 						$this->doctrineEM->flush ();
+						
+						// trigger uploadPicture. AbtractController is EventManagerAware.
+						$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+								'picture_name' => $name,
+								'pictures_dir' => $folder 
+						) );
+						
+						$this->flashMessenger ()->addMessage ( "'" . $original_filename . "' has been uploaded sucessfully" );
+						$result [] = $original_filename . ' uploaded sucessfully';
+						$success ++;
 					} catch ( Exception $e ) {
-						$result = $e->getMessage ();
+						$this->flashMessenger ()->addMessage ( $e );
+						$result [] = $e;
+						$failed ++;
 					}
-					
-					// trigger uploadPicture. AbtractController is EventManagerAware.
-					$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
-							'picture_name' => $name,
-							'pictures_dir' => $folder 
-					) );
-					
-					$result = $result . ' uploaded. //';
 				} else {
-					$result = $result . ' exits. //';
+					$this->flashMessenger ()->addMessage ( "'" . $original_filename . "' exits already!" );
+					$result [] = $original_filename . ' exits already. Please select other file!';
+					$failed ++;
 				}
 			}
 			// $data['filetype'] = $filetype;
 			$data = array ();
 			$data ['message'] = $result;
+			$data ['total_uploaded'] = $n;
+			$data ['success'] = $success;
+			$data ['failed'] = $failed;
+			
 			$response = $this->getResponse ();
 			$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
 			$response->setContent ( json_encode ( $data ) );
@@ -725,16 +815,27 @@ class ItemController extends AbstractActionController {
 		}
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		// $company = $this->articleTable->get ( $id );
-		// $company = $this->doctrineEM->find('Application\Entity\NmtApplicationCompanyLogo',$id);
-		$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $id );
 		
-		return new ViewModel ( array (
-				'item' => $item,
-				'redirectUrl' => $redirectUrl,
-				'errors' => null 
-		) );
+		$target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $target_id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+		
+		if ($target !== null) {
+			return new ViewModel ( array (
+					'item' => $target,
+					'redirectUrl' => $redirectUrl,
+					'errors' => null 
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 	}
 	
 	/**
@@ -782,18 +883,22 @@ class ItemController extends AbstractActionController {
 	/**
 	 */
 	public function barcodeAction() {
-		$barcode = ( int ) $this->params ()->fromQuery ( 'barcode' );
+		$barcode = $this->params ()->fromQuery ( 'barcode' );
 		
-		// Only the text to draw is required
-		$barcodeOptions = array (
-				'text' => $barcode 
-		);
-		
-		// No required options
-		$rendererOptions = array ();
-		
-		// Draw the barcode in a new image,
-		Barcode::factory ( 'code39', 'image', $barcodeOptions, $rendererOptions )->render ();
+		if ($barcode !== "") {
+			// Only the text to draw is required
+			$barcodeOptions = array (
+					'text' => $barcode 
+			);
+			
+			// No required options
+			$rendererOptions = array ();
+			
+			// Draw the barcode in a new image,
+			Barcode::factory ( 'code39', 'image', $barcodeOptions, $rendererOptions )->render ();
+		} else {
+			return;
+		}
 	}
 	
 	/**
@@ -804,22 +909,7 @@ class ItemController extends AbstractActionController {
 		$criteria = array ();
 		
 		// var_dump($criteria);
-		
 		$sort_criteria = array ();
-		
-		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
-			$resultsPerPage = 15;
-		} else {
-			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
-		}
-		;
-		
-		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
-			$page = 1;
-		} else {
-			$page = $this->params ()->fromQuery ( 'page' );
-		}
-		;
 		
 		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria );
 		
@@ -832,18 +922,38 @@ class ItemController extends AbstractActionController {
 		
 		$this->doctrineEM->flush ();
 		
-		$total_records = count ( $list );
-		$paginator = null;
+		// update search index()
+		$this->itemSearchService->createItemIndex ();
 		
-		if ($total_records > $resultsPerPage) {
-			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
-			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
-		}
+		$total_records = count ( $list );
 		
 		return new ViewModel ( array (
-				'list' => $list,
-				'total_records' => $total_records,
-				'paginator' => $paginator 
+				'total_records' => $total_records 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function updatePictureTokenAction() {
+		$criteria = array ();
+		$sort_criteria = array ();
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findBy ( $criteria, $sort_criteria );
+		
+		if (count ( $list ) > 0) {
+			foreach ( $list as $entity ) {
+				/** @todo ONLY TOKEN */
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			}
+		}
+		
+		$this->doctrineEM->flush ();
+		
+		$total_records = count ( $list );
+		return new ViewModel ( array (
+				'total_records' => $total_records 
 		) );
 	}
 	

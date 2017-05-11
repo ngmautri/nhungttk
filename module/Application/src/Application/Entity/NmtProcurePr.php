@@ -106,6 +106,13 @@ class NmtProcurePr
     private $checksum;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="submitted_on", type="datetime", nullable=true)
+     */
+    private $submittedOn;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -433,6 +440,30 @@ class NmtProcurePr
     public function getChecksum()
     {
         return $this->checksum;
+    }
+
+    /**
+     * Set submittedOn
+     *
+     * @param \DateTime $submittedOn
+     *
+     * @return NmtProcurePr
+     */
+    public function setSubmittedOn($submittedOn)
+    {
+        $this->submittedOn = $submittedOn;
+
+        return $this;
+    }
+
+    /**
+     * Get submittedOn
+     *
+     * @return \DateTime
+     */
+    public function getSubmittedOn()
+    {
+        return $this->submittedOn;
     }
 
     /**

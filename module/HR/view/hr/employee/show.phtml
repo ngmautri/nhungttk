@@ -1,16 +1,4 @@
-<?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
-}
-?>
+<h4><?php echo (!$entity == null)? "Employee: " . $entity->getEmployeeName():"";?></h4>
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>

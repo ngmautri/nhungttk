@@ -28,15 +28,9 @@ class ItemAttachmentControllerFactory implements FactoryInterface{
 		$controller= new ItemAttachmentController();
 		
 		
-		// User Table
-		$tbl = $container->get ( 'User\Model\UserTable' );
-		$controller->setUserTable ( $tbl );
-		
+			
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
-		
-		$sv =  $container->get('Inventory\Service\ItemSearchService');
-		$controller->setItemSearchService($sv);
 		
 		return $controller;
 	}	

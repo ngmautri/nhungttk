@@ -23,7 +23,8 @@ use Application\Entity\NmtProcurePr;
  * @author nmt
  *        
  */
-class PrController extends AbstractActionController {
+class PrRowController extends AbstractActionController {
+	
 	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 	protected $doctrineEM;
 	
@@ -58,11 +59,11 @@ class PrController extends AbstractActionController {
 		}
 		;
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtPmProject' )->findBy ( $criteria, $sort_criteria );
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->findBy ( $criteria, $sort_criteria );
 		
 		if (count ( $list ) > 0) {
 			foreach ( $list as $entity ) {
-				$entity->setChecksum ( md5 ( uniqid ( "project_" . $entity->getId () ) . microtime () ) );
+				$entity->setChecksum ( md5 ( uniqid ( "pr_row_" . $entity->getId () ) . microtime () ) );
 				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 			}
 		}

@@ -9,50 +9,29 @@
  */
 namespace User\Controller;
 
-use Zend\I18n\Validator\Int;
+
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Date;
-use Zend\Validator\EmailAddress;
-use Zend\Mail\Message;
 use Zend\View\Model\ViewModel;
-use MLA\Paginator;
-use MLA\Files;
-use User\Service\Acl;
-use User\Model\AclRole;
-use User\Model\AclRoleTable;
-use User\Model\AclUserRole;
-use User\Model\AclUserRoleTable;
-use User\Model\AclRoleResource;
-use User\Model\AclRoleResourceTable;
-use User\Model\AclResource;
-use User\Model\AclResourceTable;
-use User\Model\UserTable;
+
+use Zend\Math\Rand;
+use Doctrine\ORM\EntityManager;
 
 /*
  * Control Panel Controller
  */
 class ProfileController extends AbstractActionController {
-	protected $SmtpTransportService;
-	protected $authService;
-	protected $aclService;
-	protected $userTable;
-	protected $aclRoleTable;
-	protected $aclResourceTable;
-	protected $aclUserRoleTable;
-	protected $aclRoleResourceTable;
-	protected $tree;
 	
-	/*
-	 * Defaul Action
+	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+	
+	protected $doctrineEM;
+	protected $SmtpTransportService;
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
 	 */
 	public function indexAction() {
-		
-		$identity = $this->authService->getIdentity ();
-		$user = $this->userTable->getUserDepartmentByEmail( $identity );
-		
-		return new ViewModel ( array (
-				'user' => $user
-		) );
 	}
 	
 	/**
@@ -61,7 +40,7 @@ class ProfileController extends AbstractActionController {
 	 */
 	public function changePasswordAction() {
 			
-		$request = $this->getRequest ();
+	/* 	$request = $this->getRequest ();
 		
 		if ($request->isPost ()) {
 			
@@ -115,64 +94,54 @@ class ProfileController extends AbstractActionController {
 		return new ViewModel ( array (
 				'status' =>null,
 				'messages' => null
+		) ); */
+	}
+
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function updateTokenAction() {
+		$criteria = array ();
+		
+		// var_dump($criteria);
+		$sort_criteria = array ();
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findBy ( $criteria, $sort_criteria );
+		
+		if (count ( $list ) > 0) {
+			foreach ( $list as $entity ) {
+				$entity->setChecksum ( md5 ( uniqid ( "user_" . $entity->getId () ) . microtime () ) );
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			}
+		}
+		
+		$this->doctrineEM->flush ();
+		
+		// update search index()
+		$total_records = count ( $list );
+		
+		return new ViewModel ( array (
+				'total_records' => $total_records
 		) );
 	}
-	public function getAclRoleTable() {
-		return $this->aclRoleTable;
-	}
-	public function setAclRoleTable(AclRoleTable $aclRoleTable) {
-		$this->aclRoleTable = $aclRoleTable;
-		return $this;
-	}
-	public function getAclUserRoleTable() {
-		return $this->aclUserRoleTable;
-	}
-	public function setAclUserRoleTable(AclUserRoleTable $aclUserRoleTable) {
-		$this->aclUserRoleTable = $aclUserRoleTable;
-		return $this;
-	}
-	public function getAclRoleResourceTable() {
-		return $this->aclRoleResourceTable;
-	}
-	public function setAclRoleResourceTable(AclRoleResourceTable $aclRoleResourceTable) {
-		$this->aclRoleResourceTable = $aclRoleResourceTable;
-		return $this;
-	}
-	public function getSmtpTransportService() {
-		return $this->SmtpTransportService;
-	}
-	public function setSmtpTransportService($SmtpTransportService) {
-		$this->SmtpTransportService = $SmtpTransportService;
-		return $this;
-	}
-	public function getAuthService() {
-		return $this->authService;
-	}
-	public function setAuthService($authService) {
-		$this->authService = $authService;
-		return $this;
-	}
-	public function getUserTable() {
-		return $this->userTable;
-	}
-	public function setUserTable(UserTable $userTable) {
-		$this->userTable = $userTable;
-		return $this;
-	}
-	public function getAclResourceTable() {
-		return $this->aclResourceTable;
-	}
-	public function setAclResourceTable(AclResourceTable $aclResourceTable) {
-		$this->aclResourceTable = $aclResourceTable;
-		return $this;
-	}
-	public function getAclService() {
-		return $this->aclService;
-	}
-	public function setAclService(Acl $aclService) {
-		$this->aclService = $aclService;
-		return $this;
+	
+	/**
+	 *
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	public function getDoctrineEM() {
+		return $this->doctrineEM;
 	}
 	
+	/**
+	 *
+	 * @param EntityManager $doctrineEM
+	 * @return \BP\Controller\VendorController
+	 */
+	public function setDoctrineEM(EntityManager $doctrineEM) {
+		$this->doctrineEM = $doctrineEM;
+		return $this;
+	}
 	
 }

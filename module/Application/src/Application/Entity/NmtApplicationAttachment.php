@@ -43,6 +43,13 @@ class NmtApplicationAttachment
     private $isPicture;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_contract", type="boolean", nullable=true)
+     */
+    private $isContract;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="signing_date", type="datetime", nullable=true)
@@ -115,9 +122,16 @@ class NmtApplicationAttachment
     /**
      * @var string
      *
-     * @ORM\Column(name="folder", type="string", length=150, nullable=true)
+     * @ORM\Column(name="folder", type="string", length=255, nullable=true)
      */
     private $folder;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="attachment_folder", type="string", length=200, nullable=true)
+     */
+    private $attachmentFolder;
 
     /**
      * @var string
@@ -351,6 +365,30 @@ class NmtApplicationAttachment
     public function getIsPicture()
     {
         return $this->isPicture;
+    }
+
+    /**
+     * Set isContract
+     *
+     * @param boolean $isContract
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setIsContract($isContract)
+    {
+        $this->isContract = $isContract;
+
+        return $this;
+    }
+
+    /**
+     * Get isContract
+     *
+     * @return boolean
+     */
+    public function getIsContract()
+    {
+        return $this->isContract;
     }
 
     /**
@@ -615,6 +653,30 @@ class NmtApplicationAttachment
     public function getFolder()
     {
         return $this->folder;
+    }
+
+    /**
+     * Set attachmentFolder
+     *
+     * @param string $attachmentFolder
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setAttachmentFolder($attachmentFolder)
+    {
+        $this->attachmentFolder = $attachmentFolder;
+
+        return $this;
+    }
+
+    /**
+     * Get attachmentFolder
+     *
+     * @return string
+     */
+    public function getAttachmentFolder()
+    {
+        return $this->attachmentFolder;
     }
 
     /**

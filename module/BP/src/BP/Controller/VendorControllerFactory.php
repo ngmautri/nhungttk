@@ -23,7 +23,11 @@ class VendorControllerFactory implements FactoryInterface {
 		$sm = $serviceLocator->getServiceLocator();
 			
 		$controller = new VendorController();
-			
+		
+		//Vendor Search Service
+		$sv =  $sm->get ('BP\Service\VendorSearchService' );
+		$controller->setVendorSearchService($sv );
+		
 		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
 		$controller->setDoctrineEM($sv );
 		

@@ -376,6 +376,9 @@ class ItemAttachmentController extends AbstractActionController {
 						$cloned_entity->setFilenameOriginal ( $file_name );
 						$cloned_entity->setSize ( $file_size );
 						$cloned_entity->setFolder ( $folder );
+						
+						//new
+						$cloned_entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
 						$cloned_entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$cloned_entity->setChecksum ( $checksum );
 						$cloned_entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -936,6 +939,8 @@ class ItemAttachmentController extends AbstractActionController {
 						$entity->setFilenameOriginal ( $file_name );
 						$entity->setSize ( $file_size );
 						$entity->setFolder ( $folder );
+						//new
+						$entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
 						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setChecksum ( $checksum );
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -1254,6 +1259,10 @@ class ItemAttachmentController extends AbstractActionController {
 						$entity->setFilenameOriginal ( $file_name );
 						$entity->setSize ( $file_size );
 						$entity->setFolder ( $folder );
+						
+						//new
+						$entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
+						
 						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setChecksum ( $checksum );
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -1414,6 +1423,10 @@ class ItemAttachmentController extends AbstractActionController {
 						$entity->setFilenameOriginal ( $original_filename );
 						// $entity->setSize ( $file_size );
 						$entity->setFolder ( $folder );
+						
+						//new
+						$entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
+						
 						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setChecksum ( $checksum );
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -1547,7 +1560,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$attachment = $tmp_attachment;
 		
 		if ($attachment !== null) {
-			$f = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $attachment->getFolderRelative () . $attachment->getFilename ();
+			$f = ROOT . $attachment->getAttachmentFolder(). DIRECTORY_SEPARATOR . $attachment->getFilename ();
 			$output = file_get_contents ( $f );
 			
 			$response = $this->getResponse ();

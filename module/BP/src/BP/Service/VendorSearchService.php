@@ -38,7 +38,7 @@ class VendorSearchService {
 		$result = array ();
 		$sucess = 0;
 		$fail = 0;
-				
+		
 		try {
 			$index = Lucene::create ( getcwd () . self::ITEM_INDEX );
 			
@@ -50,13 +50,15 @@ class VendorSearchService {
 			
 			if (count ( $records ) > 0) {
 				
-				
 				foreach ( $records as $r ) {
 					
 					try {
 						$doc = new Document ();
 						$row = $r;
-						$doc->addField ( Field::UnIndexed ( 'vendor_id', $row->getId () ) );						
+						$doc->addField ( Field::UnIndexed ( 'vendor_id', $row->getId () ) );
+						$doc->addField ( Field::UnIndexed ( 'token', $row->getToken () ) );
+						$doc->addField ( Field::UnIndexed ( 'checksum', $row->getChecksum () ) );
+						
 						$doc->addField ( Field::text ( 'vendor_name', $row->getVendorName () ) );
 						$doc->addField ( Field::text ( 'vendor_name_short', $row->getVendorShortName () ) );
 						$doc->addField ( Field::text ( 'keywords', $row->getKeywords () ) );
@@ -65,40 +67,38 @@ class VendorSearchService {
 						$doc->addField ( Field::Keyword ( 'is_active', $row->getIsActive () ) );
 						
 						$index->addDocument ( $doc );
-						//$log [] = $row->getVendorName () . "  added!";
-						$sucess++;
-						
+						// $log [] = $row->getVendorName () . " added!";
+						$sucess ++;
 					} catch ( Exception $e ) {
-						//$log [] = $e->getMessage ();
-						$fail++;
+						// $log [] = $e->getMessage ();
+						$fail ++;
 					}
 				}
 				$index->optimize ();
 				
-				//$log [] = 'Vendor indexes is created successfully!<br> Index Size:' . $index->count () . '<br>Documents: ' . $index->numDocs ();
+				// $log [] = 'Vendor indexes is created successfully!<br> Index Size:' . $index->count () . '<br>Documents: ' . $index->numDocs ();
 				
-				$result = array(
-					'message' => 'Vendor indexes is created successfully!<br> Index Size:' . $index->count () . '<br>Documents: ' . $index->numDocs (),
-					'sucess' => $sucess,
-					'fail' => $fail,
+				$result = array (
+						'message' => 'Vendor indexes is created successfully!<br> Index Size:' . $index->count () . '<br>Documents: ' . $index->numDocs (),
+						'sucess' => $sucess,
+						'fail' => $fail 
 				);
 				return $result;
-				
 			} else {
 				
-				$result = array(
+				$result = array (
 						'message' => 'Nothing for indexing!',
 						'sucess' => $sucess,
-						'fail' => $fail,
-					);
+						'fail' => $fail 
+				);
 				return $result;
 			}
 		} catch ( Exception $e ) {
 			
-			$result = array(
+			$result = array (
 					'message' => $e->getMessage (),
 					'sucess' => $sucess,
-					'fail' => $fail,
+					'fail' => $fail 
 			);
 			return $result;
 		}
@@ -212,7 +212,6 @@ class VendorSearchService {
 				// $query = QueryParser::parse ( $q );
 				$hits = $index->find ( $q );
 			}
-			
 			
 			$result = [ 
 					"message" => count ( $hits ) . " result(s) found for query: <b>" . $q . "</b>",

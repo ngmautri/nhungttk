@@ -14,23 +14,56 @@ use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
 use Application\Entity\NmtBpVendor;
 use MLA\Paginator;
+use Zend\Math\Rand;
+use BP\Service\VendorSearchService;
 
 /*
  * Control Panel Controller
  */
 class VendorController extends AbstractActionController {
+	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 	protected $doctrineEM;
+	protected $vendorSearchService;
 	
 	/*
 	 * Defaul Action
 	 */
 	public function indexAction() {
-		$em = $this->doctrineEM;
-		$data = $em->getRepository ( 'Application\Entity\NmtWfWorkflow' )->findAll ();
-		foreach ( $data as $row ) {
-			echo $row->getWorkflowName ();
-			echo '<br />';
+	}
+	
+	/**
+	 *
+	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+	 */
+	public function showAction() {
+		$request = $this->getRequest ();
+		
+		if ($request->getHeader ( 'Referer' ) == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		
+		$criteria = array (
+				'id' => $entity_id,
+				'token' => $token,
+				'checksum' => $checksum 
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findOneBy ( $criteria );
+		if ($entity == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		return new ViewModel ( array (
+				'redirectUrl' => $redirectUrl,
+				'errors' => null,
+				'entity' => $entity 
+		) );
 	}
 	
 	/*
@@ -48,69 +81,72 @@ class VendorController extends AbstractActionController {
 		
 		if ($request->isPost ()) {
 			
-			$vendor_name = $request->getPost ( 'vendor_name' );
-			$vendor_short_name = $request->getPost ( 'vendor_short_name' );
-			$keywords = $request->getPost ( 'keywords' );
-			$country_id = $request->getPost ( 'country_id' );
-			$is_active = $request->getPost ( 'is_active' );
-			if ($is_active == null) :
-				$is_active = 0;
-			endif;
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$errors = array ();
 			
+			$vendorName = $request->getPost ( 'vendorName' );
+			$vendorShortName = $request->getPost ( 'vendorShortName' );
+			$keywords = $request->getPost ( 'keywords' );
+			$isActive = ( int ) $request->getPost ( 'isActive' );
 			$remarks = $request->getPost ( 'remarks' );
 			
-			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$country_id = $request->getPost ( 'country_id' );
 			
-			$errors = array ();
+			if ($isActive !== 1) :
+				$isActive = 0;
+			endif;
 			
 			$entity = new NmtBpVendor ();
 			
-			if ($vendor_name === '' or $vendor_name === null) {
+			$entity->setIsActive($isActive);
+			$entity->setKeywords ( $keywords );
+			$entity->setRemarks ( $remarks );
+			$entity->setVendorName ( $vendorName );
+			$entity->setVendorShortName ( $vendorShortName );
+			
+			if ($vendorName === '' or $vendorName === null) {
 				$errors [] = 'Please give vendor name';
 			}
 			
 			if ($country_id === '' or $country_id === null) {
 				$errors [] = 'Please give a country!';
-				$country = null;
 			} else {
 				$country = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCountry', $country_id );
 				$entity->setCountry ( $country );
 			}
-			$entity->setVendorName ( $vendor_name );
-			$entity->setVendorShortName ( $vendor_short_name );
-			$entity->setKeywords ( $keywords );
-			$entity->setIsActive ( $is_active );
-			$entity->setRemarks ( $remarks );
 			
 			if (count ( $errors ) > 0) {
 				return new ViewModel ( array (
 						'errors' => $errors,
 						'redirectUrl' => $redirectUrl,
-						'entity' => $entity,
-						'country' => $country 
-				
+						'entity' => $entity 
 				) );
 			}
 			
 			// No Error
 			try {
 				
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+				
 				$entity->setCreatedOn ( new \DateTime () );
 				$entity->setCreatedBy ( $u );
 				
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
+				
+				$new_entity_id = $entity->getId ();
+				
+				$entity->setChecksum ( md5 ( $new_entity_id . uniqid ( microtime () ) ) );
+				$this->doctrineEM->flush ();
 			} catch ( Exception $e ) {
 				return new ViewModel ( array (
 						'errors' => $e->getMessage (),
 						'redirectUrl' => $redirectUrl,
-						'entity' => null,
-						'country' => null 
-				
+						'entity' => null 
 				) );
 			}
 			
-			$this->flashMessenger ()->addSuccessMessage ( "Vendor " . $vendor_name . " has been created sucessfully" );
+			$this->flashMessenger ()->addSuccessMessage ( 'Vendor " ' . $vendorName . '" has been created sucessfully!' );
 			return $this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
@@ -119,9 +155,138 @@ class VendorController extends AbstractActionController {
 		return new ViewModel ( array (
 				'errors' => null,
 				'redirectUrl' => $redirectUrl,
-				'entity' => null,
-				'country' => null 
+				'entity' => null 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+	 */
+	public function editAction() {
+		$request = $this->getRequest ();
 		
+		if ($request->isPost ()) {
+			$errors = array ();
+			
+			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+					"email" => $this->identity () 
+			) );
+			
+			$errors = array ();
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$entity_id = ( int ) $request->getPost ( 'entity_id' );
+			$token = $request->getPost ( 'token' );
+			
+			$criteria = array (
+					'id' => $entity_id,
+					'token' => $token 
+			);
+			
+			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findOneBy ( $criteria );
+			
+			if ($entity == null) {
+				
+				$errors [] = 'Entity object can\'t be empty!';
+				return new ViewModel ( array (
+						'redirectUrl' => $redirectUrl,
+						'errors' => $errors,
+						'entity' => null 
+				) );
+				
+				// might need redirect
+			} else {
+				
+				$redirectUrl = $request->getPost ( 'redirectUrl' );
+				$errors = array ();
+				
+				$vendorName = $request->getPost ( 'vendorName' );
+				$vendorShortName = $request->getPost ( 'vendorShortName' );
+				$keywords = $request->getPost ( 'keywords' );
+				$isActive = ( int ) $request->getPost ( 'isActive' );
+				$remarks = $request->getPost ( 'remarks' );
+				
+				$country_id = $request->getPost ( 'country_id' );
+				
+				if ($isActive !== 1) :
+					$isActive = 0;
+				endif;
+				
+				//$entity = new NmtBpVendor ();
+				$entity->setKeywords ( $keywords );
+				$entity->setRemarks ( $remarks );
+				$entity->setVendorName ( $vendorName );
+				$entity->setVendorShortName ( $vendorShortName );
+				$entity->setIsActive($isActive);
+				
+				if ($vendorName === '' or $vendorName === null) {
+					$errors [] = 'Please give vendor name';
+				}
+				
+				if ($country_id === '' or $country_id === null) {
+					$errors [] = 'Please give a country!';
+				} else {
+					$country = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCountry', $country_id );
+					$entity->setCountry ( $country );
+				}
+				
+				if (count ( $errors ) > 0) {
+					return new ViewModel ( array (
+							'errors' => $errors,
+							'redirectUrl' => $redirectUrl,
+							'entity' => $entity 
+					) );
+				}
+				
+				// No Error
+				try {
+					
+					$entity->setLastChangeBy ( $u );
+					$entity->setLastChangeOn ( new \DateTime () );
+					$this->doctrineEM->persist ( $entity );
+					$this->doctrineEM->flush ();
+					$this->flashMessenger ()->addSuccessMessage ( 'Vendor " ' . $vendorName . '" has been updated!' );
+					return $this->redirect ()->toUrl ( $redirectUrl );
+				} catch ( Exception $e ) {
+					return new ViewModel ( array (
+							'errors' => $e->getMessage (),
+							'redirectUrl' => $redirectUrl,
+							'entity' => null 
+					) );
+				}
+			}
+			
+			return $this->redirect ()->toUrl ( $redirectUrl );
+		}
+		
+		// NOT POST
+		
+		$redirectUrl = null;
+		if ($request->getHeader ( 'Referer' ) == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		
+		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		
+		$criteria = array (
+				'id' => $entity_id,
+				'token' => $token,
+				'checksum' => $checksum 
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findOneBy ( $criteria );
+		if ($entity == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		return new ViewModel ( array (
+				'redirectUrl' => $redirectUrl,
+				'errors' => null,
+				'entity' => $entity 
 		) );
 	}
 	
@@ -206,6 +371,15 @@ class VendorController extends AbstractActionController {
 	 */
 	public function list1Action() {
 		$request = $this->getRequest ();
+		
+		$sort_criteria = array (
+				"vendorName" => "ASC",
+				
+		);
+		$criteria = array (
+				"isActive" => 1,
+		);
+		
 		$context = $this->params ()->fromQuery ( 'context' );
 		
 		// accepted only ajax request
@@ -214,13 +388,15 @@ class VendorController extends AbstractActionController {
 		}
 		
 		$this->layout ( "layout/user/ajax" );
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findAll ();
+		// $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findAll ();
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findBy ( $criteria, $sort_criteria );
+		
 		$total_records = count ( $list );
 		return new ViewModel ( array (
 				'list' => $list,
 				'total_records' => $total_records,
 				'paginator' => null,
-				'context' =>$context,
+				'context' => $context 
 		) );
 	}
 	
@@ -241,7 +417,37 @@ class VendorController extends AbstractActionController {
 		return new ViewModel ( array (
 				'list' => $list,
 				'total_records' => $total_records,
-				'paginator' => null
+				'paginator' => null 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function updateTokenAction() {
+		$criteria = array ();
+		
+		// var_dump($criteria);
+		$sort_criteria = array ();
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findBy ( $criteria, $sort_criteria );
+		
+		if (count ( $list ) > 0) {
+			foreach ( $list as $entity ) {
+				$entity->setChecksum ( md5 ( uniqid ( $entity->getId () ) . microtime () ) );
+				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+			}
+		}
+		
+		$this->doctrineEM->flush ();
+		
+		// update search index()
+		$this->vendorSearchService->createVendorIndex();
+		$total_records = count ( $list );
+		
+		return new ViewModel ( array (
+				'total_records' => $total_records
 		) );
 	}
 	
@@ -262,4 +468,12 @@ class VendorController extends AbstractActionController {
 		$this->doctrineEM = $doctrineEM;
 		return $this;
 	}
+	public function getVendorSearchService() {
+		return $this->vendorSearchService;
+	}
+	public function setVendorSearchService(VendorSearchService $vendorSearchService) {
+		$this->vendorSearchService = $vendorSearchService;
+		return $this;
+	}
+	
 }

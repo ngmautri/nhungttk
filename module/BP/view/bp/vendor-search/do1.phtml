@@ -60,7 +60,7 @@ if (! $hits == null) :
 			<td><?php echo $this->escapeHtml($hit->country_name);?></td>
 		
 	<td>
-	<a href="<?php echo $this->baseUrl ?>/bp/vendor/show?target_id=<?php echo $this->escapeHtml($hit->vendor_id);?>">show</a>
+	<a href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>">Show</a>
 	</td>	
 		</tr>
 <?php endforeach; ?>

@@ -1,0 +1,69 @@
+<form class="form-inline" action=""	method="get" enctype="multipart/form-data">
+  <div class="form-group">
+    	<input class="form-control" size="25" type="text" id ="search_term_<?php echo $context;?>" name = "q">
+   </div>
+  <div class="form-group">
+     <button type="submit" class="btn btn-default" onclick="searchEntity('/inventory/item-search/do1','<?php echo $context;?>');"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
+  </div>
+  
+</form>
+
+<div>
+<ul class="nav nav-pills">
+		<li><a style="color: #0080ff;" href="/inventory/item/add">
+		<i class="glyphicon glyphicon-plus"> </i>&nbsp;CREATE NEW ITEM </a></li>
+</ul>
+</div>
+
+<?php
+echo '<span style = "font-size: 10pt;">';
+echo $message;
+echo '</span>';
+
+if (! $hits == null) :
+	?>
+<table style = "font-size: 10pt;" class="table table-hover table-bordered">
+	<thead>
+		<tr style = "">
+			<td><b>#</b></td>
+			<td><b>Name</b></td>
+			<td><b>SKU</b></td>
+			<td><b>Manufacturer Serial</b></td>
+			<td><b>Manufacturer Model</b></td>
+			<td><b>Model</b></td>
+			<td><b>Resource</b></td>
+		</tr>
+		</tr>
+	</thead>
+	<tbody>
+
+	 <?php
+	
+	$count = 0;
+	foreach ( $hits as $hit ) :
+		$count ++;
+		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+		
+		?>
+	 <tr>
+	
+			<td> <?php echo $count;?></td>
+	 		<td>		
+<a href="javascript:;"
+	onclick="selectId('<?php echo $this->escapeHtml($hit->item_id);?>','item_id','<?php echo $this->escapeHtml($hit->item_name);?>','item_name');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
+</a></td>
+		<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
+				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
+				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_serial);?></span></td>
+				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_model);?></span></td>
+    		
+	<td>
+	<a href="<?php echo $this->baseUrl ?>/bp/vendor/show?target_id=<?php echo $this->escapeHtml($hit->item_id);?>">show</a>
+	</td>	
+		</tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+
+
+<?php endif; ?>

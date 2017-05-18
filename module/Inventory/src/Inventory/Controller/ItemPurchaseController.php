@@ -64,7 +64,7 @@ class ItemPurchaseController extends AbstractActionController {
 			if ($target == null) {
 				
 				$errors [] = 'Target object can\'t be empty. Or token key is not valid!';
-				$this->flashMessenger ()->addMessage ( 'Something wrong!' );
+				$this->flashMessenger ()->addMessage ( 'Something went wrong!' );
 				return new ViewModel ( array (
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
@@ -116,7 +116,6 @@ class ItemPurchaseController extends AbstractActionController {
 					$errors [] = 'Please enter unit of purchase';
 				} else {
 					$entity->setVendorItemUnit ( $vendorItemUnit );
-					$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
 				}
 				
 				if ($conversionFactor == null) {
@@ -195,6 +194,8 @@ class ItemPurchaseController extends AbstractActionController {
 					) );
 				}
 				;
+				// OK now
+				$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
 				
 				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
 						'email' => $this->identity () 
@@ -216,6 +217,7 @@ class ItemPurchaseController extends AbstractActionController {
 			}
 		}
 		
+		// NO POST
 		$redirectUrl = Null;
 		if ($request->getHeader ( 'Referer' ) == null) {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -261,12 +263,12 @@ class ItemPurchaseController extends AbstractActionController {
 		
 		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
 		$token = $this->params ()->fromQuery ( 'token' );
-		$checksum= $this->params ()->fromQuery ( 'checksum' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
 		
 		$criteria = array (
 				'id' => $entity_id,
 				'token' => $token,
-				'checksum' => $checksum
+				'checksum' => $checksum 
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findOneBy ( $criteria );
@@ -354,6 +356,10 @@ class ItemPurchaseController extends AbstractActionController {
 				
 				$vendor = $this->doctrineEM->find ( 'Application\Entity\NmtBpVendor', $vendor_id );
 				
+				if ($target == null) {
+					$errors [] = 'Target object can\'t be empty';
+				}
+				
 				if ($vendor == null) {
 					$errors [] = 'Vendor can\'t be empty. Please select a vendor!';
 				} else {
@@ -364,10 +370,6 @@ class ItemPurchaseController extends AbstractActionController {
 					$errors [] = 'Please enter unit of purchase';
 				} else {
 					$entity->setVendorItemUnit ( $vendorItemUnit );
-					
-					if ($target !== null) {
-						$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
-					}
 				}
 				
 				if ($conversionFactor == null) {
@@ -448,6 +450,8 @@ class ItemPurchaseController extends AbstractActionController {
 				}
 				;
 				
+				$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
+				
 				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
 						'email' => $this->identity () 
 				) );
@@ -475,12 +479,12 @@ class ItemPurchaseController extends AbstractActionController {
 		
 		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
 		$token = $this->params ()->fromQuery ( 'token' );
-		$checksum= $this->params ()->fromQuery ( 'checksum' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
 		
 		$criteria = array (
 				'id' => $entity_id,
 				'token' => $token,
-				'checksum' => $checksum
+				'checksum' => $checksum 
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findOneBy ( $criteria );
@@ -502,11 +506,51 @@ class ItemPurchaseController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function listAction() {
-		$criteria = array ();
+		$item_type = $this->params ()->fromQuery ( 'item_type' );
+		$is_active = $this->params ()->fromQuery ( 'is_active' );
+		$is_fixed_asset = $this->params ()->fromQuery ( 'is_fixed_asset' );
+		
+		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
+		$sort = $this->params ()->fromQuery ( 'sort' );
+		
+		$criteria1 = array ();
+		/*
+		 * if (! $item_type == null) {
+		 * $criteria1 = array (
+		 * "itemType" => $item_type
+		 * );
+		 * }
+		 */
+		$criteria2 = array ();
+		if (! $is_active == null) {
+			$criteria2 = array (
+					"isActive" => $is_active 
+			);
+			
+			if ($is_active == - 1) {
+				$criteria2 = array (
+						"isActive" => '0' 
+				);
+			}
+		}
+		
+		$criteria3 = array ();
+		
+		if ($sort_by == null) :
+			$sort_by = "itemName";
+		endif;
+		
+		if ($sort == null) :
+			$sort = "ASC";
+		endif;
+		
+		$sort_criteria = array (
+				$sort_by => $sort 
+		);
+		
+		$criteria = array_merge ( $criteria1, $criteria2, $criteria3 );
 		
 		// var_dump($criteria);
-		
-		$sort_criteria = array ();
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 15;
@@ -522,13 +566,35 @@ class ItemPurchaseController extends AbstractActionController {
 		}
 		;
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findBy ( $criteria, $sort_criteria );
+		// $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findBy ( $criteria, $sort_criteria );
+		
+		$query = 'SELECT e, i FROM Application\Entity\NmtInventoryItemPurchasing e JOIN e.item i JOIN e.vendor v Where 1=?1';
+		
+		if (! $is_active == null) {
+			if ($is_active == - 1) {
+				$query = $query . " AND e.isActive = 0";
+			} else {
+				$query = $query . " AND e.isActive = 1";
+			}
+		}
+		
+		if ($sort_by == "itemName") {
+			$query = $query . ' ORDER BY i.' . $sort_by . ' ' . $sort . ' ,e.currency';
+		} elseif ($sort_by == "vendorName") {
+			$query = $query . ' ORDER BY v.' . $sort_by . ' ' . $sort . ' ,e.currency';
+		}
+		$list = $this->doctrineEM->createQuery ( $query )->setParameters ( array (
+				"1" => 1 
+		) )->getResult ();
+		
 		$total_records = count ( $list );
 		$paginator = null;
 		
 		if ($total_records > $resultsPerPage) {
 			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
-			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$list = $this->doctrineEM->createQuery ( $query )->setParameters ( array (
+					"1" => 1 
+			) )->setFirstResult ( $paginator->minInPage - 1 )->setMaxResults ( ($paginator->maxInPage - $paginator->minInPage) + 1 )->getResult ();
 		}
 		
 		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
@@ -537,7 +603,14 @@ class ItemPurchaseController extends AbstractActionController {
 		return new ViewModel ( array (
 				'list' => $list,
 				'total_records' => $total_records,
-				'paginator' => $paginator 
+				'paginator' => $paginator,
+				'sort_by' => $sort_by,
+				'sort' => $sort,
+				'is_active' => $is_active,
+				'is_fixed_asset' => $is_fixed_asset,
+				'per_pape' => $resultsPerPage,
+				'item_type' => $item_type 
+		
 		) );
 	}
 	
@@ -549,11 +622,10 @@ class ItemPurchaseController extends AbstractActionController {
 		$request = $this->getRequest ();
 		
 		// accepted only ajax request
-		/*
-		 * if (! $request->isXmlHttpRequest ()) {
-		 * return $this->redirect ()->toRoute ( 'access_denied' );
-		 * }
-		 */
+		
+		if (! $request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 		
 		$this->layout ( "layout/user/ajax" );
 		
@@ -594,20 +666,76 @@ class ItemPurchaseController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function vendorAction() {
+		$request = $this->getRequest ();
+		
+		// accepted only ajax request
+		
+		if (! $request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$this->layout ( "layout/user/ajax" );
+		
+		$target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		
+		$criteria = array (
+				'id' => $target_id,
+				'checksum' => $checksum,
+				'token' => $token
+		);
+		
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findOneBy ( $criteria );
+		
+		if ($target == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$query = 'SELECT e, i FROM Application\Entity\NmtInventoryItemPurchasing e JOIN e.item i JOIN e.vendor v Where 1=?1';
+		$query = $query . " AND e.vendor = " . $target_id;
+		$query = $query . " AND e.isActive = 1";
+		$query = $query . ' ORDER BY i.itemName ASC, e.currency';
+	
+		$list = $this->doctrineEM->createQuery ( $query )->setParameters ( array (
+				"1" => 1
+		) )->getResult ();
+		
+		
+		
+		//$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findBy ( $criteria, $sort_criteria );
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => $paginator,
+				'target' => $target
+		) );
+	}
+	
+	/**
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function updateTokenAction() {
 		
-		/** @todo: update target */
+		/**
+		 *
+		 * @todo : update target
+		 */
 		$query = 'SELECT e FROM Application\Entity\NmtInventoryItemPurchasing e';
 		
-		$list = $this->doctrineEM->createQuery($query)
-		->getResult();
+		$list = $this->doctrineEM->createQuery ( $query )->getResult ();
 		
 		if (count ( $list ) > 0) {
 			foreach ( $list as $entity ) {
-				$entity->setChecksum ( md5 ( $entity->getId(). uniqid ( microtime () ) ) );
+				$entity->setChecksum ( md5 ( $entity->getId () . uniqid ( microtime () ) ) );
 				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 			}
 		}
@@ -617,7 +745,7 @@ class ItemPurchaseController extends AbstractActionController {
 		$total_records = count ( $list );
 		return new ViewModel ( array (
 				'list' => $list,
-				'total_records' => $total_records,
+				'total_records' => $total_records 
 		) );
 	}
 	

@@ -24,34 +24,9 @@ class ProfileControllerFactory implements FactoryInterface {
 			
 		$controller = new ProfileController();
 		
-		//User Table
-		$tbl =  $sm->get ('User\Model\UserTable' );
-		$controller->setUserTable($tbl);
+		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
+		$controller->setDoctrineEM($sv );
 		
-		//User Role Table
-		$tbl =  $sm->get ('User\Model\AclUserRoleTable' );
-		$controller->setAclUserRoleTable($tbl);
-		
-		//Res Table
-		$tbl =  $sm->get ('User\Model\AclResourceTable' );
-		$controller->setAclResourceTable($tbl);
-		
-		//Role-Res Table
-		$tbl =  $sm->get ('User\Model\AclRoleResourceTable' );
-		$controller->setAclRoleResourceTable($tbl);
-		
-		//Role Table
-		$tbl =  $sm->get ('User\Model\AclRoleTable' );
-		$controller->setAclRoleTable($tbl);
-		
-		
-		//Auth Service
-		$sv =  $sm->get ('AuthService' );
-		$controller->setAuthService($sv );
-		
-		//Auth Service
-		$sv =  $sm->get ('User\Service\Acl' );
-		$controller->setAclService($sv );
 		
 		return $controller;
 	}

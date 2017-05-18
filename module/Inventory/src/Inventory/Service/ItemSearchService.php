@@ -135,7 +135,7 @@ class ItemSearchService {
 				$row = $item;
 				$doc->addField ( Field::UnIndexed ( 'item_id', $row->getId () ) );
 				$doc->addField ( Field::UnIndexed ( 'token', $row->getToken() ) );
-				$doc->addField ( Field::UnIndexed ( 'checksum', $row->getToken() ) );
+				$doc->addField ( Field::UnIndexed ( 'checksum', $row->getChecksum() ) );
 				
 				$doc->addField ( Field::Keyword ( 'item_sku_key', $row->getItemSku () ) );
 				

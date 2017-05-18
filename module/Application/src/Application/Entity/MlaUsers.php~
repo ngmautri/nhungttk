@@ -24,6 +24,20 @@ class MlaUsers
     /**
      * @var string
      *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
+     */
+    private $checksum;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="title", type="string", length=40, nullable=true)
      */
     private $title;

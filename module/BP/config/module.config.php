@@ -63,6 +63,8 @@ return array (
 						'BP\Controller\Vendor' => 'BP\Controller\VendorControllerFactory',
 						'BP\Controller\VendorContract' => 'BP\Controller\VendorContractControllerFactory',
 						'BP\Controller\VendorSearch' => 'BP\Controller\VendorSearchControllerFactory',
+						'BP\Controller\VendorAttachment' => 'BP\Controller\VendorAttachmentControllerFactory',
+						
 						
 						
 						'BP\Controller\Debtor' => 'BP\Controller\DebtorControllerFactory',

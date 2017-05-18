@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtBpVendor
  *
- * @ORM\Table(name="nmt_bp_vendor", indexes={@ORM\Index(name="nmt_bp_vendor_idx", columns={"created_by"}), @ORM\Index(name="nmt_bp_vendor_FK2_idx", columns={"country_id"})})
+ * @ORM\Table(name="nmt_bp_vendor", indexes={@ORM\Index(name="nmt_bp_vendor_idx", columns={"created_by"}), @ORM\Index(name="nmt_bp_vendor_FK2_idx", columns={"country_id"}), @ORM\Index(name="nmt_bp_vendor_FK3_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtBpVendor
@@ -20,6 +20,20 @@ class NmtBpVendor
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
+     */
+    private $checksum;
 
     /**
      * @var string
@@ -64,18 +78,11 @@ class NmtBpVendor
     private $remarks;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
-    private $token;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
-     */
-    private $checksum;
+    private $lastChangeOn;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -97,6 +104,16 @@ class NmtBpVendor
      */
     private $country;
 
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
+
 
 
     /**
@@ -107,6 +124,54 @@ class NmtBpVendor
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtBpVendor
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set checksum
+     *
+     * @param string $checksum
+     *
+     * @return NmtBpVendor
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+
+        return $this;
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
     }
 
     /**
@@ -254,51 +319,27 @@ class NmtBpVendor
     }
 
     /**
-     * Set token
+     * Set lastChangeOn
      *
-     * @param string $token
+     * @param \DateTime $lastChangeOn
      *
      * @return NmtBpVendor
      */
-    public function setToken($token)
+    public function setLastChangeOn($lastChangeOn)
     {
-        $this->token = $token;
+        $this->lastChangeOn = $lastChangeOn;
 
         return $this;
     }
 
     /**
-     * Get token
+     * Get lastChangeOn
      *
-     * @return string
+     * @return \DateTime
      */
-    public function getToken()
+    public function getLastChangeOn()
     {
-        return $this->token;
-    }
-
-    /**
-     * Set checksum
-     *
-     * @param string $checksum
-     *
-     * @return NmtBpVendor
-     */
-    public function setChecksum($checksum)
-    {
-        $this->checksum = $checksum;
-
-        return $this;
-    }
-
-    /**
-     * Get checksum
-     *
-     * @return string
-     */
-    public function getChecksum()
-    {
-        return $this->checksum;
+        return $this->lastChangeOn;
     }
 
     /**
@@ -347,5 +388,29 @@ class NmtBpVendor
     public function getCountry()
     {
         return $this->country;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtBpVendor
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePrRow
  *
- * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"})})
  * @ORM\Entity
  */
 class NmtProcurePrRow
@@ -22,11 +22,81 @@ class NmtProcurePrRow
     private $id;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="quantiy", type="integer", nullable=true)
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
-    private $quantiy;
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
+     */
+    private $checksum;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="priority", type="string", length=45, nullable=true)
+     */
+    private $priority;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="row_name", type="string", length=60, nullable=true)
+     */
+    private $rowName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="row_description", type="string", length=255, nullable=true)
+     */
+    private $rowDescription;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="row_code", type="string", length=100, nullable=true)
+     */
+    private $rowCode;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="row_unit", type="string", length=45, nullable=true)
+     */
+    private $rowUnit;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="quantity", type="float", precision=10, scale=0, nullable=false)
+     */
+    private $quantity;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="edt", type="datetime", nullable=true)
+     */
+    private $edt;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_draft", type="boolean", nullable=true)
+     */
+    private $isDraft;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
 
     /**
      * @var \DateTime
@@ -34,6 +104,23 @@ class NmtProcurePrRow
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
 
     /**
      * @var \Application\Entity\NmtProcurePr
@@ -56,24 +143,14 @@ class NmtProcurePrRow
     private $item;
 
     /**
-     * @var \Application\Entity\NmtBpVendor
+     * @var \Application\Entity\NmtPmProject
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtPmProject")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="vendor_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      * })
      */
-    private $vendor;
-
-    /**
-     * @var \Application\Entity\MlaUsers
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
-     * })
-     */
-    private $createdBy;
+    private $project;
 
 
 
@@ -88,27 +165,267 @@ class NmtProcurePrRow
     }
 
     /**
-     * Set quantiy
+     * Set token
      *
-     * @param integer $quantiy
+     * @param string $token
      *
      * @return NmtProcurePrRow
      */
-    public function setQuantiy($quantiy)
+    public function setToken($token)
     {
-        $this->quantiy = $quantiy;
+        $this->token = $token;
 
         return $this;
     }
 
     /**
-     * Get quantiy
+     * Get token
      *
-     * @return integer
+     * @return string
      */
-    public function getQuantiy()
+    public function getToken()
     {
-        return $this->quantiy;
+        return $this->token;
+    }
+
+    /**
+     * Set checksum
+     *
+     * @param string $checksum
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+
+        return $this;
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
+
+    /**
+     * Set priority
+     *
+     * @param string $priority
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
+     * Get priority
+     *
+     * @return string
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * Set rowName
+     *
+     * @param string $rowName
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setRowName($rowName)
+    {
+        $this->rowName = $rowName;
+
+        return $this;
+    }
+
+    /**
+     * Get rowName
+     *
+     * @return string
+     */
+    public function getRowName()
+    {
+        return $this->rowName;
+    }
+
+    /**
+     * Set rowDescription
+     *
+     * @param string $rowDescription
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setRowDescription($rowDescription)
+    {
+        $this->rowDescription = $rowDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get rowDescription
+     *
+     * @return string
+     */
+    public function getRowDescription()
+    {
+        return $this->rowDescription;
+    }
+
+    /**
+     * Set rowCode
+     *
+     * @param string $rowCode
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setRowCode($rowCode)
+    {
+        $this->rowCode = $rowCode;
+
+        return $this;
+    }
+
+    /**
+     * Get rowCode
+     *
+     * @return string
+     */
+    public function getRowCode()
+    {
+        return $this->rowCode;
+    }
+
+    /**
+     * Set rowUnit
+     *
+     * @param string $rowUnit
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setRowUnit($rowUnit)
+    {
+        $this->rowUnit = $rowUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get rowUnit
+     *
+     * @return string
+     */
+    public function getRowUnit()
+    {
+        return $this->rowUnit;
+    }
+
+    /**
+     * Set quantity
+     *
+     * @param float $quantity
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * Get quantity
+     *
+     * @return float
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * Set edt
+     *
+     * @param \DateTime $edt
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setEdt($edt)
+    {
+        $this->edt = $edt;
+
+        return $this;
+    }
+
+    /**
+     * Get edt
+     *
+     * @return \DateTime
+     */
+    public function getEdt()
+    {
+        return $this->edt;
+    }
+
+    /**
+     * Set isDraft
+     *
+     * @param boolean $isDraft
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setIsDraft($isDraft)
+    {
+        $this->isDraft = $isDraft;
+
+        return $this;
+    }
+
+    /**
+     * Get isDraft
+     *
+     * @return boolean
+     */
+    public function getIsDraft()
+    {
+        return $this->isDraft;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 
     /**
@@ -133,6 +450,54 @@ class NmtProcurePrRow
     public function getCreatedOn()
     {
         return $this->createdOn;
+    }
+
+    /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 
     /**
@@ -184,50 +549,26 @@ class NmtProcurePrRow
     }
 
     /**
-     * Set vendor
+     * Set project
      *
-     * @param \Application\Entity\NmtBpVendor $vendor
+     * @param \Application\Entity\NmtPmProject $project
      *
      * @return NmtProcurePrRow
      */
-    public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
+    public function setProject(\Application\Entity\NmtPmProject $project = null)
     {
-        $this->vendor = $vendor;
+        $this->project = $project;
 
         return $this;
     }
 
     /**
-     * Get vendor
+     * Get project
      *
-     * @return \Application\Entity\NmtBpVendor
+     * @return \Application\Entity\NmtPmProject
      */
-    public function getVendor()
+    public function getProject()
     {
-        return $this->vendor;
-    }
-
-    /**
-     * Set createdBy
-     *
-     * @param \Application\Entity\MlaUsers $createdBy
-     *
-     * @return NmtProcurePrRow
-     */
-    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    /**
-     * Get createdBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getCreatedBy()
-    {
-        return $this->createdBy;
+        return $this->project;
     }
 }

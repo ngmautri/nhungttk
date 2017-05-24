@@ -42,15 +42,19 @@ class Bootstrap {
 						'module_paths' => $zf2ModulePaths 
 				),
 				'modules' => array (
+						'Application',
+						'DoctrineModule',
+						'DoctrineORMModule',
 						'User',
 						'Workflow',
-							
-				) 
+				),
+				
 		)
 		;
 		
 		// ServiceManager Config
 		$smConfig = array (
+				
 				'factories' => array (
 						'Zend\Db\Adapter\Adapter' => function ($sm) {
 							return $adapter = new Adapter ( array (
@@ -58,7 +62,7 @@ class Bootstrap {
 									'hostname' => 'localhost',
 									'database' => 'mla',
 									'username' => 'root',
-									'password' => '' 
+									'password' => 'kflg79' 
 							) );
 						},
 						
@@ -103,7 +107,6 @@ class Bootstrap {
 						$transport->setOptions ( $options );
 						return $transport;
 						}
-						
 				)
 				
 		);

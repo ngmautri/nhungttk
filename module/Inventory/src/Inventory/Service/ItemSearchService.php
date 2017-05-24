@@ -78,6 +78,8 @@ class ItemSearchService {
 					$doc->addField ( Field::text ( 'item_name', $row->getItemName () ) );
 					// $doc->addField ( Field::text ( 'item_name1', $row->getItemNameForeign () ) );
 					$doc->addField ( Field::text ( 'item_description', $row->getItemDescription () ) );
+					$doc->addField ( Field::text ( 'keywords', $row->getKeywords() ) );
+					
 					
 					$doc->addField ( Field::text ( 'manufacturer', $row->getManufacturer () ) );
 					$doc->addField ( Field::text ( 'manufacturer_model', $row->getManufacturerModel () ) );
@@ -158,6 +160,8 @@ class ItemSearchService {
 				$doc->addField ( Field::text ( 'item_name', $row->getItemName () ) );
 				// $doc->addField ( Field::text ( 'item_name1', $row->getItemNameForeign () ) );
 				$doc->addField ( Field::text ( 'item_description', $row->getItemDescription () ) );
+				$doc->addField ( Field::text ( 'keywords', $row->getKeywords() ) );
+				
 				
 				$doc->addField ( Field::text ( 'manufacturer', $row->getManufacturer () ) );
 				$doc->addField ( Field::text ( 'manufacturer_model', $row->getManufacturerModel () ) );

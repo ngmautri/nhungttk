@@ -20,10 +20,13 @@ class WorkflowServiceFactory implements FactoryInterface {
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 	
+		$container = $serviceLocator;
+		
 		$service = new WorkflowService();
 		
-		$tbl =  $serviceLocator->get ('Workflow\Model\NmtWfNodeTable' );
-		$service->setWorkFlowNoteTable($tbl);
+		$sv =  $container->get('doctrine.entitymanager.orm_default');
+		$service->setDoctrineEM($sv);
+		
 		return $service;
 	}
 }

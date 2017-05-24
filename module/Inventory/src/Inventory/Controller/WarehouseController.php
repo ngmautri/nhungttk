@@ -144,9 +144,9 @@ class WarehouseController extends AbstractActionController {
 		$request = $this->getRequest ();
 		
 		// accepted only ajax request
-		if (!$request->isXmlHttpRequest ()) {
+		/* if (!$request->isXmlHttpRequest ()) {
 			return $this->redirect ()->toRoute ( 'access_denied' );
-		}
+		} */
 		$this->layout ( "layout/user/ajax" );
 		$target_id = $_GET['target_id'];
 		$target_name = $_GET['target_name'];

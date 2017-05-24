@@ -19,7 +19,6 @@ use Doctrine\ORM\EntityManager;
  */
 class WFController extends AbstractActionController {
 	
-	protected$nmtWfWorkflowTable;
 	protected $doctrineEM;
 	
 	/*
@@ -69,8 +68,6 @@ class WFController extends AbstractActionController {
 	 */
 	public function listAction()
 	{
-		$this->nmtWfWorkflowTable->fetchAll();
-		var_dump($this->nmtWfWorkflowTable->fetchAll());
 	}
 	
 	public function deleteAction()
@@ -79,14 +76,7 @@ class WFController extends AbstractActionController {
 		var_dump($this->nmtWfWorkflowTable->fetchAll());
 	}
 	
-	public function getNmtWfWorkflowTable() {
-		return $this->nmtWfWorkflowTable;
-	}
-	public function setNmtWfWorkflowTable(NmtWfWorkflowTable $nmtWfWorkflowTable) {
-		$this->nmtWfWorkflowTable = $nmtWfWorkflowTable;
-		return $this;
-	}
-	public function getDoctrineEM() {
+		public function getDoctrineEM() {
 		return $this->doctrineEM;
 	}
 	public function setDoctrineEM(EntityManager $doctrineEM) {

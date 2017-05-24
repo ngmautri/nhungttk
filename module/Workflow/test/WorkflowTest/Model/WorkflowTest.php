@@ -44,8 +44,9 @@ class WorkflowTest extends PHPUnit_Framework_TestCase {
 		$service->updateCategory(1,0);
 		
 		//var_dump($service->getChildNodes(1));
-		var_dump($service->get(2));
-		//$service->fire(4);
+		//var_dump($service->get(2));
+		//var_dump($service->purchaseWF());
+		//var_dump($service->purchaseWF());
 		
 		//var_dump(count($service->getCategories()[1]));
 		//$service->generateJSTree(1);

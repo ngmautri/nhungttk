@@ -33,8 +33,7 @@ if ($total_records <= 0) {
 	 <tr>
 			<td><?php echo $count;?></td>
 			<td>
-<a href="javascript:;"
-	onclick="selectId('<?php echo $this->escapeHtml($a->getId());?>','<?php echo $target_id;?>','<?php echo $this->escapeHtml($a->GetWhName());?>','<?php echo $target_name;?>');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
+<a href="javascript:;" onclick="selectId('<?php echo $this->escapeHtml($a->getId());?>','<?php echo $target_id;?>','<?php echo $this->escapeHtml($a->GetWhName());?>','<?php echo $target_name;?>');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
 </a>			
 			</td> 	 	
 			<td><?php echo $this->escapeHtml($a->getWhCode());?></td>

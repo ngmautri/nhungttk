@@ -24,7 +24,7 @@ class NmtWfNode
     /**
      * @var string
      *
-     * @ORM\Column(name="node_name", type="string", length=100, nullable=false)
+     * @ORM\Column(name="node_name", type="string", length=100, nullable=true)
      */
     private $nodeName;
 

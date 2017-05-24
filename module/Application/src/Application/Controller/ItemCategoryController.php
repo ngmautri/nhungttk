@@ -211,6 +211,12 @@ class ItemCategoryController extends AbstractActionController {
 		$this->itemCategoryService->updateCategory($root->getNodeId(),0);
 		$jsTree = $this->itemCategoryService->generateJSTreeForAddingMember($root->getNodeId(),false);
 		
+		$this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
+		$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
+		$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
+		$this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
+		
+		
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (
 				'jsTree' => $jsTree
@@ -235,11 +241,28 @@ class ItemCategoryController extends AbstractActionController {
 	
 		$cat_id = $this->params ()->fromQuery ( 'cat_id' );
 		if ($cat_id > 0) {
-			$records = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategoryMember')->findBy(array('category'=>$cat_id));
+			
+			$query = 'SELECT e, i FROM Application\Entity\NmtInventoryItemCategoryMember e JOIN e.item i Where 1=?1';
+			$query = $query . " AND e.category = " . $cat_id;
+			$query = $query . " AND i.isActive = 1";
+			$query = $query . ' ORDER BY i.itemName ASC';
+			
+			$records= $this->doctrineEM->createQuery ( $query )->setParameters ( array (
+					"1" => 1
+			) )->getResult ();
+			
+			//$records= $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemCategoryMember' )->findBy ( $criteria, $sort_criteria );
+			//$records = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemCategoryMember')->findBy(array('category'=>$cat_id));
 		}
 		
 		$total_records= count ( $records);
 		$paginator = null;
+		
+	/* 	$this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
+		$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
+		$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
+		$this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
+	 */	
 		
 		return new ViewModel ( array (
 				'records' => $records,

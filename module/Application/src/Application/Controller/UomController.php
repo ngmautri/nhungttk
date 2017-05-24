@@ -157,6 +157,12 @@ class UomController extends AbstractActionController {
 		$this->layout ( "layout/user/ajax" );		
 		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationUom' )->findBy(array(),array('uomCode'=>'ASC'));
 		$total_records = count($list);
+		
+		$this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
+		$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
+		$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
+		$this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
+		
 		return new ViewModel ( array (
 				'list' => $list,
 				'total_records'=>$total_records,

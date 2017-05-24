@@ -3,6 +3,7 @@
 namespace Workflow\Service;
 
 use Workflow\Model\NmtWfNodeTable;
+use Doctrine\ORM\EntityManager;
 
 /**
  *
@@ -11,7 +12,30 @@ use Workflow\Model\NmtWfNodeTable;
  */
 class WorkflowService extends AbstractCategory {
 	
+	protected $doctrineEM;
 	private $caseId;
+	
+	public function purchaseWF(){
+		
+		$factory = new \Petrinet\Model\Factory();
+		$builder = new \Petrinet\Builder\PetrinetBuilder($factory);
+		$petrinet = $builder
+		->connect($builder->place(), $t1 = $builder->transition())
+		->connect($t1, $p2 = $builder->place())
+		->connect($t1, $p3 = $builder->place())
+		->connect($p2, $t2 = $builder->transition())
+		->connect($p3, $t2)
+		->connect($t2, $builder->place())
+		->getPetrinet();
+	
+		
+		// Instanciates the Dumper
+		//$dumper = new \Petrinet\Dumper\GraphvizDumper();
+		
+		// Dumps the Petrinet structure
+		//$string = $dumper->dump($petrinet);
+		return ($petrinet);
+	}
 	
 	/**
 	 *
@@ -20,11 +44,14 @@ class WorkflowService extends AbstractCategory {
 	 * @see \Workflow\Service\AbstractCategory::init()
 	 */
 	public function init() {
-		$nodes = $this->workFlowNoteTable->fetchAll ();
+		$nodes= $this->doctrineEM->getRepository ( 'Application\Entity\NmtWfNode' )->findAll ();
+		
+		
+		//$nodes = $this->workFlowNoteTable->fetchAll ();
 		
 		foreach ( $nodes as $row ) {
-			$id = $row->node_id;
-			$parent_id = $row->node_parent_id;
+			$id = $row->getNodeId();
+			$parent_id = $row->getNodeParentId();
 			$this->data [$id] = $row;
 			$this->index [$parent_id] [] = $id;
 		}
@@ -40,12 +67,12 @@ class WorkflowService extends AbstractCategory {
 		$node = $this->get ( $nodeID );
 		$wf_node = $node ['instance'];
 		
-		if ($wf_node->node_type == "TRANSITION") {
+		if ($wf_node->getNodeType() == "TRANSITION") {
 			
-			echo $wf_node->node_name . " is a transition can be fired";
-			echo " change Token of input place...";
+			printf ($wf_node->getNodeName(). " is a transition can be fired\n");
+			printf (" change Token of input place...\n");
 			// Changing Input Place
-			$wf_node_parend_id = $wf_node->node_parent_id;
+			$wf_node_parend_id = $wf_node->getNodeParentId();
 			$this->changeInputPlace($wf_node_parend_id);
 			
 			// Changing Input Place
@@ -65,9 +92,9 @@ class WorkflowService extends AbstractCategory {
 		
 		$node = $this->get ( $id);
 		$wf_node_parent = $node['instance'];
-		if ($wf_node_parent->node_type == "PLACE") {
-			echo $wf_node_parent->node_name . " is a INPUT PLACE...";
-			// create or change token // need caseId; NodeId
+		if ($wf_node_parent->getNodeType()== "PLACE") {
+			printf($wf_node_parent->getNodeName(). " is a INPUT PLACE...\n");
+			/** @todo create or change token // need caseId; NodeId */
 			// getToken(case_id, node_id)
 			// if not exist create and change.
 			
@@ -84,22 +111,22 @@ class WorkflowService extends AbstractCategory {
 	private function changeOutPlace($node){
 		
 		// Changing OutPlace
-		echo " change Token of output place...";
+		printf (" change Token of output place...\n");
 		$node_children = $node ['children'];
 		
 		if (count ( $node_children ) > 0) {
 			foreach ( $node_children as $child ) {
 				$wf_node = $child ['instance'];
-				if ($wf_node->node_type == "PLACE") {
-					echo $wf_node->node_name . " is a OUT PLACE...";
+				if ($wf_node->getNodeType()== "PLACE") {
+					printf($wf_node->getNodeName() . " is a OUTPUT PLACE...\n");
 					// enable transition
 					$node_children_children = $child['children'];
 					if(count($node_children_children>0))
 					{
 						foreach($node_children_children as $t){
 							$wf_t = $t['instance'];
-							if($wf_t->node_type="TRANSTION"){
-								echo $wf_t->node_name . 'is enabled';
+							if($wf_t->getNodeType()=="TRANSTION"){
+								printf($wf_t->getNodeName(). ' is enabled\n');
 							}
 						}
 						
@@ -142,5 +169,13 @@ class WorkflowService extends AbstractCategory {
 		$this->caseId = $caseId;
 		return $this;
 	}
+	public function getDoctrineEM() {
+		return $this->doctrineEM;
+	}
+	public function setDoctrineEM(EntityManager $doctrineEM) {
+		$this->doctrineEM = $doctrineEM;
+		return $this;
+	}
+	
 	
 }

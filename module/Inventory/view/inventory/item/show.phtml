@@ -2,37 +2,38 @@
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
   <li ><a href="#general">Item</a></li>
-  <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Purchasing</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-picture/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Picture</a></li>
+  <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Purchasing</a></li>
+  <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Stock</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Attachment</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">MemberOf</a></li>
- 
    </ul>
 
 <div id="general"> 
 
 <form id= "create_item_form" class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/add" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-		
+
+			
 	<div class="form-group required">
 		<label class="control-label col-sm-2" >Item ID</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
 				name="itemSku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
-		</div>		
-		<div class="col-sm-4">
 	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 			 <input <?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isStocked" value="1">&nbsp;Stocked &nbsp;&nbsp;
 			 <input <?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isPurchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
 	 		 <input <?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isSaleItem" value="1">&nbsp;For Sale &nbsp;&nbsp;
 			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset
+	   
 		</div>
-		
-		<div class="col-sm-2">
-			<img alt="" height="" src="/inventory/item/barcode?barcode=<?php echo (!$entity == null)? $entity->getAssetLabel():"";?>">
+	
+		<div class="col-sm-2" style="left: 50px; top:0px;">
+			<img style="cursor:pointer;" title="click for more detail!" onclick="$('#tabs').tabs({ active: 1});" class= "img-rounded" width="150" height="150" src="/inventory/item/get-picture?&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>"/>
+	
 		</div>
 	</div>
-	
+		
 	<div class="form-group required">
 		<label class="control-label col-sm-2" >Item  Name</label>
 		<div class="col-sm-3">
@@ -40,13 +41,22 @@
 				name="itemName" value="<?php echo (!$entity == null)? $entity->getItemName():"";?>">
 		</div>
 		
+				<div class="col-sm-2">
+			<img alt="" height="" src="/inventory/item/barcode?barcode=<?php echo (!$entity == null)? $entity->getAssetLabel():"";?>">
+		</div>
+		
+		</div>
+	
+	<div class="form-group required">
+		
 		<label class="control-label col-sm-2" >Item Foreign Name</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
 				name="itemNameForeign" value="<?php echo (!$entity == null)? $entity->getItemNameForeign():"";?>">
 		</div>
 	</div>
-		<div class="form-group">
+	
+	<div class="form-group">
 		<label class="control-label col-sm-2" >Item  Description</label>
 		<div class="col-sm-8">
 			<input class="form-control" type="text"  placeholder=""
@@ -194,6 +204,9 @@ value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
 	</form>
 </div>
 </div>	
+
+
+	
 
 <script type="text/javascript">
 $("#create_item_form :input").attr("disabled", "disabled");

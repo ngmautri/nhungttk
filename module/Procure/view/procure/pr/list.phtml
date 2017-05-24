@@ -73,8 +73,8 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
-		$_connector_symbol = '&';
+	$base = $this->baseUrl . '/procure/pr/list';
+		$_connector_symbol = '?';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
 		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;

@@ -17,18 +17,9 @@ class NmtWfPlace
      *
      * @ORM\Column(name="place_id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $placeId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="place_name", type="string", length=80, nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     */
-    private $placeName;
 
     /**
      * @var string
@@ -36,6 +27,13 @@ class NmtWfPlace
      * @ORM\Column(name="place_type", type="string", length=45, nullable=true)
      */
     private $placeType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="place_name", type="string", length=80, nullable=false)
+     */
+    private $placeName;
 
     /**
      * @var string

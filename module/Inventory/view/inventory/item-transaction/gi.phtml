@@ -1,0 +1,234 @@
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+	echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+
+<div id="tabs" style="font-size: 10pt"> 
+  <ul>
+  <li ><a href="#general">Item Issue</a></li>
+ 	</ul>
+   
+ <div id="general">
+
+<form id ="gr_form" class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item-transaction/gi"	method="post" enctype="multipart/form-data">
+	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+	<input type="hidden" id="target_wh_id" name="target_wh_id" value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity->getWh()->getId();endif;endif;?>"/>
+
+	
+	<div class="form-group required">
+		<label class="control-label col-sm-2" >Item: </label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="item_name" placeholder="Select Item if any"
+				name="item_name" value="<?php if(!$target == null): echo ($target->getItemName()); endif;?>">
+				<input type="hidden" id="item_id" placeholder="" name="item_id" value="<?php if(!$target == null): echo ($target->getId()); endif;?>">
+				<input type="hidden" id="token" placeholder="" name="token" value="">
+				<input type="hidden" id="checksum" placeholder="" name="checksum" value="">
+				<input <?php if(!$entity == null): echo ($entity->getIsDraft()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
+				<input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+		</div>
+		
+
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >PR Referrence: </label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="item_name" placeholder="Select PR Item, if any"
+				name="pr_row_name" value="">
+	
+	
+			<input type="hidden" id="pr_row_id" placeholder="" name="pr_row_id" value="">
+		</div>
+		
+
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+
+	</div>
+	
+	<fieldset >
+ <legend style="font-size: 9pt; color: gray;"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+   <a href="#transaction" class="" data-toggle="collapse">TRANSACTION:</a>
+ </legend>
+	<div id ="transaction" class="collapse in">
+	
+ 	 <div class="form-group required">
+		<label class="control-label col-sm-2" for="inputTag">Transaction Date:</label>
+		<div class="col-sm-3">
+<input class="form-control" type="text" name="movement_date"  placeholder =" please select" id="movement_date" 
+value="<?php if(!$entity == null): echo ($entity->getTrxDate() !== null)? date_format($entity->getTrxDate(),"Y-m-d"):""; endif;?>"/>
+         </div>
+         
+         	<label class="control-label col-sm-2" for="inputTag">Target Warehouse:</label>
+		<div class="col-sm-3">
+  			<input class="form-control" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh"
+value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity->getWh()->getWhName();endif;endif;?>">
+		</div>
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Target Warehouse','700','500','/inventory/warehouse/list1?target_id=target_wh_id&target_name=target_wh_name','j_loaded_data',true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>		
+      </div>
+      <div class="form-group required">
+		<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
+		<div class="col-sm-3">
+  				<input class="form-control" type="text" name="quantity" value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
+		</div>
+	   </div>
+	  
+	    <div class="form-group required">
+		<label class="control-label col-sm-2" >Issue for: </label>
+		<div class="col-sm-3">
+			<input disabled class="form-control" type="text" id="issue_for_name" placeholder="Select Item if any"
+				name="issue_for_name" 
+value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getItemName(); endif;endif;?>">
+				<input type="hidden" id="issue_for_id" placeholder="" name="issue_for_id" 
+value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getId(); endif;endif;?>">
+		</div>
+		
+
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=issue_for_id&target_name=issue_for_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+
+	</div>
+	  
+	    </div>
+	</fieldset>
+   <fieldset >
+    <legend style="font-size: 9pt; color: gray;"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+   <a href="#purchasing_data" class="" data-toggle="collapse">PURCHASING DATA:</a>
+ </legend>
+ <div id ="purchasing_data" class="collapse">
+  <div class="form-group">
+		<label class="control-label col-sm-2" >Vendor:</label>
+		<div class="col-sm-3">
+<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor" name="vendor_name" 
+value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
+				
+<input type="hidden" id="vendor_id" placeholder="" 	name="vendor_id" 
+value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
+<input <?php if(!$entity== null): echo ($entity->getIsPreferredVendor()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isPreferredVendor" value="1">&nbsp;Is Preferred&nbsp;&nbsp;
+
+		</div>
+		
+
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Select Vendor','860','450', '/bp/vendor/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Vendor's Item Code</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="vendorItemCode" value="<?php echo (!$entity == null)? $entity->getVendorItemCode():"";?>">
+		</div>		
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Vendor's Item Unit</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				id = "vendor_item_unit" name="vendorItemUnit" value="<?php echo (!$entity == null)? $entity->getVendorItemUnit():"";?>">
+		</div>
+		
+		<label class="control-label col-sm-2" >Conversion Factor:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				id="conversion_factor" name="conversionFactor" 
+value="<?php if(!$entity == null): if($entity->getConversionFactor()!==null): echo number_format($entity->getConversionFactor(), 2); endif;endif;?>">
+
+		</div>
+		<span style="font-size: 9.5pt" id="conversion_text"></span> 
+<span><?php if (!$target == null): if (!$target->getStandardUom() == null):echo $target->getStandardUom()->getUomCode();endif;endif;?></span>			
+	</div>
+	
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Unit Price</label>
+		<div class="col-sm-3">
+<input class="form-control" type="text"  placeholder="" name="vendorUnitPrice" 
+value="<?php if(!$entity == null): if($entity->getVendorUnitPrice()!==null): echo number_format($entity->getVendorUnitPrice(), 2); endif;endif;?>">
+		</div>
+		
+		<label class="control-label col-sm-2" >Currency:</label>
+		<div class="col-sm-3">
+<input disabled class="form-control" type="text" id="currency_name" placeholder="Select Currency" name="currency_name" 
+value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getCurrency();endif;endif;?>">
+<input type="hidden" id="currency_id" placeholder="" name="currency_id" 
+value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getId();endif;endif;?>">
+		</div>
+		
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Select Currency','500','450', '/application/currency/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>		
+	</div>
+	
+	 <div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Lead Time:</label>
+		<div class="col-sm-3">
+  				<input class="form-control" type="text" name="leadTime" value="">
+		</div>
+	    </div>
+	    </div>
+</fieldset>
+	
+  <fieldset >
+    <legend style="font-size: 9pt; color: gray;"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+   <a href="#additional" class="" data-toggle="collapse">ADDITIONAL:</a>
+ </legend>
+	<div id ="additional" class="collapse">
+	     
+	     
+  <div class="form-group">
+		
+		<label class="control-label col-sm-2" >Remarks:</label>
+		<div class="col-sm-3">
+			<textarea  class="form-control" type="text" rows="4" placeholder=""
+				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>
+	</div>
+      
+ 	  
+  
+</div>
+</fieldset>
+
+  <div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+ <button onclick="submitForm('gr_form');" type="submit" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
+  	    </div>
+      </div>
+
+    </form>
+ </div>
+ </div>
+
+<script type="text/javascript">
+$('#vendor_item_unit').bind('change', function() {
+	//alert($('#vendor_item_unit').val());
+	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
+});
+
+$('#conversion_factor').bind('change', function() {
+	//alert($('#vendor_item_unit').val());
+	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
+});
+$( "input[id='movement_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+ </script>

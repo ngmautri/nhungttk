@@ -22,9 +22,16 @@ class NmtWfArc
     private $arcId;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="weight", type="integer", nullable=true)
+     */
+    private $weight;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="direction", type="string", length=45, nullable=true)
+     * @ORM\Column(name="direction", type="string", nullable=true)
      */
     private $direction;
 
@@ -41,6 +48,20 @@ class NmtWfArc
      * @ORM\Column(name="condition", type="string", length=45, nullable=true)
      */
     private $condition;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="created_by", type="integer", nullable=true)
+     */
+    private $createdBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
 
     /**
      * @var \Application\Entity\NmtWfWorkflow

@@ -58,22 +58,26 @@ class ItemSearchController extends AbstractActionController {
 	 */
 	public function do1Action() {
 		$request = $this->getRequest ();
-		$context = $this->params ()->fromQuery ( 'context' );
 		
 		// accepted only ajax request
 		
-		if (! $request->isXmlHttpRequest ()) {
+		/* if (! $request->isXmlHttpRequest ()) {
 			return $this->redirect ()->toRoute ( 'access_denied' );
-		}
+		} */
 		
 		$this->layout ( "layout/user/ajax" );
 		
 		$q = $this->params ()->fromQuery ( 'q' );
+		$context = $this->params ()->fromQuery ( 'context' );
+		$target_id= $this->params ()->fromQuery ( 'target_id' );
+		$target_name= $this->params ()->fromQuery ( 'target_name' );
 		
 		$results = [ 
 				"message" => "",
 				"hits" => null,
-				'context' => $context 
+				'context' => $context,
+				'target_id' => $target_id,
+				'target_name' => $target_name,
 		];
 		
 		if ($q !== null) {
@@ -86,7 +90,10 @@ class ItemSearchController extends AbstractActionController {
 		return new ViewModel ( array (
 				'message' => $results ["message"],
 				'hits' => $results ["hits"],
-				'context' => $context 
+				'context' => $context,
+				'target_id' => $target_id,
+				'target_name' => $target_name,
+				
 		) );
 	}
 	

@@ -17,18 +17,9 @@ class NmtWfPlace
      *
      * @ORM\Column(name="place_id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $placeId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="place_name", type="string", length=80, nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     */
-    private $placeName;
 
     /**
      * @var string
@@ -36,6 +27,13 @@ class NmtWfPlace
      * @ORM\Column(name="place_type", type="string", length=45, nullable=true)
      */
     private $placeType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="place_name", type="string", length=80, nullable=false)
+     */
+    private $placeName;
 
     /**
      * @var string
@@ -74,20 +72,6 @@ class NmtWfPlace
 
 
     /**
-     * Set placeId
-     *
-     * @param integer $placeId
-     *
-     * @return NmtWfPlace
-     */
-    public function setPlaceId($placeId)
-    {
-        $this->placeId = $placeId;
-
-        return $this;
-    }
-
-    /**
      * Get placeId
      *
      * @return integer
@@ -95,30 +79,6 @@ class NmtWfPlace
     public function getPlaceId()
     {
         return $this->placeId;
-    }
-
-    /**
-     * Set placeName
-     *
-     * @param string $placeName
-     *
-     * @return NmtWfPlace
-     */
-    public function setPlaceName($placeName)
-    {
-        $this->placeName = $placeName;
-
-        return $this;
-    }
-
-    /**
-     * Get placeName
-     *
-     * @return string
-     */
-    public function getPlaceName()
-    {
-        return $this->placeName;
     }
 
     /**
@@ -143,6 +103,30 @@ class NmtWfPlace
     public function getPlaceType()
     {
         return $this->placeType;
+    }
+
+    /**
+     * Set placeName
+     *
+     * @param string $placeName
+     *
+     * @return NmtWfPlace
+     */
+    public function setPlaceName($placeName)
+    {
+        $this->placeName = $placeName;
+
+        return $this;
+    }
+
+    /**
+     * Get placeName
+     *
+     * @return string
+     */
+    public function getPlaceName()
+    {
+        return $this->placeName;
     }
 
     /**

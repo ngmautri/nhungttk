@@ -138,6 +138,9 @@ class VendorController extends AbstractActionController {
 				
 				$entity->setChecksum ( md5 ( $new_entity_id . uniqid ( microtime () ) ) );
 				$this->doctrineEM->flush ();
+				
+				$this->vendorSearchService->addDocument($entity, true);
+				
 			} catch ( Exception $e ) {
 				return new ViewModel ( array (
 						'errors' => $e->getMessage (),

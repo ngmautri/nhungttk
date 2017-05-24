@@ -71,7 +71,7 @@ class ItemController extends AbstractActionController {
 					'department' => null,
 					'category' => null,
 					'pictures' => $pictures,
-					'back' => $redirectUrl 
+					'redirectUrl' => $redirectUrl 
 			
 			) );
 		}
@@ -94,9 +94,9 @@ class ItemController extends AbstractActionController {
 			$itemSku = $request->getPost ( 'itemSku' );
 			$itemName = $request->getPost ( 'itemName' );
 			$itemNameForeign = $request->getPost ( 'itemNameForeign' );
-			$itemDescription = $request->getPost ( '$itemDescription' );
+			$itemDescription = $request->getPost ( 'itemDescription' );
 			
-			$barcode = $request->getPost ( '$barcode' );
+			$barcode = $request->getPost ( 'barcode' );
 			$keywords = $request->getPost ( 'keywords' );
 			
 			$itemType = $request->getPost ( 'itemType' );
@@ -351,9 +351,9 @@ class ItemController extends AbstractActionController {
 				$itemSku = $request->getPost ( 'itemSku' );
 				$itemName = $request->getPost ( 'itemName' );
 				$itemNameForeign = $request->getPost ( 'itemNameForeign' );
-				$itemDescription = $request->getPost ( '$itemDescription' );
+				$itemDescription = $request->getPost ( 'itemDescription' );
 				
-				$barcode = $request->getPost ( '$barcode' );
+				$barcode = $request->getPost ( 'barcode' );
 				$keywords = $request->getPost ( 'keywords' );
 				
 				$itemType = $request->getPost ( 'itemType' );

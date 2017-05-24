@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtInventoryMovementType
+ * NmtInventoryTrxType
  *
- * @ORM\Table(name="nmt_inventory_movement_type", indexes={@ORM\Index(name="nmt_inventory_movement_type_FK1_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_inventory_trx_type", indexes={@ORM\Index(name="nmt_inventory_movement_type_FK1_idx", columns={"created_by"})})
  * @ORM\Entity
  */
-class NmtInventoryMovementType
+class NmtInventoryTrxType
 {
     /**
      * @var integer
@@ -76,7 +76,7 @@ class NmtInventoryMovementType
      *
      * @param string $movementFlow
      *
-     * @return NmtInventoryMovementType
+     * @return NmtInventoryTrxType
      */
     public function setMovementFlow($movementFlow)
     {
@@ -100,7 +100,7 @@ class NmtInventoryMovementType
      *
      * @param string $movementCode
      *
-     * @return NmtInventoryMovementType
+     * @return NmtInventoryTrxType
      */
     public function setMovementCode($movementCode)
     {
@@ -124,7 +124,7 @@ class NmtInventoryMovementType
      *
      * @param string $movementName
      *
-     * @return NmtInventoryMovementType
+     * @return NmtInventoryTrxType
      */
     public function setMovementName($movementName)
     {
@@ -148,7 +148,7 @@ class NmtInventoryMovementType
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtInventoryMovementType
+     * @return NmtInventoryTrxType
      */
     public function setCreatedOn($createdOn)
     {
@@ -172,7 +172,7 @@ class NmtInventoryMovementType
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtInventoryMovementType
+     * @return NmtInventoryTrxType
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {

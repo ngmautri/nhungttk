@@ -21,7 +21,7 @@ use Zend\Math\Rand;
 /**
  *
  * @author nmt
- *
+ *        
  */
 class ItemAttachmentController extends AbstractActionController {
 	
@@ -61,7 +61,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $entity_id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
@@ -78,7 +78,7 @@ class ItemAttachmentController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => $entity
+					'entity' => $entity 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -95,7 +95,7 @@ class ItemAttachmentController extends AbstractActionController {
 		if ($request->isPost ()) {
 			
 			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-					"email" => $this->identity ()
+					"email" => $this->identity () 
 			) );
 			
 			$errors = array ();
@@ -105,7 +105,7 @@ class ItemAttachmentController extends AbstractActionController {
 			
 			$criteria = array (
 					'id' => $entity_id,
-					'token' => $token
+					'token' => $token 
 			);
 			
 			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
@@ -117,7 +117,7 @@ class ItemAttachmentController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null
+						'entity' => null 
 				) );
 				
 				// might need redirect
@@ -245,7 +245,7 @@ class ItemAttachmentController extends AbstractActionController {
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
 									'target' => $target,
-									'entity' => $entity
+									'entity' => $entity 
 							) );
 						}
 						
@@ -295,7 +295,7 @@ class ItemAttachmentController extends AbstractActionController {
 								"docx",
 								"doc",
 								"zip",
-								"msg"
+								"msg" 
 						);
 						
 						if (in_array ( $ext, $expensions ) === false) {
@@ -314,7 +314,7 @@ class ItemAttachmentController extends AbstractActionController {
 						 */
 						$criteria = array (
 								"checksum" => $checksum,
-								"item" => $target_id
+								"item" => $target_id 
 						);
 						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 						
@@ -328,7 +328,7 @@ class ItemAttachmentController extends AbstractActionController {
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
 									'target' => $target,
-									'entity' => $entity
+									'entity' => $entity 
 							) );
 						}
 						;
@@ -377,8 +377,8 @@ class ItemAttachmentController extends AbstractActionController {
 						$cloned_entity->setSize ( $file_size );
 						$cloned_entity->setFolder ( $folder );
 						
-						//new
-						$cloned_entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
+						// new
+						$cloned_entity->setAttachmentFolder ( self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR );
 						$cloned_entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$cloned_entity->setChecksum ( $checksum );
 						$cloned_entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -408,7 +408,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $entity_id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
@@ -425,7 +425,7 @@ class ItemAttachmentController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => $entity
+					'entity' => $entity 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -437,6 +437,20 @@ class ItemAttachmentController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function listAction() {
+		
+		$query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.item > :n';
+		$list = $this->doctrineEM->createQuery ( $query )->setParameter ( 'n', 0 )->getResult ();
+		
+		//$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findBy ( $criteria );
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => $paginator,
+				'target' => null 
+		) );
 	}
 	
 	/**
@@ -461,7 +475,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $target_id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		/**
@@ -479,18 +493,24 @@ class ItemAttachmentController extends AbstractActionController {
 			$criteria = array (
 					'item' => $target_id,
 					'isActive' => 1,
-					'markedForDeletion' => 0
+					'markedForDeletion' => 0 
 			);
 			
 			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findBy ( $criteria );
 			$total_records = count ( $list );
 			$paginator = null;
 			
+			$this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
+			$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
+			$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
+			$this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
+			
+			
 			return new ViewModel ( array (
 					'list' => $list,
 					'total_records' => $total_records,
 					'paginator' => $paginator,
-					'target' => $target
+					'target' => $target 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -518,7 +538,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $target_id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		/**
@@ -537,7 +557,7 @@ class ItemAttachmentController extends AbstractActionController {
 					'pr' => $target_id,
 					'isActive' => 1,
 					'markedForDeletion' => 0,
-					'isPicture' => 1
+					'isPicture' => 1 
 			);
 			
 			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findBy ( $criteria );
@@ -548,7 +568,7 @@ class ItemAttachmentController extends AbstractActionController {
 					'list' => $list,
 					'total_records' => $total_records,
 					'paginator' => $paginator,
-					'target' => $target
+					'target' => $target 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -573,8 +593,8 @@ class ItemAttachmentController extends AbstractActionController {
 				'checksum' => $checksum,
 				'token' => $token,
 				'markedForDeletion' => 0,
-				'isPicture' => 1
-				
+				'isPicture' => 1 
+		
 		);
 		
 		$pic = new \Application\Entity\NmtApplicationAttachment ();
@@ -610,8 +630,8 @@ class ItemAttachmentController extends AbstractActionController {
 				'checksum' => $checksum,
 				'token' => $token,
 				'markedForDeletion' => 0,
-				'isPicture' => 1
-				
+				'isPicture' => 1 
+		
 		);
 		
 		$pic = new \Application\Entity\NmtApplicationAttachment ();
@@ -648,8 +668,8 @@ class ItemAttachmentController extends AbstractActionController {
 				'checksum' => $checksum,
 				'token' => $token,
 				'markedForDeletion' => 0,
-				'isPicture' => 1
-				
+				'isPicture' => 1 
+		
 		);
 		
 		$pic = new \Application\Entity\NmtApplicationAttachment ();
@@ -679,7 +699,7 @@ class ItemAttachmentController extends AbstractActionController {
 		if ($request->isPost ()) {
 			
 			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-					"email" => $this->identity ()
+					"email" => $this->identity () 
 			) );
 			
 			$errors = array ();
@@ -689,7 +709,7 @@ class ItemAttachmentController extends AbstractActionController {
 			
 			$criteria = array (
 					'id' => $target_id,
-					'token' => $token
+					'token' => $token 
 			);
 			
 			/**
@@ -706,7 +726,7 @@ class ItemAttachmentController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null
+						'entity' => null 
 				) );
 				
 				// might need redirect
@@ -821,7 +841,7 @@ class ItemAttachmentController extends AbstractActionController {
 								'redirectUrl' => $redirectUrl,
 								'errors' => $errors,
 								'target' => $target,
-								'entity' => $entity
+								'entity' => $entity 
 						) );
 					} else {
 						
@@ -862,7 +882,7 @@ class ItemAttachmentController extends AbstractActionController {
 								"docx",
 								"doc",
 								"zip",
-								"msg"
+								"msg" 
 						);
 						
 						if (in_array ( $ext, $expensions ) === false) {
@@ -881,7 +901,7 @@ class ItemAttachmentController extends AbstractActionController {
 						 */
 						$criteria = array (
 								"checksum" => $checksum,
-								"item" => $target_id
+								"item" => $target_id 
 						);
 						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 						
@@ -895,7 +915,7 @@ class ItemAttachmentController extends AbstractActionController {
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
 									'target' => $target,
-									'entity' => $entity
+									'entity' => $entity 
 							) );
 						}
 						;
@@ -918,7 +938,7 @@ class ItemAttachmentController extends AbstractActionController {
 							// trigger uploadPicture. AbtractController is EventManagerAware.
 							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
 									'picture_name' => $name,
-									'pictures_dir' => $folder
+									'pictures_dir' => $folder 
 							) );
 						}
 						
@@ -939,8 +959,8 @@ class ItemAttachmentController extends AbstractActionController {
 						$entity->setFilenameOriginal ( $file_name );
 						$entity->setSize ( $file_size );
 						$entity->setFolder ( $folder );
-						//new
-						$entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
+						// new
+						$entity->setAttachmentFolder ( self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setChecksum ( $checksum );
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -968,7 +988,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		/**
@@ -983,7 +1003,7 @@ class ItemAttachmentController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => null
+					'entity' => null 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -1007,7 +1027,7 @@ class ItemAttachmentController extends AbstractActionController {
 		}
 		
 		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				"email" => $this->identity ()
+				"email" => $this->identity () 
 		) );
 		
 		if ($request->isPost ()) {
@@ -1019,7 +1039,7 @@ class ItemAttachmentController extends AbstractActionController {
 			
 			$criteria = array (
 					'id' => $target_id,
-					'token' => $token
+					'token' => $token 
 			);
 			
 			// Target: Employee
@@ -1032,7 +1052,7 @@ class ItemAttachmentController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null
+						'entity' => null 
 				) );
 				
 				// might need redirect
@@ -1150,7 +1170,7 @@ class ItemAttachmentController extends AbstractActionController {
 								'redirectUrl' => $redirectUrl,
 								'errors' => $errors,
 								'target' => $target,
-								'entity' => $entity
+								'entity' => $entity 
 						) );
 					} else {
 						
@@ -1185,7 +1205,7 @@ class ItemAttachmentController extends AbstractActionController {
 								"jpeg",
 								"jpg",
 								"png",
-								"gif"
+								"gif" 
 						);
 						
 						if (in_array ( $ext, $expensions ) === false) {
@@ -1201,7 +1221,7 @@ class ItemAttachmentController extends AbstractActionController {
 						// change target
 						$criteria = array (
 								"checksum" => $checksum,
-								"employee" => $target_id
+								"employee" => $target_id 
 						);
 						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 						
@@ -1215,7 +1235,7 @@ class ItemAttachmentController extends AbstractActionController {
 									'redirectUrl' => $redirectUrl,
 									'errors' => $errors,
 									'target' => $target,
-									'entity' => $entity
+									'entity' => $entity 
 							) );
 						}
 						;
@@ -1236,7 +1256,7 @@ class ItemAttachmentController extends AbstractActionController {
 						// trigger uploadPicture. AbtractController is EventManagerAware.
 						$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
 								'picture_name' => $name,
-								'pictures_dir' => $folder
+								'pictures_dir' => $folder 
 						) );
 						
 						/*
@@ -1260,8 +1280,8 @@ class ItemAttachmentController extends AbstractActionController {
 						$entity->setSize ( $file_size );
 						$entity->setFolder ( $folder );
 						
-						//new
-						$entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
+						// new
+						$entity->setAttachmentFolder ( self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR );
 						
 						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setChecksum ( $checksum );
@@ -1287,7 +1307,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		// Target: Employee
@@ -1299,7 +1319,7 @@ class ItemAttachmentController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => null
+					'entity' => null 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -1326,7 +1346,7 @@ class ItemAttachmentController extends AbstractActionController {
 			$criteria = array (
 					'id' => $target_id,
 					'token' => $token,
-					'checksum' => $checksum
+					'checksum' => $checksum 
 			);
 			
 			/**
@@ -1344,7 +1364,7 @@ class ItemAttachmentController extends AbstractActionController {
 						'redirectUrl' => null,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null
+						'entity' => null 
 				) );
 				
 				// might need redirect
@@ -1382,7 +1402,7 @@ class ItemAttachmentController extends AbstractActionController {
 					 */
 					$criteria = array (
 							"checksum" => $checksum,
-							"item" => $target_id
+							"item" => $target_id 
 					);
 					$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
 					
@@ -1424,43 +1444,41 @@ class ItemAttachmentController extends AbstractActionController {
 						// $entity->setSize ( $file_size );
 						$entity->setFolder ( $folder );
 						
-						//new
-						$entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
+						// new
+						$entity->setAttachmentFolder ( self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR );
 						
 						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setChecksum ( $checksum );
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 						
 						$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-								"email" => $this->identity ()
+								"email" => $this->identity () 
 						) );
 						
 						$entity->setCreatedBy ( $u );
 						$entity->setCreatedOn ( new \DateTime () );
 						
-						
 						// get Old Entity, if any
 						$criteria = array (
 								'id' => $entity_id,
-								'token' => $entity_token,
+								'token' => $entity_token 
 						);
 						$old_entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
 						
-						if($old_entity !== null){
-							$old_entity->setIsActive(0);
-							$old_entity->setMarkedForDeletion(1);
-							$old_entity->setLastChangeBy($u);
-							$old_entity->setLastChangeOn(new \DateTime ());
-							$entity->setChangeFor($old_entity->getId());
+						if ($old_entity !== null) {
+							$old_entity->setIsActive ( 0 );
+							$old_entity->setMarkedForDeletion ( 1 );
+							$old_entity->setLastChangeBy ( $u );
+							$old_entity->setLastChangeOn ( new \DateTime () );
+							$entity->setChangeFor ( $old_entity->getId () );
 							
-							$this->flashMessenger ()->addMessage ( "'" . $old_entity->getDocumentSubject(). "' has been update with new file!" );
-						}else {
+							$this->flashMessenger ()->addMessage ( "'" . $old_entity->getDocumentSubject () . "' has been update with new file!" );
+						} else {
 							$this->flashMessenger ()->addMessage ( "'" . $original_filename . "' has been uploaded sucessfully" );
 						}
 						
 						$this->doctrineEM->persist ( $entity );
 						$this->doctrineEM->flush ();
-						
 						
 						$result [] = $original_filename . ' uploaded sucessfully';
 						$success ++;
@@ -1468,10 +1486,8 @@ class ItemAttachmentController extends AbstractActionController {
 						// trigger uploadPicture. AbtractController is EventManagerAware.
 						$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
 								'picture_name' => $name,
-								'pictures_dir' => $folder
+								'pictures_dir' => $folder 
 						) );
-						
-						
 					} else {
 						$this->flashMessenger ()->addMessage ( "'" . $original_filename . "' exits already!" );
 						$result [] = $original_filename . ' exits already. Please select other file!';
@@ -1506,7 +1522,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		/**
@@ -1520,14 +1536,12 @@ class ItemAttachmentController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => null
+					'entity' => null 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 	}
-	
-	
 	
 	/**
 	 *
@@ -1551,8 +1565,8 @@ class ItemAttachmentController extends AbstractActionController {
 		$criteria = array (
 				'id' => $entity_id,
 				'checksum' => $checksum,
-				'token' => $token
-				// 'markedForDeletion' => 0,
+				'token' => $token 
+			// 'markedForDeletion' => 0,
 		);
 		
 		$attachment = new NmtApplicationAttachment ();
@@ -1560,7 +1574,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$attachment = $tmp_attachment;
 		
 		if ($attachment !== null) {
-			$f = ROOT . $attachment->getAttachmentFolder(). DIRECTORY_SEPARATOR . $attachment->getFilename ();
+			$f = ROOT . $attachment->getAttachmentFolder () . DIRECTORY_SEPARATOR . $attachment->getFilename ();
 			$output = file_get_contents ( $f );
 			
 			$response = $this->getResponse ();
@@ -1587,12 +1601,13 @@ class ItemAttachmentController extends AbstractActionController {
 	 */
 	public function updateTokenAction() {
 		
-		/** @todo: update target */
+		/**
+		 *
+		 * @todo : update target
+		 */
 		$query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.item > :n';
 		
-		$list = $this->doctrineEM->createQuery($query)
-		->setParameter('n', 0)
-		->getResult();
+		$list = $this->doctrineEM->createQuery ( $query )->setParameter ( 'n', 0 )->getResult ();
 		
 		if (count ( $list ) > 0) {
 			foreach ( $list as $entity ) {
@@ -1605,7 +1620,7 @@ class ItemAttachmentController extends AbstractActionController {
 		$total_records = count ( $list );
 		return new ViewModel ( array (
 				'list' => $list,
-				'total_records' => $total_records,
+				'total_records' => $total_records 
 		) );
 	}
 	

@@ -376,8 +376,8 @@ class VendorAttachmentController extends AbstractActionController {
 						$cloned_entity->setFilenameOriginal ( $file_name );
 						$cloned_entity->setSize ( $file_size );
 						$cloned_entity->setFolder ( $folder );
-						//new
-						$cloned_entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
+						// new
+						$cloned_entity->setAttachmentFolder ( self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR );
 						$cloned_entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$cloned_entity->setChecksum ( $checksum );
 						$cloned_entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -447,10 +447,9 @@ class VendorAttachmentController extends AbstractActionController {
 		$request = $this->getRequest ();
 		
 		// accepted only ajax request
-		/* if (! $request->isXmlHttpRequest ()) {
+		if (! $request->isXmlHttpRequest ()) {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
-		; */
 		
 		$this->layout ( "layout/user/ajax" );
 		
@@ -485,6 +484,12 @@ class VendorAttachmentController extends AbstractActionController {
 			$total_records = count ( $list );
 			$paginator = null;
 			
+	/* 		$this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
+			$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
+			$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
+			$this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
+	 */		
+			
 			return new ViewModel ( array (
 					'list' => $list,
 					'total_records' => $total_records,
@@ -494,6 +499,98 @@ class VendorAttachmentController extends AbstractActionController {
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
+	}
+	
+	/**
+	 * Return attachment of a target
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function getContractsAction() {
+		$request = $this->getRequest ();
+		
+		// accepted only ajax request
+		if (! $request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$this->layout ( "layout/user/ajax" );
+		
+		$target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $target_id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		/**
+		 *
+		 * @todo : Change Target
+		 */
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findOneBy ( $criteria );
+		
+		if ($target !== null) {
+			
+			/**
+			 *
+			 * @todo : Change Target
+			 */
+			$criteria = array (
+					'vendor' => $target_id,
+					'isActive' => 1,
+					'isContract' => 1,
+					'markedForDeletion' => 0 
+			
+			);
+			
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findBy ( $criteria );
+			$total_records = count ( $list );
+			$paginator = null;
+			
+		/* 	$this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
+			$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
+			$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
+			$this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true); */
+			
+			return new ViewModel ( array (
+					'list' => $list,
+					'total_records' => $total_records,
+					'paginator' => $paginator,
+					'target' => $target 
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+	}
+	
+	/**
+	 * Return attachment of a target
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function contractsAction() {
+		/**
+		 *
+		 * @todo : Change Target
+		 */
+		$criteria = array (
+				'isActive' => 1,
+				'isContract' => 1,
+				'markedForDeletion' => 0 
+		);
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findBy ( $criteria );
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => $paginator,
+				'target' => null 
+		) );
 	}
 	
 	/**
@@ -939,8 +1036,343 @@ class VendorAttachmentController extends AbstractActionController {
 						$entity->setSize ( $file_size );
 						$entity->setFolder ( $folder );
 						
-						//new
-						$entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
+						// new
+						$entity->setAttachmentFolder ( self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR );
+						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
+						$entity->setChecksum ( $checksum );
+						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+						
+						$entity->setCreatedBy ( $u );
+						$entity->setCreatedOn ( new \DateTime () );
+						$this->doctrineEM->persist ( $entity );
+						$this->doctrineEM->flush ();
+						
+						$this->flashMessenger ()->addMessage ( "'" . $file_name . "' has been uploaded successfully!" );
+						return $this->redirect ()->toUrl ( $redirectUrl );
+					}
+				}
+			}
+		}
+		
+		$redirectUrl = null;
+		if ($this->getRequest ()->getHeader ( 'Referer' ) !== null) {
+			$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		}
+		
+		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		/**
+		 *
+		 * @todo : Update Target
+		 */
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findOneBy ( $criteria );
+		
+		if ($target !== null) {
+			
+			return new ViewModel ( array (
+					'redirectUrl' => $redirectUrl,
+					'errors' => null,
+					'target' => $target,
+					'entity' => null 
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+	}
+	
+	/**
+	 *
+	 * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+	 */
+	public function uploadContractAction() {
+		$request = $this->getRequest ();
+		
+		if ($request->isPost ()) {
+			
+			$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+					"email" => $this->identity () 
+			) );
+			
+			$errors = array ();
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$target_id = $request->getPost ( 'target_id' );
+			$token = $request->getPost ( 'token' );
+			
+			$criteria = array (
+					'id' => $target_id,
+					'token' => $token 
+			);
+			
+			/**
+			 *
+			 * @todo : Update Target
+			 */
+			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findOneBy ( $criteria );
+			
+			if ($target == null) {
+				
+				$errors [] = 'Target object can\'t be empty. Or token key is not valid!';
+				$this->flashMessenger ()->addMessage ( 'Something wrong!' );
+				return new ViewModel ( array (
+						'redirectUrl' => $redirectUrl,
+						'errors' => $errors,
+						'target' => null,
+						'entity' => null 
+				) );
+				
+				// might need redirect
+			} else {
+				
+				$vendor_id = $request->getPost ( 'vendor_id' );
+				$documentSubject = $request->getPost ( 'documentSubject' );
+				
+				$signingDate = $request->getPost ( 'signingDate' );
+				$validFrom = $request->getPost ( 'validFrom' );
+				$validTo = $request->getPost ( 'validTo' );
+				$validFrom = $request->getPost ( 'validFrom' );
+				
+				$isActive = $request->getPost ( 'isActive' );
+				$markedForDeletion = $request->getPost ( 'markedForDeletion' );
+				$filePassword = $request->getPost ( 'filePassword' );
+				$visibility = $request->getPost ( 'visibility' );
+				
+				$remarks = $request->getPost ( 'remarks' );
+				
+				$entity = new NmtApplicationAttachment ();
+				
+				/**
+				 *
+				 * @todo : Update Target
+				 */
+				$entity->setVendor ( $target );
+				
+				if ($documentSubject == null) {
+					$errors [] = 'Please give document subject!';
+				} else {
+					$entity->setDocumentSubject ( $documentSubject );
+				}
+				
+				if ($isActive != 1) {
+					$isActive = 0;
+				}
+				
+				if ($markedForDeletion != 1) {
+					$markedForDeletion = 0;
+				}
+				
+				if ($visibility != 1) {
+					$visibility = 0;
+				}
+				
+				if ($filePassword === null or $filePassword == "") {
+					$filePassword = self::PDF_PASSWORD;
+				}
+				
+				$entity->setIsContract ( 1 );
+				$entity->setIsActive ( $isActive );
+				$entity->setMarkedForDeletion ( $markedForDeletion );
+				$entity->setVisibility ( $visibility );
+				$entity->setRemarks ( $remarks );
+				
+				// validator.
+				$validator = new Date ();
+				$date_to_validate = 3;
+				$date_validated = 0;
+				
+				// Can not EMPTY
+				if (! $validator->isValid ( $signingDate )) {
+					$errors [] = 'Signing date is not correct or empty!';
+				} else {
+					$entity->setSigningDate ( new \DateTime ( $signingDate ) );
+					$date_validated ++;
+				}
+				
+				// Can not EMPTY
+				if (! $validator->isValid ( $validFrom )) {
+					$errors [] = 'Start date is not correct or empty!';
+				} else {
+					$date_validated ++;
+					$entity->setValidFrom ( new \DateTime ( $validFrom ) );
+				}
+				
+				if (! $validator->isValid ( $validTo )) {
+					$errors [] = 'End date is not correct or empty!';
+				} else {
+					$date_validated ++;
+					$entity->setValidTo ( new \DateTime ( $validTo ) );
+				}
+				
+				// all date corrected
+				if ($date_validated == $date_to_validate) {
+					
+					if ($signingDate > $validFrom) {
+						$errors [] = 'Contract is effective backwards (?)';
+					} else {
+						if ($validFrom > $validTo) {
+							$errors [] = 'End date must be in the future';
+						}
+					}
+				}
+				
+				// need to set context id
+				/*
+				 * $vendor = null;
+				 * if ($vendor_id > 0) {
+				 * $vendor = $this->doctrineEM->find ( 'Application\Entity\NmtBpVendor', $vendor_id );
+				 * $entity->setVendor ( $vendor );
+				 * }
+				 */
+				
+				if (isset ( $_FILES ['attachments'] )) {
+					$file_name = $_FILES ['attachments'] ['name'];
+					$file_size = $_FILES ['attachments'] ['size'];
+					$file_tmp = $_FILES ['attachments'] ['tmp_name'];
+					$file_type = $_FILES ['attachments'] ['type'];
+					$file_ext = strtolower ( end ( explode ( '.', $_FILES ['attachments'] ['name'] ) ) );
+					
+					// attachement required?
+					if ($file_tmp == "" or $file_tmp === null) {
+						
+						$errors [] = 'Attachment can\'t be empty!';
+						$this->flashMessenger ()->addMessage ( 'Something wrong!' );
+						return new ViewModel ( array (
+								'redirectUrl' => $redirectUrl,
+								'errors' => $errors,
+								'target' => $target,
+								'entity' => $entity 
+						) );
+					} else {
+						
+						$ext = '';
+						$isPicture = 0;
+						if (preg_match ( '/(jpg|jpeg)$/', $file_type )) {
+							$ext = 'jpg';
+							$isPicture = 1;
+						} else if (preg_match ( '/(gif)$/', $file_type )) {
+							$ext = 'gif';
+							$isPicture = 1;
+						} else if (preg_match ( '/(png)$/', $file_type )) {
+							$ext = 'png';
+							$isPicture = 1;
+						} else if (preg_match ( '/(pdf)$/', $file_type )) {
+							$ext = 'pdf';
+						} else if (preg_match ( '/(vnd.ms-excel)$/', $file_type )) {
+							$ext = 'xls';
+						} else if (preg_match ( '/(vnd.openxmlformats-officedocument.spreadsheetml.sheet)$/', $file_type )) {
+							$ext = 'xlsx';
+						} else if (preg_match ( '/(msword)$/', $file_type )) {
+							$ext = 'doc';
+						} else if (preg_match ( '/(vnd.openxmlformats-officedocument.wordprocessingml.document)$/', $file_type )) {
+							$ext = 'docx';
+						} else if (preg_match ( '/(x-zip-compressed)$/', $file_type )) {
+							$ext = 'zip';
+						} else if (preg_match ( '/(octet-stream)$/', $file_type )) {
+							$ext = $file_ext;
+						}
+						
+						/*
+						 * $expensions = array (
+						 * "jpeg",
+						 * "jpg",
+						 * "png",
+						 * "pdf",
+						 * "xlsx",
+						 * "xls",
+						 * "docx",
+						 * "doc",
+						 * "zip",
+						 * "msg"
+						 * );
+						 */
+						
+						$expensions = array (
+								"pdf" 
+						);
+						
+						if (in_array ( $ext, $expensions ) === false) {
+							$errors [] = 'Extension file"' . $ext . '" not supported, please choose a "pdf"';
+						}
+						
+						if ($file_size > 2097152) {
+							$errors [] = 'File size must be  2 MB';
+						}
+						
+						$checksum = md5_file ( $file_tmp );
+						
+						/**
+						 *
+						 * @todo : Update Targert
+						 */
+						$criteria = array (
+								"checksum" => $checksum,
+								"vendor" => $target_id 
+						);
+						$ck = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findby ( $criteria );
+						
+						if (count ( $ck ) > 0) {
+							$errors [] = 'Document: "' . $file_name . '"  exits already';
+						}
+						
+						if (count ( $errors ) > 0) {
+							$this->flashMessenger ()->addMessage ( 'Something went wrong!' );
+							return new ViewModel ( array (
+									'redirectUrl' => $redirectUrl,
+									'errors' => $errors,
+									'target' => $target,
+									'entity' => $entity 
+							) );
+						}
+						;
+						
+						$name_part1 = Rand::getString ( 6, self::CHAR_LIST, true ) . "_" . Rand::getString ( 10, self::CHAR_LIST, true );
+						
+						$name = md5 ( $target_id . $checksum . uniqid ( microtime () ) ) . '_' . $name_part1 . '.' . $ext;
+						
+						$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
+						$folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
+						
+						if (! is_dir ( $folder )) {
+							mkdir ( $folder, 0777, true ); // important
+						}
+						
+						// echo ("$folder/$name");
+						move_uploaded_file ( $file_tmp, "$folder/$name" );
+						
+						if ($isPicture == 1) {
+							// trigger uploadPicture. AbtractController is EventManagerAware.
+							$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+									'picture_name' => $name,
+									'pictures_dir' => $folder 
+							) );
+						}
+						
+						if ($ext == "pdf") {
+							$pdf_box = ROOT . self::PDFBOX_FOLDER;
+							
+							// java -jar pdfbox-app-2.0.5.jar Encrypt [OPTIONS] <password> <inputfile>
+							exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
+							
+							// extract text:
+							exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar ExtractText -password ' . $filePassword . ' ' . "$folder/$name" . ' ' . "$folder/$name" . '.txt' );
+						}
+						// update database
+						$entity->setFilePassword ( $filePassword );
+						$entity->setIsPicture ( $isPicture );
+						$entity->setFilename ( $name );
+						$entity->setFiletype ( $file_type );
+						$entity->setFilenameOriginal ( $file_name );
+						$entity->setSize ( $file_size );
+						$entity->setFolder ( $folder );
+						
+						// new
+						$entity->setAttachmentFolder ( self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setChecksum ( $checksum );
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -1259,8 +1691,8 @@ class VendorAttachmentController extends AbstractActionController {
 						$entity->setFilenameOriginal ( $file_name );
 						$entity->setSize ( $file_size );
 						$entity->setFolder ( $folder );
-						//new
-						$entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);						
+						// new
+						$entity->setAttachmentFolder ( self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setChecksum ( $checksum );
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -1421,8 +1853,8 @@ class VendorAttachmentController extends AbstractActionController {
 						$entity->setFilenameOriginal ( $original_filename );
 						// $entity->setSize ( $file_size );
 						$entity->setFolder ( $folder );
-						//new
-						$entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR.$folder_relative.DIRECTORY_SEPARATOR);
+						// new
+						$entity->setAttachmentFolder ( self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setFolderRelative ( $folder_relative . DIRECTORY_SEPARATOR );
 						$entity->setChecksum ( $checksum );
 						$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -1550,9 +1982,9 @@ class VendorAttachmentController extends AbstractActionController {
 		$attachment = $tmp_attachment;
 		
 		if ($attachment !== null) {
-			$f = ROOT . $attachment->getAttachmentFolder().DIRECTORY_SEPARATOR. $attachment->getFilename ();
+			$f = ROOT . $attachment->getAttachmentFolder () . DIRECTORY_SEPARATOR . $attachment->getFilename ();
 			$output = file_get_contents ( $f );
-		
+			
 			$response = $this->getResponse ();
 			$headers = new Headers ();
 			
@@ -1581,14 +2013,14 @@ class VendorAttachmentController extends AbstractActionController {
 		 *
 		 * @todo : update target
 		 */
-	
-		/* $query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.vendor > :n';
-		$list = $this->doctrineEM->createQuery ( $query )->setParameter ( 'n', 0 )->getResult ();
+		
+		/*
+		 * $query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.vendor > :n';
+		 * $list = $this->doctrineEM->createQuery ( $query )->setParameter ( 'n', 0 )->getResult ();
 		 */
 		$query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e ';
 		
 		$list = $this->doctrineEM->createQuery ( $query )->getResult ();
-		
 		
 		if (count ( $list ) > 0) {
 			foreach ( $list as $entity ) {
@@ -1597,9 +2029,9 @@ class VendorAttachmentController extends AbstractActionController {
 				 * @todo Update Target
 				 */
 				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
-			
-				$str =  $entity->getFolder();
-				$entity->setAttachmentFolder(substr($str, 35,strlen($str)-35));
+				
+				$str = $entity->getFolder ();
+				$entity->setAttachmentFolder ( substr ( $str, 35, strlen ( $str ) - 35 ) );
 			}
 		}
 		

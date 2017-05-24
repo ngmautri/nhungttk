@@ -3,7 +3,7 @@
     	<input class="form-control" size="25" type="text" id ="search_term_<?php echo $context;?>" name = "q">
    </div>
   <div class="form-group">
-     <button type="submit" class="btn btn-default" onclick="searchEntity('/inventory/item-search/do1','<?php echo $context;?>');"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
+     <button type="submit" class="btn btn-default" onclick="searchEntity('/inventory/item-search/do1?target_id=<?php echo $target_id;?>&target_name=<?php echo $target_name;?>','<?php echo $context;?>');"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
   </div>
   
 </form>
@@ -50,7 +50,7 @@ if (! $hits == null) :
 			<td> <?php echo $count;?></td>
 	 		<td>		
 <a href="javascript:;"
-	onclick="selectId('<?php echo $this->escapeHtml($hit->item_id);?>','item_id','<?php echo $this->escapeHtml($hit->item_name);?>','item_name');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
+	onclick="selectId('<?php echo $this->escapeHtml($hit->item_id);?>','<?php echo $target_id;?>','<?php echo $this->escapeHtml($hit->item_name);?>','<?php echo $target_name;?>');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
 </a></td>
 		<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
@@ -58,7 +58,7 @@ if (! $hits == null) :
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_model);?></span></td>
     		
 	<td>
-	<a href="<?php echo $this->baseUrl ?>/bp/vendor/show?target_id=<?php echo $this->escapeHtml($hit->item_id);?>">show</a>
+	<a target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">show</a>
 	</td>	
 		</tr>
 <?php endforeach; ?>

@@ -200,6 +200,12 @@ class DepartmentController extends AbstractActionController {
 		$this->departmentService->updateCategory(1,0);
 		$jsTree = $this->departmentService->generateJSTree(1);
 		
+		$this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
+		$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
+		$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
+		$this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
+		
+		
 		//$jsTree = $this->tree;
 		return new ViewModel ( array (
 				'jsTree' => $jsTree

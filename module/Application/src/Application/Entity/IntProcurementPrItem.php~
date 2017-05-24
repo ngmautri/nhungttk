@@ -22,5 +22,14 @@ class IntProcurementPrItem
     private $int;
 
 
-}
 
+    /**
+     * Get int
+     *
+     * @return integer
+     */
+    public function getInt()
+    {
+        return $this->int;
+    }
+}

@@ -22,9 +22,16 @@ class NmtWfArc
     private $arcId;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="weight", type="integer", nullable=true)
+     */
+    private $weight;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="direction", type="string", length=45, nullable=true)
+     * @ORM\Column(name="direction", type="string", nullable=true)
      */
     private $direction;
 
@@ -41,6 +48,20 @@ class NmtWfArc
      * @ORM\Column(name="condition", type="string", length=45, nullable=true)
      */
     private $condition;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="created_by", type="integer", nullable=true)
+     */
+    private $createdBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
 
     /**
      * @var \Application\Entity\NmtWfWorkflow
@@ -82,6 +103,30 @@ class NmtWfArc
     public function getArcId()
     {
         return $this->arcId;
+    }
+
+    /**
+     * Set weight
+     *
+     * @param integer $weight
+     *
+     * @return NmtWfArc
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+
+        return $this;
+    }
+
+    /**
+     * Get weight
+     *
+     * @return integer
+     */
+    public function getWeight()
+    {
+        return $this->weight;
     }
 
     /**
@@ -154,6 +199,54 @@ class NmtWfArc
     public function getCondition()
     {
         return $this->condition;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param integer $createdBy
+     *
+     * @return NmtWfArc
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return integer
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return NmtWfArc
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
     }
 
     /**

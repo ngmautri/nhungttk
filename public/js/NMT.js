@@ -135,6 +135,15 @@ function searchEntity(source, context = null) {
 	// $( "#dialog" ).text(t);
 	var q;
 	var target_id;
+	
+	var connector_symbol;
+	var re = new RegExp("\\?");
+
+	if (source.match(re)) {
+		connector_symbol='&';
+	}else{
+		connector_symbol='?';
+	}
 
 	q = $("#search_term_"+context).val();
 	
@@ -149,7 +158,7 @@ function searchEntity(source, context = null) {
 	// alert(q);
 	
 	$.ajax({
-		url : source + '?context='+ context + '&q='+ q,
+		url : source + connector_symbol+'context='+ context + '&q='+ q,
 		success : function(text) {
 			// alert(text);
 			$(target_id).html(text);
@@ -168,7 +177,17 @@ function searchEntity(source, context = null) {
 function loadData(title, source, target, context = null) {
 	var target_id = '#' + target;
 	var search_term_id;
+	var connector_symbol;
+	var re = new RegExp("\\?");
+
+	if (source.match(re)) {
+		connector_symbol='&';
+	}else{
+		connector_symbol='?';
+	}
 	
+	//alert(source + connector_symbol + "context="+ context);
+		
 	$(target_id).text("Loading...");
 	
 	if(context == "J"){
@@ -179,7 +198,7 @@ function loadData(title, source, target, context = null) {
 		search_term_id = "#search_term_B";
 	}
 		$.ajax({
-		url : source + "?context="+ context,
+		url : source + connector_symbol + "context="+ context,
 		success : function(text) {
 			// alert(target_id);
 			$(target_id).html(text);
@@ -222,6 +241,7 @@ function selectId(id, target, name, target_name, context = null){
 	var target_id = '#' + target;
 	$(target_id).val(id);
 	
+	//alert(target_name);
 	var target_name_id = '#' + target_name;
 	$(target_name_id).val(name);
 	

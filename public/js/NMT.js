@@ -241,6 +241,8 @@ function selectId(id, target, name, target_name, context = null){
 	var target_id = '#' + target;
 	$(target_id).val(id);
 	
+	//alert(name);
+	
 	//alert(target_name);
 	var target_name_id = '#' + target_name;
 	$(target_name_id).val(name);

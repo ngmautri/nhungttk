@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePrRow
  *
- * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"})})
+ * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"}), @ORM\Index(name="nmt_procure_pr_row_FK5_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtProcurePrRow
@@ -71,6 +71,20 @@ class NmtProcurePrRow
     private $rowUnit;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=true)
+     */
+    private $conversionFactor;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="conversion_text", type="string", length=100, nullable=true)
+     */
+    private $conversionText;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=0, nullable=false)
@@ -113,6 +127,13 @@ class NmtProcurePrRow
     private $remarks;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -151,6 +172,16 @@ class NmtProcurePrRow
      * })
      */
     private $project;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
 
 
 
@@ -333,6 +364,54 @@ class NmtProcurePrRow
     }
 
     /**
+     * Set conversionFactor
+     *
+     * @param string $conversionFactor
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setConversionFactor($conversionFactor)
+    {
+        $this->conversionFactor = $conversionFactor;
+
+        return $this;
+    }
+
+    /**
+     * Get conversionFactor
+     *
+     * @return string
+     */
+    public function getConversionFactor()
+    {
+        return $this->conversionFactor;
+    }
+
+    /**
+     * Set conversionText
+     *
+     * @param string $conversionText
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setConversionText($conversionText)
+    {
+        $this->conversionText = $conversionText;
+
+        return $this;
+    }
+
+    /**
+     * Get conversionText
+     *
+     * @return string
+     */
+    public function getConversionText()
+    {
+        return $this->conversionText;
+    }
+
+    /**
      * Set quantity
      *
      * @param float $quantity
@@ -477,6 +556,30 @@ class NmtProcurePrRow
     }
 
     /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -570,5 +673,29 @@ class NmtProcurePrRow
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

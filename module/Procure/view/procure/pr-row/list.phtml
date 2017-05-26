@@ -1,20 +1,126 @@
+<div><small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a href="#transaction" class="" data-toggle="collapse">FILTER</a>
+ </div>
+ <div id ="transaction" class="collapse">
+	
+  <div style="border:1px; padding: 3px; font-size:10pt; background:url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+					    
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procure/pr-row/list" method="get" enctype="multipart/form-data">
+	
+	 <div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Item  Type</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="item_type">
+									<option value="">All</option>
+									<option
+										<?php echo $item_type=='ITEM'? "selected='selected'":"";?>
+										value="ITEM">Item</option>
+									<option
+										<?php echo $item_type=='SERVICE'? "selected='selected'":"";?>
+										value="SERVICE">Service</option>
+									<option
+										<?php echo $item_type=='SOFTWARE'? "selected='selected'":"";?>
+										value="SOFTWARE">Software</option>
+									</select>
+		</div>
+		<div class="col-sm-4">
+	 	</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Active Items</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="is_active">
+									<option
+									<?php echo $is_active ==''? "selected='selected'":"";?>
+										value="">All</option>
+									<option
+									<?php echo $is_active=='1'? "selected='selected'":"";?>
+										value="1">Active</option>
+									<option
+									<?php echo $is_active=='-1'? "selected='selected'":"";?>
+										value="-1">Inactive</option>
+									</select>
+		</div>
+	</div>
 
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
-  <div class="form-group">
-    	<input class="form-control" size="28" type="text" name = "q">
- 
- 
-  </div>
-  <div class="form-group">
-     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
-  </div>
-  
-</form>
-<hr>
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Fixed Asset</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="is_fixed_asset">
+									<option
+									<?php echo $is_fixed_asset==''? "selected='selected'":"";?>
+										value="">All</option>
+									<option
+									<?php echo $is_fixed_asset=='1'? "selected='selected'":"";?>
+										value="1">Fixed Asset</option>
+									<option
+									<?php echo $is_fixed_asset=='-1'? "selected='selected'":"";?>
+										value="-1">None Fixed Asset</option>
+									</select>
+		</div>
+	</div>
 
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Sort by</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="sort_by">
+									<option value="">None</option>
+									<option
+										<?php echo $sort_by=='itemName'? "selected='selected'":"";?>
+										value="itemName">Item Name</option>
+						
+									<option <?php echo $sort_by=='prNumber'? "selected='selected'":"";?>
+										value="prNumber">Pr Number</option>
+ 			</select>
+ 			<input <?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?> type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp;
+ 			<input <?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?> type="radio" name="sort" value="DESC">&nbsp;DESC&nbsp;&nbsp;
+ 							
+		</div>
+	</div>
+	
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Result per page</label>
+		<div class="col-sm-3">
+			<select class="form-control" name="perPage">
+									<option value="">None</option>
+									<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
+										value="15">15</option>
+
+									<option <?php echo $per_pape=='20'? "selected='selected'":"";?>
+										value="20">20</option>
+
+									<option <?php echo $per_pape=='30'? "selected='selected'":"";?>
+										value="30">30</option>
+
+									<option <?php echo $per_pape=='50'? "selected='selected'":"";?>
+										value="50">50</option>
+									<option
+										<?php echo $per_pape=='100'? "selected='selected'":"";?>
+										value="100">100</option>
+									<option
+										<?php echo $per_pape=='200'? "selected='selected'":"";?>
+										value="200">200</option>
+								</select>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-default">Show</button>
+		</div>
+	</div>     
+	     
+ </form>
  
+    </div>
+</div>
+<br>
 
 <?php
+
+
+
 
 if ($total_records <= 0) {
 	
@@ -29,20 +135,21 @@ if ($total_records <= 0) {
 	
 	?>
 
+
+
+
 <table style="font-size: 10pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>PR</b></td>
 			<td><b>Item</b></td>
-			<td><b>Doc. Type</b></td>
-			<td><b>Doc. Name</b></td>
-			<td><b>Doc. Size</b></td>
-			<td><b>Vendor</b></td>
-					<td><b>A</b></td>
-	
-			<td><b>D</b></td>
-	
-			<td><b>Date</b></td>
+			<td><b>Code</b></td>
+			<td><b>quantity</b></td>
+			<td><b>Standard<br>Unit</b></td>
+			<td><b>PR<br>Unit</b></td>
+			<td><b>Conversion<br>Factor</b></td>
+			<td><b>EDT</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -56,24 +163,61 @@ if ($total_records <= 0) {
 		$count ++;
 		?>
 	 <tr>
-	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 		<td><?php echo ($a->getItem()!==null)?$a->getItem()->getItemName():"";?></td>
-		
-			<td><?php echo $this->escapeHtml($a->getDocumentType());?></td>
-			<td><?php echo $this->escapeHtml($a->getFileNameOriginal());?></td>
-			<td><?php echo $this->escapeHtml($a->getSize());?></td>
-			<td><?php echo ($a->getVendor()!==null)?$a->getVendor()->getVendorName():"";?></td>
-			<td><?php echo ($a->getIsActive()=='1')?'<small><i class="glyphicon glyphicon-ok"></i></small>':"";?></td>
-			<td><?php echo ($a->getMarkedForDeletion()=='1')?'<small><i class="glyphicon glyphicon-remove"></i></small>':"";?></td>
-			
-			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y h:m");?> </td>
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 			<td>
-	<i class="glyphicon glyphicon-download-alt"></i><a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/download?target_id=<?php echo $this->escapeHtml($a->getID());?>">download</a>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/show?target_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/edit?target_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
+	  <?php
+		if ($a->getPR () !== null) :
+			echo $a->getPr ()->getPrNumber ();
+ 	    endif;
+		
+		?>
+ 	 </td>
+
+			<td><?php echo ($this->escapeHtml($a->getItem()!==null)? $this->escapeHtml($a->getItem()->getItemName()):"-");?></td>
+			<td>
+	  <?php
+		if ($a->getItem () !== null) :
+			echo $a->getItem ()->getManufacturerCode ();
+ 	    endif;
+		
+		?>
+ 	 </td>
+
+			<td><?php echo $this->escapeHtml($a->getQuantity());?></td>
+
+			<td><?php
+		if ($a->getItem () !== null) :
+			if ($a->getItem ()->getStandardUom () !== null) :
+				echo $a->getItem ()->getStandardUom ()->getUomCode ();
+ 	  	    	endif;
+ 	  	    endif;
+			
+		
+		?>
+ 	    </td>
+			<td><?php echo $this->escapeHtml($a->getRowUnit());?></td>
+			<td>
+			<?php
+		if ($a->getConversionFactor () !== null) :
+			echo number_format ( $a->getConversionFactor (), 2 );
+				endif;
+		
+		?>			
+			</td>
+			<td>
+			<?php
+		if ($a->getEdt () !== null) :
+			echo date_format ( $a->getEdt (), "d/m/y" );
+ 	  	    	endif;
+		
+		?> 
+			</td>
+			<td>
+<a href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Edit</a>
 
 			</td>
-		
+			
 		</tr>
 <?php endforeach; ?>
 
@@ -86,8 +230,8 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-		$base = $this->baseUrl . '/inventory/item-attachment/list';
-		$_connector_symbol = '?';
+	$base = $this->baseUrl . '/procure/pr-row/list?is_active='. $is_active.'&sort_by='.$sort_by.'&sort='.$sort;
+	$_connector_symbol = '&';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
 		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
@@ -125,6 +269,5 @@ endif;
 }
 // ===============================
 ?>
-
 
 

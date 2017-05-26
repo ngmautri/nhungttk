@@ -23,8 +23,11 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>item</b></td>
+			<td><b>Item</b></td>
 			<td><b>quantity</b></td>
+			<td><b>Standard<br>Unit</b></td>
+			<td><b>PR<br>Unit</b></td>
+			<td><b>Conversion<br>Factor</b></td>
 			<td><b>EDT</b></td>
 			<td><b>Action</b></td>
 		</tr>
@@ -40,12 +43,26 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 
 	 		<td><?php echo ($this->escapeHtml($a->getItem()!==null)? $this->escapeHtml($a->getItem()->getItemName()):"-");?></td>
+	 		<td><?php 
+ 	  	    if($a->getItem()!==null):
+ 	  	    	if($a->getItem()->getStandardUom()!==null):
+ 	  	    		echo $a->getItem()->getStandardUom()->getUomCode();
+ 	  	    	endif;
+ 	  	    endif;
+ 	  	    ?>
+ 	  	    </td>
 			<td><?php echo $this->escapeHtml($a->getQuantity());?></td>
-			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y");?> </td>
+			<td><?php echo $this->escapeHtml($a->getRowUnit());?></td>
 			<td>
-<small><i class="glyphicon glyphicon-download-alt"></i></small>&nbsp;<a href="<?php echo $this->baseUrl ?>/procure/pr-attachment/download?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">download</a>
+			<?php 
+				if($a->getConversionFactor()!==null):
+				echo number_format($a->getConversionFactor(),2);
+				endif;
+				?>			
+			</td>
+			<td><?php echo date_format ( $a->getEdt(), "d/m/y");?> </td>
+			<td>
 <a href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Show</a>
 <a href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Edit</a>
 

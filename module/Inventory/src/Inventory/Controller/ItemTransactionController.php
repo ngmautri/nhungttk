@@ -630,7 +630,10 @@ class ItemTransactionController extends AbstractActionController {
 				// might need redirect
 			} else {
 				
+				$issue_for_id = $request->getPost ( 'issue_for_id' );
+				
 				$vendor_id = $request->getPost ( 'vendor_id' );
+			
 				$currency_id = $request->getPost ( 'currency_id' );
 				// $pmt_method_id = $request->getPost ( 'pmt_method_id' );
 				
@@ -666,7 +669,7 @@ class ItemTransactionController extends AbstractActionController {
 				
 				$entity = new NmtInventoryTrx ();
 				
-				$entity->setFlow ( 'IN' );
+				$entity->setFlow ( 'OUT' );
 				$entity->setItem ( $target );
 				
 				$validator = new Date ();
@@ -701,6 +704,13 @@ class ItemTransactionController extends AbstractActionController {
 				
 				$entity->setIsDraft ( $isDraft );
 				$entity->setIsActive ( $isActive );
+				
+				$issue_for = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $issue_for_id);
+				if ($issue_for== null) {
+					// $errors [] = 'Curency can\'t be empty. Please select a currency!';
+				} else {
+					$entity->setIssueFor( $issue_for);
+				}
 				
 				$entity->setIsPreferredVendor ( $isPreferredVendor );
 				
@@ -800,7 +810,7 @@ class ItemTransactionController extends AbstractActionController {
 				}
 				;
 				// OK now
-				$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
+				//$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
 				
 				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
 						'email' => $this->identity ()

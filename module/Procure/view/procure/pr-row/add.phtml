@@ -47,7 +47,7 @@ value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->
 		
 
 <a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Item','900','500', '/inventory/item-search/do1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+	onclick="showJqueryDialog('Select Item','900','500', '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
 
 	</div>
@@ -65,19 +65,52 @@ value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->
 		</div>		
 	</div>
 	
+<fieldset >
+ <legend style="font-size: 9pt; color: gray;"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+   <a href="#transaction" class="" data-toggle="collapse">PR ROW:</a>
+ </legend>
+	<div id ="transaction" class="collapse in">
+	
 	<div class="form-group required">
 		<label class="control-label col-sm-2" >Quantity:</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
-				name="quantity" id="" quantity"" value="<?php echo (!$entity== null)? $entity->getQuantity():"";?>">
+				name="quantity" id="quantity" value="<?php echo (!$entity== null)? $entity->getQuantity():"";?>">
 		</div>
+	</div>
+	
+	<div class="form-group required">
+		<label class="control-label col-sm-2" >Unit:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="rowUnit" id="rowUnit" value="<?php echo (!$entity== null)? $entity->getRowUnit():"";?>">
+		</div>
+	
+		<label class="control-label col-sm-2" >Conversion Factor:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="conversionFactor" id="conversionFactor" value="<?php echo (!$entity== null)? $entity->getConversionFactor():"";?>">
+		</div>
+	
+	</div>
+	
+	<div class="form-group required">
 		<label class="control-label col-sm-2" >Expected Delivery:</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text" name="edt" 
-			value="<?php if(!$entity == null): echo ($entity->getEdt() !== null)? date_format($entity->getEdt(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_from" />
+			value="<?php if(!$entity == null): echo ($entity->getEdt() !== null)? date_format($entity->getEdt(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="edt" />
 		</div>
 	</div>
-		
+	
+	</div>
+</fieldset>
+	
+  <fieldset >
+  <legend style="font-size: 9pt; color: gray;"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+   <a href="#additional" class="" data-toggle="collapse">ADDITIONAL:</a>
+ </legend>
+	<div id ="additional" class="collapse">
+	
 	<div class="form-group">
 	<label class="control-label col-sm-2" >Remarks:</label>
 		<div class="col-sm-3">
@@ -85,13 +118,16 @@ value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 		</div>		
 	</div>
+
+</div>
+</fieldset>
 	
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
 	
  <a class="btn btn-default" style="" href="javascript:;"
-	onClick="submitForm('pr_row_form');"> <small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;Add
+	onClick="submitForm('pr_row_form');"> <small><i class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;Save
 </a>
    		</div>
 	</div> 
@@ -102,26 +138,8 @@ value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->
 </div>
 
 <script type="text/javascript">
-$('#attachments').bind('change', function() {
-	var file_size;
-	file_size = this.files[0].size
-	if (file_size > 2097152){
-		//alert('This file size is too large : ' + file_size + "MB. Please select new file");
-		
-		$('#b_loaded_data').text('This file size is too large : ' + file_size + "MB. Please select new file");
-		$('#modal1').modal();
 
-		 $("#attachments").val("");
-		 	
-	}else{
-		//alert('This file size is: ' + file_size + "MB, OKE");
-		 //$('#save').removeAttr('disabled');
-	}
-
-});
-
-$( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-$( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='edt']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 
 </script>

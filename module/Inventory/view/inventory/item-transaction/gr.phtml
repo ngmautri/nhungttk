@@ -39,7 +39,7 @@ if (count ( $errors ) > 0) {
 		
 
 <a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+	onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
 
 	</div>
@@ -49,8 +49,6 @@ if (count ( $errors ) > 0) {
 		<div class="col-sm-3">
 			<input disabled class="form-control" type="text" id="item_name" placeholder="Select PR Item, if any"
 				name="pr_row_name" value="">
-	
-	
 			<input type="hidden" id="pr_row_id" placeholder="" name="pr_row_id" value="">
 		</div>
 		

@@ -1,8 +1,8 @@
 
 <h4>
 	 <?php 
-	 // target:Project
- 	echo (!$target== null)? 'PR: ' . $target->getPrNumber():"";?>
+	 // target
+	 echo (!$target== null)? 'PR: ' . $target->getPrNumber():"";?>
 </h4>
 
 <?php
@@ -21,93 +21,120 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 10pt"> 
   <ul>
-  <li ><a href="#general">Attachment Edit</a></li>
+  <li ><a href="#general">PR Row</a></li>
    </ul>
 
 <div id="general"> 
 
-<!--UPDATE -->
-<form id="attachment_upload_form" class="form-horizontal" action="/procure/pr-attachment/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
+<!-- TO UPDATE ACTION -->
+<form id="pr_row_form" class="form-horizontal" action="/procure/pr-row/edit" method="post" enctype="multipart/form-data">
+<input type="hidden" name="entity_id" value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
 <input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
-
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Document Subject</label>
+<div class="form-group">
+		<label class="control-label col-sm-2" >Item: </label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="documentSubject" value="<?php echo (!$entity== null)? $entity->getDocumentSubject():"";?>">
+			<input disabled class="form-control" type="text" id="item_name" placeholder="Select Item if any"
+				name="item_name" 
+value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
 	
-		</div>
-		<label class="control-label col-sm-1" for="inputTag"></label>
-		<div class="col-sm-4">
-					  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-		</div>		
-	</div>
-		
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Attachment</label>
-		<div class="col-sm-3">
-			<input style=";" type="file" id= "attachments" name="attachments" />
-		</div>		
-	</div>
 	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Vendor (optional)</label>
-		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor, if any"
-				name="vendor_name" value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity->getVendor()->getVendorName(); endif;endif;?>">
-			<input type="hidden" id="vendor_id" placeholder="" 
-			name="vendor_id" value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity->getVendor()->getID(); endif;endif;?>">
+			<input type="hidden" id="item_id" placeholder="" 
+			name="item_id" 
+value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
 		</div>
 		
 
 <a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Vendor','750','450', '/bp/vendor/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+	onclick="showJqueryDialog('Select Item','900','500', '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
 
 	</div>
 	
 	<div class="form-group">
+		<label class="control-label col-sm-2" >Item Name</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="rowName" id="rowName" value="<?php echo (!$entity== null)? $entity->getRowName():"";?>">
 	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Valid From:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" name="validFrom" 
-			value="<?php if(!$entity == null): echo ($entity->getValidFrom() !== null)? date_format($entity->getValidFrom(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_from" />
 		</div>
-		
-		<label class="control-label col-sm-2" >Valid To:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" name="validTo" 
-			value="<?php if(!$entity == null): echo ($entity->getValidTo() !== null)? date_format($entity->getValidTo(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_to" />
+		<label class="control-label col-sm-1" for="inputTag"></label>
+		<div class="col-sm-4">
+			 <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 		</div>		
 	</div>
-		
-	<label class="control-label col-sm-2" >Remarks</label>
+	
+<fieldset >
+ <legend style="font-size: 9pt; color: gray;"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+   <a href="#transaction" class="" data-toggle="collapse">PR ROW:</a>
+ </legend>
+	<div id ="transaction" class="collapse in">
+	
+	<div class="form-group required">
+		<label class="control-label col-sm-2" >Quantity:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="quantity" id="quantity" value="<?php echo (!$entity== null)? $entity->getQuantity():"";?>">
+		</div>
+	</div>
+	
+	<div class="form-group required">
+		<label class="control-label col-sm-2" >Unit:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="rowUnit" id="rowUnit" value="<?php echo (!$entity== null)? $entity->getRowUnit():"";?>">
+		</div>
+	
+		<label class="control-label col-sm-2" >Conversion Factor:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="conversionFactor" id="conversionFactor" value="<?php 
+				if(!$entity== null):
+				if($entity->getConversionFactor()!==null):
+					echo number_format($entity->getConversionFactor(),2);
+				endif;
+				endif;
+				?>">
+		</div>
+	
+	</div>
+</div>
+</fieldset>
+	
+	<div class="form-group required">
+		<label class="control-label col-sm-2" >Expected Delivery:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text" name="edt" 
+			value="<?php if(!$entity == null): echo ($entity->getEdt() !== null)? date_format($entity->getEdt(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="edt" />
+		</div>
+	</div>
+	
+  <fieldset >
+    <legend style="font-size: 9pt; color: gray;"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+   <a href="#additional" class="" data-toggle="collapse">ADDITIONAL:</a>
+ </legend>
+	<div id ="additional" class="collapse">
+	
+	<div class="form-group">
+	<label class="control-label col-sm-2" >Remarks:</label>
 		<div class="col-sm-3">
 			<textarea  class="form-control" type="text" rows="4" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-		</div>
-			<label class="control-label col-sm-2" for="inputTag">Attachment: </label>
-		<div class="col-sm-3">
-	<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/procure/pr-attachment/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
 		</div>		
 	</div>
+
+</div>
+</fieldset>
 	
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-<a class="btn btn-default" style="" href="javascript:;"
-	onClick="doUploadAttachment('attachment_upload_form','attachments','/procure/pr-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','<?php echo $target!==null ? $target->getChecksum():""?>','<?php echo $target!==null ? $target->getToken():""?>','0','<?php echo (!$entity== null)? $entity->getId():"";?>','<?php echo (!$entity== null)? $entity->getToken():"";?>');">
-	<small><i class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp; Edit
+	
+ <a class="btn btn-default" style="" href="javascript:;"
+	onClick="submitForm('pr_row_form');"> <small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;Add
 </a>
-
-<a class="btn btn-default" href="<?php echo $redirectUrl ?>"><i class="icon-back"> </i> << Back</a>
-		
- 		
-  		</div>
+   		</div>
 	</div> 
 		
 	
@@ -116,26 +143,8 @@ if (count ( $errors ) > 0) {
 </div>
 
 <script type="text/javascript">
-$('#attachments').bind('change', function() {
-	var file_size;
-	file_size = this.files[0].size
-	if (file_size > 2097152){
-		//alert('This file size is too large : ' + file_size + "MB. Please select new file");
-		
-		$('#b_loaded_data').text('This file size is too large : ' + file_size + "MB. Please select new file");
-		$('#modal1').modal();
 
-		 $("#attachments").val("");
-		 	
-	}else{
-		//alert('This file size is: ' + file_size + "MB, OKE");
-		 //$('#save').removeAttr('disabled');
-	}
-
-});
-
-$( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-$( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='edt']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 
 </script>

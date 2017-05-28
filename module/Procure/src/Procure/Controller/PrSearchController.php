@@ -37,7 +37,7 @@ class PrSearchController extends AbstractActionController {
 		$q = $this->params ()->fromQuery ( 'q' );
 		
 		if ($q !== "") {
-			$results = $this->prSearchService->searchAllItem ( $q );
+			$results = $this->prSearchService->search( $q );
 		} else {
 			$results = [ 
 					"message" => "",
@@ -82,7 +82,7 @@ class PrSearchController extends AbstractActionController {
 		
 		if ($q !== null) {
 			if ($q !== "") {
-				$results = $this->NmtBpVendor->searchAllItem ( $q );
+				$results = $this->prSearchService->search( $q );
 			}
 		}
 		
@@ -100,7 +100,7 @@ class PrSearchController extends AbstractActionController {
 	/**
 	 */
 	public function createIndexAction() {
-		$result = $this->vendorSearchService->createVendorIndex ();
+		$result = $this->prSearchService->createIndex();
 		return new ViewModel ( array (
 				'result' => $result 
 		) );

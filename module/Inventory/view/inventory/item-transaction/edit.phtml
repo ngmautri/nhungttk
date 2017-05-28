@@ -50,17 +50,27 @@ value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity-
 	<div class="form-group">
 		<label class="control-label col-sm-2" >PR Referrence: </label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="item_name" placeholder="Select PR Item, if any"
-				name="pr_row_name" value="">
-	
-	
-			<input type="hidden" id="pr_row_id" placeholder="" name="pr_row_id" value="">
-		</div>
+			<input disabled class="form-control" type="text" id="pr_item_name" placeholder="Select PR Item, if any" name="pr_row_name" 
+value="<?php if(!$entity == null): 
+if($entity->getPrRow()!==null):
+	if($entity->getPrRow()->getItem()!==null):
+		echo $entity->getPrRow()->getItem()->getItemName();
+	endif;
+endif;
+endif;?>">
+
+			<input type="hidden" id="pr_row_id" placeholder="" name="pr_row_id" 
+value="<?php if(!$entity == null): 
+if($entity->getPrRow()!==null):
+	echo $entity->getPrRow()->getId();
+endif;
+endif;?>">		</div>
 		
- 
+
 <a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+	onclick="showJqueryDialog('Select PR Row','950','500', '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
+
 	</div>
 	
 	<fieldset >

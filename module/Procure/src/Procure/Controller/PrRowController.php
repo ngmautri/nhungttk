@@ -18,6 +18,7 @@ use Zend\Validator\Date;
 use Zend\Math\Rand;
 use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
+use Application\Entity\NmtInventoryItem;
 
 /**
  *
@@ -25,7 +26,6 @@ use Application\Entity\NmtProcurePrRow;
  *        
  */
 class PrRowController extends AbstractActionController {
-	
 	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 	protected $doctrineEM;
 	
@@ -143,7 +143,7 @@ class PrRowController extends AbstractActionController {
 				$rowCode = $request->getPost ( 'rowCode' );
 				$rowName = $request->getPost ( 'rowName' );
 				$rowUnit = $request->getPost ( 'rowUnit' );
-				$conversionFactor= $request->getPost ( 'conversionFactor' );
+				$conversionFactor = $request->getPost ( 'conversionFactor' );
 				
 				$item_id = $request->getPost ( 'item_id' );
 				
@@ -169,7 +169,7 @@ class PrRowController extends AbstractActionController {
 				$entity->setRowCode ( $rowCode );
 				$entity->setRowName ( $rowName );
 				$entity->setRowUnit ( $rowUnit );
-				$entity->setConversionFactor($conversionFactor);
+				$entity->setConversionFactor ( $conversionFactor );
 				
 				if ($quantity == null) {
 					$errors [] = 'Please  enter order quantity!';
@@ -200,16 +200,16 @@ class PrRowController extends AbstractActionController {
 				}
 				
 				if ($conversionFactor == null) {
-					//$errors [] = 'Please  enter order quantity!';
+					// $errors [] = 'Please enter order quantity!';
 				} else {
 					
-					if (! is_numeric ( $conversionFactor)) {
+					if (! is_numeric ( $conversionFactor )) {
 						$errors [] = 'quantity must be a number.';
 					} else {
-						if ($conversionFactor<= 0) {
+						if ($conversionFactor <= 0) {
 							$errors [] = 'quantity must be greater than 0!';
 						}
-						$entity->setConversionFactor( $conversionFactor);
+						$entity->setConversionFactor ( $conversionFactor );
 					}
 				}
 				
@@ -244,7 +244,7 @@ class PrRowController extends AbstractActionController {
 				$entity->setChecksum ( md5 ( uniqid ( "pr_row_" . $entity->getId () ) . microtime () ) );
 				$this->doctrineEM->flush ();
 				
-				$this->flashMessenger ()->addMessage ( "Row '" . $entity->getId() . "' has been created successfully!" );
+				$this->flashMessenger ()->addMessage ( "Row '" . $entity->getId () . "' has been created successfully!" );
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
@@ -281,6 +281,68 @@ class PrRowController extends AbstractActionController {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 	}
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function allAction() {
+		$item_type = $this->params ()->fromQuery ( 'item_type' );
+		$is_active = $this->params ()->fromQuery ( 'is_active' );
+		$is_fixed_asset = $this->params ()->fromQuery ( 'is_fixed_asset' );
+		
+		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
+		$sort = $this->params ()->fromQuery ( 'sort' );
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		// $n = new NmtInventoryItem();
+		if ($sort_by == null) :
+			$sort_by = "itemName";
+		endif;
+		
+		if ($sort == null) :
+			$sort = "ASC";
+		endif;
+			
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ( $sort_by, $sort, 0, 0 );
+		
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		if ($total_records > $resultsPerPage) {
+			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ( $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
+		// var_dump (count($all));
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => $paginator,
+				'sort_by' => $sort_by,
+				'sort' => $sort,
+				'is_active' => $is_active,
+				'is_fixed_asset' => $is_fixed_asset,
+				'per_pape' => $resultsPerPage,
+				'item_type' => $item_type 
+		
+		) );
+	}
 	
 	/**
 	 *
@@ -305,12 +367,12 @@ class PrRowController extends AbstractActionController {
 		$criteria2 = array ();
 		if (! $is_active == null) {
 			$criteria2 = array (
-					"isActive" => $is_active
+					"isActive" => $is_active 
 			);
 			
 			if ($is_active == - 1) {
 				$criteria2 = array (
-						"isActive" => '0'
+						"isActive" => '0' 
 				);
 			}
 		}
@@ -318,15 +380,15 @@ class PrRowController extends AbstractActionController {
 		$criteria3 = array ();
 		
 		if ($sort_by == null) :
-		$sort_by = "itemName";
+			$sort_by = "itemName";
 		endif;
 		
 		if ($sort == null) :
-		$sort = "ASC";
+			$sort = "ASC";
 		endif;
 		
 		$sort_criteria = array (
-				$sort_by => $sort
+				$sort_by => $sort 
 		);
 		
 		$criteria = array_merge ( $criteria1, $criteria2, $criteria3 );
@@ -363,17 +425,16 @@ class PrRowController extends AbstractActionController {
 			$query = $query . ' ORDER BY pr.' . $sort_by . ' ' . $sort;
 		}
 		$list = $this->doctrineEM->createQuery ( $query )->setParameters ( array (
-				"1" => 1
+				"1" => 1 
 		) )->getResult ();
 		
-	
 		$total_records = count ( $list );
 		$paginator = null;
 		
 		if ($total_records > $resultsPerPage) {
 			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
 			$list = $this->doctrineEM->createQuery ( $query )->setParameters ( array (
-					"1" => 1
+					"1" => 1 
 			) )->setFirstResult ( $paginator->minInPage - 1 )->setMaxResults ( ($paginator->maxInPage - $paginator->minInPage) + 1 )->getResult ();
 		}
 		
@@ -389,8 +450,8 @@ class PrRowController extends AbstractActionController {
 				'is_active' => $is_active,
 				'is_fixed_asset' => $is_fixed_asset,
 				'per_pape' => $resultsPerPage,
-				'item_type' => $item_type
-				
+				'item_type' => $item_type 
+		
 		) );
 	}
 	

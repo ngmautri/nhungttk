@@ -28,8 +28,6 @@ class ItemTransactionController extends AbstractActionController {
 	protected $doctrineEM;
 	protected $itemSearchService;
 	
-	
-	
 	/*
 	 * Defaul Action
 	 */
@@ -66,13 +64,12 @@ class ItemTransactionController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'entity' => $entity,
-					'target' => $entity->getItem (),
+					'target' => $entity->getItem () 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 	}
-	
 	
 	/**
 	 *
@@ -89,16 +86,16 @@ class ItemTransactionController extends AbstractActionController {
 			
 			$criteria = array (
 					'id' => $entity_id,
-					'token' => $token,
+					'token' => $token 
 			);
 			
 			/**
 			 *
 			 * @todo Update Target
 			 */
-			$entity= $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryTrx' )->findOneBy ( $criteria );
+			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryTrx' )->findOneBy ( $criteria );
 			
-			if ($entity== null) {
+			if ($entity == null) {
 				
 				$errors [] = 'Target object can\'t be empty. Or token key is not valid!';
 				$this->flashMessenger ()->addMessage ( 'Something went wrong!' );
@@ -106,7 +103,7 @@ class ItemTransactionController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null
+						'entity' => null 
 				) );
 				
 				// might need redirect
@@ -146,11 +143,11 @@ class ItemTransactionController extends AbstractActionController {
 				
 				// Inventory Transaction:
 				
-				//$entity = new NmtInventoryTrx ();
-				$target = $entity->getItem();
+				// $entity = new NmtInventoryTrx ();
+				$target = $entity->getItem ();
 				
-				//$entity->setFlow ( 'IN' );
-				//$entity->setItem ( $target );
+				// $entity->setFlow ( 'IN' );
+				// $entity->setItem ( $target );
 				
 				$validator = new Date ();
 				if (! $validator->isValid ( $movement_date )) {
@@ -278,7 +275,7 @@ class ItemTransactionController extends AbstractActionController {
 							'redirectUrl' => $redirectUrl,
 							'errors' => $errors,
 							'target' => $target,
-							'entity' => $entity
+							'entity' => $entity 
 					) );
 				}
 				;
@@ -286,7 +283,7 @@ class ItemTransactionController extends AbstractActionController {
 				$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
 				
 				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-						'email' => $this->identity ()
+						'email' => $this->identity () 
 				) );
 				
 				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -319,25 +316,22 @@ class ItemTransactionController extends AbstractActionController {
 		$criteria = array (
 				'id' => $entity_id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
-		$entity= $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryTrx' )->findOneBy ( $criteria );
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryTrx' )->findOneBy ( $criteria );
 		
-		if($entity!==null){
+		if ($entity !== null) {
 			
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'entity' => $entity,
-					'target' => $entity->getItem(),
+					'target' => $entity->getItem () 
 			) );
-			
-		}else{
+		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
-			
 		}
-		
 	}
 	/**
 	 *
@@ -349,21 +343,27 @@ class ItemTransactionController extends AbstractActionController {
 		if ($request->isPost ()) {
 			$errors = array ();
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$pr_row_id = $request->getPost ( 'pr_row_id' );
 			$target_id = $request->getPost ( 'item_id' );
 			
-			$criteria = array (
-					'id' => $target_id 
-			);
-			
-			/**
-			 *
-			 * @todo Update Target
-			 */
-			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+			$pr_row = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->find( $pr_row_id );
+			if ($pr_row !== null) {
+				$target = $pr_row->getItem ();
+			} else {
+				$criteria = array (
+						'id' => $target_id 
+				);
+				
+				/**
+				 *
+				 * @todo Update Target
+				 */
+				$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+			}
 			
 			if ($target == null) {
 				
-				$errors [] = 'Target object can\'t be empty. Or token key is not valid!';
+				$errors [] = 'Item or PR Row object can\'t be empty. Or token key is not valid!';
 				$this->flashMessenger ()->addMessage ( 'Something went wrong!' );
 				return new ViewModel ( array (
 						'redirectUrl' => $redirectUrl,
@@ -414,6 +414,9 @@ class ItemTransactionController extends AbstractActionController {
 				$entity->setFlow ( 'IN' );
 				$entity->setItem ( $target );
 				
+				if ($pr_row !== null) {
+					$entity->setPrRow ( $pr_row );
+				}
 				$validator = new Date ();
 				if (! $validator->isValid ( $movement_date )) {
 					$errors [] = 'Transaction date is not correct or empty!';
@@ -607,7 +610,7 @@ class ItemTransactionController extends AbstractActionController {
 			$target_id = $request->getPost ( 'item_id' );
 			
 			$criteria = array (
-					'id' => $target_id
+					'id' => $target_id 
 			);
 			
 			/**
@@ -624,7 +627,7 @@ class ItemTransactionController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null
+						'entity' => null 
 				) );
 				
 				// might need redirect
@@ -633,7 +636,7 @@ class ItemTransactionController extends AbstractActionController {
 				$issue_for_id = $request->getPost ( 'issue_for_id' );
 				
 				$vendor_id = $request->getPost ( 'vendor_id' );
-			
+				
 				$currency_id = $request->getPost ( 'currency_id' );
 				// $pmt_method_id = $request->getPost ( 'pmt_method_id' );
 				
@@ -705,11 +708,11 @@ class ItemTransactionController extends AbstractActionController {
 				$entity->setIsDraft ( $isDraft );
 				$entity->setIsActive ( $isActive );
 				
-				$issue_for = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $issue_for_id);
-				if ($issue_for== null) {
+				$issue_for = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $issue_for_id );
+				if ($issue_for == null) {
 					// $errors [] = 'Curency can\'t be empty. Please select a currency!';
 				} else {
-					$entity->setIssueFor( $issue_for);
+					$entity->setIssueFor ( $issue_for );
 				}
 				
 				$entity->setIsPreferredVendor ( $isPreferredVendor );
@@ -805,15 +808,15 @@ class ItemTransactionController extends AbstractActionController {
 							'redirectUrl' => $redirectUrl,
 							'errors' => $errors,
 							'target' => $target,
-							'entity' => $entity
+							'entity' => $entity 
 					) );
 				}
 				;
 				// OK now
-				//$entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
+				// $entity->setConversionText ( $entity->getVendorItemUnit () . ' = ' . $entity->getConversionFactor () . '*' . $target->getStandardUom ()->getUomCode () );
 				
 				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-						'email' => $this->identity ()
+						'email' => $this->identity () 
 				) );
 				
 				$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
@@ -846,7 +849,7 @@ class ItemTransactionController extends AbstractActionController {
 		$criteria = array (
 				'id' => $target_id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
@@ -855,7 +858,7 @@ class ItemTransactionController extends AbstractActionController {
 				'redirectUrl' => $redirectUrl,
 				'errors' => null,
 				'entity' => null,
-				'target' => $target
+				'target' => $target 
 		) );
 	}
 	

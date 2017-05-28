@@ -43,7 +43,16 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 		<td><?php echo ($this->escapeHtml($a->getItem()!==null)? $this->escapeHtml($a->getItem()->getItemName()):"-");?></td>
+	 		<td>
+
+<?php if ($a->getItem () !== null) : ?>			
+<a style="color: #337ab7;" href="javascript:;"
+	onclick="showJqueryDialog('Detail of Item . <?php	echo $this->escapeJs($a->getItem()->getItemName());?>','950','650', '/inventory/item/show1?token=<?php echo $a->getItem()->getToken();?>&checksum=<?php echo $a->getItem()->getChecksum();?>&entity_id=<?php echo $a->getItem()->getID();?>','j_loaded_data', true);"><?php	echo $a->getItem ()->getItemName();?>
+</a>
+<?php endif; ?>			
+	 		
+	 		
+	 		</td>
 	 		<td><?php 
  	  	    if($a->getItem()!==null):
  	  	    	if($a->getItem()->getStandardUom()!==null):

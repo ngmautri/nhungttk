@@ -79,6 +79,53 @@ class ItemController extends AbstractActionController {
 		return $this->redirect ()->toRoute ( 'access_denied' );
 	}
 	
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function show1Action() {
+		$request = $this->getRequest ();
+		$redirectUrl = null;
+		
+		
+		// accepted only ajax request
+		/* if (! $request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		; */
+		
+		$this->layout ( "layout/user/ajax" );
+		
+		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $entity_id,
+				'checksum' => $checksum,
+				'token' => $token
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+		$pictures = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findBy ( array (
+				"item" => $entity_id
+		) );
+		
+		if (! $entity == null) {
+			return new ViewModel ( array (
+					'entity' => $entity,
+					'department' => null,
+					'category' => null,
+					'pictures' => $pictures,
+					'redirectUrl' => $redirectUrl
+					
+			) );
+		}
+		
+		return $this->redirect ()->toRoute ( 'access_denied' );
+	}
+	
+	
 	/**
 	 *
 	 * @return \Zend\View\Model\ViewModel

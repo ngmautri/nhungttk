@@ -15,7 +15,7 @@
 	
   <div style="border:1px; padding: 3px; font-size:10pt; background:url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 					    
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procure/pr-row/list" method="get" enctype="multipart/form-data">
+ <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/procure/pr-row/all" method="get" enctype="multipart/form-data">
 	
 	 <div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag">Item  Type</label>
@@ -155,12 +155,8 @@ if ($total_records <= 0) {
 			<td><b>#</b></td>
 			<td><b>PR</b></td>
 			<td><b>Item</b></td>
-			<td><b>Code</b></td>
-			<td><b>quantity</b></td>
-			<td><b>Standard<br>Unit</b></td>
-			<td><b>PR<br>Unit</b></td>
-			<td><b>Conversion<br>Factor</b></td>
-			<td><b>EDT</b></td>
+			<td><b>Quantity</b></td>
+			<td><b>Received</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -173,70 +169,31 @@ if ($total_records <= 0) {
 	foreach ( $list as $a ) :
 		$count ++;
 		?>
-	 <tr>
-			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-			<td>
-			
-<?php if ($a->getPR () !== null) : ?>			
+	<tr>
+		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+		<td>
+
 <a style="color: #337ab7;" href="javascript:;"
-	onclick="showJqueryDialog('Detail of PR . <?php	echo $a->getPr ()->getPrNumber();?>','950','650', '/procure/pr-row/list1?token=<?php echo $a->getPR()->getToken();?>&checksum=<?php echo $a->getPr()->getChecksum();?>&target_id=<?php echo $a->getPr()->getID();?>','j_loaded_data', true);"><?php	echo $a->getPr ()->getPrNumber();?>
+	onclick="showJqueryDialog('Detail of PR: <?php echo $this->escapeJs($a['pr_number']) ?>','950','550', '/procure/pr-row/list1?token=<?php echo $a['pr_token'] ?>&checksum=<?php echo $a['pr_checksum'] ?>&target_id=<?php echo $a['pr_id'] ?>','j_loaded_data', true);"><?php echo $a['pr_number'] ?>
 </a>
-<?php endif; ?>
 
- 	 </td>
-
-			<td>
-<?php if ($a->getItem () !== null) : ?>			
+		
+		</td>
+		<td>
 <a style="color: #337ab7;" href="javascript:;"
-	onclick="showJqueryDialog('Detail of Item . <?php	echo $this->escapeJs($a->getItem()->getItemName());?>','1000','650', '/inventory/item/show1?token=<?php echo $a->getItem()->getToken();?>&checksum=<?php echo $a->getItem()->getChecksum();?>&entity_id=<?php echo $a->getItem()->getID();?>','j_loaded_data', true);"><?php	echo $a->getItem ()->getItemName();?>
+	onclick="showJqueryDialog('Detail of Item: <?php echo $this->escapeJs($a['item_name']) ?>','950','550', '/inventory/item/show1?token=<?php echo $a['item_token'] ?>&checksum=<?php echo $a['item_checksum'] ?>&entity_id=<?php echo $a['item_id'] ?>','j_loaded_data', true);"><?php echo $a['item_name'] ?>
 </a>
-<?php endif; ?>			
-			
-	<td>
-	  <?php
-		if ($a->getItem () !== null) :
-			echo $a->getItem ()->getManufacturerCode ();
- 	    endif;
-		
-		?>
- 	 </td>
 
-			<td><?php echo $this->escapeHtml($a->getQuantity());?></td>
-
-			<td><?php
-		if ($a->getItem () !== null) :
-			if ($a->getItem ()->getStandardUom () !== null) :
-				echo $a->getItem ()->getStandardUom ()->getUomCode ();
- 	  	    	endif;
- 	  	    endif;
-			
+		</td>
+	
+		<td><?php echo $a['quantity'] ?></td>
+		<td><?php echo $a['total_received'] ?></td>
+		<td>
+<a href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $a['token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['checksum'] ?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo $a['token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['checksum'] ?>">Edit</a>
 		
-		?>
- 	    </td>
-			<td><?php echo $this->escapeHtml($a->getRowUnit());?></td>
-			<td>
-			<?php
-		if ($a->getConversionFactor () !== null) :
-			echo number_format ( $a->getConversionFactor (), 2 );
-				endif;
-		
-		?>			
-			</td>
-			<td>
-			<?php
-		if ($a->getEdt () !== null) :
-			echo date_format ( $a->getEdt (), "d/m/y" );
- 	  	    	endif;
-		
-		?> 
-			</td>
-			<td>
-<a href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Edit</a>
-
-			</td>
-			
-		</tr>
+		</td>
+	</tr>
 <?php endforeach; ?>
 
  </tbody>
@@ -248,7 +205,7 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/procure/pr-row/list?is_active='. $is_active.'&sort_by='.$sort_by.'&sort='.$sort;
+	$base = $this->baseUrl . '/procure/pr-row/all?is_active='. $is_active.'&sort_by='.$sort_by.'&sort='.$sort;
 	$_connector_symbol = '&';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;

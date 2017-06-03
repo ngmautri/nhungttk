@@ -133,11 +133,11 @@ class ItemPictureController extends AbstractActionController {
 			$total_records = count ( $list );
 			$paginator = null;
 			
-			$this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
+		/* 	$this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
 			$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
 			$this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
 			$this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
-			
+		 */	
 			
 			return new ViewModel ( array (
 					'list' => $list,

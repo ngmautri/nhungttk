@@ -38,9 +38,9 @@ class NmtInventoryTrx
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="trx_date", type="datetime", nullable=false)
+     * @ORM\Column(name="trx_date", type="datetime", nullable=true)
      */
-    private $trxDate = 'CURRENT_TIMESTAMP';
+    private $trxDate;
 
     /**
      * @var integer

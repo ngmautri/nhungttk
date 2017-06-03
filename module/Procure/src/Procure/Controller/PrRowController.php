@@ -292,6 +292,8 @@ class PrRowController extends AbstractActionController {
 		
 		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		$sort = $this->params ()->fromQuery ( 'sort' );
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		$pr_year = $this->params ()->fromQuery ( 'pr_year' );
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 15;
@@ -312,19 +314,28 @@ class PrRowController extends AbstractActionController {
 			$sort_by = "itemName";
 		endif;
 		
+			// $n = new NmtInventoryItem();
+		if ($balance == null) :
+			$balance = 1;
+		endif;
+		
+			// $n = new NmtInventoryItem();
+		if ($pr_year == null) :
+			$pr_year = date ( 'Y' );
+		endif;
+		
 		if ($sort == null) :
 			$sort = "ASC";
 		endif;
-			
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ( $sort_by, $sort, 0, 0 );
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ( $pr_year, $balance, $sort_by, $sort, 0, 0 );
 		
 		$total_records = count ( $list );
 		$paginator = null;
 		
 		if ($total_records > $resultsPerPage) {
 			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
-			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ( $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ( $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 		}
 		
 		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
@@ -339,8 +350,9 @@ class PrRowController extends AbstractActionController {
 				'is_active' => $is_active,
 				'is_fixed_asset' => $is_fixed_asset,
 				'per_pape' => $resultsPerPage,
-				'item_type' => $item_type 
-		
+				'item_type' => $item_type,
+				'balance' => $balance,
+				'pr_year' => $pr_year 
 		) );
 	}
 	
@@ -355,6 +367,7 @@ class PrRowController extends AbstractActionController {
 		
 		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		$sort = $this->params ()->fromQuery ( 'sort' );
+		$balance = $this->params ()->fromQuery ( 'balance' );
 		
 		$criteria1 = array ();
 		/*
@@ -450,8 +463,8 @@ class PrRowController extends AbstractActionController {
 				'is_active' => $is_active,
 				'is_fixed_asset' => $is_fixed_asset,
 				'per_pape' => $resultsPerPage,
-				'item_type' => $item_type 
-		
+				'item_type' => $item_type,
+				'balance' => $balance 
 		) );
 	}
 	
@@ -506,6 +519,102 @@ class PrRowController extends AbstractActionController {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 	}
+	
+	/**
+	 *
+	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+	 */
+	public function rowAction() {
+		$request = $this->getRequest ();
+		
+		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
+		$sort = $this->params ()->fromQuery ( 'sort' );
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		$is_active = $this->params ()->fromQuery ( 'is_active' );
+		
+		if ($sort_by == null) :
+			$sort_by = "createdOn";
+		endif;
+		
+		if ($balance == null) :
+			$balance = 2;
+		endif;
+		
+		if ($sort == null) :
+			$sort = "ASC";
+		endif;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) ) or $this->params ()->fromQuery ( 'perPage' ) == null) {
+			$resultsPerPage = 10;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		// accepted only ajax request		
+		if (! $request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$this->layout ( "layout/user/ajax" );
+		
+		$target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $target_id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		/**
+		 *
+		 * @todo : Change Target
+		 */
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
+		
+		if ($target !== null) {
+			
+			$criteria = array (
+					'pr' => $target_id 
+				// 'isActive' => 1,
+			);
+			
+			// $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->get ( $criteria );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, 0, 0 );
+			
+			$total_records = count ( $list );
+			$paginator = null;
+			
+			if ($total_records > $resultsPerPage) {
+				$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
+				$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			}
+			
+			return new ViewModel ( array (
+					'list' => $list,
+					'total_records' => $total_records,
+					'paginator' => $paginator,
+					'target' => $target,
+					'sort_by' => $sort_by,
+					'sort' => $sort,
+					'per_pape' => $resultsPerPage,
+					'balance' => $balance,
+					'is_active' => $is_active 
+			
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+	}
+	
 	/**
 	 *
 	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -536,7 +645,7 @@ class PrRowController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'entity' => $entity,
 					'errors' => null,
-					'target' => $entity->getPR()
+					'target' => $entity->getPR () 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -553,17 +662,17 @@ class PrRowController extends AbstractActionController {
 			
 			$errors = array ();
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
-			$entity_id= $request->getPost ( 'entity_id' );
+			$entity_id = $request->getPost ( 'entity_id' );
 			$token = $request->getPost ( 'token' );
 			
 			$criteria = array (
 					'id' => $entity_id,
-					'token' => $token
+					'token' => $token 
 			);
 			
-			$entity= $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->findOneBy ( $criteria );
+			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->findOneBy ( $criteria );
 			
-			if ($entity== null) {
+			if ($entity == null) {
 				
 				$errors [] = 'Entity object can\'t be empty. Or token key is not valid!';
 				$this->flashMessenger ()->addMessage ( 'Something wrong!' );
@@ -571,7 +680,7 @@ class PrRowController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null
+						'entity' => null 
 				) );
 				
 				// might need redirect
@@ -589,7 +698,7 @@ class PrRowController extends AbstractActionController {
 				$rowCode = $request->getPost ( 'rowCode' );
 				$rowName = $request->getPost ( 'rowName' );
 				$rowUnit = $request->getPost ( 'rowUnit' );
-				$conversionFactor= $request->getPost ( 'conversionFactor' );
+				$conversionFactor = $request->getPost ( 'conversionFactor' );
 				
 				$item_id = $request->getPost ( 'item_id' );
 				
@@ -597,21 +706,21 @@ class PrRowController extends AbstractActionController {
 					$isActive = 0;
 				}
 				
-				//$entity = new NmtProcurePrRow ();
+				// $entity = new NmtProcurePrRow ();
 				
 				if ($item_id > 0) {
 					$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
 					$entity->setItem ( $item );
 				}
 				
-				//$entity->setPr ( $target );
+				// $entity->setPr ( $target );
 				$entity->setIsActive ( $isActive );
 				$entity->setPriority ( $priority );
 				$entity->setRemarks ( $remarks );
 				$entity->setRowCode ( $rowCode );
 				$entity->setRowName ( $rowName );
 				$entity->setRowUnit ( $rowUnit );
-				$entity->setConversionFactor($conversionFactor);
+				$entity->setConversionFactor ( $conversionFactor );
 				
 				if ($quantity == null) {
 					$errors [] = 'Please  enter order quantity!';
@@ -622,8 +731,9 @@ class PrRowController extends AbstractActionController {
 					} else {
 						if ($quantity <= 0) {
 							$errors [] = 'quantity must be greater than 0!';
+						} else {
+							$entity->setQuantity ( $quantity );
 						}
-						$entity->setQuantity ( $quantity );
 					}
 				}
 				
@@ -642,16 +752,17 @@ class PrRowController extends AbstractActionController {
 				}
 				
 				if ($conversionFactor == null) {
-					//$errors [] = 'Please  enter order quantity!';
+					// $errors [] = 'Please enter order quantity!';
 				} else {
 					
-					if (! is_numeric ( $conversionFactor)) {
-						$errors [] = 'quantity must be a number.';
+					if (! is_numeric ( $conversionFactor )) {
+						$errors [] = 'Conversion Factor must be a number.';
 					} else {
-						if ($conversionFactor<= 0) {
-							$errors [] = 'quantity must be greater than 0!';
+						if ($conversionFactor <= 0) {
+							$errors [] = 'Conversion Factor must be greater than 0!';
+						} else {
+							$entity->setConversionFactor ( $conversionFactor );
 						}
-						$entity->setConversionFactor( $conversionFactor);
 					}
 				}
 				
@@ -661,25 +772,25 @@ class PrRowController extends AbstractActionController {
 							'redirectUrl' => $redirectUrl,
 							'errors' => $errors,
 							'entity' => $entity,
-							'target' => $entity->getPr(),
-							
+							'target' => $entity->getPr () 
+					
 					) );
 				}
 				
 				// NO ERROR
-				//$entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+				// $entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
 				
 				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-						"email" => $this->identity ()
+						"email" => $this->identity () 
 				) );
 				
 				$entity->setLastChangeBy ( $u );
-				$entity->setLastChangeOn( new \DateTime () );
+				$entity->setLastChangeOn ( new \DateTime () );
 				
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
 				
-				$this->flashMessenger ()->addMessage ( "Row '" . $entity->getId() . "' has been updated successfully!" );
+				$this->flashMessenger ()->addMessage ( "Row '" . $entity->getId () . "' has been updated successfully!" );
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
@@ -696,18 +807,18 @@ class PrRowController extends AbstractActionController {
 		$criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
-				'token' => $token
+				'token' => $token 
 		);
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->findOneBy ( $criteria );
 		
-		if ($entity!== null) {
+		if ($entity !== null) {
 			
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
-					'target' => $entity->getPr(),
-					'entity' => $entity,
+					'target' => $entity->getPr (),
+					'entity' => $entity 
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );

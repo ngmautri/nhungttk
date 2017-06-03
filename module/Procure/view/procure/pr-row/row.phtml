@@ -1,55 +1,23 @@
-
-<form class="form-inline"
-	action="<?php echo $this->baseUrl ?>/procure/pr-search/do" method="get"
-	enctype="multipart/form-data">
-	<div class="form-group">
-		<input class="form-control" size="25" type="text" name="q">
-	</div>
-	<div class="form-group">
-		<button type="submit" class="btn btn-default">
-			<small><i class="glyphicon glyphicon-search"> </i></small> Search
-		</button>
-	</div>
-
-</form>
+<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/procure/pr-row/add?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;New Row</a>
 <hr>
-
+  
 <div>
-	<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
-		href="#transaction" class="" data-toggle="collapse">FILTER</a>
+	<small><span class="glyphicon glyphicon-filter" style="font-size: 9pt; color: gray; padding: 1px"></span></small>&nbsp;<a
+		href="#filter" class="" data-toggle="collapse">Filter</a>
 </div>
-<div id="transaction" class="collapse">
+<div id="filter" class="collapse">
 
 	<div
-		style="border: 1px; padding: 3px; font-size: 10pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+		style="border: 1px; padding: 2px; font-size: 10pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 
 		<form class="form-horizontal"
 			action="<?php echo $this->baseUrl ?>/procure/pr-row/all" method="get"
 			enctype="multipart/form-data">
 
 			<div class="form-group">
-				<label class="control-label col-sm-2" for="inputTag">PR Year</label>
-				<div class="col-sm-3">
-					<select name="pr_year"  class="form-control">
-						<option value="0">All</option>
-						<option <?php echo $pr_year=='2016'? "selected='selected'":"";?>
-							value="2016">2016</option>
-						<option <?php echo $pr_year=='2017'? "selected='selected'":"";?>
-							value="2017">2017</option>
-						<option <?php echo $pr_year=='2018'? "selected='selected'":"";?>
-							value="2018">2018</option>
-						<option <?php echo $pr_year=='2019'? "selected='selected'":"";?>
-							value="2019">2019</option>
-						<option <?php echo $pr_year=='2020'? "selected='selected'":"";?>
-							value="2020">2020</option>
-					</select>
-				</div>
-			</div>
-
-			<div class="form-group">
 				<label class="control-label col-sm-2" for="inputTag">PR Row Balance</label>
 				<div class="col-sm-3">
-					<select name="balance" class="form-control">
+					<select name="balance" class="form-control" id="row_balance">
 						<option value="2">All</option>
 						<option <?php echo $balance=='0'? "selected='selected'":"";?>
 							value="0">Balance=0 (Fulfilled Items)</option>
@@ -64,7 +32,7 @@
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="inputTag">Active Items</label>
 				<div class="col-sm-3">
-					<select class="form-control" name="is_active">
+					<select class="form-control" name="is_active"  id="is_active">
 						<option <?php echo $is_active ==''? "selected='selected'":"";?>
 							value="">All</option>
 						<option <?php echo $is_active=='1'? "selected='selected'":"";?>
@@ -78,15 +46,17 @@
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="inputTag">Sort by</label>
 				<div class="col-sm-3">
-					<select class="form-control" name="sort_by">
+					<select class="form-control" name="sort_by" id="sort_by">
 						<option value="">None</option>
 						<option
 							<?php echo $sort_by=='itemName'? "selected='selected'":"";?>
 							value="itemName">Item Name</option>
-
 						<option
-							<?php echo $sort_by=='prNumber'? "selected='selected'":"";?>
-							value="prNumber">Pr Number</option>
+							<?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
+							value="createdOn">Created date</option>
+						<option
+							<?php echo $sort_by=='balance'? "selected='selected'":"";?>
+							value="balance">Balance</option>
 					</select> <input
 						<?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?>
 						type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp; <input
@@ -100,17 +70,14 @@
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="inputTag">Result per page</label>
 				<div class="col-sm-3">
-					<select class="form-control" name="perPage">
+					<select class="form-control" name="perPage" id="perPage">
 						<option value="">None</option>
-						<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
-							value="15">15</option>
-
+						<option <?php echo $per_pape=='10'? "selected='selected'":"";?>
+							value="10">10</option>
 						<option <?php echo $per_pape=='20'? "selected='selected'":"";?>
 							value="20">20</option>
-
 						<option <?php echo $per_pape=='30'? "selected='selected'":"";?>
 							value="30">30</option>
-
 						<option <?php echo $per_pape=='50'? "selected='selected'":"";?>
 							value="50">50</option>
 						<option <?php echo $per_pape=='100'? "selected='selected'":"";?>
@@ -123,7 +90,7 @@
 
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" class="btn btn-default">Show</button>
+					<button onclick= "filterPrRow('<?php echo $this->baseUrl . '/procure/pr-row/row?target_id='. $target->getId().'&token='.$target->getToken().'&checksum='.$target->getChecksum()?>')" type="submit" class="btn btn-default">Show</button>
 				</div>
 			</div>
 
@@ -132,6 +99,7 @@
 	</div>
 </div>
 <br>
+
 
 <?php
 
@@ -155,7 +123,6 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>PR</b></td>
 			<td><b>Item</b></td>
 			<td><b>Ordered<br>Q'ty</b></td>
 			<td><b>Received<br>Q'ty</b></b></td>
@@ -176,14 +143,15 @@ if ($total_records <= 0) {
 	<tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 			<td><a style="color: #337ab7;" href="javascript:;"
-				onclick="showJqueryDialog('Detail of PR: <?php echo $this->escapeJs($a['pr_number']) ?>','950','550', '/procure/pr-row/list1?token=<?php echo $a['pr_token'] ?>&checksum=<?php echo $a['pr_checksum'] ?>&target_id=<?php echo $a['pr_id'] ?>','j_loaded_data', true);"><?php echo $a['pr_number'] ?>
-</a></td>
-			<td><a style="color: #337ab7;" href="javascript:;"
 				onclick="showJqueryDialog('Detail of Item: <?php echo $this->escapeJs($a['item_name']) ?>','950','550', '/inventory/item/show1?token=<?php echo $a['item_token'] ?>&checksum=<?php echo $a['item_checksum'] ?>&entity_id=<?php echo $a['item_id'] ?>','j_loaded_data', true);"><?php echo $a['item_name'] ?>
 </a></td>
 
 			<td><?php echo $a['quantity'] ?></td>
-			<td><?php echo $a['total_received'] ?></td>
+			<td>
+<a style="color: #337ab7;" href="javascript:;"
+				onclick="showJqueryDialog('Receiving of Item: <?php echo $this->escapeJs($a['item_name']) ?>','980','550', '/inventory/item-transaction/pr-row?pr_row_id=<?php echo $a['id'] ?>','j_loaded_data', true);"><?php echo $a['total_received'] ?>
+</a>			
+			</td>
 			<td><?php echo $a['confirmed_balance'] ?></td>
 			<td><?php echo $a['confirmed_free_balance'] ?></td>
 
@@ -202,13 +170,15 @@ if ($total_records <= 0) {
  </tbody>
 </table>
 
+
+
 <?php
 	
 	// ===============================
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/procure/pr-row/all?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort. '&balance=' . $balance;
+	$base = $this->baseUrl . '/procure/pr-row/row?target_id='. $target->getId().'&token='.$target->getToken().'&checksum='.$target->getChecksum().'&is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort. '&balance=' . $balance;
 		$_connector_symbol = '&';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
@@ -234,7 +204,7 @@ if ($total_records <= 0) {
 			if ($i == $paginator->page) {
 				echo '<li><a class="active" href="#">' . $i . '</a></li>';
 			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+				echo "<li><a href=\"#\" onClick=\"loadPrRow('" . $url . "')\">" . $i . " </a></li>";
 			}
 		}
 		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {

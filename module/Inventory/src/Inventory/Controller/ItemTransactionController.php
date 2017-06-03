@@ -115,7 +115,7 @@ class ItemTransactionController extends AbstractActionController {
 				
 				$quantity = $request->getPost ( 'quantity' );
 				$target_wh_id = $request->getPost ( 'target_wh_id' );
-				$movement_date = $request->getPost ( 'movement_date' );
+				$trx_date = $request->getPost ( 'trx_date' );
 				$isDraft = ( int ) $request->getPost ( 'isDraft' );
 				$isActive = ( int ) $request->getPost ( 'isActive' );
 				
@@ -150,11 +150,11 @@ class ItemTransactionController extends AbstractActionController {
 				// $entity->setItem ( $target );
 				
 				$validator = new Date ();
-				if (! $validator->isValid ( $movement_date )) {
+				if (! $validator->isValid ( $trx_date )) {
 					$errors [] = 'Transaction date is not correct or empty!';
 					$entity->setTrxDate ( null );
 				} else {
-					$entity->setTrxDate ( new \DateTime ( $movement_date ) );
+					$entity->setTrxDate ( new \DateTime ( $trx_date ) );
 					// $date_validated ++;
 				}
 				
@@ -346,7 +346,7 @@ class ItemTransactionController extends AbstractActionController {
 			$pr_row_id = $request->getPost ( 'pr_row_id' );
 			$target_id = $request->getPost ( 'item_id' );
 			
-			$pr_row = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->find( $pr_row_id );
+			$pr_row = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->find ( $pr_row_id );
 			if ($pr_row !== null) {
 				$target = $pr_row->getItem ();
 			} else {
@@ -381,7 +381,7 @@ class ItemTransactionController extends AbstractActionController {
 				
 				$quantity = $request->getPost ( 'quantity' );
 				$target_wh_id = $request->getPost ( 'target_wh_id' );
-				$movement_date = $request->getPost ( 'movement_date' );
+				$trx_date = $request->getPost ( 'trx_date' );
 				$isDraft = ( int ) $request->getPost ( 'isDraft' );
 				$isActive = ( int ) $request->getPost ( 'isActive' );
 				
@@ -417,12 +417,14 @@ class ItemTransactionController extends AbstractActionController {
 				if ($pr_row !== null) {
 					$entity->setPrRow ( $pr_row );
 				}
+				
 				$validator = new Date ();
-				if (! $validator->isValid ( $movement_date )) {
+				
+				if (! $validator->isValid ( $trx_date )) {
 					$errors [] = 'Transaction date is not correct or empty!';
 					$entity->setTrxDate ( null );
 				} else {
-					$entity->setTrxDate ( new \DateTime ( $movement_date ) );
+					$entity->setTrxDate ( new \DateTime ( $trx_date ) );
 					// $date_validated ++;
 				}
 				
@@ -578,6 +580,8 @@ class ItemTransactionController extends AbstractActionController {
 		
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
 		$target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$pr_row_id = ( int ) $this->params ()->fromQuery ( 'pr_row_id' );
+		
 		$token = $this->params ()->fromQuery ( 'token' );
 		$checksum = $this->params ()->fromQuery ( 'checksum' );
 		
@@ -587,12 +591,32 @@ class ItemTransactionController extends AbstractActionController {
 				'token' => $token 
 		);
 		
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+		$criteria1 = array (
+				'id' => $pr_row_id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		$entity = new NmtInventoryTrx ();
+		
+		if ($pr_row_id > 0) {
+			$pr_row = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->findOneBy ( $criteria1 );
+			$entity->setPrRow ( $pr_row );
+		}
+		
+		$target = null;
+		if ($target_id > 0) {
+			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findOneBy ( $criteria );
+			$entity->setItem ( $target );
+		}
+		
+		// set null
+		$entity->setTrxDate ( null );
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,
 				'errors' => null,
-				'entity' => null,
+				'entity' => $entity,
 				'target' => $target 
 		) );
 	}
@@ -642,7 +666,7 @@ class ItemTransactionController extends AbstractActionController {
 				
 				$quantity = $request->getPost ( 'quantity' );
 				$target_wh_id = $request->getPost ( 'target_wh_id' );
-				$movement_date = $request->getPost ( 'movement_date' );
+				$trx_date = $request->getPost ( 'trx_date' );
 				$isDraft = ( int ) $request->getPost ( 'isDraft' );
 				$isActive = ( int ) $request->getPost ( 'isActive' );
 				
@@ -676,11 +700,11 @@ class ItemTransactionController extends AbstractActionController {
 				$entity->setItem ( $target );
 				
 				$validator = new Date ();
-				if (! $validator->isValid ( $movement_date )) {
+				if (! $validator->isValid ( $trx_date )) {
 					$errors [] = 'Transaction date is not correct or empty!';
 					$entity->setTrxDate ( null );
 				} else {
-					$entity->setTrxDate ( new \DateTime ( $movement_date ) );
+					$entity->setTrxDate ( new \DateTime ( $trx_date ) );
 					// $date_validated ++;
 				}
 				
@@ -935,6 +959,42 @@ class ItemTransactionController extends AbstractActionController {
 				'total_records' => $total_records,
 				'paginator' => $paginator,
 				'target' => $target 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function prRowAction() {
+		$request = $this->getRequest ();
+		
+		// accepted only ajax request
+		
+		if (! $request->isXmlHttpRequest ()) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
+		
+		$this->layout ( "layout/user/ajax" );
+		
+		$pr_row_id = ( int ) $this->params ()->fromQuery ( 'pr_row_id' );
+		
+		$criteria = array (
+				'prRow' => $pr_row_id 
+		);
+		
+		$sort_criteria = array (
+			// 'priceValidFrom' => "DESC"
+		);
+		
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryTrx' )->findBy ( $criteria, $sort_criteria );
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => $paginator 
 		) );
 	}
 	/**

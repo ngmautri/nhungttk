@@ -74,6 +74,7 @@ if ($total_records <= 0) {
 			<td>
 <a href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Show</a>
 <a href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Edit</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr?token=<?php echo $a->getToken();?>&pr_row_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Receive</a>
 
 			</td>
 			

@@ -12,6 +12,62 @@ function submitForm(form_id){
  * @param cat_name
  * @returns
  */
+function loadPrRow(url) {
+
+	$('#pr_rows').text("Loading...");
+		// alert(cat_id);
+		$.get(url, {
+	}, function(data, status) {
+		//alert(status);
+		$('#pr_rows').html(data);
+
+	});
+}
+
+/**
+ * 
+ * @param cat_id
+ * @param cat_name
+ * @returns
+ */
+function filterPrRow(url) {
+	var row_balance;
+	var is_active;
+	var sort_by;
+	var sort;
+	var perPage;
+
+	
+	row_balance = $( "#row_balance option:selected" ).val();
+	is_active = $( "#is_active option:selected" ).val();
+	sort_by = $( "#sort_by option:selected" ).val();
+	perPage = $( "#perPage option:selected" ).val();
+	sort = $('input[name=sort]:checked').val();
+	url= url+'&balance=' + row_balance;
+	url= url+'&is_active=' + is_active;
+	url= url+'&perPage=' + perPage;
+	url= url+'&sort_by='+ sort_by;
+	url= url+'&sort=' + sort;
+
+	//alert(url);
+	
+	$('#pr_rows').text("Loading...");
+		// alert(cat_id);
+		$.get(url, {
+	}, function(data, status) {
+		//alert(status);
+		$('#pr_rows').html(data);
+
+	});
+}
+
+
+/**
+ * 
+ * @param cat_id
+ * @param cat_name
+ * @returns
+ */
 function loadCategory(cat_id, cat_name) {
 	
 	var defaut_width = 1000;

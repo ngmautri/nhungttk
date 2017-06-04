@@ -545,7 +545,7 @@ class PrRowController extends AbstractActionController {
 		endif;
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) ) or $this->params ()->fromQuery ( 'perPage' ) == null) {
-			$resultsPerPage = 10;
+			$resultsPerPage = 30;
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}

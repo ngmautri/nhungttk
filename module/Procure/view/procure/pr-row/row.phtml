@@ -148,9 +148,11 @@ if ($total_records <= 0) {
 
 			<td><?php echo $a['quantity'] ?></td>
 			<td>
+<?php if($a['total_received']>0):?>
 <a style="color: #337ab7;" href="javascript:;"
 				onclick="showJqueryDialog('Receiving of Item: <?php echo $this->escapeJs($a['item_name']) ?>','980','550', '/inventory/item-transaction/pr-row?pr_row_id=<?php echo $a['id'] ?>','j_loaded_data', true);"><?php echo $a['total_received'] ?>
-</a>			
+</a>
+<?php endif;?>			
 			</td>
 			<td><?php echo $a['confirmed_balance'] ?></td>
 			<td><?php echo $a['confirmed_free_balance'] ?></td>

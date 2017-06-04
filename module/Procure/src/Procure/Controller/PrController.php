@@ -111,7 +111,7 @@ class PrController extends AbstractActionController {
 			$prNumber = $request->getPost ( 'prNumber' );
 			$prName = $request->getPost ( 'prName' );
 			$keywords = $request->getPost ( 'keywords' );
-			$submittedOn= $request->getPost ( 'submittedOn' );
+			$submittedOn = $request->getPost ( 'submittedOn' );
 			
 			$remarks = $request->getPost ( 'remarks' );
 			$isDraft = $request->getPost ( 'isDraft' );
@@ -151,18 +151,17 @@ class PrController extends AbstractActionController {
 			$validator = new Date ();
 			
 			// Empty is OK
-			if ($submittedOn!== null) {
-				if ($submittedOn!== "") {
+			if ($submittedOn !== null) {
+				if ($submittedOn !== "") {
 					
-					if (! $validator->isValid ( $submittedOn)) {
+					if (! $validator->isValid ( $submittedOn )) {
 						$errors [] = 'Date is not correct or empty!';
 					} else {
-						$entity->setSubmittedOn(new \DateTime($submittedOn));
+						$entity->setSubmittedOn ( new \DateTime ( $submittedOn ) );
 					}
 				}
 			}
 			
-				
 			if ($department_id > 0) {
 				$department = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $department_id );
 				$entity->setDepartment ( $department );
@@ -246,6 +245,69 @@ class PrController extends AbstractActionController {
 				'list' => $list,
 				'total_records' => $total_records,
 				'paginator' => $paginator 
+		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function allAction() {
+		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
+		$sort = $this->params ()->fromQuery ( 'sort' );
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		$is_active = $this->params ()->fromQuery ( 'is_active' );
+		
+		if ($sort_by == null) :
+			$sort_by = "createdOn";
+		endif;
+		
+		if ($is_active == null) :
+			$is_active = 1;
+		endif;
+		
+		if ($balance == null) :
+			$balance = 1;
+		endif;
+		
+		if ($sort == null) :
+			$sort = "ASC";
+		endif;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
+			$resultsPerPage = 15;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		// $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findBy ( $criteria, $sort_criteria );
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrList ( $is_active,$balance, $sort_by, $sort, 0, 0 );
+		
+		$total_records = count ( $list );
+		$paginator = null;
+		
+		if ($total_records > $resultsPerPage) {
+			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrList ( $is_active,$balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+		}
+		
+		return new ViewModel ( array (
+				'list' => $list,
+				'total_records' => $total_records,
+				'paginator' => $paginator,
+				'sort_by' => $sort_by,
+				'sort' => $sort,
+				'per_pape' => $resultsPerPage,
+				'balance' => $balance,
+				'is_active' => $is_active 
 		) );
 	}
 	

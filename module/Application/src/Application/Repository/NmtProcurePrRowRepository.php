@@ -55,6 +55,64 @@ WHERE 1
 	";
 	
 	
+	private $sql1 = "
+SELECT
+	nmt_procure_pr.id ,
+    nmt_procure_pr.pr_number,
+    nmt_procure_pr.created_on,
+    nmt_procure_pr.last_change_on,
+    nmt_procure_pr.is_active,
+    nmt_procure_pr.is_draft,
+    
+    nmt_procure_pr.checksum as pr_checksum,
+	nmt_procure_pr.token as pr_token,
+	year(nmt_procure_pr.created_on) as pr_year,
+	month(nmt_procure_pr.created_on) as pr_month,
+    ifnull(nmt_procure_pr_row.total_row, 0) as total_row,
+    ifnull(nmt_procure_pr_row.row_completed, 0) as row_completed,
+    ifnull(nmt_procure_pr_row.row_completed_converted, 0) as row_completed_converted,
+    
+    ifnull(nmt_procure_pr_row.row_pending, 0) as row_pending,
+    
+    ifnull(nmt_procure_pr_row.percentage_completed, 0) as percentage_completed,
+    ifnull(nmt_procure_pr_row.percentage_completed_converted, 0) as percentage_completed_converted
+    
+    
+FROM nmt_procure_pr
+
+Left JOIN
+(
+	SELECT
+	nmt_procure_pr_row.pr_id,
+	Count(nmt_procure_pr_row.id) as total_row,
+	sum(CASE WHEN (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))<=0 THEN  1 ELSE 0 END) AS row_completed,
+    sum(CASE WHEN (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received_converted,0))<=0 THEN  1 ELSE 0 END) AS row_completed_converted,
+	sum(CASE WHEN (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))>0 THEN  1 ELSE 0 END) AS row_pending,
+	(sum(CASE WHEN (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))<=0 THEN  1 ELSE 0 END)/Count(nmt_procure_pr_row.id)) as percentage_completed,
+    (sum(CASE WHEN (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received_converted,0))<=0 THEN  1 ELSE 0 END)/Count(nmt_procure_pr_row.id)) as percentage_completed_converted
+
+	from nmt_procure_pr_row
+	LEFT JOIN
+	(
+		SELECT
+			nmt_inventory_trx.pr_row_id AS pr_row_id,
+			SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END) AS total_received,
+			SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity*nmt_inventory_trx.conversion_factor ELSE 0 END) AS total_received_converted
+
+		FROM nmt_inventory_trx
+		GROUP BY nmt_inventory_trx.pr_row_id
+	) 
+	AS nmt_inventory_trx
+	ON nmt_procure_pr_row.id = nmt_inventory_trx.pr_row_id
+	Group by nmt_procure_pr_row.pr_id
+) 
+AS nmt_procure_pr_row
+ON nmt_procure_pr_row.pr_id = nmt_procure_pr.id
+
+where 1
+
+";
+	
 	/**
 	 *
 	 * @param number $limit        	
@@ -141,5 +199,55 @@ WHERE 1
 		$stmt->execute ();
 		return $stmt->fetchAll ();
 	}
+	
+	/**
+	 *
+	 * @param number $limit
+	 * @param number $offset
+	 * @return array
+	 */
+	public function getPrList($is_active = null, $balance = null, $sort_by = null, $sort=null, $limit = 0, $offset = 0) {
+		$sql = $this->sql1;
+		
+		if ($is_active== 1) {
+			$sql = $sql. " AND nmt_procure_pr.is_active=  1";
+		}elseif($is_active== -1) {
+			$sql = $sql. " AND nmt_procure_pr.is_active = 0";
+		}
+	
+		// Group
+		
+		// fullfiled
+		if ($balance == 0) {
+			$sql = $sql. " AND ifnull(nmt_procure_pr_row.total_row, 0)	<=ifnull(nmt_procure_pr_row.row_completed, 0)";
+		}elseif($balance == 1){
+			$sql = $sql. " AND ifnull(nmt_procure_pr_row.total_row, 0)	> ifnull(nmt_procure_pr_row.row_completed, 0)";
+			
+		}
+		
+		if ($sort_by == "prNumber") {
+			$sql = $sql. " ORDER BY nmt_procure_pr.pr_number " . $sort;
+		}elseif($sort_by == "createdOn") {
+			$sql = $sql. " ORDER BY nmt_procure_pr.created_on " . $sort;
+		}elseif($sort_by == "completion") {
+			$sql = $sql. " ORDER BY ifnull(nmt_procure_pr_row.percentage_completed, 0) " . $sort;
+		}
+		
+		
+		if($limit>0){
+			$sql = $sql. " LIMIT " . $limit;
+		}
+		
+		if($offset>0){
+			$sql = $sql. " OFFSET " . $offset;
+		}
+		
+		$sql = $sql.";";
+		
+		$stmt = $this->_em->getConnection ()->prepare ( $sql );
+		$stmt->execute ();
+		return $stmt->fetchAll ();
+	}
+	
 }
 

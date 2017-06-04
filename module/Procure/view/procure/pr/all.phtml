@@ -24,7 +24,7 @@
 		style="border: 1px; padding: 3px; font-size: 10pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 
 		<form class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/procure/pr-row/all" method="get"
+			action="<?php echo $this->baseUrl ?>/procure/pr/all" method="get"
 			enctype="multipart/form-data">
 
 			<div class="form-group">
@@ -52,11 +52,9 @@
 					<select name="balance" class="form-control">
 						<option value="2">All</option>
 						<option <?php echo $balance=='0'? "selected='selected'":"";?>
-							value="0">Balance=0 (Fulfilled Items)</option>
+							value="0">Balance=0 (Fulfilled PR)</option>
 						<option <?php echo $balance=='1'? "selected='selected'":"";?>
-							value="1">Balance>0 (Pending Items)</option>
-						<option <?php echo $balance=='-1'? "selected='selected'":"";?>
-							value="-1">Balance<0 (Some Free Items)</option>
+							value="1">Balance>0 (Pending PR)</option>
 					</select>
 				</div>
 			</div>
@@ -81,12 +79,15 @@
 					<select class="form-control" name="sort_by">
 						<option value="">None</option>
 						<option
-							<?php echo $sort_by=='itemName'? "selected='selected'":"";?>
-							value="itemName">Item Name</option>
-
-						<option
 							<?php echo $sort_by=='prNumber'? "selected='selected'":"";?>
 							value="prNumber">Pr Number</option>
+						<option
+							<?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
+							value="createdOn">Created Date</option>
+						<option
+							<?php echo $sort_by=='completion'? "selected='selected'":"";?>
+							value="completion">Completion</option>
+				
 					</select> <input
 						<?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?>
 						type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp; <input
@@ -156,11 +157,10 @@ if ($total_records <= 0) {
 		<tr>
 			<td><b>#</b></td>
 			<td><b>PR</b></td>
-			<td><b>Item</b></td>
-			<td><b>Ordered<br>Q'ty</b></td>
-			<td><b>Received<br>Q'ty</b></b></td>
-			<td><b>Balance</b></td>
-			<td><b>Free</b></td>
+			<td><b>Total<br>Row</b></td>
+			<td><b>Completed<br>Row</b></td>
+			<td><b>Pending<br>Row</b></td>
+			<td><b>%</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -175,32 +175,20 @@ if ($total_records <= 0) {
 		?>
 	<tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-			<td><a style="color: #337ab7;" href="javascript:;"
-				onclick="showJqueryDialog('Detail of PR: <?php echo $this->escapeJs($a['pr_number']) ?>','950','550', '/procure/pr-row/list1?token=<?php echo $a['pr_token'] ?>&checksum=<?php echo $a['pr_checksum'] ?>&target_id=<?php echo $a['pr_id'] ?>','j_loaded_data', true);"><?php echo $a['pr_number'] ?>
-</a></td>
-			<td><a style="color: #337ab7;" href="javascript:;"
-				onclick="showJqueryDialog('Detail of Item: <?php echo $this->escapeJs($a['item_name']) ?>','950','550', '/inventory/item/show1?token=<?php echo $a['item_token'] ?>&checksum=<?php echo $a['item_checksum'] ?>&entity_id=<?php echo $a['item_id'] ?>','j_loaded_data', true);"><?php echo $a['item_name'] ?>
-</a></td>
-
-			<td><?php echo $a['quantity'] ?></td>
 			<td>
-<?php if($a['total_received']>0):?>
-<a style="color: #337ab7;" href="javascript:;"
-				onclick="showJqueryDialog('Receiving of Item: <?php echo $this->escapeJs($a['item_name']) ?>','980','550', '/inventory/item-transaction/pr-row?pr_row_id=<?php echo $a['id'] ?>','j_loaded_data', true);"><?php echo $a['total_received'] ?>
-</a>
-<?php endif;?>			
-			</td>
-			<td><?php echo $a['confirmed_balance'] ?></td>
-			<td><?php echo $a['confirmed_free_balance'] ?></td>
+<a	href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $a['pr_token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['pr_checksum'] ?>"><?php echo $a['pr_number'] ?></a>
+	</td>
 
+			<td><?php echo $a['total_row'] ?></td>
+			<td><?php echo $a['row_completed'] ?></td>
+			<td><?php echo $a['row_pending'] ?></td>
+			<td><?php echo round($a['percentage_completed']*100,2)."%"?></td>
+		
 
 			<td><a
-				href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $a['token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['checksum'] ?>">Show</a>
+				href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $a['pr_token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['pr_checksum'] ?>">Show</a>
 				<a
-				href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo $a['token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['checksum'] ?>">Edit</a>
-			<a
-				href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr?token=<?php echo $a['token'] ?>&pr_row_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['checksum'] ?>">Receive</a>
-
+				href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo $a['pr_token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['pr_checksum'] ?>">Edit</a>
 			</td>
 		</tr>
 <?php endforeach; ?>
@@ -214,7 +202,7 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/procure/pr-row/all?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort. '&balance=' . $balance;
+	$base = $this->baseUrl . '/procure/pr/all?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort. '&balance=' . $balance;
 		$_connector_symbol = '&';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;

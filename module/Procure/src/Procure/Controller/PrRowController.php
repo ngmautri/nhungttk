@@ -146,10 +146,14 @@ class PrRowController extends AbstractActionController {
 				$conversionFactor = $request->getPost ( 'conversionFactor' );
 				
 				$item_id = $request->getPost ( 'item_id' );
+				$project_id= $request->getPost ( 'project_id' );
+				
 				
 				if ($isActive != 1) {
 					$isActive = 0;
 				}
+				
+				
 				
 				/**
 				 *
@@ -160,6 +164,14 @@ class PrRowController extends AbstractActionController {
 				if ($item_id > 0) {
 					$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
 					$entity->setItem ( $item );
+				}
+				
+				
+				if($project_id >0){
+					$project = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $project_id);
+					if($project!==null){
+						$entity->setProject( $project);
+					}
 				}
 				
 				$entity->setPr ( $target );
@@ -701,6 +713,9 @@ class PrRowController extends AbstractActionController {
 				$conversionFactor = $request->getPost ( 'conversionFactor' );
 				
 				$item_id = $request->getPost ( 'item_id' );
+				$project_id= $request->getPost ( 'project_id' );
+				
+				
 				
 				if ($isActive != 1) {
 					$isActive = 0;
@@ -712,6 +727,14 @@ class PrRowController extends AbstractActionController {
 					$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
 					$entity->setItem ( $item );
 				}
+				
+				if($project_id >0){
+					$project = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $project_id);
+					if($project!==null){
+						$entity->setProject( $project);
+					}
+				}
+				
 				
 				// $entity->setPr ( $target );
 				$entity->setIsActive ( $isActive );

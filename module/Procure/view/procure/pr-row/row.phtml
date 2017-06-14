@@ -128,6 +128,7 @@ if ($total_records <= 0) {
 			<td><b>Received<br>Q'ty</b></b></td>
 			<td><b>Balance</b></td>
 			<td><b>Free</b></td>
+			<td><b>Project</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -156,7 +157,8 @@ if ($total_records <= 0) {
 			</td>
 			<td><?php echo $a['confirmed_balance'] ?></td>
 			<td><?php echo $a['confirmed_free_balance'] ?></td>
-
+			<td><?php echo $a['project_id'] ?></td>
+			
 
 			<td><a
 				href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $a['token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['checksum'] ?>">Show</a>

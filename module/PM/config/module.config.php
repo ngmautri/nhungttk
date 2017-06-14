@@ -44,6 +44,7 @@ return array (
 		'service_manager' => array (
 				'factories' => array (
 						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+						'PM\Service\ProjectSearchService' => 'PM\Service\ProjectSearchServiceFactory',
 				) 
 		),
 		'translator' => array (
@@ -61,6 +62,7 @@ return array (
 						'PM\Controller\Index' => 'PM\Controller\IndexControllerFactory',
 						'PM\Controller\Project' => 'PM\Controller\ProjectControllerFactory',
 						'PM\Controller\ProjectAttachment' => 'PM\Controller\ProjectAttachmentControllerFactory',
+						'PM\Controller\ProjectSearch' => 'PM\Controller\ProjectSearchControllerFactory',
 						
 				) 
 		

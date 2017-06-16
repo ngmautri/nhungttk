@@ -22,6 +22,13 @@ class NmtInventoryItemEmployee
     private $id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="assigned_on", type="datetime", nullable=true)
@@ -117,6 +124,30 @@ class NmtInventoryItemEmployee
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtInventoryItemEmployee
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 
     /**

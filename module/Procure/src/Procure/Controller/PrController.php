@@ -259,7 +259,7 @@ class PrController extends AbstractActionController {
 		$is_active = $this->params ()->fromQuery ( 'is_active' );
 		
 		if ($sort_by == null) :
-			$sort_by = "createdOn";
+			$sort_by = "prNumber";
 		endif;
 		
 		if ($is_active == null) :

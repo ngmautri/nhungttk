@@ -148,6 +148,7 @@ return array (
 						'Inventory\Controller\ItemPicture' => 'Inventory\Controller\ItemPictureControllerFactory',
 						'Inventory\Controller\ItemSearch' => 'Inventory\Controller\ItemSearchControllerFactory',
 						'Inventory\Controller\ItemTransaction' => 'Inventory\Controller\ItemTransactionControllerFactory',
+						'Inventory\Controller\ItemAssignment' => 'Inventory\Controller\ItemAssignmentControllerFactory',
 				)
 				
 				

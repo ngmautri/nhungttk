@@ -1,0 +1,104 @@
+<h4>
+	 <?php echo (!$target == null)? $target->getItemName():"";?>
+</h4>
+
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general">Assignment</a></li>
+   </ul>
+
+<div id="general"> 
+
+<form id="Create_Purchase_Form" class="form-horizontal" action="/inventory/item-assignment/add" method="post" enctype="multipart/form-data">
+<input type="hidden" name="target_id" value="<?php echo (!$target == null)? $target->getId():"";?>" />
+<input type="hidden" name="token" value="<?php echo (!$target == null)? $target->getToken():"";?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Employee:</label>
+		<div class="col-sm-3">
+<input disabled class="form-control" type="text" id="employee_name" placeholder="Find Employee" name="employee_name" 
+value="<?php if (!$entity == null): if (!$entity->getEmployee() == null):echo $entity->getEmployee()->getEmployeeName();endif;endif;?>">
+				
+<input type="hidden" id="employee_id" placeholder="" 	name="employee_id" 
+value="<?php if (!$entity == null): if (!$entity->getEmployee() == null):echo $entity->getEmployee()->getId();endif;endif;?>">
+		</div>
+		
+
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Select Employee','860','450', '/hr/employee/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+	</div>
+
+	
+
+	
+	<div class="form-group">
+		
+		<label class="control-label col-sm-2" >Remarks</label>
+		<div class="col-sm-3">
+			<textarea  class="form-control" type="text" rows="4" placeholder=""
+				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	   	<button onclick="submitForm('Create_Purchase_Form');" type="submit" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
+  		</div>
+	</div> 
+	
+</form>
+</div>
+</div>
+
+<script>
+
+$('#attachments').bind('change', function() {
+	var file_size;
+	file_size = this.files[0].size
+	if (file_size > 2097152){
+		alert('This file size is too large : ' + file_size + "MB. Please select new file");
+
+		 $("#attachments").val("");
+		 	
+	}else{
+		//alert('This file size is: ' + file_size + "MB, OKE");
+		 //$('#save').removeAttr('disabled');
+	}
+
+});
+
+$('#vendor_item_unit').bind('change', function() {
+	//alert($('#vendor_item_unit').val());
+	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
+});
+
+$('#conversion_factor').bind('change', function() {
+	//alert($('#vendor_item_unit').val());
+	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
+});
+
+$(function() {
+   $( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+   $( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+});
+
+</script>
+
+

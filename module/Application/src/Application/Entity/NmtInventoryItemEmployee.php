@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemEmployee
  *
- * @ORM\Table(name="nmt_inventory_item_employee", indexes={@ORM\Index(name="nmt_inventory_item_employee_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_employee_FK2_idx", columns={"employee_id"}), @ORM\Index(name="nmt_inventory_item_employee_FK3_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_inventory_item_employee", indexes={@ORM\Index(name="nmt_inventory_item_employee_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_employee_FK2_idx", columns={"employee_id"}), @ORM\Index(name="nmt_inventory_item_employee_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_employee_FK4_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtInventoryItemEmployee
@@ -71,13 +71,6 @@ class NmtInventoryItemEmployee
     private $createdOn;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="last_change_by", type="integer", nullable=true)
-     */
-    private $lastChangeBy;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
@@ -113,6 +106,16 @@ class NmtInventoryItemEmployee
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
 
 
 
@@ -295,30 +298,6 @@ class NmtInventoryItemEmployee
     }
 
     /**
-     * Set lastChangeBy
-     *
-     * @param integer $lastChangeBy
-     *
-     * @return NmtInventoryItemEmployee
-     */
-    public function setLastChangeBy($lastChangeBy)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastChangeBy
-     *
-     * @return integer
-     */
-    public function getLastChangeBy()
-    {
-        return $this->lastChangeBy;
-    }
-
-    /**
      * Set lastChangeOn
      *
      * @param \DateTime $lastChangeOn
@@ -412,5 +391,29 @@ class NmtInventoryItemEmployee
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtInventoryItemEmployee
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

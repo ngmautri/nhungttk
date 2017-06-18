@@ -1,3 +1,8 @@
+<script language="javascript">
+			var id_array = [];
+			$.fn.editable.defaults.mode = 'inline';  
+</script>
+
 <a class="btn btn-default" href="<?php echo $this->baseUrl ?>/procure/pr-row/add?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;New Row</a>
   
 <hr>
@@ -61,7 +66,9 @@ if ($total_records <= 0) {
  	  	    endif;
  	  	    ?>
  	  	    </td>
-			<td><?php echo $this->escapeHtml($a->getQuantity());?></td>
+			<td><a href="#" id="quantity_<?php echo $a->getID() ;?>"><?php echo $this->escapeHtml($a->getQuantity());?></a></td>
+			
+			
 			<td><?php echo $this->escapeHtml($a->getRowUnit());?></td>
 			<td>
 			<?php 
@@ -79,6 +86,28 @@ if ($total_records <= 0) {
 			</td>
 			
 		</tr>
+		
+		<script language="javascript">
+			id_array.push(<?php echo $a->getID();?>);
+			$('#quantity_<?php echo $a->getID();?>').editable({
+			    type: 'text',
+			    showbuttons: false,
+			    pk: {id:<?php echo $a->getID();?>,key:'quantity'},
+			    url: '/procurement/pr/update-cart-quantity',
+			    title: '<?php echo "nmt";?>',
+			        success: function(response, newValue) {
+			        	if(response.status == 'error') 
+				        {
+					        return response.msg; //msg will be shown in editable form
+				        }else{
+				        	$('#global-notice').show();
+				        	$('#global-notice').text(response.msg).fadeOut(3800);
+				        	
+				        }
+				        
+			        }    
+			});
+		</script>
 <?php endforeach; ?>
 
  </tbody>

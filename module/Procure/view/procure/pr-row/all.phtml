@@ -87,6 +87,21 @@
 						<option
 							<?php echo $sort_by=='prNumber'? "selected='selected'":"";?>
 							value="prNumber">Pr Number</option>
+						<option
+							<?php echo $sort_by=='vendorName'? "selected='selected'":"";?>
+							value="vendorName">Vendor</option>
+						<option
+							<?php echo $sort_by=='currency'? "selected='selected'":"";?>
+							value="currency">Currency</option>
+						<option
+							<?php echo $sort_by=='unitPrice'? "selected='selected'":"";?>
+							value="unitPrice">Price</option>
+						<option
+							<?php echo $sort_by=='balance'? "selected='selected'":"";?>
+							value="balance">Balance</option>
+							<option
+							<?php echo $sort_by=='prSubmitted'? "selected='selected'":"";?>
+							value="prSubmitted">Pr Date</option>
 					</select> <input
 						<?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?>
 						type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp; <input
@@ -161,6 +176,10 @@ if ($total_records <= 0) {
 			<td><b>Received<br>Q'ty</b></b></td>
 			<td><b>Balance</b></td>
 			<td><b>Free</b></td>
+			<td><b>Vendor</b></td>
+			<td><b>Unit Price</b></td>
+			<td><b>Curr.</b></td>
+			<td><b>Unit</b></td>			
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -192,6 +211,26 @@ if ($total_records <= 0) {
 			</td>
 			<td><?php echo $a['confirmed_balance'] ?></td>
 			<td><?php echo $a['confirmed_free_balance'] ?></td>
+			<td>
+			
+			
+<?php if($a['vendor_id']!== null): ?>
+<a target= "blank" href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $a['vendor_token'];?>&entity_id=<?php echo $a['vendor_id'];?>&checksum=<?php echo $a['vendor_checksum'];?>"><?php echo $a['vendor_name'];?></a>
+<?php endif; ?>			
+	</td>		
+			<td>
+<?php if(!$a['vendor_unit_price'] == null): 
+
+if($a['currency']=="USD"):
+echo number_format($a['vendor_unit_price'], 2); 
+else:
+echo number_format($a['vendor_unit_price']);
+endif;
+endif;?>			
+			</td>
+			<td><?php echo $a['currency'] ?></td>
+			<td><?php echo $a['vendor_item_unit'] ?></td>
+
 
 
 			<td><a

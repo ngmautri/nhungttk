@@ -24,6 +24,7 @@ use Application\Entity\NmtInventoryItemAttachment;
 use Zend\Http\Headers;
 use Application\Entity\NmtInventoryItemEmployee;
 use Zend\Math\Rand;
+use Zend\Validator\Date;
 
 /**
  *
@@ -117,27 +118,38 @@ class ItemAssignmentController extends AbstractActionController {
 				
 				$employee_id = $request->getPost ( 'employee_id' );
 				$remarks = $request->getPost ( 'remarks' );
-				$isActive = $request->getPost ( 'isActive' );
+				$isActive = ( int ) $request->getPost ( 'isActive' );
+				$assignedOn = $request->getPost ( 'assignedOn' );
 				
 				if ($isActive !== 1) {
 					$isActive = 0;
 				}
 				
 				$entity = new NmtInventoryItemEmployee ();
-				$entity->setItem ( $target );
 				
+				$entity->setItem ( $target );
 				$entity->setIsActive ( $isActive );
+				
 				$employee = null;
 				if ($employee_id > 0) {
-					
 					$employee = $this->doctrineEM->find ( 'Application\Entity\NmtHrEmployee', $employee_id );
 				}
 				
 				if ($employee == null) {
 					$errors [] = 'Employee can\'t be empty. Please select a employee!';
 				} else {
-					$entity->setEmployee ($employee);
+					$entity->setEmployee ( $employee );
 				}
+				
+				$validator = new Date ();
+				if (! $validator->isValid ( $assignedOn )) {
+					$errors [] = 'Assignment date is not correct or empty!';
+					$entity->setAssignedOn ( null );
+				} else {
+					$entity->setAssignedOn ( new \DateTime ( $assignedOn ) );
+				}
+				
+				$entity->setRemarks ( $remarks );
 				
 				if (count ( $errors ) > 0) {
 					
@@ -151,7 +163,6 @@ class ItemAssignmentController extends AbstractActionController {
 				;
 				// OK now
 				
-				$entity->setRemarks ( $remarks );
 				
 				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
 						'email' => $this->identity () 
@@ -163,8 +174,6 @@ class ItemAssignmentController extends AbstractActionController {
 				$entity->setCreatedOn ( new \DateTime () );
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
-				$this->doctrineEM->flush ();
-				
 				$this->flashMessenger ()->addMessage ( "Item has been assigned successfully!" );
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
@@ -208,210 +217,121 @@ class ItemAssignmentController extends AbstractActionController {
 	public function editAction() {
 		$request = $this->getRequest ();
 		
-		if ($request->getHeader ( 'Referer' ) == null) {
-			return $this->redirect ()->toRoute ( 'access_denied' );
-		}
-		
-		$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
-				'email' => $this->identity () 
-		) );
-		
 		if ($request->isPost ()) {
-			
-			$item_id = $request->getPost ( 'item_id' );
-			
-			$item_sku = $request->getPost ( 'item_sku' );
-			$item_name = $request->getPost ( 'item_name' );
-			$item_name_foreign = $request->getPost ( 'item_name_foreign' );
-			$item_description = $request->getPost ( 'item_description' );
-			
-			$item_barcode = $request->getPost ( 'item_barcode' );
-			$keywords = $request->getPost ( 'keywords' );
-			
-			$item_type = $request->getPost ( 'item_type' );
-			$item_category_id = $request->getPost ( 'item_category_id' );
-			$department_id = $request->getPost ( 'department_id' );
-			$location = $request->getPost ( 'location' );
-			
-			$standard_uom_id = $request->getPost ( 'standard_uom_id' );
-			$item_leadtime = $request->getPost ( 'lead_time' );
-			$local_availability = $request->getPost ( 'local_availability' );
-			
-			$is_active = $request->getPost ( 'is_active' );
-			$is_stocked = $request->getPost ( 'is_stocked' );
-			$is_purchased = $request->getPost ( 'is_purchased' );
-			$is_sale_item = $request->getPost ( 'is_sale_item' );
-			$is_fixed_asset = $request->getPost ( 'is_fixed_asset' );
-			
-			$manufacturer = $request->getPost ( 'manufacturer' );
-			$manufacturer_code = $request->getPost ( 'manufacturer_code' );
-			$manufacturer_model = $request->getPost ( 'manufacturer_model' );
-			$manufacturer_serial = $request->getPost ( 'manufacturer_serial' );
-			$remarks = $request->getPost ( 'remarks' );
-			
-			$redirectUrl = $request->getPost ( 'redirectUrl' );
-			
-			/*
-			 * $r = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( array (
-			 * 'itemSku' => $item_sku
-			 * ) );
-			 *
-			 * if (count ( $r ) >= 1) {
-			 * $errors [] = $item_sku . ' exists';
-			 * }
-			 */
-			
+				
 			$errors = array ();
 			
-			$entity = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
+			$redirectUrl = $request->getPost ( 'redirectUrl' );
+			$entity_id = ( int ) $request->getPost ( 'entity_id' );
+			$token = $request->getPost ( 'token' );
 			
-			if ($item_sku === '' or $item_sku === null) {
-				$errors [] = 'Please give ID';
-			}
-			$entity->setItemSku ( $item_sku );
+			$criteria = array (
+					'id' => $entity_id,
+					'token' => $token 
+			);
 			
-			if ($item_name === '' or $item_name === null) {
-				$errors [] = 'Please give item name';
-			}
-			$entity->setItemName ( $item_name );
+			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemEmployee' )->findOneBy ( $criteria );
 			
-			$entity->setItemNameForeign ( $item_name_foreign );
-			$entity->setItemDescription ( $item_description );
-			$entity->setBarcode ( $item_barcode );
-			$entity->setKeywords ( $keywords );
-			$entity->setItemType ( $item_type );
-			
-			if ($standard_uom_id === '' or $standard_uom_id === null) {
-				$errors [] = 'Please give standard measurement!';
-				$uom = null;
-			} else {
-				$uom = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationUom', $standard_uom_id );
-				$entity->setStandardUom ( $uom );
-			}
-			
-			// category
-			$category = null;
-			
-			if ($item_category_id > 0) {
-				$category = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItemCategory', $item_category_id );
-			}
-			
-			// add department member
-			$department = null;
-			if ($department_id > 0) {
-				$department = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationDepartment', $department_id );
-			}
-			
-			$entity->setLocation ( $location );
-			
-			$entity->setManufacturer ( $manufacturer );
-			
-			$entity->setManufacturerCode ( $manufacturer_code );
-			$entity->setManufacturerModel ( $manufacturer_model );
-			$entity->setManufacturerSerial ( $manufacturer_serial );
-			
-			$entity->setIsActive ( $is_active );
-			$entity->setIsStocked ( $is_stocked );
-			$entity->setIsPurchased ( $is_purchased );
-			$entity->setIsSaleItem ( $is_sale_item );
-			$entity->setIsFixedAsset ( $is_fixed_asset );
-			
-			$entity->setLeadTime ( $item_leadtime );
-			$entity->setLocalAvailabiliy ( $local_availability );
-			$entity->setRemarks ( $remarks );
-			
-			$company_id = 1;
-			$company = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationCompany', $company_id );
-			$entity->setCompany ( $company );
-			
-			if (count ( $errors ) > 0) {
+			if ($entity == null) {
+				
+				$errors [] = 'Entity object can\'t be empty!';
 				return new ViewModel ( array (
-						'errors' => $errors,
 						'redirectUrl' => $redirectUrl,
-						'entity' => $entity,
-						'category' => $category,
-						'uom' => $uom,
-						'department' => $department,
-						'item_id' => $item_id 
-				
+						'errors' => $errors,
+						'target' => null,
+						'entity' => null 
 				) );
-			}
-			
-			// No Error
-			try {
+			} else {
 				
+				$employee_id = $request->getPost ( 'employee_id' );
+				$remarks = $request->getPost ( 'remarks' );
+				$isActive = ( int ) $request->getPost ( 'isActive' );
+				$assignedOn = $request->getPost ( 'assignedOn' );
+				
+				if ($isActive !== 1) {
+					$isActive = 0;
+				}
+				
+				//$entity = new NmtInventoryItemEmployee ();
+				//$entity->setItem ( $target );
+			
+				$entity->setIsActive ( $isActive );
+				
+				//$employee = null;
+				if ($employee_id !== $entity->getEmployee()->getId()) {
+					$employee = $this->doctrineEM->find ( 'Application\Entity\NmtHrEmployee', $employee_id );					
+					if ($employee == null) {
+						$errors [] = 'Employee can\'t be empty. Please select a employee!';
+					} else {
+						$entity->setEmployee ( $employee );
+					}
+				}
+				
+				$validator = new Date ();
+				if (! $validator->isValid ( $assignedOn )) {
+					$errors [] = 'Assignment date is not correct or empty!';
+					$entity->setAssignedOn ( null );
+				} else {
+					$entity->setAssignedOn ( new \DateTime ( $assignedOn ) );
+				}
+				
+				$entity->setRemarks ( $remarks );
+				
+				if (count ( $errors ) > 0) {
+					
+					return new ViewModel ( array (
+							'redirectUrl' => $redirectUrl,
+							'errors' => $errors,
+							'target' => $entity->getItem(),
+							'entity' => $entity 
+					) );
+				}
+				;
+				// OK now
+				
+				$u = $this->doctrineEM->getRepository ( 'Application\Entity\MlaUsers' )->findOneBy ( array (
+						'email' => $this->identity ()
+				) );
+				
+				$entity->setLastChangeBy( $u );
 				$entity->setLastChangeOn ( new \DateTime () );
-				$entity->setLastChangeBy ( $u );
+				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
 				
-				$new_item = $entity;
-				
-				// add category member
-				if ($item_category_id > 0) {
-					$entity = new NmtInventoryItemCategoryMember ();
-					$entity->setItem ( $new_item );
-					$entity->setCategory ( $category );
-					
-					$entity->setCreatedBy ( $u );
-					$entity->setCreatedOn ( new \DateTime () );
-					
-					$this->doctrineEM->persist ( $entity );
-					$this->doctrineEM->flush ();
-				}
-				
-				// add department member
-				if ($department_id > 0) {
-					$entity = new NmtInventoryItemDepartment ();
-					$entity->setDepartment ( $department );
-					$entity->setItem ( $new_item );
-					
-					$entity->setCreatedBy ( $u );
-					$entity->setCreatedOn ( new \DateTime () );
-					
-					$this->doctrineEM->persist ( $entity );
-					$this->doctrineEM->flush ();
-				}
-				
-				// update search index.
-				// $this->itemSearchService->addDocument ( $new_item, true );
-			} catch ( Exception $e ) {
-				return new ViewModel ( array (
-						'errors' => $e->getMessage (),
-						'redirectUrl' => $redirectUrl,
-						'entity' => null,
-						'category' => null,
-						'uom' => null,
-						'department' => null,
-						'item_id' => $item_id 
-				
-				) );
+				$this->flashMessenger ()->addMessage ( "Item Assignemt has been updated successfully!" );
+				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
-			
-			$this->flashMessenger ()->addSuccessMessage ( "Item " . $item_name . " has been updated sucessfully" );
-			return $this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
 		// Not Post
 		
-		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
-		$item_id = ( int ) $this->params ()->fromQuery ( 'item_id' );
-		$item = $this->doctrineEM->find ( 'Application\Entity\NmtInventoryItem', $item_id );
-		$uom = $item->getStandardUom ();
-		/*
-		 * $pictures = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPicture' )->findBy ( array (
-		 * "item" => $item_id
-		 * ) );
-		 */
+		// NO POST
+		$redirectUrl = Null;
+		if ($request->getHeader ( 'Referer' ) == null) {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 		
-		return new ViewModel ( array (
-				'errors' => null,
-				'redirectUrl' => $redirectUrl,
-				'entity' => $item,
-				'category' => null,
-				'uom' => $uom,
-				'department' => null,
-				'item_id' => $item_id 
-		) );
+		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
+		$entity_id = ( int ) $this->params ()->fromQuery ( 'entity_id' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		
+		$criteria = array (
+				'id' => $entity_id,
+				'token' => $token 
+		);
+		
+		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemEmployee' )->findOneBy ( $criteria );
+		
+		if ($entity !== null) {
+			return new ViewModel ( array (
+					'redirectUrl' => $redirectUrl,
+					'errors' => null,
+					'entity' => $entity,
+					'target' => $entity->getItem () 
+			) );
+		} else {
+			return $this->redirect ()->toRoute ( 'access_denied' );
+		}
 	}
 	
 	/**

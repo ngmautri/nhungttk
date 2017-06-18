@@ -31,20 +31,30 @@ if (count ( $errors ) > 0) {
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Employee:</label>
 		<div class="col-sm-3">
-<input disabled class="form-control" type="text" id="employee_name" placeholder="Find Employee" name="employee_name" 
+<input class="form-control" type="text" id="employee_name" placeholder="Please find Employee" name="employee_name" 
 value="<?php if (!$entity == null): if (!$entity->getEmployee() == null):echo $entity->getEmployee()->getEmployeeName();endif;endif;?>">
 				
 <input type="hidden" id="employee_id" placeholder="" 	name="employee_id" 
 value="<?php if (!$entity == null): if (!$entity->getEmployee() == null):echo $entity->getEmployee()->getId();endif;endif;?>">
+		<input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+		
 		</div>
 		
 
 <a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Employee','860','450', '/hr/employee/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+	onclick="showJqueryDialog('Select Employee','680','500', '/hr/employee/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
+
 	</div>
 
-	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Assigned On:</label>
+		<div class="col-sm-3">
+<input class="form-control" type="text" name="assignedOn" 
+value="<?php if(!$entity == null): echo ($entity->getAssignedOn() !== null)? date_format($entity->getAssignedOn(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="assigned_on" />
+		</div>
+		
+	</div>
 
 	
 	<div class="form-group">
@@ -69,36 +79,28 @@ value="<?php if (!$entity == null): if (!$entity->getEmployee() == null):echo $e
 
 <script>
 
-$('#attachments').bind('change', function() {
-	var file_size;
-	file_size = this.files[0].size
-	if (file_size > 2097152){
-		alert('This file size is too large : ' + file_size + "MB. Please select new file");
-
-		 $("#attachments").val("");
-		 	
-	}else{
-		//alert('This file size is: ' + file_size + "MB, OKE");
-		 //$('#save').removeAttr('disabled');
-	}
-
-});
-
-$('#vendor_item_unit').bind('change', function() {
-	//alert($('#vendor_item_unit').val());
-	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
-});
-
-$('#conversion_factor').bind('change', function() {
-	//alert($('#vendor_item_unit').val());
-	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
-});
 
 $(function() {
-   $( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
-   $( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
+   $( "input[id='assigned_on']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 });
+$( function() {
+    $( "#employee_name" ).autocomplete({
+     source: "/hr/employee-search/auto-complete",
+     minLength: 2,
+     select: function( event, ui ) {
+   	  $( "#employee_id" ).val(ui.item.id);
+       //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+   	  //alert($( "#vendor_id" ).val());
 
+   	 	$('#global-notice').show();
+   		$('#global-notice').html('"' + ui.item.value + '" selected');
+   		$('#global-notice').fadeOut(5000);
+   		//$("#jquery_dialog").dialog("close");
+     }
+
+    
+   });
+} );
 </script>
 
 

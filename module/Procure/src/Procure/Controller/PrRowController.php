@@ -146,14 +146,11 @@ class PrRowController extends AbstractActionController {
 				$conversionFactor = $request->getPost ( 'conversionFactor' );
 				
 				$item_id = $request->getPost ( 'item_id' );
-				$project_id= $request->getPost ( 'project_id' );
-				
+				$project_id = $request->getPost ( 'project_id' );
 				
 				if ($isActive != 1) {
 					$isActive = 0;
 				}
-				
-				
 				
 				/**
 				 *
@@ -166,11 +163,10 @@ class PrRowController extends AbstractActionController {
 					$entity->setItem ( $item );
 				}
 				
-				
-				if($project_id >0){
-					$project = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $project_id);
-					if($project!==null){
-						$entity->setProject( $project);
+				if ($project_id > 0) {
+					$project = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $project_id );
+					if ($project !== null) {
+						$entity->setProject ( $project );
 					}
 				}
 				
@@ -570,7 +566,7 @@ class PrRowController extends AbstractActionController {
 		}
 		;
 		
-		// accepted only ajax request		
+		// accepted only ajax request
 		if (! $request->isXmlHttpRequest ()) {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
@@ -625,6 +621,101 @@ class PrRowController extends AbstractActionController {
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
+	}
+	
+	/**
+	 *
+	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+	 */
+	public function girdAction() {
+		$request = $this->getRequest ();
+		
+		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
+		$sort = $this->params ()->fromQuery ( 'sort' );
+		$balance = $this->params ()->fromQuery ( 'balance' );
+		$is_active = $this->params ()->fromQuery ( 'is_active' );
+		
+		if ($sort_by == null) :
+			$sort_by = "createdOn";
+		endif;
+		
+		if ($balance == null) :
+			$balance = 2;
+		endif;
+		
+		if ($sort == null) :
+			$sort = "ASC";
+		endif;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) ) or $this->params ()->fromQuery ( 'perPage' ) == null) {
+			$resultsPerPage = 30;
+		} else {
+			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+		}
+		;
+		
+		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+			$page = 1;
+		} else {
+			$page = $this->params ()->fromQuery ( 'page' );
+		}
+		;
+		
+		$target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+		$checksum = $this->params ()->fromQuery ( 'checksum' );
+		$token = $this->params ()->fromQuery ( 'token' );
+		$criteria = array (
+				'id' => $target_id,
+				'checksum' => $checksum,
+				'token' => $token 
+		);
+		
+		/**
+		 *
+		 * @todo : Change Target
+		 */
+		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
+		
+		
+		
+		$a_json_final=array();
+		$a_json = array ();
+		$a_json_row = array ();
+		
+		
+		if ($target !== null) {
+			
+			$criteria = array (
+					'pr' => $target_id 
+				// 'isActive' => 1,
+			);
+			
+			// $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->get ( $criteria );
+			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, 0, 0 );
+			
+			if (count ( $list ) > 0) {
+				foreach ( $list as $a ) {
+					$a_json_row["row_id"] = $a['id'];
+					$a_json_row["row_token"] = $a['token'];
+					$a_json_row["row_checksum"] = $a['checksum'];
+					
+					$a_json_row["item_name"] = $a['item_name'];
+					$a_json_row["quantity"] = $a['quantity'];
+					$a_json_row["confirmed_balance"] = $a['confirmed_balance'];
+					$a_json_row["total_received"] = $a['total_received'];
+					$a_json_row["project_id"] = $a['project_id'];
+					
+					$a_json[]= $a_json_row;
+				}
+			}
+			
+			$a_json_final['data'] = $a_json;
+		}
+		
+		$response = $this->getResponse ();
+		$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+		$response->setContent ( json_encode ( $a_json_final) );
+		return $response;
 	}
 	
 	/**
@@ -713,9 +804,7 @@ class PrRowController extends AbstractActionController {
 				$conversionFactor = $request->getPost ( 'conversionFactor' );
 				
 				$item_id = $request->getPost ( 'item_id' );
-				$project_id= $request->getPost ( 'project_id' );
-				
-				
+				$project_id = $request->getPost ( 'project_id' );
 				
 				if ($isActive != 1) {
 					$isActive = 0;
@@ -728,13 +817,12 @@ class PrRowController extends AbstractActionController {
 					$entity->setItem ( $item );
 				}
 				
-				if($project_id >0){
-					$project = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $project_id);
-					if($project!==null){
-						$entity->setProject( $project);
+				if ($project_id > 0) {
+					$project = $this->doctrineEM->find ( 'Application\Entity\NmtPmProject', $project_id );
+					if ($project !== null) {
+						$entity->setProject ( $project );
 					}
 				}
-				
 				
 				// $entity->setPr ( $target );
 				$entity->setIsActive ( $isActive );

@@ -1,3 +1,5 @@
+
+
 <h4><?php echo (!$entity == null)? 'PR: ' . $entity->getPrName():"";?></h4>
 
 <div id="tabs" style="font-size: 9.5pt">
@@ -112,12 +114,136 @@
 			<div id="transaction" class="collapse in">
 
 				<div id="pr_rows"></div>
+
+				<div id="pr_row_gird" style="margin: 1px;"></div>
 		
 		</fieldset>
 	</div>
+
+
 </div>
+
+
+
 <script>
-	loadPrRow('<?php echo $this->baseUrl . '/procure/pr-row/row?target_id='. $entity->getId().'&token='.$entity->getToken().'&checksum='.$entity->getChecksum()?>');
+	//loadPrRow('<?php echo $this->baseUrl . '/procure/pr-row/row?target_id='. $entity->getId().'&token='.$entity->getToken().'&checksum='.$entity->getChecksum()?>');
 	$("#Create_PR_Form :input").attr("disabled", "disabled");
+
+
+	 //to check whether any row is currently being edited.
+    function isEditing($grid) {
+        var rows = $grid.pqGrid("getRowsByClass", { cls: 'pq-row-edit' });
+        if (rows.length > 0) {
+            //focus on editor if any 
+            $grid.find(".pq-editor-focus").focus();
+            return true;
+        }
+        return false;
+    }
+
+     
+	  //called by add button in toolbar.
+    function addRow($grid) {
+    	 if (isEditing($grid)) {
+    	        return false;
+    	    }
+    	  
+    	//append empty row in the first row.                            
+        var rowData = { Item: "", Quantity: 0, Received: 0, Balance: 0}; //empty row template
+        $grid.pqGrid("addRow", { rowIndxPage: 0, rowData: rowData });
+
+        var $tr = $grid.pqGrid("getRow", { rowIndxPage: 0 });
+        if ($tr) {
+            //simulate click on edit button.
+            $tr.find("button.edit_btn").click();
+        }
+    }
+    
+	var obj = { width: "100%", height: 350, title: "ParamQuery Grid Example",
+			//resizable:true,
+			//draggable:true,
+			sortable: true,
+			 hoverMode: 'cell',
+			 columnBorders: true,
+			 /*  toolbar: {
+	                items: [
+	                    { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
+	                        { "click": function (evt, ui) {
+	                            var $grid = $(this).closest('.pq-grid');
+	                            addRow($grid);
+	                            //debugger;
+	                        }
+	                        }
+	                    ]
+	                    }
+	                ]
+	            },  */
+	};
+
+    obj.colModel = [
+        { title: "Item", dataType: "string", dataIndx: "item_name", width: 380 },
+        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 80,align: 'right'},
+        { title: "Received", dataType: "integer", dataIndx: "total_received", width:82, align: 'right'},
+        { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 80,align: 'right'},
+        
+        { title: "", editable: false, minWidth: 200, sortable: false,
+            render: function (ui) {
+                return "<button type='button' class='receive_btn'>Receive</button> <button type='button' class='received_btn'>Received</button>";
+	           }
+        }
+   ];
+
+    obj.dataModel = {
+    		  dataType: "JSON",
+              location: "remote",
+              recIndx: "row_id",
+              url: "/procure/pr-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>",
+              getData: function (response) {
+           	    return { data: response.data };
+             }
+    };
+    
+    var $grid = $("#pr_row_gird").pqGrid(obj);
+
+    $grid.on('pqgridrefresh pqgridrefreshrow', function () {
+        //debugger;
+        var $grid = $(this);
+
+        //receive button
+        $grid.find("button.receive_btn").button({})
+        .unbind("click")
+        .bind("click", function (evt) {
+
+            var $tr = $(this).closest("tr"),
+            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+    
+            redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+          	//alert(rowData['item_name']);
+
+          	window.open(redirectUrl,'_blank');
+        });
+
+        //receive button
+        $grid.find("button.received_btn").button({})
+        .unbind("click")
+        .bind("click", function (evt) {
+
+            var $tr = $(this).closest("tr"),
+            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+    
+            redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+          	//alert(rowData['item_name']);
+
+          	//window.open(redirectUrl,'_blank');
+          	showJqueryDialog('Receiving of Item:',980,550, '/inventory/item-transaction/pr-row?pr_row_id='+ rowData['row_id'],'j_loaded_data', true)
+        });
+    });        
+
 </script>
 

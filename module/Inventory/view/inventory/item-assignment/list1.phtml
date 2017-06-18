@@ -20,7 +20,8 @@ if ($total_records <= 0) {
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Employee Name</b></td>
-			<td><b>Created Date</b></td>
+			<td><b>Assignment<br>Date</b></td>
+			<td><b>Action</b></td>
 		</tr>
 	</thead>
 
@@ -35,10 +36,10 @@ if ($total_records <= 0) {
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
 	<td><?php echo $this->escapeHtml($a->getEmployee()->getEmployeeName());?></td>
-	<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d/m/y"):"N/A";?> </td>
+	<td><?php echo ($a->getAssignedOn()!==null )? date_format ( $a->getAssignedOn(), "d/m/y"):"N/A";?> </td>
 		 <td>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Edit</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-assignment/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-assignment/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>">Edit</a>
 </td>
 						
 		</tr>

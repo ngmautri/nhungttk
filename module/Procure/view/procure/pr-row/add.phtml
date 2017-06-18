@@ -35,7 +35,7 @@ if (count ( $errors ) > 0) {
 <div class="form-group">
 		<label class="control-label col-sm-2" >Item: </label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="item_name" placeholder="Select Item if any"
+			<input class="form-control" type="text" id="item_name" placeholder="Select Item if any"
 				name="item_name" 
 value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
 	
@@ -168,6 +168,23 @@ value="<?php if (!$entity== null): if($entity->getProject()!==null): echo $entit
 
 $( "input[id='edt']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
+$( function() {
+    $( "#item_name" ).autocomplete({
+     source: "/inventory/item-search/auto-complete",
+     minLength: 2,
+     select: function( event, ui ) {
+   	  $( "#item_id" ).val(ui.item.id);
+       //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+   	  //alert($( "#vendor_id" ).val());
 
+   	 	$('#global-notice').show();
+   		$('#global-notice').html('"' + ui.item.value + '" selected');
+   		$('#global-notice').fadeOut(5000);
+   		//$("#jquery_dialog").dialog("close");
+     }
+
+    
+   });
+} );
 </script>
 

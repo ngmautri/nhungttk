@@ -30,7 +30,7 @@ class VendorSearchController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function doAction() {
@@ -53,13 +53,12 @@ class VendorSearchController extends AbstractActionController {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function do1Action() {
 		$request = $this->getRequest ();
 		$context = $this->params ()->fromQuery ( 'context' );
-		
 		
 		// accepted only ajax request
 		if (! $request->isXmlHttpRequest ()) {
@@ -72,10 +71,10 @@ class VendorSearchController extends AbstractActionController {
 		if ($q !== "") {
 			$results = $this->vendorSearchService->search ( $q );
 		} else {
-			$results = [
+			$results = [ 
 					"message" => "",
 					"hits" => null,
-					'context' =>$context,
+					'context' => $context 
 			];
 		}
 		
@@ -83,8 +82,38 @@ class VendorSearchController extends AbstractActionController {
 		return new ViewModel ( array (
 				'message' => $results ["message"],
 				'hits' => $results ["hits"],
-				'context' =>$context,
+				'context' => $context 
 		) );
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function autocompleteAction() {
+		/* retrieve the search term that autocomplete sends */
+		$q = trim ( strip_tags ( $_GET ['term'] ) );
+		//$q = $this->params ()->fromQuery ( 'q' );
+		
+		$a_json = array ();
+		$a_json_row = array ();
+		
+		if ($q !== "") {
+			$results = $this->vendorSearchService->search ( $q );
+			
+			if (count ( $results ) > 0) {
+				foreach ( $results['hits'] as $a ) {
+					$a_json_row ["id"] = $a->vendor_id;
+					$a_json_row ["value"] = $a->vendor_name;
+					$a_json[]=$a_json_row;
+				}
+			}
+		}
+		//var_dump($a_json);
+		$response = $this->getResponse ();
+		$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+		$response->setContent ( json_encode ( $a_json ) );
+		return $response;
 	}
 	
 	/**
@@ -120,5 +149,4 @@ class VendorSearchController extends AbstractActionController {
 		$this->vendorSearchService = $vendorSearchService;
 		return $this;
 	}
-	
 }

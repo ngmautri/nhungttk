@@ -17,41 +17,98 @@ class NmtProcurePrRowRepository extends EntityRepository {
 SELECT
 	nmt_procure_pr_row.*,
     nmt_inventory_item.item_name,
-	nmt_inventory_item.checksum as item_checksum,
-	nmt_inventory_item.token as item_token,
+	nmt_inventory_item.checksum AS item_checksum,
+	nmt_inventory_item.token AS item_token,
 	
-    nmt_procure_pr.checksum as pr_checksum,
-	nmt_procure_pr.token as pr_token,
+    nmt_procure_pr.checksum AS pr_checksum,
+	nmt_procure_pr.token AS pr_token,
 	nmt_procure_pr.pr_number,
-		
+    nmt_procure_pr.submitted_on,
+    
+    ifnull(nmt_inventory_trx_last.vendor_name,nmt_inventory_item_purchasing.vendor_name) as vendor_name,
+	ifnull(nmt_inventory_trx_last.vendor_id,nmt_inventory_item_purchasing.vendor_id) as vendor_id,
+    ifnull(nmt_inventory_trx_last.vendor_token,nmt_inventory_item_purchasing.vendor_token) as vendor_token,
+	ifnull(nmt_inventory_trx_last.vendor_checksum,nmt_inventory_item_purchasing.vendor_checksum) as vendor_checksum,
+    
+ 	ifnull( nmt_inventory_trx_last.vendor_unit_price, nmt_inventory_item_purchasing.vendor_unit_price) as vendor_unit_price,
+  	ifnull( nmt_inventory_trx_last.currency, nmt_inventory_item_purchasing.currency) as currency,
+ 	ifnull( nmt_inventory_trx_last.vendor_item_unit, nmt_inventory_item_purchasing.vendor_item_unit) as vendor_item_unit,
+ 		
 	IFNULL(nmt_inventory_trx.total_received,0) AS total_received,
     
     IF ((nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))>0
     ,(nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))
     ,0) AS confirmed_balance,
-    
-      IF ((nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))>=0
+    IF ((nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))>=0
     ,0,(nmt_procure_pr_row.quantity*-1 + IFNULL(nmt_inventory_trx.total_received,0))) AS confirmed_free_balance
  
-	
     
 FROM nmt_procure_pr_row
-left join nmt_inventory_item
-on nmt_inventory_item.id = nmt_procure_pr_row.item_id
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
 
-left join nmt_procure_pr
-on nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+left JOIN nmt_procure_pr
+ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
 
 LEFT JOIN
 (
-SELECT
-	nmt_inventory_trx.pr_row_id AS pr_row_id,
-	SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END) AS total_received
-FROM nmt_inventory_trx
-GROUP BY nmt_inventory_trx.pr_row_id
+	SELECT
+		nmt_inventory_trx.pr_row_id AS pr_row_id,
+		SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END) AS total_received
+	FROM nmt_inventory_trx
+	GROUP BY nmt_inventory_trx.pr_row_id
 ) 
 AS nmt_inventory_trx
 ON nmt_procure_pr_row.id = nmt_inventory_trx.pr_row_id
+
+LEFT JOIN
+(
+	SELECT
+	nmt_bp_vendor.vendor_name,
+	nmt_bp_vendor.token as vendor_token,
+    nmt_bp_vendor.checksum as vendor_checksum, 
+	nmt_application_currency.currency,
+	nmt_inventory_trx.*,
+	COUNT(nmt_inventory_trx.item_id) AS total_trx,
+	MAX(nmt_inventory_trx.created_on) AS last_trx
+	FROM nmt_inventory_trx
+
+	LEFT JOIN nmt_bp_vendor
+	ON nmt_bp_vendor.id = nmt_inventory_trx.vendor_id
+
+	LEFT JOIN nmt_application_currency
+	ON nmt_application_currency.id = nmt_inventory_trx.currency_id
+	WHERE nmt_inventory_trx.is_active=1
+	GROUP BY nmt_inventory_trx.item_id
+)
+AS nmt_inventory_trx_last
+ON nmt_inventory_trx_last.item_id = nmt_procure_pr_row.item_id
+
+LEFT JOIN
+(
+
+	SELECT
+	nmt_bp_vendor.vendor_name,
+    nmt_bp_vendor.token as vendor_token,
+    nmt_bp_vendor.checksum as vendor_checksum,
+    
+	nmt_application_currency.currency,
+	nmt_inventory_item_purchasing.*,
+	COUNT(nmt_inventory_item_purchasing.item_id) AS total_purchase,
+	MAX(nmt_inventory_item_purchasing.created_on) AS last_purchase
+	FROM nmt_inventory_item_purchasing
+
+	LEFT JOIN nmt_bp_vendor
+	ON nmt_bp_vendor.id = nmt_inventory_item_purchasing.vendor_id
+
+	LEFT JOIN nmt_application_currency
+	ON nmt_application_currency.id = nmt_inventory_item_purchasing.currency_id
+
+	WHERE nmt_inventory_item_purchasing.is_active=1
+	GROUP BY nmt_inventory_item_purchasing.item_id
+)
+AS nmt_inventory_item_purchasing
+ON nmt_inventory_item_purchasing.item_id = nmt_procure_pr_row.item_id
 WHERE 1
 	";
 	
@@ -141,6 +198,14 @@ where 1
 			$sql = $sql. " ORDER BY nmt_inventory_item.item_name " . $sort;
 		}elseif ($sort_by == "prNumber") {
 			$sql = $sql. " ORDER BY nmt_procure_pr.pr_number " . $sort;
+		}elseif ($sort_by == "vendorName") {
+			$sql = $sql. " ORDER BY ifnull(nmt_inventory_trx_last.vendor_name,nmt_inventory_item_purchasing.vendor_name) " . $sort;
+		}elseif ($sort_by == "currency") {
+			$sql = $sql. " ORDER BY ifnull( nmt_inventory_trx_last.currency, nmt_inventory_item_purchasing.currency) " . $sort;
+		}elseif ($sort_by == "unitPrice") {
+			$sql = $sql. " ORDER BY ifnull( nmt_inventory_trx_last.vendor_unit_price, nmt_inventory_item_purchasing.vendor_unit_price) " . $sort;
+		}elseif ($sort_by == "balance") {
+			$sql = $sql. " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
 		}
 		
 		if($limit>0){
@@ -184,6 +249,8 @@ where 1
 			$sql = $sql. " ORDER BY nmt_procure_pr_row.created_on " . $sort;
 		}elseif($sort_by == "balance") {
 			$sql = $sql. " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
+		}elseif($sort_by == "prSubmitted") {
+			$sql = $sql. " ORDER BY nmt_procure_pr.submitted_on" . $sort;
 		}
 		
 		if($limit>0){

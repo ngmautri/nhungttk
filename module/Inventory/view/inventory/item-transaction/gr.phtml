@@ -1,3 +1,5 @@
+
+
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
@@ -34,7 +36,12 @@ if (count ( $errors ) > 0) {
 				<input type="hidden" id="token" placeholder="" name="token" value="">
 				<input type="hidden" id="checksum" placeholder="" name="checksum" value="">
 				<input <?php if(!$entity == null): echo ($entity->getIsDraft()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
-				<input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+				<input type="checkbox" 
+<?php if(!$entity == null): 
+echo ($entity->getIsActive()=="1")?"checked": ""; 
+else: echo "checked"; 
+endif;?>  name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+	
 		</div>
 		
 
@@ -117,7 +124,7 @@ value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity-
   <div class="form-group">
 		<label class="control-label col-sm-2" >Vendor:</label>
 		<div class="col-sm-3">
-<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor" name="vendor_name" 
+<input  class="form-control" type="text" id="vendor_name" placeholder="Select vendor" name="vendor_name" 
 value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
 				
 <input type="hidden" id="vendor_id" placeholder="" 	name="vendor_id" 
@@ -231,4 +238,24 @@ $('#conversion_factor').bind('change', function() {
 	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
 });
 $( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+$( function() {
+     $( "#vendor_name" ).autocomplete({
+      source: "/bp/vendor-search/auto-complete",
+      minLength: 3,
+      select: function( event, ui ) {
+    	  $( "#vendor_id" ).val(ui.item.id);
+        //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+    	  //alert($( "#vendor_id" ).val());
+
+    	 	$('#global-notice').show();
+    		$('#global-notice').html('"' + ui.item.value + '" selected');
+    		$('#global-notice').fadeOut(5000);
+    		//$("#jquery_dialog").dialog("close");
+      }
+
+     
+    });
+ } );
+
  </script>

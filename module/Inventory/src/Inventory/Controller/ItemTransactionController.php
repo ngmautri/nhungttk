@@ -612,6 +612,16 @@ class ItemTransactionController extends AbstractActionController {
 		
 		// set null
 		$entity->setTrxDate ( null );
+		$entity->setIsActive( 1 );
+		
+		$default_wh= $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryWarehouse' )->findOneBy (  array (
+				'isDefault' => 1,
+		));
+		
+		if($default_wh!==null){
+			$entity->setWh($default_wh);
+		}
+		
 		
 		return new ViewModel ( array (
 				'redirectUrl' => $redirectUrl,

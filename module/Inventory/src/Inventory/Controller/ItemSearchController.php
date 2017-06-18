@@ -33,6 +33,36 @@ class ItemSearchController extends AbstractActionController {
 	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
+	public function autocompleteAction() {
+		/* retrieve the search term that autocomplete sends */
+		$q = trim ( strip_tags ( $_GET ['term'] ) );
+		//$q = $this->params ()->fromQuery ( 'q' );
+		
+		$a_json = array ();
+		$a_json_row = array ();
+		
+		if ($q !== "") {
+			$results = $this->itemSearchService->searchAllItem( $q );
+			if (count ( $results ) > 0) {
+				foreach ( $results['hits'] as $a ) {
+					$a_json_row ["id"] = $a->item_id;
+					$a_json_row ["value"] = $a->item_name . ': ' .$a->item_sku ;
+					$a_json[]=$a_json_row;
+					
+				}
+			}
+		}
+		//var_dump($a_json);
+		$response = $this->getResponse ();
+		$response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+		$response->setContent ( json_encode ( $a_json ) );
+		return $response;
+	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function doAction() {
 		$q = $this->params ()->fromQuery ( 'q' );
 		

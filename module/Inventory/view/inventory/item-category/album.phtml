@@ -1,0 +1,23 @@
+<div class="demo-gallery">
+<div id="lightgallery1" class="justified-gallery">
+
+ 
+ <?php foreach ( $album as $a ) : ?>
+  	
+  		<?php
+  		if ($a['pic_id'] !== null) :
+			?>
+		<a data-toggle="tooltip" data-sub-html="<?php echo $a['item_sku'];?>: <?php echo $a['item_name'];?> : <?php echo $a['location'] ;?>" class="jg-entry" href="/inventory/item-picture/get?token=<?php echo $a['pic_token'];?>&entity_id=<?php  echo $a['pic_id'];?>&checksum=<?php echo $a['pic_checksum']?>">
+	   <img title="<?php echo $a['item_sku'];?>: <?php echo $a['item_name'] ?> : <?php echo $a['location'] ;?>" class= "img-rounded" src="/inventory/item-picture/thumbnail200?token=<?php echo $a['pic_token'];?>&entity_id=<?php  echo $a['pic_id'];?>&checksum=<?php echo $a['pic_checksum']?>"/>
+	 		 </a>
+		<?php else:
+			endif;
+	endforeach
+	;
+	?>
+</div>
+</div>
+
+<script>
+	$("#lightgallery1").lightGallery({});
+</script>

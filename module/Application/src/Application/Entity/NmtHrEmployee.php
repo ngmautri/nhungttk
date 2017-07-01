@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrEmployee
  *
- * @ORM\Table(name="nmt_hr_employee", uniqueConstraints={@ORM\UniqueConstraint(name="employee_code_UNIQUE", columns={"employee_code"})}, indexes={@ORM\Index(name="nmt_hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_employee_FK2_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_hr_employee", uniqueConstraints={@ORM\UniqueConstraint(name="employee_code_UNIQUE", columns={"employee_code"})}, indexes={@ORM\Index(name="nmt_hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_employee_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_hr_employee_FK3_idx", columns={"nationality"}), @ORM\Index(name="nmt_hr_employee_FK4_idx", columns={"birth_country"})})
  * @ORM\Entity
  */
 class NmtHrEmployee
@@ -92,6 +92,146 @@ class NmtHrEmployee
     private $lastChangeOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="sso_number", type="string", length=45, nullable=true)
+     */
+    private $ssoNumber;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="sso_date", type="datetime", nullable=true)
+     */
+    private $ssoDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="family_book_no", type="string", length=45, nullable=true)
+     */
+    private $familyBookNo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="personal_id_no", type="string", length=45, nullable=true)
+     */
+    private $personalIdNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="personal_id_issue_date", type="datetime", nullable=true)
+     */
+    private $personalIdIssueDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="personal_id_issue_place", type="string", length=45, nullable=true)
+     */
+    private $personalIdIssuePlace;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="personal_id_expire_date", type="datetime", nullable=true)
+     */
+    private $personalIdExpireDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="passport_no", type="string", length=45, nullable=true)
+     */
+    private $passportNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="passport_issue_date", type="datetime", nullable=true)
+     */
+    private $passportIssueDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="passport_issue_place", type="string", length=45, nullable=true)
+     */
+    private $passportIssuePlace;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="passport_expire_date", type="datetime", nullable=true)
+     */
+    private $passportExpireDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="stay_permit_no", type="string", length=45, nullable=true)
+     */
+    private $stayPermitNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="stay_permit_issue_date", type="datetime", nullable=true)
+     */
+    private $stayPermitIssueDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="stay_permit_issue_place", type="string", length=45, nullable=true)
+     */
+    private $stayPermitIssuePlace;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="stay_permit_expire_date", type="datetime", nullable=true)
+     */
+    private $stayPermitExpireDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="work_permit_no", type="string", length=45, nullable=true)
+     */
+    private $workPermitNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="work_permit_issue_date", type="datetime", nullable=true)
+     */
+    private $workPermitIssueDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="work_permint_issue_place", type="string", length=45, nullable=true)
+     */
+    private $workPermintIssuePlace;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="work_permit_expire_date", type="datetime", nullable=true)
+     */
+    private $workPermitExpireDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="salary_pmt_method", type="string", length=45, nullable=true)
+     */
+    private $salaryPmtMethod;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -110,6 +250,26 @@ class NmtHrEmployee
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="nationality", referencedColumnName="id")
+     * })
+     */
+    private $nationality;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCountry
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="birth_country", referencedColumnName="id")
+     * })
+     */
+    private $birthCountry;
 
 
 
@@ -364,6 +524,486 @@ class NmtHrEmployee
     }
 
     /**
+     * Set ssoNumber
+     *
+     * @param string $ssoNumber
+     *
+     * @return NmtHrEmployee
+     */
+    public function setSsoNumber($ssoNumber)
+    {
+        $this->ssoNumber = $ssoNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get ssoNumber
+     *
+     * @return string
+     */
+    public function getSsoNumber()
+    {
+        return $this->ssoNumber;
+    }
+
+    /**
+     * Set ssoDate
+     *
+     * @param \DateTime $ssoDate
+     *
+     * @return NmtHrEmployee
+     */
+    public function setSsoDate($ssoDate)
+    {
+        $this->ssoDate = $ssoDate;
+
+        return $this;
+    }
+
+    /**
+     * Get ssoDate
+     *
+     * @return \DateTime
+     */
+    public function getSsoDate()
+    {
+        return $this->ssoDate;
+    }
+
+    /**
+     * Set familyBookNo
+     *
+     * @param string $familyBookNo
+     *
+     * @return NmtHrEmployee
+     */
+    public function setFamilyBookNo($familyBookNo)
+    {
+        $this->familyBookNo = $familyBookNo;
+
+        return $this;
+    }
+
+    /**
+     * Get familyBookNo
+     *
+     * @return string
+     */
+    public function getFamilyBookNo()
+    {
+        return $this->familyBookNo;
+    }
+
+    /**
+     * Set personalIdNo
+     *
+     * @param string $personalIdNo
+     *
+     * @return NmtHrEmployee
+     */
+    public function setPersonalIdNo($personalIdNo)
+    {
+        $this->personalIdNo = $personalIdNo;
+
+        return $this;
+    }
+
+    /**
+     * Get personalIdNo
+     *
+     * @return string
+     */
+    public function getPersonalIdNo()
+    {
+        return $this->personalIdNo;
+    }
+
+    /**
+     * Set personalIdIssueDate
+     *
+     * @param \DateTime $personalIdIssueDate
+     *
+     * @return NmtHrEmployee
+     */
+    public function setPersonalIdIssueDate($personalIdIssueDate)
+    {
+        $this->personalIdIssueDate = $personalIdIssueDate;
+
+        return $this;
+    }
+
+    /**
+     * Get personalIdIssueDate
+     *
+     * @return \DateTime
+     */
+    public function getPersonalIdIssueDate()
+    {
+        return $this->personalIdIssueDate;
+    }
+
+    /**
+     * Set personalIdIssuePlace
+     *
+     * @param string $personalIdIssuePlace
+     *
+     * @return NmtHrEmployee
+     */
+    public function setPersonalIdIssuePlace($personalIdIssuePlace)
+    {
+        $this->personalIdIssuePlace = $personalIdIssuePlace;
+
+        return $this;
+    }
+
+    /**
+     * Get personalIdIssuePlace
+     *
+     * @return string
+     */
+    public function getPersonalIdIssuePlace()
+    {
+        return $this->personalIdIssuePlace;
+    }
+
+    /**
+     * Set personalIdExpireDate
+     *
+     * @param \DateTime $personalIdExpireDate
+     *
+     * @return NmtHrEmployee
+     */
+    public function setPersonalIdExpireDate($personalIdExpireDate)
+    {
+        $this->personalIdExpireDate = $personalIdExpireDate;
+
+        return $this;
+    }
+
+    /**
+     * Get personalIdExpireDate
+     *
+     * @return \DateTime
+     */
+    public function getPersonalIdExpireDate()
+    {
+        return $this->personalIdExpireDate;
+    }
+
+    /**
+     * Set passportNo
+     *
+     * @param string $passportNo
+     *
+     * @return NmtHrEmployee
+     */
+    public function setPassportNo($passportNo)
+    {
+        $this->passportNo = $passportNo;
+
+        return $this;
+    }
+
+    /**
+     * Get passportNo
+     *
+     * @return string
+     */
+    public function getPassportNo()
+    {
+        return $this->passportNo;
+    }
+
+    /**
+     * Set passportIssueDate
+     *
+     * @param \DateTime $passportIssueDate
+     *
+     * @return NmtHrEmployee
+     */
+    public function setPassportIssueDate($passportIssueDate)
+    {
+        $this->passportIssueDate = $passportIssueDate;
+
+        return $this;
+    }
+
+    /**
+     * Get passportIssueDate
+     *
+     * @return \DateTime
+     */
+    public function getPassportIssueDate()
+    {
+        return $this->passportIssueDate;
+    }
+
+    /**
+     * Set passportIssuePlace
+     *
+     * @param string $passportIssuePlace
+     *
+     * @return NmtHrEmployee
+     */
+    public function setPassportIssuePlace($passportIssuePlace)
+    {
+        $this->passportIssuePlace = $passportIssuePlace;
+
+        return $this;
+    }
+
+    /**
+     * Get passportIssuePlace
+     *
+     * @return string
+     */
+    public function getPassportIssuePlace()
+    {
+        return $this->passportIssuePlace;
+    }
+
+    /**
+     * Set passportExpireDate
+     *
+     * @param \DateTime $passportExpireDate
+     *
+     * @return NmtHrEmployee
+     */
+    public function setPassportExpireDate($passportExpireDate)
+    {
+        $this->passportExpireDate = $passportExpireDate;
+
+        return $this;
+    }
+
+    /**
+     * Get passportExpireDate
+     *
+     * @return \DateTime
+     */
+    public function getPassportExpireDate()
+    {
+        return $this->passportExpireDate;
+    }
+
+    /**
+     * Set stayPermitNo
+     *
+     * @param string $stayPermitNo
+     *
+     * @return NmtHrEmployee
+     */
+    public function setStayPermitNo($stayPermitNo)
+    {
+        $this->stayPermitNo = $stayPermitNo;
+
+        return $this;
+    }
+
+    /**
+     * Get stayPermitNo
+     *
+     * @return string
+     */
+    public function getStayPermitNo()
+    {
+        return $this->stayPermitNo;
+    }
+
+    /**
+     * Set stayPermitIssueDate
+     *
+     * @param \DateTime $stayPermitIssueDate
+     *
+     * @return NmtHrEmployee
+     */
+    public function setStayPermitIssueDate($stayPermitIssueDate)
+    {
+        $this->stayPermitIssueDate = $stayPermitIssueDate;
+
+        return $this;
+    }
+
+    /**
+     * Get stayPermitIssueDate
+     *
+     * @return \DateTime
+     */
+    public function getStayPermitIssueDate()
+    {
+        return $this->stayPermitIssueDate;
+    }
+
+    /**
+     * Set stayPermitIssuePlace
+     *
+     * @param string $stayPermitIssuePlace
+     *
+     * @return NmtHrEmployee
+     */
+    public function setStayPermitIssuePlace($stayPermitIssuePlace)
+    {
+        $this->stayPermitIssuePlace = $stayPermitIssuePlace;
+
+        return $this;
+    }
+
+    /**
+     * Get stayPermitIssuePlace
+     *
+     * @return string
+     */
+    public function getStayPermitIssuePlace()
+    {
+        return $this->stayPermitIssuePlace;
+    }
+
+    /**
+     * Set stayPermitExpireDate
+     *
+     * @param \DateTime $stayPermitExpireDate
+     *
+     * @return NmtHrEmployee
+     */
+    public function setStayPermitExpireDate($stayPermitExpireDate)
+    {
+        $this->stayPermitExpireDate = $stayPermitExpireDate;
+
+        return $this;
+    }
+
+    /**
+     * Get stayPermitExpireDate
+     *
+     * @return \DateTime
+     */
+    public function getStayPermitExpireDate()
+    {
+        return $this->stayPermitExpireDate;
+    }
+
+    /**
+     * Set workPermitNo
+     *
+     * @param string $workPermitNo
+     *
+     * @return NmtHrEmployee
+     */
+    public function setWorkPermitNo($workPermitNo)
+    {
+        $this->workPermitNo = $workPermitNo;
+
+        return $this;
+    }
+
+    /**
+     * Get workPermitNo
+     *
+     * @return string
+     */
+    public function getWorkPermitNo()
+    {
+        return $this->workPermitNo;
+    }
+
+    /**
+     * Set workPermitIssueDate
+     *
+     * @param \DateTime $workPermitIssueDate
+     *
+     * @return NmtHrEmployee
+     */
+    public function setWorkPermitIssueDate($workPermitIssueDate)
+    {
+        $this->workPermitIssueDate = $workPermitIssueDate;
+
+        return $this;
+    }
+
+    /**
+     * Get workPermitIssueDate
+     *
+     * @return \DateTime
+     */
+    public function getWorkPermitIssueDate()
+    {
+        return $this->workPermitIssueDate;
+    }
+
+    /**
+     * Set workPermintIssuePlace
+     *
+     * @param string $workPermintIssuePlace
+     *
+     * @return NmtHrEmployee
+     */
+    public function setWorkPermintIssuePlace($workPermintIssuePlace)
+    {
+        $this->workPermintIssuePlace = $workPermintIssuePlace;
+
+        return $this;
+    }
+
+    /**
+     * Get workPermintIssuePlace
+     *
+     * @return string
+     */
+    public function getWorkPermintIssuePlace()
+    {
+        return $this->workPermintIssuePlace;
+    }
+
+    /**
+     * Set workPermitExpireDate
+     *
+     * @param \DateTime $workPermitExpireDate
+     *
+     * @return NmtHrEmployee
+     */
+    public function setWorkPermitExpireDate($workPermitExpireDate)
+    {
+        $this->workPermitExpireDate = $workPermitExpireDate;
+
+        return $this;
+    }
+
+    /**
+     * Get workPermitExpireDate
+     *
+     * @return \DateTime
+     */
+    public function getWorkPermitExpireDate()
+    {
+        return $this->workPermitExpireDate;
+    }
+
+    /**
+     * Set salaryPmtMethod
+     *
+     * @param string $salaryPmtMethod
+     *
+     * @return NmtHrEmployee
+     */
+    public function setSalaryPmtMethod($salaryPmtMethod)
+    {
+        $this->salaryPmtMethod = $salaryPmtMethod;
+
+        return $this;
+    }
+
+    /**
+     * Get salaryPmtMethod
+     *
+     * @return string
+     */
+    public function getSalaryPmtMethod()
+    {
+        return $this->salaryPmtMethod;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -409,5 +1049,53 @@ class NmtHrEmployee
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set nationality
+     *
+     * @param \Application\Entity\NmtApplicationCompany $nationality
+     *
+     * @return NmtHrEmployee
+     */
+    public function setNationality(\Application\Entity\NmtApplicationCompany $nationality = null)
+    {
+        $this->nationality = $nationality;
+
+        return $this;
+    }
+
+    /**
+     * Get nationality
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getNationality()
+    {
+        return $this->nationality;
+    }
+
+    /**
+     * Set birthCountry
+     *
+     * @param \Application\Entity\NmtApplicationCountry $birthCountry
+     *
+     * @return NmtHrEmployee
+     */
+    public function setBirthCountry(\Application\Entity\NmtApplicationCountry $birthCountry = null)
+    {
+        $this->birthCountry = $birthCountry;
+
+        return $this;
+    }
+
+    /**
+     * Get birthCountry
+     *
+     * @return \Application\Entity\NmtApplicationCountry
+     */
+    public function getBirthCountry()
+    {
+        return $this->birthCountry;
     }
 }

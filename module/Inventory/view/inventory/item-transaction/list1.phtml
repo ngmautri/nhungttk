@@ -22,6 +22,7 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>PR Number</b></td>
 			<td><b>Vendor</b></td>
 			<td><b>Flow</b></td>
 			<td><b>Q'ty</b></td>
@@ -47,6 +48,8 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	 			<td><?php if($a->getPrRow()!==null): echo $a->getPrRow()->getPr()->getPrNumber(); endif;?></td>
+	 
 			<td><?php if($a->getVendor()!==null): echo $a->getVendor()->getVendorName(); endif;?></td>
 			<td><?php echo $this->escapeHtml($a->getFlow());?></td>
 	

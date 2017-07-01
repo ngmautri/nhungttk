@@ -1,19 +1,4 @@
 
-<form class="form-inline"
-	action="<?php echo $this->baseUrl ?>/procure/pr-search/do" method="get"
-	enctype="multipart/form-data">
-	<div class="form-group">
-		<input class="form-control" size="25" type="text" name="q">
-	</div>
-	<div class="form-group">
-		<button type="submit" class="btn btn-default">
-			<small><i class="glyphicon glyphicon-search"> </i></small> Search
-		</button>
-	</div>
-
-</form>
-<hr>
-
 <div>
 	<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
 		href="#transaction" class="" data-toggle="collapse">FILTER</a>
@@ -23,14 +8,14 @@
 	<div
 		style="border: 1px; padding: 3px; font-size: 10pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 
-		<form class="form-horizontal"
+		<form id="filter_form" class="form-horizontal"
 			action="<?php echo $this->baseUrl ?>/procure/pr-row/all" method="get"
 			enctype="multipart/form-data">
 
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="inputTag">PR Year</label>
 				<div class="col-sm-3">
-					<select name="pr_year"  class="form-control">
+					<select name="pr_year" class="form-control">
 						<option value="0">All</option>
 						<option <?php echo $pr_year=='2016'? "selected='selected'":"";?>
 							value="2016">2016</option>
@@ -74,7 +59,7 @@
 					</select>
 				</div>
 			</div>
-			
+
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="inputTag">Sort by</label>
 				<div class="col-sm-3">
@@ -99,7 +84,7 @@
 						<option
 							<?php echo $sort_by=='balance'? "selected='selected'":"";?>
 							value="balance">Balance</option>
-							<option
+						<option
 							<?php echo $sort_by=='prSubmitted'? "selected='selected'":"";?>
 							value="prSubmitted">Pr Date</option>
 					</select> <input
@@ -111,34 +96,12 @@
 				</div>
 			</div>
 
-
-			<div class="form-group">
-				<label class="control-label col-sm-2" for="inputTag">Result per page</label>
-				<div class="col-sm-3">
-					<select class="form-control" name="perPage">
-						<option value="">None</option>
-						<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
-							value="15">15</option>
-
-						<option <?php echo $per_pape=='20'? "selected='selected'":"";?>
-							value="20">20</option>
-
-						<option <?php echo $per_pape=='30'? "selected='selected'":"";?>
-							value="30">30</option>
-
-						<option <?php echo $per_pape=='50'? "selected='selected'":"";?>
-							value="50">50</option>
-						<option <?php echo $per_pape=='100'? "selected='selected'":"";?>
-							value="100">100</option>
-						<option <?php echo $per_pape=='200'? "selected='selected'":"";?>
-							value="200">200</option>
-					</select>
-				</div>
-			</div>
-
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" class="btn btn-default">Show</button>
+					<button onclick="submitForm('Edit_PR_Form');"
+						class="btn btn-default">
+						<i class="glyphicon glyphicon-OK"> </i> OK
+					</button>
 				</div>
 			</div>
 
@@ -148,149 +111,122 @@
 </div>
 <br>
 
-<?php
 
-if ($total_records <= 0) {
+<div id="pr_row_gird" style="margin: 1px;"></div>
+
+<script>
+
+   	 //to check whether any row is currently being edited.
+    function isEditing($grid) {
+        var rows = $grid.pqGrid("getRowsByClass", { cls: 'pq-row-edit' });
+        if (rows.length > 0) {
+            //focus on editor if any 
+            $grid.find(".pq-editor-focus").focus();
+            return true;
+        }
+        return false;
+    }
+
+     
+	  //called by add button in toolbar.
+    function addRow($grid) {
+    	 if (isEditing($grid)) {
+    	        return false;
+    	    }
+    	  
+    	//append empty row in the first row.                            
+        var rowData = { Item: "", Quantity: 0, Received: 0, Balance: 0}; //empty row template
+        $grid.pqGrid("addRow", { rowIndxPage: 0, rowData: rowData });
+
+        var $tr = $grid.pqGrid("getRow", { rowIndxPage: 0 });
+        if ($tr) {
+            //simulate click on edit button.
+            $tr.find("button.edit_btn").click();
+        }
+    }
+
+    var columns = [
+    	{ title: "#", dataType: "string", dataIndx: "row_number", width: 7	,editable: false },
+        { title: "PR Number", dataType: "string", dataIndx: "pr_number", width: 150,editable: false },
+    	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
+       	{ title: "Item", dataType: "string", dataIndx: "item_name", width: 280,editable: false },
+        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',hidden: false},
+        { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
+        { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
+        { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 80,align: 'left',editable: false},
+        { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 100,align: 'right', hidden: false},
+        { title: "Curr", dataType: "string", dataIndx: "currency", width: 3,align: 'center', hidden: false},
+        
+        //{ title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
+        
+        { title: "", editable: false, minWidth: 90, sortable: false,
+            render: function (ui) {
+                return "<button type='button' class='receive_btn'>Receive</button>";
+	           }
+        },
+   ];
+
+    var url = "/procure/pr-row/gird-all?pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>";
+	//var url = "/procure/pr-row/gird-all";
+	//var url = "/procure/pr-row/gird-all?pr_year=2017&balance=0&is_active=&sort_by=currency&sort=ASC";
 	
-	echo 'No record found!';
-} else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
-	} else {
-		echo $total_records . ' records found!';
-	}
-	
-	?>
+	//alert(url);
+	 var dataModel = {
+    		  dataType: "JSON",
+              location: "remote",
+              method: "GET",
+              recIndx: "row_id",
+              url: url,
+              getData: function (response) {
+           	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
+             },
+            
+       	
+    };
 
+    //var container_height = $('#main_container').height();
+    //alert(container_height);
+	var obj = { width: "100%", height: 680, showTitle : true,
+			resizable:true,
+			//draggable:true,
+			sortable: true,
+			hoverMode: 'cell',
+			pageModel: { type: "remote", rPP:100, strRpp: "{0}" },
+			columnBorders: true,
+			dataModel: dataModel,
+			colModel: columns,
+			    numberCell: { resizable: true, width: 40, title: "#", minWidth: 25 },
+	            resizable: true
+       		
+   	};
 
+    var $grid = $("#pr_row_gird").pqGrid(obj);
 
+    $grid.on('pqgridrefresh pqgridrefreshrow', function () {
+        //debugger;
+        var $grid = $(this);
 
-<table style="font-size: 10pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>PR</b></td>
-			<td><b>Item</b></td>
-			<td><b>Ordered<br>Q'ty</b></td>
-			<td><b>Received<br>Q'ty</b></b></td>
-			<td><b>Balance</b></td>
-			<td><b>Free</b></td>
-			<td><b>Vendor</b></td>
-			<td><b>Unit Price</b></td>
-			<td><b>Curr.</b></td>
-			<td><b>Unit</b></td>			
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
+        //receive button
+        $grid.find("button.receive_btn").button({})
+        .unbind("click")
+        .bind("click", function (evt) {
 
-	<tbody>
+            var $tr = $(this).closest("tr"),
+            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+    
+            redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+          	//alert(rowData['item_name']);
+
+          	window.open(redirectUrl,'_blank');
+        });
+
+      });
+    
  
-	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
-		$count ++;
-		?>
-	<tr>
-			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-			<td><a style="color: #337ab7;" href="javascript:;"
-				onclick="showJqueryDialog('Detail of PR: <?php echo $this->escapeJs($a['pr_number']) ?>','950','550', '/procure/pr-row/list1?token=<?php echo $a['pr_token'] ?>&checksum=<?php echo $a['pr_checksum'] ?>&target_id=<?php echo $a['pr_id'] ?>','j_loaded_data', true);"><?php echo $a['pr_number'] ?>
-</a></td>
-			<td><a style="color: #337ab7;" href="javascript:;"
-				onclick="showJqueryDialog('Detail of Item: <?php echo $this->escapeJs($a['item_name']) ?>','950','550', '/inventory/item/show1?token=<?php echo $a['item_token'] ?>&checksum=<?php echo $a['item_checksum'] ?>&entity_id=<?php echo $a['item_id'] ?>','j_loaded_data', true);"><?php echo $a['item_name'] ?>
-</a></td>
+</script>
 
-			<td><?php echo $a['quantity'] ?></td>
-			<td>
-<?php if($a['total_received']>0):?>
-<a style="color: #337ab7;" href="javascript:;"
-				onclick="showJqueryDialog('Receiving of Item: <?php echo $this->escapeJs($a['item_name']) ?>','980','550', '/inventory/item-transaction/pr-row?pr_row_id=<?php echo $a['id'] ?>','j_loaded_data', true);"><?php echo $a['total_received'] ?>
-</a>
-<?php endif;?>			
-			</td>
-			<td><?php echo $a['confirmed_balance'] ?></td>
-			<td><?php echo $a['confirmed_free_balance'] ?></td>
-			<td>
-			
-			
-<?php if($a['vendor_id']!== null): ?>
-<a target= "blank" href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $a['vendor_token'];?>&entity_id=<?php echo $a['vendor_id'];?>&checksum=<?php echo $a['vendor_checksum'];?>"><?php echo $a['vendor_name'];?></a>
-<?php endif; ?>			
-	</td>		
-			<td>
-<?php if(!$a['vendor_unit_price'] == null): 
-
-if($a['currency']=="USD"):
-echo number_format($a['vendor_unit_price'], 2); 
-else:
-echo number_format($a['vendor_unit_price']);
-endif;
-endif;?>			
-			</td>
-			<td><?php echo $a['currency'] ?></td>
-			<td><?php echo $a['vendor_item_unit'] ?></td>
-
-
-
-			<td><a
-				href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $a['token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['checksum'] ?>">Show</a>
-				<a
-				href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo $a['token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['checksum'] ?>">Edit</a>
-			<a
-				href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr?token=<?php echo $a['token'] ?>&pr_row_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['checksum'] ?>">Receive</a>
-
-			</td>
-		</tr>
-<?php endforeach; ?>
-
- </tbody>
-</table>
-
-<?php
-	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-	$base = $this->baseUrl . '/procure/pr-row/all?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort. '&balance=' . $balance;
-		$_connector_symbol = '&';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
-endif;
-	
-}
-// ===============================
-?>
 
 

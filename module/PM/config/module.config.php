@@ -7,7 +7,28 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 return array (
-		
+		'navigation' => array (
+				'pm_navi' => array (
+						array (
+								'label' => 'Home',
+								'route' => 'application'
+						),
+						array (
+								'label' => 'Create New Project',
+								'route' => 'pm/default',
+								'controller' => 'project',
+								'action' => 'add',
+								'icon' => 'glyphicon glyphicon-plus'
+						),
+						array (
+								'label' => 'Project List',
+								'route' => 'pm/default',
+								'controller' => 'project',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right'
+						)
+				)
+		),
 		'router' => array (
 				'routes' => array (
 						
@@ -45,6 +66,8 @@ return array (
 				'factories' => array (
 						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
 						'PM\Service\ProjectSearchService' => 'PM\Service\ProjectSearchServiceFactory',
+						'pm_navi' => 'PM\Service\PmNavigationFactory', // <-- add this
+						
 				) 
 		),
 		'translator' => array (
@@ -75,6 +98,7 @@ return array (
 				'exception_template' => 'error/index',
 				'template_map' => array (
 						'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+						'PM/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
 						'user/index/index' => __DIR__ . '/../view/user/index/index.phtml',
 						'error/404' => __DIR__ . '/../view/error/404.phtml',
 						'error/index' => __DIR__ . '/../view/error/index.phtml',

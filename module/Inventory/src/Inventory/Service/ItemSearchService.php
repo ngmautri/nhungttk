@@ -214,6 +214,50 @@ class ItemSearchService {
 	
 	/**
 	 *
+	 * @param unknown $q
+	 * @param unknown $department_id
+	 */
+	public function searchAll($q,$isActive=1) {
+		try {
+			$index = Lucene::open ( getcwd () . self::ITEM_INDEX );
+			
+			$final_query = new Boolean ();
+			
+			if (strpos ( $q, '*' ) != false) {
+				$pattern = new Term ( $q );
+				$query = new Wildcard ( $pattern );
+				$final_query->addSubquery ( $query, true );
+			} else {
+				$subquery = new MultiTerm ();
+				$subquery->addTerm ( new Term ( $q ) );
+				$final_query->addSubquery ( $subquery, true );
+			}
+			
+			$subquery1 = new MultiTerm ();
+			$subquery1->addTerm ( new Term ( $isActive, 'is_active' ) );
+			
+			$final_query->addSubquery ( $subquery1, true );
+			
+			// var_dump ( $final_query );
+			$hits = $index->find ( $final_query );
+			
+			$result = [
+					"message" => count ( $hits ) . " result(s) found for query: <b>" . $q . "</b>",
+					"hits" => $hits
+			];
+			
+			return $result;
+		} catch ( \Exception $e ) {
+			$result = [
+					"message" => 'Query: <b>' . $q . '</b> sent , but exception catched: <b>' . $e->getMessage () . "</b>\n",
+					"hits" => null
+			];
+			return $result;
+		}
+	}
+	
+	/**
+	 *
 	 * @param unknown $q        	
 	 * @param unknown $department_id        	
 	 */

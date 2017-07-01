@@ -7,6 +7,85 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 return array (
+		
+		'navigation' => array(
+				'default' => array(
+						array(
+								'label' => 'Home',
+								'route' => 'application',
+						),
+						array(
+								'label' => 'Company',
+								'route' => 'application/default',
+								'controller' => 'company',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right',
+						),
+						array(
+								'label' => 'Department',
+								'route' => 'application/default',
+								'controller' => 'department',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right',
+						),
+						array(
+								'label' => 'Country',
+								'route' => 'application/default',
+								'controller' => 'country',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right',
+						),
+						array(
+								'label' => 'Currency',
+								'route' => 'application/default',
+								'controller' => 'currency',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right',
+						),
+						array(
+								'label' => 'Unit Of Measures',
+								'route' => 'application/default',
+								'controller' => 'uom',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right',
+						),
+						array(
+								'label' => 'Item Category',
+								'route' => 'application/default',
+								'controller' => 'item-category',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right',
+						),
+						
+						
+						array(
+								'label' => 'ACL',
+								'route' => 'application/default',
+								'controller' => 'acl',
+								'action' => 'list-resources',
+								'icon' => 'glyphicon glyphicon-triangle-right',
+						),
+						
+						array(
+								'label' => 'ACL Role',
+								'route' => 'application/default',
+								'controller' => 'role',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right',
+						),
+						array(
+								'label' => 'System Information',
+								'route' => 'application/default',
+								'controller' => 'index',
+								'action' => 'info',
+								'icon' => 'glyphicon glyphicon-triangle-right',
+						),
+				),
+		),
+		
+		
+		
+		
 		'doctrine' => array (
 				'driver' => array (
 						'Application_driver' => array (
@@ -23,7 +102,7 @@ return array (
 						) 
 				) 
 		),
-		
+				
 		'router' => array (
 				'routes' => array (
 						
@@ -40,183 +119,31 @@ return array (
 												'controller' => 'Index',
 												'action' => 'index' 
 										) 
+								),
+								'may_terminate' => true,
+								'child_routes' => array (
+										'default' => array (
+												'type' => 'Segment',
+												'options' => array (
+														'route' => '/[:controller[/:action]]',
+														'constraints' => array (
+																'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+																'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+														),
+														'defaults' => array ()
+												)
+										)
 								) 
 						
 						),
-						
-						// For AclController
-						'app_acl' => [ 
-								'type' => 'segment',
-								'options' => [ 
-										'route' => '/application/acl[/:action]', // to update
-										'constraints' => [ 
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+' 
-										],
-										'defaults' => [ 
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'Acl', // to update
-												'action' => 'index' 
-										] 
-								] 
-						],
-						
-						// For RoleController
-						'app_role' => [ 
-								'type' => 'segment',
-								'options' => [ 
-										'route' => '/application/role[/:action]', // to update
-										'constraints' => [ 
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+' 
-										],
-										'defaults' => [ 
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'Role', // to update
-												'action' => 'index' 
-										] 
-								] 
-						],
-						
-						// For DepartmentController
-						'app_department' => [ 
-								'type' => 'segment',
-								'options' => [ 
-										'route' => '/application/department[/:action]', // to update
-										'constraints' => [ 
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+' 
-										],
-										'defaults' => [ 
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'Department', // to update
-												'action' => 'index' 
-										] 
-								] 
-						],
-						
-						// For CountryController
-						'app_country' => [ 
-								'type' => 'segment',
-								'options' => [ 
-										'route' => '/application/country[/:action]', // to update
-										'constraints' => [ 
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+' 
-										],
-										'defaults' => [ 
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'Country', // to update
-												'action' => 'index' 
-										] 
-								] 
-						],
-						// For CountryController
-						'app_currency' => [
-								'type' => 'segment',
-								'options' => [
-										'route' => '/application/currency[/:action]', // to update
-										'constraints' => [
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+'
-										],
-										'defaults' => [
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'Currency', // to update
-												'action' => 'index'
-										]
-								]
-						],
-						// For CountryController
-						'app_uom' => [
-								'type' => 'segment',
-								'options' => [
-										'route' => '/application/uom[/:action]', // to update
-										'constraints' => [
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+'
-										],
-										'defaults' => [
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'Uom', // to update
-												'action' => 'index'
-										]
-								]
-						],
-						// For CompanyController
-						'app_company' => [
-								'type' => 'segment',
-								'options' => [
-										'route' => '/application/company[/:action]', // to update
-										'constraints' => [
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+'
-										],
-										'defaults' => [
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'Company', // to update
-												'action' => 'index'
-										]
-								]
-						],
-						// For PmtMethodeController
-						'app_pmtmethod' => [
-								'type' => 'segment',
-								'options' => [
-										'route' => '/application/pmt-method[/:action]', // to update
-										'constraints' => [
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+'
-										],
-										'defaults' => [
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'PmtMethod', // to update
-												'action' => 'index'
-										]
-								]
-						],
-						// For PmtMethodeController
-						'app_itemcategory' => [
-								'type' => 'segment',
-								'options' => [
-										'route' => '/application/item-category[/:action]', // to update
-										'constraints' => [
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+'
-										],
-										'defaults' => [
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'ItemCategory', // to update
-												'action' => 'index'
-										]
-								]
-						],
-						// For PmtMethodeController
-						'app_search' => [
-								'type' => 'segment',
-								'options' => [
-										'route' => '/application/search[/:action]', // to update
-										'constraints' => [
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+'
-										],
-										'defaults' => [
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'Search', // to update
-												'action' => 'index'
-										]
-								]
-						],
-						// For indexController
-						'app_index' => [
-								'type' => 'segment',
-								'options' => [
-										'route' => '/application/index[/:action]', // to update
-										'constraints' => [
-												'action' => '[a-zA-Z][a-zA-Z0-9_-]+'
-										],
-										'defaults' => [
-												'__NAMESPACE__' => 'Application\Controller',
-												'controller' => 'Index', // to update
-												'action' => 'index'
-										]
-								]
-						]
 				) 
 		),
 		'service_manager' => array (
 				'factories' => array (
 						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+						'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory', // <-- add this
+						
+						
 						'Application\Service\ApplicationService' => 'Application\Service\ApplicationServiceFactory',
 						'Application\Service\PdfService' => 'Application\Service\PdfServiceFactory',
 						'Application\Service\ExcelService' => 'Application\Service\ExcelServiceFactory',
@@ -276,6 +203,8 @@ return array (
 				'exception_template' => 'error/index',
 				'template_map' => array (
 						'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+						'Application/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
+						
 						'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
 						'error/404' => __DIR__ . '/../view/error/404.phtml',
 						'error/index' => __DIR__ . '/../view/error/index.phtml' 

@@ -31,9 +31,13 @@ class AuthController extends AbstractActionController {
 	}
 	public function authenticateAction() {
 		
+		$this->layout("layout/layout");
+		
 		// User is authenticated
 		if ($this->getAuthService ()->hasIdentity ()) {
-			return $this->redirect ()->toRoute ( 'Inventory' );
+			//return $this->redirect ()->toRoute ( 'Inventory' );
+			return $this->redirect ()->toUrl ( '/inventory/item/list' );
+			
 		}
 		
 		$request = $this->getRequest ();
@@ -67,7 +71,8 @@ class AuthController extends AbstractActionController {
 				$session = new Container('MLA_USER');
 				$session->offsetSet('user', $user);
 				
-				return $this->redirect ()->toRoute ( 'Inventory' );
+				return $this->redirect ()->toUrl ( '/inventory/item/list' );
+				
 			} else {
 				
 				// $route = $this->getServiceLocator ()->get ( 'application' )->getMvcEvent()->getRouteMatch();

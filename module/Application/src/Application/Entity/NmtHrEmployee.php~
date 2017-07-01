@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrEmployee
  *
- * @ORM\Table(name="nmt_hr_employee", uniqueConstraints={@ORM\UniqueConstraint(name="employee_code_UNIQUE", columns={"employee_code"})}, indexes={@ORM\Index(name="nmt_hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_employee_FK2_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_hr_employee", uniqueConstraints={@ORM\UniqueConstraint(name="employee_code_UNIQUE", columns={"employee_code"})}, indexes={@ORM\Index(name="nmt_hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_employee_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_hr_employee_FK3_idx", columns={"nationality"}), @ORM\Index(name="nmt_hr_employee_FK4_idx", columns={"birth_country"})})
  * @ORM\Entity
  */
 class NmtHrEmployee
@@ -92,6 +92,146 @@ class NmtHrEmployee
     private $lastChangeOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="sso_number", type="string", length=45, nullable=true)
+     */
+    private $ssoNumber;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="sso_date", type="datetime", nullable=true)
+     */
+    private $ssoDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="family_book_no", type="string", length=45, nullable=true)
+     */
+    private $familyBookNo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="personal_id_no", type="string", length=45, nullable=true)
+     */
+    private $personalIdNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="personal_id_issue_date", type="datetime", nullable=true)
+     */
+    private $personalIdIssueDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="personal_id_issue_place", type="string", length=45, nullable=true)
+     */
+    private $personalIdIssuePlace;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="personal_id_expire_date", type="datetime", nullable=true)
+     */
+    private $personalIdExpireDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="passport_no", type="string", length=45, nullable=true)
+     */
+    private $passportNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="passport_issue_date", type="datetime", nullable=true)
+     */
+    private $passportIssueDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="passport_issue_place", type="string", length=45, nullable=true)
+     */
+    private $passportIssuePlace;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="passport_expire_date", type="datetime", nullable=true)
+     */
+    private $passportExpireDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="stay_permit_no", type="string", length=45, nullable=true)
+     */
+    private $stayPermitNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="stay_permit_issue_date", type="datetime", nullable=true)
+     */
+    private $stayPermitIssueDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="stay_permit_issue_place", type="string", length=45, nullable=true)
+     */
+    private $stayPermitIssuePlace;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="stay_permit_expire_date", type="datetime", nullable=true)
+     */
+    private $stayPermitExpireDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="work_permit_no", type="string", length=45, nullable=true)
+     */
+    private $workPermitNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="work_permit_issue_date", type="datetime", nullable=true)
+     */
+    private $workPermitIssueDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="work_permint_issue_place", type="string", length=45, nullable=true)
+     */
+    private $workPermintIssuePlace;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="work_permit_expire_date", type="datetime", nullable=true)
+     */
+    private $workPermitExpireDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="salary_pmt_method", type="string", length=45, nullable=true)
+     */
+    private $salaryPmtMethod;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -110,6 +250,26 @@ class NmtHrEmployee
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="nationality", referencedColumnName="id")
+     * })
+     */
+    private $nationality;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCountry
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="birth_country", referencedColumnName="id")
+     * })
+     */
+    private $birthCountry;
 
 
 }

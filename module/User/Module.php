@@ -28,6 +28,8 @@ use User\Model\AclWhiteListTable;
 use User\Model\AclUserRole;
 use User\Model\AclUserRoleTable;
 use Zend\Permissions\Acl;
+use Zend\Navigation\Page\Mvc as MvcPage;
+use Zend\Navigation\AbstractContainer;
 
 class Module {
 	
@@ -62,9 +64,9 @@ class Module {
 				'checkACL' 
 		), 100 );
 		
-		
-		
 	}
+	
+	
 	
 	/**
 	 * 
@@ -115,6 +117,8 @@ class Module {
 		
 		// Route is whitelisted
 		$name = $match->getMatchedRouteName ();
+		//var_dump($name);
+		
 		if (in_array ( $name, array (
 				'login',
 				'logout',

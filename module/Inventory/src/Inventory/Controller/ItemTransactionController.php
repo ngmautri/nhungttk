@@ -951,7 +951,7 @@ class ItemTransactionController extends AbstractActionController {
 		);
 		
 		$sort_criteria = array (
-			// 'priceValidFrom' => "DESC"
+			 'trxDate' => "DESC"
 		);
 		
 		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryTrx' )->findBy ( $criteria, $sort_criteria );

@@ -1,6 +1,5 @@
 
-
-<h4><?php echo (!$entity == null)? 'PR: ' . $entity->getPrName():"";?></h4>
+<h5><?php echo (!$entity == null)? 'PR: ' . $entity->getPrName():"";?></h5>
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
@@ -105,7 +104,8 @@
 				</div>
 			</fieldset>
 		</form>
-
+		
+		
 		<fieldset>
 			<legend style="font-size: 10pt; color: gray;">
 				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
@@ -114,10 +114,11 @@
 			<div id="transaction" class="collapse in">
 
 				<div id="pr_rows"></div>
-
 				<div id="pr_row_gird" style="margin: 1px;"></div>
-		
 		</fieldset>
+		
+		
+		
 	</div>
 
 
@@ -158,48 +159,66 @@
             $tr.find("button.edit_btn").click();
         }
     }
-    
-	var obj = { width: "100%", height: 350, title: "ParamQuery Grid Example",
+
+    //var container_height = $('#main_container').height();
+    //alert(container_height);
+	var obj = { width: "100%", height: 450, showTitle : false,
 			//resizable:true,
 			//draggable:true,
 			sortable: true,
-			 hoverMode: 'cell',
+			hoverMode: 'cell',
+			 pageModel: { type: "remote", rPP: 50, strRpp: "{0}" },
 			 columnBorders: true,
-			 /*  toolbar: {
+			   toolbar: {
 	                items: [
 	                    { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
 	                        { "click": function (evt, ui) {
 	                            var $grid = $(this).closest('.pq-grid');
-	                            addRow($grid);
+	                            //addRow($grid);
+	                            
+	    redirectUrl="/procure/pr-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>";
+       	//alert(rowData['item_name']);
+
+          	//window.open(redirectUrl,'_blank');
+	        window.location.href= redirectUrl;
+	                             
 	                            //debugger;
 	                        }
 	                        }
 	                    ]
 	                    }
 	                ]
-	            },  */
+	            },  
 	};
 
     obj.colModel = [
-        { title: "Item", dataType: "string", dataIndx: "item_name", width: 380 },
-        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 80,align: 'right'},
-        { title: "Received", dataType: "integer", dataIndx: "total_received", width:82, align: 'right'},
-        { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 80,align: 'right'},
+    	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
+        { title: "Item", dataType: "string", dataIndx: "item_name", width:280,editable: false },
+        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: false},
+        { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
+        { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
+        { title: "Project", dataType: "string", dataIndx: "project_id", width: 70, align: 'right',editable: false},
+        { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 90, align: 'left',editable: false},
+        { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 82, align: 'right',editable: false},
+        { title: "Curr", dataType: "string", dataIndx: "currency", width:3, align: 'center',editable: false},
+             
+        { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         
-        { title: "", editable: false, minWidth: 200, sortable: false,
+        { title: "", editable: false, minWidth: 90, sortable: false,
             render: function (ui) {
-                return "<button type='button' class='receive_btn'>Receive</button> <button type='button' class='received_btn'>Received</button>";
+                return "<button type='button' class='edit_btn'><small><i class='glyphicon glyphicon-pencil'>&nbsp;</i></small></button> <button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
 	           }
-        }
+        },
    ];
 
     obj.dataModel = {
     		  dataType: "JSON",
               location: "remote",
+              method: "GET",
               recIndx: "row_id",
               url: "/procure/pr-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>",
               getData: function (response) {
-           	    return { data: response.data };
+           	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }
     };
     
@@ -222,12 +241,13 @@
     
             redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
           	//alert(rowData['item_name']);
-
-          	window.open(redirectUrl,'_blank');
+			
+			window.location.href = redirectUrl;
+          	//window.open(redirectUrl,'_blank');
         });
 
         //receive button
-        $grid.find("button.received_btn").button({})
+        $grid.find("button.edit_btn").button({})
         .unbind("click")
         .bind("click", function (evt) {
 
@@ -237,11 +257,10 @@
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
-          	//alert(rowData['item_name']);
-
+            redirectUrl="/procure/pr-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+          	//alert(redirectUrl);
+			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');
-          	showJqueryDialog('Receiving of Item:',980,550, '/inventory/item-transaction/pr-row?pr_row_id='+ rowData['row_id'],'j_loaded_data', true)
         });
     });        
 

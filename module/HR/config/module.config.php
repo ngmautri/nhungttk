@@ -7,6 +7,28 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 return array (
+		'navigation' => array (
+				'hr_navi' => array (
+						array (
+								'label' => 'Home',
+								'route' => 'application'
+						),
+						array (
+								'label' => 'Create New Employee',
+								'route' => 'hr/default',
+								'controller' => 'employee',
+								'action' => 'add',
+								'icon' => 'glyphicon glyphicon-plus'
+						),
+						array (
+								'label' => 'Employee List',
+								'route' => 'hr/default',
+								'controller' => 'employee',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right'
+						)
+				)
+		),
 		'router' => array (
 				'routes' => array (
 						// The following is a route to simplify getting started creating
@@ -46,6 +68,8 @@ return array (
 		'service_manager' => array (
 				'factories' => array (
 						'HR\Service\EmployeeSearchService' => 'HR\Service\EmployeeSearchServiceFactory',
+						'hr_navi' => 'HR\Service\HrNavigationFactory', // <-- add this
+						
 				)
 		),
 		
@@ -73,6 +97,7 @@ return array (
 				'exception_template' => 'error/index',
 				'template_map' => array (
 						'layout1/layout' => __DIR__ . '/../view/layout/layout.phtml',
+						'HR/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
 						'hr/index/index' => __DIR__ . '/../view/hr/index/index.phtml',
 						'error/404' => __DIR__ . '/../view/error/404.phtml',
 						'error/index' => __DIR__ . '/../view/error/index.phtml' 

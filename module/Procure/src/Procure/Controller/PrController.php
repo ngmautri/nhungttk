@@ -197,6 +197,7 @@ class PrController extends AbstractActionController {
 			
 			$this->flashMessenger ()->addMessage ( 'Purchase Request "' . $prNumber . '" is created successfully!' );
 			
+			$redirectUrl="/procure/pr/show?token=".$entity->getToken(). "&entity_id=".$entity->getId()."&checksum=".$entity->getChecksum();
 			return $this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
@@ -212,6 +213,8 @@ class PrController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function listAction() {
+		$this->layout ( "layout/fluid" );
+		
 		$criteria = array ();
 		
 		// var_dump($criteria);
@@ -253,10 +256,12 @@ class PrController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function allAction() {
+		//$this->layout ( "layout/fluid" );
+		
 		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		$sort = $this->params ()->fromQuery ( 'sort' );
 		$balance = $this->params ()->fromQuery ( 'balance' );
-		$is_active = $this->params ()->fromQuery ( 'is_active' );
+		$is_active = (int) $this->params ()->fromQuery ( 'is_active' );
 		
 		if ($sort_by == null) :
 			$sort_by = "prNumber";

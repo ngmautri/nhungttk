@@ -1,3 +1,4 @@
+<!-- 
  <ul class="nav nav-pills">
 	<li><a href="<?php echo $this->baseUrl ?>/inventory/item/list">Item List</a></li>
 </ul>
@@ -11,10 +12,16 @@
   </div>
   
 </form>
+ -->
+ 
+ <div id="tabs" style="font-size: 9.5pt">
 
+	<ul>
+		<li><a href="#general">Search Result</a></li>
+	</ul>
+<div id="general">
 
 <?php
-echo '<hr>';
 echo '<span>';
 echo $message;
 echo '</span>';
@@ -22,7 +29,7 @@ echo '</span>';
 if (! $hits == null) :
 	
 	?>
-<table style = "font-size: 10pt;" class="table table-hover table-bordered">
+<table style = "font-size: 9.5pt;" class="table table-hover table-bordered">
 	<thead>
 		<tr style = "">
 			<td><b>#</b></td>
@@ -70,3 +77,5 @@ if (! $hits == null) :
 
 
 <?php endif; ?>
+</div></div>
+

@@ -16,137 +16,165 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Purchasing Data</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Purchasing Data</a></li>
+	</ul>
 
-<div id="general"> 
+	<div id="general">
 
-<form id="Create_Purchase_Form" class="form-horizontal" action="/inventory/item-purchase/add" method="post" enctype="multipart/form-data">
-<input type="hidden" name="target_id" value="<?php echo (!$target == null)? $target->getId():"";?>" />
-<input type="hidden" name="token" value="<?php echo (!$target == null)? $target->getToken():"";?>" />
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+		<form id="Create_Purchase_Form" class="form-horizontal"
+			action="/inventory/item-purchase/add" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="target_id"
+				value="<?php echo (!$target == null)? $target->getId():"";?>" /> <input
+				type="hidden" name="token"
+				value="<?php echo (!$target == null)? $target->getToken():"";?>" />
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Vendor:</label>
-		<div class="col-sm-3">
-<input disabled class="form-control" type="text" id="vendor_name" placeholder="Select vendor" name="vendor_name" 
-value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
-				
-<input type="hidden" id="vendor_id" placeholder="" 	name="vendor_id" 
-value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
-<input <?php if(!$entity== null): echo ($entity->getIsPreferredVendor()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isPreferredVendor" value="1">&nbsp;Is Preferred&nbsp;&nbsp;
-<input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-		</div>
-		
+			<div class="form-group">
+				<label class="control-label col-sm-2">Vendor:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" id="vendor_name"
+						placeholder="Select vendor" name="vendor_name"
+						value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
 
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Vendor','860','450', '/bp/vendor/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>
-	</div>
+					<input type="hidden" id="vendor_id" placeholder="" name="vendor_id"
+						value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
+					<input
+						<?php if(!$entity== null): echo ($entity->getIsPreferredVendor()=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isPreferredVendor" value="1">&nbsp;Is
+					Preferred&nbsp;&nbsp; <input
+						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+				</div>
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Vendor's Item Code</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="vendorItemCode" value="<?php echo (!$entity == null)? $entity->getVendorItemCode():"";?>">
-		</div>		
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Vendor's Item Unit</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "vendor_item_unit" name="vendorItemUnit" value="<?php echo (!$entity == null)? $entity->getVendorItemUnit():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" >Conversion Factor:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id="conversion_factor" name="conversionFactor" value="<?php echo (!$entity == null)? number_format($entity->getConversionFactor(), 2):"";?>">
-		</div>
-		<span style="font-size: 9.5pt" id="conversion_text"></span> 
-<span><?php if (!$target == null): if (!$target->getStandardUom() == null):echo $target->getStandardUom()->getUomCode();endif;endif;?></span>			
-	</div>
-	
 
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Unit Price</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="vendorUnitPrice" value="<?php echo (!$entity == null)? number_format($entity->getVendorUnitPrice(), 2,'.',''):"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" >Currency:</label>
-		<div class="col-sm-3">
-<input disabled class="form-control" type="text" id="currency_name" placeholder="Select Currency" name="currency_name" 
-value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getCurrency();endif;endif;?>">
-<input type="hidden" id="currency_id" placeholder="" name="currency_id" 
-value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getId();endif;endif;?>">
-		</div>
-		
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Currency','500','450', '/application/currency/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>		
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Valid From:</label>
-		<div class="col-sm-3">
-<input class="form-control" type="text" name="priceValidFrom" 
-value="<?php if(!$entity == null): echo ($entity->getPriceValidFrom() !== null)? date_format($entity->getPriceValidFrom(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_from" />
-		</div>
-		
-		<label class="control-label col-sm-2" >Valid To:</label>
-		<div class="col-sm-3">
-<input class="form-control" type="text" name="priceValidTo" 
-value="<?php if(!$entity == null): echo ($entity->getPriceValidTo() !== null)? date_format($entity->getPriceValidTo(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_to" />
-		</div>		
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Payment Method</label>
-		<div class="col-sm-3">
-<input disabled class="form-control" type="text" id="pmt_method_name" placeholder="Select Payment Method" name="pmt_method_name" 
-value="<?php if (!$entity == null): if (!$entity->getPmtMethod() == null):echo $entity->getPmtMethod()->getMethodCode();endif;endif;?>">
+				<a style="color: #0080ff;" href="javascript:;"
+					onclick="showJqueryDialog('Select Vendor','860','450', '/bp/vendor/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+					class="glyphicon glyphicon-folder-open"></i>
+				</a>
+			</div>
 
-<input type="hidden" id="pmt_method_id" placeholder="" name="pmt_method_id" 
-value="<?php if (!$entity == null): if (!$entity->getPmtMethod() == null):echo $entity->getPmtMethod()->getId();endif;endif;?>">
-		</div>
-		
+			<div class="form-group">
+				<label class="control-label col-sm-2">Vendor's Item Code</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						name="vendorItemCode"
+						value="<?php echo (!$entity == null)? $entity->getVendorItemCode():"";?>">
+				</div>
+			</div>
 
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showJqueryDialog('Select Payment Method','500','450', '/application/pmt-method/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>		
+			<div class="form-group">
+				<label class="control-label col-sm-2">Vendor's Item Unit</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						id="vendor_item_unit" name="vendorItemUnit"
+						value="<?php echo (!$entity == null)? $entity->getVendorItemUnit():"";?>">
+				</div>
+
+				<label class="control-label col-sm-2">Conversion Factor:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						id="conversion_factor" name="conversionFactor"
+						value="<?php echo (!$entity == null)? number_format($entity->getConversionFactor(), 2):"";?>">
+				</div>
+				<span style="font-size: 9.5pt" id="conversion_text"></span> <span><?php if (!$target == null): if (!$target->getStandardUom() == null):echo $target->getStandardUom()->getUomCode();endif;endif;?></span>
+			</div>
+
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">Unit Price</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						name="vendorUnitPrice"
+						value="<?php echo (!$entity == null)? number_format($entity->getVendorUnitPrice(), 2,'.',''):"";?>">
+				</div>
+
+				<label class="control-label col-sm-2">Currency:</label>
+				<div class="col-sm-3">
+					<input disabled class="form-control" type="text" id="currency_name"
+						placeholder="Select Currency" name="currency_name"
+						value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getCurrency();endif;endif;?>">
+					<input type="hidden" id="currency_id" placeholder=""
+						name="currency_id"
+						value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getId();endif;endif;?>">
+				</div>
+
+				<a style="color: #0080ff;" href="javascript:;"
+					onclick="showJqueryDialog('Select Currency','500','450', '/application/currency/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+					class="glyphicon glyphicon-folder-open"></i>
+				</a>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">Valid From:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" name="priceValidFrom"
+						value="<?php if(!$entity == null): echo ($entity->getPriceValidFrom() !== null)? date_format($entity->getPriceValidFrom(),"Y-m-d"):""; endif;?>"
+						placeholder=" please select" id="valid_from" />
+				</div>
+
+				<label class="control-label col-sm-2">Valid To:</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" name="priceValidTo"
+						value="<?php if(!$entity == null): echo ($entity->getPriceValidTo() !== null)? date_format($entity->getPriceValidTo(),"Y-m-d"):""; endif;?>"
+						placeholder=" please select" id="valid_to" />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">Payment Method</label>
+				<div class="col-sm-3">
+					<input disabled class="form-control" type="text"
+						id="pmt_method_name" placeholder="Select Payment Method"
+						name="pmt_method_name"
+						value="<?php if (!$entity == null): if (!$entity->getPmtMethod() == null):echo $entity->getPmtMethod()->getMethodCode();endif;endif;?>">
+
+					<input type="hidden" id="pmt_method_id" placeholder=""
+						name="pmt_method_id"
+						value="<?php if (!$entity == null): if (!$entity->getPmtMethod() == null):echo $entity->getPmtMethod()->getId();endif;endif;?>">
+				</div>
+
+
+				<a style="color: #0080ff;" href="javascript:;"
+					onclick="showJqueryDialog('Select Payment Method','500','450', '/application/pmt-method/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+					class="glyphicon glyphicon-folder-open"></i>
+				</a>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2">Lead time</label>
+				<div class="col-sm-3">
+					<input class="form-control" type="text" placeholder=""
+						name="leadTime"
+						value="<?php echo (!$entity == null)? $entity->getLeadTime():"";?>">
+				</div>
+			</div>
+
+			<div class="form-group">
+
+				<label class="control-label col-sm-2">Remarks</label>
+				<div class="col-sm-3">
+					<textarea class="form-control" type="text" rows="4" placeholder=""
+						name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<button onclick="submitForm('Create_Purchase_Form');" type="submit"
+						id="save" class="btn btn-default">
+						<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save
+					</button>
+				</div>
+			</div>
+
+
+		</form>
 	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Lead time</label>
-		<div class="col-sm-3">
-<input  class="form-control" type="text" placeholder="" name="leadTime" value="<?php echo (!$entity == null)? $entity->getLeadTime():"";?>">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		
-		<label class="control-label col-sm-2" >Remarks</label>
-		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="4" placeholder=""
-				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-	   	<button onclick="submitForm('Create_Purchase_Form');" type="submit" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
-  		</div>
-	</div> 
-		
-	
-</form>
-</div>
 </div>
 
 <script>
@@ -180,6 +208,22 @@ $(function() {
    $( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
    $( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X'});
 });
+
+
+    $( "#vendor_name" ).focus().autocomplete({
+     source: "/bp/vendor-search/auto-complete",
+     minLength: 3,
+     select: function( event, ui ) {
+   	  $( "#vendor_id" ).val(ui.item.id);
+       //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+   	  //alert($( "#vendor_id" ).val());
+
+   	 	$('#global-notice').show();
+   		$('#global-notice').html('"' + ui.item.value + '" selected');
+   		$('#global-notice').fadeOut(5000);
+   		//$("#jquery_dialog").dialog("close");
+     }
+   });
 
 </script>
 

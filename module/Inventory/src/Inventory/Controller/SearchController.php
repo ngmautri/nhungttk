@@ -63,7 +63,7 @@ class SearchController extends AbstractActionController {
 		$q = $this->params ()->fromQuery ( 'q' );
 		
 		if ($q !== "") {
-			$results = $this->itemSearchService->searchAllItem($q );
+			$results = $this->itemSearchService->searchAll($q );
 		} else {
 			$results = [
 					"message"=> "",

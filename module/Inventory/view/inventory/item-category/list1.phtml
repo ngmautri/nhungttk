@@ -1,0 +1,118 @@
+<a style="" href="javascript:;"
+	onclick="$('#html1').jstree('open_all');">Expand all
+</a>
+&nbsp;|&nbsp;
+<a style="color:" href="javascript:;"
+	onclick="$('#html1').jstree('close_all');">Collapse all
+</a>
+
+<div style="font-size: 10pt" id="html1" class="demo">
+	<ul>
+	<?php echo $jsTree ?>
+</ul>
+</div>
+
+
+<script>	
+// html demo
+	$('#html1').jstree({
+		"core" : {
+		       // so that create works
+		       "check_callback" : true
+		     },
+		    "plugins" : [ "contextmenu" ],
+
+		    "contextmenu":{         
+		        "items": function($node) {
+		            var tree = $("#html").jstree(true);
+		            return {
+		                "Create": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Create New Role",
+		                    "action": function (obj) { 
+		                    	var ref = $.jstree.reference(obj.reference);
+                                sel = ref.get_selected();
+        	                    $node = tree.create_node($node);
+			                    tree.edit($node);
+		                    }
+		                },
+		                "Rename": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Rename Role",
+		                    "action": function (obj) { 
+		                        tree.edit($node);
+		                    }
+		                },                         
+		                "Remove": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Remove Role",
+		                    "action": function (obj) { 
+		                        tree.delete_node($node);
+		                    }
+		                },
+		                "Add Member": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Add Member",
+		                    "action": function (obj) {
+		                    	var redirectUrl = "/application/role/add-member?id="+$node.id; 
+		                    	window.location = redirectUrl;
+		                   }
+		                },
+		                "Grant Access": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Grand Access",
+		                    "action": function (obj) {
+		                    	var redirectUrl = "/application/role/grant-access1?role="+$node.id; 
+		                    	window.location = redirectUrl;
+	 
+		                   }
+		                }
+		            };
+		        }
+		    }
+		    
+    });
+
+	// When the jsTree is ready, add two more records.
+	$('#html1').on('create_node.jstree', function (e, data) {
+		alert(data.node.parent +  data.node.id);
+	});
+	
+	$('#html1').on('rename_node.jstree', function (e, data) {
+		alert(data.node.parent +  data.node.id);
+		createRole(data.node.parent,data.node.id,data.node.text);
+    });
+
+	$('#html1').on('delete_node.jstree', function (e, data) {
+		alert(data.node.parent +  data.node.id);
+		//createRole(data.node.parent,data.node.id,data.node.text);
+    });
+
+	$("#html1").on("click", ".jstree-anchor", function(e) {
+
+		   var node = $("#html1").jstree(true).get_node($(this));	
+		   var id = $("#html1").jstree(true).get_node($(this)).id;
+		   var cat_name = $("#html1").jstree(true).get_node($(this)).text;
+
+		   if (!node.state.disabled)
+   		   {
+		   	   $("#node_selected").html('"' + cat_name + '" selected');
+			   $("#item_category_name").val(cat_name);
+			   $("#item_category_name_selected").val(id);
+			   //alert(id);
+			   
+			   //$("#content").text(cat_name);
+			   //loadArticles(id,cat_name);
+		
+			  	$('#modal1 .close').click();
+				$('#global-notice').show();
+				$('#global-notice').html('"' + cat_name + '" selected');
+				$('#global-notice').fadeOut(3000);
+   		   }
+	});
+</script>

@@ -1,23 +1,18 @@
 
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/hr/employee-search/do"	method="get" enctype="multipart/form-data">
-  <div class="form-group">
-    	<input class="form-control" size="28" type="text" name = "q">
- 
- 
-  </div>
-  <div class="form-group">
-     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
-  </div>
-  
-</form>
-<hr>
-
 
 <a style="color: #0080ff;" href="javascript:;"
 	onclick="showJqueryDialog('Select Employee','750','520', '/hr/employee/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
 <br>
  
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Employee List</a></li>
+	</ul>
+<div id="general">
+
+
 
 <?php
 
@@ -118,3 +113,4 @@ endif;
 }
 // ===============================
 ?>
+</div></div>

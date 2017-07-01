@@ -42,13 +42,14 @@ class ItemSearchController extends AbstractActionController {
 		$a_json_row = array ();
 		
 		if ($q !== "") {
-			$results = $this->itemSearchService->searchAllItem( $q );
+			$results = $this->itemSearchService->searchAll( $q );
 			if (count ( $results ) > 0) {
+				$n=1;
 				foreach ( $results['hits'] as $a ) {
 					$a_json_row ["id"] = $a->item_id;
 					$a_json_row ["value"] = $a->item_name . ': ' .$a->item_sku ;
 					$a_json[]=$a_json_row;
-					
+					$n++;
 				}
 			}
 		}
@@ -67,7 +68,7 @@ class ItemSearchController extends AbstractActionController {
 		$q = $this->params ()->fromQuery ( 'q' );
 		
 		if ($q !== "") {
-			$results = $this->itemSearchService->searchAllItem ( $q );
+			$results = $this->itemSearchService->searchAll ( $q );
 		} else {
 			$results = [ 
 					"message" => "",
@@ -112,7 +113,7 @@ class ItemSearchController extends AbstractActionController {
 		
 		if ($q !== null) {
 			if ($q !== "") {
-				$results = $this->itemSearchService->searchAllItem ( $q );
+				$results = $this->itemSearchService->searchAll ( $q );
 			}
 		}
 		

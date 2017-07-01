@@ -1,45 +1,83 @@
 <?php echo $this->doctype(); ?>
 
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-        <?php echo $this->headTitle('Mascot International (Lao) Sole co., Ltd')?>
+<meta charset="utf-8">
+<?= $this->headTitle('Mascot International Laos')->setSeparator(' - ')->setAutoEscape(false) ?>
+<?=$this->headMeta ()->appendName ( 'viewport', 'width=device-width, initial-scale=1.0' )->appendHttpEquiv ( 'X-UA-Compatible', 'IE=edge' )?>
 
-        <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')?>
+<!-- Le styles -->
+<link href="/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
 
- <link rel="icon" href="/img/favicon.ico">
- <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
- <link href="/css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css">
-<link href="/css/style.css" media="screen" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="/css/tables.css" type="text/css">
-<link rel="stylesheet" href="/css/lightgallery.css" type="text/css">
-<link rel="stylesheet" href="/css/lg-transitions.min.css" type="text/css">
+<link href="/bootstrap3/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/bootstrap3/css/bootstrap-theme.min.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/bootstrap3/css/style.css" media="screen" rel="stylesheet" type="text/css">
+	           
 
-<link rel="stylesheet" href="/css/jstree/style.css" type="text/css">
+<link href="/css/lightgallery.css" rel="stylesheet"  type="text/css">
+<link href="/css/lg-transitions.min.css" rel="stylesheet"   type="text/css">
+<link href="/css/jstree/style.css" rel="stylesheet"  type="text/css">
+<link href="/css/bootstrap-editable.css" rel="stylesheet" type="text/css">
+<link href="/css/calendar.css" media="screen" rel="stylesheet"  type="text/css">
+<!-- <link href="/css/tables.css" rel="stylesheet"  type="text/css">  -->
 
-<link rel="stylesheet" href="/jquery/jquery-ui.min.css" type="text/css">
-<link rel="stylesheet" href="/jquery/jquery-ui.theme.min.css" type="text/css">
-<link rel="stylesheet" href="/jquery/jquery-ui.structure.min.css" type="text/css">
+<link href="/jquery/jquery-ui.min.css" rel="stylesheet"  type="text/css">
+<link href="/jquery/jquery-ui.theme.min.css" rel="stylesheet"  type="text/css">
+<link href="/jquery/jquery-ui.structure.min.css" rel="stylesheet"  type="text/css">
 
 
-<!-- Scripts -->
+	<!--PQ Grid files-->
+    <link rel="stylesheet" href="/pqgird/css/pqgrid.min.css" />
+   <link rel="stylesheet" href="/pqselect/pqselect.min.css" />
+
+    
+    <!--PQ Grid Office theme-->
+    <link rel="stylesheet" href="/pqgird/themes/office/pqgrid.css" />
+    
+  <style>
+  
+  .map {
+    width: 220px;
+    height: 220px;
+  }
+  .ui-tooltip {
+    max-width: 250px;
+  }
+  
+  
+  </style>
+  
+  
+  
+
+
+
 <script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/bootstrap3/js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript" src="/jquery/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/exif.js"></script>								
+<script type="text/javascript" src="/js/lightgallery-all.min.js"></script>
+<script type="text/javascript" src="/js/lg-thumbnail.js"></script>
+<script type="text/javascript" src="/js/lg-fullscreen.min.js"></script>
+<script type="text/javascript" src="/js/Observer.js"></script>
+
+<script type="text/javascript" src="/js/jstree.min.js"></script>
+<script type="text/javascript" src="/js/jquery.tabledit.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-editable.min.js"></script>		
 <script type="text/javascript" src="/js/mla.js"></script>
+<script type="text/javascript" src="/js/NMT.js"></script>
 <script type="text/javascript" src="/js/mla-hr.js"></script>
 <script type="text/javascript" src="/js/mla-proc.js"></script>
-<script type="text/javascript" src="/js/exif.js"></script>											
-<script src="/js/lightgallery-all.min.js"></script>
-<script src="/js/lg-thumbnail.js"></script>
-<script src="/js/lg-fullscreen.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/Observer.js"></script>
-<script src="/js/NMT.js"></script>
-<script src="/js/jstree.min.js"></script>
-<script src="/js/jquery.tabledit.min.js"></script>
-<script src="/jquery/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/nmt-inventory.js"></script>
 
+<script src="/pqgird/js/pqgrid.min.js"></script>
+<script src="/pqselect/pqselect.min.js"></script>
 
 <script>
+
+
   var timerSubject = new Subject();
 
   $(function() {
@@ -61,7 +99,11 @@
 
   $(function() {
 	    $( "#tabs" ).tabs({
-	     
+
+	    	beforeLoad:function(e,ui){
+	    		$( ui.panel ).html('<p>Loading...</p>');       
+	    	    },
+	    	   
 	    });
 	  });
   
@@ -69,146 +111,357 @@
 	    $( "#menu" ).menu();
 	  });
 
+
+  $( function() {
+	    $( document ).tooltip({
+	      items: "img, [item-pic], [title]",
+	      content: function() {
+	        var element = $( this );
+	        if ( element.is( "[item-pic]" ) ) {
+	          var text = element.text();
+	          var item_id = element.attr("id");
+	          var item_name = element.attr("item_name");
+
+	          return "<div style='font-size: 10pt'>"+ item_name +"</div><img class='map' alt='"+ item_id +"' src='/inventory/item/get-picture?item_id=" + item_id +"'><div style='font-size: 10pt'>Click for more detail!</div>";
+	        }
+	        if ( element.is( "[title]" ) ) {
+	          return element.attr( "title" );
+	        }
+	        if ( element.is( "img" ) ) {
+	          return element.attr( "alt" );
+	        }
+	      }
+	    });
+	  } );
+
+ 
+
+   startTime();
   </script>
 
 
 </head>
 <body>
 
+	<div style="display: none" id="global-notice"></div>
 
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<a class="btn btn-navbar" data-toggle="collapse"
-					data-target=".nav-collapse"> <span class="icon-bar"></span> <span
-					class="icon-bar"></span> <span class="icon-bar"></span>
-				</a> <a class="brand" href="<?php echo $this->url('Inventory') ?>">Mascot
-					International (Lao) Sole Co., Ltd</a>
-				<div class="nav-collapse collapse">
-					<ul class="nav">
-						<!-- <li class="active"><a href="<?php echo $this->url('Inventory') ?>"><?php echo $this->translate('Home') ?></a></li> -->
-							
-						 
-							
-						  
-						  <?php if ($this->user !== null): ?>
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" >
+		<div class="container" style="padding-right: 0px; padding-left: 0px">
+			<div class="navbar-header" style="padding-right: 0px; padding-left: 0px">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-collapse">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a style="color:#adadad; font-weight: bold;" href="<?= $this->url('home') ?>"> <img
+					src="/img/logo.gif" height="50"
+					alt=""/>&nbsp;Mascot International Laos</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">	
+				 
+				 <?php if ($this->user !== null): ?>
 				
 				 		<li class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#">MESSAGES <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="/procurement/do/get-notification">Delivery
-										Notification</a></li>
+						data-toggle="dropdown" href="#" style="padding-left: 20px;padding-right: 10px; ">My Inbox <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/procurement/do/get-notification">Delivery
+									Notification</a></li>
+						</ul></li>
+						
+						
 
-							</ul></li>
+						<li class="dropdown"><a class="dropdown-toggle"
+						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; ">Inventory <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+						<li><a href="/inventory/item/add"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;Create new item</a></li>
+						<li><a href="/inventory/item/list"><small><i class="glyphicon glyphicon-list"></i></small>&nbsp;Item List</a></li>
+								<li><a href="/application/item-category/list"><small><i class="glyphicon glyphicon-list"></i></small>&nbsp;Item Category</a></li>
+				
+						<li class="divider"></li>
+						<li><a href="/inventory/item-attachment/list"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Items attachement</a></li>
+						<li><a href="/inventory/item-purchase/list"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Items purchasing data</a></li>
+			
+						<li class="divider"></li>
+						<li><a href="/inventory/item-transaction"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Item Transaction</a></li>
+						<li><a href="/inventory/warehouse"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Warehouse management</a></li>
+					
+					
+						</ul>
+						</li>
+						
+						<li class="dropdown" style="padding: 0px; margin:0px;"><a class="dropdown-toggle"
+						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; ">Partner <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+						<li><a href="/bp/vendor/add"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;Create new Vendor</a></li>
+						<li><a href="/bp/vendor/list"><small><i class="glyphicon glyphicon-list"></i></small>&nbsp;Vendor List</a></li>
+						<li><a href="/bp/vendor-search"><small><i class="glyphicon glyphicon-list"></i></small>&nbsp;Vendor Search</a></li>
+						<li><a href="/bp/vendor-attachment/contracts"><small><i class="glyphicon glyphicon-list"></i></small>&nbsp;Vendor Contract List</a></li>
+				
+					
+						</ul>
+						</li>
 						  
 						  <?php if ($this->cart_items !== null): ?>
 						  
 						  <li class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#"> <span class="label"><i
-									class="icon-shopping-cart"> </i></span>
+						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; ">
 						    
-						   
 						    <?php if ($this->cart_items >0): ?>
-						    <span id="cart_items" class="label label-warning">
-						    <?php
-											
-											echo $this->cart_items;
-										 else :
-											?>
+						    <span id="cart_items" class="badge">
+						    <?php								
+								echo $this->cart_items;
+							else :
+								?>
 	  					    <span id="cart_items" class="">
-						    <?php endif;?>
-						    
-						    </span> ORDER LIST <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="/procurement/pr/cart"> <i
-										class="icon-shopping-cart"> </i> Review Cart
-								</a></li>
-								<li class="divider"></li>
-								<li><a href="/procurement/pr/mine">My PR</a></li>
-								<li><a href="/procurement/pr/my-items">My PR Items</a></li>
-							</ul></li>
+						    <?php endif;?>						    
+						    </span>&nbsp;Procure <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/procurement/pr/cart"> <i class="icon-shopping-cart">
+								</i> Review Cart
+							</a></li>
+							<li class="divider"></li>
+							<li><a href="/procurement/pr/mine">My PR</a></li>
+							<li><a href="/procurement/pr/my-items">My PR Items</a></li>
+							<li class="divider"></li>
+							<li><a href="/procure/pr/add">Create New PR</a></li>
+							<li><a href="/procure/pr/all">PR list</a></li>
+							<li><a href="/procure/pr-row/all">PR Row list</a></li>
+					
+						</ul></li>
 						  <?php endif;?>
 						  
-						   	<?php if ($this->isAdmin==true): ?>
-							<li class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#"><span class="label label-default"><i
-									class="icon-lock"> </i> </span> Admin <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="<?php echo $this->baseUrl ?>/user/index/index">User
-										Manager</a></li>
-								<li><a
-									href="<?php echo $this->baseUrl ?>/application/department/list">Department</a>
-								</li>
-								<li><a
-									href="<?php echo $this->baseUrl ?>/application/acl/list-resources">ACL
-										Management</a></li>
-								<li class="divider"></li>
-								<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all">Show
-										all articles</a></li>
-								<li class="divider"></li>
-								<li><a href="<?php echo $this->baseUrl ?>/user/admin/asset-index">Update Asset Index</a></li>
-								<li><a href="<?php echo $this->baseUrl ?>/user/admin/sparepart-index">Update Sparepart Index</a></li>
-								
-							<li><a href="<?php echo $this->baseUrl ?>/user/admin/article-index">Update Item Index</a></li>
-							<li><a href="<?php echo $this->baseUrl ?>/user/admin/vendor-index">Update Vendor Index</a></li>
+						  <li class="dropdown"><a class="dropdown-toggle"
+						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; ">OTHER <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/hr/employee/add">Add employee</a></li>
+							<li><a href="/hr/employee/list">Employee List</a></li>
+							<li><a href="/hr/employee-search">Employee Search</a></li>
+					
 							<li class="divider"></li>
-							<li><a href="<?php echo $this->baseUrl ?>/hr/employee/create-index">Update Employee Index</a></li>
-	
-	
+							<li><a href="/pm/project/add">Add Project</a></li>
+							<li><a href="/pm/project/list">Project List</a></li>
+							<li><a href="/pm/project-search/create-index">Create Project Index</a></li>
+			
+							<li class="divider"></li>
+						
+				
+						</ul></li>
+						  
+						   	<?php if ($this->isAdmin==true): ?>
+						   	
+						   		  <li class="dropdown"><a class="dropdown-toggle"
+						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; "><span class="label label-success">
+								<small><span class="glyphicon glyphicon-wrench"> </span></small>
+						</span>&nbsp;&nbsp;Settings
+						<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="<?php echo $this->baseUrl ?>/user/index/index">User
+									Manager</a></li>
+							<li><a
+								href="<?php echo $this->baseUrl ?>/application/department/list">Department</a>
+							</li>
+							<li><a
+								href="<?php echo $this->baseUrl ?>/application/acl/list-resources">ACL
+									Management</a></li>
+							<li class="divider"></li>
+							<li><a href="<?php echo $this->baseUrl ?>/workflow/wf">Workflow
+									Management</a></li>
+							<li class="divider"></li>
+							<li><a
+								href="<?php echo $this->baseUrl ?>/inventory/article/admin-add"><i
+									class="icon-plus"> </i> Add New Item</a></li>
+							<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all"><i
+									class="icon-list-alt"></i> Show all articles</a></li>
+							<li class="divider"></li>
+							<li><a href="<?php echo $this->baseUrl ?>/user/admin/asset-index">Update
+									Asset Index</a></li>
+							<li><a
+								href="<?php echo $this->baseUrl ?>/user/admin/sparepart-index">Update
+									Sparepart Index</a></li>
+
+							<li><a
+								href="<?php echo $this->baseUrl ?>/user/admin/article-index">Update
+									Item Index</a></li>
+							<li><a
+								href="<?php echo $this->baseUrl ?>/user/admin/vendor-index">Update
+									Vendor Index</a></li>
+							<li class="divider"></li>
+							<li><a
+								href="<?php echo $this->baseUrl ?>/hr/employee/create-index">Update
+									Employee Index</a></li>
 							</ul></li>
 						  <?php endif;?>
 						  
 						  	<?php if ($this->isProcurement==true): ?>
 							<li class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#"><span class="label label-default"></span> PROCUREMENT <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li> <a href="<?php echo $this->baseUrl ?>/procurement/pr/all-pr">All PR</a> </li>
-								<li> <a href="<?php echo $this->baseUrl ?>/procurement/pr/pr-items">All PR Items</a> </li>
-								<li class="divider"></li>
-								
-								<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all">Show all items</a></li>
-							
+						data-toggle="dropdown" href="#"><span class="label label-default"></span>
+							PROCUREMENT <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="<?php echo $this->baseUrl ?>/procurement/pr/all-pr">All
+									PR</a></li>
+							<li><a
+								href="<?php echo $this->baseUrl ?>/procurement/pr/pr-items">All
+									PR Items</a></li>
 							<li class="divider"></li>
-								
-								<li><a href="<?php echo $this->baseUrl ?>/procurement/vendor/list">Show all vendors
-									 </a></li>
-							
-							</ul></li>
+
+							<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all">Show
+									all items</a></li>
+
+							<li class="divider"></li>
+
+							<li><a
+								href="<?php echo $this->baseUrl ?>/procurement/vendor/list">Show
+									all vendors </a></li>
+
+						</ul></li>
 						  <?php endif;?>
 						
 				
 						  <li class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#"><span class="label label-info"
-								title="76 items"><i class="icon-user"> </i> </span> <?php echo $this->user?>
+						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; "><span class="label label-primary">
+								<small><span class="glyphicon glyphicon-user"> </span></small>
+						</span>&nbsp;&nbsp;<?php echo $this->user?>
 						    <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="/user/profile">My Profile</a></li>
-								<li class="divider"></li>
-								<li><a href="/user/auth/logout"><i class="icon-off"></i> Logout</a>
-								</li>
-							</ul></li>
+						<ul class="dropdown-menu">
+							<li><a href="/user/profile"><small><i class="glyphicon glyphicon-user">
+								</i></small>&nbsp;My Profile</a></li>
+							<li class="divider"></li>
+							<li><a href="/user/auth/logout"><small><i
+									class="glyphicon glyphicon-log-out"></i></small>&nbsp;Logout</a></li>
+						</ul></li>
+						
+						
 						  <?php endif;?>
-		
-						  
+				<li id="clock1" style="color: #FFFFCC; padding: 6px 4px 2px 15px; font-size:10pt;"></li>
+					
 					</ul>
-				</div>
-				<!--/.nav-collapse -->
+					
+			</div>
+		</div>
+	</nav>
+
+
+  
+  <div class="container-fluid" id="main_container">
+  
+  
+   <div class="row row-offcanvas row-offcanvas-right">
+       <div class="col-xs-12 col-sm-10 col-sm-push-2 ">
+           <p class="pull-right visible-xs">
+            <button type="button" class="btn btn-primary" data-toggle="offcanvas" title="Toggle sidebar"><i class="fa fa-chevron-right"></i></button>
+          </p>
+             <div class="row" style="padding-right:5px">
+             	<h5><strong>PROJECT MANAGER MODULE</strong></h5>
+     	      <?= $this->content ?>
+        	 </div><!--/row-->
+        </div><!--/.col-xs-12.col-sm-9-->
+
+         <div class="col-xs-6 col-sm-2 col-sm-pull-10 sidebar-offcanvas" id="sidebar" style="font-size: 9.5pt; ">
+         
+          <form id="item_search_form" class="form-inline" action="<?php echo $this->baseUrl ?>/pm/project-search/do"	method="get" enctype="multipart/form-data">
+  <div class="form-group">
+    	<input placeholder ="Search Project..." class="form-control" size="15" type="text" name = "q">
+ 
+ 
+  </div>
+  <div class="form-group">
+  		<button onclick="submitForm('item_search_form');" class="btn btn-default"><i class="glyphicon glyphicon-search"> </i></button>
+ </div>
+  
+</form>
+			    <?php // <-- Update this !!
+				    echo $this->navigation('pm_navi')
+				              ->menu()
+				              ->setMinDepth(0)
+				              ->setMaxDepth(0)
+				              ->setUlClass('nav nav-pills nav-stacked')->setPartial('navigation.phtml');
+				    ?>
+        </div><!--/.sidebar-offcanvas-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; 2016-2017 Nguyen Mau Tri</p>
+      </footer>
+       
+    </div><!--/.container-->
+    
+<div id="flash_messages" class="global-notice" style="display: none;"><?php
+if($this->flashMessenger()!==null){
+	echo $this->flashMessenger()->render();
+}?></div>
+
+<script>
+		var flash_message = $( "#flash_messages" ).text();
+		if(flash_message!=''){
+			$( "#flash_messages" ).show();
+			$( "#flash_messages" ).delay(2200).fadeOut(1000);
+		}
+
+		 $('[data-toggle="offcanvas"]').click(function () {
+			    $('.row-offcanvas').toggleClass('active')
+			  });
+		
+</script>
+ 
+ <!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<span class="modal-title" id="modal_title" style="font-weight: bold;">Mascot International Laos</span>
+			</div>
+			<div class="modal-body">
+				<div id="b_loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<span id="node_selected"></span>&nbsp;&nbsp;
+				<button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
 			</div>
 		</div>
 	</div>
-	
-	<div class="container-fluid">
-	
-            <?php echo $this->content; ?>
-            <hr>
-           
-		<footer>
-			<p>Email: nmt@mascot.dk</p>
-		</footer>
+</div>
+
+
+
+<div id="jquery_dialog" style="display: none; padding-top: 10pt">
+	<div id="j_loaded_data"></div>
+</div>
+
+
+<!-- Modal -->
+<div id="b_modal_no_header" class="modal" role="dialog">
+	<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-body">
+			<p>Processing........Please Wait!</p>
+		</div>
 	</div>
-	<!-- /container -->
-        <?php echo $this->inlineScript()?>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="b_modal_sm" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h5 class="modal-title" id="b_modal_sm_title">Mascot International Laos</h5>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<p>No attachment selected!</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+    
+    
     </body>
-
-
 </html>
+    

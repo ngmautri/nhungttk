@@ -1,0 +1,76 @@
+<div id="tabs1" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Items</a></li>
+		<li><a href="/inventory/item-category/album?cat_id=<?php echo $cat_id?>">Album</a></li>
+	</ul>
+<div id="general">
+
+<?php
+
+if ($total_records <= 0) {
+	
+	echo 'No records found!';
+} else {
+
+	if (! is_null ( $paginator )) {
+		echo 'Record '. $paginator->minInPage. ' to '.$paginator->maxInPage. ' | ' .$total_records. ' records found!';
+	}else{	
+		echo $total_records. ' records found!';
+	}
+	
+?>
+
+<table class="table table-hover table-bordered" style="font-size: 10pt">
+<thead>
+	<tr>
+		<td><b>#</b></td>
+		<td><b>SKU</b></td>
+		<td><b>Name</b></td>
+		<td><b>Code</b></td>
+		<td><b>Location</b></td>
+		<td><b>Action</b></td>
+	</tr>
+</thead>
+
+ <tbody>
+ 
+	 <?php 
+	 
+	 $count = 0;
+	 foreach ($records as $record) : 
+	 	 $count++;
+    ?>
+	 
+	 <tr>
+	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	  <td><?php echo $record->getItem()->getItemSku();?></td>
+	 
+	 <td><?php echo $record->getItem()->getItemName();?>
+	 </td>
+	 
+	 <td><?php echo $record->getItem()->getManufacturerCode();?></td>
+	 <td><?php echo $record->getItem()->getLocation();?></td>
+	<td>
+	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($record->getItem()->getId());?>" item_name="<?php echo $this->escapeHtml($record->getItem()->getItemName());?>" target="blank" 
+	href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $record->getItem()->getToken();?>&entity_id=<?php echo $record->getItem()->getId();?>&checksum=<?php echo $record->getItem()->getChecksum();?>">Show</a>
+	 </td>
+	 
+	</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+<?php }?>
+
+</div></div>
+<script type="text/javascript">
+
+$( "#tabs1" ).tabs({
+
+	beforeLoad:function(e,ui){
+		$( ui.panel ).html('<p>Loading...</p>');       
+	    },
+	   
+});
+</script>

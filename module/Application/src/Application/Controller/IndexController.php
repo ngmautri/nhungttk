@@ -20,6 +20,7 @@ class IndexController extends AbstractActionController {
 	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
 	 */
 	public function indexAction() {
+		$this->layout ( "layout/fluid" );
 		return new ViewModel ();
 	}
 	
@@ -31,6 +32,9 @@ class IndexController extends AbstractActionController {
 	public function infoAction() {
 		$this->layout ( "layout/user/ajax" );
 		
-		return new ViewModel ();
+		$model = new ViewModel();
+		$model->setTerminal(true);
+		
+		return new $model();
 	}
 }

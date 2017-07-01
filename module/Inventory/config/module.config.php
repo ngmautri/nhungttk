@@ -7,6 +7,39 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 return array (
+		'navigation' => array(
+				'inventory_navi' => array(
+						array(
+								'label' => 'Home',
+								'route' => 'application',
+								'icon' => 'glyphicon glyphicon-home',
+							),
+						array(
+								'label' => 'Add New Item',
+								'route' => 'Inventory/default',
+								'controller' => 'item',
+								'action' => 'add',
+								'icon' => 'glyphicon glyphicon-plus',
+						),
+						
+						array(
+								'label' => 'Item List',
+								'route' => 'Inventory/default',
+								'controller' => 'item',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-list',
+						),
+						
+						array(
+								'label' => 'Item Category',
+								'route' => 'Inventory/default',
+								'controller' => 'item-category',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-list',
+						),
+				),
+		),
+		
 		'router' => array (
 				'routes' => array (
 						
@@ -103,6 +136,9 @@ return array (
 		'service_manager' => array (
 				'factories' => array (
 						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+						'inventory_navi' => 'Inventory\Service\InventoryNavigationFactory', // <-- add this
+						
+						
 						'Inventory\Services\ArticleService'  => 'Inventory\Services\ArticleServiceFactory',
 						'Inventory\Services\ArticleSearchService'  => 'Inventory\Services\ArticleSearchServiceFactory',						
 						'Inventory\Services\AssetService' => 'Inventory\Services\AssetServiceFactory',
@@ -141,6 +177,7 @@ return array (
 						'Inventory\Controller\Transaction' => 'Inventory\Controller\TransactionControllerFactory',
 						'Inventory\Controller\Image' => 'Inventory\Controller\ImageControllerFactory',
 						//refactory
+						
 						'Inventory\Controller\Item' => 'Inventory\Controller\ItemControllerFactory',
 						'Inventory\Controller\Category' => 'Inventory\Controller\CategoryControllerFactory',
 						'Inventory\Controller\ItemAttachment' => 'Inventory\Controller\ItemAttachmentControllerFactory',
@@ -148,7 +185,9 @@ return array (
 						'Inventory\Controller\ItemPicture' => 'Inventory\Controller\ItemPictureControllerFactory',
 						'Inventory\Controller\ItemSearch' => 'Inventory\Controller\ItemSearchControllerFactory',
 						'Inventory\Controller\ItemTransaction' => 'Inventory\Controller\ItemTransactionControllerFactory',
-						'Inventory\Controller\ItemAssignment' => 'Inventory\Controller\ItemAssignmentControllerFactory',
+				    	'Inventory\Controller\ItemAssignment' => 'Inventory\Controller\ItemAssignmentControllerFactory',
+				        'Inventory\Controller\ItemCategory' => 'Inventory\Controller\ItemCategoryControllerFactory',
+				    
 				)
 				
 				
@@ -160,7 +199,9 @@ return array (
 				'not_found_template' => 'error/404',
 				'exception_template' => 'error/index',
 				'template_map' => array (
-						'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+						//'inventory/layout' => __DIR__ . '/../view/layout/layout.phtml',
+						'layout/layout' => __DIR__ . '/../view/layout/layout-fluid.phtml',
+						'Inventory/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
 						'layout/no-layout' => __DIR__ . '/../view/layout/no-layout.phtml',
 						'inventory/index/index' => __DIR__ . '/../view/inventory/index/index.phtml',
 						'error/404' => __DIR__ . '/../view/error/404.phtml',

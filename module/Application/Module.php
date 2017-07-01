@@ -26,6 +26,7 @@ use Application\Model\CurrencyableTable;
 use Application\Model\CurrencyTable;
 use Application\Model\AclRoleTable;
 use Application\Model\AclRole;
+use Zend\ModuleManager\ModuleManager;
 
 class Module {
 	
@@ -51,11 +52,13 @@ class Module {
 			//Version 2
 			$pictureUploadListener = $sm->get ( 'Application\Listener\PictureUploadListener' );
 			$controller->getEventManager()->attachAggregate ( $pictureUploadListener );
+			
+			$controllerClass = get_class($controller);
+			$moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
+			$controller->layout($moduleNamespace . '/layout-fluid');
 		}, 101 );
 			
 	}
-	
-	
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
 	}

@@ -3,7 +3,7 @@
 namespace Application\Repository;
 
 use Doctrine\ORM\EntityRepository;
-//use Application\Entity\NmtProcurePrRow;
+use Application\Entity\NmtProcurePrRow;
 
 /**
  *
@@ -17,6 +17,7 @@ class NmtProcurePrRowRepository extends EntityRepository {
 SELECT
 	nmt_procure_pr_row.*,
     nmt_inventory_item.item_name,
+    nmt_inventory_item.item_sku,
 	nmt_inventory_item.checksum AS item_checksum,
 	nmt_inventory_item.token AS item_token,
 	
@@ -70,7 +71,7 @@ LEFT JOIN
 	nmt_application_currency.currency,
 	nmt_inventory_trx.*,
 	COUNT(nmt_inventory_trx.item_id) AS total_trx,
-	MAX(nmt_inventory_trx.created_on) AS last_trx
+	MAX(nmt_inventory_trx.trx_date) AS last_trx
 	FROM nmt_inventory_trx
 
 	LEFT JOIN nmt_bp_vendor
@@ -79,7 +80,9 @@ LEFT JOIN
 	LEFT JOIN nmt_application_currency
 	ON nmt_application_currency.id = nmt_inventory_trx.currency_id
 	WHERE nmt_inventory_trx.is_active=1
-	GROUP BY nmt_inventory_trx.item_id
+    GROUP BY nmt_inventory_trx.item_id
+    ORDER BY nmt_inventory_trx.trx_date DESC
+	
 )
 AS nmt_inventory_trx_last
 ON nmt_inventory_trx_last.item_id = nmt_procure_pr_row.item_id

@@ -305,17 +305,21 @@ class VendorController extends AbstractActionController {
 		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		$sort = $this->params ()->fromQuery ( 'sort' );
 		
-		$criteria1 = array ();
-		if (! $is_active == null) {
-			$criteria1 = array (
-					"isActive" => $is_active 
+		
+		if ($is_active == null) {
+			$is_active= 1;
+		}
+		
+		$criteria1= array ();
+		
+		if($is_active== 1){
+			$criteria1= array (
+					"isActive" => 1
 			);
-			
-			if ($is_active == - 1) {
-				$criteria1 = array (
-						"isActive" => '0' 
-				);
-			}
+		}elseif($is_active == - 1){
+			$criteria1= array (
+					"isActive" => 0
+			);
 		}
 		
 		if ($sort_by == null) :

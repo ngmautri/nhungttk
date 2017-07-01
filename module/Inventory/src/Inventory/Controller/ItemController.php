@@ -42,6 +42,7 @@ class ItemController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function showAction() {
+		
 		$request = $this->getRequest ();
 		
 		$redirectUrl = null;
@@ -90,10 +91,10 @@ class ItemController extends AbstractActionController {
 		
 		
 		// accepted only ajax request
-		/* if (! $request->isXmlHttpRequest ()) {
+		if (! $request->isXmlHttpRequest ()) {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
-		; */
+		;
 		
 		$this->layout ( "layout/user/ajax" );
 		
@@ -342,6 +343,8 @@ class ItemController extends AbstractActionController {
 			}
 			
 			$this->flashMessenger ()->addMessage ( "Item " . $itemName . " has been created sucessfully" );
+			
+			$redirectUrl="/inventory/item/show?token=".$new_item->getToken()."&entity_id=".$new_item->getId()."&checksum=" . $new_item->getChecksum();
 			return $this->redirect ()->toUrl ( $redirectUrl );
 		}
 		
@@ -635,12 +638,13 @@ class ItemController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function listAction() {
+		
 		$sort_criteria = array ();
 		$criteria = array ();
 		
 		$item_type = $this->params ()->fromQuery ( 'item_type' );
-		$is_active = $this->params ()->fromQuery ( 'is_active' );
-		$is_fixed_asset = $this->params ()->fromQuery ( 'is_fixed_asset' );
+		$is_active = (int) $this->params ()->fromQuery ( 'is_active' );
+		$is_fixed_asset =(int) $this->params ()->fromQuery ( 'is_fixed_asset' );
 		
 		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		$sort = $this->params ()->fromQuery ( 'sort' );
@@ -652,18 +656,23 @@ class ItemController extends AbstractActionController {
 			);
 		}
 		
-		$criteria2 = array ();
-		if (! $is_active == null) {
-			$criteria2 = array (
-					"isActive" => $is_active 
-			);
-			
-			if ($is_active == - 1) {
-				$criteria2 = array (
-						"isActive" => '0' 
-				);
-			}
+		if ($is_active == null) {
+			$is_active= 1;
 		}
+		
+		$criteria2 = array ();
+		
+		if($is_active== 1){
+			$criteria2 = array (
+					"isActive" => 1
+			);
+		}elseif($is_active == - 1){
+			$criteria2 = array (
+					"isActive" => 0
+			);
+		}
+		
+		
 		
 		$criteria3 = array ();
 		if (! $is_fixed_asset == '') {
@@ -673,7 +682,7 @@ class ItemController extends AbstractActionController {
 			
 			if ($is_fixed_asset == - 1) {
 				$criteria3 = array (
-						"isFixedAsset" => "0" 
+						"isFixedAsset" => 0
 				);
 			}
 		}
@@ -707,13 +716,23 @@ class ItemController extends AbstractActionController {
 		}
 		;
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria );
-		$total_records = count ( $list );
+		//$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria );
+		$total_records = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getTotalItem($item_type, $is_active, $is_fixed_asset);
+		//echo($total_records);
+		
+		//$total_records =count($list);
+		
 		$paginator = null;
 		
 		if ($total_records > $resultsPerPage) {
 			$paginator = new Paginator ( $total_records, $page, $resultsPerPage );
-			$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			//$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+			//$list = array_slice($list, $paginator->minInPage - 1, ($paginator->maxInPage - $paginator->minInPage) + 1);
+			$list= $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getItems($item_type, $is_active, $is_fixed_asset,$sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+			
+			
+		}else{
+			$list= $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getItems($item_type, $is_active, $is_fixed_asset,$sort_by,$sort, 0,0);
 		}
 		
 		// $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();

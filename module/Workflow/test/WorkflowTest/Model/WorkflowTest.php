@@ -10,6 +10,7 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\Event;
 use User\Model\UserTable;
 use WorkflowTest\Bootstrap;
+use Application\Entity\NmtProcurePr;
 
 
 use Zend\Mail\Message;
@@ -40,10 +41,22 @@ class WorkflowTest extends PHPUnit_Framework_TestCase {
  	public function testWorflowTable() {
 		//$tbl = Bootstrap::getServiceManager ()->get ( 'Workflow\Model\WorkflowNodeTable' );
 		$service = Bootstrap::getServiceManager ()->get ( 'Workflow\Service\WorkflowService' );
-		$service->init();
-		$service->updateCategory(1,0);
+		//$service->init();
+		//$service->updateCategory(1,0);
 		
-		//var_dump($service->getChildNodes(1));
+		$p = new NmtProcurePr();
+		$wf= $service->testWF()->get($p);
+		//var_dump($wf->getEnabledTransitions($p));
+		$wf->apply($p, 'to_review');
+
+		
+		$wf->apply($p, 'publish');
+		echo "Current State: " . $p->getCurrentState();
+		var_dump($wf->getEnabledTransitions($p));
+		
+		
+		//var_dump($service->testWF());
+		
 		//var_dump($service->get(2));
 		//var_dump($service->purchaseWF());
 		//var_dump($service->purchaseWF());

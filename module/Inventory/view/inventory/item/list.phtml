@@ -1,16 +1,9 @@
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
-  <div class="form-group">
-    	<input class="form-control" size="28" type="text" name = "q">
- 
- 
-  </div>
-  <div class="form-group">
-     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
-  </div>
-  
-</form>
-<hr>
+<div id="tabs" style="font-size: 9.5pt">
 
+	<ul>
+		<li><a href="#general">Items</a></li>
+	</ul>
+<div id="general">
  <div class="panel-group"  >
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -31,7 +24,7 @@
 		<label class="control-label col-sm-2" for="inputTag">Item  Type</label>
 		<div class="col-sm-3">
 			<select class="form-control" name="item_type">
-									<option value="">All</option>
+									<option value="All">All</option>
 									<option
 										<?php echo $item_type=='ITEM'? "selected='selected'":"";?>
 										value="ITEM">Item</option>
@@ -53,7 +46,7 @@
 			<select class="form-control" name="is_active">
 									<option
 									<?php echo $is_active ==''? "selected='selected'":"";?>
-										value="">All</option>
+										value="2">All</option>
 									<option
 									<?php echo $is_active=='1'? "selected='selected'":"";?>
 										value="1">Active</option>
@@ -177,41 +170,19 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-			<td><?php echo $this->escapeHtml($a->getItemSku());?></td>
+			<td><?php echo $this->escapeHtml(($a['item_sku']));?></td>
 			<td>
-			 	<span class="dropdown"><a class="dropdown-toggle"	data-toggle="dropdown" href="#" style="padding-left: 20px;padding-right: 10px; "><?php echo $this->escapeHtml($a->getItemName());?> <span class="caret"></span></a>
-<ul class="dropdown-menu">
-<li>
-	<a href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Show</a>
-</li>
-<li>
-	<a href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><i class="glyphicon glyphicon-pencil"> </i>&nbsp;Edit</a>
-</li>
-
-			<li class="divider"></li>
-				
-<li>
-		<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo $this->escapeHtml($a->getToken());?>&target_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Upload picture</a>
-</li><li>
-		<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload?token=<?php echo $this->escapeHtml($a->getToken());?>&target_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Attach Document</a>
-</li><li>
-
-		<a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/add?token=<?php echo $this->escapeHtml($a->getToken());?>&target_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Add Purchase</a>
-</li><li>
-		<a href="<?php echo $this->baseUrl ?>/inventory/warehouse/transfer?token=<?php echo $this->escapeHtml($a->getToken());?>&target_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>"><small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;transfer</a>
-</li>
-
-						</ul></span>
+			 	<span class="dropdown"><a class="dropdown-toggle"	data-toggle="dropdown" href="#" title="<?php echo $this->escapeHtml($a['item_name']);?>" style="padding-left: 20px;padding-right: 10px; "><?php echo substr($this->escapeHtml($a['item_name']),0,45);?> <span class="caret"></span></a>
+				</span>
 				
 			
 			</td>
-			<td><?php echo $this->escapeHtml($a->getManufacturerModel());?></td>
-			<td><?php echo $this->escapeHtml($a->getSerialNumber());?></td>
+			<td><?php echo substr($this->escapeHtml($a['manufacturer_model']),0,30);?></td>
+			<td><?php echo $this->escapeHtml($a['serial_number']);?></td>
 	
-			<!-- <td><?php echo date_format ( $a->getCreatedOn(), "d/m/y");?> </td>  -->
+			<!-- <td><?php echo date_format ( $a['created_on'], "d/m/y");?> </td>  -->
 			<td>
-	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($a->getId());?>" item_name="<?php echo $this->escapeHtml($a->getItemName());?>" target="blank" 
-	href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getId());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Show</a>
+	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($a['id']);?>" item_name="<?php echo $this->escapeHtml($a['item_name']);?>" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($a['token']);?>&entity_id=<?php echo $this->escapeHtml($a['id']);?>&checksum=<?php echo $this->escapeHtml($a['checksum']);?>">Show</a>
 			</td>
 		
 		</tr>
@@ -266,4 +237,6 @@ endif;
 // ===============================
 ?>
 
+</div>
+</div>
 

@@ -1,20 +1,11 @@
- <ul class="nav nav-pills">
-	<li><a href="<?php echo $this->baseUrl ?>/hr/employee/list">Employee List</a></li>
-</ul>
- 
- <form class="form-inline" action="<?php echo $this->baseUrl ?>/hr/employee-search/do"	method="get" enctype="multipart/form-data">
-  <div class="form-group">
-    	<input class="form-control" size="28" type="text" name = "q" class="">
-  </div>
-  <div class="form-group">
-     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
-  </div>
-  
-</form>
+<div id="tabs" style="font-size: 9.5pt">
 
+	<ul>
+		<li><a href="#general">Search Result</a></li>
+	</ul>
+<div id="general">
 
 <?php
-echo '<hr>';
 echo '<span>';
 echo $message;
 echo '</span>';
@@ -52,7 +43,7 @@ if (! $hits == null) :
 				<td><span id=""></span></td>
 				<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>
 	<td>
-	<a href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo $hit->token;?>&checksum=<?php echo $hit->checksum;?>&target_id=<?php echo $this->escapeHtml($hit->employee_id);?>">show</a>
+	<a href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo $hit->token;?>&checksum=<?php echo $hit->checksum;?>&entity_id=<?php echo $this->escapeHtml($hit->employee_id);?>">show</a>
 	</td>	
 		</tr>
 <?php endforeach; ?>
@@ -61,3 +52,4 @@ if (! $hits == null) :
 
 
 <?php endif; ?>
+</div></div>

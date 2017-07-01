@@ -7,6 +7,28 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 return array (
+		'navigation' => array (
+				'bp_navi' => array (
+						array (
+								'label' => 'Home',
+								'route' => 'application' 
+						),
+						array (
+								'label' => 'Create New Vendor',
+								'route' => 'bp/default',
+								'controller' => 'vendor',
+								'action' => 'add',
+								'icon' => 'glyphicon glyphicon-plus' 
+						),
+						array (
+								'label' => 'Vendor',
+								'route' => 'bp/default',
+								'controller' => 'vendor',
+								'action' => 'list',
+								'icon' => 'glyphicon glyphicon-triangle-right' 
+						) 
+				) 
+		),
 		
 		'router' => array (
 				'routes' => array (
@@ -35,8 +57,8 @@ return array (
 												) 
 										) 
 								) 
-						),
-					
+						) 
+				
 				) 
 		
 		),
@@ -44,8 +66,10 @@ return array (
 		'service_manager' => array (
 				'factories' => array (
 						'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-						'BP\Service\VendorSearchService'  => 'BP\Service\VendorSearchServiceFactory',
+						'bp_navi' => 'BP\Service\BpNavigationFactory', // <-- add this
 						
+						'BP\Service\VendorSearchService' => 'BP\Service\VendorSearchServiceFactory' 
+				
 				) 
 		),
 		'translator' => array (
@@ -65,10 +89,8 @@ return array (
 						'BP\Controller\VendorSearch' => 'BP\Controller\VendorSearchControllerFactory',
 						'BP\Controller\VendorAttachment' => 'BP\Controller\VendorAttachmentControllerFactory',
 						
-						
-						
 						'BP\Controller\Debtor' => 'BP\Controller\DebtorControllerFactory',
-						'BP\Controller\DebtorContract' => 'BP\Controller\DebtorContractControllerFactory',
+						'BP\Controller\DebtorContract' => 'BP\Controller\DebtorContractControllerFactory' 
 				) 
 		
 		),
@@ -80,6 +102,7 @@ return array (
 				'exception_template' => 'error/index',
 				'template_map' => array (
 						'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+						'BP/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
 						'bp/index/index' => __DIR__ . '/../view/bp/index/index.phtml',
 						'error/404' => __DIR__ . '/../view/error/404.phtml',
 						'error/index' => __DIR__ . '/../view/error/index.phtml',
@@ -88,14 +111,14 @@ return array (
 				'template_path_stack' => array (
 						__DIR__ . '/../view' 
 				) 
-		),
-		
-		// Plugin
-		/*
-		'controller_plugins' => array (
-				'invokables' => array (
-						'UserPlugin' => 'User\Controller\Plugin\UserPlugin' 
-				) 
 		) 
-		*/
+	
+	// Plugin
+	/*
+ * 'controller_plugins' => array (
+ * 'invokables' => array (
+ * 'UserPlugin' => 'User\Controller\Plugin\UserPlugin'
+ * )
+ * )
+ */
 );

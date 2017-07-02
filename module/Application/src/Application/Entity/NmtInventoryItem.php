@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_inventory_item", uniqueConstraints={@ORM\UniqueConstraint(name="asset_label_UNIQUE", columns={"asset_label"}), @ORM\UniqueConstraint(name="internal_label_UNIQUE", columns={"item_internal_label"})}, indexes={@ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx1", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_change_by"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
  */
 class NmtInventoryItem
 {
@@ -314,6 +315,13 @@ class NmtInventoryItem
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
      */
     private $checksum;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
+     */
+    private $currentState;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -1383,6 +1391,30 @@ class NmtInventoryItem
     public function getChecksum()
     {
         return $this->checksum;
+    }
+
+    /**
+     * Set currentState
+     *
+     * @param string $currentState
+     *
+     * @return NmtInventoryItem
+     */
+    public function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+
+        return $this;
+    }
+
+    /**
+     * Get currentState
+     *
+     * @return string
+     */
+    public function getCurrentState()
+    {
+        return $this->currentState;
     }
 
     /**

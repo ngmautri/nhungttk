@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"}), @ORM\Index(name="nmt_procure_pr_row_FK5_idx", columns={"last_change_by"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
  */
 class NmtProcurePrRow
 {
@@ -132,6 +133,20 @@ class NmtProcurePrRow
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
+     */
+    private $currentState;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nmt_procure_pr_rowcol", type="string", length=45, nullable=true)
+     */
+    private $nmtProcurePrRowcol;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -577,6 +592,54 @@ class NmtProcurePrRow
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
+    }
+
+    /**
+     * Set currentState
+     *
+     * @param string $currentState
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+
+        return $this;
+    }
+
+    /**
+     * Get currentState
+     *
+     * @return string
+     */
+    public function getCurrentState()
+    {
+        return $this->currentState;
+    }
+
+    /**
+     * Set nmtProcurePrRowcol
+     *
+     * @param string $nmtProcurePrRowcol
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setNmtProcurePrRowcol($nmtProcurePrRowcol)
+    {
+        $this->nmtProcurePrRowcol = $nmtProcurePrRowcol;
+
+        return $this;
+    }
+
+    /**
+     * Get nmtProcurePrRowcol
+     *
+     * @return string
+     */
+    public function getNmtProcurePrRowcol()
+    {
+        return $this->nmtProcurePrRowcol;
     }
 
     /**

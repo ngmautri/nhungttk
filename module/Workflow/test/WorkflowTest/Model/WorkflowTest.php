@@ -45,25 +45,12 @@ class WorkflowTest extends PHPUnit_Framework_TestCase {
 		//$service->updateCategory(1,0);
 		
 		$p = new NmtProcurePr();
-		$wf= $service->testWF()->get($p);
+		$p->setPrNumber("Purchase Request");
+		$p->setCurrentState("bought");
+		$wf= $service->purchaseRequestWF()->get($p);
 		//var_dump($wf->getEnabledTransitions($p));
-		$wf->apply($p, 'to_review');
-
-		
-		$wf->apply($p, 'publish');
-		echo "Current State: " . $p->getCurrentState();
-		var_dump($wf->getEnabledTransitions($p));
-		
-		
-		//var_dump($service->testWF());
-		
-		//var_dump($service->get(2));
-		//var_dump($service->purchaseWF());
-		//var_dump($service->purchaseWF());
-		
-		//var_dump(count($service->getCategories()[1]));
-		//$service->generateJSTree(1);
-		//var_dump($service->getJsTree());
+		$wf->apply($p, 'delivery');
+		//echo "Current State: " . $p->getCurrentState();
 		
  	}	
 	

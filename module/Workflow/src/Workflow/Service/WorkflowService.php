@@ -9,6 +9,10 @@ use Symfony\Component\Workflow\Workflow;
 use Symfony\Component\Workflow\MarkingStore\SingleStateMarkingStore;
 use Symfony\Component\Workflow\Registry;
 use Application\Entity\NmtProcurePr;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Workflow\Listener\PrReviewListener;
+use Workflow\Listener\WorkflowLogger;
+
 
 /**
  *
@@ -24,30 +28,50 @@ class WorkflowService extends AbstractCategory
 
     /**
      */
-    public function testWF()
+    public function purchaseRequestWF()
     {
         $definition = new DefinitionBuilder();
         $definition->addPlaces([
             'draft',
-            'review',
-            'rejected',
-            'published'
+            'department_head',
+            'department_head_approved',
+            'department_head_rejected',            
+            'fa_budget_check',
+            'fa_budget_check_approved',
+            'fa_budget_check_rejected',
+            'procurement',
+            'bought',
+            'delivered',
         ])
             ->
         // Transitions are defined with a unique name, an origin place and a destination place
-        addTransition(new Transition('to_review', 'draft', 'review'))
-            ->addTransition(new Transition('publish', 'review', 'published'))
-            ->addTransition(new Transition('reject', 'review', 'rejected'));
-        
-        $marking = new SingleStateMarkingStore('currentState');
-        $workflow = new Workflow($definition->build(), $marking);
-        
+        addTransition(new Transition('submit_to_department_head', 'draft', 'department_head'))
+            ->addTransition(new Transition('department_head_yes', 'department_head', 'fa_budget_check'))
+            ->addTransition(new Transition('department_head_no', 'department_head', 'department_head_rejected'))
+            ->addTransition(new Transition('fa_yes', 'fa_budget_check', 'procurement'))
+            ->addTransition(new Transition('fa_no', 'fa_budget_check', 'fa_budget_check_rejected'));
+            ->addTransition(new Transition('buy', 'procurement', 'bought'));
+            ->addTransition(new Transition('delivery', 'bought', 'delivered'));
+            $marking = new SingleStateMarkingStore('currentState');
+            
         $registry = new Registry();
+        
+        $dispatcher = new EventDispatcher();
+        $l1 = new PrReviewListener($registry);
+        $dispatcher->addListener('workflow.PR_WORKFLOW.guard.to_review', array($l1, 'guardReview'));
+        $dispatcher->addListener('workflow.PR_WORKFLOW.entered', array($l1, 'onSubmitPR'));
+        
+        $l2 =  new WorkflowLogger();
+        $dispatcher->addListener('workflow.leave', array($l2, 'onLeave'));
+        
+        $workflow = new Workflow($definition->build(), $marking,$dispatcher,"PR_WORKFLOW");
+        
+      
         $registry->add($workflow, 'Application\Entity\NmtProcurePr');
         return $registry;
     }
 
-    public function purchaseWF()
+    public function purchase1WF()
     {
         $factory = new \Petrinet\Model\Factory();
         $builder = new \Petrinet\Builder\PetrinetBuilder($factory);
@@ -177,16 +201,7 @@ class WorkflowService extends AbstractCategory
     {}
 
     // =====================================
-    public function getWorkFlowNoteTable()
-    {
-        return $this->workFlowNoteTable;
-    }
-
-    public function setWorkFlowNoteTable(NmtWfNodeTable $workFlowNoteTable)
-    {
-        $this->workFlowNoteTable = $workFlowNoteTable;
-        return $this;
-    }
+    
 
     public function getCase()
     {

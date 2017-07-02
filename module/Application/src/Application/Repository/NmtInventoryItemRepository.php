@@ -3,8 +3,7 @@
 namespace Application\Repository;
 
 use Doctrine\ORM\EntityRepository;
-
-//use Application\Entity\NmtInventoryItem;
+use Application\Entity\NmtInventoryItem;
 
 /**
  *

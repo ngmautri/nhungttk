@@ -124,11 +124,10 @@ return array (
 		),
 		
 		// Plugin
-		/*
 		'controller_plugins' => array (
-				'invokables' => array (
-						'UserPlugin' => 'User\Controller\Plugin\UserPlugin' 
-				) 
+		    'factories' => array (
+		        'ProcureWfPlugin' => 'Procure\Controller\Plugin\WfPluginFactory',
+		    ) 
 		) 
-		*/
+	
 );

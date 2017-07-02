@@ -48,8 +48,7 @@ if (! $hits == null) :
 			<td><span id=""><?php echo $this->escapeHtml($hit->row_quantity);?></span></td>
 			<td><span id=""><?php echo $this->escapeHtml($hit->row_unit);?></span></td>
 			<td><span id=""><?php echo $this->escapeHtml($hit->row_conversion_factor);?></span></td>
-		<!--  <td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>-->
-			<td><a
+			<td>
 <a href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->pr_row_id;?>&checksum=<?php echo $hit->checksum;?>">Show</a>
 <a href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->pr_row_id;?>&checksum=<?php echo $hit->checksum;?>">Edit</a>
 <a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr?token=<?php echo $hit->token;?>&pr_row_id=<?php echo $hit->pr_row_id;?>&checksum=<?php echo $hit->checksum;?>">Receive</a>

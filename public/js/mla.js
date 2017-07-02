@@ -1,43 +1,24 @@
 $(document).ready(function() {
-	
-	
-	
-	//$('[data-toggle="tooltip"]').tooltip();
-	   
-	
-	
+
+		// $('[data-toggle="tooltip"]').tooltip();
+
 	$(document).ready(function() {
-		$("#lightgallery").lightGallery({
-		});
+		//$("#lightgallery").lightGallery({});
 		countdown();
-		
-		/*
-		$('#pr_item_tbl').Tabledit({
-		    url: 'example.php',
-		    eventType: 'dblclick',
-		    editButton: true,
-		    columns: {
-		        identifier: [0, 'id'],
-		        editable: [[3, 'nickname'], [4, 'firstname'], [5, 'lastname'],[6, 'avatar', '{"1": "Black Widow", "2": "Captain America", "3": "Iron Man"}']]
-		    }
-		});
-		*/
-		
-	
-		
-		
+			/*
+		 * $('#pr_item_tbl').Tabledit({ url: 'example.php', eventType:
+		 * 'dblclick', editButton: true, columns: { identifier: [0, 'id'],
+		 * editable: [[3, 'nickname'], [4, 'firstname'], [5, 'lastname'],[6,
+		 * 'avatar', '{"1": "Black Widow", "2": "Captain America", "3": "Iron
+		 * Man"}']] } });
+		 */
+
 	});
 
-	
 	$("#select_ALL").change(function() {
 		$(".checkbox1").prop('checked', $(this).prop("checked"));
 	});
-	
-	
-	
 
-	
-	
 });
 
 function openAssetSearchDialog() {
@@ -48,33 +29,32 @@ function openAssetSearchDialog() {
 		modal : true,
 		dialogClass : 'dialogClass'
 	});
-	
-	$('#asset_search_term').keypress(function(event){
 
-	    if (event.keyCode === 10 || event.keyCode === 13) 
-	        event.preventDefault();
-	    	//showDialog();
-	  });
+	$('#asset_search_term').keypress(function(event) {
+
+		if (event.keyCode === 10 || event.keyCode === 13)
+			event.preventDefault();
+		// showDialog();
+	});
 }
-
-
 
 /**
  * function on calendar dialog
  */
 function showDialog() {
-	//$('#myModal').modal('hide');
+	// $('#myModal').modal('hide');
 	q = $("#asset_search_term").val();
-	
-	if (q.length ==0) {
+
+	if (q.length == 0) {
 		$("#search_result").html('Please enter search term');
 		return;
 	}
-	
+
 	$("#search_result").html('Searching.....');
 
-	//$("#dialog").html('Please wait ...');
-	$.ajax({
+	// $("#dialog").html('Please wait ...');
+	$
+			.ajax({
 				url : "/inventory/search/asset?json=1&query=" + q,
 
 				success : function(text) {
@@ -86,25 +66,27 @@ function showDialog() {
 					var i;
 					s = n_hits + ' Result(s) for "' + q + '"';
 					if (n_hits > 0) {
-						s = s+ '<table class="table table-striped table-bordered"><thead><tr style="font-weight: bold;"><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td><td>SHOW CONSUMPTION</td></thead></tr>';
+						s = s
+								+ '<table class="table table-striped table-bordered"><thead><tr style="font-weight: bold;"><td>ID</td><td>NAME</td><td>TAG</td><td>ACTION</td><td>DETAIL</td><td>SHOW CONSUMPTION</td></thead></tr>';
 						for (i = 0; i < n_hits; i++) {
 							s = s + "<tr>"
 							var id = obj[i]["id"];
 							var name = obj[i]["name"];
 							var tag = obj[i]["tag"];
-							s = s + '<td>' + i+ '</td>';
+							s = s + '<td>' + i + '</td>';
 							s = s + '<td>' + name + '</td>';
 							s = s + '<td>' + tag + '</td>';
 							s = s
 									+ '<td><a href="javascript:;" onclick="selectAsset(\''
 									+ id + '\',\'' + name + '\',\'' + tag
 									+ '\')">  Select  </a></td>';
-							
+
 							s = s + '<td><a href="/inventory/asset/show?id='
 									+ id
 									+ '" target="_blank">  Detail  </a></td>';
-							
-							s = s + '<td><a href="/inventory/spareparts/consumption?asset_id='
+
+							s = s
+									+ '<td><a href="/inventory/spareparts/consumption?asset_id='
 									+ id
 									+ '" target="_blank">show consumption </a></td>';
 							s = s + "</tr>";
@@ -114,7 +96,7 @@ function showDialog() {
 
 					} else {
 
-						s = s+" <p> No asset found!</p>";
+						s = s + " <p> No asset found!</p>";
 					}
 
 					// alert(s);
@@ -124,7 +106,7 @@ function showDialog() {
 			});
 
 	// $( "#dialog" ).text(t);
-	
+
 }
 
 function selectAsset(id, name, tag) {
@@ -244,14 +226,14 @@ function uploadPictures() {
 
 						// Resize the image
 						var canvas = document.createElement('canvas'), max_size = 1500, // TODO
-																						// :
-																						// pull
-																						// max
-																						// size
-																						// from
-																						// a
-																						// site
-																						// config
+						// :
+						// pull
+						// max
+						// size
+						// from
+						// a
+						// site
+						// config
 						width = image.width, height = image.height;
 						if (width > height) {
 							if (width > max_size) {
@@ -358,80 +340,92 @@ function countAsset() {
 		reader.onload = (function(p, pic_to_upload_resized, n) {
 			return function(e) {
 				var contents = e.target.result;
-				
+
 				// EXIF.jS
-				EXIF.getData(p, function () {
-					var pic_orientation; 
-					pic_orientation=this.exifdata.Orientation;
-					
-				// resize
-				var image = new Image();
+				EXIF
+						.getData(
+								p,
+								function() {
+									var pic_orientation;
+									pic_orientation = this.exifdata.Orientation;
 
-				image.onload = (function(p, pic_to_upload_resized, n) {
-					return function(imageEvent) {
+									// resize
+									var image = new Image();
 
-						// Resize the image - change to 1000
-						var canvas = document.createElement('canvas'), max_size = 1000,
-						width = image.width, height = image.height;
-						if (width > height) {
-							if (width > max_size) {
-								height *= max_size / width;
-								width = max_size;
-							}
-						} else {
-							if (height > max_size) {
-								width *= max_size / height;
-								height = max_size;
-							}
-						}
-						
-						var ctx = canvas.getContext('2d')
-						ctx.save();	
-							
-						canvas.width = width;
-						canvas.height = height;
-						
-						if(pic_orientation == 6){
-							canvas.width = height;
-							canvas.height = width;
-							ctx.rotate(0.5 * Math.PI);
-					        ctx.translate(0, -height);
-						}
-						
-						ctx.drawImage(image, 0, 0, width,height);
-						ctx.restore();
+									image.onload = (function(p,
+											pic_to_upload_resized, n) {
+										return function(imageEvent) {
 
-						switch (filetype) {
-						case "image/jpeg":
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						case "image/png":
-							var dataUrl = canvas.toDataURL('image/png');
-							break;
-						case "image/bmp":
-							var dataUrl = canvas.toDataURL('image/bmp');
-							break;
-						case "image/jpg":
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						default:
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						}
+											// Resize the image - change to 1000
+											var canvas = document
+													.createElement('canvas'), max_size = 1000, width = image.width, height = image.height;
+											if (width > height) {
+												if (width > max_size) {
+													height *= max_size / width;
+													width = max_size;
+												}
+											} else {
+												if (height > max_size) {
+													width *= max_size / height;
+													height = max_size;
+												}
+											}
 
-						var p_tmp = [];
-						p_tmp.push(filetype);
-						p_tmp.push(dataUrl);
+											var ctx = canvas.getContext('2d')
+											ctx.save();
 
-						pic_to_upload_resized.push(p_tmp);
+											canvas.width = width;
+											canvas.height = height;
 
-						isCountingCompleted(pic_to_upload_resized, n)
-					};
-				})(p, pic_to_upload_resized, n);
+											if (pic_orientation == 6) {
+												canvas.width = height;
+												canvas.height = width;
+												ctx.rotate(0.5 * Math.PI);
+												ctx.translate(0, -height);
+											}
 
-				image.src = contents;
-				
-				});;
+											ctx.drawImage(image, 0, 0, width,
+													height);
+											ctx.restore();
+
+											switch (filetype) {
+											case "image/jpeg":
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											case "image/png":
+												var dataUrl = canvas
+														.toDataURL('image/png');
+												break;
+											case "image/bmp":
+												var dataUrl = canvas
+														.toDataURL('image/bmp');
+												break;
+											case "image/jpg":
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											default:
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											}
+
+											var p_tmp = [];
+											p_tmp.push(filetype);
+											p_tmp.push(dataUrl);
+
+											pic_to_upload_resized.push(p_tmp);
+
+											isCountingCompleted(
+													pic_to_upload_resized, n)
+										};
+									})(p, pic_to_upload_resized, n);
+
+									image.src = contents;
+
+								});
+				;
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length);
@@ -509,81 +503,93 @@ function uploadAssetPictures() {
 		reader.onload = (function(p, pic_to_upload_resized, n) {
 			return function(e) {
 				var contents = e.target.result;
-				
+
 				// EXIF.jS
-				EXIF.getData(p, function () {
-					var pic_orientation; 
-					pic_orientation=this.exifdata.Orientation;
-					// resize
-					
-				var image = new Image();
+				EXIF
+						.getData(
+								p,
+								function() {
+									var pic_orientation;
+									pic_orientation = this.exifdata.Orientation;
+									// resize
 
-				image.onload = (function(p, pic_to_upload_resized, n) {
-					return function(imageEvent) {
+									var image = new Image();
 
-						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1350, 
-						width = image.width, height = image.height;
-						
-						if (width > height) {
-							if (width > max_size) {
-								height *= max_size / width;
-								width = max_size;
-							}
-						} else {
-							if (height > max_size) {
-								width *= max_size / height;
-								height = max_size;
-							}
-						}
-						
-						var ctx = canvas.getContext('2d')
-						ctx.save();	
-							
-						canvas.width = width;
-						canvas.height = height;
-						
-						if(pic_orientation == 6){
-							canvas.width = height;
-							canvas.height = width;
-							ctx.rotate(0.5 * Math.PI);
-					        ctx.translate(0, -height);
-						}
-						
-						ctx.drawImage(image, 0, 0, width,height);
-						ctx.restore();
-						
-						switch (filetype) {
-						case "image/jpeg":
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						case "image/png":
-							var dataUrl = canvas.toDataURL('image/png');
-							break;
-						case "image/bmp":
-							var dataUrl = canvas.toDataURL('image/bmp');
-							break;
-						case "image/jpg":
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						default:
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						}
+									image.onload = (function(p,
+											pic_to_upload_resized, n) {
+										return function(imageEvent) {
 
-						var p_tmp = [];
-						p_tmp.push(filetype);
-						p_tmp.push(dataUrl);
+											// Resize the image
+											var canvas = document
+													.createElement('canvas'), max_size = 1350, width = image.width, height = image.height;
 
-						pic_to_upload_resized.push(p_tmp);
+											if (width > height) {
+												if (width > max_size) {
+													height *= max_size / width;
+													width = max_size;
+												}
+											} else {
+												if (height > max_size) {
+													width *= max_size / height;
+													height = max_size;
+												}
+											}
 
-						isUploadAssetPicturedCompleted(pic_to_upload_resized, n)
-					};
-				})(p, pic_to_upload_resized, n);
+											var ctx = canvas.getContext('2d')
+											ctx.save();
 
-				image.src = contents;
-				
-				});;
+											canvas.width = width;
+											canvas.height = height;
+
+											if (pic_orientation == 6) {
+												canvas.width = height;
+												canvas.height = width;
+												ctx.rotate(0.5 * Math.PI);
+												ctx.translate(0, -height);
+											}
+
+											ctx.drawImage(image, 0, 0, width,
+													height);
+											ctx.restore();
+
+											switch (filetype) {
+											case "image/jpeg":
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											case "image/png":
+												var dataUrl = canvas
+														.toDataURL('image/png');
+												break;
+											case "image/bmp":
+												var dataUrl = canvas
+														.toDataURL('image/bmp');
+												break;
+											case "image/jpg":
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											default:
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											}
+
+											var p_tmp = [];
+											p_tmp.push(filetype);
+											p_tmp.push(dataUrl);
+
+											pic_to_upload_resized.push(p_tmp);
+
+											isUploadAssetPicturedCompleted(
+													pic_to_upload_resized, n)
+										};
+									})(p, pic_to_upload_resized, n);
+
+									image.src = contents;
+
+								});
+				;
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length);
@@ -652,79 +658,92 @@ function uploadSPPictures() {
 		reader.onload = (function(p, pic_to_upload_resized, n) {
 			return function(e) {
 				var contents = e.target.result;
-		
+
 				// EXIF.jS
-				EXIF.getData(p, function () {
-					var pic_orientation; 
-					pic_orientation=this.exifdata.Orientation;
-					// resize
-				var image = new Image();
+				EXIF
+						.getData(
+								p,
+								function() {
+									var pic_orientation;
+									pic_orientation = this.exifdata.Orientation;
+									// resize
+									var image = new Image();
 
-				image.onload = (function(p, pic_to_upload_resized, n) {
-					return function(imageEvent) {
+									image.onload = (function(p,
+											pic_to_upload_resized, n) {
+										return function(imageEvent) {
 
-						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1300, // TODO
-																						// :
-																						// config
-						width = image.width, height = image.height;
-						if (width > height) {
-							if (width > max_size) {
-								height *= max_size / width;
-								width = max_size;
-							}
-						} else {
-							if (height > max_size) {
-								width *= max_size / height;
-								height = max_size;
-							}
-						}
-						var ctx = canvas.getContext('2d')
-						ctx.save();	
-							
-						canvas.width = width;
-						canvas.height = height;
-						
-						if(pic_orientation == 6){
-							canvas.width = height;
-							canvas.height = width;
-							ctx.rotate(0.5 * Math.PI);
-					        ctx.translate(0, -height);
-						}
-						
-						ctx.drawImage(image, 0, 0, width,height);
-						ctx.restore();
-								switch (filetype) {
-						case "image/jpeg":
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						case "image/png":
-							var dataUrl = canvas.toDataURL('image/png');
-							break;
-						case "image/bmp":
-							var dataUrl = canvas.toDataURL('image/bmp');
-							break;
-						case "image/jpg":
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						default:
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						}
+											// Resize the image
+											var canvas = document
+													.createElement('canvas'), max_size = 1300, // TODO
+											// :
+											// config
+											width = image.width, height = image.height;
+											if (width > height) {
+												if (width > max_size) {
+													height *= max_size / width;
+													width = max_size;
+												}
+											} else {
+												if (height > max_size) {
+													width *= max_size / height;
+													height = max_size;
+												}
+											}
+											var ctx = canvas.getContext('2d')
+											ctx.save();
 
-						var p_tmp = [];
-						p_tmp.push(filetype);
-						p_tmp.push(dataUrl);
+											canvas.width = width;
+											canvas.height = height;
 
-						pic_to_upload_resized.push(p_tmp);
+											if (pic_orientation == 6) {
+												canvas.width = height;
+												canvas.height = width;
+												ctx.rotate(0.5 * Math.PI);
+												ctx.translate(0, -height);
+											}
 
-						isUploadSPPicturedCompleted(pic_to_upload_resized, n)
-					};
-				})(p, pic_to_upload_resized, n);
+											ctx.drawImage(image, 0, 0, width,
+													height);
+											ctx.restore();
+											switch (filetype) {
+											case "image/jpeg":
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											case "image/png":
+												var dataUrl = canvas
+														.toDataURL('image/png');
+												break;
+											case "image/bmp":
+												var dataUrl = canvas
+														.toDataURL('image/bmp');
+												break;
+											case "image/jpg":
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											default:
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											}
 
-				image.src = contents;
-				
-				});;
+											var p_tmp = [];
+											p_tmp.push(filetype);
+											p_tmp.push(dataUrl);
+
+											pic_to_upload_resized.push(p_tmp);
+
+											isUploadSPPicturedCompleted(
+													pic_to_upload_resized, n)
+										};
+									})(p, pic_to_upload_resized, n);
+
+									image.src = contents;
+
+								});
+				;
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length);
@@ -739,7 +758,6 @@ function isUploadSPPicturedCompleted(pic_to_upload_resized, n) {
 
 		var sparepart_id = $("#sparepart_id").val();
 		var redirectUrl = $("#redirectUrl").val();
-	
 
 		$.post("/inventory/spareparts/upload-picture1", {
 			sparepart_id : sparepart_id,
@@ -749,7 +767,6 @@ function isUploadSPPicturedCompleted(pic_to_upload_resized, n) {
 		});
 	}
 }
-
 
 /**
  * Upload Article pictures.
@@ -797,78 +814,90 @@ function uploadArticlePictures() {
 				var contents = e.target.result;
 
 				// EXIF.jS
-				EXIF.getData(p, function () {
-					var pic_orientation; 
-					pic_orientation=this.exifdata.Orientation;
-					
-				// resize
-				var image = new Image();
+				EXIF
+						.getData(
+								p,
+								function() {
+									var pic_orientation;
+									pic_orientation = this.exifdata.Orientation;
 
-				image.onload = (function(p, pic_to_upload_resized, n) {
-					return function(imageEvent) {
-			
-						// Resize the image
-						var canvas = document.createElement('canvas'), max_size = 1350,
-						width = image.width, height = image.height;
-						if (width > height) {
-							if (width > max_size) {
-								height *= max_size / width;
-								width = max_size;
-							}
-						} else {
-							if (height > max_size) {
-								width *= max_size / height;
-								height = max_size;
-							}
-						}
-						
-						var ctx = canvas.getContext('2d')
-						ctx.save();	
-							
-						canvas.width = width;
-						canvas.height = height;
-						
-						if(pic_orientation == 6){
-							canvas.width = height;
-							canvas.height = width;
-							ctx.rotate(0.5 * Math.PI);
-					        ctx.translate(0, -height);
-						}
-						
-						ctx.drawImage(image, 0, 0, width,height);
-						ctx.restore();
+									// resize
+									var image = new Image();
 
-						switch (filetype) {
-						case "image/jpeg":
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						case "image/png":
-							var dataUrl = canvas.toDataURL('image/png');
-							break;
-						case "image/bmp":
-							var dataUrl = canvas.toDataURL('image/bmp');
-							break;
-						case "image/jpg":
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						default:
-							var dataUrl = canvas.toDataURL('image/jpeg');
-							break;
-						}
+									image.onload = (function(p,
+											pic_to_upload_resized, n) {
+										return function(imageEvent) {
 
-						var p_tmp = [];
-						p_tmp.push(filetype);
-						p_tmp.push(dataUrl);
+											// Resize the image
+											var canvas = document
+													.createElement('canvas'), max_size = 1350, width = image.width, height = image.height;
+											if (width > height) {
+												if (width > max_size) {
+													height *= max_size / width;
+													width = max_size;
+												}
+											} else {
+												if (height > max_size) {
+													width *= max_size / height;
+													height = max_size;
+												}
+											}
 
-						pic_to_upload_resized.push(p_tmp);
+											var ctx = canvas.getContext('2d')
+											ctx.save();
 
-						isUploadArticlePicturedCompleted(pic_to_upload_resized, n)
-					};
-				})(p, pic_to_upload_resized, n);
+											canvas.width = width;
+											canvas.height = height;
 
-				image.src = contents;
-				
-				});;
+											if (pic_orientation == 6) {
+												canvas.width = height;
+												canvas.height = width;
+												ctx.rotate(0.5 * Math.PI);
+												ctx.translate(0, -height);
+											}
+
+											ctx.drawImage(image, 0, 0, width,
+													height);
+											ctx.restore();
+
+											switch (filetype) {
+											case "image/jpeg":
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											case "image/png":
+												var dataUrl = canvas
+														.toDataURL('image/png');
+												break;
+											case "image/bmp":
+												var dataUrl = canvas
+														.toDataURL('image/bmp');
+												break;
+											case "image/jpg":
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											default:
+												var dataUrl = canvas
+														.toDataURL('image/jpeg');
+												break;
+											}
+
+											var p_tmp = [];
+											p_tmp.push(filetype);
+											p_tmp.push(dataUrl);
+
+											pic_to_upload_resized.push(p_tmp);
+
+											isUploadArticlePicturedCompleted(
+													pic_to_upload_resized, n)
+										};
+									})(p, pic_to_upload_resized, n);
+
+									image.src = contents;
+
+								});
+				;
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length);
@@ -930,7 +959,6 @@ function completeNotifyDN(ID) {
 	});
 }
 
-
 function showVendorDialog() {
 	// $( "#dialog" ).text(t);
 	$("#dialog").dialog({
@@ -940,25 +968,25 @@ function showVendorDialog() {
 		modal : true,
 		dialogClass : 'dialogClass'
 	});
-	
-	$('#search_term').keypress(function(event){
 
-	    if (event.keyCode === 10 || event.keyCode === 13) 
-	        event.preventDefault();
-	    	//showDialog();
-	  });
-	
-	
+	$('#search_term').keypress(function(event) {
+
+		if (event.keyCode === 10 || event.keyCode === 13)
+			event.preventDefault();
+		// showDialog();
+	});
+
 	loadVendorList();
 }
 /**
  * function on calendar dialog
  */
 function loadVendorList() {
-	
+
 	$("#search_result").html('Loading....');
-	
-	$.ajax({
+
+	$
+			.ajax({
 				url : "/procurement/vendor/list-json",
 				success : function(text) {
 					var obj = eval(text);
@@ -968,36 +996,43 @@ function loadVendorList() {
 					var s;
 					var i;
 					s = '';
-					
+
 					if (n_hits > 0) {
-						
-						s = s +'<div><table class="table table-striped table-bordered"><thead><tr><td><b>ID</b></td><td><b>NAME</b></td><td><b>KEY-WORDS</b></td><td><b>ACTION</b></td><td><b>DETAIL</b></td></thead></tr>';
+
+						s = s
+								+ '<div><table class="table table-striped table-bordered"><thead><tr><td><b>ID</b></td><td><b>NAME</b></td><td><b>KEY-WORDS</b></td><td><b>ACTION</b></td><td><b>DETAIL</b></td></thead></tr>';
 						for (i = 0; i < n_hits; i++) {
-							s = s + "<tr>"	
+							s = s + "<tr>"
 							var id = obj[i]["id"];
 							var name = obj[i]["name"];
 							var keywords = obj[i]["keywords"];
 							s = s + '<td>' + id + '</td>';
 							s = s + '<td>' + name + '</td>';
 							s = s + '<td>' + keywords + '</td>';
-							
+
 							/*
-							s = s +
-							'<td><ul style="padding:0px;" class="nav nav-pills">'
-							+ '<li><a style="color: #0080ff;" href="javascript:;" onclick="selectVendor(\''
-							+ id + '\',\'' + name + '\',\'' + keywords + '\')"> <i class="icon-chevron-right"></i> SELECT  </a></li>'							
-							+ '<li><a style="color: #0080ff;" href="/procurement/vendor/show?id=' + id+ '" target="_blank">  DETAIL	  </a></li>'
-							+'</ul></td>';
-							*/
-							
+							 * s = s + '<td><ul style="padding:0px;" class="nav nav-pills">' + '<li><a
+							 * style="color: #0080ff;" href="javascript:;"
+							 * onclick="selectVendor(\'' + id + '\',\'' + name +
+							 * '\',\'' + keywords + '\')"> <i
+							 * class="icon-chevron-right"></i> SELECT </a></li>' + '<li><a
+							 * style="color: #0080ff;"
+							 * href="/procurement/vendor/show?id=' + id+ '"
+							 * target="_blank"> DETAIL </a></li>' +'</ul></td>';
+							 */
+
 							s = s
 									+ '<td><a class ="" href="javascript:;" onclick="selectVendor(\''
-									+ id + '\',\'' + name + '\',\'' + keywords
+									+ id
+									+ '\',\''
+									+ name
+									+ '\',\''
+									+ keywords
 									+ '\')"> <i class="icon-chevron-right"></i> Select  </a></td>';
 							s = s + '<td><a href="/procurement/vendor/show?id='
 									+ id
 									+ '" target="_blank">  Detail	  </a></td>';
-							
+
 							s = s + "</tr>";
 
 						}
@@ -1008,12 +1043,11 @@ function loadVendorList() {
 						s = "No Vendors found!";
 					}
 
-					//alert(s);
+					// alert(s);
 
 					$("#search_result").html(s);
 				}
 			});
-
 
 }
 
@@ -1023,20 +1057,19 @@ function loadVendorList() {
 function searchVendor() {
 	// $( "#dialog" ).text(t);
 	var q;
-	
-	
-	
+
 	q = $("#search_term").val();
-	
-	if (q.length ==0) {
+
+	if (q.length == 0) {
 		q = $("#search_term").val();
 		$("#search_result").html('please enter search term');
 		return;
 	}
-	
+
 	$("#search_result").html('Searching...');
-	$.ajax({
-				url : "/procurement/vendor/search?json=1&query="+q,
+	$
+			.ajax({
+				url : "/procurement/vendor/search?json=1&query=" + q,
 				success : function(text) {
 					var obj = eval(text);
 					var n_hits = obj.length;
@@ -1045,10 +1078,11 @@ function searchVendor() {
 					var s;
 					var i;
 					s = '';
-					
+
 					if (n_hits > 0) {
-						
-						s = s +'<div><table class="table table-striped table-bordered"><thead><tr><td><b>ID</b></td><td><b>NAME</b></td><td><b>KEY-WORDS</b></td><td><b>ACTION</b></td><td><b>DETAIL</b></td></thead></tr>';
+
+						s = s
+								+ '<div><table class="table table-striped table-bordered"><thead><tr><td><b>ID</b></td><td><b>NAME</b></td><td><b>KEY-WORDS</b></td><td><b>ACTION</b></td><td><b>DETAIL</b></td></thead></tr>';
 						for (i = 0; i < n_hits; i++) {
 							s = s + "<tr>"
 							var id = obj[i]["id"];
@@ -1058,15 +1092,18 @@ function searchVendor() {
 							s = s + '<td>' + name + '</td>';
 							s = s + '<td>' + keywords + '</td>';
 							s = s
-							+ '<td><a href="javascript:;" onclick="selectVendor(\''
-							+ id + '\',\'' + name + '\',\'' + keywords
-							+ '\')"> <i class="icon-chevron-right"></i> Select  </a></td>';
+									+ '<td><a href="javascript:;" onclick="selectVendor(\''
+									+ id
+									+ '\',\''
+									+ name
+									+ '\',\''
+									+ keywords
+									+ '\')"> <i class="icon-chevron-right"></i> Select  </a></td>';
 							s = s + '<td><a href="/procurement/vendor/show?id='
 									+ id
 									+ '" target="_blank">  Detail	  </a></td>';
-							
-							s = s + "</tr>";
 
+							s = s + "</tr>";
 
 						}
 						s = s + "</table></div>";
@@ -1076,15 +1113,13 @@ function searchVendor() {
 						s = "No Vendors found!";
 					}
 
-					//alert(s);
+					// alert(s);
 
 					$("#search_result").html(s);
 				}
 			});
 
-
 }
-
 
 function selectVendor(id, name, tag) {
 	$("#vendor_id").val(id);
@@ -1102,23 +1137,24 @@ function openPRCart(ID) {
 	var item_min_balance_id;
 	var item_on_cart_id;
 	var isOnCart;
-	
+
 	item_name_id = '#' + ID + '_name';
 	item_code_id = '#' + ID + '_code';
 	item_unit_id = '#' + ID + '_unit';
 	item_current_balance_id = '#' + ID + '_current_balance';
 	item_min_balance_id = '#' + ID + '_min_balance';
 	item_on_cart_id = '#' + ID + '_on_cart';
-	
-	isOnCart =$(item_on_cart_id).text();
-	
-	if (isOnCart=="YES"){
-		$('#_status').html('<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> Item is already on Order List. Please review it!</div>');
-	}else{
+
+	isOnCart = $(item_on_cart_id).text();
+
+	if (isOnCart == "YES") {
+		$('#_status')
+				.html(
+						'<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> Item is already on Order List. Please review it!</div>');
+	} else {
 		$('#_status').text("");
 	}
-	
-	
+
 	$('#end_date').val("");
 	$('#item_quantity').val("").select();
 	$('#item_remarks').val("");
@@ -1126,8 +1162,11 @@ function openPRCart(ID) {
 	$('#item_name').val($(item_name_id).text());
 	$('#item_code').val($(item_code_id).text());
 	$('#item_unit').val($(item_unit_id).text());
-	
-	$('#item_balance').html('<span style="font-size 6px;"> Current Balance:' + $(item_current_balance_id).text() + '; Minimum Balance:' + $(item_min_balance_id).text()+ '</span>');
+
+	$('#item_balance').html(
+			'<span style="font-size 6px;"> Current Balance:'
+					+ $(item_current_balance_id).text() + '; Minimum Balance:'
+					+ $(item_min_balance_id).text() + '</span>');
 
 	$('#item_id').val(ID);
 	$('#sp_order_modal').modal();
@@ -1169,7 +1208,7 @@ function addItemToCart(type) {
 		priority : item_priority,
 		name : item_name,
 		code : item_code,
-		unit:item_unit,
+		unit : item_unit,
 		quantity : item_quantity,
 		EDT : item_edt,
 		asset_name : item_asset_name,
@@ -1225,19 +1264,18 @@ function updateCarts() {
 }
 
 function openConfirmation(ID) {
-		$('#myModal').modal();
+	$('#myModal').modal();
 }
-
 
 /**
  * 
  * @param ID
  */
 function openSubmitCartConfirmation(ID) {
-	var error='';
+	var error = '';
 	var selected_items = '';
 	var i = 0;
-	
+
 	var SelectAll = $('#select_ALL').prop('checked') ? "YES" : "NO";
 
 	selected_items = selected_items + '(';
@@ -1255,20 +1293,19 @@ function openSubmitCartConfirmation(ID) {
 	if (SelectAll === 'NO' && i === 0) {
 		error = 'No items selected... Please select item(s) to submit!';
 	}
-	
+
 	var pr_number = $('#pr_number').val();
 	$('#submitted_id').html('<b>#' + pr_number + ' - ' + i + ' Items</b>');
 
-		
-	if(pr_number.length==0){
-		error= error + '<br> PR Number is empty...Please enter PR Number!';
+	if (pr_number.length == 0) {
+		error = error + '<br> PR Number is empty...Please enter PR Number!';
 	}
-	
-	
-	if(error.length>0){
-		$('#message_modal_content').html('<div class="alert alert-error">' + error +'</div>');
+
+	if (error.length > 0) {
+		$('#message_modal_content').html(
+				'<div class="alert alert-error">' + error + '</div>');
 		$('#message_modal').modal();
-	}else{
+	} else {
 		$('#myModal').modal();
 	}
 }
@@ -1280,7 +1317,7 @@ function submitCartItems() {
 	var i = 0;
 
 	var pr_number = $('#pr_number').val();
-	
+
 	var SelectAll = $('#select_ALL').prop('checked') ? "YES" : "NO";
 
 	selected_items = selected_items + '(';
@@ -1321,7 +1358,7 @@ function submitCartItems() {
  */
 function deleteCartItemDialog(ID) {
 	$('#cart_item_to_delete').val(ID);
-	$('#cart_item_to_delete_id').html('<b>#' + ID+'</b>');
+	$('#cart_item_to_delete_id').html('<b>#' + ID + '</b>');
 	$('#myModal2').modal();
 }
 
@@ -1362,7 +1399,7 @@ function createArticleCat(parent_id, node_id, node_text) {
 	});
 }
 
-function deleteArticleCat(cat_id) {	
+function deleteArticleCat(cat_id) {
 	$('#myModal1').modal();
 	var redirectUrl = "/inventory/article/category";
 	$.get("/inventory/article/delete-category", {
@@ -1371,8 +1408,7 @@ function deleteArticleCat(cat_id) {
 		var obj = eval(data);
 		var status = obj['status'];
 		var messages = obj['messages'];
-		
-		
+
 		if (status == 1) {
 			window.location = redirectUrl;
 		} else {
@@ -1429,25 +1465,26 @@ function createRole(parent_id, node_id, node_text) {
 	});
 }
 
-
-
 /* =============================== */
-function openDeliveryConfirmation(ID,URL) {
+function openDeliveryConfirmation(ID, URL) {
 	var delivered_quantity;
 	var item_name;
 	delivered_quantity_id = '#' + ID + '_delivered_quantity';
 	item_name = '#' + ID + '_item_name';
 	$('#delivered_quantity').val($(delivered_quantity_id).text());
 	$('#item_name').val($(item_name).text());
-	
-	$('#confirmed_quantity').on('input',function(e){
-			$('#rejected_quantity').val($('#delivered_quantity').val()- $('#confirmed_quantity').val());
 
-		});
-	
+	$('#confirmed_quantity').on(
+			'input',
+			function(e) {
+				$('#rejected_quantity').val(
+						$('#delivered_quantity').val()
+								- $('#confirmed_quantity').val());
+
+			});
+
 	$('#end_date').val("");
 	$('#_uri').val(URL);
-	
 
 	$('#item_id').val(ID);
 	$('#myModal').modal();
@@ -1458,16 +1495,12 @@ function openDeliveryConfirmation(ID,URL) {
 }
 
 /**
- * 	dn_id : dn_id,	
-	dn_item_id:dn_item_id,
-	pr_item_id:pr_item_id,
-	sparepart_id:sparepart_id,
-	article_id:,
-	asset_id:,
-
+ * dn_id : dn_id, dn_item_id:dn_item_id, pr_item_id:pr_item_id,
+ * sparepart_id:sparepart_id, article_id:, asset_id:,
+ * 
  */
 function doConfirmDelivery() {
-	
+
 	var delivered_quantity = $('#delivered_quantity').val();
 	var confirmed_quantity = $('#confirmed_quantity').val();
 	var rejected_quantity = $('#rejected_quantity').val();
@@ -1479,14 +1512,14 @@ function doConfirmDelivery() {
 	$('#myModal1').modal();
 	redirectUrl = "/procurement/do/get-notification";
 	$.get(uri, {
-	confirmed_quantity : confirmed_quantity,
-	rejected_quantity : rejected_quantity,
-	remarks:remarks,
+		confirmed_quantity : confirmed_quantity,
+		rejected_quantity : rejected_quantity,
+		remarks : remarks,
 	}, function(data, status) {
-		//alert(data);
+		// alert(data);
 		window.location = redirectUrl;
 	});
-	
+
 }
 
 /**
@@ -1510,7 +1543,7 @@ function deleteDNCartItem() {
 	$.get("/procurement/delivery/delete-cart-item", {
 		id : cart_item_id,
 	}, function(data, status) {
-		//updateCarts();
+		// updateCarts();
 		window.location = redirectUrl;
 
 	});
@@ -1557,13 +1590,12 @@ function submitDNCartItems() {
 	});
 }
 
-
 function openDOConfirmation(ID) {
-	
-	var error='';
+
+	var error = '';
 	var selected_items = '';
 	var i = 0;
-	
+
 	var SelectAll = $('#select_ALL').prop('checked') ? "YES" : "NO";
 
 	selected_items = selected_items + '(';
@@ -1581,20 +1613,19 @@ function openDOConfirmation(ID) {
 	if (SelectAll === 'NO' && i === 0) {
 		error = 'No items selected... Please select item(s) to notify!';
 	}
-	
+
 	var dn_number = $('#dn_number').val();
 	$('#submitted_id').html('<b>#' + dn_number + ' - ' + i + ' Items</b>');
 
-		
-	if(dn_number.length==0){
-		error= error + '<br> DO Number is empty...Please enter DO Number!';
+	if (dn_number.length == 0) {
+		error = error + '<br> DO Number is empty...Please enter DO Number!';
 	}
-	
-	
-	if(error.length>0){
-		$('#message_modal_content').html('<div class="alert alert-error">' + error +'</div>');
+
+	if (error.length > 0) {
+		$('#message_modal_content').html(
+				'<div class="alert alert-error">' + error + '</div>');
 		$('#message_modal').modal();
-	}else{
+	} else {
 		$('#myModal').modal();
 	}
 }
@@ -1619,7 +1650,6 @@ function notifyDOItems() {
 	// remove last ','
 	selected_items = selected_items.substring(selected_items.length - 1, 1);
 	selected_items = '(' + selected_items + ')';
-	
 
 	if (SelectAll === 'NO' && i === 0) {
 		$('#myModal').modal('hide');
@@ -1641,17 +1671,15 @@ function notifyDOItems() {
 	});
 }
 
-
-
 function loadArticles(cat_id, cat_name) {
 	//alert(cat_id);
 	$('#content').text("Loading...");
-		//alert(cat_id);
-		$.get("/inventory/article/show-category", {
+	//alert(cat_id);
+	$.get("/inventory/article/show-category", {
 		cat_id : cat_id,
 	}, function(data, status) {
 		//updateCarts();
-		$('#content').html("<h5>"+cat_name+"</h5>"+data);
+		$('#content').html("<h5>" + cat_name + "</h5>" + data);
 
 	});
 }

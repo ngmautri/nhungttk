@@ -70,7 +70,7 @@ function filterPrRow(url) {
  */
 function loadCategory(cat_id, cat_name) {
 	
-	var defaut_width = 1000;
+	var defaut_width = 1350;
 	var container_with = $("#main_container").width();
 	
 	if(container_with > defaut_width){
@@ -81,7 +81,7 @@ function loadCategory(cat_id, cat_name) {
 	
 	$("#dialog1").dialog({
 		width : width,
-		height : 580,
+		height : 600,
 		title : cat_name,
 		modal : true,
 		dialogClass : 'dialogClass'
@@ -90,7 +90,7 @@ function loadCategory(cat_id, cat_name) {
 	// alert(cat_id);
 	$('#content').text("Loading...");
 		// alert(cat_id);
-		$.get("/application/item-category/show", {
+		$.get("/inventory/item-category/show", {
 		cat_id : cat_id,
 	}, function(data, status) {
 		// updateCarts();

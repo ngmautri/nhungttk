@@ -20,7 +20,7 @@ use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
 use Application\Entity\NmtInventoryItem;
 use Zend\Escaper\Escaper;
-
+use Procure\Service\PrSearchService;
 /**
  *
  * @author nmt
@@ -29,6 +29,7 @@ use Zend\Escaper\Escaper;
 class PrRowController extends AbstractActionController {
 	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 	protected $doctrineEM;
+	protected $prSearchService;
 	
 	/*
 	 * Defaul Action
@@ -37,6 +38,22 @@ class PrRowController extends AbstractActionController {
 	}
 	
 	/**
+     * @return the $prSearchService
+     */
+    public function getPrSearchService()
+    {
+        return $this->prSearchService;
+    }
+
+    /**
+     * @param field_type $prSearchService
+     */
+    public function setPrSearchService(PrSearchService $prSearchService)
+    {
+        $this->prSearchService = $prSearchService;
+    }
+
+    /**
 	 *
 	 * @return \Zend\View\Model\ViewModel
 	 */
@@ -253,6 +270,7 @@ class PrRowController extends AbstractActionController {
 				$entity->setChecksum ( md5 ( uniqid ( "pr_row_" . $entity->getId () ) . microtime () ) );
 				$this->doctrineEM->flush ();
 				
+				$index_update_status = $this->prSearchService->updateIndex($entity, fasle);
 				$this->flashMessenger ()->addMessage ( "Row '" . $entity->getId () . "' has been created successfully!" );
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
@@ -501,9 +519,9 @@ class PrRowController extends AbstractActionController {
 				
 				$item_detail = "/inventory/item/show1?token=" . $a ['item_token'] . "&checksum=" . $a ['item_checksum'] . "&entity_id=" . $a ['item_id'];
 				if ($a ['item_name'] !== null) {
-					$onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200','550','" . $item_detail . "','j_loaded_data', true);";
+					$onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
 				} else {
-					$onclick = "showJqueryDialog('Detail of Item: " . ($a ['item_name']) . "','1200','550','" . $item_detail . "','j_loaded_data', true);";
+					$onclick = "showJqueryDialog('Detail of Item: " . ($a ['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
 				}
 				$count ++;
 				if ($paginator == null) {
@@ -549,9 +567,9 @@ class PrRowController extends AbstractActionController {
 				$received_detail = "/inventory/item-transaction/pr-row?pr_row_id=" . $a ['id'];
 				
 				if ($a ['item_name'] !== null) {
-					$onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200','550','" . $received_detail . "','j_loaded_data', true);";
+					$onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200',$(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
 				} else {
-					$onclick1 = "showJqueryDialog('Receiving of Item: " . ($a ['item_name']) . "','1200','550','" . $received_detail . "','j_loaded_data', true);";
+					$onclick1 = "showJqueryDialog('Receiving of Item: " . ($a ['item_name']) . "','1200', $(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
 				}
 				if ($a ['total_received'] > 0) {
 					$a_json_row ["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . $a ['total_received'] . '</a>';
@@ -927,9 +945,9 @@ class PrRowController extends AbstractActionController {
 					$item_detail = "/inventory/item/show1?token=" . $a ['item_token'] . "&checksum=" . $a ['item_checksum'] . "&entity_id=" . $a ['item_id'];
 					
 					if ($a ['item_name'] !== null) {
-						$onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200','550','" . $item_detail . "','j_loaded_data', true);";
+						$onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
 					} else {
-						$onclick = "showJqueryDialog('Detail of Item: " . ($a ['item_name']) . "','1200','550','" . $item_detail . "','j_loaded_data', true);";
+						$onclick = "showJqueryDialog('Detail of Item: " . ($a ['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
 					}
 					
 					
@@ -949,7 +967,7 @@ class PrRowController extends AbstractActionController {
 					$a_json_row ["confirmed_balance"] = $a ['confirmed_balance'];
 					
 					$received_detail = "/inventory/item-transaction/pr-row?pr_row_id=" . $a ['id'];
-					$onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200','600','" . $received_detail . "','j_loaded_data', true);";
+					$onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200',$(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
 					
 					if ($a ['total_received'] > 0) {
 						$a_json_row ["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . $a ['total_received'] . '</a>';
@@ -1180,7 +1198,9 @@ class PrRowController extends AbstractActionController {
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
 				
-				$this->flashMessenger ()->addMessage ( "Row '" . $entity->getId () . "' has been updated successfully!" );
+				$index_update_status = $this->prSearchService->updateIndex($entity, fasle);
+				
+				$this->flashMessenger ()->addMessage ( $index_update_status );
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}

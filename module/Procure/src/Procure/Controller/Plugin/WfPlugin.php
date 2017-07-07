@@ -12,8 +12,8 @@ class WfPlugin extends AbstractPlugin
     protected $serviceManager;
     protected $doctrineEM;
     
-    public function getWF() {
-        echo "test plugin";
+    public function getWF($subject) {
+        return $wf= $this->getServiceManager()->get("Workflow\Service\WorkflowService")->purchaseRequestWF()->get($subject);
     }
     /**
      * @return the $serviceManager

@@ -8,7 +8,7 @@ $container = $this->container;
         <?php /* @var $page Zend\Navigation\Page\Mvc */ ?>
         <?php $hasChildren = $page->hasPages() ?>
         <?php if (!$hasChildren): ?>
-            <li<?php if ($page->isActive()) echo ' class="active"' ?>>
+            <li<?php if ($page->isActive()) ; echo  ' class="active"' ?>>
                 <a 
                     class="nav-header" 
                     href="<?php echo $page->getHref() ?>"

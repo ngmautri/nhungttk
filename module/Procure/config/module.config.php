@@ -24,13 +24,14 @@ return array (
 						
 						array(
 								'label' => 'PR List',
-								'route' => 'procure/default',
+								//'route' => 'procure/default',
+						        //'url' ="/procure/pr/all?pr_year=0&balance=0&is_active=1&sort_by=prNumber&sort=ASC&perPage=15",
 								'controller' => 'pr',
 								'action' => 'all',
 								'icon' => 'glyphicon glyphicon-list',
 						),
 						
-						array(
+    				 	array(
 								'label' => 'PR Row',
 								'route' => 'procure/default',
 								'controller' => 'pr-row',

@@ -8,7 +8,7 @@
 	<li><a
 		href="<?php echo $this->baseUrl ?>/inventory/spareparts/add?category_id=<?php echo $category->id ?>"><i
 			class="icon-plus"> </i> Add New Spare-part</a></li>
-			<li><a
+	<li><a
 		href="<?php echo $this->baseUrl ?>/inventory/spareparts/show-category?id=<?php echo $category->id ?>"><i
 			class="icon-list"> </i> Show category</a></li>
 </ul>
@@ -16,62 +16,69 @@
 <?php
 
 if ($total_spareparts <= 0) {
-	
-	echo 'No spare part found!';
+    
+    echo 'No spare part found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_spareparts . ' members found! </h5>';
-		;
-	} else {
-		echo '<h5>' . $total_spareparts . ' spare parts found! </h5>';
-	}
+    
+    if (! is_null($paginator)) {
+        echo '<h5>Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_spareparts . ' members found! </h5>';
+        ;
+    } else {
+        echo '<h5>' . $total_spareparts . ' spare parts found! </h5>';
+    }
 }
 ?>
 
 
  <?php
- /*
- $spareparts1=$spareparts; 
- foreach ($spareparts1 as $a1 ) : ?>
-  	
-  	<div id="caption<?php echo $this->escapeHtml($a1['id']);?>" style="display:none">
-    	<h4><?php echo $this->escapeHtml($a1['tag']);?></h4><p><?php echo $this->escapeHtml($a1['name']);?></p>
-	</div>				
-	<?php
-	endforeach
-	;
-	*/
-$no_pics=0;
+/*
+ * $spareparts1=$spareparts;
+ * foreach ($spareparts1 as $a1 ) : ?>
+ *
+ * <div id="caption<?php echo $this->escapeHtml($a1['id']);?>" style="display:none">
+ * <h4><?php echo $this->escapeHtml($a1['tag']);?></h4><p><?php echo $this->escapeHtml($a1['name']);?></p>
+ * </div>
+ * <?php
+ * endforeach
+ * ;
+ */
+$no_pics = 0;
 ?>
 <div class="demo-gallery">
-<div id="lightgallery" class="justified-gallery">
+	<div id="lightgallery" class="justified-gallery">
 
  
  <?php foreach ( $spareparts as $a ) : ?>
   	
   		<?php
-		if ($a->sp_pic_id !== null) :
-			?>
-		<a data-toggle="tooltip" data-sub-html="<h3><?php echo $this->escapeHtml($a['tag']);?></h3><h4><?php echo $this->escapeHtml($a['name']);?></h4><h4><?php echo $this->escapeHtml($a['location']);?></h4>" class="jg-entry" href="/inventory/image/sparepart?id=<?php echo $a->sp_pic_id;?>">
-	    	<img class="img-rounded" title="<?php echo $this->escapeHtml($a['tag']);?>: <?php echo $this->escapeHtml($a['name']);?> - Location: <?php echo $a['location']!=null?$a['location']:"N/A"?>" src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"
-		 </a>
-		<?php else:
-			$no_pics=$no_pics+1;
-		
- 		endif;
-	endforeach
-	;
-	?>
+    if ($a->sp_pic_id !== null) :
+        ?>
+		<a data-toggle="tooltip" data-sub-html="<h3>
+			<?php echo $this->escapeHtml($a['tag']);?></h3>
+			<h4><?php echo $this->escapeHtml($a['name']);?></h4>
+			<h4><?php echo $this->escapeHtml($a['location']);?></h4>" class="jg-entry" href="/inventory/image/sparepart?id=<?php echo $a->sp_pic_id;?>">
+	    	<img class="img-rounded"
+			title="<?php echo $this->escapeHtml($a['tag']);?>: <?php echo $this->escapeHtml($a['name']);?> - Location: <?php echo $a['location']!=null?$a['location']:"N/A"?>"
+			src="/inventory/image/sparepartthumbnail200?id=<?php echo $a->sp_pic_id;?>"</a>
+		<?php
+    
+else :
+        $no_pics = $no_pics + 1;
+    
+    endif;
+endforeach
+;
+?>
 </div>
 </div>
 
-<?php if ($no_pics>0)
-{
-echo '<div class="alert alert-error">';
-	echo $no_pics . ' spare part has no picture!';
-echo '</div>';
-} 
+<?php
+
+if ($no_pics > 0) {
+    echo '<div class="alert alert-error">';
+    echo $no_pics . ' spare part has no picture!';
+    echo '</div>';
+}
 ?>
 
 

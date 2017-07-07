@@ -13,7 +13,6 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Workflow\Listener\PrReviewListener;
 use Workflow\Listener\WorkflowLogger;
 
-
 /**
  *
  * @author nmt
@@ -31,42 +30,51 @@ class WorkflowService extends AbstractCategory
     public function purchaseRequestWF()
     {
         $definition = new DefinitionBuilder();
+        // Transitions are defined with a unique name, an origin place and a destination place
+        
         $definition->addPlaces([
             'draft',
             'department_head',
             'department_head_approved',
-            'department_head_rejected',            
+            'department_head_rejected',
             'fa_budget_check',
             'fa_budget_check_approved',
             'fa_budget_check_rejected',
             'procurement',
             'bought',
-            'delivered',
+            'delivered'
         ])
-            ->
-        // Transitions are defined with a unique name, an origin place and a destination place
-        addTransition(new Transition('submit_to_department_head', 'draft', 'department_head'))
+            ->addTransition(new Transition('submit_to_department_head', 'draft', 'department_head'))
             ->addTransition(new Transition('department_head_yes', 'department_head', 'fa_budget_check'))
             ->addTransition(new Transition('department_head_no', 'department_head', 'department_head_rejected'))
             ->addTransition(new Transition('fa_yes', 'fa_budget_check', 'procurement'))
-            ->addTransition(new Transition('fa_no', 'fa_budget_check', 'fa_budget_check_rejected'));
-            ->addTransition(new Transition('buy', 'procurement', 'bought'));
+            ->addTransition(new Transition('fa_no', 'fa_budget_check', 'fa_budget_check_rejected'))
+            ->addTransition(new Transition('buy', 'procurement', 'bought'))
             ->addTransition(new Transition('delivery', 'bought', 'delivered'));
-            $marking = new SingleStateMarkingStore('currentState');
-            
+        
+        $marking = new SingleStateMarkingStore('currentState');
+        
         $registry = new Registry();
         
         $dispatcher = new EventDispatcher();
         $l1 = new PrReviewListener($registry);
-        $dispatcher->addListener('workflow.PR_WORKFLOW.guard.to_review', array($l1, 'guardReview'));
-        $dispatcher->addListener('workflow.PR_WORKFLOW.entered', array($l1, 'onSubmitPR'));
+        $dispatcher->addListener('workflow.PR_WORKFLOW.guard.to_review', array(
+            $l1,
+            'guardReview'
+        ));
+        $dispatcher->addListener('workflow.PR_WORKFLOW.entered', array(
+            $l1,
+            'onSubmitPR'
+        ));
         
-        $l2 =  new WorkflowLogger();
-        $dispatcher->addListener('workflow.leave', array($l2, 'onLeave'));
+        $l2 = new WorkflowLogger();
+        $dispatcher->addListener('workflow.leave', array(
+            $l2,
+            'onLeave'
+        ));
         
-        $workflow = new Workflow($definition->build(), $marking,$dispatcher,"PR_WORKFLOW");
+        $workflow = new Workflow($definition->build(), $marking, $dispatcher, "PR_WORKFLOW");
         
-      
         $registry->add($workflow, 'Application\Entity\NmtProcurePr');
         return $registry;
     }
@@ -201,8 +209,6 @@ class WorkflowService extends AbstractCategory
     {}
 
     // =====================================
-    
-
     public function getCase()
     {
         return $this->case;
@@ -214,20 +220,25 @@ class WorkflowService extends AbstractCategory
         return $this;
     }
 
-    public function getCaseId() {
-		return $this->caseId;
-	}
-	public function setCaseId($caseId) {
-		$this->caseId = $caseId;
-		return $this;
-	}
-	public function getDoctrineEM() {
-		return $this->doctrineEM;
-	}
-	public function setDoctrineEM(EntityManager $doctrineEM) {
-		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
-	
-	
+    public function getCaseId()
+    {
+        return $this->caseId;
+    }
+
+    public function setCaseId($caseId)
+    {
+        $this->caseId = $caseId;
+        return $this;
+    }
+
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+        return $this;
+    }
 }

@@ -127,6 +127,7 @@
 
 
 <script>
+
 	//loadPrRow('<?php echo $this->baseUrl . '/procure/pr-row/row?target_id='. $entity->getId().'&token='.$entity->getToken().'&checksum='.$entity->getChecksum()?>');
 	$("#Create_PR_Form :input").attr("disabled", "disabled");
 
@@ -162,8 +163,8 @@
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "100%", height: 450, showTitle : false,
-			//resizable:true,
+	var obj = { width: "100%", height: $(window).height()-350, showTitle : false,
+			resizable:true,
 			//draggable:true,
 			sortable: true,
 			hoverMode: 'cell',

@@ -28,6 +28,11 @@ class PrRowControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
 		$controller->setDoctrineEM($sv );
 		
+		//Vendor Search Service
+		$sv =  $sm->get ('Procure\Service\PrSearchService' );
+		$controller->setPrSearchService($sv );
+		
+		
 		return $controller;
 	}
 }

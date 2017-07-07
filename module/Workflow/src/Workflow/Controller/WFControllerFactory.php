@@ -23,11 +23,12 @@ class WFControllerFactory implements FactoryInterface {
 		$sm = $serviceLocator->getServiceLocator();
 			
 		$controller = new WFController();
-			
 		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
 		$controller->setDoctrineEM($sv );
-		
-		
+				
+	    $sv =  $sm->get ('Workflow\Service\WorkflowService' );
+		$controller->setWfService($sv);
+				
 		return $controller;
 	}
 }

@@ -352,19 +352,20 @@
             <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas" title="Toggle sidebar"><i class="fa fa-chevron-right"></i></button>
           </p>
              <div class="row" style="padding-right:10px">
-             	<h5><strong>PROCUREMENT MODULE</strong></h5>
+             	
      	      <?= $this->content ?>
           </div><!--/row-->
         </div><!--/.col-xs-12.col-sm-9-->
 
            <div class="col-xs-6 col-sm-2 col-sm-pull-10 sidebar-offcanvas" id="sidebar" style="font-size: 9.5pt; ">
-           
+           <h5><strong>PROCUREMENT</strong></h5>
                      <form class="form-inline" action="<?php echo $this->baseUrl ?>/procure/pr-search/do"	method="get" enctype="multipart/form-data">
   <div class="form-group">
     	<input placeholder ="Search PR Item..." class="form-control" size="15" type="text" name = "q">
  
  
   </div>
+  
   <div class="form-group">
      <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small></button>
   </div>
@@ -383,11 +384,9 @@
 				    
         </div><!--/.sidebar-offcanvas-->
       </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <p>&copy; 2016-2017 Nguyen Mau Tri</p>
+		<hr>
+       <footer>
+        &copy; 2016-2017 Nguyen Mau Tri
       </footer>
       
       		
@@ -415,7 +414,7 @@ if($this->flashMessenger()!==null){
 			    $( ".procure_menu" ).menu();
 			  });
 				  
-		
+		// $("#main_container").height() =  $(window).height()-50;
 </script>
  
  <!-- Modal -->
@@ -473,7 +472,7 @@ if($this->flashMessenger()!==null){
 	</div>
 </div>
     
-    
+     <?php echo $this->inlineScript()?>
     </body>
 </html>
     

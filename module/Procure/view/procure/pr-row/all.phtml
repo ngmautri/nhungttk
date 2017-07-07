@@ -184,9 +184,11 @@
        	
     };
 
+	
+
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "100%", height: 680, showTitle : true,
+	var obj = { width: "100%", height: $(window).height()-190, showTitle : true,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
@@ -225,7 +227,8 @@
 
       });
     
- 
+
+    $("#main_container").height() = $(window).height()-190;
 </script>
 
 

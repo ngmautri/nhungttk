@@ -1,0 +1,106 @@
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Purchase Requests</a></li>
+	</ul>
+<div id="general">
+
+<?php
+
+if ($total_records <= 0) {
+    
+    echo 'No record found!';
+} else {
+    
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+    
+    ?>
+
+<table style="font-size: 9.5pt;"
+	class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>WF</b></td>
+			<td><b>Subject</b></td>
+			<td><b>Transition </b></td>
+			<td><b>Created</b></td>
+			<td><b>Status</b></td>
+			
+		</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+    
+    $count = 0;
+    foreach ($list as $a) :
+        $count ++;
+        ?>
+	 <tr>
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><?php echo $this->escapeHtml($a->getWorkflowName());?></td>
+					<td><?php echo $this->escapeHtml($a->getSubjectClass());?></td>
+			
+			<td><?php echo $this->escapeHtml($a->getTransitionName());?></td>
+			<td><?php echo ($a->getEnabledDate()!==null )? date_format ( $a->getEnabledDate(), "d-m-y H:i"):"";?> </td>
+			<td><?php echo $this->escapeHtml($a->getWorkitemStatus());?></td>
+	
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+</div></div>
+<?php
+    
+    // ===============================
+    if (! is_null($paginator)) :
+        
+        // change it only
+        $base = $this->baseUrl . '/procure/pr/list';
+        $_connector_symbol = '?';
+        
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+        
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+        
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        
+        echo '<ul class="pagination pagination-sm">';
+        
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+        
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+            
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+            
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
+endif;
+    
+}
+// ===============================
+?>
+
+

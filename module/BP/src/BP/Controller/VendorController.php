@@ -84,6 +84,7 @@ class VendorController extends AbstractActionController {
 			$redirectUrl = $request->getPost ( 'redirectUrl' );
 			$errors = array ();
 			
+			$vendorNumber = $request->getPost ( 'vendorNumber' );
 			$vendorName = $request->getPost ( 'vendorName' );
 			$vendorShortName = $request->getPost ( 'vendorShortName' );
 			$keywords = $request->getPost ( 'keywords' );
@@ -98,6 +99,7 @@ class VendorController extends AbstractActionController {
 			
 			$entity = new NmtBpVendor ();
 			
+			$entity->setVendorNumber($vendorNumber);
 			$entity->setIsActive($isActive);
 			$entity->setKeywords ( $keywords );
 			$entity->setRemarks ( $remarks );
@@ -139,7 +141,7 @@ class VendorController extends AbstractActionController {
 				$entity->setChecksum ( md5 ( $new_entity_id . uniqid ( microtime () ) ) );
 				$this->doctrineEM->flush ();
 				
-				$this->vendorSearchService->addDocument($entity, true);
+				$this->vendorSearchService->updateIndex(1, $entity, false);
 				
 			} catch ( Exception $e ) {
 				return new ViewModel ( array (
@@ -185,7 +187,7 @@ class VendorController extends AbstractActionController {
 					'id' => $entity_id,
 					'token' => $token 
 			);
-			
+		
 			$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtBpVendor' )->findOneBy ( $criteria );
 			
 			if ($entity == null) {
@@ -203,6 +205,9 @@ class VendorController extends AbstractActionController {
 				$redirectUrl = $request->getPost ( 'redirectUrl' );
 				$errors = array ();
 				
+				$vendorNumber = $request->getPost ( 'vendorNumber' );
+				
+				
 				$vendorName = $request->getPost ( 'vendorName' );
 				$vendorShortName = $request->getPost ( 'vendorShortName' );
 				$keywords = $request->getPost ( 'keywords' );
@@ -216,6 +221,9 @@ class VendorController extends AbstractActionController {
 				endif;
 				
 				//$entity = new NmtBpVendor ();
+				/** @var \Application\Entity\NmtBpVendor $entity ;*/
+				
+				$entity->setVendorNumber($vendorNumber);
 				$entity->setKeywords ( $keywords );
 				$entity->setRemarks ( $remarks );
 				$entity->setVendorName ( $vendorName );
@@ -248,7 +256,10 @@ class VendorController extends AbstractActionController {
 					$entity->setLastChangeOn ( new \DateTime () );
 					$this->doctrineEM->persist ( $entity );
 					$this->doctrineEM->flush ();
-					$this->flashMessenger ()->addSuccessMessage ( 'Vendor " ' . $vendorName . '" has been updated!' );
+					
+					$this->vendorSearchService->updateIndex(0, $entity, false);
+					$this->flashMessenger ()->addMessage ( 'Vendor " ' . $vendorName . '" has been updated!' );
+					
 					return $this->redirect ()->toUrl ( $redirectUrl );
 				} catch ( Exception $e ) {
 					return new ViewModel ( array (

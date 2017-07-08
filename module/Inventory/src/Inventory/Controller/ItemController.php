@@ -331,7 +331,9 @@ class ItemController extends AbstractActionController {
 				}
 				
 				// update search index.
-				$this->itemSearchService->addDocument ( $new_item, true );
+				//$this->itemSearchService->addDocument ( $new_item, true );
+				$this->itemSearchService->updateIndex(1, $new_item, false );
+				
 			} catch ( Exception $e ) {
 				return new ViewModel ( array (
 						'errors' => $e->getMessage (),
@@ -585,7 +587,8 @@ class ItemController extends AbstractActionController {
 				 *
 				 * @todo : update search index.
 				 */
-					// $this->itemSearchService->addDocument ( $new_item, true );
+				 $this->itemSearchService->updateIndex(0, $new_item, false );
+				
 				} catch ( Exception $e ) {
 					return new ViewModel ( array (
 							'errors' => $e->getMessage (),

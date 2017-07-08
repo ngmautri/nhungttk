@@ -73,7 +73,6 @@ class PrSearchService
                         $doc->addField(Field::UnIndexed('row_unit', $row->getRowUnit()));
                         $doc->addField(Field::text('row_remark', $row->getRemarks()));
                         
-                        
                         if ($row->getPr() !== null) {
                             $doc->addField(Field::UnIndexed('pr_id', $row->getPr()
                                 ->getId()));
@@ -152,7 +151,7 @@ class PrSearchService
      * @param unknown $item
      * @return string|unknown
      */
-    public function updateIndex($row, $optimized)
+    public function updateIndex($is_new = 0, $row, $optimized)
     {
         
         // take long time
@@ -160,38 +159,36 @@ class PrSearchService
         try {
             
             /** @var \Application\Entity\NmtProcurePrRow $row;*/
-            
             if ($row instanceof NmtProcurePrRow) {
                 $index = Lucene::open(getcwd() . self::ITEM_INDEX);
                 Analyzer::setDefault(new CaseInsensitive());
                 
-                $ck_query = 'row_token_keyword:' . $row->getToken() . '__' . $row->getId();
-                $ck_hits = $index->find($ck_query);
-                
-                if (count($ck_hits) == 1) {
-                    $ck_hit = $ck_hits[0];
-                    $index->delete($ck_hit->id);
+                if($is_new!==1){
+                    $ck_query = 'row_token_keyword:' . $row->getToken() . '__' . $row->getId();
+                    $ck_hits = $index->find($ck_query);
                     
+                    if (count($ck_hits) == 1) {
+                        $ck_hit = $ck_hits[0];
+                        $index->delete($ck_hit->id);
+                    }
                 }
                 
                 $query = 'SELECT e, i, pr FROM Application\Entity\NmtProcurePrRow e JOIN e.item i JOIN e.pr pr Where 1=?1 AND e.id = ?2';
-               
+                
                 $records = $this->doctrineEM->createQuery($query)
-                ->setParameters(array(
+                    ->setParameters(array(
                     "1" => 1,
                     "2" => $row->getId()
                 ))
-                ->getResult();
+                    ->getResult();
                 
-                //alway found.
+                // alway found.
                 $row = $records[0];
                 
                 $doc = new Document();
                 $doc->addField(Field::UnIndexed('pr_row_id', $row->getId()));
                 $doc->addField(Field::UnIndexed('token', $row->getToken()));
                 $doc->addField(Field::Keyword('row_token_keyword', $row->getToken() . "__" . $row->getId()));
-                
-                
                 
                 $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
                 $doc->addField(Field::UnIndexed('row_quantity', $row->getQuantity()));
@@ -200,7 +197,6 @@ class PrSearchService
                 $doc->addField(Field::UnIndexed('row_unit', $row->getRowUnit()));
                 
                 $doc->addField(Field::text('row_remark', $row->getRemarks()));
-                
                 
                 if ($row->getPr() !== null) {
                     $doc->addField(Field::UnIndexed('pr_id', $row->getPr()
@@ -376,7 +372,7 @@ class PrSearchService
             
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             
-              if (strpos($q, '*') != false) {
+            if (strpos($q, '*') != false) {
                 $pattern = new Term($q);
                 $query = new Wildcard($pattern);
                 $hits = $index->find($query);

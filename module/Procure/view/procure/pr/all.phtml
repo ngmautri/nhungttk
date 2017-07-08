@@ -15,7 +15,7 @@
 		style="border: 1px; padding: 3px; font-size: 10pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 
 		<form class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/procure/pr/all" method="get"
+			action="<?php echo $this->baseUrl ?>/procure/pr/all<?php echo "/row_number=".$row_number?><?php echo $status!==null? "/status=".$status:"";?>" method="get"
 			enctype="multipart/form-data">
 
 			<div class="form-group">
@@ -193,7 +193,7 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/procure/pr/all?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort. '&balance=' . $balance;
+	$base = $this->baseUrl . '/procure/pr/all/row_number='.$row_number.'/status='.$status.'?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort. '&balance=' . $balance;
 		$_connector_symbol = '&';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;

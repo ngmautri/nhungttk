@@ -18,6 +18,7 @@ if (! $hits == null) :
 	<thead>
 		<tr style = "">
 			<td><b>#</b></td>
+			<td><b>Number</b></td>
 			<td><b>Name</b></td>
 			<td><b>Keywords</b></td>
 			<td><b>Country</b></td>
@@ -38,7 +39,7 @@ if (! $hits == null) :
 	 <tr>
 	
 			<td> <?php echo $count;?></td>
-	
+				<td><span id=""><?php echo $this->escapeHtml($hit->vendor_number);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->vendor_name);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->keywords);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->country_name);?></span></td>

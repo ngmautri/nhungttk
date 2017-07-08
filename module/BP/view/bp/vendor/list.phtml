@@ -1,3 +1,5 @@
+ <?php /** @var \Application\Entity\NmtBpVendor $entity; */ ?>
+ 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
   <li ><a href="#general">Vendor</a></li>
@@ -117,8 +119,10 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>Vendor <br>Number</b></td>
 			<td><b>Vendor Name</b></td>
 			<td><b>Country</b></td>
+			<td><b>Keywords</b></td>
 			<td><b>Created Date</b></td>
 			<td><b>Action</b></td>
 		</tr>
@@ -130,13 +134,17 @@ if ($total_records <= 0) {
 	
 	$count = 0;
 	foreach ( $list as $a ) :
-		$count ++;
+  		$count ++;
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	 		<td><?php echo $this->escapeHtml($a->getVendorNumber());?></td>
+	
 			<td><?php echo $this->escapeHtml($a->getVendorName());?></td>
 			<td><?php echo $this->escapeHtml($a->getCountry()->getCountryName());?></td>
+				<td><?php echo $this->escapeHtml($a->getKeyWords());?></td>
 			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y");?> </td>
+		
 			<td>
 <a href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Show</a>
 <a href="<?php echo $this->baseUrl ?>/bp/vendor/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Edit</a>

@@ -20,13 +20,13 @@ class WorkflowLogger implements EventSubscriberInterface
 
     public function onLeave(Event $event)
     {
-        printf(
-            'Blog post (id: "%s") performed transaction "%s" from "%s" to "%s"',
-            $event->getSubject()->getId(),
-            $event->getTransition()->getName(),
-            implode(', ', array_keys($event->getMarking()->getPlaces())),
-            implode(', ', $event->getTransition()->getTos())
-        );
+            printf(
+                'Blog post (id: "%s") performed transaction "%s" from "%s" to "%s"',
+                $event->getSubject()->getId(),
+                $event->getTransition()->getName(),
+                implode(', ', array_keys($event->getMarking()->getPlaces())),
+                implode(', ', $event->getTransition()->getTos())
+            );
     }
 
     public static function getSubscribedEvents()

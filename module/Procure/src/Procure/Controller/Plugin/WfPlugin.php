@@ -15,6 +15,13 @@ class WfPlugin extends AbstractPlugin
     public function getWF($subject) {
         return $wf= $this->getServiceManager()->get("Workflow\Service\WorkflowService")->purchaseRequestWF()->get($subject);
     }
+    
+    
+    
+    public function createWorkflow($subject) {
+        return $this->getServiceManager()->get("Workflow\Service\WorkflowService")->createWorkflow($subject);
+    }
+    
     /**
      * @return the $serviceManager
      */

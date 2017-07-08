@@ -38,6 +38,13 @@ class NmtBpVendor
     /**
      * @var string
      *
+     * @ORM\Column(name="vendor_number", type="string", length=15, nullable=true)
+     */
+    private $vendorNumber;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="vendor_name", type="string", length=100, nullable=false)
      */
     private $vendorName;
@@ -172,6 +179,30 @@ class NmtBpVendor
     public function getChecksum()
     {
         return $this->checksum;
+    }
+
+    /**
+     * Set vendorNumber
+     *
+     * @param string $vendorNumber
+     *
+     * @return NmtBpVendor
+     */
+    public function setVendorNumber($vendorNumber)
+    {
+        $this->vendorNumber = $vendorNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get vendorNumber
+     *
+     * @return string
+     */
+    public function getVendorNumber()
+    {
+        return $this->vendorNumber;
     }
 
     /**

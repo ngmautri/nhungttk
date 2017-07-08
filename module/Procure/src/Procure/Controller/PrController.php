@@ -9,6 +9,7 @@
  */
 namespace Procure\Controller;
 
+use Symfony\Component\Workflow\Exception\LogicException;
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
@@ -275,6 +276,9 @@ class PrController extends AbstractActionController
         $balance = $this->params()->fromQuery('balance');
         $is_active = (int) $this->params()->fromQuery('is_active');
         
+        $status = $this->getEvent()->getRouteMatch()->getParam("status");
+        $row_number = (int) $this->getEvent()->getRouteMatch()->getParam("row_number");
+          
         if ($sort_by == null) :
             $sort_by = "prNumber";
 		endif;
@@ -286,11 +290,30 @@ class PrController extends AbstractActionController
         if ($balance == null) :
             $balance = 1;
 		endif;
+		
+		
+		if($status=="pending"){
+		    $balance = 1;
+		}elseif($status=="completed"){
+		    $balance = 0;
+		}elseif($status=="all"){
+		    $balance = 2;
+		}
+		
+		
+		
+		
+		//echo $balance;
         
         if ($sort == null) :
             $sort = "ASC";
 		endif;
         
+		if($row_number == 0){
+		    $sort_by = "prNumber";
+		    $sort = "DESC";
+		}
+		
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
@@ -306,14 +329,14 @@ class PrController extends AbstractActionController
         ;
         
         // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findBy ( $criteria, $sort_criteria );
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getPrList($is_active, $balance, $sort_by, $sort, 0, 0);
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getPrList($row_number, $is_active, $balance, $sort_by, $sort, 0, 0);
         
         $total_records = count($list);
         $paginator = null;
         
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getPrList($is_active, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getPrList($row_number, $is_active, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
         
         return new ViewModel(array(
@@ -324,8 +347,10 @@ class PrController extends AbstractActionController
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
             'balance' => $balance,
-            'is_active' => $is_active
-        ));
+            'is_active' => $is_active,
+            'status' => $status,
+            'row_number' => $row_number,
+         ));
     }
 
     /**
@@ -360,13 +385,18 @@ class PrController extends AbstractActionController
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
         if ($entity !== null) {
             
+            try{
             /** @var \Symfony\Component\Workflow\Workflow $wf */
-            $wf = $this->ProcureWfPlugin()->getWF($entity);
-           //var_dump($wf->getEnabledTransitions($entity));
+            //$wf = $this->ProcureWfPlugin()->createWorkflow($entity);
+            
+            //var_dump($wf->getEnabledTransitions($entity));
            
+            //$wf->apply($entity, "recall");
             //$dumper = new GraphvizDumper();
             //echo $dumper->dump($wf->getDefinition());
-            
+            }catch (LogicException $e){
+               //echo $e->getMessage();
+            }
 			return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,

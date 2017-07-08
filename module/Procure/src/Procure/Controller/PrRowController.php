@@ -270,7 +270,7 @@ class PrRowController extends AbstractActionController {
 				$entity->setChecksum ( md5 ( uniqid ( "pr_row_" . $entity->getId () ) . microtime () ) );
 				$this->doctrineEM->flush ();
 				
-				$index_update_status = $this->prSearchService->updateIndex($entity, fasle);
+				$index_update_status = $this->prSearchService->updateIndex(1,$entity, fasle);
 				$this->flashMessenger ()->addMessage ( "Row '" . $entity->getId () . "' has been created successfully!" );
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
@@ -318,8 +318,8 @@ class PrRowController extends AbstractActionController {
 		
 		
 		$item_type = $this->params ()->fromQuery ( 'item_type' );
-		$is_active = $this->params ()->fromQuery ( 'is_active' );
-		$is_fixed_asset = $this->params ()->fromQuery ( 'is_fixed_asset' );
+		$is_active = (int) $this->params ()->fromQuery ( 'is_active' );
+		$is_fixed_asset = (int) $this->params ()->fromQuery ( 'is_fixed_asset' );
 		
 		$sort_by = $this->params ()->fromQuery ( 'sort_by' );
 		$sort = $this->params ()->fromQuery ( 'sort' );
@@ -349,6 +349,11 @@ class PrRowController extends AbstractActionController {
 		if ($balance == null) :
 			$balance = 1;
 		endif;
+		
+		if ($is_active == null) :
+		  $is_active = 1;
+		endif;
+		
 		
 			// $n = new NmtInventoryItem();
 		if ($pr_year == null) :
@@ -477,6 +482,13 @@ class PrRowController extends AbstractActionController {
 			$balance = 1;
 		}
 		
+		if (isset ( $_GET ['is_active'] )) {
+		    
+		    $is_active = (int) $_GET ['is_active'];
+		} else {
+		    $is_active = 1;
+		}
+		
 		// $pr_year = $this->params ()->fromQuery ( 'pr_year' );
 		
 		if (isset ( $_GET ['pr_year'] )) {
@@ -498,7 +510,7 @@ class PrRowController extends AbstractActionController {
 			$pq_rPP = 1;
 		}
 		
-		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ( $pr_year, $balance, $sort_by, $sort, 0, 0 );
+		$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0 );
 		
 		$total_records = count ( $list );
 		$paginator = null;
@@ -512,7 +524,7 @@ class PrRowController extends AbstractActionController {
 			
 			if ($total_records > $pq_rPP) {
 				$paginator = new Paginator ( $total_records, $pq_curPage, $pq_rPP );
-				$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ( $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+				$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getAllPrRow ( $is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
 			}
 			$count = 0;
 			foreach ( $list as $a ) {
@@ -1198,7 +1210,7 @@ class PrRowController extends AbstractActionController {
 				$this->doctrineEM->persist ( $entity );
 				$this->doctrineEM->flush ();
 				
-				$index_update_status = $this->prSearchService->updateIndex($entity, fasle);
+				$index_update_status = $this->prSearchService->updateIndex(0, $entity, fasle);
 				
 				$this->flashMessenger ()->addMessage ( $index_update_status );
 				return $this->redirect ()->toUrl ( $redirectUrl );

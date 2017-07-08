@@ -92,6 +92,20 @@ class NmtProcureWfWorkitem
     private $cancelledDate;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="subject_id", type="integer", nullable=false)
+     */
+    private $subjectId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subject_class", type="string", length=80, nullable=false)
+     */
+    private $subjectClass;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -381,6 +395,54 @@ class NmtProcureWfWorkitem
     public function getCancelledDate()
     {
         return $this->cancelledDate;
+    }
+
+    /**
+     * Set subjectId
+     *
+     * @param integer $subjectId
+     *
+     * @return NmtProcureWfWorkitem
+     */
+    public function setSubjectId($subjectId)
+    {
+        $this->subjectId = $subjectId;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectId
+     *
+     * @return integer
+     */
+    public function getSubjectId()
+    {
+        return $this->subjectId;
+    }
+
+    /**
+     * Set subjectClass
+     *
+     * @param string $subjectClass
+     *
+     * @return NmtProcureWfWorkitem
+     */
+    public function setSubjectClass($subjectClass)
+    {
+        $this->subjectClass = $subjectClass;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectClass
+     *
+     * @return string
+     */
+    public function getSubjectClass()
+    {
+        return $this->subjectClass;
     }
 
     /**

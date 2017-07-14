@@ -341,8 +341,8 @@ class PrRowController extends AbstractActionController {
 		;
 		
 		if ($sort_by == null) :
-			$sort_by = "prNumber";
-			//$sort_by = "itemName";
+			//$sort_by = "prNumber";
+			$sort_by = "itemName";
 		endif;
 		
 			// $n = new NmtInventoryItem();
@@ -597,6 +597,10 @@ class PrRowController extends AbstractActionController {
 					$a_json_row ["remarks"] = '<span title="'. $a ['remarks'] .'">'.substr ( $a ['remarks'], 0, 15 ) . '...</span>';
 					
 				}
+				$a_json_row ["fa_remarks"] = $a ['fa_remarks'];
+				$a_json_row ["receipt_date"] ="";
+				$a_json_row ["vendor"] ="";
+				$a_json_row ["vendor_id"] ="";
 				
 				$a_json [] = $a_json_row;
 			}
@@ -1031,6 +1035,187 @@ class PrRowController extends AbstractActionController {
 	 *
 	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
 	 */
+	public function grGirdAction() {
+	    $request = $this->getRequest ();
+	    
+	    $sort_by = $this->params ()->fromQuery ( 'sort_by' );
+	    $sort = $this->params ()->fromQuery ( 'sort' );
+	    $balance = $this->params ()->fromQuery ( 'balance' );
+	    $is_active = $this->params ()->fromQuery ( 'is_active' );
+	    
+	    if ($sort_by == null) :
+	    $sort_by = "createdOn";
+	    endif;
+	    
+	    if ($balance == null) :
+	    $balance = 2;
+	    endif;
+	    
+	    if ($sort == null) :
+	    $sort = "ASC";
+	    endif;
+	    
+	    $pq_curPage = $_GET ["pq_curpage"];
+	    $pq_rPP = $_GET ["pq_rpp"];
+	    
+	    if (is_null ( $this->params ()->fromQuery ( 'perPage' ) ) or $this->params ()->fromQuery ( 'perPage' ) == null) {
+	        $resultsPerPage = 30;
+	    } else {
+	        $resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
+	    }
+	    ;
+	    
+	    if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
+	        $page = 1;
+	    } else {
+	        $page = $this->params ()->fromQuery ( 'page' );
+	    }
+	    ;
+	    
+	    $target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+	    $checksum = $this->params ()->fromQuery ( 'checksum' );
+	    $token = $this->params ()->fromQuery ( 'token' );
+	    $criteria = array (
+	        'id' => $target_id,
+	        'checksum' => $checksum,
+	        'token' => $token
+	    );
+	    
+	    /**
+	     *
+	     * @todo : Change Target
+	     */
+	    $target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
+	    
+	    $a_json_final = array ();
+	    $a_json = array ();
+	    $a_json_row = array ();
+	    $escaper = new Escaper ();
+	    
+	    if ($target !== null) {
+	        
+	        $criteria = array (
+	            'pr' => $target_id
+	            // 'isActive' => 1,
+	        );
+	        
+	        // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->get ( $criteria );
+	        $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, 0, 0 );
+	        $total_records = 0;
+	        if (count ( $list ) > 0) {
+	            
+	            $total_records = count ( $list );
+	            
+	            if ($total_records > $pq_rPP) {
+	                $paginator = new Paginator ( $total_records, $pq_curPage, $pq_rPP );
+	                $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
+	            }
+	            
+	            foreach ( $list as $a ) {
+	                
+	                $item_detail = "/inventory/item/show1?token=" . $a ['item_token'] . "&checksum=" . $a ['item_checksum'] . "&entity_id=" . $a ['item_id'];
+	                
+	                if ($a ['item_name'] !== null) {
+	                    $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+	                } else {
+	                    $onclick = "showJqueryDialog('Detail of Item: " . ($a ['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+	                }
+	                
+	                
+	                $a_json_row ["row_id"] = $a ['id'];
+	                $a_json_row ["row_token"] = $a ['token'];
+	                $a_json_row ["row_checksum"] = $a ['checksum'];
+	                $a_json_row ["item_sku"] = '<span title="SKU: ' .$a ['item_sku'] . '">'. substr($a ['item_sku'],0,5) . '</span>';
+	                
+	                
+	                if (strlen ( $a ['item_name'] ) < 40) {
+	                    $a_json_row ["item_name"] = '<a style=""  title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . $a ['item_name'] . '</a>';
+	                }else{
+	                    $a_json_row ["item_name"] = '<a style="" title="'. $a ['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36).' ...</a>';
+	                }
+	                
+	                $a_json_row ["quantity"] = $a ['quantity'];
+	                $a_json_row ["confirmed_balance"] = $a ['confirmed_balance'];
+	                
+	                $received_detail = "/inventory/item-transaction/pr-row?pr_row_id=" . $a ['id'];
+	                $onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs ( $a ['item_name'] ) . "','1200',$(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
+	                
+	                if ($a ['total_received'] > 0) {
+	                    $a_json_row ["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . $a ['total_received'] . '</a>';
+	                } else {
+	                    $a_json_row ["total_received"] = "";
+	                }
+	                
+	                $a_json_row ["confirmed_balance"] = $a ['confirmed_balance'];
+	                
+	                $a_json_row ["vendor_name"] = "";
+	                $a_json_row ["receipt_quantity"] = "";
+	                $a_json_row ["unit"] = "";
+	                $a_json_row ["convert_factory"] = "";
+	                $a_json_row ["unit_price"] = "";
+	                $a_json_row ["currency"] = "";
+	                $a_json_row ["remarks"] = "";
+	                $a_json [] = $a_json_row;
+	            }
+	        }
+	        
+	        $a_json_final ['data'] = $a_json;
+	        $a_json_final ['totalRecords'] = $total_records;
+	        $a_json_final ['curPage'] = $pq_curPage;
+	    }
+	    
+	    $response = $this->getResponse ();
+	    $response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+	    $response->setContent ( json_encode ( $a_json_final ) );
+	    return $response;
+	}
+	
+	/**
+	 *
+	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+	 */
+	public function updateRowAction() {
+	    
+	    $a_json_final = array ();
+	    $escaper = new Escaper ();
+	
+	    /* $pq_curPage = $_GET ["pq_curpage"];
+	    $pq_rPP = $_GET ["pq_rpp"];
+	     */
+	    $sent_list = json_decode($_POST['sent_list'], true);
+	    //echo json_encode($sent_list);
+	    
+	    $to_update = $sent_list['updateList'];
+	    foreach ($to_update as $a){
+	        $criteria = array (
+	            'id' => $a['row_id'],
+	            'token' => $a['row_token']
+	        );
+	        
+	        /** @var \Application\Entity\NmtProcurePrRow $entity */
+	        $entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->findOneBy ( $criteria );
+	        
+	        if ($entity != null) {
+	            $entity->setFaRemarks($a['fa_remarks']);
+	            //$a_json_final['updateList']=$a['row_id'] . 'has been updated';
+	            $this->doctrineEM->persist ( $entity );
+	            
+	        }
+	    }
+	    $this->doctrineEM->flush ();
+	    
+	    //$a_json_final["updateList"]= json_encode($sent_list["updateList"]);
+	    
+	    $response = $this->getResponse ();
+	    $response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
+	    $response->setContent ( json_encode ( $sent_list ) );
+	    return $response;
+	}
+	
+	/**
+	 *
+	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+	 */
 	public function showAction() {
 		$request = $this->getRequest ();
 		
@@ -1246,6 +1431,7 @@ class PrRowController extends AbstractActionController {
 			return $this->redirect ()->toRoute ( 'access_denied' );
 		}
 	}
+	
 	
 	/**
 	 *

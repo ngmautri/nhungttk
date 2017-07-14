@@ -151,7 +151,7 @@
 
         //change edit button to update button and delete to cancel.
         var $tr = $grid.pqGrid("getRow", { rowIndx: rowIndx }),
-            $btn = $tr.find("button.edit_btn");
+            $btn = $tr.find("button.receive_btn");
         $btn.button("option", { label: "Update", "icons": { primary: "ui-icon-check"} })
             .unbind("click")
             .click(function (evt) {
@@ -195,6 +195,8 @@
                 //url to  update records.
                 url = "/pro/products/update";
                 //url = "/pro/products.php?pq_update=1";for PHP
+
+               
             }
             $.ajax($.extend({}, ajaxObj, {
                 context: $grid,
@@ -260,6 +262,39 @@
               .appendTo( ul );
           };
     }
+
+    var dateEditor = function (ui) {
+        var $inp = ui.$cell.find("input"),
+            $grid = $(this),
+            validate = function (that) {
+                var valid = $grid.pqGrid("isValid", { dataIndx: ui.dataIndx, value: $inp.val() }).valid;
+                if (!valid) {
+                    that.firstOpen = false;
+                }
+            };
+
+        //initialize the editor
+        $inp
+        .on("input", function (evt) {
+            validate(this);
+        })
+        .datepicker({
+        	dateFormat: 'yy-mm-dd',closeText: 'X',
+        	changeMonth: true,
+            changeYear: true,
+            showAnim: '',
+            onSelect: function () {
+                this.firstOpen = true;
+                validate(this);
+            },
+            beforeShow: function (input, inst) {
+                return !this.firstOpen;
+            },
+            onClose: function () {
+                this.focus();
+            }
+        });
+    }
     
 
     //var container_height = $('#main_container').height();
@@ -269,6 +304,22 @@
 			//draggable:true,
 			sortable: true,
 			hoverMode: 'cell',
+			freezeCols:4,
+		      track: true, //to turn on the track changes.
+		      
+
+			 //make rows editable selectively.
+            editable: function (ui) {
+                var $grid = $(this);
+                var rowIndx = ui.rowIndx;
+                if ($grid.pqGrid("hasClass", { rowIndx: rowIndx, cls: 'pq-row-edit' }) == true) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            },
+			
 			 pageModel: { type: "remote", rPP: 50, strRpp: "{0}" },
 			 columnBorders: true,
 			   toolbar: {
@@ -290,35 +341,62 @@
 	                    ]
 	                    }
 	                ]
-	            },  
+	            }, 
+
+
+	             
 	};
 
     obj.colModel = [
-    	 { title: "vendor", dataType: "string", dataIndx: "vendor", align: 'left',minWidth: 100,editable: true,
+    	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
+        { title: "Item", dataType: "string", dataIndx: "item_name", width:100,editable: false },
+        { title: "Order Q'ty", dataType: "integer", dataIndx: "quantity", width: 50,align: 'right',editable: false},
+        { title: "Receipted Q'ty", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
+        { title: "Receipt Date", dataIndx: "receipt_date", width:80,editable: true,
+      		editor: {
+        	type: 'textbox',
+       		 init: dateEditor
+    		}, 
+
+            render: function (ui) {
+                //return "hello";
+                var cellData = ui.cellData;
+                if (cellData) {
+                    return $.datepicker.formatDate('yy-mm-dd', new Date(cellData));
+                }
+                else {
+                    return "";
+                }
+            },
+            validations: [
+               { type: 'regexp', value: '^[0-9]{4}-[0-9]{2}-[0-9]{2}$', msg: 'Not in mm/dd/yyyy format' }
+            ] 
+    	}, 
+    	{ title: "vendor", dataType: "string", dataIndx: "vendor_name", align: 'left',minWidth: 100,editable: true,
              editor: {
              type: "textbox",
              init: autoCompleteEditor
              //type: function (ui) { return dropdowneditor(this, ui); }
-         },},
+         	},
+         },
          
-       { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true },
-    	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
-        { title: "Item", dataType: "string", dataIndx: "item_name", width:200,editable: false },
-        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: false},
-        { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
-        { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
-        { title: "Project", dataType: "string", dataIndx: "project_id", width: 70, align: 'right',editable: false},
-        { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 90, align: 'left',editable: false},
-        { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 82, align: 'right',editable: false},
-        { title: "Curr", dataType: "string", dataIndx: "currency", width:3, align: 'center',editable: false},
-             
+        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true },
+        { title: "Quantity", dataType: "integer", dataIndx: "receipt_quantity", width: 70,align: 'right',editable: true},
+        { title: "Unit", dataType: "String", dataIndx: "unit", width: 70,align: 'right',editable: true},
+        { title: "Convert Factor", dataType: "integer", dataIndx: "convert_factory", width: 70,align: 'right',editable: true},
+        { title: "Price", dataType: "float", dataIndx: "unit_price", width: 82, align: 'right',editable: true},
+        { title: "Curr", dataType: "string", dataIndx: "currency", width:3, align: 'center',editable: true},
+        { title: "Curr_id", dataType: "integer", dataIndx: "", width: 7	,editable: true,hidden: true },
+        
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: true},
         
         { title: "", editable: false, minWidth: 200, sortable: false,
             render: function (ui) {
-                return "<button type='button' class='edit_btn'><small><i class='glyphicon glyphicon-pencil'>&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;PO</span></button>";
+                return "<button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;PO</span></button>";
 	           }
         },
+
+        
    ];
 
     obj.dataModel = {
@@ -326,7 +404,7 @@
               location: "remote",
               method: "GET",
               recIndx: "row_id",
-              url: "/procure/pr-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>",
+              url: "/procure/pr-row/gr-gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }

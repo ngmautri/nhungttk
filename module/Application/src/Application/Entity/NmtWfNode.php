@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfNode
  *
- * @ORM\Table(name="nmt_wf_node", indexes={@ORM\Index(name="nmt_wf_node_idx", columns={"place_id"}), @ORM\Index(name="nmt_wf_node_FK2_idx", columns={"transition_id"}), @ORM\Index(name="nmt_wf_node_FK3_idx", columns={"node_created_by"}), @ORM\Index(name="nmt_wf_node_FK4_idx", columns={"workflow_id"})})
+ * @ORM\Table(name="nmt_wf_node", indexes={@ORM\Index(name="nmt_wf_node_idx", columns={"place_id"}), @ORM\Index(name="nmt_wf_node_FK3_idx", columns={"node_created_by"}), @ORM\Index(name="nmt_wf_node_FK4_idx", columns={"workflow_id"})})
  * @ORM\Entity
  */
 class NmtWfNode
@@ -85,6 +85,13 @@ class NmtWfNode
     private $nodeCreatedOn;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="transition_id", type="integer", nullable=true)
+     */
+    private $transitionId;
+
+    /**
      * @var \Application\Entity\NmtWfPlace
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfPlace")
@@ -93,16 +100,6 @@ class NmtWfNode
      * })
      */
     private $place;
-
-    /**
-     * @var \Application\Entity\NmtWfTransition
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfTransition")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="transition_id", referencedColumnName="transition_id")
-     * })
-     */
-    private $transition;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -353,6 +350,30 @@ class NmtWfNode
     }
 
     /**
+     * Set transitionId
+     *
+     * @param integer $transitionId
+     *
+     * @return NmtWfNode
+     */
+    public function setTransitionId($transitionId)
+    {
+        $this->transitionId = $transitionId;
+
+        return $this;
+    }
+
+    /**
+     * Get transitionId
+     *
+     * @return integer
+     */
+    public function getTransitionId()
+    {
+        return $this->transitionId;
+    }
+
+    /**
      * Set place
      *
      * @param \Application\Entity\NmtWfPlace $place
@@ -374,30 +395,6 @@ class NmtWfNode
     public function getPlace()
     {
         return $this->place;
-    }
-
-    /**
-     * Set transition
-     *
-     * @param \Application\Entity\NmtWfTransition $transition
-     *
-     * @return NmtWfNode
-     */
-    public function setTransition(\Application\Entity\NmtWfTransition $transition = null)
-    {
-        $this->transition = $transition;
-
-        return $this;
-    }
-
-    /**
-     * Get transition
-     *
-     * @return \Application\Entity\NmtWfTransition
-     */
-    public function getTransition()
-    {
-        return $this->transition;
     }
 
     /**

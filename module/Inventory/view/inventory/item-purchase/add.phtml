@@ -1,5 +1,5 @@
 <h4>
-	 <?php echo (!$target == null)? $target->getItemName():"";?>
+	 <?php echo (!$target == null)? $target->getItemName(). " - " . $target->getItemSkU() . " " . $target->getManufacturerSerial() :"";?>
 </h4>
 
 <?php
@@ -16,7 +16,7 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt">
+<div id="tabs" style="font-size: 9.5pt;">
 	<ul>
 		<li><a href="#general">Purchasing Data</a></li>
 	</ul>
@@ -223,7 +223,11 @@ $(function() {
    		$('#global-notice').fadeOut(5000);
    		//$("#jquery_dialog").dialog("close");
      }
-   });
+   }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+	      return $( "<li>" )
+	        .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+	        .appendTo( ul );
+	    };
 
 </script>
 

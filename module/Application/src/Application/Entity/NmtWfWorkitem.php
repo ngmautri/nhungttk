@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfWorkitem
  *
- * @ORM\Table(name="nmt_wf_workitem", indexes={@ORM\Index(name="nmt_wf_workitem_FK1_idx", columns={"case_id"}), @ORM\Index(name="nmt_wf_workitem_FK2_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_workitem_FK3_idx", columns={"transition_id"}), @ORM\Index(name="nmt_wf_workitem_FK4_idx", columns={"workitem_use_id"}), @ORM\Index(name="nmt_wf_workitem_FK5_idx", columns={"node_id"})})
+ * @ORM\Table(name="nmt_wf_workitem", indexes={@ORM\Index(name="nmt_wf_workitem_idx", columns={"agent_id"}), @ORM\Index(name="nmt_wf_workitem_FK2_idx", columns={"agent_role_id"})})
  * @ORM\Entity
  */
 class NmtWfWorkitem
@@ -15,11 +15,46 @@ class NmtWfWorkitem
     /**
      * @var integer
      *
-     * @ORM\Column(name="workitem_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $workitemId;
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="workflow_id", type="integer", nullable=true)
+     */
+    private $workflowId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_name", type="string", length=45, nullable=false)
+     */
+    private $workflowName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="transition_id", type="integer", nullable=true)
+     */
+    private $transitionId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transition_name", type="string", length=45, nullable=false)
+     */
+    private $transitionName;
 
     /**
      * @var string
@@ -38,6 +73,13 @@ class NmtWfWorkitem
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="finished_date", type="datetime", nullable=true)
+     */
+    private $finishedDate;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="enabled_date", type="datetime", nullable=true)
      */
     private $enabledDate;
@@ -50,72 +92,176 @@ class NmtWfWorkitem
     private $cancelledDate;
 
     /**
-     * @var \DateTime
+     * @var integer
      *
-     * @ORM\Column(name="finished_date", type="datetime", nullable=true)
+     * @ORM\Column(name="subject_id", type="integer", nullable=false)
      */
-    private $finishedDate;
+    private $subjectId;
 
     /**
-     * @var \Application\Entity\NmtWfCase
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfCase")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="case_id", referencedColumnName="case_id")
-     * })
+     * @ORM\Column(name="subject_class", type="string", length=80, nullable=false)
      */
-    private $case;
+    private $subjectClass;
 
     /**
-     * @var \Application\Entity\NmtWfWorkflow
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
-     * })
+     * @ORM\Column(name="remark", type="string", length=100, nullable=true)
      */
-    private $workflow;
-
-    /**
-     * @var \Application\Entity\NmtWfTransition
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfTransition")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="transition_id", referencedColumnName="transition_id")
-     * })
-     */
-    private $transition;
+    private $remark;
 
     /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workitem_use_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="agent_id", referencedColumnName="id")
      * })
      */
-    private $workitemUse;
+    private $agent;
 
     /**
-     * @var \Application\Entity\NmtWfNode
+     * @var \Application\Entity\NmtApplicationAclRole
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfNode")
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="node_id", referencedColumnName="node_id")
+     *   @ORM\JoinColumn(name="agent_role_id", referencedColumnName="id")
      * })
      */
-    private $node;
+    private $agentRole;
 
 
 
     /**
-     * Get workitemId
+     * Get id
      *
      * @return integer
      */
-    public function getWorkitemId()
+    public function getId()
     {
-        return $this->workitemId;
+        return $this->id;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtWfWorkitem
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set workflowId
+     *
+     * @param integer $workflowId
+     *
+     * @return NmtWfWorkitem
+     */
+    public function setWorkflowId($workflowId)
+    {
+        $this->workflowId = $workflowId;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowId
+     *
+     * @return integer
+     */
+    public function getWorkflowId()
+    {
+        return $this->workflowId;
+    }
+
+    /**
+     * Set workflowName
+     *
+     * @param string $workflowName
+     *
+     * @return NmtWfWorkitem
+     */
+    public function setWorkflowName($workflowName)
+    {
+        $this->workflowName = $workflowName;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowName
+     *
+     * @return string
+     */
+    public function getWorkflowName()
+    {
+        return $this->workflowName;
+    }
+
+    /**
+     * Set transitionId
+     *
+     * @param integer $transitionId
+     *
+     * @return NmtWfWorkitem
+     */
+    public function setTransitionId($transitionId)
+    {
+        $this->transitionId = $transitionId;
+
+        return $this;
+    }
+
+    /**
+     * Get transitionId
+     *
+     * @return integer
+     */
+    public function getTransitionId()
+    {
+        return $this->transitionId;
+    }
+
+    /**
+     * Set transitionName
+     *
+     * @param string $transitionName
+     *
+     * @return NmtWfWorkitem
+     */
+    public function setTransitionName($transitionName)
+    {
+        $this->transitionName = $transitionName;
+
+        return $this;
+    }
+
+    /**
+     * Get transitionName
+     *
+     * @return string
+     */
+    public function getTransitionName()
+    {
+        return $this->transitionName;
     }
 
     /**
@@ -167,6 +313,30 @@ class NmtWfWorkitem
     }
 
     /**
+     * Set finishedDate
+     *
+     * @param \DateTime $finishedDate
+     *
+     * @return NmtWfWorkitem
+     */
+    public function setFinishedDate($finishedDate)
+    {
+        $this->finishedDate = $finishedDate;
+
+        return $this;
+    }
+
+    /**
+     * Get finishedDate
+     *
+     * @return \DateTime
+     */
+    public function getFinishedDate()
+    {
+        return $this->finishedDate;
+    }
+
+    /**
      * Set enabledDate
      *
      * @param \DateTime $enabledDate
@@ -215,146 +385,122 @@ class NmtWfWorkitem
     }
 
     /**
-     * Set finishedDate
+     * Set subjectId
      *
-     * @param \DateTime $finishedDate
+     * @param integer $subjectId
      *
      * @return NmtWfWorkitem
      */
-    public function setFinishedDate($finishedDate)
+    public function setSubjectId($subjectId)
     {
-        $this->finishedDate = $finishedDate;
+        $this->subjectId = $subjectId;
 
         return $this;
     }
 
     /**
-     * Get finishedDate
+     * Get subjectId
      *
-     * @return \DateTime
+     * @return integer
      */
-    public function getFinishedDate()
+    public function getSubjectId()
     {
-        return $this->finishedDate;
+        return $this->subjectId;
     }
 
     /**
-     * Set case
+     * Set subjectClass
      *
-     * @param \Application\Entity\NmtWfCase $case
+     * @param string $subjectClass
      *
      * @return NmtWfWorkitem
      */
-    public function setCase(\Application\Entity\NmtWfCase $case = null)
+    public function setSubjectClass($subjectClass)
     {
-        $this->case = $case;
+        $this->subjectClass = $subjectClass;
 
         return $this;
     }
 
     /**
-     * Get case
+     * Get subjectClass
      *
-     * @return \Application\Entity\NmtWfCase
+     * @return string
      */
-    public function getCase()
+    public function getSubjectClass()
     {
-        return $this->case;
+        return $this->subjectClass;
     }
 
     /**
-     * Set workflow
+     * Set remark
      *
-     * @param \Application\Entity\NmtWfWorkflow $workflow
+     * @param string $remark
      *
      * @return NmtWfWorkitem
      */
-    public function setWorkflow(\Application\Entity\NmtWfWorkflow $workflow = null)
+    public function setRemark($remark)
     {
-        $this->workflow = $workflow;
+        $this->remark = $remark;
 
         return $this;
     }
 
     /**
-     * Get workflow
+     * Get remark
      *
-     * @return \Application\Entity\NmtWfWorkflow
+     * @return string
      */
-    public function getWorkflow()
+    public function getRemark()
     {
-        return $this->workflow;
+        return $this->remark;
     }
 
     /**
-     * Set transition
+     * Set agent
      *
-     * @param \Application\Entity\NmtWfTransition $transition
+     * @param \Application\Entity\MlaUsers $agent
      *
      * @return NmtWfWorkitem
      */
-    public function setTransition(\Application\Entity\NmtWfTransition $transition = null)
+    public function setAgent(\Application\Entity\MlaUsers $agent = null)
     {
-        $this->transition = $transition;
+        $this->agent = $agent;
 
         return $this;
     }
 
     /**
-     * Get transition
-     *
-     * @return \Application\Entity\NmtWfTransition
-     */
-    public function getTransition()
-    {
-        return $this->transition;
-    }
-
-    /**
-     * Set workitemUse
-     *
-     * @param \Application\Entity\MlaUsers $workitemUse
-     *
-     * @return NmtWfWorkitem
-     */
-    public function setWorkitemUse(\Application\Entity\MlaUsers $workitemUse = null)
-    {
-        $this->workitemUse = $workitemUse;
-
-        return $this;
-    }
-
-    /**
-     * Get workitemUse
+     * Get agent
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getWorkitemUse()
+    public function getAgent()
     {
-        return $this->workitemUse;
+        return $this->agent;
     }
 
     /**
-     * Set node
+     * Set agentRole
      *
-     * @param \Application\Entity\NmtWfNode $node
+     * @param \Application\Entity\NmtApplicationAclRole $agentRole
      *
      * @return NmtWfWorkitem
      */
-    public function setNode(\Application\Entity\NmtWfNode $node = null)
+    public function setAgentRole(\Application\Entity\NmtApplicationAclRole $agentRole = null)
     {
-        $this->node = $node;
+        $this->agentRole = $agentRole;
 
         return $this;
     }
 
     /**
-     * Get node
+     * Get agentRole
      *
-     * @return \Application\Entity\NmtWfNode
+     * @return \Application\Entity\NmtApplicationAclRole
      */
-    public function getNode()
+    public function getAgentRole()
     {
-        return $this->node;
+        return $this->agentRole;
     }
 }

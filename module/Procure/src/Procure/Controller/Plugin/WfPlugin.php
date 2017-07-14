@@ -22,6 +22,10 @@ class WfPlugin extends AbstractPlugin
         return $this->getServiceManager()->get("Workflow\Service\WorkflowService")->createWorkflow($subject);
     }
     
+    public function getWorkflowSerive() {
+        return $this->getServiceManager()->get("Workflow\Service\WorkflowService";
+    }
+    
     /**
      * @return the $serviceManager
      */

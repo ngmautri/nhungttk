@@ -206,10 +206,5 @@ return array(
         )
     ),
     
-    // Plugin
-    'controller_plugins' => array(
-        'factories' => array(
-            'ProcureWfPlugin' => 'Procure\Controller\Plugin\WfPluginFactory'
-        )
-    ),
+ 
 );

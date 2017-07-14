@@ -47,7 +47,9 @@ class ItemSearchController extends AbstractActionController {
 				$n=1;
 				foreach ( $results['hits'] as $a ) {
 					$a_json_row ["id"] = $a->item_id;
-					$a_json_row ["value"] = $a->item_name . ': ' .$a->item_sku ;
+					$a_json_row ["value"] = $a->item_name;
+					$a_json_row ["item_sku"] = $a->item_sku ;
+					$a_json_row ["item_serial"] = $a->manufacturer_code ;					
 					$a_json[]=$a_json_row;
 					$n++;
 				}

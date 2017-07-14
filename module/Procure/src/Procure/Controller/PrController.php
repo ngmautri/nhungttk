@@ -19,6 +19,7 @@ use Zend\Validator\Date;
 use Zend\Math\Rand;
 use Application\Entity\NmtProcurePr;
 use Symfony\Component\Workflow\Dumper\GraphvizDumper;
+use Application\Entity\NmtApplicationAclResource;
 
 /**
  *
@@ -268,20 +269,19 @@ class PrController extends AbstractActionController
     public function allAction()
     {
         // $this->layout ( "layout/fluid" );
-        $plugin = $this->ProcureWfPlugin();
+        // $plugin = $this->ProcureWfPlugin();
         // echo($plugin->getWF());
-        
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $balance = $this->params()->fromQuery('balance');
         $is_active = (int) $this->params()->fromQuery('is_active');
         
-        $status = $this->getEvent()->getRouteMatch()->getParam("status");
-        $row_number = (int) $this->getEvent()->getRouteMatch()->getParam("row_number");
-          
-        if ($sort_by == null) :
-            $sort_by = "prNumber";
-		endif;
+        $status = $this->getEvent()
+            ->getRouteMatch()
+            ->getParam("status");
+        $row_number = (int) $this->getEvent()
+            ->getRouteMatch()
+            ->getParam("row_number");
         
         if ($is_active == null) :
             $is_active = 1;
@@ -290,30 +290,36 @@ class PrController extends AbstractActionController
         if ($balance == null) :
             $balance = 1;
 		endif;
-		
-		
-		if($status=="pending"){
-		    $balance = 1;
-		}elseif($status=="completed"){
-		    $balance = 0;
-		}elseif($status=="all"){
-		    $balance = 2;
-		}
-		
-		
-		
-		
-		//echo $balance;
         
-        if ($sort == null) :
-            $sort = "ASC";
-		endif;
+        if ($status == "pending") {
+            $balance = 1;
+        } elseif ($status == "completed") {
+            $balance = 0;
+        } elseif ($status == "all") {
+            $balance = 2;
+        }
         
-		if($row_number == 0){
-		    $sort_by = "prNumber";
-		    $sort = "DESC";
-		}
-		
+        // echo $balance;
+        
+        if ($row_number == 0) {
+            if ($sort_by == null) :
+                $sort_by = "createdOn"; endif;
+            
+            if ($sort == null) :
+                $sort = "DESC";endif;
+            
+        } else {
+            if ($sort_by == null) :
+                $sort_by = "prNumber";
+                
+                if ($sort == null) :
+                    $sort = "ASC";
+            endif;
+            endif;
+                
+            
+        }
+        
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
@@ -349,8 +355,8 @@ class PrController extends AbstractActionController
             'balance' => $balance,
             'is_active' => $is_active,
             'status' => $status,
-            'row_number' => $row_number,
-         ));
+            'row_number' => $row_number
+        ));
     }
 
     /**
@@ -359,9 +365,8 @@ class PrController extends AbstractActionController
      */
     public function showAction()
     {
-       // $plugin = $this->ProcureWfPlugin();
-        //$wf = $plugin->getWF();
-        
+        // $plugin = $this->ProcureWfPlugin();
+        // $wf = $plugin->getWF();
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {
@@ -385,19 +390,100 @@ class PrController extends AbstractActionController
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
         if ($entity !== null) {
             
-            try{
+            try {
             /** @var \Symfony\Component\Workflow\Workflow $wf */
-            //$wf = $this->ProcureWfPlugin()->createWorkflow($entity);
+                // $wf = $this->ProcureWfPlugin()->createWorkflow($entity);
+                
+                // var_dump($wf->getEnabledTransitions($entity));
+                
+                // $wf->apply($entity, "recall");
+                // $dumper = new GraphvizDumper();
+                // echo $dumper->dump($wf->getDefinition());
             
-            //var_dump($wf->getEnabledTransitions($entity));
-           
-            //$wf->apply($entity, "recall");
-            //$dumper = new GraphvizDumper();
-            //echo $dumper->dump($wf->getDefinition());
-            }catch (LogicException $e){
-               //echo $e->getMessage();
+            /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
+                // $wf_plugin = $this->WfPlugin();
+            
+            /** @var \Workflow\Service\WorkflowService $wfService */
+                // $wfService = $wf_plugin->getWorkflowSerive();
+            
+            /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
+                // $wf_factory = $wfService->getPrWorkFlowFactory($entity);
+            
+            /** @var \Symfony\Component\Workflow\Workflow  $wf */
+                // $wf = $wf_factory->makePrSendingWorkflow();
+                // $wf->apply($entity,"get");
+            } catch (LogicException $e) {
+                // echo $e->getMessage();
             }
-			return new ViewModel(array(
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'entity' => $entity,
+                'errors' => null
+            ));
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+    }
+    
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function grAction()
+    {
+        // $plugin = $this->ProcureWfPlugin();
+        // $wf = $plugin->getWF();
+        $request = $this->getRequest();
+        $redirectUrl = null;
+        if ($request->getHeader('Referer') == null) {
+            //return $this->redirect()->toRoute('access_denied');
+        }else{
+            $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+        }
+        
+        // $u = $this->doctrineEM->getRepository( 'Application\Entity\MlaUsers')->findOneBy(array("email"=>$this->identity() ));
+        
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $checksum = $this->params()->fromQuery('checksum');
+        $token = $this->params()->fromQuery('token');
+        $criteria = array(
+            'id' => $id,
+            'checksum' => $checksum,
+            'token' => $token
+        );
+        
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        if ($entity !== null) {
+            
+            try {
+                /** @var \Symfony\Component\Workflow\Workflow $wf */
+                // $wf = $this->ProcureWfPlugin()->createWorkflow($entity);
+                
+                // var_dump($wf->getEnabledTransitions($entity));
+                
+                // $wf->apply($entity, "recall");
+                // $dumper = new GraphvizDumper();
+                // echo $dumper->dump($wf->getDefinition());
+                
+                /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
+                // $wf_plugin = $this->WfPlugin();
+                
+                /** @var \Workflow\Service\WorkflowService $wfService */
+                // $wfService = $wf_plugin->getWorkflowSerive();
+                
+                /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
+                // $wf_factory = $wfService->getPrWorkFlowFactory($entity);
+                
+                /** @var \Symfony\Component\Workflow\Workflow  $wf */
+                // $wf = $wf_factory->makePrSendingWorkflow();
+                // $wf->apply($entity,"get");
+            } catch (LogicException $e) {
+                // echo $e->getMessage();
+            }
+            return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
                 'errors' => null

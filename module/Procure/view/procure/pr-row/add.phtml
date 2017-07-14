@@ -190,16 +190,26 @@ if (count ( $errors ) > 0) {
      minLength: 2,
      select: function( event, ui ) {
    	  $( "#item_id" ).val(ui.item.id);
-       //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
-   	  //alert($( "#vendor_id" ).val());
-
+     
    	 	$('#global-notice').show();
    		$('#global-notice').html('"' + ui.item.value + '" selected');
    		$('#global-notice').fadeOut(5000);
    		//$("#jquery_dialog").dialog("close");
      }
     
-   });
+   })
+   .autocomplete( "instance" )._renderItem = function( ul, item ) {
+	  var serial_no = "";
+	  if(item.item_serial!=""){
+		  serial_no = " : " + item.item_serial;
+	  }
+ 	   
+      return $( "<li>" )
+        .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
+        .appendTo( ul );
+    };
+   ;
+    
 
     $("#item_name").focus();
 </script>

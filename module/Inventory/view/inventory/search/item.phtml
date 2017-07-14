@@ -56,7 +56,13 @@ if (! $hits == null) :
 	
 			<td> <?php echo $count;?></td>
 	
-				<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
+				<td>
+	<span id="">
+	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($hit->item_id);?>" item_name="<?php echo $this->escapeHtml($hit->item_name);?>" target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">
+	<?php echo $this->escapeHtml($hit->item_name);?></a>
+	
+				
+				</span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_serial);?></span></td>

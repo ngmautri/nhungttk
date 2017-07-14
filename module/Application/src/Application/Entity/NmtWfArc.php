@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfArc
  *
- * @ORM\Table(name="nmt_wf_arc", indexes={@ORM\Index(name="nmt_wf_arc_FK1_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_arc_FK1_idx1", columns={"place_id"}), @ORM\Index(name="nmt_wf_arc_FK3_idx", columns={"transition_id"})})
+ * @ORM\Table(name="nmt_wf_arc", indexes={@ORM\Index(name="nmt_wf_arc_FK1_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_arc_FK1_idx1", columns={"place_id"})})
  * @ORM\Entity
  */
 class NmtWfArc
@@ -27,6 +27,13 @@ class NmtWfArc
      * @ORM\Column(name="weight", type="integer", nullable=true)
      */
     private $weight;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="transition_id", type="integer", nullable=false)
+     */
+    private $transitionId;
 
     /**
      * @var string
@@ -83,16 +90,6 @@ class NmtWfArc
      */
     private $place;
 
-    /**
-     * @var \Application\Entity\NmtWfTransition
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfTransition")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="transition_id", referencedColumnName="transition_id")
-     * })
-     */
-    private $transition;
-
 
 
     /**
@@ -127,6 +124,30 @@ class NmtWfArc
     public function getWeight()
     {
         return $this->weight;
+    }
+
+    /**
+     * Set transitionId
+     *
+     * @param integer $transitionId
+     *
+     * @return NmtWfArc
+     */
+    public function setTransitionId($transitionId)
+    {
+        $this->transitionId = $transitionId;
+
+        return $this;
+    }
+
+    /**
+     * Get transitionId
+     *
+     * @return integer
+     */
+    public function getTransitionId()
+    {
+        return $this->transitionId;
     }
 
     /**
@@ -295,29 +316,5 @@ class NmtWfArc
     public function getPlace()
     {
         return $this->place;
-    }
-
-    /**
-     * Set transition
-     *
-     * @param \Application\Entity\NmtWfTransition $transition
-     *
-     * @return NmtWfArc
-     */
-    public function setTransition(\Application\Entity\NmtWfTransition $transition = null)
-    {
-        $this->transition = $transition;
-
-        return $this;
-    }
-
-    /**
-     * Get transition
-     *
-     * @return \Application\Entity\NmtWfTransition
-     */
-    public function getTransition()
-    {
-        return $this->transition;
     }
 }

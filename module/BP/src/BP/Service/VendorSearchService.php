@@ -14,6 +14,7 @@ use ZendSearch\Lucene\Search\Query\Wildcard;
 use Application\Entity\NmtInventoryItem;
 use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\QueryParser;
+use Exception;
 use Application\Entity\NmtBpVendor;
 
 /**

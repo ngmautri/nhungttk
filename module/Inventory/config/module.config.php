@@ -29,6 +29,13 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
+            array(
+                'label' => 'Item Price',
+                'route' => 'Inventory/default',
+                'controller' => 'item',
+                'action' => 'item-price',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
             
             array(
                 'label' => 'Item Category',

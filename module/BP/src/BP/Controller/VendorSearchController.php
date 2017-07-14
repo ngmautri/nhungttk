@@ -104,7 +104,8 @@ class VendorSearchController extends AbstractActionController {
 			if (count ( $results ) > 0) {
 				foreach ( $results['hits'] as $a ) {
 					$a_json_row ["id"] = $a->vendor_id;
-					$a_json_row ["value"] = $a->vendor_number .  ' '. $a->vendor_name;
+					$a_json_row ["value"] = $a->vendor_number .  ' '. $a->vendor_name . '';
+					$a_json_row ["vendor_country"] = $a->country_name;
 					$a_json[]=$a_json_row;
 				}
 			}

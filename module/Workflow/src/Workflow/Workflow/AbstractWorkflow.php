@@ -1,6 +1,6 @@
 <?php
 
-namespace Workflow\Model;
+namespace Workflow\Workflow;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Workflow\DefinitionBuilder;
 use Symfony\Component\Workflow\Transition;

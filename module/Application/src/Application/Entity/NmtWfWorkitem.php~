@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfWorkitem
  *
- * @ORM\Table(name="nmt_wf_workitem", indexes={@ORM\Index(name="nmt_wf_workitem_FK1_idx", columns={"case_id"}), @ORM\Index(name="nmt_wf_workitem_FK2_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_workitem_FK3_idx", columns={"transition_id"}), @ORM\Index(name="nmt_wf_workitem_FK4_idx", columns={"workitem_use_id"}), @ORM\Index(name="nmt_wf_workitem_FK5_idx", columns={"node_id"})})
+ * @ORM\Table(name="nmt_wf_workitem", indexes={@ORM\Index(name="nmt_wf_workitem_idx", columns={"agent_id"}), @ORM\Index(name="nmt_wf_workitem_FK2_idx", columns={"agent_role_id"})})
  * @ORM\Entity
  */
 class NmtWfWorkitem
@@ -15,11 +15,46 @@ class NmtWfWorkitem
     /**
      * @var integer
      *
-     * @ORM\Column(name="workitem_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $workitemId;
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="workflow_id", type="integer", nullable=true)
+     */
+    private $workflowId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_name", type="string", length=45, nullable=false)
+     */
+    private $workflowName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="transition_id", type="integer", nullable=true)
+     */
+    private $transitionId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transition_name", type="string", length=45, nullable=false)
+     */
+    private $transitionName;
 
     /**
      * @var string
@@ -38,6 +73,13 @@ class NmtWfWorkitem
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="finished_date", type="datetime", nullable=true)
+     */
+    private $finishedDate;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="enabled_date", type="datetime", nullable=true)
      */
     private $enabledDate;
@@ -50,61 +92,45 @@ class NmtWfWorkitem
     private $cancelledDate;
 
     /**
-     * @var \DateTime
+     * @var integer
      *
-     * @ORM\Column(name="finished_date", type="datetime", nullable=true)
+     * @ORM\Column(name="subject_id", type="integer", nullable=false)
      */
-    private $finishedDate;
+    private $subjectId;
 
     /**
-     * @var \Application\Entity\NmtWfCase
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfCase")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="case_id", referencedColumnName="case_id")
-     * })
+     * @ORM\Column(name="subject_class", type="string", length=80, nullable=false)
      */
-    private $case;
+    private $subjectClass;
 
     /**
-     * @var \Application\Entity\NmtWfWorkflow
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
-     * })
+     * @ORM\Column(name="remark", type="string", length=100, nullable=true)
      */
-    private $workflow;
-
-    /**
-     * @var \Application\Entity\NmtWfTransition
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfTransition")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="transition_id", referencedColumnName="transition_id")
-     * })
-     */
-    private $transition;
+    private $remark;
 
     /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workitem_use_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="agent_id", referencedColumnName="id")
      * })
      */
-    private $workitemUse;
+    private $agent;
 
     /**
-     * @var \Application\Entity\NmtWfNode
+     * @var \Application\Entity\NmtApplicationAclRole
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfNode")
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="node_id", referencedColumnName="node_id")
+     *   @ORM\JoinColumn(name="agent_role_id", referencedColumnName="id")
      * })
      */
-    private $node;
+    private $agentRole;
 
 
 }

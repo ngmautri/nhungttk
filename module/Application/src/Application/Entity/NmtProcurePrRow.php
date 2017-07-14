@@ -144,9 +144,9 @@ class NmtProcurePrRow
     /**
      * @var string
      *
-     * @ORM\Column(name="nmt_procure_pr_rowcol", type="string", length=45, nullable=true)
+     * @ORM\Column(name="fa_remarks", type="string", length=100, nullable=true)
      */
-    private $nmtProcurePrRowcol;
+    private $faRemarks;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -619,27 +619,27 @@ class NmtProcurePrRow
     }
 
     /**
-     * Set nmtProcurePrRowcol
+     * Set faRemarks
      *
-     * @param string $nmtProcurePrRowcol
+     * @param string $faRemarks
      *
      * @return NmtProcurePrRow
      */
-    public function setNmtProcurePrRowcol($nmtProcurePrRowcol)
+    public function setFaRemarks($faRemarks)
     {
-        $this->nmtProcurePrRowcol = $nmtProcurePrRowcol;
+        $this->faRemarks = $faRemarks;
 
         return $this;
     }
 
     /**
-     * Get nmtProcurePrRowcol
+     * Get faRemarks
      *
      * @return string
      */
-    public function getNmtProcurePrRowcol()
+    public function getFaRemarks()
     {
-        return $this->nmtProcurePrRowcol;
+        return $this->faRemarks;
     }
 
     /**

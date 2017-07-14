@@ -145,23 +145,114 @@
         }
     }
 
+    var autoCompleteEditor = function (ui) {
+        var $inp = ui.$cell.find("input");
+        var rowData = ui.rowData;
+      
+        //initialize the editor
+        $inp.autocomplete({
+        	source: "/bp/vendor-search/auto-complete",
+            minLength: 3,
+            select: function( event, ui ) {
+          	  //$( "#vendor_id" ).val(ui.item.id);
+              //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+          	  //alert($( "#vendor_id" ).val());
+          	  //alert(ui.item.id);
+          	  rowData.vendor_id = ui.item.id;
+
+          	 	$('#global-notice').show();
+          		$('#global-notice').html('"' + ui.item.value + '" selected');
+          		$('#global-notice').fadeOut(5000);
+          		//$("#jquery_dialog").dialog("close");
+            }
+            })
+            .autocomplete( "instance" )._renderItem = function( ul, item ) {
+            return $( "<li>" )
+              .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+              .appendTo( ul );
+          };
+    }
+
+    var dateEditor = function (ui) {
+        var $inp = ui.$cell.find("input"),
+            $grid = $(this),
+            validate = function (that) {
+                var valid = $grid.pqGrid("isValid", { dataIndx: ui.dataIndx, value: $inp.val() }).valid;
+                if (!valid) {
+                    that.firstOpen = false;
+                }
+            };
+
+        //initialize the editor
+        $inp
+        .on("input", function (evt) {
+            validate(this);
+        })
+        .datepicker({
+        	dateFormat: 'yy-mm-dd',closeText: 'X',
+        	changeMonth: true,
+            changeYear: true,
+            showAnim: '',
+            onSelect: function () {
+                this.firstOpen = true;
+                validate(this);
+            },
+            beforeShow: function (input, inst) {
+                return !this.firstOpen;
+            },
+            onClose: function () {
+                this.focus();
+            }
+        });
+    }
+
     var columns = [
-    	{ title: "#", dataType: "string", dataIndx: "row_number", width: 7	,editable: false },
+       	/* { title: "Receip Date", dataIndx: "receipt_date", width:100,editable: true,
+          	editor: {
+            type: 'textbox',
+            init: dateEditor
+        }, 
+
+        render: function (ui) {
+            //return "hello";
+            var cellData = ui.cellData;
+            if (cellData) {
+                return $.datepicker.formatDate('yy-mm-dd', new Date(cellData));
+            }
+            else {
+                return "";
+            }
+        },
+        validations: [
+           { type: 'regexp', value: '^[0-9]{4}-[0-9]{2}-[0-9]{2}$', msg: 'Not in mm/dd/yyyy format' }
+        ] 
+        }, */
+        
+    	 /*  { title: "vendor", dataType: "string", dataIndx: "vendor", align: 'left',minWidth: 100,editable: true,
+              editor: {
+              type: "textbox",
+              init: autoCompleteEditor
+              //type: function (ui) { return dropdowneditor(this, ui); }
+          },},
+          
+        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
+         
+        //{ title: "#", dataType: "string", dataIndx: "row_number", width: 1,editable: false },
+        { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
         { title: "PR Number", dataType: "string", dataIndx: "pr_number", width: 150,editable: false },
     	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
        	{ title: "Item", dataType: "string", dataIndx: "item_name", width: 280,editable: false },
-        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',hidden: false},
+        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',hidden: false,editable: false},
         { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
         { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
         { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 80,align: 'left',editable: false},
-        { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 100,align: 'right', hidden: false},
-        { title: "Curr", dataType: "string", dataIndx: "currency", width: 3,align: 'center', hidden: false},
-        
-        //{ title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
-        
+        { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 100,align: 'right', hidden: false,editable: false},
+        { title: "Curr", dataType: "string", dataIndx: "currency", width: 3,align: 'center', hidden: false,editable: false},
+        { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
+                  
         { title: "", editable: false, minWidth: 90, sortable: false,
             render: function (ui) {
-                return "<button type='button' class='receive_btn'>Receive</button>";
+                return "<button type='button' class='receive_btn'>Receive</button><button type='button' class='receive1_btn'>Receive</button>";
 	           }
         },
    ];
@@ -193,12 +284,104 @@
 			//draggable:true,
 			sortable: true,
 			hoverMode: 'cell',
-			pageModel: { type: "remote", rPP:100, strRpp: "{0}" },
+			pageModel: { type: "remote", rPP:200, strRpp: "{0}" },
 			columnBorders: true,
 			dataModel: dataModel,
 			colModel: columns,
-			    numberCell: { resizable: true, width: 40, title: "#", minWidth: 25 },
-	            resizable: true
+		    numberCell: {show:true, resizable: true, width: 40, title: "#", minWidth: 25 },
+	        resizable: true,
+	        editModel: {
+                allowInvalid: true,
+                saveKey: $.ui.keyCode.ENTER
+            },
+            editor: {
+                select: true
+            },
+ 			change: function (evt, ui) {                
+                
+                if (ui.source == 'commit' || ui.source == 'rollback') {
+                    return;
+                }
+                console.log(ui);
+                var $grid = $(this),
+                    grid = $grid.pqGrid('getInstance').grid;
+                var rowList = ui.rowList,
+                    addList = [],
+                    recIndx = grid.option('dataModel').recIndx,
+                    deleteList = [],
+                    updateList = [];
+                
+                for (var i = 0; i < rowList.length; i++) {
+                    var obj = rowList[i],
+                        rowIndx = obj.rowIndx,
+                        newRow = obj.newRow,
+                        type = obj.type,
+                        rowData = obj.rowData;
+                     if (type == 'add') {                        
+                        var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
+                        if (valid) {
+                            addList.push(newRow);
+                        }
+                    }
+                    else if (type == 'update') {                        
+                        var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
+                        if (valid) {
+                            if (rowData[recIndx] == null) {
+                                addList.push(rowData);
+                            }
+                            //else if (grid.isDirty({rowData: rowData})) {
+                            else {
+                                updateList.push(rowData);
+                          		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
+                                 
+                            }
+                        }
+                    }
+                  }
+
+                  if (addList.length || updateList.length || deleteList.length) {
+					var sent_list = JSON.stringify({
+                        updateList: updateList,
+                        addList: addList,
+                        deleteList: deleteList
+                    });
+                    //alert(sent_list);
+                      
+                      $.ajax({
+                          url: '/procure/pr-row/update-row',
+                          data: {
+                              sent_list: sent_list
+                          },
+                          dataType: "json",
+                          type: "POST",
+                          async: true,
+                          beforeSend: function (jqXHR, settings) {
+                              //$(".saving", $grid).show();
+
+							  	
+                              //$("#global-notice").text("Updating...").show();
+                              //alert(updateList[0].item_name  +  updateList[0].row_id);
+                          },
+                          success: function (changes) {
+                              //commit the changes.
+                              //alert(changes.updateList);
+                               $("#global-notice").text("Updated...").show();
+                		      //alert('it is ok');                
+                              /* grid.commit({ type: 'add', rows: changes.addList });
+                              grid.commit({ type: 'update', rows: changes.updateList });
+                              grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                          },
+                          complete: function () {
+                              //$(".saving", $grid).hide();
+                              $("#global-notice").delay(2200).fadeOut(500);
+                              
+                          }
+                      });
+                  }
+                //alert(updateList.length);
+               
+            },     
+	                
        		
    	};
 
@@ -222,7 +405,28 @@
             redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
           	//alert(rowData['item_name']);
 
-          	window.open(redirectUrl,'_blank');
+          	//window.open(redirectUrl,'_blank');
+          	window.location.href = redirectUrl;
+        });
+
+        //receive button
+        $grid.find("button.receive1_btn").button({})
+        .unbind("click")
+        .bind("click", function (evt) {
+
+            var $tr = $(this).closest("tr"),
+            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+    
+            redirectUrl="/inventory/item-transaction/gr1?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+          	//alert(rowData['item_name']);
+          	
+          	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
+          	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
+          	//window.open(redirectUrl,'_blank');
+          	
         });
 
       });

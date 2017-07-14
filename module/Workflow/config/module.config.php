@@ -20,10 +20,9 @@ return array(
                 'controller' => 'pr',
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
-            ),
-            
-          
-                  )
+            )
+        
+        )
     ),
     
     'router' => array(
@@ -63,8 +62,8 @@ return array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'Workflow\Service\WorkflowService' => 'Workflow\Service\WorkflowServiceFactory',
-            'wf_navi' => 'Workflow\Service\WfNavigationFactory', // <-- add this
-            
+            'wf_navi' => 'Workflow\Service\WfNavigationFactory' // <-- add this
+        
         )
     ),
     'translator' => array(
@@ -101,14 +100,12 @@ return array(
         'template_path_stack' => array(
             __DIR__ . '/../view'
         )
-    )
+    ),
     
     // Plugin
-    /*
- * 'controller_plugins' => array (
- * 'invokables' => array (
- * 'UserPlugin' => 'User\Controller\Plugin\UserPlugin'
- * )
- * )
- */
+    'controller_plugins' => array(
+        'factories' => array(
+            'WfPlugin' => 'Workflow\Controller\Plugin\WfPluginFactory'
+        )
+    )
 );

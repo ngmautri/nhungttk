@@ -106,6 +106,13 @@ class NmtProcureWfWorkitem
     private $subjectClass;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="remark", type="string", length=100, nullable=true)
+     */
+    private $remark;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -443,6 +450,30 @@ class NmtProcureWfWorkitem
     public function getSubjectClass()
     {
         return $this->subjectClass;
+    }
+
+    /**
+     * Set remark
+     *
+     * @param string $remark
+     *
+     * @return NmtProcureWfWorkitem
+     */
+    public function setRemark($remark)
+    {
+        $this->remark = $remark;
+
+        return $this;
+    }
+
+    /**
+     * Get remark
+     *
+     * @return string
+     */
+    public function getRemark()
+    {
+        return $this->remark;
     }
 
     /**

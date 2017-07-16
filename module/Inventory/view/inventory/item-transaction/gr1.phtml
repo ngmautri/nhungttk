@@ -1,16 +1,5 @@
-<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
-}
-?>
+<div id="form_process_status" class="alert alert-danger" role="alert" style="font-size: 9.5pt; display:none"></div>
+
 <div id="general" style="font-size: 9.5pt; padding: 0px;">
 
 	<form id="gr_form" class="form-horizontal"
@@ -21,17 +10,28 @@ if (count($errors) > 0) {
 			id="target_wh_id" name="target_wh_id"
 			value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity->getWh()->getId();endif;endif;?>" />
 
-
 		<div class="form-group required">
 			<div class="col-sm-3">
 				<input type="hidden" id="token" placeholder="" name="token" value="">
-				<input type="hidden" id="checksum" placeholder="" name="checksum"
-					value="">
+				<input type="hidden" id="checksum" placeholder="" name="checksum" value="">
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label class="control-label col-sm-2">PR Referrence: </label>
+			<label class="control-label col-sm-2">
+<?php
+
+if (! $entity == null) :
+    if ($entity->getPrRow() !== null) :
+         if ($entity->getPrRow()->getPr() !== null) :
+            echo $entity->getPrRow()->getPr()->getPrNumber().":";
+        endif;
+    endif;
+endif;
+    
+
+?>
+			</label>
 			<div class="col-sm-3">
 				<input disabled class="form-control" type="text" id="pr_item_name"
 					placeholder="Select PR Item, if any" name="pr_row_name"
@@ -45,10 +45,7 @@ if (count($errors) > 0) {
                     ->getItemName();
 	endif;
 endif;
-endif;
-            
-        
-    
+endif;           
     ?>">
 
 
@@ -59,7 +56,6 @@ endif;
 					type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp; <input
 					type="checkbox"
 					<?php
-    
     if (! $entity == null) :
         echo ($entity->getIsActive() == "1") ? "checked" : "";
     else :
@@ -139,19 +135,23 @@ endif;
 					<label class="control-label col-sm-2">Vendor:</label>
 					<div class="col-sm-3">
 						<input class="form-control" type="text" id="vendor_name_1"
-							placeholder="Select vendor" name="vendor_name"
+							placeholder="Enter term to search vendor" name="vendor_name"
 							value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
-
+			
 						<input type="hidden" id="vendor_id" placeholder=""
 							name="vendor_id"
 							value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-3">
+					
 						<input
-							<?php if(!$entity== null): echo ($entity->getIsPreferredVendor()=="1")?"checked":""; else: echo "checked"; endif;?>
-							type="checkbox" name="isPreferredVendor" value="1">&nbsp;Is
-						Preferred&nbsp;&nbsp;
+							<?php if(!$entity== null): echo ($entity->getIsPreferredVendor()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isPreferredVendor" value="1">&nbsp;Is
+						Preferred&nbsp;&nbsp;&nbsp;&nbsp;
 
+					</div>
+					<div class="col-sm-3">
+					
+					<a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i class="glyphicon glyphicon-new-window"></i></small>
 					</div>
 				</div>
 
@@ -193,19 +193,15 @@ endif;
 
 					<label class="control-label col-sm-2">Currency:</label>
 					<div class="col-sm-3">
-						<input disabled class="form-control" type="text"
-							id="currency_name" placeholder="Select Currency"
-							name="currency_name"
-							value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getCurrency();endif;endif;?>">
-						<input type="hidden" id="currency_id" placeholder=""
-							name="currency_id"
-							value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getId();endif;endif;?>">
-					</div>
-
-					<a style="color: #0080ff;" href="javascript:;"
-						onclick="showJqueryDialog('Select Currency','500','450', '/application/currency/select','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-						class="glyphicon glyphicon-folder-open"></i>
-					</a>
+					<select name="currency_id" class="form-control">
+								<option value="">Select Currency</option>
+   	    							<?php
+   	    							foreach ( $currency_list as $curr ) :
+   	    							 echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+									endforeach
+									?>
+   					</select>
+   					</div>
 				</div>
 
 				<div class="form-group">
@@ -242,7 +238,7 @@ endif;
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="inputTag"></label>
 			<div class="col-sm-3">
-				<button onclick="submitForm('gr_form');" type="submit" id="save"
+				<button onclick="submitAjaxForm('/inventory/item-transaction/gr1','gr_form');" type="submit" id="save"
 					class="btn btn-default">
 					<i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save
 				</button>
@@ -254,16 +250,16 @@ endif;
 
 
 <script type="text/javascript">
-$('#vendor_item_unit').bind('change', function() {
-	//alert($('#vendor_item_unit').val());
-	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
-});
-
-$('#conversion_factor').bind('change', function() {
-	//alert($('#vendor_item_unit').val());
-	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
-});
-$( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+    $('#vendor_item_unit').bind('change', function() {
+    	//alert($('#vendor_item_unit').val());
+    	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
+    });
+    
+    $('#conversion_factor').bind('change', function() {
+    	//alert($('#vendor_item_unit').val());
+    	$('#conversion_text').html($('#vendor_item_unit').val() + ' = ' + $('#conversion_factor').val() );
+    });
+    $( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
      $( "#vendor_name_1" ).autocomplete({
       source: "/bp/vendor-search/auto-complete",
@@ -284,5 +280,9 @@ $( "input[id='trx_date']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',clos
         .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
         .appendTo( ul );
       };
+
+
+     
+    	      
 
  </script>

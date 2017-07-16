@@ -542,7 +542,7 @@ class PrRowController extends AbstractActionController {
 					$a_json_row ["row_number"] = $paginator->minInPage - 1 + $count;
 				}
 				
-				$a_json_row ["pr_number"] = $a ['pr_number'];
+				$a_json_row ["pr_number"] = $a ['pr_number'] . '<a style="" target="blank"  title="'. $a ['pr_number'] .'" href="/procure/pr/show?token='.$a ["pr_token"].'&entity_id='. $a ["pr_id"]. '&checksum='.$a ["pr_checksum"].'" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
 				
 				$a_json_row ["row_id"] = $a ['id'];
 				$a_json_row ["row_token"] = $a ['token'];
@@ -1015,6 +1015,8 @@ class PrRowController extends AbstractActionController {
 						$a_json_row ["remarks"] = '<span title="'. $a ['remarks'] .'">'.substr ( $a ['remarks'], 0, 15 ) . '...</span>';
 						
 					}
+					$a_json_row ["fa_remarks"] = $a ['fa_remarks'];
+					
 					
 					$a_json [] = $a_json_row;
 				}

@@ -5,9 +5,10 @@
 	<ul>
 		<li><a href="#general">Purchase Request</a></li>
 		<li><a
-			href="/procure/pr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Picture</a></li>
+			href="/procure/pr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
 		<li><a
-			href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Attachment</a></li>
+			href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
 
 	</ul>
 
@@ -104,8 +105,8 @@
 				</div>
 			</fieldset>
 		</form>
-		
-		
+
+
 		<fieldset>
 			<legend style="font-size: 10pt; color: gray;">
 				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
@@ -115,10 +116,11 @@
 
 				<div id="pr_rows"></div>
 				<div id="pr_row_gird" style="margin: 1px;"></div>
+		
 		</fieldset>
-		
-		
-		
+
+
+
 	</div>
 
 
@@ -269,40 +271,133 @@
 			//draggable:true,
 			sortable: true,
 			hoverMode: 'cell',
-			 pageModel: { type: "remote", rPP: 50, strRpp: "{0}" },
-			 columnBorders: true,
-			   toolbar: {
-	                items: [
-	                    { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
-	                        { "click": function (evt, ui) {
-	                            var $grid = $(this).closest('.pq-grid');
-	                            //addRow($grid);
-	                            
-	    redirectUrl="/procure/pr-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>";
-       	//alert(rowData['item_name']);
+		   	pageModel: { type: "remote", rPP: 50, strRpp: "{0}" },
+		  	editModel: {
+                allowInvalid: true,
+                saveKey: $.ui.keyCode.ENTER
+            },
+            editor: {
+                select: true
+            },
+		 columnBorders: true,
+    	   toolbar: {
+                    items: [
+                        { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
+                            { "click": function (evt, ui) {
+                                var $grid = $(this).closest('.pq-grid');
+                                //addRow($grid);
+                                
+   		     redirectUrl="/procure/pr-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>";
+              window.location.href= redirectUrl;
+                                 
+                                //debugger;
+                            }
+                            }
+                        ]
+                        }
+                    ]
+                },
 
-          	//window.open(redirectUrl,'_blank');
-	        window.location.href= redirectUrl;
-	                             
-	                            //debugger;
-	                        }
-	                        }
-	                    ]
-	                    }
-	                ]
-	            },  
+
+        change: function (evt, ui) {                
+            
+            if (ui.source == 'commit' || ui.source == 'rollback') {
+                return;
+            }
+            console.log(ui);
+            var $grid = $(this),
+                grid = $grid.pqGrid('getInstance').grid;
+            var rowList = ui.rowList,
+                addList = [],
+                recIndx = grid.option('dataModel').recIndx,
+                deleteList = [],
+                updateList = [];
+            
+            for (var i = 0; i < rowList.length; i++) {
+                var obj = rowList[i],
+                    rowIndx = obj.rowIndx,
+                    newRow = obj.newRow,
+                    type = obj.type,
+                    rowData = obj.rowData;
+                 if (type == 'add') {                        
+                    var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
+                    if (valid) {
+                        addList.push(newRow);
+                    }
+                }
+                else if (type == 'update') {                        
+                    var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
+                    if (valid) {
+                        if (rowData[recIndx] == null) {
+                            addList.push(rowData);
+                        }
+                        //else if (grid.isDirty({rowData: rowData})) {
+                        else {
+                            updateList.push(rowData);
+                      		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
+                             
+                        }
+                    }
+                }
+              }
+
+              if (addList.length || updateList.length || deleteList.length) {
+				var sent_list = JSON.stringify({
+                    updateList: updateList,
+                    addList: addList,
+                    deleteList: deleteList
+                });
+                //alert(sent_list);
+                  
+                  $.ajax({
+                      url: '/procure/pr-row/update-row',
+                      data: {
+                          sent_list: sent_list
+                      },
+                      dataType: "json",
+                      type: "POST",
+                      async: true,
+                      beforeSend: function (jqXHR, settings) {
+                          //$(".saving", $grid).show();
+
+						  	
+                          //$("#global-notice").text("Updating...").show();
+                          //alert(updateList[0].item_name  +  updateList[0].row_id);
+                      },
+                      success: function (changes) {
+                          //commit the changes.
+                          //alert(changes.updateList);
+                           $("#global-notice").text("Updated...").show();
+            		      //alert('it is ok');                
+                          /* grid.commit({ type: 'add', rows: changes.addList });
+                          grid.commit({ type: 'update', rows: changes.updateList });
+                          grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                      },
+                      complete: function () {
+                          //$(".saving", $grid).hide();
+                          $("#global-notice").delay(2200).fadeOut(500);
+                          
+                      }
+                  });
+              }
+            //alert(updateList.length);
+           
+        },     
+	              
 	};
 
     obj.colModel = [
-    	 { title: "vendor", dataType: "string", dataIndx: "vendor", align: 'left',minWidth: 100,editable: true,
+    	/*  { title: "vendor", dataType: "string", dataIndx: "vendor", align: 'left',minWidth: 100,editable: true,
              editor: {
              type: "textbox",
              init: autoCompleteEditor
              //type: function (ui) { return dropdowneditor(this, ui); }
          },},
          
-       { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true },
-    	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
+       { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
+        { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
+       
+   		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
         { title: "Item", dataType: "string", dataIndx: "item_name", width:200,editable: false },
         { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: false},
         { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
@@ -312,11 +407,11 @@
         { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 82, align: 'right',editable: false},
         { title: "Curr", dataType: "string", dataIndx: "currency", width:3, align: 'center',editable: false},
              
-        { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: true},
+        { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         
         { title: "", editable: false, minWidth: 200, sortable: false,
             render: function (ui) {
-                return "<button type='button' class='edit_btn'><small><i class='glyphicon glyphicon-pencil'>&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;PO</span></button>";
+                return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
 	           }
         },
    ];
@@ -384,6 +479,26 @@
                 rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
             editRow(rowIndx, $grid);
             return false;
+        });
+
+      //receive button
+        $grid.find("button.receive_inline_btn").button({})
+        .unbind("click")
+        .bind("click", function (evt) {
+
+            var $tr = $(this).closest("tr"),
+            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+    
+            redirectUrl="/inventory/item-transaction/gr1?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+          	//alert(rowData['item_name']);
+          	
+          	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
+          	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
+          	//window.open(redirectUrl,'_blank');
+          	
         });
 
       //rows which were in edit mode before refresh, put them in edit mode again.

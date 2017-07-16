@@ -5,62 +5,55 @@ use Application\Entity\NmtHrEmployee;
 use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
 use Doctrine\ORM\EntityManager;
-use Procure\Workflow\PrRowWorkflow;
-use Procure\Workflow\PrWorkflow;
-use Symfony\Component\Workflow\Exception\LogicException;
 use Workflow\Workflow\Procure\Factory\PrWorkflowFactoryMLA;
+
 
 class WorkflowService
 {
 
     protected $doctrineEM;
-
     protected $supportedSubjects = array();
 
     /**
      *
-     * @deprecated
      * @param unknown $subject
-     * @return \Symfony\Component\Workflow\Workflow
+     * @return \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryMLA
      */
-    public function createWorkFlow($subject)
+    public function getWorkFlowFactory($subject)
     {
-        if ($subject instanceof NmtProcurePr) {
-            // NmtProcurePr
-            $wf = new PrWorkflow();
-            $wf->setDoctrineEM($this->doctrineEM);
-            return $wf->createWorkflow();
-        } elseif ($subject instanceof NmtProcurePrRow) {
-            $wf = new PrRowWorkflow();
-            $wf->setDoctrineEM($this->doctrineEM);
-            return $wf->createWorkflow();
-        } elseif ($subject instanceof NmtHrEmployee) {
-            $wf = new CreateEmployeeWorkflow();
-            $wf->setDoctrineEM($this->doctrineEM);
-            return $wf->createWorkflow();
-        }
-    }
-
-    /**
-     *
-     * @param unknown $subject
-     * @return \Symfony\Component\Workflow\Workflow
-     */
-    public function getPrWorkFlowFactory($subject)
-    {
-        if (! $subject instanceof NmtProcurePr) {
-            throw new LogicException(sprintf(
-                'The subject object is not an instance of Class "%s"', 
-                get_class(new NmtProcurePr())));
-        }
         
-        // NmtProcurePr
-        $factory = new PrWorkflowFactoryMLA();
-        $factory->setDoctrineEM($this->doctrineEM);
-        return $factory;
+        switch (true) {            
+            case ($subject instanceof NmtProcurePr):                
+                $factory = new PrWorkflowFactoryMLA($subject);
+                $factory->setDoctrineEM($this->doctrineEM);
+                return $factory;
+            
+            case ($subject instanceof NmtProcurePrRow):
+                return null;
+                
+            case ($subject instanceof NmtHrEmployee):
+                return null;
+        }
     }
-
-  
+    
+   
+    /**
+     * 
+     * @return array|unknown
+     */
+    public function getSupportedSubjects(){
+        $s = new NmtProcurePr();
+        $this->supportedSubjects[] = $s;
+        
+        $s = new NmtProcurePrRow();
+        $this->supportedSubjects[] = $s;
+        
+        $s = new NmtHrEmployee();
+        $this->supportedSubjects[] = $s;
+        
+        return $this->supportedSubjects;
+        
+    }
 
     /**
      *
@@ -82,17 +75,7 @@ class WorkflowService
         return $this;
     }
 
-    /**
-     *
-     * @return the $supportedSubjects
-     */
-    public function getSupportedSubjects()
-    {
-        return $this->supportedSubjects;
-    }
-
-  
-    public function setSupportedSubjects($supportedSubjects)
+       public function setSupportedSubjects($supportedSubjects)
     {
         $this->supportedSubjects = $supportedSubjects;
     }

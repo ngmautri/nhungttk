@@ -1,6 +1,5 @@
 <?php
 namespace Workflow\Workflow\Procure\Factory;
-use Doctrine\ORM\EntityManager;
 use Workflow\Workflow\Procure\PrWorkflow;
 
 /**
@@ -20,7 +19,26 @@ class PrWorkflowFactoryMLA extends PrWorkflowFactoryAbstract
     {
         // TODO Auto-generated method stub
         $wf = new PrWorkflow();
+        $wf->setWorkflowName("PR_SUBMIT_WF");
+        $wf->setSubject($this->getSubject());
+        $wf->setWorkflowFactory($this);
         $wf->setDoctrineEM($this->getDoctrineEM());
-        return $wf->createWorkflow();
+        return $wf;
     }
+    
+   /**
+    * 
+    * @return \Workflow\Workflow\Procure\PrWorkflow[]
+    */
+    public function getWorkFlowList()
+    {
+        $workflow_list= array();
+        
+        if(!isset( $workflow_list[$this->makePrSendingWorkflow()->getWorkflowName()])){
+            $workflow_list[$this->makePrSendingWorkflow()->getWorkflowName()] = $this->makePrSendingWorkflow();
+        }
+        
+        return $workflow_list;
+    }
+
 }

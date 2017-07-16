@@ -656,11 +656,90 @@ class ItemTransactionController extends AbstractActionController
         
         $this->layout("layout/user/ajax");
         
-        if ($request->isPost()) {
+        if (isset($_POST['submited_form'])) {
+            
+            $redirectUrl = null;
+            $pr_row_id = null;
+            $target_id = null;
+            $vendor_id = null;
+            $currency_id = null;
+            $quantity = null;
+            $target_wh_id = null;
+            $trx_date = null;
+            $isDraft = null;
+            $isActive = null;
+            $isPreferredVendor = null;
+            $conversionFactor = null;
+            $vendorItemCode = null;
+            $vendorItemUnit = null;
+            $vendorUnitPrice = null;
+            $leadTime = null;
+            $remarks = null;
+            
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-            $pr_row_id = $request->getPost('pr_row_id');
-            $target_id = $request->getPost('item_id');
+            $a_json_final = array();
+            
+            $submited_form = json_decode($_POST['submited_form'], true);
+            $a_json_final['field_number'] = count($submited_form);
+            
+            foreach ($submited_form as $f) {
+                
+                switch ($f['name']) {
+                    case 'pr_row_id':
+                        $pr_row_id = (int) $f['value'];
+                        break;
+                    case 'target_id':
+                        $target_id = (int) $f['value'];
+                        break;
+                    case 'vendor_id':
+                        $vendor_id = (int) $f['value'];
+                        break;
+                    case 'currency_id':
+                        $currency_id = $f['value'];
+                        break;
+                    case 'quantity':
+                        $quantity = $f['value'];
+                        break;
+                    case 'target_wh_id':
+                        $target_wh_id = (int) $f['value'];
+                        break;
+                    case 'trx_date':
+                        $trx_date = $f['value'];
+                        break;
+                    case 'isDraft':
+                        $isDraft = (int) $f['value'];
+                        break;
+                    case 'isActive':
+                        $isActive = (int) $f['value'];
+                        break;
+                    case 'isPreferredVendor':
+                        $isPreferredVendor = (int) $f['value'];
+                        break;
+                    case 'conversionFactor':
+                        $conversionFactor = $f['value'];
+                        break;
+                    case 'vendorItemCode':
+                        $vendorItemCode = $f['value'];
+                        break;
+                    case 'vendorItemUnit':
+                        $vendorItemUnit = $f['value'];
+                        break;
+                    case 'vendorUnitPrice':
+                        $vendorUnitPrice = $f['value'];
+                        break;
+                    case 'leadTime':
+                        $leadTime = $f['value'];
+                        break;
+                    case 'remarks':
+                        $remarks = $f['value'];
+                        break;
+                    case 'redirectUrl':
+                        $redirectUrl = $f['value'];
+                        break;
+                }
+            }
+            
+            $a_json_final['redirect_url'] = $redirectUrl;
             
             $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
             if ($pr_row !== null) {
@@ -669,48 +748,12 @@ class ItemTransactionController extends AbstractActionController
                 $criteria = array(
                     'id' => $target_id
                 );
-                
-                /**
-                 *
-                 * @todo Update Target
-                 */
                 $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
             }
             
             if ($target == null) {
-                
                 $errors[] = 'Item or PR Row object can\'t be empty. Or token key is not valid!';
-                $this->flashMessenger()->addMessage('Something went wrong!');
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'target' => null,
-                    'entity' => null
-                ));
-                
-                // might need redirect
             } else {
-                
-                $vendor_id = $request->getPost('vendor_id');
-                $currency_id = $request->getPost('currency_id');
-                // $pmt_method_id = $request->getPost ( 'pmt_method_id' );
-                
-                $quantity = $request->getPost('quantity');
-                $target_wh_id = $request->getPost('target_wh_id');
-                $trx_date = $request->getPost('trx_date');
-                $isDraft = (int) $request->getPost('isDraft');
-                $isActive = (int) $request->getPost('isActive');
-                
-                $isPreferredVendor = (int) $request->getPost('isPreferredVendor');
-                
-                $conversionFactor = $request->getPost('conversionFactor');
-                $vendorItemCode = $request->getPost('vendorItemCode');
-                $vendorItemUnit = $request->getPost('vendorItemUnit');
-                $vendorUnitPrice = $request->getPost('vendorUnitPrice');
-                $leadTime = $request->getPost('leadTime');
-                
-                $remarks = $request->getPost('remarks');
-                
                 if ($isDraft !== 1) {
                     $isDraft = 0;
                 }
@@ -722,9 +765,7 @@ class ItemTransactionController extends AbstractActionController
                 if ($isPreferredVendor !== 1) {
                     $isPreferredVendor = 0;
                 }
-                
                 // Inventory Transaction:
-                
                 $entity = new NmtInventoryTrx();
                 
                 $entity->setFlow('IN');
@@ -741,7 +782,6 @@ class ItemTransactionController extends AbstractActionController
                     $entity->setTrxDate(null);
                 } else {
                     $entity->setTrxDate(new \DateTime($trx_date));
-                    // $date_validated ++;
                 }
                 
                 $wh = $this->doctrineEM->find('Application\Entity\NmtInventoryWarehouse', $target_wh_id);
@@ -816,39 +856,6 @@ class ItemTransactionController extends AbstractActionController
                     $entity->setCurrency($currency);
                 }
                 
-                /*
-                 * $pmt_method = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationPmtMethod', $pmt_method_id );
-                 * if (! $pmt_method == null) {
-                 * $entity->setPmtMethod ( $pmt_method );
-                 * }
-                 */
-                
-                /*
-                 * $date_validated = 0;
-                 * $validator = new Date ();
-                 * if (! $validator->isValid ( $priceValidFrom )) {
-                 * $errors [] = 'Start date is not correct or empty!';
-                 * } else {
-                 * $entity->setPriceValidFrom ( new \DateTime ( $priceValidFrom ) );
-                 * $date_validated ++;
-                 * }
-                 *
-                 * if ($priceValidTo !== "") {
-                 * if (! $validator->isValid ( $priceValidTo )) {
-                 * $errors [] = 'End Date to is not correct or empty!';
-                 * } else {
-                 * $entity->setPriceValidTo ( new \DateTime ( $priceValidTo ) );
-                 * $date_validated ++;
-                 * }
-                 *
-                 * if ($date_validated == 2) {
-                 *
-                 * if ($priceValidFrom > $priceValidTo) {
-                 * $errors [] = 'End date must be in the future!';
-                 * }
-                 * }
-                 * }
-                 */
                 $entity->setVendorItemCode($vendorItemCode);
                 
                 $entity->setLeadTime($leadTime);
@@ -856,16 +863,18 @@ class ItemTransactionController extends AbstractActionController
                 $entity->setRemarks($remarks);
                 
                 if (count($errors) > 0) {
-                    
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'target' => $target,
-                        'entity' => $entity
-                    ));
+                    $a_json_final['status'] = - 1;
+                    $a_json_final['errors'] = $errors;
+                    $response = $this->getResponse();
+                    $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+                    $response->setContent(json_encode($a_json_final));
+                    return $response;
                 }
                 ;
                 // OK now
+                $a_json_final['status'] = 1;
+                $a_json_final['errors'] = $errors;
+                
                 $entity->setConversionText($entity->getVendorItemUnit() . ' = ' . $entity->getConversionFactor() . '*' . $target->getStandardUom()
                     ->getUomCode());
                 
@@ -885,19 +894,23 @@ class ItemTransactionController extends AbstractActionController
                 $this->doctrineEM->flush();
                 
                 $this->flashMessenger()->addMessage($quantity . ' of Item "' . $target->getItemName() . '" has been received successfully!');
-                return $this->redirect()->toUrl($redirectUrl);
+                // return $this->redirect()->toUrl($redirectUrl);
+                
+                $response = $this->getResponse();
+                $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+                $response->setContent(json_encode($a_json_final));
+                return $response;
             }
         }
         
         // NO POST
         $redirectUrl = Null;
         if ($request->getHeader('Referer') == null) {
-            //return $this->redirect()->toRoute('access_denied');
-        }else{
+            // return $this->redirect()->toRoute('access_denied');
+        } else {
             $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-            
+                ->getHeader('Referer')
+                ->getUri();
         }
         
         $target_id = (int) $this->params()->fromQuery('target_id');
@@ -934,6 +947,7 @@ class ItemTransactionController extends AbstractActionController
         // set null
         $entity->setTrxDate(null);
         $entity->setIsActive(1);
+        $entity->setIsPreferredVendor(1);
         
         $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
             'isDefault' => 1
@@ -943,11 +957,21 @@ class ItemTransactionController extends AbstractActionController
             $entity->setWh($default_wh);
         }
         
+        $criteria=array(
+            'isActive'=>1,
+        );
+        $sort_criteria=array(
+            'currency'=>'ASC',
+        );
+        
+        $currency_list= $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findBy($criteria,$sort_criteria);
+        
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'target' => $target
+            'target' => $target,
+            'currency_list' => $currency_list,
         ));
     }
 
@@ -1389,13 +1413,17 @@ class ItemTransactionController extends AbstractActionController
     public function setUserTable($userTable)
     {
         $this->userTable = $userTable;
-		return $this;
-	}
-	public function getItemSearchService() {
-		return $this->itemSearchService;
-	}
-	public function setItemSearchService(ItemSearchService $itemSearchService) {
-		$this->itemSearchService = $itemSearchService;
-		return $this;
-	}
+        return $this;
+    }
+
+    public function getItemSearchService()
+    {
+        return $this->itemSearchService;
+    }
+
+    public function setItemSearchService(ItemSearchService $itemSearchService)
+    {
+        $this->itemSearchService = $itemSearchService;
+        return $this;
+    }
 }

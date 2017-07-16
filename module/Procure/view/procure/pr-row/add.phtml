@@ -48,12 +48,16 @@ if (count ( $errors ) > 0) {
 					<input type="hidden" id="item_id" placeholder="" name="item_id"
 						value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
 				</div>
-
-
+				<div class="col-sm-3">
 				<a style="color: #0080ff;" href="javascript:;"
 					onclick="showJqueryDialog('Select Item','900','500', '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
 					class="glyphicon glyphicon-folder-open"></i>
 				</a>
+							
+				</div>
+				<div class="col-sm-3">
+					<a target="blank" style="font-size: 9pt;" href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i class="glyphicon glyphicon-new-window"></i></small>
+				</div>
 
 			</div>
 
@@ -62,14 +66,12 @@ if (count ( $errors ) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control" type="text" placeholder=""
 						name="rowName" id="rowName"
-						value="<?php echo (!$entity== null)? $entity->getRowName():"";?>">
-
+					value="<?php echo (!$entity== null)? $entity->getRowName():"";?>">
+				
 				</div>
-				<label class="control-label col-sm-1" for="inputTag"></label>
-				<div class="col-sm-4">
-					<input
-						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+				 <div class="col-sm-3">
+					<input 	<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isActive" value="1" >&nbsp;Active&nbsp;&nbsp;
 				</div>
 			</div>
 
@@ -91,13 +93,22 @@ if (count ( $errors ) > 0) {
 							name="project_id"
 							value="<?php if (!$entity== null): if($entity->getProject()!==null): echo $entity->getProject()->getID(); endif;endif;?>">
 					</div>
-
-
-					<a style="color: #0080ff;" href="javascript:;"
+					
+					<div class="col-sm-3">
+				<a style="color: #0080ff;" href="javascript:;"
 						onclick="showJqueryDialog('Select Project','900','500', '/pm/project-search/do1?target_id=project_id&target_name=project_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
 						class="glyphicon glyphicon-folder-open"></i>
 					</a>
 
+							
+				</div>
+				<div class="col-sm-3">
+					<a target="blank" style="font-size: 9pt;" href="/pm/project/list">Project List&nbsp;&nbsp;</a><small><i class="glyphicon glyphicon-new-window"></i></small>
+				</div>
+					
+
+
+					
 
 				</div>
 			</fieldset>

@@ -10,8 +10,6 @@
 namespace Workflow\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Workflow\Model\NmtWfWorkflowTable;
-use Workflow\Model\NmtWfWorkflow;
 use Doctrine\ORM\EntityManager;
 use Workflow\Service\WorkflowService;
 use Application\Entity\NmtProcurePr;
@@ -86,21 +84,68 @@ class WFController extends AbstractActionController
      */
     public function listAction()
     {
+        $wf_list = array();
+        
         $entity = new NmtProcurePr();
-        $wf = $this->ProcureWfPlugin()->getWF($entity);
-        $dumper = new GraphvizDumper();
-        $imageContent = $dumper->dump($wf->getDefinition());
-        echo $imageContent;
         
-      /*   $response = $this->getResponse();
-        $imageContent = file_get_contents($pic->url);
-        $response->setContent($imageContent);
-        $response->getHeaders()
-            ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-            ->addHeaderLine('Content-Type', 'image/png')
-            ->addHeaderLine('Content-Length', $imageContent); */
+        $subjects = $this->wfService->getSupportedSubjects();
+        foreach ($subjects as $s) {
+            
+            /** @var \Workflow\Workflow\WorkflowFactoryInterface $wf_factory */
+            $wf_factory = $this->wfService->getWorkFlowFactory($s);
+            
+            if (! $wf_factory == null) {
+                /** @var \Workflow\Workflow\AbstractWorkflow  $wf */
+                $wf_list = $wf_factory->getWorkFlowList();
+                
+                foreach ($wf_list as $k => $v) {
+                    
+                    // echo get_class($wf->getWorkflowFactory());
+                    // echo get_class($wf->getWorkflowName());
+                    
+                    /** @var \Symfony\Component\Workflow\Workflow $w */
+                    $w = $v->createWorkflow();
+                    
+                    $transitions = $w->getDefinition()->getTransitions();
+                    $places = $w->getDefinition()->getPlaces();
+                    echo $w->getName() . '<br>';
+                    
+                    foreach ($places as $p) {
+                        echo $p . ';';
+                    }
+                    
+                    foreach ($transitions as $t) {
+                        echo $t->getName() . '<br>';
+                        foreach ($t->getFroms() as $f) {
+                            echo 'From: ' . $f . '<br>';
+                        }
+                        
+                        foreach ($t->getTos() as $f) {
+                            echo 'To: ' . $f . '<br>';
+                        }
+                    }
+                }
+            }
+        }
         
-        //return $response;
+        /*
+         * $wf = $this->ProcureWfPlugin()->getWF($entity);
+         * $dumper = new GraphvizDumper();
+         * $imageContent = $dumper->dump($wf->getDefinition());
+         * echo $imageContent;
+         */
+        
+        /*
+         * $response = $this->getResponse();
+         * $imageContent = file_get_contents($pic->url);
+         * $response->setContent($imageContent);
+         * $response->getHeaders()
+         * ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+         * ->addHeaderLine('Content-Type', 'image/png')
+         * ->addHeaderLine('Content-Length', $imageContent);
+         */
+        
+        // return $response;
     }
 
     public function deleteAction()

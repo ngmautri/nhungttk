@@ -1,0 +1,94 @@
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+	echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general">New Purchase Request</a></li>
+   </ul>
+
+<div id="general"> 
+
+<!-- UPDATE -->
+<form id="Edit_PR_Form" class="form-horizontal" action="/procure/pr/edit" method="post" enctype="multipart/form-data">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
+<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+
+
+	<div class="form-group">
+		<label class="control-label col-sm-2" >PR Number:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				name="prNumber" value="<?php echo (!$entity == null)? $entity->getPrNumber():"";?>">
+		</div>
+		
+		<label class="control-label col-sm-1" for="inputTag"></label>
+		<div class="col-sm-4">
+<input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+<input <?php if(!$entity == null): echo ($entity->getIsDraft()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
+
+		</div>		
+				
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >PR Name:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				id = "prName" name="prName" value="<?php echo (!$entity == null)? $entity->getPrName():"";?>">
+		</div>
+		
+		<label class="control-label col-sm-2" >Keywords:</label>
+		<div class="col-sm-3">
+			<input class="form-control" type="text"  placeholder=""
+				id = "keywords" name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Department</label>
+		<div class="col-sm-3">
+<input disabled class="form-control" type="text" id="department_name" placeholder="Please select!" 
+name="deparment_name" value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeName(); endif;endif;?>">
+
+<input type="hidden" class="form-control" type="text" id="department_name_selected" placeholder="Please select!" 
+name="department_id" value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeId(); endif;endif;?>">
+			</div>
+		
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
+</a>
+    </div>	
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" >Remarks:</label>
+		<div class="col-sm-3">
+			<textarea  class="form-control" type="text" rows="4" placeholder=""
+				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	   	<button onclick="submitForm('Edit_PR_Form');" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+  		</div>
+	</div> 
+		
+	
+</form>
+</div>
+</div>
+
+

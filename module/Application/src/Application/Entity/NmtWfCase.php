@@ -61,7 +61,7 @@ class NmtWfCase
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="id")
      * })
      */
     private $workflow;

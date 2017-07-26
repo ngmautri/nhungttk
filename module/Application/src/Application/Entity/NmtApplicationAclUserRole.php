@@ -24,9 +24,9 @@ class NmtApplicationAclUserRole
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updated_on", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_on", type="datetime", nullable=true)
      */
-    private $updatedOn = 'CURRENT_TIMESTAMP';
+    private $updatedOn;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -39,16 +39,6 @@ class NmtApplicationAclUserRole
     private $user;
 
     /**
-     * @var \Application\Entity\NmtApplicationAclRole
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     * })
-     */
-    private $role;
-
-    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -57,6 +47,16 @@ class NmtApplicationAclUserRole
      * })
      */
     private $updatedBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationAclRole
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     * })
+     */
+    private $role;
 
 
 
@@ -119,30 +119,6 @@ class NmtApplicationAclUserRole
     }
 
     /**
-     * Set role
-     *
-     * @param \Application\Entity\NmtApplicationAclRole $role
-     *
-     * @return NmtApplicationAclUserRole
-     */
-    public function setRole(\Application\Entity\NmtApplicationAclRole $role = null)
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    /**
-     * Get role
-     *
-     * @return \Application\Entity\NmtApplicationAclRole
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
-
-    /**
      * Set updatedBy
      *
      * @param \Application\Entity\MlaUsers $updatedBy
@@ -164,5 +140,29 @@ class NmtApplicationAclUserRole
     public function getUpdatedBy()
     {
         return $this->updatedBy;
+    }
+
+    /**
+     * Set role
+     *
+     * @param \Application\Entity\NmtApplicationAclRole $role
+     *
+     * @return NmtApplicationAclUserRole
+     */
+    public function setRole(\Application\Entity\NmtApplicationAclRole $role = null)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return \Application\Entity\NmtApplicationAclRole
+     */
+    public function getRole()
+    {
+        return $this->role;
     }
 }

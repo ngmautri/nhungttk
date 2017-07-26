@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfArc
  *
- * @ORM\Table(name="nmt_wf_arc", indexes={@ORM\Index(name="nmt_wf_arc_FK1_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_arc_FK1_idx1", columns={"place_id"})})
+ * @ORM\Table(name="nmt_wf_arc", indexes={@ORM\Index(name="nmt_wf_arc_FK1_idx1", columns={"place_id"}), @ORM\Index(name="nmt_wf_arc_FK1_idx", columns={"workflow_id"})})
  * @ORM\Entity
  */
 class NmtWfArc
@@ -15,11 +15,11 @@ class NmtWfArc
     /**
      * @var integer
      *
-     * @ORM\Column(name="arc_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $arcId;
+    private $id;
 
     /**
      * @var integer
@@ -75,7 +75,7 @@ class NmtWfArc
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="id")
      * })
      */
     private $workflow;
@@ -85,7 +85,7 @@ class NmtWfArc
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfPlace")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="place_id", referencedColumnName="place_id")
+     *   @ORM\JoinColumn(name="place_id", referencedColumnName="id")
      * })
      */
     private $place;
@@ -93,13 +93,13 @@ class NmtWfArc
 
 
     /**
-     * Get arcId
+     * Get id
      *
      * @return integer
      */
-    public function getArcId()
+    public function getId()
     {
-        return $this->arcId;
+        return $this->id;
     }
 
     /**

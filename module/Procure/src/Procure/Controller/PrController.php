@@ -401,19 +401,20 @@ class PrController extends AbstractActionController
                 // echo $dumper->dump($wf->getDefinition());
             
             /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
-                 $wf_plugin = $this->WfPlugin();
+                 //$wf_plugin = $this->WfPlugin();
             
             /** @var \Workflow\Service\WorkflowService $wfService */
-                $wfService = $wf_plugin->getWorkflowSerive();
+                //$wfService = $wf_plugin->getWorkflowSerive();
             
             /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
-                 $wf_factory = $wfService->getPrWorkFlowFactory($entity);
+                 //$wf_factory = $wfService->getWorkFlowFactory($entity);
             
             /** @var \Symfony\Component\Workflow\Workflow  $wf */
-                 $wf = $wf_factory->makePrSendingWorkflow();
-                 $wf->apply($entity,"get");
+                 //$wf = $wf_factory->makePrSendingWorkflow()->createWorkflow();
+                 //$wf->apply($entity,"get");
+                 
             } catch (LogicException $e) {
-                 echo $e->getMessage();
+                 //echo $e->getMessage();
             }
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,

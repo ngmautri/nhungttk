@@ -1,0 +1,58 @@
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Transition</a></li>
+	</ul>
+	<div id="general">
+
+
+<?php
+
+if (count($total_records) <= 0) {
+	
+	echo 'No record found!';
+} else {
+    echo count($total_records);
+	?>
+
+
+
+
+<table style="font-size: 9.5pt;" class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b>Transition</b></td>
+					<td><b>From</b></td>
+					<td><b>To</b></td>
+					<td><b>Action</b></td
+				</tr>
+			</thead>
+
+			<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $a ) :
+		$count ++;
+		?>
+	<tr>
+					<td><?php echo $count;?></td>
+					<td><?php echo $a->getTransitionName();?></td>
+					<td>From</td>
+					<td>To</td>
+		<td>
+	<a href="<?php echo $this->baseUrl ?>/workflow/transition/add-agent?token=<?php echo $a->getToken();?>&target_id=<?php echo $a->getId();?>">Add Agent</a>
+			</td>
+
+				</tr>
+<?php endforeach; ?>
+
+ </tbody>
+		</table>
+
+
+	</div>
+</div>
+<?php } ?>

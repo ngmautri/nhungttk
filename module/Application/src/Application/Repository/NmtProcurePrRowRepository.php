@@ -174,6 +174,50 @@ where 1
 
 ";
 	
+	private $sql_project_item="
+SELECT
+nmt_procure_pr_row.id as pr_row_id,
+nmt_procure_pr_row.checksum AS pr_row_checksum,
+nmt_procure_pr_row.token AS pr_row_token,
+
+nmt_procure_pr_row.pr_id,
+nmt_procure_pr.pr_number,
+nmt_procure_pr.checksum AS pr_checksum,
+nmt_procure_pr.token AS pr_token,
+nmt_procure_pr_row.item_id,
+nmt_inventory_item.item_name,
+nmt_inventory_item.item_sku,
+nmt_inventory_item.checksum AS item_checksum,
+nmt_inventory_item.token AS item_token,
+nmt_inventory_trx.quantity,
+nmt_inventory_trx.vendor_unit_price,
+nmt_inventory_trx.quantity*vendor_unit_price AS total_price,
+nmt_application_currency.currency,
+nmt_procure_pr_row.remarks,
+nmt_procure_pr_row.fa_remarks,
+nmt_inventory_trx.vendor_id,
+nmt_bp_vendor.vendor_name,
+nmt_bp_vendor.checksum as vendor_checksum,
+nmt_bp_vendor.token as vendor_token
+FROM nmt_procure_pr_row
+LEFT JOIN nmt_inventory_trx
+ON nmt_inventory_trx.pr_row_id = nmt_procure_pr_row.id
+
+LEFT JOIN nmt_procure_pr
+ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+
+LEFT JOIN nmt_application_currency
+ON nmt_application_currency.id = nmt_inventory_trx.currency_id
+
+LEFT JOIN nmt_bp_vendor
+ON nmt_bp_vendor.id = nmt_inventory_trx.vendor_id
+
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
+WHERE 1
+
+";
+	
 	/**
 	 *
 	 * @param number $limit        	
@@ -331,6 +375,24 @@ where 1
 		$stmt->execute ();
 		return $stmt->fetchAll ();
 	}
+	
+	
+	/**
+	 * 
+	 * @param unknown $project_id
+	 * @return array
+	 */
+	public function getProjectItem($project_id) {
+	    $sql = $this->sql_project_item;
+	    
+	    $sql = $sql. " AND nmt_procure_pr_row.project_id=" . $project_id;
+	    $sql = $sql.";";
+	    
+	    $stmt = $this->_em->getConnection ()->prepare ( $sql );
+	    $stmt->execute ();
+	    return $stmt->fetchAll ();
+	}
+	
 	
 }
 

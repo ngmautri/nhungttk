@@ -1,13 +1,13 @@
 <?php
 namespace Workflow\Workflow\Procure;
 
-use Procure\Workflow\Listener\PrWorkflowListener;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Workflow\DefinitionBuilder;
 use Symfony\Component\Workflow\Workflow;
 use Symfony\Component\Workflow\MarkingStore\SingleStateMarkingStore;
 use Workflow\Workflow\AbstractWorkflow;
 use Workflow\Workflow\NmtTransition;
+use Workflow\Workflow\Procure\Listener\PrWorkflowListener;
 
 class PrWorkflow extends AbstractWorkflow
 {
@@ -39,7 +39,7 @@ class PrWorkflow extends AbstractWorkflow
         $marking = new SingleStateMarkingStore('currentState');
         
         $dispatcher = new EventDispatcher();
-        $l1 = new PrWorkflowListener($this->doctrineEM);
+        $l1 = new PrWorkflowListener($this->doctrineEM, $this);
         
         $dispatcher->addListener('workflow.'.$this->getWorkflowName().'.guard.to_review', array(
             $l1,
@@ -50,22 +50,8 @@ class PrWorkflow extends AbstractWorkflow
             'onSubmitPR'
         ));
         
-        /*
-         * $l2 = new WorkflowLogger();
-         * $dispatcher->addListener('workflow.leave', array(
-         * $l2,
-         * 'onLeave'
-         * ));
-         */
-        
         $workflow = new Workflow($definition->build(), $marking, $dispatcher, $this->getWorkflowName());
-        
-        /**
-         *
-         * @todo
-         */
-        $l1->setWorkflow($workflow);
-        
+        $this->setWorkflowInstance($workflow);
         return $workflow;
     }
 }

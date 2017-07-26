@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfWorkflow
  *
- * @ORM\Table(name="nmt_wf_workflow", indexes={@ORM\Index(name="nmt_wf_workflow_idx", columns={"workflow_created_by"})})
+ * @ORM\Table(name="nmt_wf_workflow", indexes={@ORM\Index(name="nmt_wf_workflow_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class NmtWfWorkflow
@@ -15,25 +15,46 @@ class NmtWfWorkflow
     /**
      * @var integer
      *
-     * @ORM\Column(name="workflow_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $workflowId;
+    private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="workflow_name", type="string", length=80, nullable=false)
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_name", type="string", length=100, nullable=false)
      */
     private $workflowName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="workflow_description", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="workflow_factory", type="string", length=200, nullable=false)
      */
-    private $workflowDescription;
+    private $workflowFactory;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_class", type="string", length=200, nullable=false)
+     */
+    private $workflowClass;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subject_class", type="string", length=200, nullable=false)
+     */
+    private $subjectClass;
 
     /**
      * @var boolean
@@ -43,9 +64,16 @@ class NmtWfWorkflow
     private $isValid;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="workflow_errors", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="workflow_errors", type="string", length=255, nullable=true)
      */
     private $workflowErrors;
 
@@ -66,19 +94,26 @@ class NmtWfWorkflow
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="workflow_created_on", type="datetime", nullable=true)
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
-    private $workflowCreatedOn;
+    private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
+     */
+    private $remarks;
 
     /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_created_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $workflowCreatedBy;
+    private $createdBy;
 
 
 }

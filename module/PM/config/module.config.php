@@ -86,7 +86,8 @@ return array (
 						'PM\Controller\Project' => 'PM\Controller\ProjectControllerFactory',
 						'PM\Controller\ProjectAttachment' => 'PM\Controller\ProjectAttachmentControllerFactory',
 						'PM\Controller\ProjectSearch' => 'PM\Controller\ProjectSearchControllerFactory',
-						
+				        'PM\Controller\ProjectItem' => 'PM\Controller\ProjectItemControllerFactory',
+				    
 				) 
 		
 		),

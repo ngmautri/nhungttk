@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfWorkflow
  *
- * @ORM\Table(name="nmt_wf_workflow", indexes={@ORM\Index(name="nmt_wf_workflow_idx", columns={"workflow_created_by"})})
+ * @ORM\Table(name="nmt_wf_workflow", indexes={@ORM\Index(name="nmt_wf_workflow_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class NmtWfWorkflow
@@ -15,25 +15,46 @@ class NmtWfWorkflow
     /**
      * @var integer
      *
-     * @ORM\Column(name="workflow_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $workflowId;
+    private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="workflow_name", type="string", length=80, nullable=false)
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_name", type="string", length=100, nullable=false)
      */
     private $workflowName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="workflow_description", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="workflow_factory", type="string", length=200, nullable=false)
      */
-    private $workflowDescription;
+    private $workflowFactory;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_class", type="string", length=200, nullable=false)
+     */
+    private $workflowClass;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subject_class", type="string", length=200, nullable=false)
+     */
+    private $subjectClass;
 
     /**
      * @var boolean
@@ -43,9 +64,16 @@ class NmtWfWorkflow
     private $isValid;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="workflow_errors", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="workflow_errors", type="string", length=255, nullable=true)
      */
     private $workflowErrors;
 
@@ -66,30 +94,61 @@ class NmtWfWorkflow
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="workflow_created_on", type="datetime", nullable=true)
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
-    private $workflowCreatedOn;
+    private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
+     */
+    private $remarks;
 
     /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_created_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $workflowCreatedBy;
+    private $createdBy;
 
 
 
     /**
-     * Get workflowId
+     * Get id
      *
      * @return integer
      */
-    public function getWorkflowId()
+    public function getId()
     {
-        return $this->workflowId;
+        return $this->id;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtWfWorkflow
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 
     /**
@@ -117,27 +176,75 @@ class NmtWfWorkflow
     }
 
     /**
-     * Set workflowDescription
+     * Set workflowFactory
      *
-     * @param string $workflowDescription
+     * @param string $workflowFactory
      *
      * @return NmtWfWorkflow
      */
-    public function setWorkflowDescription($workflowDescription)
+    public function setWorkflowFactory($workflowFactory)
     {
-        $this->workflowDescription = $workflowDescription;
+        $this->workflowFactory = $workflowFactory;
 
         return $this;
     }
 
     /**
-     * Get workflowDescription
+     * Get workflowFactory
      *
      * @return string
      */
-    public function getWorkflowDescription()
+    public function getWorkflowFactory()
     {
-        return $this->workflowDescription;
+        return $this->workflowFactory;
+    }
+
+    /**
+     * Set workflowClass
+     *
+     * @param string $workflowClass
+     *
+     * @return NmtWfWorkflow
+     */
+    public function setWorkflowClass($workflowClass)
+    {
+        $this->workflowClass = $workflowClass;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowClass
+     *
+     * @return string
+     */
+    public function getWorkflowClass()
+    {
+        return $this->workflowClass;
+    }
+
+    /**
+     * Set subjectClass
+     *
+     * @param string $subjectClass
+     *
+     * @return NmtWfWorkflow
+     */
+    public function setSubjectClass($subjectClass)
+    {
+        $this->subjectClass = $subjectClass;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectClass
+     *
+     * @return string
+     */
+    public function getSubjectClass()
+    {
+        return $this->subjectClass;
     }
 
     /**
@@ -162,6 +269,30 @@ class NmtWfWorkflow
     public function getIsValid()
     {
         return $this->isValid;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtWfWorkflow
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 
     /**
@@ -237,50 +368,74 @@ class NmtWfWorkflow
     }
 
     /**
-     * Set workflowCreatedOn
+     * Set createdOn
      *
-     * @param \DateTime $workflowCreatedOn
+     * @param \DateTime $createdOn
      *
      * @return NmtWfWorkflow
      */
-    public function setWorkflowCreatedOn($workflowCreatedOn)
+    public function setCreatedOn($createdOn)
     {
-        $this->workflowCreatedOn = $workflowCreatedOn;
+        $this->createdOn = $createdOn;
 
         return $this;
     }
 
     /**
-     * Get workflowCreatedOn
+     * Get createdOn
      *
      * @return \DateTime
      */
-    public function getWorkflowCreatedOn()
+    public function getCreatedOn()
     {
-        return $this->workflowCreatedOn;
+        return $this->createdOn;
     }
 
     /**
-     * Set workflowCreatedBy
+     * Set remarks
      *
-     * @param \Application\Entity\MlaUsers $workflowCreatedBy
+     * @param string $remarks
      *
      * @return NmtWfWorkflow
      */
-    public function setWorkflowCreatedBy(\Application\Entity\MlaUsers $workflowCreatedBy = null)
+    public function setRemarks($remarks)
     {
-        $this->workflowCreatedBy = $workflowCreatedBy;
+        $this->remarks = $remarks;
 
         return $this;
     }
 
     /**
-     * Get workflowCreatedBy
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtWfWorkflow
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getWorkflowCreatedBy()
+    public function getCreatedBy()
     {
-        return $this->workflowCreatedBy;
+        return $this->createdBy;
     }
 }

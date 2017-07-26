@@ -15,11 +15,11 @@ class NmtWfToken
     /**
      * @var integer
      *
-     * @ORM\Column(name="token_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $tokenId;
+    private $id;
 
     /**
      * @var string
@@ -64,7 +64,7 @@ class NmtWfToken
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="id")
      * })
      */
     private $workflow;
@@ -74,7 +74,7 @@ class NmtWfToken
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfPlace")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="place_id", referencedColumnName="place_id")
+     *   @ORM\JoinColumn(name="place_id", referencedColumnName="id")
      * })
      */
     private $place;

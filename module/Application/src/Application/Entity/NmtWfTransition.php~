@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfTransition
  *
- * @ORM\Table(name="nmt_wf_transition", indexes={@ORM\Index(name="nmt_wf_transition_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_transition_FK1_idx", columns={"transition_created_by"})})
+ * @ORM\Table(name="nmt_wf_transition", indexes={@ORM\Index(name="nmt_wf_transition_FK1_idx", columns={"agent_id"}), @ORM\Index(name="nmt_wf_transition_FK2_idx", columns={"role_id"}), @ORM\Index(name="nmt_wf_transition_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_wf_transition_FK4_idx", columns={"workflow_id"})})
  * @ORM\Entity
  */
 class NmtWfTransition
@@ -15,244 +15,108 @@ class NmtWfTransition
     /**
      * @var integer
      *
-     * @ORM\Column(name="transition_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $transitionId;
+    private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="transition_name", type="string", length=100, nullable=false)
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_name", type="string", length=45, nullable=true)
+     */
+    private $workflowName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transition_name", type="string", length=45, nullable=true)
      */
     private $transitionName;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="transition_description", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
-    private $transitionDescription;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="transition_trigger", type="string", length=45, nullable=true)
-     */
-    private $transitionTrigger;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="role", type="string", length=45, nullable=true)
-     */
-    private $role;
+    private $isActive;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="transition_created_on", type="datetime", nullable=false)
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
-    private $transitionCreatedOn = 'CURRENT_TIMESTAMP';
+    private $createdOn;
 
     /**
-     * @var \Application\Entity\NmtWfWorkflow
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
-     * })
+     * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
      */
-    private $workflow;
+    private $remarks;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="froms", type="string", length=45, nullable=true)
+     */
+    private $froms;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tos", type="string", length=45, nullable=true)
+     */
+    private $tos;
 
     /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="transition_created_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="agent_id", referencedColumnName="id")
      * })
      */
-    private $transitionCreatedBy;
-
-
+    private $agent;
 
     /**
-     * Get transitionId
+     * @var \Application\Entity\NmtApplicationAclRole
      *
-     * @return integer
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     * })
      */
-    public function getTransitionId()
-    {
-        return $this->transitionId;
-    }
+    private $role;
 
     /**
-     * Set transitionName
+     * @var \Application\Entity\MlaUsers
      *
-     * @param string $transitionName
-     *
-     * @return NmtWfTransition
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
      */
-    public function setTransitionName($transitionName)
-    {
-        $this->transitionName = $transitionName;
-
-        return $this;
-    }
+    private $createdBy;
 
     /**
-     * Get transitionName
+     * @var \Application\Entity\NmtWfWorkflow
      *
-     * @return string
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="id")
+     * })
      */
-    public function getTransitionName()
-    {
-        return $this->transitionName;
-    }
+    private $workflow;
 
-    /**
-     * Set transitionDescription
-     *
-     * @param string $transitionDescription
-     *
-     * @return NmtWfTransition
-     */
-    public function setTransitionDescription($transitionDescription)
-    {
-        $this->transitionDescription = $transitionDescription;
 
-        return $this;
-    }
-
-    /**
-     * Get transitionDescription
-     *
-     * @return string
-     */
-    public function getTransitionDescription()
-    {
-        return $this->transitionDescription;
-    }
-
-    /**
-     * Set transitionTrigger
-     *
-     * @param string $transitionTrigger
-     *
-     * @return NmtWfTransition
-     */
-    public function setTransitionTrigger($transitionTrigger)
-    {
-        $this->transitionTrigger = $transitionTrigger;
-
-        return $this;
-    }
-
-    /**
-     * Get transitionTrigger
-     *
-     * @return string
-     */
-    public function getTransitionTrigger()
-    {
-        return $this->transitionTrigger;
-    }
-
-    /**
-     * Set role
-     *
-     * @param string $role
-     *
-     * @return NmtWfTransition
-     */
-    public function setRole($role)
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    /**
-     * Get role
-     *
-     * @return string
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
-
-    /**
-     * Set transitionCreatedOn
-     *
-     * @param \DateTime $transitionCreatedOn
-     *
-     * @return NmtWfTransition
-     */
-    public function setTransitionCreatedOn($transitionCreatedOn)
-    {
-        $this->transitionCreatedOn = $transitionCreatedOn;
-
-        return $this;
-    }
-
-    /**
-     * Get transitionCreatedOn
-     *
-     * @return \DateTime
-     */
-    public function getTransitionCreatedOn()
-    {
-        return $this->transitionCreatedOn;
-    }
-
-    /**
-     * Set workflow
-     *
-     * @param \Application\Entity\NmtWfWorkflow $workflow
-     *
-     * @return NmtWfTransition
-     */
-    public function setWorkflow(\Application\Entity\NmtWfWorkflow $workflow = null)
-    {
-        $this->workflow = $workflow;
-
-        return $this;
-    }
-
-    /**
-     * Get workflow
-     *
-     * @return \Application\Entity\NmtWfWorkflow
-     */
-    public function getWorkflow()
-    {
-        return $this->workflow;
-    }
-
-    /**
-     * Set transitionCreatedBy
-     *
-     * @param \Application\Entity\MlaUsers $transitionCreatedBy
-     *
-     * @return NmtWfTransition
-     */
-    public function setTransitionCreatedBy(\Application\Entity\MlaUsers $transitionCreatedBy = null)
-    {
-        $this->transitionCreatedBy = $transitionCreatedBy;
-
-        return $this;
-    }
-
-    /**
-     * Get transitionCreatedBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getTransitionCreatedBy()
-    {
-        return $this->transitionCreatedBy;
-    }
 }
+

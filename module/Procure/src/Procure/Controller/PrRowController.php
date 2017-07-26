@@ -552,11 +552,12 @@ class PrRowController extends AbstractActionController {
 			
 				$a_json_row ["item_sku"] = '<span title="' .$a ['item_sku'] . '">'. substr($a ['item_sku'],0,5) . '</span>';
 				
-				if (strlen ( $a ['item_name'] ) < 40) {
-					$a_json_row ["item_name"] = '<a style=""  title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . $a ['item_name'] . '</a>';
-				}else{
-					$a_json_row ["item_name"] = '<a style="" title="'. $a ['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36).' ...</a>';
-				}
+	                if (strlen ( $a ['item_name'] ) < 40) {
+$a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . $a ['item_name'] .'</a>';
+	                }else{
+	                    $a_json_row ["item_name"] = '<a style="" title="'. $a ['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36).' ...</a>';
+	                $a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36) .'</a>';
+					}
 				
 				$a_json_row ["quantity"] = $a ['quantity'];
 				$a_json_row ["confirmed_balance"] = $a ['confirmed_balance'];
@@ -973,10 +974,12 @@ class PrRowController extends AbstractActionController {
 					$a_json_row ["item_sku"] = '<span title="SKU: ' .$a ['item_sku'] . '">'. substr($a ['item_sku'],0,5) . '</span>';
 					
 					
-					if (strlen ( $a ['item_name'] ) < 40) {
-						$a_json_row ["item_name"] = '<a style=""  title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . $a ['item_name'] . '</a>';
-					}else{
-						$a_json_row ["item_name"] = '<a style="" title="'. $a ['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36).' ...</a>';
+				        
+	                if (strlen ( $a ['item_name'] ) < 40) {
+$a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . $a ['item_name'] .'</a>';
+	                }else{
+	                    $a_json_row ["item_name"] = '<a style="" title="'. $a ['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36).' ...</a>';
+	                $a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36) .'</a>';
 					}
 					
 					$a_json_row ["quantity"] = $a ['quantity'];
@@ -1129,12 +1132,13 @@ class PrRowController extends AbstractActionController {
 	                $a_json_row ["row_checksum"] = $a ['checksum'];
 	                $a_json_row ["item_sku"] = '<span title="SKU: ' .$a ['item_sku'] . '">'. substr($a ['item_sku'],0,5) . '</span>';
 	                
-	                
+			        
 	                if (strlen ( $a ['item_name'] ) < 40) {
-	                    $a_json_row ["item_name"] = '<a style=""  title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . $a ['item_name'] . '</a>';
+$a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . $a ['item_name'] .'</a>';
 	                }else{
 	                    $a_json_row ["item_name"] = '<a style="" title="'. $a ['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36).' ...</a>';
-	                }
+	                $a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36) .'</a>';
+					}
 	                
 	                $a_json_row ["quantity"] = $a ['quantity'];
 	                $a_json_row ["confirmed_balance"] = $a ['confirmed_balance'];

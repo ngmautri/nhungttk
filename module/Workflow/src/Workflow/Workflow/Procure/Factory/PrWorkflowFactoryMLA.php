@@ -19,7 +19,7 @@ class PrWorkflowFactoryMLA extends PrWorkflowFactoryAbstract
     {
         // TODO Auto-generated method stub
         $wf = new PrWorkflow();
-        $wf->setWorkflowName("PR_SUBMIT_WF");
+        $wf->setWorkflowName("PR_SUBMIT");
         $wf->setSubject($this->getSubject());
         $wf->setWorkflowFactory($this);
         $wf->setDoctrineEM($this->getDoctrineEM());

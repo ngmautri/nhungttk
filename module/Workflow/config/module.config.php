@@ -78,7 +78,8 @@ return array(
     ),
     'controllers' => array(
         'factories' => array(
-            'Workflow\Controller\WF' => 'Workflow\Controller\WFControllerFactory'
+            'Workflow\Controller\WF' => 'Workflow\Controller\WFControllerFactory',
+            'Workflow\Controller\Transition' => 'Workflow\Controller\TransitionControllerFactory'
         )
     
     ),

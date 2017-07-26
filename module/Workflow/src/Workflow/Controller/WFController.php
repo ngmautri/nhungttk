@@ -14,12 +14,19 @@ use Doctrine\ORM\EntityManager;
 use Workflow\Service\WorkflowService;
 use Application\Entity\NmtProcurePr;
 use Symfony\Component\Workflow\Dumper\GraphvizDumper;
+use Application\Entity\NmtWfWorkflow;
+use Zend\Math\Rand;
+use Zend\View\Model\ViewModel;
+use Application\Entity\NmtWfTransition;
+use Application\Entity\NmtWfPlace;
 
 /*
  * Control Panel Controller
  */
 class WFController extends AbstractActionController
 {
+
+    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     protected $doctrineEM;
 
@@ -84,9 +91,7 @@ class WFController extends AbstractActionController
      */
     public function listAction()
     {
-        $wf_list = array();
-        
-        $entity = new NmtProcurePr();
+        $list = array();
         
         $subjects = $this->wfService->getSupportedSubjects();
         foreach ($subjects as $s) {
@@ -100,54 +105,135 @@ class WFController extends AbstractActionController
                 
                 foreach ($wf_list as $k => $v) {
                     
+                    $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                        "email" => $this->identity()
+                    ));
                     // echo get_class($wf->getWorkflowFactory());
                     // echo get_class($wf->getWorkflowName());
+                    
+                    /** @var \Workflow\Workflow\AbstractWorkflow  $v */
+                    
+                    $workflowName = $v->getWorkflowName();
+                    $workflowFactory = get_class($v->getWorkflowFactory());
+                    $workflowClass = get_class($v);
+                    $subjectClass = get_class($v->getSubject());
+                    $criteria = array(
+                        'workflowName' => $workflowName,
+                        'workflowFactory' => $workflowFactory,
+                        'workflowClass' => $workflowClass,
+                        'subjectClass' => $subjectClass,
+                        'isActive' => 1,
+                    );
+                    
+                    $wf_entity = $this->doctrineEM->getRepository('Application\Entity\NmtWfWorkflow')->findOneBy($criteria);
+                    
+                    if ($wf_entity == null) {
+                        $entity = new NmtWfWorkflow();
+                        $entity->setWorkflowName($workflowName);
+                        $entity->setWorkflowFactory($workflowFactory);
+                        $entity->setWorkflowClass($workflowClass);
+                        $entity->setSubjectClass($subjectClass);
+                        $entity->setIsActive(1);
+                        
+                        $entity->setCreatedBy($u);
+                        $entity->setCreatedOn(new \DateTime());
+                        $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                        
+                        $this->doctrineEM->persist($entity);
+                        $this->doctrineEM->flush();
+                        $wf_entity = $entity;
+                    }
+                    $list[] = $wf_entity;
                     
                     /** @var \Symfony\Component\Workflow\Workflow $w */
                     $w = $v->createWorkflow();
                     
                     $transitions = $w->getDefinition()->getTransitions();
                     $places = $w->getDefinition()->getPlaces();
-                    echo $w->getName() . '<br>';
-                    
-                    foreach ($places as $p) {
-                        echo $p . ';';
+                    foreach ($transitions as $t) {
+                        
+                        $transitionName = $t->getName();
+                        $criteria = array(
+                            'workflow' => $wf_entity,
+                            'transitionName' => $transitionName
+                        );
+                        
+                        $transition_entity = $this->doctrineEM->getRepository('Application\Entity\NmtWfTransition')->findOneBy($criteria);
+                        
+                        if ($transition_entity == null) {
+                            $new_t_entity = new NmtWfTransition();
+                            $new_t_entity->setTransitionName($transitionName);
+                            $new_t_entity->setIsActive(1);
+                            $new_t_entity->setWorkflow($wf_entity);
+                            $new_t_entity->setWorkflowName($workflowName);
+                            $new_t_entity->setCreatedBy($u);
+                            $new_t_entity->setCreatedOn(new \DateTime());
+                            $new_t_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                            
+                            $this->doctrineEM->persist($new_t_entity);
+                            $this->doctrineEM->flush();
+                        }
                     }
                     
-                    foreach ($transitions as $t) {
-                        echo $t->getName() . '<br>';
-                        foreach ($t->getFroms() as $f) {
-                            echo 'From: ' . $f . '<br>';
-                        }
-                        
-                        foreach ($t->getTos() as $f) {
-                            echo 'To: ' . $f . '<br>';
+                    foreach ($places as $p) {
+                        $placeName = $p;
+                        $criteria = array(
+                            'workflow' => $wf_entity,
+                            'placeName' => $placeName
+                        );
+                        $place_entity = $this->doctrineEM->getRepository('Application\Entity\NmtWfPlace')->findOneBy($criteria);
+                        if ($place_entity == null) {
+                            $new_p_entity = new NmtWfPlace();
+                            $new_p_entity->setPlaceName($placeName);
+                            $new_p_entity->setIsActive(1);
+                            $new_p_entity->setWorkflow($wf_entity);
+                            $new_p_entity->setCreatedBy($u);
+                            $new_p_entity->setCreatedOn(new \DateTime());
+                            $new_p_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                            
+                            $this->doctrineEM->persist($new_p_entity);
+                            $this->doctrineEM->flush();
                         }
                     }
                 }
             }
         }
         
-        /*
-         * $wf = $this->ProcureWfPlugin()->getWF($entity);
-         * $dumper = new GraphvizDumper();
-         * $imageContent = $dumper->dump($wf->getDefinition());
-         * echo $imageContent;
-         */
+        return new ViewModel(array(
+            'wf_list' => $list
+        ));
+    }
+    
+    
+    /**
+     * 
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function transitionAction()
+    {
+        $target_id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        $criteria = array(
+            'id' => $target_id,
+            'token' => $token
+        );
+         
+        $criteria = array();
         
-        /*
-         * $response = $this->getResponse();
-         * $imageContent = file_get_contents($pic->url);
-         * $response->setContent($imageContent);
-         * $response->getHeaders()
-         * ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-         * ->addHeaderLine('Content-Type', 'image/png')
-         * ->addHeaderLine('Content-Length', $imageContent);
-         */
+        // var_dump($criteria);
         
-        // return $response;
+        $sort_criteria = array();
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtWfTransition')->findBy($criteria, $sort_criteria);
+        $total_records = count($list);
+              
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+        ));
     }
 
+    
     public function deleteAction()
     {
         $this->nmtWfWorkflowTable->fetchAll();

@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"}), @ORM\Index(name="nmt_procure_pr_row_FK5_idx", columns={"last_change_by"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
  */
 class NmtProcurePrRow
 {

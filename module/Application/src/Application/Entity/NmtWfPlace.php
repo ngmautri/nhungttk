@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfPlace
  *
- * @ORM\Table(name="nmt_wf_place", indexes={@ORM\Index(name="nmt_wf_place_FK1_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_place_FK2_idx", columns={"place_created_by"})})
+ * @ORM\Table(name="nmt_wf_place", indexes={@ORM\Index(name="nmt_wf_place_FK1_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_place_FK2_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class NmtWfPlace
@@ -15,18 +15,18 @@ class NmtWfPlace
     /**
      * @var integer
      *
-     * @ORM\Column(name="place_id", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $placeId;
+    private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="place_type", type="string", length=45, nullable=true)
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
-    private $placeType;
+    private $token;
 
     /**
      * @var string
@@ -38,23 +38,37 @@ class NmtWfPlace
     /**
      * @var string
      *
-     * @ORM\Column(name="place_description", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="place_type", type="string", length=45, nullable=true)
+     */
+    private $placeType;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="place_description", type="string", length=200, nullable=true)
      */
     private $placeDescription;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="place_created_on", type="datetime", nullable=true)
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
-    private $placeCreatedOn;
+    private $createdOn;
 
     /**
      * @var \Application\Entity\NmtWfWorkflow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="id")
      * })
      */
     private $workflow;
@@ -64,45 +78,45 @@ class NmtWfPlace
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="place_created_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $placeCreatedBy;
+    private $createdBy;
 
 
 
     /**
-     * Get placeId
+     * Get id
      *
      * @return integer
      */
-    public function getPlaceId()
+    public function getId()
     {
-        return $this->placeId;
+        return $this->id;
     }
 
     /**
-     * Set placeType
+     * Set token
      *
-     * @param string $placeType
+     * @param string $token
      *
      * @return NmtWfPlace
      */
-    public function setPlaceType($placeType)
+    public function setToken($token)
     {
-        $this->placeType = $placeType;
+        $this->token = $token;
 
         return $this;
     }
 
     /**
-     * Get placeType
+     * Get token
      *
      * @return string
      */
-    public function getPlaceType()
+    public function getToken()
     {
-        return $this->placeType;
+        return $this->token;
     }
 
     /**
@@ -130,6 +144,54 @@ class NmtWfPlace
     }
 
     /**
+     * Set placeType
+     *
+     * @param string $placeType
+     *
+     * @return NmtWfPlace
+     */
+    public function setPlaceType($placeType)
+    {
+        $this->placeType = $placeType;
+
+        return $this;
+    }
+
+    /**
+     * Get placeType
+     *
+     * @return string
+     */
+    public function getPlaceType()
+    {
+        return $this->placeType;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtWfPlace
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
      * Set placeDescription
      *
      * @param string $placeDescription
@@ -154,27 +216,27 @@ class NmtWfPlace
     }
 
     /**
-     * Set placeCreatedOn
+     * Set createdOn
      *
-     * @param \DateTime $placeCreatedOn
+     * @param \DateTime $createdOn
      *
      * @return NmtWfPlace
      */
-    public function setPlaceCreatedOn($placeCreatedOn)
+    public function setCreatedOn($createdOn)
     {
-        $this->placeCreatedOn = $placeCreatedOn;
+        $this->createdOn = $createdOn;
 
         return $this;
     }
 
     /**
-     * Get placeCreatedOn
+     * Get createdOn
      *
      * @return \DateTime
      */
-    public function getPlaceCreatedOn()
+    public function getCreatedOn()
     {
-        return $this->placeCreatedOn;
+        return $this->createdOn;
     }
 
     /**
@@ -202,26 +264,26 @@ class NmtWfPlace
     }
 
     /**
-     * Set placeCreatedBy
+     * Set createdBy
      *
-     * @param \Application\Entity\MlaUsers $placeCreatedBy
+     * @param \Application\Entity\MlaUsers $createdBy
      *
      * @return NmtWfPlace
      */
-    public function setPlaceCreatedBy(\Application\Entity\MlaUsers $placeCreatedBy = null)
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
-        $this->placeCreatedBy = $placeCreatedBy;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
     /**
-     * Get placeCreatedBy
+     * Get createdBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getPlaceCreatedBy()
+    public function getCreatedBy()
     {
-        return $this->placeCreatedBy;
+        return $this->createdBy;
     }
 }

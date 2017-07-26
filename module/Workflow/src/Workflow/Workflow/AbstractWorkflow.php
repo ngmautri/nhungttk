@@ -14,6 +14,7 @@ abstract class AbstractWorkflow
     protected $subject;
     protected $doctrineEM;
     protected $workflowName;
+    protected $workflowInstance;
 
     abstract public function createWorkflow();
 
@@ -88,4 +89,20 @@ abstract class AbstractWorkflow
     {
         $this->workflowName = $workflowName;
     }
+    /**
+     * @return the $workflowInstance
+     */
+    public function getWorkflowInstance()
+    {
+        return $this->workflowInstance;
+    }
+
+    /**
+     * @param field_type $workflowInstance
+     */
+    public function setWorkflowInstance($workflowInstance)
+    {
+        $this->workflowInstance = $workflowInstance;
+    }
+
 }

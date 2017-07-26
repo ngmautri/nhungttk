@@ -96,7 +96,7 @@ class NmtWfNode
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfPlace")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="place_id", referencedColumnName="place_id")
+     *   @ORM\JoinColumn(name="place_id", referencedColumnName="id")
      * })
      */
     private $place;
@@ -116,7 +116,7 @@ class NmtWfNode
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtWfWorkflow")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="workflow_id")
+     *   @ORM\JoinColumn(name="workflow_id", referencedColumnName="id")
      * })
      */
     private $workflow;

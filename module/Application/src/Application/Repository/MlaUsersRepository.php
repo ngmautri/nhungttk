@@ -2,7 +2,6 @@
 namespace Application\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Application\Entity\MlaUsers;
 
 /**
  *
@@ -11,8 +10,10 @@ use Application\Entity\MlaUsers;
  */
 class MlaUsersRepository extends EntityRepository
 {
-
+    
+     /** @var \Application\Entity\MlaUsers $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\MlaUsersRepository")
+
     private $sql = "";
     
    /**

@@ -29,7 +29,6 @@ class WFController extends AbstractActionController
     const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     protected $doctrineEM;
-
     protected $wfService;
 
     /**

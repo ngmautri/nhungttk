@@ -482,8 +482,7 @@ class PrRowController extends AbstractActionController {
 			$balance = 1;
 		}
 		
-		if (isset ( $_GET ['is_active'] )) {
-		    
+		if (isset ( $_GET ['is_active'] )) {		    
 		    $is_active = (int) $_GET ['is_active'];
 		} else {
 		    $is_active = 1;
@@ -535,6 +534,7 @@ class PrRowController extends AbstractActionController {
 				} else {
 					$onclick = "showJqueryDialog('Detail of Item: " . ($a ['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
 				}
+				
 				$count ++;
 				if ($paginator == null) {
 					$a_json_row ["row_number"] = $count;
@@ -543,6 +543,14 @@ class PrRowController extends AbstractActionController {
 				}
 				
 				$a_json_row ["pr_number"] = $a ['pr_number'] . '<a style="" target="blank"  title="'. $a ['pr_number'] .'" href="/procure/pr/show?token='.$a ["pr_token"].'&entity_id='. $a ["pr_id"]. '&checksum='.$a ["pr_checksum"].'" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
+	
+				if($a ['submitted_on']!== null ){
+				    $a_json_row ['pr_submitted_on'] = date_format(date_create($a ['submitted_on']),'d-m-y');
+				    //$a_json_row ['pr_submitted_on'] = $a ['submitted_on'];
+				}else{
+				    $a_json_row ['pr_submitted_on'] = '';
+				}
+				
 				
 				$a_json_row ["row_id"] = $a ['id'];
 				$a_json_row ["row_token"] = $a ['token'];
@@ -552,11 +560,10 @@ class PrRowController extends AbstractActionController {
 			
 				$a_json_row ["item_sku"] = '<span title="' .$a ['item_sku'] . '">'. substr($a ['item_sku'],0,5) . '</span>';
 				
-	                if (strlen ( $a ['item_name'] ) < 40) {
-$a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . $a ['item_name'] .'</a>';
+	                if (strlen ( $a ['item_name'] ) < 35) {
+	                    $a_json_row ["item_name"] = $a ['item_name'] . '<a style="cursor:pointer;color:blue"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
 	                }else{
-	                    $a_json_row ["item_name"] = '<a style="" title="'. $a ['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36).' ...</a>';
-	                $a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >' . substr($a ['item_name'],0,36) .'</a>';
+	                     $a_json_row ["item_name"] = substr($a ['item_name'],0,30). '<a style="cursor:pointer;;color:blue"  item-pic="" id="'.$a['item_id'] .'" item_name="'.$a['item_name'].'" title="'. $a ['item_name'] .'" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
 					}
 				
 				$a_json_row ["quantity"] = $a ['quantity'];

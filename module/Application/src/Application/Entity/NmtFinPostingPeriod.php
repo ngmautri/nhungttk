@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtFinPostingPeriod
  *
- * @ORM\Table(name="nmt_fin_posting_period", uniqueConstraints={@ORM\UniqueConstraint(name="posting_from_date_UNIQUE", columns={"posting_from_date"}), @ORM\UniqueConstraint(name="posting_to_date_UNIQUE", columns={"posting_to_date"})}, indexes={@ORM\Index(name="nmt_fin_posting_period_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_fin_posting_period_FK2_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_fin_posting_period", uniqueConstraints={@ORM\UniqueConstraint(name="posting_from_date_UNIQUE", columns={"posting_from_date"}), @ORM\UniqueConstraint(name="posting_to_date_UNIQUE", columns={"posting_to_date"})}, indexes={@ORM\Index(name="nmt_fin_posting_period_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_fin_posting_period_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_fin_posting_period_IDX1", columns={"posting_from_date"}), @ORM\Index(name="nmt_fin_posting_period_IDX2", columns={"posting_to_date"})})
  * @ORM\Entity
  */
 class NmtFinPostingPeriod
@@ -76,6 +76,41 @@ class NmtFinPostingPeriod
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="plan_working_days", type="integer", nullable=true)
+     */
+    private $planWorkingDays;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="actual_workding_days", type="integer", nullable=true)
+     */
+    private $actualWorkdingDays;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="cooperate_leave", type="integer", nullable=true)
+     */
+    private $cooperateLeave;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="national_holidays", type="integer", nullable=true)
+     */
+    private $nationalHolidays;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
+     */
+    private $remarks;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -299,6 +334,126 @@ class NmtFinPostingPeriod
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
+    }
+
+    /**
+     * Set planWorkingDays
+     *
+     * @param integer $planWorkingDays
+     *
+     * @return NmtFinPostingPeriod
+     */
+    public function setPlanWorkingDays($planWorkingDays)
+    {
+        $this->planWorkingDays = $planWorkingDays;
+
+        return $this;
+    }
+
+    /**
+     * Get planWorkingDays
+     *
+     * @return integer
+     */
+    public function getPlanWorkingDays()
+    {
+        return $this->planWorkingDays;
+    }
+
+    /**
+     * Set actualWorkdingDays
+     *
+     * @param integer $actualWorkdingDays
+     *
+     * @return NmtFinPostingPeriod
+     */
+    public function setActualWorkdingDays($actualWorkdingDays)
+    {
+        $this->actualWorkdingDays = $actualWorkdingDays;
+
+        return $this;
+    }
+
+    /**
+     * Get actualWorkdingDays
+     *
+     * @return integer
+     */
+    public function getActualWorkdingDays()
+    {
+        return $this->actualWorkdingDays;
+    }
+
+    /**
+     * Set cooperateLeave
+     *
+     * @param integer $cooperateLeave
+     *
+     * @return NmtFinPostingPeriod
+     */
+    public function setCooperateLeave($cooperateLeave)
+    {
+        $this->cooperateLeave = $cooperateLeave;
+
+        return $this;
+    }
+
+    /**
+     * Get cooperateLeave
+     *
+     * @return integer
+     */
+    public function getCooperateLeave()
+    {
+        return $this->cooperateLeave;
+    }
+
+    /**
+     * Set nationalHolidays
+     *
+     * @param integer $nationalHolidays
+     *
+     * @return NmtFinPostingPeriod
+     */
+    public function setNationalHolidays($nationalHolidays)
+    {
+        $this->nationalHolidays = $nationalHolidays;
+
+        return $this;
+    }
+
+    /**
+     * Get nationalHolidays
+     *
+     * @return integer
+     */
+    public function getNationalHolidays()
+    {
+        return $this->nationalHolidays;
+    }
+
+    /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return NmtFinPostingPeriod
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
     }
 
     /**

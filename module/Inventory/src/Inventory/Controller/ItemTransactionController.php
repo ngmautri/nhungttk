@@ -61,7 +61,7 @@ class ItemTransactionController extends AbstractActionController
         
         $criteria = array(
             'id' => $entity_id,
-            'checksum' => $checksum,
+            //'checksum' => $checksum,
             'token' => $token
         );
         
@@ -101,6 +101,8 @@ class ItemTransactionController extends AbstractActionController
              *
              * @todo Update Target
              */
+            
+            /** @var \Application\Entity\NmtInventoryTrx $entity */
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
             
             if ($entity == null) {
@@ -116,7 +118,6 @@ class ItemTransactionController extends AbstractActionController
                 
                 // might need redirect
             } else {
-                
                 $vendor_id = $request->getPost('vendor_id');
                 $currency_id = $request->getPost('currency_id');
                 // $pmt_method_id = $request->getPost ( 'pmt_method_id' );
@@ -330,9 +331,22 @@ class ItemTransactionController extends AbstractActionController
             'token' => $token
         );
         
+        /** @var \Application\Entity\NmtInventoryTrx $entity */
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
         
         if ($entity !== null) {
+            
+            // check if posting is close
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+            
+            /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+            $postingPeriod = $p->getPostingPeriod($entity->getTrxDate());
+            
+            if($postingPeriod->getPeriodStatus()=="C"){
+                $this->flashMessenger()->addMessage("Period :'" . $postingPeriod->getPeriodName() . "' is closed. Can't change!");
+                return $this->redirect()->toUrl('/inventory/item-transaction/show?token='.$token.'&entity_id='.$entity_id);
+            }
             
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
@@ -437,8 +451,18 @@ class ItemTransactionController extends AbstractActionController
                     $errors[] = 'Transaction date is not correct or empty!';
                     $entity->setTrxDate(null);
                 } else {
-                    $entity->setTrxDate(new \DateTime($trx_date));
-                    // $date_validated ++;
+                    // check if posting is close
+                    /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                    $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                    
+                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                    $postingPeriod = $p->getPostingPeriod(new \DateTime($trx_date));
+                    
+                    if($postingPeriod->getPeriodStatus()!=="C"){
+                        $entity->setTrxDate(new \DateTime($trx_date));
+                    }else{
+                        $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
+                    }
                 }
                 
                 $wh = $this->doctrineEM->find('Application\Entity\NmtInventoryWarehouse', $target_wh_id);
@@ -781,7 +805,20 @@ class ItemTransactionController extends AbstractActionController
                     $errors[] = 'Transaction date is not correct or empty!';
                     $entity->setTrxDate(null);
                 } else {
-                    $entity->setTrxDate(new \DateTime($trx_date));
+                    
+                    // check if posting period is close
+                    /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                    $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                    
+                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                    $postingPeriod = $p->getPostingPeriod(new \DateTime($trx_date));
+                    
+                    if($postingPeriod->getPeriodStatus()!=="C"){
+                        $entity->setTrxDate(new \DateTime($trx_date));
+                    }else{
+                        $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
+                    }
+                    
                 }
                 
                 $wh = $this->doctrineEM->find('Application\Entity\NmtInventoryWarehouse', $target_wh_id);

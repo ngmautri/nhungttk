@@ -3,7 +3,6 @@
 namespace Application\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Application\Entity\NmtProcurePrRow;
 
 /**
  *
@@ -11,7 +10,9 @@ use Application\Entity\NmtProcurePrRow;
  *        
  */
 class NmtProcurePrRowRepository extends EntityRepository {
-	// @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
+    
+    /** @var \Application\Entity\NmtProcurePrRow $e*/
+   // @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
 	
 	private $sql = "
 SELECT
@@ -57,6 +58,7 @@ LEFT JOIN
 		nmt_inventory_trx.pr_row_id AS pr_row_id,
 		SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END) AS total_received
 	FROM nmt_inventory_trx
+    WHERE nmt_inventory_trx.is_active =1
 	GROUP BY nmt_inventory_trx.pr_row_id
 ) 
 AS nmt_inventory_trx
@@ -122,6 +124,7 @@ SELECT
     nmt_procure_pr.pr_number,
     nmt_procure_pr.created_on,
     nmt_procure_pr.last_change_on,
+    nmt_procure_pr.submitted_on,
     nmt_procure_pr.is_active,
     nmt_procure_pr.is_draft,
     
@@ -161,6 +164,7 @@ Left JOIN
 			SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity*nmt_inventory_trx.conversion_factor ELSE 0 END) AS total_received_converted
 
 		FROM nmt_inventory_trx
+        WHERE nmt_inventory_trx.is_active =1
 		GROUP BY nmt_inventory_trx.pr_row_id
 	) 
 	AS nmt_inventory_trx
@@ -228,7 +232,7 @@ WHERE 1
 		$sql = $this->sql;
 		
 		if ($is_active == 1) {
-		    $sql = $sql . " AND (nmt_procure_pr.is_active = 1 OR nmt_procure_pr_row.is_active = 1)";
+		    $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
 		}elseif($is_active == -1) {
 		    $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
 		}
@@ -358,6 +362,8 @@ WHERE 1
 			$sql = $sql. " ORDER BY nmt_procure_pr.created_on " . $sort;
 		}elseif($sort_by == "completion") {
 			$sql = $sql. " ORDER BY ifnull(nmt_procure_pr_row.percentage_completed, 0) " . $sort;
+		}elseif($sort_by == "submittedOn") {
+		    $sql = $sql. " ORDER BY nmt_procure_pr.submitted_on " . $sort;
 		}
 		
 		

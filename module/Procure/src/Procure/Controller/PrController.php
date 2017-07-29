@@ -365,8 +365,6 @@ class PrController extends AbstractActionController
      */
     public function showAction()
     {
-        // $plugin = $this->ProcureWfPlugin();
-        // $wf = $plugin->getWF();
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {
@@ -401,20 +399,20 @@ class PrController extends AbstractActionController
                 // echo $dumper->dump($wf->getDefinition());
             
             /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
-                 //$wf_plugin = $this->WfPlugin();
+                 $wf_plugin = $this->WfPlugin();
             
             /** @var \Workflow\Service\WorkflowService $wfService */
-                //$wfService = $wf_plugin->getWorkflowSerive();
+                $wfService = $wf_plugin->getWorkflowSerive();
             
             /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
-                 //$wf_factory = $wfService->getWorkFlowFactory($entity);
+                $wf_factory = $wfService->getWorkFlowFactory($entity);
             
             /** @var \Symfony\Component\Workflow\Workflow  $wf */
-                 //$wf = $wf_factory->makePrSendingWorkflow()->createWorkflow();
-                 //$wf->apply($entity,"get");
+                //$wf = $wf_factory->makePrSendingWorkflow()->createWorkflow();
+               // $wf->apply($entity,"send");
                  
             } catch (LogicException $e) {
-                 //echo $e->getMessage();
+                // echo $e->getMessage();
             }
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
@@ -538,6 +536,8 @@ class PrController extends AbstractActionController
                 $status = $request->getPost('status');
                 $remarks = $request->getPost('remarks');
                 $department_id = $request->getPost('department_id');
+                $submittedOn = $request->getPost('submittedOn');
+                
                 
                 if ($isActive != 1) {
                     $isActive = 0;
@@ -571,6 +571,20 @@ class PrController extends AbstractActionController
                 if ($department_id > 0) {
                     $department = $this->doctrineEM->find('Application\Entity\NmtApplicationDepartment', $department_id);
                     $entity->setDepartment($department);
+                }
+                
+                $validator = new Date();
+                
+                // Empty is OK
+                if ($submittedOn !== null) {
+                    if ($submittedOn !== "") {
+                        
+                        if (! $validator->isValid($submittedOn)) {
+                            $errors[] = 'Date is not correct or empty!';
+                        } else {
+                            $entity->setSubmittedOn(new \DateTime($submittedOn));
+                        }
+                    }
                 }
                 
                 if (count($errors) > 0) {

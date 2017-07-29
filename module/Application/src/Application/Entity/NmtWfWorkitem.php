@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfWorkitem
  *
- * @ORM\Table(name="nmt_wf_workitem", indexes={@ORM\Index(name="nmt_wf_workitem_FK2_idx", columns={"transition_id"}), @ORM\Index(name="nmt_wf_workitem_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_wf_workitem_FK3_idx", columns={"workflow_id"})})
+ * @ORM\Table(name="nmt_wf_workitem", indexes={@ORM\Index(name="nmt_wf_workitem_FK2_idx", columns={"transition_id"}), @ORM\Index(name="nmt_wf_workitem_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_wf_workitem_FK3_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_workitem_FK4_idx", columns={"agent_id"})})
  * @ORM\Entity
  */
 class NmtWfWorkitem
@@ -80,13 +80,6 @@ class NmtWfWorkitem
     /**
      * @var integer
      *
-     * @ORM\Column(name="agent_id", type="integer", nullable=true)
-     */
-    private $agentId;
-
-    /**
-     * @var integer
-     *
      * @ORM\Column(name="agent_role_id", type="integer", nullable=true)
      */
     private $agentRoleId;
@@ -97,6 +90,13 @@ class NmtWfWorkitem
      * @ORM\Column(name="subject_id", type="integer", nullable=false)
      */
     private $subjectId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subject_token", type="string", length=45, nullable=true)
+     */
+    private $subjectToken;
 
     /**
      * @var string
@@ -148,6 +148,16 @@ class NmtWfWorkitem
      * })
      */
     private $workflow;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="agent_id", referencedColumnName="id")
+     * })
+     */
+    private $agent;
 
 
 
@@ -354,30 +364,6 @@ class NmtWfWorkitem
     }
 
     /**
-     * Set agentId
-     *
-     * @param integer $agentId
-     *
-     * @return NmtWfWorkitem
-     */
-    public function setAgentId($agentId)
-    {
-        $this->agentId = $agentId;
-
-        return $this;
-    }
-
-    /**
-     * Get agentId
-     *
-     * @return integer
-     */
-    public function getAgentId()
-    {
-        return $this->agentId;
-    }
-
-    /**
      * Set agentRoleId
      *
      * @param integer $agentRoleId
@@ -423,6 +409,30 @@ class NmtWfWorkitem
     public function getSubjectId()
     {
         return $this->subjectId;
+    }
+
+    /**
+     * Set subjectToken
+     *
+     * @param string $subjectToken
+     *
+     * @return NmtWfWorkitem
+     */
+    public function setSubjectToken($subjectToken)
+    {
+        $this->subjectToken = $subjectToken;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectToken
+     *
+     * @return string
+     */
+    public function getSubjectToken()
+    {
+        return $this->subjectToken;
     }
 
     /**
@@ -567,5 +577,29 @@ class NmtWfWorkitem
     public function getWorkflow()
     {
         return $this->workflow;
+    }
+
+    /**
+     * Set agent
+     *
+     * @param \Application\Entity\MlaUsers $agent
+     *
+     * @return NmtWfWorkitem
+     */
+    public function setAgent(\Application\Entity\MlaUsers $agent = null)
+    {
+        $this->agent = $agent;
+
+        return $this;
+    }
+
+    /**
+     * Get agent
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getAgent()
+    {
+        return $this->agent;
     }
 }

@@ -30,7 +30,8 @@ if ($total_records <= 0) {
 			<td><b>Transition </b></td>
 			<td><b>Created</b></td>
 			<td><b>Status</b></td>
-			
+			<td><b>Remarks</b></td>
+			<td><b>Action</b></td>
 		</tr>
 	</thead>
 
@@ -50,7 +51,11 @@ if ($total_records <= 0) {
 			<td><?php echo $this->escapeHtml($a->getTransitionName());?></td>
 			<td><?php echo ($a->getEnabledDate()!==null )? date_format ( $a->getEnabledDate(), "d-m-y H:i"):"";?> </td>
 			<td><?php echo $this->escapeHtml($a->getWorkitemStatus());?></td>
-	
+			<td><?php echo $this->escapeHtml($a->getRemarks());?></td>
+			<td>
+<a href="<?php echo $this->baseUrl ?>/workflow/workitem/apply?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getid();?>">apply</a>
+
+			</td>
 		</tr>
 <?php endforeach; ?>
 

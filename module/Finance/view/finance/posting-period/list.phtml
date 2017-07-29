@@ -1,9 +1,13 @@
+
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
 		<li><a href="#general">Posting Period</a></li>
 	</ul>
 <div id="general">
+
+<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/finance/posting-period/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Period</a>
+<hr>
 
 <?php
 if ($total_records <= 0) {
@@ -18,7 +22,6 @@ if ($total_records <= 0) {
 	
 	?>
 
-
 <table style="font-size: 10pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
@@ -26,6 +29,10 @@ if ($total_records <= 0) {
 			<td><b>Period Name</b></td>
 			<td><b>Period<br>Start</b></td>
 			<td><b>Period<br>End</b></td>
+			<td><b>Plan<br>Working Days</b></td>
+			<td><b>Actual<br>Working Days</b></td>
+			<td><b>National<br>Holidays</b></td>
+			<td><b>Coorperate<br>Leaves</b></td>
 			<td><b>Status</b></td>
 			<td><b>Action</b></td>
 		</tr>
@@ -43,16 +50,22 @@ if ($total_records <= 0) {
 		?>
 	<tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-			<td>
-			<?php echo $a->getPeriodName();?>
-			</td>
-
+			<td><a href="/finance/posting-period/show?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>"><?php echo $a->getPeriodName();?></a></td>
 			<td><?php echo date_format($a->getPostingFromDate(),"Y-m-d") ?></td>
 			<td><?php echo date_format($a->getPostingToDate(),"Y-m-d") ?></td>
-			<td><?php echo $a->getPeriodStatus();?></td>
-			<td>
+			<td><?php echo $a->getPlanWorkingDays();?></td>
+			<td><?php echo $a->getActualWorkdingDays();?></td>
+			<td><?php echo $a->getNationalHolidays();?>	</td>
+			<td><?php echo $a->getCooperateLeave();?></td>
 			
-			</td>
+<?php if($a->getPeriodStatus()=="C"): ?>
+<td><span class="glyphicon glyphicon-lock"></span></td>
+<td><a style="color:blue;" href="<?php echo $this->baseUrl ?>/finance/posting-period/alter?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>&action=open">Open</a></td>
+<?php else: ?>
+<td>Open</td>
+<td><a style="color:blue;" href="<?php echo $this->baseUrl ?>/finance/posting-period/alter?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>&action=close">Close</a>
+</td>
+<?php endif; ?>
 		</tr>
 <?php endforeach; ?>
 

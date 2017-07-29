@@ -87,16 +87,9 @@ class PrWorkflowListener extends AbstractWorkflowListener
                 $this->doctrineEM->persist($current_wi_entity);
             }
             
-            
-            
-            /**
-             * set agent_id, role_id
-             * @todo Create Workitem
-             */
             foreach ($transtions as $t) {
                 /** @var \Symfony\Component\Workflow\Transition $t*/
                 
-                // set agent_id, role_id
                 $criteria = array(
                     'workflow' => $wf_entity,
                     'transitionName' => $t->getName(),
@@ -107,19 +100,32 @@ class PrWorkflowListener extends AbstractWorkflowListener
                 $t_entity = $this->doctrineEM->getRepository('Application\Entity\NmtWfTransition')->findOneBy($criteria);
                 
                 if ($t_entity !== null) {
-                    $entity = new NmtWfWorkitem();
-                    $entity->setWorkflow($wf_entity);
-                    $entity->setWorkflowName($event->getWorkflowName());
-                    $entity->setWorkitemStatus("ENABLED");
-                    $entity->setTransitionName($t->getName());
-                    $entity->setTransition($t_entity);
-                    $entity->setEnabledDate(new \DateTime());
-                    $entity->setToken(Rand::getString(10, parent::CHAR_LIST, true) . "_" . Rand::getString(21, parent::CHAR_LIST, true));
-                    $entity->setSubjectId($event->getSubject()
-                        ->getId());
-                    $entity->setSubjectClass(get_class($event->getSubject()));
-                    $entity->setRemarks("Workitem: please do '". $t_entity->getTransitionName() . "' on '" . $subjectClass. " ID (".  $event->getSubject()->getId() .")'");
-                    $this->doctrineEM->persist($entity);
+                  
+                    // set agent_id, role_id
+                    $agents = $this->doctrineEM->getRepository('Application\Entity\NmtWfTransitionAgent')->findBy(array("transition"=>$t_entity->getId()));
+                    
+                    if(count($agents)>0){
+                        
+                        foreach($agents  as $a){
+                            /** @var \Application\Entity\NmtWfTransitionAgent $a*/
+                            $entity = new NmtWfWorkitem();
+                            $entity->setAgent($a->getAgent());
+                            $entity->setWorkflow($wf_entity);
+                            $entity->setWorkflowName($event->getWorkflowName());
+                            $entity->setWorkitemStatus("ENABLED");
+                            $entity->setTransitionName($t->getName());
+                            $entity->setTransition($t_entity);
+                            $entity->setEnabledDate(new \DateTime());
+                            $entity->setToken(Rand::getString(10, parent::CHAR_LIST, true) . "_" . Rand::getString(21, parent::CHAR_LIST, true));
+                            $entity->setSubjectId($event->getSubject()->getId());
+                            $entity->setSubjectClass(get_class($event->getSubject()));
+                            $entity->setRemarks("Workitem: please do '". $t_entity->getTransitionName() . "' on '" . $subjectClass. " ID (".  $event->getSubject()->getId() .")'");
+                            $this->doctrineEM->persist($entity);
+                       }
+                        
+                    }
+                    
+                   
                 }
             }
         } else {

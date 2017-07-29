@@ -281,16 +281,6 @@ class EmployeeController extends AbstractActionController
         
         if ($entity !== null) {
             
-            /** @var \Symfony\Component\Workflow\Workflow $wf */
-            try {
-                $wf = $this->ProcureWfPlugin()->createWorkflow($entity);
-                $wf->apply($entity, "reject");
-            } catch (LogicException $e) {
-                //$this->flashMessenger()->addMessage($e->getMessage());
-                
-                echo $e->getMessage();
-            }
-            // var_dump($wf->getEnabledTransitions($entity));
             
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,

@@ -39,16 +39,6 @@ class NmtApplicationAclUserRole
     private $user;
 
     /**
-     * @var \Application\Entity\MlaUsers
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
-     * })
-     */
-    private $updatedBy;
-
-    /**
      * @var \Application\Entity\NmtApplicationAclRole
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
@@ -57,6 +47,16 @@ class NmtApplicationAclUserRole
      * })
      */
     private $role;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
+     * })
+     */
+    private $updatedBy;
 
 
 
@@ -119,30 +119,6 @@ class NmtApplicationAclUserRole
     }
 
     /**
-     * Set updatedBy
-     *
-     * @param \Application\Entity\MlaUsers $updatedBy
-     *
-     * @return NmtApplicationAclUserRole
-     */
-    public function setUpdatedBy(\Application\Entity\MlaUsers $updatedBy = null)
-    {
-        $this->updatedBy = $updatedBy;
-
-        return $this;
-    }
-
-    /**
-     * Get updatedBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getUpdatedBy()
-    {
-        return $this->updatedBy;
-    }
-
-    /**
      * Set role
      *
      * @param \Application\Entity\NmtApplicationAclRole $role
@@ -164,5 +140,29 @@ class NmtApplicationAclUserRole
     public function getRole()
     {
         return $this->role;
+    }
+
+    /**
+     * Set updatedBy
+     *
+     * @param \Application\Entity\MlaUsers $updatedBy
+     *
+     * @return NmtApplicationAclUserRole
+     */
+    public function setUpdatedBy(\Application\Entity\MlaUsers $updatedBy = null)
+    {
+        $this->updatedBy = $updatedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
     }
 }

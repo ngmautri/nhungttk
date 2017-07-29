@@ -1,31 +1,16 @@
 <?php
 /**@var \Application\Entity\NmtFinPostingPeriod $entity*/
-
-if (count ( $errors ) > 0) {
-    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
-    echo '<ul>';
-    foreach ( $errors as $error ) :
-    echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
-}
 ?>
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
-  <li ><a href="#general">Edit Posting Period</a></li>
+  <li ><a href="#general">New Posting Period</a></li>
    </ul>
 
 <div id="general"> 
 
-<form id="Create_Form" class="form-horizontal" action="/finance/posting-period/edit" method="post" enctype="multipart/form-data">
-<input type="hidden" name="entity_id" value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
-<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+<form id="Create_Form" class="form-horizontal" action="/finance/posting-period/add" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-
 
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Period Code:</label>
@@ -109,7 +94,8 @@ value="<?php if(!$entity == null): if ($entity->getPostingToDate() !== null): ec
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-	   	<button onclick="submitForm('Create_Form');" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/finance/posting-period/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+		</div>
   		</div>
 	</div> 
 		
@@ -118,8 +104,8 @@ value="<?php if(!$entity == null): if ($entity->getPostingToDate() !== null): ec
 </div>
 </div>
 
-<script>
-   $( "input[id='postingFromDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
-   $( "input[id='postingToDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+
+<script type="text/javascript">
+	$("#Create_Form :input").attr("disabled", "disabled");
 </script>
 

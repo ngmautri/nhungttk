@@ -73,6 +73,9 @@
 							<?php echo $sort_by=='prNumber'? "selected='selected'":"";?>
 							value="prNumber">Pr Number</option>
 						<option
+							<?php echo $sort_by=='submittedOn'? "selected='selected'":"";?>
+							value="submittedOn">Submitted Date</option>	
+						<option
 							<?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
 							value="createdOn">Created Date</option>
 						<option
@@ -148,6 +151,7 @@ if ($total_records <= 0) {
 		<tr>
 			<td><b>#</b></td>
 			<td><b>PR</b></td>
+			<td><b>Date</b></td>
 			<td><b>Total<br>Row</b></td>
 			<td><b>Completed<br>Row</b></td>
 			<td><b>Pending<br>Row</b></td>
@@ -169,7 +173,7 @@ if ($total_records <= 0) {
 			<td>
 <a	href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $a['pr_token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['pr_checksum'] ?>"><?php echo $a['pr_number'] ?></a>
 	</td>
-
+			<td><?php echo $a['submitted_on'] ?></td>
 			<td><?php echo $a['total_row'] ?></td>
 			<td><?php echo $a['row_completed'] ?></td>
 			<td><?php echo $a['row_pending'] ?></td>

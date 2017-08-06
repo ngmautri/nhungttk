@@ -86,7 +86,11 @@ return array (
 						'HR\Controller\EmployeePicture' => 'HR\Controller\EmployeePictureControllerFactory',
 						'HR\Controller\EmployeeSearch' => 'HR\Controller\EmployeeSearchControllerFactory',
 						'HR\Controller\EmployeeAttachment' => 'HR\Controller\EmployeeAttachmentControllerFactory',
-						
+				        'HR\Controller\EmployeeLeave' => 'HR\Controller\EmployeeLeaveControllerFactory',
+				        'HR\Controller\EmployeeWarning' => 'HR\Controller\EmployeeWarningControllerFactory',
+				        'HR\Controller\EmployeeEvaluation' => 'HR\Controller\EmployeeEvaluationControllerFactory',
+				        'HR\Controller\EmployeeOT' => 'HR\Controller\EmployeeOTControllerFactory',
+				    
 				)
 		),
 		'view_manager' => array (

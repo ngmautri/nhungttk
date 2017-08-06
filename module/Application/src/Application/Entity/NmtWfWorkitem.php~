@@ -120,6 +120,13 @@ class NmtWfWorkitem
     private $createdOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="subject_handler", type="string", length=100, nullable=true)
+     */
+    private $subjectHandler;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

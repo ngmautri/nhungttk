@@ -1,6 +1,6 @@
 <div id="form_process_status" class="alert alert-danger" role="alert" style="font-size: 9.5pt; display:none"></div>
 
-<div id="general" style="font-size: 9.5pt; padding: 0px;">
+<div id="general" style="font-size: 9pt; padding: 0px;">
 
 	<form id="gr_form" class="form-horizontal"
 		action="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr1"
@@ -10,14 +10,14 @@
 			id="target_wh_id" name="target_wh_id"
 			value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity->getWh()->getId();endif;endif;?>" />
 
-		<div class="form-group required">
+		<div class="form-group margin-bottom required">
 			<div class="col-sm-3">
 				<input type="hidden" id="token" placeholder="" name="token" value="">
 				<input type="hidden" id="checksum" placeholder="" name="checksum" value="">
 			</div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group margin-bottom">
 			<label class="control-label col-sm-2">
 <?php
 
@@ -85,7 +85,7 @@ endif;
 			</legend>
 			<div id="transactionID" class="collapse in">
 
-				<div class="form-group required">
+				<div class="form-group margin-bottom required">
 					<label class="control-label col-sm-2" for="inputTag">Transaction
 						Date:</label>
 					<div class="col-sm-3">
@@ -115,7 +115,7 @@ endif;
 				</div>
 
 
-				<div class="form-group required">
+				<div class="form-group margin-bottom required">
 					<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
 					<div class="col-sm-3">
 						<input class="form-control" type="text" name="quantity"
@@ -131,7 +131,7 @@ endif;
 					DATA:</a>
 			</legend>
 			<div id="purchasing_dataID" class="collapse in">
-				<div class="form-group">
+				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2">Vendor:</label>
 					<div class="col-sm-3">
 						<input class="form-control" type="text" id="vendor_name_1"
@@ -155,7 +155,7 @@ endif;
 					</div>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2">Vendor's Item Code</label>
 					<div class="col-sm-3">
 						<input class="form-control" type="text" placeholder=""
@@ -164,7 +164,7 @@ endif;
 					</div>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2">Vendor's Item Unit</label>
 					<div class="col-sm-3">
 						<input class="form-control" type="text" placeholder=""
@@ -183,7 +183,7 @@ endif;
 				</div>
 
 
-				<div class="form-group">
+				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2">Unit Price</label>
 					<div class="col-sm-3">
 						<input class="form-control" type="text" placeholder=""
@@ -204,7 +204,7 @@ endif;
    					</div>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2" for="inputTag">Lead Time:</label>
 					<div class="col-sm-3">
 						<input class="form-control" type="text" name="leadTime" value="">
@@ -221,7 +221,7 @@ endif;
 			<div id="additional" class="collapse">
 
 
-				<div class="form-group">
+				<div class="form-group margin-bottom">
 
 					<label class="control-label col-sm-2">Remarks:</label>
 					<div class="col-sm-3">
@@ -235,7 +235,7 @@ endif;
 			</div>
 		</fieldset>
 
-		<div class="form-group">
+		<div class="form-group margin-bottom">
 			<label class="control-label col-sm-2" for="inputTag"></label>
 			<div class="col-sm-3">
 				<button onclick="submitAjaxForm('/inventory/item-transaction/gr1','gr_form');" type="submit" id="save"

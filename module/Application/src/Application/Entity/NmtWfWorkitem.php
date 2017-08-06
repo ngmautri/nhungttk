@@ -120,6 +120,13 @@ class NmtWfWorkitem
     private $createdOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="subject_handler", type="string", length=100, nullable=true)
+     */
+    private $subjectHandler;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -505,6 +512,30 @@ class NmtWfWorkitem
     public function getCreatedOn()
     {
         return $this->createdOn;
+    }
+
+    /**
+     * Set subjectHandler
+     *
+     * @param string $subjectHandler
+     *
+     * @return NmtWfWorkitem
+     */
+    public function setSubjectHandler($subjectHandler)
+    {
+        $this->subjectHandler = $subjectHandler;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectHandler
+     *
+     * @return string
+     */
+    public function getSubjectHandler()
+    {
+        return $this->subjectHandler;
     }
 
     /**

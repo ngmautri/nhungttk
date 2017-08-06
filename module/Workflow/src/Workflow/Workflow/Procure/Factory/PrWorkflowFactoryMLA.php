@@ -9,6 +9,7 @@ use Workflow\Workflow\Procure\PrWorkflow;
  */
 class PrWorkflowFactoryMLA extends PrWorkflowFactoryAbstract
 {
+    protected $subjectHandler;
 
     /**
      *
@@ -21,6 +22,7 @@ class PrWorkflowFactoryMLA extends PrWorkflowFactoryAbstract
         $wf = new PrWorkflow();
         $wf->setWorkflowName("PR_SUBMIT");
         $wf->setSubject($this->getSubject());
+        $wf->setSubjectHandler("procure/pr/worfklow");
         $wf->setWorkflowFactory($this);
         $wf->setDoctrineEM($this->getDoctrineEM());
         return $wf;
@@ -40,5 +42,6 @@ class PrWorkflowFactoryMLA extends PrWorkflowFactoryAbstract
         
         return $workflow_list;
     }
-
-}
+    
+   
+ }

@@ -18,7 +18,7 @@ if (count ( $errors ) > 0) {
   <li ><a href="#general">Edit Item</a></li>
    </ul>
 
-<div id="general"> 
+<div id="general" style="font-size: 9pt"> 
 
 <form id= "create_item_form" class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/edit" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
@@ -29,7 +29,7 @@ if (count ( $errors ) > 0) {
 	<div class="form-group required">
 		<label class="control-label col-sm-2" >Item ID</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="itemSku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
 		</div>		
 		<div class="col-sm-4">
@@ -49,33 +49,33 @@ if (count ( $errors ) > 0) {
 	<div class="form-group required">
 		<label class="control-label col-sm-2" >Item  Name</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="itemName" value="<?php echo (!$entity == null)? $entity->getItemName():"";?>">
 		</div>
 		
 		<label class="control-label col-sm-2" >Item Foreign Name</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="itemNameForeign" value="<?php echo (!$entity == null)? $entity->getItemNameForeign():"";?>">
 		</div>
 	</div>
 		<div class="form-group">
 		<label class="control-label col-sm-2" >Item  Description</label>
 		<div class="col-sm-8">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="itemDescription" value="<?php echo (!$entity == null)? $entity->getItemDescription():"";?>">
 		</div>
 	</div>
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Barcode</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="barcode" value="<?php echo (!$entity == null)? $entity->getBarcode():"";?>">
 			
 		</div>		
 		<label class="control-label col-sm-2" >Keyworks</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
 		</div>
 	</div>
@@ -83,7 +83,7 @@ if (count ( $errors ) > 0) {
 	<div class="form-group required">
 		<label class="control-label col-sm-2" >Item Type</label>
 		<div class="col-sm-3">
-			<select class="form-control"  name="itemType" >
+			<select class="form-control input-sm"  name="itemType" >
         		<option <?php if(!$entity == null): echo ($entity->getItemType()=="ITEM")?"selected":""; endif;?> value="ITEM">Item</option>
    	     		<option <?php if(!$entity == null): echo ($entity->getItemType()=="SERVICE")?"selected":""; endif;?> value="SERVICE">Service</option>
    	     		<option <?php if(!$entity == null): echo ($entity->getItemType()=="SOFTWARE")?"selected":""; endif;?> value="SOFTWARE">Software</option>
@@ -92,9 +92,9 @@ if (count ( $errors ) > 0) {
 		
 		<label class="control-label col-sm-2" >Measurement</label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="standard_uom_name" placeholder="Please select standard unit" name="item_uom_name" 
+			<input disabled class="form-control input-sm" type="text" id="standard_uom_name" placeholder="Please select standard unit" name="item_uom_name" 
 value="<?php if($entity !== null):if($entity->getStandardUom()!==null):echo $entity->getStandardUom()->getUomCode() . " - ". $entity->getStandardUom()->getUomName();endif;endif;?>">
-			<input type="hidden" class="form-control" id="standard_uom_id" name="standard_uom_id" 
+			<input type="hidden" class="form-control input-sm" id="standard_uom_id" name="standard_uom_id" 
 value="<?php if($entity !== null):if($entity->getStandardUom()!==null):echo $entity->getStandardUom()->getId();endif;endif;?>">
 		</div>
 <!-- 		
@@ -113,9 +113,9 @@ value="<?php if($entity !== null):if($entity->getStandardUom()!==null):echo $ent
 		<label class="control-label col-sm-2" >Item Category</label>
 		<div class="col-sm-3">		
 
-<input disabled class="form-control" type="text" id="item_category_name" placeholder="Please select item category" name="country_code_2" 
+<input disabled class="form-control input-sm" type="text" id="item_category_name" placeholder="Please select item category" name="country_code_2" 
 value="<?php if($category !== null):echo $category->getNodeName();endif;?>">
-<input type="hidden" class="form-control" id="item_category_name_selected" name="item_category_id" 
+<input type="hidden" class="form-control input-sm" id="item_category_name_selected" name="item_category_id" 
 value="<?php if($category!== null):echo $category->getNodeId();endif;?>">
 	</div>		
 		
@@ -128,9 +128,9 @@ value="<?php if($category!== null):echo $category->getNodeId();endif;?>">
 		<label class="control-label col-sm-2" >Department</label>
 		<div class="col-sm-3">
 		
-<input disabled class="form-control" type="text" id="department_name" placeholder="Please select!" name="deparment_name" 
+<input disabled class="form-control input-sm" type="text" id="department_name" placeholder="Please select!" name="deparment_name" 
 value="<?php if($department !== null):echo $department->getNodeName();endif;?>">
-<input type="hidden" class="form-control" type="text" id="department_name_selected" placeholder="Please select standard unit" name="department_id" 
+<input type="hidden" class="form-control input-sm" type="text" id="department_name_selected" placeholder="Please select standard unit" name="department_id" 
 value="<?php if($department!== null):echo $department->getNodeId();endif;?>">	
 
 		</div>
@@ -144,7 +144,7 @@ value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
 	<div class="form-group">
 		<label class="control-label col-sm-2">Location</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="location" value="<?php echo (!$entity == null)? $entity->getLocation():"";?>">
 		</div>
 	</div>
@@ -152,12 +152,12 @@ value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Manufacturer</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="manufacturer" value="<?php echo (!$entity == null)? $entity->getManufacturer():"";?>">
 		</div>
 		<label class="control-label col-sm-2" >Manufacturer Model</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="manufacturerModel" value="<?php echo (!$entity == null)? $entity->getManufacturerModel():"";?>">
 		</div>
 	</div>
@@ -165,14 +165,14 @@ value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Manufacturer's Item Code</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="manufacturerCode" value="<?php echo (!$entity == null)? $entity->getManufacturerCode():"";?>">
 		</div>
 		
 		
 		<label class="control-label col-sm-2" >Manufacturer Serial</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text" placeholder=""
+			<input class="form-control input-sm" type="text" placeholder=""
 				name="manufacturerSerial" value="<?php echo (!$entity == null)? $entity->getManufacturerSerial():"";?>">
 		</div>
 	</div>
@@ -180,7 +180,7 @@ value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
 	<div class="form-group">
 		<label class="control-label col-sm-2" >Lead time</label>
 		<div class="col-sm-3">
-<input  class="form-control" type="text" placeholder="" name="leadTime" 
+<input  class="form-control input-sm" type="text" placeholder="" name="leadTime" 
 			value="<?php echo (!$entity == null)? $entity->getLeadTime():"";?>">
 
 <input  name="localAvailabiliy" <?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" value="1">&nbsp;Local Availability
@@ -188,7 +188,7 @@ value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
 
 		<label class="control-label col-sm-2" >Remarks</label>
 		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="5" placeholder=""
+			<textarea  class="form-control input-sm" type="text" rows="5" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 		</div>
 	</div>

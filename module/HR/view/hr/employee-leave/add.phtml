@@ -1,0 +1,86 @@
+<h4><?php echo (!$target == null)? "Employee: " . $target->getEmployeeName() ." - ". $target->getEmployeeCode():"";?></h4>
+
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general">Apply New Leave</a></li>
+   </ul>
+
+<div id="general"> 
+
+<form id="create_employee_form" class="form-horizontal" action="/hr/employee-leave/add" method="post" enctype="multipart/form-data">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+	<div class="form-group required">
+		<label class="control-label col-sm-2" >Leave Reason</label>
+		<div class="col-sm-3">
+			<select class="form-control required" name="leaveReason">
+				<option value="">Please select</option>
+				<option <?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?> value="M">Sick Leave</option>
+				<option <?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?> value="F">Personal Paid leave</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group required">
+		<label class="control-label col-sm-2" >Leave From Date</label>
+		<div class="col-sm-3">
+		<input class="form-control" type="text" name="birthday" 
+		value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="birthday" />
+		</div>
+		
+		<label class="control-label col-sm-2" >Leave To Date</label>
+		<div class="col-sm-3">
+		<input class="form-control" type="text" name="birthday" 
+		value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="birthday" />
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag">Attachment</label>
+		<div class="col-sm-3">
+			<input style=";" type="file" id= "attachments" name="attachments" />
+		</div>		
+	</div>
+	
+	<div class="form-group">
+		
+		<label class="control-label col-sm-2" >Remarks</label>
+		<div class="col-sm-3">
+			<textarea  class="form-control" type="text" rows="4" placeholder=""
+				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	   	<button onclick="submitForm('create_employee_form');" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+  		</div>
+	</div> 
+		
+	
+</form>
+</div>
+</div>
+
+<script>
+$(function() {
+   $( "input[id='birthday']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+});
+
+</script>
+
+

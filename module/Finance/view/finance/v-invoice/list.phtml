@@ -1,0 +1,60 @@
+<?php /**@var \Application\Entity\FinVendorInvoice $a ; */ ?>
+
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Posting Period</a></li>
+	</ul>
+<div id="general">
+
+<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/finance/posting-period/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Period</a>
+<hr>
+
+<?php
+if ($total_records <= 0): 
+	echo 'No record found!';
+else:
+	
+	if (! is_null ( $paginator)):
+		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+	else:
+		echo $total_records . ' records found!';
+	endif;
+	
+	?>
+
+<table style="font-size: 10pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Vendor</b></td>
+			<td><b>Invoice Number</b></td>
+			<td><b>Status</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $a ) :	
+		$count ++;
+		?>
+	<tr>
+			<td><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td><?php echo $a->getVendor()->getVendorName()?></td>
+			<td><?php echo $a->getInvoiceNo()?></td>
+			<td><?php echo $a->getIsActive()?></td>
+			<td>
+<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+			</td>
+	<?php endforeach; ?>s
+ </tbody>
+</table>
+
+</div>
+<?php endif; ?>
+</div>
+

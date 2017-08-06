@@ -15,7 +15,8 @@ use Workflow\Workflow\WorkflowFactoryInterface;
 abstract class PrWorkflowFactoryAbstract implements WorkflowFactoryInterface{
     
     protected $doctrineEM;
-    protected $subject;    
+    protected $subject;
+
     
     /**
      * Support Object
@@ -72,7 +73,7 @@ abstract class PrWorkflowFactoryAbstract implements WorkflowFactoryInterface{
     {
         $this->subject = $subject;
     }
+   
 
-	
-	
+
 }

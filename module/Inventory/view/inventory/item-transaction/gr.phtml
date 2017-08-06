@@ -20,14 +20,14 @@ if (count ( $errors ) > 0) {
   <li ><a href="#general">Item Receiving</a></li>
  	</ul>
    
- <div id="general">
+ <div id="general" style="font-size: 9pt;">
 
 <form id ="gr_form" class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr"	method="post" enctype="multipart/form-data">
 	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 	<input type="hidden" id="target_wh_id" name="target_wh_id" value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity->getWh()->getId();endif;endif;?>"/>
 
 	
-	<div class="form-group required">
+	<div class="form-group margin-bottom required">
 		<label class="control-label col-sm-2" >Item: </label>
 		<div class="col-sm-3">
 			<input disabled class="form-control" type="text" id="item_name" placeholder="Select Item if any"
@@ -51,7 +51,7 @@ endif;?>  name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >PR Referrence: </label>
 		<div class="col-sm-3">
 			<input disabled class="form-control" type="text" id="pr_item_name" placeholder="Select PR Item, if any" name="pr_row_name" 
@@ -83,7 +83,7 @@ endif;?>">		</div>
  </legend>
 	<div id ="transaction" class="collapse in">
 	
- 	 <div class="form-group required">
+ 	 <div class="form-group margin-bottom required">
 		<label class="control-label col-sm-2" for="inputTag">Transaction Date:</label>
 		<div class="col-sm-3">
 <input class="form-control" type="text" name="trx_date"  placeholder = "please select" id="trx_date" 
@@ -108,7 +108,7 @@ value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity-
       </div>
       
 
-  <div class="form-group required">
+  <div class="form-group margin-bottom required">
 		<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
 		<div class="col-sm-3">
   				<input class="form-control" type="text" name="quantity" value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
@@ -121,7 +121,7 @@ value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity-
    <a href="#purchasing_data" class="" data-toggle="collapse">PURCHASING DATA:</a>
  </legend>
  <div id ="purchasing_data" class="collapse in">
-  <div class="form-group">
+  <div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Vendor:</label>
 		<div class="col-sm-3">
 <input  class="form-control" type="text" id="vendor_name" placeholder="Select vendor" name="vendor_name" 
@@ -139,7 +139,7 @@ value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $ent
 </a>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Vendor's Item Code</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
@@ -147,7 +147,7 @@ value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $ent
 		</div>		
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Vendor's Item Unit</label>
 		<div class="col-sm-3">
 			<input class="form-control" type="text"  placeholder=""
@@ -166,7 +166,7 @@ value="<?php if(!$entity == null): if($entity->getConversionFactor()!==null): ec
 	</div>
 	
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Unit Price</label>
 		<div class="col-sm-3">
 <input class="form-control" type="text"  placeholder="" name="vendorUnitPrice" 
@@ -186,7 +186,7 @@ value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $e
 </a>		
 	</div>
 	
-	 <div class="form-group">
+	 <div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Lead Time:</label>
 		<div class="col-sm-3">
   				<input class="form-control" type="text" name="leadTime" value="">
@@ -202,7 +202,7 @@ value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $e
 	<div id ="additional" class="collapse">
 	     
 	     
-  <div class="form-group">
+  <div class="form-group margin-bottom">
 		
 		<label class="control-label col-sm-2" >Remarks:</label>
 		<div class="col-sm-3">
@@ -216,7 +216,7 @@ value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $e
 </div>
 </fieldset>
 
-  <div class="form-group">
+  <div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
  <button onclick="submitForm('gr_form');" type="submit" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>

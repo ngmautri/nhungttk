@@ -42,9 +42,8 @@ if (! $hits == null) :
 
 					<td> <?php echo $count;?></td>
 					<td>
-						<a
-						href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $hit->pr_token;?>&entity_id=<?php echo $hit->pr_id;?>&checksum=<?php echo $hit->pr_checksum;?>"><span id=""><?php echo $this->escapeHtml($hit->pr_number);?></span></a>
-						<a</td>
+<a href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $hit->pr_token;?>&entity_id=<?php echo $hit->pr_id;?>&checksum=<?php echo $hit->pr_checksum;?>"><span><?php echo $this->escapeHtml($hit->pr_number);?></span></a>
+					</td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->row_quantity);?></span></td>

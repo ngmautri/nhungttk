@@ -427,6 +427,55 @@ class ItemAssignmentController extends AbstractActionController {
 		
 		) );
 	}
+	
+	/**
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function toEmployeeAction() {
+	    $request = $this->getRequest ();
+	    
+	    // accepted only ajax request
+	    if (! $request->isXmlHttpRequest ()) {
+	        return $this->redirect ()->toRoute ( 'access_denied' );
+	    }
+	    ;
+	    
+	    $this->layout ( "layout/user/ajax" );
+	    
+	    $target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+	    $token = $this->params ()->fromQuery ( 'token' );
+	    
+	    $criteria = array (
+	        'id' => $target_id,
+	        'token' => $token
+	    );
+	    
+	    $target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrEmployee' )->findOneBy ( $criteria );
+	    
+	    if ($target == null) {
+	        return $this->redirect ()->toRoute ( 'access_denied' );
+	    }
+	    
+	    $criteria = array (
+	        'employee' => $target_id
+	    );
+	    
+	    $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemEmployee' )->findBy ( $criteria );
+	    $total_records = count ( $list );
+	    $paginator = null;
+	    
+	    // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
+	    // var_dump (count($all));
+	    
+	    return new ViewModel ( array (
+	        'list' => $list,
+	        'total_records' => $total_records,
+	        'paginator' => $paginator,
+	        'target' => $target
+	        
+	    ) );
+	}
 	public function getDoctrineEM() {
 		return $this->doctrineEM;
 	}

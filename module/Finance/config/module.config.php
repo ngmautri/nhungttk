@@ -20,6 +20,20 @@ return array(
                 'controller' => 'posting-period',
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
+            ),
+            array(
+                'label' => 'New Vendor Invoice',
+                'route' => 'finance/default',
+                'controller' => 'v-invoice',
+                'action' => 'add',
+                'icon' => 'glyphicon glyphicon-plus'
+            ),
+            array(
+                'label' => 'Vendor Invoice List',
+                'route' => 'finance/default',
+                'controller' => 'v-invoice',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-plus'
             )
         )
     ),
@@ -77,6 +91,8 @@ return array(
         'factories' => array(
             'Finance\Controller\Index' => 'Finance\Controller\IndexControllerFactory',
             'Finance\Controller\PostingPeriod' => 'Finance\Controller\PostingPeriodControllerFactory',
+            'Finance\Controller\VInvoice' => 'Finance\Controller\VInvoiceControllerFactory',
+            'Finance\Controller\VInvoiceRow' => 'Finance\Controller\VInvoiceRowControllerFactory',
             
          )
     

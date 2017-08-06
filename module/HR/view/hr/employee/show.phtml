@@ -1,617 +1,1044 @@
-<h4><?php echo (!$entity == null)? "Employee: " . $entity->getEmployeeName():"";?></h4>
+<h4><?php echo (!$entity == null)? "Employee: " . $entity->getEmployeeName() ." - ". $entity->getEmployeeCode():"";?></h4>
 
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Employee</a></li>
-  <li ><a href="#education">Education</a></li>
-  <li ><a href="#employment">Employment</a></li>
-  <li ><a href="#remuneration">Remuneration</a></li>
-  <li ><a href="#evaluation">Evaluation</a></li>
-  <li ><a href="#absence">Absense</a></li>
-  <li ><a href="#warning_letter">Warning Letter</a></li>
-  <li ><a href="/hr/employee-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Picture</a></li>
-  <li ><a href="/hr/employee-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">Attachment</a></li>
- 
-  </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Personal</a></li>
+		<li><a href="#cv">CV</a></li>
+		<li><a href="#application">Application</a></li>
+		<li><a href="#employment">Employment</a></li>
+		<li><a href="#remuneration">Remuneration <small><i
+					class="glyphicon glyphicon-lock"> </i></small></a></li>
+		<li><a
+			href="/hr/employee-evaluation/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
+				class=""></span>&nbsp;Evaluation</a></li>
+		</li>
+		<li><a
+			href="/hr/employee-leave/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
+				class=""></span>&nbsp;Leave</a></li>
+		</li>
+		<li><a
+			href="/hr/employee-ot/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
+				class=""></span>&nbsp;Overtime</a></li>
+		</li>
+		<li><a
+			href="/hr/employee-warning/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
+				class=""></span>&nbsp;Warning</a></li>
+		</li>
+		<!-- 
+		<li><a
+			href="/hr/employee-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
+				class="glyphicon glyphicon-picture"></span>&nbsp;Picture</a></li>
+		 -->
+		<li><a
+			href="/hr/employee-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
+				class="glyphicon glyphicon-paperclip"></span>&nbsp;Attachment</a></li>
+		<li><a
+			href="/inventory/item-assignment/to-employee?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
+				class="glyphicon glyphicon-paperclip"></span>&nbsp;Asset</a></li>
 
-<!-- GENERRA -->
-<div id="general"> 
+	</ul>
 
-<form id="employee_show_form" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-	
-	<fieldset>
-	
-	<legend style="font-size: 9pt; color: gray;">
-		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-		<a href="#general_info" class="" data-toggle="collapse">GENERAL:</a>
-	</legend>
-	<div id ="general_info">
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Employee Code</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				name="employeeCode" value="<?php echo (!$entity == null)? $entity->getEmployeeCode():"";?>">
-		</div>		
+	<div id="application" style="font-size: 9pt">
+		<form id="application_form" class="form-horizontal" action=""
+			method="post" enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#application_for" class="" data-toggle="collapse">APPLICATION:</a>
+				</legend>
+				<div id="application_for" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Application For</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="Finance Manager">
+						</div>
+						<label class="control-label col-sm-2">Application submited on:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="01-06-2017">
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#application_ref" class="" data-toggle="collapse">REFFERENCE:</a>
+				</legend>
+				<div id="application_ref" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Reference: </label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="New Paper /Facebook">
+						</div>
+						<label class="control-label col-sm-2">Recuirment Campain:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="Radio 03/2017">
+						</div>
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Bring-In Friend</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="YES">
+						</div>
+
+					</div>
+
+
+
+				</div>
+			</fieldset>
+
+		</form>
 	</div>
+
+	<!-- GENERRA -->
+	<div id="general" style="font-size: 9pt">
+
+		<form id="employee_show_form" class="form-horizontal" action=""
+			method="post" enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
+
+			<fieldset>
+
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#general_info" class="" data-toggle="collapse">GENERAL:</a>
+				</legend>
+				<div id="general_info" class="collapse in" style="padding: 0px; margin: 0" >
+
+
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">First Name - Local</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName"
+								value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
+						</div>
+
+						<label class="control-label col-sm-2">Last Name - Local:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeNameLocal"
+								value="<?php echo (!$entity == null)? $entity->getEmployeeNameLocal():"";?>">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">First Name - EN</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName"
+								value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
+						</div>
+
+						<label class="control-label col-sm-2">Last Name - EN:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeNameLocal"
+								value="<?php echo (!$entity == null)? $entity->getEmployeeNameLocal():"";?>">
+						</div>
+					</div>
+
+
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Birthday</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" name="birthday"
+								value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>"
+								placeholder=" please select" id="birthday" />
+						</div>
+
+						<label class="control-label col-sm-2" for="inputTag">Gender</label>
+						<div class="col-sm-3">
+							<select class="form-control input-sm" name="gender">
+								<option value="">Please select</option>
+								<option
+									<?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?>
+									value="M">Male</option>
+								<option
+									<?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?>
+									value="F">Female</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Birth Country</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="Vietnam">
+						</div>
+
+						<label class="control-label col-sm-2">Nationality:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeNameLocal" value="Vietnamese">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Minority</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="Mong">
+						</div>
+
+						<label class="control-label col-sm-2">Marital Status:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeNameLocal" value="married">
+						</div>
+					</div>
+
+
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#address" class="" data-toggle="collapse">ADDRESS:</a>
+				</legend>
+				<div id="address" class="collapse">
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Address</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="Donpalan">
+						</div>
+						<label class="control-label col-sm-2">Distance to Factory:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="10km">
+						</div>
+
+					</div>
+
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Country:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeNameLocal" value="Laos"> <a
+								target="blank" style="font-size: 9pt; color: navy;" href="#"><small><i
+									class="glyphicon glyphicon-plus"></i></small> New
+								Address&nbsp;&nbsp;</a>
+						</div>
+
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#contract_info" class="" data-toggle="collapse">CONTACT:</a>
+				</legend>
+				<div id="contract_info" class="collapse">
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Mobile phone:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="Donpalan">
+						</div>
+						<label class="control-label col-sm-2">Fixed Line Phone:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="Donpalan">
+						</div>
+					</div>
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Email1:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="Donpalan">
+						</div>
+						<label class="control-label col-sm-2">Email2:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="Donpalan">
+						</div>
+					</div>
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Relatives (For urgent
+							cases):</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="CHone"> <a
+								target="blank" style="font-size: 9pt; color: navy;" href="#"><small><i
+									class="glyphicon glyphicon-plus"></i></small> New
+								Contract&nbsp;&nbsp;</a>
+						</div>
+						<label class="control-label col-sm-2">Telephone:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="123456">
+						</div>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#personal_id" class="" data-toggle="collapse">PERSONAL ID:</a>
+				</legend>
+				<div id="personal_id" class="collapse">
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Family Book No:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="12">
+						</div>
+					</div>
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Peronsal ID:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="12345">
+						</div>
+					</div>
+					<div class="form-group margin-bottom margin-bottom">
+						<label class="control-label col-sm-2">Issue Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="">
+						</div>
+						<label class="control-label col-sm-2">Expired Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value=""> <input checked
+								type="checkbox" name="isActive" value="1">&nbsp;Reminder one
+							month before&nbsp;&nbsp;
+
+						</div>
+					</div>
+					<hr>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">SS0 No.:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="12">
+						</div>
+						<label class="control-label col-sm-2">SSO registered on:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="12">
+						</div>
+					</div>
+
+					<hr>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Passpord No.:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="12">
+						</div>
+						<label class="control-label col-sm-2">Issue Place:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="12">
+						</div>
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Issue Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="">
+						</div>
+						<label class="control-label col-sm-2">Expired Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value=""> <input checked
+								type="checkbox" name="isActive" value="1">&nbsp;Reminder one
+							month before&nbsp;&nbsp;
+
+						</div>
+					</div>
+
+
+					<hr>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Work Permit:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="12">
+
+						</div>
+						<label class="control-label col-sm-2">Issue Place:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="12">
+						</div>
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Issue Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value="">
+						</div>
+						<label class="control-label col-sm-2">Expired Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="employeeName" name="employeeName" value=""> <input checked
+								type="checkbox" name="isActive" value="1">&nbsp;Reminder one
+							month before&nbsp;&nbsp;
+
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#general_note" class="" data-toggle="collapse">REMARKS:</a>
+				</legend>
+				<div id="general_note" class="collapse">
+					<div class="form-group margin-bottom">
+
+						<label class="control-label col-sm-2">Remarks</label>
+						<div class="col-sm-3">
+							<textarea class="form-control input-sm" type="text" rows="4"
+								placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2" for="inputTag"></label>
+						<div class="col-sm-3">
+							<a class="btn btn-default"
+								href="<?php echo $this->baseUrl ?>/hr/employee/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
+									class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+
+						</div>
+					</div>
+				</div>
+			</fieldset>
+
+		</form>
+
+	</div>
+	<!-- GENERRAL END -->
+
+	<!-- EMPLOYMENT -->
+	<div id="employment" style="font-size: 9pt">
+		<form id="employment_form" class="form-horizontal" action=""
+			method="post" enctype="multipart/form-data">
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#recruitment" class="" data-toggle="collapse">RECRUITMENT:</a>
+				</legend>
+				<div id="recruitment" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Test on: </label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="01-06-2017">
+						</div>
+						<label class="control-label col-sm-2">Interview on</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="30-06-2017">
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+
+
+
+			<fieldset>
+
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#organisation" class="" data-toggle="collapse">EMPLOYMENT:</a>
+				</legend>
+				<div id="organisation" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Company</label>
+						<div class="col-sm-3">
+							<input disabled="disabled" class="form-control input-sm" type="text"
+								placeholder="" name="employeeCode"
+								value="Mascot International Laos Sole">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom margin-bottom ">
+						<label class="control-label col-sm-2">Employee Code</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode"
+								value="<?php echo (!$entity == null)? $entity->getEmployeeCode():"";?>">
+						</div>
+						<label class="control-label col-sm-2">Position</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="Sewing Worker">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Department</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="Production">
+						</div>
+						<label class="control-label col-sm-2">Group</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="Line1">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Current Contract Type:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="Training - TC">
+						</div>
+						<div class="col-sm-4">
+							<a target="blank" style="font-size: 9pt; color: navy;" href="#">Last
+								Evaluation&nbsp;&nbsp;</a><small><i
+								class="glyphicon glyphicon-new-window"></i></small>
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Contract Valid From:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" name="startDate"
+								id="contractValidFrom" />
+						</div>
+
+						<label class="control-label col-sm-2">Contract Valid To:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" name="startDate"
+								id="contractValidTo" /> <input checked type="checkbox"
+								name="isActive" value="1">&nbsp;Reminder one month before
+
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#dates" class="" data-toggle="collapse">DATES:</a>
+				</legend>
+				<div id="dates" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Start Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" name="startDate"
+								id="startDate" />
+						</div>
+						<label class="control-label col-sm-2">Restart Date:</label>
+							<div class="col-sm-3">
+								<input disabled="disabled" class="form-control input-sm" type="text"
+									name="startDate" id="reStartDate" />
+							</div>
+
+					</div>
+			
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#working_time" class="" data-toggle="collapse">WORKING
+						TIME:</a>
+				</legend>
+				<div id="working_time" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Start Time</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="8:00">
+						</div>
+						<label class="control-label col-sm-2">End Time</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="17:00">
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#termination" class="" data-toggle="collapse">TERMINATION:</a>
+				</legend>
+				<div id="termination" class="collapse in"> 
+					<div class="form-group margin-bottom">
+
+
+						<label class="control-label col-sm-2">Noticed Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" name="startDate"
+								id="resigntDate" />
+						</div>
+						<label class="control-label col-sm-2">Last Working Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" name="startDate"
+								id="resigntDate" />
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Reason</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="Go home">
+						</div>
+						<label class="control-label col-sm-2">Termination Type</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="Resignation">
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#accounting_data" class="" data-toggle="collapse">ACCOUNTING
+						DATA:</a>
+				</legend>
+				<div id="accounting_data" class="collapse">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Cost Center</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="820400">
+						</div>
+						<label class="control-label col-sm-2" for="inputTag">Indirect
+							/Direct:</label>
+						<div class="col-sm-3">
+							<select class="form-control input-sm" name="gender">
+								<option
+									<?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?>
+									value="M">Direct</option>
+								<option
+									<?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?>
+									value="F">Indirect</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Salary Account</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="82140">
+						</div>
+						<label class="control-label col-sm-2">SSO Account</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="820160">
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<!-- EMPLOYMENT -->
+
+
+	<!-- CV-->
+	<div id="cv">
+		<form id="cv_form" class="form-horizontal" action="" method="post"
+			enctype="multipart/form-data">
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#language" class="" data-toggle="collapse">LANGUAGE:</a>
+				</legend>
+				<div id="language" class="collapse in">
+					<div class="form-group margin-bottom">
+
+						<label class="control-label col-sm-1"></label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text"
+								value="Laos, Thai, English, German" id="resigntDate" />
+							<div style="color: navy; margin-bottom: 10pt;">
+								<a target="blank" style="font-size: 9pt; color: navy;" href="#"><small><i
+										class="glyphicon glyphicon-plus"></i></small> New
+									Line&nbsp;&nbsp;</a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#skill" class="" data-toggle="collapse">SKILL:</a>
+				</legend>
+				<div id="skill" class="collapse in">
+					<div class="form-group margin-bottom">
+
+						<label class="control-label col-sm-1"></label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text"
+								value="sewing, cutting, PC" id="resigntDate" />
+							<div style="color: navy; margin-bottom: 10pt;">
+								<a target="blank" style="font-size: 9pt; color: navy;" href="#"><small><i
+										class="glyphicon glyphicon-plus"></i></small> New
+									Line&nbsp;&nbsp;</a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#education" class="" data-toggle="collapse">EDUCATION:</a>
+				</legend>
+				<div id="education" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-1"></label>
+						<div class="col-sm-9">
+							<table style="font-size: 10pt;"
+								class="table table-bordered table-hover">
+								<thead>
+									<tr>
+										<td><b>#</b></td>
+										<td><b>From Date</b></td>
+										<td><b>To Date</b></td>
+										<td><b>action</b></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>1</td>
+										<td>01-05-2000</td>
+										<td>31-05-2000</td>
+										<td>University of Laos</td>
+										<td>attach</td>
+
+									</tr>
+									<tr>
+										<td>2</td>
+										<td>01-05-2000</td>
+										<td>31-05-2000</td>
+										<td>University of vietnam</td>
+										<td>attach</td>
+
+
+									</tr>
+								</tbody>
+							</table>
+							<div style="color: navy; margin-bottom: 10pt;">
+								<a target="blank" style="font-size: 9pt; color: navy;" href="#"><small><i
+										class="glyphicon glyphicon-plus"></i></small> New
+									Line&nbsp;&nbsp;</a>
+							</div>
+						</div>
+					</div>
+			
+			</fieldset>
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#experience" class="" data-toggle="collapse">EXPERIENCES:</a>
+				</legend>
+				<div id="experience" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-1"></label>
+						<div class="col-sm-9">
+							<table style="font-size: 10pt;"
+								class="table table-bordered table-hover">
+								<thead>
+									<tr>
+										<td><b>#</b></td>
+										<td><b>From Date</b></td>
+										<td><b>To Date</b></td>
+										<td><b>action</b></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>1</td>
+										<td>01-05-2000</td>
+										<td>31-05-2000</td>
+										<td>Chief Account at ML</td>
+										<td>attach</td>
+
+									</tr>
+									<tr>
+										<td>2</td>
+										<td>01-05-2000</td>
+										<td>31-05-2000</td>
+										<td>University of vietnam</td>
+										<td>attach</td>
+
+
+									</tr>
+								</tbody>
+							</table>
+							<div style="color: navy; margin-bottom: 10pt;">
+								<a target="blank" style="font-size: 9pt; color: navy;" href="#"><small><i
+										class="glyphicon glyphicon-plus"></i></small> New
+									Line&nbsp;&nbsp;</a>
+							</div>
+						</div>
+					</div>
+			
+			</fieldset>
+		</form>
+	</div>
+	<!-- EDU -->
+
+	<!-- REMUNERATION -->
+	<div id="remuneration" style="font-size: 9pt">
 	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >First Name - Local</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeName" value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
-		</div>
+	<ul class="nav nav-tabs">
+  		<li class="active"><a data-toggle="tab" href="#home">Current Salary</a></li>
+  		<li><a data-toggle="tab" href="#salary_history">History</a></li>
+	</ul>
+
+    <div class="tab-content">
+      <div id="home" class="tab-pane fade in active">
+        <form id="remuneration_form" class="form-horizontal" action=""
+			method="post" enctype="multipart/form-data">
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#salary_info" class="" data-toggle="collapse">SALARY:</a>
+				</legend>
+				<div id="salary_info" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Contracted Salary:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="900000"> <input checked
+								type="checkbox" name="isActive" value="1">&nbsp;13 Month
+							Salary&nbsp;&nbsp;
+						</div>
+
+						<label class="control-label col-sm-2" for="inputTag">Currency: </label>
+						<div class="col-sm-3">
+							<select class="form-control input-sm" name="gender">
+								<option
+									<?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?>
+									value="M">LAK</option>
+								<option
+									<?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?>
+									value="F">USD</option>
+							</select>
+						</div>
+
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#fixed_bonus" class="" data-toggle="collapse">FIXED BONUS:</a>
+				</legend>
+				<div id="fixed_bonus" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Factory Rate</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="125000">
+						</div>
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Attendance Bonus</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="350000">
+						</div>
+						<label class="control-label col-sm-2">Loyality Bonus:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="120000">
+						</div>
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Other Bonus</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="0"> <a target="blank"
+								style="font-size: 9pt; color: navy;" href="#"><small><i
+									class="glyphicon glyphicon-plus"></i></small> New
+								Bonus&nbsp;&nbsp;</a>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#allowance_info" class="" data-toggle="collapse">ALLOWANCE:</a>
+				</legend>
+				<div id="allowance_info" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Housing Allowance</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="0">
+						</div>
+						<label class="control-label col-sm-2">Transporation Allowance</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="120000">
+						</div>
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Other Allowance</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value=""> <a target="blank"
+								style="font-size: 9pt; color: navy;" href="#"><small><i
+									class="glyphicon glyphicon-plus"></i></small> New
+								Allowance&nbsp;&nbsp;</a>
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#salary_pmt_method" class="" data-toggle="collapse">SALARY
+						PAYMENT METHOD:</a>
+				</legend>
+				<div id="salary_pmt_method" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2"></label>
+						<div class="col-sm-3">
+							<input type="radio" name="sort" value="ASC">&nbsp;CASH&nbsp;&nbsp;
+							<input checked type="radio" name="sort" value="DESC">&nbsp;Bank
+							Transfer&nbsp;&nbsp;
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Beneficiary Name</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="CHONE">
+						</div>
+						<label class="control-label col-sm-2">Account Number</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="120000">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Bank Name</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="BCEL">
+						</div>
+						<label class="control-label col-sm-2">Swiftcode</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="BCEL">
+						</div>
+
+					</div>
+					<div class="form-group margin-bottom">
+					
+						<label class="control-label col-sm-2">Bank Address:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="employeeCode" value="Langxane Vientiane">
+						</div>
+					</div>
+				</div>
+			</fieldset>
+
+
+		</form>
 		
-		<label class="control-label col-sm-2" >Last Name - Local:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeNameLocal" value="<?php echo (!$entity == null)? $entity->getEmployeeNameLocal():"";?>">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >First Name - EN</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeName" value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
-		</div>
-		
-		<label class="control-label col-sm-2" >Last Name - EN:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeNameLocal" value="<?php echo (!$entity == null)? $entity->getEmployeeNameLocal():"";?>">
-		</div>
-	</div>
-	
-
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Birthday</label>
-		<div class="col-sm-3">
-		<input class="form-control" type="text" name="birthday" 
-		value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="birthday" />
-		</div>
-		
-		<label class="control-label col-sm-2" for="inputTag">Gender</label>
-		<div class="col-sm-3">
-			<select class="form-control" name="gender">
-				<option value="">Please select</option>
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?> value="M">Male</option>
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?> value="F">Female</option>
-			</select>
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Birth Country</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeName" value="Vietnam">
-		</div>
-		
-		<label class="control-label col-sm-2" >Nationality:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeNameLocal" value="Vietnamese">
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Minority</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeName" value="Mong">
-		</div>
-		
-		<label class="control-label col-sm-2" >Marital Status:</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
-				id = "employeeName" name="employeeNameLocal" value="married">
-		</div>
-	</div>
-	
-	
-	</div>
-	</fieldset>
-	
-	<fieldset>
-	<legend style="font-size: 9pt; color: gray;">
-		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-		<a href="#address" class="" data-toggle="collapse">ADDRESS:</a>
-	</legend>
-	<div id ="address">
-		<div class="form-group">
-    		<label class="control-label col-sm-2" >Address</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="Donpalan"> 
-    		</div>
-    		<div class="col-sm-4">
-    			Add New Address
-    		</div>
- 		</div>
-		
-		<div class="form-group">
-    		<label class="control-label col-sm-2" >Country:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeNameLocal" value="Laos">
-    		</div>
-		</div>
-	</div>
-	</fieldset>
-	
-	<fieldset>
-	<legend style="font-size: 9pt; color: gray;">
-		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-		<a href="#contract_info" class="" data-toggle="collapse">CONTACT:</a>
-	</legend>
-	<div id ="contract_info">
-		<div class="form-group">
-    		<label class="control-label col-sm-2" >Mobile phone:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="Donpalan"> 
-    		</div>
-    		<label class="control-label col-sm-2" >Fixed Line Phone:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="Donpalan"> 
-    		</div>
-  		</div>
-  		<div class="form-group">
-    		<label class="control-label col-sm-2" >Email1:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="Donpalan"> 
-    		</div>
-    		<label class="control-label col-sm-2" >Email2:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="Donpalan"> 
-    		</div>
-  		</div>
-  		<div class="form-group">
-    		<label class="control-label col-sm-2" >Relatives (For urgent cases):</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="CHone"> 
-    		</div>
-    		<label class="control-label col-sm-2" >Telephone:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="123456"> 
-    		</div>
-  		</div>
-	</div>
-	</fieldset>
-	
-	<fieldset>
-	<legend style="font-size: 9pt; color: gray;">
-		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-		<a href="#personal_id" class="" data-toggle="collapse">PERSONAL ID:</a>
-	</legend>
-	<div id ="personal_id">
-		<div class="form-group">
-    		<label class="control-label col-sm-2" >Family Book No:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="12"> 
-    		</div>
-    	</div>
-  		<div class="form-group">
-    		<label class="control-label col-sm-2" >Peronsal ID:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="12345"> 
-    		</div>
-  		</div>
-  		<div class="form-group">
-    		<label class="control-label col-sm-2" >Issue Date:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value=""> 
-    		</div>
-    		<label class="control-label col-sm-2" >Expired Date:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="">
-    			<input checked type="checkbox" name="isActive" value="1">&nbsp;Reminder one month before expired date&nbsp;&nbsp;
-    				 
-    		</div>
-  		</div>
-  		
-  	<hr>
-  		<div class="form-group">
-    	<label class="control-label col-sm-2" >Passpord No. (required for Expat):</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="12"> 
-    		</div>
-    	</div>
-  		<div class="form-group">
-    		<label class="control-label col-sm-2" >Issue Date:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value=""> 
-    		</div>
-    		<label class="control-label col-sm-2" >Expired Date:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="">
-    				 	        <input checked type="checkbox" name="isActive" value="1">&nbsp;Reminder one month before expired date&nbsp;&nbsp;
-	 
-    		</div>
-  		</div>
-  		
-  		<div class="form-group">
-    	<label class="control-label col-sm-2" >Issue Place:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="12"> 
-    		</div>
-    	</div>
-  		
-  		<hr>
-  		<div class="form-group">
-    	<label class="control-label col-sm-2" >Work Permit (required for Expat):</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="12">
-   	 
-    		</div>
-    	</div>
-  		<div class="form-group">
-    		<label class="control-label col-sm-2" >Issue Date:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value=""> 
-    		</div>
-    		<label class="control-label col-sm-2" >Expired Date:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value=""> 
-    				 				 	        <input checked type="checkbox" name="isActive" value="1">&nbsp;Reminder one month before expired date&nbsp;&nbsp;
-    				
-    		</div>
-  		</div>
-  		
-  		<div class="form-group">
-    	<label class="control-label col-sm-2" >Issue Place:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text"  placeholder=""
-    				id = "employeeName" name="employeeName" value="12"> 
-    		</div>
-    	</div>
-  		
-	</div>
-	</fieldset>
-	
-	<fieldset>
-	<legend style="font-size: 9pt; color: gray;">
-		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-		<a href="#addtional_info" class="" data-toggle="collapse">REMARKS:</a>
-	</legend>
-	<div id ="#addtional_info">
-	<div class="form-group">
-		
-		<label class="control-label col-sm-2" >Remarks</label>
-		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="4" placeholder=""
-				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
-		</div>
-	</div>
-	
-		<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
- <a class="btn btn-default" href="<?php echo $this->baseUrl ?>/hr/employee/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
- 
-  		</div>
-	</div> 
-	</div>
-	</fieldset>
-	
-</form>
-
-</div>
-<!-- GENERRAL END -->
-
-<!-- EMPLOYMENT -->
-<div id="employment">
-     <form id="employment_form" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-    
-	<fieldset>
-	
-	<legend style="font-size: 9pt; color: gray;">
-		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-		<a href="#organisation" class="" data-toggle="collapse">ORGANISATION:</a>
-	</legend>
-	<div id ="organisation">
-    <div class="form-group">
-    	<label class="control-label col-sm-2" >Company</label>
-    	<div class="col-sm-3">
-    		<input disabled="disabled" class="form-control" type="text"  placeholder="" name="employeeCode" value="Mascot International Laos Sole">
-      	</div>
-    </div>
-    
-    <div class="form-group">
-    	<label class="control-label col-sm-2" >Department</label>
-    	<div class="col-sm-3">
-    		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="Production">
-      	</div>
-      	<label class="control-label col-sm-2" >Group</label>
-    	<div class="col-sm-3">
-    		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="Line1">
-      	</div>				
-    </div>
-    
-    <div class="form-group">
-    	<label class="control-label col-sm-2" >Current Contract Type:</label>
-    	<div class="col-sm-3">
-    		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="Training - TC">
-      	</div>
-     	<div class="col-sm-4s">
-    		See last evaluation
-      	</div>
-    </div>
-
-    <div class="form-group">
-    	<label class="control-label col-sm-2" >Contract Valid From:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text" name="startDate" id="contractValidFrom" />
-    		</div>
-    		
-    		<label class="control-label col-sm-2" >Contract Valid To:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text" name="startDate" id="contractValidTo" />
-      	        <input checked type="checkbox" name="isActive" value="1">&nbsp;Reminder one month before expired date&nbsp;&nbsp;
-	
-    		</div>
-    </div>
-    
-    </div>	
-    </fieldset>
-    
-    <fieldset>
-	<legend style="font-size: 9pt; color: gray;">
-		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-		<a href="#dates" class="" data-toggle="collapse">DATES:</a>
-	</legend>
-	<div id ="dates">
-		<div class="form-group">
-    		<label class="control-label col-sm-2" >Start Date:</label>
-    		<div class="col-sm-3">
-    			<input class="form-control" type="text" name="startDate" id="startDate" />
-    		</div>
-    		
-    		<div class="form-group">
-    			<label class="control-label col-sm-2" >Restart Date:</label>
-    			<div class="col-sm-3">
-    			<input disabled="disabled" class="form-control" type="text" name="startDate" id="reStartDate" />
-			</div>
-		</div>
-		
-	</div>
-    </fieldset>
-    
-    <fieldset>
-	<legend style="font-size: 9pt; color: gray;">
-		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-		<a href="#working_time" class="" data-toggle="collapse">WORKING TIME:</a>
-	</legend>
-	<div id ="working_time">
-    <div class="form-group">
-    	<label class="control-label col-sm-2" >Start Time</label>
-    	<div class="col-sm-3">
-    		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="8:00">
-      	</div>
-      	<label class="control-label col-sm-2" >End Time</label>
-    	<div class="col-sm-3">
-    		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="17:00">
-      	</div>
-    </div>
- 
-    </div>	
-    </fieldset>
-    
-     <fieldset>
-	<legend style="font-size: 9pt; color: gray;">
-		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-		<a href="#accounting_data" class="" data-toggle="collapse">ACCOUNTING DATA:</a>
-	</legend>
-	<div id ="accounting_data">
-    <div class="form-group">
-    	<label class="control-label col-sm-2" >Cost Center</label>
-    	<div class="col-sm-3">
-    		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="820400">
-      	</div>
-    </div>
-    
-    <div class="form-group">
-    	<label class="control-label col-sm-2" >Salary Account</label>
-    	<div class="col-sm-3">
-    		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="82140">
-      	</div>
-      	<label class="control-label col-sm-2" >SSO Account</label>
-    	<div class="col-sm-3">
-    		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="820160">
-      	</div>				
-    	</div>
-    	
-    	<div class="form-group">
-		
-		<label class="control-label col-sm-2" for="inputTag">Indirect /Direct:</label>
-		<div class="col-sm-3">
-			<select class="form-control" name="gender">
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?> value="M">Direct</option>
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?> value="F">Indirect</option>
-			</select>
-		</div>
-		
-		
-	</div>
-    
-    </div>	
-    </fieldset>
-     </form>
-</div>
-<!-- EMPLOYMENT -->
-
-
-<!-- EDU -->
-<div id="education">
-	Eduction etc.
-</div>
-<!-- EDU -->
-
-<!-- REMUNERATION -->
-<div id="remuneration">
-
-	<form id="remuneration_form" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-    
-     <fieldset>
-    	<legend style="font-size: 9pt; color: gray;">
-    		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-    		<a href="#salary_info" class="" data-toggle="collapse">SALARY:</a>
-    	</legend>
-    	<div id ="salary_info">
-            <div class="form-group">
-            	<label class="control-label col-sm-2" >Salary</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="820400">
-      	 	        <input checked type="checkbox" name="isActive" value="1">&nbsp;13 Month Salary&nbsp;&nbsp;
-      			</div>
-      			
-      			<label class="control-label col-sm-2" for="inputTag">Currency: </label>
-        		<div class="col-sm-3">
-        			<select class="form-control" name="gender">
-        				<option <?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?> value="M">USD</option>
-        				<option <?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?> value="F">LAK</option>
-        			</select>
-        		</div>
-     
-            </div>
-        </div>	
-      </fieldset>		
-
- 	<fieldset>
-    	<legend style="font-size: 9pt; color: gray;">
-    		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-    		<a href="#fixed_bonus" class="" data-toggle="collapse">FIXED BONUS:</a>
-    	</legend>
-    	<div id ="fixed_bonus">
-            <div class="form-group">
-            	<label class="control-label col-sm-2" >Factory Rate</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="0">
-      			</div>
-            </div>
-            <div class="form-group">
-            	<label class="control-label col-sm-2" >Loyality Bonus:</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="120000">
-      			</div>
-            </div>
-            
-        </div>	
-     </fieldset>
-     
-     <fieldset>
-    	<legend style="font-size: 9pt; color: gray;">
-    		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-    		<a href="#allowance_info" class="" data-toggle="collapse">ALLOWANCES:</a>
-    	</legend>
-    	<div id ="allowance_info">
-            <div class="form-group">
-            	<label class="control-label col-sm-2" >Housing Allowance</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="0">
-      			</div>
-            </div>
-            <div class="form-group">
-            	<label class="control-label col-sm-2" >Transporation Allowance</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="120000">
-      			</div>
-            </div>
-            
-        </div>	
-      </fieldset>
+      </div>
       
-       <fieldset>
-    	<legend style="font-size: 9pt; color: gray;">
-    		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-    		<a href="#salary_pmt_method" class="" data-toggle="collapse">SALARY PAYMENT METHOD:</a>
-    	</legend>
-    	<div id ="salary_pmt_method">
-            <div class="form-group">
-            <label class="control-label col-sm-2" ></label>
-            	<div class="col-sm-3">
-            		 <input type="radio" name="sort" value="ASC">&nbsp;CASH&nbsp;&nbsp; 
-    	   			 <input checked type="radio" name="sort" value="DESC">&nbsp;Bank Transfer&nbsp;&nbsp;
-      			</div>
- 	         </div>
- 	         
- 	         <div class="form-group">
-            	<label class="control-label col-sm-2" >Beneficiary Name</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="0">
-      			</div>
-      			<label class="control-label col-sm-2" >Account Number</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="120000">
-      			</div>
-            </div>
-             
-            <div class="form-group">
-            	<label class="control-label col-sm-2" >Bank Name</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="120000">
-      			</div>
-      			<label class="control-label col-sm-2" >Swiftcode</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="120000">
-      			</div>
-      			
-            </div>
-           
-            <div class="form-group">
-            	<label class="control-label col-sm-2" >Bank Address:</label>
-            	<div class="col-sm-3">
-            		<input class="form-control" type="text"  placeholder="" name="employeeCode" value="120000">
-      			</div>
-            </div>
-        </div>	
-      </fieldset>
-      		
-     	
-	</form>
-	
-</div>
-<!-- REMUNERATION -->
+      <div id="salary_history" class="tab-pane fade">
+        <h5>Salary History</h5>
+        <table style="font-size: 9pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Salary<br>Period</b></td>
+			<td><b>Contracted<br>Salary</b></td>
+			<td><b>Housing <br>Allowance</b></td>
+			<td><b>Transportation<br>Allowance</b></td>
+			<td><b>Attendance<br>Bonus</b></td>
+			<td><b>SSO <br>Deduction</b></td>
+			<td><b>PIT <br>Deduction</b></td>
+			<td><b>Net <br>Salary</b></td>
+			<td><b>Status</b></td>
+			<td><b>action</b></td>
+		</tr>
+	</thead>
+	<tbody>
+	<tr>
+			<td>1</td>
+			<td>05-2017</td>
+			<td>900.000</td>
+			<td>0</td>
+			<td>120.000</td>
+			<td>350.000</td>
+			<td>0</td>
+			<td>0</td>
+			<td>850.000</td>
+			<td>final</td>
+			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
+			
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>06-2017</td>
+			<td>900.000</td>
+			<td>0</td>
+			<td>120.000</td>
+			<td>350.000</td>
+			<td>0</td>
+			<td>0</td>
+			<td>850.000</td>
+			<td>final</td>
+			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;payslip</a></td>
+			
+		</tr>
+	</tbody>
+</table>
+      </div>
+    </div>
 
-<!-- EVA -->
-<div id="evaluation">
-	Evaluation etc.
-</div>
-<!-- EVA -->
+		
 
-<!-- ABSENCE -->
-<div id="absence">
-<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/finance/posting-period/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Leave Application</a>
-<hr>
-	Absense, OT etc.	
-</div>
-<!-- ABSENCE END-->
-
-<!-- Warning -->
-<div id="warning_letter">
-<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/finance/posting-period/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Warning Letter</a>
-<hr>
-	Warning, OT etc.	
-</div>
-<!-- ABSENCE END-->
+	</div>
+	<!-- REMUNERATION -->
 
 </div>
 <script>

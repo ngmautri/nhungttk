@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryTrx
  *
- * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK8_idx", columns={"issue_for"})})
+ * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK8_idx", columns={"issue_for"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"})})
  * @ORM\Entity
  */
 class NmtInventoryTrx
@@ -176,6 +176,13 @@ class NmtInventoryTrx
     private $leadTime;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="tax_rate", type="integer", nullable=true)
+     */
+    private $taxRate;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -254,6 +261,16 @@ class NmtInventoryTrx
      * })
      */
     private $issueFor;
+
+    /**
+     * @var \Application\Entity\FinVendorInvoiceRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="invoice_row_id", referencedColumnName="id")
+     * })
+     */
+    private $invoiceRow;
 
 
 
@@ -796,6 +813,30 @@ class NmtInventoryTrx
     }
 
     /**
+     * Set taxRate
+     *
+     * @param integer $taxRate
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setTaxRate($taxRate)
+    {
+        $this->taxRate = $taxRate;
+
+        return $this;
+    }
+
+    /**
+     * Get taxRate
+     *
+     * @return integer
+     */
+    public function getTaxRate()
+    {
+        return $this->taxRate;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -985,5 +1026,29 @@ class NmtInventoryTrx
     public function getIssueFor()
     {
         return $this->issueFor;
+    }
+
+    /**
+     * Set invoiceRow
+     *
+     * @param \Application\Entity\FinVendorInvoiceRow $invoiceRow
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setInvoiceRow(\Application\Entity\FinVendorInvoiceRow $invoiceRow = null)
+    {
+        $this->invoiceRow = $invoiceRow;
+
+        return $this;
+    }
+
+    /**
+     * Get invoiceRow
+     *
+     * @return \Application\Entity\FinVendorInvoiceRow
+     */
+    public function getInvoiceRow()
+    {
+        return $this->invoiceRow;
     }
 }

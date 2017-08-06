@@ -12,7 +12,9 @@ abstract class AbstractWorkflow
 {
     protected $workflowFactory;
     protected $subject;
+    protected $subjectHandler;
     protected $doctrineEM;
+   
     protected $workflowName;
     protected $workflowInstance;
 
@@ -104,5 +106,21 @@ abstract class AbstractWorkflow
     {
         $this->workflowInstance = $workflowInstance;
     }
+    /**
+     * @return the $subjectHandler
+     */
+    public function getSubjectHandler()
+    {
+        return $this->subjectHandler;
+    }
+
+    /**
+     * @param field_type $subjectHandler
+     */
+    public function setSubjectHandler($subjectHandler)
+    {
+        $this->subjectHandler = $subjectHandler;
+    }
+
 
 }

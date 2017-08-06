@@ -168,9 +168,7 @@ if (count ( $errors ) > 0) {
 				<a href="#rows" class="" data-toggle="collapse">INVOICE ROWS:</a>
 			</legend>
 			<div id="rows" class="collapse in">
-
-				<div id="pr_rows"></div>
-				<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
+					<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
 			</fieldset>
 			</form>
 	</div>
@@ -532,9 +530,10 @@ $( "#vendor_name_1" ).autocomplete({
  		      
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         
-        { title: "", editable: false, minWidth: 200, sortable: false,
+        { title: "", editable: false, minWidth: 100, sortable: false,
             render: function (ui) {
-                return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
+                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
+            	return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button>";
 	           }
         },
    ];
@@ -585,7 +584,7 @@ $( "#vendor_name_1" ).autocomplete({
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/procure/pr-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+            redirectUrl="/finance/v-invoice-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

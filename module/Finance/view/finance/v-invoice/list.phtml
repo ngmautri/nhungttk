@@ -41,7 +41,10 @@ else:
 	$count = 0;
 	foreach ( $list as $a ) :	
 		$count ++;
+     /**@var \Application\Entity\FinVendorInvoice $a ; */ 
+		
 		?>
+		
 	<tr>
 			<td><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></td>
 			<td><?php echo $a->getVendor()->getVendorName()?></td>

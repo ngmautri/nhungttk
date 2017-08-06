@@ -176,12 +176,43 @@ if (count ( $errors ) > 0) {
 					<a href="#new_row" class="" data-toggle="collapse">NEW INVOICE ROW:</a>
 				</legend>
 	<div id="new_row" class="collapse in">
+	<div class="form-group margin-bottom">
+	 	<label class="control-label col-sm-2"></label>
+    	<div class="col-sm-3">
+    		<input
+    			<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+    			type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+    	</div>
+	</div>
 
 	
 	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2">PR Item: </label>
+		<div class="col-sm-3">
+			<input tabindex="1"  class="form-control input-sm" type="text"
+				id="pr_item_name" placeholder="Select PR item"
+				name="pr_item_name" value=""> 
+			<input type="hidden" id="pr_row_id"
+				placeholder="" name="pr_row_id" value="">
+		</div>
+
+		<div class="col-sm-3">
+		<a tabindex="100" style="color: #0080ff;" href="javascript:;"
+			onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+			class="glyphicon glyphicon-folder-open"></i>
+		</a>
+		</div>
+		
+		<div class="col-sm-3">
+			<a tabindex="101" target="_blank" style="font-size: 9pt;"
+				href="/procure/pr-row/all">PR Item List&nbsp;&nbsp;</a><small><i
+				class="glyphicon glyphicon-new-window"></i></small>
+		</div>
+	</div>
+		<div class="form-group margin-bottom  required">
         <label class="control-label col-sm-2">Item: </label>
         <div class="col-sm-3">
-        	<input tabindex="1" class="form-control" type="text" id="item_name"
+        	<input tabindex="2" class="form-control" type="text" id="item_name"
         		placeholder="Enter keyword to search item..." name="item_name"
         		value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
         
@@ -201,30 +232,6 @@ if (count ( $errors ) > 0) {
         		href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i
         		class="glyphicon glyphicon-new-window"></i></small>
         </div>
-	</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2">PR Item: </label>
-		<div class="col-sm-3">
-			<input tabindex="2"  class="form-control input-sm" type="text"
-				id="pr_item_name" placeholder="Select PR item"
-				name="pr_item_name" value=""> 
-			<input type="hidden" id="pr_row_id"
-				placeholder="" name="pr_row_id" value="">
-		</div>
-
-		<div class="col-sm-3">
-		<a tabindex="100" style="color: #0080ff;" href="javascript:;"
-			onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-			class="glyphicon glyphicon-folder-open"></i>
-		</a>
-		</div>
-		
-		<div class="col-sm-3">
-			<a tabindex="101" target="_blank" style="font-size: 9pt;"
-				href="/procure/pr-row/all">PR Item List&nbsp;&nbsp;</a><small><i
-				class="glyphicon glyphicon-new-window"></i></small>
-		</div>
 	</div>
 	 <div class="form-group margin-bottom">
         <label class="control-label col-sm-2" for="inputTag">Vendor Item Code:</label>

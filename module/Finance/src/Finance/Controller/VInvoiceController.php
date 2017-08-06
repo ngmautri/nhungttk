@@ -251,13 +251,32 @@ class VInvoiceController extends AbstractActionController
             'token' => $token
         );
         
+       /*  $qb = $this->doctrineEM->createQueryBuilder();
+        
+        $qb->select(array('i', 'Count(r.id) as row_number','SUM(r.grossAmount) as gross_amount'))
+        ->from('\Application\Entity\FinVendorInvoice', 'i')
+        ->Join('\Application\Entity\FinVendorInvoiceRow', 'r','r.invoice_id = i.id')
+        ->where('i.id = ?0')
+        ->andWhere('i.token=?1')
+        ->andWhere('r.isActive=?2')
+        ->setParameter(0, $id)
+        ->setParameter(1, $token)    
+        ->setParameter(2, 1)    
+        ;
+        
+        $query = $qb->getQuery();
+        $result = $query->getSingleResult(); */
+        //var_dump($result['gross_amount']);
+        //$entity=$result[0];
+        
+        
         $query = 'SELECT e,v FROM Application\Entity\FinVendorInvoice e Join e.vendor v
             WHERE e.id=?1 AND e.token =?2';
         
         $entity = $this->doctrineEM->createQuery ( $query )->setParameters ( array (
             "1" => $id,
             "2" => $token,            
-        ) )->getSingleResult();
+        ) )->getSingleResult(); 
         
         //var_dump($entity);
         
@@ -268,8 +287,8 @@ class VInvoiceController extends AbstractActionController
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
                 'errors' => null,
-                'currency_list' => $currency_list
-            ));
+                'currency_list' => $currency_list,
+             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
         }

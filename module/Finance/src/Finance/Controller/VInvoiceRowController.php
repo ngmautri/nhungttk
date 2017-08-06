@@ -355,6 +355,17 @@ class VInvoiceRowController extends AbstractActionController
      */
     public function editAction()
     {
+        
+        $criteria = array(
+            'isActive' => 1
+        );
+        $sort_criteria = array(
+            'currency' => 'ASC'
+        );
+        
+        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        
+        
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -362,16 +373,16 @@ class VInvoiceRowController extends AbstractActionController
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
             
-            $entity_id = $request->getPost('entity_id');
+            $entity_id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
             
             $criteria = array(
                 'id' => $entity_id,
                 'token' => $token
             );
-            
-            /**@var \Application\Entity\NmtFinPostingPeriod $entity*/
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
+               
+            /** @var \Application\Entity\FinVendorInvoiceRow $entity ; */
+            $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findOneBy($criteria);
             
             if ($entity == null) {
                 
@@ -380,126 +391,50 @@ class VInvoiceRowController extends AbstractActionController
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => null
+                    'entity' => null,
+                    'target'=>null,
+                    'currency_list' =>$currency_list
+                    
                 ));
                 
                 // might need redirect
             } else {
                 
-                $periodName = $request->getPost('periodName');
-                $periodCode = $request->getPost('periodCode');
-                $postingFromDate = $request->getPost('postingFromDate');
-                $postingToDate = $request->getPost('postingToDate');
+                $isActive = (int) $request->getPost('$isActive');
                 
-                $periodStatus = $request->getPost('periodStatus');
-                
-                $actualWorkdingDays = $request->getPost('actualWorkdingDays');
-                $planWorkingDays = $request->getPost('planWorkingDays');
-                $nationalHolidays = $request->getPost('nationalHolidays');
-                $cooperateLeave = $request->getPost('cooperateLeave');
-                
-                $entity->setPeriodStatus($periodStatus);
-                
-                if ($periodName == null) {
-                    $errors[] = 'Please enter Period Name!';
-                } else {
-                    $entity->setPeriodName($periodName);
+                if($isActive!=1){
+                    $isActive =0;
                 }
                 
-                if ($periodCode == null) {
-                    $errors[] = 'Please enter Period Code!';
-                } else {
-                    $entity->setPeriodCode($periodCode);
-                }
-                
-                if ($planWorkingDays == null) {
-                    $errors[] = 'Please  enter Plan Working Days!';
-                } else {
-                    
-                    if (! is_numeric($planWorkingDays)) {
-                        $errors[] = 'Plan Working Days must be a number.';
-                    } else {
-                        if ($planWorkingDays <= 0) {
-                            $errors[] = 'Plan Working Days must be greater than 0!';
-                        }
-                        $entity->setPlanWorkingDays($planWorkingDays);
-                    }
-                }
-                
-                if ($actualWorkdingDays == null) {
-                    $errors[] = 'Please  enter $actualWorkdingDays!';
-                } else {
-                    
-                    if (! is_numeric($actualWorkdingDays)) {
-                        $errors[] = '$actualWorkdingDaysmust be a number.';
-                    } else {
-                        if ($actualWorkdingDays <= 0) {
-                            $errors[] = '$actualWorkdingDays must be greater than 0!';
-                        }
-                        $entity->setActualWorkdingDays($actualWorkdingDays);
-                    }
-                }
-                
-                if ($nationalHolidays == null) {
-                    // $errors [] = 'Please enter $actualWorkdingDays!';
-                } else {
-                    
-                    if (! is_numeric($nationalHolidays)) {
-                        $errors[] = '$nationalHolidays be a number.';
-                    } else {
-                        if ($nationalHolidays <= 0) {
-                            $errors[] = '$$nationalHolidays must be greater than 0!';
-                        }
-                        $entity->setNationalHolidays($nationalHolidays);
-                    }
-                }
-                
-                if ($cooperateLeave == null) {
-                    // $errors [] = 'Please enter $actualWorkdingDays!';
-                } else {
-                    
-                    if (! is_numeric($cooperateLeave)) {
-                        $errors[] = '$cooperateLeave be a number.';
-                    } else {
-                        if ($cooperateLeave <= 0) {
-                            $errors[] = '$cooperateLeave must be greater than 0!';
-                        }
-                        $entity->setCooperateLeave($cooperateLeave);
-                    }
-                }
-                
-                $validator = new Date();
-                
-                if (! $validator->isValid($postingFromDate)) {
-                    $errors[] = 'Start Date is not correct or empty!';
-                } else {
-                    $entity->setPostingFromDate(new \DateTime($postingFromDate));
-                }
-                if (! $validator->isValid($postingToDate)) {
-                    $errors[] = 'End Date is not correct or empty!';
-                } else {
-                    $entity->setPostingToDate(new \DateTime($postingToDate));
-                }
-                
-                if (count($errors) > 0) {
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'entity' => $entity
-                    ));
-                }
-                
+                $entity->setIsActive($isActive);
+        
                 // NO ERROR
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
                 
-                $entity->setLastChangeBy($u);
+                $entity->setLastchangedBy($u);
                 $entity->setLastChangeOn(new \DateTime());
                 $this->doctrineEM->persist($entity);
+                 
+                $criteria = array(
+                    'invoiceRow' => $entity->getId(),
+                );
+                
+                /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/
+                
+                $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+                if($gr_entity!==null){
+                    $gr_entity->setIsActive($isActive);
+                    $gr_entity->setLastChangeBy($u);
+                    $gr_entity->setLastChangeOn(new \DateTime());
+                    $this->doctrineEM->persist($gr_entity);
+                }
+               
                 $this->doctrineEM->flush();
                 
-                $this->flashMessenger()->addMessage('Posting Period "' . $periodName . '" is updated successfully!');
+                
+                $this->flashMessenger()->addMessage('Posting Period is updated successfully!');
                 return $this->redirect()->toUrl("/finance/posting-period/list");
             }
         }
@@ -519,13 +454,17 @@ class VInvoiceRowController extends AbstractActionController
             'token' => $token
         );
         
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
+        /** @var \Application\Entity\FinVendorInvoiceRow $entity ; */
+        $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findOneBy($criteria);
         
         if ($entity !== null) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
-                'entity' => $entity
+                'entity' => $entity,
+                'target' =>$entity->getInvoice(),
+                'currency_list' =>$currency_list
+                
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');

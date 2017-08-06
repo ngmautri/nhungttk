@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryTrx
  *
- * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK8_idx", columns={"issue_for"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"})})
+ * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK8_idx", columns={"issue_for"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtInventoryTrx
@@ -104,13 +104,6 @@ class NmtInventoryTrx
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="last_change_by", type="integer", nullable=true)
-     */
-    private $lastChangeBy;
 
     /**
      * @var boolean
@@ -271,6 +264,16 @@ class NmtInventoryTrx
      * })
      */
     private $invoiceRow;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
 
 
 
@@ -570,30 +573,6 @@ class NmtInventoryTrx
     public function getLastChangeOn()
     {
         return $this->lastChangeOn;
-    }
-
-    /**
-     * Set lastChangeBy
-     *
-     * @param integer $lastChangeBy
-     *
-     * @return NmtInventoryTrx
-     */
-    public function setLastChangeBy($lastChangeBy)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastChangeBy
-     *
-     * @return integer
-     */
-    public function getLastChangeBy()
-    {
-        return $this->lastChangeBy;
     }
 
     /**
@@ -1050,5 +1029,29 @@ class NmtInventoryTrx
     public function getInvoiceRow()
     {
         return $this->invoiceRow;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

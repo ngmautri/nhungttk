@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinVendorInvoiceRow
  *
- * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK2_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"})})
+ * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK2_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchanged_by"})})
  * @ORM\Entity
  */
 class FinVendorInvoiceRow
@@ -106,13 +106,6 @@ class FinVendorInvoiceRow
     private $lastchangeOn;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="lastchanged_by", type="integer", nullable=true)
-     */
-    private $lastchangedBy;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
@@ -153,6 +146,13 @@ class FinVendorInvoiceRow
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="fa_remarks", type="string", length=200, nullable=true)
+     */
+    private $faRemarks;
 
     /**
      * @var \Application\Entity\FinVendorInvoice
@@ -203,6 +203,16 @@ class FinVendorInvoiceRow
      * })
      */
     private $warehouse;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="lastchanged_by", referencedColumnName="id")
+     * })
+     */
+    private $lastchangedBy;
 
 
 
@@ -505,30 +515,6 @@ class FinVendorInvoiceRow
     }
 
     /**
-     * Set lastchangedBy
-     *
-     * @param integer $lastchangedBy
-     *
-     * @return FinVendorInvoiceRow
-     */
-    public function setLastchangedBy($lastchangedBy)
-    {
-        $this->lastchangedBy = $lastchangedBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastchangedBy
-     *
-     * @return integer
-     */
-    public function getLastchangedBy()
-    {
-        return $this->lastchangedBy;
-    }
-
-    /**
      * Set currentState
      *
      * @param string $currentState
@@ -673,6 +659,30 @@ class FinVendorInvoiceRow
     }
 
     /**
+     * Set faRemarks
+     *
+     * @param string $faRemarks
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setFaRemarks($faRemarks)
+    {
+        $this->faRemarks = $faRemarks;
+
+        return $this;
+    }
+
+    /**
+     * Get faRemarks
+     *
+     * @return string
+     */
+    public function getFaRemarks()
+    {
+        return $this->faRemarks;
+    }
+
+    /**
      * Set invoice
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
@@ -790,5 +800,29 @@ class FinVendorInvoiceRow
     public function getWarehouse()
     {
         return $this->warehouse;
+    }
+
+    /**
+     * Set lastchangedBy
+     *
+     * @param \Application\Entity\MlaUsers $lastchangedBy
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setLastchangedBy(\Application\Entity\MlaUsers $lastchangedBy = null)
+    {
+        $this->lastchangedBy = $lastchangedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastchangedBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastchangedBy()
+    {
+        return $this->lastchangedBy;
     }
 }

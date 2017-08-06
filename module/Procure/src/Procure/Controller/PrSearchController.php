@@ -46,7 +46,7 @@ class PrSearchController extends AbstractActionController {
 	        
 	        if (count ( $results ) > 0) {
 	            foreach ( $results['hits'] as $a ) {
-	                $a_json_row ["value"] = $a->item_name;
+	                $a_json_row ["value"] = $a->pr_number . ' | ' . $a->item_name;
 	                
 	                $a_json_row ["pr_id"] = $a->pr_id;
 	                $a_json_row ["pr_token"] = $a->pr_token;

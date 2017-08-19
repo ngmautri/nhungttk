@@ -33,7 +33,7 @@ endif;
 ?>
 			</label>
 			<div class="col-sm-3">
-				<input disabled class="form-control" type="text" id="pr_item_name"
+				<input disabled class="form-control input-sm" type="text" id="pr_item_name"
 					placeholder="Select PR Item, if any" name="pr_row_name"
 					value="<?php
     
@@ -89,7 +89,7 @@ endif;
 					<label class="control-label col-sm-2" for="inputTag">Transaction
 						Date:</label>
 					<div class="col-sm-3">
-						<input class="form-control" type="text" name="trx_date"
+						<input class="form-control input-sm" type="text" name="trx_date"
 							placeholder="please select" id="trx_date"
 							value="
 <?php
@@ -108,7 +108,7 @@ endif;
 					<label class="control-label col-sm-2" for="inputTag">Target
 						Warehouse:</label>
 					<div class="col-sm-3">
-						<input class="form-control" readonly type="text"
+						<input class="form-control input-sm" readonly type="text"
 							id="target_wh_name" placeholder="Please select!" name="target_wh"
 							value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity->getWh()->getWhName();endif;endif;?>">
 					</div>
@@ -118,7 +118,7 @@ endif;
 				<div class="form-group margin-bottom required">
 					<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
 					<div class="col-sm-3">
-						<input class="form-control" type="text" name="quantity"
+						<input class="form-control input-sm" type="text" name="quantity"
 							value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
 					</div>
 				</div>
@@ -134,7 +134,7 @@ endif;
 				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2">Vendor:</label>
 					<div class="col-sm-3">
-						<input class="form-control" type="text" id="vendor_name_1"
+						<input class="form-control input-sm" type="text" id="vendor_name_1"
 							placeholder="Enter term to search vendor" name="vendor_name"
 							value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
 			
@@ -158,7 +158,7 @@ endif;
 				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2">Vendor's Item Code</label>
 					<div class="col-sm-3">
-						<input class="form-control" type="text" placeholder=""
+						<input class="form-control input-sm" type="text" placeholder=""
 							name="vendorItemCode"
 							value="<?php echo (!$entity == null)? $entity->getVendorItemCode():"";?>">
 					</div>
@@ -167,14 +167,14 @@ endif;
 				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2">Vendor's Item Unit</label>
 					<div class="col-sm-3">
-						<input class="form-control" type="text" placeholder=""
+						<input class="form-control input-sm" type="text" placeholder=""
 							id="vendor_item_unit" name="vendorItemUnit"
 							value="<?php echo (!$entity == null)? $entity->getVendorItemUnit():"";?>">
 					</div>
 
 					<label class="control-label col-sm-2">Conversion Factor:</label>
 					<div class="col-sm-3">
-						<input class="form-control" type="text" placeholder=""
+						<input class="form-control input-sm" type="text" placeholder=""
 							id="conversion_factor" name="conversionFactor"
 							value="<?php if(!$entity == null): if($entity->getConversionFactor()!==null): echo number_format($entity->getConversionFactor(), 2); endif;endif;?>">
 
@@ -186,14 +186,14 @@ endif;
 				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2">Unit Price</label>
 					<div class="col-sm-3">
-						<input class="form-control" type="text" placeholder=""
+						<input class="form-control input-sm" type="text" placeholder=""
 							name="vendorUnitPrice"
 							value="<?php if(!$entity == null): if($entity->getVendorUnitPrice()!==null): echo number_format($entity->getVendorUnitPrice(), 2); endif;endif;?>">
 					</div>
 
 					<label class="control-label col-sm-2">Currency:</label>
 					<div class="col-sm-3">
-					<select name="currency_id" class="form-control">
+					<select name="currency_id" class="form-control input-sm">
 								<option value="">Select Currency</option>
    	    							<?php
    	    							foreach ( $currency_list as $curr ) :
@@ -207,7 +207,7 @@ endif;
 				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2" for="inputTag">Lead Time:</label>
 					<div class="col-sm-3">
-						<input class="form-control" type="text" name="leadTime" value="">
+						<input class="form-control input-sm" type="text" name="leadTime" value="">
 					</div>
 				</div>
 			</div>
@@ -225,7 +225,7 @@ endif;
 
 					<label class="control-label col-sm-2">Remarks:</label>
 					<div class="col-sm-3">
-						<textarea class="form-control" type="text" rows="4" placeholder=""
+						<textarea class="form-control input-sm" type="text" rows="4" placeholder=""
 							name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 					</div>
 				</div>

@@ -43,6 +43,14 @@ return array(
                 'controller' => 'item-category',
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
+            ),
+            
+            array(
+                'label' => 'Item Transaction',
+                'route' => 'Inventory/default',
+                'controller' => 'item-transaction',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
             )
         )
     ),

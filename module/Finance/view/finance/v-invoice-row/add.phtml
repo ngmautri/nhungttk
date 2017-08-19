@@ -322,7 +322,7 @@ if (count ( $errors ) > 0) {
 									class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
  					<a tabindex="11" class="btn btn-default"
 								href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
-									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+									class="glyphicon glyphicon-ok"></i></small>&nbsp;Cancel</a>
 	 	  
   	    </div>
  </div>
@@ -385,9 +385,15 @@ if (count ( $errors ) > 0) {
            .appendTo( ul );
        };
 
+    $('#quantity').bind('change', function() {
+       	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+       	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
+
+    });
 
     $('#unit_price').bind('change', function() {
     	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+    	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);	
     });
 
     $('#tax_rate').bind('change', function() {

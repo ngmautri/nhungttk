@@ -18,44 +18,44 @@ if (count ( $errors ) > 0) {
   <li ><a href="#general">New Employee</a></li>
    </ul>
 
-<div id="general"> 
+<div id="general" style="font-size: 9pt"> 
 
 <form id="create_employee_form" class="form-horizontal" action="/hr/employee/add" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Employee Code</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="employeeCode" value="<?php echo (!$entity == null)? $entity->getEmployeeCode():"";?>">
 		</div>		
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Employee Name</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				id = "employeeName" name="employeeName" value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
 		</div>
 		
 		<label class="control-label col-sm-2" >Employee Name Local:</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				id = "employeeName" name="employeeNameLocal" value="<?php echo (!$entity == null)? $entity->getEmployeeNameLocal():"";?>">
 		</div>
 	</div>
 	
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Birthday</label>
 		<div class="col-sm-3">
-		<input class="form-control" type="text" name="birthday" 
+		<input class="form-control input-sm" type="text" name="birthday" 
 		value="<?php if(!$entity == null): echo ($entity->getBirthday() !== null)? date_format($entity->getBirthday(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="birthday" />
 		</div>
 		
 		<label class="control-label col-sm-2" for="inputTag">Gender</label>
 		<div class="col-sm-3">
-			<select class="form-control" name="gender">
+			<select class="form-control input-sm" name="gender">
 				<option value="">Please select</option>
 				<option <?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?> value="M">Male</option>
 				<option <?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?> value="F">Female</option>
@@ -65,16 +65,16 @@ if (count ( $errors ) > 0) {
 		
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		
 		<label class="control-label col-sm-2" >Remarks</label>
 		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="4" placeholder=""
+			<textarea  class="form-control input-sm" type="text" rows="4" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 		</div>
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
 	   	<button onclick="submitForm('create_employee_form');" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-plus"> </i> Add</button>

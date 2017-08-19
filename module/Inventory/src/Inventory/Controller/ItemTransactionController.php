@@ -9,16 +9,14 @@
  */
 namespace Inventory\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
-use Application\Entity\NmtInventoryItem;
-use User\Model\UserTable;
-use MLA\Paginator;
-use Inventory\Service\ItemSearchService;
-use Zend\Math\Rand;
 use Application\Entity\NmtInventoryTrx;
+use Doctrine\ORM\EntityManager;
+use Inventory\Service\ItemSearchService;
+use MLA\Paginator;
+use Zend\Math\Rand;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
+use Zend\View\Model\ViewModel;
 
 /*
  * Control Panel Controller
@@ -61,7 +59,7 @@ class ItemTransactionController extends AbstractActionController
         
         $criteria = array(
             'id' => $entity_id,
-            //'checksum' => $checksum,
+            // 'checksum' => $checksum,
             'token' => $token
         );
         
@@ -343,9 +341,9 @@ class ItemTransactionController extends AbstractActionController
             /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
             $postingPeriod = $p->getPostingPeriod($entity->getTrxDate());
             
-            if($postingPeriod->getPeriodStatus()=="C"){
+            if ($postingPeriod->getPeriodStatus() == "C") {
                 $this->flashMessenger()->addMessage("Period :'" . $postingPeriod->getPeriodName() . "' is closed. Can't change!");
-                return $this->redirect()->toUrl('/inventory/item-transaction/show?token='.$token.'&entity_id='.$entity_id);
+                return $this->redirect()->toUrl('/inventory/item-transaction/show?token=' . $token . '&entity_id=' . $entity_id);
             }
             
             return new ViewModel(array(
@@ -458,9 +456,9 @@ class ItemTransactionController extends AbstractActionController
                     /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                     $postingPeriod = $p->getPostingPeriod(new \DateTime($trx_date));
                     
-                    if($postingPeriod->getPeriodStatus()!=="C"){
+                    if ($postingPeriod->getPeriodStatus() !== "C") {
                         $entity->setTrxDate(new \DateTime($trx_date));
-                    }else{
+                    } else {
                         $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
                     }
                 }
@@ -813,12 +811,11 @@ class ItemTransactionController extends AbstractActionController
                     /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                     $postingPeriod = $p->getPostingPeriod(new \DateTime($trx_date));
                     
-                    if($postingPeriod->getPeriodStatus()!=="C"){
+                    if ($postingPeriod->getPeriodStatus() !== "C") {
                         $entity->setTrxDate(new \DateTime($trx_date));
-                    }else{
+                    } else {
                         $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
                     }
-                    
                 }
                 
                 $wh = $this->doctrineEM->find('Application\Entity\NmtInventoryWarehouse', $target_wh_id);
@@ -994,21 +991,21 @@ class ItemTransactionController extends AbstractActionController
             $entity->setWh($default_wh);
         }
         
-        $criteria=array(
-            'isActive'=>1,
+        $criteria = array(
+            'isActive' => 1
         );
-        $sort_criteria=array(
-            'currency'=>'ASC',
+        $sort_criteria = array(
+            'currency' => 'ASC'
         );
         
-        $currency_list= $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationCurrency' )->findBy($criteria,$sort_criteria);
+        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
         
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
-            'currency_list' => $currency_list,
+            'currency_list' => $currency_list
         ));
     }
 
@@ -1297,6 +1294,135 @@ class ItemTransactionController extends AbstractActionController
             "item" => $item,
             "errors" => null,
             'redirectUrl' => $redirectUrl
+        ));
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function listAction()
+    {
+        $item_type = $this->params()->fromQuery('item_type');
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $is_fixed_asset = $this->params()->fromQuery('is_fixed_asset');
+        
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        
+        $criteria1 = array();
+        /*
+         * if (! $item_type == null) {
+         * $criteria1 = array (
+         * "itemType" => $item_type
+         * );
+         * }
+         */
+        $criteria2 = array();
+        if (! $is_active == null) {
+            $criteria2 = array(
+                "isActive" => $is_active
+            );
+            
+            if ($is_active == - 1) {
+                $criteria2 = array(
+                    "isActive" => '0'
+                );
+            }
+        }
+        
+        $criteria3 = array();
+        
+        if ($sort_by == null) :
+            $sort_by = "trxDate";
+        endif;
+        
+        if ($sort == null) :
+            $sort = "DESC";
+        endif;
+        
+        $sort_criteria = array(
+            $sort_by => $sort
+        );
+        
+        $criteria = array_merge($criteria1, $criteria2, $criteria3);
+        
+        // var_dump($criteria);
+        
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+        
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+        
+        // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findBy ( $criteria, $sort_criteria );
+        
+        $query = 'SELECT e, i FROM Application\Entity\NmtInventoryTrx e JOIN e.item i JOIN e.vendor v Where 1=?1';
+        
+        if($is_active==0){
+            $is_active=1;
+        }
+        
+        if ($is_active == - 1) {
+            $query = $query . " AND e.isActive = 0";
+        } elseif($is_active == 1){
+            $query = $query . " AND e.isActive = 1";
+        }
+        
+        switch ($sort_by) {
+            case "itemName":
+                $query = $query . ' ORDER BY i.' . $sort_by . ' ' . $sort . ' ,e.currency';
+                break;
+            case "vendorName":
+                $query = $query . ' ORDER BY v.' . $sort_by . ' ' . $sort . ' ,e.currency';
+                break;
+            case "trxDate":
+                $query = $query . ' ORDER BY e.' . $sort_by . ' ' . $sort . ' ,e.currency';
+                break;
+        }
+        
+        $list = $this->doctrineEM->createQuery($query)
+            ->setParameters(array(
+            "1" => 1
+        ))
+            ->getResult();
+        
+        $total_records = count($list);
+        $paginator = null;
+        
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $list = $this->doctrineEM->createQuery($query)
+                ->setParameters(array(
+                "1" => 1
+            ))
+                ->setFirstResult($paginator->minInPage - 1)
+                ->setMaxResults(($paginator->maxInPage - $paginator->minInPage) + 1)
+                ->getResult();
+        }
+        
+        // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
+        // var_dump (count($all));
+        
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'is_active' => $is_active,
+            'is_fixed_asset' => $is_fixed_asset,
+            'per_pape' => $resultsPerPage,
+            'item_type' => $item_type
+        
         ));
     }
 

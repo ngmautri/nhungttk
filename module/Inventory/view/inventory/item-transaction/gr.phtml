@@ -30,7 +30,7 @@ if (count ( $errors ) > 0) {
 	<div class="form-group margin-bottom required">
 		<label class="control-label col-sm-2" >Item: </label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="item_name" placeholder="Select Item if any"
+			<input disabled class="form-control input-sm" type="text" id="item_name" placeholder="Select Item if any"
 				name="item_name" value="<?php if(!$target == null): echo ($target->getItemName()); endif;?>">
 				<input type="hidden" id="item_id" placeholder="" name="item_id" value="<?php if(!$target == null): echo ($target->getId()); endif;?>">
 				<input type="hidden" id="token" placeholder="" name="token" value="">
@@ -54,7 +54,7 @@ endif;?>  name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >PR Referrence: </label>
 		<div class="col-sm-3">
-			<input disabled class="form-control" type="text" id="pr_item_name" placeholder="Select PR Item, if any" name="pr_row_name" 
+			<input disabled class="form-control input-sm" type="text" id="pr_item_name" placeholder="Select PR Item, if any" name="pr_row_name" 
 value="<?php if(!$entity == null): 
 if($entity->getPrRow()!==null):
 	if($entity->getPrRow()->getItem()!==null):
@@ -86,7 +86,7 @@ endif;?>">		</div>
  	 <div class="form-group margin-bottom required">
 		<label class="control-label col-sm-2" for="inputTag">Transaction Date:</label>
 		<div class="col-sm-3">
-<input class="form-control" type="text" name="trx_date"  placeholder = "please select" id="trx_date" 
+<input class="form-control input-sm" type="text" name="trx_date"  placeholder = "please select" id="trx_date" 
 value="
 <?php if(!$entity == null): 
 if($entity->getTrxDate() !== null):
@@ -99,7 +99,7 @@ endif;
          
          	<label class="control-label col-sm-2" for="inputTag">Target Warehouse:</label>
 		<div class="col-sm-3">
-  			<input class="form-control" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh"
+  			<input class="form-control input-sm" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh"
 value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity->getWh()->getWhName();endif;endif;?>">
 		</div>
 <a style="color: #0080ff;" href="javascript:;"
@@ -111,7 +111,7 @@ value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity-
   <div class="form-group margin-bottom required">
 		<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
 		<div class="col-sm-3">
-  				<input class="form-control" type="text" name="quantity" value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
+  				<input class="form-control input-sm" type="text" name="quantity" value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
 		</div>
 	    </div>
 	    </div>
@@ -124,7 +124,7 @@ value="<?php if (!$entity == null): if (!$entity->getWh() == null):echo $entity-
   <div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Vendor:</label>
 		<div class="col-sm-3">
-<input  class="form-control" type="text" id="vendor_name" placeholder="Select vendor" name="vendor_name" 
+<input  class="form-control input-sm" type="text" id="vendor_name" placeholder="Select vendor" name="vendor_name" 
 value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
 				
 <input type="hidden" id="vendor_id" placeholder="" 	name="vendor_id" 
@@ -142,7 +142,7 @@ value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $ent
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Vendor's Item Code</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="vendorItemCode" value="<?php echo (!$entity == null)? $entity->getVendorItemCode():"";?>">
 		</div>		
 	</div>
@@ -150,13 +150,13 @@ value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $ent
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Vendor's Item Unit</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				id = "vendor_item_unit" name="vendorItemUnit" value="<?php echo (!$entity == null)? $entity->getVendorItemUnit():"";?>">
 		</div>
 		
 		<label class="control-label col-sm-2" >Conversion Factor:</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				id="conversion_factor" name="conversionFactor" 
 value="<?php if(!$entity == null): if($entity->getConversionFactor()!==null): echo number_format($entity->getConversionFactor(), 2); endif;endif;?>">
 
@@ -169,13 +169,13 @@ value="<?php if(!$entity == null): if($entity->getConversionFactor()!==null): ec
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Unit Price</label>
 		<div class="col-sm-3">
-<input class="form-control" type="text"  placeholder="" name="vendorUnitPrice" 
+<input class="form-control input-sm" type="text"  placeholder="" name="vendorUnitPrice" 
 value="<?php if(!$entity == null): if($entity->getVendorUnitPrice()!==null): echo number_format($entity->getVendorUnitPrice(), 2); endif;endif;?>">
 		</div>
 		
 		<label class="control-label col-sm-2" >Currency:</label>
 		<div class="col-sm-3">
-<input disabled class="form-control" type="text" id="currency_name" placeholder="Select Currency" name="currency_name" 
+<input disabled class="form-control input-sm" type="text" id="currency_name" placeholder="Select Currency" name="currency_name" 
 value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getCurrency();endif;endif;?>">
 <input type="hidden" id="currency_id" placeholder="" name="currency_id" 
 value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $entity->getCurrency()->getId();endif;endif;?>">
@@ -189,7 +189,7 @@ value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $e
 	 <div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Lead Time:</label>
 		<div class="col-sm-3">
-  				<input class="form-control" type="text" name="leadTime" value="">
+  				<input class="form-control input-sm" type="text" name="leadTime" value="">
 		</div>
 	    </div>
 	    </div>
@@ -206,7 +206,7 @@ value="<?php if (!$entity == null): if (!$entity->getCurrency() == null):echo $e
 		
 		<label class="control-label col-sm-2" >Remarks:</label>
 		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="4" placeholder=""
+			<textarea  class="form-control input-sm" type="text" rows="4" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 		</div>
 	</div>

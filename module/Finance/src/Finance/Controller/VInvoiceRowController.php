@@ -85,7 +85,7 @@ class VInvoiceRowController extends AbstractActionController
                 
                 $item_id = $request->getPost('item_id');
                 $pr_row_id = $request->getPost('pr_row_id');
-                $isActive = $request->getPost('isActive');
+                $isActive = (int) $request->getPost('isActive');
                 
                 
                 $vendorItemCode = $request->getPost('vendorItemCode');
@@ -421,8 +421,7 @@ class VInvoiceRowController extends AbstractActionController
                     'invoiceRow' => $entity->getId(),
                 );
                 
-                /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/
-                
+                /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/                
                 $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
                 if($gr_entity!==null){
                     $gr_entity->setIsActive($isActive);
@@ -434,8 +433,11 @@ class VInvoiceRowController extends AbstractActionController
                 $this->doctrineEM->flush();
                 
                 
-                $this->flashMessenger()->addMessage('Posting Period is updated successfully!');
-                return $this->redirect()->toUrl("/finance/posting-period/list");
+                     $redirectUrl= "/finance/v-invoice/add1?token=". $entity->getInvoice()->getToken()."&entity_id=".$entity->getInvoice()->getId();
+                     $this->flashMessenger()->addMessage('Invoice '.$entity->getInvoice()->getInvoiceNo() . ' is updated successfully!');
+                     //$this->flashMessenger()->addMessage($redirectUrl);
+                     
+                     return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
@@ -556,6 +558,7 @@ class VInvoiceRowController extends AbstractActionController
             
             $total_records = 0;
             if (count ( $list ) > 0) {
+                $escaper = new Escaper ();
                 
                 $total_records = count ( $list );
                 foreach ( $list as $a ) {
@@ -566,14 +569,48 @@ class VInvoiceRowController extends AbstractActionController
                     $a_json_row ["row_token"] = $a->getToken();
                     $a_json_row ["row_unit"] = $a->getUnit();
                     $a_json_row ["row_quantity"] = $a->getQuantity();
-                    $a_json_row ["row_unit_price"] =number_format($a->getUnitPrice(),2);
-                    $a_json_row ["row_net"] = number_format($a->getNetAmount(),2);
-                    $a_json_row ["row_tax_rate"] = $a->getTaxRate();
-                    $a_json_row ["row_gross"] = number_format($a->getGrossAmount(),2);
-                
-                    $a_json_row ["pr_number"] = $a->getPrRow()->getPr()->getPrNumber();
+                    
+                    if($a->getUnitPrice()!==null){
+                        $a_json_row ["row_unit_price"] =number_format($a->getUnitPrice(),2);
+                    }else{
+                        $a_json_row ["row_unit_price"]=0;
+                    }
+                    
+                    
+                    if($a->getNetAmount()!==null){
+                        $a_json_row ["row_net"] = number_format($a->getNetAmount(),2);
+                    }else{
+                        $a_json_row ["row_net"]=0;
+                    }
+                  
+                    
+                    if($a->getTaxRate()!==null){
+                        $a_json_row ["row_tax_rate"] = $a->getTaxRate();
+                    }else{
+                        $a_json_row ["row_tax_rate"] = 0;
+                    }
+                    
+                    if($a->getGrossAmount()!==null){
+                        $a_json_row ["row_gross"] = number_format($a->getGrossAmount(),2);
+                    }else{
+                        $a_json_row ["row_gross"] = 0;
+                    }
+                    
+                    
+                    $a_json_row ["pr_number"] = "";
+                    if($a->getPrRow()!==null){
+                        if($a->getPrRow()->getPr()!==null){
+                            $a_json_row ["pr_number"] = $a->getPrRow()->getPr()->getPrNumber();
+                        }
+                    }
+                        
+                    //$a_json_row ["item_name"]="";
+                    /* if( $a_json_row ["item_name"]!==null){
+                        $a_json_row ["item_name"] = $escaper->escapeJs($a->getItem()->getItemName());
+                    } */
                     
                     $a_json_row ["item_name"] = $a->getItem()->getItemName();
+                    
                     $a_json_row ["item_sku"] = $a->getItem()->getItemSku();
                     $a_json_row ["item_token"] = $a->getItem()->getToken();
                     $a_json_row ["item_checksum"] = $a->getItem()->getChecksum();

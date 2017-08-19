@@ -33,7 +33,7 @@ return array(
                 'route' => 'finance/default',
                 'controller' => 'v-invoice',
                 'action' => 'list',
-                'icon' => 'glyphicon glyphicon-plus'
+                'icon' => 'glyphicon glyphicon-triangle-right'
             )
         )
     ),

@@ -578,11 +578,16 @@ class ItemPurchaseController extends AbstractActionController {
 			}
 		}
 		
-		if ($sort_by == "itemName") {
-			$query = $query . ' ORDER BY i.' . $sort_by . ' ' . $sort . ' ,e.currency';
-		} elseif ($sort_by == "vendorName") {
-			$query = $query . ' ORDER BY v.' . $sort_by . ' ' . $sort . ' ,e.currency';
+		switch($sort_by){
+		    case "itemName":
+		        $query = $query . ' ORDER BY i.' . $sort_by . ' ' . $sort . ' ,e.currency';
+		        break;
+		    case "vendorName":
+		        $query = $query . ' ORDER BY v.' . $sort_by . ' ' . $sort . ' ,e.currency';
+		        break;
 		}
+		
+		
 		$list = $this->doctrineEM->createQuery ( $query )->setParameters ( array (
 				"1" => 1 
 		) )->getResult ();

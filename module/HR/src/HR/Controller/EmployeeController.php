@@ -56,9 +56,6 @@ class EmployeeController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
         
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            "email" => $this->identity()
-        ));
         
         if ($request->isPost()) {
             

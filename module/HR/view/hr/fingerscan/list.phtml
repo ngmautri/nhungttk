@@ -1,0 +1,121 @@
+
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Leave Reason</a></li>
+	</ul>
+<div id="general" style="font-size: 9pt">
+<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/hr/leave-reason/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Leave Reason</a>
+<hr>
+
+
+<?php
+
+if ($total_records <= 0) {
+	
+	echo 'No record found!';
+} else {
+	
+	if (! is_null ( $paginator )) {
+		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
+	} else {
+		echo $total_records. ' records found!';
+	}
+	
+	?>
+
+<table style="font-size: 10pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Employee Code</b></td>
+			<?php 
+			for ($i=1; $i<=31;$i++){
+			 echo '<td><b>' . $i . '</b></td>';
+			}
+			?>			
+			<td><b>Action</b></td>
+			</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $a ) :
+		$count ++;
+        /**@var \Application\Entity\NmtHrLeaveReason $a ; */
+		?>
+	 <tr>
+	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	  		<td><?php echo $a['employee_code'];?></td>
+			<?php 
+			for ($i=1; $i<=31;$i++){
+			    $hh_in = 'hh_in_'.$i;
+			    $hh_out = 'hh_out_'.$i;
+			    
+			    $mm_in = 'mm_in_'.$i;
+			    $mm_out = 'mm_out_'.$i;
+			    
+			    $clockin  = new DateTime($a[$hh_in].":".$a[$mm_in].":00");
+			    $clockout  = new DateTime($a[$hh_out].":".$a[$mm_out].":00");
+			    $diff = $clockin->diff($clockout);
+			    echo "<td>" . $a[$hh_in] . ":" . $a[$mm_in]."<br>". $a[$hh_out] . ":" . $a[$mm_out] ."<br>". $diff->format('%h h') ."</td>";
+			}
+			?>	
+		 <td>
+		</td>
+		
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<?php
+	
+	// ===============================
+	if (! is_null ( $paginator )) :
+		
+		// change it only
+	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
+		$_connector_symbol = '&';
+		
+		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+		
+		$p1 = ($paginator->page) - 1;
+		$p2 = ($paginator->page) + 1;
+		
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		
+		echo '<ul class="pagination pagination-sm">';
+		
+		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $first . '"> |< </a></li>';
+			echo '<li><a href="' . $prev . '"> < </a></li>';
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			
+			if ($i == $paginator->page) {
+				echo '<li><a class="active" href="#">' . $i . '</a></li>';
+			} else {
+				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+			}
+		}
+		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $next . '"> > </a></li>';
+			echo '<li><a href="' . $last . '"> >| </a></li>';
+		}
+		echo '</ul>';
+endif;
+	
+}
+// ===============================
+?>
+</div></div>

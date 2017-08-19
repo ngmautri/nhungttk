@@ -7,8 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrFingerscan
  *
- * @ORM\Table(name="nmt_hr_fingerscan", uniqueConstraints={@ORM\UniqueConstraint(name="employee_id_UNIQUE", columns={"employee_id"})})
+ * @ORM\Table(name="nmt_hr_fingerscan", indexes={@ORM\Index(name="nmt_hr_fingerscan_KF1_idx", columns={"created_by"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtHrFingerscanRepository")
  */
 class NmtHrFingerscan
 {
@@ -20,11 +21,32 @@ class NmtHrFingerscan
     private $token;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="employee_id", type="integer", nullable=false)
+     */
+    private $employeeId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="employee_code", type="integer", nullable=false)
+     */
+    private $employeeCode;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="attendance_date", type="datetime", nullable=true)
      */
     private $attendanceDate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="attendance_type", type="integer", nullable=true)
+     */
+    private $attendanceType;
 
     /**
      * @var \DateTime
@@ -62,28 +84,18 @@ class NmtHrFingerscan
     private $createdOn;
 
     /**
-     * @var integer
+     * @var \DateTime
      *
-     * @ORM\Column(name="created_by", type="integer", nullable=true)
+     * @ORM\Column(name="reconciled_on", type="datetime", nullable=true)
      */
-    private $createdBy;
+    private $reconciledOn;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="attendance_type", type="integer", nullable=true)
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
-    private $attendanceType;
-
-    /**
-     * @var \Application\Entity\NmtHrEmployee
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
-     * })
-     */
-    private $employee;
+    private $remarks;
 
     /**
      * @var \Application\Entity\NmtHrAttendanceType
@@ -96,6 +108,16 @@ class NmtHrFingerscan
      * })
      */
     private $id;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
 
 
 
@@ -124,6 +146,54 @@ class NmtHrFingerscan
     }
 
     /**
+     * Set employeeId
+     *
+     * @param integer $employeeId
+     *
+     * @return NmtHrFingerscan
+     */
+    public function setEmployeeId($employeeId)
+    {
+        $this->employeeId = $employeeId;
+
+        return $this;
+    }
+
+    /**
+     * Get employeeId
+     *
+     * @return integer
+     */
+    public function getEmployeeId()
+    {
+        return $this->employeeId;
+    }
+
+    /**
+     * Set employeeCode
+     *
+     * @param integer $employeeCode
+     *
+     * @return NmtHrFingerscan
+     */
+    public function setEmployeeCode($employeeCode)
+    {
+        $this->employeeCode = $employeeCode;
+
+        return $this;
+    }
+
+    /**
+     * Get employeeCode
+     *
+     * @return integer
+     */
+    public function getEmployeeCode()
+    {
+        return $this->employeeCode;
+    }
+
+    /**
      * Set attendanceDate
      *
      * @param \DateTime $attendanceDate
@@ -145,6 +215,30 @@ class NmtHrFingerscan
     public function getAttendanceDate()
     {
         return $this->attendanceDate;
+    }
+
+    /**
+     * Set attendanceType
+     *
+     * @param integer $attendanceType
+     *
+     * @return NmtHrFingerscan
+     */
+    public function setAttendanceType($attendanceType)
+    {
+        $this->attendanceType = $attendanceType;
+
+        return $this;
+    }
+
+    /**
+     * Get attendanceType
+     *
+     * @return integer
+     */
+    public function getAttendanceType()
+    {
+        return $this->attendanceType;
     }
 
     /**
@@ -268,75 +362,51 @@ class NmtHrFingerscan
     }
 
     /**
-     * Set createdBy
+     * Set reconciledOn
      *
-     * @param integer $createdBy
+     * @param \DateTime $reconciledOn
      *
      * @return NmtHrFingerscan
      */
-    public function setCreatedBy($createdBy)
+    public function setReconciledOn($reconciledOn)
     {
-        $this->createdBy = $createdBy;
+        $this->reconciledOn = $reconciledOn;
 
         return $this;
     }
 
     /**
-     * Get createdBy
+     * Get reconciledOn
      *
-     * @return integer
+     * @return \DateTime
      */
-    public function getCreatedBy()
+    public function getReconciledOn()
     {
-        return $this->createdBy;
+        return $this->reconciledOn;
     }
 
     /**
-     * Set attendanceType
+     * Set remarks
      *
-     * @param integer $attendanceType
+     * @param string $remarks
      *
      * @return NmtHrFingerscan
      */
-    public function setAttendanceType($attendanceType)
+    public function setRemarks($remarks)
     {
-        $this->attendanceType = $attendanceType;
+        $this->remarks = $remarks;
 
         return $this;
     }
 
     /**
-     * Get attendanceType
+     * Get remarks
      *
-     * @return integer
+     * @return string
      */
-    public function getAttendanceType()
+    public function getRemarks()
     {
-        return $this->attendanceType;
-    }
-
-    /**
-     * Set employee
-     *
-     * @param \Application\Entity\NmtHrEmployee $employee
-     *
-     * @return NmtHrFingerscan
-     */
-    public function setEmployee(\Application\Entity\NmtHrEmployee $employee = null)
-    {
-        $this->employee = $employee;
-
-        return $this;
-    }
-
-    /**
-     * Get employee
-     *
-     * @return \Application\Entity\NmtHrEmployee
-     */
-    public function getEmployee()
-    {
-        return $this->employee;
+        return $this->remarks;
     }
 
     /**
@@ -361,5 +431,29 @@ class NmtHrFingerscan
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtHrFingerscan
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
     }
 }

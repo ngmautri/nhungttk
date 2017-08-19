@@ -14,6 +14,7 @@ use ZendSearch\Lucene\Search\Query\Wildcard;
 use Application\Entity\NmtInventoryItem;
 use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\QueryParser;
+use Exception;
 use Application\Entity\NmtProcurePrRow;
 
 /**
@@ -81,6 +82,8 @@ class PrSearchService
                             $doc->addField(Field::UnIndexed('pr_checksum', $row->getPr()
                                 ->getChecksum()));
                             $doc->addField(Field::text('pr_number', $row->getPr()
+                                ->getPrNumber()));
+                            $doc->addField(Field::text('pr', $row->getPr()
                                 ->getPrNumber()));
                         }
                         
@@ -206,6 +209,8 @@ class PrSearchService
                     $doc->addField(Field::UnIndexed('pr_checksum', $row->getPr()
                         ->getChecksum()));
                     $doc->addField(Field::text('pr_number', $row->getPr()
+                        ->getPrNumber()));
+                    $doc->addField(Field::text('pr', $row->getPr()
                         ->getPrNumber()));
                 }
                 

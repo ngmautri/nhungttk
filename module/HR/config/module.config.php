@@ -26,7 +26,14 @@ return array (
 								'controller' => 'employee',
 								'action' => 'list',
 								'icon' => 'glyphicon glyphicon-triangle-right'
-						)
+						),
+    				    array (
+    				        'label' => 'Fingerscan', 
+    				        'route' => 'hr/default',
+    				        'controller' => 'fingerscan',
+    				        'action' => 'list',
+    				        'icon' => 'glyphicon glyphicon-triangle-right'
+    				    )
 				)
 		),
 		'router' => array (
@@ -90,6 +97,8 @@ return array (
 				        'HR\Controller\EmployeeWarning' => 'HR\Controller\EmployeeWarningControllerFactory',
 				        'HR\Controller\EmployeeEvaluation' => 'HR\Controller\EmployeeEvaluationControllerFactory',
 				        'HR\Controller\EmployeeOT' => 'HR\Controller\EmployeeOTControllerFactory',
+				        'HR\Controller\leaveReason' => 'HR\Controller\LeaveReasonControllerFactory',
+				        'HR\Controller\Fingerscan' => 'HR\Controller\FingerscanControllerFactory',
 				    
 				)
 		),

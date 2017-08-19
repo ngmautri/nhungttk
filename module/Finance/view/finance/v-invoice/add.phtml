@@ -168,6 +168,11 @@ if (count ( $errors ) > 0) {
 
 <script>
 
+$('#invoiceDate').bind('change', function() {
+	$('#postingDate').val($('#invoiceDate').val());
+	$('#grDate').val($('#invoiceDate').val());
+});
+
 $( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='grDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});

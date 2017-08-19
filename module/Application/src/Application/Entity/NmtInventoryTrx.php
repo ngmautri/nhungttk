@@ -186,6 +186,16 @@ class NmtInventoryTrx
     private $createdBy;
 
     /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
+
+    /**
      * @var \Application\Entity\NmtInventoryWarehouse
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
@@ -264,16 +274,6 @@ class NmtInventoryTrx
      * })
      */
     private $invoiceRow;
-
-    /**
-     * @var \Application\Entity\MlaUsers
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
-     * })
-     */
-    private $lastChangeBy;
 
 
 
@@ -840,6 +840,30 @@ class NmtInventoryTrx
     }
 
     /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
+    }
+
+    /**
      * Set wh
      *
      * @param \Application\Entity\NmtInventoryWarehouse $wh
@@ -1029,29 +1053,5 @@ class NmtInventoryTrx
     public function getInvoiceRow()
     {
         return $this->invoiceRow;
-    }
-
-    /**
-     * Set lastChangeBy
-     *
-     * @param \Application\Entity\MlaUsers $lastChangeBy
-     *
-     * @return NmtInventoryTrx
-     */
-    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastChangeBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getLastChangeBy()
-    {
-        return $this->lastChangeBy;
     }
 }

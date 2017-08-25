@@ -152,7 +152,7 @@ if ($total_records <= 0) {
 			<td><?php echo $a->getVendor()->getVendorName();?>
 			<?php if($a->getInvoiceRow()!==null): if($a->getInvoiceRow()->getInvoice()!==null): 
 echo '<div><a target="_blank" style="font-size: 8.5pt; color:gray" href="/finance/v-invoice/add1?token='. 
-			$a->getInvoiceRow()->getInvoice()->getToken().'&entity_id='.$a->getInvoiceRow()->getInvoice()->getId().'">'.$a->getInvoiceRow()->getInvoice()->getSapDoc().'</a>';
+			$a->getInvoiceRow()->getInvoice()->getToken().'&entity_id='.$a->getInvoiceRow()->getInvoice()->getId().'">'.$a->getInvoiceRow()->getInvoice()->getId().'</a>';
 endif;
 endif;?>			
 			</td>

@@ -16,7 +16,7 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general">Vendor Invoice</a></li>
+		<li><a href="#general"><small><i class="glyphicon glyphicon-usd"></i></small>&nbsp;Vendor Invoice</a></li>
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
@@ -28,11 +28,28 @@ if (count ( $errors ) > 0) {
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">INVOICE
-						HEADER:</a>
+					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
 				</legend>
 				<div id="invoice_header" class="collapse in">
+					<div class="form-group margin-bottom required">
+					<label class="control-label col-sm-2">Current State:</label>
+					<div class="col-sm-3">
+					<select name="currentState" class="form-control">
+							<option value="">Please Select</option>
+							<option <?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?> value="contract">Contract /PO</option>
+							<option <?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?> value="draftInvoice">Draft Invoice</option>
+							<option <?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?> value="finalInvoice">Final Invoice</option>
+    				</select>
+   					</div>
+   					
+   					<div class="col-sm-3">
+							<input
+								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
 
+						</div>
+   					
+   					</div>
 
 					<div class="form-group margin-bottom required">
 						<label class="control-label col-sm-2 ">Vendor:</label>
@@ -48,44 +65,27 @@ if (count ( $errors ) > 0) {
 						</div>
 						<div class="col-sm-3">
 
-							<input
-								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
-
-						</div>
-						<div class="col-sm-3">
-
 							<a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor
 								List&nbsp;&nbsp;</a><small><i
 								class="glyphicon glyphicon-new-window"></i></small>
 						</div>
 					</div>
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Invoice number:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder="Please enter invoice number!"
-								id="invoiceNo" name="invoiceNo" 
-								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
-						</div>
-						<label class="control-label col-sm-2">SAP Document No.:</label>
+					
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Contract /PO:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
-								id="sapDoc" name="sapDoc" 
-								value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
+								id="contractNo" name="contractNo" 
+								value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
 						</div>
-						
-						
-					</div>
-					<div class="form-group margin-bottom required">
-
-						<label class="control-label col-sm-2 required">Invoice Date:</label>
+						<label class="control-label col-sm-2">Contract /PO Date:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text"
-								id="invoiceDate" name="invoiceDate"
-								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
-								placeholder=" please select" />
-							</div>
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="contractDate" name="contractDate" 
+								value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
+						</div>
 					</div>
+					
 					<div class="form-group margin-bottom required">
 					
 					<label class="control-label col-sm-2">Currency:</label>
@@ -114,6 +114,36 @@ if (count ( $errors ) > 0) {
    					</select>
    					</div>
    					</div>
+					
+					
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Invoice number:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="invoiceNo" name="invoiceNo" 
+								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
+						</div>
+						<label class="control-label col-sm-2">SAP Document No.:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="sapDoc" name="sapDoc" 
+								value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
+						</div>
+						
+						
+					</div>
+					
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2 required">Invoice Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm input-sm" type="text"
+								id="invoiceDate" name="invoiceDate"
+								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+							</div>
+					</div>
+					
 					<div class="form-group margin-bottom required">
 
 						<label class="control-label col-sm-2">Posting Date:</label>
@@ -127,7 +157,7 @@ if (count ( $errors ) > 0) {
 					
 					<div class="form-group margin-bottom required">
 
-						<label class="control-label col-sm-2">Good Receipt Date:</label>
+						<label class="control-label col-sm-2">Goods Receipt Date:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm input-sm" type="text"
 								id="grDate" name="grDate"
@@ -176,6 +206,8 @@ $('#invoiceDate').bind('change', function() {
 $( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='grDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
 
 $( "#vendor_name_1" ).autocomplete({
     source: "/bp/vendor-search/auto-complete",
@@ -193,7 +225,7 @@ $( "#vendor_name_1" ).autocomplete({
     })
     .autocomplete( "instance" )._renderItem = function( ul, item ) {
     return $( "<li>" )
-      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><b>" + item.value + "</b><br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
       .appendTo( ul );
     };
 

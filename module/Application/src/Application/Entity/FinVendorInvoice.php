@@ -113,6 +113,34 @@ class FinVendorInvoice
     private $sapDoc;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="contract_no", type="string", length=45, nullable=true)
+     */
+    private $contractNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="contract_date", type="datetime", nullable=true)
+     */
+    private $contractDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="quotation_no", type="string", length=45, nullable=true)
+     */
+    private $quotationNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="quotation_date", type="datetime", nullable=true)
+     */
+    private $quotationDate;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -484,6 +512,102 @@ class FinVendorInvoice
     public function getSapDoc()
     {
         return $this->sapDoc;
+    }
+
+    /**
+     * Set contractNo
+     *
+     * @param string $contractNo
+     *
+     * @return FinVendorInvoice
+     */
+    public function setContractNo($contractNo)
+    {
+        $this->contractNo = $contractNo;
+
+        return $this;
+    }
+
+    /**
+     * Get contractNo
+     *
+     * @return string
+     */
+    public function getContractNo()
+    {
+        return $this->contractNo;
+    }
+
+    /**
+     * Set contractDate
+     *
+     * @param \DateTime $contractDate
+     *
+     * @return FinVendorInvoice
+     */
+    public function setContractDate($contractDate)
+    {
+        $this->contractDate = $contractDate;
+
+        return $this;
+    }
+
+    /**
+     * Get contractDate
+     *
+     * @return \DateTime
+     */
+    public function getContractDate()
+    {
+        return $this->contractDate;
+    }
+
+    /**
+     * Set quotationNo
+     *
+     * @param string $quotationNo
+     *
+     * @return FinVendorInvoice
+     */
+    public function setQuotationNo($quotationNo)
+    {
+        $this->quotationNo = $quotationNo;
+
+        return $this;
+    }
+
+    /**
+     * Get quotationNo
+     *
+     * @return string
+     */
+    public function getQuotationNo()
+    {
+        return $this->quotationNo;
+    }
+
+    /**
+     * Set quotationDate
+     *
+     * @param \DateTime $quotationDate
+     *
+     * @return FinVendorInvoice
+     */
+    public function setQuotationDate($quotationDate)
+    {
+        $this->quotationDate = $quotationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get quotationDate
+     *
+     * @return \DateTime
+     */
+    public function getQuotationDate()
+    {
+        return $this->quotationDate;
     }
 
     /**

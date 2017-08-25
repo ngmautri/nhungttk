@@ -7,12 +7,20 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrFingerscan
  *
- * @ORM\Table(name="nmt_hr_fingerscan", indexes={@ORM\Index(name="nmt_hr_fingerscan_KF1_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_hr_fingerscan", indexes={@ORM\Index(name="nmt_hr_fingerscan_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_fingerscan_KF2_idx", columns={"employee_code"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtHrFingerscanRepository")
  */
 class NmtHrFingerscan
 {
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
     /**
      * @var string
      *
@@ -98,18 +106,6 @@ class NmtHrFingerscan
     private $remarks;
 
     /**
-     * @var \Application\Entity\NmtHrAttendanceType
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\OneToOne(targetEntity="Application\Entity\NmtHrAttendanceType")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id", referencedColumnName="id")
-     * })
-     */
-    private $id;
-
-    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -120,6 +116,16 @@ class NmtHrFingerscan
     private $createdBy;
 
 
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Set token
@@ -407,30 +413,6 @@ class NmtHrFingerscan
     public function getRemarks()
     {
         return $this->remarks;
-    }
-
-    /**
-     * Set id
-     *
-     * @param \Application\Entity\NmtHrAttendanceType $id
-     *
-     * @return NmtHrFingerscan
-     */
-    public function setId(\Application\Entity\NmtHrAttendanceType $id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * Get id
-     *
-     * @return \Application\Entity\NmtHrAttendanceType
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**

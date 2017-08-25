@@ -23,16 +23,15 @@ else:
 	
 	?>
 
-<table style="font-size: 10pt;" class="table table-bordered table-hover">
+<table style="font-size: 9.3pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Vendor</b></td>
+			<td><b>Contract</b></td>
 			<td><b>Invoice Number</b></td>
 			<td><b>SAP No.</b></td>
-			<td><b>Invoice Date</b></td>
-			<td><b>SAP Doc</b></td>
-			<td><b>Status</b></td>
+			<td><b>Current State</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -51,19 +50,66 @@ else:
 	<tr>
 			<td><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></td>
 			<td><?php echo $a->getVendor()->getVendorName()?></td>
-			<td><?php echo $a->getInvoiceNo()?></td>
+			<td><?php echo $a->getContractNo()?><br>
+			<span style="color: gray;"><?php if($a->getContractDate()!==null):echo date_format($a->getContractDate(),"d-m-Y");   endif;?></span></td>
+			<td><?php echo $a->getInvoiceNo()?><br>
+			<span style="color: gray;"><?php if($a->getInvoiceDate()!==null):echo date_format($a->getInvoiceDate(),"d-m-Y");   endif;?></span>
+			</td>
 			<td><?php echo $a->getSapDoc()?></td>
-			<td><?php if($a->getInvoiceDate()!==null):echo date_format($a->getInvoiceDate(),"d-m-Y");   endif;?></td>
-			
-			<td><?php echo $a->getIsActive()?></td>
+			<td><?php echo $a->getCurrentState()?></td>
 			<td>
 <a href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
 			</td>
-	<?php endforeach; ?>s
+	<?php endforeach; ?>
  </tbody>
 </table>
+
+
+<?php 	
+	// ===============================
+	if (! is_null ( $paginator )) :
+		
+		// change it only
+	$base = $this->baseUrl . '/finance/v-invoice/list?is_active='. $is_active;
+		$_connector_symbol = '&';
+		
+		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+		
+		$p1 = ($paginator->page) - 1;
+		$p2 = ($paginator->page) + 1;
+		
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		
+		echo '<ul class="pagination pagination-sm">';
+		
+		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $first . '"> |< </a></li>';
+			echo '<li><a href="' . $prev . '"> < </a></li>';
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			
+			if ($i == $paginator->page) {
+				echo '<li><a class="active" href="#">' . $i . '</a></li>';
+			} else {
+				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+			}
+		}
+		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $next . '"> > </a></li>';
+			echo '<li><a href="' . $last . '"> >| </a></li>';
+		}
+		echo '</ul>';
+endif;
+// ===============================
+?>
 
 </div>
 <?php endif; ?>
 </div>
+<?php
 

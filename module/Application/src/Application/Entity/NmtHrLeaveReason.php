@@ -38,6 +38,13 @@ class NmtHrLeaveReason
     /**
      * @var string
      *
+     * @ORM\Column(name="leave_reason_local", type="string", length=60, nullable=true)
+     */
+    private $leaveReasonLocal;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
     private $description;
@@ -48,6 +55,20 @@ class NmtHrLeaveReason
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="valid_from", type="datetime", nullable=true)
+     */
+    private $validFrom;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="valid_to", type="datetime", nullable=true)
+     */
+    private $validTo;
 
     /**
      * @var string
@@ -76,13 +97,6 @@ class NmtHrLeaveReason
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
      */
     private $lastchangeOn;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="leave_reason_local", type="string", length=60, nullable=true)
-     */
-    private $leaveReasonLocal;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -165,6 +179,30 @@ class NmtHrLeaveReason
     }
 
     /**
+     * Set leaveReasonLocal
+     *
+     * @param string $leaveReasonLocal
+     *
+     * @return NmtHrLeaveReason
+     */
+    public function setLeaveReasonLocal($leaveReasonLocal)
+    {
+        $this->leaveReasonLocal = $leaveReasonLocal;
+
+        return $this;
+    }
+
+    /**
+     * Get leaveReasonLocal
+     *
+     * @return string
+     */
+    public function getLeaveReasonLocal()
+    {
+        return $this->leaveReasonLocal;
+    }
+
+    /**
      * Set description
      *
      * @param string $description
@@ -210,6 +248,54 @@ class NmtHrLeaveReason
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    /**
+     * Set validFrom
+     *
+     * @param \DateTime $validFrom
+     *
+     * @return NmtHrLeaveReason
+     */
+    public function setValidFrom($validFrom)
+    {
+        $this->validFrom = $validFrom;
+
+        return $this;
+    }
+
+    /**
+     * Get validFrom
+     *
+     * @return \DateTime
+     */
+    public function getValidFrom()
+    {
+        return $this->validFrom;
+    }
+
+    /**
+     * Set validTo
+     *
+     * @param \DateTime $validTo
+     *
+     * @return NmtHrLeaveReason
+     */
+    public function setValidTo($validTo)
+    {
+        $this->validTo = $validTo;
+
+        return $this;
+    }
+
+    /**
+     * Get validTo
+     *
+     * @return \DateTime
+     */
+    public function getValidTo()
+    {
+        return $this->validTo;
     }
 
     /**
@@ -306,30 +392,6 @@ class NmtHrLeaveReason
     public function getLastchangeOn()
     {
         return $this->lastchangeOn;
-    }
-
-    /**
-     * Set leaveReasonLocal
-     *
-     * @param string $leaveReasonLocal
-     *
-     * @return NmtHrLeaveReason
-     */
-    public function setLeaveReasonLocal($leaveReasonLocal)
-    {
-        $this->leaveReasonLocal = $leaveReasonLocal;
-
-        return $this;
-    }
-
-    /**
-     * Get leaveReasonLocal
-     *
-     * @return string
-     */
-    public function getLeaveReasonLocal()
-    {
-        return $this->leaveReasonLocal;
     }
 
     /**

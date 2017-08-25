@@ -37,9 +37,9 @@ class VInvoiceRowController extends AbstractActionController
      */
     public function indexAction()
     {}
-    
+
     /**
-     * 
+     *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
@@ -61,7 +61,6 @@ class VInvoiceRowController extends AbstractActionController
             $invoice_id = $request->getPost('invoice_id');
             $invoice_token = $request->getPost('invoice_token');
             
-              
             $criteria = array(
                 'id' => $invoice_id,
                 'token' => $invoice_token
@@ -78,7 +77,7 @@ class VInvoiceRowController extends AbstractActionController
                     'errors' => $errors,
                     'target' => null,
                     'entity' => null,
-                    'currency_list' =>$currency_list
+                    'currency_list' => $currency_list
                 ));
                 // might need redirect
             } else {
@@ -86,7 +85,6 @@ class VInvoiceRowController extends AbstractActionController
                 $item_id = $request->getPost('item_id');
                 $pr_row_id = $request->getPost('pr_row_id');
                 $isActive = (int) $request->getPost('isActive');
-                
                 
                 $vendorItemCode = $request->getPost('vendorItemCode');
                 $unit = $request->getPost('unit');
@@ -100,7 +98,6 @@ class VInvoiceRowController extends AbstractActionController
                 
                 $remarks = $request->getPost('remarks');
                 
-                   
                 if ($isActive !== 1) {
                     $isActive = 0;
                 }
@@ -115,17 +112,15 @@ class VInvoiceRowController extends AbstractActionController
                 $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
                 $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
                 
-                
-                if($pr_row == null){
-                    //$errors[] = 'Item can\'t be empty!';
-                }else{
+                if ($pr_row == null) {
+                    // $errors[] = 'Item can\'t be empty!';
+                } else {
                     $entity->setPrRow($pr_row);
-                    
                 }
-                 
-                if($item== null){
+                
+                if ($item == null) {
                     $errors[] = 'Item can\'t be empty!';
-                }else{
+                } else {
                     $entity->setItem($item);
                 }
                 
@@ -134,7 +129,7 @@ class VInvoiceRowController extends AbstractActionController
                 $entity->setConversionFactor($conversionFactor);
                 $entity->setConverstionText($converstionText);
                 
-                $n_validated= 0;
+                $n_validated = 0;
                 if ($quantity == null) {
                     $errors[] = 'Please  enter quantity!';
                 } else {
@@ -146,49 +141,49 @@ class VInvoiceRowController extends AbstractActionController
                             $errors[] = 'Quantity must be greater than 0!';
                         }
                         $entity->setQuantity($quantity);
-                        $n_validated++;
+                        $n_validated ++;
                     }
                 }
-                 
+                
                 if ($unitPrice !== null) {
                     if (! is_numeric($unitPrice)) {
-                         $errors [] = 'Price is not valid. It must be a number.';
+                        $errors[] = 'Price is not valid. It must be a number.';
                     } else {
                         if ($unitPrice <= 0) {
                             $errors[] = 'Price must be greate than 0!';
                         }
                         $entity->setUnitPrice($unitPrice);
-                        $n_validated++;
+                        $n_validated ++;
                     }
-                }                
+                }
                 
-                if($n_validated == 2){
-                    $netAmount = $entity->getQuantity()*$entity->getUnitPrice();
+                if ($n_validated == 2) {
+                    $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
                     $entity->setNetAmount($netAmount);
                 }
                 
                 if ($taxRate !== null) {
                     if (! is_numeric($taxRate)) {
-                        $errors [] = '$taxRate is not valid. It must be a number.';
+                        $errors[] = '$taxRate is not valid. It must be a number.';
                     } else {
                         if ($taxRate < 0) {
                             $errors[] = '$taxRate must be greate than 0!';
                         }
                         $entity->setTaxRate($taxRate);
-                        $n_validated++;
+                        $n_validated ++;
                     }
-                }    
+                }
                 
-                if($n_validated==3){
-                    $taxAmount = $entity->getNetAmount()*$entity->getTaxRate()/100;
+                if ($n_validated == 3) {
+                    $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
                     $grossAmount = $entity->getNetAmount() + $taxAmount;
                     $entity->setTaxAmount($taxAmount);
                     $entity->setGrossAmount($grossAmount);
                 }
                 
-                //$entity->setTraceStock($traceStock);
+                // $entity->setTraceStock($traceStock);
                 $entity->setRemarks($remarks);
-                 
+                
                 if (count($errors) > 0) {
                     
                     return new ViewModel(array(
@@ -196,8 +191,8 @@ class VInvoiceRowController extends AbstractActionController
                         'errors' => $errors,
                         'target' => $target,
                         'entity' => $entity,
-                        'currency_list' =>$currency_list
-                        
+                        'currency_list' => $currency_list
+                    
                     ));
                 }
                 ;
@@ -224,7 +219,6 @@ class VInvoiceRowController extends AbstractActionController
                 $gr_entity->setVendorItemCode($entity->getVendorItemCode());
                 $gr_entity->setVendorItemUnit($entity->getUnit());
                 $gr_entity->setVendorUnitPrice($entity->getUnitPrice());
-                $gr_entity->setIsActive(1);
                 $gr_entity->setTrxDate($target->getGrDate());
                 $gr_entity->setCurrency($target->getCurrency());
                 $gr_entity->setRemarks("Auto:");
@@ -236,10 +230,18 @@ class VInvoiceRowController extends AbstractActionController
                 
                 $gr_entity->setTaxRate($entity->getTaxRate());
                 
-                $this->doctrineEM->persist($gr_entity);
-                $this->doctrineEM->flush();                
+                $gr_entity->setCurrentState($target->getCurrentState());
                 
-                $redirectUrl = "/finance/v-invoice-row/add?token=".$target->getToken()."&target_id=".$target->getId();
+                if ($target->getCurrentState() == "finalInvoice") {
+                    $gr_entity->setIsActive(1);
+                  } else {
+                    $gr_entity->setIsActive(0);
+                }
+                
+                $this->doctrineEM->persist($gr_entity);
+                $this->doctrineEM->flush();
+                
+                $redirectUrl = "/finance/v-invoice-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
                 $this->flashMessenger()->addMessage('Invoice Item has been created successfully!');
                 return $this->redirect()->toUrl($redirectUrl);
             }
@@ -252,8 +254,8 @@ class VInvoiceRowController extends AbstractActionController
         }
         
         $redirectUrl = $this->getRequest()
-        ->getHeader('Referer')
-        ->getUri();
+            ->getHeader('Referer')
+            ->getUri();
         
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
@@ -265,11 +267,12 @@ class VInvoiceRowController extends AbstractActionController
         
         $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
         
-        
         $entity = new FinVendorInvoiceRow();
-  
+        
         // set null
         $entity->setIsActive(1);
+		$entity->setConversionFactor(1);
+        $entity->setUnit("each");
         
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
@@ -277,11 +280,9 @@ class VInvoiceRowController extends AbstractActionController
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list
-            
+        
         ));
     }
-    
-  
 
     /**
      */
@@ -355,7 +356,6 @@ class VInvoiceRowController extends AbstractActionController
      */
     public function editAction()
     {
-        
         $criteria = array(
             'isActive' => 1
         );
@@ -364,7 +364,6 @@ class VInvoiceRowController extends AbstractActionController
         );
         
         $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
-        
         
         $request = $this->getRequest();
         
@@ -380,7 +379,7 @@ class VInvoiceRowController extends AbstractActionController
                 'id' => $entity_id,
                 'token' => $token
             );
-               
+            
             /** @var \Application\Entity\FinVendorInvoiceRow $entity ; */
             $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findOneBy($criteria);
             
@@ -392,9 +391,9 @@ class VInvoiceRowController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
-                    'target'=>null,
-                    'currency_list' =>$currency_list
-                    
+                    'target' => null,
+                    'currency_list' => $currency_list
+                
                 ));
                 
                 // might need redirect
@@ -402,12 +401,12 @@ class VInvoiceRowController extends AbstractActionController
                 
                 $isActive = (int) $request->getPost('$isActive');
                 
-                if($isActive!=1){
-                    $isActive =0;
+                if ($isActive != 1) {
+                    $isActive = 0;
                 }
                 
                 $entity->setIsActive($isActive);
-        
+                
                 // NO ERROR
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
@@ -416,28 +415,28 @@ class VInvoiceRowController extends AbstractActionController
                 $entity->setLastchangedBy($u);
                 $entity->setLastChangeOn(new \DateTime());
                 $this->doctrineEM->persist($entity);
-                 
+                
                 $criteria = array(
-                    'invoiceRow' => $entity->getId(),
+                    'invoiceRow' => $entity->getId()
                 );
                 
-                /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/                
+                /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/
                 $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-                if($gr_entity!==null){
+                if ($gr_entity !== null) {
                     $gr_entity->setIsActive($isActive);
                     $gr_entity->setLastChangeBy($u);
                     $gr_entity->setLastChangeOn(new \DateTime());
                     $this->doctrineEM->persist($gr_entity);
                 }
-               
+                
                 $this->doctrineEM->flush();
                 
+                $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getInvoice()->getToken() . "&entity_id=" . $entity->getInvoice()->getId();
+                $this->flashMessenger()->addMessage('Invoice ' . $entity->getInvoice()
+                    ->getInvoiceNo() . ' is updated successfully!');
+                // $this->flashMessenger()->addMessage($redirectUrl);
                 
-                     $redirectUrl= "/finance/v-invoice/add1?token=". $entity->getInvoice()->getToken()."&entity_id=".$entity->getInvoice()->getId();
-                     $this->flashMessenger()->addMessage('Invoice '.$entity->getInvoice()->getInvoiceNo() . ' is updated successfully!');
-                     //$this->flashMessenger()->addMessage($redirectUrl);
-                     
-                     return $this->redirect()->toUrl($redirectUrl);
+                return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
@@ -464,9 +463,9 @@ class VInvoiceRowController extends AbstractActionController
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
                 'entity' => $entity,
-                'target' =>$entity->getInvoice(),
-                'currency_list' =>$currency_list
-                
+                'target' => $entity->getInvoice(),
+                'currency_list' => $currency_list
+            
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
@@ -511,122 +510,140 @@ class VInvoiceRowController extends AbstractActionController
         }
         return $this->redirect()->toUrl('/finance/posting-period/list');
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
-    public function girdAction() {
-        $request = $this->getRequest ();
+    public function girdAction()
+    {
+        $request = $this->getRequest();
         
-        //$pq_curPage = $_GET ["pq_curpage"];
-        //$pq_rPP = $_GET ["pq_rpp"];
+        // $pq_curPage = $_GET ["pq_curpage"];
+        // $pq_rPP = $_GET ["pq_rpp"];
         
-        $target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-        $token = $this->params ()->fromQuery ( 'token' );
-        $criteria = array (
+        $target_id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        $criteria = array(
             'id' => $target_id,
-             'token' => $token
+            'token' => $token
         );
         
         /**
          *
          * @todo : Change Target
          */
-        $target = $this->doctrineEM->getRepository ( 'Application\Entity\FinVendorInvoice' )->findOneBy ( $criteria );
+        $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
         
-        $a_json_final = array ();
-        $a_json = array ();
-        $a_json_row = array ();
-        $escaper = new Escaper ();
+        $a_json_final = array();
+        $a_json = array();
+        $a_json_row = array();
+        $escaper = new Escaper();
         
         if ($target !== null) {
             
-            $criteria = array (
+            $criteria = array(
                 'invoice' => $target_id,
-                'isActive' => 1,
+                'isActive' => 1
             );
             
             $query = 'SELECT e FROM Application\Entity\FinVendorInvoiceRow e 
             WHERE e.invoice=?1 AND e.isActive =?2';
             
-            $list = $this->doctrineEM->createQuery ( $query )->setParameters ( array (
+            $list = $this->doctrineEM->createQuery($query)
+                ->setParameters(array(
                 "1" => $target,
-                "2" => 1,
-             
-            ) )->getResult ();
+                "2" => 1
+            
+            ))
+                ->getResult();
             
             $total_records = 0;
-            if (count ( $list ) > 0) {
-                $escaper = new Escaper ();
+            if (count($list) > 0) {
+                $escaper = new Escaper();
                 
-                $total_records = count ( $list );
-                foreach ( $list as $a ) {
+                $total_records = count($list);
+                foreach ($list as $a) {
                     
-                   /** @var \Application\Entity\FinVendorInvoiceRow $a ;*/
+                    /** @var \Application\Entity\FinVendorInvoiceRow $a ;*/
                     
-                    $a_json_row ["row_id"] = $a->getId();
-                    $a_json_row ["row_token"] = $a->getToken();
-                    $a_json_row ["row_unit"] = $a->getUnit();
-                    $a_json_row ["row_quantity"] = $a->getQuantity();
+                    $a_json_row["row_id"] = $a->getId();
+                    $a_json_row["row_token"] = $a->getToken();
+                    $a_json_row["row_unit"] = $a->getUnit();
+                    $a_json_row["row_quantity"] = $a->getQuantity();
                     
-                    if($a->getUnitPrice()!==null){
-                        $a_json_row ["row_unit_price"] =number_format($a->getUnitPrice(),2);
-                    }else{
-                        $a_json_row ["row_unit_price"]=0;
+                    if ($a->getUnitPrice() !== null) {
+                        $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), 2);
+                    } else {
+                        $a_json_row["row_unit_price"] = 0;
                     }
                     
-                    
-                    if($a->getNetAmount()!==null){
-                        $a_json_row ["row_net"] = number_format($a->getNetAmount(),2);
-                    }else{
-                        $a_json_row ["row_net"]=0;
-                    }
-                  
-                    
-                    if($a->getTaxRate()!==null){
-                        $a_json_row ["row_tax_rate"] = $a->getTaxRate();
-                    }else{
-                        $a_json_row ["row_tax_rate"] = 0;
+                    if ($a->getNetAmount() !== null) {
+                        $a_json_row["row_net"] = number_format($a->getNetAmount(), 2);
+                    } else {
+                        $a_json_row["row_net"] = 0;
                     }
                     
-                    if($a->getGrossAmount()!==null){
-                        $a_json_row ["row_gross"] = number_format($a->getGrossAmount(),2);
-                    }else{
-                        $a_json_row ["row_gross"] = 0;
+                    if ($a->getTaxRate() !== null) {
+                        $a_json_row["row_tax_rate"] = $a->getTaxRate();
+                    } else {
+                        $a_json_row["row_tax_rate"] = 0;
                     }
                     
+                    if ($a->getGrossAmount() !== null) {
+                        $a_json_row["row_gross"] = number_format($a->getGrossAmount(), 2);
+                    } else {
+                        $a_json_row["row_gross"] = 0;
+                    }
                     
-                    $a_json_row ["pr_number"] = "";
-                    if($a->getPrRow()!==null){
-                        if($a->getPrRow()->getPr()!==null){
-                            $a_json_row ["pr_number"] = $a->getPrRow()->getPr()->getPrNumber();
+                    $a_json_row["pr_number"] = "";
+                    if ($a->getPrRow() !== null) {
+                        if ($a->getPrRow()->getPr() !== null) {
+                            $a_json_row["pr_number"] = $a->getPrRow()
+                                ->getPr()
+                                ->getPrNumber();
                         }
                     }
-                        
-                    //$a_json_row ["item_name"]="";
-                    /* if( $a_json_row ["item_name"]!==null){
-                        $a_json_row ["item_name"] = $escaper->escapeJs($a->getItem()->getItemName());
-                    } */
                     
-                    $a_json_row ["item_name"] = $a->getItem()->getItemName();
+                    // $a_json_row ["item_name"]="";
+                    /*
+                     * if( $a_json_row ["item_name"]!==null){
+                     * $a_json_row ["item_name"] = $escaper->escapeJs($a->getItem()->getItemName());
+                     * }
+                     */
                     
-                    $a_json_row ["item_sku"] = $a->getItem()->getItemSku();
-                    $a_json_row ["item_token"] = $a->getItem()->getToken();
-                    $a_json_row ["item_checksum"] = $a->getItem()->getChecksum();
+                    $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken(). "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
+                    if ($a->getItem()->getItemName() !== null) {
+                        $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs ( $a->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                    } else {
+                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                    }
                     
-                    $a_json [] = $a_json_row;
+                    if (strlen ( $a->getItem()->getItemName() ) < 35) {
+                        $a_json_row ["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="'.$a->getItem()->getId() .'" item_name="'.$a->getItem()->getItemName().'" title="'. $a->getItem()->getItemName().'" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
+                    }else{
+                        $a_json_row ["item_name"] = substr($a->getItem()->getItemName(),0,30). '<a style="cursor:pointer;;color:blue"  item-pic="" id="'.$a->getItem()->getId() .'" item_name="'.$a->getItem()->getItemName().'" title="'. $a->getItem()->getItemName() .'" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                    }
+                    
+                    
+                    //$a_json_row["item_name"] = $a->getItem()->getItemName();
+                    
+                    $a_json_row["item_sku"] = $a->getItem()->getItemSku();
+                    $a_json_row["item_token"] = $a->getItem()->getToken();
+                    $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
+                    
+                    $a_json[] = $a_json_row;
                 }
             }
             
-            $a_json_final ['data'] = $a_json;
-            $a_json_final ['totalRecords'] = $total_records;
-            //$a_json_final ['curPage'] = $pq_curPage;
+            $a_json_final['data'] = $a_json;
+            $a_json_final['totalRecords'] = $total_records;
+            // $a_json_final ['curPage'] = $pq_curPage;
         }
         
-        $response = $this->getResponse ();
-        $response->getHeaders ()->addHeaderLine ( 'Content-Type', 'application/json' );
-        $response->setContent ( json_encode ( $a_json_final ) );
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
         return $response;
     }
 
@@ -636,46 +653,53 @@ class VInvoiceRowController extends AbstractActionController
      */
     public function listAction()
     {
-        $criteria = array();
+        $request = $this->getRequest();
         
-        $sort_criteria = array();
-        
-        if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 15;
-        } else {
-            $resultsPerPage = $this->params()->fromQuery('perPage');
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
         }
         ;
         
-        if (is_null($this->params()->fromQuery('page'))) {
-            $page = 1;
-        } else {
-            $page = $this->params()->fromQuery('page');
+        $this->layout("layout/user/ajax");
+        
+        $invoice_id = (int) $this->params()->fromQuery('target_id');
+        $invoice_token = $this->params()->fromQuery('token');
+        
+        $criteria = array(
+            'id' => $invoice_id,
+            'token' => $invoice_token
+        );
+        
+         /** @var \Application\Entity\FinVendorInvoice $target ;*/
+        $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+        
+        if ($target !== null) {
+            
+            $criteria = array(
+                'invoice' => $invoice_id,
+                'isActive' => 1
+            );
+            
+            $query = 'SELECT e FROM Application\Entity\FinVendorInvoiceRow e
+            WHERE e.invoice=?1 AND e.isActive =?2';
+            
+            $list = $this->doctrineEM->createQuery($query)
+            ->setParameters(array(
+                "1" => $target,
+                "2" => 1
+                
+            ))
+            ->getResult();
+            return new ViewModel(array(
+                'list' => $list,
+                'total_records' => count($list),
+                'paginator' => null,
+            ));
         }
-        ;
         
-        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-        // $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+        return $this->redirect()->toRoute('access_denied');
         
-        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-        // $postingPeriod = $p->getPostingPeriodStatus(new \DateTime());
-        // echo $postingPeriod->getPeriodName() . $postingPeriod->getPeriodStatus();
-        // echo $postingPeriod;
-        
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findBy($criteria, $sort_criteria);
-        $total_records = count($list);
-        $paginator = null;
-        
-        if ($total_records > $resultsPerPage) {
-            $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-        }
-        
-        return new ViewModel(array(
-            'list' => $list,
-            'total_records' => $total_records,
-            'paginator' => $paginator
-        ));
     }
 
     /**

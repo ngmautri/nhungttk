@@ -1,5 +1,5 @@
 <?php /**@var \Application\Entity\FinVendorInvoice $target ;
-        @var \Application\Entity\FinVendorInvoiceRow $entity
+        @var \Application\Entity\FinVendorInvoiceRow $entity ;
 */?>
 <?php
 if (count ( $errors ) > 0) {
@@ -18,7 +18,8 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
- 	 <li ><a href="#general">New Invoice Row</a></li>
+ 	 <li ><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;New Row</a></li>
+ 	  <li ><a href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/list?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current Rows</a></li>
  </ul>
    
  <div id="general" style="font-size: 9pt;">
@@ -30,8 +31,7 @@ if (count ( $errors ) > 0) {
 			<fieldset>
 				<legend style="font-size: 9pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">INVOICE
-						HEADER:</a>
+					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
 				</legend>
 				
 				<div id="invoice_header" class="collapse">
@@ -173,7 +173,7 @@ if (count ( $errors ) > 0) {
 		<fieldset>
 				<legend style="font-size: 9pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#new_row" class="" data-toggle="collapse">NEW INVOICE ROW:</a>
+					<a href="#new_row" class="" data-toggle="collapse">NEW ROW:</a>
 				</legend>
 	<div id="new_row" class="collapse in">
 	<div class="form-group margin-bottom">
@@ -243,11 +243,11 @@ if (count ( $errors ) > 0) {
  	<div class="form-group margin-bottom required">
         <label class="control-label col-sm-2" for="inputTag">Unit:</label>
         <div class="col-sm-3">
-        		<input tabindex="4" class="form-control input-sm" type="text" name="unit" value="<?php echo (!$entity == null)? $entity->getUnit():"";?>">
+        		<input tabindex="4" class="form-control input-sm" type="text" name="unit" value="<?php echo (!$entity == null)? $entity->getUnit():"each";?>">
          </div>
         <label class="control-label col-sm-2" for="inputTag">Converstion Factor:</label>
         <div class="col-sm-3">
-        		<input tabindex="5" class="form-control input-sm" type="text" name="conversionFactor" value="<?php echo (!$entity == null)? $entity->getConversionFactor():"";?>">
+        		<input tabindex="5" class="form-control input-sm" type="text" name="conversionFactor" value="<?php echo (!$entity == null)? $entity->getConversionFactor():"1";?>">
          </div>
   
     </div>

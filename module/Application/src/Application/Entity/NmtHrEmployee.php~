@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrEmployee
  *
- * @ORM\Table(name="nmt_hr_employee", uniqueConstraints={@ORM\UniqueConstraint(name="employee_code_UNIQUE", columns={"employee_code"})}, indexes={@ORM\Index(name="nmt_hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_employee_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_hr_employee_FK3_idx", columns={"nationality"}), @ORM\Index(name="nmt_hr_employee_FK4_idx", columns={"birth_country"})})
+ * @ORM\Table(name="nmt_hr_employee", uniqueConstraints={@ORM\UniqueConstraint(name="employee_code_UNIQUE", columns={"employee_code"})}, indexes={@ORM\Index(name="nmt_hr_employee_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_employee_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_hr_employee_FK3_idx", columns={"nationality"}), @ORM\Index(name="nmt_hr_employee_FK4_idx", columns={"birth_country"}), @ORM\Index(name="nmt_hr_employee_INX1", columns={"employee_code"})})
  * @ORM\Entity
  */
 class NmtHrEmployee

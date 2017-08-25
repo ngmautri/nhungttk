@@ -16,7 +16,7 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general">Vendor Invoice</a></li>
+		<li><a href="#general"><small><i class="glyphicon glyphicon-usd"></i></small>&nbsp;Vendor Invoice</a></li>
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
@@ -26,13 +26,30 @@ if (count ( $errors ) > 0) {
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 			<fieldset>
-				<legend style="font-size: 9pt; color: gray;">
+				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">INVOICE
-						HEADER:</a>
+					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
 				</legend>
 				<div id="invoice_header" class="collapse">
+					<div class="form-group margin-bottom required">
+					<label class="control-label col-sm-2">Current State:</label>
+					<div class="col-sm-3">
+					<select name="currentState" class="form-control">
+							<option value="">Please Select</option>
+							<option <?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?> value="contract">Contract /PO</option>
+							<option <?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?> value="draftInvoice">Draft Invoice</option>
+							<option <?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?> value="finalInvoice">Final Invoice</option>
+    				</select>
+   					</div>
+   					
+   					<div class="col-sm-3">
+							<input
+								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
 
+						</div>
+   					
+   					</div>
 
 					<div class="form-group margin-bottom required">
 						<label class="control-label col-sm-2 ">Vendor:</label>
@@ -48,44 +65,27 @@ if (count ( $errors ) > 0) {
 						</div>
 						<div class="col-sm-3">
 
-							<input
-								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
-
-						</div>
-						<div class="col-sm-3">
-
 							<a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor
 								List&nbsp;&nbsp;</a><small><i
 								class="glyphicon glyphicon-new-window"></i></small>
 						</div>
 					</div>
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Invoice number:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder="Please enter invoice number!"
-								id="invoiceNo" name="invoiceNo" 
-								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
-						</div>
-						<label class="control-label col-sm-2">SAP Document No.:</label>
+					
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Contract /PO:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
-								id="sapDoc" name="sapDoc" 
-								value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
+								id="contractNo" name="contractNo" 
+								value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
 						</div>
-						
-						
-					</div>
-					<div class="form-group margin-bottom required">
-
-						<label class="control-label col-sm-2 required">Invoice Date:</label>
+						<label class="control-label col-sm-2">Contract /PO Date:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text"
-								id="invoiceDate" name="invoiceDate"
-								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
-								placeholder=" please select" />
-							</div>
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="contractDate" name="contractDate" 
+								value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
+						</div>
 					</div>
+					
 					<div class="form-group margin-bottom required">
 					
 					<label class="control-label col-sm-2">Currency:</label>
@@ -114,6 +114,36 @@ if (count ( $errors ) > 0) {
    					</select>
    					</div>
    					</div>
+					
+					
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Invoice number:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="invoiceNo" name="invoiceNo" 
+								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
+						</div>
+						<label class="control-label col-sm-2">SAP Document No.:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="sapDoc" name="sapDoc" 
+								value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
+						</div>
+						
+						
+					</div>
+					
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2 required">Invoice Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm input-sm" type="text"
+								id="invoiceDate" name="invoiceDate"
+								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+							</div>
+					</div>
+					
 					<div class="form-group margin-bottom required">
 
 						<label class="control-label col-sm-2">Posting Date:</label>
@@ -127,7 +157,7 @@ if (count ( $errors ) > 0) {
 					
 					<div class="form-group margin-bottom required">
 
-						<label class="control-label col-sm-2">Good Receipt Date:</label>
+						<label class="control-label col-sm-2">Goods Receipt Date:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm input-sm" type="text"
 								id="grDate" name="grDate"
@@ -148,24 +178,17 @@ if (count ( $errors ) > 0) {
             				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
             		</div>
 				</div>
-				<br>
-				<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag"></label>
-						<div class="col-sm-3">
-					<a class="btn btn-default"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><small><i
-									class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
-						</div>
-					</div>
-						</div>
+					
+					
+			</div>
 			</fieldset>
-			</form>
+		</form>
 			
 			<form action="">
 			<fieldset>
 			<legend style="font-size: 9pt; color: gray;">
 				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-				<a href="#rows" class="" data-toggle="collapse">INVOICE ROWS:</a>
+				<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
 			</legend>
 			<div id="rows" class="collapse in">
 					<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
@@ -386,12 +409,12 @@ $( "#vendor_name_1" ).autocomplete({
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "100%", height: $(window).height()-350, showTitle : false,
+	var obj = { width: "100%", height: $(window).height()-200, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
 			hoverMode: 'cell',
-		   	pageModel: { type: "remote", rPP: 50, strRpp: "{0}" },
+		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
 		  	editModel: {
                 allowInvalid: true,
                 saveKey: $.ui.keyCode.ENTER
@@ -518,7 +541,7 @@ $( "#vendor_name_1" ).autocomplete({
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
        
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
-        { title: "Item", dataType: "string", dataIndx: "item_name", width:150,editable: false },
+        { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
         { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},
         
         { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: false},
@@ -526,7 +549,7 @@ $( "#vendor_name_1" ).autocomplete({
         { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},
         { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
         { title: "Gross", dataType: "decimal", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
- 		{ title: "PR", dataType: "string", dataIndx: "pr_number", width:100,editable: false },
+ 		{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
  		      
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         

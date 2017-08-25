@@ -176,6 +176,13 @@ class NmtInventoryTrx
     private $taxRate;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
+     */
+    private $currentState;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -813,6 +820,30 @@ class NmtInventoryTrx
     public function getTaxRate()
     {
         return $this->taxRate;
+    }
+
+    /**
+     * Set currentState
+     *
+     * @param string $currentState
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+
+        return $this;
+    }
+
+    /**
+     * Get currentState
+     *
+     * @return string
+     */
+    public function getCurrentState()
+    {
+        return $this->currentState;
     }
 
     /**

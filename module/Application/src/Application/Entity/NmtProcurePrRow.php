@@ -22,6 +22,13 @@ class NmtProcurePrRow
     private $id;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="row_number", type="integer", nullable=true)
+     */
+    private $rowNumber;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
@@ -207,6 +214,30 @@ class NmtProcurePrRow
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set rowNumber
+     *
+     * @param integer $rowNumber
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setRowNumber($rowNumber)
+    {
+        $this->rowNumber = $rowNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get rowNumber
+     *
+     * @return integer
+     */
+    public function getRowNumber()
+    {
+        return $this->rowNumber;
     }
 
     /**

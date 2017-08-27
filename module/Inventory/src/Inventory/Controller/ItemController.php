@@ -700,7 +700,7 @@ class ItemController extends AbstractActionController
 		endif;
         
         if ($sort == null) :
-            $sort = "ASC";
+            $sort = "DESC";
 		endif;
         
         $sort_criteria = array(

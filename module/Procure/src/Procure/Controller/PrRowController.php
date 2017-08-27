@@ -133,6 +133,8 @@ class PrRowController extends AbstractActionController {
 			 *
 			 * @todo : Update Target
 			 */
+			
+			/**@var \Application\Entity\NmtProcurePr $target ;*/
 			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 			
 			if ($target == null) {
@@ -271,7 +273,10 @@ class PrRowController extends AbstractActionController {
 				$this->doctrineEM->flush ();
 				
 				$index_update_status = $this->prSearchService->updateIndex(1,$entity, fasle);
+				
+				$redirectUrl= "/procure/pr-row/add?token=".$target->getToken()."&target_id=".$target->getID()."&checksum=".$target->getChecksum();				
 				$this->flashMessenger ()->addMessage ( "Row '" . $entity->getId () . "' has been created successfully!" );
+				
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
@@ -754,11 +759,9 @@ class PrRowController extends AbstractActionController {
 		$this->layout ( "layout/user/ajax" );
 		
 		$target_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
-		$checksum = $this->params ()->fromQuery ( 'checksum' );
 		$token = $this->params ()->fromQuery ( 'token' );
 		$criteria = array (
 				'id' => $target_id,
-				'checksum' => $checksum,
 				'token' => $token 
 		);
 		

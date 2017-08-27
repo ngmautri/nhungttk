@@ -40,7 +40,7 @@ if (count ( $errors ) > 0) {
 					<div class="form-group margin-bottom required">
 						<label class="control-label col-sm-2 ">Vendor:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text"
+							<input class="form-control input-sm" type="text"
 								id="vendor_name_1" placeholder="Enter term to search vendor"
 								name="vendor_name"
 								value="<?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>">
@@ -82,7 +82,7 @@ if (count ( $errors ) > 0) {
 
 						<label class="control-label col-sm-2 required">Invoice Date:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text"
+							<input class="form-control input-sm" type="text"
 								id="invoiceDate" name="invoiceDate"
 								value="<?php if(!$target == null): if ($target->getInvoiceDate() !== null): echo date_format($target->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
 								placeholder=" please select" />
@@ -120,7 +120,7 @@ if (count ( $errors ) > 0) {
 
 						<label class="control-label col-sm-2">Posting Date:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text"
+							<input class="form-control input-sm" type="text"
 								id="postingDate" name="postingDate"
 								value="<?php if(!$target == null): if ($target->getPostingDate() !== null): echo date_format($target->getPostingDate(),"Y-m-d"); endif; endif;?>"
 								placeholder=" please select" />
@@ -131,7 +131,7 @@ if (count ( $errors ) > 0) {
 
 						<label class="control-label col-sm-2">Good Receipt Date:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text"
+							<input class="form-control input-sm" type="text"
 								id="grDate" name="grDate"
 								value="<?php if(!$target == null): if ($target->getGrDate() !== null): echo date_format($target->getGrDate(),"Y-m-d"); endif; endif;?>"
 								placeholder=" please select" />
@@ -340,7 +340,7 @@ if (count ( $errors ) > 0) {
 	$("#Create_Inv_Form :input").attr("disabled", "disabled");
     $( "#pr_item_name" ).autocomplete({
         source: "/procure/pr-search/auto-complete",
-        minLength: 3,
+        minLength: 2,
         select: function( event, ui ) {
             $( "#pr_row_id" ).val(ui.item.pr_row_id);
             $( "#quantity" ).val(ui.item.row_quantity);
@@ -360,6 +360,8 @@ if (count ( $errors ) > 0) {
  //         .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
           .appendTo( ul );
         };	
+
+        $( "#pr_item_name" ).focus();   
 
     $( "#item_name" ).autocomplete({
         source: "/inventory/item-search/auto-complete",

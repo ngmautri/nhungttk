@@ -1,0 +1,120 @@
+<?php /**@var \Application\Entity\FinVendorInvoice $target ;*/ ?>
+
+<h4 style="color: gray">
+	 <?php echo (!$target== null)? 'Contract: ' . $target->getContractNo()."<br>":"";?>
+	 <?php echo (!$target== null)? 'Invoice: ' . $target->getInvoiceNo():"";?>
+</h4>
+
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 10pt"> 
+  <ul>
+  <li ><a href="#general">Attachment upload</a></li>
+   </ul>
+
+<div id="general"> 
+
+<!-- TO UPDATE ACTION -->
+<form id="attachment_upload_form" class="form-horizontal" action="/finance/v-invoice-attachment/upload" method="post" enctype="multipart/form-data">
+<input type="hidden" name="target_id" value="<?php echo (!$target == null)? $target->getId():"";?>" />
+<input type="hidden" name="token" value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+
+
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2 " >Document Subject:</label>
+		<div class="col-sm-3">
+			<input class="form-control input-sm" type="text"  placeholder=""
+				name="documentSubject" id="documentSubject" value="<?php echo (!$entity== null)? $entity->getDocumentSubject():"";?>">
+	
+		</div>
+		<label class="control-label col-sm-1" for="inputTag"></label>
+		<div class="col-sm-4">
+					  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+		</div>		
+	</div>
+		
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" for="inputTag">Attachment:</label>
+		<div class="col-sm-3">
+			<input style=";" type="file" id= "attachments" name="attachments" />
+		</div>		
+	</div>
+	
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" >Valid From:</label>
+		<div class="col-sm-3">
+			<input class="form-control input-sm" type="text" name="validFrom" 
+			value="<?php if(!$entity == null): echo ($entity->getValidFrom() !== null)? date_format($entity->getValidFrom(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_from" />
+		</div>
+		
+		<label class="control-label col-sm-2" >Valid To:</label>
+		<div class="col-sm-3">
+			<input class="form-control input-sm" type="text" name="validTo" 
+			value="<?php if(!$entity == null): echo ($entity->getValidTo() !== null)? date_format($entity->getValidTo(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="valid_to" />
+		</div>		
+	</div>
+	<div class="form-group margin-bottom">
+					<label class="control-label col-sm-2" >Remark:</label>
+            		<div class="col-sm-8">
+            			<input tabindex="9" class="form-control input-sm" type="text"  placeholder=""
+            				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+            		</div>
+				</div>
+	<hr>
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	
+ <a class="btn btn-default" style="" href="javascript:;"
+	onClick="doUploadAttachment('attachment_upload_form','attachments','/finance/v-invoice-attachment/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','','<?php echo $target!==null ? $target->getToken():""?>');">
+	<small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp; Upload
+</a>
+					<a tabindex="11" class="btn btn-default"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+									class="glyphicon glyphicon-ok"></i></small>&nbsp;Cancel</a>
+   		</div>
+	</div> 
+		
+	
+</form>
+</div>
+</div>
+
+<script type="text/javascript">
+$('#attachments').bind('change', function() {
+	var file_size;
+	file_size = this.files[0].size
+	if (file_size > 2097152){
+		//alert('This file size is too large : ' + file_size + "MB. Please select new file");
+		
+		$('#b_loaded_data').text('This file size is too large : ' + file_size + "MB. Please select new file");
+		$('#modal1').modal();
+
+		 $("#attachments").val("");
+		 	
+	}else{
+		//alert('This file size is: ' + file_size + "MB, OKE");
+		 //$('#save').removeAttr('disabled');
+	}
+
+});
+
+$( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
+</script>
+

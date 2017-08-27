@@ -93,6 +93,7 @@ return array(
             'Finance\Controller\PostingPeriod' => 'Finance\Controller\PostingPeriodControllerFactory',
             'Finance\Controller\VInvoice' => 'Finance\Controller\VInvoiceControllerFactory',
             'Finance\Controller\VInvoiceRow' => 'Finance\Controller\VInvoiceRowControllerFactory',
+            'Finance\Controller\VInvoiceAttachment' => 'Finance\Controller\VInvoiceAttachmentControllerFactory',
             
          )
     

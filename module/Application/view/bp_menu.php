@@ -9,5 +9,4 @@
 	<li><a href="/bp/vendor-attachment/contracts"><small><i
 				class="glyphicon glyphicon-list"></i></small>&nbsp;Vendor Contract
 			List</a></li>
-
 </ul>

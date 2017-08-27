@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtApplicationAttachment
+ * FinAttachment
  *
- * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_application_attachment_FK6_idx", columns={"item_purchasing_id"}), @ORM\Index(name="nmt_application_attachment_FK7_idx", columns={"pr_id"}), @ORM\Index(name="nmt_application_attachment_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_application_attachment_idx1", columns={"target_class"}), @ORM\Index(name="nmt_application_attachment_idx2", columns={"target_id"}), @ORM\Index(name="nmt_application_attachment_idx3", columns={"target_token"}), @ORM\Index(name="nmt_application_attachment_FK9_idx", columns={"v_invoice_id"})})
+ * @ORM\Table(name="fin_attachment", indexes={@ORM\Index(name="fin_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="fin_attachment_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="fin_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="fin_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="fin_attachment_FK5_idx", columns={"vendor_id"}), @ORM\Index(name="fin_attachment_FK6_idx", columns={"item_purchasing_id"}), @ORM\Index(name="fin_attachment_FK7_idx", columns={"pr_id"}), @ORM\Index(name="fin_attachment_FK8_idx", columns={"item_id"})})
  * @ORM\Entity
  */
-class NmtApplicationAttachment
+class FinAttachment
 {
     /**
      * @var integer
@@ -204,27 +204,6 @@ class NmtApplicationAttachment
     private $prRowId;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="target_class", type="string", length=100, nullable=true)
-     */
-    private $targetClass;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="target_id", type="integer", nullable=true)
-     */
-    private $targetId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="target_token", type="string", length=45, nullable=true)
-     */
-    private $targetToken;
-
-    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -304,16 +283,6 @@ class NmtApplicationAttachment
      */
     private $item;
 
-    /**
-     * @var \Application\Entity\FinVendorInvoice
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="v_invoice_id", referencedColumnName="id")
-     * })
-     */
-    private $vInvoice;
-
 
 
     /**
@@ -331,7 +300,7 @@ class NmtApplicationAttachment
      *
      * @param string $documentSubject
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setDocumentSubject($documentSubject)
     {
@@ -355,7 +324,7 @@ class NmtApplicationAttachment
      *
      * @param string $keywords
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setKeywords($keywords)
     {
@@ -379,7 +348,7 @@ class NmtApplicationAttachment
      *
      * @param boolean $isPicture
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setIsPicture($isPicture)
     {
@@ -403,7 +372,7 @@ class NmtApplicationAttachment
      *
      * @param boolean $isContract
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setIsContract($isContract)
     {
@@ -427,7 +396,7 @@ class NmtApplicationAttachment
      *
      * @param \DateTime $signingDate
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setSigningDate($signingDate)
     {
@@ -451,7 +420,7 @@ class NmtApplicationAttachment
      *
      * @param \DateTime $validFrom
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setValidFrom($validFrom)
     {
@@ -475,7 +444,7 @@ class NmtApplicationAttachment
      *
      * @param \DateTime $validTo
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setValidTo($validTo)
     {
@@ -499,7 +468,7 @@ class NmtApplicationAttachment
      *
      * @param string $url
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setUrl($url)
     {
@@ -523,7 +492,7 @@ class NmtApplicationAttachment
      *
      * @param string $filetype
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setFiletype($filetype)
     {
@@ -547,7 +516,7 @@ class NmtApplicationAttachment
      *
      * @param string $filename
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setFilename($filename)
     {
@@ -571,7 +540,7 @@ class NmtApplicationAttachment
      *
      * @param string $filenameOriginal
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setFilenameOriginal($filenameOriginal)
     {
@@ -595,7 +564,7 @@ class NmtApplicationAttachment
      *
      * @param string $filePassword
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setFilePassword($filePassword)
     {
@@ -619,7 +588,7 @@ class NmtApplicationAttachment
      *
      * @param string $size
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setSize($size)
     {
@@ -643,7 +612,7 @@ class NmtApplicationAttachment
      *
      * @param boolean $visibility
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setVisibility($visibility)
     {
@@ -667,7 +636,7 @@ class NmtApplicationAttachment
      *
      * @param string $folder
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setFolder($folder)
     {
@@ -691,7 +660,7 @@ class NmtApplicationAttachment
      *
      * @param string $attachmentFolder
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setAttachmentFolder($attachmentFolder)
     {
@@ -715,7 +684,7 @@ class NmtApplicationAttachment
      *
      * @param string $folderRelative
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setFolderRelative($folderRelative)
     {
@@ -739,7 +708,7 @@ class NmtApplicationAttachment
      *
      * @param string $checksum
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setChecksum($checksum)
     {
@@ -763,7 +732,7 @@ class NmtApplicationAttachment
      *
      * @param string $token
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setToken($token)
     {
@@ -787,7 +756,7 @@ class NmtApplicationAttachment
      *
      * @param boolean $isActive
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setIsActive($isActive)
     {
@@ -811,7 +780,7 @@ class NmtApplicationAttachment
      *
      * @param boolean $markedForDeletion
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setMarkedForDeletion($markedForDeletion)
     {
@@ -835,7 +804,7 @@ class NmtApplicationAttachment
      *
      * @param string $remarks
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setRemarks($remarks)
     {
@@ -859,7 +828,7 @@ class NmtApplicationAttachment
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setCreatedOn($createdOn)
     {
@@ -883,7 +852,7 @@ class NmtApplicationAttachment
      *
      * @param \DateTime $lastChangeOn
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setLastChangeOn($lastChangeOn)
     {
@@ -907,7 +876,7 @@ class NmtApplicationAttachment
      *
      * @param integer $changeFor
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setChangeFor($changeFor)
     {
@@ -931,7 +900,7 @@ class NmtApplicationAttachment
      *
      * @param integer $prRowId
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setPrRowId($prRowId)
     {
@@ -951,83 +920,11 @@ class NmtApplicationAttachment
     }
 
     /**
-     * Set targetClass
-     *
-     * @param string $targetClass
-     *
-     * @return NmtApplicationAttachment
-     */
-    public function setTargetClass($targetClass)
-    {
-        $this->targetClass = $targetClass;
-
-        return $this;
-    }
-
-    /**
-     * Get targetClass
-     *
-     * @return string
-     */
-    public function getTargetClass()
-    {
-        return $this->targetClass;
-    }
-
-    /**
-     * Set targetId
-     *
-     * @param integer $targetId
-     *
-     * @return NmtApplicationAttachment
-     */
-    public function setTargetId($targetId)
-    {
-        $this->targetId = $targetId;
-
-        return $this;
-    }
-
-    /**
-     * Get targetId
-     *
-     * @return integer
-     */
-    public function getTargetId()
-    {
-        return $this->targetId;
-    }
-
-    /**
-     * Set targetToken
-     *
-     * @param string $targetToken
-     *
-     * @return NmtApplicationAttachment
-     */
-    public function setTargetToken($targetToken)
-    {
-        $this->targetToken = $targetToken;
-
-        return $this;
-    }
-
-    /**
-     * Get targetToken
-     *
-     * @return string
-     */
-    public function getTargetToken()
-    {
-        return $this->targetToken;
-    }
-
-    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
@@ -1051,7 +948,7 @@ class NmtApplicationAttachment
      *
      * @param \Application\Entity\MlaUsers $lastChangeBy
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
@@ -1075,7 +972,7 @@ class NmtApplicationAttachment
      *
      * @param \Application\Entity\NmtPmProject $project
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setProject(\Application\Entity\NmtPmProject $project = null)
     {
@@ -1099,7 +996,7 @@ class NmtApplicationAttachment
      *
      * @param \Application\Entity\NmtHrEmployee $employee
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setEmployee(\Application\Entity\NmtHrEmployee $employee = null)
     {
@@ -1123,7 +1020,7 @@ class NmtApplicationAttachment
      *
      * @param \Application\Entity\NmtBpVendor $vendor
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
     {
@@ -1147,7 +1044,7 @@ class NmtApplicationAttachment
      *
      * @param \Application\Entity\NmtInventoryItemPurchasing $itemPurchasing
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setItemPurchasing(\Application\Entity\NmtInventoryItemPurchasing $itemPurchasing = null)
     {
@@ -1171,7 +1068,7 @@ class NmtApplicationAttachment
      *
      * @param \Application\Entity\NmtProcurePr $pr
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setPr(\Application\Entity\NmtProcurePr $pr = null)
     {
@@ -1195,7 +1092,7 @@ class NmtApplicationAttachment
      *
      * @param \Application\Entity\NmtInventoryItem $item
      *
-     * @return NmtApplicationAttachment
+     * @return FinAttachment
      */
     public function setItem(\Application\Entity\NmtInventoryItem $item = null)
     {
@@ -1212,29 +1109,5 @@ class NmtApplicationAttachment
     public function getItem()
     {
         return $this->item;
-    }
-
-    /**
-     * Set vInvoice
-     *
-     * @param \Application\Entity\FinVendorInvoice $vInvoice
-     *
-     * @return NmtApplicationAttachment
-     */
-    public function setVInvoice(\Application\Entity\FinVendorInvoice $vInvoice = null)
-    {
-        $this->vInvoice = $vInvoice;
-
-        return $this;
-    }
-
-    /**
-     * Get vInvoice
-     *
-     * @return \Application\Entity\FinVendorInvoice
-     */
-    public function getVInvoice()
-    {
-        return $this->vInvoice;
     }
 }

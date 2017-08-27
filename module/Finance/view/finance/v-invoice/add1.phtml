@@ -17,7 +17,11 @@ if (count ( $errors ) > 0) {
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general"><small><i class="glyphicon glyphicon-usd"></i></small>&nbsp;Vendor Invoice</a></li>
+				<li><a			href="/finance/v-invoice-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
+		
 	</ul>
+	
 
 	<div id="general" style="font-size: 9pt">
 

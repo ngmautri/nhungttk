@@ -1,3 +1,9 @@
+<?php 
+/**@var \Application\Entity\NmtProcurePr $target ;
+ * @var \Application\Entity\NmtProcurePrRow $entity ;
+ */
+
+?>
 
 <h4>
 	 <?php
@@ -22,7 +28,9 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general" >New PR Row</a></li>
+		<li ><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;New Row</a></li>
+     	<li ><a href="<?php echo $this->baseUrl ?>/procure/pr-row/list1?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current Rows</a></li>
+ 
 			<li><a
 			href="/procure/pr-attachment/get-pictures?token=<?php echo (!$target == null)? $target->getToken():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>&target_id=<?php echo (!$target == null)? $target->getID():"";?>"><small></small><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
 			<li><a

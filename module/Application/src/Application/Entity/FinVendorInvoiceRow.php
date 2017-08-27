@@ -24,6 +24,20 @@ class FinVendorInvoiceRow
     /**
      * @var integer
      *
+     * @ORM\Column(name="row_number", type="integer", nullable=true)
+     */
+    private $rowNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(name="quantity", type="integer", nullable=false)
      */
     private $quantity;
@@ -143,13 +157,6 @@ class FinVendorInvoiceRow
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", length=45, nullable=true)
-     */
-    private $token;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="fa_remarks", type="string", length=200, nullable=true)
      */
     private $faRemarks;
@@ -224,6 +231,54 @@ class FinVendorInvoiceRow
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set rowNumber
+     *
+     * @param integer $rowNumber
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setRowNumber($rowNumber)
+    {
+        $this->rowNumber = $rowNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get rowNumber
+     *
+     * @return integer
+     */
+    public function getRowNumber()
+    {
+        return $this->rowNumber;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 
     /**
@@ -632,30 +687,6 @@ class FinVendorInvoiceRow
     public function getTaxAmount()
     {
         return $this->taxAmount;
-    }
-
-    /**
-     * Set token
-     *
-     * @param string $token
-     *
-     * @return FinVendorInvoiceRow
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
-
-        return $this;
-    }
-
-    /**
-     * Get token
-     *
-     * @return string
-     */
-    public function getToken()
-    {
-        return $this->token;
     }
 
     /**

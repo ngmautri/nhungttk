@@ -13,10 +13,10 @@
 	action="<?php echo $this->baseUrl ?>/bp/vendor/add" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
-		<div class="form-group">
+		<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Vendor Number</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
 				name="vendorNumber" value="<?php echo (!$entity == null)? $entity->getVendorNumber():"";?>">
 		</div>
 		
@@ -25,32 +25,32 @@
 		</div>
 	</div>
 
-	<div class="form-group required">
+	<div class="form-group margin-bottom required">
 		<label class="control-label col-sm-2" for="inputTag">Vendor Name</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
 				name="vendorName" value="<?php echo (!$entity == null)? $entity->getVendorName():"";?>">
 		</div>
 		
 		<label class="control-label col-sm-2" for="inputTag">Short name</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
 				name="vendorShortName" value="<?php echo (!$entity == null)? $entity->getVendorShortname():"";?>">
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Keywords</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
 				name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
 		</div>
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Country</label>
 		<div class="col-sm-3">
-<input disabled class="form-control" type="text" id="country_name" placeholder="Please select country" name="country_name" 
+<input disabled class="form-control input-sm" type="text" id="country_name" placeholder="Please select country" name="country_name" 
 value="<?php if (!$entity == null): if (!$entity->getCountry() == null):echo $entity->getCountry()->getCountryName();endif;endif;?>">
 
 <input type="hidden" id="country_id" placeholder=""  name="country_id" 
@@ -63,15 +63,15 @@ value="<?php if (!$entity == null): if (!$entity->getCountry() == null):echo $en
 		
 	</div>
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputDescription">remarks</label>
 		<div class="col-sm-3">
-			<textarea class="form-control" id="inputDescription" placeholder=""
+			<textarea class="form-control input-sm" id="inputDescription" placeholder=""
 				rows="3" name="remarks"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<div class="col-sm-offset-2 col-sm-10">
 <a class="btn btn-default" href="<?php echo $this->baseUrl ?>/bp/vendor/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
  		</div>

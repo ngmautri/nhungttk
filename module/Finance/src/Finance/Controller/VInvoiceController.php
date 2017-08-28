@@ -16,6 +16,7 @@ use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
 use Application\Entity\FinVendorInvoice;
+use Application\Entity\FinVendorInvoiceRow;
 
 /**
  *
@@ -34,10 +35,10 @@ class VInvoiceController extends AbstractActionController
      */
     public function indexAction()
     {}
-    
-    
-    /** adding new vendor invoce
-     * 
+
+    /**
+     * adding new vendor invoce
+     *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
@@ -79,7 +80,7 @@ class VInvoiceController extends AbstractActionController
             }
             
             if ($sapDoc == "") {
-                $sapDoc = "No SAP document";
+                $sapDoc = "N/A";
             }
             
             $entity = new FinVendorInvoice();
@@ -243,13 +244,14 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
-            $this->flashMessenger()->addMessage('Invoice Period "' . $invoiceNo . '" is created successfully!');
+            $this->flashMessenger()->addMessage($invoiceNo . 'of ' . $entity->getVendor()
+                ->getVendorName() . '" is created successfully!');
             
             $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
         
-        // NOT POST
+        // NOT POST ================================
         $redirectUrl = null;
         if ($request->getHeader('Referer') != null) {
             
@@ -329,7 +331,20 @@ class VInvoiceController extends AbstractActionController
         // var_dump($result['gross_amount']);
         // $entity=$result[0];
         
-        $query = 'SELECT e,v FROM Application\Entity\FinVendorInvoice e Join e.vendor v
+        
+        $query = 'SELECT r, count(r.id), max(r.rowNumber), sum(r.netAmount),sum(r.taxAmount),sum(r.grossAmount) FROM Application\Entity\FinVendorInvoiceRow r
+            JOIN r.invoice i
+            WHERE i.id=:id AND i.token =:token AND r.isActive=:is_active';
+        
+        $r = $this->doctrineEM->createQuery($query)
+        ->setParameters(array(
+            "id" => $id,
+            "token" => $token,
+            "is_active"=>1,
+        ))->getSingleResult();
+        
+        
+      /*   $query = 'SELECT e,v FROM Application\Entity\FinVendorInvoice e Join e.vendor v
             WHERE e.id=?1 AND e.token =?2';
         
         $entity = $this->doctrineEM->createQuery($query)
@@ -337,9 +352,15 @@ class VInvoiceController extends AbstractActionController
             "1" => $id,
             "2" => $token
         ))
-            ->getSingleResult();
+            ->getSingleResult(); */
         
         // var_dump($entity);
+        
+        $entity = null;
+        if($r[0] instanceof FinVendorInvoiceRow)
+        {
+            $entity = $r[0]->getInvoice();
+        }
         
         // $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
         if ($entity !== null) {
@@ -347,7 +368,12 @@ class VInvoiceController extends AbstractActionController
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
                 'errors' => null,
-                'currency_list' => $currency_list
+                'currency_list' => $currency_list,
+                'total_row' => (int) $r[1],
+                'max_row_number' => (int) $r[2],
+                'net_amount' => $r[3],
+                'tax_amount' => $r[4],
+                'gross_amount' => $r[5],
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
@@ -396,6 +422,15 @@ class VInvoiceController extends AbstractActionController
     {
         $request = $this->getRequest();
         
+        $criteria = array(
+            'isActive' => 1
+        );
+        $sort_criteria = array(
+            'currency' => 'ASC'
+        );
+        
+        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        
         if ($request->isPost()) {
             
             $errors = array();
@@ -409,8 +444,8 @@ class VInvoiceController extends AbstractActionController
                 'token' => $token
             );
             
-            /**@var \Application\Entity\NmtFinPostingPeriod $entity*/
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
+            /**@var \Application\Entity\FinVendorInvoice $entity*/
+            $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
             
             if ($entity == null) {
                 
@@ -419,131 +454,218 @@ class VInvoiceController extends AbstractActionController
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => null
+                    'entity' => null,
+                    'currency_list' => $currency_list
                 ));
                 
                 // might need redirect
             } else {
                 
-                $periodName = $request->getPost('periodName');
-                $periodCode = $request->getPost('periodCode');
-                $postingFromDate = $request->getPost('postingFromDate');
-                $postingToDate = $request->getPost('postingToDate');
+                $errors = array();
+                $redirectUrl = $request->getPost('redirectUrl');
                 
-                $periodStatus = $request->getPost('periodStatus');
+                $contractDate = $request->getPost('contractDate');
+                $contractNo = $request->getPost('contractNo');
+                $currentState = $request->getPost('currentState');
                 
-                $actualWorkdingDays = $request->getPost('actualWorkdingDays');
-                $planWorkingDays = $request->getPost('planWorkingDays');
-                $nationalHolidays = $request->getPost('nationalHolidays');
-                $cooperateLeave = $request->getPost('cooperateLeave');
+                $vendor_id = (int) $request->getPost('vendor_id');
+                $currency_id = (int) $request->getPost('currency_id');
+                $warehouse_id = (int) $request->getPost('target_wh_id');
                 
-                $entity->setPeriodStatus($periodStatus);
+                $postingDate = $request->getPost('postingDate');
+                $grDate = $request->getPost('grDate');
+                $invoiceDate = $request->getPost('invoiceDate');
+                $invoiceNo = $request->getPost('invoiceNo');
+                $sapDoc = $request->getPost('sapDoc');
+                $isActive = (int) $request->getPost('isActive');
+                $remarks = $request->getPost('remarks');
                 
-                if ($periodName == null) {
-                    $errors[] = 'Please enter Period Name!';
-                } else {
-                    $entity->setPeriodName($periodName);
+                if ($isActive !== 1) {
+                    $isActive = 0;
                 }
                 
-                if ($periodCode == null) {
-                    $errors[] = 'Please enter Period Code!';
-                } else {
-                    $entity->setPeriodCode($periodCode);
+                if ($sapDoc == "") {
+                    $sapDoc = "N/A";
                 }
                 
-                if ($planWorkingDays == null) {
-                    $errors[] = 'Please  enter Plan Working Days!';
-                } else {
-                    
-                    if (! is_numeric($planWorkingDays)) {
-                        $errors[] = 'Plan Working Days must be a number.';
-                    } else {
-                        if ($planWorkingDays <= 0) {
-                            $errors[] = 'Plan Working Days must be greater than 0!';
-                        }
-                        $entity->setPlanWorkingDays($planWorkingDays);
-                    }
+                $entity->setIsActive($isActive);
+                
+                $entity->setCurrentState($currentState);
+                
+                $vendor = null;
+                if ($vendor_id > 0) {
+                    $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
                 }
                 
-                if ($actualWorkdingDays == null) {
-                    $errors[] = 'Please  enter $actualWorkdingDays!';
+                if ($vendor !== null) {
+                    $entity->setVendor($vendor);
                 } else {
-                    
-                    if (! is_numeric($actualWorkdingDays)) {
-                        $errors[] = '$actualWorkdingDaysmust be a number.';
-                    } else {
-                        if ($actualWorkdingDays <= 0) {
-                            $errors[] = '$actualWorkdingDays must be greater than 0!';
-                        }
-                        $entity->setActualWorkdingDays($actualWorkdingDays);
-                    }
+                    $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
                 }
                 
-                if ($nationalHolidays == null) {
-                    // $errors [] = 'Please enter $actualWorkdingDays!';
-                } else {
-                    
-                    if (! is_numeric($nationalHolidays)) {
-                        $errors[] = '$nationalHolidays be a number.';
-                    } else {
-                        if ($nationalHolidays <= 0) {
-                            $errors[] = '$$nationalHolidays must be greater than 0!';
-                        }
-                        $entity->setNationalHolidays($nationalHolidays);
-                    }
+                $currency = null;
+                if ($currency_id > 0) {
+                    $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
                 }
                 
-                if ($cooperateLeave == null) {
-                    // $errors [] = 'Please enter $actualWorkdingDays!';
+                if ($currency !== null) {
+                    $entity->setCurrency($currency);
                 } else {
-                    
-                    if (! is_numeric($cooperateLeave)) {
-                        $errors[] = '$cooperateLeave be a number.';
-                    } else {
-                        if ($cooperateLeave <= 0) {
-                            $errors[] = '$cooperateLeave must be greater than 0!';
-                        }
-                        $entity->setCooperateLeave($cooperateLeave);
-                    }
+                    $errors[] = 'Currency can\'t be empty. Please select a vendor!';
                 }
                 
                 $validator = new Date();
                 
-                if (! $validator->isValid($postingFromDate)) {
-                    $errors[] = 'Start Date is not correct or empty!';
-                } else {
-                    $entity->setPostingFromDate(new \DateTime($postingFromDate));
+                switch ($currentState) {
+                    case "contract":
+                        // contract number not empty
+                        
+                        if ($contractNo == "") {
+                            $errors[] = 'Contract is not correct or empty!';
+                        } else {
+                            $entity->setContractNo($contractNo);
+                        }
+                        
+                        if (! $validator->isValid($contractDate)) {
+                            $errors[] = 'Contract Date is not correct or empty!';
+                        } else {
+                            $entity->setContractDate(new \DateTime($contractDate));
+                        }
+                        
+                        break;
+                    case "draftInvoice":
+                        
+                        /**
+                         *
+                         * @todo
+                         */
+                        
+                        /*
+                         * if ($invoiceNo == null) {
+                         * $errors[] = 'Please enter Invoice Number!';
+                         * } else {
+                         * $entity->setInvoiceNo($invoiceNo);
+                         * }
+                         *
+                         * if (! $validator->isValid($invoiceDate)) {
+                         * $errors[] = 'Invoice Date is not correct or empty!';
+                         * } else {
+                         * $entity->setInvoiceDate(new \DateTime($invoiceDate));
+                         * }
+                         */
+                        
+                        break;
+                    
+                    case "finalInvoice":
+                        
+                        /**
+                         *
+                         * @todo
+                         */
+                        
+                        if ($invoiceNo == null) {
+                            $errors[] = 'Please enter Invoice Number!';
+                        } else {
+                            $entity->setInvoiceNo($invoiceNo);
+                        }
+                        
+                        $entity->setSapDoc($sapDoc);
+                        
+                        if (! $validator->isValid($invoiceDate)) {
+                            $errors[] = 'Invoice Date is not correct or empty!';
+                        } else {
+                            $entity->setInvoiceDate(new \DateTime($invoiceDate));
+                        }
+                        
+                        if (! $validator->isValid($postingDate)) {
+                            $errors[] = 'Posting Date is not correct or empty!';
+                        } else {
+                            
+                            $entity->setPostingDate(new \DateTime($postingDate));
+                            
+                            // check if posting period is close
+                            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                            
+                            /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                            $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
+                            
+                            if ($postingPeriod->getPeriodStatus() == "C") {
+                                $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
+                            }
+                        }
+                        
+                        if (! $validator->isValid($grDate)) {
+                            $errors[] = 'Good receipt Date is not correct or empty!';
+                        } else {
+                            $entity->setGrDate(new \DateTime($grDate));
+                            // check if posting period is close
+                            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                            
+                            /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                            $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
+                            
+                            if ($postingPeriod->getPeriodStatus() == "C") {
+                                $errors[] = ' period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
+                            }
+                        }
+                        
+                        break;
                 }
-                if (! $validator->isValid($postingToDate)) {
-                    $errors[] = 'End Date is not correct or empty!';
-                } else {
-                    $entity->setPostingToDate(new \DateTime($postingToDate));
+                
+                $warehouse = null;
+                if ($warehouse_id > 0) {
+                    $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
                 }
+                
+                if ($warehouse !== null) {
+                    $entity->setWarehouse($warehouse);
+                } else {
+                    $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
+                }
+                
+                $entity->setRemarks($remarks);
                 
                 if (count($errors) > 0) {
                     return new ViewModel(array(
                         'redirectUrl' => $redirectUrl,
                         'errors' => $errors,
-                        'entity' => $entity
+                        'entity' => $entity,
+                        'currency_list' => $currency_list
                     ));
                 }
                 
-                // NO ERROR
+                // NO ERROR =====
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
                 
-                $entity->setLastChangeBy($u);
-                $entity->setLastChangeOn(new \DateTime());
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn(new \DateTime());
+                
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 
-                $this->flashMessenger()->addMessage('Posting Period "' . $periodName . '" is updated successfully!');
-                return $this->redirect()->toUrl("/finance/posting-period/list");
+                $this->flashMessenger()->addMessage('Doc. ' . $invoiceNo . 'of ' . $entity->getVendor()
+                    ->getVendorName() . '" is updated successfully!');
+                
+                // update current state of row
+                $query = $this->doctrineEM->createQuery('
+UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state WHERE r.invoice =:invoice_id
+                    ')->setParameters(array(
+                        'new_state' => $entity->getCurrentState(),
+                        'invoice_id' => $entity->getId(),
+                    ));
+                
+                $query->getResult();
+                
+                $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+                return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
-        // NO Post
+        // NO POST ====================
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') !== null) {
             $redirectUrl = $this->getRequest()
@@ -558,13 +680,16 @@ class VInvoiceController extends AbstractActionController
             'token' => $token
         );
         
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
+        /**@var \Application\Entity\FinVendorInvoice $entity*/
+        $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
         
         if ($entity !== null) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
-                'entity' => $entity
+                'entity' => $entity,
+                'currency_list' => $currency_list
+            
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
@@ -716,6 +841,4 @@ class VInvoiceController extends AbstractActionController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-    
-    
 }

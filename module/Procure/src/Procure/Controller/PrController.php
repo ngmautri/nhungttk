@@ -20,6 +20,7 @@ use Zend\Math\Rand;
 use Application\Entity\NmtProcurePr;
 use Symfony\Component\Workflow\Dumper\GraphvizDumper;
 use Application\Entity\NmtApplicationAclResource;
+use Application\Entity\NmtProcurePrRow;
 
 /**
  *
@@ -379,13 +380,35 @@ class PrController extends AbstractActionController
         $id = (int) $this->params()->fromQuery('entity_id');
         $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
-        $criteria = array(
+        /* $criteria = array(
             'id' => $id,
             'checksum' => $checksum,
             'token' => $token
-        );
+        ); */
         
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        $query = 'SELECT r, count(r.id), max(r.rowNumber) FROM Application\Entity\NmtProcurePrRow r
+            JOIN r.pr pr
+            WHERE pr.id=:id AND pr.token =:token AND r.isActive=:is_active';
+        
+        $r = $this->doctrineEM->createQuery($query)
+        ->setParameters(array(
+            "id" => $id,
+            "token" => $token,
+            "is_active"=>1,
+        ))->getSingleResult();
+        
+        
+        $entity = null;
+        if($r[0] instanceof NmtProcurePrRow)
+        {
+            $entity = $r[0]->getPr();
+        }
+        
+        if ($entity == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        //$entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
         if ($entity !== null) {
             
             try {
@@ -417,7 +440,9 @@ class PrController extends AbstractActionController
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
-                'errors' => null
+                'errors' => null,
+                'total_row' => (int) $r[1],
+                'max_row_number' => (int) $r[2],
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');

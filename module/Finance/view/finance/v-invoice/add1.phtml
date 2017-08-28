@@ -16,7 +16,11 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general"><small><i class="glyphicon glyphicon-usd"></i></small>&nbsp;Vendor Invoice</a></li>
+		<li><a href="#general"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Vendor Document</a></li>
+		<li><a
+			href="/finance/v-invoice-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
+		
+		
 				<li><a			href="/finance/v-invoice-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
 <small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
 		
@@ -29,16 +33,25 @@ if (count ( $errors ) > 0) {
 			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
+				
+					
+				
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+					<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
 				</legend>
 				<div id="invoice_header" class="collapse">
+					<small></small><a class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+&nbsp;Edit</a></small>
+						<hr>
+					
 					<div class="form-group margin-bottom required">
 					<label class="control-label col-sm-2">Current State:</label>
 					<div class="col-sm-3">
-					<select name="currentState" class="form-control">
+					<select name="currentState" class="form-control input-sm">
 							<option value="">Please Select</option>
 							<option <?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?> value="contract">Contract /PO</option>
 							<option <?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?> value="draftInvoice">Draft Invoice</option>
@@ -94,7 +107,7 @@ if (count ( $errors ) > 0) {
 					
 					<label class="control-label col-sm-2">Currency:</label>
 					<div class="col-sm-3">
-					<select name="currency_id" class="form-control">
+					<select name="currency_id" class="form-control input-sm">
 								<option value="">Select Currency</option>
    	    							<?php
    	    							if($currency_list!== null):
@@ -170,7 +183,7 @@ if (count ( $errors ) > 0) {
 							</div>
 						<label class="control-label col-sm-2" for="inputTag">Target Warehouse:</label>
 					<div class="col-sm-3">
-<input class="form-control" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+<input class="form-control input-sm" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
 <input type="hidden" id="target_wh_id" name="target_wh_id" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
 					</div>
 				</div>
@@ -195,6 +208,12 @@ if (count ( $errors ) > 0) {
 				<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
 			</legend>
 			<div id="rows" class="collapse in">
+					<span class="" style="padding:3px;margin-bottom:2px; font-size: 10pt">
+						Net: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
+                        |&nbsp;Tax: <?php echo number_format($tax_amount,2);?>
+                        |&nbsp;Gross: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
+                        |&nbsp;Total Rows:<?php echo ($total_row);?>
+					</span>
 					<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
 			</fieldset>
 			</form>
@@ -413,7 +432,7 @@ $( "#vendor_name_1" ).autocomplete({
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "100%", height: $(window).height()-200, showTitle : false,
+	var obj = { width: "100%", height: $(window).height()-230, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
@@ -497,7 +516,7 @@ $( "#vendor_name_1" ).autocomplete({
                 //alert(sent_list);
                   
                   $.ajax({
-                      url: '/procure/pr-row/update-row',
+                      url: '/finance/v-invoice-row/update-row',
                       data: {
                           sent_list: sent_list
                       },
@@ -543,13 +562,14 @@ $( "#vendor_name_1" ).autocomplete({
          
        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-       
+
+        { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
         { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
         { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},
         
         { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: false},
-        { title: "Unit Price", dataType: "string", dataIndx: "row_unit_price", width:90, align: 'right',editable: false},
+        { title: "Unit Price", dataType: "integer", dataIndx: "row_unit_price", width:90, align: 'right',editable: false},
         { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},
         { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
         { title: "Gross", dataType: "decimal", dataIndx: "row_gross", width: 90,align: 'right',editable: false},

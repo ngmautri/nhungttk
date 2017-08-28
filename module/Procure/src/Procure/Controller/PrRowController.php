@@ -124,18 +124,31 @@ class PrRowController extends AbstractActionController {
 			$target_id = $request->getPost ( 'target_id' );
 			$token = $request->getPost ( 'token' );
 			
-			$criteria = array (
+			/* $criteria = array (
 					'id' => $target_id,
 					'token' => $token 
-			);
+			); */
 			
-			/**
-			 *
-			 * @todo : Update Target
-			 */
+			$query = 'SELECT r, count(r.id), max(r.rowNumber) FROM Application\Entity\NmtProcurePrRow r
+            JOIN r.pr pr
+            WHERE pr.id=:id AND pr.token =:token AND r.isActive=:is_active';
+			
+			$r = $this->doctrineEM->createQuery($query)
+			->setParameters(array(
+			    "id" => $target_id,
+			    "token" => $token,
+			    "is_active"=>1,
+			))->getSingleResult();
+			
+			$target = null;
+			if($r[0] instanceof NmtProcurePrRow)
+			{
+			    $target = $r[0]->getPr();
+			}
+			
 			
 			/**@var \Application\Entity\NmtProcurePr $target ;*/
-			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
+		   //$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 			
 			if ($target == null) {
 				
@@ -145,7 +158,9 @@ class PrRowController extends AbstractActionController {
 						'redirectUrl' => $redirectUrl,
 						'errors' => $errors,
 						'target' => null,
-						'entity' => null 
+						'entity' => null,
+    				    'total_row' => (int) $r[1],
+    				    'max_row_number' => (int) $r[2],
 				) );
 				
 				// might need redirect
@@ -155,7 +170,10 @@ class PrRowController extends AbstractActionController {
 				$redirectUrl = $request->getPost ( 'redirectUrl' );
 				
 				$edt = $request->getPost ( 'edt' );
-				$isActive = $request->getPost ( 'isActive' );
+				$isActive = (int) $request->getPost ( 'isActive' );
+				
+				$rowNumber=(int) $request->getPost ( 'rowNumber' );
+				
 				$priority = $request->getPost ( 'priority' );
 				$quantity = $request->getPost ( 'quantity' );
 				
@@ -189,7 +207,7 @@ class PrRowController extends AbstractActionController {
 						$entity->setProject ( $project );
 					}
 				}
-				
+				$entity->setRowNumber($rowNumber);
 				$entity->setPr ( $target );
 				$entity->setIsActive ( $isActive );
 				$entity->setPriority ( $priority );
@@ -247,7 +265,9 @@ class PrRowController extends AbstractActionController {
 							'redirectUrl' => $redirectUrl,
 							'errors' => $errors,
 							'entity' => $entity,
-							'target' => $target 
+							'target' => $target,
+    					    'total_row' => (int) $r[1],
+    					    'max_row_number' => (int) $r[2],
 					
 					) );
 				}
@@ -280,7 +300,7 @@ class PrRowController extends AbstractActionController {
 				return $this->redirect ()->toUrl ( $redirectUrl );
 			}
 		}
-		
+		// NO POST ================
 		$redirectUrl = null;
 		if ($this->getRequest ()->getHeader ( 'Referer' ) !== null) {
 			$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();
@@ -289,17 +309,31 @@ class PrRowController extends AbstractActionController {
 		$id = ( int ) $this->params ()->fromQuery ( 'target_id' );
 		$checksum = $this->params ()->fromQuery ( 'checksum' );
 		$token = $this->params ()->fromQuery ( 'token' );
-		$criteria = array (
+		/* $criteria = array (
 				'id' => $id,
 				'checksum' => $checksum,
 				'token' => $token 
 		);
-		
-		/**
-		 *
-		 * @todo : Update Target
 		 */
-		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
+		$query = 'SELECT r, count(r.id), max(r.rowNumber) FROM Application\Entity\NmtProcurePrRow r
+            JOIN r.pr pr
+            WHERE pr.id=:id AND pr.token =:token AND r.isActive=:is_active';
+		
+		$r = $this->doctrineEM->createQuery($query)
+		->setParameters(array(
+		    "id" => $id,
+		    "token" => $token,
+		    "is_active"=>1,
+		))->getSingleResult();
+		
+		
+		$target = null;
+		if($r[0] instanceof NmtProcurePrRow)
+		{
+		    $target = $r[0]->getPr();
+		}
+		
+	   //$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 		
 		if ($target !== null) {
 			
@@ -307,7 +341,9 @@ class PrRowController extends AbstractActionController {
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,
 					'target' => $target,
-					'entity' => null 
+					'entity' => null,
+			         'total_row' => (int) $r[1],
+			         'max_row_number' => (int) $r[2],
 			) );
 		} else {
 			return $this->redirect ()->toRoute ( 'access_denied' );
@@ -981,6 +1017,7 @@ class PrRowController extends AbstractActionController {
 					$a_json_row ["row_id"] = $a ['id'];
 					$a_json_row ["row_token"] = $a ['token'];
 					$a_json_row ["row_checksum"] = $a ['checksum'];
+					$a_json_row ["row_number"] = $a ['row_number'];
 					
 					$a_json_row ["item_sku"] = '<span title="' .$a ['item_sku'] . '">'. substr($a ['item_sku'],0,5) . '</span>';
 					
@@ -1211,6 +1248,7 @@ $a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['i
 	        
 	        if ($entity != null) {
 	            $entity->setFaRemarks($a['fa_remarks']);
+	            $entity->setRowNumber($a['row_number']);
 	            //$a_json_final['updateList']=$a['row_id'] . 'has been updated';
 	            $this->doctrineEM->persist ( $entity );
 	            

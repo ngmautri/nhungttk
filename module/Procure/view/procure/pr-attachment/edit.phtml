@@ -90,7 +90,7 @@ if (count ( $errors ) > 0) {
 			<textarea  class="form-control" type="text" rows="4" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 		</div>
-			<label class="control-label col-sm-2" for="inputTag">Attachment: </label>
+	<label class="control-label col-sm-2" for="inputTag">Attachment: </label>
 		<div class="col-sm-3">
 	<i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $this->baseUrl ?>/procure/pr-attachment/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
 		</div>		

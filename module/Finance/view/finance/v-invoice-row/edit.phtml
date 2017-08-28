@@ -184,7 +184,12 @@ if (count ( $errors ) > 0) {
     			type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
     	</div>
 	</div>
-
+<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2">Row Number: </label>
+		<div class="col-sm-1">
+				<input tabindex="0" class="form-control input-sm" type="text" id="rowNumber" name="rowNumber" value="<?php if (!$entity== null): echo $entity->getRowNumber(); endif;?>">
+		</div>
+	</div>
 	
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2">PR Item: </label>

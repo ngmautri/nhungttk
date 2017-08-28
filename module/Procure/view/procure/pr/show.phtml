@@ -1,6 +1,4 @@
 
-<h4><?php echo (!$entity == null)? $entity->getPrName():"";?></h4>
-
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general"><i class="glyphicon glyphicon-shopping-cart"></i>&nbsp;Purchase Request</a></li>
@@ -23,7 +21,7 @@
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#pr_header" class="" data-toggle="collapse">PR HEADER:</a>
+					<a href="#pr_header" class="" data-toggle="collapse">PR HEADER: <?php echo (!$entity == null)? "(". $entity->getPrName() .")" :"";?></a>
 				</legend>
 				<div id="pr_header" class="collapse">
 
@@ -121,7 +119,6 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
 				<a href="#transaction" class="" data-toggle="collapse">PR ROWS:</a>
 			</legend>
 			<div id="transaction" class="collapse in">
-
 				<div id="pr_rows"></div>
 				<div id="pr_row_gird" style="margin: 1px;"></div>
 		</fieldset>
@@ -403,7 +400,8 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
          
        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-       
+
+        { title: "#", dataType: "string", dataIndx: "row_number", width:5,editable: true },
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
         { title: "Item", dataType: "string", dataIndx: "item_name", width:200,editable: false },
         { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: false},

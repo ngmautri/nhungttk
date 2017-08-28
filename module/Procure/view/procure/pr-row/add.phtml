@@ -4,14 +4,6 @@
  */
 
 ?>
-
-<h4>
-	 <?php
-		// target
-		echo (! $target == null) ? 'PR: ' . $target->getPrNumber () : "";
-		?>
-</h4>
-
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
@@ -49,7 +41,8 @@ if (count ( $errors ) > 0) {
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#pr_header" class="" data-toggle="collapse">PR HEADER:</a>
+								<a href="#pr_header" class="" data-toggle="collapse">PR HEADER: <?php echo (!$target == null)? "(". $target->getPrName() .")" :"";?></a>
+	
 				</legend>
 				<div id="pr_header" class="collapse">
 
@@ -161,6 +154,13 @@ value="<?php if(!$target == null): if ($target->getSubmittedOn() !== null): echo
 				</legend>
 				<div id="transaction" class="collapse in">
 				
+				<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2">Row Number: </label>
+		<div class="col-sm-1">
+			<input tabindex="0" class="form-control input-sm" type="text" id="rowNumber" name="rowNumber" 
+value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_row_number + 1;else:echo $entity->getRowNumber();endif;else:echo $max_row_number + 1;endif;?>">
+		</div>
+	</div>
 					<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2">Item: </label>
 				<div class="col-sm-3">

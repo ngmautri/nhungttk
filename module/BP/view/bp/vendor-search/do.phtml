@@ -39,8 +39,15 @@ if (! $hits == null) :
 	 <tr>
 	
 			<td> <?php echo $count;?></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->vendor_number);?></span></td>
-				<td><span id=""><?php echo $this->escapeHtml($hit->vendor_name);?></span></td>
+				<td>
+	<a href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>"><?php echo $this->escapeHtml($hit->vendor_number);?></a>
+				</td>
+				
+				
+				<td>
+	<a href="<?php echo $this->baseUrl ?>/bp/vendor/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->vendor_id;?>&checksum=<?php echo $hit->checksum;?>"><?php echo $this->escapeHtml($hit->vendor_name);?></a>
+				
+				</td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->keywords);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->country_name);?></span></td>
 					<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>

@@ -115,6 +115,11 @@ class VInvoiceAttachmentController extends AbstractActionController
                 'token' => $token
             );
             
+            /**
+             *
+             * @var \Application\Entity\NmtApplicationAttachment $entity ;
+             *
+             */
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
             
             if ($entity == null) {
@@ -130,11 +135,10 @@ class VInvoiceAttachmentController extends AbstractActionController
                 // might need redirect
             } else {
                 
-                $vendor_id = $request->getPost('vendor_id');
                 $documentSubject = $request->getPost('documentSubject');
                 $validFrom = $request->getPost('validFrom');
                 $validTo = $request->getPost('validTo');
-                $isActive = $request->getPost('isActive');
+                $isActive = (int) $request->getPost('isActive');
                 $markedForDeletion = $request->getPost('markedForDeletion');
                 $filePassword = $request->getPost('filePassword');
                 $visibility = $request->getPost('visibility');
@@ -144,7 +148,7 @@ class VInvoiceAttachmentController extends AbstractActionController
                  *
                  * @todo : Change Target
                  */
-                $target = $entity->getPr();
+                $target = $entity->getVInvoice();
                 
                 // to Add
                 $target_id = null;
@@ -152,10 +156,7 @@ class VInvoiceAttachmentController extends AbstractActionController
                     $target_id = $target->getId();
                 }
                 
-                // to Comment
-                // $entity = new NmtApplicationAttachment ();
-                
-                $remarks = $request->getPost('remarks');
+                 $remarks = $request->getPost('remarks');
                 
                 if ($documentSubject == null) {
                     $errors[] = 'Please give document subject!';
@@ -224,14 +225,6 @@ class VInvoiceAttachmentController extends AbstractActionController
                 }
                 
                 $entity->setRemarks($remarks);
-                
-                $vendor = null;
-                if ($vendor_id > 0) {
-                    $vendor = $this->doctrineEM->find('Application\Entity\NmtBpVendor', $vendor_id);
-                    // $entity->setVendor ( $vendor );
-                }
-                
-                $entity->setVendor($vendor);
                 
                 // handle attachment
                 if (isset($_FILES['attachments'])) {
@@ -321,7 +314,7 @@ class VInvoiceAttachmentController extends AbstractActionController
                          */
                         $criteria = array(
                             "checksum" => $checksum,
-                            "pr" => $target_id
+                            "vInvoice" => $target_id
                         );
                         $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
                         
@@ -428,7 +421,7 @@ class VInvoiceAttachmentController extends AbstractActionController
              *
              * @todo : Update Target
              */
-            $target = $entity->getPr();
+            $target = $entity->getVInvoice();
             
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
@@ -527,19 +520,20 @@ class VInvoiceAttachmentController extends AbstractActionController
         $this->layout("layout/user/ajax");
         
         $target_id = (int) $this->params()->fromQuery('target_id');
-        $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
+        
         $criteria = array(
             'id' => $target_id,
-            'checksum' => $checksum,
             'token' => $token
         );
         
         /**
          *
-         * @todo : Update Target
+         * @todo : Change Target
+         * @var \Application\Entity\FinVendorInvoice $target ;
+         *     
          */
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
         
         if ($target !== null) {
             
@@ -548,7 +542,7 @@ class VInvoiceAttachmentController extends AbstractActionController
              * @todo : Update Target
              */
             $criteria = array(
-                'pr' => $target_id,
+                'vInvoice' => $target_id,
                 'isActive' => 1,
                 'markedForDeletion' => 0,
                 'isPicture' => 1
@@ -744,7 +738,7 @@ class VInvoiceAttachmentController extends AbstractActionController
                 // make attachment entity
                 // validadte
                 // save
-           
+                
                 $documentSubject = $request->getPost('documentSubject');
                 $validFrom = $request->getPost('validFrom');
                 $validTo = $request->getPost('validTo');
@@ -760,13 +754,13 @@ class VInvoiceAttachmentController extends AbstractActionController
                 $entity->setTargetId($target->getId());
                 $entity->setTargetToken($target->getToken());
                 $entity->setVendor($target->getVendor());
-                                
+                
                 /**
                  *
                  * @todo : Update Target
                  */
                 $entity->setVInvoice($target);
-                 
+                
                 $remarks = $request->getPost('remarks');
                 
                 if ($documentSubject == null) {
@@ -833,7 +827,7 @@ class VInvoiceAttachmentController extends AbstractActionController
                 }
                 
                 $entity->setRemarks($remarks);
-                               
+                
                 if (isset($_FILES['attachments'])) {
                     $file_name = $_FILES['attachments']['name'];
                     $file_size = $_FILES['attachments']['size'];
@@ -929,7 +923,7 @@ class VInvoiceAttachmentController extends AbstractActionController
                         }
                         ;
                         
-                        $name_part1 = Rand::getString(6, self::CHAR_LIST, true) . "_" . Rand::getString(10, self::CHAR_LIST, true);                        
+                        $name_part1 = Rand::getString(6, self::CHAR_LIST, true) . "_" . Rand::getString(10, self::CHAR_LIST, true);
                         $name = md5($target_id . $checksum . uniqid(microtime())) . '_' . $name_part1 . '.' . $ext;
                         
                         $folder_relative = $name[0] . $name[1] . DIRECTORY_SEPARATOR . $name[2] . $name[3] . DIRECTORY_SEPARATOR . $name[4] . $name[5];
@@ -991,7 +985,6 @@ class VInvoiceAttachmentController extends AbstractActionController
             }
         }
         
-        
         // NO POST
         
         $redirectUrl = null;
@@ -1012,7 +1005,7 @@ class VInvoiceAttachmentController extends AbstractActionController
          *
          * @todo : Change Target
          * @var \Application\Entity\FinVendorInvoice $target ;
-         *
+         *     
          */
         $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
         
@@ -1368,15 +1361,16 @@ class VInvoiceAttachmentController extends AbstractActionController
             
             $criteria = array(
                 'id' => $target_id,
-                'token' => $token,
-                'checksum' => $checksum
+                'token' => $token
             );
             
             /**
              *
-             * @todo : Update Target
+             * @todo : Change Target
+             * @var \Application\Entity\FinVendorInvoice $target ;
+             *     
              */
-            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+            $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
             
             if ($target == null) {
                 
@@ -1425,7 +1419,7 @@ class VInvoiceAttachmentController extends AbstractActionController
                      */
                     $criteria = array(
                         "checksum" => $checksum,
-                        "pr" => $target_id
+                        "vInvoice" => $target_id
                     );
                     $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
                     
@@ -1446,11 +1440,16 @@ class VInvoiceAttachmentController extends AbstractActionController
                         
                         $entity = new NmtApplicationAttachment();
                         
+                        $entity->setTargetClass(get_class($target));
+                        $entity->setTargetId($target->getId());
+                        $entity->setTargetToken($target->getToken());
+                        $entity->setVendor($target->getVendor());
+                        
                         /**
                          *
                          * @todo : CHANGE: target
                          */
-                        $entity->setPr($target);
+                        $entity->setVInvoice($target);
                         
                         // $entity->setFilePassword ( $filePassword );
                         if ($documentSubject == null) {
@@ -1539,19 +1538,19 @@ class VInvoiceAttachmentController extends AbstractActionController
         }
         
         $id = (int) $this->params()->fromQuery('target_id');
-        $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $id,
-            'checksum' => $checksum,
             'token' => $token
         );
         
         /**
          *
-         * @todo Update target
+         * @todo : Change Target
+         * @var \Application\Entity\FinVendorInvoice $target ;
+         *     
          */
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
         
         if ($target !== null) {
             return new ViewModel(array(
@@ -1629,7 +1628,7 @@ class VInvoiceAttachmentController extends AbstractActionController
          *
          * @todo : update target
          */
-        $query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.pr > :n';
+        $query = 'SELECT e FROM Application\Entity\NmtApplicationAttachment e WHERE e.vInvoice > :n';
         
         $list = $this->doctrineEM->createQuery($query)
             ->setParameter('n', 0)

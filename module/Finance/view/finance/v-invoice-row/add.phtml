@@ -15,7 +15,6 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
  	 <li ><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;New Row</a></li>
@@ -35,7 +34,15 @@ if (count ( $errors ) > 0) {
 				</legend>
 				
 				<div id="invoice_header" class="collapse">
-
+					
+					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9.5pt">
+					<ul style="font-size: 9.5pt">
+						<li>Net: <?php echo number_format($net_amount,2) . " " . $target->getCurrency()->getCurrency() ;?></li>
+                        <li>Tax: <?php echo number_format($tax_amount,2);?></li>
+                        <li>Gross: <?php echo number_format($gross_amount,2) . " " .$target->getCurrency()->getCurrency();?></li>
+                        <li>Total Rows:<?php echo ($total_row);?></li>
+					</ul>	
+					</div>
 
 					<div class="form-group margin-bottom required">
 						<label class="control-label col-sm-2 ">Vendor:</label>
@@ -185,6 +192,12 @@ if (count ( $errors ) > 0) {
     	</div>
 	</div>
 
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2">Row Number: </label>
+		<div class="col-sm-1">
+			<input tabindex="0" class="form-control input-sm" type="text" id="rowNumber" name="rowNumber" value="<?php if($entity->getRowNumber()==null): echo ($max_row_number+1); else: echo $entity->getRowNumber(); endif;?>">
+		</div>
+	</div>
 	
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2">PR Item: </label>
@@ -209,7 +222,8 @@ if (count ( $errors ) > 0) {
 				class="glyphicon glyphicon-new-window"></i></small>
 		</div>
 	</div>
-		<div class="form-group margin-bottom  required">
+	
+	<div class="form-group margin-bottom  required">
         <label class="control-label col-sm-2">Item: </label>
         <div class="col-sm-3">
         	<input tabindex="2" class="form-control" type="text" id="item_name"

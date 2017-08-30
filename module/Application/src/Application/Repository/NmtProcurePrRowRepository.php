@@ -35,15 +35,16 @@ SELECT
  	ifnull( nmt_inventory_trx_last.vendor_unit_price, nmt_inventory_item_purchasing.vendor_unit_price) as vendor_unit_price,
   	ifnull( nmt_inventory_trx_last.currency, nmt_inventory_item_purchasing.currency) as currency,
  	ifnull( nmt_inventory_trx_last.vendor_item_unit, nmt_inventory_item_purchasing.vendor_item_unit) as vendor_item_unit,
- 		
-	IFNULL(nmt_inventory_trx.total_received,0) AS total_received,
+    
+    ifnull(nmt_inventory_trx.total_received,0) as total_received,
     
     IF ((nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))>0
     ,(nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))
     ,0) AS confirmed_balance,
     IF ((nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))>=0
-    ,0,(nmt_procure_pr_row.quantity*-1 + IFNULL(nmt_inventory_trx.total_received,0))) AS confirmed_free_balance
- 
+    ,0,(nmt_procure_pr_row.quantity*-1 + IFNULL(nmt_inventory_trx.total_received,0))) AS confirmed_free_balance,
+
+	ifnull(fin_vendor_invoice_row.processing_quantity,0) as processing_quantity 
     
 FROM nmt_procure_pr_row
 LEFT JOIN nmt_inventory_item
@@ -63,6 +64,18 @@ LEFT JOIN
 ) 
 AS nmt_inventory_trx
 ON nmt_procure_pr_row.id = nmt_inventory_trx.pr_row_id
+
+LEFT JOIN
+(
+	SELECT
+		fin_vendor_invoice_row.pr_row_id,
+		SUM(fin_vendor_invoice_row.quantity) AS processing_quantity
+	FROM fin_vendor_invoice_row
+	WHERE fin_vendor_invoice_row.current_state!='finalInvoice' AND fin_vendor_invoice_row.is_active=1
+	GROUP BY fin_vendor_invoice_row.pr_row_id
+)
+AS fin_vendor_invoice_row
+ON fin_vendor_invoice_row.pr_row_id = nmt_procure_pr_row.id
 
 LEFT JOIN
 (
@@ -300,16 +313,24 @@ WHERE 1
 			$sql = $sql. " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
 		}
 		
-		if ($sort_by == "itemName") {
-			$sql = $sql. " ORDER BY nmt_inventory_item.item_name " . $sort;
-		}elseif($sort_by == "createdOn") {
-			$sql = $sql. " ORDER BY nmt_procure_pr_row.created_on " . $sort;
-		}elseif($sort_by == "balance") {
-			$sql = $sql. " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
-		}elseif($sort_by == "prSubmitted") {
-			$sql = $sql. " ORDER BY nmt_procure_pr.submitted_on" . $sort;
+		switch($sort_by){		    
+		    case "itemName":
+		        $sql = $sql. " ORDER BY nmt_inventory_item.item_name " . $sort;
+		        break;
+		    case "createdOn":
+		        $sql = $sql. " ORDER BY nmt_procure_pr_row.created_on " . $sort;
+		        break;
+		    case "balance":
+		        $sql = $sql. " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
+		        break;
+		    case "prSubmitted":
+		        $sql = $sql. " ORDER BY nmt_procure_pr.submitted_on" . $sort;
+		        break;
+		    case "rowNumber":
+		        $sql = $sql. " ORDER BY nmt_procure_pr_row.row_number " . $sort;
+		        break;
 		}
-		
+	
 		if($limit>0){
 			$sql = $sql. " LIMIT " . $limit;
 		}

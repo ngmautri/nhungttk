@@ -401,12 +401,13 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
 
-        { title: "#", dataType: "string", dataIndx: "row_number", width:5,editable: true },
+        { title: "#", dataType: "integer", dataIndx: "row_number", width:5,editable: true },
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
-        { title: "Item", dataType: "string", dataIndx: "item_name", width:200,editable: false },
+        { title: "Item", dataType: "string", dataIndx: "item_name", width:250,editable: false },
         { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: false},
         { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
         { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
+        { title: "buying", dataType: "integer", dataIndx: "buying", width: 70,align: 'right',editable: false},
         { title: "Project", dataType: "string", dataIndx: "project_id", width: 70, align: 'right',editable: false},
         { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 90, align: 'left',editable: false},
         { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 82, align: 'right',editable: false},

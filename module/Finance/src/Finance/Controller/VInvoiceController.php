@@ -306,74 +306,31 @@ class VInvoiceController extends AbstractActionController
         
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $id,
-            'token' => $token
-        );
-        
-        /*
-         * $qb = $this->doctrineEM->createQueryBuilder();
-         *
-         * $qb->select(array('i', 'Count(r.id) as row_number','SUM(r.grossAmount) as gross_amount'))
-         * ->from('\Application\Entity\FinVendorInvoice', 'i')
-         * ->Join('\Application\Entity\FinVendorInvoiceRow', 'r','r.invoice_id = i.id')
-         * ->where('i.id = ?0')
-         * ->andWhere('i.token=?1')
-         * ->andWhere('r.isActive=?2')
-         * ->setParameter(0, $id)
-         * ->setParameter(1, $token)
-         * ->setParameter(2, 1)
-         * ;
-         *
-         * $query = $qb->getQuery();
-         * $result = $query->getSingleResult();
-         */
-        // var_dump($result['gross_amount']);
-        // $entity=$result[0];
-        
-        
-        $query = 'SELECT r, count(r.id), max(r.rowNumber), sum(r.netAmount),sum(r.taxAmount),sum(r.grossAmount) FROM Application\Entity\FinVendorInvoiceRow r
-            JOIN r.invoice i
-            WHERE i.id=:id AND i.token =:token AND r.isActive=:is_active';
-        
-        $r = $this->doctrineEM->createQuery($query)
-        ->setParameters(array(
-            "id" => $id,
-            "token" => $token,
-            "is_active"=>1,
-        ))->getSingleResult();
-        
-        
-      /*   $query = 'SELECT e,v FROM Application\Entity\FinVendorInvoice e Join e.vendor v
-            WHERE e.id=?1 AND e.token =?2';
-        
-        $entity = $this->doctrineEM->createQuery($query)
-            ->setParameters(array(
-            "1" => $id,
-            "2" => $token
-        ))
-            ->getSingleResult(); */
-        
-        // var_dump($entity);
-        
+       
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $invoice = $res->getVendorInvoice($id,$token);
+  
+        if($invoice==null){
+            return $this->redirect()->toRoute('access_denied');
+        }
+                
         $entity = null;
-        if($r[0] instanceof FinVendorInvoiceRow)
-        {
-            $entity = $r[0]->getInvoice();
+        if($invoice[0] instanceof FinVendorInvoice)        {
+            $entity = $invoice[0];
         }
         
-        // $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
         if ($entity !== null) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
                 'errors' => null,
                 'currency_list' => $currency_list,
-                'total_row' => (int) $r[1],
-                'max_row_number' => (int) $r[2],
-                'net_amount' => $r[3],
-                'tax_amount' => $r[4],
-                'gross_amount' => $r[5],
+                'total_row' => $invoice['total_row'],
+                'max_row_number' => $invoice['total_row'],
+                'net_amount' => $invoice['net_amount'],
+                'tax_amount' => $invoice['tax_amount'],
+                'gross_amount' => $invoice['gross_amount'],
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');

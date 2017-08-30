@@ -208,11 +208,11 @@ if (count ( $errors ) > 0) {
 				<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
 			</legend>
 			<div id="rows" class="collapse in">
-					<span class="" style="padding:3px;margin-bottom:2px; font-size: 10pt">
-						Net: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
-                        |&nbsp;Tax: <?php echo number_format($tax_amount,2);?>
-                        |&nbsp;Gross: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
-                        |&nbsp;Total Rows:<?php echo ($total_row);?>
+					<span class="" style="padding:3px;margin-bottom:2px; font-size: 10pt; color: gray">
+						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
+                        &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>
+                        &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
+                        &nbsp;|&nbsp;Total rows:<?php echo ($total_row);?>
 					</span>
 					<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
 			</fieldset>

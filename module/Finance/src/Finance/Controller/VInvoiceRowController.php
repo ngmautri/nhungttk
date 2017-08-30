@@ -259,31 +259,20 @@ class VInvoiceRowController extends AbstractActionController
         
          $redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
         
-        $target_id = (int) $this->params()->fromQuery('target_id');
+        $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         
-        /*
-         * $criteria = array(
-         * 'id' => $target_id,
-         * 'token' => $token
-         * );
-         * $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
-         */
-        $query = 'SELECT r, count(r.id), max(r.rowNumber), sum(r.netAmount),sum(r.taxAmount),sum(r.grossAmount) FROM Application\Entity\FinVendorInvoiceRow r
-            JOIN r.invoice i          
-            WHERE i.id=:id AND i.token =:token AND r.isActive=:is_active';
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $invoice = $res->getVendorInvoice($id,$token);
         
-        $r = $this->doctrineEM->createQuery($query)
-            ->setParameters(array(
-            "id" => $target_id,
-            "token" => $token,
-             "is_active"=>1,        
-        ))->getSingleResult();
+        if($invoice==null){
+            return $this->redirect()->toRoute('access_denied');
+        }
         
         $target = null;
-        if($r[0] instanceof FinVendorInvoiceRow)
-        {
-            $target = $r[0]->getInvoice();
+        if($invoice[0] instanceof FinVendorInvoice)        {
+            $target = $invoice[0];
         }
         
         if ($target == null) {
@@ -303,11 +292,11 @@ class VInvoiceRowController extends AbstractActionController
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list,
-            'total_row' => (int) $r[1],
-            'max_row_number' => (int) $r[2],
-            'net_amount' => $r[3],
-            'tax_amount' => $r[4],
-            'gross_amount' => $r[5],
+            'total_row' => $invoice['total_row'],
+            'max_row_number' => $invoice['total_row'],
+            'net_amount' => $invoice['net_amount'],
+            'tax_amount' => $invoice['tax_amount'],
+            'gross_amount' => $invoice['gross_amount'],
         ));
     }
 
@@ -659,6 +648,7 @@ class VInvoiceRowController extends AbstractActionController
                     $a_json_row["item_sku"] = $a->getItem()->getItemSku();
                     $a_json_row["item_token"] = $a->getItem()->getToken();
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
+                    $a_json_row["fa_remarks"] = $a->getFaRemarks();
                     
                     $a_json[] = $a_json_row;
                 }

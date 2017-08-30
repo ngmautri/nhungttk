@@ -638,6 +638,9 @@ class PrRowController extends AbstractActionController {
 				} else {
 					$a_json_row ["total_received"] = "";
 				}
+				$a_json_row ["buying"] = $a ['processing_quantity'];
+				
+				
 				
 				$a_json_row ["project_id"] = $a ['project_id'];
 				
@@ -937,7 +940,7 @@ class PrRowController extends AbstractActionController {
 		$is_active = $this->params ()->fromQuery ( 'is_active' );
 		
 		if ($sort_by == null) :
-			$sort_by = "createdOn";
+			$sort_by = "rowNumber";
 		endif;
 		
 		if ($balance == null) :
@@ -948,8 +951,8 @@ class PrRowController extends AbstractActionController {
 			$sort = "ASC";
 		endif;
 		
-		$pq_curPage = $_GET ["pq_curpage"];
-		$pq_rPP = $_GET ["pq_rpp"];
+		//$pq_curPage = $_GET ["pq_curpage"];
+		//$pq_rPP = $_GET ["pq_rpp"];
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) ) or $this->params ()->fromQuery ( 'perPage' ) == null) {
 			$resultsPerPage = 30;
@@ -999,10 +1002,10 @@ class PrRowController extends AbstractActionController {
 				
 				$total_records = count ( $list );
 				
-				if ($total_records > $pq_rPP) {
+				/* if ($total_records > $pq_rPP) {
 					$paginator = new Paginator ( $total_records, $pq_curPage, $pq_rPP );
 					$list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
-				}
+				} */
 				
 				foreach ( $list as $a ) {
 					
@@ -1040,6 +1043,8 @@ class PrRowController extends AbstractActionController {
 					}
 					
 					$a_json_row ["confirmed_balance"] = $a ['confirmed_balance'];
+					$a_json_row ["buying"] = $a ['processing_quantity'];
+					
 					
 					if (strlen ( $a ['vendor_name'] ) < 10) {
 						$a_json_row ["vendor_name"] = $a ['vendor_name'];
@@ -1072,7 +1077,7 @@ class PrRowController extends AbstractActionController {
 			
 			$a_json_final ['data'] = $a_json;
 			$a_json_final ['totalRecords'] = $total_records;
-			$a_json_final ['curPage'] = $pq_curPage;
+			//$a_json_final ['curPage'] = $pq_curPage;
 		}
 		
 		$response = $this->getResponse ();
@@ -1105,8 +1110,8 @@ class PrRowController extends AbstractActionController {
 	    $sort = "ASC";
 	    endif;
 	    
-	    $pq_curPage = $_GET ["pq_curpage"];
-	    $pq_rPP = $_GET ["pq_rpp"];
+	    //$pq_curPage = $_GET ["pq_curpage"];
+	    //$pq_rPP = $_GET ["pq_rpp"];
 	    
 	    if (is_null ( $this->params ()->fromQuery ( 'perPage' ) ) or $this->params ()->fromQuery ( 'perPage' ) == null) {
 	        $resultsPerPage = 30;
@@ -1156,10 +1161,10 @@ class PrRowController extends AbstractActionController {
 	            
 	            $total_records = count ( $list );
 	            
-	            if ($total_records > $pq_rPP) {
+	           /*  if ($total_records > $pq_rPP) {
 	                $paginator = new Paginator ( $total_records, $pq_curPage, $pq_rPP );
 	                $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->getPrRow ( $target_id, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
-	            }
+	            } */
 	            
 	            foreach ( $list as $a ) {
 	                
@@ -1198,6 +1203,8 @@ $a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['i
 	                }
 	                
 	                $a_json_row ["confirmed_balance"] = $a ['confirmed_balance'];
+	                $a_json_row ["buying"] = $a ['processing_quantity'];
+	                
 	                
 	                $a_json_row ["vendor_name"] = "";
 	                $a_json_row ["receipt_quantity"] = "";
@@ -1212,7 +1219,7 @@ $a_json_row ["item_name"] = '<a style="cursor:pointer;"  item-pic="" id="'.$a['i
 	        
 	        $a_json_final ['data'] = $a_json;
 	        $a_json_final ['totalRecords'] = $total_records;
-	        $a_json_final ['curPage'] = $pq_curPage;
+	        //$a_json_final ['curPage'] = $pq_curPage;
 	    }
 	    
 	    $response = $this->getResponse ();

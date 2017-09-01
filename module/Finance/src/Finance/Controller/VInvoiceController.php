@@ -90,22 +90,26 @@ class VInvoiceController extends AbstractActionController
             
             $vendor = null;
             if ($vendor_id > 0) {
+                /** @var \Application\Entity\NmtBpVendor $vendor ; */
                 $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
             }
             
             if ($vendor !== null) {
                 $entity->setVendor($vendor);
+                $entity->setVendorName($vendor->getVendorName());
             } else {
                 $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
             }
             
             $currency = null;
             if ($currency_id > 0) {
+                /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
                 $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
             }
             
             if ($currency !== null) {
                 $entity->setCurrency($currency);
+                $entity->setCurrencyIso3($currency->getCurrency());
             } else {
                 $errors[] = 'Currency can\'t be empty. Please select a vendor!';
             }
@@ -327,6 +331,7 @@ class VInvoiceController extends AbstractActionController
                 'errors' => null,
                 'currency_list' => $currency_list,
                 'total_row' => $invoice['total_row'],
+                'active_row' => $invoice['active_row'],
                 'max_row_number' => $invoice['total_row'],
                 'net_amount' => $invoice['net_amount'],
                 'tax_amount' => $invoice['tax_amount'],
@@ -512,7 +517,7 @@ class VInvoiceController extends AbstractActionController
                          */
                         
                         break;
-                    
+                        
                     case "finalInvoice":
                         
                         /**
@@ -607,15 +612,40 @@ class VInvoiceController extends AbstractActionController
                 $this->flashMessenger()->addMessage('Doc. ' . $invoiceNo . 'of ' . $entity->getVendor()
                     ->getVendorName() . '" is updated successfully!');
                 
-                // update current state of row
+                // update current state of row invoice row
                 $query = $this->doctrineEM->createQuery('
 UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state WHERE r.invoice =:invoice_id
                     ')->setParameters(array(
                         'new_state' => $entity->getCurrentState(),
                         'invoice_id' => $entity->getId(),
-                    ));
+                    ));                
+                 $query->getResult();
+                 
+                 
+                 $criteria = array(
+                     'isActive' => 1,
+                     'invoice' => $entity->getId(),
+                 );
+                 $sort_criteria = array();
+                 
+                 $invoice_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria, $sort_criteria);
                 
-                $query->getResult();
+                // update current state of stock row.
+                if(count($invoice_rows)>0) {
+                    foreach ($invoice_rows as $r){
+                        $query = $this->doctrineEM->createQuery('
+UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.isActive=:is_active WHERE t.invoiceRow =:invoice_row_id
+                    ')->setParameters(array(
+                        'new_state' => $r->getCurrentState(),
+                        'is_active' => 1,
+                        'invoice_row_id' => $r->getId(),
+                        
+                    )); 
+                        $query->getResult();
+                     }
+                    
+                }
+                
                 
                 $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
                 return $this->redirect()->toUrl($redirectUrl);
@@ -698,9 +728,11 @@ UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state 
      */
     public function listAction()
     {
-        $criteria = array();
         
-        $sort_criteria = array();
+        $is_active = (int) $this->params ()->fromQuery ( 'is_active' );
+        $sort_by = $this->params ()->fromQuery ( 'sort_by' );
+        $sort = $this->params ()->fromQuery ( 'sort' );
+        $currentState = $this->params ()->fromQuery ( 'currentState' );
         
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -722,6 +754,15 @@ UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state 
             $is_active = 1;
         }
         
+        if ($sort_by == null) :
+          $sort_by = "createdOn";
+        endif;
+     
+        if ($sort == null) :
+            $sort = "DESC";
+        endif;
+        
+        
         /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
         // $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
         
@@ -730,31 +771,109 @@ UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state 
         // echo $postingPeriod->getPeriodName() . $postingPeriod->getPeriodStatus();
         // echo $postingPeriod;
         
-        $criteria = array(
-            'isActive' => $is_active
-        );
-        
-        $sort_criteria = array(
-            'createdOn' => 'DESC'
-        );
-        
-        $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria);
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $list = $res->getVendorInvoiceList($is_active,$currentState,null,$sort_by,$sort,0,0);
         $total_records = count($list);
         $paginator = null;
         
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            //$list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getVendorInvoiceList($is_active,$currentState,null,$sort_by,$sort,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
         
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
-            'is_active' => $is_active
+            'is_active' => $is_active,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $resultsPerPage,
+            'currentState' => $currentState,
+            
+            
         ));
     }
 
+    /**
+     *
+     * @return \Zend\View\Helper\ViewModel
+     */
+    public function vendorAction()
+    {   
+        $request = $this->getRequest ();
+        
+        // accepted only ajax request
+        
+        if (! $request->isXmlHttpRequest ()) {
+            return $this->redirect ()->toRoute ( 'access_denied' );
+        }
+        
+        $this->layout ( "layout/user/ajax" );
+        
+        $vendor_id = ( int ) $this->params ()->fromQuery ( 'target_id' );
+        $token = $this->params ()->fromQuery ( 'token' );
+        
+        
+        $is_active = (int) $this->params ()->fromQuery ( 'is_active' );
+        $sort_by = $this->params ()->fromQuery ( 'sort_by' );
+        $sort = $this->params ()->fromQuery ( 'sort' );
+        $currentState = $this->params ()->fromQuery ( 'currentState' );
+        
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+        
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+        
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        
+        if ($is_active == null) {
+            $is_active = 1;
+        }
+        
+        if ($sort_by == null) :
+        $sort_by = "createdOn";
+        endif;
+        
+        if ($sort == null) :
+        $sort = "DESC";
+        endif;
+    
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $list = $res->getInvoicesOf($vendor_id,$is_active,$currentState,null,$sort_by,$sort,0,0);
+        $total_records = count($list);
+        $paginator = null;
+        
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            //$list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getInvoicesOf($vendor_id,$is_active,$currentState,null,$sort_by,$sort,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+        }
+        
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'is_active' => $is_active,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $resultsPerPage,
+            'currentState' => $currentState,
+         ));
+    }
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -764,10 +883,21 @@ UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state 
         $criteria = array();
         $sort_criteria = array();
         
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findBy($criteria, $sort_criteria);
+        $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria);
         
         if (count($list) > 0) {
             foreach ($list as $entity) {
+                
+                /**@var \Application\Entity\FinVendorInvoice $entity ;*/                
+                
+                if($entity->getVendor()!==null){
+                    $entity->setVendorName($entity->getVendor()->getVendorName());
+                }
+                
+                if($entity->getCurrency()!==null){
+                    $entity->setCurrencyIso3($entity->getCurrency()->getCurrency()  );
+                }
+                
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
             }
         }

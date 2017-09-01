@@ -186,7 +186,11 @@ if (count ( $errors ) > 0) {
 				<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2" for="inputTag"></label>
 						<div class="col-sm-3">
-	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+							<a tabindex="11" class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
+									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+	
 						</div>
 					</div>
 			</fieldset>

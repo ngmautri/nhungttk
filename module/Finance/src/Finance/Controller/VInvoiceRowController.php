@@ -616,9 +616,12 @@ class VInvoiceRowController extends AbstractActionController
                     $a_json_row["pr_number"] = "";
                     if ($a->getPrRow() !== null) {
                         if ($a->getPrRow()->getPr() !== null) {
+                            
+                            $link = '<a target="_blank" href="/procure/pr/show?token='.$a->getPrRow()->getPr()->getToken().'&entity_id='.$a->getPrRow()->getPr()->getId().'&checkum='.$a->getPrRow()->getPr()->getChecksum(). '"> ... </a>';
+                            
                             $a_json_row["pr_number"] = $a->getPrRow()
                                 ->getPr()
-                                ->getPrNumber();
+                                ->getPrNumber() . $link ;
                         }
                     }
                     

@@ -2,9 +2,12 @@
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
   <li ><a href="#general">Vendor</a></li>
+
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/vendor?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Vendor Items</a></li>
  <li ><a href="<?php echo $this->baseUrl ?>/bp/vendor-attachment/get-contracts?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Contract</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/bp/vendor-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Attachment</a></li>
+ <li ><a href="<?php echo $this->baseUrl ?>/finance/v-invoice/vendor?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">Invoice/Contract</a></li>
+
     </ul>
 
 <div id="general">

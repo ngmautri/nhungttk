@@ -3,6 +3,8 @@
 namespace Application\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  *
@@ -234,6 +236,44 @@ ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
 WHERE 1
 
 ";
+
+	private $sql_get_pr="
+SELECT 
+	nmt_procure_pr.*,
+	COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.id) ELSE NULL END) AS active_row,
+    ifnull(MAX(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.row_number) ELSE null END),0) AS max_row_number,
+	COUNT(nmt_procure_pr_row.id) AS total_row
+FROM nmt_procure_pr
+LEFT JOIN nmt_procure_pr_row
+ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+WHERE 1";
+	
+	/**
+	 * 
+	 * @param unknown $pr_id
+	 * @param unknown $token
+	 * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+	 */
+	public function getPR($pr_id, $token)
+	{
+	    $sql = $this->sql_get_pr;
+	    
+	    $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token='" . $token . "' GROUP BY nmt_procure_pr.id";
+	    
+	    try {
+	        $rsm = new ResultSetMappingBuilder($this->_em);
+	        $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
+	        $rsm->addScalarResult("active_row", "active_row");
+	        $rsm->addScalarResult("total_row", "total_row");
+	        $rsm->addScalarResult("max_row_number", "max_row_number");
+	        $query = $this->_em->createNativeQuery($sql, $rsm);
+	        
+	        $result = $query->getSingleResult();
+	        return $result;
+	    } catch (NoResultException $e) {
+	        return null;
+	    }
+	}
 	
 	/**
 	 *

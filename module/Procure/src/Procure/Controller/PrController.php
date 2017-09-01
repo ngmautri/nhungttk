@@ -378,41 +378,26 @@ class PrController extends AbstractActionController
             ->getHeader('Referer')
             ->getUri();
         $id = (int) $this->params()->fromQuery('entity_id');
-        $checksum = $this->params()->fromQuery('checksum');
+        //$checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
-        /* $criteria = array(
-            'id' => $id,
-            'checksum' => $checksum,
-            'token' => $token
-        ); */
         
-        $query = 'SELECT r, count(r.id), max(r.rowNumber) FROM Application\Entity\NmtProcurePrRow r
-            JOIN r.pr pr
-            WHERE pr.id=:id AND pr.token =:token AND r.isActive=:is_active';
+        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $pr = $res->getPR($id, $token);
         
-        $r = $this->doctrineEM->createQuery($query)
-        ->setParameters(array(
-            "id" => $id,
-            "token" => $token,
-            "is_active"=>1,
-        ))->getSingleResult();
-        
-        
-        $entity = null;
-        if($r[0] instanceof NmtProcurePrRow)
-        {
-            $entity = $r[0]->getPr();
-        }
-        
-        if ($entity == null) {
+        if ($pr == null) {
             return $this->redirect()->toRoute('access_denied');
         }
         
-        //$entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        $entity = null;
+        if ($pr[0] instanceof NmtProcurePr) {
+            $entity = $pr[0];
+        }
+        
         if ($entity !== null) {
             
             try {
-            /** @var \Symfony\Component\Workflow\Workflow $wf */
+                /** @var \Symfony\Component\Workflow\Workflow $wf */
                 // $wf = $this->ProcureWfPlugin()->createWorkflow($entity);
                 
                 // var_dump($wf->getEnabledTransitions($entity));
@@ -420,20 +405,19 @@ class PrController extends AbstractActionController
                 // $wf->apply($entity, "recall");
                 // $dumper = new GraphvizDumper();
                 // echo $dumper->dump($wf->getDefinition());
-            
-            /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
-                 $wf_plugin = $this->WfPlugin();
-            
-            /** @var \Workflow\Service\WorkflowService $wfService */
+                
+                /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
+                $wf_plugin = $this->WfPlugin();
+                
+                /** @var \Workflow\Service\WorkflowService $wfService */
                 $wfService = $wf_plugin->getWorkflowSerive();
-            
-            /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
+                
+                /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
                 $wf_factory = $wfService->getWorkFlowFactory($entity);
             
             /** @var \Symfony\Component\Workflow\Workflow  $wf */
-                //$wf = $wf_factory->makePrSendingWorkflow()->createWorkflow();
-               // $wf->apply($entity,"send");
-                 
+                // $wf = $wf_factory->makePrSendingWorkflow()->createWorkflow();
+                // $wf->apply($entity,"send");
             } catch (LogicException $e) {
                 // echo $e->getMessage();
             }
@@ -441,14 +425,17 @@ class PrController extends AbstractActionController
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
                 'errors' => null,
-                'total_row' => (int) $r[1],
-                'max_row_number' => (int) $r[2],
+                'total_row' => $pr['total_row'],
+                'max_row_number' => $pr['max_row_number'],
+                'active_row' => $pr['active_row'],
             ));
+            
+            
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -460,15 +447,14 @@ class PrController extends AbstractActionController
         $request = $this->getRequest();
         $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
-            //return $this->redirect()->toRoute('access_denied');
-        }else{
+            // return $this->redirect()->toRoute('access_denied');
+        } else {
             $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+                ->getHeader('Referer')
+                ->getUri();
         }
         
         // $u = $this->doctrineEM->getRepository( 'Application\Entity\MlaUsers')->findOneBy(array("email"=>$this->identity() ));
-        
         
         $id = (int) $this->params()->fromQuery('entity_id');
         $checksum = $this->params()->fromQuery('checksum');
@@ -483,7 +469,7 @@ class PrController extends AbstractActionController
         if ($entity !== null) {
             
             try {
-                /** @var \Symfony\Component\Workflow\Workflow $wf */
+            /** @var \Symfony\Component\Workflow\Workflow $wf */
                 // $wf = $this->ProcureWfPlugin()->createWorkflow($entity);
                 
                 // var_dump($wf->getEnabledTransitions($entity));
@@ -491,17 +477,17 @@ class PrController extends AbstractActionController
                 // $wf->apply($entity, "recall");
                 // $dumper = new GraphvizDumper();
                 // echo $dumper->dump($wf->getDefinition());
-                
-                /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
+            
+            /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
                 // $wf_plugin = $this->WfPlugin();
-                
-                /** @var \Workflow\Service\WorkflowService $wfService */
+            
+            /** @var \Workflow\Service\WorkflowService $wfService */
                 // $wfService = $wf_plugin->getWorkflowSerive();
-                
-                /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
+            
+            /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
                 // $wf_factory = $wfService->getPrWorkFlowFactory($entity);
-                
-                /** @var \Symfony\Component\Workflow\Workflow  $wf */
+            
+            /** @var \Symfony\Component\Workflow\Workflow  $wf */
                 // $wf = $wf_factory->makePrSendingWorkflow();
                 // $wf->apply($entity,"get");
             } catch (LogicException $e) {
@@ -562,7 +548,6 @@ class PrController extends AbstractActionController
                 $remarks = $request->getPost('remarks');
                 $department_id = $request->getPost('department_id');
                 $submittedOn = $request->getPost('submittedOn');
-                
                 
                 if ($isActive != 1) {
                     $isActive = 0;

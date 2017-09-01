@@ -212,7 +212,7 @@ if (count ( $errors ) > 0) {
 						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
                         &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>
                         &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
-                        &nbsp;|&nbsp;Total rows:<?php echo ($total_row);?>
+                        &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
 					</span>
 					<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
 			</fieldset>

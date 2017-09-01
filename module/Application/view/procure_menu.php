@@ -6,7 +6,8 @@
 	<li><a href="/procurement/pr/mine">My PR</a></li>
 	<li><a href="/procurement/pr/my-items">My PR Items</a></li>
 	<li class="divider"></li>
-	<li><a href="/procure/pr/add">Create New PR</a></li>
+	<li><a href="/procure/pr/add"><small><i
+				class="glyphicon glyphicon-plus"></i></small>&nbsp;Create New PR</a></li>
 	<li><a href="/procure/pr/all/row_number=1/status=pending">PR list</a></li>
 	<li><a href="/procure/pr-row/all">PR Row list</a></li>
 

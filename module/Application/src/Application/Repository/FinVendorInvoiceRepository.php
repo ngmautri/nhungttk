@@ -17,13 +17,7 @@ class FinVendorInvoiceRepository extends EntityRepository
     /** @var \Application\Entity\FinVendorInvoice $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\FinVendorInvoiceRepository")
     private $sql = "
-
-    ";
-
-    public function getVendorInvoice($invoice_id,$token)
-    {
-        $sql = "
-SELECT 
+SELECT
 	fin_vendor_invoice.*,
 	COUNT(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.id) ELSE NULL END) AS active_row,
     ifnull(MAX(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.row_number) ELSE null END),0) AS max_row_number,
@@ -34,8 +28,22 @@ SELECT
 FROM fin_vendor_invoice
 LEFT JOIN fin_vendor_invoice_row
 ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+WHERE 1";
 
-WHERE fin_vendor_invoice.id =" . $invoice_id . " AND fin_vendor_invoice.token='". $token ."' GROUP BY fin_vendor_invoice.id";
+    /**
+     *
+     * @param unknown $invoice_id
+     * @param unknown $token
+     * @param unknown $filter_by
+     * @param unknown $sort_by
+     * @param unknown $sort
+     * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+     */
+    public function getVendorInvoice($invoice_id, $token, $filter_by = null, $sort_by = null, $sort = null)
+    {
+        $sql = $this->sql;
+        
+        $sql = $sql . " AND fin_vendor_invoice.id =" . $invoice_id . " AND fin_vendor_invoice.token='" . $token . "' GROUP BY fin_vendor_invoice.id";
         
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
@@ -48,6 +56,7 @@ WHERE fin_vendor_invoice.id =" . $invoice_id . " AND fin_vendor_invoice.token='"
             $rsm->addScalarResult("gross_amount", "gross_amount");
             
             $query = $this->_em->createNativeQuery($sql, $rsm);
+            
             $result = $query->getSingleResult();
             return $result;
         } catch (NoResultException $e) {
@@ -57,45 +66,49 @@ WHERE fin_vendor_invoice.id =" . $invoice_id . " AND fin_vendor_invoice.token='"
 
     /**
      *
-     * @todo
+     * @param number $is_active
+     * @param unknown $current_state
+     * @param unknown $filter_by
+     * @param unknown $sort_by
+     * @param unknown $sort
      * @param number $limit
      * @param number $offset
-     * @return array
+     * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
      */
-    public function getPrList($row_number = 1, $is_active = null, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getVendorInvoiceList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
-        $sql = $this->sql1;
-        
-        if ($row_number == 1) {
-            $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0) > 0";
-        } elseif ($row_number == 0) {
-            $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0) = 0";
-        }
+        $sql = $this->sql;
         
         if ($is_active == 1) {
-            $sql = $sql . " AND nmt_procure_pr.is_active=  1";
+            $sql = $sql . " AND fin_vendor_invoice.is_active=  1";
         } elseif ($is_active == - 1) {
-            $sql = $sql . " AND nmt_procure_pr.is_active = 0";
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 0";
         }
         
-        // Group
-        
-        // fullfiled
-        if ($balance == 0) {
-            $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0)	<=ifnull(nmt_procure_pr_row.row_completed, 0)";
-        } elseif ($balance == 1) {
-            $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0)	> ifnull(nmt_procure_pr_row.row_completed, 0)";
+        if ($current_state != null) {
+            $sql = $sql . " AND fin_vendor_invoice.current_state = '".$current_state."'";
         }
         
-        if ($sort_by == "prNumber") {
-            $sql = $sql . " ORDER BY nmt_procure_pr.pr_number " . $sort;
-        } elseif ($sort_by == "createdOn") {
-            $sql = $sql . " ORDER BY nmt_procure_pr.created_on " . $sort;
-        } elseif ($sort_by == "completion") {
-            $sql = $sql . " ORDER BY ifnull(nmt_procure_pr_row.percentage_completed, 0) " . $sort;
-        } elseif ($sort_by == "submittedOn") {
-            $sql = $sql . " ORDER BY nmt_procure_pr.submitted_on " . $sort;
+        $sql = $sql . " GROUP BY fin_vendor_invoice.id";
+        
+        switch ($sort_by) {
+            case "invoiceDate":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.invoice_date " . $sort;
+                break;
+            case "grossAmount":
+                $sql = $sql . " ORDER BY SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.gross_amount) ELSE 0 END) " . $sort;
+                break;
+            case "createdOn":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.created_on " . $sort;
+                break;
+            case "vendorName":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $sort;
+                break;
+            case "currencyCode":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
+                break;
         }
+        
         
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
@@ -104,14 +117,108 @@ WHERE fin_vendor_invoice.id =" . $invoice_id . " AND fin_vendor_invoice.token='"
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
-        
         $sql = $sql . ";";
-		
-		$stmt = $this->_em->getConnection ()->prepare ( $sql );
-		$stmt->execute ();
-		return $stmt->fetchAll ();
-	}
-	
-	
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoice', 'fin_vendor_invoice');
+            $rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("max_row_number", "max_row_number");
+            $rsm->addScalarResult("net_amount", "net_amount");
+            $rsm->addScalarResult("tax_amount", "tax_amount");
+            $rsm->addScalarResult("gross_amount", "gross_amount");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    
+    /**
+     * 
+     * @param unknown $vendor_id
+     * @param unknown $token
+     * @param number $is_active
+     * @param unknown $current_state
+     * @param unknown $filter_by
+     * @param unknown $sort_by
+     * @param unknown $sort
+     * @param number $limit
+     * @param number $offset
+     * @return array|NULL
+     */
+    public function getInvoicesOf($vendor_id,$is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = $this->sql;
+        
+        if($vendor_id > 0){
+            $sql = $sql . " AND fin_vendor_invoice.vendor_id =" . $vendor_id ;
+        }else{
+            return null;
+        }
+        
+        if ($is_active == 1) {
+            $sql = $sql . " AND fin_vendor_invoice.is_active=  1";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND fin_vendor_invoice.is_active = 0";
+        }
+        
+        if ($current_state != null) {
+            $sql = $sql . " AND fin_vendor_invoice.current_state = '".$current_state."'";
+        }
+        
+        $sql = $sql . " GROUP BY fin_vendor_invoice.id";
+        
+        switch ($sort_by) {
+            case "invoiceDate":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.invoice_date " . $sort;
+                break;
+            case "grossAmount":
+                $sql = $sql . " ORDER BY SUM(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.gross_amount) ELSE 0 END) " . $sort;
+                break;
+            case "createdOn":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.created_on " . $sort;
+                break;
+            case "vendorName":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $sort;
+                break;
+            case "currencyCode":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
+                break;
+        }
+        
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoice', 'fin_vendor_invoice');
+            $rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("max_row_number", "max_row_number");
+            $rsm->addScalarResult("net_amount", "net_amount");
+            $rsm->addScalarResult("tax_amount", "tax_amount");
+            $rsm->addScalarResult("gross_amount", "gross_amount");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }
 

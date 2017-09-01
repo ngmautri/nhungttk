@@ -32,6 +32,13 @@ class FinVendorInvoice
     /**
      * @var string
      *
+     * @ORM\Column(name="vendor_name", type="string", length=100, nullable=true)
+     */
+    private $vendorName;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="invoice_no", type="string", length=45, nullable=true)
      */
     private $invoiceNo;
@@ -42,6 +49,13 @@ class FinVendorInvoice
      * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
      */
     private $invoiceDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="currency_iso3", type="string", length=3, nullable=true)
+     */
+    private $currencyIso3;
 
     /**
      * @var string
@@ -228,6 +242,30 @@ class FinVendorInvoice
     }
 
     /**
+     * Set vendorName
+     *
+     * @param string $vendorName
+     *
+     * @return FinVendorInvoice
+     */
+    public function setVendorName($vendorName)
+    {
+        $this->vendorName = $vendorName;
+
+        return $this;
+    }
+
+    /**
+     * Get vendorName
+     *
+     * @return string
+     */
+    public function getVendorName()
+    {
+        return $this->vendorName;
+    }
+
+    /**
      * Set invoiceNo
      *
      * @param string $invoiceNo
@@ -273,6 +311,30 @@ class FinVendorInvoice
     public function getInvoiceDate()
     {
         return $this->invoiceDate;
+    }
+
+    /**
+     * Set currencyIso3
+     *
+     * @param string $currencyIso3
+     *
+     * @return FinVendorInvoice
+     */
+    public function setCurrencyIso3($currencyIso3)
+    {
+        $this->currencyIso3 = $currencyIso3;
+
+        return $this;
+    }
+
+    /**
+     * Get currencyIso3
+     *
+     * @return string
+     */
+    public function getCurrencyIso3()
+    {
+        return $this->currencyIso3;
     }
 
     /**

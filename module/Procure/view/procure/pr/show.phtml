@@ -98,12 +98,19 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
                 		</div>
 					</div>
 
+<hr>
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2" for="inputTag"></label>
 						<div class="col-sm-3">
-							<a class="btn btn-default"
+							<a class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
 									class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+									
+																<a class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/procure/pr-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+<i class="fa fa-file-excel-o" aria-hidden="true"></i> &nbsp;Excel</a>
+			
+									
 
 						</div>
 					</div>
@@ -121,6 +128,7 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
 			<div id="transaction" class="collapse in">
 				<div id="pr_rows"></div>
 				<div id="pr_row_gird" style="margin: 1px;"></div>
+			</div>
 		</fieldset>
 
 

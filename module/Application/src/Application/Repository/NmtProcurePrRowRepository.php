@@ -460,6 +460,47 @@ WHERE 1";
 	    return $stmt->fetchAll ();
 	}
 	
+	/**
+	 *
+	 * @param unknown $invoice_id
+	 * @param unknown $token
+	 * @param unknown $filter_by
+	 * @param unknown $sort_by
+	 * @param unknown $sort
+	 * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+	 */
+	public function downloadPrRows($pr_id, $token, $filter_by = null, $sort_by = null, $sort = null)
+	{
+	    $sql = $this->sql;
+	    
+	    $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token='" . $token . "'";
+	    
+	    try {
+	        $rsm = new ResultSetMappingBuilder($this->_em);
+	        $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+	        $rsm->addScalarResult("item_name", "active_row");
+	        $rsm->addScalarResult("item_sku", "total_row");
+	        $rsm->addScalarResult("pr_number", "max_row_number");
+	        $rsm->addScalarResult("submitted_on", "submitted_on");
+	        $rsm->addScalarResult("vendor_name", "vendor_name");
+	        $rsm->addScalarResult("vendor_id", "vendor_id");
+	        $rsm->addScalarResult("vendor_token", "vendor_token");
+	        $rsm->addScalarResult("vendor_checksum", "vendor_checksum");
+	        $rsm->addScalarResult("currency", "currency");
+	        $rsm->addScalarResult("vendor_item_unit", "vendor_item_unit");
+	        $rsm->addScalarResult("total_received", "total_received");
+	        $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
+	        $rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
+	        $rsm->addScalarResult("processing_quantity", "processing_quantity");	        
+	        $query = $this->_em->createNativeQuery($sql, $rsm);
+	        $result = $query->getResult();
+	        return $result;
+	    } catch (NoResultException $e) {
+	        return null;
+	    }
+	}
+	
+	
 	
 }
 

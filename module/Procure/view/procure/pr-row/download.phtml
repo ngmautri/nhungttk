@@ -1,0 +1,104 @@
+<h4><?php echo (!$target == null)? $target->getPrNumber():"";?></h4>
+ 
+
+<?php
+
+if ($total_records <= 0) {
+	
+	echo 'No record found!';
+} else {
+		echo $total_records. ' records found!';
+	?>
+
+<table style="font-size: 10pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Item</b></td>
+			<td><b>quantity</b></td>
+			<td><b>Standard<br>Unit</b></td>
+			<td><b>PR<br>Unit</b></td>
+			<td><b>Conversion<br>Factor</b></td>
+			<td><b>EDT</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $r ) :
+		$count ++;
+		/**@var \Application\Entity\NmtProcurePrRow $a ;*/		
+		$a = $r[0]
+		?>
+	 <tr>
+	 <td><?php echo $count;?></td>
+	 		<td>
+
+<?php if ($a->getItem () !== null) : ?>			
+<a style="color: #337ab7;" href="javascript:;"
+	onclick="showJqueryDialog('Detail of Item . <?php	echo $this->escapeJs($a->getItem()->getItemName());?>','950','650', '/inventory/item/show1?token=<?php echo $a->getItem()->getToken();?>&checksum=<?php echo $a->getItem()->getChecksum();?>&entity_id=<?php echo $a->getItem()->getID();?>','j_loaded_data', true);"><?php	echo $a->getItem ()->getItemName();?>
+</a>
+<?php endif; ?>			
+	 		
+	 		
+	 		</td>
+	 		<td><?php 
+ 	  	    if($a->getItem()!==null):
+ 	  	    	if($a->getItem()->getStandardUom()!==null):
+ 	  	    		echo $a->getItem()->getStandardUom()->getUomCode();
+ 	  	    	endif;
+ 	  	    endif;
+ 	  	    ?>
+ 	  	    </td>
+			<td><a href="#" id="quantity_<?php echo $a->getID() ;?>"><?php echo $this->escapeHtml($a->getQuantity());?></a></td>
+			
+			
+			<td><?php echo $this->escapeHtml($a->getRowUnit());?></td>
+			<td>
+			<?php 
+				if($a->getConversionFactor()!==null):
+				echo number_format($a->getConversionFactor(),2);
+				endif;
+				?>			
+			</td>
+			<td><?php if(!$a->getEdt()==null): echo date_format ( $a->getEdt(), "d/m/y");endif;?> </td>
+			<td>
+<a href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Show</a>
+<a href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>&checksum=<?php echo $this->escapeHtml($a->getChecksum());?>">Edit</a>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr?token=<?php echo $a->getToken();?>&pr_row_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Receive</a>
+
+			</td>
+			
+		</tr>
+		
+		<script language="javascript">
+			id_array.push(<?php echo $a->getID();?>);
+			$('#quantity_<?php echo $a->getID();?>').editable({
+			    type: 'text',
+			    showbuttons: false,
+			    pk: {id:<?php echo $a->getID();?>,key:'quantity'},
+			    url: '/procurement/pr/update-cart-quantity',
+			    title: '<?php echo "nmt";?>',
+			        success: function(response, newValue) {
+			        	if(response.status == 'error') 
+				        {
+					        return response.msg; //msg will be shown in editable form
+				        }else{
+				        	$('#global-notice').show();
+				        	$('#global-notice').text(response.msg).fadeOut(3800);
+				        	
+				        }
+				        
+			        }    
+			});
+		</script>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+<?php }?>
+	

@@ -35,6 +35,10 @@ class InboxController extends AbstractActionController {
 	public function indexAction() {
 	}
 	
+	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function workflowAction() {
 	    
 	   $this->layout("layout/fluid");

@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Repository;
 
 use Doctrine\ORM\EntityRepository;
@@ -11,12 +10,12 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
  * @author nmt
  *        
  */
-class NmtProcurePrRowRepository extends EntityRepository {
-    
+class NmtProcurePrRowRepository extends EntityRepository
+{
+
     /** @var \Application\Entity\NmtProcurePrRow $e*/
-   // @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
-	
-	private $sql = "
+    // @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
+    private $sql = "
 SELECT
 	nmt_procure_pr_row.*,
     nmt_inventory_item.item_name,
@@ -131,9 +130,8 @@ AS nmt_inventory_item_purchasing
 ON nmt_inventory_item_purchasing.item_id = nmt_procure_pr_row.item_id
 WHERE 1
 	";
-	
-	
-	private $sql1 = "
+
+    private $sql1 = "
 SELECT
 	nmt_procure_pr.id ,
     nmt_procure_pr.pr_number,
@@ -192,8 +190,8 @@ ON nmt_procure_pr_row.pr_id = nmt_procure_pr.id
 where 1
 
 ";
-	
-	private $sql_project_item="
+
+    private $sql_project_item = "
 SELECT
 nmt_procure_pr_row.id as pr_row_id,
 nmt_procure_pr_row.checksum AS pr_row_checksum,
@@ -237,7 +235,7 @@ WHERE 1
 
 ";
 
-	private $sql_get_pr="
+    private $sql_get_pr = "
 SELECT 
 	nmt_procure_pr.*,
 	COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.id) ELSE NULL END) AS active_row,
@@ -247,260 +245,342 @@ FROM nmt_procure_pr
 LEFT JOIN nmt_procure_pr_row
 ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
 WHERE 1";
-	
-	/**
-	 * 
-	 * @param unknown $pr_id
-	 * @param unknown $token
-	 * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
-	 */
-	public function getPR($pr_id, $token)
-	{
-	    $sql = $this->sql_get_pr;
-	    
-	    $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token='" . $token . "' GROUP BY nmt_procure_pr.id";
-	    
-	    try {
-	        $rsm = new ResultSetMappingBuilder($this->_em);
-	        $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
-	        $rsm->addScalarResult("active_row", "active_row");
-	        $rsm->addScalarResult("total_row", "total_row");
-	        $rsm->addScalarResult("max_row_number", "max_row_number");
-	        $query = $this->_em->createNativeQuery($sql, $rsm);
-	        
-	        $result = $query->getSingleResult();
-	        return $result;
-	    } catch (NoResultException $e) {
-	        return null;
-	    }
-	}
-	
-	/**
-	 *
-	 * @param number $limit        	
-	 * @param number $offset        	
-	 * @return array
-	 */
-	public function getAllPrRow($is_active=1,$pr_year = 0, $balance = null,$sort_by = null, $sort=null, $limit = 0, $offset = 0) {
-		$sql = $this->sql;
-		
-		if ($is_active == 1) {
-		    $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
-		}elseif($is_active == -1) {
-		    $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
-		}
-		
-		if ($pr_year > 0) {
-			$sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
-		}
-		
-		if ($balance == 0) {
-			$sql = $sql. " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) <= 0";
-		}
-		if ($balance ==1) {
-			$sql = $sql. " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) > 0";
-		}
-		if ($balance ==-1) {
-			$sql = $sql. " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
-		}
-		
-		if ($sort_by == "itemName") {
-			$sql = $sql. " ORDER BY nmt_inventory_item.item_name " . $sort;
-		}elseif ($sort_by == "prNumber") {
-			$sql = $sql. " ORDER BY nmt_procure_pr.pr_number " . $sort;
-		}elseif ($sort_by == "vendorName") {
-			$sql = $sql. " ORDER BY ifnull(nmt_inventory_trx_last.vendor_name,nmt_inventory_item_purchasing.vendor_name) " . $sort;
-		}elseif ($sort_by == "currency") {
-			$sql = $sql. " ORDER BY ifnull( nmt_inventory_trx_last.currency, nmt_inventory_item_purchasing.currency) " . $sort;
-		}elseif ($sort_by == "unitPrice") {
-			$sql = $sql. " ORDER BY ifnull( nmt_inventory_trx_last.vendor_unit_price, nmt_inventory_item_purchasing.vendor_unit_price) " . $sort;
-		}elseif ($sort_by == "balance") {
-			$sql = $sql. " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
-		}
-		
-		if($limit>0){
-			$sql = $sql. " LIMIT " . $limit;
-		}
-		
-		if($offset>0){
-			$sql = $sql. " OFFSET " . $offset;
-		}
-		$sql = $sql.";";
-		
-		$stmt = $this->_em->getConnection ()->prepare ( $sql );
-		$stmt->execute ();
-		return $stmt->fetchAll ();
-	}
-	
-	/**
-	 *
-	 * @param number $limit
-	 * @param number $offset
-	 * @return array
-	 */
-	public function getPrRow($pr_id, $balance = null,$sort_by = null, $sort=null, $limit = 0, $offset = 0) {
-		$sql = $this->sql;
-		
-		$sql = $sql . " AND nmt_procure_pr_row.pr_id =" . $pr_id;
-	
-		if ($balance == 0) {
-			$sql = $sql. " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) <= 0";
-		}
-		if ($balance ==1) {
-			$sql = $sql. " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) > 0";
-		}
-		if ($balance ==-1) {
-			$sql = $sql. " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
-		}
-		
-		switch($sort_by){		    
-		    case "itemName":
-		        $sql = $sql. " ORDER BY nmt_inventory_item.item_name " . $sort;
-		        break;
-		    case "createdOn":
-		        $sql = $sql. " ORDER BY nmt_procure_pr_row.created_on " . $sort;
-		        break;
-		    case "balance":
-		        $sql = $sql. " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
-		        break;
-		    case "prSubmitted":
-		        $sql = $sql. " ORDER BY nmt_procure_pr.submitted_on" . $sort;
-		        break;
-		    case "rowNumber":
-		        $sql = $sql. " ORDER BY nmt_procure_pr_row.row_number " . $sort;
-		        break;
-		}
-	
-		if($limit>0){
-			$sql = $sql. " LIMIT " . $limit;
-		}
-		
-		if($offset>0){
-			$sql = $sql. " OFFSET " . $offset;
-		}
-		
-		$sql = $sql.";";
-		
-		$stmt = $this->_em->getConnection ()->prepare ( $sql );
-		$stmt->execute ();
-		return $stmt->fetchAll ();
-	}
-	
-	/**
-	 *
-	 * @param number $limit
-	 * @param number $offset
-	 * @return array
-	 */
-	public function getPrList($row_number =1, $is_active = null, $balance = null, $sort_by = null, $sort=null, $limit = 0, $offset = 0) {
-		$sql = $this->sql1;
-		
-		if ($row_number== 1) {
-		    $sql = $sql. " AND ifnull(nmt_procure_pr_row.total_row, 0) > 0";
-		}elseif($row_number == 0) {
-		    $sql = $sql. " AND ifnull(nmt_procure_pr_row.total_row, 0) = 0";
-		}
-		
-		if ($is_active== 1) {
-			$sql = $sql. " AND nmt_procure_pr.is_active=  1";
-		}elseif($is_active== -1) {
-			$sql = $sql. " AND nmt_procure_pr.is_active = 0";
-		}
-	
-		// Group
-		
-		// fullfiled
-		if ($balance == 0) {
-			$sql = $sql. " AND ifnull(nmt_procure_pr_row.total_row, 0)	<=ifnull(nmt_procure_pr_row.row_completed, 0)";
-		}elseif($balance == 1){
-			$sql = $sql. " AND ifnull(nmt_procure_pr_row.total_row, 0)	> ifnull(nmt_procure_pr_row.row_completed, 0)";
-			
-		}
-		
-		if ($sort_by == "prNumber") {
-			$sql = $sql. " ORDER BY nmt_procure_pr.pr_number " . $sort;
-		}elseif($sort_by == "createdOn") {
-			$sql = $sql. " ORDER BY nmt_procure_pr.created_on " . $sort;
-		}elseif($sort_by == "completion") {
-			$sql = $sql. " ORDER BY ifnull(nmt_procure_pr_row.percentage_completed, 0) " . $sort;
-		}elseif($sort_by == "submittedOn") {
-		    $sql = $sql. " ORDER BY nmt_procure_pr.submitted_on " . $sort;
-		}
-		
-		
-		if($limit>0){
-			$sql = $sql. " LIMIT " . $limit;
-		}
-		
-		if($offset>0){
-			$sql = $sql. " OFFSET " . $offset;
-		}
-		
-		$sql = $sql.";";
-		
-		$stmt = $this->_em->getConnection ()->prepare ( $sql );
-		$stmt->execute ();
-		return $stmt->fetchAll ();
-	}
-	
-	
-	/**
-	 * 
-	 * @param unknown $project_id
-	 * @return array
-	 */
-	public function getProjectItem($project_id) {
-	    $sql = $this->sql_project_item;
-	    
-	    $sql = $sql. " AND nmt_procure_pr_row.project_id=" . $project_id;
-	    $sql = $sql.";";
-	    
-	    $stmt = $this->_em->getConnection ()->prepare ( $sql );
-	    $stmt->execute ();
-	    return $stmt->fetchAll ();
-	}
-	
-	/**
-	 *
-	 * @param unknown $invoice_id
-	 * @param unknown $token
-	 * @param unknown $filter_by
-	 * @param unknown $sort_by
-	 * @param unknown $sort
-	 * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
-	 */
-	public function downloadPrRows($pr_id, $token, $filter_by = null, $sort_by = null, $sort = null)
-	{
-	    $sql = $this->sql;
-	    
-	    $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token='" . $token . "'";
-	    
-	    try {
-	        $rsm = new ResultSetMappingBuilder($this->_em);
-	        $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-	        $rsm->addScalarResult("item_name", "active_row");
-	        $rsm->addScalarResult("item_sku", "total_row");
-	        $rsm->addScalarResult("pr_number", "max_row_number");
-	        $rsm->addScalarResult("submitted_on", "submitted_on");
-	        $rsm->addScalarResult("vendor_name", "vendor_name");
-	        $rsm->addScalarResult("vendor_id", "vendor_id");
-	        $rsm->addScalarResult("vendor_token", "vendor_token");
-	        $rsm->addScalarResult("vendor_checksum", "vendor_checksum");
-	        $rsm->addScalarResult("currency", "currency");
-	        $rsm->addScalarResult("vendor_item_unit", "vendor_item_unit");
-	        $rsm->addScalarResult("total_received", "total_received");
-	        $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
-	        $rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
-	        $rsm->addScalarResult("processing_quantity", "processing_quantity");	        
-	        $query = $this->_em->createNativeQuery($sql, $rsm);
-	        $result = $query->getResult();
-	        return $result;
-	    } catch (NoResultException $e) {
-	        return null;
-	    }
-	}
-	
-	
-	
+
+    /**
+     *
+     * @param unknown $pr_id
+     * @param unknown $token
+     * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+     */
+    public function getPR($pr_id, $token)
+    {
+        $sql = $this->sql_get_pr;
+        
+        $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token='" . $token . "' GROUP BY nmt_procure_pr.id";
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
+            $rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("max_row_number", "max_row_number");
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            
+            $result = $query->getSingleResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param number $limit
+     * @param number $offset
+     * @return array
+     */
+    public function getAllPrRow($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = $this->sql;
+        
+        if ($is_active == 1) {
+            $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
+        }
+        
+        if ($pr_year > 0) {
+            $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
+        }
+        
+        if ($balance == 0) {
+            $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) <= 0";
+        }
+        if ($balance == 1) {
+            $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) > 0";
+        }
+        if ($balance == - 1) {
+            $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
+        }
+        
+        if ($sort_by == "itemName") {
+            $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
+        } elseif ($sort_by == "prNumber") {
+            $sql = $sql . " ORDER BY nmt_procure_pr.pr_number " . $sort;
+        } elseif ($sort_by == "vendorName") {
+            $sql = $sql . " ORDER BY ifnull(nmt_inventory_trx_last.vendor_name,nmt_inventory_item_purchasing.vendor_name) " . $sort;
+        } elseif ($sort_by == "currency") {
+            $sql = $sql . " ORDER BY ifnull( nmt_inventory_trx_last.currency, nmt_inventory_item_purchasing.currency) " . $sort;
+        } elseif ($sort_by == "unitPrice") {
+            $sql = $sql . " ORDER BY ifnull( nmt_inventory_trx_last.vendor_unit_price, nmt_inventory_item_purchasing.vendor_unit_price) " . $sort;
+        } elseif ($sort_by == "balance") {
+            $sql = $sql . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
+        }
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+        
+        $stmt = $this->_em->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /**
+     *
+     * @param number $limit
+     * @param number $offset
+     * @return array
+     */
+    public function getPrRow($pr_id, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = $this->sql;
+        
+        $sql = $sql . " AND nmt_procure_pr_row.pr_id =" . $pr_id;
+        
+        if ($balance == 0) {
+            $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) <= 0";
+        }
+        if ($balance == 1) {
+            $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) > 0";
+        }
+        if ($balance == - 1) {
+            $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
+        }
+        
+        switch ($sort_by) {
+            case "itemName":
+                $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
+                break;
+            case "createdOn":
+                $sql = $sql . " ORDER BY nmt_procure_pr_row.created_on " . $sort;
+                break;
+            case "balance":
+                $sql = $sql . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
+                break;
+            case "prSubmitted":
+                $sql = $sql . " ORDER BY nmt_procure_pr.submitted_on" . $sort;
+                break;
+            case "rowNumber":
+                $sql = $sql . " ORDER BY nmt_procure_pr_row.row_number " . $sort;
+                break;
+        }
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        
+        $sql = $sql . ";";
+        
+        $stmt = $this->_em->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /**
+     *
+     * @param number $limit
+     * @param number $offset
+     * @return array
+     */
+    public function getPrList($row_number = 1, $is_active = null, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = $this->sql1;
+        
+        if ($row_number == 1) {
+            $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0) > 0";
+        } elseif ($row_number == 0) {
+            $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0) = 0";
+        }
+        
+        if ($is_active == 1) {
+            $sql = $sql . " AND nmt_procure_pr.is_active=  1";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND nmt_procure_pr.is_active = 0";
+        }
+        
+        // Group
+        
+        // fullfiled
+        if ($balance == 0) {
+            $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0)	<=ifnull(nmt_procure_pr_row.row_completed, 0)";
+        } elseif ($balance == 1) {
+            $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0)	> ifnull(nmt_procure_pr_row.row_completed, 0)";
+        }
+        
+        if ($sort_by == "prNumber") {
+            $sql = $sql . " ORDER BY nmt_procure_pr.pr_number " . $sort;
+        } elseif ($sort_by == "createdOn") {
+            $sql = $sql . " ORDER BY nmt_procure_pr.created_on " . $sort;
+        } elseif ($sort_by == "completion") {
+            $sql = $sql . " ORDER BY ifnull(nmt_procure_pr_row.percentage_completed, 0) " . $sort;
+        } elseif ($sort_by == "submittedOn") {
+            $sql = $sql . " ORDER BY nmt_procure_pr.submitted_on " . $sort;
+        }
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        
+        $sql = $sql . ";";
+        
+        $stmt = $this->_em->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /**
+     *
+     * @param unknown $project_id
+     * @return array
+     */
+    public function getProjectItem($project_id)
+    {
+        $sql = $this->sql_project_item;
+        
+        $sql = $sql . " AND nmt_procure_pr_row.project_id=" . $project_id;
+        $sql = $sql . ";";
+        
+        $stmt = $this->_em->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /**
+     *
+     * @param unknown $invoice_id
+     * @param unknown $token
+     * @param unknown $filter_by
+     * @param unknown $sort_by
+     * @param unknown $sort
+     * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+     */
+    public function downloadAllPrRows($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = $this->sql;
+        
+        if ($is_active == 1) {
+            $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
+        }
+        
+        if ($pr_year > 0) {
+            $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
+        }
+        
+        if ($balance == 0) {
+            $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) <= 0";
+        }
+        if ($balance == 1) {
+            $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) > 0";
+        }
+        if ($balance == - 1) {
+            $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
+        }
+        
+        switch ($sort_by) {
+            case "itemName":
+                $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
+                break;
+            case "prNumber":
+                $sql = $sql . " ORDER BY nmt_procure_pr.pr_number " . $sort;
+                break;
+            case "vendorName":
+                $sql = $sql . " ORDER BY ifnull(nmt_inventory_trx_last.vendor_name,nmt_inventory_item_purchasing.vendor_name) " . $sort;
+                break;
+            case "currency":
+                $sql = $sql . " ORDER BY ifnull( nmt_inventory_trx_last.currency, nmt_inventory_item_purchasing.currency) " . $sort;
+                break;
+            case "unitPrice":
+                $sql = $sql . " ORDER BY ifnull( nmt_inventory_trx_last.vendor_unit_price, nmt_inventory_item_purchasing.vendor_unit_price) " . $sort;
+                break;
+            case "balance":
+                $sql = $sql . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
+                break;
+        }
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $rsm->addScalarResult("item_name", "item_name");
+            $rsm->addScalarResult("item_sku", "item_sku");
+            $rsm->addScalarResult("pr_number", "pr_number");
+            $rsm->addScalarResult("submitted_on", "submitted_on");
+            $rsm->addScalarResult("vendor_name", "vendor_name");
+            $rsm->addScalarResult("vendor_id", "vendor_id");
+            $rsm->addScalarResult("vendor_token", "vendor_token");
+            $rsm->addScalarResult("vendor_checksum", "vendor_checksum");
+            $rsm->addScalarResult("currency", "currency");
+            $rsm->addScalarResult("vendor_item_unit", "vendor_item_unit");
+            $rsm->addScalarResult("vendor_unit_price", "vendor_unit_price");
+            $rsm->addScalarResult("total_received", "total_received");
+            $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
+            $rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
+            $rsm->addScalarResult("processing_quantity", "processing_quantity");
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @return array|NULL
+     */
+    public function downloadPrRows($pr_id, $token)
+    {
+        $sql = $this->sql;
+        
+        $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token='" . $token . "'";
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $rsm->addScalarResult("item_name", "item_name");
+            $rsm->addScalarResult("item_sku", "item_sku");
+            $rsm->addScalarResult("pr_number", "pr_number");
+            $rsm->addScalarResult("submitted_on", "submitted_on");
+            $rsm->addScalarResult("vendor_name", "vendor_name");
+            $rsm->addScalarResult("vendor_id", "vendor_id");
+            $rsm->addScalarResult("vendor_token", "vendor_token");
+            $rsm->addScalarResult("vendor_checksum", "vendor_checksum");
+            $rsm->addScalarResult("currency", "currency");
+            $rsm->addScalarResult("vendor_item_unit", "vendor_item_unit");
+            $rsm->addScalarResult("total_received", "total_received");
+            $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
+            $rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
+            $rsm->addScalarResult("processing_quantity", "processing_quantity");
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }
 

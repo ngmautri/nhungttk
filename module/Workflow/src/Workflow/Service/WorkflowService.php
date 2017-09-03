@@ -6,6 +6,7 @@ use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
 use Doctrine\ORM\EntityManager;
 use Workflow\Workflow\Procure\Factory\PrWorkflowFactoryMLA;
+use Workflow\Workflow\Procure\Factory\PrRowWorkflowFactoryMLA;
 
 
 class WorkflowService
@@ -29,7 +30,9 @@ class WorkflowService
                 return $factory;
             
             case ($subject instanceof NmtProcurePrRow):
-                return null;
+                $factory = new PrRowWorkflowFactoryMLA($subject);
+                $factory->setDoctrineEM($this->doctrineEM);
+                return $factory;
                 
             case ($subject instanceof NmtHrEmployee):
                 return null;

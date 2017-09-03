@@ -109,6 +109,9 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
 																<a class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/pr-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 <i class="fa fa-file-excel-o" aria-hidden="true"></i> &nbsp;Excel</a>
+																<a class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/procure/pr/submit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+<i class="fa fa-paper-plane-o" aria-hidden="true"></i> &nbsp;Submit</a>
 			
 									
 

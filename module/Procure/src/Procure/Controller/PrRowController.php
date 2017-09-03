@@ -20,6 +20,7 @@ use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
 use Application\Entity\NmtInventoryItem;
 use Zend\Escaper\Escaper;
+
 use PHPExcel;
 use PHPExcel_IOFactory;
 use Procure\Service\PrSearchService;
@@ -490,174 +491,6 @@ class PrRowController extends AbstractActionController
      *
      * @return \Zend\View\Model\ViewModel
      */
-    public function girdAllAction()
-    {
-        // $sort_by = $this->params ()->fromQuery ( 'sort_by' );
-        if (isset($_GET['sort_by'])) {
-            $sort_by = $_GET['sort_by'];
-        } else {
-            $sort_by = "itemName";
-        }
-        // $sort = $this->params ()->fromQuery ( 'sort' );
-        
-        if (isset($_GET['sort'])) {
-            $sort = $_GET['sort'];
-        } else {
-            $sort = "ASC";
-        }
-        
-        // $balance = $this->params ()->fromQuery ( 'balance' );
-        
-        if (isset($_GET['balance'])) {
-            
-            $balance = $_GET['balance'];
-        } else {
-            $balance = 1;
-        }
-        
-        if (isset($_GET['is_active'])) {
-            $is_active = (int) $_GET['is_active'];
-        } else {
-            $is_active = 1;
-        }
-        
-        // $pr_year = $this->params ()->fromQuery ( 'pr_year' );
-        
-        if (isset($_GET['pr_year'])) {
-            
-            $pr_year = $_GET['pr_year'];
-        } else {
-            $pr_year = date('Y');
-        }
-        
-        if (isset($_GET["pq_curpage"])) {
-            $pq_curPage = $_GET["pq_curpage"];
-        } else {
-            $pq_curPage = 1;
-        }
-        
-        if (isset($_GET["pq_rpp"])) {
-            $pq_rPP = $_GET["pq_rpp"];
-        } else {
-            $pq_rPP = 1;
-        }
-        
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getAllPrRow($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0);
-        
-        $total_records = count($list);
-        $paginator = null;
-        
-        $a_json_final = array();
-        $a_json = array();
-        $a_json_row = array();
-        $escaper = new Escaper();
-        
-        if ($total_records > 0) {
-            
-            if ($total_records > $pq_rPP) {
-                $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getAllPrRow($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            }
-            $count = 0;
-            foreach ($list as $a) {
-                
-                $item_detail = "/inventory/item/show1?token=" . $a['item_token'] . "&checksum=" . $a['item_checksum'] . "&entity_id=" . $a['item_id'];
-                if ($a['item_name'] !== null) {
-                    $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
-                } else {
-                    $onclick = "showJqueryDialog('Detail of Item: " . ($a['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
-                }
-                
-                $count ++;
-                if ($paginator == null) {
-                    $a_json_row["row_number"] = $count;
-                } else {
-                    $a_json_row["row_number"] = $paginator->minInPage - 1 + $count;
-                }
-                
-                $a_json_row["pr_number"] = $a['pr_number'] . '<a style="" target="blank"  title="' . $a['pr_number'] . '" href="/procure/pr/show?token=' . $a["pr_token"] . '&entity_id=' . $a["pr_id"] . '&checksum=' . $a["pr_checksum"] . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
-                
-                if ($a['submitted_on'] !== null) {
-                    $a_json_row['pr_submitted_on'] = date_format(date_create($a['submitted_on']), 'd-m-y');
-                    // $a_json_row ['pr_submitted_on'] = $a ['submitted_on'];
-                } else {
-                    $a_json_row['pr_submitted_on'] = '';
-                }
-                
-                $a_json_row["row_id"] = $a['id'];
-                $a_json_row["row_token"] = $a['token'];
-                $a_json_row["row_checksum"] = $a['checksum'];
-                
-                $a_json_row["item_sku"] = '<span title="' . $a['item_sku'] . '">' . substr($a['item_sku'], 0, 5) . '</span>';
-                
-                if (strlen($a['item_name']) < 35) {
-                    $a_json_row["item_name"] = $a['item_name'] . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a['item_id'] . '" item_name="' . $a['item_name'] . '" title="' . $a['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
-                } else {
-                    $a_json_row["item_name"] = substr($a['item_name'], 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a['item_id'] . '" item_name="' . $a['item_name'] . '" title="' . $a['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
-                }
-                
-                $a_json_row["quantity"] = $a['quantity'];
-                $a_json_row["confirmed_balance"] = $a['confirmed_balance'];
-                
-                if (strlen($a['vendor_name']) < 10) {
-                    $a_json_row["vendor_name"] = $a['vendor_name'];
-                } else {
-                    $a_json_row["vendor_name"] = '<span title="' . $a['vendor_name'] . '">' . substr($a['vendor_name'], 0, 8) . '...</span>';
-                }
-                
-                if ($a['vendor_unit_price'] !== null) {
-                    $a_json_row["vendor_unit_price"] = number_format($a['vendor_unit_price'], 2);
-                } else {
-                    $a_json_row["vendor_unit_price"] = 0;
-                }
-                
-                $a_json_row["currency"] = $a['currency'];
-                
-                $received_detail = "/inventory/item-transaction/pr-row?pr_row_id=" . $a['id'];
-                
-                if ($a['item_name'] !== null) {
-                    $onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs($a['item_name']) . "','1200',$(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
-                } else {
-                    $onclick1 = "showJqueryDialog('Receiving of Item: " . ($a['item_name']) . "','1200', $(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
-                }
-                
-                if ($a['total_received'] > 0) {
-                    $a_json_row["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . $a['total_received'] . '</a>';
-                } else {
-                    $a_json_row["total_received"] = "";
-                }
-                $a_json_row["buying"] = $a['processing_quantity'];
-                
-                $a_json_row["project_id"] = $a['project_id'];
-                
-                if (strlen($a['remarks']) < 20) {
-                    $a_json_row["remarks"] = $a['remarks'];
-                } else {
-                    $a_json_row["remarks"] = '<span title="' . $a['remarks'] . '">' . substr($a['remarks'], 0, 15) . '...</span>';
-                }
-                $a_json_row["fa_remarks"] = $a['fa_remarks'];
-                $a_json_row["receipt_date"] = "";
-                $a_json_row["vendor"] = "";
-                $a_json_row["vendor_id"] = "";
-                
-                $a_json[] = $a_json_row;
-            }
-            
-            $a_json_final['data'] = $a_json;
-            $a_json_final['totalRecords'] = $total_records;
-            $a_json_final['curPage'] = $pq_curPage;
-        }
-        
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($a_json_final));
-        return $response;
-    }
-
-    /**
-     *
-     * @return \Zend\View\Model\ViewModel
-     */
     public function listAction()
     {
         $item_type = $this->params()->fromQuery('item_type');
@@ -823,15 +656,19 @@ class PrRowController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function downloadAction()
     {
-  
         $request = $this->getRequest();
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        
         $format = (int) $this->params()->fromQuery('format');
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
@@ -842,13 +679,11 @@ class PrRowController extends AbstractActionController
         
         if ($rows !== null) {
             
-            $total_records = count($rows);
-            
-            $target=null;
-            if(count($rows)>0){
-               $pr_row_1=$rows[0][0];
-                if( $pr_row_1 instanceof NmtProcurePrRow){
-                    $target =$pr_row_1->getPr();
+            $target = null;
+            if (count($rows) > 0) {
+                $pr_row_1 = $rows[0][0];
+                if ($pr_row_1 instanceof NmtProcurePrRow) {
+                    $target = $pr_row_1->getPr();
                 }
             }
             
@@ -856,79 +691,60 @@ class PrRowController extends AbstractActionController
             $objPHPExcel = new PHPExcel();
             
             // Set document properties
-            $objPHPExcel->getProperties()->setCreator("Nguyen Mau Tri")
-            ->setLastModifiedBy("Nguyen Mau Tri")
-            ->setTitle("Office 2007 XLSX Test Document")
-            ->setSubject("Office 2007 XLSX Test Document")
-            ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
-            ->setKeywords("office 2007 openxml php")
-            ->setCategory("Test result file");
-            
-            
-            // Add some data
-            $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('B1', $target->getPrName());
+            $objPHPExcel->getProperties()
+                ->setCreator("Nguyen Mau Tri")
+                ->setLastModifiedBy("Nguyen Mau Tri")
+                ->setTitle("Office 2007 XLSX Test Document")
+                ->setSubject("Office 2007 XLSX Test Document")
+                ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2007 openxml php")
+                ->setCategory("Test result file");
             
             // Add some data
-            $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('C1', $target->getSubmittedOn());
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B1', $target->getPrName());
             
+            // Add some data
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C1', $target->getSubmittedOn());
             
             $header = 3;
-            $i=0;
+            $i = 0;
             
-            $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('A'.$header, "#");
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $header, "#");
             
-            $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('B'.$header, "Item");
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $header, "Item");
             
-            $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('G'.$header, "SKU");
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $header, "SKU");
             
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $header, "Quantity");
             
-            $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('C'.$header, "Quantity");
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $header, "Received");
             
-            $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('D'.$header, "Received");
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $header, "Balance");
             
-            $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('E'.$header, "Balance");
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $header, "Buying");
             
-            $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('F'.$header, "Buying");
-            
-            foreach($rows as $r){
+            foreach ($rows as $r) {
                 
                 /**@var \Application\Entity\NmtProcurePrRow $a ;*/
                 $a = $r[0];
                 
-                $i++;
-                $l=$header+$i;
-                $objPHPExcel->setActiveSheetIndex(0)
-                ->setCellValue('A'.$l, $i);                
-                $objPHPExcel->setActiveSheetIndex(0)
-                ->setCellValue('B'.$l, $a->getItem()->getItemName());
+                $i ++;
+                $l = $header + $i;
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $l, $i);
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $l, $a->getItem()
+                    ->getItemName());
                 
-                $objPHPExcel->setActiveSheetIndex(0)
-                ->setCellValue('C'.$l, $a->getQuantity());
-              
-                $objPHPExcel->setActiveSheetIndex(0)
-                ->setCellValue('D'.$l, $r['total_received']);
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, $a->getQuantity());
                 
-                $objPHPExcel->setActiveSheetIndex(0)
-                ->setCellValue('E'.$l, $r['confirmed_balance']);
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, $r['total_received']);
                 
-                $objPHPExcel->setActiveSheetIndex(0)
-                ->setCellValue('F'.$l, $r['processing_quantity']);
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $l, $r['confirmed_balance']);
                 
-                $objPHPExcel->setActiveSheetIndex(0)
-                ->setCellValue('G'.$l, $a->getItem()->getItemSku());
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, $r['processing_quantity']);
                 
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $l, $a->getItem()
+                    ->getItemSku());
             }
-            
-            
             
             // Rename worksheet
             $objPHPExcel->getActiveSheet()->setTitle($target->getPrName());
@@ -938,39 +754,178 @@ class PrRowController extends AbstractActionController
             // Set active sheet index to the first sheet, so Excel opens this as the first sheet
             $objPHPExcel->setActiveSheetIndex(0);
             
-            
             // Redirect output to a client’s web browser (Excel2007)
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="'. $target->getPrName().'.xlsx"');
+            header('Content-Disposition: attachment;filename="' . $target->getPrName() . '.xlsx"');
             header('Cache-Control: max-age=0');
             // If you're serving to IE 9, then the following may be needed
             header('Cache-Control: max-age=1');
             
             // If you're serving to IE over SSL, then the following may be needed
-            header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-            header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
-            header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-            header ('Pragma: public'); // HTTP/1.0
+            header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+            header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+            header('Pragma: public'); // HTTP/1.0
             
             $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
             $objWriter->save('php://output');
-            exit;
+            exit();
             
-            
-            /* return new ViewModel(array(
-                'list' => $rows,
-                'total_records' => $total_records,
-                'target' => $target
-            ));
-             */           
-            
-            
-            
-            
-            
+            /*
+             * return new ViewModel(array(
+             * 'list' => $rows,
+             * 'total_records' => $total_records,
+             * 'target' => $target
+             * ));
+             */
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function downloadAllAction()
+    {
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $balance = $this->params()->fromQuery('balance');
+        $pr_year = $this->params()->fromQuery('pr_year');
+        
+        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $rows = $res->downloadAllPrRows($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0);
+        
+        if ($rows !== null) {
+            
+            $target = null;
+            if (count($rows) > 0) {
+                $pr_row_1 = $rows[0][0];
+                if ($pr_row_1 instanceof NmtProcurePrRow) {
+                    $target = $pr_row_1->getPr();
+                }
+                
+                // Create new PHPExcel object
+                $objPHPExcel = new PHPExcel();
+                
+                // Set document properties
+                $objPHPExcel->getProperties()
+                    ->setCreator("Nguyen Mau Tri")
+                    ->setLastModifiedBy("Nguyen Mau Tri")
+                    ->setTitle("All PR Row")
+                    ->setSubject("All PR Row")
+                    ->setDescription("All PR Row")
+                    ->setKeywords("All PR Row")
+                    ->setCategory("Procurment MLA");
+                
+                // Add some data
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', "All PR Row");
+                
+                $header = 2;
+                $i = 0;
+                
+                //a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $header, "FA Remarks");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $header, "#");
+                
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $header, "PR Number");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $header, "PR Date");
+                
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $header, "SKU");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $header, "Item ID");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $header, "Item Name");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $header, "Model");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $header, "Serial");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $header, "Item Code");
+                
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $header, "Ordered Q'ty");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $header, "Received");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $header, "Balance");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $header, "Buying");
+                
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $header, "Last Vendor");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $header, "Last Price");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Last Curr");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Remarks");
+                
+                foreach ($rows as $r) {
+                    
+                    /**@var \Application\Entity\NmtProcurePrRow $a ;*/
+                    $a = $r[0];
+                    
+                    $i ++;
+                    $l = $header + $i;
+                    
+                    
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $l, $a->getFaRemarks());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $l, $i);
+                    
+                    if($a->getPr()!== null){
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, $a->getPr()->getPrNumber());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, $a->getPr()->getSubmittedOn());
+                    }else{
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, " No PR No.");
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, "");
+                    }
+                    
+                    if($a->getItem()!== null){
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $l, $a->getItem()->getItemSku());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, $a->getItem()->getId());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $l, $a->getItem()->getItemName());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, $a->getItem()->getManufacturerModel());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, $a->getItem()->getManufacturerSerial());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $l, $a->getItem()->getManufacturerCode());
+                         
+                    }else{
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $l, "");
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, "");
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, "");
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, "");
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, "");
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $l, "");
+                        
+                    }
+          
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $l, $a->getQuantity());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $l, $r['total_received']);
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $l, $r['confirmed_balance']);
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $l, $r['processing_quantity']);
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $l, $r['vendor_name']);
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $r['vendor_unit_price']);
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $r['currency']);
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRemarks());                    
+                }
+                
+                // Rename worksheet
+                $objPHPExcel->getActiveSheet()->setTitle("PR Rows");
+                
+                $objPHPExcel->getActiveSheet()->setAutoFilter("A2:R2");
+                
+                // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+                $objPHPExcel->setActiveSheetIndex(0);
+                
+                // Redirect output to a client’s web browser (Excel2007)
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Disposition: attachment;filename="' . 'All Pr Row.xlsx"');
+                header('Cache-Control: max-age=0');
+                // If you're serving to IE 9, then the following may be needed
+                header('Cache-Control: max-age=1');
+                
+                // If you're serving to IE over SSL, then the following may be needed
+                header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+                header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+                header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+                header('Pragma: public'); // HTTP/1.0
+                
+                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+                $objWriter->save('php://output');
+                exit();
+            }
+        }
+        return $this->redirect()->toRoute('access_denied');
     }
 
     /**
@@ -1361,6 +1316,174 @@ class PrRowController extends AbstractActionController
             $a_json_final['data'] = $a_json;
             $a_json_final['totalRecords'] = $total_records;
             // $a_json_final ['curPage'] = $pq_curPage;
+        }
+        
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function girdAllAction()
+    {
+        // $sort_by = $this->params ()->fromQuery ( 'sort_by' );
+        if (isset($_GET['sort_by'])) {
+            $sort_by = $_GET['sort_by'];
+        } else {
+            $sort_by = "itemName";
+        }
+        // $sort = $this->params ()->fromQuery ( 'sort' );
+        
+        if (isset($_GET['sort'])) {
+            $sort = $_GET['sort'];
+        } else {
+            $sort = "ASC";
+        }
+        
+        // $balance = $this->params ()->fromQuery ( 'balance' );
+        
+        if (isset($_GET['balance'])) {
+            
+            $balance = $_GET['balance'];
+        } else {
+            $balance = 1;
+        }
+        
+        if (isset($_GET['is_active'])) {
+            $is_active = (int) $_GET['is_active'];
+        } else {
+            $is_active = 1;
+        }
+        
+        // $pr_year = $this->params ()->fromQuery ( 'pr_year' );
+        
+        if (isset($_GET['pr_year'])) {
+            
+            $pr_year = $_GET['pr_year'];
+        } else {
+            $pr_year = date('Y');
+        }
+        
+        if (isset($_GET["pq_curpage"])) {
+            $pq_curPage = $_GET["pq_curpage"];
+        } else {
+            $pq_curPage = 1;
+        }
+        
+        if (isset($_GET["pq_rpp"])) {
+            $pq_rPP = $_GET["pq_rpp"];
+        } else {
+            $pq_rPP = 1;
+        }
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getAllPrRow($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0);
+        
+        $total_records = count($list);
+        $paginator = null;
+        
+        $a_json_final = array();
+        $a_json = array();
+        $a_json_row = array();
+        $escaper = new Escaper();
+        
+        if ($total_records > 0) {
+            
+            if ($total_records > $pq_rPP) {
+                $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
+                $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getAllPrRow($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            }
+            $count = 0;
+            foreach ($list as $a) {
+                
+                $item_detail = "/inventory/item/show1?token=" . $a['item_token'] . "&checksum=" . $a['item_checksum'] . "&entity_id=" . $a['item_id'];
+                if ($a['item_name'] !== null) {
+                    $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                } else {
+                    $onclick = "showJqueryDialog('Detail of Item: " . ($a['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                }
+                
+                $count ++;
+                if ($paginator == null) {
+                    $a_json_row["row_number"] = $count;
+                } else {
+                    $a_json_row["row_number"] = $paginator->minInPage - 1 + $count;
+                }
+                
+                $a_json_row["pr_number"] = $a['pr_number'] . '<a style="" target="blank"  title="' . $a['pr_number'] . '" href="/procure/pr/show?token=' . $a["pr_token"] . '&entity_id=' . $a["pr_id"] . '&checksum=' . $a["pr_checksum"] . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
+                
+                if ($a['submitted_on'] !== null) {
+                    $a_json_row['pr_submitted_on'] = date_format(date_create($a['submitted_on']), 'd-m-y');
+                    // $a_json_row ['pr_submitted_on'] = $a ['submitted_on'];
+                } else {
+                    $a_json_row['pr_submitted_on'] = '';
+                }
+                
+                $a_json_row["row_id"] = $a['id'];
+                $a_json_row["row_token"] = $a['token'];
+                $a_json_row["row_checksum"] = $a['checksum'];
+                
+                $a_json_row["item_sku"] = '<span title="' . $a['item_sku'] . '">' . substr($a['item_sku'], 0, 5) . '</span>';
+                
+                if (strlen($a['item_name']) < 35) {
+                    $a_json_row["item_name"] = $a['item_name'] . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a['item_id'] . '" item_name="' . $a['item_name'] . '" title="' . $a['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
+                } else {
+                    $a_json_row["item_name"] = substr($a['item_name'], 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a['item_id'] . '" item_name="' . $a['item_name'] . '" title="' . $a['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                }
+                
+                $a_json_row["quantity"] = $a['quantity'];
+                $a_json_row["confirmed_balance"] = $a['confirmed_balance'];
+                
+                if (strlen($a['vendor_name']) < 10) {
+                    $a_json_row["vendor_name"] = $a['vendor_name'];
+                } else {
+                    $a_json_row["vendor_name"] = '<span title="' . $a['vendor_name'] . '">' . substr($a['vendor_name'], 0, 8) . '...</span>';
+                }
+                
+                if ($a['vendor_unit_price'] !== null) {
+                    $a_json_row["vendor_unit_price"] = number_format($a['vendor_unit_price'], 2);
+                } else {
+                    $a_json_row["vendor_unit_price"] = 0;
+                }
+                
+                $a_json_row["currency"] = $a['currency'];
+                
+                $received_detail = "/inventory/item-transaction/pr-row?pr_row_id=" . $a['id'];
+                
+                if ($a['item_name'] !== null) {
+                    $onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs($a['item_name']) . "','1200',$(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
+                } else {
+                    $onclick1 = "showJqueryDialog('Receiving of Item: " . ($a['item_name']) . "','1200', $(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
+                }
+                
+                if ($a['total_received'] > 0) {
+                    $a_json_row["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . $a['total_received'] . '</a>';
+                } else {
+                    $a_json_row["total_received"] = "";
+                }
+                $a_json_row["buying"] = $a['processing_quantity'];
+                
+                $a_json_row["project_id"] = $a['project_id'];
+                
+                if (strlen($a['remarks']) < 20) {
+                    $a_json_row["remarks"] = $a['remarks'];
+                } else {
+                    $a_json_row["remarks"] = '<span title="' . $a['remarks'] . '">' . substr($a['remarks'], 0, 15) . '...</span>';
+                }
+                $a_json_row["fa_remarks"] = $a['fa_remarks'];
+                $a_json_row["receipt_date"] = "";
+                $a_json_row["vendor"] = "";
+                $a_json_row["vendor_id"] = "";
+                
+                $a_json[] = $a_json_row;
+            }
+            
+            $a_json_final['data'] = $a_json;
+            $a_json_final['totalRecords'] = $total_records;
+            $a_json_final['curPage'] = $pq_curPage;
         }
         
         $response = $this->getResponse();

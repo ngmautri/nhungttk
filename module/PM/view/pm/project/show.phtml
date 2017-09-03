@@ -21,55 +21,56 @@ if (count ( $errors ) > 0) {
    	<li ><a href="/pm/project-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Attachment</a></li>
   </ul>
 
-<div id="general"> 
+<div id="general" style="font-size: 9pt"> 
 
 <form id="project_show_form" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Project Name:</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				name="projectName" value="<?php echo (!$entity == null)? $entity->getProjectName():"";?>">
 		</div>		
 	</div>
 
 
 	<fieldset>
-			<legend style="font-size: 10pt; color: gray;">
+			<legend style="font-size: 9.5pt; color: gray;">
 				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 				<a href="#header" class="" data-toggle="collapse">HEADER:</a>
 			</legend>
-			<div id="header" class="collapse">
+			
+			<div id="header"  style="font-size: 9.5pt; color: gray;" class="collapse">
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Keywords:</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text"  placeholder=""
+			<input class="form-control input-sm" type="text"  placeholder=""
 				id = "keywords" name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
 		</div>
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Start Date:</label>
 		<div class="col-sm-3">
-		<input class="form-control" type="text" name="startDate" 
+		<input class="form-control input-sm" type="text" name="startDate" 
 		value="<?php if(!$entity == null): echo ($entity->getStartDate() !== null)? date_format($entity->getStartDate(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="startDate" />
 		</div>
 		
 		<label class="control-label col-sm-2" >End Date:</label>
 		<div class="col-sm-3">
-		<input class="form-control" type="text" name="endDate" 
+		<input class="form-control input-sm" type="text" name="endDate" 
 		value="<?php if(!$entity == null): echo ($entity->getEndDate() !== null)? date_format($entity->getEndDate(),"Y-m-d"):""; endif;?>" placeholder =" please select" id="endDate" />
 		</div>
 		
 		
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Status:</label>
 		<div class="col-sm-3">
-			<select class="form-control" name="status">
+			<select class="form-control input-sm" name="status">
 				<option value="">Please select</option>
 				<option <?php if(!$entity == null):	echo ($entity->getStatus()=='STARTED')?'selected="selected"':''; endif;?> value="STARTED">STARTED</option>
 				<option <?php if(!$entity == null):	echo ($entity->getStatus()=='PENDING')?'selected="selected"':''; endif;?> value="PENDING">PENDING</option>
@@ -80,15 +81,15 @@ if (count ( $errors ) > 0) {
 		
 		<label class="control-label col-sm-2" >Remarks:</label>
 		<div class="col-sm-3">
-			<textarea  class="form-control" type="text" rows="4" placeholder=""
+			<textarea  class="form-control input-sm" type="text" rows="4" placeholder=""
 				name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 		</div>
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/pm/project/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/pm/project/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
  		</div>
 	</div>
 	
@@ -96,7 +97,7 @@ if (count ( $errors ) > 0) {
 	</fieldset> 
 	
 	<fieldset>
-			<legend style="font-size: 10pt; color: gray;">
+			<legend style="font-size: 9.5pt; color: gray;">
 				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 				<a href="#row" class="" data-toggle="collapse">PR ITEM:</a>
 			</legend>
@@ -245,7 +246,7 @@ var autoCompleteEditor = function (ui) {
 
 //var container_height = $('#main_container').height();
 //alert(container_height);
-var obj = { width: "100%", height: $(window).height()-350, showTitle : false,
+var obj = { width: "100%", height: $(window).height()-250, showTitle : false,
 		resizable:true,
 		//draggable:true,
 		sortable: true,
@@ -473,7 +474,7 @@ $grid.on('pqgridrefresh pqgridrefreshrow', function () {
       	//alert(rowData['item_name']);
       	
       	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
-      	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
+      	showJqueryDialog('Item Receiving','1000',$(window).height()-50, redirectUrl,'j_loaded_data', true);
       	//window.open(redirectUrl,'_blank');
       	
     });

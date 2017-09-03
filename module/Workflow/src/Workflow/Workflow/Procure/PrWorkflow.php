@@ -26,16 +26,15 @@ class PrWorkflow extends AbstractWorkflow
         // Transitions are defined with a unique name, an origin place and a destination place
         
         $definition->addPlaces([
-            'draft',
-            'sent',
-            'received',
-            'recalled'
-        ])
-            ->addTransition(new NmtTransition('send', 'draft', 'sent'))
-            ->addTransition(new NmtTransition('get', 'sent', 'received'))
-            ->addTransition(new NmtTransition('recall', 'received', 'recalled'))
-            ->addTransition(new NmtTransition('resend', 'recalled', 'sent'));
-        
+            'DRAFT',
+            'SENT',
+            'RECALLED',
+            'PROCESSED',
+          ])
+            ->addTransition(new NmtTransition('submit', 'DRAFT', 'SENT'))
+            ->addTransition(new NmtTransition('process', 'SENT', 'PROCESSED'))
+            ->addTransition(new NmtTransition('recall', 'SENT', 'DRAFT'));
+             
         $marking = new SingleStateMarkingStore('currentState');
         
         $dispatcher = new EventDispatcher();

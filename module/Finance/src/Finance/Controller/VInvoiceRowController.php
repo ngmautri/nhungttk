@@ -19,6 +19,8 @@ use MLA\Paginator;
 use Application\Entity\FinVendorInvoice;
 use Application\Entity\FinVendorInvoiceRow;
 use Application\Entity\NmtInventoryTrx;
+use PHPExcel;
+use PHPExcel_IOFactory;
 
 /**
  *
@@ -205,6 +207,7 @@ class VInvoiceRowController extends AbstractActionController
                     'email' => $this->identity()
                 ));
                 
+                $entity->setCurrentState($target->getCurrentState());
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                 
                 $entity->setCreatedBy($u);
@@ -254,24 +257,26 @@ class VInvoiceRowController extends AbstractActionController
         $redirectUrl = Null;
         
         if ($request->getHeader('Referer') == null) {
-        return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('access_denied');
         }
         
-         $redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
+        $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
         
         $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         
         /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
-        $invoice = $res->getVendorInvoice($id,$token);
+        $invoice = $res->getVendorInvoice($id, $token);
         
-        if($invoice==null){
+        if ($invoice == null) {
             return $this->redirect()->toRoute('access_denied');
         }
         
         $target = null;
-        if($invoice[0] instanceof FinVendorInvoice)        {
+        if ($invoice[0] instanceof FinVendorInvoice) {
             $target = $invoice[0];
         }
         
@@ -282,7 +287,7 @@ class VInvoiceRowController extends AbstractActionController
         $entity = new FinVendorInvoiceRow();
         
         // set null
-        $entity->setIsActive(1);        
+        $entity->setIsActive(1);
         $entity->setConversionFactor(1);
         $entity->setUnit("each");
         
@@ -296,7 +301,7 @@ class VInvoiceRowController extends AbstractActionController
             'max_row_number' => $invoice['total_row'],
             'net_amount' => $invoice['net_amount'],
             'tax_amount' => $invoice['tax_amount'],
-            'gross_amount' => $invoice['gross_amount'],
+            'gross_amount' => $invoice['gross_amount']
         ));
     }
 
@@ -415,13 +420,74 @@ class VInvoiceRowController extends AbstractActionController
                 // might need redirect
             } else {
                 
-                $isActive = (int) $request->getPost('$isActive');
+                $isActive = (int) $request->getPost('isActive');
+                $remarks = $request->getPost('remarks');
                 
                 if ($isActive != 1) {
                     $isActive = 0;
                 }
                 
+                $entity->setRemarks($remarks);
                 $entity->setIsActive($isActive);
+                
+                //
+                if ($entity->getCurrentState() != "finalInvoice") {
+                    $quantity = $request->getPost('quantity');
+                    $unitPrice = $request->getPost('unitPrice');
+                    $taxRate = $request->getPost('taxRate');
+                    
+                    $n_validated = 0;
+                    if ($quantity == null) {
+                        $errors[] = 'Please  enter quantity!';
+                    } else {
+                        
+                        if (! is_numeric($quantity)) {
+                            $errors[] = 'Quantity must be a number.';
+                        } else {
+                            if ($quantity <= 0) {
+                                $errors[] = 'Quantity must be greater than 0!';
+                            }
+                            $entity->setQuantity($quantity);
+                            $n_validated ++;
+                        }
+                    }
+                    
+                    if ($unitPrice !== null) {
+                        if (! is_numeric($unitPrice)) {
+                            $errors[] = 'Price is not valid. It must be a number.';
+                        } else {
+                            if ($unitPrice <= 0) {
+                                $errors[] = 'Price must be greate than 0!';
+                            }
+                            $entity->setUnitPrice($unitPrice);
+                            $n_validated ++;
+                        }
+                    }
+                    
+                    if ($n_validated == 2) {
+                        $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
+                        $entity->setNetAmount($netAmount);
+                    }
+                    
+                    if ($taxRate !== null) {
+                        if (! is_numeric($taxRate)) {
+                            $errors[] = '$taxRate is not valid. It must be a number.';
+                        } else {
+                            if ($taxRate < 0) {
+                                $errors[] = '$taxRate must be greate than 0!';
+                            }
+                            $entity->setTaxRate($taxRate);
+                            $n_validated ++;
+                        }
+                    }
+                    
+                    if ($n_validated == 3) {
+                        $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
+                        $grossAmount = $entity->getNetAmount() + $taxAmount;
+                        $entity->setTaxAmount($taxAmount);
+                        $entity->setGrossAmount($grossAmount);
+                    }
+                }
                 
                 // NO ERROR
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -617,11 +683,17 @@ class VInvoiceRowController extends AbstractActionController
                     if ($a->getPrRow() !== null) {
                         if ($a->getPrRow()->getPr() !== null) {
                             
-                            $link = '<a target="_blank" href="/procure/pr/show?token='.$a->getPrRow()->getPr()->getToken().'&entity_id='.$a->getPrRow()->getPr()->getId().'&checkum='.$a->getPrRow()->getPr()->getChecksum(). '"> ... </a>';
+                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
+                                ->getPr()
+                                ->getToken() . '&entity_id=' . $a->getPrRow()
+                                ->getPr()
+                                ->getId() . '&checkum=' . $a->getPrRow()
+                                ->getPr()
+                                ->getChecksum() . '"> ... </a>';
                             
                             $a_json_row["pr_number"] = $a->getPrRow()
                                 ->getPr()
-                                ->getPrNumber() . $link ;
+                                ->getPrNumber() . $link;
                         }
                     }
                     
@@ -652,6 +724,7 @@ class VInvoiceRowController extends AbstractActionController
                     $a_json_row["item_token"] = $a->getItem()->getToken();
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
                     $a_json_row["fa_remarks"] = $a->getFaRemarks();
+                    $a_json_row["remarks"] = $a->getRemarks();
                     
                     $a_json[] = $a_json_row;
                 }
@@ -666,6 +739,152 @@ class VInvoiceRowController extends AbstractActionController
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setContent(json_encode($a_json_final));
         return $response;
+    }
+
+    /**
+     */
+    public function downloadAction()
+    {
+        $request = $this->getRequest();
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $target_id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $rows = $res->downLoadVendorInvoice($target_id, $token);
+        
+        if ($rows !== null) {
+            
+            $target = null;
+            if (count($rows) > 0) {
+                $pr_row_1 = $rows[0];
+                if ($pr_row_1 instanceof FinVendorInvoiceRow) {
+                    $target = $pr_row_1->getInvoice();
+                }
+                
+                // Create new PHPExcel object
+                $objPHPExcel = new PHPExcel();
+                
+                // Set document properties
+                $objPHPExcel->getProperties()
+                    ->setCreator("Nguyen Mau Tri")
+                    ->setLastModifiedBy("Nguyen Mau Tri")
+                    ->setTitle("Office 2007 XLSX Test Document")
+                    ->setSubject("Office 2007 XLSX Test Document")
+                    ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+                    ->setKeywords("office 2007 openxml php")
+                    ->setCategory("Test result file");
+                
+                // Add some data
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B1', $target->getInvoiceNo());
+                
+                // Add some data
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C1', $target->getInvoiceDate());
+                
+                $header = 3;
+                $i = 0;
+                
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $header, "FA Remarks");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $header, "#");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $header, "SKU");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $header, "Item");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $header, "Unit");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $header, "Quantity");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $header, "Unit Price");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $header, "Net Amount");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $header, "Tax Rate");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $header, "Tax Amount");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $header, "Gross Amount");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $header, "PR Number");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $header, "PR Date");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $header, "Requested Q/ty");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $header, "Requested Name");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $header, "RowNo.");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Remarks");
+                
+                foreach ($rows as $r) {
+                    
+                    /**@var \Application\Entity\FinVendorInvoiceRow $a ;*/
+                    $a = $r;
+                    
+                    $i ++;
+                    $l = $header + $i;
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $l, $a->getFaRemarks());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $l, $i);
+                    
+                    if ($a->getItem() !== null) {
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, $a->getItem()
+                            ->getItemSku());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, $a->getItem()
+                            ->getItemName());
+                    } else {
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, "NA");
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, "NA");
+                    }
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $l, $a->getUnit());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, $a->getQuantity());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $l, $a->getUnitPrice());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, $a->getNetAmount());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, $a->getTaxRate());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $l, $a->getTaxAmount());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $l, $a->getGrossAmount());
+                    
+                    if ($a->getPrRow() !== null) {
+                        
+                        if ($a->getPrRow()->getPr() !== null) {
+                            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $l, $a->getPrRow()
+                                ->getPr()
+                                ->getPrNumber());
+                            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $l, $a->getPrRow()
+                                ->getPr()
+                                ->getSubmittedOn());
+                        }
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $l, $a->getPrRow()
+                            ->getQuantity());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $l, $a->getPrRow()
+                            ->getRowName());
+                    } else {
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $l, "NA");
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $l, "NA");
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $l, 0);
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $l, "");
+                    }
+                    
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowNumber());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
+                }
+                
+                // Rename worksheet
+                $objPHPExcel->getActiveSheet()->setTitle("invoice");
+                
+                $objPHPExcel->getActiveSheet()->setAutoFilter("A" . $header . ":R" . $header);
+                
+                // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+                $objPHPExcel->setActiveSheetIndex(0);
+                
+                // Redirect output to a client’s web browser (Excel2007)
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Disposition: attachment;filename="invoice' . $target->getId() . '.xlsx"');
+                header('Cache-Control: max-age=0');
+                // If you're serving to IE 9, then the following may be needed
+                header('Cache-Control: max-age=1');
+                
+                // If you're serving to IE over SSL, then the following may be needed
+                header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+                header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+                header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+                header('Pragma: public'); // HTTP/1.0
+                
+                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+                $objWriter->save('php://output');
+                exit();
+            }
+        }
+        return $this->redirect()->toRoute('access_denied');
     }
 
     /**

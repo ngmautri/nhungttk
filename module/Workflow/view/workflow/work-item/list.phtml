@@ -1,0 +1,62 @@
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Workflow List</a></li>
+	</ul>
+	<div id="general">
+
+
+<?php
+
+if (count($wf_list) <= 0) {
+	
+	echo 'No record found!';
+} else {
+    echo count($wf_list);
+	?>
+
+
+
+
+<table style="font-size: 10pt;" class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b>Workflow Detail</b></td>
+					<td><b>Workflow Name</b></td>
+					<td><b>Created on</b></td>
+					<td><b>Action</b></td
+				</tr>
+			</thead>
+
+			<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $wf_list as $a ) :
+		$count ++;
+		?>
+	<tr>
+					<td><?php echo $count;?></td>
+					<td><?php echo $a->getWorkflowFactory();?><br>
+					<?php echo $a->getWorkflowClass();?> <br>
+					<?php echo $a->getSubjectClass();?>
+					</td>
+					<td><?php echo $a->getWorkflowName();?></td>
+					
+					<td><?php echo date_format ( $a->getCreatedOn(), "d/m/y");?> </td>
+		<td>
+	<a href="<?php echo $this->baseUrl ?>/workflow/wf/transition?token=<?php echo $a->getToken();?>&target_id=<?php echo $a->getId();?>">Transtion</a>
+			</td>
+
+				</tr>
+<?php endforeach; ?>
+
+ </tbody>
+		</table>
+
+
+	</div>
+</div>
+<?php } ?>

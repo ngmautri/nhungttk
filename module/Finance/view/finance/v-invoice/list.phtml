@@ -166,7 +166,10 @@ else:
 <a style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
 			
 			</td>
-			<td><?php echo $a->getVendor()->getVendorName()?></td>
+			<td>
+<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
+			
+			</td>
 			<td><?php echo $a->getContractNo()?></td>
 			<td><span style="color: gray;"><?php if($a->getContractDate()!==null):echo date_format($a->getContractDate(),"d-m-Y");   endif;?></span></td>
 			<td><?php echo $a->getInvoiceNo()?></td>

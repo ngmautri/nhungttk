@@ -213,14 +213,10 @@ class WFController extends AbstractActionController
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
-            'id' => $target_id,
-            'token' => $token
+            'workflow' => $target_id,
+            
         );
-         
-        $criteria = array();
-        
-        // var_dump($criteria);
-        
+    
         $sort_criteria = array();
         
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtWfTransition')->findBy($criteria, $sort_criteria);

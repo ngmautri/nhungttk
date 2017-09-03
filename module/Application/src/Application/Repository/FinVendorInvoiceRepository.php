@@ -220,5 +220,39 @@ WHERE 1";
             return null;
         }
     }
+    
+    
+   /**
+    * 
+    * @param unknown $invoice_id
+    * @param unknown $token
+    * @param unknown $filter_by
+    * @param unknown $sort_by
+    * @param unknown $sort
+    * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+    */
+    public function downLoadVendorInvoice($invoice_id, $token, $filter_by = null, $sort_by = null, $sort = null)
+    {
+        $sql = 
+"
+SELECT 
+fin_vendor_invoice_row.*
+FROM fin_vendor_invoice_row
+LEFT JOIN fin_vendor_invoice
+ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+WHERE 1
+";
+        
+        $sql = $sql . " AND fin_vendor_invoice_row.is_active=1 AND fin_vendor_invoice.id =" . $invoice_id . " AND fin_vendor_invoice.token='" . $token . "'";
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }
 

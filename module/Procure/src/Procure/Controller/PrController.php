@@ -378,7 +378,7 @@ class PrController extends AbstractActionController
             ->getHeader('Referer')
             ->getUri();
         $id = (int) $this->params()->fromQuery('entity_id');
-        //$checksum = $this->params()->fromQuery('checksum');
+        // $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
         
         /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
@@ -427,13 +427,105 @@ class PrController extends AbstractActionController
                 'errors' => null,
                 'total_row' => $pr['total_row'],
                 'max_row_number' => $pr['max_row_number'],
-                'active_row' => $pr['active_row'],
+                'active_row' => $pr['active_row']
             ));
-            
-            
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
+    }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function submitAction()
+    {
+        /*
+         * $request = $this->getRequest();
+         *
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('access_denied');
+         * }
+         */
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $rows = $res->downloadPrRows($id, $token);
+        
+        if ($rows == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
+        $wf_plugin = $this->WfPlugin();
+        
+        /** @var \Workflow\Service\WorkflowService $wfService */
+        $wfService = $wf_plugin->getWorkflowSerive();
+        
+        // change PR
+        $pr = null;
+        if ($rows[0][0] instanceof NmtProcurePrRow) {
+            $pr = $rows[0][0]->getPr();
+        }
+        
+        if ($pr == null) {
+            return $this->redirect()->toRoute('access_denied');
+        } else {
+            try {
+                /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $pr_wf_factory */
+                $pr_wf_factory = $wfService->getWorkFlowFactory($pr);
+                
+                /** @var \Symfony\Component\Workflow\Workflow  $wf */
+                $wf = $pr_wf_factory->makePrSendingWorkflow()->createWorkflow();
+                $wf->apply($pr, "submit");
+            } catch (LogicException $e) {
+                $this->flashMessenger()->addMessage($e->getMessage());
+                $url = "/procure/pr/show?token=" . $token . "&entity_id=" . $id;
+                return $this->redirect()->toUrl($url);
+            }
+        }
+        
+        foreach ($rows as $r) {
+            /** @var \Application\Entity\NmtProcurePrRow $entity */
+            $entity = $r[0];
+            $errors = array();
+            
+            try {
+                
+                /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
+                $wf_plugin = $this->WfPlugin();
+                
+                /** @var \Workflow\Service\WorkflowService $wfService */
+                $wfService = $wf_plugin->getWorkflowSerive();
+                
+                /** @var \Workflow\Workflow\Procure\Factory\PrRowWorkflowFactoryAbstract $wf_factory */
+                $wf_factory = $wfService->getWorkFlowFactory($entity);
+                
+                /** @var \Symfony\Component\Workflow\Workflow  $wf */
+                $wf = $wf_factory->makePrRowWorkFlow()->createWorkflow();
+                $wf->apply($entity, "submit");
+            } catch (LogicException $e) {
+                // echo $e->getMessage();
+                $errors[] = $e->getMessage();
+            }
+        }
+        
+        if (count($errors) > 0) {
+            $m = "<ul>";
+            foreach ($errors as $error) {
+                $m = $m . "<li>" . $error . "</li>";
+            }
+            $m = $m . "</ul>";
+            
+            $this->flashMessenger()->addMessage($m);
+        } else {
+            $this->flashMessenger()->addMessage("PR is submited!");
+        }
+        
+        $url = "/procure/pr/show?token=" . $token . "&entity_id=" . $id;
+        return $this->redirect()->toUrl($url);
     }
 
     /**

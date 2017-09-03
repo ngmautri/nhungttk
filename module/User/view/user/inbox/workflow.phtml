@@ -41,6 +41,9 @@ if ($total_records <= 0) {
     
     $count = 0;
     foreach ($list as $a) :
+    
+        /**@var \Application\Entity\NmtWfTransition $a ; */
+    
         $count ++;
         ?>
 	 <tr>
@@ -53,7 +56,7 @@ if ($total_records <= 0) {
 			<td><?php echo $this->escapeHtml($a->getWorkitemStatus());?></td>
 			<td><?php echo $this->escapeHtml($a->getRemarks());?></td>
 			<td>
-<a href="<?php echo $this->baseUrl ?>/workflow/workitem/apply?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getid();?>">apply</a>
+<a href="<?php echo $this->baseUrl ?>/workflow/workitem/apply?token=<?php echo $a->getToken();?>&t=<?php echo $a->getTransitionName();?>&entity_id=<?php echo $a->getid();?>">apply</a>
 
 			</td>
 		</tr>

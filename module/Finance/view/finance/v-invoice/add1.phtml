@@ -42,11 +42,6 @@ if (count ( $errors ) > 0) {
 					<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
 				</legend>
 				<div id="invoice_header" class="collapse">
-					<small></small><a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-&nbsp;Edit</a></small>
-						<hr>
 					
 					<div class="form-group margin-bottom required">
 					<label class="control-label col-sm-2">Current State:</label>
@@ -195,7 +190,19 @@ if (count ( $errors ) > 0) {
             				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
             		</div>
 				</div>
-					
+				<hr>
+					<div class="form-group margin-bottom">
+					<label class="control-label col-sm-2" ></label>
+            		<div class="col-sm-3">
+            		
+  <a class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Edit</a>       		
+   <a class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>       		
+
+</div>
+				</div>
 					
 			</div>
 			</fieldset>
@@ -220,8 +227,9 @@ if (count ( $errors ) > 0) {
 	</div>
 </div>
 
+<hr>
 
-
+						
 
 <script>
 

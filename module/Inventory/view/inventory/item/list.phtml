@@ -16,14 +16,14 @@
     <div id="collapse1" class="panel-collapse collapse">
       <div class="panel-body" style="padding: 0px;">
   <div
-					style="padding: 3px; font-size:10pt; background:url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+					style="padding: 3px; font-size:9.5pt; background:url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 					    
  <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/item/list" method="get" enctype="multipart/form-data">
 	
-	 <div class="form-group">
+	 <div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Item  Type</label>
 		<div class="col-sm-3">
-			<select class="form-control" name="item_type">
+			<select class="form-control input-sm" name="item_type">
 									<option value="All">All</option>
 									<option
 										<?php echo $item_type=='ITEM'? "selected='selected'":"";?>
@@ -40,10 +40,10 @@
 	 	</div>
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Active Items</label>
 		<div class="col-sm-3">
-			<select class="form-control" name="is_active">
+			<select class="form-control input-sm" name="is_active">
 									<option
 									<?php echo $is_active ==''? "selected='selected'":"";?>
 										value="2">All</option>
@@ -57,10 +57,10 @@
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Fixed Asset</label>
 		<div class="col-sm-3">
-			<select class="form-control" name="is_fixed_asset">
+			<select class="form-control input-sm" name="is_fixed_asset">
 									<option
 									<?php echo $is_fixed_asset==''? "selected='selected'":"";?>
 										value="">All</option>
@@ -74,10 +74,10 @@
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Sort by</label>
 		<div class="col-sm-3">
-			<select class="form-control" name="sort_by">
+			<select class="form-control input-sm" name="sort_by">
 									<option value="">None</option>
 									<option
 										<?php echo $sort_by=='itemName'? "selected='selected'":"";?>
@@ -93,10 +93,10 @@
 	</div>
 	
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Result per page</label>
 		<div class="col-sm-3">
-			<select class="form-control" name="perPage">
+			<select class="form-control input-sm" name="perPage">
 									<option value="">None</option>
 									<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
 										value="15">15</option>
@@ -119,7 +119,7 @@
 		</div>
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<div class="col-sm-offset-2 col-sm-10">
 			<button type="submit" class="btn btn-default">Show</button>
 		</div>

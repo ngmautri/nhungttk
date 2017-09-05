@@ -49,7 +49,7 @@ if (count ( $errors ) > 0) {
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">PR Number:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text" placeholder=""
+							<input class="form-control input-sm" type="text" placeholder=""
 								name="prNumber"
 								value="<?php echo (!$target == null)? $target->getPrNumber():"";?>">
 						</div>
@@ -70,14 +70,14 @@ if (count ( $errors ) > 0) {
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">PR Name:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text" placeholder=""
+							<input class="form-control input-sm" type="text" placeholder=""
 								id="prName" name="prName"
 								value="<?php echo (!$target == null)? $target->getPrName():"";?>">
 						</div>
 
 						<label class="control-label col-sm-2">Keywords:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text" placeholder=""
+							<input class="form-control input-sm" type="text" placeholder=""
 								id="keywords" name="keywords"
 								value="<?php echo (!$target == null)? $target->getKeywords():"";?>">
 						</div>
@@ -86,7 +86,7 @@ if (count ( $errors ) > 0) {
 						<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Date:</label>
 		<div class="col-sm-3">
-<input class="form-control input-sm input-sm" type="text"  placeholder="" id = "submittedOn" name="submittedOn" 
+<input class="form-control input-sm" type="text"  placeholder="" id = "submittedOn" name="submittedOn" 
 value="<?php if(!$target == null): if ($target->getSubmittedOn() !== null): echo date_format($target->getSubmittedOn(),"Y-m-d"); endif; endif;?>" placeholder =" please select"/>
 		</div>
 	</div>
@@ -94,12 +94,12 @@ value="<?php if(!$target == null): if ($target->getSubmittedOn() !== null): echo
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">Department</label>
 						<div class="col-sm-3">
-							<input disabled class="form-control input-sm input-sm" type="text"
+							<input disabled class="form-control input-sm" type="text"
 								id="department_name" placeholder="Please select!"
 								name="deparment_name"
 								value="<?php if (!$target== null):if($target->getDepartment()!==null):echo $target->getDepartment()->getNodeName(); endif;endif;?>">
 
-							<input type="hidden" class="form-control input-sm input-sm"
+							<input type="hidden" class="form-control input-sm"
 								id="department_name_selected" placeholder="Please select!"
 								name="department_id"
 								value="<?php if (!$target== null):if($target->getDepartment()!==null):echo $target->getDepartment()->getNodeId(); endif;endif;?>">
@@ -114,7 +114,7 @@ value="<?php if(!$target == null): if ($target->getSubmittedOn() !== null): echo
 					<div class="form-group margin-bottom">
                 		<label class="control-label col-sm-2" >Remarks:</label>
                 		<div class="col-sm-8">
-                			<input class="form-control input-sm input-sm" type="text"  placeholder=""
+                			<input class="form-control input-sm" type="text"  placeholder=""
                 				name="itemDescription" value="<?php echo (!$target == null)? $target->getRemarks():"";?>">
                 		</div>
 					</div>
@@ -122,7 +122,7 @@ value="<?php if(!$target == null): if ($target->getSubmittedOn() !== null): echo
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2" for="inputTag"></label>
 						<div class="col-sm-3">
-							<a class="btn btn-default"
+							<a class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
 									class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
 
@@ -288,11 +288,11 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
 				<label class="control-label col-sm-2" for="inputTag"></label>
 				<div class="col-sm-3">
 
-					<a tabindex="7" class="btn btn-default" style="" href="javascript:;"
+					<a tabindex="7" class="btn btn-default btn-sm" style="" href="javascript:;"
 						onClick="submitForm('pr_row_form');"> <small><i
 							class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;Save
 					</a>
-					<a tabindex="8" class="btn btn-default"
+					<a tabindex="8" class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
 									class=""></i></small>&nbsp;Cancel</a>
 				</div>

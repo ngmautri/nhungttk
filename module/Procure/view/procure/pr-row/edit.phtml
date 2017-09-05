@@ -37,10 +37,10 @@ if (count($errors) > 0) {
 				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" /> <input
 				type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
-			<div class="form-group margin-bottom">
+			<div class="form-group margin-bottom margin-bottom">
 				<label class="control-label col-sm-2">Item: </label>
 				<div class="col-sm-3">
-					<input class="form-control" type="text" id="item_name"
+					<input class="form-control input-sm" type="text" id="item_name"
 						placeholder="Select Item if any" name="item_name"
 						value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
 
@@ -57,10 +57,10 @@ if (count($errors) > 0) {
 
 			</div>
 
-			<div class="form-group margin-bottom">
+			<div class="form-group margin-bottom margin-bottom">
 				<label class="control-label col-sm-2">Item Name</label>
 				<div class="col-sm-3">
-					<input class="form-control" type="text" placeholder=""
+					<input class="form-control input-sm" type="text" placeholder=""
 						name="rowName" id="rowName"
 						value="<?php echo (!$entity== null)? $entity->getRowName():"";?>">
 
@@ -80,11 +80,11 @@ if (count($errors) > 0) {
 				</legend>
 
 				<div id="reference" class="collapse in">
-					<div class="form-group margin-bottom required">
+					<div class="form-group margin-bottom margin-bottom required">
 					<label class="control-label col-sm-2">For Project: </label>
 					<div class="col-sm-3">
 					
-						<input disabled class="form-control" type="text" id="project_name"
+						<input disabled class="form-control input-sm" type="text" id="project_name"
 							placeholder="Select Project if any" name="project_name"
 							value="<?php if (!$entity== null): if($entity->getProject()!==null): echo $entity->getProject()->getProjectName(); endif;endif;?>">
 
@@ -112,26 +112,26 @@ if (count($errors) > 0) {
 				</legend>
 				<div id="transaction" class="collapse in">
 
-					<div class="form-group margin-bottom required">
+					<div class="form-group margin-bottom margin-bottom required">
 						<label class="control-label col-sm-2">Quantity:</label>
 						<div class="col-sm-3">
-							<input class="form-control" type="text" placeholder=""
+							<input class="form-control input-sm" type="text" placeholder=""
 								name="quantity"
 								value="<?php echo (!$entity== null)? $entity->getQuantity():"";?>">
 						</div>
 					</div>
 
-					<div class="form-group margin-bottom required">
+					<div class="form-group margin-bottom margin-bottom required">
 						<label class="control-label col-sm-2">Unit:</label>
 						<div class="col-sm-3">
-							<input class="form-control" type="text" placeholder=""
+							<input class="form-control input-sm" type="text" placeholder=""
 								name="rowUnit" id="rowUnit"
 								value="<?php echo (!$entity== null)? $entity->getRowUnit():"";?>">
 						</div>
 
 						<label class="control-label col-sm-2">Conversion Factor:</label>
 						<div class="col-sm-3">
-							<input class="form-control" type="text" placeholder=""
+							<input class="form-control input-sm" type="text" placeholder=""
 								name="conversionFactor" id="conversionFactor"
 								value="<?php
         if (! $entity == null) :
@@ -148,10 +148,10 @@ if (count($errors) > 0) {
 				</div>
 			</fieldset>
 
-			<div class="form-group margin-bottom required">
+			<div class="form-group margin-bottom margin-bottom required">
 				<label class="control-label col-sm-2">Expected Delivery:</label>
 				<div class="col-sm-3">
-					<input class="form-control" type="text" name="edt"
+					<input class="form-control input-sm" type="text" name="edt"
 						value="<?php if(!$entity == null): echo ($entity->getEdt() !== null)? date_format($entity->getEdt(),"Y-m-d"):""; endif;?>"
 						placeholder=" please select" id="edt" />
 				</div>
@@ -164,10 +164,10 @@ if (count($errors) > 0) {
 				</legend>
 				<div id="additional" class="collapse">
 
-					<div class="form-group margin-bottom">
+					<div class="form-group margin-bottom margin-bottom">
 						<label class="control-label col-sm-2">Remarks:</label>
 						<div class="col-sm-3">
-							<textarea class="form-control" type="text" rows="4"
+							<textarea class="form-control input-sm" type="text" rows="4"
 								placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
 						</div>
 					</div>
@@ -175,13 +175,13 @@ if (count($errors) > 0) {
 				</div>
 			</fieldset>
 
-			<div class="form-group margin-bottom">
+			<div class="form-group margin-bottom margin-bottom">
 				<label class="control-label col-sm-2" for="inputTag"></label>
 				<div class="col-sm-3">
 
-					<a class="btn btn-default" style="" href="javascript:;"
+					<a class="btn btn-default btn-sm" style="" href="javascript:;"
 						onClick="submitForm('pr_row_form');"> <small><i
-							class="glyphicon glyphicon-plus"> </i></small>&nbsp;Add
+							class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;Save
 					</a>
 				</div>
 			</div>

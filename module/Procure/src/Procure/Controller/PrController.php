@@ -464,18 +464,21 @@ class PrController extends AbstractActionController
         /** @var \Workflow\Service\WorkflowService $wfService */
         $wfService = $wf_plugin->getWorkflowSerive();
         
-        // change PR
+        /** @var \Application\Entity\NmtProcurePr $pr ; */
         $pr = null;
         if ($rows[0][0] instanceof NmtProcurePrRow) {
-            $pr = $rows[0][0]->getPr();
-        }
+            
+             $pr = $rows[0][0]->getPr();
+         }
         
         if ($pr == null) {
             return $this->redirect()->toRoute('access_denied');
         } else {
             try {
-                /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $pr_wf_factory */
+                
+                     /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $pr_wf_factory */
                 $pr_wf_factory = $wfService->getWorkFlowFactory($pr);
+                
                 
                 /** @var \Symfony\Component\Workflow\Workflow  $wf */
                 $wf = $pr_wf_factory->makePrSendingWorkflow()->createWorkflow();
@@ -483,7 +486,7 @@ class PrController extends AbstractActionController
             } catch (LogicException $e) {
                 $this->flashMessenger()->addMessage($e->getMessage());
                 $url = "/procure/pr/show?token=" . $token . "&entity_id=" . $id;
-                return $this->redirect()->toUrl($url);
+                //return $this->redirect()->toUrl($url);
             }
         }
         
@@ -525,7 +528,7 @@ class PrController extends AbstractActionController
         }
         
         $url = "/procure/pr/show?token=" . $token . "&entity_id=" . $id;
-        return $this->redirect()->toUrl($url);
+        //return $this->redirect()->toUrl($url);
     }
 
     /**

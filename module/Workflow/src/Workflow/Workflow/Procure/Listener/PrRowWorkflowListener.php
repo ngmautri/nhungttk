@@ -58,7 +58,9 @@ class PrRowWorkflowListener extends AbstractWorkflowListener
             $workflowFactory = get_class($wf->getWorkflowFactory());
             $workflowClass = get_class($wf);
             $workflowName = $event->getWorkflowName();
-            $subjectClass = get_class($event->getSubject());
+            //to handle the proxie object
+            $className = $this->doctrineEM->getClassMetadata(get_class($event->getSubject()))->getName();
+            $subjectClass = $className;
             
             // set agent_id, role_id
             $criteria = array(

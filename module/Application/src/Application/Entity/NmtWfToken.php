@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtWfToken
  *
- * @ORM\Table(name="nmt_wf_token", indexes={@ORM\Index(name="nmt_wf_token_idx", columns={"case_id"}), @ORM\Index(name="nmt_wf_token_FK2_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_token_FK3_idx", columns={"place_id"}), @ORM\Index(name="nmt_wf_token_FK4_idx", columns={"token_enabled_by"}), @ORM\Index(name="nmt_wf_token_FK5_idx", columns={"token_cancelled_by"}), @ORM\Index(name="nmt_wf_token_FK6_idx", columns={"token_consumed_by"}), @ORM\Index(name="nmt_wf_token_FK6_idx1", columns={"note_id"})})
+ * @ORM\Table(name="nmt_wf_token", indexes={@ORM\Index(name="nmt_wf_token_idx", columns={"case_id"}), @ORM\Index(name="nmt_wf_token_FK2_idx", columns={"workflow_id"}), @ORM\Index(name="nmt_wf_token_FK3_idx", columns={"place_id"}), @ORM\Index(name="nmt_wf_token_FK4_idx", columns={"token_enabled_by"}), @ORM\Index(name="nmt_wf_token_FK5_idx", columns={"token_cancelled_by"}), @ORM\Index(name="nmt_wf_token_FK6_idx", columns={"token_consumed_by"}), @ORM\Index(name="nmt_wf_token_FK6_idx1", columns={"note_id"}), @ORM\Index(name="nmt_wf_token_IDX1", columns={"subject_id"}), @ORM\Index(name="nmt_wf_token_IDX2", columns={"subject_token"}), @ORM\Index(name="nmt_wf_token_IDX3", columns={"subject_class"})})
  * @ORM\Entity
  */
 class NmtWfToken
@@ -48,6 +48,34 @@ class NmtWfToken
      * @ORM\Column(name="consumed_date", type="datetime", nullable=true)
      */
     private $consumedDate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="subject_id", type="integer", nullable=true)
+     */
+    private $subjectId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subject_token", type="string", length=45, nullable=true)
+     */
+    private $subjectToken;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subject_class", type="string", length=100, nullable=true)
+     */
+    private $subjectClass;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="place_name", type="string", length=45, nullable=true)
+     */
+    private $placeName;
 
     /**
      * @var \Application\Entity\NmtWfCase
@@ -225,6 +253,102 @@ class NmtWfToken
     public function getConsumedDate()
     {
         return $this->consumedDate;
+    }
+
+    /**
+     * Set subjectId
+     *
+     * @param integer $subjectId
+     *
+     * @return NmtWfToken
+     */
+    public function setSubjectId($subjectId)
+    {
+        $this->subjectId = $subjectId;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectId
+     *
+     * @return integer
+     */
+    public function getSubjectId()
+    {
+        return $this->subjectId;
+    }
+
+    /**
+     * Set subjectToken
+     *
+     * @param string $subjectToken
+     *
+     * @return NmtWfToken
+     */
+    public function setSubjectToken($subjectToken)
+    {
+        $this->subjectToken = $subjectToken;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectToken
+     *
+     * @return string
+     */
+    public function getSubjectToken()
+    {
+        return $this->subjectToken;
+    }
+
+    /**
+     * Set subjectClass
+     *
+     * @param string $subjectClass
+     *
+     * @return NmtWfToken
+     */
+    public function setSubjectClass($subjectClass)
+    {
+        $this->subjectClass = $subjectClass;
+
+        return $this;
+    }
+
+    /**
+     * Get subjectClass
+     *
+     * @return string
+     */
+    public function getSubjectClass()
+    {
+        return $this->subjectClass;
+    }
+
+    /**
+     * Set placeName
+     *
+     * @param string $placeName
+     *
+     * @return NmtWfToken
+     */
+    public function setPlaceName($placeName)
+    {
+        $this->placeName = $placeName;
+
+        return $this;
+    }
+
+    /**
+     * Get placeName
+     *
+     * @return string
+     */
+    public function getPlaceName()
+    {
+        return $this->placeName;
     }
 
     /**

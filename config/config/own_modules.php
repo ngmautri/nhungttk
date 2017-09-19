@@ -7,7 +7,7 @@ return [
 		'BP',  // Business partner
 		'HR',
 		'PM', // Project manager
-		'Procurement',
+		'Procure', // Procurement
 		'Inventory',
 		'Workflow',
 		'User', // load last		

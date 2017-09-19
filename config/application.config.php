@@ -16,6 +16,8 @@ return array (
 				'HR',
 				'PM', // Project manager
 				'Procurement',
+		        'Finance',
+				'Procure',
 				'Inventory',
 				'Workflow',
 				'DoctrineModule',

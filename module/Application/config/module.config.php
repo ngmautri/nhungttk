@@ -49,6 +49,13 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
+            array(
+                'label' => 'Document Number',
+                'route' => 'application/default',
+                'controller' => 'doc-number',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
             
             array(
                 'label' => 'Unit Of Measures',
@@ -203,7 +210,9 @@ return array(
             'Application\Controller\Search' => 'Application\Controller\SearchControllerFactory',
             
             'Application\Controller\Pdf' => 'Application\Controller\PdfControllerFactory',
-            'Application\Controller\Company' => 'Application\Controller\CompanyControllerFactory'
+            'Application\Controller\Company' => 'Application\Controller\CompanyControllerFactory',
+            'Application\Controller\DocNumber' => 'Application\Controller\DocNumberControllerFactory'
+            
         
         )
     ),

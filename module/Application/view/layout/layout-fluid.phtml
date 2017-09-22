@@ -281,13 +281,13 @@
             <button type="button" class="btn btn-primary" data-toggle="offcanvas" title="Toggle sidebar"><i class="fa fa-chevron-right"></i></button>
           </p>
              <div class="row" style="padding-right:5px">
-             	<h5><strong>APPLICATION MODULE</strong></h5>
-     	      <?= $this->content ?>
+       	      <?= $this->content ?>
         	 </div><!--/row-->
         </div><!--/.col-xs-12.col-sm-9-->
 
          <div class="col-xs-6 col-sm-2 col-sm-pull-10 sidebar-offcanvas" id="sidebar" style="font-size: 9.5pt; ">
-         
+              <h5><strong>SETTING</strong></h5>
+      
           <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
   <div class="form-group">
     	<input class="form-control" size="15" type="text" name = "q">

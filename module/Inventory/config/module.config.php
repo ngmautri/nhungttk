@@ -51,7 +51,23 @@ return array(
                 'controller' => 'item-transaction',
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
-            )
+            ),
+            array(
+                'label' => 'Serial Number',
+                'route' => 'Inventory/default',
+                'controller' => 'serial-number',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
+            
+            array(
+                'label' => 'Batch Number',
+                'route' => 'Inventory/default',
+                'controller' => 'batch-number',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
+            
         )
     ),
     
@@ -196,7 +212,10 @@ return array(
             'Inventory\Controller\ItemSearch' => 'Inventory\Controller\ItemSearchControllerFactory',
             'Inventory\Controller\ItemTransaction' => 'Inventory\Controller\ItemTransactionControllerFactory',
             'Inventory\Controller\ItemAssignment' => 'Inventory\Controller\ItemAssignmentControllerFactory',
-            'Inventory\Controller\ItemCategory' => 'Inventory\Controller\ItemCategoryControllerFactory'
+            'Inventory\Controller\ItemCategory' => 'Inventory\Controller\ItemCategoryControllerFactory',
+            'Inventory\Controller\SerialNumber' => 'Inventory\Controller\SerialNumberControllerFactory',
+            'Inventory\Controller\BatchNumber' => 'Inventory\Controller\BatchNumberControllerFactory',
+            
         
         )
     

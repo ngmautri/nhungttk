@@ -7,7 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItem
  *
- * @ORM\Table(name="nmt_inventory_item", uniqueConstraints={@ORM\UniqueConstraint(name="asset_label_UNIQUE", columns={"asset_label"}), @ORM\UniqueConstraint(name="internal_label_UNIQUE", columns={"item_internal_label"})}, indexes={@ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx1", columns={"standard_uom_id"})})
+ * @ORM\Table(name="nmt_inventory_item", uniqueConstraints={@ORM\UniqueConstraint(name="asset_label_UNIQUE", columns={"asset_label"}), @ORM\UniqueConstraint(name="internal_label_UNIQUE", columns={"item_internal_label"})}, indexes={@ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx1", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_change_by"})})
+ * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
  */
 class NmtInventoryItem
@@ -288,6 +289,41 @@ class NmtInventoryItem
     private $remarks;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="local_availabiliy", type="boolean", nullable=true)
+     */
+    private $localAvailabiliy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
+     */
+    private $checksum;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
+     */
+    private $currentState;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -326,6 +362,16 @@ class NmtInventoryItem
      * })
      */
     private $standardUom;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
 
 
 
@@ -1252,6 +1298,126 @@ class NmtInventoryItem
     }
 
     /**
+     * Set localAvailabiliy
+     *
+     * @param boolean $localAvailabiliy
+     *
+     * @return NmtInventoryItem
+     */
+    public function setLocalAvailabiliy($localAvailabiliy)
+    {
+        $this->localAvailabiliy = $localAvailabiliy;
+
+        return $this;
+    }
+
+    /**
+     * Get localAvailabiliy
+     *
+     * @return boolean
+     */
+    public function getLocalAvailabiliy()
+    {
+        return $this->localAvailabiliy;
+    }
+
+    /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return NmtInventoryItem
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtInventoryItem
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set checksum
+     *
+     * @param string $checksum
+     *
+     * @return NmtInventoryItem
+     */
+    public function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+
+        return $this;
+    }
+
+    /**
+     * Get checksum
+     *
+     * @return string
+     */
+    public function getChecksum()
+    {
+        return $this->checksum;
+    }
+
+    /**
+     * Set currentState
+     *
+     * @param string $currentState
+     *
+     * @return NmtInventoryItem
+     */
+    public function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+
+        return $this;
+    }
+
+    /**
+     * Get currentState
+     *
+     * @return string
+     */
+    public function getCurrentState()
+    {
+        return $this->currentState;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -1345,5 +1511,29 @@ class NmtInventoryItem
     public function getStandardUom()
     {
         return $this->standardUom;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtInventoryItem
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

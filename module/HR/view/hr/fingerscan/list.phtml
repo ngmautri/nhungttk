@@ -2,35 +2,28 @@
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
-		<li><a href="#general">Leave Reason</a></li>
+		<li><a href="#general">Fingerscan</a></li>
 	</ul>
 <div id="general" style="font-size: 9pt">
-<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/hr/leave-reason/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Leave Reason</a>
-<hr>
 
 
 <?php
 
 if ($total_records <= 0) {
 	
-	echo 'No record found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
-	} else {
-		echo $total_records. ' records found!';
-	}
 	
 	?>
 
+<h4>August 2017</h4>
+<hr>
 <table style="font-size: 10pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Employee Code</b></td>
 			<?php 
-			for ($i=1; $i<=31;$i++){
+			for ($i=1; $i<=15;$i++){
 			 echo '<td><b>' . $i . '</b></td>';
 			}
 			?>			
@@ -49,9 +42,9 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	  		<td><?php echo $a['employee_code'];?></td>
+	  		<td><?php echo $a['employee_code'];?><br>Somleth</td>
 			<?php 
-			for ($i=1; $i<=31;$i++){
+			for ($i=1; $i<=14;$i++){
 			    $hh_in = 'hh_in_'.$i;
 			    $hh_out = 'hh_out_'.$i;
 			    
@@ -61,10 +54,61 @@ if ($total_records <= 0) {
 			    $clockin  = new DateTime($a[$hh_in].":".$a[$mm_in].":00");
 			    $clockout  = new DateTime($a[$hh_out].":".$a[$mm_out].":00");
 			    $diff = $clockin->diff($clockout);
-			    echo "<td>" . $a[$hh_in] . ":" . $a[$mm_in]."<br>". $a[$hh_out] . ":" . $a[$mm_out] ."<br>". $diff->format('%h h') ."</td>";
+			    echo "<td style='color:gray'>" . $a[$hh_in] . ":" . $a[$mm_in]."<br>". $a[$hh_out] . ":" . $a[$mm_out] ."<br>". $diff->format('%h h') ."</td>";
 			}
 			?>	
+			<td>7:45<br>-<br>0 h</td>	
 		 <td>
+	  	</td>
+		
+		</tr>
+		
+			 <tr>
+	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	  		<td><?php echo $a['employee_code']+19;?><br>Chone</td>
+			<?php 
+			for ($i=1; $i<=14    ;$i++){
+			    $hh_in = 'hh_in_'.$i;
+			    $hh_out = 'hh_out_'.$i;
+			    
+			    $mm_in = 'mm_in_'.$i;
+			    $mm_out = 'mm_out_'.$i;
+			    
+			    $clockin  = new DateTime($a[$hh_in].":".$a[$mm_in].":00");
+			    $clockout  = new DateTime($a[$hh_out].":".$a[$mm_out].":00");
+			    $diff = $clockin->diff($clockout);
+			    echo "<td style='color:gray'>" . $a[$hh_in] . ":" . $a[$mm_in]."<br>". $a[$hh_out] . ":" . $a[$mm_out] ."<br>". $diff->format('%h h') ."</td>";
+			}
+			
+			?>
+					<td>7:45<br>-<br>0 h</td>	
+		
+		 <td>
+		</td>
+
+		</tr>
+			 <tr>
+	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	  		<td><?php echo $a['employee_code']+29;?><br>Kalia</td>
+			<?php 
+			for ($i=1; $i<=14;$i++){
+			    $hh_in = 'hh_in_'.$i;
+			    $hh_out = 'hh_out_'.$i;
+			    
+			    $mm_in = 'mm_in_'.$i;
+			    $mm_out = 'mm_out_'.$i;
+			    
+			    $clockin  = new DateTime($a[$hh_in].":".$a[$mm_in].":00");
+			    $clockout  = new DateTime($a[$hh_out].":".$a[$mm_out].":00");
+			    $diff = $clockin->diff($clockout);
+			    echo "<td style='color:gray'>" . $a[$hh_in] . ":" . $a[$mm_in]."<br>". $a[$hh_out] . ":" . $a[$mm_out] ."<br>". $diff->format('%h h') ."</td>";
+			}
+			
+			?>
+			
+			<td>00<br>-<br>0 h</td>	
+		 <td>
+		 check
 		</td>
 		
 		</tr>

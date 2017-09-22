@@ -24,6 +24,13 @@ class NmtWfToken
     /**
      * @var string
      *
+     * @ORM\Column(name="place_name", type="string", length=45, nullable=true)
+     */
+    private $placeName;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="token_status", type="string", length=45, nullable=true)
      */
     private $tokenStatus;
@@ -69,13 +76,6 @@ class NmtWfToken
      * @ORM\Column(name="subject_class", type="string", length=100, nullable=true)
      */
     private $subjectClass;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="place_name", type="string", length=45, nullable=true)
-     */
-    private $placeName;
 
     /**
      * @var \Application\Entity\NmtWfCase
@@ -157,6 +157,30 @@ class NmtWfToken
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set placeName
+     *
+     * @param string $placeName
+     *
+     * @return NmtWfToken
+     */
+    public function setPlaceName($placeName)
+    {
+        $this->placeName = $placeName;
+
+        return $this;
+    }
+
+    /**
+     * Get placeName
+     *
+     * @return string
+     */
+    public function getPlaceName()
+    {
+        return $this->placeName;
     }
 
     /**
@@ -325,30 +349,6 @@ class NmtWfToken
     public function getSubjectClass()
     {
         return $this->subjectClass;
-    }
-
-    /**
-     * Set placeName
-     *
-     * @param string $placeName
-     *
-     * @return NmtWfToken
-     */
-    public function setPlaceName($placeName)
-    {
-        $this->placeName = $placeName;
-
-        return $this;
-    }
-
-    /**
-     * Get placeName
-     *
-     * @return string
-     */
-    public function getPlaceName()
-    {
-        return $this->placeName;
     }
 
     /**

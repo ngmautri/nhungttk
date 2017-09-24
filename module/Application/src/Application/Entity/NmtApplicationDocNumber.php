@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationDocNumber
  *
- * @ORM\Table(name="nmt_application_doc_number", indexes={@ORM\Index(name="nmt_application_doc_number_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_application_doc_number", indexes={@ORM\Index(name="nmt_application_doc_number_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_doc_number_FK2_idx", columns={"lastchange_by"})})
  * @ORM\Entity
  */
 class NmtApplicationDocNumber
@@ -31,14 +31,14 @@ class NmtApplicationDocNumber
     /**
      * @var integer
      *
-     * @ORM\Column(name="range_no", type="integer", nullable=false)
+     * @ORM\Column(name="range_no", type="integer", nullable=true)
      */
     private $rangeNo;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="year", type="integer", nullable=false)
+     * @ORM\Column(name="year", type="integer", nullable=true)
      */
     private $year;
 
@@ -169,6 +169,20 @@ class NmtApplicationDocNumber
     private $remarks;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
+     */
+    private $lastchangeOn;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -177,6 +191,16 @@ class NmtApplicationDocNumber
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="lastchange_by", referencedColumnName="id")
+     * })
+     */
+    private $lastchangeBy;
 
 
 
@@ -695,6 +719,54 @@ class NmtApplicationDocNumber
     }
 
     /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtApplicationDocNumber
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set lastchangeOn
+     *
+     * @param \DateTime $lastchangeOn
+     *
+     * @return NmtApplicationDocNumber
+     */
+    public function setLastchangeOn($lastchangeOn)
+    {
+        $this->lastchangeOn = $lastchangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastchangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastchangeOn()
+    {
+        return $this->lastchangeOn;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -716,5 +788,29 @@ class NmtApplicationDocNumber
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set lastchangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastchangeBy
+     *
+     * @return NmtApplicationDocNumber
+     */
+    public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
+    {
+        $this->lastchangeBy = $lastchangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastchangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastchangeBy()
+    {
+        return $this->lastchangeBy;
     }
 }

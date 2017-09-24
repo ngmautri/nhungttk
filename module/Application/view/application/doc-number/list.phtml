@@ -1,9 +1,8 @@
-<?php /**@var \Application\Entity\NmtApplicationDocNumber $a ; */ ?>
 
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
-		<li><a href="#general">Document Nnmber Management:</a></li>
+		<li><a href="#general">Document Number List:</a></li>
 	</ul>
 <div id="general">
 
@@ -115,20 +114,15 @@ else:
 	
 	?>
 
-<table style="font-size: 9.3pt;" class="table table-bordered table-hover">
+<table style="font-size: 9.5pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>Vendor</b></td>
-			<td><b>Contract No</b></td>
-			<td><b>Contract Date</b></td>
-			<td><b>Invoice Number</b></td>
-			<td><b>Invoice Date</b></td>
-			<td><b>SAP No.</b></td>
-			<td><b>Rows</b></td>
-			<td><b>Curr</b></td>
-			<td><b>Gross <br>amount</b></td>
-			<td><b>Current State</b></td>
+			<td><b>range number</b></td>
+			<td><b>Prefix</b></td>
+			<td><b>From</b></td>
+			<td><b>To</b></td>
+			<td><b>Current</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -141,31 +135,23 @@ else:
 	foreach ( $list as $l ) :	
 		$count ++;
 	
+		 		
+        /**@var \Application\Entity\NmtApplicationDocNumber $a ; */
 		
-     /**@var \Application\Entity\FinVendorInvoice $a ; */ 
-		$a = $l[0];
+		$a = $l;
 		?>
 		
 	<tr>
 			<td>
-<a style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
-			
+<?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
 			</td>
+			<td><?php echo $a->getDocNumberName()?></td>
+			<td><?php echo $a->getPrefix()?></td>
+			<td><?php echo $a->getFromNumber()?></td>
+			<td><?php echo $a->getToNumber()?></td>
+			<td><?php echo $a->getCurrentNumber()?></td>
 			<td>
-<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
-			
-			</td>
-			<td><?php echo $a->getContractNo()?></td>
-			<td><span style="color: gray;"><?php if($a->getContractDate()!==null):echo date_format($a->getContractDate(),"d-m-Y");   endif;?></span></td>
-			<td><?php echo $a->getInvoiceNo()?></td>
-			<td><span style="color: gray;"><?php if($a->getInvoiceDate()!==null):echo date_format($a->getInvoiceDate(),"d-m-Y");   endif;?></span></td>
-			<td><?php echo $a->getSapDoc()?></td>
-			<td><?php echo $l['active_row'];?></td>
-			<td><?php echo $a->getCurrency()->getCurrency()?></td>
-			<td><?php if($l['gross_amount']!==null): echo number_format($l['gross_amount'],2); endif;?></td>
-			<td><?php echo $a->getCurrentState()?></td>
-			<td>
-<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+<a href="<?php echo $this->baseUrl ?>/application/doc-number/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
 			</td>
 	<?php endforeach; ?>
  </tbody>

@@ -22,12 +22,9 @@ if (count ( $errors ) > 0) {
 	<div id="general" style="font-size: 9pt">
 
 		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/inventory/serial-number/edit" method="post" enctype="multipart/form-data">
+			action="/inventory/serial-number/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
-				<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
-				<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
-				
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;

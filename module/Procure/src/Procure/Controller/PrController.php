@@ -30,7 +30,7 @@ use Application\Entity\NmtProcurePrRow;
 class PrController extends AbstractActionController
 {
 
-    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
 
     protected $doctrineEM;
 
@@ -207,6 +207,42 @@ class PrController extends AbstractActionController
             $this->doctrineEM->flush();
             
             $this->flashMessenger()->addMessage('Purchase Request "' . $prNumber . '" is created successfully!');
+            
+            // generate document
+            
+            $criteria = array(
+                'isActive' => 1,
+                'subjectClass' => get_class($entity)
+            );
+            
+            /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
+            $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
+            if ($docNumber != null) {
+                $maxLen = strlen($docNumber->getToNumber());
+                $currentLen = 1;
+                $currentDoc = $docNumber->getPrefix() . "-";
+                $current_no = $docNumber->getCurrentNumber();
+                
+                if ($current_no == null) {
+                    $current_no = $docNumber->getFromNumber();
+                } else {
+                    $current_no ++;
+                    $currentLen = strlen($current_no);
+                }
+                
+                $docNumber->setCurrentNumber($current_no);
+                
+                $tmp = "";
+                for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
+                    
+                    $tmp = $tmp . "0";
+                }
+                
+                $currentDoc = $currentDoc . $tmp.$current_no;
+                $entity->setPrAutoNumber($currentDoc);
+            }
+            
+            $this->doctrineEM->flush();
             
             $redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
             return $this->redirect()->toUrl($redirectUrl);
@@ -468,17 +504,16 @@ class PrController extends AbstractActionController
         $pr = null;
         if ($rows[0][0] instanceof NmtProcurePrRow) {
             
-             $pr = $rows[0][0]->getPr();
-         }
+            $pr = $rows[0][0]->getPr();
+        }
         
         if ($pr == null) {
             return $this->redirect()->toRoute('access_denied');
         } else {
             try {
                 
-                     /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $pr_wf_factory */
+                /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $pr_wf_factory */
                 $pr_wf_factory = $wfService->getWorkFlowFactory($pr);
-                
                 
                 /** @var \Symfony\Component\Workflow\Workflow  $wf */
                 $wf = $pr_wf_factory->makePrSendingWorkflow()->createWorkflow();
@@ -486,7 +521,7 @@ class PrController extends AbstractActionController
             } catch (LogicException $e) {
                 $this->flashMessenger()->addMessage($e->getMessage());
                 $url = "/procure/pr/show?token=" . $token . "&entity_id=" . $id;
-                //return $this->redirect()->toUrl($url);
+                // return $this->redirect()->toUrl($url);
             }
         }
         
@@ -528,7 +563,7 @@ class PrController extends AbstractActionController
         }
         
         $url = "/procure/pr/show?token=" . $token . "&entity_id=" . $id;
-        //return $this->redirect()->toUrl($url);
+        // return $this->redirect()->toUrl($url);
     }
 
     /**

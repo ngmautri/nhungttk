@@ -26,6 +26,7 @@ SELECT
     nmt_procure_pr.checksum AS pr_checksum,
 	nmt_procure_pr.token AS pr_token,
 	nmt_procure_pr.pr_number,
+	nmt_procure_pr.pr_auto_number,
     nmt_procure_pr.submitted_on,
     
     ifnull(nmt_inventory_trx_last.vendor_name,nmt_inventory_item_purchasing.vendor_name) as vendor_name,
@@ -140,6 +141,8 @@ SELECT
     nmt_procure_pr.submitted_on,
     nmt_procure_pr.is_active,
     nmt_procure_pr.is_draft,
+	nmt_procure_pr.pr_auto_number,
+ 
     
     nmt_procure_pr.checksum as pr_checksum,
 	nmt_procure_pr.token as pr_token,

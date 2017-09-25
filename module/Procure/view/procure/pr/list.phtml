@@ -32,6 +32,7 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>PR #Auto</b></td>
 			<td><b>PR Number</b></td>
 			<td><b>PR Name	</b></td>
 			<td><b>Created</b></td>
@@ -47,10 +48,13 @@ if ($total_records <= 0) {
 	$count = 0;
 	foreach ( $list as $a ) :
 		$count ++;
+		/** @var \Application\Entity\NmtProcurePr $a ; */
+		
 		?>
 	 <tr>
 	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	  		<td><?php echo $this->escapeHtml($a->getPrNumber());?></td>
+	  		<td><span style="color: gray;"><?php echo $this->escapeHtml($a->getPrAutoNumber());?></span></td>
+			<td><?php echo $this->escapeHtml($a->getPrNumber());?></td>
 			<td><?php echo $this->escapeHtml($a->getPrName());?></td>
 			<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d-m-y"):"";?> </td>
 			<td><?php echo $this->escapeHtml($a->getStatus());?></td>

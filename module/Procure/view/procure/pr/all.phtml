@@ -150,6 +150,7 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>PR Auto</b></td>
 			<td><b>PR</b></td>
 			<td><b>Date</b></td>
 			<td><b>Total<br>Row</b></td>
@@ -170,6 +171,10 @@ if ($total_records <= 0) {
 		?>
 	<tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td>
+<a	style="color: gray;font-size: 9pt;" href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $a['pr_token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['pr_checksum'] ?>"><?php echo $a['pr_auto_number'] ?></a>
+			</td>
+	
 			<td>
 <a	href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $a['pr_token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['pr_checksum'] ?>"><?php echo $a['pr_number'] ?></a>
 	</td>

@@ -124,6 +124,8 @@ class PrController extends AbstractActionController
             $keywords = $request->getPost('keywords');
             $submittedOn = $request->getPost('submittedOn');
             
+            $totalRowManual = (int) $request->getPost('$totalRowManual');
+            
             $remarks = $request->getPost('remarks');
             $isDraft = $request->getPost('isDraft');
             $isActive = $request->getPost('isActive');
@@ -158,6 +160,7 @@ class PrController extends AbstractActionController
             $entity->setIsActive($isActive);
             $entity->setIsDraft($isDraft);
             $entity->setStatus($status);
+            $entity->setTotalRowManual($totalRowManual);
             
             $validator = new Date();
             
@@ -679,6 +682,9 @@ class PrController extends AbstractActionController
                 $department_id = $request->getPost('department_id');
                 $submittedOn = $request->getPost('submittedOn');
                 
+                $totalRowManual = (int) $request->getPost('totalRowManual');
+                
+                
                 if ($isActive != 1) {
                     $isActive = 0;
                 }
@@ -687,8 +693,7 @@ class PrController extends AbstractActionController
                     $isDraft = 0;
                 }
                 
-                $prAutoNumber = 'later';
-                
+                 
                 if ($prNumber == null) {
                     $errors[] = 'Please enter PR Number!';
                 }
@@ -697,9 +702,8 @@ class PrController extends AbstractActionController
                     $errors[] = 'Please enter PR Name!';
                 }
                 
-                // $entity = new NmtProcurePr ();
+                /**@var \Application\Entity\NmtProcurePr $entity ;*/
                 
-                $entity->setPrAutoNumber($prAutoNumber);
                 $entity->setPrNumber($prNumber);
                 $entity->setPrName($prName);
                 $entity->setKeywords($keywords);
@@ -707,7 +711,7 @@ class PrController extends AbstractActionController
                 $entity->setIsActive($isActive);
                 $entity->setIsDraft($isDraft);
                 $entity->setStatus($status);
-                
+                $entity->setTotalRowManual($totalRowManual);
                 if ($department_id > 0) {
                     $department = $this->doctrineEM->find('Application\Entity\NmtApplicationDepartment', $department_id);
                     $entity->setDepartment($department);

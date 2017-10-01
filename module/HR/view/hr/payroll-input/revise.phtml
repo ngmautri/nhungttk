@@ -1,0 +1,496 @@
+<?php /**@var \Application\Entity\NmtHrPayrollInput $entity ;*/?>
+<?php /**@var \Application\Entity\NmtHrPayrollInput $lastRevision ;*/?>
+
+<?php /**@var \Application\Entity\NmtHrEmployee $target ;*/?>
+<?php /**@var \Application\Entity\NmtFinPostingPeriod $period ;*/?>
+
+
+
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+    
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+
+
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;New Revision</a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt">
+
+		<h5 style="color: gray;"><?php if($target!==null): echo "Employee: ". $target->getEmployeeName() . " - ". $target->getEmployeeCode(); endif;?><?php if($period!==null): echo " // Period: " .$period->getPeriodName(); endif;?></h5>
+		<form id="Create_Inv_Form" class="form-horizontal"
+			action="/hr/payroll-input/revise" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				name="target_id"
+				value="<?php if($target!==null): echo $target->getId(); endif;?>" />
+			<input type="hidden" name="token"
+				value="<?php if($target!==null): echo $target->getToken(); endif;?>" />
+			<input type="hidden" name="period_id"
+				value="<?php if($period!==null): echo $period->getId(); endif;?>" />
+			<input type="hidden" name="period_token"
+				value="<?php if($period!==null): echo $period->getToken(); endif;?>" />
+
+			<fieldset>
+				<legend style="font-size: 9.5pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#invoice_header" class="" data-toggle="collapse">ATTENDANCE</a>
+				</legend>
+				<div id="invoice_header" class="collapse in">
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 "></label>
+						<div class="col-sm-1">OLD</div>
+						<div class="col-sm-1">NEW</div>
+						<div class="col-sm-1">CHANGE</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">Present day:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayOld" placeholder=""
+								name="presentDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getPresentDay();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text" id="presentDay"
+								placeholder="" name="presentDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getPresentDay();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getPresentDay();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">Out of Office day:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getOutOfOfficeDay();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getOutOfOfficeDay();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getOutOfOfficeDay();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">Annual Leave:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getAnnualLeave();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getAnnualLeave();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getAnnualLeave();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">Sick Leave:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getSickLeave();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getSickLeave();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getSickLeave();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">Personal Paid Leave:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getPersonalPaidLeave();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getPersonalPaidLeave();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getPersonalPaidLeave();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">Approved Leave:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getApprovedLeave();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getApprovedLeave();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getApprovedLeave();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">Unapproved Leave:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getUnapprovedLeave();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getUnapprovedLeave();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getUnapprovedLeave();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">Maternity Leave:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getMaternityLeave();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getMaternityLeave();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getMaternityLeave();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<legend style="font-size: 9.5pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#ot" class="" data-toggle="collapse">OVERTIME:</a>
+				</legend>
+				<div id="ot" class="collapse">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">OverTime1:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getOvertime1();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getOvertime1();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getOvertime1();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">OverTime2:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getOvertime2();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getOvertime2();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getOvertime2();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">OverTime3:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getOvertime3();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getOvertime3();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getOvertime3();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">OverTime4:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getOvertime4();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getOvertime4();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getOvertime4();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend style="font-size: 9.5pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#other" class="" data-toggle="collapse">OTHER:</a>
+				</legend>
+				<div id="other" class="collapse">
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2 ">Warning Letter:</label>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="outOfOfficeDayOld" placeholder=""
+								name="outOfOfficeDayOld"
+								value="<?php if (!$lastRevision == null): echo $lastRevision->getOvertime2();endif;?>">
+						</div>
+						<div class="col-sm-1">
+							<input class="form-control input-sm" type="text"
+								id="outOfOfficeDay" placeholder="" name="outOfOfficeDay"
+								value="<?php
+        
+if (! $entity == null) :
+            echo $entity->getOvertime2();
+        else :
+            if (! $lastRevision == null) :
+                echo $lastRevision->getOvertime2();endif;
+            
+        endif;
+        ?>">
+						</div>
+						<div class="col-sm-1">
+							<input disabled="disabled" class="form-control input-sm"
+								type="text" id="presentDayC" placeholder="" name="presentDayC"
+								value="">
+						</div>
+					</div>
+					<hr>
+				</div>
+			</fieldset>
+
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Remarks:</label>
+				<div class="col-sm-8">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="remarks"
+						value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+				</div>
+			</div>
+
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<button onclick="submitForm('Create_Inv_Form');"
+						class="btn btn-default btn-sm">
+						<i class="glyphicon glyphicon-floppy-disk"> </i> Save
+					</button>
+					<a tabindex="11" class="btn btn-default btn-sm"
+						href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
+							class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+				</div>
+		</div>
+		</form>
+	</div>
+</div>
+
+
+
+<script>
+
+
+$('#presentDay').bind('change', function() {
+$('#presentDayC').val($('#presentDay').val()-$('#presentDayOld').val());
+
+});
+
+</script>
+

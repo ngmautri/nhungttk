@@ -323,6 +323,20 @@ class NmtInventoryItem
     private $currentState;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_number", type="string", length=45, nullable=true)
+     */
+    private $docNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="monitored_by", type="string", nullable=true)
+     */
+    private $monitoredBy;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

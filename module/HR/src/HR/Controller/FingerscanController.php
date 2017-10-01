@@ -150,6 +150,35 @@ class FingerscanController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function show1Action()
+    {
+        $request = $this->getRequest();
+       
+        // accepted only ajax request
+       /*  if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        ;
+         */
+        $this->layout("layout/user/ajax");
+        
+        //$entity_id = (int) $this->params()->fromQuery('entity_id');
+        //$token = $this->params()->fromQuery('token');
+        $criteria = array(
+            'employeeCode' => 2211
+        );
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrFingerscan')->findBy($criteria);
+        
+             return new ViewModel(array(
+                'list' => $list
+            ));
+    }
 
     /**
      *
@@ -389,6 +418,9 @@ class FingerscanController extends AbstractActionController
         }
     }
 
+    
+    
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel

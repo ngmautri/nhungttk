@@ -99,6 +99,9 @@ return array (
 				        'HR\Controller\EmployeeOT' => 'HR\Controller\EmployeeOTControllerFactory',
 				        'HR\Controller\leaveReason' => 'HR\Controller\LeaveReasonControllerFactory',
 				        'HR\Controller\Fingerscan' => 'HR\Controller\FingerscanControllerFactory',
+	
+				        'HR\Controller\Payroll' => 'HR\Controller\PayrollControllerFactory',
+				        'HR\Controller\PayrollInput' => 'HR\Controller\PayrollInputControllerFactory',
 				    
 				)
 		),

@@ -120,6 +120,13 @@ class NmtProcurePr
     private $currentState;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="total_row_manual", type="integer", nullable=true)
+     */
+    private $totalRowManual;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -495,6 +502,30 @@ class NmtProcurePr
     public function getCurrentState()
     {
         return $this->currentState;
+    }
+
+    /**
+     * Set totalRowManual
+     *
+     * @param integer $totalRowManual
+     *
+     * @return NmtProcurePr
+     */
+    public function setTotalRowManual($totalRowManual)
+    {
+        $this->totalRowManual = $totalRowManual;
+
+        return $this;
+    }
+
+    /**
+     * Get totalRowManual
+     *
+     * @return integer
+     */
+    public function getTotalRowManual()
+    {
+        return $this->totalRowManual;
     }
 
     /**

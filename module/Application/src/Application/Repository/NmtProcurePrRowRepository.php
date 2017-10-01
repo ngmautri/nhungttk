@@ -142,6 +142,7 @@ SELECT
     nmt_procure_pr.is_active,
     nmt_procure_pr.is_draft,
 	nmt_procure_pr.pr_auto_number,
+nmt_procure_pr.total_row_manual,
  
     
     nmt_procure_pr.checksum as pr_checksum,

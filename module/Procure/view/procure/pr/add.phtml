@@ -1,3 +1,5 @@
+<?php /**@var \Application\Entity\NmtProcurePr $entity ;*/?>
+
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
@@ -17,7 +19,7 @@ if (count ( $errors ) > 0) {
   <li ><a href="#general">New Purchase Request</a></li>
    </ul>
 
-<div id="general"> 
+<div id="general" style="font-size: 9pt"> 
 
 <form id="Create_PR_Form" class="form-horizontal" action="/procure/pr/add" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
@@ -59,6 +61,15 @@ if (count ( $errors ) > 0) {
 value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo date_format($entity->getSubmittedOn(),"Y-m-d"); endif; endif;?>" placeholder =" please select"/>
 		</div>
 	</div>
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" >Total Rows:</label>
+		<div class="col-sm-3">
+			<input class="form-control input-sm" type="text"  placeholder=""
+				id = "totalRowManual" name="totalRowManual" value="<?php echo (!$entity == null)? $entity->getTotalRowManual():"";?>">
+		</div>
+		
+	</div>
+	
 	
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Department</label>

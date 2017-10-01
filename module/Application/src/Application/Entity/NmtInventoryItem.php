@@ -324,6 +324,20 @@ class NmtInventoryItem
     private $currentState;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_number", type="string", length=45, nullable=true)
+     */
+    private $docNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="monitored_by", type="string", nullable=true)
+     */
+    private $monitoredBy;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1415,6 +1429,54 @@ class NmtInventoryItem
     public function getCurrentState()
     {
         return $this->currentState;
+    }
+
+    /**
+     * Set docNumber
+     *
+     * @param string $docNumber
+     *
+     * @return NmtInventoryItem
+     */
+    public function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get docNumber
+     *
+     * @return string
+     */
+    public function getDocNumber()
+    {
+        return $this->docNumber;
+    }
+
+    /**
+     * Set monitoredBy
+     *
+     * @param string $monitoredBy
+     *
+     * @return NmtInventoryItem
+     */
+    public function setMonitoredBy($monitoredBy)
+    {
+        $this->monitoredBy = $monitoredBy;
+
+        return $this;
+    }
+
+    /**
+     * Get monitoredBy
+     *
+     * @return string
+     */
+    public function getMonitoredBy()
+    {
+        return $this->monitoredBy;
     }
 
     /**

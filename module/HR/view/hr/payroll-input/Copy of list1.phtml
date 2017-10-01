@@ -1,0 +1,201 @@
+   <?php      /**@var \Application\Entity\NmtFinPostingPeriod $period ; */?>
+   	
+	
+	<ul class="nav nav-tabs">
+  		<li class="active"><a data-toggle="tab" href="#home1">INPUT</a></li>
+  		<li><a data-toggle="tab" href="#salary_history1">PARYOLL</a></li>
+	</ul>
+
+    <div class="tab-content">
+    
+      <div id="home1" class="tab-pane fade in active">
+      
+      <form class="form-horizontal" action="" method="get" enctype="multipart/form-data">
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag">Salary Period:</label>
+					<div class="col-sm-2">
+					<select name="periodId" class="form-control input-sm">
+								<option value="">Select</option>
+   	    							<?php
+   	    							if($periods!== null):
+   	    							     foreach ( $periods as $p ) :   	    							     
+   	    							     /**@var \Application\Entity\NmtFinPostingPeriod $p ; */
+   	    							
+   	    							if($period!==null):
+   	    							 if($period->getId() == $p->getId() ):
+   	    							     echo '<option selected value="' . $p->getId() . '">' . $p->getPeriodName() . '</option>';
+   	    							 else:
+   	    							     echo '<option value="' . $p->getId() . '">' . $p->getPeriodName() . '</option>';
+   	    							 endif;
+   	    							else:
+   	    						  	   echo '<option value="' . $p->getId() . '">' . $p->getPeriodName() . '</option>';
+   	    							endif;
+   	    							
+       	    							endforeach;
+   	    							endif;
+									?>
+   					</select>
+   				</div>
+			</div>
+		
+		
+			
+			<div class="form-group margin-bottom">
+				<div class="col-sm-offset-2 col-sm-10">
+     <button type="submit" class="btn btn-default" 
+     onclick="searchEntity('/hr/payroll-input/list1','<?php echo $context;?>');"><small><i class="glyphicon glyphicon-search"> </i></small> Search</button>
+				</div>
+			</div>
+
+		</form>
+      
+  <hr>    
+      
+  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/finance/v-invoice/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;Create New Revision</a>
+<hr>
+      
+    <?php if ($total_records > 0):
+        echo $total_records;    
+    ?>   	
+   <h5 style="color:gray">Consolidated Input: Period <?php if($period!==null): echo $period->getPeriodName(); endif;?></h5>
+  <table style="font-size: 9pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Salary<br>Period</b></td>
+			<td><b>Revision<br>Number</b></td>
+			<td><b>Current<br>State</b></td>
+			<td><b>Present <br>Days</b></td>
+			<td><b>Out of<br>Office</b></td>
+			<td><b>Sick<br>Leave</b></td>
+			<td><b>Annual <br>Leave</b></td>
+			<td><b>Personal <br> Paid Leave</b></td>
+			<td><b>Maternity <br> Leave</b></td>
+			<td><b>Unappoved <br> Leave</b></td>
+			<td><b>Approved <br> Leave</b></td>
+			<td><b>OT1</b></td>
+			<td><b>OT12</b></td>
+			<td><b>OT3</b></td>
+			<td><b>Doc.</b></td>
+			<td><b>action</b></td>
+		</tr>
+	</thead>
+	<tbody>
+    	
+    <?php
+        $count = 0;
+    	foreach ( $list as $a ) :
+    		$count ++;
+    		/**@var \Application\Entity\NmtHrPayrollInput $a*/
+    ?>  
+     <tr>
+			<td><?php echo $count; ?></td>
+			<td><?php echo $a->getPresentDay(); ?></td>
+			<td><b>Revision<br>Number</b></td>
+			<td><b>Current<br>State</b></td>
+			<td><b>Present <br>Days</b></td>
+			<td><b>Out of<br>Office</b></td>
+			<td><b>Sick<br>Leave</b></td>
+			<td><b>Annual <br>Leave</b></td>
+			<td><b>Personal <br> Paid Leave</b></td>
+			<td><b>Maternity <br> Leave</b></td>
+			<td><b>Unappoved <br> Leave</b></td>
+			<td><b>Approved <br> Leave</b></td>
+			<td><b>OT1</b></td>
+			<td><b>OT12</b></td>
+			<td><b>OT3</b></td>
+			<td><b>Doc.</b></td>
+			<td><b>action</b></td>
+		</tr>
+	       
+        
+        
+    <? 
+        endforeach;
+    endif; 
+    ?>
+  
+        
+        
+        
+        <table style="font-size: 9pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Salary<br>Period</b></td>
+			<td><b>Revision<br>Number</b></td>
+			<td><b>Current<br>State</b></td>
+			<td><b>Present <br>Days</b></td>
+			<td><b>Out of<br>Office</b></td>
+			<td><b>Sick<br>Leave</b></td>
+			<td><b>Annual <br>Leave</b></td>
+			<td><b>Personal <br> Paid Leave</b></td>
+			<td><b>Maternity <br> Leave</b></td>
+			<td><b>Unappoved <br> Leave</b></td>
+			<td><b>Approved <br> Leave</b></td>
+			<td><b>OT1</b></td>
+			<td><b>OT12</b></td>
+			<td><b>OT3</b></td>
+			<td><b>Doc.</b></td>
+			<td><b>action</b></td>
+		</tr>
+	</thead>
+	<tbody>
+	<tr>
+			<td>1</td>
+			<td>07-2017</td>
+			<td>0</td>
+			<td>ARCHIVED</td>
+
+			<td>
+
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="showJqueryDialog('Present Days (Finger Scan): 2211 Period: 07-2017','680',$(window).height()-100, '/hr/finger-scan/show1','j_loaded_data', true);">24</a>
+
+</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>see document</td>
+			<td><a style="color:navy" href="#"><small><span class="glyphicon glyphicon-print"></span></small>&nbsp;See Payroll</a></td>
+			
+		</tr>
+		
+		<tr>
+			<td>1</td>
+			<td>07-2017</td>
+			<td>1</td>
+			<td>ENABLED</td>
+			<td>23</td>
+			<td>1</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>2</td>
+			<td>0</td>
+			<td>0</td>
+			<td>0</td>
+			<td>see document</td>
+			<td><a style="color:navy" href="#"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp;&nbsp;caculate</a></td>
+			
+		</tr>
+		
+	</tbody>
+</table>
+      </div>
+      
+      <div id="salary_history1" class="tab-pane fade">
+    	<h1>COMMING SOON</h1>
+      </div>
+      
+    </div>

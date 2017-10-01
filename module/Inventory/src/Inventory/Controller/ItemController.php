@@ -152,6 +152,8 @@ class ItemController extends AbstractActionController
             $keywords = $request->getPost('keywords');
             
             $itemType = $request->getPost('itemType');
+            $monitoredBy = $request->getPost('monitoredBy');
+            
             
             $item_category_id = $request->getPost('item_category_id');
             $department_id = $request->getPost('department_id');
@@ -234,6 +236,7 @@ class ItemController extends AbstractActionController
             // $entity->setItemInternalLabel ( $itemInternalLabel );
             
             $entity->setItemType($itemType);
+            $entity->setMonitoredBy($monitoredBy);
             
             $entity->setManufacturer($manufacturer);
             $entity->setManufacturerCatalog($manufacturerCatalog);
@@ -415,6 +418,8 @@ class ItemController extends AbstractActionController
                 $keywords = $request->getPost('keywords');
                 
                 $itemType = $request->getPost('itemType');
+                $monitoredBy = $request->getPost('monitoredBy');
+                
                 
                 $item_category_id = $request->getPost('item_category_id');
                 $department_id = $request->getPost('department_id');
@@ -498,6 +503,8 @@ class ItemController extends AbstractActionController
                 // $entity->setItemInternalLabel ( $itemInternalLabel );
                 
                 $entity->setItemType($itemType);
+                $entity->setMonitoredBy($monitoredBy);
+                
                 
                 $entity->setManufacturer($manufacturer);
                 $entity->setManufacturerCatalog($manufacturerCatalog);

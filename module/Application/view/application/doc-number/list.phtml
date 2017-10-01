@@ -123,6 +123,8 @@ else:
 			<td><b>From</b></td>
 			<td><b>To</b></td>
 			<td><b>Current</b></td>
+			<td><b>Subject</b></td>
+	
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -150,6 +152,8 @@ else:
 			<td><?php echo $a->getFromNumber()?></td>
 			<td><?php echo $a->getToNumber()?></td>
 			<td><?php echo $a->getCurrentNumber()?></td>
+			<td><?php echo $a->getSubjectClass()?></td>
+			
 			<td>
 <a href="<?php echo $this->baseUrl ?>/application/doc-number/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
 			</td>

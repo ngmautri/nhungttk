@@ -7,11 +7,6 @@
 	<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/workflow/wf"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;&nbsp;WorkflowManagement</a></li>
 	<li class="divider"></li>
-	<li><a href="<?php echo $this->baseUrl ?>/inventory/article/admin-add"><i
-			class="icon-plus"> </i> Add New Item</a></li>
-	<li><a href="<?php echo $this->baseUrl ?>/inventory/article/all"><i
-			class="icon-list-alt"></i> Show all articles</a></li>
-	<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/user/admin/asset-index">Update
 			Asset Index</a></li>
 	<li><a href="<?php echo $this->baseUrl ?>/user/admin/sparepart-index">Update

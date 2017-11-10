@@ -2,6 +2,9 @@
 namespace Application\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  *
@@ -10,9 +13,9 @@ use Doctrine\ORM\EntityRepository;
  */
 class NmtInventoryItemRepository extends EntityRepository
 {
-    /** @var \Application\Entity\NmtInventoryItem $e*/    
+
+    /** @var \Application\Entity\NmtInventoryItem $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
-    
     private $sql = "SELECT * FROM nmt_inventory_item ";
 
     private $sql_cat_album = "
@@ -199,9 +202,9 @@ WHERE 1
      */
     public function getTotalItem($item_type = null, $is_active = null, $is_fixed_asset = null)
     {
-        $sql = "SELECT count(id) as total_row FROM nmt_inventory_item Where 1";
+        $sql = "SELECT count(*) as total_row FROM nmt_inventory_item Where 1 ";
         
-        if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
+       if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
             $sql = $sql . " AND nmt_inventory_item.item_type =" . $item_type;
         }
         
@@ -215,13 +218,26 @@ WHERE 1
             $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 1";
         } elseif ($is_fixed_asset == - 1) {
             $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 0";
-        }
+        } 
         
-        $stmt = $this->_em->getConnection()->prepare($sql);
-        $stmt->execute();
-        return (int) $stmt->fetchAll()[0]['total_row'];
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+            $rsm->addScalarResult("total_row", "total_row");
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getSingleResult();
+            return (int) $result['total_row'];
+        } catch (NoResultException $e) {
+            return null;
+        }
     }
 
+    /**
+     *
+     * @param unknown $cat_id
+     * @return array
+     */
     public function getAlbum($cat_id)
     {
         $sql = $this->sql_cat_album;
@@ -235,7 +251,7 @@ WHERE 1
     }
 
     /**
-     * 
+     *
      * @param unknown $item_type
      * @param unknown $is_active
      * @param unknown $is_fixed_asset
@@ -269,20 +285,20 @@ WHERE 1
             $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
         } elseif ($sort_by == "createdOn") {
             $sql = $sql . " ORDER BY nmt_inventory_item.created_on " . $sort;
-        }elseif ($sort_by == "vendorName") {
+        } elseif ($sort_by == "vendorName") {
             $sql = $sql . " ORDER BY IFNULL(nmt_bp_vendor.vendor_name,nmt_bp_vendor_1.vendor_name) " . $sort;
         }
         
-        if($limit>0){
-            $sql = $sql. " LIMIT " . $limit;
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
         }
         
-        if($offset>0){
-            $sql = $sql. " OFFSET " . $offset;
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
         }
-        $sql = $sql.";";
+        $sql = $sql . ";";
         
-       // echo $sql;
+        // echo $sql;
         
         $stmt = $this->_em->getConnection()->prepare($sql);
         $stmt->execute();

@@ -21,6 +21,7 @@ use Application\Entity\NmtInventoryItemCategoryMember;
 use Application\Entity\NmtInventoryItemDepartment;
 use Inventory\Service\ItemSearchService;
 use Zend\Math\Rand;
+use Exception;
 
 /*
  * Control Panel Controller
@@ -731,21 +732,29 @@ class ItemController extends AbstractActionController
         }
         ;
         
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
+        
+        //$list = $res->getVendorInvoiceList($is_active,$currentState,null,$sort_by,$sort,0,0);
+        //$total_records = count($list);
+        
         // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria );
-        $total_records = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getTotalItem($item_type, $is_active, $is_fixed_asset);
+        //$total_records = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getTotalItem($item_type, $is_active, $is_fixed_asset);
         // echo($total_records);
         
         // $total_records =count($list);
         
         $paginator = null;
+         $list =null;
         
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
             // $list = array_slice($list, $paginator->minInPage - 1, ($paginator->maxInPage - $paginator->minInPage) + 1);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         } else {
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
+            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
         }
         
         // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();

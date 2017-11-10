@@ -314,6 +314,8 @@ class PrController extends AbstractActionController
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $balance = $this->params()->fromQuery('balance');
+        $pr_year = $this->params()->fromQuery('pr_year');
+        
         $is_active = (int) $this->params()->fromQuery('is_active');
         
         $status = $this->getEvent()
@@ -360,6 +362,11 @@ class PrController extends AbstractActionController
             
         }
         
+        if ($pr_year == null) :
+          $pr_year = date('Y');
+        endif;
+        
+        
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
@@ -374,15 +381,17 @@ class PrController extends AbstractActionController
         }
         ;
         
-        // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findBy ( $criteria, $sort_criteria );
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getPrList($row_number, $is_active, $balance, $sort_by, $sort, 0, 0);
+        /** @var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        
+        $list = $res->getPrList($row_number, $pr_year, $is_active, $balance, $sort_by, $sort, 0, 0);
         
         $total_records = count($list);
         $paginator = null;
         
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getPrList($row_number, $is_active, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getPrList($row_number, $pr_year, $is_active, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
         
         return new ViewModel(array(
@@ -395,6 +404,7 @@ class PrController extends AbstractActionController
             'balance' => $balance,
             'is_active' => $is_active,
             'status' => $status,
+            'pr_year' => $pr_year,
             'row_number' => $row_number
         ));
     }

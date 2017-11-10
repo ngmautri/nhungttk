@@ -396,9 +396,14 @@ WHERE 1";
      * @param number $offset
      * @return array
      */
-    public function getPrList($row_number = 1, $is_active = null, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getPrList($row_number = 1, $pr_year=0, $is_active = null, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql1;
+        
+        if ($pr_year > 0) {
+            $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
+        }
+        
         
         if ($row_number == 1) {
             $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0) > 0";

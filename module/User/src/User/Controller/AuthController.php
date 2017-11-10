@@ -71,7 +71,7 @@ class AuthController extends AbstractActionController {
 				$session = new Container('MLA_USER');
 				$session->offsetSet('user', $user);
 				
-				return $this->redirect ()->toUrl ( '/inventory/item/list' );
+				return $this->redirect ()->toUrl ( '/inventory/item-category/list' );
 				
 			} else {
 				

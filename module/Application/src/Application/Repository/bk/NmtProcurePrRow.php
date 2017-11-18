@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePrRow
  *
- * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"}), @ORM\Index(name="nmt_procure_pr_row_FK5_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"}), @ORM\Index(name="nmt_procure_pr_row_FK5_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
  */
@@ -21,140 +21,147 @@ class NmtProcurePrRow
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="row_number", type="integer", nullable=true)
      */
     private $rowNumber;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
      */
     private $checksum;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="priority", type="string", length=45, nullable=true)
      */
     private $priority;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="row_name", type="string", length=60, nullable=true)
      */
     private $rowName;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="row_description", type="string", length=255, nullable=true)
      */
     private $rowDescription;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="row_code", type="string", length=100, nullable=true)
      */
     private $rowCode;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="row_unit", type="string", length=45, nullable=true)
      */
     private $rowUnit;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=true)
      */
     private $conversionFactor;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="conversion_text", type="string", length=100, nullable=true)
      */
     private $conversionText;
-
+    
     /**
      * @var float
      *
      * @ORM\Column(name="quantity", type="float", precision=10, scale=0, nullable=false)
      */
     private $quantity;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="edt", type="datetime", nullable=true)
      */
     private $edt;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
      */
     private $isDraft;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
      */
     private $currentState;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="fa_remarks", type="string", length=100, nullable=true)
      */
     private $faRemarks;
-
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
+     */
+    private $rowIdentifer;
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -164,7 +171,7 @@ class NmtProcurePrRow
      * })
      */
     private $createdBy;
-
+    
     /**
      * @var \Application\Entity\NmtProcurePr
      *
@@ -174,7 +181,7 @@ class NmtProcurePrRow
      * })
      */
     private $pr;
-
+    
     /**
      * @var \Application\Entity\NmtInventoryItem
      *
@@ -184,7 +191,7 @@ class NmtProcurePrRow
      * })
      */
     private $item;
-
+    
     /**
      * @var \Application\Entity\NmtPmProject
      *
@@ -194,7 +201,7 @@ class NmtProcurePrRow
      * })
      */
     private $project;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -204,9 +211,9 @@ class NmtProcurePrRow
      * })
      */
     private $lastChangeBy;
-
-
-
+    
+    
+    
     /**
      * Get id
      *
@@ -216,7 +223,7 @@ class NmtProcurePrRow
     {
         return $this->id;
     }
-
+    
     /**
      * Set rowNumber
      *
@@ -227,10 +234,10 @@ class NmtProcurePrRow
     public function setRowNumber($rowNumber)
     {
         $this->rowNumber = $rowNumber;
-
+        
         return $this;
     }
-
+    
     /**
      * Get rowNumber
      *
@@ -240,7 +247,7 @@ class NmtProcurePrRow
     {
         return $this->rowNumber;
     }
-
+    
     /**
      * Set token
      *
@@ -251,10 +258,10 @@ class NmtProcurePrRow
     public function setToken($token)
     {
         $this->token = $token;
-
+        
         return $this;
     }
-
+    
     /**
      * Get token
      *
@@ -264,7 +271,7 @@ class NmtProcurePrRow
     {
         return $this->token;
     }
-
+    
     /**
      * Set checksum
      *
@@ -275,10 +282,10 @@ class NmtProcurePrRow
     public function setChecksum($checksum)
     {
         $this->checksum = $checksum;
-
+        
         return $this;
     }
-
+    
     /**
      * Get checksum
      *
@@ -288,7 +295,7 @@ class NmtProcurePrRow
     {
         return $this->checksum;
     }
-
+    
     /**
      * Set priority
      *
@@ -299,10 +306,10 @@ class NmtProcurePrRow
     public function setPriority($priority)
     {
         $this->priority = $priority;
-
+        
         return $this;
     }
-
+    
     /**
      * Get priority
      *
@@ -312,7 +319,7 @@ class NmtProcurePrRow
     {
         return $this->priority;
     }
-
+    
     /**
      * Set rowName
      *
@@ -323,10 +330,10 @@ class NmtProcurePrRow
     public function setRowName($rowName)
     {
         $this->rowName = $rowName;
-
+        
         return $this;
     }
-
+    
     /**
      * Get rowName
      *
@@ -336,7 +343,7 @@ class NmtProcurePrRow
     {
         return $this->rowName;
     }
-
+    
     /**
      * Set rowDescription
      *
@@ -347,10 +354,10 @@ class NmtProcurePrRow
     public function setRowDescription($rowDescription)
     {
         $this->rowDescription = $rowDescription;
-
+        
         return $this;
     }
-
+    
     /**
      * Get rowDescription
      *
@@ -360,7 +367,7 @@ class NmtProcurePrRow
     {
         return $this->rowDescription;
     }
-
+    
     /**
      * Set rowCode
      *
@@ -371,10 +378,10 @@ class NmtProcurePrRow
     public function setRowCode($rowCode)
     {
         $this->rowCode = $rowCode;
-
+        
         return $this;
     }
-
+    
     /**
      * Get rowCode
      *
@@ -384,7 +391,7 @@ class NmtProcurePrRow
     {
         return $this->rowCode;
     }
-
+    
     /**
      * Set rowUnit
      *
@@ -395,10 +402,10 @@ class NmtProcurePrRow
     public function setRowUnit($rowUnit)
     {
         $this->rowUnit = $rowUnit;
-
+        
         return $this;
     }
-
+    
     /**
      * Get rowUnit
      *
@@ -408,7 +415,7 @@ class NmtProcurePrRow
     {
         return $this->rowUnit;
     }
-
+    
     /**
      * Set conversionFactor
      *
@@ -419,10 +426,10 @@ class NmtProcurePrRow
     public function setConversionFactor($conversionFactor)
     {
         $this->conversionFactor = $conversionFactor;
-
+        
         return $this;
     }
-
+    
     /**
      * Get conversionFactor
      *
@@ -432,7 +439,7 @@ class NmtProcurePrRow
     {
         return $this->conversionFactor;
     }
-
+    
     /**
      * Set conversionText
      *
@@ -443,10 +450,10 @@ class NmtProcurePrRow
     public function setConversionText($conversionText)
     {
         $this->conversionText = $conversionText;
-
+        
         return $this;
     }
-
+    
     /**
      * Get conversionText
      *
@@ -456,7 +463,7 @@ class NmtProcurePrRow
     {
         return $this->conversionText;
     }
-
+    
     /**
      * Set quantity
      *
@@ -467,10 +474,10 @@ class NmtProcurePrRow
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
-
+        
         return $this;
     }
-
+    
     /**
      * Get quantity
      *
@@ -480,7 +487,7 @@ class NmtProcurePrRow
     {
         return $this->quantity;
     }
-
+    
     /**
      * Set edt
      *
@@ -491,10 +498,10 @@ class NmtProcurePrRow
     public function setEdt($edt)
     {
         $this->edt = $edt;
-
+        
         return $this;
     }
-
+    
     /**
      * Get edt
      *
@@ -504,7 +511,7 @@ class NmtProcurePrRow
     {
         return $this->edt;
     }
-
+    
     /**
      * Set isDraft
      *
@@ -515,10 +522,10 @@ class NmtProcurePrRow
     public function setIsDraft($isDraft)
     {
         $this->isDraft = $isDraft;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isDraft
      *
@@ -528,7 +535,7 @@ class NmtProcurePrRow
     {
         return $this->isDraft;
     }
-
+    
     /**
      * Set isActive
      *
@@ -539,10 +546,10 @@ class NmtProcurePrRow
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isActive
      *
@@ -552,7 +559,7 @@ class NmtProcurePrRow
     {
         return $this->isActive;
     }
-
+    
     /**
      * Set createdOn
      *
@@ -563,10 +570,10 @@ class NmtProcurePrRow
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdOn
      *
@@ -576,7 +583,7 @@ class NmtProcurePrRow
     {
         return $this->createdOn;
     }
-
+    
     /**
      * Set remarks
      *
@@ -587,10 +594,10 @@ class NmtProcurePrRow
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-
+        
         return $this;
     }
-
+    
     /**
      * Get remarks
      *
@@ -600,7 +607,7 @@ class NmtProcurePrRow
     {
         return $this->remarks;
     }
-
+    
     /**
      * Set lastChangeOn
      *
@@ -611,10 +618,10 @@ class NmtProcurePrRow
     public function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastChangeOn
      *
@@ -624,7 +631,7 @@ class NmtProcurePrRow
     {
         return $this->lastChangeOn;
     }
-
+    
     /**
      * Set currentState
      *
@@ -635,10 +642,10 @@ class NmtProcurePrRow
     public function setCurrentState($currentState)
     {
         $this->currentState = $currentState;
-
+        
         return $this;
     }
-
+    
     /**
      * Get currentState
      *
@@ -648,7 +655,7 @@ class NmtProcurePrRow
     {
         return $this->currentState;
     }
-
+    
     /**
      * Set faRemarks
      *
@@ -659,10 +666,10 @@ class NmtProcurePrRow
     public function setFaRemarks($faRemarks)
     {
         $this->faRemarks = $faRemarks;
-
+        
         return $this;
     }
-
+    
     /**
      * Get faRemarks
      *
@@ -672,7 +679,31 @@ class NmtProcurePrRow
     {
         return $this->faRemarks;
     }
-
+    
+    /**
+     * Set rowIdentifer
+     *
+     * @param string $rowIdentifer
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setRowIdentifer($rowIdentifer)
+    {
+        $this->rowIdentifer = $rowIdentifer;
+        
+        return $this;
+    }
+    
+    /**
+     * Get rowIdentifer
+     *
+     * @return string
+     */
+    public function getRowIdentifer()
+    {
+        return $this->rowIdentifer;
+    }
+    
     /**
      * Set createdBy
      *
@@ -683,10 +714,10 @@ class NmtProcurePrRow
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdBy
      *
@@ -696,7 +727,7 @@ class NmtProcurePrRow
     {
         return $this->createdBy;
     }
-
+    
     /**
      * Set pr
      *
@@ -707,10 +738,10 @@ class NmtProcurePrRow
     public function setPr(\Application\Entity\NmtProcurePr $pr = null)
     {
         $this->pr = $pr;
-
+        
         return $this;
     }
-
+    
     /**
      * Get pr
      *
@@ -720,7 +751,7 @@ class NmtProcurePrRow
     {
         return $this->pr;
     }
-
+    
     /**
      * Set item
      *
@@ -731,10 +762,10 @@ class NmtProcurePrRow
     public function setItem(\Application\Entity\NmtInventoryItem $item = null)
     {
         $this->item = $item;
-
+        
         return $this;
     }
-
+    
     /**
      * Get item
      *
@@ -744,7 +775,7 @@ class NmtProcurePrRow
     {
         return $this->item;
     }
-
+    
     /**
      * Set project
      *
@@ -755,10 +786,10 @@ class NmtProcurePrRow
     public function setProject(\Application\Entity\NmtPmProject $project = null)
     {
         $this->project = $project;
-
+        
         return $this;
     }
-
+    
     /**
      * Get project
      *
@@ -768,7 +799,7 @@ class NmtProcurePrRow
     {
         return $this->project;
     }
-
+    
     /**
      * Set lastChangeBy
      *
@@ -779,10 +810,10 @@ class NmtProcurePrRow
     public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
         $this->lastChangeBy = $lastChangeBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastChangeBy
      *

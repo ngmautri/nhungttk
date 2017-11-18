@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryWfWorkitem
  *
- * @ORM\Table(name="nmt_inventory_wf_workitem", indexes={@ORM\Index(name="nmt_inventory_wf_workitem_FK1_idx", columns={"item_id"})})
+ * @ORM\Table(name="nmt_inventory_wf_workitem")
  * @ORM\Entity
  */
 class NmtInventoryWfWorkitem
@@ -106,14 +106,11 @@ class NmtInventoryWfWorkitem
     private $agentRoleId;
 
     /**
-     * @var \Application\Entity\NmtInventoryItem
+     * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="item_id", type="integer", nullable=true)
      */
-    private $item;
+    private $itemId;
 
 
 
@@ -416,26 +413,26 @@ class NmtInventoryWfWorkitem
     }
 
     /**
-     * Set item
+     * Set itemId
      *
-     * @param \Application\Entity\NmtInventoryItem $item
+     * @param integer $itemId
      *
      * @return NmtInventoryWfWorkitem
      */
-    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    public function setItemId($itemId)
     {
-        $this->item = $item;
+        $this->itemId = $itemId;
 
         return $this;
     }
 
     /**
-     * Get item
+     * Get itemId
      *
-     * @return \Application\Entity\NmtInventoryItem
+     * @return integer
      */
-    public function getItem()
+    public function getItemId()
     {
-        return $this->item;
+        return $this->itemId;
     }
 }

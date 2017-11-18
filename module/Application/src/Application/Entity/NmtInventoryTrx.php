@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryTrx
  *
- * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK8_idx", columns={"issue_for"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class NmtInventoryTrx
@@ -55,6 +55,13 @@ class NmtInventoryTrx
      * @ORM\Column(name="flow", type="string", nullable=false)
      */
     private $flow;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="issue_for", type="integer", nullable=true)
+     */
+    private $issueFor;
 
     /**
      * @var integer
@@ -203,16 +210,6 @@ class NmtInventoryTrx
     private $lastChangeBy;
 
     /**
-     * @var \Application\Entity\NmtInventoryWarehouse
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="wh_id", referencedColumnName="id")
-     * })
-     */
-    private $wh;
-
-    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -221,6 +218,16 @@ class NmtInventoryTrx
      * })
      */
     private $item;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="wh_id", referencedColumnName="id")
+     * })
+     */
+    private $wh;
 
     /**
      * @var \Application\Entity\NmtProcurePrRow
@@ -261,16 +268,6 @@ class NmtInventoryTrx
      * })
      */
     private $pmtMethod;
-
-    /**
-     * @var \Application\Entity\NmtInventoryItem
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="issue_for", referencedColumnName="id")
-     * })
-     */
-    private $issueFor;
 
     /**
      * @var \Application\Entity\FinVendorInvoiceRow
@@ -412,6 +409,30 @@ class NmtInventoryTrx
     public function getFlow()
     {
         return $this->flow;
+    }
+
+    /**
+     * Set issueFor
+     *
+     * @param integer $issueFor
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setIssueFor($issueFor)
+    {
+        $this->issueFor = $issueFor;
+
+        return $this;
+    }
+
+    /**
+     * Get issueFor
+     *
+     * @return integer
+     */
+    public function getIssueFor()
+    {
+        return $this->issueFor;
     }
 
     /**
@@ -895,30 +916,6 @@ class NmtInventoryTrx
     }
 
     /**
-     * Set wh
-     *
-     * @param \Application\Entity\NmtInventoryWarehouse $wh
-     *
-     * @return NmtInventoryTrx
-     */
-    public function setWh(\Application\Entity\NmtInventoryWarehouse $wh = null)
-    {
-        $this->wh = $wh;
-
-        return $this;
-    }
-
-    /**
-     * Get wh
-     *
-     * @return \Application\Entity\NmtInventoryWarehouse
-     */
-    public function getWh()
-    {
-        return $this->wh;
-    }
-
-    /**
      * Set item
      *
      * @param \Application\Entity\NmtInventoryItem $item
@@ -940,6 +937,30 @@ class NmtInventoryTrx
     public function getItem()
     {
         return $this->item;
+    }
+
+    /**
+     * Set wh
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $wh
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setWh(\Application\Entity\NmtInventoryWarehouse $wh = null)
+    {
+        $this->wh = $wh;
+
+        return $this;
+    }
+
+    /**
+     * Get wh
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getWh()
+    {
+        return $this->wh;
     }
 
     /**
@@ -1036,30 +1057,6 @@ class NmtInventoryTrx
     public function getPmtMethod()
     {
         return $this->pmtMethod;
-    }
-
-    /**
-     * Set issueFor
-     *
-     * @param \Application\Entity\NmtInventoryItem $issueFor
-     *
-     * @return NmtInventoryTrx
-     */
-    public function setIssueFor(\Application\Entity\NmtInventoryItem $issueFor = null)
-    {
-        $this->issueFor = $issueFor;
-
-        return $this;
-    }
-
-    /**
-     * Get issueFor
-     *
-     * @return \Application\Entity\NmtInventoryItem
-     */
-    public function getIssueFor()
-    {
-        return $this->issueFor;
     }
 
     /**

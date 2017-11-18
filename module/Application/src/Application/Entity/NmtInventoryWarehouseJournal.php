@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryWarehouseJournal
  *
- * @ORM\Table(name="nmt_inventory_warehouse_journal", indexes={@ORM\Index(name="nmt_inventory_warehouse_journal_idx", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_warehouse_journal_FK2_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_warehouse_journal_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_journal_FK4_idx", columns={"currency"})})
+ * @ORM\Table(name="nmt_inventory_warehouse_journal", indexes={@ORM\Index(name="nmt_inventory_warehouse_journal_idx", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_warehouse_journal_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_journal_FK4_idx", columns={"currency"})})
  * @ORM\Entity
  */
 class NmtInventoryWarehouseJournal
@@ -20,6 +20,13 @@ class NmtInventoryWarehouseJournal
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="item_id", type="integer", nullable=false)
+     */
+    private $itemId;
 
     /**
      * @var \DateTime
@@ -60,16 +67,6 @@ class NmtInventoryWarehouseJournal
     private $wh;
 
     /**
-     * @var \Application\Entity\NmtInventoryItem
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
-     * })
-     */
-    private $item;
-
-    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -99,6 +96,30 @@ class NmtInventoryWarehouseJournal
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set itemId
+     *
+     * @param integer $itemId
+     *
+     * @return NmtInventoryWarehouseJournal
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
+
+        return $this;
+    }
+
+    /**
+     * Get itemId
+     *
+     * @return integer
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
     }
 
     /**
@@ -219,30 +240,6 @@ class NmtInventoryWarehouseJournal
     public function getWh()
     {
         return $this->wh;
-    }
-
-    /**
-     * Set item
-     *
-     * @param \Application\Entity\NmtInventoryItem $item
-     *
-     * @return NmtInventoryWarehouseJournal
-     */
-    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    /**
-     * Get item
-     *
-     * @return \Application\Entity\NmtInventoryItem
-     */
-    public function getItem()
-    {
-        return $this->item;
     }
 
     /**

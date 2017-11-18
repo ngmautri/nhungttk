@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemCategoryMember
  *
- * @ORM\Table(name="nmt_inventory_item_category_member", indexes={@ORM\Index(name="nmt_inventory_item_category_memberFK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_category_memberFK2_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_category_memberFK3_idx", columns={"category_id"})})
+ * @ORM\Table(name="nmt_inventory_item_category_member", indexes={@ORM\Index(name="nmt_inventory_item_category_memberFK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_category_memberFK3_idx", columns={"category_id"}), @ORM\Index(name="nmt_inventory_item_category_memberFK4_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemCategoryMember
@@ -46,16 +46,6 @@ class NmtInventoryItemCategoryMember
     private $createdBy;
 
     /**
-     * @var \Application\Entity\NmtInventoryItem
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
-     * })
-     */
-    private $item;
-
-    /**
      * @var \Application\Entity\NmtInventoryItemCategory
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemCategory")
@@ -64,6 +54,16 @@ class NmtInventoryItemCategoryMember
      * })
      */
     private $category;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
 
 
 
@@ -150,30 +150,6 @@ class NmtInventoryItemCategoryMember
     }
 
     /**
-     * Set item
-     *
-     * @param \Application\Entity\NmtInventoryItem $item
-     *
-     * @return NmtInventoryItemCategoryMember
-     */
-    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    /**
-     * Get item
-     *
-     * @return \Application\Entity\NmtInventoryItem
-     */
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    /**
      * Set category
      *
      * @param \Application\Entity\NmtInventoryItemCategory $category
@@ -195,5 +171,29 @@ class NmtInventoryItemCategoryMember
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return NmtInventoryItemCategoryMember
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
     }
 }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemPurchasing
  *
- * @ORM\Table(name="nmt_inventory_item_purchasing", indexes={@ORM\Index(name="nmt_inventory_item_purchasing_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK3_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK2_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK5_idx", columns={"pmt_term_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK6_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK7_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_inventory_item_purchasing", indexes={@ORM\Index(name="nmt_inventory_item_purchasing_FK3_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK2_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK5_idx", columns={"pmt_term_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK6_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK7_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_purchasing_FK8_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemPurchasing
@@ -134,16 +134,6 @@ class NmtInventoryItemPurchasing
     private $lastChangeOn;
 
     /**
-     * @var \Application\Entity\NmtInventoryItem
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
-     * })
-     */
-    private $item;
-
-    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -202,6 +192,16 @@ class NmtInventoryItemPurchasing
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
 
 
 
@@ -600,30 +600,6 @@ class NmtInventoryItemPurchasing
     }
 
     /**
-     * Set item
-     *
-     * @param \Application\Entity\NmtInventoryItem $item
-     *
-     * @return NmtInventoryItemPurchasing
-     */
-    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    /**
-     * Get item
-     *
-     * @return \Application\Entity\NmtInventoryItem
-     */
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    /**
      * Set vendor
      *
      * @param \Application\Entity\NmtBpVendor $vendor
@@ -765,5 +741,29 @@ class NmtInventoryItemPurchasing
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return NmtInventoryItemPurchasing
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
     }
 }

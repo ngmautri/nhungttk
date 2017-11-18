@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinVendorInvoiceRow
  *
- * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK2_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="fin_vendor_invoice_row_INX1", columns={"current_state"})})
+ * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="fin_vendor_invoice_row_INX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class FinVendorInvoiceRow
@@ -172,16 +172,6 @@ class FinVendorInvoiceRow
     private $invoice;
 
     /**
-     * @var \Application\Entity\NmtInventoryItem
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
-     * })
-     */
-    private $item;
-
-    /**
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -220,6 +210,16 @@ class FinVendorInvoiceRow
      * })
      */
     private $lastchangedBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
 
 
 
@@ -738,30 +738,6 @@ class FinVendorInvoiceRow
     }
 
     /**
-     * Set item
-     *
-     * @param \Application\Entity\NmtInventoryItem $item
-     *
-     * @return FinVendorInvoiceRow
-     */
-    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    /**
-     * Get item
-     *
-     * @return \Application\Entity\NmtInventoryItem
-     */
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    /**
      * Set prRow
      *
      * @param \Application\Entity\NmtProcurePrRow $prRow
@@ -855,5 +831,29 @@ class FinVendorInvoiceRow
     public function getLastchangedBy()
     {
         return $this->lastchangedBy;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
     }
 }

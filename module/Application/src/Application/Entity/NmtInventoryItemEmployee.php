@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemEmployee
  *
- * @ORM\Table(name="nmt_inventory_item_employee", indexes={@ORM\Index(name="nmt_inventory_item_employee_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_employee_FK2_idx", columns={"employee_id"}), @ORM\Index(name="nmt_inventory_item_employee_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_employee_FK4_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_inventory_item_employee", indexes={@ORM\Index(name="nmt_inventory_item_employee_FK2_idx", columns={"employee_id"}), @ORM\Index(name="nmt_inventory_item_employee_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_employee_FK4_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_employee_FK5_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemEmployee
@@ -78,16 +78,6 @@ class NmtInventoryItemEmployee
     private $lastChangeOn;
 
     /**
-     * @var \Application\Entity\NmtInventoryItem
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
-     * })
-     */
-    private $item;
-
-    /**
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -116,6 +106,16 @@ class NmtInventoryItemEmployee
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
 
 
 
@@ -322,30 +322,6 @@ class NmtInventoryItemEmployee
     }
 
     /**
-     * Set item
-     *
-     * @param \Application\Entity\NmtInventoryItem $item
-     *
-     * @return NmtInventoryItemEmployee
-     */
-    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    /**
-     * Get item
-     *
-     * @return \Application\Entity\NmtInventoryItem
-     */
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    /**
      * Set employee
      *
      * @param \Application\Entity\NmtHrEmployee $employee
@@ -415,5 +391,29 @@ class NmtInventoryItemEmployee
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return NmtInventoryItemEmployee
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
     }
 }

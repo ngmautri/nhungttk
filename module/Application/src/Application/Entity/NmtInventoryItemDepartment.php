@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemDepartment
  *
- * @ORM\Table(name="nmt_inventory_item_department", indexes={@ORM\Index(name="nmt_inventory_item_department_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_department_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_department_FK2_idx", columns={"department"})})
+ * @ORM\Table(name="nmt_inventory_item_department", indexes={@ORM\Index(name="nmt_inventory_item_department_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_department_FK2_idx", columns={"department"}), @ORM\Index(name="nmt_inventory_item_department_FK4_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemDepartment
@@ -36,16 +36,6 @@ class NmtInventoryItemDepartment
     private $createdOn;
 
     /**
-     * @var \Application\Entity\NmtInventoryItem
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
-     * })
-     */
-    private $item;
-
-    /**
      * @var \Application\Entity\NmtApplicationDepartment
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
@@ -64,6 +54,16 @@ class NmtInventoryItemDepartment
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
 
 
 
@@ -126,30 +126,6 @@ class NmtInventoryItemDepartment
     }
 
     /**
-     * Set item
-     *
-     * @param \Application\Entity\NmtInventoryItem $item
-     *
-     * @return NmtInventoryItemDepartment
-     */
-    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    /**
-     * Get item
-     *
-     * @return \Application\Entity\NmtInventoryItem
-     */
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    /**
      * Set department
      *
      * @param \Application\Entity\NmtApplicationDepartment $department
@@ -195,5 +171,29 @@ class NmtInventoryItemDepartment
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return NmtInventoryItemDepartment
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
     }
 }

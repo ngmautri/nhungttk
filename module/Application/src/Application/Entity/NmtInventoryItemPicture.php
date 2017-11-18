@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemPicture
  *
- * @ORM\Table(name="nmt_inventory_item_picture", indexes={@ORM\Index(name="nmt_inventory_item_picture_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_picture_FK2_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_inventory_item_picture", indexes={@ORM\Index(name="nmt_inventory_item_picture_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_picture_FK3_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemPicture
@@ -134,16 +134,6 @@ class NmtInventoryItemPicture
     private $createdOn;
 
     /**
-     * @var \Application\Entity\NmtInventoryItem
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
-     * })
-     */
-    private $item;
-
-    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -152,6 +142,16 @@ class NmtInventoryItemPicture
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
 
 
 
@@ -550,30 +550,6 @@ class NmtInventoryItemPicture
     }
 
     /**
-     * Set item
-     *
-     * @param \Application\Entity\NmtInventoryItem $item
-     *
-     * @return NmtInventoryItemPicture
-     */
-    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    /**
-     * Get item
-     *
-     * @return \Application\Entity\NmtInventoryItem
-     */
-    public function getItem()
-    {
-        return $this->item;
-    }
-
-    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -595,5 +571,29 @@ class NmtInventoryItemPicture
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
     }
 }

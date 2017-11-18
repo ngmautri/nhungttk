@@ -66,6 +66,7 @@ class PrSearchService
                         $doc->addField(Field::UnIndexed('pr_row_id', $row->getId()));
                         $doc->addField(Field::UnIndexed('token', $row->getToken()));
                         $doc->addField(Field::Keyword('row_token_keyword', $row->getToken() . "__" . $row->getId()));
+                        $doc->addField(Field::Keyword('row_identifer_keyword', $row->getRowIdentifer()));
                         
                         $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
                         $doc->addField(Field::UnIndexed('row_quantity', $row->getQuantity()));
@@ -85,6 +86,10 @@ class PrSearchService
                                 ->getPrNumber()));
                             $doc->addField(Field::text('pr', $row->getPr()
                                 ->getPrNumber()));
+                            
+                            $doc->addField(Field::Keyword('pr_auto_number', $row->getPr()
+                                ->getPrAutoNumber()));
+                            
                         }
                         
                         if ($row->getItem() !== null) {
@@ -192,6 +197,8 @@ class PrSearchService
                 $doc->addField(Field::UnIndexed('pr_row_id', $row->getId()));
                 $doc->addField(Field::UnIndexed('token', $row->getToken()));
                 $doc->addField(Field::Keyword('row_token_keyword', $row->getToken() . "__" . $row->getId()));
+                $doc->addField(Field::Keyword('row_identifer_keyword', $row->getRowIdentifer()));
+                
                 
                 $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
                 $doc->addField(Field::UnIndexed('row_quantity', $row->getQuantity()));
@@ -212,6 +219,9 @@ class PrSearchService
                         ->getPrNumber()));
                     $doc->addField(Field::text('pr', $row->getPr()
                         ->getPrNumber()));
+                    
+                    $doc->addField(Field::Keyword('pr_auto_number', $row->getPr()
+                        ->getPrAutoNumber()));
                 }
                 
                 if ($row->getItem() !== null) {

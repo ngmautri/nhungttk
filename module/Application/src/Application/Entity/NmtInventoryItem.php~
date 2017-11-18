@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItem
  *
- * @ORM\Table(name="nmt_inventory_item", uniqueConstraints={@ORM\UniqueConstraint(name="asset_label_UNIQUE", columns={"asset_label"}), @ORM\UniqueConstraint(name="internal_label_UNIQUE", columns={"item_internal_label"})}, indexes={@ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx1", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_item_IDX2", columns={"is_fixed_asset"}), @ORM\Index(name="nmt_inventory_item_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtInventoryItem
@@ -20,6 +20,20 @@ class NmtInventoryItem
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="company_id", type="integer", nullable=false)
+     */
+    private $companyId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="warehouse_id", type="integer", nullable=true)
+     */
+    private $warehouseId;
 
     /**
      * @var string
@@ -125,6 +139,13 @@ class NmtInventoryItem
      * @ORM\Column(name="uom", type="string", length=45, nullable=true)
      */
     private $uom;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="standard_uom_id", type="integer", nullable=true)
+     */
+    private $standardUomId;
 
     /**
      * @var string
@@ -345,36 +366,6 @@ class NmtInventoryItem
      * })
      */
     private $createdBy;
-
-    /**
-     * @var \Application\Entity\NmtInventoryWarehouse
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
-     * })
-     */
-    private $warehouse;
-
-    /**
-     * @var \Application\Entity\NmtApplicationCompany
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
-     * })
-     */
-    private $company;
-
-    /**
-     * @var \Application\Entity\NmtApplicationUom
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="standard_uom_id", referencedColumnName="id")
-     * })
-     */
-    private $standardUom;
 
     /**
      * @var \Application\Entity\MlaUsers

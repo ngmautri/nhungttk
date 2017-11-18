@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinVendorInvoice
  *
- * @ORM\Table(name="fin_vendor_invoice", indexes={@ORM\Index(name="fin_vendor_invoice_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="fin_vendor_invoice_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_FK3_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx1", columns={"currency_id"})})
+ * @ORM\Table(name="fin_vendor_invoice", indexes={@ORM\Index(name="fin_vendor_invoice_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="fin_vendor_invoice_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_FK3_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="fin_vendor_invoice_FK6_idx", columns={"po_id"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\FinVendorInvoiceRepository")
  */
@@ -156,6 +156,13 @@ class FinVendorInvoice
     private $quotationDate;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
+     */
+    private $sysNumber;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -204,6 +211,16 @@ class FinVendorInvoice
      * })
      */
     private $currency;
+
+    /**
+     * @var \Application\Entity\NmtProcurePo
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="po_id", referencedColumnName="id")
+     * })
+     */
+    private $po;
 
 
 
@@ -674,6 +691,30 @@ class FinVendorInvoice
     }
 
     /**
+     * Set sysNumber
+     *
+     * @param string $sysNumber
+     *
+     * @return FinVendorInvoice
+     */
+    public function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get sysNumber
+     *
+     * @return string
+     */
+    public function getSysNumber()
+    {
+        return $this->sysNumber;
+    }
+
+    /**
      * Set vendor
      *
      * @param \Application\Entity\NmtBpVendor $vendor
@@ -791,5 +832,29 @@ class FinVendorInvoice
     public function getCurrency()
     {
         return $this->currency;
+    }
+
+    /**
+     * Set po
+     *
+     * @param \Application\Entity\NmtProcurePo $po
+     *
+     * @return FinVendorInvoice
+     */
+    public function setPo(\Application\Entity\NmtProcurePo $po = null)
+    {
+        $this->po = $po;
+
+        return $this;
+    }
+
+    /**
+     * Get po
+     *
+     * @return \Application\Entity\NmtProcurePo
+     */
+    public function getPo()
+    {
+        return $this->po;
     }
 }

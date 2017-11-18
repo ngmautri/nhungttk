@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * FinVendorInvoiceRow
+ * NmtProcurePoRow
  *
- * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="fin_vendor_invoice_row_INX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"})})
+ * @ORM\Table(name="nmt_procure_po_row", indexes={@ORM\Index(name="nmt_procure_po_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_po_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_po_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_po_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_po_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_po_row_FK7_idx", columns={"po_id"})})
  * @ORM\Entity
  */
-class FinVendorInvoiceRow
+class NmtProcurePoRow
 {
     /**
      * @var integer
@@ -164,9 +164,9 @@ class FinVendorInvoiceRow
     /**
      * @var string
      *
-     * @ORM\Column(name="row_indentifer", type="string", length=45, nullable=true)
+     * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
      */
-    private $rowIndentifer;
+    private $rowIdentifer;
 
     /**
      * @var \Application\Entity\FinVendorInvoice
@@ -219,6 +219,16 @@ class FinVendorInvoiceRow
     private $lastchangedBy;
 
     /**
+     * @var \Application\Entity\NmtProcurePo
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="po_id", referencedColumnName="id")
+     * })
+     */
+    private $po;
+
+    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -245,7 +255,7 @@ class FinVendorInvoiceRow
      *
      * @param integer $rowNumber
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setRowNumber($rowNumber)
     {
@@ -269,7 +279,7 @@ class FinVendorInvoiceRow
      *
      * @param string $token
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setToken($token)
     {
@@ -293,7 +303,7 @@ class FinVendorInvoiceRow
      *
      * @param integer $quantity
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setQuantity($quantity)
     {
@@ -317,7 +327,7 @@ class FinVendorInvoiceRow
      *
      * @param string $unitPrice
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setUnitPrice($unitPrice)
     {
@@ -341,7 +351,7 @@ class FinVendorInvoiceRow
      *
      * @param string $netAmount
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setNetAmount($netAmount)
     {
@@ -365,7 +375,7 @@ class FinVendorInvoiceRow
      *
      * @param string $unit
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setUnit($unit)
     {
@@ -389,7 +399,7 @@ class FinVendorInvoiceRow
      *
      * @param string $itemUnit
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setItemUnit($itemUnit)
     {
@@ -413,7 +423,7 @@ class FinVendorInvoiceRow
      *
      * @param string $conversionFactor
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setConversionFactor($conversionFactor)
     {
@@ -437,7 +447,7 @@ class FinVendorInvoiceRow
      *
      * @param string $converstionText
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setConverstionText($converstionText)
     {
@@ -461,7 +471,7 @@ class FinVendorInvoiceRow
      *
      * @param integer $taxRate
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setTaxRate($taxRate)
     {
@@ -485,7 +495,7 @@ class FinVendorInvoiceRow
      *
      * @param string $remarks
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setRemarks($remarks)
     {
@@ -509,7 +519,7 @@ class FinVendorInvoiceRow
      *
      * @param boolean $isActive
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setIsActive($isActive)
     {
@@ -533,7 +543,7 @@ class FinVendorInvoiceRow
      *
      * @param \DateTime $createdOn
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setCreatedOn($createdOn)
     {
@@ -557,7 +567,7 @@ class FinVendorInvoiceRow
      *
      * @param \DateTime $lastchangeOn
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setLastchangeOn($lastchangeOn)
     {
@@ -581,7 +591,7 @@ class FinVendorInvoiceRow
      *
      * @param string $currentState
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setCurrentState($currentState)
     {
@@ -605,7 +615,7 @@ class FinVendorInvoiceRow
      *
      * @param string $vendorItemCode
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setVendorItemCode($vendorItemCode)
     {
@@ -629,7 +639,7 @@ class FinVendorInvoiceRow
      *
      * @param boolean $traceStock
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setTraceStock($traceStock)
     {
@@ -653,7 +663,7 @@ class FinVendorInvoiceRow
      *
      * @param string $grossAmount
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setGrossAmount($grossAmount)
     {
@@ -677,7 +687,7 @@ class FinVendorInvoiceRow
      *
      * @param string $taxAmount
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setTaxAmount($taxAmount)
     {
@@ -701,7 +711,7 @@ class FinVendorInvoiceRow
      *
      * @param string $faRemarks
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setFaRemarks($faRemarks)
     {
@@ -721,27 +731,27 @@ class FinVendorInvoiceRow
     }
 
     /**
-     * Set rowIndentifer
+     * Set rowIdentifer
      *
-     * @param string $rowIndentifer
+     * @param string $rowIdentifer
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
-    public function setRowIndentifer($rowIndentifer)
+    public function setRowIdentifer($rowIdentifer)
     {
-        $this->rowIndentifer = $rowIndentifer;
+        $this->rowIdentifer = $rowIdentifer;
 
         return $this;
     }
 
     /**
-     * Get rowIndentifer
+     * Get rowIdentifer
      *
      * @return string
      */
-    public function getRowIndentifer()
+    public function getRowIdentifer()
     {
-        return $this->rowIndentifer;
+        return $this->rowIdentifer;
     }
 
     /**
@@ -749,7 +759,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setInvoice(\Application\Entity\FinVendorInvoice $invoice = null)
     {
@@ -773,7 +783,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\NmtProcurePrRow $prRow
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setPrRow(\Application\Entity\NmtProcurePrRow $prRow = null)
     {
@@ -797,7 +807,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
@@ -821,7 +831,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\NmtInventoryWarehouse $warehouse
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
     {
@@ -845,7 +855,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\MlaUsers $lastchangedBy
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setLastchangedBy(\Application\Entity\MlaUsers $lastchangedBy = null)
     {
@@ -865,11 +875,35 @@ class FinVendorInvoiceRow
     }
 
     /**
+     * Set po
+     *
+     * @param \Application\Entity\NmtProcurePo $po
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setPo(\Application\Entity\NmtProcurePo $po = null)
+    {
+        $this->po = $po;
+
+        return $this;
+    }
+
+    /**
+     * Get po
+     *
+     * @return \Application\Entity\NmtProcurePo
+     */
+    public function getPo()
+    {
+        return $this->po;
+    }
+
+    /**
      * Set item
      *
      * @param \Application\Entity\NmtInventoryItem $item
      *
-     * @return FinVendorInvoiceRow
+     * @return NmtProcurePoRow
      */
     public function setItem(\Application\Entity\NmtInventoryItem $item = null)
     {

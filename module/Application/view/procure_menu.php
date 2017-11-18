@@ -9,7 +9,7 @@
 	
 	<li class="divider"></li>
 	<li><a href="/procure/po/add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;New PO /Contract</a></li>
-	<li><a href="/procure/po/all/row_number=1/status=pending"><i class="fa fa-caret-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;PO /Contract list</a></li>
+	<li><a href="/procure/po/list"><i class="fa fa-caret-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;PO /Contract list</a></li>
 	<li><a href="/procure/po-row/all"><i class="fa fa-caret-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;PO /Contract Row</a></li>
 
 </ul>

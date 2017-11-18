@@ -22,14 +22,14 @@ return array(
                 'icon' => 'glyphicon glyphicon-plus'
             ),
             array(
-                'label' => 'New Vendor Invoice',
+                'label' => 'New A/P Invoice',
                 'route' => 'finance/default',
                 'controller' => 'v-invoice',
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
             ),
             array(
-                'label' => 'Vendor Invoice List',
+                'label' => 'A/P Invoice List',
                 'route' => 'finance/default',
                 'controller' => 'v-invoice',
                 'action' => 'list',

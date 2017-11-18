@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
 use Application\Entity\FinVendorInvoice;
 use Application\Entity\FinVendorInvoiceRow;
+use Application\Entity\NmtProcurePo;
 
 /**
  *
@@ -236,6 +237,40 @@ class VInvoiceController extends AbstractActionController
                 ));
             }
             
+            
+            // generate document
+            $criteria = array(
+                'isActive' => 1,
+                'subjectClass' => get_class($entity)
+            );
+            
+            /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
+            $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
+            if ($docNumber != null) {
+                $maxLen = strlen($docNumber->getToNumber());
+                $currentLen = 1;
+                $currentDoc = $docNumber->getPrefix();
+                $current_no = $docNumber->getCurrentNumber();
+                
+                if ($current_no == null) {
+                    $current_no = $docNumber->getFromNumber();
+                } else {
+                    $current_no ++;
+                    $currentLen = strlen($current_no);
+                }
+                
+                $docNumber->setCurrentNumber($current_no);
+                
+                $tmp = "";
+                for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
+                    
+                    $tmp = $tmp . "0";
+                }
+                
+                $currentDoc = $currentDoc . $tmp . $current_no;
+                $entity->setSysNumber($currentDoc);
+            }
+            
             // NO ERROR
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
@@ -283,6 +318,280 @@ class VInvoiceController extends AbstractActionController
             'currency_list' => $currency_list
         ));
     }
+    
+    /**
+     * adding new vendor invoce
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function copyFromPoAction()
+    {
+        $criteria = array(
+            'isActive' => 1
+        );
+        $sort_criteria = array(
+            'currency' => 'ASC'
+        );
+        
+        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        
+        $request = $this->getRequest();
+        
+        if ($request->isPost()) {
+            
+            $errors = array();
+            $redirectUrl = $request->getPost('redirectUrl');
+            
+            $contractDate = $request->getPost('contractDate');
+            $contractNo = $request->getPost('contractNo');
+            $currentState = $request->getPost('currentState');
+            
+            $vendor_id = (int) $request->getPost('vendor_id');
+            $currency_id = (int) $request->getPost('currency_id');
+            $warehouse_id = (int) $request->getPost('target_wh_id');
+            
+            $postingDate = $request->getPost('postingDate');
+            $grDate = $request->getPost('grDate');
+            $invoiceDate = $request->getPost('invoiceDate');
+            $invoiceNo = $request->getPost('invoiceNo');
+            $sapDoc = $request->getPost('sapDoc');
+            $isActive = (int) $request->getPost('isActive');
+            $remarks = $request->getPost('remarks');
+            
+            if ($isActive !== 1) {
+                $isActive = 0;
+            }
+            
+            if ($sapDoc == "") {
+                $sapDoc = "N/A";
+            }
+            
+            $entity = new FinVendorInvoice();
+            $entity->setIsActive($isActive);
+            
+            $entity->setCurrentState($currentState);
+            
+            $vendor = null;
+            if ($vendor_id > 0) {
+                /** @var \Application\Entity\NmtBpVendor $vendor ; */
+                $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
+            }
+            
+            if ($vendor !== null) {
+                $entity->setVendor($vendor);
+                $entity->setVendorName($vendor->getVendorName());
+            } else {
+                $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
+            }
+            
+            $currency = null;
+            if ($currency_id > 0) {
+                /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
+                $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+            }
+            
+            if ($currency !== null) {
+                $entity->setCurrency($currency);
+                $entity->setCurrencyIso3($currency->getCurrency());
+            } else {
+                $errors[] = 'Currency can\'t be empty. Please select a vendor!';
+            }
+            
+            $validator = new Date();
+            
+            switch ($currentState) {
+                case "contract":
+                    // contract number not empty
+                    
+                    if ($contractNo == "") {
+                        $errors[] = 'Contract is not correct or empty!';
+                    } else {
+                        $entity->setContractNo($contractNo);
+                    }
+                    
+                    if (! $validator->isValid($contractDate)) {
+                        $errors[] = 'Contract Date is not correct or empty!';
+                    } else {
+                        $entity->setContractDate(new \DateTime($contractDate));
+                    }
+                    
+                    break;
+                case "draftInvoice":
+                    
+                    /**
+                     *
+                     * @todo
+                     */
+                    
+                    /*
+                     * if ($invoiceNo == null) {
+                     * $errors[] = 'Please enter Invoice Number!';
+                     * } else {
+                     * $entity->setInvoiceNo($invoiceNo);
+                     * }
+                     *
+                     * if (! $validator->isValid($invoiceDate)) {
+                     * $errors[] = 'Invoice Date is not correct or empty!';
+                     * } else {
+                     * $entity->setInvoiceDate(new \DateTime($invoiceDate));
+                     * }
+                     */
+                    
+                    break;
+                    
+                case "finalInvoice":
+                    
+                    /**
+                     *
+                     * @todo
+                     */
+                    
+                    if ($invoiceNo == null) {
+                        $errors[] = 'Please enter Invoice Number!';
+                    } else {
+                        $entity->setInvoiceNo($invoiceNo);
+                    }
+                    
+                    $entity->setSapDoc($sapDoc);
+                    
+                    if (! $validator->isValid($invoiceDate)) {
+                        $errors[] = 'Invoice Date is not correct or empty!';
+                    } else {
+                        $entity->setInvoiceDate(new \DateTime($invoiceDate));
+                    }
+                    
+                    if (! $validator->isValid($postingDate)) {
+                        $errors[] = 'Posting Date is not correct or empty!';
+                    } else {
+                        
+                        $entity->setPostingDate(new \DateTime($postingDate));
+                        
+                        // check if posting period is close
+                        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                        
+                        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                        $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
+                        
+                        if ($postingPeriod->getPeriodStatus() == "C") {
+                            $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
+                        }
+                    }
+                    
+                    if (! $validator->isValid($grDate)) {
+                        $errors[] = 'Good receipt Date is not correct or empty!';
+                    } else {
+                        $entity->setGrDate(new \DateTime($grDate));
+                        // check if posting period is close
+                        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                        
+                        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                        $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
+                        
+                        if ($postingPeriod->getPeriodStatus() == "C") {
+                            $errors[] = ' period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
+                        }
+                    }
+                    
+                    break;
+            }
+            
+            $warehouse = null;
+            if ($warehouse_id > 0) {
+                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+            }
+            
+            if ($warehouse !== null) {
+                $entity->setWarehouse($warehouse);
+            } else {
+                $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
+            }
+            
+            $entity->setRemarks($remarks);
+            
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list
+                ));
+            }
+            
+            // NO ERROR
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+            
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn(new \DateTime());
+            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+            
+            $this->flashMessenger()->addMessage($invoiceNo . 'of ' . $entity->getVendor()
+                ->getVendorName() . '" is created successfully!');
+            
+            $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+        
+        // NOT POST ================================
+        $redirectUrl = null;
+        if ($request->getHeader('Referer') != null) {
+            
+            $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+        }
+        
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $po = $res->getPo($id, $token);
+        
+        if ($po == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        /**@var \Application\Entity\NmtProcurePo $target ;*/
+        
+        $target = null;
+        if ($po[0] instanceof NmtProcurePo) {
+            $target = $po[0];
+        }
+        
+        if($target==null){
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = new FinVendorInvoice();
+        $entity->setContractNo($target->getContractNo());
+        $entity->setContractDate($target->getContractDate());
+        
+        $entity->setIsActive(1);
+        
+        $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
+            'isDefault' => 1
+        ));
+        
+        if ($default_wh !== null) {
+            $entity->setWarehouse($default_wh);
+        }
+        
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'entity' => $entity,
+            'target' => $target,            
+            'currency_list' => $currency_list
+        ));
+    }
+    
 
     /**
      *

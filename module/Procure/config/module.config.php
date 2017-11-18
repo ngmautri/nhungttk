@@ -183,6 +183,11 @@ return array(
             'Procure\Controller\Pr' => 'Procure\Controller\PrControllerFactory',
             'Procure\Controller\PrAttachment' => 'Procure\Controller\PrAttachmentControllerFactory',
             'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
+            'Procure\Controller\Po' => 'Procure\Controller\PoControllerFactory',
+            'Procure\Controller\PoAttachment' => 'Procure\Controller\PoAttachmentControllerFactory',
+            'Procure\Controller\PoRow' => 'Procure\Controller\PoRowControllerFactory',
+            
+            
             'Procure\Controller\PrSearch' => 'Procure\Controller\PrSearchControllerFactory'
         
         )

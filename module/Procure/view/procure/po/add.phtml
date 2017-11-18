@@ -1,4 +1,4 @@
-<?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
+<?php /**@var \Application\Entity\NmtProcurePo $entity ;*/?>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -16,13 +16,13 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general">New A/P Invoice</a></li>
+		<li><a href="#general">Contract /PO</a></li>
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
 
 		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
+			action="/procure/po/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 			<fieldset>
@@ -35,11 +35,10 @@ if (count ( $errors ) > 0) {
 					<label class="control-label col-sm-2">Current State:</label>
 					<div class="col-sm-3">
 					<select name="currentState" class="form-control input-sm">
-							<option value="">Please Select</option>
-							<option <?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?> value="contract">Contract /PO</option>
-							<option <?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?> value="draftInvoice">Draft Invoice</option>
-							<option <?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?> value="finalInvoice">Final Invoice</option>
-    				</select>
+						<option value="">Please Select</option>
+							<option <?php if($entity->getCurrentState()=="draftPo"): echo "selected"; endif ?> value="draftPo">Draft</option>
+							<option <?php if($entity->getCurrentState()=="finalPo"): echo "selected"; endif ?> value="finalPo">Final</option>
+    	   				</select>
    					</div>
    					
    					<div class="col-sm-3">
@@ -72,7 +71,7 @@ if (count ( $errors ) > 0) {
 					</div>
 					
 					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Contract /PO:</label>
+						<label class="control-label col-sm-2">Contract /PO No.:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
 								id="contractNo" name="contractNo" 
@@ -116,61 +115,8 @@ if (count ( $errors ) > 0) {
    					</div>
 					
 					
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Invoice number:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="invoiceNo" name="invoiceNo" 
-								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
-						</div>
-						<label class="control-label col-sm-2">SAP Document No.:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="sapDoc" name="sapDoc" 
-								value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
-						</div>
-						
-						
-					</div>
+				
 					
-					<div class="form-group margin-bottom required">
-
-						<label class="control-label col-sm-2 required">Invoice Date:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text"
-								id="invoiceDate" name="invoiceDate"
-								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
-								placeholder=" please select" />
-							</div>
-					</div>
-					
-					<div class="form-group margin-bottom required">
-
-						<label class="control-label col-sm-2">Posting Date:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text"
-								id="postingDate" name="postingDate"
-								value="<?php if(!$entity == null): if ($entity->getPostingDate() !== null): echo date_format($entity->getPostingDate(),"Y-m-d"); endif; endif;?>"
-								placeholder=" please select" />
-							</div>
-					</div>
-					
-					<div class="form-group margin-bottom required">
-
-						<label class="control-label col-sm-2">Goods Receipt Date:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text"
-								id="grDate" name="grDate"
-								value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
-								placeholder=" please select" />
-							</div>
-						<label class="control-label col-sm-2" for="inputTag">Target Warehouse:</label>
-					<div class="col-sm-3">
-<input class="form-control input-sm" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
-<input type="hidden" id="target_wh_id" name="target_wh_id" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
-					</div>
-				</div>
-		
 				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2" >Description</label>
             		<div class="col-sm-8">

@@ -1,4 +1,5 @@
 <?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
+<?php /**@var \Application\Entity\NmtProcurePo $target ;*/?>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -16,13 +17,13 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general">New A/P Invoice</a></li>
+		<li><a href="#general">New A/P Invoice from Contract/PO: <?php if($target!==null): echo $target->getSysNumber(); endif;?></a></li>
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
 
 		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
+			action="/finance/v-invoice/copy-from-po" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 			<fieldset>
@@ -54,65 +55,43 @@ if (count ( $errors ) > 0) {
 					<div class="form-group margin-bottom required">
 						<label class="control-label col-sm-2 ">Vendor:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text"
+							<input readonly="readonly" class="form-control input-sm" type="text"
 								id="vendor_name_1" placeholder="Enter term to search vendor"
 								name="vendor_name"
-								value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
+								value="<?php if (!$target== null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>">
 
 							<input type="hidden" id="vendor_id" placeholder=""
 								name="vendor_id"
-								value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
-						</div>
-						<div class="col-sm-3">
-
-							<a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor
-								List&nbsp;&nbsp;</a><small><i
-								class="glyphicon glyphicon-new-window"></i></small>
+								value="<?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getId();endif;endif;?>">
 						</div>
 					</div>
 					
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">Contract /PO:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
+							<input readonly="readonly" class="form-control input-sm" type="text" placeholder=""
 								id="contractNo" name="contractNo" 
-								value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
+								value="<?php echo (!$target == null)? $target->getContractNo():"";?>">
 						</div>
 						<label class="control-label col-sm-2">Contract /PO Date:</label>
 						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
+							<input readonly="readonly" class="form-control input-sm" type="text" placeholder=""
 								id="contractDate" name="contractDate" 
-								value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
+								value="<?php if(!$target == null): if ($target->getContractDate() !== null): echo date_format($target->getContractDate(),"Y-m-d"); endif; endif;?>">
 						</div>
 					</div>
 					
 					<div class="form-group margin-bottom required">
-					
-					<label class="control-label col-sm-2">Currency:</label>
-					<div class="col-sm-3">
-					<select name="currency_id" class="form-control input-sm">
-								<option value="">Select Currency</option>
-   	    							<?php
-   	    							if($currency_list!== null):
-       	    							foreach ( $currency_list as $curr ) :
-       	    							 if($entity!==null):
-       	    							     if($entity->getCurrency()!==null):
-       	    							         if($entity->getCurrency()->getCurrency() == $curr->getCurrency()):
-       	    							             echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-   	    							             else:
-   	    							                 echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							         endif;
-       	    							     else:
-       	    							            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							     endif;
-       	    							 else:
-       	    							     echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							 endif;
-       									endforeach;
-   	    							endif;
-									?>
-   					</select>
-   					</div>
+						<label class="control-label col-sm-2">Currency:</label>
+    					<div class="col-sm-3">
+    					
+    					<input readonly="readonly" class="form-control input-sm" type="text" placeholder=""
+    								id="currency_name" name="currency_name" 
+    								value="<?php if($target->getCurrency()!==null): echo $target->getCurrency()->getCurrency(); endif;?>">
+    					<input type="hidden" class="form-control input-sm" placeholder=""
+    								id="currency_id" name="currency_id" 
+    								value="<?php if($target->getCurrency()!==null): echo $target->getCurrency()->getId(); endif;?>">
+    					</div>
    					</div>
 					
 					
@@ -175,12 +154,15 @@ if (count ( $errors ) > 0) {
 					<label class="control-label col-sm-2" >Description</label>
             		<div class="col-sm-8">
             			<input class="form-control input-sm" type="text"  placeholder=""
-            				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+            				name="remarks" value="<?php 
+            				if($target!==null): 
+            				echo 'A/P Invoice from Contract/PO:'. $target->getSysNumber(); 
+            				endif;
+            				
+            				?>">
             		</div>
 				</div>
-					
-					
-			</div>
+				</div>
 					
 				<hr>
 				<div class="form-group margin-bottom">
@@ -210,8 +192,6 @@ $('#invoiceDate').bind('change', function() {
 $( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='grDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
-
 
 $( "#vendor_name_1" ).autocomplete({
     source: "/bp/vendor-search/auto-complete",

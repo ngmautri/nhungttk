@@ -4,14 +4,14 @@ namespace Procure\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Procure\Controller\PrRowController;
+use Procure\Controller\PrController;
 
 /**
  * 
  * @author nmt
  *
  */
-class PrRowControllerFactory implements FactoryInterface {
+class PoControllerFactory implements FactoryInterface {
 	
 	/**
 	 *
@@ -23,15 +23,10 @@ class PrRowControllerFactory implements FactoryInterface {
 		
 		$sm = $serviceLocator->getServiceLocator();
 			
-		$controller = new PrRowController();
+		$controller = new PoController();
 			
 		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
 		$controller->setDoctrineEM($sv );
-		
-		//Vendor Search Service
-		$sv =  $sm->get ('Procure\Service\PrSearchService' );
-		$controller->setPrSearchService($sv );
-		
 		
 		return $controller;
 	}

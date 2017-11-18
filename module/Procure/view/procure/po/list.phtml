@@ -1,13 +1,13 @@
-    <?php /**@var \Application\Entity\FinVendorInvoice $a ; */ ?>
+    <?php /**@var \Application\Entity\NmtProcurePo $a ; */ ?>
 
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
-		<li><a href="#general">Vendor Document:</a></li>
+		<li><a href="#general">Contract /PO List:</a></li>
 	</ul>
 <div id="general">
 
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/finance/v-invoice/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Vendor Invoice</a>
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/procure/po/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Contract /PO</a>
 <hr>
 
 <div>
@@ -20,7 +20,7 @@
 		style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 
 		<form class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/finance/v-invoice/list" method="get"
+			action="<?php echo $this->baseUrl ?>/procure/po/list" method="get"
 			enctype="multipart/form-data">
 
 			<div class="form-group margin-bottom">
@@ -28,12 +28,10 @@
 				<div class="col-sm-3">
 					<select name="currentState"  class="form-control input-sm">
 						<option value="">All</option>
-						<option <?php echo $currentState=='contract'? "selected='selected'":"";?>
-							value="contract">Contract /PO</option>
-						<option <?php echo $currentState=='draftInvoice'? "selected='selected'":"";?>
-							value="draftInvoice">Draft Invoice</option>
-						<option <?php echo $currentState=='finalInvoice'? "selected='selected'":"";?>
-							value="finalInvoice">Final Invoice</option>
+						<option <?php echo $currentState=='draftPo'? "selected='selected'":"";?>
+							value="draftPo">Draft Invoice</option>
+						<option <?php echo $currentState=='finalPo'? "selected='selected'":"";?>
+							value="finalPo">Final PO</option>
 					</select>
 				</div>
 			</div>
@@ -59,7 +57,7 @@
 						<option value="">None</option>
 						<option
 							<?php echo $sort_by=='invoiceDate'? "selected='selected'":"";?>
-							value="invoiceDate">Invoice Date</option>
+							value="poDate">PO Date</option>
 						<option
 							<?php echo $sort_by=='vendorName'? "selected='selected'":"";?>
 							value="vendorName">Vendor Name</option>
@@ -138,9 +136,6 @@ else:
 			<td><b>Vendor</b></td>
 			<td><b>Contract No</b></td>
 			<td><b>Contract Date</b></td>
-			<td><b>Invoice Number</b></td>
-			<td><b>Invoice Date</b></td>
-			<td><b>SAP No.</b></td>
 			<td><b>Rows</b></td>
 			<td><b>Curr</b></td>
 			<td><b>Gross <br>amount</b></td>
@@ -158,34 +153,30 @@ else:
 		$count ++;
 	
 		
-     /**@var \Application\Entity\FinVendorInvoice $a ; */ 
+     /**@var \Application\Entity\NmtProcurePo $a ; */ 
 		$a = $l[0];
 		?>
 		
 	<tr>
 			<td>
-<a style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
+				<?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?>
+			</td>
+			<td>
+<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
 			</td>
 
 			<td>
-<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
-			</td>
-			
-			<td>
-<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
+<a href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
 			
 			</td>
 			<td><?php echo $a->getContractNo()?></td>
 			<td><span style="color: gray;"><?php if($a->getContractDate()!==null):echo date_format($a->getContractDate(),"d-m-Y");   endif;?></span></td>
-			<td><?php echo $a->getInvoiceNo()?></td>
-			<td><span style="color: gray;"><?php if($a->getInvoiceDate()!==null):echo date_format($a->getInvoiceDate(),"d-m-Y");   endif;?></span></td>
-			<td><?php echo $a->getSapDoc()?></td>
 			<td><?php echo $l['active_row'];?></td>
 			<td><?php echo $a->getCurrency()->getCurrency()?></td>
 			<td><?php if($l['gross_amount']!==null): echo number_format($l['gross_amount'],2); endif;?></td>
 			<td><?php echo $a->getCurrentState()?></td>
 			<td>
-<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+<a href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
 			</td>
 	<?php endforeach; ?>
  </tbody>
@@ -197,7 +188,7 @@ else:
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/finance/v-invoice/list?is_active='. $is_active.'&currentState='. $currentState.
+	$base = $this->baseUrl . '/procure/po/list?is_active='. $is_active.'&currentState='. $currentState.
 	'&sort_by='. $sort_by.'&sort='. $sort;
 		$_connector_symbol = '&';
 		

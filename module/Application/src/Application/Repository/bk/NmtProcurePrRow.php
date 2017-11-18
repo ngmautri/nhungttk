@@ -32,6 +32,13 @@ class NmtProcurePrRow
     /**
      * @var string
      *
+     * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
+     */
+    private $rowIdentifer;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
@@ -156,13 +163,6 @@ class NmtProcurePrRow
     private $faRemarks;
     
     /**
-     * @var string
-     *
-     * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
-     */
-    private $rowIdentifer;
-    
-    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -246,6 +246,30 @@ class NmtProcurePrRow
     public function getRowNumber()
     {
         return $this->rowNumber;
+    }
+    
+    /**
+     * Set rowIdentifer
+     *
+     * @param string $rowIdentifer
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setRowIdentifer($rowIdentifer)
+    {
+        $this->rowIdentifer = $rowIdentifer;
+        
+        return $this;
+    }
+    
+    /**
+     * Get rowIdentifer
+     *
+     * @return string
+     */
+    public function getRowIdentifer()
+    {
+        return $this->rowIdentifer;
     }
     
     /**
@@ -678,30 +702,6 @@ class NmtProcurePrRow
     public function getFaRemarks()
     {
         return $this->faRemarks;
-    }
-    
-    /**
-     * Set rowIdentifer
-     *
-     * @param string $rowIdentifer
-     *
-     * @return NmtProcurePrRow
-     */
-    public function setRowIdentifer($rowIdentifer)
-    {
-        $this->rowIdentifer = $rowIdentifer;
-        
-        return $this;
-    }
-    
-    /**
-     * Get rowIdentifer
-     *
-     * @return string
-     */
-    public function getRowIdentifer()
-    {
-        return $this->rowIdentifer;
     }
     
     /**

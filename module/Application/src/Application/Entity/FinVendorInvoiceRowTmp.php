@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * FinVendorInvoiceRow
+ * FinVendorInvoiceRowTmp
  *
- * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="fin_vendor_invoice_row_INX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK7_idx", columns={"po_row_id"})})
+ * @ORM\Table(name="fin_vendor_invoice_row_tmp", indexes={@ORM\Index(name="fin_vendor_invoice_row_tmp_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_tmp_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_tmp_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_tmp_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_tmp_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="fin_vendor_invoice_row_tmp_INX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_tmp_FK8_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_tmp_FK7_idx", columns={"po_row_id"})})
  * @ORM\Entity
  */
-class FinVendorInvoiceRow
+class FinVendorInvoiceRowTmp
 {
     /**
      * @var integer
@@ -262,7 +262,7 @@ class FinVendorInvoiceRow
      *
      * @param integer $rowNumber
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setRowNumber($rowNumber)
     {
@@ -286,7 +286,7 @@ class FinVendorInvoiceRow
      *
      * @param string $token
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setToken($token)
     {
@@ -310,7 +310,7 @@ class FinVendorInvoiceRow
      *
      * @param integer $quantity
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setQuantity($quantity)
     {
@@ -334,7 +334,7 @@ class FinVendorInvoiceRow
      *
      * @param string $unitPrice
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setUnitPrice($unitPrice)
     {
@@ -358,7 +358,7 @@ class FinVendorInvoiceRow
      *
      * @param string $netAmount
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setNetAmount($netAmount)
     {
@@ -382,7 +382,7 @@ class FinVendorInvoiceRow
      *
      * @param string $unit
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setUnit($unit)
     {
@@ -406,7 +406,7 @@ class FinVendorInvoiceRow
      *
      * @param string $itemUnit
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setItemUnit($itemUnit)
     {
@@ -430,7 +430,7 @@ class FinVendorInvoiceRow
      *
      * @param string $conversionFactor
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setConversionFactor($conversionFactor)
     {
@@ -454,7 +454,7 @@ class FinVendorInvoiceRow
      *
      * @param string $converstionText
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setConverstionText($converstionText)
     {
@@ -478,7 +478,7 @@ class FinVendorInvoiceRow
      *
      * @param integer $taxRate
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setTaxRate($taxRate)
     {
@@ -502,7 +502,7 @@ class FinVendorInvoiceRow
      *
      * @param string $remarks
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setRemarks($remarks)
     {
@@ -526,7 +526,7 @@ class FinVendorInvoiceRow
      *
      * @param boolean $isActive
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setIsActive($isActive)
     {
@@ -550,7 +550,7 @@ class FinVendorInvoiceRow
      *
      * @param \DateTime $createdOn
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setCreatedOn($createdOn)
     {
@@ -574,7 +574,7 @@ class FinVendorInvoiceRow
      *
      * @param \DateTime $lastchangeOn
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setLastchangeOn($lastchangeOn)
     {
@@ -598,7 +598,7 @@ class FinVendorInvoiceRow
      *
      * @param string $currentState
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setCurrentState($currentState)
     {
@@ -622,7 +622,7 @@ class FinVendorInvoiceRow
      *
      * @param string $vendorItemCode
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setVendorItemCode($vendorItemCode)
     {
@@ -646,7 +646,7 @@ class FinVendorInvoiceRow
      *
      * @param boolean $traceStock
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setTraceStock($traceStock)
     {
@@ -670,7 +670,7 @@ class FinVendorInvoiceRow
      *
      * @param string $grossAmount
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setGrossAmount($grossAmount)
     {
@@ -694,7 +694,7 @@ class FinVendorInvoiceRow
      *
      * @param string $taxAmount
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setTaxAmount($taxAmount)
     {
@@ -718,7 +718,7 @@ class FinVendorInvoiceRow
      *
      * @param string $faRemarks
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setFaRemarks($faRemarks)
     {
@@ -742,7 +742,7 @@ class FinVendorInvoiceRow
      *
      * @param string $rowIndentifer
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setRowIndentifer($rowIndentifer)
     {
@@ -766,7 +766,7 @@ class FinVendorInvoiceRow
      *
      * @param integer $discountRate
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setDiscountRate($discountRate)
     {
@@ -790,7 +790,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setInvoice(\Application\Entity\FinVendorInvoice $invoice = null)
     {
@@ -814,7 +814,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\NmtProcurePrRow $prRow
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setPrRow(\Application\Entity\NmtProcurePrRow $prRow = null)
     {
@@ -838,7 +838,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
@@ -862,7 +862,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\NmtInventoryWarehouse $warehouse
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
     {
@@ -886,7 +886,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\MlaUsers $lastchangedBy
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setLastchangedBy(\Application\Entity\MlaUsers $lastchangedBy = null)
     {
@@ -910,7 +910,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\NmtProcurePoRow $poRow
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setPoRow(\Application\Entity\NmtProcurePoRow $poRow = null)
     {
@@ -934,7 +934,7 @@ class FinVendorInvoiceRow
      *
      * @param \Application\Entity\NmtInventoryItem $item
      *
-     * @return FinVendorInvoiceRow
+     * @return FinVendorInvoiceRowTmp
      */
     public function setItem(\Application\Entity\NmtInventoryItem $item = null)
     {

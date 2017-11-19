@@ -169,6 +169,13 @@ class NmtProcurePoRow
     private $rowIdentifer;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="discount_rate", type="integer", nullable=true)
+     */
+    private $discountRate;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -752,6 +759,30 @@ class NmtProcurePoRow
     public function getRowIdentifer()
     {
         return $this->rowIdentifer;
+    }
+
+    /**
+     * Set discountRate
+     *
+     * @param integer $discountRate
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setDiscountRate($discountRate)
+    {
+        $this->discountRate = $discountRate;
+
+        return $this;
+    }
+
+    /**
+     * Get discountRate
+     *
+     * @return integer
+     */
+    public function getDiscountRate()
+    {
+        return $this->discountRate;
     }
 
     /**

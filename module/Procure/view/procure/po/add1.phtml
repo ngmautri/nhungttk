@@ -145,20 +145,6 @@ if (count ( $errors ) > 0) {
             				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
             		</div>
 				</div>
-				<hr>
-					<div class="form-group margin-bottom">
-					<label class="control-label col-sm-2" ></label>
-            		<div class="col-sm-3">
-            		
-  <a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Edit</a>       		
-   <a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>       		
-
-</div>
-				</div>
-					
 			</div>
 			</fieldset>
 		</form>

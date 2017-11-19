@@ -14,9 +14,10 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
+<h4><strong>A/P Invoice:<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Vendor Document</a></li>
+		<li><a href="#general">&nbsp;A/P Invoice</a></li>
 		<li><a
 			href="/finance/v-invoice-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
 		
@@ -30,8 +31,10 @@ if (count ( $errors ) > 0) {
 	<div id="general" style="font-size: 9pt">
 	
 					<div style="position:relative; float:right;">
+<a class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>       		
+					
 <a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Edit</a>       		
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Apply</a>       		
    <a class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>       		
@@ -520,7 +523,7 @@ $( "#vendor_name_1" ).autocomplete({
                 //alert(sent_list);
                   
                   $.ajax({
-                      url: '/finance/v-invoice-row/update-row',
+                      url: '/finance/v-invoice-row/update-row-tmp',
                       data: {
                           sent_list: sent_list
                       },
@@ -572,7 +575,7 @@ $( "#vendor_name_1" ).autocomplete({
         { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
         { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},
         
-        { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: false},
+        { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: true},
         { title: "Unit Price", dataType: "integer", dataIndx: "row_unit_price", width:90, align: 'right',editable: false},
         { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},
         { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
@@ -594,7 +597,7 @@ $( "#vendor_name_1" ).autocomplete({
               location: "remote",
               method: "GET",
               recIndx: "row_id",
-              url: "/finance/v-invoice-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+              url: "/finance/v-invoice-row/gird-tmp?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }
@@ -635,7 +638,7 @@ $( "#vendor_name_1" ).autocomplete({
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/finance/v-invoice-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+            redirectUrl="/finance/v-invoice-row/edit-tmp?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');
@@ -682,5 +685,8 @@ $( "#vendor_name_1" ).autocomplete({
         }
     });        
 
+    function refreshGird(){
+    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+	}
 </script>
 

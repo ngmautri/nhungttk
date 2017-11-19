@@ -740,8 +740,158 @@ class VInvoiceRowController extends AbstractActionController
         $response->setContent(json_encode($a_json_final));
         return $response;
     }
+    
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function girdTmpAction()
+    {
+        $request = $this->getRequest();
+        
+        // $pq_curPage = $_GET ["pq_curpage"];
+        // $pq_rPP = $_GET ["pq_rpp"];
+        
+        $target_id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        $criteria = array(
+            'id' => $target_id,
+            'token' => $token
+        );
+        
+        /**
+         *
+         * @todo : Change Target
+         */
+        $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+        
+        $a_json_final = array();
+        $a_json = array();
+        $a_json_row = array();
+        $escaper = new Escaper();
+        
+        if ($target !== null) {
+            
+            $criteria = array(
+                'invoice' => $target_id,
+                'isActive' => 1
+            );
+            
+            $query = 'SELECT e FROM Application\Entity\FinVendorInvoiceRowTmp e
+            WHERE e.invoice=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
+            
+            $list = $this->doctrineEM->createQuery($query)
+            ->setParameters(array(
+                "1" => $target,
+                "2" => 1
+                
+            ))
+            ->getResult();
+            
+            $total_records = 0;
+            if (count($list) > 0) {
+                $escaper = new Escaper();
+                
+                $total_records = count($list);
+                foreach ($list as $a) {
+                    
+                    /** @var \Application\Entity\FinVendorInvoiceRowTmp $a ;*/
+                    
+                    $a_json_row["row_id"] = $a->getId();
+                    $a_json_row["row_token"] = $a->getToken();
+                    $a_json_row["row_number"] = $a->getRowNumber();
+                    $a_json_row["row_unit"] = $a->getUnit();
+                    $a_json_row["row_quantity"] = $a->getQuantity();
+                    
+                    if ($a->getUnitPrice() !== null) {
+                        $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), 2);
+                    } else {
+                        $a_json_row["row_unit_price"] = 0;
+                    }
+                    
+                    if ($a->getNetAmount() !== null) {
+                        $a_json_row["row_net"] = number_format($a->getNetAmount(), 2);
+                    } else {
+                        $a_json_row["row_net"] = 0;
+                    }
+                    
+                    if ($a->getTaxRate() !== null) {
+                        $a_json_row["row_tax_rate"] = $a->getTaxRate();
+                    } else {
+                        $a_json_row["row_tax_rate"] = 0;
+                    }
+                    
+                    if ($a->getGrossAmount() !== null) {
+                        $a_json_row["row_gross"] = number_format($a->getGrossAmount(), 2);
+                    } else {
+                        $a_json_row["row_gross"] = 0;
+                    }
+                    
+                    $a_json_row["pr_number"] = "";
+                    if ($a->getPrRow() !== null) {
+                        if ($a->getPrRow()->getPr() !== null) {
+                            
+                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
+                            ->getPr()
+                            ->getToken() . '&entity_id=' . $a->getPrRow()
+                            ->getPr()
+                            ->getId() . '&checkum=' . $a->getPrRow()
+                            ->getPr()
+                            ->getChecksum() . '"> ... </a>';
+                            
+                            $a_json_row["pr_number"] = $a->getPrRow()
+                            ->getPr()
+                            ->getPrNumber() . $link;
+                        }
+                    }
+                    
+                    // $a_json_row ["item_name"]="";
+                    /*
+                     * if( $a_json_row ["item_name"]!==null){
+                     * $a_json_row ["item_name"] = $escaper->escapeJs($a->getItem()->getItemName());
+                     * }
+                     */
+                    
+                    $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
+                    if ($a->getItem()->getItemName() !== null) {
+                        $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
+                            ->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                    } else {
+                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                    }
+                    
+                    if (strlen($a->getItem()->getItemName()) < 35) {
+                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
+                    } else {
+                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                    }
+                    
+                    // $a_json_row["item_name"] = $a->getItem()->getItemName();
+                    
+                    $a_json_row["item_sku"] = $a->getItem()->getItemSku();
+                    $a_json_row["item_token"] = $a->getItem()->getToken();
+                    $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
+                    $a_json_row["fa_remarks"] = $a->getFaRemarks();
+                    $a_json_row["remarks"] = $a->getRemarks();
+                    
+                    $a_json[] = $a_json_row;
+                }
+            }
+            
+            $a_json_final['data'] = $a_json;
+            $a_json_final['totalRecords'] = $total_records;
+            // $a_json_final ['curPage'] = $pq_curPage;
+        }
+        
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
 
     /**
+     * 
+     * @return \Zend\Http\Response
      */
     public function downloadAction()
     {
@@ -984,6 +1134,52 @@ class VInvoiceRowController extends AbstractActionController
         return $response;
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function updateRowTmpAction()
+    {
+        $a_json_final = array();
+        $escaper = new Escaper();
+        
+        /*
+         * $pq_curPage = $_GET ["pq_curpage"];
+         * $pq_rPP = $_GET ["pq_rpp"];
+         */
+        $sent_list = json_decode($_POST['sent_list'], true);
+        // echo json_encode($sent_list);
+        
+        $to_update = $sent_list['updateList'];
+        foreach ($to_update as $a) {
+            $criteria = array(
+                'id' => $a['row_id'],
+                'token' => $a['row_token']
+            );
+            
+            /** @var \Application\Entity\FinVendorInvoiceRowTmp $entity */
+            $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRowTmp')->findOneBy($criteria);
+            
+            if ($entity != null) {
+                $entity->setFaRemarks($a['fa_remarks']);
+                $entity->setRowNumber($a['row_number']);
+                $entity->setQuantity($a['row_quantity']);
+                $entity->setNetAmount($a['row_quantity']*$entity->getUnitPrice());
+                
+                // $a_json_final['updateList']=$a['row_id'] . 'has been updated';
+                $this->doctrineEM->persist($entity);
+            }
+        }
+        $this->doctrineEM->flush();
+        
+        // $a_json_final["updateList"]= json_encode($sent_list["updateList"]);
+        
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($sent_list));
+        return $response;
+    }
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel

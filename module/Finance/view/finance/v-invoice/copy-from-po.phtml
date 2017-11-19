@@ -24,8 +24,13 @@ if (count ( $errors ) > 0) {
 
 		<form id="Create_Inv_Form" class="form-horizontal"
 			action="/finance/v-invoice/copy-from-po" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" />
+			<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+			<input type="hidden" name="target_id" value="<?php if($target!==null): echo $target->getId(); endif;?>" />
+			<input type="hidden" name="target_token" value="<?php if($target!==null): echo $target->getToken(); endif;?>" />
+				
+				
+				
+				
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
@@ -37,7 +42,6 @@ if (count ( $errors ) > 0) {
 					<div class="col-sm-3">
 					<select name="currentState" class="form-control input-sm">
 							<option value="">Please Select</option>
-							<option <?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?> value="contract">Contract /PO</option>
 							<option <?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?> value="draftInvoice">Draft Invoice</option>
 							<option <?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?> value="finalInvoice">Final Invoice</option>
     				</select>

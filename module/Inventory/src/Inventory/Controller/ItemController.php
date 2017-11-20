@@ -29,7 +29,7 @@ use Exception;
 class ItemController extends AbstractActionController
 {
 
-    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     protected $doctrineEM;
 
@@ -154,7 +154,9 @@ class ItemController extends AbstractActionController
             
             $itemType = $request->getPost('itemType');
             $monitoredBy = $request->getPost('monitoredBy');
-            
+            if($monitoredBy==''){
+                $monitoredBy =null;
+            }
             
             $item_category_id = $request->getPost('item_category_id');
             $department_id = $request->getPost('department_id');
@@ -293,6 +295,8 @@ class ItemController extends AbstractActionController
             // No Error
             try {
                 
+                 
+                
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     'email' => $this->identity()
                 ));
@@ -341,9 +345,12 @@ class ItemController extends AbstractActionController
                 // update search index.
                 // $this->itemSearchService->addDocument ( $new_item, true );
                 $this->itemSearchService->updateIndex(1, $new_item, false);
+                 
             } catch (Exception $e) {
+                
+                $errors[] = $e->getMessage();
                 return new ViewModel(array(
-                    'errors' => $e->getMessage(),
+                    'errors' => $errors,
                     'redirectUrl' => $redirectUrl,
                     'entity' => $entity,
                     'department' => $department,
@@ -420,7 +427,9 @@ class ItemController extends AbstractActionController
                 
                 $itemType = $request->getPost('itemType');
                 $monitoredBy = $request->getPost('monitoredBy');
-                
+                if($monitoredBy==''){
+                    $monitoredBy =null;
+                }
                 
                 $item_category_id = $request->getPost('item_category_id');
                 $department_id = $request->getPost('department_id');

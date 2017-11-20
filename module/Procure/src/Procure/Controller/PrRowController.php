@@ -293,7 +293,7 @@ class PrRowController extends AbstractActionController
                 $entity->setChecksum(md5(uniqid("pr_row_" . $entity->getId()) . microtime()));
                 $this->doctrineEM->flush();
                 
-                $index_update_status = $this->prSearchService->updateIndex(1, $entity, fasle);
+                $index_update_status = $this->prSearchService->updateIndex(1, $entity, FALSE);
                 
                 $redirectUrl = "/procure/pr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getID() . "&checksum=" . $target->getChecksum();
                 $this->flashMessenger()->addMessage("Row '" . $entity->getRowIdentifer() . "' has been created successfully!");

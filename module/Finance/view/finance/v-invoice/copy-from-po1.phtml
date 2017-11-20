@@ -34,7 +34,7 @@ if (count ( $errors ) > 0) {
 <a class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>       		
 					
 <a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Apply</a>       		
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/accept-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Accept</a>       		
    <a class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>       		

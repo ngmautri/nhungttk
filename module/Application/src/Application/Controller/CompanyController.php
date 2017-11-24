@@ -9,22 +9,16 @@
  */
 namespace Application\Controller;
 
+use Application\Entity\NmtApplicationCompany;
+use Application\Entity\NmtApplicationCompanyLogo;
+use Application\Entity\NmtApplicationCompanyMember;
+use Application\Entity\NmtApplicationDepartment;
+use Application\Listener\PictureUploadListener;
+use Application\Service\DepartmentService;
+use Doctrine\ORM\EntityManager;
+use User\Model\UserTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Model\AclRoleTable;
-use Nmt\Paginator;
-use Application\Service\DepartmentService;
-use Application\Entity\NmtApplicationAclRole;
-use Doctrine\ORM\EntityManager;
-use Application\Entity\NmtApplicationAclUserRole;
-use User\Model\UserTable;
-use Application\Entity\NmtApplicationAclRoleResource;
-use Application\Entity\NmtApplicationDepartment;
-use Application\Entity\NmtApplicationCountry;
-use Application\Entity\NmtApplicationCompany;
-use Application\Entity\NmtApplicationCompanyMember;
-use Application\Entity\NmtApplicationCompanyLogo;
-use Application\Listener\PictureUploadListener;
 
 /**
  *

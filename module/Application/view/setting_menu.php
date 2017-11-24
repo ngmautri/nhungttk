@@ -7,6 +7,9 @@
 	<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/workflow/wf"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;&nbsp;WorkflowManagement</a></li>
 	<li class="divider"></li>
+	<li><a href="<?php echo $this->baseUrl ?>/application/backup/db">Backup DB
+	
+	<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/user/admin/asset-index">Update
 			Asset Index</a></li>
 	<li><a href="<?php echo $this->baseUrl ?>/user/admin/sparepart-index">Update

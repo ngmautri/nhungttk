@@ -1273,7 +1273,7 @@ class PRController extends AbstractActionController {
 		} else {
 			$resultsPerPage = $this->params ()->fromQuery ( 'perPage' );
 		}
-		;
+		;f
 		
 		if (is_null ( $this->params ()->fromQuery ( 'page' ) )) {
 			$page = 1;

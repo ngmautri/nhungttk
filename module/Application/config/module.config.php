@@ -211,7 +211,8 @@ return array(
             
             'Application\Controller\Pdf' => 'Application\Controller\PdfControllerFactory',
             'Application\Controller\Company' => 'Application\Controller\CompanyControllerFactory',
-            'Application\Controller\DocNumber' => 'Application\Controller\DocNumberControllerFactory'
+            'Application\Controller\DocNumber' => 'Application\Controller\DocNumberControllerFactory',
+            'Application\Controller\Backup' => 'Application\Controller\BackupControllerFactory'
             
         
         )

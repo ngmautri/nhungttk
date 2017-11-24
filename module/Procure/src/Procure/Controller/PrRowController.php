@@ -20,7 +20,6 @@ use Application\Entity\NmtProcurePr;
 use Application\Entity\NmtProcurePrRow;
 use Application\Entity\NmtInventoryItem;
 use Zend\Escaper\Escaper;
-
 use PHPExcel;
 use PHPExcel_IOFactory;
 use Procure\Service\PrSearchService;
@@ -203,7 +202,7 @@ class PrRowController extends AbstractActionController
                     }
                 }
                 
-                $n = $pr['total_row'] +1 ;
+                $n = $pr['total_row'] + 1;
                 $rowIdentifer = $target->getPrAutoNumber() . "-$n";
                 
                 $entity->setRowNumber($rowNumber);
@@ -669,7 +668,6 @@ class PrRowController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
         
-        
         $format = (int) $this->params()->fromQuery('format');
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
@@ -828,7 +826,7 @@ class PrRowController extends AbstractActionController
                 $header = 2;
                 $i = 0;
                 
-                //a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t
+                // a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $header, "FA Remarks");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $header, "#");
                 
@@ -860,36 +858,41 @@ class PrRowController extends AbstractActionController
                     $i ++;
                     $l = $header + $i;
                     
-                    
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $l, $a->getFaRemarks());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $l, $i);
                     
-                    if($a->getPr()!== null){
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, $a->getPr()->getPrNumber());
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, $a->getPr()->getSubmittedOn());
-                    }else{
+                    if ($a->getPr() !== null) {
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, $a->getPr()
+                            ->getPrNumber());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, $a->getPr()
+                            ->getSubmittedOn());
+                    } else {
                         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, " No PR No.");
                         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, "");
                     }
                     
-                    if($a->getItem()!== null){
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $l, $a->getItem()->getItemSku());
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, $a->getItem()->getId());
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $l, $a->getItem()->getItemName());
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, $a->getItem()->getManufacturerModel());
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, $a->getItem()->getManufacturerSerial());
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $l, $a->getItem()->getManufacturerCode());
-                         
-                    }else{
+                    if ($a->getItem() !== null) {
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $l, $a->getItem()
+                            ->getItemSku());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, $a->getItem()
+                            ->getId());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $l, $a->getItem()
+                            ->getItemName());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, $a->getItem()
+                            ->getManufacturerModel());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, $a->getItem()
+                            ->getManufacturerSerial());
+                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $l, $a->getItem()
+                            ->getManufacturerCode());
+                    } else {
                         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $l, "");
                         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, "");
                         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, "");
                         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, "");
                         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, "");
                         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $l, "");
-                        
                     }
-          
+                    
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $l, $a->getQuantity());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $l, $r['total_received']);
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $l, $r['confirmed_balance']);
@@ -897,7 +900,7 @@ class PrRowController extends AbstractActionController
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $l, $r['vendor_name']);
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $r['vendor_unit_price']);
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $r['currency']);
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRemarks());                    
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRemarks());
                 }
                 
                 // Rename worksheet
@@ -1763,6 +1766,32 @@ class PrRowController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function prOfItemAction()
+    {
+        $request = $this->getRequest();
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $this->layout("layout/user/ajax");
+        
+        $item_id = (int) $this->params()->fromQuery('item_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $rows = $res->getPrOfItem($item_id, $token);
+        
+        return new ViewModel(array(
+            'rows' => $rows
+        ));
+    }
+    
 
     /**
      *

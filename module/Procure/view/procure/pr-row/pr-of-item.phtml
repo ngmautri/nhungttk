@@ -1,0 +1,74 @@
+<?php if (count($rows)==0): ?>
+
+<h5>no thing found!</h5>
+
+<?php else: ?>
+<h5 style="color: gray;" id="total_ordered"></h5>
+<h5 style="color: gray;" id="total_received"></h5>
+<h5 style="color: gray;" id="total_balance"></h5>
+
+<table style="font-size: 10pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Pr No.</b></td>
+			<td><b>Pr No.</b></td>
+			<td><b>Pr Date</b></td>
+			<td><b>Unit</b></td>
+			<td><b>Ordered <br> Q'ty</b></td>
+			<td><b>Receipted<br>Q'ty</b></td>
+			<td><b>Balance</b></td>
+			
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	$total_ordered = 0;
+	$total_received = 0;
+	$total_balance = 0;
+	
+	foreach ( $rows as $r ) :
+		$count ++;
+		/**@var \Application\Entity\NmtProcurePrRow $a ;*/		
+		$a = $r[0];
+		$total_ordered =  $total_ordered + $a->getQuantity();
+		$total_received =  $total_received + $r['total_received'];
+		$total_balance =  $total_balance + $r['confirmed_balance'];
+		
+		
+		?>
+	 <tr>
+	 <td><?php echo $count;?></td>
+	 		<td><a href="/procure/pr/show?entity_id=<?php echo $a->getPr()->getId();?>&token=<?php echo $a->getPr()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getPr()->getPrAutoNumber());?></a></td>
+			<td><?php echo $this->escapeHtml($a->getPr()->getPrNumber());?></td>
+			<td><?php if(!$a->getPr()->getCreatedOn()==null): echo date_format ( $a->getPr()->getSubmittedOn(), "d/m/y");endif;?> </td>
+				<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
+		
+			<td><?php echo $a->getQuantity();?></td>
+			
+			<td><?php echo $r['total_received'];?></td>
+			<td><?php echo $r['confirmed_balance'];?></td>
+	
+			<td>
+			</td>
+			
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<script type="text/javascript">
+$('#total_ordered').text("<?php echo "Ordered Q'ty: " . $total_ordered; ?>");
+$('#total_received').text("<?php echo "Received Q'ty: ". $total_received; ?>");
+$('#total_balance').text("<?php echo "Balance: " . $total_balance; ?>");
+
+</script>
+
+<?php endif; ?>
+	

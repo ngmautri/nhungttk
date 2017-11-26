@@ -39,11 +39,8 @@ class PrSearchService
         // take long time
         set_time_limit(1500);
         try {
-            $index = Lucene::create(getcwd() . self::ITEM_INDEX);
-            
+            $index = Lucene::create(getcwd() . self::ITEM_INDEX);            
             Analyzer::setDefault(new CaseInsensitive());
-            
-            $row = new NmtProcurePrRow();
             
             $query = 'SELECT e, i, pr FROM Application\Entity\NmtProcurePrRow e JOIN e.item i JOIN e.pr pr Where 1=?1';
             $records = $this->doctrineEM->createQuery($query)
@@ -57,12 +54,12 @@ class PrSearchService
             if (count($records) > 0) {
                 
                 $log = array();
-                foreach ($records as $r) {
+                foreach ($records as $row) {
                     
                     try {
                         $doc = new Document();
                         
-                        $row = $r;
+                        /** @var \Application\Entity\NmtProcurePrRow $row ; */
                         $doc->addField(Field::UnIndexed('pr_row_id', $row->getId()));
                         $doc->addField(Field::UnIndexed('token', $row->getToken()));
                         $doc->addField(Field::Keyword('row_token_keyword', $row->getToken() . "__" . $row->getId()));
@@ -112,6 +109,8 @@ class PrSearchService
                                 ->getAssetLabel()));
                             $doc->addField(Field::Keyword('item_sku_key', $row->getItem()
                                 ->getItemSku()));
+                            $doc->addField ( Field::Keyword ( 'item_sys_number', $row->getItem ()->getSysNumber() ) );
+                            
                             
                             $doc->addField(Field::text('item_name', $row->getItem()
                                 ->getItemName()));
@@ -244,6 +243,9 @@ class PrSearchService
                         ->getAssetLabel()));
                     $doc->addField(Field::Keyword('item_sku_key', $row->getItem()
                         ->getItemSku()));
+                    
+                    $doc->addField ( Field::Keyword ( 'item_sys_number', $row->getSysNumber() ) );
+                    
                     
                     $doc->addField(Field::text('item_name', $row->getItem()
                         ->getItemName()));

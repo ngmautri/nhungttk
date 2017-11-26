@@ -212,7 +212,7 @@ class PrController extends AbstractActionController
             $this->flashMessenger()->addMessage('Purchase Request "' . $prNumber . '" is created successfully!');
             
             // generate document
-            
+            //==================
             $criteria = array(
                 'isActive' => 1,
                 'subjectClass' => get_class($entity)

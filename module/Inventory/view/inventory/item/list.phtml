@@ -152,6 +152,7 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>Idf</b></td>
 			<td><b>SKU</b></td>
 			<td><b>Item Name</b></td>
 			<td><b>Item Code</b></td>
@@ -170,6 +171,11 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	 		<td>
+<a style="color: navy;" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $a['token'] ;?>&entity_id=<?php echo $a['id'];?>&checksum=<?php echo $a['checksum'];?>"><?php echo $a['sys_number'];?></a>
+	 		
+	 		</td>
+	
 			<td><?php echo $this->escapeHtml(($a['item_sku']));?></td>
 			<td>
 			 	<span class="dropdown"><a class="dropdown-toggle"	data-toggle="dropdown" href="#" title="<?php echo $this->escapeHtml($a['item_name']);?>" style="padding-left: 20px;padding-right: 10px; "><?php echo substr($this->escapeHtml($a['item_name']),0,45);?> <span class="caret"></span></a>

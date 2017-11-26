@@ -295,7 +295,38 @@ class ItemController extends AbstractActionController
             // No Error
             try {
                 
-                 
+                // generate document
+                //==================
+                $criteria = array(
+                    'isActive' => 1,
+                    'subjectClass' => get_class($entity)
+                );
+                
+                /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
+                $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
+                if ($docNumber != null) {
+                    $maxLen = strlen($docNumber->getToNumber());
+                    $currentLen = 1;
+                    $currentDoc = $docNumber->getPrefix();
+                    $current_no = $docNumber->getCurrentNumber();
+                    
+                    if ($current_no == null) {
+                        $current_no = $docNumber->getFromNumber();
+                    } else {
+                        $current_no ++;
+                        $currentLen = strlen($current_no);
+                    }                    
+                    $docNumber->setCurrentNumber($current_no);
+                    
+                    $tmp = "";
+                    for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
+                        
+                        $tmp = $tmp . "0";
+                    }
+                    
+                    $currentDoc = $currentDoc . $tmp.$current_no;
+                    $entity->setSysNumber($currentDoc);
+                }
                 
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     'email' => $this->identity()
@@ -401,6 +432,7 @@ class ItemController extends AbstractActionController
                 'token' => $token
             );
             
+            /**@var \Application\Entity\NmtInventoryItem $entity ;*/
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
             
             if ($entity == null) {
@@ -444,6 +476,9 @@ class ItemController extends AbstractActionController
                 $isSparepart = (int) $request->getPost('isSparepart');
                 $isStocked = (int) $request->getPost('isStocked');
                 
+                $assetLabel = $request->getPost('assetLabel');
+                
+                
                 $manufacturer = $request->getPost('manufacturer');
                 $manufacturerCatalog = $request->getPost('manufacturerCatalog');
                 $manufacturerCode = $request->getPost('manufacturerCode');
@@ -455,10 +490,7 @@ class ItemController extends AbstractActionController
                 
                 $remarks = $request->getPost('remarks');
                 
-                // Create NEW ITEM
-                // $entity = new NmtInventoryItem ();
-                
-                if ($itemSku === '' or $itemSku === null) {
+                 if ($itemSku === '' or $itemSku === null) {
                     $errors[] = 'Please give Item ID';
                 } else {
                     $entity->setItemSku($itemSku);
@@ -521,6 +553,8 @@ class ItemController extends AbstractActionController
                 $entity->setManufacturerCode($manufacturerCode);
                 $entity->setManufacturerModel($manufacturerModel);
                 $entity->setManufacturerSerial($manufacturerSerial);
+                
+                $entity->setAssetLabel($assetLabel);
                 
                 // $entity->setOrigin($origin);
                 // $entity->setSerialNumber($serialNumber);
@@ -1145,6 +1179,82 @@ class ItemController extends AbstractActionController
         }
         
         $this->doctrineEM->flush();
+        
+        // update search index()
+        $this->itemSearchService->createItemIndex();
+        
+        $total_records = count($list);
+        
+        return new ViewModel(array(
+            'total_records' => $total_records
+        ));
+    }
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function updateSysNumberAction()
+    {
+        $criteria = array("isActive"=>1);
+        
+        // var_dump($criteria);
+        $sort_criteria = array("createdOn"=>"ASC");
+        
+        
+         
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findBy($criteria, $sort_criteria);
+        $criteria = array(
+            'isActive' => 1,
+            'subjectClass' => 'Application\Entity\NmtInventoryItem'
+        );
+        
+        /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
+        $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
+            
+        
+        if (count($list) > 0) {
+            
+            $current_no=0;
+            foreach ($list as $entity) {
+                
+                /** @var \Application\Entity\NmtInventoryItem $entity ; */
+                
+                $criteria = array(
+                    'isActive' => 1,
+                    'subjectClass' => 'Application\Entity\NmtInventoryItem'
+                );
+                
+                /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
+                $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
+                
+                // generate document
+                //==================
+                 if ($docNumber != null) {
+                    $maxLen = strlen($docNumber->getToNumber());
+                    $currentDoc = $docNumber->getPrefix();
+                   
+                    $current_no ++;
+                    $currentLen = strlen($current_no);
+                    
+                    $tmp = "";
+                    for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
+                        
+                        $tmp = $tmp . "0";
+                    }
+                    
+                    $currentDoc = $currentDoc . $tmp.$current_no;
+                    $entity->setSysNumber($currentDoc);
+                }
+                
+                 
+             }
+        }
+        
+        $docNumber->setCurrentNumber($current_no);
+        $this->doctrineEM->flush();
+        
         
         // update search index()
         $this->itemSearchService->createItemIndex();

@@ -613,7 +613,7 @@ class PoRowController extends AbstractActionController
             );
             
             $query = 'SELECT e FROM Application\Entity\NmtProcurePoRow e
-            WHERE e.po=?1 AND e.isActive =?2 ORDER BY e.rowIdentifer';
+            WHERE e.po=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
             
             $list = $this->doctrineEM->createQuery($query)
                 ->setParameters(array(
@@ -792,6 +792,7 @@ class PoRowController extends AbstractActionController
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $header, "RowNo.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Remarks");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Ref.No.");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "Item.No.");
                 
                 foreach ($rows as $r) {
                     
@@ -844,6 +845,8 @@ class PoRowController extends AbstractActionController
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRowIdentifer());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()->getSysNumber());
+                    
                 }
                 
                 // Rename worksheet

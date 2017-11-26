@@ -60,6 +60,7 @@ class ItemSearchService
                         $doc->addField(Field::Keyword('item_token_keyword', $row->getToken() . "__" . $row->getId()));
                         
                         $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
+                        $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
                         
                         $doc->addField(Field::Keyword('manufacturer_key', $row->getManufacturer()));
                         $doc->addField(Field::Keyword('manufacturer_model_key', $row->getManufacturerModel()));
@@ -155,6 +156,8 @@ class ItemSearchService
                 $doc->addField(Field::Keyword('item_token_keyword', $row->getToken() . "__" . $row->getId()));
                 
                 $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
+                $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
+                
                 
                 $doc->addField(Field::Keyword('manufacturer_key', $row->getManufacturer()));
                 $doc->addField(Field::Keyword('manufacturer_model_key', $row->getManufacturerModel()));
@@ -234,6 +237,8 @@ class ItemSearchService
                 $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
                 
                 $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
+                $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
+                
                 
                 $doc->addField(Field::Keyword('manufacturer_key', $row->getManufacturer()));
                 $doc->addField(Field::Keyword('manufacturer_model_key', $row->getManufacturerModel()));

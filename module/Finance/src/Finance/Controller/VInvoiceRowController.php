@@ -955,6 +955,7 @@ class VInvoiceRowController extends AbstractActionController
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $header, "Requested Name");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $header, "RowNo.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Remarks");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Item.No.");
                 
                 foreach ($rows as $r) {
                     
@@ -1006,6 +1007,8 @@ class VInvoiceRowController extends AbstractActionController
                     
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getItem()->getSysNumber());
+                    
                 }
                 
                 // Rename worksheet

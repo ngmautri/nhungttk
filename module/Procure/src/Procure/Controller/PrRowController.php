@@ -721,6 +721,8 @@ class PrRowController extends AbstractActionController
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $header, "Balance");
             
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $header, "Buying");
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $header, "Item.No.");
+            
             
             foreach ($rows as $r) {
                 
@@ -743,12 +745,15 @@ class PrRowController extends AbstractActionController
                 
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $l, $a->getItem()
                     ->getItemSku());
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, $a->getItem()
+                    ->getSysNumber());
+                
             }
             
             // Rename worksheet
             $objPHPExcel->getActiveSheet()->setTitle($target->getPrName());
             
-            $objPHPExcel->getActiveSheet()->setAutoFilter("A3:G3");
+            $objPHPExcel->getActiveSheet()->setAutoFilter("A3:H3");
             
             // Set active sheet index to the first sheet, so Excel opens this as the first sheet
             $objPHPExcel->setActiveSheetIndex(0);

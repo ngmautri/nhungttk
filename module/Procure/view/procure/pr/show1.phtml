@@ -1,157 +1,4 @@
-<?php   /**@var \Application\Entity\NmtProcurePr $entity ;*/ ?>
-   
-<div id="tabs" style="font-size: 9.5pt">
-	<ul>
-		<li><a href="#general"><i class="glyphicon glyphicon-shopping-cart"></i>&nbsp;Purchase Request</a></li>
-		<li><a
-			href="/procure/pr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
-		<li><a
-			href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
-
-	</ul>
-
-	<div id="general" style="font-size: 9pt">
-
-			<div style="position:relative; float:right;">
-						<a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
-									class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
-									
-																<a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/pr-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-<i class="fa fa-file-excel-o" aria-hidden="true"></i> &nbsp;Excel</a>
-																<a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/pr/submit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-<i class="fa fa-paper-plane-o" aria-hidden="true"></i> &nbsp;Submit</a>
-<a class="btn btn-default btn-sm" href="javascript:;" onclick = "showJqueryDialog('<?php echo $entity->getPrAutoNumber().' - '. $entity->getPrNumber() ; ?>','1550',$(window).height()-50,'/procure/pr/show1?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>&checksum=<?php echo $entity->getChecksum() ?>','j_loaded_data',true);"><i class="fa fa-window-maximize" aria-hidden="true"></i>
-Full Screen</a>	
-
-	
-
-	</div>
-
-		<form id="Create_PR_Form" class="form-horizontal"
-			action="/procure/pr/add" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" />
-
-
-			<fieldset>
-				<legend style="font-size: 9.5pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#pr_header" class="" data-toggle="collapse">PR HEADER: <?php echo (!$entity == null)? "(". $entity->getPrName() .")" :"";?></a>
-				</legend>
-				<div id="pr_header" class="collapse">
-
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">PR Number:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="prNumber"
-								value="<?php echo (!$entity == null)? $entity->getPrNumber():"";?>">
-						</div>
-
-						<label class="control-label col-sm-1" for="inputTag"></label>
-						<div class="col-sm-4">
-							<input
-								<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-							<input
-								<?php if(!$entity == null): echo ($entity->getIsDraft()== "1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
-
-						</div>
-
-					</div>
-
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">PR Name:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="prName" name="prName"
-								value="<?php echo (!$entity == null)? $entity->getPrName():"";?>">
-						</div>
-
-						<label class="control-label col-sm-2">Keywords:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="keywords" name="keywords"
-								value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
-						</div>
-					</div>
-					
-						<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" >Date:</label>
-		<div class="col-sm-3">
-<input class="form-control input-sm" type="text"  placeholder="" id = "submittedOn" name="submittedOn" 
-value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo date_format($entity->getSubmittedOn(),"Y-m-d"); endif; endif;?>" placeholder =" please select"/>
-		</div>
-	</div>
-	
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" >Total Rows:</label>
-		<div class="col-sm-3">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				id = "totalRowManual" name="totalRowManual" value="<?php echo (!$entity == null)? $entity->getTotalRowManual():"";?>">
-		</div>
-		
-	</div>
-
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Department</label>
-						<div class="col-sm-3">
-							<input disabled class="form-control input-sm" type="text"
-								id="department_name" placeholder="Please select!"
-								name="deparment_name"
-								value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeName(); endif;endif;?>">
-
-							<input type="hidden" class="form-control input-sm" type="text"
-								id="department_name_selected" placeholder="Please select!"
-								name="department_id"
-								value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeId(); endif;endif;?>">
-						</div>
-
-						<a style="color: #0080ff;" href="javascript:;"
-							onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i
-							class="glyphicon glyphicon-folder-open"></i>
-						</a>
-					</div>
-
-					<div class="form-group margin-bottom">
-                		<label class="control-label col-sm-2" >Remarks:</label>
-                		<div class="col-sm-8">
-                			<input class="form-control input-sm" type="text"  placeholder=""
-                				name="itemDescription" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
-                		</div>
-					</div>
-
-
-
-				</div>
-			</fieldset>
-		</form>
-
-
-		<fieldset>
-			<legend style="font-size: 9.5pt; color: gray;">
-				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-				<a href="#transaction" class="" data-toggle="collapse">PR ROWS:</a>
-			</legend>
-			<div id="transaction" class="collapse in">
-				<div id="pr_rows"></div>
-				<div id="pr_row_gird" style="margin: 1px;"></div>
-			</div>
-		</fieldset>
-
-
-
-	</div>
-
-
-</div>
-
-
+		<div id="pr_row_gird1" style="margin: 1px; font-size: 9pt"></div>
 
 <script>
 
@@ -291,7 +138,7 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "100%", height: $(window).height()-250, showTitle : false,
+	var obj = { width: "99%", height: $(window).height()-120, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
@@ -455,7 +302,7 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
              }
     };
     
-    var $grid = $("#pr_row_gird").pqGrid(obj);
+    var $grid = $("#pr_row_gird1").pqGrid(obj);
 
     $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         //debugger;

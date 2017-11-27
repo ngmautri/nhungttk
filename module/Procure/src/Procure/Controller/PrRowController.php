@@ -417,6 +417,16 @@ class PrRowController extends AbstractActionController
      */
     public function all1Action()
     {
+        $request = $this->getRequest();
+        $redirectUrl = null;
+        
+        // accepted only ajax request
+        /* if (! $request->isXmlHttpRequest()) {
+         return $this->redirect()->toRoute('access_denied');
+         }
+         */
+        $this->layout("layout/user/ajax");
+        
         $item_type = $this->params()->fromQuery('item_type');
         $is_active = $this->params()->fromQuery('is_active');
         $is_fixed_asset = $this->params()->fromQuery('is_fixed_asset');

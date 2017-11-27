@@ -126,8 +126,10 @@
 
 	</div>
 </div>
-<br>
 
+
+<div style="color: gray;font-size: 9pt;margin-top: 8px"><?php echo "Sorted by = ".$sort_by;?>. <?php echo "Sort = ".$sort ?></div>
+<br>
 <?php
 
 if ($total_records <= 0) {
@@ -192,6 +194,7 @@ if ($total_records <= 0) {
 				href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $a['pr_token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['pr_checksum'] ?>">Show</a>
 				<a
 				href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo $a['pr_token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['pr_checksum'] ?>">Edit</a>
+				<a href="javascript:;" onclick = "showJqueryDialog('<?php echo $a['pr_auto_number'].' - '. $a['pr_number'] ; ?>','1550',$(window).height()-50,'/procure/pr/show1?token=<?php echo $a['pr_token'] ?>&entity_id=<?php echo $a['id'] ?>&checksum=<?php echo $a['pr_checksum'] ?>','j_loaded_data',true);">Quick Show</a>
 			</td>
 		</tr>
 <?php endforeach; ?>

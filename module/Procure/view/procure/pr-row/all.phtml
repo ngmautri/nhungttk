@@ -1,17 +1,24 @@
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><i class="glyphicon glyphicon-shopping-cart"></i>&nbsp;PR Row</a></li>
+	</ul>
 
-<div>
-	<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
-		href="#transaction" class="" data-toggle="collapse">FILTER</a>
+  
+	<div id="general" style="font-size: 9pt">
+	
+		
+
+
+
+<div><small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a style="font-size: 9.5pt" href="#transaction" class="" data-toggle="collapse">FILTER</a>
 </div>
+
+
 <div id="transaction" class="collapse">
 
-	<div
-		style="border: 1px; padding: 3px; font-size: 10pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
-
-		<form id="filter_form" class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/procure/pr-row/all" method="get"
-			enctype="multipart/form-data">
-
+	<div style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+			
+		<form id="filter_form" class="form-horizontal" action="<?php echo $this->baseUrl ?>/procure/pr-row/all" method="get" enctype="multipart/form-data">
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2" for="inputTag">PR Year</label>
 				<div class="col-sm-3">
@@ -95,28 +102,25 @@
 
 				</div>
 			</div>
-			<hr>
 			<div class="form-group margin-bottom">
 				<div class="col-sm-offset-2 col-sm-10">
-				
-						<a class="btn btn-default btn-sm"
-								href="javascript:;" onclick="submitForm('filter_form');">
-								<i class="fa fa-filter" aria-hidden="true"></i>&nbsp;&nbsp;Filter...</a>
-						<a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/pr-row/download-all?pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>"">
-<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
-						</button>
+					<a class="btn btn-default btn-sm" href="javascript:;" onClick="submitForm('filter_form');"><i class="fa fa-filter" aria-hidden="true"></i>&nbsp;&nbsp;Filter...</a>
 				</div>
 			</div>
-
 		</form>
-
-	</div>
+		</div>
 </div>
-<br>
 
+<div style="position:relative; float:right; margin-bottom: 3px">
+<a class="btn btn-default btn-sm" href="javascript:;" onclick = "showJqueryDialog('All Pr Row: <?php echo "Year= ".$pr_year;?>. <?php echo "Balance= ".$balance ?> ','1550',$(window).height()-50,'/procure/pr-row/all1?pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>','j_loaded_data',true);"><i class="fa fa-window-maximize" aria-hidden="true"></i>
+Full Screen</a>
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/procure/pr-row/download-all?pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
+    </div> 
+<div style="color: gray;font-size: 9pt;margin-top: 8px"><?php echo "Sorted by = ".$sort_by;?>. <?php echo "Sort = ".$sort ?></div>
+<div id="pr_row_gird" style="margin: 1px;font-size: 9pt"></div>
 
-<div id="pr_row_gird" style="margin: 1px;"></div>
+</div>
+</div>
 
 <script>
 

@@ -3,11 +3,11 @@
 <h5>no thing found!</h5>
 
 <?php else: ?>
-<h5 style="color: gray;" id="total_ordered"></h5>
-<h5 style="color: gray;" id="total_received"></h5>
-<h5 style="color: gray;" id="total_balance"></h5>
+<div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
+<div style="color: gray;font-size: 9pt;" id="total_received"></div>
+<div style="color: gray;font-size: 9pt;" id="total_balance"></div>
 
-<table style="font-size: 10pt;" class="table table-bordered table-hover">
+<table style="font-size: 9pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
@@ -22,7 +22,6 @@
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
-
 	<tbody>
  
 	 <?php
@@ -66,7 +65,7 @@
 <script type="text/javascript">
 $('#total_ordered').text("<?php echo "Ordered Q'ty: " . $total_ordered; ?>");
 $('#total_received').text("<?php echo "Received Q'ty: ". $total_received; ?>");
-$('#total_balance').text("<?php echo "Balance: " . $total_balance; ?>");
+$('#total_balance').text("<?php echo "Balance Q'ty: " . $total_balance; ?>");
 
 </script>
 

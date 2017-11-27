@@ -1,177 +1,7 @@
 <?php /**@var \Application\Entity\NmtProcurePo $entity ;*/?>
-
-<?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
-}
-?>
-
-<h4><strong>Contract /PO:<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
-<div id="tabs" style="font-size: 9.5pt">
-	<ul>
-		<li><a href="#general"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Contract /PO</a></li>
-		<li><a
-			href="/procure/po-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
-		
-		
-				<li><a			href="/procure/po-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
-		
-	</ul>
-	
-
-	<div id="general" style="font-size: 9pt">
-
-		<form id="Create_Inv_Form" class="form-horizontal"
-			action="" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" />
-				
-				<div style="position:relative; float:right;">
-				<a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Edit</a>       		
-   <a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
-	<a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/copy-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;A/P Invoice</a>      	
-<a class="btn btn-default btn-sm" href="javascript:;" onclick = "showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1550',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i class="fa fa-window-maximize" aria-hidden="true"></i>
-Full Screen</a>	
-								      	
-</div>
-				
-			<fieldset>
-				<legend style="font-size: 9.5pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getSysNumber():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
-				</legend>
-				<div id="invoice_header" class="collapse">
-					
-					<div class="form-group margin-bottom required">
-					<label class="control-label col-sm-2">Current State:</label>
-					<div class="col-sm-3">
-					<select name="currentState" class="form-control input-sm">
-							<option value="">Please Select</option>
-							<option <?php if($entity->getCurrentState()=="draftPo"): echo "selected"; endif ?> value="draftPo">Draft</option>
-							<option <?php if($entity->getCurrentState()=="finalPo"): echo "selected"; endif ?> value="finalPo">Final</option>
-    	   				</select>
-   					</div>
-   					
-   					<div class="col-sm-3">
-							<input
-								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
-
-						</div>
-   					
-   					</div>
-
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2 ">Vendor:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm input-sm" type="text"
-								id="vendor_name_1" placeholder="Enter term to search vendor"
-								name="vendor_name"
-								value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
-
-							<input type="hidden" id="vendor_id" placeholder=""
-								name="vendor_id"
-								value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
-						</div>
-						<div class="col-sm-3">
-
-							<a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor
-								List&nbsp;&nbsp;</a><small><i
-								class="glyphicon glyphicon-new-window"></i></small>
-						</div>
-					</div>
-					
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Contract /PO:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="contractNo" name="contractNo" 
-								value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
-						</div>
-						<label class="control-label col-sm-2">Contract /PO Date:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="contractDate" name="contractDate" 
-								value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
-						</div>
-					</div>
-					
-					<div class="form-group margin-bottom required">
-					
-					<label class="control-label col-sm-2">Currency:</label>
-					<div class="col-sm-3">
-					<select name="currency_id" class="form-control input-sm">
-								<option value="">Select Currency</option>
-   	    							<?php
-   	    							if($currency_list!== null):
-       	    							foreach ( $currency_list as $curr ) :
-       	    							 if($entity!==null):
-       	    							     if($entity->getCurrency()!==null):
-       	    							         if($entity->getCurrency()->getCurrency() == $curr->getCurrency()):
-       	    							             echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-   	    							             else:
-   	    							                 echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							         endif;
-       	    							     else:
-       	    							            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							     endif;
-       	    							 else:
-       	    							     echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-       	    							 endif;
-       									endforeach;
-   	    							endif;
-									?>
-   					</select>
-   					</div>
-   					</div>
-					
-					
-				<div class="form-group margin-bottom">
-					<label class="control-label col-sm-2" >Description</label>
-            		<div class="col-sm-8">
-            			<input class="form-control input-sm" type="text"  placeholder=""
-            				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
-            		</div>
-				</div>
-			</div>
-			</fieldset>
-		</form>
-			
-			<form action="">
-			<fieldset>
-			<legend style="font-size: 9pt; color: gray;">
-				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-				<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
-			</legend>
-			<div id="rows" class="collapse in">
-					<span class="" style="padding:3px;margin-bottom:2px; font-size: 10pt; color: gray">
-						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
-                        &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>
-                        &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
-                        &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
-					</span>
-					<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
-			</fieldset>
-			</form>
-	</div>
-</div>
-
-<hr>
-
+<div style="color: gray;font-size: 9pt"><?php echo $entity->getVendor()->getVendorName();?></div>
+<div style="color: gray;font-size: 9pt"><?php echo "Currency = ".$entity->getCurrency()->getCurrency();?></div>
+<div id="pr_row_gird2" style="margin: 1px; font-size: 9pt;"></div>
 						
 
 <script>
@@ -383,7 +213,7 @@ $( "#vendor_name_1" ).autocomplete({
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "100%", height: $(window).height()-280, showTitle : false,
+	var obj = { width: "100%", height: $(window).height()-150, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
@@ -548,7 +378,7 @@ $( "#vendor_name_1" ).autocomplete({
              }
     };
     
-    var $grid = $("#pr_row_gird").pqGrid(obj);
+    var $grid = $("#pr_row_gird2").pqGrid(obj);
 
     $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         //debugger;

@@ -493,10 +493,10 @@ class PrController extends AbstractActionController
         $redirectUrl = null;
         
         // accepted only ajax request
-        /* if (! $request->isXmlHttpRequest()) {
+        if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
-         */
+        
         $this->layout("layout/user/ajax");
         
         

@@ -258,6 +258,72 @@ class PoController extends AbstractActionController
         }
     }
 
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function add2Action()
+    {
+        $request = $this->getRequest();
+        
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $this->layout("layout/user/ajax");
+        
+        $criteria = array(
+            'isActive' => 1
+        );
+        $sort_criteria = array(
+            'currency' => 'ASC'
+        );
+        
+        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        
+        $request = $this->getRequest();
+        
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $redirectUrl = $this->getRequest()
+        ->getHeader('Referer')
+        ->getUri();
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $po = $res->getPo($id, $token);
+        
+        if ($po == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($po[0] instanceof NmtProcurePo) {
+            $entity = $po[0];
+        }
+        
+        if ($entity !== null) {
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'entity' => $entity,
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'total_row' => $po['total_row'],
+                'active_row' => $po['active_row'],
+                'max_row_number' => $po['total_row'],
+                'net_amount' => $po['net_amount'],
+                'tax_amount' => $po['tax_amount'],
+                'gross_amount' => $po['gross_amount']
+            ));
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+    }
    
 
     /**

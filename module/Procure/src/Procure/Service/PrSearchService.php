@@ -244,7 +244,7 @@ class PrSearchService
                     $doc->addField(Field::Keyword('item_sku_key', $row->getItem()
                         ->getItemSku()));
                     
-                    $doc->addField ( Field::Keyword ( 'item_sys_number', $row->getSysNumber() ) );
+                    $doc->addField ( Field::Keyword ( 'item_sys_number', $row->getItem()->getSysNumber() ) );
                     
                     
                     $doc->addField(Field::text('item_name', $row->getItem()

@@ -1113,7 +1113,10 @@ class PrRowController extends AbstractActionController
             );
             
             // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->get ( $criteria );
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getPrRow($target_id, $balance, $sort_by, $sort, 0, 0);
+            /** @var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+            
+            $list = $res->getPrRow($target_id, $balance, $sort_by, $sort, 0, 0);
             $total_records = 0;
             if (count($list) > 0) {
                 

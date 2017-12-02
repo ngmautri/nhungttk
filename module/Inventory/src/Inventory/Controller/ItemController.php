@@ -154,8 +154,8 @@ class ItemController extends AbstractActionController
             
             $itemType = $request->getPost('itemType');
             $monitoredBy = $request->getPost('monitoredBy');
-            if($monitoredBy==''){
-                $monitoredBy =null;
+            if ($monitoredBy == '') {
+                $monitoredBy = null;
             }
             
             $item_category_id = $request->getPost('item_category_id');
@@ -296,7 +296,7 @@ class ItemController extends AbstractActionController
             try {
                 
                 // generate document
-                //==================
+                // ==================
                 $criteria = array(
                     'isActive' => 1,
                     'subjectClass' => get_class($entity)
@@ -315,7 +315,7 @@ class ItemController extends AbstractActionController
                     } else {
                         $current_no ++;
                         $currentLen = strlen($current_no);
-                    }                    
+                    }
                     $docNumber->setCurrentNumber($current_no);
                     
                     $tmp = "";
@@ -324,7 +324,7 @@ class ItemController extends AbstractActionController
                         $tmp = $tmp . "0";
                     }
                     
-                    $currentDoc = $currentDoc . $tmp.$current_no;
+                    $currentDoc = $currentDoc . $tmp . $current_no;
                     $entity->setSysNumber($currentDoc);
                 }
                 
@@ -376,7 +376,6 @@ class ItemController extends AbstractActionController
                 // update search index.
                 // $this->itemSearchService->addDocument ( $new_item, true );
                 $this->itemSearchService->updateIndex(1, $new_item, false);
-                 
             } catch (Exception $e) {
                 
                 $errors[] = $e->getMessage();
@@ -459,8 +458,8 @@ class ItemController extends AbstractActionController
                 
                 $itemType = $request->getPost('itemType');
                 $monitoredBy = $request->getPost('monitoredBy');
-                if($monitoredBy==''){
-                    $monitoredBy =null;
+                if ($monitoredBy == '') {
+                    $monitoredBy = null;
                 }
                 
                 $item_category_id = $request->getPost('item_category_id');
@@ -478,7 +477,6 @@ class ItemController extends AbstractActionController
                 
                 $assetLabel = $request->getPost('assetLabel');
                 
-                
                 $manufacturer = $request->getPost('manufacturer');
                 $manufacturerCatalog = $request->getPost('manufacturerCatalog');
                 $manufacturerCode = $request->getPost('manufacturerCode');
@@ -490,7 +488,7 @@ class ItemController extends AbstractActionController
                 
                 $remarks = $request->getPost('remarks');
                 
-                 if ($itemSku === '' or $itemSku === null) {
+                if ($itemSku === '' or $itemSku === null) {
                     $errors[] = 'Please give Item ID';
                 } else {
                     $entity->setItemSku($itemSku);
@@ -546,7 +544,6 @@ class ItemController extends AbstractActionController
                 
                 $entity->setItemType($itemType);
                 $entity->setMonitoredBy($monitoredBy);
-                
                 
                 $entity->setManufacturer($manufacturer);
                 $entity->setManufacturerCatalog($manufacturerCatalog);
@@ -779,17 +776,17 @@ class ItemController extends AbstractActionController
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
         $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
         
-        //$list = $res->getVendorInvoiceList($is_active,$currentState,null,$sort_by,$sort,0,0);
-        //$total_records = count($list);
+        // $list = $res->getVendorInvoiceList($is_active,$currentState,null,$sort_by,$sort,0,0);
+        // $total_records = count($list);
         
         // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria );
-        //$total_records = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getTotalItem($item_type, $is_active, $is_fixed_asset);
+        // $total_records = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getTotalItem($item_type, $is_active, $is_fixed_asset);
         // echo($total_records);
         
         // $total_records =count($list);
         
         $paginator = null;
-         $list =null;
+        $list = null;
         
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
@@ -901,7 +898,7 @@ class ItemController extends AbstractActionController
         // $total_records = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getTotalItem($item_type, $is_active, $is_fixed_asset);
         // echo($total_records);
         
-        //$total_records = count($list);
+        // $total_records = count($list);
         $total_records = 100;
         
         $paginator = null;
@@ -911,9 +908,9 @@ class ItemController extends AbstractActionController
             // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
             // $list = array_slice($list, $paginator->minInPage - 1, ($paginator->maxInPage - $paginator->minInPage) + 1);
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getItemPrice($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-        }else{
+        } else {
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->getItemPrice($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
-         }
+        }
         
         // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
         // var_dump (count($all));
@@ -1189,20 +1186,73 @@ class ItemController extends AbstractActionController
             'total_records' => $total_records
         ));
     }
-    
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function updateLastTransactionAction()
+    {
+        
+        
+        // Update Last GR
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $last_gr = $res->getItemLastTrx();
+       
+        $total_gr = count($last_gr);
+        
+        if ($total_gr > 0) {
+            foreach ($last_gr as $gr) {
+                
+                /**@var \Application\Entity\NmtInventoryTrx $gr_entity ;*/
+                $gr_entity = $gr[0];
+                $gr_entity->getItem()->setLastTrxRow($gr_entity);
+              }
+        }
+        
+        $this->doctrineEM->flush();
+       
+        // Update Puchasing Data
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $item_purchasing = $res->getItemPurchasing();
+        
+        $total_purchasing =  count($item_purchasing);
+        if ($total_purchasing > 0) {
+            foreach ($item_purchasing as $purchasing) {
+                
+                /**@var \Application\Entity\NmtInventoryItemPurchasing $purchasing_entity ;*/
+                $purchasing_entity = $purchasing[0];
+                $purchasing_entity->getItem()->setLastPurchasing($purchasing_entity);
+            }
+        }
+        $this->doctrineEM->flush();
+        
+         
+        return new ViewModel(array(
+            'last_gr' => $total_gr,
+            'last_purchasing' => $total_purchasing,
+            
+        ));
+    }
+
     /**
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function updateSysNumberAction()
     {
-        $criteria = array("isActive"=>1);
+        $criteria = array(
+            "isActive" => 1
+        );
         
         // var_dump($criteria);
-        $sort_criteria = array("createdOn"=>"ASC");
-        
-        
-         
+        $sort_criteria = array(
+            "createdOn" => "ASC"
+        );
         
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findBy($criteria, $sort_criteria);
         $criteria = array(
@@ -1212,11 +1262,10 @@ class ItemController extends AbstractActionController
         
         /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
         $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
-            
         
         if (count($list) > 0) {
             
-            $current_no=0;
+            $current_no = 0;
             foreach ($list as $entity) {
                 
                 /** @var \Application\Entity\NmtInventoryItem $entity ; */
@@ -1230,11 +1279,11 @@ class ItemController extends AbstractActionController
                 $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
                 
                 // generate document
-                //==================
-                 if ($docNumber != null) {
+                // ==================
+                if ($docNumber != null) {
                     $maxLen = strlen($docNumber->getToNumber());
                     $currentDoc = $docNumber->getPrefix();
-                   
+                    
                     $current_no ++;
                     $currentLen = strlen($current_no);
                     
@@ -1244,17 +1293,14 @@ class ItemController extends AbstractActionController
                         $tmp = $tmp . "0";
                     }
                     
-                    $currentDoc = $currentDoc . $tmp.$current_no;
+                    $currentDoc = $currentDoc . $tmp . $current_no;
                     $entity->setSysNumber($currentDoc);
                 }
-                
-                 
-             }
+            }
         }
         
         $docNumber->setCurrentNumber($current_no);
         $this->doctrineEM->flush();
-        
         
         // update search index()
         $this->itemSearchService->createItemIndex();

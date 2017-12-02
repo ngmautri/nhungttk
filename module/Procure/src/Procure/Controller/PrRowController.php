@@ -864,6 +864,8 @@ class PrRowController extends AbstractActionController
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $header, "Last Price");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Last Curr");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Remarks");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "Item No.");
+                
                 
                 foreach ($rows as $r) {
                     
@@ -916,12 +918,15 @@ class PrRowController extends AbstractActionController
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $r['vendor_unit_price']);
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $r['currency']);
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRemarks());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()
+                        ->getSysNumber());
+                    
                 }
                 
                 // Rename worksheet
                 $objPHPExcel->getActiveSheet()->setTitle("PR Rows");
                 
-                $objPHPExcel->getActiveSheet()->setAutoFilter("A2:R2");
+                $objPHPExcel->getActiveSheet()->setAutoFilter("A2:T2");
                 
                 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
                 $objPHPExcel->setActiveSheetIndex(0);
@@ -1403,7 +1408,10 @@ class PrRowController extends AbstractActionController
             $pq_rPP = 1;
         }
         
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getAllPrRow($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0);
+        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+        
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $list = $res->getAllPrRow1($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0);
         
         $total_records = count($list);
         $paginator = null;
@@ -1417,16 +1425,19 @@ class PrRowController extends AbstractActionController
             
             if ($total_records > $pq_rPP) {
                 $paginator = new Paginator($total_records, $pq_curPage, $pq_rPP);
-                $list = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->getAllPrRow($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+                $list = $res->getAllPrRow1($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
             }
             $count = 0;
             foreach ($list as $a) {
                 
-                $item_detail = "/inventory/item/show1?token=" . $a['item_token'] . "&checksum=" . $a['item_checksum'] . "&entity_id=" . $a['item_id'];
-                if ($a['item_name'] !== null) {
-                    $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                /**@var \Application\Entity\NmtProcurePrRow $pr_row_entity ;*/
+                $pr_row_entity =  $a[0];
+                
+                $item_detail = "/inventory/item/show1?token=" . $pr_row_entity->getItem()->getToken() . "&checksum=" . $pr_row_entity->getItem()->getChecksum() . "&entity_id=" . $pr_row_entity->getItem()->getId();
+                if ($pr_row_entity->getItem()->getItemName() !== null) {
+                    $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($pr_row_entity->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
                 } else {
-                    $onclick = "showJqueryDialog('Detail of Item: " . ($a['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                    $onclick = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
                 }
                 
                 $count ++;
@@ -1436,50 +1447,50 @@ class PrRowController extends AbstractActionController
                     $a_json_row["row_number"] = $paginator->minInPage - 1 + $count;
                 }
                 
-                $a_json_row["pr_number"] = $a['pr_number'] . '<a style="" target="blank"  title="' . $a['pr_number'] . '" href="/procure/pr/show?token=' . $a["pr_token"] . '&entity_id=' . $a["pr_id"] . '&checksum=' . $a["pr_checksum"] . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
+                $a_json_row["pr_number"] = $pr_row_entity->getPr()->getPrNumber()  . '<a style="" target="blank"  title="' . $pr_row_entity->getPr()->getPrNumber() . '" href="/procure/pr/show?token=' . $pr_row_entity->getPr()->getToken() . '&entity_id=' . $pr_row_entity->getPr()->getId() . '&checksum=' . $pr_row_entity->getPr()->getChecksum(). '" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
                 
-                if ($a['submitted_on'] !== null) {
-                    $a_json_row['pr_submitted_on'] = date_format(date_create($a['submitted_on']), 'd-m-y');
+                if ($pr_row_entity->getPr()->getSubmittedOn()!== null) {
+                    $a_json_row['pr_submitted_on'] = date_format($pr_row_entity->getPr()->getSubmittedOn(), 'd-m-y');
                     // $a_json_row ['pr_submitted_on'] = $a ['submitted_on'];
                 } else {
                     $a_json_row['pr_submitted_on'] = '';
                 }
                 
-                $a_json_row["row_id"] = $a['id'];
-                $a_json_row["row_token"] = $a['token'];
-                $a_json_row["row_checksum"] = $a['checksum'];
+                $a_json_row["row_id"] = $pr_row_entity->getId();
+                $a_json_row["row_token"] = $pr_row_entity->getToken();
+                $a_json_row["row_checksum"] = $pr_row_entity->getChecksum();
                 
-                $a_json_row["item_sku"] = '<span title="' . $a['item_sku'] . '">' . substr($a['item_sku'], 0, 5) . '</span>';
+                $a_json_row["item_sku"] = '<span title="' . $pr_row_entity->getItem()->getItemSku() . '">' . substr($pr_row_entity->getItem()->getItemSku(), 0, 5) . '</span>';
                 
-                if (strlen($a['item_name']) < 35) {
-                    $a_json_row["item_name"] = $a['item_name'] . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a['item_id'] . '" item_name="' . $a['item_name'] . '" title="' . $a['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
+                if (strlen($pr_row_entity->getItem()->getItemName()) < 35) {
+                    $a_json_row["item_name"] = $pr_row_entity->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' .$pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
                 } else {
-                    $a_json_row["item_name"] = substr($a['item_name'], 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a['item_id'] . '" item_name="' . $a['item_name'] . '" title="' . $a['item_name'] . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                    $a_json_row["item_name"] = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
                 }
                 
-                $a_json_row["quantity"] = $a['quantity'];
+                $a_json_row["quantity"] = $pr_row_entity->getQuantity();
                 $a_json_row["confirmed_balance"] = $a['confirmed_balance'];
                 
-                if (strlen($a['vendor_name']) < 10) {
-                    $a_json_row["vendor_name"] = $a['vendor_name'];
+                if (strlen($a['last_vendor_name']) < 10) {
+                    $a_json_row["vendor_name"] = $a['last_vendor_name'];
                 } else {
-                    $a_json_row["vendor_name"] = '<span title="' . $a['vendor_name'] . '">' . substr($a['vendor_name'], 0, 8) . '...</span>';
+                    $a_json_row["vendor_name"] = '<span title="' . $a['last_vendor_name'] . '">' . substr($a['last_vendor_name'], 0, 8) . '...</span>';
                 }
                 
-                if ($a['vendor_unit_price'] !== null) {
-                    $a_json_row["vendor_unit_price"] = number_format($a['vendor_unit_price'], 2);
+                if ($a['last_vendor_unit_price'] !== null) {
+                    $a_json_row["vendor_unit_price"] = number_format($a['last_vendor_unit_price'], 2);
                 } else {
                     $a_json_row["vendor_unit_price"] = 0;
                 }
                 
-                $a_json_row["currency"] = $a['currency'];
+                $a_json_row["currency"] = $a['last_currency'];
                 
-                $received_detail = "/inventory/item-transaction/pr-row?pr_row_id=" . $a['id'];
+                $received_detail = "/inventory/item-transaction/pr-row?pr_row_id=" . $pr_row_entity->getId();
                 
-                if ($a['item_name'] !== null) {
-                    $onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs($a['item_name']) . "','1200',$(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
+                if ($pr_row_entity->getItem()->getItemName()!== null) {
+                    $onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs($pr_row_entity->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
                 } else {
-                    $onclick1 = "showJqueryDialog('Receiving of Item: " . ($a['item_name']) . "','1200', $(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
+                    $onclick1 = "showJqueryDialog('Receiving of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1200', $(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
                 }
                 
                 if ($a['total_received'] > 0) {
@@ -1487,16 +1498,21 @@ class PrRowController extends AbstractActionController
                 } else {
                     $a_json_row["total_received"] = "";
                 }
-                $a_json_row["buying"] = $a['processing_quantity'];
+                $a_json_row["buying"] = $a['po_quantity_draft'] + $a['po_quantity_final'];
                 
-                $a_json_row["project_id"] = $a['project_id'];
-                
-                if (strlen($a['remarks']) < 20) {
-                    $a_json_row["remarks"] = $a['remarks'];
-                } else {
-                    $a_json_row["remarks"] = '<span title="' . $a['remarks'] . '">' . substr($a['remarks'], 0, 15) . '...</span>';
+                if($pr_row_entity->getProject()!==null){
+                    $a_json_row["project_id"] = $pr_row_entity->getProject()->getId();
+                        
+                }else{
+                    $a_json_row["project_id"]="";
                 }
-                $a_json_row["fa_remarks"] = $a['fa_remarks'];
+                    
+                if (strlen($pr_row_entity->getRemarks()) < 20) {
+                    $a_json_row["remarks"] = $pr_row_entity->getRemarks();
+                } else {
+                    $a_json_row["remarks"] = '<span title="' . $pr_row_entity->getRemarks() . '">' . substr($pr_row_entity->getRemarks(), 0, 15) . '...</span>';
+                }
+                $a_json_row["fa_remarks"] = $pr_row_entity->getRemarks();
                 $a_json_row["receipt_date"] = "";
                 $a_json_row["vendor"] = "";
                 $a_json_row["vendor_id"] = "";

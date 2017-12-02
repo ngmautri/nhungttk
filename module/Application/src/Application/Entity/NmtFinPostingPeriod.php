@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_fin_posting_period", uniqueConstraints={@ORM\UniqueConstraint(name="posting_from_date_UNIQUE", columns={"posting_from_date"}), @ORM\UniqueConstraint(name="posting_to_date_UNIQUE", columns={"posting_to_date"})}, indexes={@ORM\Index(name="nmt_fin_posting_period_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_fin_posting_period_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_fin_posting_period_IDX1", columns={"posting_from_date"}), @ORM\Index(name="nmt_fin_posting_period_IDX2", columns={"posting_to_date"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtFinPostingPeriodRepository")
  */
 class NmtFinPostingPeriod
 {

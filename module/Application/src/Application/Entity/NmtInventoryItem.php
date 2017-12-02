@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItem
  *
- * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_item_IDX2", columns={"is_fixed_asset"}), @ORM\Index(name="nmt_inventory_item_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_FK3_idx", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"})})
- * @ORM\Entity * 
+ * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_item_IDX2", columns={"is_fixed_asset"}), @ORM\Index(name="nmt_inventory_item_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_FK3_idx", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_pr_row"}), @ORM\Index(name="nmt_inventory_item_FK6_idx", columns={"last_po_row"}), @ORM\Index(name="nmt_inventory_item_FK7_idx", columns={"last_ap_invoice_row"}), @ORM\Index(name="nmt_inventory_item_FK8_idx", columns={"last_trx_row"}), @ORM\Index(name="nmt_inventory_item_FK9_idx", columns={"last_purchasing"})})
+ * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
  */
 class NmtInventoryItem
@@ -390,6 +390,56 @@ class NmtInventoryItem
      * })
      */
     private $company;
+
+    /**
+     * @var \Application\Entity\NmtProcurePrRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_pr_row", referencedColumnName="id")
+     * })
+     */
+    private $lastPrRow;
+
+    /**
+     * @var \Application\Entity\NmtProcurePoRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePoRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_po_row", referencedColumnName="id")
+     * })
+     */
+    private $lastPoRow;
+
+    /**
+     * @var \Application\Entity\FinVendorInvoiceRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_ap_invoice_row", referencedColumnName="id")
+     * })
+     */
+    private $lastApInvoiceRow;
+
+    /**
+     * @var \Application\Entity\NmtInventoryTrx
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryTrx")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_trx_row", referencedColumnName="id")
+     * })
+     */
+    private $lastTrxRow;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItemPurchasing
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemPurchasing")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_purchasing", referencedColumnName="id")
+     * })
+     */
+    private $lastPurchasing;
 
 
 
@@ -1625,5 +1675,125 @@ class NmtInventoryItem
     public function getCompany()
     {
         return $this->company;
+    }
+
+    /**
+     * Set lastPrRow
+     *
+     * @param \Application\Entity\NmtProcurePrRow $lastPrRow
+     *
+     * @return NmtInventoryItem
+     */
+    public function setLastPrRow(\Application\Entity\NmtProcurePrRow $lastPrRow = null)
+    {
+        $this->lastPrRow = $lastPrRow;
+
+        return $this;
+    }
+
+    /**
+     * Get lastPrRow
+     *
+     * @return \Application\Entity\NmtProcurePrRow
+     */
+    public function getLastPrRow()
+    {
+        return $this->lastPrRow;
+    }
+
+    /**
+     * Set lastPoRow
+     *
+     * @param \Application\Entity\NmtProcurePoRow $lastPoRow
+     *
+     * @return NmtInventoryItem
+     */
+    public function setLastPoRow(\Application\Entity\NmtProcurePoRow $lastPoRow = null)
+    {
+        $this->lastPoRow = $lastPoRow;
+
+        return $this;
+    }
+
+    /**
+     * Get lastPoRow
+     *
+     * @return \Application\Entity\NmtProcurePoRow
+     */
+    public function getLastPoRow()
+    {
+        return $this->lastPoRow;
+    }
+
+    /**
+     * Set lastApInvoiceRow
+     *
+     * @param \Application\Entity\FinVendorInvoiceRow $lastApInvoiceRow
+     *
+     * @return NmtInventoryItem
+     */
+    public function setLastApInvoiceRow(\Application\Entity\FinVendorInvoiceRow $lastApInvoiceRow = null)
+    {
+        $this->lastApInvoiceRow = $lastApInvoiceRow;
+
+        return $this;
+    }
+
+    /**
+     * Get lastApInvoiceRow
+     *
+     * @return \Application\Entity\FinVendorInvoiceRow
+     */
+    public function getLastApInvoiceRow()
+    {
+        return $this->lastApInvoiceRow;
+    }
+
+    /**
+     * Set lastTrxRow
+     *
+     * @param \Application\Entity\NmtInventoryTrx $lastTrxRow
+     *
+     * @return NmtInventoryItem
+     */
+    public function setLastTrxRow(\Application\Entity\NmtInventoryTrx $lastTrxRow = null)
+    {
+        $this->lastTrxRow = $lastTrxRow;
+
+        return $this;
+    }
+
+    /**
+     * Get lastTrxRow
+     *
+     * @return \Application\Entity\NmtInventoryTrx
+     */
+    public function getLastTrxRow()
+    {
+        return $this->lastTrxRow;
+    }
+
+    /**
+     * Set lastPurchasing
+     *
+     * @param \Application\Entity\NmtInventoryItemPurchasing $lastPurchasing
+     *
+     * @return NmtInventoryItem
+     */
+    public function setLastPurchasing(\Application\Entity\NmtInventoryItemPurchasing $lastPurchasing = null)
+    {
+        $this->lastPurchasing = $lastPurchasing;
+
+        return $this;
+    }
+
+    /**
+     * Get lastPurchasing
+     *
+     * @return \Application\Entity\NmtInventoryItemPurchasing
+     */
+    public function getLastPurchasing()
+    {
+        return $this->lastPurchasing;
     }
 }

@@ -327,7 +327,7 @@ if (count ( $errors ) > 0) {
             $( "#quantity" ).val(ui.item.row_quantity);
             $( "#item_id" ).val(ui.item.item_id);
             $( "#item_name" ).val(ui.item.item_name);
-            
+                        
              //alert(ui.item.item_id);
             $('#global-notice').show();
             $('#global-notice').html('"' + ui.item.item_name + '" selected');
@@ -336,7 +336,10 @@ if (count ( $errors ) > 0) {
         })
         .autocomplete( "instance" )._renderItem = function( ul, item ) {
         return $( "<li>" )
-          .append( "<div style='padding-bottom: 15px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "</span><br><span style='padding-top: 7px;color:gray;font-size: 9pt;'>" + item.pr_number +"<span></div>" )
+          .append( "<div style='padding-bottom: 15px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + 
+                  "</span><br><span style='padding-top: 7px;color:gray;font-size: 9pt;'>" + item.pr_number + " | " + item.row_name +"<span></div>" )
+ 
+ 
  
  //         .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
           .appendTo( ul );

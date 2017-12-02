@@ -65,6 +65,8 @@ class PrSearchController extends AbstractActionController {
 	                $a_json_row ["manufacturer_code"] = $a->manufacturer_code;
 	                $a_json_row ["row_quantity"] = $a->row_quantity;
 	                $a_json_row ["row_unit"] = $a->row_unit;
+	                $a_json_row ["row_name"] = $a->row_name;
+	                
 	                $a_json_row ["row_conversion_factor"] = $a->row_conversion_factor;
 	                
 	                $a_json[]=$a_json_row;

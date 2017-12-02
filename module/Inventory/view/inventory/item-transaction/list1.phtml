@@ -43,8 +43,12 @@ if ($total_records <= 0) {
 	 <?php
 	
 	$count = 0;
+	$total_qty = 0;
+	$total_value=0;
 	foreach ( $list as $a ) :
 		$count ++;
+		$total_qty = $total_qty + $a->getQuantity();
+		$total_value = $total_value + $a->getQuantity()*$a->getVendorUnitPrice();
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
@@ -75,8 +79,10 @@ if ($total_records <= 0) {
  </tbody>
 </table>
 
+
 <?php
-	
+echo "<h5 style='color:black;'><strong>Total Qty: ". $total_qty . ". Total Value: ". number_format($total_value,2, ",", ".")."<strong></h5>"; 
+
 	// ===============================
 	if (! is_null ( $paginator )) :
 		

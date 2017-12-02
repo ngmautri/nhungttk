@@ -21,6 +21,8 @@ if (! $hits == null) :
 					<td><b>#</b></td>
 					<td><b>PR</b></td>
 					<td><b>Item</b></td>
+				     <td><b>Row Name</b></td>
+				
 					<td><b>Code</b></td>
 					<td><b>quantity</b></td>
 					<td><b>PR<br>Unit
@@ -44,6 +46,8 @@ if (! $hits == null) :
 					<td><a href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $hit->pr_token;?>&entity_id=<?php echo $hit->pr_id;?>&checksum=<?php echo $hit->pr_checksum;?>">
 					<?php echo $this->escapeHtml($hit->pr_number);?></a></td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->row_name);?></span></td>
+				
 					<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->row_quantity);?></span></td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->row_unit);?></span></td>

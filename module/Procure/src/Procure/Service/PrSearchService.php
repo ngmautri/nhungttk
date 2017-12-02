@@ -71,6 +71,8 @@ class PrSearchService
                         // $doc->addField ( Field::UnIndexed ( 'row_edt', $row->getEdt() ) );
                         $doc->addField(Field::UnIndexed('row_unit', $row->getRowUnit()));
                         $doc->addField(Field::text('row_remark', $row->getRemarks()));
+                        $doc->addField(Field::text('row_name', $row->getRowName()));
+                        
                         
                         if ($row->getPr() !== null) {
                             $doc->addField(Field::UnIndexed('pr_id', $row->getPr()
@@ -201,6 +203,8 @@ class PrSearchService
                 
                 $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
                 $doc->addField(Field::UnIndexed('row_quantity', $row->getQuantity()));
+                $doc->addField(Field::text('row_name', $row->getRowName()));
+                
                 $doc->addField(Field::UnIndexed('row_conversion_factor', $row->getConversionFactor()));
                 // $doc->addField ( Field::UnIndexed ( 'row_edt', $row->getEdt() ) );
                 $doc->addField(Field::UnIndexed('row_unit', $row->getRowUnit()));

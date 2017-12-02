@@ -120,8 +120,8 @@ LEFT JOIN
 
 	LEFT JOIN nmt_bp_vendor
 	ON nmt_bp_vendor.id = nmt_inventory_item_purchasing.vendor_id
-
-	LEFT JOIN nmt_application_currency
+	
+ 	LEFT JOIN nmt_application_currency
 	ON nmt_application_currency.id = nmt_inventory_item_purchasing.currency_id
 
 	WHERE nmt_inventory_item_purchasing.is_active=1
@@ -250,6 +250,79 @@ LEFT JOIN nmt_procure_pr_row
 ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
 WHERE 1";
 
+    private $sql2="
+
+Select 
+	
+    nmt_inventory_item.item_name,
+    nmt_inventory_item.item_sku,
+	nmt_inventory_item.checksum AS item_checksum,
+	nmt_inventory_item.token AS item_token,
+	
+    nmt_procure_pr.checksum AS pr_checksum,
+	nmt_procure_pr.token AS pr_token,
+	nmt_procure_pr.pr_number,
+	nmt_procure_pr.pr_auto_number,
+        
+    SUM(CASE WHEN nmt_procure_po_row.current_state='finalPo' THEN  nmt_procure_po_row.quantity ELSE 0 END)  AS po_quantity_final,
+    SUM(CASE WHEN nmt_procure_po_row.current_state!='finalPo' THEN  nmt_procure_po_row.quantity ELSE 0 END)  AS po_quantity_draft,    
+   	SUM(CASE WHEN fin_vendor_invoice_row.current_state='finalInvoice' THEN  fin_vendor_invoice_row.quantity ELSE 0 END)  AS ap_quantity_final,
+    SUM(CASE WHEN fin_vendor_invoice_row.current_state!='finalInvoice' THEN  fin_vendor_invoice_row.quantity ELSE 0 END)  AS ap_quantity_draft, 
+	SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END) AS total_received,
+	nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END) as confirmed_balance,
+
+    ifnull(nmt_bp_vendor_last.vendor_name,nmt_bp_vendor_last_purchasing.vendor_name) as last_vendor_name,
+    ifnull(nmt_inventory_trx_last.vendor_item_unit,nmt_inventory_item_purchasing.vendor_item_unit) as last_unit,
+    ifnull(nmt_inventory_trx_last.vendor_unit_price,nmt_inventory_item_purchasing.vendor_unit_price) as last_vendor_unit_price,
+	ifnull(nmt_application_currency_last.currency,nmt_application_currency_last_purchasing.currency) as last_currency,
+     
+    nmt_procure_pr_row.*
+from nmt_procure_pr_row
+
+
+LEFT JOIN nmt_procure_pr
+ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+
+left join nmt_procure_po_row
+on nmt_procure_pr_row.id = nmt_procure_po_row.pr_row_id AND nmt_procure_po_row.is_active=1
+
+left join fin_vendor_invoice_row
+on nmt_procure_pr_row.id = fin_vendor_invoice_row.pr_row_id AND fin_vendor_invoice_row.is_active=1
+
+left join nmt_inventory_trx
+on nmt_procure_pr_row.id = nmt_inventory_trx.pr_row_id AND nmt_inventory_trx.is_active=1
+
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
+
+/* Last GR */
+left join nmt_inventory_trx as nmt_inventory_trx_last
+on nmt_inventory_item.id = nmt_inventory_trx_last.id
+
+left join nmt_bp_vendor as nmt_bp_vendor_last
+on nmt_bp_vendor_last.id = nmt_inventory_trx_last.vendor_id
+
+left join nmt_application_currency as nmt_application_currency_last
+on nmt_application_currency_last.id = nmt_inventory_trx_last.currency_id
+
+/* Last Purchasing */
+left join nmt_inventory_item_purchasing
+on nmt_inventory_item_purchasing.id = nmt_inventory_item.last_purchasing
+
+left join nmt_bp_vendor as nmt_bp_vendor_last_purchasing
+on nmt_bp_vendor_last_purchasing.id = nmt_inventory_item_purchasing.vendor_id
+
+left join nmt_application_currency as nmt_application_currency_last_purchasing
+on nmt_application_currency_last_purchasing.id = nmt_inventory_item_purchasing.currency_id
+
+WHERE 1 
+
+
+/* IMPORTANT: 
+   GROUP BY nmt_procure_pr_row.id
+ */
+
+";
     /**
      *
      * @param unknown $pr_id
@@ -333,6 +406,169 @@ WHERE 1";
         $stmt = $this->_em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+    
+    /**
+     *
+     * @param number $limit
+     * @param number $offset
+     * @return array
+     */
+    public function getAllPrRow1($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = $this->sql2;
+        
+        if ($is_active == 1) {
+            $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
+        }
+        
+        if ($pr_year > 0) {
+            $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
+        }
+        
+           
+        // IMPORTANT
+        $sql = $sql . " GROUP BY nmt_procure_pr_row.id";
+        
+        if ($balance == 0) {
+            $sql = $sql . " HAVING (nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END)) <= 0";
+        }
+        if ($balance == 1) {
+            $sql = $sql . " HAVING (nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END)) > 0";
+        }
+        if ($balance == - 1) {
+            $sql = $sql . " HAVING (nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END)) < 0";
+        }
+        
+        
+        switch ($sort_by) {
+            case "itemName":
+                $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;                
+                break;
+                
+            case "prNumber":
+                $sql = $sql . " ORDER BY nmt_procure_pr.pr_number " . $sort;
+                break;
+                
+                  
+            case "vendorName":
+                $sql = $sql . " ORDER BY ifnull(nmt_bp_vendor_last.vendor_name,nmt_bp_vendor_last_purchasing.vendor_name) " . $sort;
+                break;
+                
+            case "currency":
+                $sql = $sql . " ORDER BY ifnull(nmt_application_currency_last.currency,nmt_application_currency_last_purchasing.currency) " . $sort;
+                break;
+                
+            case "unitPrice":
+                $sql = $sql . " ORDER BY ifnull(nmt_inventory_trx_last.vendor_unit_price,nmt_inventory_item_purchasing.vendor_unit_price) " . $sort;
+                break;
+                
+            case "balance":
+                $sql = $sql . " ORDER BY (nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END)) " . $sort;
+                break;
+                
+      
+        }
+        
+        /*
+        if ($sort_by == "itemName") {
+            $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
+        } elseif ($sort_by == "prNumber") {
+            $sql = $sql . " ORDER BY nmt_procure_pr.pr_number " . $sort;
+        } elseif ($sort_by == "vendorName") {
+            $sql = $sql . " ORDER BY ifnull(nmt_inventory_trx_last.vendor_name,nmt_inventory_item_purchasing.vendor_name) " . $sort;
+        } elseif ($sort_by == "currency") {
+            $sql = $sql . " ORDER BY ifnull( nmt_inventory_trx_last.currency, nmt_inventory_item_purchasing.currency) " . $sort;
+        } elseif ($sort_by == "unitPrice") {
+            $sql = $sql . " ORDER BY ifnull( nmt_inventory_trx_last.vendor_unit_price, nmt_inventory_item_purchasing.vendor_unit_price) " . $sort;
+        } elseif ($sort_by == "balance") {
+            $sql = $sql . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
+        }
+        */
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+        
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+           
+            $rsm->addScalarResult("total_received", "total_received");
+            $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
+            $rsm->addScalarResult("po_quantity_final", "po_quantity_final");
+            $rsm->addScalarResult("po_quantity_draft", "po_quantity_draft");
+            $rsm->addScalarResult("ap_quantity_final", "ap_quantity_final");
+            $rsm->addScalarResult("ap_quantity_draft", "ap_quantity_draft");
+            $rsm->addScalarResult("last_vendor_name", "last_vendor_name");
+            $rsm->addScalarResult("last_vendor_unit_price", "last_vendor_unit_price");
+            $rsm->addScalarResult("last_currency", "last_currency");            
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    /**
+     *
+     * @param unknown $item_type
+     * @param unknown $is_active
+     * @param unknown $is_fixed_asset
+     * @return mixed
+     */
+    public function getTotalPrRow1($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    
+    {
+        $sql = "SELECT count(*) as total_row FROM nmt_procure_pr_row Where 1 ";
+        
+        $sql = $this->sql2;
+        
+        if ($is_active == 1) {
+            $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
+        }
+        
+        if ($pr_year > 0) {
+            $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
+        }
+        
+        
+        // IMPORTANT
+        $sql = $sql . " GROUP BY nmt_procure_pr_row.id";
+        
+        if ($balance == 0) {
+            $sql = $sql . " HAVING (nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END)) <= 0";
+        }
+        if ($balance == 1) {
+            $sql = $sql . " HAVING (nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END)) > 0";
+        }
+        if ($balance == - 1) {
+            $sql = $sql . " HAVING (nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END)) < 0";
+        }
+        
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+            $rsm->addScalarResult("total_row", "total_row");
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getSingleResult();
+            return (int) $result['total_row'];
+        } catch (NoResultException $e) {
+            return 0;
+        }
     }
 
     /**

@@ -793,6 +793,9 @@ class PoRowController extends AbstractActionController
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Remarks");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Ref.No.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "Item.No.");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $header, "Po.Item Name");
+                
+                
                 
                 foreach ($rows as $r) {
                     
@@ -845,7 +848,8 @@ class PoRowController extends AbstractActionController
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRowIdentifer());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()->getSysNumber());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()->getSysNumber());                    
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $l, $a->getVendorItemCode());
                     
                 }
                 

@@ -114,6 +114,62 @@ WHERE 1
 
 ";
 
+    private $sql_item_last_trx= "
+
+SELECT
+nmt_inventory_trx_max.trx_total_record,
+nmt_inventory_trx.*
+
+FROM
+nmt_inventory_trx
+JOIN
+(
+	SELECT
+		nmt_inventory_trx.item_id,
+		MAX(nmt_inventory_trx.id) AS max_id,	
+		MAX(nmt_inventory_trx.trx_date) AS max_date,
+       count(nmt_inventory_trx.id) as trx_total_record
+
+	FROM nmt_inventory_trx
+    
+    WHERE nmt_inventory_trx.flow='IN' AND nmt_inventory_trx.is_active=1
+	GROUP BY nmt_inventory_trx.item_id 
+)
+AS nmt_inventory_trx_max
+ON nmt_inventory_trx_max.item_id = nmt_inventory_trx.item_id 
+AND nmt_inventory_trx.trx_date = nmt_inventory_trx_max.max_date
+AND nmt_inventory_trx.id = nmt_inventory_trx_max.max_id
+
+WHERE 1
+
+";
+    
+    
+    private $sql_item_purchasing="
+    SELECT
+    nmt_inventory_item_purchasing_max.purchasing_total_record,
+    nmt_inventory_item_purchasing.*
+    FROM
+    nmt_inventory_item_purchasing
+    JOIN
+    (
+        SELECT
+        nmt_inventory_item_purchasing.item_id,
+        MAX(nmt_inventory_item_purchasing.id) AS max_id,
+        MAX(nmt_inventory_item_purchasing.created_on) AS max_date,
+        count(nmt_inventory_item_purchasing.id) as purchasing_total_record
+        FROM nmt_inventory_item_purchasing
+        
+        WHERE nmt_inventory_item_purchasing.is_active=1
+        GROUP BY nmt_inventory_item_purchasing.item_id
+        )
+        AS nmt_inventory_item_purchasing_max
+        ON nmt_inventory_item_purchasing_max.item_id = nmt_inventory_item_purchasing.item_id
+        AND nmt_inventory_item_purchasing_max.max_date = nmt_inventory_item_purchasing.created_on
+        AND nmt_inventory_item_purchasing_max.max_id = nmt_inventory_item_purchasing.id
+        WHERE 1
+    ";
+    
     /**
      *
      * @param unknown $item_type
@@ -229,7 +285,7 @@ WHERE 1
             $result = $query->getSingleResult();
             return (int) $result['total_row'];
         } catch (NoResultException $e) {
-            return null;
+            return 0;
         }
     }
 
@@ -304,6 +360,62 @@ WHERE 1
         $stmt->execute();
         return $stmt->fetchAll();
     }
+    
+   /**
+    * 
+    * @param number $item_id
+    * @return array|NULL
+    */
+    public function getItemLastTrx($item_id=0)
+    {
+        $sql = $this->sql_item_last_trx;
+        
+        if($item_id>0){
+            $sql = $sql . " AND nmt_inventory_trx.item_id=. $item_id ";
+        }
+         
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryTrx', 'nmt_inventory_trx');
+            $rsm->addScalarResult("trx_total_record", "trx_total_record");
+            //$rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
+            //$rsm->addScalarResult("processing_quantity", "processing_quantity");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    /**
+     *
+     * @param number $item_id
+     * @return array|NULL
+     */
+    public function getItemPurchasing($item_id=0)
+    {
+        $sql = $this->sql_item_purchasing;
+        
+        if($item_id>0){
+            $sql = $sql . " AND nmt_inventory_item_purchasing.item_id=. $item_id ";
+        }
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItemPurchasing', 'nmt_inventory_item_purchasing');
+            $rsm->addScalarResult("purchasing_total_record", "purchasing_total_record");
+            //$rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
+            //$rsm->addScalarResult("processing_quantity", "processing_quantity");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
 }
 
-;

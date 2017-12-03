@@ -216,7 +216,10 @@ return array(
             'Inventory\Controller\SerialNumber' => 'Inventory\Controller\SerialNumberControllerFactory',
             'Inventory\Controller\BatchNumber' => 'Inventory\Controller\BatchNumberControllerFactory',
             
-        
+            'Inventory\Controller\GR' => 'Inventory\Controller\GRControllerFactory',
+            'Inventory\Controller\GI' => 'Inventory\Controller\GIControllerFactory',
+            'Inventory\Controller\Transfer' => 'Inventory\Controller\TransferControllerFactory',
+            
         )
     
     ),

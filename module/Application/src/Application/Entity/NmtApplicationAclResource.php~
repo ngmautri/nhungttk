@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationAclResource
  *
- * @ORM\Table(name="nmt_application_acl_resource", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_acl_resource_resource_UNIQUE", columns={"resource"})}, indexes={@ORM\Index(name="nmt_application_acl_resource_FK1_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_application_acl_resource", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_acl_resource_resource_UNIQUE", columns={"resource"})}, indexes={@ORM\Index(name="nmt_application_acl_resource_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_acl_resource_FK2_idx", columns={"change_by"}), @ORM\Index(name="nmt_application_acl_resource_IDX1", columns={"resource"}), @ORM\Index(name="nmt_application_acl_resource_IDX2", columns={"token"})})
  * @ORM\Entity
  */
 class NmtApplicationAclResource
@@ -71,6 +71,34 @@ class NmtApplicationAclResource
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
+     */
+    private $currentState;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="change_on", type="datetime", nullable=true)
+     */
+    private $changeOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -79,6 +107,16 @@ class NmtApplicationAclResource
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="change_by", referencedColumnName="id")
+     * })
+     */
+    private $changeBy;
 
 
 }

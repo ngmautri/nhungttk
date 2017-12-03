@@ -472,25 +472,13 @@ class RoleController extends AbstractActionController {
 						$this->doctrineEM->persist($e);
 						$this->doctrineEM->flush();
 					}
-					
-					/* if ($this->aclRoleResourceTable->isGrantedAccess ( $role_id, $r ) == false) {
-						$access = new AclRoleResource ();
-						$access->resource_id = $r;
-						$access->role_id = $role_id;
-						$this->aclRoleResourceTable->add ( $access );
-					} */
 				}
 				
-				/*
-				 * return new ViewModel ( array (
-				 * 'sparepart' => null,
-				 * 'categories' => $categories,
-				 *
-				 * ) );
-				 */
 				$this->redirect ()->toUrl ( "/application/role/grant-access?id=" . $role_id );
 			}
 		}
+		
+		// NO POST
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 18;

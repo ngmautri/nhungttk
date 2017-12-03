@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationAclResource
  *
- * @ORM\Table(name="nmt_application_acl_resource", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_acl_resource_resource_UNIQUE", columns={"resource"})}, indexes={@ORM\Index(name="nmt_application_acl_resource_FK1_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_application_acl_resource", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_acl_resource_resource_UNIQUE", columns={"resource"})}, indexes={@ORM\Index(name="nmt_application_acl_resource_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_acl_resource_FK2_idx", columns={"change_by"}), @ORM\Index(name="nmt_application_acl_resource_IDX1", columns={"resource"}), @ORM\Index(name="nmt_application_acl_resource_IDX2", columns={"token"})})
  * @ORM\Entity
  */
 class NmtApplicationAclResource
@@ -71,6 +71,34 @@ class NmtApplicationAclResource
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
+     */
+    private $currentState;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="change_on", type="datetime", nullable=true)
+     */
+    private $changeOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -79,6 +107,16 @@ class NmtApplicationAclResource
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="change_by", referencedColumnName="id")
+     * })
+     */
+    private $changeBy;
 
 
 
@@ -261,6 +299,102 @@ class NmtApplicationAclResource
     }
 
     /**
+     * Set currentState
+     *
+     * @param string $currentState
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+
+        return $this;
+    }
+
+    /**
+     * Get currentState
+     *
+     * @return string
+     */
+    public function getCurrentState()
+    {
+        return $this->currentState;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set changeOn
+     *
+     * @param \DateTime $changeOn
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setChangeOn($changeOn)
+    {
+        $this->changeOn = $changeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get changeOn
+     *
+     * @return \DateTime
+     */
+    public function getChangeOn()
+    {
+        return $this->changeOn;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -282,5 +416,29 @@ class NmtApplicationAclResource
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set changeBy
+     *
+     * @param \Application\Entity\MlaUsers $changeBy
+     *
+     * @return NmtApplicationAclResource
+     */
+    public function setChangeBy(\Application\Entity\MlaUsers $changeBy = null)
+    {
+        $this->changeBy = $changeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get changeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getChangeBy()
+    {
+        return $this->changeBy;
     }
 }

@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_hr_payroll_input", indexes={@ORM\Index(name="nmt_hr_payroll_input_FK1_idx", columns={"period_id"}), @ORM\Index(name="nmt_hr_payroll_input_FK2_idx", columns={"employee_id"}), @ORM\Index(name="nmt_hr_payroll_input_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_payroll_input_IDX1", columns={"revision_number"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtHrPayrollInputRepository")
  */
 class NmtHrPayrollInput
 {

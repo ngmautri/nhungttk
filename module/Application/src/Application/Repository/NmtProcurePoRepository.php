@@ -279,5 +279,47 @@ WHERE 1
             return null;
         }
     }
+    
+    /**
+     *
+     * @param unknown $item_id
+     * @param unknown $token
+     * @return array|NULL
+     */
+    public function getPoOfItem($item_id, $token)
+    {
+        $sql = "
+SELECT
+    nmt_inventory_item.item_name as item_name,
+	nmt_procure_po_row.*
+FROM nmt_procure_po_row
+            
+LEFT JOIN nmt_procure_po
+ON nmt_procure_po.id = nmt_procure_po_row.po_id
+            
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = nmt_procure_po_row.item_id
+WHERE 1
+            
+";
+        
+        //$sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
+        
+        $sql = $sql . " AND nmt_inventory_item.id =" . $item_id . " AND nmt_inventory_item.token='" . $token . "'";
+        $sql = $sql . " ORDER BY nmt_procure_po.contract_date DESC ";
+         try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'procure_po_row');
+            $rsm->addScalarResult("item_name", "item_name");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+  
 }
 

@@ -1093,6 +1093,30 @@ class VInvoiceRowController extends AbstractActionController
         
         return $this->redirect()->toRoute('access_denied');
     }
+    
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function apOfItemAction()
+    {
+        $request = $this->getRequest();
+        // accepted only ajax request
+       /*  if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        } */
+        $this->layout("layout/user/ajax");
+        
+        $item_id = (int) $this->params()->fromQuery('item_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $rows = $res->getAPOfItem($item_id, $token);
+        return new ViewModel(array(
+            'rows' => $rows
+        ));
+    }
 
     /**
      *

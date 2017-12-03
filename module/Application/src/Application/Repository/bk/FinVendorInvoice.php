@@ -21,147 +21,147 @@ class FinVendorInvoice
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="vendor_name", type="string", length=100, nullable=true)
      */
     private $vendorName;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="invoice_no", type="string", length=45, nullable=true)
      */
     private $invoiceNo;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
      */
     private $invoiceDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="currency_iso3", type="string", length=3, nullable=true)
      */
     private $currencyIso3;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=2, nullable=true)
      */
     private $exchangeRate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
      */
     private $currentState;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="trx_type", type="string", length=45, nullable=true)
      */
     private $trxType;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
      */
     private $lastchangeOn;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
      */
     private $postingDate;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="gr_date", type="datetime", nullable=true)
      */
     private $grDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="sap_doc", type="string", length=45, nullable=true)
      */
     private $sapDoc;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="contract_no", type="string", length=45, nullable=true)
      */
     private $contractNo;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="contract_date", type="datetime", nullable=true)
      */
     private $contractDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="quotation_no", type="string", length=45, nullable=true)
      */
     private $quotationNo;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="quotation_date", type="datetime", nullable=true)
      */
     private $quotationDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
      */
     private $sysNumber;
-
+    
     /**
      * @var \Application\Entity\NmtBpVendor
      *
@@ -171,7 +171,7 @@ class FinVendorInvoice
      * })
      */
     private $vendor;
-
+    
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
      *
@@ -181,7 +181,7 @@ class FinVendorInvoice
      * })
      */
     private $warehouse;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -191,7 +191,7 @@ class FinVendorInvoice
      * })
      */
     private $createdBy;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -201,7 +201,7 @@ class FinVendorInvoice
      * })
      */
     private $lastchangeBy;
-
+    
     /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
@@ -211,7 +211,7 @@ class FinVendorInvoice
      * })
      */
     private $currency;
-
+    
     /**
      * @var \Application\Entity\NmtProcurePo
      *
@@ -221,9 +221,9 @@ class FinVendorInvoice
      * })
      */
     private $po;
-
-
-
+    
+    
+    
     /**
      * Get id
      *
@@ -233,7 +233,7 @@ class FinVendorInvoice
     {
         return $this->id;
     }
-
+    
     /**
      * Set token
      *
@@ -244,10 +244,10 @@ class FinVendorInvoice
     public function setToken($token)
     {
         $this->token = $token;
-
+        
         return $this;
     }
-
+    
     /**
      * Get token
      *
@@ -257,7 +257,7 @@ class FinVendorInvoice
     {
         return $this->token;
     }
-
+    
     /**
      * Set vendorName
      *
@@ -268,10 +268,10 @@ class FinVendorInvoice
     public function setVendorName($vendorName)
     {
         $this->vendorName = $vendorName;
-
+        
         return $this;
     }
-
+    
     /**
      * Get vendorName
      *
@@ -281,7 +281,7 @@ class FinVendorInvoice
     {
         return $this->vendorName;
     }
-
+    
     /**
      * Set invoiceNo
      *
@@ -292,10 +292,10 @@ class FinVendorInvoice
     public function setInvoiceNo($invoiceNo)
     {
         $this->invoiceNo = $invoiceNo;
-
+        
         return $this;
     }
-
+    
     /**
      * Get invoiceNo
      *
@@ -305,7 +305,7 @@ class FinVendorInvoice
     {
         return $this->invoiceNo;
     }
-
+    
     /**
      * Set invoiceDate
      *
@@ -316,10 +316,10 @@ class FinVendorInvoice
     public function setInvoiceDate($invoiceDate)
     {
         $this->invoiceDate = $invoiceDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get invoiceDate
      *
@@ -329,7 +329,7 @@ class FinVendorInvoice
     {
         return $this->invoiceDate;
     }
-
+    
     /**
      * Set currencyIso3
      *
@@ -340,10 +340,10 @@ class FinVendorInvoice
     public function setCurrencyIso3($currencyIso3)
     {
         $this->currencyIso3 = $currencyIso3;
-
+        
         return $this;
     }
-
+    
     /**
      * Get currencyIso3
      *
@@ -353,7 +353,7 @@ class FinVendorInvoice
     {
         return $this->currencyIso3;
     }
-
+    
     /**
      * Set exchangeRate
      *
@@ -364,10 +364,10 @@ class FinVendorInvoice
     public function setExchangeRate($exchangeRate)
     {
         $this->exchangeRate = $exchangeRate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get exchangeRate
      *
@@ -377,7 +377,7 @@ class FinVendorInvoice
     {
         return $this->exchangeRate;
     }
-
+    
     /**
      * Set remarks
      *
@@ -388,10 +388,10 @@ class FinVendorInvoice
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-
+        
         return $this;
     }
-
+    
     /**
      * Get remarks
      *
@@ -401,7 +401,7 @@ class FinVendorInvoice
     {
         return $this->remarks;
     }
-
+    
     /**
      * Set createdOn
      *
@@ -412,10 +412,10 @@ class FinVendorInvoice
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdOn
      *
@@ -425,7 +425,7 @@ class FinVendorInvoice
     {
         return $this->createdOn;
     }
-
+    
     /**
      * Set currentState
      *
@@ -436,10 +436,10 @@ class FinVendorInvoice
     public function setCurrentState($currentState)
     {
         $this->currentState = $currentState;
-
+        
         return $this;
     }
-
+    
     /**
      * Get currentState
      *
@@ -449,7 +449,7 @@ class FinVendorInvoice
     {
         return $this->currentState;
     }
-
+    
     /**
      * Set isActive
      *
@@ -460,10 +460,10 @@ class FinVendorInvoice
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isActive
      *
@@ -473,7 +473,7 @@ class FinVendorInvoice
     {
         return $this->isActive;
     }
-
+    
     /**
      * Set trxType
      *
@@ -484,10 +484,10 @@ class FinVendorInvoice
     public function setTrxType($trxType)
     {
         $this->trxType = $trxType;
-
+        
         return $this;
     }
-
+    
     /**
      * Get trxType
      *
@@ -497,7 +497,7 @@ class FinVendorInvoice
     {
         return $this->trxType;
     }
-
+    
     /**
      * Set lastchangeOn
      *
@@ -508,10 +508,10 @@ class FinVendorInvoice
     public function setLastchangeOn($lastchangeOn)
     {
         $this->lastchangeOn = $lastchangeOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastchangeOn
      *
@@ -521,7 +521,7 @@ class FinVendorInvoice
     {
         return $this->lastchangeOn;
     }
-
+    
     /**
      * Set postingDate
      *
@@ -532,10 +532,10 @@ class FinVendorInvoice
     public function setPostingDate($postingDate)
     {
         $this->postingDate = $postingDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get postingDate
      *
@@ -545,7 +545,7 @@ class FinVendorInvoice
     {
         return $this->postingDate;
     }
-
+    
     /**
      * Set grDate
      *
@@ -556,10 +556,10 @@ class FinVendorInvoice
     public function setGrDate($grDate)
     {
         $this->grDate = $grDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get grDate
      *
@@ -569,7 +569,7 @@ class FinVendorInvoice
     {
         return $this->grDate;
     }
-
+    
     /**
      * Set sapDoc
      *
@@ -580,10 +580,10 @@ class FinVendorInvoice
     public function setSapDoc($sapDoc)
     {
         $this->sapDoc = $sapDoc;
-
+        
         return $this;
     }
-
+    
     /**
      * Get sapDoc
      *
@@ -593,7 +593,7 @@ class FinVendorInvoice
     {
         return $this->sapDoc;
     }
-
+    
     /**
      * Set contractNo
      *
@@ -604,10 +604,10 @@ class FinVendorInvoice
     public function setContractNo($contractNo)
     {
         $this->contractNo = $contractNo;
-
+        
         return $this;
     }
-
+    
     /**
      * Get contractNo
      *
@@ -617,7 +617,7 @@ class FinVendorInvoice
     {
         return $this->contractNo;
     }
-
+    
     /**
      * Set contractDate
      *
@@ -628,10 +628,10 @@ class FinVendorInvoice
     public function setContractDate($contractDate)
     {
         $this->contractDate = $contractDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get contractDate
      *
@@ -641,7 +641,7 @@ class FinVendorInvoice
     {
         return $this->contractDate;
     }
-
+    
     /**
      * Set quotationNo
      *
@@ -652,10 +652,10 @@ class FinVendorInvoice
     public function setQuotationNo($quotationNo)
     {
         $this->quotationNo = $quotationNo;
-
+        
         return $this;
     }
-
+    
     /**
      * Get quotationNo
      *
@@ -665,7 +665,7 @@ class FinVendorInvoice
     {
         return $this->quotationNo;
     }
-
+    
     /**
      * Set quotationDate
      *
@@ -676,10 +676,10 @@ class FinVendorInvoice
     public function setQuotationDate($quotationDate)
     {
         $this->quotationDate = $quotationDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get quotationDate
      *
@@ -689,7 +689,7 @@ class FinVendorInvoice
     {
         return $this->quotationDate;
     }
-
+    
     /**
      * Set sysNumber
      *
@@ -700,10 +700,10 @@ class FinVendorInvoice
     public function setSysNumber($sysNumber)
     {
         $this->sysNumber = $sysNumber;
-
+        
         return $this;
     }
-
+    
     /**
      * Get sysNumber
      *
@@ -713,7 +713,7 @@ class FinVendorInvoice
     {
         return $this->sysNumber;
     }
-
+    
     /**
      * Set vendor
      *
@@ -724,10 +724,10 @@ class FinVendorInvoice
     public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
     {
         $this->vendor = $vendor;
-
+        
         return $this;
     }
-
+    
     /**
      * Get vendor
      *
@@ -737,7 +737,7 @@ class FinVendorInvoice
     {
         return $this->vendor;
     }
-
+    
     /**
      * Set warehouse
      *
@@ -748,10 +748,10 @@ class FinVendorInvoice
     public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
     {
         $this->warehouse = $warehouse;
-
+        
         return $this;
     }
-
+    
     /**
      * Get warehouse
      *
@@ -761,7 +761,7 @@ class FinVendorInvoice
     {
         return $this->warehouse;
     }
-
+    
     /**
      * Set createdBy
      *
@@ -772,10 +772,10 @@ class FinVendorInvoice
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdBy
      *
@@ -785,7 +785,7 @@ class FinVendorInvoice
     {
         return $this->createdBy;
     }
-
+    
     /**
      * Set lastchangeBy
      *
@@ -796,10 +796,10 @@ class FinVendorInvoice
     public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
     {
         $this->lastchangeBy = $lastchangeBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastchangeBy
      *
@@ -809,7 +809,7 @@ class FinVendorInvoice
     {
         return $this->lastchangeBy;
     }
-
+    
     /**
      * Set currency
      *
@@ -820,10 +820,10 @@ class FinVendorInvoice
     public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
     {
         $this->currency = $currency;
-
+        
         return $this;
     }
-
+    
     /**
      * Get currency
      *
@@ -833,7 +833,7 @@ class FinVendorInvoice
     {
         return $this->currency;
     }
-
+    
     /**
      * Set po
      *
@@ -844,10 +844,10 @@ class FinVendorInvoice
     public function setPo(\Application\Entity\NmtProcurePo $po = null)
     {
         $this->po = $po;
-
+        
         return $this;
     }
-
+    
     /**
      * Get po
      *

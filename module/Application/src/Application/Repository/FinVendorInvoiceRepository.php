@@ -335,5 +335,48 @@ WHERE 1
             return null;
         }
     }
+    
+    
+    /**
+     *
+     * @param unknown $item_id
+     * @param unknown $token
+     * @return array|NULL
+     */
+    public function getAPOfItem($item_id, $token)
+    {
+        $sql = "
+SELECT
+    nmt_inventory_item.item_name as item_name,
+	fin_vendor_invoice_row.*
+FROM fin_vendor_invoice_row
+            
+LEFT JOIN fin_vendor_invoice
+ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+            
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = fin_vendor_invoice_row.item_id
+WHERE 1
+            
+";
+        
+        //$sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
+        
+        $sql = $sql . " AND nmt_inventory_item.id =" . $item_id . " AND nmt_inventory_item.token='" . $token . "'";
+        $sql = $sql . " ORDER BY fin_vendor_invoice.invoice_date DESC ";
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
+            $rsm->addScalarResult("item_name", "item_name");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
 }
 

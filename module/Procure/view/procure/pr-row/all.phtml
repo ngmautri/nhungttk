@@ -269,7 +269,7 @@ Full Screen</a>
         },
    ];
 
-    var url = "/procure/pr-row/gird-all?pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>";
+    var url = "/procure/pr-row/gird-all1?pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>";
 	//var url = "/procure/pr-row/gird-all";
 	//var url = "/procure/pr-row/gird-all?pr_year=2017&balance=0&is_active=&sort_by=currency&sort=ASC";
 	
@@ -296,7 +296,7 @@ Full Screen</a>
 			//draggable:true,
 			sortable: true,
 			hoverMode: 'cell',
-			pageModel: { type: "remote", rPP:200, strRpp: "{0}" },
+			pageModel: { type: "remote", rPP:100, strRpp: "{0}" },
 			columnBorders: true,
 			dataModel: dataModel,
 			colModel: columns,

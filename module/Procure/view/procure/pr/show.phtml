@@ -444,12 +444,12 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
         },
    ];
 
-    obj.dataModel = {
+    obj.dataModel = {	
     		  dataType: "JSON",
               location: "remote",
               method: "GET",
               recIndx: "row_id",
-              url: "/procure/pr-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>",
+              url: "/procure/pr-row/gird1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }

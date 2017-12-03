@@ -341,9 +341,11 @@ class ItemTransactionController extends AbstractActionController
             /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
             $postingPeriod = $p->getPostingPeriod($entity->getTrxDate());
             
-            if ($postingPeriod->getPeriodStatus() == "C") {
-                $this->flashMessenger()->addMessage("Period :'" . $postingPeriod->getPeriodName() . "' is closed. Can't change!");
-                return $this->redirect()->toUrl('/inventory/item-transaction/show?token=' . $token . '&entity_id=' . $entity_id);
+            if ($postingPeriod != null) {
+                if ($postingPeriod->getPeriodStatus() == "C") {
+                    $this->flashMessenger()->addMessage("Period :'" . $postingPeriod->getPeriodName() . "' is closed. Can't change!");
+                    return $this->redirect()->toUrl('/inventory/item-transaction/show?token=' . $token . '&entity_id=' . $entity_id);
+                }
             }
             
             return new ViewModel(array(
@@ -1367,13 +1369,13 @@ class ItemTransactionController extends AbstractActionController
         
         $query = 'SELECT e, i FROM Application\Entity\NmtInventoryTrx e JOIN e.item i JOIN e.vendor v Where 1=?1';
         
-        if($is_active==0){
-            $is_active=1;
+        if ($is_active == 0) {
+            $is_active = 1;
         }
         
         if ($is_active == - 1) {
             $query = $query . " AND e.isActive = 0";
-        } elseif($is_active == 1){
+        } elseif ($is_active == 1) {
             $query = $query . " AND e.isActive = 1";
         }
         

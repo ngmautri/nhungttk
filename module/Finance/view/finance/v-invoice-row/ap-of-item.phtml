@@ -1,0 +1,78 @@
+<?php if (count($rows)==0): ?>
+
+<h5>no thing found!</h5>
+
+<?php else: ?>
+<div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
+<div style="color: gray;font-size: 9pt;" id="total_received"></div>
+<div style="color: gray;font-size: 9pt;" id="total_balance"></div>
+
+<table style="font-size: 9pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>PR No.</b></td>
+			<td><b>PO No.</b></td>
+			<td><b>AP Invoice</b></td>			
+			<td><b>Pr Date</b></td>
+			<td><b>Unit</b></td>
+			<td><b>Quantity <br> Q'ty</b></td>
+			<td><b>Price<br>Q'ty</b></td>
+			<td><b>Currency</b></td>
+			<td><b>Status</b></td>
+	
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	//$total_ordered = 0;
+	//$total_received = 0;
+	//$total_balance = 0;
+	foreach ( $rows as $r ) :
+		$count ++;
+		/**@var \Application\Entity\FinVendorInvoiceRow $a ;*/		
+		$a = $r[0];
+		
+		?>
+	 <tr>
+	 <td><?php echo $count;?></td>
+			<?php if($a->getPrRow()!==null):?>			
+			<td><a href="/procure/pr/show?entity_id=<?php echo $a->getPrRow()->getPr()->getId();?>&token=<?php echo $a->getPrRow()->getPr()->getToken();?>" target="_blank"><?php echo $a->getPrRow()->getPr()->getPrAutoNumber();?></a></td>
+			<?php else:?>
+			<td>N/A</td>
+			<?php endif; ?>
+			
+			<?php if($a->getPoRow()!==null):?>			
+			<td><a href="/procure/po/add1?entity_id=<?php echo $a->getPoRow()->getPo()->getId();?>&token=<?php echo $a->getPoRow()->getPo()->getId();?>" target="_blank"><?php echo $a->getPoRow()->getPo()->getSysNumber();?></a></td>
+			<?php else:?>
+			<td>N/A</td>
+			<?php endif; ?>
+			
+	 		<td><a href="/finance/v-invoice/add1?entity_id=<?php echo $a->getInvoice()->getId();?>&token=<?php echo $a->getInvoice()->getToken();?>" target="_blank"><?php if($a->getInvoice()->getSysNumber()==null):echo "N/A";else: echo $a->getInvoice()->getSysNumber();endif;?></a></td>
+			
+			<td><?php if(!$a->getInvoice()->getInvoiceDate()==null): echo date_format ( $a->getInvoice()->getInvoiceDate(), "d/m/y");endif;?> </td>
+			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
+		
+			<td><?php echo $a->getQuantity();?></td>
+			<td><?php echo number_format($a->getUnitPrice(),2);?></td>
+			<td><?php echo $a->getInvoice()->getCurrency()->getCurrency();?></td>
+			
+			<td><?php echo $a->getCurrentState();?></td>
+			<td>
+			</td>
+			
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<script type="text/javascript">
+</script>
+
+<?php endif; ?>
+	

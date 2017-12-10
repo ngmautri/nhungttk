@@ -1,6 +1,33 @@
-<?php/** @var \Application\Entity\NmtInventoryItem $entity ; */ ?>
-<span style="color: gray;"><?php echo (!$entity == null)? "Item No.: " . $entity->getSysNumber() :"";?></span>
+<?php                /** @var \Application\Entity\NmtInventoryItem $entity ; */ ?>
 
+<div style="position: relative; float: right;">
+		<img alt="" height="" src="/inventory/item/barcode?barcode=<?php echo (!$entity == null)? $entity->getAssetLabel():"";?>">
+</div>
+
+
+<h4><?php echo (!$entity == null)?$entity->getItemName():"";?>
+
+<span style="color: gray; font-size: 9.5pt"><?php echo (!$entity == null)? " (Item No.: " . $entity->getSysNumber().")" :"";?></span></h4>
+<div style="margin: 5px; font-size: 9.5pt">
+
+	<div class="dropdown">
+		<button class="btn btn-default btn-sm dropdown-toggle" type="button"
+			id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+			aria-expanded="true">
+			Action <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+			<li><a href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
+						class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">
+			<small><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;</small>&nbsp;Upload Picture</a></li>
+			<li><a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
+						class="glyphicon glyphicon-plus"></i></small>&nbsp;New Attachment</a></li>
+		</ul>
+	</div>
+
+</div>
 <div id="tabs1" style="font-size: 9.5pt"> 
   <ul>
   <li ><a href="#general">Item</a></li>
@@ -9,6 +36,7 @@
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Stock</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Attachment</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-assignment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Assignment</a></li>
+  <li ><a href="#accounting">&nbsp;Accounting</a></li>
   
    <li ><a href="<?php echo $this->baseUrl ?>/procure/pr-row/pr-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PR</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/procure/po-row/po-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PO</a></li>
@@ -17,9 +45,15 @@
   
    </ul>
 
+<div id="accounting" style="font-size: 9pt"> 
+Not implemented!
+</div>
 <div id="general"  style="font-size: 9pt"> 
 
-
+	<div style="position: relative; float: right;">
+		<img style="cursor:pointer;" title="click for more detail!" onclick="$('#tabs').tabs({ active: 1});" class= "img-rounded" width="150" height="150" src="/inventory/item/get-picture?&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>"/>
+	</div>
+	
 	<form id="create_item_form" class="form-horizontal" action=""
 		method="post" enctype="multipart/form-data">
 		<input type="hidden" name="redirectUrl"
@@ -49,29 +83,6 @@
 					type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset
 
 			</div>
-
-			<div class="col-sm-2" style="left: 50px; top: 0px;">
-				<img style="cursor: pointer;" title="click for more detail!"
-					onclick="$('#tabs').tabs({ active: 1});" class="img-rounded"
-					width="150" height="150"
-					src="/inventory/item/get-picture?&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>" />
-
-			</div>
-		</div>
-
-		<div class="form-group margin-bottom required">
-			<label class="control-label col-sm-2">Item Name</label>
-			<div class="col-sm-3">
-				<input class="form-control input-sm" type="text" placeholder=""
-					name="itemName"
-					value="<?php echo (!$entity == null)? $entity->getItemName():"";?>">
-			</div>
-
-			<div class="col-sm-2">
-				<img alt="" height=""
-					src="/inventory/item/barcode?barcode=<?php echo (!$entity == null)? $entity->getAssetLabel():"";?>">
-			</div>
-
 		</div>
 
 		<div class="form-group margin-bottom required">
@@ -232,13 +243,7 @@
 
 		</div>
 
-		<div class="form-group margin-bottom">
-			<div class="col-sm-offset-2 col-sm-10">
-				<a class="btn btn-default"
-					href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
-						class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
-			</div>
-		</div>
+	
 
 	</form>
 

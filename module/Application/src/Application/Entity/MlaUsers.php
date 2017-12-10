@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="mla_users", uniqueConstraints={@ORM\UniqueConstraint(name="CT_users_1", columns={"email"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\MlaUsersRepository")
  */
 class MlaUsers
 {
@@ -20,107 +21,107 @@ class MlaUsers
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
      */
     private $checksum;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=40, nullable=true)
      */
     private $title;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=64, nullable=false)
      */
     private $firstname = '';
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=64, nullable=false)
      */
     private $lastname = '';
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=32, nullable=false)
      */
     private $password = '';
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="salt", type="string", length=64, nullable=true)
      */
     private $salt;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
      */
     private $email = '';
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="role", type="string", length=64, nullable=true)
      */
     private $role;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="registration_key", type="string", length=32, nullable=false)
      */
     private $registrationKey;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="confirmed", type="boolean", nullable=false)
      */
     private $confirmed = '0';
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="register_date", type="datetime", nullable=false)
      */
     private $registerDate = 'CURRENT_TIMESTAMP';
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="lastvisit_date", type="datetime", nullable=true)
      */
     private $lastvisitDate;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="block", type="boolean", nullable=false)
      */
     private $block = '0';
-
-
-
+    
+    
+    
     /**
      * Get id
      *
@@ -130,7 +131,7 @@ class MlaUsers
     {
         return $this->id;
     }
-
+    
     /**
      * Set token
      *
@@ -141,10 +142,10 @@ class MlaUsers
     public function setToken($token)
     {
         $this->token = $token;
-
+        
         return $this;
     }
-
+    
     /**
      * Get token
      *
@@ -154,7 +155,7 @@ class MlaUsers
     {
         return $this->token;
     }
-
+    
     /**
      * Set checksum
      *
@@ -165,10 +166,10 @@ class MlaUsers
     public function setChecksum($checksum)
     {
         $this->checksum = $checksum;
-
+        
         return $this;
     }
-
+    
     /**
      * Get checksum
      *
@@ -178,7 +179,7 @@ class MlaUsers
     {
         return $this->checksum;
     }
-
+    
     /**
      * Set title
      *
@@ -189,10 +190,10 @@ class MlaUsers
     public function setTitle($title)
     {
         $this->title = $title;
-
+        
         return $this;
     }
-
+    
     /**
      * Get title
      *
@@ -202,7 +203,7 @@ class MlaUsers
     {
         return $this->title;
     }
-
+    
     /**
      * Set firstname
      *
@@ -213,10 +214,10 @@ class MlaUsers
     public function setFirstname($firstname)
     {
         $this->firstname = $firstname;
-
+        
         return $this;
     }
-
+    
     /**
      * Get firstname
      *
@@ -226,7 +227,7 @@ class MlaUsers
     {
         return $this->firstname;
     }
-
+    
     /**
      * Set lastname
      *
@@ -237,10 +238,10 @@ class MlaUsers
     public function setLastname($lastname)
     {
         $this->lastname = $lastname;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastname
      *
@@ -250,7 +251,7 @@ class MlaUsers
     {
         return $this->lastname;
     }
-
+    
     /**
      * Set password
      *
@@ -261,10 +262,10 @@ class MlaUsers
     public function setPassword($password)
     {
         $this->password = $password;
-
+        
         return $this;
     }
-
+    
     /**
      * Get password
      *
@@ -274,7 +275,7 @@ class MlaUsers
     {
         return $this->password;
     }
-
+    
     /**
      * Set salt
      *
@@ -285,10 +286,10 @@ class MlaUsers
     public function setSalt($salt)
     {
         $this->salt = $salt;
-
+        
         return $this;
     }
-
+    
     /**
      * Get salt
      *
@@ -298,7 +299,7 @@ class MlaUsers
     {
         return $this->salt;
     }
-
+    
     /**
      * Set email
      *
@@ -309,10 +310,10 @@ class MlaUsers
     public function setEmail($email)
     {
         $this->email = $email;
-
+        
         return $this;
     }
-
+    
     /**
      * Get email
      *
@@ -322,7 +323,7 @@ class MlaUsers
     {
         return $this->email;
     }
-
+    
     /**
      * Set role
      *
@@ -333,10 +334,10 @@ class MlaUsers
     public function setRole($role)
     {
         $this->role = $role;
-
+        
         return $this;
     }
-
+    
     /**
      * Get role
      *
@@ -346,7 +347,7 @@ class MlaUsers
     {
         return $this->role;
     }
-
+    
     /**
      * Set registrationKey
      *
@@ -357,10 +358,10 @@ class MlaUsers
     public function setRegistrationKey($registrationKey)
     {
         $this->registrationKey = $registrationKey;
-
+        
         return $this;
     }
-
+    
     /**
      * Get registrationKey
      *
@@ -370,7 +371,7 @@ class MlaUsers
     {
         return $this->registrationKey;
     }
-
+    
     /**
      * Set confirmed
      *
@@ -381,10 +382,10 @@ class MlaUsers
     public function setConfirmed($confirmed)
     {
         $this->confirmed = $confirmed;
-
+        
         return $this;
     }
-
+    
     /**
      * Get confirmed
      *
@@ -394,7 +395,7 @@ class MlaUsers
     {
         return $this->confirmed;
     }
-
+    
     /**
      * Set registerDate
      *
@@ -405,10 +406,10 @@ class MlaUsers
     public function setRegisterDate($registerDate)
     {
         $this->registerDate = $registerDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get registerDate
      *
@@ -418,7 +419,7 @@ class MlaUsers
     {
         return $this->registerDate;
     }
-
+    
     /**
      * Set lastvisitDate
      *
@@ -429,10 +430,10 @@ class MlaUsers
     public function setLastvisitDate($lastvisitDate)
     {
         $this->lastvisitDate = $lastvisitDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastvisitDate
      *
@@ -442,7 +443,7 @@ class MlaUsers
     {
         return $this->lastvisitDate;
     }
-
+    
     /**
      * Set block
      *
@@ -453,10 +454,10 @@ class MlaUsers
     public function setBlock($block)
     {
         $this->block = $block;
-
+        
         return $this;
     }
-
+    
     /**
      * Get block
      *

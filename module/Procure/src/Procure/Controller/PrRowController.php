@@ -1272,6 +1272,8 @@ class PrRowController extends AbstractActionController
                     
                     $count ++;
                     $a_json_row["row_number"] = $pr_row_entity->getRowNumber();
+                    $a_json_row["row_identifer"] = $pr_row_entity->getRowIdentifer();
+                    
                     
                     $a_json_row["pr_number"] = $pr_row_entity->getPr()->getPrNumber() . '<a style="" target="blank"  title="' . $pr_row_entity->getPr()->getPrNumber() . '" href="/procure/pr/show?token=' . $pr_row_entity->getPr()->getToken() . '&entity_id=' . $pr_row_entity->getPr()->getId() . '&checksum=' . $pr_row_entity->getPr()->getChecksum() . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
                     

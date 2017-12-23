@@ -22,12 +22,14 @@ echo '</span>';
 
 if (! $hits == null) :
 	?>
-<table style = "font-size: 10pt;" class="table table-hover table-bordered">
+<table style = "font-size: 9pt;" class="table table-hover table-bordered">
 	<thead>
 		<tr style = "">
 			<td><b>#</b></td>
+			<td><b>Select</b></td>
 			<td><b>Name</b></td>
 			<td><b>SKU</b></td>
+			<td><b>Manufacturer Code</b></td>
 			<td><b>Manufacturer Serial</b></td>
 			<td><b>Manufacturer Model</b></td>
 			<td><b>Model</b></td>
@@ -53,6 +55,7 @@ if (! $hits == null) :
 </a></td>
 		<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
+				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_code);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_serial);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_model);?></span></td>
     		

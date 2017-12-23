@@ -8,14 +8,14 @@
 <h4><?php echo (!$entity == null)?$entity->getItemName():"";?>
 
 <span style="color: gray; font-size: 9.5pt"><?php echo (!$entity == null)? " (Item No.: " . $entity->getSysNumber().")" :"";?></span></h4>
-<div style="margin: 5px; font-size: 9.5pt">
+<div style="margin: 5px; font-size: 9pt">
 
 	<div class="dropdown">
 		<button class="btn btn-default btn-sm dropdown-toggle" type="button"
 			id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
 			aria-expanded="true">
-			Action <span class="caret"></span>
-		</button>
+		<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;&nbsp;Actions&nbsp;<span class="caret"></span>
+			</button>
 		<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 			<li><a href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
 						class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a></li>

@@ -66,18 +66,31 @@ if (count ( $errors ) > 0) {
 				name="itemDescription" value="<?php echo (!$entity == null)? $entity->getItemDescription():"";?>">
 		</div>
 	</div>
+	
 	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" >Keyworks</label>
+		<div class="col-sm-3">
+			<input class="form-control input-sm" type="text"  placeholder=""
+				name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
+		</div>
+	</div>
+	
+	
+	<div class="form-group margin-bottom">
+		
+		<label class="control-label col-sm-2" >Inventory No.</label>
+		<div class="col-sm-3">
+			<input class="form-control input-sm" type="text"  placeholder=""
+				name="assetLabel" value="<?php echo (!$entity == null)? $entity->getAssetLabel():"";?>">
+		</div>
+	
 		<label class="control-label col-sm-2" >Barcode</label>
 		<div class="col-sm-3">
 			<input class="form-control input-sm" type="text"  placeholder=""
 				name="barcode" value="<?php echo (!$entity == null)? $entity->getBarcode():"";?>">
 			
 		</div>		
-		<label class="control-label col-sm-2" >Keyworks</label>
-		<div class="col-sm-3">
-			<input class="form-control input-sm" type="text"  placeholder=""
-				name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
-		</div>
+		
 	</div>
 	
 	<div class="form-group margin-bottom required">

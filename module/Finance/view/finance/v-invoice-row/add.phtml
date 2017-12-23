@@ -1,6 +1,30 @@
 <?php /**@var \Application\Entity\FinVendorInvoice $target ;
         @var \Application\Entity\FinVendorInvoiceRow $entity ;
 */?>
+
+
+<div>
+
+<div class="alert alert-warning" role="alert" style="position: relative; float: right; margin-bottom: 1px; margin-right: 10pt; padding:0px; font-size: 9.5pt">
+					
+
+		<ul style="font-size: 9.5pt">
+						<li>Net: <?php echo number_format($net_amount,2) . " " . $target->getCurrency()->getCurrency() ;?></li>
+                        <li>Tax: <?php echo number_format($tax_amount,2);?></li>
+                        <li>Gross: <?php echo number_format($gross_amount,2) . " " .$target->getCurrency()->getCurrency();?></li>
+                        <li>Total Rows:<?php echo ($total_row);?></li>
+		</ul>
+</div>
+
+<h4>
+<?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
+</h4>
+<span style="font-size: 9pt; color: gray;">Invoice No.:<?php echo (!$target == null)? $target->getInvoiceNo():"";?> // <?php echo (!$target == null)? $target->getSapDoc():"";?></span>
+<br>
+<span style="font-size: 9pt; color: gray;" >Invoice Date:<?php if(!$target == null): if ($target->getInvoiceDate() !== null): echo date_format($target->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
+<br>
+<span style="font-size: 9pt; color: gray;">Doc.No.: <?php echo (!$target == null)? $target->getSysNumber():"";?></span>
+</div>
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
@@ -35,15 +59,7 @@ if (count ( $errors ) > 0) {
 				
 				<div id="invoice_header" class="collapse">
 					
-					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9.5pt">
-					<ul style="font-size: 9.5pt">
-						<li>Net: <?php echo number_format($net_amount,2) . " " . $target->getCurrency()->getCurrency() ;?></li>
-                        <li>Tax: <?php echo number_format($tax_amount,2);?></li>
-                        <li>Gross: <?php echo number_format($gross_amount,2) . " " .$target->getCurrency()->getCurrency();?></li>
-                        <li>Total Rows:<?php echo ($total_row);?></li>
-					</ul>	
-					</div>
-
+		
 					<div class="form-group margin-bottom required">
 						<label class="control-label col-sm-2 ">Vendor:</label>
 						<div class="col-sm-3">

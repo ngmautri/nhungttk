@@ -29,7 +29,7 @@ use Exception;
 class ItemController extends AbstractActionController
 {
 
-    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
 
     protected $doctrineEM;
 
@@ -163,6 +163,8 @@ class ItemController extends AbstractActionController
             $standard_uom_id = $request->getPost('standard_uom_id');
             
             $leadTime = $request->getPost('leadTime');
+            $assetLabel = $request->getPost('assetLabel');
+            
             
             $isActive = (int) $request->getPost('isActive');
             $isFixedAsset = (int) $request->getPost('isFixedAsset');
@@ -246,6 +248,9 @@ class ItemController extends AbstractActionController
             $entity->setManufacturerCode($manufacturerCode);
             $entity->setManufacturerModel($manufacturerModel);
             $entity->setManufacturerSerial($manufacturerSerial);
+            
+            $entity->setAssetLabel($assetLabel);
+            
             
             // $entity->setOrigin($origin);
             // $entity->setSerialNumber($serialNumber);

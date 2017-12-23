@@ -1,0 +1,106 @@
+
+<div id="tabs" style="font-size: 10pt"> 
+  <ul>
+  <li ><a href="#general">User List</a></li>
+   </ul>
+
+<div id="general"> 
+
+
+<?php
+
+if ($total_resources <= 0) {
+	
+	echo 'No records found!';
+} else {
+	
+	if (! is_null ( $paginator )) {
+		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_resources . ' records found!';
+	} else {
+		echo $total_resources . ' record found!';
+	}
+	
+	?>
+
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>First Name</b></td>
+			<td><b>Last Name</b></td>
+			<td><b>Email</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $resources as $a ) :
+		$count ++;
+		/** @var \Application\Entity\MlaUsers $a */
+		
+	?>
+	 <tr>
+	 		<td><?php echo $count;?></td>
+			<td><?php echo $this->escapeHtml($a->getFirstname());?></td>
+			<td><?php echo $this->escapeHtml($a->getLastname());?></td>
+			<td><?php echo $this->escapeHtml($a->getEmail());?></td>
+	
+			<td></td>
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<?php
+	
+	// ===============================
+	if (! is_null ( $paginator )) :
+		
+		// change it only
+		$base = $this->baseUrl . '/application/acl/list-resources';
+		$_connector_symbol = '?';
+		
+		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+		
+		$p1 = ($paginator->page) - 1;
+		$p2 = ($paginator->page) + 1;
+		
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		
+		echo '<ul class="pagination pagination-sm">';
+		
+		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $first . '"> |< </a></li>';
+			echo '<li><a href="' . $prev . '"> < </a></li>';
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			
+			if ($i == $paginator->page) {
+				echo '<li><a class="active" href="#">' . $i . '</a></li>';
+			} else {
+				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+			}
+		}
+		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+			echo '<li><a href="' . $next . '"> > </a></li>';
+			echo '<li><a href="' . $last . '"> >| </a></li>';
+		}
+		echo '</ul>';
+endif;
+	
+}
+// ===============================
+?>
+
+
+</div></div>

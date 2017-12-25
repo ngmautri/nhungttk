@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
 use Application\Entity\FinVendorInvoice;
 use Application\Entity\FinVendorInvoiceRow;
+use Application\Entity\NmtInventoryTrx;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\FinVendorInvoiceRowTmp;
 
@@ -627,7 +628,12 @@ class VInvoiceController extends AbstractActionController
                 'isActive' => 1,
                 'po' => $target
             );
-            $po_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findBy($criteria);
+            
+            $sort_criteria = array(
+                'rowNumber' => 'ASC'
+            );
+            
+            $po_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findBy($criteria,$sort_criteria);
             
             if (count($po_rows > 0)) {
                 $n = 0;
@@ -763,7 +769,7 @@ class VInvoiceController extends AbstractActionController
                     $ap_row->setRowNumber($n);
                     $ap_row->setRowIndentifer($target->getSysNumber() . "-$n");
                     
-                    $ap_row->setCurrentState("finalInvoice");
+                    $ap_row->setCurrentState($target->getCurrentState());
                     $ap_row->setInvoice($target);
                     $ap_row->setPoRow($r->getPoRow());
                     $ap_row->setPrRow($r->getPrRow());
@@ -799,10 +805,43 @@ class VInvoiceController extends AbstractActionController
                     
                     $r->setCurrentState("ACCEPTED");
                     $r->setIsActive(0);
-                    $this->doctrineEM->persist($r);
+                    $this->doctrineEM->persist($r);                   
+                    
+                    $gr_entity = new NmtInventoryTrx();
+                    $gr_entity->setVendor($target->getVendor());
+                    $gr_entity->setFlow('IN');
+                    $gr_entity->setInvoiceRow($ap_row);
+                    $gr_entity->setItem($r->getItem());
+                    $gr_entity->setPrRow($r->getPrRow());
+                    $gr_entity->setQuantity($r->getQuantity());
+                    $gr_entity->setVendorItemCode($r->getVendorItemCode());
+                    $gr_entity->setVendorItemUnit($r->getUnit());
+                    $gr_entity->setVendorUnitPrice($r->getUnitPrice());
+                    $gr_entity->setTrxDate($target->getGrDate());
+                    $gr_entity->setCurrency($target->getCurrency());
+                    $gr_entity->setRemarks("GR of Invoice ".$target->getInvoiceNo());
+                    $gr_entity->setWh($target->getWarehouse());
+                    $gr_entity->setCreatedBy($u);
+                    $gr_entity->setCreatedOn(new \DateTime());
+                    $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
+                    
+                    $gr_entity->setTaxRate($r->getTaxRate());
+                    
+                    $gr_entity->setCurrentState($target->getCurrentState());
+                    
+                    if ($target->getCurrentState() == "finalInvoice") {
+                        $gr_entity->setIsActive(1);
+                    } else {
+                        $gr_entity->setIsActive(0);
+                    }
+                    
+                    $this->doctrineEM->persist($gr_entity);
+                    $this->doctrineEM->flush();
                     
                     
-                }
+                    
+                 }
                 
             }
             

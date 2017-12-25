@@ -89,13 +89,49 @@ if (count ( $errors ) > 0) {
 						<label class="control-label col-sm-2">Currency:</label>
     					<div class="col-sm-3">
     					
+    					
+    					<select name="currency_id" class="form-control input-sm">
+								<option value="">Select Currency</option>
+   	    							<?php
+   	    							if($currency_list!== null):
+       	    							foreach ( $currency_list as $curr ) :
+       	    							if($target!==null):
+       	    							     if($target->getCurrency()!==null):
+       	    							         if($target->getCurrency()->getCurrency() == $curr->getCurrency()):
+       	    							             echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+   	    							             else:
+   	    							                 echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+       	    							         endif;
+       	    							     else:
+       	    							            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+       	    							     endif;
+       	    							 else:
+       	    							     echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+       	    							 endif;
+       									endforeach;
+   	    							endif;
+									?>
+   					</select>
+    					
+    					
+    			    <!-- 		
     					<input readonly="readonly" class="form-control input-sm" type="text" placeholder=""
     								id="currency_name" name="currency_name" 
     								value="<?php if($target->getCurrency()!==null): echo $target->getCurrency()->getCurrency(); endif;?>">
     					<input type="hidden" class="form-control input-sm" placeholder=""
     								id="currency_id" name="currency_id" 
     								value="<?php if($target->getCurrency()!==null): echo $target->getCurrency()->getId(); endif;?>">
-    					</div>
+    					
+   					 -->
+   					 	</div>
+   			   					 
+   					 <label class="control-label col-sm-2">Exchange Rate:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="exchangeRate" name="exchangeRate" 
+								value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
+						</div>
+   						 
    					</div>
 					
 					

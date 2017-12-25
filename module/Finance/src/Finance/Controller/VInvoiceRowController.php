@@ -707,9 +707,9 @@ class VInvoiceRowController extends AbstractActionController
                     $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
-                            ->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                            ->getItemName()) . "','1280',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1280',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     }
                     
                     if (strlen($a->getItem()->getItemName()) < 35) {
@@ -1191,7 +1191,13 @@ class VInvoiceRowController extends AbstractActionController
                 $entity->setFaRemarks($a['fa_remarks']);
                 $entity->setRowNumber($a['row_number']);
                 $entity->setQuantity($a['row_quantity']);
+                $entity->setUnitPrice($a['row_unit_price']);
+                $entity->setTaxRate($a['row_tax_rate']);
+                
                 $entity->setNetAmount($a['row_quantity']*$entity->getUnitPrice());
+                $entity->setTaxAmount($entity->getNetAmount()*$entity->getTaxRate()/100);
+                $entity->setGrossAmount($entity->getNetAmount()+$entity->getTaxAmount());
+                
                 
                 // $a_json_final['updateList']=$a['row_id'] . 'has been updated';
                 $this->doctrineEM->persist($entity);

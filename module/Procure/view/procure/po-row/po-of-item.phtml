@@ -12,7 +12,8 @@
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Po No.</b></td>
-				<td><b>Pr Date</b></td>
+			<td><b>Pr Date</b></td>
+			<td><b>Vendor</b></td>
 			<td><b>Unit</b></td>
 			<td><b>Quantity <br> Q'ty</b></td>
 			<td><b>Price<br>Q'ty</b></td>
@@ -39,7 +40,9 @@
 	 <tr>
 	 <td><?php echo $count;?></td>
 	 		<td><a href="/procure/po/add1?entity_id=<?php echo $a->getPo()->getId();?>&token=<?php echo $a->getPo()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getPo()->getSysNumber());?></a></td>
-				<td><?php if(!$a->getPo()->getContractDate()==null): echo date_format ( $a->getPo()->getContractDate(), "d/m/y");endif;?> </td>
+			<td><?php if(!$a->getPo()==null): if($a->getPo()->getVendor()!==null): echo $a->getPo()->getVendor()->getVendorName();endif;endif;?> </td>
+			
+			<td><?php if(!$a->getPo()->getContractDate()==null): echo date_format ( $a->getPo()->getContractDate(), "d/m/y");endif;?> </td>
 			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
 		
 			<td><?php echo $a->getQuantity();?></td>

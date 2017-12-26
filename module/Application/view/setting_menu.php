@@ -5,7 +5,7 @@
 	<li><a
 		href="<?php echo $this->baseUrl ?>/application/acl/list-resources"><i class="fa fa-key" aria-hidden="true"></i>&nbsp;&nbsp;ACL Management</a></li>
 	<li class="divider"></li>
-	<li><a href="<?php echo $this->baseUrl ?>/workflow/wf"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;&nbsp;WorkflowManagement</a></li>
+	<li><a href="<?php echo $this->baseUrl ?>/workflow/wf"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;&nbsp;Workflows</a></li>
 	<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/application/backup/db"><i class="fa fa-database" aria-hidden="true"></i>&nbsp;&nbsp;Backup DB</a></li>
 	

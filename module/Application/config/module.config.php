@@ -214,6 +214,7 @@ return array(
             'Application\Controller\DocNumber' => 'Application\Controller\DocNumberControllerFactory',
             'Application\Controller\Backup' => 'Application\Controller\BackupControllerFactory',
             'Application\Controller\User' => 'Application\Controller\UserControllerFactory',
+            'Application\Controller\SearchIndex' => 'Application\Controller\SearchIndexControllerFactory',
             
         
         )

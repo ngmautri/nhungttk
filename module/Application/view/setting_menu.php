@@ -10,19 +10,8 @@
 	<li><a href="<?php echo $this->baseUrl ?>/application/backup/db"><i class="fa fa-database" aria-hidden="true"></i>&nbsp;&nbsp;Backup DB</a></li>
 	
 	<li class="divider"></li>	
-	<li><a href="<?php echo $this->baseUrl ?>/user/admin/asset-index">Update
-			Asset Index</a></li>
-	<li><a href="<?php echo $this->baseUrl ?>/user/admin/sparepart-index">Update
-			Sparepart Index</a></li>
-
-	<li><a href="<?php echo $this->baseUrl ?>/user/admin/article-index">Update
-			Item Index</a></li>
-	<li><a href="<?php echo $this->baseUrl ?>/user/admin/vendor-index">Update
-			Vendor Index</a></li>
-	<li class="divider"></li>
-	<li><a href="<?php echo $this->baseUrl ?>/hr/employee/create-index">Update
-			Employee Index</a></li>
-			<li class="divider"></li>
+	<li><a href="<?php echo $this->baseUrl ?>/application/search-index/update-all"><small><i class="fa fa-refresh" aria-hidden="true"></i></small>&nbsp;&nbsp;Update Search Indexes</a></li>
+				<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/application/index/info"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;&nbsp;System Information</a></li>
 		
 </ul>

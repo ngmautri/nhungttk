@@ -1317,9 +1317,9 @@ class PrRowController extends AbstractActionController
                     
                     if ($pr_row_entity->getItem()->getItemName() !== null) {
                         $onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
-                            ->getItemName()) . "','1200',$(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
+                            ->getItemName()) . "','1200',$(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick1 = "showJqueryDialog('Receiving of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1200', $(window).height()-100,'" . $received_detail . "','j_loaded_data', true);";
+                        $onclick1 = "showJqueryDialog('Receiving of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1200', $(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
                     }
                     
                     if ($a['total_received'] > 0) {

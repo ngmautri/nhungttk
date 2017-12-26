@@ -142,7 +142,7 @@ SELECT
     nmt_procure_pr.is_active,
     nmt_procure_pr.is_draft,
 	nmt_procure_pr.pr_auto_number,
-nmt_procure_pr.total_row_manual,
+    nmt_procure_pr.total_row_manual,
  
     
     nmt_procure_pr.checksum as pr_checksum,
@@ -165,7 +165,7 @@ Left JOIN
 (
 	SELECT
 	nmt_procure_pr_row.pr_id,
-	Count(nmt_procure_pr_row.id) as total_row,
+   	Count(nmt_procure_pr_row.id) as total_row,
 	sum(CASE WHEN (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))<=0 THEN  1 ELSE 0 END) AS row_completed,
     sum(CASE WHEN (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received_converted,0))<=0 THEN  1 ELSE 0 END) AS row_completed_converted,
 	sum(CASE WHEN (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0))>0 THEN  1 ELSE 0 END) AS row_pending,
@@ -186,6 +186,7 @@ Left JOIN
 	) 
 	AS nmt_inventory_trx
 	ON nmt_procure_pr_row.id = nmt_inventory_trx.pr_row_id
+    Where nmt_procure_pr_row.is_active=1
 	Group by nmt_procure_pr_row.pr_id
 ) 
 AS nmt_procure_pr_row
@@ -694,7 +695,7 @@ WHERE 1
         
         if ($is_active == 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active=  1";
-        } elseif ($is_active == - 1) {
+          } elseif ($is_active == - 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active = 0";
         }
         

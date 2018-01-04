@@ -389,8 +389,9 @@ class PrRowController extends AbstractActionController
         
             // $n = new NmtInventoryItem();
         if ($pr_year == null) :
-            $pr_year = date('Y');
-		endif;
+            //$pr_year = date('Y');
+            $pr_year=0;
+        endif;
         
         if ($sort == null) :
             $sort = "ASC";
@@ -463,7 +464,8 @@ class PrRowController extends AbstractActionController
         
             // $n = new NmtInventoryItem();
         if ($pr_year == null) :
-            $pr_year = date('Y');
+            //$pr_year = date('Y');
+            $pr_year=0;
 		endif;
         
         if ($sort == null) :

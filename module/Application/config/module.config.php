@@ -215,6 +215,7 @@ return array(
             'Application\Controller\Backup' => 'Application\Controller\BackupControllerFactory',
             'Application\Controller\User' => 'Application\Controller\UserControllerFactory',
             'Application\Controller\SearchIndex' => 'Application\Controller\SearchIndexControllerFactory',
+            'Application\Controller\QrCode' => 'Application\Controller\QrCodeControllerFactory',
             
         
         )

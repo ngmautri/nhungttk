@@ -11,15 +11,14 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
+use Endroid\QrCode\QrCode;
 
 /**
  *
  * @author nmt
  *        
  */
-class BackupController extends AbstractActionController {
-    
-    const BACKUP_FOLDER = "/data/back-up/db";
+class QrCodeController extends AbstractActionController {
     
     
     protected $doctrineEM;
@@ -35,16 +34,12 @@ class BackupController extends AbstractActionController {
     /**
      * 
      */
-	public function dbAction() {
-	    //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-	    //exec('mysqldump --user=... --password=... --host=... DB_NAME > /path/to/output/file.sql');
-	    
-	    $fileName = ROOT.self::BACKUP_FOLDER.'/sql_' . date ("m-d-Y");
-	    echo $fileName;
-	    
-	    //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-	    exec('mysqldump -u root --password=kflg79 mla --result-file=' . $fileName . '.sql');
-	    
+	public function testAction() {
+	     
+	    $qrCode = new QrCode('inventory/item/show?token=8_oN_6VBBS_1fwkV71Q8xiqwqY1q4chr&entity_id=3377&checksum=fa0d9289a1a311dae94ad9d6b7117655');
+	    $qrCode->setSize(80);
+	    header('Content-Type: '.$qrCode->getContentType());
+	    echo $qrCode->writeString();
 	}
 	
     /**

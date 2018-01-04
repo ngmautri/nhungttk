@@ -363,7 +363,8 @@ class PrController extends AbstractActionController
         }
         
         if ($pr_year == null) :
-          $pr_year = date('Y');
+          //$pr_year = date('Y');
+            $pr_year = 0;
         endif;
         
         

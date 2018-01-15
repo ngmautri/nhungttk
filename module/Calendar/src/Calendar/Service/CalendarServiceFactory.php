@@ -1,7 +1,6 @@
 <?php
 
-namespace Procure\Service;
-
+namespace Calendar\Service;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -10,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author nmt
  *
  */
-class PrSearchServiceFactory implements FactoryInterface {
+class CalendarServiceFactory implements FactoryInterface {
 	
 	/**
 	 * 
@@ -19,12 +18,12 @@ class PrSearchServiceFactory implements FactoryInterface {
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		
-		$container = $serviceLocator;
+		//$container = $serviceLocator;
 		
-		$service = new PrSearchService();
+		$service = new CalendarService();
 		
-		$sv =  $container->get('doctrine.entitymanager.orm_default');
-		$service->setDoctrineEM($sv);
+	/* 	$sv =  $container->get('doctrine.entitymanager.orm_default');
+		$service->setDoctrineEM($sv); */
 		return $service;
 	}
 }

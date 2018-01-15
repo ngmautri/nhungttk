@@ -8,7 +8,7 @@
  */
 return array(
     'navigation' => array(
-        'finance_navi' => array(
+        'calendar_navi' => array(
             array(
                 'label' => 'Home',
                 'route' => 'application',
@@ -21,32 +21,18 @@ return array(
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
             ),
-            array(
-                'label' => 'New A/P Invoice',
-                'route' => 'finance/default',
-                'controller' => 'v-invoice',
-                'action' => 'add',
-                'icon' => 'glyphicon glyphicon-plus'
-            ),
-            array(
-                'label' => 'A/P Invoice List',
-                'route' => 'finance/default',
-                'controller' => 'v-invoice',
-                'action' => 'list',
-                'icon' => 'glyphicon glyphicon-triangle-right'
-            )
         )
     ),
     
     'router' => array(
         'routes' => array(
             
-            'finance' => array(
+            'calendar' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/finance',
+                    'route' => '/calendar',
                     'defaults' => array(
-                        '__NAMESPACE__' => 'Finance\Controller',
+                        '__NAMESPACE__' => 'Calendar\Controller',
                         'controller' => 'Index',
                         'action' => 'index'
                     )
@@ -74,8 +60,12 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-            'finance_navi' => 'Finance\Service\FinanceNavigationFactory', // <-- add this
-           )
+            'calendar_navi' => 'Calendar\Service\CalendarNavigationFactory', // <-- add this
+            'Calendar\Service\CalendarService' => 'Calendar\Service\CalendarServiceFactory',
+            
+            
+            
+        )
     ),
     'translator' => array(
         'locale' => 'en_US',
@@ -89,12 +79,7 @@ return array(
     ),
     'controllers' => array(
         'factories' => array(
-            'Finance\Controller\Index' => 'Finance\Controller\IndexControllerFactory',
-            'Finance\Controller\PostingPeriod' => 'Finance\Controller\PostingPeriodControllerFactory',
-            'Finance\Controller\VInvoice' => 'Finance\Controller\VInvoiceControllerFactory',
-            'Finance\Controller\VInvoiceRow' => 'Finance\Controller\VInvoiceRowControllerFactory',
-            'Finance\Controller\VInvoiceAttachment' => 'Finance\Controller\VInvoiceAttachmentControllerFactory',
-            
+            'Calendar\Controller\Index' => 'Calendar\Controller\IndexControllerFactory',
          )
     
     ),
@@ -105,8 +90,8 @@ return array(
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => array(
-            'Finance/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
-            'Finance/index/index' => __DIR__ . '/../view/procure/index/index.phtml',
+            'Calendar/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
+            'Calendar/index/index' => __DIR__ . '/../view/procure/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',
             'error/index' => __DIR__ . '/../view/error/index.phtml',
             'layout/fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml'

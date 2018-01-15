@@ -126,7 +126,9 @@ ul.pagination li a:hover:not (.active ) {
 }
 
 <!--
-jquery UI -->.dialogClass a:hover {
+jquery UI -->
+
+.dialogClass a:hover {
 	background-color: #0080c0;
 	color: #ffffff;
 }
@@ -392,3 +394,23 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
 .demo-gallery {
 	padding-bottom: 80px;
 }
+
+.margin-bottom {
+    margin-bottom:2px;
+}
+
+
+.nav-tabs{
+}
+.tab-content{
+      padding-top:10px
+}
+.nav-tabs > li > a{
+  border: medium none;
+}
+.nav-tabs > li > a:hover{
+  }
+  
+  .nav > li.active > a{
+   font-weight:bold;
+  }

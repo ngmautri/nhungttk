@@ -1,8 +1,55 @@
-function submitForm(form_id){
+	function submitForm(form_id){
 	var form_id_tmp;
 	$('#b_modal_no_header').modal();
 	form_id_tmp = '#' + form_id;
 	$(form_id_tmp).submit();
+}
+
+function submitAjaxForm(url, form_id){
+	var form_id_tmp;
+	form_id_tmp = '#' + form_id;
+	$( form_id_tmp).submit(function( event ) {
+		 var form_data =   JSON.stringify($( this ).serializeArray());
+		  event.preventDefault();
+		  // alert(form_data);
+
+          $.ajax({
+              url: url,
+              data: {
+                  submited_form: form_data
+              },
+              dataType: "json",
+              type: "POST",
+              async: true,
+              beforeSend: function (jqXHR, settings) {
+            	  $("#global-notice").text("Working on it ...").show();
+              },
+              success: function (result) {
+            	   // $("#global-notice").text("Updated...").show();
+            		var n_errors = result.errors.length,s,i;
+            		var messages = result.errors;
+            		var redirectUrl = result.redirect_url;
+            		//alert(result.status);
+            		if(result.status ==-1){
+	           			if (n_errors > 0) {
+	           				s = '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	           				s = s + '<ul>';
+	           				for (i = 0; i < n_errors; i++) {
+	           					s = s + '<li>' + messages[i] + '</li>';
+	           				}
+	           				s = s + '</ul></div>';
+	           				$("#global-notice").html(s).show();
+	           			}
+		              }else{		            	    
+		              	window.location.href = redirectUrl;
+		              }
+                },
+              complete: function () {
+            	 	$("#global-notice").delay(3500).fadeOut(500);
+              }
+          });
+		  
+	});
 }
 
 
@@ -18,7 +65,7 @@ function loadPrRow(url) {
 		// alert(cat_id);
 		$.get(url, {
 	}, function(data, status) {
-		//alert(status);
+		// alert(status);
 		$('#pr_rows').html(data);
 
 	});
@@ -49,13 +96,13 @@ function filterPrRow(url) {
 	url= url+'&sort_by='+ sort_by;
 	url= url+'&sort=' + sort;
 
-	//alert(url);
+	// alert(url);
 	
 	$('#pr_rows').text("Loading...");
 		// alert(cat_id);
 		$.get(url, {
 	}, function(data, status) {
-		//alert(status);
+		// alert(status);
 		$('#pr_rows').html(data);
 
 	});
@@ -81,7 +128,7 @@ function loadCategory(cat_id, cat_name) {
 	
 	$("#dialog1").dialog({
 		width : width,
-		height : 600,
+		height : $(window).height()-80,
 		title : cat_name,
 		modal : true,
 		dialogClass : 'dialogClass'
@@ -242,7 +289,7 @@ function loadData(title, source, target, context = null) {
 		connector_symbol='?';
 	}
 	
-	//alert(source + connector_symbol + "context="+ context);
+	// alert(source + connector_symbol + "context="+ context);
 		
 	$(target_id).text("Loading...");
 	
@@ -297,9 +344,9 @@ function selectId(id, target, name, target_name, context = null){
 	var target_id = '#' + target;
 	$(target_id).val(id);
 	
-	//alert(name);
+	// alert(name);
 	
-	//alert(target_name);
+	// alert(target_name);
 	var target_name_id = '#' + target_name;
 	$(target_name_id).val(name);
 	
@@ -379,7 +426,11 @@ function DatumZeigen() {
 }
 
 
-function doUploadAttachment(form_id, attachment_id, url=null, target_id=null, redirectUrl=null, checksum = null, token = null, attachmentRequired = 1,entity_id = null, entity_token=null){
+function doUploadAttachment(form_id, attachment_id, url=null, 
+		target_id=null, redirectUrl=null, checksum = null, 
+		token = null, attachmentRequired = 1,
+		entity_id = null, entity_token=null){
+	
 	var attachment_id_tmp;
 	var form_id_tmp;
 	var attachment;
@@ -390,7 +441,7 @@ function doUploadAttachment(form_id, attachment_id, url=null, target_id=null, re
 	if (typeof attachment !== "undefined") {
 		// Ensure it's an image
 		if (attachment.type.match(/image.*/)) {
-			//alert(form_id_tmp);
+			// alert(form_id_tmp);
 			uploadImages(url, target_id, redirectUrl, checksum, token,form_id,$('#documentSubject').val(),entity_id,entity_token);
 		}else{
 			$('#b_modal_no_header').modal();
@@ -449,9 +500,9 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 		var p = pic_to_upload[j];
 
 		// console.log(p.size);
-		//var filetype = p.type;
-		//var filename = p.name;
-		//alert(filename);
+		// var filetype = p.type;
+		// var filename = p.name;
+		// alert(filename);
 		// Load the image
 		var reader = new FileReader();
 
@@ -554,7 +605,8 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 											isUploadImagesCompleted(
 													pic_to_upload_resized, n,
 													url, target_id, redirectUrl,checksum, token,subject,entity_id,entity_token)
-													// alert(n+'URL:::' + subject);
+													// alert(n+'URL:::' +
+													// subject);
 										};
 
 									})(p, pic_to_upload_resized, n, url,
@@ -570,7 +622,9 @@ function uploadImages(url, target_id, redirectUrl, checksum = null, token = null
 			};
 
 		})(p, pic_to_upload_resized, pic_to_upload.length, url, target_id,
-				redirectUrl, checksum, token,subject,entity_id,entity_token); // must the same
+				redirectUrl, checksum, token,subject,entity_id,entity_token); // must
+																				// the
+																				// same
 
 		reader.readAsDataURL(p);
 	}
@@ -599,8 +653,8 @@ function isUploadImagesCompleted(pic_to_upload_resized, n, url, target_id,
 			entity_token:entity_token,
 			pictures : pic_to_upload_resized,
 		}, function(data, status, dataType) {
-			//alert(data);
-			//alert(data.success);
+			// alert(data);
+			// alert(data.success);
 			if(data.success > 0){
 				window.location = redirectUrl;
 			}else{
@@ -615,10 +669,11 @@ function isUploadImagesCompleted(pic_to_upload_resized, n, url, target_id,
 					result = result + "</ul>"
 				}
 					
-				/*$('#b_modal_no_header').modal('toggle'); 
-				$( "#flash_messages" ).html(result);
-				$( "#flash_messages" ).show();
-				$( "#flash_messages" ).delay(2200).fadeOut(1000);*/
+				/*
+				 * $('#b_modal_no_header').modal('toggle'); $( "#flash_messages"
+				 * ).html(result); $( "#flash_messages" ).show(); $(
+				 * "#flash_messages" ).delay(2200).fadeOut(1000);
+				 */
 				location.reload();
 			}
 		});

@@ -376,12 +376,33 @@ function getGioHoangDao(jd) {
 
 function alertDayInfo(dd, mm, yy, leap, jd, sday, smonth, syear) {
 	var lunar = new LunarDate(dd, mm, yy, leap, jd);
-    var s = "<div id=\"modal_title\">lunar event</div>";
+    var title = getDayString(lunar, sday, smonth, syear)+" \u00E2m l\u1ECBch\n";
 
-	s += "<br/><strong style='text-transform:uppercase; color:#000099;' >"+ getDayString(lunar, sday, smonth, syear)+" \u00E2m l\u1ECBch\n</strong><hr size='1'><br/>";
+    var defaut_width = 550;
+	var container_with = $("#main_container").width();
+	
+	if(container_with > defaut_width){
+		width = defaut_width;
+	}else{
+		width = container_with - 2;
+	}
+	
+	var s='';
+	//s += "<br/><strong style='text-transform:uppercase; color:#000099;' >"+ getDayString(lunar, sday, smonth, syear)+" \u00E2m l\u1ECBch\n</strong><hr size='1'><br/>";
 	s += getDayName(lunar);
 	s += "<br/>\nGi\u1EDD \u0111\u1EA7u ng\u00E0y: "+getCanHour0(jd)+" "+CHI[0];
 	s += "<br/>\nTi\u1EBFt: "+TIETKHI[getSunLongitude(jd+1, 7.0)];
 	s += "<br/>\nGi\u1EDD ho\u00E0ng \u0111\u1EA1o: "+getGioHoangDao(jd);
-	$('#modal_data').html(s).modal();
+	
+	$("#jquery_dialog").html(s);	
+	$("#jquery_dialog").dialog({
+		modal : true,
+		width : width,
+		height : 400,
+		title:title,
+		dialogClass : 'dialogClass',
+		// position: ['center', 'center'],
+	});
+	
+	
 }

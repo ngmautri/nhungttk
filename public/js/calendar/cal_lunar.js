@@ -1,16 +1,35 @@
+
 /**
  *	Lunar calendar
  *	based on the jscript. 
  */
+/**
+ *	getCurrentMonth, zero based
+ */
+function getCurrentMonth()
+{
+	return $('#nmt_current_month').text();
+}
+
+/**
+ *	getCurrentYear
+ */
+function getCurrentYear()
+{
+	return $('#nmt_current_year').text();
+}
 
 function add_lunar(){
 
 	
 	//get current month, year von cal_lunar.asp
+	
 	var yy= getCurrentYear();
 	var mm= parseInt(getCurrentMonth()) + 1;
 	var n_tagen = days(mm,yy);
 	var DATE_SEPARATOR = "-";
+	
+	//alert(mm);
 	
 	//convert to lunar day and add in kalender
 	for(var k=1; k<= n_tagen; k++){
@@ -67,7 +86,7 @@ function add_lunar(){
 				//s_temp1+=s_tooltip;
 				elem.innerHTML+=s_temp1;
 			}
-			// Return für Event: date1, date2, und first date
+			// Return fï¿½r Event: date1, date2, und first date
 			if (dd==1) var d1=yy_lunar + DATE_SEPARATOR + mm_lunar + DATE_SEPARATOR + dd_lunar;
 			if (dd==n_tagen) var d2=yy_lunar + DATE_SEPARATOR + mm_lunar + DATE_SEPARATOR + dd_lunar;
 			if (dd_lunar==1) var d_first=yy_lunar + DATE_SEPARATOR + mm_lunar + DATE_SEPARATOR + dd_lunar;

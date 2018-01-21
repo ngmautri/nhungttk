@@ -24,17 +24,107 @@ class IndexController extends AbstractActionController {
 	protected $calendarService;
 	
 	
-	/*
-	 * Defaul Action
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
 	 */
 	public function indexAction()
 	{
-	    $calendar= $this->calendarService->drawMonthCal(null,null,'http://localhost:81/calendar');
+	    $calendar= $this->calendarService->createMonthView(null,null,'http://localhost:81/calendar');
 	    return new ViewModel ( array (
 	        'calendar' => $calendar,	        
 	    ) );
 	
 	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+	 */
+	public function monthAction()
+	{
+	    
+	    $request = $this->getRequest();
+	    
+	    if ($request->getHeader('Referer') == null) {
+	        return $this->redirect()->toRoute('access_denied');
+	    }
+	    
+	    
+	    $mm = $this->params()->fromQuery('mm');
+	    $yy = $this->params()->fromQuery('yy');
+	    
+	    $monthName = array("January","February","March","April","May",
+	        "Juni","Juli","August","September","October","November","December");
+	    
+	    
+	    $current_month = date("n")-1;
+	    $current_year = date("Y");
+	    
+	    
+	    if ($yy == 0) :
+	        $yy = $current_year;
+	    endif;
+	    
+	    if ($mm == 0) :
+	        $mm = $current_month;
+	    endif;
+	    
+	    if ($mm<0){
+	        $mm = 11;
+	        $yy -= 1;
+	    }
+	    
+	    if ($mm>11){
+	        $mm = 0;
+	        $yy += 1;
+	    }
+	    
+	    
+	    
+	    $isCurrentMonth=0;
+	    
+	    if (($mm == $current_month) AND ($yy == $current_year)){
+	        $isCurrentMonth = 1;
+	    }
+	    
+	    $calendar= $this->calendarService->createMonthView($mm,$yy,'http://localhost:81/calendar');
+	    return new ViewModel ( array (
+	        'calendar' => $calendar,
+	        'mm'=>$mm,
+	        'mm_name'=>$monthName[$mm],
+	        'yy'=>$yy,
+	        'isCurrentMonth'=>$isCurrentMonth,
+	    ) );
+	    
+	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+	 */
+	public function weekAction()
+	{
+	    
+	    $mm = $this->params()->fromQuery('mm');
+	    $yy = $this->params()->fromQuery('yy');
+	    
+	    if ($yy == 0) :
+	       $yy = date('Y');
+	    endif;
+	    
+	    $calendar= $this->calendarService->createMonthView(null,null,'http://localhost:81/calendar');
+	    return new ViewModel ( array (
+	        'calendar' => $calendar,
+	        'mm'=>$mm,
+	        'yy'=>$mm,
+	    ) );
+	    
+	}
+	
 	
 	
 	/**

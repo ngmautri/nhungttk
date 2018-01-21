@@ -15,11 +15,11 @@ return array(
                 'icon' => 'glyphicon glyphicon-home'
             ),
             array(
-                'label' => 'Add New Period',
-                'route' => 'finance/default',
-                'controller' => 'posting-period',
-                'action' => 'add',
-                'icon' => 'glyphicon glyphicon-plus'
+                'label' => 'Month',
+                'route' => 'calendar/default',
+                'controller' => 'index',
+                'action' => 'month',
+                'icon' => 'glyphicon glyphicon-list'
             ),
         )
     ),

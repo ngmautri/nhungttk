@@ -19,8 +19,9 @@ use Zend\Validator\Date;
 use Zend\Math\Rand;
 use Application\Entity\NmtProcurePr;
 use Symfony\Component\Workflow\Dumper\GraphvizDumper;
-use Application\Entity\NmtApplicationAclResource;
 use Application\Entity\NmtProcurePrRow;
+use Endroid\QrCode\QrCode;
+use Application\Service\PdfService;
 
 /**
  *
@@ -32,7 +33,11 @@ class PrController extends AbstractActionController
 
     const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
 
+    const QR_CODE_PATH = "/data/procure/qr_code/pr/";
+
     protected $doctrineEM;
+
+    protected $pdfService;
 
     /*
      * Defaul Action
@@ -212,7 +217,7 @@ class PrController extends AbstractActionController
             $this->flashMessenger()->addMessage('Purchase Request "' . $prNumber . '" is created successfully!');
             
             // generate document
-            //==================
+            // ==================
             $criteria = array(
                 'isActive' => 1,
                 'subjectClass' => get_class($entity)
@@ -241,13 +246,31 @@ class PrController extends AbstractActionController
                     $tmp = $tmp . "0";
                 }
                 
-                $currentDoc = $currentDoc . $tmp.$current_no;
+                $currentDoc = $currentDoc . $tmp . $current_no;
                 $entity->setPrAutoNumber($currentDoc);
             }
+            
+            // create QR_CODE
+            $redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
+            
+            // $name_part1 = Rand::getString ( 6, self::CHAR_LIST, true ) . "_" . Rand::getString ( 10, self::CHAR_LIST, true );
+            $qr_code_name = $entity->getChecksum() . '_' . $entity->getToken() . '_' . $entity->getId() . '.png';
+            $folder_relative = $qr_code_name[0] . $qr_code_name[1] . DIRECTORY_SEPARATOR . $qr_code_name[2] . $qr_code_name[3] . DIRECTORY_SEPARATOR . $qr_code_name[4] . $qr_code_name[5] . DIRECTORY_SEPARATOR . $qr_code_name[6] . $qr_code_name[7];
+            
+            $folder = ROOT . self::QR_CODE_PATH . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR;
+            
+            if (! is_dir($folder)) {
+                mkdir($folder, 0777, true); // important
+            }
+            
+            $qrCode = new QrCode($redirectUrl);
+            $qrCode->setSize(100);
+            $qrCode->writeFile($folder . $qr_code_name);
             
             $this->doctrineEM->flush();
             
             $redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
+            
             return $this->redirect()->toUrl($redirectUrl);
         }
         
@@ -363,10 +386,9 @@ class PrController extends AbstractActionController
         }
         
         if ($pr_year == null) :
-          //$pr_year = date('Y');
+            // $pr_year = date('Y');
             $pr_year = 0;
         endif;
-        
         
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -483,9 +505,9 @@ class PrController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-    
+
     /**
-     * 
+     *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function show1Action()
@@ -499,7 +521,6 @@ class PrController extends AbstractActionController
         }
         
         $this->layout("layout/user/ajax");
-        
         
         $id = (int) $this->params()->fromQuery('entity_id');
         // $checksum = $this->params()->fromQuery('checksum');
@@ -538,8 +559,8 @@ class PrController extends AbstractActionController
                 
                 /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
                 $wf_factory = $wfService->getWorkFlowFactory($entity);
-                
-                /** @var \Symfony\Component\Workflow\Workflow  $wf */
+            
+            /** @var \Symfony\Component\Workflow\Workflow  $wf */
                 // $wf = $wf_factory->makePrSendingWorkflow()->createWorkflow();
                 // $wf->apply($entity,"send");
             } catch (LogicException $e) {
@@ -769,7 +790,6 @@ class PrController extends AbstractActionController
                 
                 $totalRowManual = (int) $request->getPost('totalRowManual');
                 
-                
                 if ($isActive != 1) {
                     $isActive = 0;
                 }
@@ -778,7 +798,6 @@ class PrController extends AbstractActionController
                     $isDraft = 0;
                 }
                 
-                 
                 if ($prNumber == null) {
                     $errors[] = 'Please enter PR Number!';
                 }
@@ -872,6 +891,92 @@ class PrController extends AbstractActionController
 
     /**
      *
+     * @return void|\Zend\Stdlib\ResponseInterface
+     */
+    public function getPqCodePngAction()
+    {
+        $id = (int) $this->params()->fromQuery('id');
+        $token = $this->params()->fromQuery('token');
+        
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+        
+        /**@var \Application\Entity\NmtProcurePr $entity ;*/
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        
+        if ($entity !== null) {
+            
+            $qr_code_name = $entity->getChecksum() . '_' . $entity->getToken() . '_' . $entity->getId() . '.png';
+            $folder_relative = $qr_code_name[0] . $qr_code_name[1] . DIRECTORY_SEPARATOR . $qr_code_name[2] . $qr_code_name[3] . DIRECTORY_SEPARATOR;
+            $folder_relative = $folder_relative . $qr_code_name[4] . $qr_code_name[5] . DIRECTORY_SEPARATOR . $qr_code_name[6] . $qr_code_name[7];
+            
+            $folder = ROOT . self::QR_CODE_PATH . $folder_relative . DIRECTORY_SEPARATOR . $qr_code_name;
+            if (! file_exists($folder)) {
+                return;
+            }
+            // echo $folder;
+            
+            $imageContent = file_get_contents($folder);
+            $response = $this->getResponse();
+            $response->setContent($imageContent);
+            $response->getHeaders()
+                ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+                ->addHeaderLine('Content-Type', 'image/png')
+                ->addHeaderLine('Content-Length', mb_strlen($imageContent));
+            return $response;
+        } else {
+            return;
+        }
+    }
+
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function printPdfAction()
+    {
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+        
+        /**@var \Application\Entity\NmtProcurePr $entity ;*/
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        
+        if ($entity !== null) {
+            
+            $qr_code_name = $entity->getChecksum() . '_' . $entity->getToken() . '_' . $entity->getId() . '.png';
+            $folder_relative = $qr_code_name[0] . $qr_code_name[1] . DIRECTORY_SEPARATOR . $qr_code_name[2] . $qr_code_name[3] . DIRECTORY_SEPARATOR;
+            $folder_relative = $folder_relative . $qr_code_name[4] . $qr_code_name[5] . DIRECTORY_SEPARATOR . $qr_code_name[6] . $qr_code_name[7];
+            
+            /* $folder = ROOT . self::QR_CODE_PATH . $folder_relative . DIRECTORY_SEPARATOR . $qr_code_name;
+            if (! file_exists($folder)) {
+                return;
+            } */
+            
+            // echo $folder;
+            
+            $details = 'If you can see this PDF file, the PDF service has been configurated successfully! :-)';
+            $image_file='';
+            //$image_file = $folder;
+            $content = $this->pdfService->printPrPdf($details,$image_file);
+            
+            $response = $this->getResponse();
+            $response->getHeaders()->addHeaderLine('Content-Type', 'application/x-pdf');
+            $response->setContent($content);
+            return $response;
+        } else {
+            return;
+        }
+    }
+
+    /**
+     *
      * @return \Doctrine\ORM\EntityManager
      */
     public function getDoctrineEM()
@@ -888,5 +993,23 @@ class PrController extends AbstractActionController
     {
         $this->doctrineEM = $doctrineEM;
         return $this;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function getPdfService()
+    {
+        return $this->pdfService;
+    }
+
+    /**
+     *
+     * @param mixed $pdfService
+     */
+    public function setPdfService(PdfService $pdfService)
+    {
+        $this->pdfService = $pdfService;
     }
 }

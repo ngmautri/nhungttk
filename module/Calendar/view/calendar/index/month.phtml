@@ -1,0 +1,25 @@
+<h4 style="text-transform: uppercase;"><?php echo $mm_name . ' '. $yy; ?></h4>
+
+<div style="padding-bottom: 5px;">
+
+<?php if($isCurrentMonth == 0):?>
+<a class="btn btn-default btn-sm" href="http://localhost:81/calendar/index/month" >Today</a>
+<?php endif;?>
+<a class="btn btn-default btn-sm" href="http://localhost:81/calendar/index/month?mm=<?php echo $mm-1 ?>&yy=<?php echo $yy ?>" ><i class="fa fa-caret-left" aria-hidden="true"></i></a>						
+<a class="btn btn-default btn-sm" href="http://localhost:81/calendar/index/month?mm=<?php echo $mm+1 ?>&yy=<?php echo $yy ?>" ><i class="fa fa-caret-right" aria-hidden="true"></i>
+</a>
+
+
+</div>
+
+
+<div style="display: none" id="nmt_current_month"><?php echo $mm ?></div>
+<div style="display: none" id="nmt_current_year"><?php echo $yy ?></div>
+
+<div id="calendar-wrap">
+<?php echo $calendar ?>
+</div>
+
+<script>
+add_lunar();
+</script>

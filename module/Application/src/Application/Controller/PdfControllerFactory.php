@@ -28,29 +28,9 @@ class PdfControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('Application\Service\PdfService' );
 		$controller->setPdfService($sv );
 		
-		// Purchase Request table
-		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestTable' );
-		$controller->setPrTable($tbl);
+		$sv =  $sm->get('doctrine.entitymanager.orm_default');
+		$controller->setDoctrineEM($sv);
 		
-		// DeliveryTable table
-		$tbl =  $sm->get ('Procurement\Model\DeliveryTable' );
-		$controller->setDnTable($tbl);
-		
-		// Delivery Item table
-		$tbl =  $sm->get ('Procurement\Model\DeliveryItemTable' );
-		$controller->setDnItemTable($tbl);
-		
-		// Delivery Item table
-		$tbl =  $sm->get ('Procurement\Model\PurchaseRequestItemTable' );
-		$controller->setPrItemTable($tbl);
-		
-		// setAssetCountingItemTable
-		$tbl =  $sm->get ('Inventory\Model\AssetCountingItemTable' );
-		$controller->setAssetCountingItemTable($tbl);
-		
-		// setAssetCountingItemTable
-		$tbl =  $sm->get ('Inventory\Model\AssetPictureTable' );
-		$controller->setAssetPictureTable($tbl);
 	
 		return $controller;
 	}

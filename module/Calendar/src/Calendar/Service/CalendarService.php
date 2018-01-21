@@ -145,6 +145,124 @@ class CalendarService
 		$showcalendar .= "</tr></table></div>";
 		return $calendar_header . $nav . $showcalendar;
 	}
+	
+	/**
+	 *	draw calendar
+	 *	@public
+	 *	return string
+	 */
+	public function createMonthView($mm=null, $yy=null, $base_url)
+	{
+	    $calendar_url =  $base_url . '/calendar/index/month/';
+	    
+	    $date = date("d");
+	    $month = date("n")-1;
+	    $year = date("Y");
+	    $showcalendar = '';
+	    $sevendaysaweek = 0;
+	    
+	    if ($mm==null) {
+	        $mm = $month;
+	    }
+	    
+	    if ($yy==null) {
+	        $yy = $year;
+	    }
+	    
+	    if ($mm<0){
+	        $mm = 11;
+	        $yy -= 1;
+	    }
+	    
+	    if ($mm>11){
+	        $mm = 0;
+	        $yy += 1;
+	    }
+	    
+	    
+	    $begin = mktime(0,0,0,($mm+1),1,$yy);
+	    $firstday = date("w",$begin)-1;
+	    $dayspermonth = date("t",$begin);
+	    if ($firstday < 0){
+	        $firstday = 6;
+	    }
+	    
+	    //echo $firstday;
+	    
+	    $dayname = array("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday");
+	    
+	    $showcalendar='<div id="calendar">';
+	    $showcalendar.='<ul class="weekdays">';
+	    
+	    for ($i=0; $i<count($dayname); $i++){
+	        $showcalendar .= '<li>'.$dayname[$i].'</li>';
+	    }
+	    $showcalendar .= "</ul>";
+	    
+	       
+	    $showcalendar .= '<ul class="days">';
+	    
+	    for ($i=0; $i<$firstday; $i++){
+	        $showcalendar .= '<li class="day other-month">&nbsp;</li>';
+	        $sevendaysaweek++;
+	    }
+	    
+	    for ($i=1; $i<=$dayspermonth; $i++){
+	        
+	        if ($i<10)
+	        {
+	            $tmp_dd ='0' . $i;
+	        }else{
+	            $tmp_dd = $i;
+	        }
+	        
+	        if (((int)$mm + 1)<10)
+	        {
+	            $tmp_mm='0' . (string)($mm +1);
+	        }else{
+	            $tmp_mm = (string)($mm+1);
+	        }
+	        
+	        // create id
+	        $id	= $yy . '-' . $tmp_mm . '-' . $tmp_dd;
+	        $id_lunar = $yy . '-' . $tmp_mm . '-' . $tmp_dd . '_lunar';
+	        
+	        if (count($dayname) == $sevendaysaweek){
+	            if ($i==$date && $mm==$month && $yy==$year)
+	            {
+	                $showcalendar .= '</ul><ul class="days"><li class="day today"><div class="date" id="' . $id .'">';
+	                $showcalendar .= '<div><div class="solar_div">' . $i . ' (Today)</div>';
+	                $showcalendar .= '<div class="lunar_div" id="' . $id_lunar . '"></div></div></div></li>';
+	                
+	            }else{
+	                $showcalendar .= '</ul><ul class="days"><li class="day"><div class="date" id="'. $id .'"><div><div class="solar_div">' . $i . '</div>';
+	                $showcalendar .= '<div class="lunar_div" id="' . $id_lunar . '"></div></div></div></li>';
+	                
+	            }
+	            $sevendaysaweek = 0;
+	        }
+	        else{
+	            if ($i==$date && $mm==$month && $yy==$year)
+	            {
+	                $showcalendar .= '<li class="day today"><div class="date" id="' . $id . '"><div><div class="solar_div">' . $i . ' (Today)</div>';
+	                $showcalendar .= '<div class="lunar_div" id="' . $id_lunar . '"></div></div></div></li>';
+	            }else{
+	                $showcalendar .= '<li class="day"><div class="date" id="' . $id . '"><div><div  class="solar_div">' . $i . '</div>';
+	                $showcalendar .= '<div class="lunar_div" id="' . $id_lunar . '"></div></div></div></li>';
+	            }
+	            
+	        }
+	        $sevendaysaweek++;
+	    }
+	    
+	    for ($i=$sevendaysaweek; $i<count($dayname); $i++){
+	        $showcalendar .= '<li class="day other-month">&nbsp;</li>';
+	    }
+	    $showcalendar .= "</ul></div>";
+	    
+	    //echo $showcalendar;
+	    return $showcalendar;
+	}
 }
 
 

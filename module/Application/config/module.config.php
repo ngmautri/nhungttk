@@ -161,8 +161,7 @@ return array(
             'Application\Service\DepartmentService' => 'Application\Service\DepartmentServiceFactory',
             'Application\Service\ItemCategoryService' => 'Application\Service\ItemCategoryServiceFactory',
             'Application\Service\AppSearchService' => 'Application\Service\AppSearchServiceFactory',
-            'Application\Service\AttachmentService' => 'Application\Service\AttachmentServiceFactory',
-                        
+            'Application\Service\AttachmentService' => 'Application\Service\AttachmentServiceFactory',                        
             'Application\Listener\PictureUploadListener' => 'Application\Listener\PictureUploadListenerFactory',
         )
     ),

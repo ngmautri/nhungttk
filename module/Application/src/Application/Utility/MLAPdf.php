@@ -8,8 +8,6 @@ namespace Application\Utility;
  *        
  */
 
-include_once ROOT.'\vendor\tcpdf\tcpdf.php';
-// create new PDF document
 
 class MLAPdf  extends\TCPDF {
 
@@ -17,15 +15,17 @@ class MLAPdf  extends\TCPDF {
 	public function Header() {
 		// Logo
 		
-		//$image_file = ROOT. '\public\images\mascot.gif';
+		$image_file = ROOT. '\public\images\mascot.gif';
 		
 		$this->SetFont('helvetica', 'B', 9);
 		$this->Cell(0, 10, 'Mascot International (Lao) Sole co., Ltd', 0, false, 'T', 0, '', 0, false, 'M', 'M');
-		//$this->Image($image_file, 20, 15, 15, '', 'GIF', '', 'T', false, 100, '', false, false, 0, false, false, false);
 			// Set font
 		$this->Ln(3);
 		$this->SetFont('helvetica', 'I', 8);
 		$this->Write(0, 'VITA Park Specific Economic Zone  Km 22, Vientiane Capital', '', 0, 'L', true, 0, false, false, 0);
+		
+		$this->Image($image_file, 180, 5, 15, '', 'GIF', '', 'T', false, 100, '', false, false, 0, false, false, false);
+		
 		
 		// Title
 		

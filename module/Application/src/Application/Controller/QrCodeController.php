@@ -20,6 +20,7 @@ use Endroid\QrCode\QrCode;
  */
 class QrCodeController extends AbstractActionController {
     
+    const QR_CODE_PATH = "/data/procure/qr_code/test.png";
     
     protected $doctrineEM;
     
@@ -36,10 +37,14 @@ class QrCodeController extends AbstractActionController {
      */
 	public function testAction() {
 	     
+		    
+	    
 	    $qrCode = new QrCode('inventory/item/show?token=8_oN_6VBBS_1fwkV71Q8xiqwqY1q4chr&entity_id=3377&checksum=fa0d9289a1a311dae94ad9d6b7117655');
 	    $qrCode->setSize(80);
-	    header('Content-Type: '.$qrCode->getContentType());
-	    echo $qrCode->writeString();
+	    $qrCode->writeFile(getcwd ().self::QR_CODE_PATH);
+	    //header('Content-Type: '.$qrCode->getContentType());
+	    
+	    //echo $qrCode->writeString();
 	}
 	
     /**

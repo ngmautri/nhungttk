@@ -59,6 +59,7 @@ class Module {
 				'checkIdentity' 
 		), - 100 );
 		
+		
 		$eventManager->attach ( MvcEvent::EVENT_DISPATCH, array (
 				$this,
 				'checkACL' 
@@ -126,7 +127,10 @@ class Module {
 				'test_console',
 				'user_register_confirmation',
 				'access_denied',
-				'order_suggestion_console',				 
+				'order_suggestion_console',
+		        'pr_rest',
+		        'pr_console',
+		    
 		) )) {
 			return;
 		}

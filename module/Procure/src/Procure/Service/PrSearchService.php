@@ -393,14 +393,36 @@ class PrSearchService
             
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             
+            $final_query = new Boolean();
+            
+            
             if (strpos($q, '*') != false) {
                 $pattern = new Term($q);
                 $query = new Wildcard($pattern);
-                $hits = $index->find($query);
-            } else {
-                // $query = QueryParser::parse ( $q );
-                $hits = $index->find($q);
+                $final_query->addSubquery($query, true);
+                
+             } else {
+                 
+                 $terms = explode(" ", $q);
+                 
+                 if (count($terms) > 1) {
+                     
+                     foreach ($terms as $t){
+                         $subquery = new MultiTerm();
+                         $subquery->addTerm(new Term($t));
+                         $final_query->addSubquery($subquery, true);
+                     }
+                     
+                 } else{
+                     $subquery = new MultiTerm();
+                     $subquery->addTerm(new Term($q));
+                     $final_query->addSubquery($subquery, true);
+                 }
             }
+            
+            
+            $hits = $index->find($final_query);
+            
             
             /*
              * echo count ( $hits ) . " result(s) found for query: <b>" . $q . "</b>";

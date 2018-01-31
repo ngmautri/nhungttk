@@ -18,9 +18,15 @@
 	<div id="general" style="font-size: 9pt">
 
 			<div style="position:relative; float:right;">
+			
+			<a class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>       		
+					
+			
 						<a class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
 									class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/procure/pr-attachment/upload-pictures?token=<?php echo (!$entity== null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity== null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity== null)? $entity->getID():"";?>"><small><i class="fa fa-upload" aria-hidden="true"></i></small>&nbsp;Upload picture</a>
+
 									
 																<a class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/pr-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
@@ -427,7 +433,6 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
          
        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-
         { title: "Identifer", dataType: "string", dataIndx: "row_identifer",width: 85,align: 'left',editable: false},	
         { title: "#", dataType: "integer", dataIndx: "row_number", width:5,editable: true },
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
@@ -543,5 +548,8 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
         }
     });        
 
+   function refreshGird(){
+    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+	} 
 </script>
 

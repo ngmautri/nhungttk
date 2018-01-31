@@ -158,7 +158,6 @@ class ItemSearchService
                 $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
                 $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
                 
-                
                 $doc->addField(Field::Keyword('manufacturer_key', $row->getManufacturer()));
                 $doc->addField(Field::Keyword('manufacturer_model_key', $row->getManufacturerModel()));
                 $doc->addField(Field::Keyword('manufacturer_serial_key', $row->getManufacturerSerial()));
@@ -238,7 +237,6 @@ class ItemSearchService
                 
                 $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
                 $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
-                
                 
                 $doc->addField(Field::Keyword('manufacturer_key', $row->getManufacturer()));
                 $doc->addField(Field::Keyword('manufacturer_model_key', $row->getManufacturerModel()));
@@ -322,14 +320,30 @@ class ItemSearchService
             
             $final_query = new Boolean();
             
+            $q = strtolower($q);
+            
             if (strpos($q, '*') != false) {
                 $pattern = new Term($q);
                 $query = new Wildcard($pattern);
                 $final_query->addSubquery($query, true);
             } else {
-                $subquery = new MultiTerm();
-                $subquery->addTerm(new Term($q));
-                $final_query->addSubquery($subquery, true);
+                
+                $terms = explode(" ", $q);
+                
+                if (count($terms) > 1) {
+                    
+                    foreach ($terms as $t){
+                        $subquery = new MultiTerm();
+                        $subquery->addTerm(new Term($t));
+                        $final_query->addSubquery($subquery, true);
+                    }
+                    
+                 } else{
+                     $subquery = new MultiTerm();
+                     $subquery->addTerm(new Term($q));
+                     $final_query->addSubquery($subquery, true);
+                     
+                }
             }
             
             $subquery1 = new MultiTerm();

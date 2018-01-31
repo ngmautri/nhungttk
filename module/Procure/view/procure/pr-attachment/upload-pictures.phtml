@@ -1,8 +1,11 @@
+<?php   /**@var \Application\Entity\NmtProcurePr $target ;*/ ?>
+
 <h4>
 	 <?php 
 	 // target:Project
 	 echo (!$target== null)? 'PR: ' . $target->getPrNumber():"";?>
 </h4>
+<div><?php echo (!$target== null)? 'No.: ' . $target->getPrAutoNumber():"";?></div>
 
 <?php
 if (count ( $errors ) > 0) {

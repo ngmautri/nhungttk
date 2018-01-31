@@ -20,6 +20,8 @@ if (! $hits == null) :
 				<tr>
 					<td><b>#</b></td>
 					<td><b>PR</b></td>
+						<td><b>Item ID</b></td>
+			<td><b>Item SKU</b></td>
 					<td><b>Item</b></td>
 				     <td><b>Row Name</b></td>
 				
@@ -43,8 +45,14 @@ if (! $hits == null) :
 	 <tr>
 
 					<td> <?php echo $count;?></td>
-					<td><a href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $hit->pr_token;?>&entity_id=<?php echo $hit->pr_id;?>&checksum=<?php echo $hit->pr_checksum;?>">
+					<td><a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo $hit->pr_token;?>&entity_id=<?php echo $hit->pr_id;?>&checksum=<?php echo $hit->pr_checksum;?>">
 					<?php echo $this->escapeHtml($hit->pr_number);?></a></td>
+					<td><span id="">
+						<a style="color:navy;" target="_blank"
+						href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->item_token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->item_checksum;?>"><?php echo $this->escapeHtml($hit->item_sys_number);?></a>
+
+					</span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->item_sku_key);?></span></td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
 					<td><span id=""><?php echo $this->escapeHtml($hit->row_name);?></span></td>
 				

@@ -153,9 +153,38 @@ return array(
                     ),
                 ),
             ),
+                        
+            'pr_rest' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/procure/pr-rest[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Procure\Controller\PrRest',
+                    ),
+                ),
+            ),
         
         )
     
+    ),
+    
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'pr_console' => array(
+                    'options' => array(
+                        'route' => 'validate',
+                        'defaults' => array(
+                            'controller' => 'Procure\Controller\PrConsole',
+                            'action' => 'validate'
+                        )
+                    )
+                )
+            )
+        )
     ),
     
     'service_manager' => array(
@@ -186,9 +215,11 @@ return array(
             'Procure\Controller\Po' => 'Procure\Controller\PoControllerFactory',
             'Procure\Controller\PoAttachment' => 'Procure\Controller\PoAttachmentControllerFactory',
             'Procure\Controller\PoRow' => 'Procure\Controller\PoRowControllerFactory',
+            'Procure\Controller\PrSearch' => 'Procure\Controller\PrSearchControllerFactory',            
+            'Procure\Controller\PrRest' => 'Procure\Controller\PrRestControllerFactory',
+            'Procure\Controller\PrConsole' => 'Procure\Controller\PrConsoleControllerFactory',
             
             
-            'Procure\Controller\PrSearch' => 'Procure\Controller\PrSearchControllerFactory'
         
         )
     

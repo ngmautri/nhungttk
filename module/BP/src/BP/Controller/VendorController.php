@@ -15,6 +15,7 @@ use Zend\View\Model\ViewModel;
 use Application\Entity\NmtBpVendor;
 use MLA\Paginator;
 use Zend\Math\Rand;
+use Exception;
 use BP\Service\VendorSearchService;
 
 /*

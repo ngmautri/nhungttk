@@ -33,6 +33,7 @@ if (! $hits == null) :
 	<thead>
 		<tr style = "">
 			<td><b>#</b></td>
+			<td><b>ID</b></td>
 			<td><b>Name</b></td>
 			<td><b>SKU</b></td>
 			<td><b>Manufacturer Code</b></td>
@@ -55,6 +56,8 @@ if (! $hits == null) :
 	 <tr>
 	
 			<td> <?php echo $count;?></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->item_sys_number);?></span></td>
+		
 	
 				<td>
 	<span id="">

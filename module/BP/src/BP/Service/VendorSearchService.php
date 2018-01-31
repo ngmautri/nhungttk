@@ -255,10 +255,22 @@ class VendorSearchService
                 $query = new Wildcard($pattern);
                 $final_query->addSubquery($query, true);
             } else {
-                // $query = QueryParser::parse ( $q );
-                $subquery = new MultiTerm();
-                $subquery->addTerm(new Term($q));
-                $final_query->addSubquery($subquery, true);
+                $terms = explode(" ", $q);
+                
+                if (count($terms) > 1) {
+                    
+                    foreach ($terms as $t){
+                        $subquery = new MultiTerm();
+                        $subquery->addTerm(new Term($t));
+                        $final_query->addSubquery($subquery, true);
+                    }
+                    
+                } else{
+                    $subquery = new MultiTerm();
+                    $subquery->addTerm(new Term($q));
+                    $final_query->addSubquery($subquery, true);
+                    
+                }
             }
             
             $subquery1 = new MultiTerm();

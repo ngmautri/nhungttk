@@ -22,6 +22,7 @@ use Symfony\Component\Workflow\Dumper\GraphvizDumper;
 use Application\Entity\NmtProcurePrRow;
 use Endroid\QrCode\QrCode;
 use Application\Service\PdfService;
+use Zend\Http\Client as HttpClient;
 
 /**
  *
@@ -36,14 +37,96 @@ class PrController extends AbstractActionController
     const QR_CODE_PATH = "/data/procure/qr_code/pr/";
 
     protected $doctrineEM;
-
     protected $pdfService;
 
     /*
      * Defaul Action
      */
     public function indexAction()
-    {}
+    {
+        $client = new HttpClient();
+        $client->setAdapter('Zend\Http\Client\Adapter\Curl');
+        
+        $method = $this->params()->fromQuery('method', 'get');
+        $client->setUri('http://localhost:81/procure/pr-rest');
+   
+          switch ($method) {
+            case 'get':
+                
+                $response = $this->getResponse();
+                
+                $client->setMethod('GET');
+                $client->setParameterGET(array(
+                    'id' => 1
+                ));
+                break;
+            
+            case 'get-list':
+                $client->setMethod('GET');
+                break;
+            case 'create':
+                $client->setMethod('POST');
+                $client->setParameterPOST(array(
+                    'name' => 'samsonasik'
+                ));
+                break;
+            case 'update':
+                $data = array(
+                    'name' => 'ikhsan'
+                );
+                $adapter = $client->getAdapter();
+                
+                $adapter->connect('localhost', 80);
+                $uri = $client->getUri() . '?id=1';
+                // send with PUT Method, with $data parameter
+                $adapter->write('PUT', new \Zend\Uri\Uri($uri), 1.1, array(), http_build_query($data));
+                
+                $responsecurl = $adapter->read();
+                list ($headers, $content) = explode("\r\n\r\n", $responsecurl, 2);
+                $response = $this->getResponse();
+                
+                $response->getHeaders()->addHeaderLine('content-type', 'text/html; charset=utf-8');
+                $response->setContent($content);
+                
+                return $response;
+            case 'delete':
+                $adapter = $client->getAdapter();
+                
+                $adapter->connect('localhost', 80);
+                $uri = $client->getUri() . '?id=1'; // send parameter id = 1
+                                                  // send with DELETE Method
+                $adapter->write('DELETE', new \Zend\Uri\Uri($uri), 1.1, array());
+                
+                $responsecurl = $adapter->read();
+                list ($headers, $content) = explode("\r\n\r\n", $responsecurl, 2);
+                $response = $this->getResponse();
+                
+                $response->getHeaders()->addHeaderLine('content-type', 'text/html; charset=utf-8');
+                $response->setContent($content);
+                
+                return $response;
+        }
+        
+        // if get/get-list/create
+        $response = $client->send();
+        if (! $response->isSuccess()) {
+            // report failure
+            $message = $response->getStatusCode() . ': ' . $response->getReasonPhrase();
+            $message = $message . $client->getMethod();
+            $message = $message . "NO....";
+            
+            
+            $response = $this->getResponse();
+            $response->setContent($message);
+            return $response;
+        }
+        $body = $response->getBody();
+        
+        $response = $this->getResponse();
+        $response->setContent($body);
+        
+        return $response;
+    }
 
     /**
      *
@@ -368,17 +451,17 @@ class PrController extends AbstractActionController
         
         if ($row_number == 0) {
             if ($sort_by == null) :
-                $sort_by = "createdOn"; endif;
+                $sort_by = "submittedOn"; endif;
             
             if ($sort == null) :
                 $sort = "DESC";endif;
             
         } else {
             if ($sort_by == null) :
-                $sort_by = "prNumber";
+                $sort_by = "submittedOn";
                 
                 if ($sort == null) :
-                    $sort = "ASC";
+                    $sort = "DESC";
             endif;
             endif;
                 
@@ -954,17 +1037,19 @@ class PrController extends AbstractActionController
             $folder_relative = $qr_code_name[0] . $qr_code_name[1] . DIRECTORY_SEPARATOR . $qr_code_name[2] . $qr_code_name[3] . DIRECTORY_SEPARATOR;
             $folder_relative = $folder_relative . $qr_code_name[4] . $qr_code_name[5] . DIRECTORY_SEPARATOR . $qr_code_name[6] . $qr_code_name[7];
             
-            /* $folder = ROOT . self::QR_CODE_PATH . $folder_relative . DIRECTORY_SEPARATOR . $qr_code_name;
-            if (! file_exists($folder)) {
-                return;
-            } */
+            /*
+             * $folder = ROOT . self::QR_CODE_PATH . $folder_relative . DIRECTORY_SEPARATOR . $qr_code_name;
+             * if (! file_exists($folder)) {
+             * return;
+             * }
+             */
             
             // echo $folder;
             
             $details = 'If you can see this PDF file, the PDF service has been configurated successfully! :-)';
-            $image_file='';
-            //$image_file = $folder;
-            $content = $this->pdfService->printPrPdf($details,$image_file);
+            $image_file = '';
+            // $image_file = $folder;
+            $content = $this->pdfService->printPrPdf($details, $image_file);
             
             $response = $this->getResponse();
             $response->getHeaders()->addHeaderLine('Content-Type', 'application/x-pdf');

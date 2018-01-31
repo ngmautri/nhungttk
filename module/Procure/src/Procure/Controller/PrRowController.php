@@ -1472,7 +1472,7 @@ class PrRowController extends AbstractActionController
                     } else {
                         $a_json_row["remarks"] = '<span title="' . $pr_row_entity->getRemarks() . '">' . substr($pr_row_entity->getRemarks(), 0, 15) . '...</span>';
                     }
-                    $a_json_row["fa_remarks"] = $pr_row_entity->getRemarks();
+                    $a_json_row["fa_remarks"] = $pr_row_entity->getFaRemarks();
                     $a_json_row["receipt_date"] = "";
                     $a_json_row["vendor"] = "";
                     $a_json_row["vendor_id"] = "";

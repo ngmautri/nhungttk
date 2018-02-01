@@ -308,11 +308,12 @@ class ItemSearchService
         }
     }
 
-    /**
-     *
-     * @param unknown $q
-     * @param unknown $department_id
-     */
+   /**
+    * 
+    * @param unknown $q
+    * @param number $isActive
+    * @return string[]|array[]|\ZendSearch\Lucene\Search\QueryHit[]|string[]|NULL[]
+    */
     public function searchAll($q, $isActive = 1)
     {
         try {
@@ -322,27 +323,33 @@ class ItemSearchService
             
             $q = strtolower($q);
             
-            if (strpos($q, '*') != false) {
-                $pattern = new Term($q);
-                $query = new Wildcard($pattern);
-                $final_query->addSubquery($query, true);
-            } else {
+            $terms = explode(" ", $q);
+             
+            if (count($terms) > 1) {
                 
-                $terms = explode(" ", $q);
-                
-                if (count($terms) > 1) {
+                foreach ($terms as $t) {
                     
-                    foreach ($terms as $t){
+                    if (strpos($t, '*') != false) {
+                        $pattern = new Term($t);
+                        $query = new Wildcard($pattern);
+                        $final_query->addSubquery($query, true);
+                    } else {
+                        
                         $subquery = new MultiTerm();
                         $subquery->addTerm(new Term($t));
                         $final_query->addSubquery($subquery, true);
                     }
-                    
-                 } else{
-                     $subquery = new MultiTerm();
-                     $subquery->addTerm(new Term($q));
-                     $final_query->addSubquery($subquery, true);
-                     
+                }
+            } else {
+                
+                if (strpos($q, '*') != false) {
+                    $pattern = new Term($q);
+                    $query = new Wildcard($pattern);
+                    $final_query->addSubquery($query, true);
+                } else {
+                    $subquery = new MultiTerm();
+                    $subquery->addTerm(new Term($q));
+                    $final_query->addSubquery($subquery, true);
                 }
             }
             

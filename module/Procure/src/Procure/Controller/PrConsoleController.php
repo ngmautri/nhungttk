@@ -17,13 +17,15 @@ use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mail\Header\ContentType;
-use Zend\I18n\Validator\Int;
+
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Application\Service\PdfService;
 
 class PrConsoleController extends AbstractActionController
 {
+    const BACKUP_FOLDER = "/data/back-up/db";
+    
 
     protected $doctrineEM;
 
@@ -46,6 +48,17 @@ class PrConsoleController extends AbstractActionController
      */
     public function validateAction()
     {
+        
+        //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
+        //exec('mysqldump --user=... --password=... --host=... DB_NAME > /path/to/output/file.sql');
+        
+        $fileName = ROOT.self::BACKUP_FOLDER.'/sql_' . date ("m-d-Y");
+        echo $fileName;
+        
+        //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
+        exec('mysqldump -u root --password=kflg79 mla --result-file=' . $fileName . '.sql');
+        
+        
         $request = $this->getRequest();
         
         // Make sure that we are running in a console and the user has not tricked our

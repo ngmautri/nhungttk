@@ -29,14 +29,23 @@ class AuthController extends AbstractActionController {
 	 */
 	public function indexAction() {
 	}
+	
+	/*
+	 * 
+	 */
 	public function authenticateAction() {
-		
+	    
+	    $redirect = $this->params()->fromQuery('redirect');
+	
+	    if($redirect==null){
+	        $redirect = '/inventory/item/list';
+	    }
 		$this->layout("layout/layout");
 		
 		// User is authenticated
 		if ($this->getAuthService ()->hasIdentity ()) {
 			//return $this->redirect ()->toRoute ( 'Inventory' );
-			return $this->redirect ()->toUrl ( '/inventory/item/list' );
+		    return $this->redirect ()->toUrl ( $redirect );
 			
 		}
 		
@@ -46,6 +55,7 @@ class AuthController extends AbstractActionController {
 			
 			$email = $request->getPost ( 'email' );
 			$password = $request->getPost ( 'password' );
+			$redirect = $request->getPost ( 'redirect' );
 			
 			$errors = array ();
 			
@@ -56,7 +66,8 @@ class AuthController extends AbstractActionController {
 			
 			if (count ( $errors ) > 0) {
 				return new ViewModel ( array (
-						'messages' => $errors 
+						'messages' => $errors,
+				        'redirect' => $redirect,
 				) );
 			}
 			
@@ -71,19 +82,21 @@ class AuthController extends AbstractActionController {
 				$session = new Container('MLA_USER');
 				$session->offsetSet('user', $user);
 				
-				return $this->redirect ()->toUrl ( '/inventory/item-category/list' );
+				return $this->redirect ()->toUrl ($redirect);
 				
 			} else {
 				
 				// $route = $this->getServiceLocator ()->get ( 'application' )->getMvcEvent()->getRouteMatch();
 					return new ViewModel ( array (
-						'messages' => $result->getMessages () 
-				) );
+						'messages' => $result->getMessages (),
+					    'redirect' => $redirect,
+					) );
 			}
 		}
 		
 		return new ViewModel ( array (
-				'messages' => '' 
+				'messages' => '',
+		        'redirect' => $redirect,
 		) );
 	}
 	public function logoutAction() {

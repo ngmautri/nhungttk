@@ -11,6 +11,10 @@
 	
 	<li class="divider"></li>	
 	<li><a href="<?php echo $this->baseUrl ?>/application/search-index/update-all"><small><i class="fa fa-refresh" aria-hidden="true"></i></small>&nbsp;&nbsp;Update Search Indexes</a></li>
+	<li class="divider"></li>	
+	<li><a href="<?php echo $this->baseUrl ?>/application/search-index/update-all"><small><i class="fa fa-terminal" aria-hidden="true"></i></small>&nbsp;&nbsp;Console</a></li>
+	<li><a href="<?php echo $this->baseUrl ?>/application/search-index/update-all"><small><i class="fa fa-exchange" aria-hidden="true"></i></small>&nbsp;&nbsp;API</a></li>
+
 				<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/application/index/info"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;&nbsp;System Information</a></li>
 		

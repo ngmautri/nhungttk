@@ -159,7 +159,7 @@ return array(
                 'options' => array(
                     'route'    => '/procure/pr-rest[/:id]',
                     'constraints' => array(
-                        'id'     => '[0-9]+',
+                        'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                     'defaults' => array(
                         'controller' => 'Procure\Controller\PrRest',

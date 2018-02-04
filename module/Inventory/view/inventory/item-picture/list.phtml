@@ -1,0 +1,77 @@
+<?php                /** @var \Application\Entity\NmtInventoryItem $target ; */ ?>
+
+<div>
+<h4><a style="color: navy;" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo (!$target == null)?$target->getToken():"";?>&entity_id=<?php echo (!$target == null)?$target->getId():"";?>&checksum=<?php echo (!$target == null)?$target->getChecksum():"";?>"><?php echo (!$target == null)?$target->getItemName():"";?></a>
+
+<span style="color: gray; font-size: 9.5pt"><?php echo (!$target == null)? " (Item No.: " . $target->getSysNumber().")" :"";?></span></h4>
+</h4>
+
+
+</div>
+
+
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#picture_manager">Picture Management</a></li>
+  
+  </ul>
+ 
+ 
+ <div id="picture_manager">
+
+
+<?php if( count($list)>0): ?>
+
+
+<table style="font-size: 10pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Picture</b></td>
+			<td><b>Active</b></td>
+			<td><b>Default</b></td>
+			<td><b>Uploaded on</b></td>
+			<td><b>Remarks</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+
+	<tbody>
+		
+
+
+	<?php 
+	$n=1;
+	foreach ($list as $pic) : ?>
+	
+	<?php /** @var Application\Entity\NmtInventoryItemPicture $pic ;*/?>
+	
+	<tr>
+	<td><?php echo $n++;?> </td>
+	
+	<td>
+	    <img class= "img-rounded" width="100" height="100" src="/inventory/item-picture/thumbnail200?token=<?php echo $pic->getToken();?>&entity_id=<?php  echo $pic->getId();?>&checksum=<?php echo $pic->getChecksum();?>"/>
+	</td>
+	<td><?php echo $pic->getIsActive(); ?></td>
+	<td><?php echo $pic->getIsDefault(); ?></td>
+	<td><?php echo date_format ( $pic->getCreatedOn(), "d/m/y h:m");?></td>
+	<td><?php echo $pic->getRemarks(); ?></td>
+	
+	<td>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-picture/edit?token=<?php echo $this->escapeHtml($pic->getToken());?>&entity_id=<?php echo $this->escapeHtml($pic->getID());?>&checksum=<?php echo $this->escapeHtml($pic->getChecksum());?>">Edit</a>
+	</td>
+	</tr>
+	<?php endforeach; ?>
+
+	
+
+	</tbody>
+	
+</table>
+</div>
+ </div> 
+<?php else:?>
+No record found!
+<?php endif; ?>
+
+

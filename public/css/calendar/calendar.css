@@ -37,19 +37,21 @@
 }
 
 #calendar ul.weekdays {
-    height: 35px;
-    background:url(../../images/ui-bg.png) repeat-x #FFFFFF; color:#000000; font-size: 8pt; font-weight:bold; 
-    
+    height: 30px;
+    /*background:url(../../images/ui-bg.png) repeat-x #FFFFFF; color:#000000; font-size: 8pt; font-weight:bold; */
+    background: #dadada;
  }
 
 #calendar ul.weekdays li {
     text-align: center;
     text-transform: uppercase;
+    font-weight:bold;
     line-height: 20px;
-    border: none !important;
-    padding: 6px 1px;
+    /*border: none !important;*/
+    padding: 5px 1px;
     color: black;
-    font-size: 11px;
+    border: 1px solid #ccc;
+    font-size: 12px;
 }
 
 #calendar .days li {

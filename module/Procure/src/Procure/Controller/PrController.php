@@ -352,6 +352,12 @@ class PrController extends AbstractActionController
             
             $this->doctrineEM->flush();
             
+            // AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.activity.log', __CLASS__, array(
+                'priority' => 7,
+                'message' => 'PR #' . $entity->getId() . ' has been added!',
+            ));
+            
             $redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
             
             return $this->redirect()->toUrl($redirectUrl);
@@ -937,6 +943,12 @@ class PrController extends AbstractActionController
                 
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
+                
+                // AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.activity.log', __CLASS__, array(
+                    'priority' => 7,
+                    'message' => 'PR #'. $entity->getId() . ' has been edited.',
+                ));
                 
                 $this->flashMessenger()->addMessage('Purchase Request "' . $prName . '" has been updated!');
                 return $this->redirect()->toUrl($redirectUrl);

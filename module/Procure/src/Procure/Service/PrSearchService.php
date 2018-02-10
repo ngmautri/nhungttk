@@ -143,15 +143,21 @@ class PrSearchService
                     }
                 }
                 $index->optimize();
-                $log[] = 'Item resource indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
-                return $log;
+                //$log[] = 'Item resource indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
+                $log1 = 'PR indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
+                
+                return $log1;
             } else {
-                $log[] = 'Nothing for indexing!';
+                //$log[] = 'Nothing for indexing!';
+                $log1 = 'Nothing for indexing!';
+                
                 return $log;
             }
         } catch (Exception $e) {
-            $log[] = 'Nothing for indexing!';
-            return $log;
+            //$log[] = 'Nothing for indexing!';
+            $log1 = 'Nothing for indexing!';
+            
+            return $log1;
         }
     }
 

@@ -292,6 +292,12 @@ class PrRowController extends AbstractActionController
                 $entity->setChecksum(md5(uniqid("pr_row_" . $entity->getId()) . microtime()));
                 $this->doctrineEM->flush();
                 
+                // AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.activity.log', __CLASS__, array(
+                    'priority' => 7,
+                    'message' => 'PR Line #'. $entity->getId() . ' has been added.',
+                ));
+                
                 $index_update_status = $this->prSearchService->updateIndex(1, $entity, FALSE);
                 
                 $redirectUrl = "/procure/pr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getID() . "&checksum=" . $target->getChecksum();
@@ -2216,6 +2222,12 @@ class PrRowController extends AbstractActionController
                 
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
+                
+                // AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.activity.log', __CLASS__, array(
+                    'priority' => 7,
+                    'message' => 'PR Line #'. $entity->getId() . ' has been edited.',
+                ));
                 
                 $index_update_status = $this->prSearchService->updateIndex(0, $entity, fasle);
                 

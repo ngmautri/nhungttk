@@ -162,7 +162,11 @@ return array(
             'Application\Service\ItemCategoryService' => 'Application\Service\ItemCategoryServiceFactory',
             'Application\Service\AppSearchService' => 'Application\Service\AppSearchServiceFactory',
             'Application\Service\AttachmentService' => 'Application\Service\AttachmentServiceFactory',                        
+           
             'Application\Listener\PictureUploadListener' => 'Application\Listener\PictureUploadListenerFactory',
+            
+            'Application\Listener\LoggingListener' => 'Application\Listener\LoggingListenerFactory',
+            
         )
     ),
     'translator' => array(

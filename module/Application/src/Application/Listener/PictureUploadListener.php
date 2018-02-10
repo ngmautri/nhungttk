@@ -4,31 +4,23 @@ namespace Application\Listener;
 
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
-
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManager;
 use Zend\EventManager\ListenerAggregateInterface;
 
-class PictureUploadListener implements ListenerAggregateInterface{
+
+class PictureUploadListener implements ListenerAggregateInterface {
 	/**
 	 *
 	 * @var array
 	 */
 	protected $listeners = array ();
-	protected $events;
-	
-	/**
-	 * 
-	 * @param EventManagerInterface $events
-	 */
-	public function attach(EventManagerInterface $events,$priority=1) {
-		$this->listeners [] = $events->attach ( 'uploadPicture', array ( $this,'onUploadPicture'), 200 );
+
+	public function attach(EventManagerInterface $events) {
+		$this->listeners [] = $events->attach ( 'uploadPicture', array (
+				$this,
+				'createThumbnail' 
+		), 200 );
 	}
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \Zend\EventManager\ListenerAggregateInterface::detach()
-	 */
+	
 	public function detach(EventManagerInterface $events) {
 		foreach ( $this->listeners as $index => $listener ) {
 			if ($events->detach ( $listener )) {
@@ -38,91 +30,99 @@ class PictureUploadListener implements ListenerAggregateInterface{
 	}
 	
 	/**
-	 * $exif = exif_read_data ("$pictures_dir/$name", NULL, true, true );
-	 * $o = $exif ['IFD0'] ['Orientation'];
-	 * case 3 : // 180 rotate left
-	 * $rotate = imagerotate ($im, 180, 0 );
-	 * imagejpeg($rotate,"$pictures_dir/$name");
-	 * break;
-	 *
-	 * case 6 : // 90 rotate right
-	 * $rotate = imagerotate ($im, -90, 0 );
-	 * var_dump(imagejpeg($rotate,"$pictures_dir/$name"));
-	 *
-	 * break;
-	 *
-	 * case 8 : // 90 rotate left
-	 * $rotate = imagerotate ($im, 90, 0 );
-	 * imagejpeg($rotate,"$pictures_dir/$name");
-	 * break;
-	 * }
-	 *
-	 * @param EventInterface $e        	
+	 * 	$exif = exif_read_data ("$pictures_dir/$name", NULL, true, true );
+		$o = $exif ['IFD0'] ['Orientation'];
+			case 3 : // 180 rotate left
+					$rotate = imagerotate ($im, 180, 0 );
+					imagejpeg($rotate,"$pictures_dir/$name");
+					break;
+			
+				case 6 : // 90 rotate right
+					$rotate = imagerotate ($im, -90, 0 );
+					var_dump(imagejpeg($rotate,"$pictures_dir/$name"));
+					
+					break;
+			
+				case 8 : // 90 rotate left
+					$rotate = imagerotate ($im, 90, 0 );
+					imagejpeg($rotate,"$pictures_dir/$name");
+					break;
+			}
+
+	 * @param EventInterface $e
 	 */
-	public function onUploadPicture(EventInterface $e) {
-		$name = $e->getParam ( 'picture_name' );
-		$pictures_dir = $e->getParam ( 'pictures_dir' );
+	public function createThumbnail(EventInterface $e) {
 		
-		if (preg_match ( '/[.](jpg|jpeg)$/', $name )) {
-			$im = imagecreatefromjpeg ( "$pictures_dir/$name" );
-		} else if (preg_match ( '/[.](gif)$/', $name )) {
-			$im = imagecreatefromgif ( "$pictures_dir/$name" );
-		} else if (preg_match ( '/[.](png)$/', $name )) {
-			$im = imagecreatefrompng ( "$pictures_dir/$name" );
+		
+		$name = $e->getParam ('picture_name');
+		$pictures_dir = $e->getParam ('pictures_dir');
+	
+	
+		if(preg_match('/[.](jpg|jpeg)$/', $name)) {
+			$im = imagecreatefromjpeg("$pictures_dir/$name");
+		} else if (preg_match('/[.](gif)$/', $name)) {
+			$im = imagecreatefromgif("$pictures_dir/$name");
+			
+		} else if (preg_match('/[.](png)$/', $name)) {
+			$im = imagecreatefrompng("$pictures_dir/$name");
 		}
 		
-		$ox = imagesx ( $im );
-		$oy = imagesy ( $im );
+		$ox = imagesx($im);
+		$oy = imagesy($im);
+		
 		
 		// resize
-		if ($ox > 1800) {
+		if ($ox > 1800){
 			
-			$final_width_of_image = 1800;
+			$final_width_of_image =1800;
 			
 			$nx = $final_width_of_image;
-			$ny = floor ( $oy * ($final_width_of_image / $ox) );
+			$ny = floor($oy * ($final_width_of_image / $ox));
+				
+			$nm = imagecreatetruecolor($nx, $ny);
 			
-			$nm = imagecreatetruecolor ( $nx, $ny );
+			$name_thumbnail = $name ;
 			
-			$name_thumbnail = $name;
 			
-			imagecopyresized ( $nm, $im, 0, 0, 0, 0, $nx, $ny, $ox, $oy );
+			imagecopyresized($nm, $im, 0,0,0,0,$nx,$ny,$ox,$oy);
 			
 			if (preg_match ( '/[.](jpg|jpeg)$/', $name_thumbnail )) {
 				imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
 			} else if (preg_match ( '/[.](gif)$/', $name_thumbnail )) {
-				imagegif ( $nm, "$pictures_dir/$name_thumbnail" );
-			} else if (preg_match ( '/[.](png)$/', $name_thumbnail )) {
+				imagegif( $nm, "$pictures_dir/$name_thumbnail" );
+			} else if (preg_match('/[.](png)$/', $name_thumbnail)) {
 				imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
 			}
 		}
 		
-		$final_width_of_image = 450;
+		
+		$final_width_of_image =450;
 		
 		$nx = $final_width_of_image;
-		$ny = floor ( $oy * ($final_width_of_image / $ox) );
+		$ny = floor($oy * ($final_width_of_image / $ox));
+			
+		$nm = imagecreatetruecolor($nx, $ny);
 		
-		$nm = imagecreatetruecolor ( $nx, $ny );
+		$name_thumbnail = 'thumbnail_450_'.$name ;
 		
-		$name_thumbnail = 'thumbnail_450_' . $name;
 		
-		imagecopyresized ( $nm, $im, 0, 0, 0, 0, $nx, $ny, $ox, $oy );
+		imagecopyresized($nm, $im, 0,0,0,0,$nx,$ny,$ox,$oy);
 		
 		if (preg_match ( '/[.](jpg|jpeg)$/', $name_thumbnail )) {
 			imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
 		} else if (preg_match ( '/[.](gif)$/', $name_thumbnail )) {
-			imagegif ( $nm, "$pictures_dir/$name_thumbnail" );
-		} else if (preg_match ( '/[.](png)$/', $name_thumbnail )) {
+			imagegif( $nm, "$pictures_dir/$name_thumbnail" );
+		} else if (preg_match('/[.](png)$/', $name_thumbnail)) {
 			imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
 		}
 		
 		// 150
-		$final_width_of_image = 200;
+		$final_width_of_image =200;
 		
 		$nx = $final_width_of_image;
-		$ny = floor ( $oy * ($final_width_of_image / $ox) );
-		
-		$nm = imagecreatetruecolor ( $nx, $ny );
+		$ny = floor($oy * ($final_width_of_image / $ox));
+			
+		$nm = imagecreatetruecolor($nx, $ny);
 		
 		$name_thumbnail = 'thumbnail_200_' . $name;
 		
@@ -131,10 +131,10 @@ class PictureUploadListener implements ListenerAggregateInterface{
 		if (preg_match ( '/[.](jpg|jpeg)$/', $name_thumbnail )) {
 			imagejpeg ( $nm, "$pictures_dir/$name_thumbnail" );
 		} else if (preg_match ( '/[.](gif)$/', $name_thumbnail )) {
-			imagegif ( $nm, "$pictures_dir/$name_thumbnail" );
-		} else if (preg_match ( '/[.](png)$/', $name_thumbnail )) {
+			imagegif( $nm, "$pictures_dir/$name_thumbnail" );
+		} else if (preg_match('/[.](png)$/', $name_thumbnail)) {
 			imagepng ( $nm, "$pictures_dir/$name_thumbnail" );
 		}
+
 	}
-	
 }

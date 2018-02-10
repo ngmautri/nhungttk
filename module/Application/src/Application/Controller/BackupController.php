@@ -45,6 +45,12 @@ class BackupController extends AbstractActionController {
 	    //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
 	    exec('mysqldump -u root --password=kflg79 mla --result-file=' . $fileName . '.sql');
 	    
+	    //AbtractController is EventManagerAware.
+	    $this->getEventManager()->trigger('system.log', __CLASS__, array(
+	        'priority' => 7,
+	        'message' => 'Database backed up'
+	    ));
+	    
 	}
 	
     /**

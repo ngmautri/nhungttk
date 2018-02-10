@@ -395,6 +395,14 @@ class ItemController extends AbstractActionController
             
             $this->flashMessenger()->addMessage("Item " . $itemName . " has been created sucessfully");
             
+            // trigger uploadPicture. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('inventory.activity.log', __CLASS__, array(
+                'priority' => 7,
+                'message' => 'Item #' . $entity->getId() . ' ('. $entity->getSysNumber() .') has been added!'
+            ));
+            
+            
+            
             $redirectUrl = "/inventory/item/show?token=" . $new_item->getToken() . "&entity_id=" . $new_item->getId() . "&checksum=" . $new_item->getChecksum();
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -657,6 +665,12 @@ class ItemController extends AbstractActionController
                     
                     ));
                 }
+                
+                // trigger uploadPicture. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('inventory.activity.log', __CLASS__, array(
+                    'priority' => 7,
+                    'message' => 'Item #' . $entity->getId() . ' ('. $entity->getSysNumber() .') has been edited!'
+                ));
                 
                 $this->flashMessenger()->addMessage("Item " . $itemName . " has been updated sucessfully");
                 return $this->redirect()->toUrl($redirectUrl);

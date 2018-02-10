@@ -65,6 +65,13 @@ class AuthController extends AbstractActionController {
 			}
 			
 			if (count ( $errors ) > 0) {
+			    
+			    // trigger uploadPicture. AbtractController is EventManagerAware.
+			    $this->getEventManager()->trigger('authenticate.log', __CLASS__, array(
+			        'priority' => 7,
+			        'message' => 'Access not successful!'
+			    ));
+			    
 				return new ViewModel ( array (
 						'messages' => $errors,
 				        'redirect' => $redirect,
@@ -81,6 +88,12 @@ class AuthController extends AbstractActionController {
 				// create new session 
 				$session = new Container('MLA_USER');
 				$session->offsetSet('user', $user);
+				
+				// trigger uploadPicture. AbtractController is EventManagerAware.
+				$this->getEventManager()->trigger('authenticate.log', __CLASS__, array(
+				    'priority' => 7,
+				    'message' => 'Access successful!'
+				));
 				
 				return $this->redirect ()->toUrl ($redirect);
 				
@@ -105,7 +118,16 @@ class AuthController extends AbstractActionController {
 		$session->getManager()->destroy();
 		$this->authService->clearIdentity ();
 		$this->flashmessenger ()->addMessage ( "You've been logged out" );
+		
+		// trigger uploadPicture. AbtractController is EventManagerAware.
+		$this->getEventManager()->trigger('authenticate.log', __CLASS__, array(
+		    'priority' => 7,
+		    'message' => 'User logged out!'
+		));
+		
 		return $this->redirect ()->toRoute ( 'login' );
+		
+		
 	}
 	
 	// GETTER AND SETTER

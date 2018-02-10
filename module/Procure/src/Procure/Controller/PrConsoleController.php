@@ -46,7 +46,7 @@ class PrConsoleController extends AbstractActionController
      *php C:\1-NMT\1-Eclipse\Workspace\mla-02\public\index.php validate
      * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
      */
-    public function validateAction()
+    public function validate1Action()
     {
         
         //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
@@ -110,6 +110,38 @@ EOT;
         // send message
         $transport->send($message);
        
+    }
+    
+    /**
+     *
+     *php C:\1-NMT\1-Eclipse\Workspace\mla-02\public\index.php validate
+     * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+     */
+    public function validateAction()
+    {
+        
+        
+        $request = $this->getRequest();
+        
+        // Make sure that we are running in a console and the user has not tricked our
+        // application into running this action from a public web server.
+        if (! $request instanceof \Zend\Console\Request) {
+            throw new \RuntimeException('You can only use this action from a console-- NMT!');
+        }
+        
+        //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
+        //exec('mysqldump --user=... --password=... --host=... DB_NAME > /path/to/output/file.sql');
+        
+        $fileName = ROOT.self::BACKUP_FOLDER.'/sql_' . date ("m-d-Y");
+        
+        //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
+        exec('mysqldump -u root --password=kflg79 mla --result-file=' . $fileName . '.sql');
+   
+        //AbtractController is EventManagerAware.
+        $this->getEventManager()->trigger('system.log', __CLASS__, array(
+            'priority' => 7,
+            'message' => 'Database backed up automatically!'
+        ));
     }
 
     // SETTER AND GETTER

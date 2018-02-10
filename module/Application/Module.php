@@ -12,21 +12,9 @@ namespace Application;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Adapter\Adapter;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\RouteMatch;
-use Application\Model\Department;
-use Application\Model\DepartmentTable;
-use Application\Model\DepartmentMember;
-use Application\Model\DepartmentMemberTable;
-use Application\Model\UOM;
-use Application\Model\UOMTable;
-use Application\Model\Currency;
-use Application\Model\CurrencyableTable;
-use Application\Model\CurrencyTable;
 use Application\Model\AclRoleTable;
 use Application\Model\AclRole;
-use Zend\ModuleManager\ModuleManager;
 
 class Module {
 	
@@ -52,6 +40,10 @@ class Module {
 			//Version 2
 			$pictureUploadListener = $sm->get ( 'Application\Listener\PictureUploadListener' );
 			$controller->getEventManager()->attachAggregate ( $pictureUploadListener );
+		
+			$LoggingListener = $sm->get ( 'Application\Listener\LoggingListener' );
+			$controller->getEventManager()->attachAggregate ( $LoggingListener );
+			
 			
 			$controllerClass = get_class($controller);
 			$moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));

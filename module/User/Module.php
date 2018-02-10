@@ -259,21 +259,10 @@ class Module
         $response = $e->getResponse();
         $target = $e->getTarget();
         
-        $requestUri = null;
-        if ($request !== null) {
-            $requestUri = $request->getRequestUri();
-        }
-        
         $match = $e->getRouteMatch();
         $app = $e->getApplication();
         $sm = $app->getServiceManager();
         
-        $auth = $sm->get('AuthService');
-        
-        // No route match, this is a 404
-        if (! $match instanceof RouteMatch) {
-            return;
-        }
         
         // Route is whitelisted
         $name = $match->getMatchedRouteName();
@@ -290,6 +279,22 @@ class Module
         ))) {
             return;
         }
+        
+        
+        $requestUri = null;
+        if ($request !== null) {
+            $requestUri = $request->getRequestUri();
+        }
+        
+       
+        $auth = $sm->get('AuthService');
+        
+        // No route match, this is a 404
+       /*  if (! $match instanceof RouteMatch) {
+            return;
+        } */
+        
+       
         
         // User is authenticated
         if ($auth->hasIdentity()) {

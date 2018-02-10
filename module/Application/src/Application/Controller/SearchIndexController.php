@@ -43,8 +43,14 @@ class SearchIndexController extends AbstractActionController
     {
         $result = array();
         $result[] = "ITEM ". $this->itemSearchService->optimizeIndex();
-        $result[] = "PR ". $this->prSearchService->optimizeIndex();
+        $result[] = "PR ". $this->prSearchService->createIndex();
         $result[] = "PROJECT " . $this->projectSearchService->optimizeIndex();
+        
+        // trigger uploadPicture. AbtractController is EventManagerAware.
+        $this->getEventManager()->trigger('system.log', __CLASS__, array(
+            'priority' => 7,
+            'message' => 'Search Indexes updated!'
+        ));
         
         return new ViewModel(array(
             "result"=>$result

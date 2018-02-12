@@ -152,8 +152,7 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-            'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory', // <-- add this
-            
+            'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory', // <-- add this            
             'Application\Service\ApplicationService' => 'Application\Service\ApplicationServiceFactory',
             'Application\Service\PdfService' => 'Application\Service\PdfServiceFactory',
             'Application\Service\ExcelService' => 'Application\Service\ExcelServiceFactory',

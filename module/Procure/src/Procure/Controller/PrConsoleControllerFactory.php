@@ -29,6 +29,9 @@ class PrConsoleControllerFactory implements FactoryInterface {
 		$controller->setSmtpTransportService($sv);
 		
 		
+		$sv =  $sm->get ('SmtpTransportService1' );
+		$controller->setOutlookEmailService($sv);
+		
 		return $controller;
 	}
 }

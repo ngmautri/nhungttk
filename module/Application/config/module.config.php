@@ -8,6 +8,54 @@
  */
 return array(
     
+    'caches' => array(
+        
+        'FileSystemCache' => array(
+            
+            'adapter' => array(
+                'name' => 'filesystem'
+            ),
+            
+            'options' => array(
+                
+                'cache_dir' => './data/cache/',
+                'ttl' => 100
+                
+                // other options
+            
+            )
+        
+        ),
+        
+        'memcached' => array( // can be called directly via SM in the name of 'memcached'
+            'adapter' => array(
+                'name' => 'memcached',
+                'options' => array(
+                    'ttl' => 7200,
+                    'servers' => array(
+                        array(
+                            '127.0.0.1',
+                            11211
+                        )
+                    ),
+                    'namespace' => 'MYMEMCACHEDNAMESPACE',
+                    'liboptions' => array(
+                        'COMPRESSION' => true,
+                        'binary_protocol' => true,
+                        'no_block' => true,
+                        'connect_timeout' => 100
+                    )
+                )
+            ),
+            'plugins' => array(
+                'exception_handler' => array(
+                    'throw_exceptions' => false
+                )
+            )
+        )
+    
+    ),
+    
     'navigation' => array(
         'default' => array(
             array(
@@ -152,7 +200,8 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-            'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory', // <-- add this            
+            'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory', // <-- add this
+            
             'Application\Service\ApplicationService' => 'Application\Service\ApplicationServiceFactory',
             'Application\Service\PdfService' => 'Application\Service\PdfServiceFactory',
             'Application\Service\ExcelService' => 'Application\Service\ExcelServiceFactory',
@@ -160,12 +209,10 @@ return array(
             'Application\Service\DepartmentService' => 'Application\Service\DepartmentServiceFactory',
             'Application\Service\ItemCategoryService' => 'Application\Service\ItemCategoryServiceFactory',
             'Application\Service\AppSearchService' => 'Application\Service\AppSearchServiceFactory',
-            'Application\Service\AttachmentService' => 'Application\Service\AttachmentServiceFactory',                        
-           
+            'Application\Service\AttachmentService' => 'Application\Service\AttachmentServiceFactory',
             'Application\Listener\PictureUploadListener' => 'Application\Listener\PictureUploadListenerFactory',
-            
-            'Application\Listener\LoggingListener' => 'Application\Listener\LoggingListenerFactory',
-            
+            'Application\Listener\LoggingListener' => 'Application\Listener\LoggingListenerFactory'
+        
         )
     ),
     'translator' => array(
@@ -217,8 +264,7 @@ return array(
             'Application\Controller\Backup' => 'Application\Controller\BackupControllerFactory',
             'Application\Controller\User' => 'Application\Controller\UserControllerFactory',
             'Application\Controller\SearchIndex' => 'Application\Controller\SearchIndexControllerFactory',
-            'Application\Controller\QrCode' => 'Application\Controller\QrCodeControllerFactory',
-            
+            'Application\Controller\QrCode' => 'Application\Controller\QrCodeControllerFactory'
         
         )
     ),

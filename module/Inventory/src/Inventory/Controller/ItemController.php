@@ -22,6 +22,8 @@ use Application\Entity\NmtInventoryItemDepartment;
 use Inventory\Service\ItemSearchService;
 use Zend\Math\Rand;
 use Exception;
+use Zend\Cache\StorageFactory;
+use Zend\Cache\Storage\StorageInterface;
 
 /*
  * Control Panel Controller
@@ -32,11 +34,11 @@ class ItemController extends AbstractActionController
     const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
 
     protected $doctrineEM;
-
     protected $itemSearchService;
-
     protected $userTable;
-
+    protected $cacheService;
+    
+    
     /*
      * Defaul Action
      */
@@ -793,7 +795,20 @@ class ItemController extends AbstractActionController
         
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-        $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
+        
+       $total_recored_cache_key = "item_list_type".$item_type."_is_active".$is_active."_is_fixed_asset".$is_fixed_asset;
+        
+       $ck = $this->cacheService->hasItem($total_recored_cache_key);
+       
+       if($ck){
+           $total_records = $this->cacheService->getItem($total_recored_cache_key);
+       }else{
+           $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
+           $this->cacheService->setItem($total_recored_cache_key, $total_records);
+       }
+           
+        
+
         
         // $list = $res->getVendorInvoiceList($is_active,$currentState,null,$sort_by,$sort,0,0);
         // $total_records = count($list);
@@ -1389,4 +1404,20 @@ class ItemController extends AbstractActionController
 		$this->itemSearchService = $itemSearchService;
 		return $this;
 	}
+    /**
+     * @return mixed
+     */
+    public function getCacheService()
+    {
+        return $this->cacheService;
+    }
+
+    /**
+     * @param mixed $cacheService
+     */
+    public function setCacheService(StorageInterface $cacheService)
+    {
+        $this->cacheService = $cacheService;
+    }
+
 }

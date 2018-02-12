@@ -38,6 +38,9 @@ class ItemControllerFactory implements FactoryInterface{
 		$sv =  $container->get('Inventory\Service\ItemSearchService');
 		$controller->setItemSearchService($sv);
 		
+		$sv =  $container->get('FileSystemCache');
+		$controller->setCacheService($sv);
+		
 		return $controller;
 	}	
 	

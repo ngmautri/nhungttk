@@ -24,6 +24,7 @@ use Zend\Math\Rand;
 use Exception;
 use Zend\Cache\StorageFactory;
 use Zend\Cache\Storage\StorageInterface;
+use Zend\Serializer\Serializer;
 
 /*
  * Control Panel Controller
@@ -805,8 +806,10 @@ class ItemController extends AbstractActionController
        }else{
            $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
            $this->cacheService->setItem($total_recored_cache_key, $total_records);
-       }
-           
+        }
+        
+        
+        //$serializer = new \Zend\Serializer\Adapter\PhpSerialize();
         
 
         
@@ -818,6 +821,20 @@ class ItemController extends AbstractActionController
         // echo($total_records);
         
         // $total_records =count($list);
+        
+        /* try {
+            
+            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
+            
+            $serialized = $serializer->serialize($list);
+            // now $serialized is a string
+            //$this->cacheService->setItem("list_object", $serialized);
+            
+            // now $data == $unserialized
+        } catch (\Zend\Serializer\Exception\ExceptionInterface $e) {
+            echo $e;
+        } */
+        
         
         $paginator = null;
         $list = null;

@@ -1,0 +1,261 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: NMT\n"
+"POT-Creation-Date: 2018-02-23 23:58+0700\n"
+"PO-Revision-Date: 2018-02-24 00:00+0700\n"
+"Last-Translator: \n"
+"Language-Team: nmt\n"
+"Language: lo_LA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0\n"
+"X-Poedit-Basepath: ../..\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-KeywordsList: translate;_\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: Application/view/application/department/list.phtml:9
+msgid "Business Partner"
+msgstr "ຄູ່ຄ້າທຸລະກິດ"
+
+#: Application/view/error/404.phtml:1 BP/view/error/404.phtml:1
+#: Calendar/view/error/404.phtml:1 Finance/view/error/404.phtml:1
+#: HR/view/error/404.phtml:1 Inventory/view/error/404.phtml:1
+#: PM/view/error/404.phtml:1 Procure/view/error/404.phtml:1
+#: Procurement/view/error/404.phtml:1 Workflow/view/error/404.phtml:1
+msgid "A 404 error occurred"
+msgstr ""
+
+#: Application/view/error/404.phtml:10 BP/view/error/404.phtml:10
+#: Calendar/view/error/404.phtml:10 Finance/view/error/404.phtml:10
+#: HR/view/error/404.phtml:10 Inventory/view/error/404.phtml:10
+#: PM/view/error/404.phtml:10 Procure/view/error/404.phtml:10
+#: Procurement/view/error/404.phtml:10 Workflow/view/error/404.phtml:10
+msgid "The requested controller was unable to dispatch the request."
+msgstr ""
+
+#: Application/view/error/404.phtml:13 BP/view/error/404.phtml:13
+#: Calendar/view/error/404.phtml:13 Finance/view/error/404.phtml:13
+#: HR/view/error/404.phtml:13 Inventory/view/error/404.phtml:13
+#: PM/view/error/404.phtml:13 Procure/view/error/404.phtml:13
+#: Procurement/view/error/404.phtml:13 Workflow/view/error/404.phtml:13
+msgid "The requested controller could not be mapped to an existing controller class."
+msgstr ""
+
+#: Application/view/error/404.phtml:16 BP/view/error/404.phtml:16
+#: Calendar/view/error/404.phtml:16 Finance/view/error/404.phtml:16
+#: HR/view/error/404.phtml:16 Inventory/view/error/404.phtml:16
+#: PM/view/error/404.phtml:16 Procure/view/error/404.phtml:16
+#: Procurement/view/error/404.phtml:16 Workflow/view/error/404.phtml:16
+msgid "The requested controller was not dispatchable."
+msgstr ""
+
+#: Application/view/error/404.phtml:19 BP/view/error/404.phtml:19
+#: Calendar/view/error/404.phtml:19 Finance/view/error/404.phtml:19
+#: HR/view/error/404.phtml:19 Inventory/view/error/404.phtml:19
+#: PM/view/error/404.phtml:19 Procure/view/error/404.phtml:19
+#: Procurement/view/error/404.phtml:19 Workflow/view/error/404.phtml:19
+msgid "The requested URL could not be matched by routing."
+msgstr ""
+
+#: Application/view/error/404.phtml:22 BP/view/error/404.phtml:22
+#: Calendar/view/error/404.phtml:22 Finance/view/error/404.phtml:22
+#: HR/view/error/404.phtml:22 Inventory/view/error/404.phtml:22
+#: PM/view/error/404.phtml:22 Procure/view/error/404.phtml:22
+#: Procurement/view/error/404.phtml:22 Workflow/view/error/404.phtml:22
+msgid "We cannot determine at this time why a 404 was generated."
+msgstr ""
+
+#: Application/view/error/404.phtml:34 BP/view/error/404.phtml:34
+#: Calendar/view/error/404.phtml:34 Finance/view/error/404.phtml:34
+#: HR/view/error/404.phtml:34 Inventory/view/error/404.phtml:34
+#: PM/view/error/404.phtml:34 Procure/view/error/404.phtml:34
+#: Procurement/view/error/404.phtml:34 Workflow/view/error/404.phtml:34
+msgid "Controller"
+msgstr ""
+
+#: Application/view/error/404.phtml:39 BP/view/error/404.phtml:39
+#: Calendar/view/error/404.phtml:39 Finance/view/error/404.phtml:39
+#: HR/view/error/404.phtml:39 Inventory/view/error/404.phtml:39
+#: PM/view/error/404.phtml:39 Procure/view/error/404.phtml:39
+#: Procurement/view/error/404.phtml:39 Workflow/view/error/404.phtml:39
+#, php-format
+msgid "resolves to %s"
+msgstr ""
+
+#: Application/view/error/404.phtml:51 Application/view/error/index.phtml:8
+#: BP/view/error/404.phtml:51 BP/view/error/index.phtml:8
+#: Calendar/view/error/404.phtml:51 Calendar/view/error/index.phtml:8
+#: Finance/view/error/404.phtml:51 Finance/view/error/index.phtml:8
+#: HR/view/error/404.phtml:51 HR/view/error/index.phtml:8
+#: Inventory/view/error/404.phtml:51 Inventory/view/error/index.phtml:8
+#: PM/view/error/404.phtml:51 PM/view/error/index.phtml:8
+#: Procure/view/error/404.phtml:51 Procure/view/error/index.phtml:8
+#: Procurement/view/error/404.phtml:51 Procurement/view/error/index.phtml:8
+#: User/view/error/index.phtml:8 Workflow/view/error/404.phtml:51
+#: Workflow/view/error/index.phtml:8
+msgid "Additional information"
+msgstr ""
+
+#: Application/view/error/404.phtml:54 Application/view/error/404.phtml:78
+#: Application/view/error/index.phtml:11 Application/view/error/index.phtml:35
+#: BP/view/error/404.phtml:54 BP/view/error/404.phtml:78
+#: BP/view/error/index.phtml:11 BP/view/error/index.phtml:35
+#: Calendar/view/error/404.phtml:54 Calendar/view/error/404.phtml:78
+#: Calendar/view/error/index.phtml:11 Calendar/view/error/index.phtml:35
+#: Finance/view/error/404.phtml:54 Finance/view/error/404.phtml:78
+#: Finance/view/error/index.phtml:11 Finance/view/error/index.phtml:35
+#: HR/view/error/404.phtml:54 HR/view/error/404.phtml:78
+#: HR/view/error/index.phtml:11 HR/view/error/index.phtml:35
+#: Inventory/view/error/404.phtml:54 Inventory/view/error/404.phtml:78
+#: Inventory/view/error/index.phtml:11 Inventory/view/error/index.phtml:35
+#: PM/view/error/404.phtml:54 PM/view/error/404.phtml:78
+#: PM/view/error/index.phtml:11 PM/view/error/index.phtml:35
+#: Procure/view/error/404.phtml:54 Procure/view/error/404.phtml:78
+#: Procure/view/error/index.phtml:11 Procure/view/error/index.phtml:35
+#: Procurement/view/error/404.phtml:54 Procurement/view/error/404.phtml:78
+#: Procurement/view/error/index.phtml:11 Procurement/view/error/index.phtml:35
+#: User/view/error/index.phtml:11 User/view/error/index.phtml:35
+#: Workflow/view/error/404.phtml:54 Workflow/view/error/404.phtml:78
+#: Workflow/view/error/index.phtml:11 Workflow/view/error/index.phtml:35
+msgid "File"
+msgstr ""
+
+#: Application/view/error/404.phtml:58 Application/view/error/404.phtml:82
+#: Application/view/error/index.phtml:15 Application/view/error/index.phtml:39
+#: BP/view/error/404.phtml:58 BP/view/error/404.phtml:82
+#: BP/view/error/index.phtml:15 BP/view/error/index.phtml:39
+#: Calendar/view/error/404.phtml:58 Calendar/view/error/404.phtml:82
+#: Calendar/view/error/index.phtml:15 Calendar/view/error/index.phtml:39
+#: Finance/view/error/404.phtml:58 Finance/view/error/404.phtml:82
+#: Finance/view/error/index.phtml:15 Finance/view/error/index.phtml:39
+#: HR/view/error/404.phtml:58 HR/view/error/404.phtml:82
+#: HR/view/error/index.phtml:15 HR/view/error/index.phtml:39
+#: Inventory/view/error/404.phtml:58 Inventory/view/error/404.phtml:82
+#: Inventory/view/error/index.phtml:15 Inventory/view/error/index.phtml:39
+#: PM/view/error/404.phtml:58 PM/view/error/404.phtml:82
+#: PM/view/error/index.phtml:15 PM/view/error/index.phtml:39
+#: Procure/view/error/404.phtml:58 Procure/view/error/404.phtml:82
+#: Procure/view/error/index.phtml:15 Procure/view/error/index.phtml:39
+#: Procurement/view/error/404.phtml:58 Procurement/view/error/404.phtml:82
+#: Procurement/view/error/index.phtml:15 Procurement/view/error/index.phtml:39
+#: User/view/error/index.phtml:15 User/view/error/index.phtml:39
+#: Workflow/view/error/404.phtml:58 Workflow/view/error/404.phtml:82
+#: Workflow/view/error/index.phtml:15 Workflow/view/error/index.phtml:39
+msgid "Message"
+msgstr ""
+
+#: Application/view/error/404.phtml:62 Application/view/error/404.phtml:86
+#: Application/view/error/index.phtml:19 Application/view/error/index.phtml:43
+#: BP/view/error/404.phtml:62 BP/view/error/404.phtml:86
+#: BP/view/error/index.phtml:19 BP/view/error/index.phtml:43
+#: Calendar/view/error/404.phtml:62 Calendar/view/error/404.phtml:86
+#: Calendar/view/error/index.phtml:19 Calendar/view/error/index.phtml:43
+#: Finance/view/error/404.phtml:62 Finance/view/error/404.phtml:86
+#: Finance/view/error/index.phtml:19 Finance/view/error/index.phtml:43
+#: HR/view/error/404.phtml:62 HR/view/error/404.phtml:86
+#: HR/view/error/index.phtml:19 HR/view/error/index.phtml:43
+#: Inventory/view/error/404.phtml:62 Inventory/view/error/404.phtml:86
+#: Inventory/view/error/index.phtml:19 Inventory/view/error/index.phtml:43
+#: PM/view/error/404.phtml:62 PM/view/error/404.phtml:86
+#: PM/view/error/index.phtml:19 PM/view/error/index.phtml:43
+#: Procure/view/error/404.phtml:62 Procure/view/error/404.phtml:86
+#: Procure/view/error/index.phtml:19 Procure/view/error/index.phtml:43
+#: Procurement/view/error/404.phtml:62 Procurement/view/error/404.phtml:86
+#: Procurement/view/error/index.phtml:19 Procurement/view/error/index.phtml:43
+#: User/view/error/index.phtml:19 User/view/error/index.phtml:43
+#: Workflow/view/error/404.phtml:62 Workflow/view/error/404.phtml:86
+#: Workflow/view/error/index.phtml:19 Workflow/view/error/index.phtml:43
+msgid "Stack trace"
+msgstr ""
+
+#: Application/view/error/404.phtml:72 Application/view/error/index.phtml:29
+#: BP/view/error/404.phtml:72 BP/view/error/index.phtml:29
+#: Calendar/view/error/404.phtml:72 Calendar/view/error/index.phtml:29
+#: Finance/view/error/404.phtml:72 Finance/view/error/index.phtml:29
+#: HR/view/error/404.phtml:72 HR/view/error/index.phtml:29
+#: Inventory/view/error/404.phtml:72 Inventory/view/error/index.phtml:29
+#: PM/view/error/404.phtml:72 PM/view/error/index.phtml:29
+#: Procure/view/error/404.phtml:72 Procure/view/error/index.phtml:29
+#: Procurement/view/error/404.phtml:72 Procurement/view/error/index.phtml:29
+#: User/view/error/index.phtml:29 Workflow/view/error/404.phtml:72
+#: Workflow/view/error/index.phtml:29
+msgid "Previous exceptions"
+msgstr ""
+
+#: Application/view/error/404.phtml:102 Application/view/error/index.phtml:59
+#: BP/view/error/404.phtml:102 BP/view/error/index.phtml:59
+#: Calendar/view/error/404.phtml:102 Calendar/view/error/index.phtml:59
+#: Finance/view/error/404.phtml:102 Finance/view/error/index.phtml:59
+#: HR/view/error/404.phtml:102 HR/view/error/index.phtml:59
+#: Inventory/view/error/404.phtml:102 Inventory/view/error/index.phtml:59
+#: PM/view/error/404.phtml:102 PM/view/error/index.phtml:59
+#: Procure/view/error/404.phtml:102 Procure/view/error/index.phtml:59
+#: Procurement/view/error/404.phtml:102 Procurement/view/error/index.phtml:59
+#: User/view/error/index.phtml:59 Workflow/view/error/404.phtml:102
+#: Workflow/view/error/index.phtml:59
+msgid "No Exception available"
+msgstr ""
+
+#: Application/view/error/index.phtml:1 BP/view/error/index.phtml:1
+#: Calendar/view/error/index.phtml:1 Finance/view/error/index.phtml:1
+#: HR/view/error/index.phtml:1 Inventory/view/error/index.phtml:1
+#: PM/view/error/index.phtml:1 Procure/view/error/index.phtml:1
+#: Procurement/view/error/index.phtml:1 User/view/error/index.phtml:1
+#: Workflow/view/error/index.phtml:1
+msgid "An error occurred"
+msgstr ""
+
+#: Application/view/layout/layout-fluid.phtml:175
+msgid "Finance"
+msgstr "ການເງິນ"
+
+#: Application/view/layout/layout-fluid.phtml:181
+msgid "Inventory"
+msgstr "ສິນຄ້າ"
+
+#: Application/view/layout/layout-fluid.phtml:187
+#, fuzzy
+#| msgid "Business Partner"
+msgid "Partner"
+msgstr "lao doi tac"
+
+#: Application/view/layout/layout-fluid.phtml:203
+msgid "Procure"
+msgstr "ການຈັດຊື້"
+
+#: Application/view/layout/layout.phtml:6
+#: Application/view/layout/layout.phtml:34
+msgid "Skeleton Application"
+msgstr ""
+
+#: Application/view/layout/layout.phtml:37 BP/view/layout/layout.phtml:97
+#: Calendar/view/layout/layout.phtml:97 Finance/view/layout/layout.phtml:97
+#: HR/view/layout/CopyOflayout.phtml:72
+#: HR/view/layout/Copy_2_of_layout.phtml:78 HR/view/layout/layout.phtml:91
+#: Inventory/view/layout/CopyOflayout.phtml:72
+#: Inventory/view/layout/Copy_2_of_layout.phtml:78
+#: Inventory/view/layout/layout.phtml:91 PM/view/layout/layout.phtml:97
+#: Procure/view/layout/layout.phtml:97
+#: Procurement/view/layout/CopyOflayout.phtml:72
+#: Procurement/view/layout/Copy_2_of_layout.phtml:78
+#: Procurement/view/layout/layout.phtml:91 Workflow/view/layout/layout.phtml:97
+msgid "Home"
+msgstr ""
+
+#: Application/view/layout/layout.phtml:48
+msgid "All rights reserved."
+msgstr ""
+
+#: Application/view/inventory_menu.php:4
+msgid "Create new item"
+msgstr ""
+
+#: Application/view/other_menu.php:6
+msgid "Calendar"
+msgstr "ປະຕິທິນ"
+
+#: Application/view/procure_menu.php:6
+msgid "New Purchase Request (PR)"
+msgstr ""

@@ -8,6 +8,8 @@
  */
 return array(
     
+		
+	
     'caches' => array(
         
         'FileSystemCache' => array(
@@ -187,9 +189,12 @@ return array(
                             'route' => '/[:controller[/:action]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+								'locale' => '[a-zA-Z]{2}_[a-zA-Z]{2}',
                             ),
-                            'defaults' => array()
+                            'defaults' => array(
+							'locale' => 'de_DE'
+							)
                         )
                     )
                 )
@@ -198,6 +203,9 @@ return array(
         )
     ),
     'service_manager' => array(
+  
+        
+        
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory', // <-- add this
@@ -216,15 +224,19 @@ return array(
         )
     ),
     'translator' => array(
-        'locale' => 'en_US',
+       	'locale' => 'en_US',
         'translation_file_patterns' => array(
             array(
                 'type' => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
                 'pattern' => '%s.mo'
             )
-        )
+        ),
+		
     ),
+    
+ 
+
     
     // Plugin
     'controller_plugins' => array(
@@ -264,8 +276,9 @@ return array(
             'Application\Controller\Backup' => 'Application\Controller\BackupControllerFactory',
             'Application\Controller\User' => 'Application\Controller\UserControllerFactory',
             'Application\Controller\SearchIndex' => 'Application\Controller\SearchIndexControllerFactory',
-            'Application\Controller\QrCode' => 'Application\Controller\QrCodeControllerFactory'
-        
+            'Application\Controller\QrCode' => 'Application\Controller\QrCodeControllerFactory',
+            'Application\Controller\Locale' => 'Application\Controller\LocaleControllerFactory',
+            
         )
     ),
     'view_manager' => array(

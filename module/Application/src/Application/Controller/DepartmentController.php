@@ -172,7 +172,8 @@ class DepartmentController extends AbstractActionController {
 	/**
 	 */
 	public function listAction() {
-		$this->departmentService->initCategory();
+	    
+	  	$this->departmentService->initCategory();
 		$this->departmentService->updateCategory(1,0);
 		$jsTree = $this->departmentService->generateJSTree(1);
 		
@@ -187,6 +188,8 @@ class DepartmentController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function list1Action() {
+	    
+	    
 		
 		$request = $this->getRequest ();
 		

@@ -172,19 +172,19 @@
 						
 						<!-- FINANCE MENU -->
 						<li class="dropdown"><a class="dropdown-toggle"
-						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; ">Finance <span class="caret"></span></a>
+						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; "><?php echo $this->translate('Finance');?> <span class="caret"></span></a>
 							<?php include (ROOT.'\module\application\view\inventory_menu.php'); ?>
 						</li>
 			
 						<!-- INVENTORY MENU -->
 						<li class="dropdown"><a class="dropdown-toggle"
-						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; ">Inventory <span class="caret"></span></a>
+						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; "><?php echo $this->translate('Inventory');?> <span class="caret"></span></a>
 							<?php include (ROOT.'\module\application\view\inventory_menu.php'); ?>			
 						</li>
 						
 						<!-- BP MENU -->
 						<li class="dropdown" style="padding: 0px; margin:0px;"><a class="dropdown-toggle"
-						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; ">Partner <span class="caret"></span></a>
+						data-toggle="dropdown" href="#" style="padding-left: 10px;padding-right: 10px; "><?php echo $this->translate('Partner'); ?> <span class="caret"></span></a>
 							<?php include (ROOT.'\module\application\view\bp_menu.php'); ?>
 						</li>
 		
@@ -200,7 +200,7 @@
 	  					   		<span id="cart_items" class="">
 						    <?php endif;?>						    
 						    
-							    </span>&nbsp;Procure <span class="caret"></span></a>			    
+							    </span>&nbsp;<?php echo $this->translate('Procure'); ?> <span class="caret"></span></a>			    
 						    	<?php include (ROOT.'\module\application\view\procure_menu.php'); ?>
 							</li>
 						  <?php endif;?>
@@ -231,7 +231,15 @@
 								  <?php include (ROOT.'\module\application\view\setting_menu.php'); ?>
 				 			</li>
 				 			<?php endif;?>
-			
+				 			
+				 			 <!-- LOCALE MENU -->						  
+							
+							<li class="dropdown active"><a class="dropdown-toggle" data-toggle="dropdown"
+							href="#" style="padding-left: 10px; padding-right: 10px;">
+								</span>&nbsp;&nbsp;Locale <span class="caret"></span></a>
+								  <?php include (ROOT.'\module\application\view\locale_menu.php'); ?>
+				 			</li>
+				 		
 						  	<?php if ($this->isProcurement==true): ?>
 							<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#"><span class="label label-default"></span>
@@ -317,7 +325,7 @@
 
       <footer>
         <p>&copy; 2016-2017 Nguyen Mau Tri</p>
-      </footer>
+	  </footer>
        
     </div><!--/.container-->
     

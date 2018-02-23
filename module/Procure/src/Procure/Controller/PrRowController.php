@@ -23,6 +23,7 @@ use Zend\Escaper\Escaper;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use Procure\Service\PrSearchService;
+use Zend\Cache\Storage\StorageInterface;
 
 /**
  *
@@ -37,6 +38,9 @@ class PrRowController extends AbstractActionController
     protected $doctrineEM;
 
     protected $prSearchService;
+    
+    protected $cacheService;
+     
 
     /*
      * Defaul Action
@@ -2313,4 +2317,20 @@ class PrRowController extends AbstractActionController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
+    /**
+     * @return mixed
+     */
+    public function getCacheService()
+    {
+        return $this->cacheService;
+    }
+
+    /**
+     * @param mixed $cacheService
+     */
+    public function setCacheService(StorageInterface $cacheService)
+    {
+        $this->cacheService = $cacheService;
+    }
+
 }

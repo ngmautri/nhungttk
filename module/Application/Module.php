@@ -13,6 +13,7 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Mvc\MvcEvent;
+use Zend\Session\Container;
 use Application\Model\AclRoleTable;
 use Application\Model\AclRole;
 
@@ -25,6 +26,8 @@ class Module {
 		
 		$sharedManager = $eventManager->getSharedManager ();
 		$sm = $e->getApplication ()->getServiceManager ();
+		
+		
 		
 		/*
 		 * when Dispatched, attach listener to Event manager
@@ -49,8 +52,15 @@ class Module {
 			$moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
 			$controller->layout($moduleNamespace . '/layout-fluid');
 		}, 101 );
-			
+		
+		    
 	}
+	
+	
+	
+	
+	
+	
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
 	}

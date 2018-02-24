@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author nmt
  *
  */
-class LocaleControllerFactory implements FactoryInterface {
+class CacheControllerFactory implements FactoryInterface {
 	
 	/**
 	 *
@@ -21,14 +21,11 @@ class LocaleControllerFactory implements FactoryInterface {
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		$container = $serviceLocator->getServiceLocator ();
 			
-		$controller = new LocaleController();
+		$controller = new CacheController();
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
-		
-		$sv =  $container->get('mvctranslator');
-		$controller->setTranslatorService($sv);
-		
+			
 		$sv =  $container->get('FileSystemCache');
 		$controller->setCacheService($sv);
 		

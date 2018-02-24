@@ -175,11 +175,7 @@ return array(
     
    
     'controllers' => array(
-        'invokables' => array(
-            // 'Inventory\Controller\Index' => 'Inventory\Controller\IndexController',
-            'Inventory\Controller\Asset' => 'Inventory\Controller\AssetController'
-        ),
-        
+       
         'factories' => array(
             'Inventory\Controller\Index' => 'Inventory\Controller\IndexControllerFactory',
             'Inventory\Controller\Admin' => 'Inventory\Controller\AdminControllerFactory',
@@ -236,19 +232,4 @@ return array(
         ),
         'ViewJsonStrategy'
     ),
-    
-    // Plugin
-    'controller_plugins' => array(
-        'factories' => array(
-            'HelloWorld' => function ($pluginManager) {
-                /** @var \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator */
-                $serviceLocator = $pluginManager->getServiceLocator();
-                return new HelloWorld($serviceLocator->get('Your\Dependency'));
-            }
-        )
-    
-    )
-    
-    // blank
-
 );

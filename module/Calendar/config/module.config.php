@@ -20,7 +20,7 @@ return array(
                 'controller' => 'index',
                 'action' => 'month',
                 'icon' => 'glyphicon glyphicon-list'
-            ),
+            )
         )
     ),
     
@@ -61,17 +61,15 @@ return array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'calendar_navi' => 'Calendar\Service\CalendarNavigationFactory', // <-- add this
-            'Calendar\Service\CalendarService' => 'Calendar\Service\CalendarServiceFactory',
-            
-            
-            
+            'Calendar\Service\CalendarService' => 'Calendar\Service\CalendarServiceFactory'
+        
         )
     ),
     
     'controllers' => array(
         'factories' => array(
-            'Calendar\Controller\Index' => 'Calendar\Controller\IndexControllerFactory',
-         )
+            'Calendar\Controller\Index' => 'Calendar\Controller\IndexControllerFactory'
+        )
     
     ),
     'view_manager' => array(

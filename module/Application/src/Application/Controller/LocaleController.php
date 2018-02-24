@@ -13,7 +13,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\I18n\Translator;
-
+use Zend\Cache\StorageFactory;
+use Zend\Cache\Storage\StorageInterface;
 /**
  *
  * @author nmt
@@ -24,6 +25,8 @@ class LocaleController extends AbstractActionController {
       
     protected $doctrineEM;
     protected $translatorService;
+    protected $cacheService;
+    
     
     
 		
@@ -96,6 +99,22 @@ class LocaleController extends AbstractActionController {
     {
         $this->translatorService = $translatorService;
     }
+    /**
+     * @return mixed
+     */
+    public function getCacheService()
+    {
+        return $this->cacheService;
+    }
+
+    /**
+     * @param mixed $cacheService
+     */
+    public function setCacheService(StorageInterface $cacheService)
+    {
+        $this->cacheService = $cacheService;
+    }
+
 
 
 	

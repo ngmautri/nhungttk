@@ -8,6 +8,7 @@
 	<li><a href="<?php echo $this->baseUrl ?>/workflow/wf"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;&nbsp;Workflows</a></li>
 	<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/application/backup/db"><i class="fa fa-database" aria-hidden="true"></i>&nbsp;&nbsp;Backup DB</a></li>
+	<li><a href="<?php echo $this->baseUrl ?>/application/cache/cache-space"><i class="fa fa-database" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate('Caching Manager'); ?></a></li>
 	
 	<li class="divider"></li>	
 	<li><a href="<?php echo $this->baseUrl ?>/application/search-index/update-all"><small><i class="fa fa-refresh" aria-hidden="true"></i></small>&nbsp;&nbsp;Update Search Indexes</a></li>

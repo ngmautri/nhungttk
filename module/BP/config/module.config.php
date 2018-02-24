@@ -105,13 +105,5 @@ return array(
             __DIR__ . '/../view'
         )
     )
-    
-    // Plugin
-    /*
- * 'controller_plugins' => array (
- * 'invokables' => array (
- * 'UserPlugin' => 'User\Controller\Plugin\UserPlugin'
- * )
- * )
- */
+   
 );

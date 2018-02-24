@@ -303,7 +303,17 @@ class VInvoiceController extends AbstractActionController
         $entity = new FinVendorInvoice();
         
         $entity->setIsActive(1);
-        
+		
+		//default currency is LAK
+		
+		 
+            // generate document
+            $criteria = array(
+                'id' => 2,
+             );
+		$default_cur = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findOneBy($criteria);
+		$entity->setCurrency($default_cur);
+        $entity->setCurrentState('finalInvoice');
         $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
             'isDefault' => 1
         ));

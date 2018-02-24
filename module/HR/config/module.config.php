@@ -81,9 +81,6 @@ return array (
 		),
 		
 		'controllers' => array (
-				'invokables' => array (
-						//'HR\Controller\Index' => 'HR\Controller\IndexController',
-				),
 				
 				'factories' => array (
 						// 'HR\Controller\Image' => 'HR\Controller\ImageControllerFactory',

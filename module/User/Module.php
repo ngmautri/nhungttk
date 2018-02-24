@@ -58,9 +58,7 @@ class Module
     {
         $eventManager = $e->getApplication()->getEventManager();
         $serviceManager = $e->getApplication()->getServiceManager();
-        $serviceManager->get('translator');
-        $this->initTranslator($e);
-        
+         
         
         
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array(
@@ -73,24 +71,9 @@ class Module
             'checkACL'
         ), 100);
         
-        /* $eventManager->attach(MvcEvent::EVENT_DISPATCH, array(
-            $this,
-            'initTranslator'
-        ), 101);
-     */
-     
-    }
+       }
     
-    function initTranslator(MvcEvent $event)
-    {
-        $serviceManager = $event->getApplication()->getServiceManager();
-        
-        // Zend\Session\Container
-        $session = New Container('locale');
-         $translator = $serviceManager->get('translator');
-        $translator->setLocale($session->locale)
-        ->setFallbackLocale('en_US');
-    }
+   
 
     /**
      *

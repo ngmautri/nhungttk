@@ -8,8 +8,6 @@
  */
 return array(
     
-		
-	
     'caches' => array(
         
         'FileSystemCache' => array(
@@ -21,15 +19,22 @@ return array(
             'options' => array(
                 
                 'cache_dir' => './data/cache/',
-                'ttl' => 100
+                'ttl' => 3600
                 
                 // other options
-            
+            ),
+            'plugins' => array(
+                array(
+                    'name' => 'serializer',
+                    'options' => array()
+                ),
+                'exception_handler' => array(
+                    'throw_exceptions' => true
+                )
             )
-        
         ),
         
-        'memcached' => array( // can be called directly via SM in the name of 'memcached'
+      /*   'memcached' => array( // can be called directly via SM in the name of 'memcached'
             'adapter' => array(
                 'name' => 'memcached',
                 'options' => array(
@@ -54,7 +59,7 @@ return array(
                     'throw_exceptions' => false
                 )
             )
-        )
+        ) */
     
     ),
     
@@ -190,11 +195,11 @@ return array(
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-								'locale' => '[a-zA-Z]{2}_[a-zA-Z]{2}',
+                                'locale' => '[a-zA-Z]{2}_[a-zA-Z]{2}'
                             ),
                             'defaults' => array(
-							'locale' => 'de_DE'
-							)
+                                'locale' => 'de_DE'
+                            )
                         )
                     )
                 )
@@ -203,8 +208,10 @@ return array(
         )
     ),
     'service_manager' => array(
-  
-        
+        'aliases' => array(
+            // important for Internationation
+            'translator' => 'mvctranslator'
+        ),
         
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
@@ -224,19 +231,16 @@ return array(
         )
     ),
     'translator' => array(
-       	'locale' => 'en_US',
+        'locale' => 'en_US',
         'translation_file_patterns' => array(
             array(
                 'type' => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
                 'pattern' => '%s.mo'
             )
-        ),
-		
-    ),
+        )
     
- 
-
+    ),
     
     // Plugin
     'controller_plugins' => array(
@@ -278,6 +282,7 @@ return array(
             'Application\Controller\SearchIndex' => 'Application\Controller\SearchIndexControllerFactory',
             'Application\Controller\QrCode' => 'Application\Controller\QrCodeControllerFactory',
             'Application\Controller\Locale' => 'Application\Controller\LocaleControllerFactory',
+            'Application\Controller\Cache' => 'Application\Controller\CacheControllerFactory',
             
         )
     ),

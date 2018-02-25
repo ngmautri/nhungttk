@@ -40,28 +40,7 @@ class Module {
 	
 	}
 	
-	/**
-	 * @param ModuleManager $mm
-	 */
-	/**
-	 * @param ModuleManager $mm
-	 */
-	public function init(ModuleManager $mm)
-	{
-		/* $mm->getEventManager()->getSharedManager()->attach(__NAMESPACE__,
-				'dispatch', function($e) {
-				
-				$request=$e->getTarget()->getRequest ();
-				if ($request->isXmlHttpRequest ()) {
-					$e->getTarget()->layout('layout/user/ajax');
-				}else{
-					$e->getTarget()->layout('procure/layout-fluid');
-				}
-				}); */
 		
-	}
-	
-	
 	/**
 	 * 
 	 * @return unknown

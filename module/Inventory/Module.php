@@ -113,19 +113,6 @@ class Module {
 	
 	}
 	
-	/**
-	 * @param ModuleManager $mm
-	 */
-	/*  public function init(ModuleManager $mm)
-	{
-		$mm->getEventManager()->getSharedManager()->attach(__NAMESPACE__,
-				'dispatch', function($e) {
-		
-			$e->getTarget()->layout('inventory/layout-fluid');
-		});
-	} 
-	 */
-	
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
 	}

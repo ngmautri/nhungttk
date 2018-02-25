@@ -34,16 +34,20 @@ class Module
         $sharedManager = $eventManager->getSharedManager();
         $sm = $e->getApplication()->getServiceManager();
         
-        //$sm->get('translator');
-        $this->initTranslator($e);
+        $eventManager->attachAggregate($sm->get('Application\Listener\ViewListener'));
         
+        // $sm->get('translator');
+        $this->initTranslator($e);
         
         /*
          * when Dispatched, attach listener to Event manager
          * shared event manager will not trigger event
          *
          */
+        
+        // AbtractController is EventManagerAware.
         $sharedManager->attach('Zend\Mvc\Controller\AbstractActionController', MvcEvent::EVENT_DISPATCH, function ($e) use ($sm) {
+            /**@var \Zend\Mvc\Controller\AbstractActionController $controller ; */
             $controller = $e->getTarget();
             
             // new in zend 3, replace EventManager->attachAgrregate ($listener);
@@ -54,10 +58,12 @@ class Module
             $controller->getEventManager()
                 ->attachAggregate($pictureUploadListener);
             
+            // Logging
             $LoggingListener = $sm->get('Application\Listener\LoggingListener');
             $controller->getEventManager()
                 ->attachAggregate($LoggingListener);
             
+            // change module layout
             $controllerClass = get_class($controller);
             $moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
             $controller->layout($moduleNamespace . '/layout-fluid');
@@ -65,22 +71,45 @@ class Module
     }
 
     /**
-     * 
+     *
      * @param MvcEvent $event
      */
     private function initTranslator(MvcEvent $event)
     {
         $serviceManager = $event->getApplication()->getServiceManager();
+        $viewModel = $event->getApplication()
+            ->getMvcEvent()
+            ->getViewModel();
+        
+        $config = $serviceManager->get('config');
+        
+        if (isset($config['locale']['available'])) {
+            $viewModel->availableLocale = $config['locale']['available'];
+        } else {
+            $viewModel->availableLocale = null;
+        }
         
         // Zend\Session\Container
-        $session = New Container('locale');
+        $session = new Container('locale');
         $translator = $serviceManager->get('translator');
-        $translator->setLocale($session->locale)
-        ->setFallbackLocale('en_US');
-        // only in production
-        //$translator->setCache($serviceManager->get('FileSystemCache'));
         
+        if ($session->locale == null) {
+            $session->locale = 'en_US';
+            $currentLocale = 'en_US';
+        } else {
+            $currentLocale = $session->locale;
+        }
+        
+        $viewModel->currentLocale = $currentLocale;
+        $translator->setLocale($currentLocale)->setFallbackLocale('en_US');
+    
+    /**
+     *
+     * @todo use in production
+     */
+        // $translator->setCache($serviceManager->get('FileSystemCache'));
     }
+
     /**
      *
      * @return unknown
@@ -107,11 +136,17 @@ class Module
 
     /**
      * always put closure here.
+     * 
      * @return NULL[][]
      */
     public function getServiceConfig()
     {
         return array(
+            
+            'aliases' => array(
+                'Zend\Authentication\AuthenticationService' => 'AuthService'
+            ),
+            
             'factories' => array(
                 'Zend\Db\Adapter\Adapter' => function ($sm) {
                     return new Adapter(array(
@@ -172,7 +207,10 @@ class Module
                     return $transport;
                 },
                 
-                /**@deprecated */
+                /**
+                 *
+                 * @deprecated
+                 */
                 'Application\Model\AclRoleTable' => function ($container) {
                     $tableGateway = $container->get('AclRoleTableGateway');
                     return new AclRoleTable($tableGateway);

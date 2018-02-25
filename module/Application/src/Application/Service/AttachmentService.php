@@ -26,8 +26,6 @@ class AttachmentService
             
             case ($target instanceof FinVendorInvoiceRow):
                 return null;
-                
-      
         }
     }
     

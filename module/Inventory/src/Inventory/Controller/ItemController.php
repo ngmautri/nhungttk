@@ -35,11 +35,13 @@ class ItemController extends AbstractActionController
     const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
 
     protected $doctrineEM;
+
     protected $itemSearchService;
+
     protected $userTable;
+
     protected $cacheService;
-    
-    
+
     /*
      * Defaul Action
      */
@@ -168,7 +170,6 @@ class ItemController extends AbstractActionController
             $leadTime = $request->getPost('leadTime');
             $assetLabel = $request->getPost('assetLabel');
             
-            
             $isActive = (int) $request->getPost('isActive');
             $isFixedAsset = (int) $request->getPost('isFixedAsset');
             $isPurchased = (int) $request->getPost('isPurchased');
@@ -253,7 +254,6 @@ class ItemController extends AbstractActionController
             $entity->setManufacturerSerial($manufacturerSerial);
             
             $entity->setAssetLabel($assetLabel);
-            
             
             // $entity->setOrigin($origin);
             // $entity->setSerialNumber($serialNumber);
@@ -401,10 +401,8 @@ class ItemController extends AbstractActionController
             // trigger uploadPicture. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('inventory.activity.log', __CLASS__, array(
                 'priority' => 7,
-                'message' => 'Item #' . $entity->getId() . ' ('. $entity->getSysNumber() .') has been added!'
+                'message' => 'Item #' . $entity->getId() . ' (' . $entity->getSysNumber() . ') has been added!'
             ));
-            
-            
             
             $redirectUrl = "/inventory/item/show?token=" . $new_item->getToken() . "&entity_id=" . $new_item->getId() . "&checksum=" . $new_item->getChecksum();
             return $this->redirect()->toUrl($redirectUrl);
@@ -672,7 +670,7 @@ class ItemController extends AbstractActionController
                 // trigger uploadPicture. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('inventory.activity.log', __CLASS__, array(
                     'priority' => 7,
-                    'message' => 'Item #' . $entity->getId() . ' ('. $entity->getSysNumber() .') has been edited!'
+                    'message' => 'Item #' . $entity->getId() . ' (' . $entity->getSysNumber() . ') has been edited!'
                 ));
                 
                 $this->flashMessenger()->addMessage("Item " . $itemName . " has been updated sucessfully");
@@ -797,21 +795,18 @@ class ItemController extends AbstractActionController
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
         
-       $total_recored_cache_key = "item_list_type".$item_type."_is_active".$is_active."_is_fixed_asset".$is_fixed_asset;
+        $total_recored_cache_key = "item_list_type" . $item_type . "_is_active" . $is_active . "_is_fixed_asset" . $is_fixed_asset;
         
-       $ck = $this->cacheService->hasItem($total_recored_cache_key);
-       
-       if($ck){
-           $total_records = $this->cacheService->getItem($total_recored_cache_key);
-       }else{
-           $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
-           $this->cacheService->setItem($total_recored_cache_key, $total_records);
+        $ck = $this->cacheService->hasItem($total_recored_cache_key);
+        
+        if ($ck) {
+            $total_records = $this->cacheService->getItem($total_recored_cache_key);
+        } else {
+            $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
+            $this->cacheService->setItem($total_recored_cache_key, $total_records);
         }
         
-        
-        //$serializer = new \Zend\Serializer\Adapter\PhpSerialize();
-        
-
+        // $serializer = new \Zend\Serializer\Adapter\PhpSerialize();
         
         // $list = $res->getVendorInvoiceList($is_active,$currentState,null,$sort_by,$sort,0,0);
         // $total_records = count($list);
@@ -822,19 +817,20 @@ class ItemController extends AbstractActionController
         
         // $total_records =count($list);
         
-        /* try {
-            
-            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
-            
-            $serialized = $serializer->serialize($list);
-            // now $serialized is a string
-            //$this->cacheService->setItem("list_object", $serialized);
-            
-            // now $data == $unserialized
-        } catch (\Zend\Serializer\Exception\ExceptionInterface $e) {
-            echo $e;
-        } */
-        
+        /*
+         * try {
+         *
+         * $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
+         *
+         * $serialized = $serializer->serialize($list);
+         * // now $serialized is a string
+         * //$this->cacheService->setItem("list_object", $serialized);
+         *
+         * // now $data == $unserialized
+         * } catch (\Zend\Serializer\Exception\ExceptionInterface $e) {
+         * echo $e;
+         * }
+         */
         
         $paginator = null;
         $list = null;
@@ -843,6 +839,7 @@ class ItemController extends AbstractActionController
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findBy ( $criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1 );
             // $list = array_slice($list, $paginator->minInPage - 1, ($paginator->maxInPage - $paginator->minInPage) + 1);
+            
             $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         } else {
             $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
@@ -1245,13 +1242,11 @@ class ItemController extends AbstractActionController
     public function updateLastTransactionAction()
     {
         
-        
         // Update Last GR
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
         $last_gr = $res->getItemLastTrx();
-       
+        
         $total_gr = count($last_gr);
         
         if ($total_gr > 0) {
@@ -1260,18 +1255,18 @@ class ItemController extends AbstractActionController
                 /**@var \Application\Entity\NmtInventoryTrx $gr_entity ;*/
                 $gr_entity = $gr[0];
                 $gr_entity->getItem()->setLastTrxRow($gr_entity);
-              }
+            }
         }
         
         $this->doctrineEM->flush();
-       
+        
         // Update Puchasing Data
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
         
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
         $item_purchasing = $res->getItemPurchasing();
         
-        $total_purchasing =  count($item_purchasing);
+        $total_purchasing = count($item_purchasing);
         if ($total_purchasing > 0) {
             foreach ($item_purchasing as $purchasing) {
                 
@@ -1282,11 +1277,10 @@ class ItemController extends AbstractActionController
         }
         $this->doctrineEM->flush();
         
-         
         return new ViewModel(array(
             'last_gr' => $total_gr,
-            'last_purchasing' => $total_purchasing,
-            
+            'last_purchasing' => $total_purchasing
+        
         ));
     }
 
@@ -1407,14 +1401,18 @@ class ItemController extends AbstractActionController
         return $this;
     }
 
-    public function getUserTable() {
-		return $this->userTable;
-	}
-	public function setUserTable($userTable) {
-		$this->userTable = $userTable;
-		return $this;
-	}
-	public function getItemSearchService() {
+    public function getUserTable()
+    {
+        return $this->userTable;
+    }
+
+    public function setUserTable($userTable)
+    {
+        $this->userTable = $userTable;
+        return $this;
+    }
+
+    public function getItemSearchService() {
 		return $this->itemSearchService;
 	}
 	public function setItemSearchService(ItemSearchService $itemSearchService) {

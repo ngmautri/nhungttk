@@ -24,7 +24,6 @@ class CacheController extends AbstractActionController
 {
 
     protected $doctrineEM;
-
     protected $cacheService;
 
     /*

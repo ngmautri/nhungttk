@@ -101,13 +101,34 @@
 	</ul></li>
 <?php endif;?>
 
-						
+<?php if ($this->currentLocale !== null): ?>						
 					<!-- LOCALE MENU -->
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"
-	href="#" style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Language")?>  <span class="caret"></span></a>
+	href="#" style="padding-left: 10px; padding-right: 10px;">
+	<!-- <i class="fa fa-globe fa-lg" aria-hidden="true"></i>  -->
+	<?php 
+	
+	switch ($this->currentLocale) {
+	    
+	    case 'en_US':
+	        echo '<img alt="" src="/images/flag/flag_uk.png">&nbsp;EN';
+	        ;
+	        break;
+	    case 'vi_VN':
+	        echo '<img alt="" src="/images/flag/flag_vn.png">&nbsp;VN';
+	        break;
+	    case 'lo_LA':
+	        echo '<img alt="" src="/images/flag/flag_la.png">&nbsp;LA';
+	        break;
+	    case 'de_DE':
+	        echo '<img alt="" src="/images/flag/flag_germany.png">&nbsp;DE';
+	}
+	
+	?>
+	<span class="caret"></span></a>
 							 <?php include (ROOT.'\module\application\view\locale_menu.php'); ?>
 						</li>
-
+<?php endif;?>
 <!-- PROFIL MENU -->
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"
 	href="#" style="padding-left: 10px; padding-right: 10px;"><span

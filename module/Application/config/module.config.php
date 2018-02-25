@@ -164,9 +164,20 @@ return array(
             'orm_default' => array(
                 'drivers' => array(
                     'Application\Entity' => 'Application_driver'
-                )
+                ),
+                
+            )
+        ),
+        /*
+        'configuration' => array(
+            'orm_default' => array(
+                'metadata_cache'    => 'filesystem',
+                'query_cache'       => 'filesystem',
+                'result_cache'      => 'filesystem',
+                'generate_proxies'  => true,
             )
         )
+        */
     ),
     
     'router' => array(
@@ -214,6 +225,13 @@ return array(
         ),
         
         'factories' => array(
+            
+            // Listner
+            'Application\Listener\PictureUploadListener' => 'Application\Listener\PictureUploadListenerFactory',
+            'Application\Listener\LoggingListener' => 'Application\Listener\LoggingListenerFactory',
+            'Application\Listener\ViewListener' => 'Application\Listener\ViewListenerFactory',
+            
+            
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory', // <-- add this
             
@@ -225,9 +243,6 @@ return array(
             'Application\Service\ItemCategoryService' => 'Application\Service\ItemCategoryServiceFactory',
             'Application\Service\AppSearchService' => 'Application\Service\AppSearchServiceFactory',
             'Application\Service\AttachmentService' => 'Application\Service\AttachmentServiceFactory',
-            'Application\Listener\PictureUploadListener' => 'Application\Listener\PictureUploadListenerFactory',
-            'Application\Listener\LoggingListener' => 'Application\Listener\LoggingListenerFactory'
-        
         )
     ),
     'translator' => array(
@@ -245,7 +260,8 @@ return array(
     // Plugin
     'controller_plugins' => array(
         'factories' => array(
-            'AttachmentPlugin' => 'Application\Controller\Plugin\AttachmentPluginFactory'
+            'AttachmentPlugin' => 'Application\Controller\Plugin\AttachmentPluginFactory',
+            'Nmtplugin' => 'Application\Controller\Plugin\NmtPluginFactory'
         )
     ),
     

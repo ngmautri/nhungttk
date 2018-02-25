@@ -493,8 +493,11 @@ class PrController extends AbstractActionController
         }
         ;
         
+        /** @var \Doctrine\ORM\EntityManager $doctrineEM ;*/
+        $doctrineEM = $this->NmtPlugin()->doctrineEM();
+        
         /** @var \Application\Repository\NmtProcurePrRowRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $res = $doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
         
         $list = $res->getPrList($row_number, $pr_year, $is_active, $balance, $sort_by, $sort, 0, 0);
         

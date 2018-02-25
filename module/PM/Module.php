@@ -15,20 +15,6 @@ use Zend\Mvc\MvcEvent;
 class Module {
 	
 	/*
-	 * The init() method is called for every module implementing this feature, on every page request,
-	 * and should only be used for performing lightweight tasks such as registering event listeners.
-	 */
-	
-	/*
-	 * public function init(ModuleManager $moduleManager)
-	 * {
-	 * // Remember to keep the init() method as lightweight as possible
-	 * $events = $moduleManager->getEventManager();
-	 * $events->attach('loadModules.post', array($this, 'modulesLoaded'));
-	 * }
-	 */
-	
-	/*
 	 * The onBootstrap() method is called for every module implementing this feature, on every page request,
 	 * and should only be used for performing lightweight tasks such as registering event listeners.
 	 */

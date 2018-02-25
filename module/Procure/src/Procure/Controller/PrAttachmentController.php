@@ -1465,11 +1465,12 @@ class PrAttachmentController extends AbstractActionController {
 						$result [] = $original_filename . ' uploaded sucessfully';
 						$success ++;
 						
-						// trigger uploadPicture. AbtractController is EventManagerAware.
-						$this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+						// Trigger uploadPicture. AbtractController is EventManagerAware.
+				         $this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
 								'picture_name' => $name,
 								'pictures_dir' => $folder
 						) );
+						
 						
 						
 					} else {

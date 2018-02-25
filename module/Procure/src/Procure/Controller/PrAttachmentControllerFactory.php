@@ -26,7 +26,11 @@ class PrAttachmentControllerFactory implements FactoryInterface{
 		
 		
 		$controller= new PrAttachmentController();
-			
+		
+		//attach PictureUploadListener.
+		/* $pictureUploadListener = $container->get('Application\Listener\PictureUploadListener');
+		$controller->getEventManager()->attachAggregate($pictureUploadListener);
+		 */
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
 		

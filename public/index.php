@@ -6,6 +6,7 @@
 chdir ( dirname ( __DIR__ ) );
 
 define ( 'ROOT', realpath ( dirname ( dirname ( __FILE__ ) ) ) );
+define('TIMESTAMP_START', microtime(true));
 
 // Setup autoloading
 require 'init_autoloader.php';

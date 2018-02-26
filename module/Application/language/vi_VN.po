@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-25 00:53+0700\n"
-"PO-Revision-Date: 2018-02-25 00:53+0700\n"
+"POT-Creation-Date: 2018-02-26 16:47+0700\n"
+"PO-Revision-Date: 2018-02-26 16:55+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -20,74 +20,93 @@ msgstr ""
 "X-Generator: Poedit 2.0\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Application/view/application/department/list.phtml:9
-msgid "Business Partner"
-msgstr "Doi tac"
+#: Application/view/application/department/list.phtml:4
+#: Application/view/setting_menu.php:3
+msgid "Department"
+msgstr "Phòng ban"
+
+#: Application/view/application/department/list.phtml:8
+#: Application/view/application/department/list.phtml:12
+msgid "Add Department"
+msgstr "Thêm phòng ban"
 
 #: Application/view/error/404.phtml:1 BP/view/error/404.phtml:1
 #: Calendar/view/error/404.phtml:1 Finance/view/error/404.phtml:1
 #: HR/view/error/404.phtml:1 Inventory/view/error/404.phtml:1
 #: PM/view/error/404.phtml:1 Procure/view/error/404.phtml:1
 #: Procurement/view/error/404.phtml:1 Workflow/view/error/404.phtml:1
+#, fuzzy
 msgid "A 404 error occurred"
-msgstr ""
+msgstr "Es trat ein 404 Fehler auf"
 
 #: Application/view/error/404.phtml:10 BP/view/error/404.phtml:10
 #: Calendar/view/error/404.phtml:10 Finance/view/error/404.phtml:10
 #: HR/view/error/404.phtml:10 Inventory/view/error/404.phtml:10
 #: PM/view/error/404.phtml:10 Procure/view/error/404.phtml:10
 #: Procurement/view/error/404.phtml:10 Workflow/view/error/404.phtml:10
+#, fuzzy
 msgid "The requested controller was unable to dispatch the request."
 msgstr ""
+"Der angeforderte Controller war nicht in der Lage die Anfrage zu verarbeiten."
 
 #: Application/view/error/404.phtml:13 BP/view/error/404.phtml:13
 #: Calendar/view/error/404.phtml:13 Finance/view/error/404.phtml:13
 #: HR/view/error/404.phtml:13 Inventory/view/error/404.phtml:13
 #: PM/view/error/404.phtml:13 Procure/view/error/404.phtml:13
 #: Procurement/view/error/404.phtml:13 Workflow/view/error/404.phtml:13
-msgid "The requested controller could not be mapped to an existing controller class."
+#, fuzzy
+msgid ""
+"The requested controller could not be mapped to an existing controller class."
 msgstr ""
+"Der angeforderte Controller konnte keiner Controller Klasse zugeordnet "
+"werden."
 
 #: Application/view/error/404.phtml:16 BP/view/error/404.phtml:16
 #: Calendar/view/error/404.phtml:16 Finance/view/error/404.phtml:16
 #: HR/view/error/404.phtml:16 Inventory/view/error/404.phtml:16
 #: PM/view/error/404.phtml:16 Procure/view/error/404.phtml:16
 #: Procurement/view/error/404.phtml:16 Workflow/view/error/404.phtml:16
+#, fuzzy
 msgid "The requested controller was not dispatchable."
-msgstr ""
+msgstr "Der angeforderte Controller ist nicht aufrufbar."
 
 #: Application/view/error/404.phtml:19 BP/view/error/404.phtml:19
 #: Calendar/view/error/404.phtml:19 Finance/view/error/404.phtml:19
 #: HR/view/error/404.phtml:19 Inventory/view/error/404.phtml:19
 #: PM/view/error/404.phtml:19 Procure/view/error/404.phtml:19
 #: Procurement/view/error/404.phtml:19 Workflow/view/error/404.phtml:19
+#, fuzzy
 msgid "The requested URL could not be matched by routing."
-msgstr ""
+msgstr "Für die angeforderte URL konnte keine Übereinstimmung gefunden werden."
 
 #: Application/view/error/404.phtml:22 BP/view/error/404.phtml:22
 #: Calendar/view/error/404.phtml:22 Finance/view/error/404.phtml:22
 #: HR/view/error/404.phtml:22 Inventory/view/error/404.phtml:22
 #: PM/view/error/404.phtml:22 Procure/view/error/404.phtml:22
 #: Procurement/view/error/404.phtml:22 Workflow/view/error/404.phtml:22
+#, fuzzy
 msgid "We cannot determine at this time why a 404 was generated."
 msgstr ""
+"Zu diesem Zeitpunkt ist es uns nicht möglich zu bestimmen, warum ein 404 "
+"Fehler aufgetreten ist."
 
 #: Application/view/error/404.phtml:34 BP/view/error/404.phtml:34
 #: Calendar/view/error/404.phtml:34 Finance/view/error/404.phtml:34
 #: HR/view/error/404.phtml:34 Inventory/view/error/404.phtml:34
 #: PM/view/error/404.phtml:34 Procure/view/error/404.phtml:34
 #: Procurement/view/error/404.phtml:34 Workflow/view/error/404.phtml:34
+#, fuzzy
 msgid "Controller"
-msgstr ""
+msgstr "Kiểm soát"
 
 #: Application/view/error/404.phtml:39 BP/view/error/404.phtml:39
 #: Calendar/view/error/404.phtml:39 Finance/view/error/404.phtml:39
 #: HR/view/error/404.phtml:39 Inventory/view/error/404.phtml:39
 #: PM/view/error/404.phtml:39 Procure/view/error/404.phtml:39
 #: Procurement/view/error/404.phtml:39 Workflow/view/error/404.phtml:39
-#, php-format
+#, fuzzy, php-format
 msgid "resolves to %s"
-msgstr ""
+msgstr "wird aufgelöst in %s"
 
 #: Application/view/error/404.phtml:51 Application/view/error/index.phtml:8
 #: BP/view/error/404.phtml:51 BP/view/error/index.phtml:8
@@ -100,8 +119,9 @@ msgstr ""
 #: Procurement/view/error/404.phtml:51 Procurement/view/error/index.phtml:8
 #: User/view/error/index.phtml:8 Workflow/view/error/404.phtml:51
 #: Workflow/view/error/index.phtml:8
+#, fuzzy
 msgid "Additional information"
-msgstr ""
+msgstr "Zusätzliche Information"
 
 #: Application/view/error/404.phtml:54 Application/view/error/404.phtml:78
 #: Application/view/error/index.phtml:11 Application/view/error/index.phtml:35
@@ -124,8 +144,9 @@ msgstr ""
 #: User/view/error/index.phtml:11 User/view/error/index.phtml:35
 #: Workflow/view/error/404.phtml:54 Workflow/view/error/404.phtml:78
 #: Workflow/view/error/index.phtml:11 Workflow/view/error/index.phtml:35
+#, fuzzy
 msgid "File"
-msgstr ""
+msgstr "Datei"
 
 #: Application/view/error/404.phtml:58 Application/view/error/404.phtml:82
 #: Application/view/error/index.phtml:15 Application/view/error/index.phtml:39
@@ -172,8 +193,9 @@ msgstr "Lời nhắn gửi"
 #: User/view/error/index.phtml:19 User/view/error/index.phtml:43
 #: Workflow/view/error/404.phtml:62 Workflow/view/error/404.phtml:86
 #: Workflow/view/error/index.phtml:19 Workflow/view/error/index.phtml:43
+#, fuzzy
 msgid "Stack trace"
-msgstr ""
+msgstr "Stapelüberwachung"
 
 #: Application/view/error/404.phtml:72 Application/view/error/index.phtml:29
 #: BP/view/error/404.phtml:72 BP/view/error/index.phtml:29
@@ -209,8 +231,9 @@ msgstr "Không có ngoại lệ sẵn có"
 #: PM/view/error/index.phtml:1 Procure/view/error/index.phtml:1
 #: Procurement/view/error/index.phtml:1 User/view/error/index.phtml:1
 #: Workflow/view/error/index.phtml:1
+#, fuzzy
 msgid "An error occurred"
-msgstr ""
+msgstr "An error occurred"
 
 #: Application/view/layout/Copy of layout-fluid.phtml:169
 #: Application/view/navbar.php:15
@@ -252,9 +275,238 @@ msgid "Home"
 msgstr "Trang chủ"
 
 #: Application/view/layout/layout.phtml:48
-#, fuzzy
 msgid "All rights reserved."
-msgstr "Bảo lưu mọi quyền"
+msgstr "Bảo lưu mọi quyền."
+
+#: Finance/view/finance/posting-period/add.phtml:19
+#: Finance/view/finance/posting-period/list.phtml:9
+msgid "New Posting Period"
+msgstr "Thêm kỳ hạch toán"
+
+#: Finance/view/finance/posting-period/add.phtml:28
+msgid "Period Code"
+msgstr "Mã kỳ hạch toán"
+
+#: Finance/view/finance/posting-period/add.phtml:34
+#: Finance/view/finance/posting-period/list.phtml:29
+msgid "Period Name"
+msgstr "Tên kỳ hạch toán"
+
+#: Finance/view/finance/posting-period/add.phtml:43
+#: Finance/view/finance/posting-period/list.phtml:36
+#: HR/view/hr/leave-reason/list.phtml:35
+msgid "Status"
+msgstr "Trạng thái"
+
+#: Finance/view/finance/posting-period/add.phtml:46
+#: Finance/view/finance/posting-period/list.phtml:65
+msgid "Opened"
+msgstr "Đã mở"
+
+#: Finance/view/finance/posting-period/add.phtml:47
+msgid "Closed"
+msgstr "Đã đóng"
+
+#: Finance/view/finance/posting-period/add.phtml:48
+msgid "Locked"
+msgstr "Đã khóa"
+
+#: Finance/view/finance/posting-period/add.phtml:54
+#: Finance/view/finance/posting-period/list.phtml:30
+msgid "Period Start"
+msgstr "Ngày bắt đầu kỳ"
+
+#: Finance/view/finance/posting-period/add.phtml:60
+#: Finance/view/finance/posting-period/list.phtml:31
+msgid "Period End"
+msgstr "Ngày kết thúc kỳ"
+
+#: Finance/view/finance/posting-period/add.phtml:69
+#: Finance/view/finance/posting-period/list.phtml:32
+msgid "Plan Working Days"
+msgstr "Ngày làm việc kế hoạch"
+
+#: Finance/view/finance/posting-period/add.phtml:75
+#: Finance/view/finance/posting-period/list.phtml:33
+msgid "Actual Working Days"
+msgstr "Ngày làm việc thực tế"
+
+#: Finance/view/finance/posting-period/add.phtml:84
+#: Finance/view/finance/posting-period/list.phtml:34
+msgid "National Holidays"
+msgstr "Ngày nghỉ theo luật"
+
+#: Finance/view/finance/posting-period/add.phtml:90
+#: Finance/view/finance/posting-period/list.phtml:35
+msgid "Cooperate Leaves"
+msgstr "Ngày nghỉ của công ty"
+
+#: Finance/view/finance/posting-period/add.phtml:99
+msgid "Remarks"
+msgstr "Ghi chú"
+
+#: Finance/view/finance/posting-period/add.phtml:109
+#: HR/view/hr/leave-reason/add.phtml:79
+msgid "Save"
+msgstr "Ghi"
+
+#: Finance/view/finance/posting-period/list.phtml:5
+msgid "Posting Period"
+msgstr "Kỳ hạch toán"
+
+#: Finance/view/finance/posting-period/list.phtml:20
+#: HR/view/hr/employee/list.phtml:123 HR/view/hr/employee/list.phtml:125
+#: HR/view/hr/leave-reason/list.phtml:22
+msgid "records"
+msgstr "bản ghi"
+
+#: Finance/view/finance/posting-period/list.phtml:37
+#: HR/view/hr/employee/list.phtml:140 HR/view/hr/leave-reason/list.phtml:37
+msgid "Action"
+msgstr "Hành động"
+
+#: Finance/view/finance/posting-period/list.phtml:63
+msgid "Open"
+msgstr "Mở"
+
+#: Finance/view/finance/posting-period/list.phtml:66
+msgid "Close"
+msgstr "Đóng"
+
+#: HR/view/hr/employee/list.phtml:11 Procure/view/layout/layout.phtml:218
+#: Application/view/hr_menu.php:6
+msgid "Employee List"
+msgstr "Danh sách Nhân viên"
+
+#: HR/view/hr/employee/list.phtml:16
+msgid "New Employee"
+msgstr "Thêm nhân viên"
+
+#: HR/view/hr/employee/list.phtml:18
+#, fuzzy
+#| msgid "New Employee"
+msgid "Search Employee"
+msgstr "Thêm nhân viên"
+
+#: HR/view/hr/employee/list.phtml:23 HR/view/hr/employee/list.phtml:101
+msgid "Filter"
+msgstr "Lọc"
+
+#: HR/view/hr/employee/list.phtml:34 HR/view/hr/employee/list.phtml:139
+msgid "Employee Status"
+msgstr "Trạng thái Nhân viên"
+
+#: HR/view/hr/employee/list.phtml:48
+msgid "Sort by"
+msgstr "Sếp xếp  theo"
+
+#: HR/view/hr/employee/list.phtml:67
+msgid "ASC"
+msgstr "Tăng dần"
+
+#: HR/view/hr/employee/list.phtml:69
+msgid "DESC"
+msgstr "Giảm dần"
+
+#: HR/view/hr/employee/list.phtml:76
+msgid "Result per page"
+msgstr "Kết quả mỗi trang"
+
+#: HR/view/hr/employee/list.phtml:134
+#, fuzzy
+#| msgid "Employee List"
+msgid "Employee Code"
+msgstr "Danh sách Nhân viên"
+
+#: HR/view/hr/employee/list.phtml:135 HR/view/hr/employee/list.phtml:136
+msgid "Name"
+msgstr "Tên"
+
+#: HR/view/hr/employee/list.phtml:137
+msgid "Birthday"
+msgstr "Ngày sinh"
+
+#: HR/view/hr/employee/list.phtml:138
+msgid "Gender"
+msgstr "Giới tính"
+
+#: HR/view/hr/employee/list.phtml:165 HR/view/hr/leave-reason/list.phtml:59
+msgid "Show"
+msgstr "Xem"
+
+#: HR/view/hr/employee/list.phtml:166 HR/view/hr/leave-reason/list.phtml:60
+msgid "Edit"
+msgstr "Sửa"
+
+#: HR/view/hr/leave-reason/add.phtml:19 HR/view/hr/leave-reason/list.phtml:8
+msgid "New Leave Reason"
+msgstr "Thêm lý do nghỉ"
+
+#: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
+#: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
+#: HR/view/hr/setting/index.phtml:9 Application/view/hr_menu.php:11
+msgid "Leave Reason"
+msgstr "Lý do nghỉ"
+
+#: HR/view/hr/leave-reason/add.phtml:33
+msgid "Active"
+msgstr "hoạt động"
+
+#: HR/view/hr/leave-reason/add.phtml:45 HR/view/hr/leave-reason/list.phtml:32
+msgid "Reference"
+msgstr "Tham khảo"
+
+#: HR/view/hr/leave-reason/add.phtml:51 HR/view/hr/leave-reason/list.phtml:33
+msgid "Vadid From"
+msgstr "Áp dụng từ"
+
+#: HR/view/hr/leave-reason/add.phtml:58 HR/view/hr/leave-reason/list.phtml:34
+msgid "Vadid To"
+msgstr "Áp dụng đến"
+
+#: HR/view/hr/leave-reason/add.phtml:65
+msgid "Description"
+msgstr "Chi tiết"
+
+#: HR/view/hr/leave-reason/add.phtml:82
+msgid "Cancel"
+msgstr "Thoát"
+
+#: HR/view/hr/leave-reason/list.phtml:36
+msgid "Created Date"
+msgstr "Ngày tạo"
+
+#: HR/view/hr/reporting/index.phtml:5 Application/view/hr_menu.php:14
+msgid "Reporting"
+msgstr "Báo Cáo"
+
+#: HR/view/hr/reporting/index.phtml:9
+msgid "Daily Reporting"
+msgstr "Báo cáo ngày"
+
+#: HR/view/hr/reporting/index.phtml:10
+msgid "Monthly Reporting"
+msgstr "Báo cáo tháng"
+
+#: HR/view/hr/reporting/index.phtml:11
+msgid "Quaterly Reporting"
+msgstr "Báo cáo quý"
+
+#: HR/view/hr/reporting/index.phtml:12
+msgid "Annual Reporting"
+msgstr "Báo cáo năm"
+
+#: HR/view/hr/setting/index.phtml:5
+msgid "HR SETTING"
+msgstr "Thiết Lập HR"
+
+#: HR/view/layout/layout-fluid.phtml:189
+msgid "HR MANAGEMENT"
+msgstr "QUẢN LÝ NHÂN SỰ"
+
+#: HR/view/layout/layout-fluid.phtml:193
+msgid "search term..."
+msgstr "nhập từ khóa để tìm ....."
 
 #: Inventory/view/layout/layout-fluid.phtml:192
 msgid "INVENTORY"
@@ -280,9 +532,17 @@ msgstr "Tháng"
 msgid "All PR"
 msgstr "Tất cả yêu cầu mua. Tiếng Việt"
 
-#: Procure/view/layout/layout.phtml:218
-msgid "Employee List"
-msgstr "Danh sách Nhân viên"
+#: Application/view/hr_menu.php:4
+msgid "Create New Employee"
+msgstr "Thêm nhân viên"
+
+#: Application/view/hr_menu.php:9
+msgid "Finger Scan"
+msgstr "Dữ liệu vân tay"
+
+#: Application/view/hr_menu.php:17 Application/view/navbar.php:77
+msgid "Setup"
+msgstr "Cài Đặt"
 
 #: Application/view/inventory_menu.php:4
 msgid "Create new item"
@@ -292,17 +552,9 @@ msgstr "Thêm mới hàng hóa"
 msgid "Other"
 msgstr "Khác"
 
-#: Application/view/navbar.php:77
-msgid "Setup"
-msgstr "Cài Đặt"
-
-#: Application/view/navbar.php:107
-msgid "Language"
-msgstr "Ngôn ngữ"
-
 #: Application/view/other_menu.php:2
 msgid "Add Project"
-msgstr "Thêm dự án "
+msgstr "Thêm dự án"
 
 #: Application/view/other_menu.php:4
 msgid "Project List"
@@ -314,11 +566,54 @@ msgstr "Lịch"
 
 #: Application/view/procure_menu.php:6
 msgid "New Purchase Request (PR)"
-msgstr "Tạo yêu cầu mua"
+msgstr "Tạo yêu cầu mua (PR)"
+
+#: Application/view/setting_menu.php:2
+msgid "User Management"
+msgstr "Quản lý người dùng"
+
+#: Application/view/setting_menu.php:6
+msgid "Access Control List (ACL)"
+msgstr "Phân quyền (ACL)"
+
+#: Application/view/setting_menu.php:8
+msgid "Workflow Management"
+msgstr "Quản lý quy trình"
+
+#: Application/view/setting_menu.php:10
+msgid "Backup Database"
+msgstr "Sao Lưu dữ liệu"
 
 #: Application/view/setting_menu.php:11
 msgid "Caching Manager"
+msgstr "Quản lý caching"
+
+#: Application/view/setting_menu.php:14
+msgid "Update Search Index"
+msgstr "Cập nhật danh mục tìm kiếm"
+
+#: Application/view/setting_menu.php:16
+msgid "Console"
 msgstr ""
+
+#: Application/view/setting_menu.php:17
+msgid "API"
+msgstr ""
+
+#: Application/view/setting_menu.php:20
+msgid "System Information"
+msgstr "Thông tin hệ thống"
+
+#~ msgid "Business Partner"
+#~ msgstr "Doi tac"
+
+#, fuzzy
+#~| msgid "Status"
+#~ msgid "Period Status"
+#~ msgstr "Trạng thái"
+
+#~ msgid "Language"
+#~ msgstr "Ngôn ngữ"
 
 #~ msgid "PR List"
 #~ msgstr "Danh sách yêu cầu mua "
@@ -327,11 +622,18 @@ msgstr ""
 #~ msgid "Welcome to %sZend Framework 2%s"
 #~ msgstr "Chào mừng bạn đến"
 
-#~ msgid "Zend Framework 2 is under active development. If you are interested in following the development of ZF2, there is a special ZF2 portal on the official Zend Framework website which provides links to the ZF2 %swiki%s, %sdev blog%s, %sissue tracker%s, and much more. This is a great resource for staying up to date with the latest developments!"
-#~ msgstr "Zend Framework 2 đang phát triển hoạt động. Nếu bạn quan tâm sau sự phát triển của ZF2, có là một cổng ZF2 đặc biệt trên trang web chính thức của Zend Framework cung cấp liên kết đến ZF2%swiki %s, blog %sdev %s, %sissue tracker %s, và nhiều hơn nữa. Đây là một nguồn lực lớn cho ở lại đến ngày với những phát triển mới nhất!"
+#~ msgid ""
+#~ "Zend Framework 2 is under active development. If you are interested in "
+#~ "following the development of ZF2, there is a special ZF2 portal on the "
+#~ "official Zend Framework website which provides links to the ZF2 %swiki%s, "
+#~ "%sdev blog%s, %sissue tracker%s, and much more. This is a great resource "
+#~ "for staying up to date with the latest developments!"
+#~ msgstr ""
+#~ "Zend Framework 2 đang phát triển hoạt động. Nếu bạn quan tâm sau sự phát "
+#~ "triển của ZF2, có là một cổng ZF2 đặc biệt trên trang web chính thức của "
+#~ "Zend Framework cung cấp liên kết đến ZF2%swiki %s, blog %sdev %s, %sissue "
+#~ "tracker %s, và nhiều hơn nữa. Đây là một nguồn lực lớn cho ở lại đến ngày "
+#~ "với những phát triển mới nhất!"
 
 #~ msgid "ZF2 Development Portal"
 #~ msgstr "ZF2 Cổng thông tin phát triển"
-
-#~ msgid "Exception"
-#~ msgstr "Ngoại lệ"

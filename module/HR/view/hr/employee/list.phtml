@@ -8,11 +8,109 @@
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
-		<li><a href="#general">Employee List</a></li>
+		<li><a href="#general"><?php echo $this->translate('Employee List'); ?></a></li>
 	</ul>
 <div id="general">
 
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee/add"><i class="fa fa-user-plus"
+			aria-hidden="true"></i>&nbsp;<?php echo $this->translate('New Employee'); ?></a>
+			<a class="btn btn-default btn-sm" href="javascript:;" onclick="showJqueryDialog('Search Employee','750','520', '/hr/employee/select','j_loaded_data', true);"><i class="fa fa-search"
+			aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Search Employee'); ?></a>
+<hr>
 
+<div>
+	<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
+		href="#transaction" class="" data-toggle="collapse"><?php echo $this->translate('Filter'); ?></a>
+</div>
+<div id="transaction" class="collapse">
+
+	<!-- <div style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;"> -->
+	<div style="border: 1px; padding: 3px; font-size: 9pt;">
+		<form class="form-horizontal"
+			action="<?php echo $this->baseUrl ?>/procure/pr/all<?php echo "/row_number=".$row_number?><?php echo $status!==null? "/status=".$status:"";?>" method="get"
+			enctype="multipart/form-data">
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate('Employee Status'); ?></label>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="is_active">
+						<option <?php echo $is_active =='2'? "selected='selected'":"";?>
+							value="2">All</option>
+						<option <?php echo $is_active=='1'? "selected='selected'":"";?>
+							value="1">Active</option>
+						<option <?php echo $is_active=='-1'? "selected='selected'":"";?>
+							value="-1">Inactive</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate('Sort by'); ?></label>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="sort_by">
+						<option value="">None</option>
+						<option
+							<?php echo $sort_by=='prNumber'? "selected='selected'":"";?>
+							value="prNumber">Pr Number</option>
+						<option
+							<?php echo $sort_by=='submittedOn'? "selected='selected'":"";?>
+							value="submittedOn">Submitted Date</option>	
+						<option
+							<?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
+							value="createdOn">Created Date</option>
+						<option
+							<?php echo $sort_by=='completion'? "selected='selected'":"";?>
+							value="completion">Completion</option>
+				
+					</select> <input
+						<?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?>
+						type="radio" name="sort" value="ASC">&nbsp;<?php echo $this->translate('ASC'); ?>&nbsp;&nbsp; <input
+						<?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?>
+						type="radio" name="sort" value="DESC">&nbsp;<?php echo $this->translate('DESC'); ?>&nbsp;&nbsp;
+
+				</div>
+			</div>
+
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate('Result per page'); ?></label>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="perPage">
+						<option value="">None</option>
+						<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
+							value="15">15</option>
+
+						<option <?php echo $per_pape=='20'? "selected='selected'":"";?>
+							value="20">20</option>
+
+						<option <?php echo $per_pape=='30'? "selected='selected'":"";?>
+							value="30">30</option>
+
+						<option <?php echo $per_pape=='50'? "selected='selected'":"";?>
+							value="50">50</option>
+						<option <?php echo $per_pape=='100'? "selected='selected'":"";?>
+							value="100">100</option>
+						<option <?php echo $per_pape=='200'? "selected='selected'":"";?>
+							value="200">200</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default"><?php echo $this->translate('Filter'); ?></button>
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+	<hr>
+</div>
+
+
+<div style="color: gray;font-size: 9pt;margin-top: 8px"><?php echo "Employee Status = ".$is_active;?>&nbsp;|&nbsp;<?php echo "Sorted by = ".$sort_by;?>&nbsp;|&nbsp;<?php echo "Sort = ".$sort ?></div>
+<br>
 
 <?php
 
@@ -22,9 +120,9 @@ if ($total_records <= 0) {
 } else {
 	
 	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
+	    echo $paginator->minInPage . ' - ' . $paginator->maxInPage . ' | ' . $total_records. ' ' .  $this->translate('records');
 	} else {
-		echo $total_records. ' records found!';
+	    echo $total_records. ' ' .  $this->translate('records') ;
 	}
 	
 	?>
@@ -33,11 +131,13 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>Name</b></td>
-			<td><b>Name local</b></td>
-			<td><b>Birthday</b></td>
-			<td><b>Gender</b></td>
-			<td><b>Attachment</b></td>
+			<td><b><?php echo $this->translate('Employee Code'); ?></b></td>
+			<td><b><?php echo $this->translate('Name'); ?></b></td>
+			<td><b><?php echo $this->translate('Name'); ?> (local)</b></td>
+			<td><b><?php echo $this->translate('Birthday'); ?></b></td>
+			<td><b><?php echo $this->translate('Gender'); ?></b></td>
+			<td><b><?php echo $this->translate('Employee Status'); ?></b></td>
+			<td><b><?php echo $this->translate('Action'); ?></b></td>
 			</tr>
 	</thead>
 
@@ -47,19 +147,23 @@ if ($total_records <= 0) {
 	
 	$count = 0;
 	foreach ( $list as $a ) :
-		$count ++;
+	    /**@var \Application\Entity\NmtHrEmployee $a ;*/
+	   
+	   $count ++;
+	
 		?>
 	 <tr>
 	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	  		<td><?php echo $this->escapeHtml($a->getEmployeeCode());?></td>
 	  		<td><?php echo $this->escapeHtml($a->getEmployeeName());?></td>
 			<td><?php echo $this->escapeHtml($a->getEmployeeNameLocal());?></td>
 			<td><?php echo ($a->getBirthday()!==null )? date_format ( $a->getBirthday(), "d-m-y"):"";?> </td>
 			<td><?php echo $this->escapeHtml($a->getGender());?></td>
+			<td>1</td>
+	
 		 <td>
-<a href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $a->getChecksum();?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/hr/employee/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $a->getChecksum();?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>">Edit</a>
-<a href="<?php echo $this->baseUrl ?>/hr/employee-attachment/upload?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $a->getChecksum();?>&target_id=<?php echo $this->escapeHtml($a->getID());?>">Attach</a>
-
+<a href="<?php echo $this->baseUrl ?>/hr/employee/show?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $a->getChecksum();?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate('Show'); ?></a>
+<a href="<?php echo $this->baseUrl ?>/hr/employee/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&checksum=<?php echo $a->getChecksum();?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate('Edit'); ?></a>
 </td>
 		
 		</tr>
@@ -74,7 +178,7 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
+	$base = $this->baseUrl . '/hr/employee/list?is_active='. $is_active.'&sort_by='.$sort_by.'&sort='.$sort;
 		$_connector_symbol = '&';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;

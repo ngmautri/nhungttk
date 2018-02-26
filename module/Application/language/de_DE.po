@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NMT\n"
-"POT-Creation-Date: 2018-02-25 01:01+0700\n"
-"PO-Revision-Date: 2018-02-25 01:02+0700\n"
+"POT-Creation-Date: 2018-02-26 14:28+0700\n"
+"PO-Revision-Date: 2018-02-26 14:29+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -250,6 +250,192 @@ msgstr ""
 msgid "All rights reserved."
 msgstr ""
 
+#: Finance/view/finance/posting-period/add.phtml:19
+#: Finance/view/finance/posting-period/list.phtml:9
+msgid "New Posting Period"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:28
+msgid "Period Code"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:34
+#: Finance/view/finance/posting-period/list.phtml:29
+msgid "Period Name"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:43
+#: Finance/view/finance/posting-period/list.phtml:36
+#: HR/view/hr/leave-reason/list.phtml:35
+msgid "Status"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:46
+#: Finance/view/finance/posting-period/list.phtml:65
+msgid "Opened"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:47
+msgid "Closed"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:48
+msgid "Locked"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:54
+#: Finance/view/finance/posting-period/list.phtml:30
+msgid "Period Start"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:60
+#: Finance/view/finance/posting-period/list.phtml:31
+msgid "Period End"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:69
+#: Finance/view/finance/posting-period/list.phtml:32
+msgid "Plan Working Days"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:75
+#: Finance/view/finance/posting-period/list.phtml:33
+msgid "Actual Working Days"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:84
+#: Finance/view/finance/posting-period/list.phtml:34
+msgid "National Holidays"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:90
+#: Finance/view/finance/posting-period/list.phtml:35
+msgid "Cooperate Leaves"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:99
+msgid "Remarks"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:109
+#: HR/view/hr/leave-reason/add.phtml:79
+msgid "Save"
+msgstr ""
+
+#: Finance/view/finance/posting-period/list.phtml:5
+msgid "Posting Period"
+msgstr ""
+
+#: Finance/view/finance/posting-period/list.phtml:20
+#: HR/view/hr/leave-reason/list.phtml:22
+msgid "records"
+msgstr ""
+
+#: Finance/view/finance/posting-period/list.phtml:37
+#: HR/view/hr/leave-reason/list.phtml:37
+msgid "Action"
+msgstr ""
+
+#: Finance/view/finance/posting-period/list.phtml:63
+msgid "Open"
+msgstr ""
+
+#: Finance/view/finance/posting-period/list.phtml:66
+msgid "Close"
+msgstr ""
+
+#: HR/view/hr/leave-reason/add.phtml:19 HR/view/hr/leave-reason/list.phtml:8
+#, fuzzy
+#| msgid "Leave Reasons"
+msgid "New Leave Reason"
+msgstr "Abwesenheitsgründe"
+
+#: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
+#: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
+#: HR/view/hr/setting/index.phtml:9 Application/view/hr_menu.php:10
+#, fuzzy
+#| msgid "Leave Reasons"
+msgid "Leave Reason"
+msgstr "Abwesenheitsgründe"
+
+#: HR/view/hr/leave-reason/add.phtml:33
+msgid "Active"
+msgstr ""
+
+#: HR/view/hr/leave-reason/add.phtml:45 HR/view/hr/leave-reason/list.phtml:32
+msgid "Reference"
+msgstr ""
+
+#: HR/view/hr/leave-reason/add.phtml:51 HR/view/hr/leave-reason/list.phtml:33
+msgid "Vadid From"
+msgstr ""
+
+#: HR/view/hr/leave-reason/add.phtml:58 HR/view/hr/leave-reason/list.phtml:34
+msgid "Vadid To"
+msgstr ""
+
+#: HR/view/hr/leave-reason/add.phtml:65
+msgid "Description"
+msgstr ""
+
+#: HR/view/hr/leave-reason/add.phtml:82
+#, fuzzy
+#| msgid "Finance"
+msgid "Cancel"
+msgstr "Finanz"
+
+#: HR/view/hr/leave-reason/list.phtml:36
+msgid "Created Date"
+msgstr ""
+
+#: HR/view/hr/leave-reason/list.phtml:59
+msgid "Show"
+msgstr ""
+
+#: HR/view/hr/leave-reason/list.phtml:60
+msgid "Edit"
+msgstr ""
+
+#: HR/view/hr/reporting/index.phtml:5 Application/view/hr_menu.php:13
+msgid "Reporting"
+msgstr "Berichten"
+
+#: HR/view/hr/reporting/index.phtml:9
+msgid "Daily Reporting"
+msgstr ""
+"Monat\n"
+"Berichten"
+
+#: HR/view/hr/reporting/index.phtml:10
+#, fuzzy
+#| msgid "Reporting"
+msgid "Monthly Reporting"
+msgstr "Berichten"
+
+#: HR/view/hr/reporting/index.phtml:11
+#, fuzzy
+#| msgid "Reporting"
+msgid "Quaterly Reporting"
+msgstr "Berichten"
+
+#: HR/view/hr/reporting/index.phtml:12
+#, fuzzy
+#| msgid "Reporting"
+msgid "Annual Reporting"
+msgstr "Berichten"
+
+#: HR/view/hr/setting/index.phtml:5
+msgid "HR SETTING"
+msgstr "HR Einrichten"
+
+#: HR/view/layout/layout-fluid.phtml:189
+msgid "HR MANAGEMENT"
+msgstr ""
+
+#: HR/view/layout/layout-fluid.phtml:193
+msgid "search term..."
+msgstr ""
+
 #: Inventory/view/layout/layout-fluid.phtml:192
 msgid "INVENTORY"
 msgstr "WAREN"
@@ -274,9 +460,21 @@ msgstr "Monat"
 msgid "All PR"
 msgstr "Alle Einkäufe"
 
-#: Procure/view/layout/layout.phtml:218
+#: Procure/view/layout/layout.phtml:218 Application/view/hr_menu.php:5
 msgid "Employee List"
 msgstr "Mitarbeiter"
+
+#: Application/view/hr_menu.php:3
+msgid "Create New Employee"
+msgstr ""
+
+#: Application/view/hr_menu.php:8
+msgid "Finger Scan"
+msgstr ""
+
+#: Application/view/hr_menu.php:16 Application/view/navbar.php:77
+msgid "Setup"
+msgstr "Einrichten"
 
 #: Application/view/inventory_menu.php:4
 msgid "Create new item"
@@ -285,14 +483,6 @@ msgstr ""
 #: Application/view/navbar.php:65
 msgid "Other"
 msgstr "Sonstiges"
-
-#: Application/view/navbar.php:77
-msgid "Setup"
-msgstr "Einrichten"
-
-#: Application/view/navbar.php:107
-msgid "Language"
-msgstr "Sprache"
 
 #: Application/view/other_menu.php:2
 msgid "Add Project"
@@ -310,6 +500,45 @@ msgstr "Kalender"
 msgid "New Purchase Request (PR)"
 msgstr "Erstelle neuer Einkauf"
 
+#: Application/view/setting_menu.php:2
+msgid "User Management"
+msgstr ""
+
+#: Application/view/setting_menu.php:3
+msgid "Department"
+msgstr ""
+
+#: Application/view/setting_menu.php:6
+msgid "Access Control List (ACL)"
+msgstr ""
+
+#: Application/view/setting_menu.php:8
+msgid "Workflow Management"
+msgstr ""
+
+#: Application/view/setting_menu.php:10
+msgid "Backup Database"
+msgstr ""
+
 #: Application/view/setting_menu.php:11
 msgid "Caching Manager"
 msgstr ""
+
+#: Application/view/setting_menu.php:14
+msgid "Update Search Index"
+msgstr ""
+
+#: Application/view/setting_menu.php:16
+msgid "Console"
+msgstr ""
+
+#: Application/view/setting_menu.php:17
+msgid "API"
+msgstr ""
+
+#: Application/view/setting_menu.php:20
+msgid "System Information"
+msgstr ""
+
+#~ msgid "Language"
+#~ msgstr "Sprache"

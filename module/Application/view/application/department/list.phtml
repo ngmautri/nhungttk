@@ -1,23 +1,25 @@
-<ul class="nav nav-pills">
-	<li><a style="color: #0080ff;" href="<?php echo $this->baseUrl ?>/application/department/add"><i class="glyphicon glyphicon-plus"> </i> Add New Department</a></li>
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><?php echo $this->translate('Department'); ?></li>
+	</ul>
+
+	<div id="general">
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/application/department/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;<?php echo $this->translate('Add Department'); ?></a>
+
+<!-- 	
+	<ul class="nav nav-pills">
+	<li><a style="color: #0080ff;" href="<?php echo $this->baseUrl ?>/application/department/add"><i class="glyphicon glyphicon-plus"> </i><?php echo $this->translate('Add Department'); ?></a></li>
 	<li><a style="color: #0080ff;" href="javascript:;"
 	onclick="showBootstrapDialog('Country List','/application/department/list1','loaded_data');"> <i class="glyphicon glyphicon-list">  </i> Test Ajax List
 </a>
 
 </ul>
-
-	       <?php echo $this->translate('Business Partner') ?>
-
-
-<div id="tabs" style="font-size: 9.5pt">
-	<ul>
-		<li><a href="#general">Department</li>
-	</ul>
-
-	<div id="general">
-		
-
+ -->
+ <hr>
 		<div id="html" class="demo">
+		
+		
 			<ul>
 				<?php echo $jsTree ?>;
 			</ul>

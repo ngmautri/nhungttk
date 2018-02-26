@@ -158,7 +158,7 @@ class EmployeeController extends AbstractActionController
         $sort_criteria = array();
         
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 15;
+            $resultsPerPage =5;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -209,6 +209,25 @@ class EmployeeController extends AbstractActionController
      */
     public function listAction()
     {
+        
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+         
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        
+        if ($is_active == null) :
+        $is_active = 1;
+        endif;
+        
+        if ($sort_by == null) :
+        $sort_by = "createdOn";
+        endif;
+        
+        if ($sort == null) :
+        $sort = "DESC";
+        endif;
+        
+        
         $criteria = array();
         
         // var_dump($criteria);
@@ -216,7 +235,7 @@ class EmployeeController extends AbstractActionController
         $sort_criteria = array();
         
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 15;
+            $resultsPerPage = 5;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -236,6 +255,8 @@ class EmployeeController extends AbstractActionController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+        }else{
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findBy($criteria, $sort_criteria, 0, 0);
         }
         
         // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
@@ -244,7 +265,11 @@ class EmployeeController extends AbstractActionController
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
-            'paginator' => $paginator
+            'paginator' => $paginator,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $resultsPerPage,
+            'is_active' => $is_active,
         ));
     }
 

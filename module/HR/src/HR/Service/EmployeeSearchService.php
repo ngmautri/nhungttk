@@ -15,6 +15,7 @@ use ZendSearch\Lucene\Search\Query\Wildcard;
 use Application\Entity\NmtInventoryItem;
 use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\QueryParser;
+use Exception;
 use Application\Entity\NmtHrEmployee;
 
 /**
@@ -60,7 +61,7 @@ class EmployeeSearchService {
 						
 						$index->addDocument ( $doc );
 						$log [] = "Doc added";
-					} catch ( Exception $e ) {
+					} catch ( \Exception $e ) {
 						$log [] = $e->getMessage ();
 					}
 				}
@@ -71,7 +72,7 @@ class EmployeeSearchService {
 				$log [] = 'Nothing for indexing!';
 				return $log;
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			$log [] = 'Nothing for indexing!';
 			return $log;
 		}

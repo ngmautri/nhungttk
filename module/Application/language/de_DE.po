@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NMT\n"
-"POT-Creation-Date: 2018-02-26 14:28+0700\n"
-"PO-Revision-Date: 2018-02-26 14:29+0700\n"
+"POT-Creation-Date: 2018-02-26 22:41+0700\n"
+"PO-Revision-Date: 2018-02-26 23:07+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -15,9 +15,15 @@ msgstr ""
 "X-Poedit-KeywordsList: translate;_\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Application/view/application/department/list.phtml:9
-msgid "Business Partner"
-msgstr "Geschäftspartner"
+#: Application/view/application/department/list.phtml:4
+#: Application/view/setting_menu.php:3
+msgid "Department"
+msgstr "Abteilungen"
+
+#: Application/view/application/department/list.phtml:8
+#: Application/view/application/department/list.phtml:12
+msgid "Add Department"
+msgstr "Neue Abteilung"
 
 #: Application/view/error/404.phtml:1 BP/view/error/404.phtml:1
 #: Calendar/view/error/404.phtml:1 Finance/view/error/404.phtml:1
@@ -253,176 +259,260 @@ msgstr ""
 #: Finance/view/finance/posting-period/add.phtml:19
 #: Finance/view/finance/posting-period/list.phtml:9
 msgid "New Posting Period"
-msgstr ""
+msgstr "Neuer Periode"
 
 #: Finance/view/finance/posting-period/add.phtml:28
 msgid "Period Code"
-msgstr ""
+msgstr "Periode"
 
 #: Finance/view/finance/posting-period/add.phtml:34
 #: Finance/view/finance/posting-period/list.phtml:29
 msgid "Period Name"
-msgstr ""
+msgstr "Periodenname"
 
 #: Finance/view/finance/posting-period/add.phtml:43
 #: Finance/view/finance/posting-period/list.phtml:36
 #: HR/view/hr/leave-reason/list.phtml:35
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: Finance/view/finance/posting-period/add.phtml:46
 #: Finance/view/finance/posting-period/list.phtml:65
 msgid "Opened"
-msgstr ""
+msgstr "Geöffnet"
 
 #: Finance/view/finance/posting-period/add.phtml:47
 msgid "Closed"
-msgstr ""
+msgstr "Geschlossen"
 
 #: Finance/view/finance/posting-period/add.phtml:48
 msgid "Locked"
-msgstr ""
+msgstr "Gesperrt"
 
 #: Finance/view/finance/posting-period/add.phtml:54
 #: Finance/view/finance/posting-period/list.phtml:30
 msgid "Period Start"
-msgstr ""
+msgstr "Periodebbeginn"
 
 #: Finance/view/finance/posting-period/add.phtml:60
 #: Finance/view/finance/posting-period/list.phtml:31
 msgid "Period End"
-msgstr ""
+msgstr "Periodenende"
 
 #: Finance/view/finance/posting-period/add.phtml:69
 #: Finance/view/finance/posting-period/list.phtml:32
 msgid "Plan Working Days"
-msgstr ""
+msgstr "Soll-Arbeitstagen"
 
 #: Finance/view/finance/posting-period/add.phtml:75
 #: Finance/view/finance/posting-period/list.phtml:33
 msgid "Actual Working Days"
-msgstr ""
+msgstr "Ist-Arbeitstagen"
 
 #: Finance/view/finance/posting-period/add.phtml:84
 #: Finance/view/finance/posting-period/list.phtml:34
 msgid "National Holidays"
-msgstr ""
+msgstr "Gesetzlicher Feiertagen"
 
 #: Finance/view/finance/posting-period/add.phtml:90
 #: Finance/view/finance/posting-period/list.phtml:35
 msgid "Cooperate Leaves"
-msgstr ""
+msgstr "Betriebliche Feiertagen"
 
 #: Finance/view/finance/posting-period/add.phtml:99
 msgid "Remarks"
-msgstr ""
+msgstr "Notizen"
 
 #: Finance/view/finance/posting-period/add.phtml:109
 #: HR/view/hr/leave-reason/add.phtml:79
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 #: Finance/view/finance/posting-period/list.phtml:5
 msgid "Posting Period"
-msgstr ""
+msgstr "Peride"
 
 #: Finance/view/finance/posting-period/list.phtml:20
+#: HR/view/hr/employee/applicant-list.phtml:111
+#: HR/view/hr/employee/applicant-list.phtml:113
+#: HR/view/hr/employee/list.phtml:111 HR/view/hr/employee/list.phtml:113
 #: HR/view/hr/leave-reason/list.phtml:22
 msgid "records"
-msgstr ""
+msgstr "Datensatz"
 
 #: Finance/view/finance/posting-period/list.phtml:37
-#: HR/view/hr/leave-reason/list.phtml:37
+#: HR/view/hr/employee/applicant-list.phtml:128
+#: HR/view/hr/employee/list.phtml:128 HR/view/hr/leave-reason/list.phtml:37
 msgid "Action"
-msgstr ""
+msgstr "Aktionen"
 
 #: Finance/view/finance/posting-period/list.phtml:63
 msgid "Open"
-msgstr ""
+msgstr "Öffnen"
 
 #: Finance/view/finance/posting-period/list.phtml:66
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
+
+#: HR/view/hr/employee/applicant-list.phtml:5
+msgid "Applicant List"
+msgstr "Bewerberliste"
+
+#: HR/view/hr/employee/applicant-list.phtml:10
+msgid "New Applicant"
+msgstr "Neuer Bewerber"
+
+#: HR/view/hr/employee/applicant-list.phtml:11
+#: HR/view/hr/employee/applicant-list.phtml:12
+msgid "Search Applicant"
+msgstr "Suche Bewerber"
+
+#: HR/view/hr/employee/applicant-list.phtml:17
+#: HR/view/hr/employee/applicant-list.phtml:89
+#: HR/view/hr/employee/list.phtml:17 HR/view/hr/employee/list.phtml:89
+msgid "Filter"
+msgstr "Filter"
+
+#: HR/view/hr/employee/applicant-list.phtml:28
+msgid "Applicant Status"
+msgstr "Berwerbersstatus"
+
+#: HR/view/hr/employee/applicant-list.phtml:42
+#: HR/view/hr/employee/applicant-list.phtml:100
+#: HR/view/hr/employee/list.phtml:42 HR/view/hr/employee/list.phtml:100
+msgid "Sort by"
+msgstr "Sortieren nach"
+
+#: HR/view/hr/employee/applicant-list.phtml:48
+#: HR/view/hr/employee/applicant-list.phtml:122
+#: HR/view/hr/employee/list.phtml:48 HR/view/hr/employee/list.phtml:122
+msgid "Employee Code"
+msgstr "Mitarbeitersnummer"
+
+#: HR/view/hr/employee/applicant-list.phtml:52
+#: HR/view/hr/employee/list.phtml:52 HR/view/hr/leave-reason/list.phtml:36
+msgid "Created Date"
+msgstr "Erstellsdatum"
+
+#: HR/view/hr/employee/applicant-list.phtml:55
+#: HR/view/hr/employee/list.phtml:55
+msgid "ASC"
+msgstr "Steigend"
+
+#: HR/view/hr/employee/applicant-list.phtml:57
+#: HR/view/hr/employee/list.phtml:57
+msgid "DESC"
+msgstr "Sinkend"
+
+#: HR/view/hr/employee/applicant-list.phtml:64
+#: HR/view/hr/employee/list.phtml:64
+msgid "Result per page"
+msgstr "Ergebnisse per Seite"
+
+#: HR/view/hr/employee/applicant-list.phtml:100
+#: HR/view/hr/employee/applicant-list.phtml:127
+#: HR/view/hr/employee/list.phtml:28 HR/view/hr/employee/list.phtml:100
+#: HR/view/hr/employee/list.phtml:127
+msgid "Employee Status"
+msgstr "Mitarbeiterstatus"
+
+#: HR/view/hr/employee/applicant-list.phtml:100
+#: HR/view/hr/employee/list.phtml:100
+msgid "Sort"
+msgstr "Sortieren"
+
+#: HR/view/hr/employee/applicant-list.phtml:123
+#: HR/view/hr/employee/applicant-list.phtml:124
+#: HR/view/hr/employee/list.phtml:123 HR/view/hr/employee/list.phtml:124
+msgid "Name"
+msgstr "Namen"
+
+#: HR/view/hr/employee/applicant-list.phtml:125
+#: HR/view/hr/employee/list.phtml:125
+msgid "Birthday"
+msgstr "Geburtstag"
+
+#: HR/view/hr/employee/applicant-list.phtml:126
+#: HR/view/hr/employee/list.phtml:126
+msgid "Gender"
+msgstr "Geschlecht"
+
+#: HR/view/hr/employee/applicant-list.phtml:153
+#: HR/view/hr/employee/list.phtml:153 HR/view/hr/leave-reason/list.phtml:59
+msgid "Show"
+msgstr "Sehen"
+
+#: HR/view/hr/employee/applicant-list.phtml:154
+#: HR/view/hr/employee/list.phtml:154 HR/view/hr/leave-reason/list.phtml:60
+msgid "Edit"
+msgstr "Editieren"
+
+#: HR/view/hr/employee/list.phtml:5 Procure/view/layout/layout.phtml:218
+#: Application/view/hr_menu.php:6
+msgid "Employee List"
+msgstr "Mitarbeitersliste"
+
+#: HR/view/hr/employee/list.phtml:10
+msgid "New Employee"
+msgstr "Neuer Mitarbeiter"
+
+#: HR/view/hr/employee/list.phtml:11 HR/view/hr/employee/list.phtml:12
+msgid "Search Employee"
+msgstr "Suche Mitarbeiter"
 
 #: HR/view/hr/leave-reason/add.phtml:19 HR/view/hr/leave-reason/list.phtml:8
-#, fuzzy
-#| msgid "Leave Reasons"
 msgid "New Leave Reason"
-msgstr "Abwesenheitsgründe"
+msgstr "Neuer Abwesenheitsgrund"
 
 #: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
 #: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
-#: HR/view/hr/setting/index.phtml:9 Application/view/hr_menu.php:10
-#, fuzzy
-#| msgid "Leave Reasons"
+#: HR/view/hr/setting/index.phtml:9 Application/view/hr_menu.php:11
 msgid "Leave Reason"
-msgstr "Abwesenheitsgründe"
+msgstr "Abwesenheitsgrund"
 
 #: HR/view/hr/leave-reason/add.phtml:33
 msgid "Active"
-msgstr ""
+msgstr "Activiert"
 
 #: HR/view/hr/leave-reason/add.phtml:45 HR/view/hr/leave-reason/list.phtml:32
 msgid "Reference"
-msgstr ""
+msgstr "Referenz"
 
 #: HR/view/hr/leave-reason/add.phtml:51 HR/view/hr/leave-reason/list.phtml:33
 msgid "Vadid From"
-msgstr ""
+msgstr "Gültig vom"
 
 #: HR/view/hr/leave-reason/add.phtml:58 HR/view/hr/leave-reason/list.phtml:34
 msgid "Vadid To"
-msgstr ""
+msgstr "Gültig bis"
 
 #: HR/view/hr/leave-reason/add.phtml:65
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: HR/view/hr/leave-reason/add.phtml:82
-#, fuzzy
-#| msgid "Finance"
 msgid "Cancel"
-msgstr "Finanz"
+msgstr "Abbrechen"
 
-#: HR/view/hr/leave-reason/list.phtml:36
-msgid "Created Date"
-msgstr ""
-
-#: HR/view/hr/leave-reason/list.phtml:59
-msgid "Show"
-msgstr ""
-
-#: HR/view/hr/leave-reason/list.phtml:60
-msgid "Edit"
-msgstr ""
-
-#: HR/view/hr/reporting/index.phtml:5 Application/view/hr_menu.php:13
+#: HR/view/hr/reporting/index.phtml:5 Application/view/hr_menu.php:14
 msgid "Reporting"
 msgstr "Berichten"
 
 #: HR/view/hr/reporting/index.phtml:9
 msgid "Daily Reporting"
-msgstr ""
-"Monat\n"
-"Berichten"
+msgstr "Tagesberichten"
 
 #: HR/view/hr/reporting/index.phtml:10
-#, fuzzy
-#| msgid "Reporting"
 msgid "Monthly Reporting"
-msgstr "Berichten"
+msgstr "MonatsBerichten"
 
 #: HR/view/hr/reporting/index.phtml:11
-#, fuzzy
-#| msgid "Reporting"
 msgid "Quaterly Reporting"
-msgstr "Berichten"
+msgstr "Vierteljährliche Berichten"
 
 #: HR/view/hr/reporting/index.phtml:12
-#, fuzzy
-#| msgid "Reporting"
 msgid "Annual Reporting"
-msgstr "Berichten"
+msgstr "Jährliche Berichten"
 
 #: HR/view/hr/setting/index.phtml:5
 msgid "HR SETTING"
@@ -430,11 +520,11 @@ msgstr "HR Einrichten"
 
 #: HR/view/layout/layout-fluid.phtml:189
 msgid "HR MANAGEMENT"
-msgstr ""
+msgstr "HR MANGEMENT"
 
 #: HR/view/layout/layout-fluid.phtml:193
 msgid "search term..."
-msgstr ""
+msgstr "Suchbegriff..."
 
 #: Inventory/view/layout/layout-fluid.phtml:192
 msgid "INVENTORY"
@@ -460,25 +550,21 @@ msgstr "Monat"
 msgid "All PR"
 msgstr "Alle Einkäufe"
 
-#: Procure/view/layout/layout.phtml:218 Application/view/hr_menu.php:5
-msgid "Employee List"
-msgstr "Mitarbeiter"
-
-#: Application/view/hr_menu.php:3
+#: Application/view/hr_menu.php:4
 msgid "Create New Employee"
-msgstr ""
+msgstr "Neuer Mitarbeiter"
 
-#: Application/view/hr_menu.php:8
+#: Application/view/hr_menu.php:9
 msgid "Finger Scan"
-msgstr ""
+msgstr "Fingersabdruck"
 
-#: Application/view/hr_menu.php:16 Application/view/navbar.php:77
+#: Application/view/hr_menu.php:17 Application/view/navbar.php:77
 msgid "Setup"
 msgstr "Einrichten"
 
 #: Application/view/inventory_menu.php:4
 msgid "Create new item"
-msgstr ""
+msgstr "Neuer Artikel"
 
 #: Application/view/navbar.php:65
 msgid "Other"
@@ -486,11 +572,11 @@ msgstr "Sonstiges"
 
 #: Application/view/other_menu.php:2
 msgid "Add Project"
-msgstr ""
+msgstr "Neues Projekt"
 
 #: Application/view/other_menu.php:4
 msgid "Project List"
-msgstr ""
+msgstr "Projektsliste"
 
 #: Application/view/other_menu.php:6
 msgid "Calendar"
@@ -502,11 +588,7 @@ msgstr "Erstelle neuer Einkauf"
 
 #: Application/view/setting_menu.php:2
 msgid "User Management"
-msgstr ""
-
-#: Application/view/setting_menu.php:3
-msgid "Department"
-msgstr ""
+msgstr "Benutzerverwaltung"
 
 #: Application/view/setting_menu.php:6
 msgid "Access Control List (ACL)"
@@ -538,7 +620,10 @@ msgstr ""
 
 #: Application/view/setting_menu.php:20
 msgid "System Information"
-msgstr ""
+msgstr "Systemsinformation"
+
+#~ msgid "Business Partner"
+#~ msgstr "Geschäftspartner"
 
 #~ msgid "Language"
 #~ msgstr "Sprache"

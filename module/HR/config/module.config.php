@@ -35,6 +35,13 @@ return array(
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
             array(
+                'label' => 'Applicant List',
+                'route' => 'hr/default',
+                'controller' => 'employee',
+                'action' => 'applicant-list',
+                'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
+            array(
                 'label' => 'Reporting',
                   'route' => 'hr/default',
                 'controller' => 'reporting',
@@ -113,8 +120,11 @@ return array(
             'HR\Controller\Payroll' => 'HR\Controller\PayrollControllerFactory',
             'HR\Controller\PayrollInput' => 'HR\Controller\PayrollInputControllerFactory',
             'HR\Controller\Setting' => 'HR\Controller\SettingControllerFactory',
-            'HR\Controller\Reporting' => 'HR\Controller\ReportingControllerFactory'
-        
+            'HR\Controller\Reporting' => 'HR\Controller\ReportingControllerFactory',
+            'HR\Controller\EmployeeContract' => 'HR\Controller\EmployeeContractControllerFactory',
+            'HR\Controller\MinimumWage' => 'HR\Controller\MinimumWageControllerFactory',
+            'HR\Controller\Salary' => 'HR\Controller\SalaryControllerFactory',
+            
         )
     ),
     'view_manager' => array(

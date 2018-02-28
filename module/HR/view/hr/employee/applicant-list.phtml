@@ -2,14 +2,14 @@
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
-		<li><a href="#general"><?php echo $this->translate('Employee List'); ?></a></li>
+		<li><a href="#general"><?php echo $this->translate('Applicant List'); ?></a></li>
 	</ul>
 <div id="general">
 
 <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee/add"><i class="fa fa-user-plus"
-			aria-hidden="true"></i>&nbsp;<?php echo $this->translate('New Employee'); ?></a>
-			<a class="btn btn-default btn-sm" href="javascript:;" onclick="showJqueryDialog('<?php echo $this->translate('Search Employee'); ?>','750','520', '/hr/employee/select','j_loaded_data', true);"><i class="fa fa-search"
-			aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Search Employee'); ?></a>
+			aria-hidden="true"></i>&nbsp;<?php echo $this->translate('New Applicant'); ?></a>
+			<a class="btn btn-default btn-sm" href="javascript:;" onclick="showJqueryDialog('<?php echo $this->translate('Search Applicant'); ?>','750','520', '/hr/employee/select','j_loaded_data', true);"><i class="fa fa-search"
+			aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Search Applicant'); ?></a>
 <hr>
 
 <div>
@@ -25,7 +25,7 @@
 			enctype="multipart/form-data">
 
 			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate('Employee Status'); ?></label>
+				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate('Applicant Status'); ?></label>
 				<div class="col-sm-3">
 					<select class="form-control input-sm" name="is_active">
 						<option <?php echo $is_active =='2'? "selected='selected'":"";?>
@@ -37,24 +37,6 @@
 					</select>
 				</div>
 			</div>
-			
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate('Filter by'); ?></label>
-				<div class="col-sm-3">
-					<select class="form-control input-sm" name="sort_by">
-						<option value="">None</option>
-						<option
-							<?php echo $sort_by=='prNumber'? "selected='selected'":"";?>
-							value="prNumber"><?php echo $this->translate('Department'); ?></option>
-						<option
-							<option
-							<?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
-							value="createdOn"><?php echo $this->translate('Department'); ?></option>
-					</select> 
-
-				</div>
-			</div>
-			
 			
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate('Sort by'); ?></label>
@@ -160,7 +142,7 @@ if ($total_records <= 0) {
 		?>
 	 <tr>
 	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	  		<td><?php echo $this->escapeHtml($a->getEmployeeCode());?></td>
+	  		<td>N/A</td>
 	  		<td><?php echo $this->escapeHtml($a->getEmployeeName());?></td>
 			<td><?php echo $this->escapeHtml($a->getEmployeeNameLocal());?></td>
 			<td><?php echo ($a->getBirthday()!==null )? date_format ( $a->getBirthday(), "d-m-y"):"";?> </td>
@@ -184,7 +166,7 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/hr/employee/list?is_active='. $is_active.'&sort_by='.$sort_by.'&sort='.$sort;
+	$base = $this->baseUrl . '/hr/employee/applicant-list?is_active='. $is_active.'&sort_by='.$sort_by.'&sort='.$sort;
 		$_connector_symbol = '&';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;

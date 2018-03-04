@@ -15,9 +15,10 @@ class NmtPlugin extends AbstractPlugin
     protected $doctrineEM;
 
     /**
-        @var \Doctrine\ORM\EntityManager $doctrineEM ;
-        $doctrineEM = $this->NmtPlugin()->doctrineEM();
-        @return mixed
+     *
+     * @var \Doctrine\ORM\EntityManager $doctrineEM ;
+     *      $doctrineEM = $this->NmtPlugin()->doctrineEM();
+     * @return unknown
      */
     public function doctrineEM()
     {

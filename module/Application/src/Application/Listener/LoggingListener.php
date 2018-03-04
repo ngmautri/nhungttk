@@ -4,6 +4,7 @@ namespace Application\Listener;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
+//use Zend\EventManager\AbstractListenerAggregate;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Stream;
 

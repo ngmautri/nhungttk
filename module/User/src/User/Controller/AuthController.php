@@ -12,6 +12,7 @@ namespace User\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use User\Model\User;
+use Doctrine\ORM\EntityManager;
 use MLA\Files;
 use Zend\Validator\EmailAddress;
 use Zend\Session\Container;
@@ -23,6 +24,7 @@ class AuthController extends AbstractActionController {
 	public $userTable;
 	public $authService;
 	public $registerService;
+	protected $doctrineEM;
 	
 	/*
 	 * Defaul Action
@@ -30,8 +32,9 @@ class AuthController extends AbstractActionController {
 	public function indexAction() {
 	}
 	
-	/*
+	/**
 	 * 
+	 * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
 	 */
 	public function authenticateAction() {
 	    
@@ -66,10 +69,10 @@ class AuthController extends AbstractActionController {
 			
 			if (count ( $errors ) > 0) {
 			    
-			    // trigger uploadPicture. AbtractController is EventManagerAware.
+			    // trigger log. AbtractController is EventManagerAware.
 			    $this->getEventManager()->trigger('authenticate.log', __CLASS__, array(
 			        'priority' => 7,
-			        'message' => 'Access not successful!'
+			        'message' => '['.$email. '] tried to login, but failed!'
 			    ));
 			    
 				return new ViewModel ( array (
@@ -92,7 +95,7 @@ class AuthController extends AbstractActionController {
 				// trigger uploadPicture. AbtractController is EventManagerAware.
 				$this->getEventManager()->trigger('authenticate.log', __CLASS__, array(
 				    'priority' => 7,
-				    'message' => 'Access successful!'
+				    'message' => '['.$email. '] logged in successful!'
 				));
 				
 				return $this->redirect ()->toUrl ($redirect);
@@ -107,25 +110,51 @@ class AuthController extends AbstractActionController {
 			}
 		}
 		
+		
+		
 		return new ViewModel ( array (
 				'messages' => '',
 		        'redirect' => $redirect,
 		) );
 	}
+	
+	/**
+	 * 
+	 * @return \Zend\Http\Response
+	 */
 	public function logoutAction() {
 		
+	    
 		$session = new Container('MLA_USER');
+		$user = $session->offsetGet('user');
+		$email= $user['email'];
+		
+		/* @var \Doctrine\ORM\EntityManager $doctrineEM ; */
+		$doctrineEM = $this->NmtPlugin()->doctrineEM();
+		
+		
 		$session->getManager()->destroy();
 		$this->authService->clearIdentity ();
-		$this->flashmessenger ()->addMessage ( "You've been logged out" );
-		
+	
 		// trigger uploadPicture. AbtractController is EventManagerAware.
 		$this->getEventManager()->trigger('authenticate.log', __CLASS__, array(
 		    'priority' => 7,
-		    'message' => 'User logged out!'
+		    'message' => '['.$email. '] logged out. Good bye!'
 		));
 		
-		return $this->redirect ()->toRoute ( 'login' );
+		
+		/** @var \Doctrine\ORM\EntityManager $doctrineEM ; */
+		$doctrineEM = $this->NmtPlugin()->doctrineEM();
+		
+		$doctrineEM = $this->NmtPlugin()->doctrineEM();
+		
+		/** @var \Application\Entity\MlaUsers $u ; */
+		$u = $doctrineEM->getRepository('\Application\Entity\MlaUsers')->findOneBy(array('email'=>$email));
+		echo $u->getEmail();
+		
+		
+		$this->flashmessenger ()->addMessage ( "You've been logged out." . $u->getEmail() );
+		//return $this->redirect ()->toRoute ( 'login' );
 		
 		
 	}
@@ -154,5 +183,21 @@ class AuthController extends AbstractActionController {
 		$this->registerService = $registerService;
 		return $this;
 	}
+    /**
+     * @return mixed
+     */
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    /**
+     * @param mixed $doctrineEM
+     */
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+    }
+
 	
 }

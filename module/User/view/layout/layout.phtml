@@ -7,6 +7,7 @@
 <?=$this->headMeta ()->appendName ( 'viewport', 'width=device-width, initial-scale=1.0' )->appendHttpEquiv ( 'X-UA-Compatible', 'IE=edge' )?>
 
 <!-- Le styles -->
+<!-- Le styles -->
 <link href="/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
 
 <link href="/bootstrap3/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
@@ -20,9 +21,7 @@
 <link href="/css/bootstrap-editable.css" rel="stylesheet" type="text/css">
 <link href="/css/calendar.css" media="screen" rel="stylesheet"  type="text/css">
 <!-- <link href="/css/tables.css" rel="stylesheet"  type="text/css">  -->
-    <link rel="stylesheet" href="/awesome-4.7.0/css/font-awesome.min.css">
-  
-  
+
 <link href="/jquery/jquery-ui.min.css" rel="stylesheet"  type="text/css">
 <link href="/jquery/jquery-ui.theme.min.css" rel="stylesheet"  type="text/css">
 <link href="/jquery/jquery-ui.structure.min.css" rel="stylesheet"  type="text/css">
@@ -35,6 +34,10 @@
     
     <!--PQ Grid Office theme-->
     <link rel="stylesheet" href="/pqgird/themes/office/pqgrid.css" />
+    <link rel="stylesheet" href="/awesome-4.7.0/css/font-awesome.min.css">
+    
+    
+    
     
   <style>
   
@@ -50,14 +53,8 @@
   </style>
   
   
-  
-
-
-
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/bootstrap3/js/bootstrap.min.js"></script>
-
-
 <script type="text/javascript" src="/jquery/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/exif.js"></script>								
 <script type="text/javascript" src="/js/lightgallery-all.min.js"></script>
@@ -358,7 +355,7 @@
 <div id="flash_messages" class="global-notice" style="display: none;"><?php
 if($this->flashMessenger()!==null){
 	echo $this->flashMessenger()->render();
-}?></div>;
+}?></div>
 
 <script>
 		var flash_message = $( "#flash_messages" ).text();
@@ -366,6 +363,11 @@ if($this->flashMessenger()!==null){
 			$( "#flash_messages" ).show();
 			$( "#flash_messages" ).delay(2200).fadeOut(1000);
 		}
+
+		 $('[data-toggle="offcanvas"]').click(function () {
+			    $('.row-offcanvas').toggleClass('active')
+			  });
+		
 </script>
  
  <!-- Modal -->
@@ -426,3 +428,4 @@ if($this->flashMessenger()!==null){
     
     </body>
 </html>
+    

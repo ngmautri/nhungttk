@@ -35,6 +35,7 @@ use Zend\Navigation\AbstractContainer;
 
 class Module
 {
+
     /*
      * The onBootstrap() method is called for every module implementing this feature, on every page request,
      * and should only be used for performing lightweight tasks such as registering event listeners.
@@ -53,10 +54,7 @@ class Module
             $this,
             'checkACL'
         ), 100);
-        
-       }
-    
-   
+    }
 
     /**
      *
@@ -252,7 +250,6 @@ class Module
         $app = $e->getApplication();
         $sm = $app->getServiceManager();
         
-        
         // Route is whitelisted
         $name = $match->getMatchedRouteName();
         if (in_array($name, array(
@@ -264,26 +261,24 @@ class Module
             'access_denied',
             'order_suggestion_console',
             'pr_rest',
-            'pr_console',
+            'pr_console'
         ))) {
             return;
         }
-        
         
         $requestUri = null;
         if ($request !== null) {
             $requestUri = $request->getRequestUri();
         }
         
-       
         $auth = $sm->get('AuthService');
         
         // No route match, this is a 404
-       /*  if (! $match instanceof RouteMatch) {
-            return;
-        } */
-        
-       
+        /*
+         * if (! $match instanceof RouteMatch) {
+         * return;
+         * }
+         */
         
         // User is authenticated
         if ($auth->hasIdentity()) {

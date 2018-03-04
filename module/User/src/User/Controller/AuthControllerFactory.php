@@ -31,6 +31,11 @@ class AuthControllerFactory implements FactoryInterface {
 		//Auth Service
 		$sv =  $sm->get ('AuthService' );
 		$controller->setAuthService($sv );
+		
+		
+		$sv =  $sm->get('doctrine.entitymanager.orm_default');
+		$controller->setDoctrineEM($sv);
+		
 			
 		return $controller;
 	}

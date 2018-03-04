@@ -12,7 +12,6 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Model\AclRoleTable;
-use Nmt\Paginator;
 use Application\Service\DepartmentService;
 
 use Application\Entity\NmtApplicationAclRole;

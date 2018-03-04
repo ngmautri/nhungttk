@@ -1,1 +1,10 @@
-Unexpected error.  File contents could not be restored from local history during undo/redo.
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="Bootstrap.php" colors="true">
+	<testsuites>
+		<testsuite name="AssetTypeTest">
+			<directory>./AssetTypeTest</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
+

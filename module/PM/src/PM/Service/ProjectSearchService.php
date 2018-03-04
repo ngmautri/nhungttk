@@ -70,7 +70,7 @@ class ProjectSearchService {
 							
 						$index->addDocument ( $doc );
 						$log [] = "Doc added";
-					} catch ( Exception $e ) {
+					} catch ( \Exception $e ) {
 						$log [] = $e->getMessage ();
 					}
 				}
@@ -81,7 +81,7 @@ class ProjectSearchService {
 				$log [] = 'Nothing for indexing!';
 				return $log;
 			}
-		} catch ( Exception $e ) {
+		} catch (\Exception $e ) {
 			$log [] = 'Nothing for indexing!';
 			return $log;
 		}
@@ -159,7 +159,7 @@ class ProjectSearchService {
 			} else {
 				return 'Input is invalid';
 			}
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return $e->getMessage ();
 		}
 	}
@@ -176,7 +176,7 @@ class ProjectSearchService {
 			$index = Lucene::open ( getcwd () . self::ITEM_INDEX );
 			$index->optimize ();
 			return 'Index has been optimzed!<br> Index Size:' . $index->count () . '<br>Documents: ' . $index->numDocs ();
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 			return $e->getMessage ();
 		}
 	}

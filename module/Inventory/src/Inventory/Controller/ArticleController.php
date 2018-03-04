@@ -47,6 +47,7 @@ use Application\Entity\MlaArticleDepartment;
 use User\Model\UserTable;
 
 /**
+ * @ignore
  * @deprecated
  * @author nmt
  *
@@ -1488,6 +1489,13 @@ class ArticleController extends AbstractActionController {
 			return $response;
 		}
 	}
+	
+	
+	
+	/**
+	 * @deprecated
+	 * @return \Zend\View\Model\ViewModel
+	 */
 	public function addCategoryMemberAction() {
 		$request = $this->getRequest ();
 		$redirectUrl = $this->getRequest ()->getHeader ( 'Referer' )->getUri ();

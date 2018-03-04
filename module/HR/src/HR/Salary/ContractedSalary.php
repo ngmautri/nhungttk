@@ -1,6 +1,6 @@
 <?php
 
-namespace HR\Salary;
+namespace HR\Payroll;
 
 
 /*
@@ -57,11 +57,10 @@ class ContractedSalary implements IncomeInterface{
      */
     public function isPayble()
     {return true;}
+    public function getCalculatedAmount()
+    {}
 
-
-    
-    
-    
+  
 }
 
 

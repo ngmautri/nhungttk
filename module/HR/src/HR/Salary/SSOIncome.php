@@ -1,10 +1,10 @@
 <?php
+namespace HR\Payroll;
 
-namespace HR\Salary;
-
-
-/*
+/**
  * 
+ * @author nmt
+ *
  */
 class SSOIncome implements IncomeInterface{
     
@@ -57,6 +57,9 @@ class SSOIncome implements IncomeInterface{
      */
     public function isPayble()
     {return true;}
+    public function getCalculatedAmount()
+    {}
+
 
 
     

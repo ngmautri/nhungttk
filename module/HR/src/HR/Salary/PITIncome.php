@@ -1,6 +1,6 @@
 <?php
 
-namespace HR\Salary;
+namespace HR\Payroll;
 
 
 /*
@@ -57,6 +57,9 @@ class PITIncome implements IncomeInterface{
      */
     public function isPayble()
     {return true;}
+    public function getCalculatedAmount()
+    {}
+
 
 
     

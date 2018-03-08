@@ -74,7 +74,7 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	 	*/
 	 	
 	 //	$sv = Bootstrap::getServiceManager ()->get ( 'HR\Model\EmployeePictureTable' );
-	 	$sv = Bootstrap::getServiceManager ()->get ( 'HR\Services\EmployeeSearchService' );
+	 	$sv = Bootstrap::getServiceManager ()->get ( 'HR\Service\EmployeeSearchService' );
 	 	
 	 	var_dump($sv->updateIndexOfEmployee('0005'));
 	 	 

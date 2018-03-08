@@ -5,9 +5,10 @@ namespace HR\Controller;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use HR\Controller\IndexController;
+
 /**
  * 
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class SettingControllerFactory implements FactoryInterface {

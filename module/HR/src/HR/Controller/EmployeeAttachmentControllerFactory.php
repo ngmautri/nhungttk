@@ -7,7 +7,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * 
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class EmployeeAttachmentControllerFactory implements FactoryInterface{

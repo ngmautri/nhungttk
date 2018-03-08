@@ -2,10 +2,15 @@
 namespace HR\Payroll;
 
 
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
 Interface IncomeInterface
 {
     /**
-     * Get the name of income component
+     * Get the name of income component /comperator
      */
     public function getIncomeName();
     
@@ -16,25 +21,14 @@ Interface IncomeInterface
     public function getAmount();
     
     /**
+     * Get currency of income
+     */
+    public function getCurrentcy();
+    
+    /**
      * Get amount of income
      */
     public function getCalculatedAmount();
-    
-    
-    /**
-     * Is the income subject to PIT
-     */
-    public function isPITPayable();
-    
-   /**
-    * Is the income subject to Social Security
-    */
-    public function isSSOPayable();
-    
-    
-    /**
-     * It is to check, if the income to paybale together with the monthly salary
-     * Some staff get Housing allowance, but this was paid in advance separately.
-     */
-    public function isPayble();
+       
+  
 }

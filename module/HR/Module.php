@@ -1,12 +1,4 @@
 <?php
-
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace HR;
 
 use Zend\Mvc\ModuleRouteListener;
@@ -15,17 +7,36 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
 use Zend\Mvc\MvcEvent;
 
+/**
+ * Configuration Module: HR
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
 class Module {
 	
 	
-	
+	/**
+	 * 
+	 * @param MvcEvent $e
+	 */
 	public function onBootstrap(MvcEvent $e) {
-		$eventManager = $e->getApplication ()->getEventManager ();
+	    
+ 		$eventManager = $e->getApplication ()->getEventManager ();
+ 		
+ 		/*
+ 		 * This listener determines if the module namespace should be prepended to the controller name. 
+ 		 * This is the case if the route match contains a parameter key matching the MODULE_NAMESPACE constant.
+ 		 */
 		$moduleRouteListener = new ModuleRouteListener ();
 		$moduleRouteListener->attach ( $eventManager );
 	}
 	
-	
+		
+	/**
+	 * 
+	 * @return unknown
+	 */
 	public function getConfig() {
 		return include __DIR__ . '/config/module.config.php';
 	}
@@ -39,7 +50,9 @@ class Module {
 		);
 	}
 	
-	// Add this method:
+	/**
+	 * Add this methode
+	 */
 	public function getServiceConfig() {
 	}
 }

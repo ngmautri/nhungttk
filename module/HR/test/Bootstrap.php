@@ -1,6 +1,6 @@
 <?php
 
-namespace AssetTypeTest;
+namespace HRTest;
 
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
@@ -41,9 +41,13 @@ class Bootstrap {
 				'module_listener_options' => array (
 						'module_paths' => $zf2ModulePaths 
 				),
-				'modules' => array (
-						'HR',						
-				) 
+		    'modules' => array (
+		        'Application',
+		        'DoctrineModule',
+		        'DoctrineORMModule',
+		        'User',
+		        'HR',
+		    ),
 		)
 		;
 		
@@ -82,7 +86,7 @@ class Bootstrap {
 				) 
 		);
 		
-		$serviceManager = new ServiceManager ( new ServiceManagerConfig ( $smConfig ) );
+		$serviceManager = new ServiceManager ( new ServiceManagerConfig () );
 		$serviceManager->setService ( 'ApplicationConfig', $config );
 		$serviceManager->get ( 'ModuleManager' )->loadModules ();
 		static::$serviceManager = $serviceManager;

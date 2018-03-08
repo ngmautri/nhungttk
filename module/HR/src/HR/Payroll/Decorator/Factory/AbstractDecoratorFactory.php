@@ -1,6 +1,7 @@
 <?php
 namespace HR\Payroll\Decorator\Factory;
 
+use HR\Payroll\ConsolidatedPayrollInput;
 use HR\Payroll\IncomeInterface;
 
 /**
@@ -17,8 +18,9 @@ Abstract class AbstractDecoratorFactory
      * @param unknown $ytd
      * @return unknown
      */
-    public function createIncomeDecorator(IncomeInterface $incomeComponent, $ytd){
-        $decorator =  $this->createDecortor($incomeComponent, $ytd);
+    public function createIncomeDecorator(IncomeInterface $incomeComponent, ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd){
+        $decorator =  $this->createDecorator($incomeComponent, $consolidatedPayrollInput, $ytd);
+        $decorator->setIdentifer(get_class($decorator));        
         return $decorator;
     }
   
@@ -28,6 +30,7 @@ Abstract class AbstractDecoratorFactory
      * @param IncomeInterface $incomeComponent
      * @param unknown $ytd
      */
-    protected abstract function createDecorator(IncomeInterface $incomeComponent, $ytd);
+    protected abstract function createDecorator(IncomeInterface $incomeComponent, 
+        ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd);
     
 }

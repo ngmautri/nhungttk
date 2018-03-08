@@ -23,7 +23,7 @@ Interface IncomeInterface
     /**
      * Get currency of income
      */
-    public function getCurrentcy();
+    public function getCurrency();
     
     /**
      * Get amount of income

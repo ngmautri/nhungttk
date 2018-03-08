@@ -15,6 +15,8 @@ abstract class AbstractIncomeComponent implements IncomeInterface{
     abstract public function isSSOPayable();
     
     abstract public function isPayable();
+    
+    abstract public function getIncomeDecoratorFactory();
 }
 
 

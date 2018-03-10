@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-26 21:28+0700\n"
-"PO-Revision-Date: 2018-02-26 21:39+0700\n"
+"POT-Creation-Date: 2018-03-08 23:53+0700\n"
+"PO-Revision-Date: 2018-03-08 23:55+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -21,6 +21,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Application/view/application/department/list.phtml:4
+#: HR/view/hr/employee/list.phtml:48 HR/view/hr/employee/list.phtml:51
 #: Application/view/setting_menu.php:3
 msgid "Department"
 msgstr "Phòng ban"
@@ -294,7 +295,8 @@ msgstr "Tên kỳ hạch toán"
 
 #: Finance/view/finance/posting-period/add.phtml:43
 #: Finance/view/finance/posting-period/list.phtml:36
-#: HR/view/hr/leave-reason/list.phtml:35
+#: HR/view/hr/leave-reason/list.phtml:35 HR/view/hr/minimum-wage/index.phtml:18
+#: HR/view/hr/sso/index.phtml:18
 msgid "Status"
 msgstr "Trạng thái"
 
@@ -355,16 +357,17 @@ msgid "Posting Period"
 msgstr "Kỳ hạch toán"
 
 #: Finance/view/finance/posting-period/list.phtml:20
-#: HR/view/hr/employee/applicant-list.phtml:111
-#: HR/view/hr/employee/applicant-list.phtml:113
-#: HR/view/hr/employee/list.phtml:111 HR/view/hr/employee/list.phtml:113
+#: HR/view/hr/employee/applicant-list.phtml:110
+#: HR/view/hr/employee/applicant-list.phtml:112
+#: HR/view/hr/employee/list.phtml:127 HR/view/hr/employee/list.phtml:129
 #: HR/view/hr/leave-reason/list.phtml:22
 msgid "records"
 msgstr "bản ghi"
 
 #: Finance/view/finance/posting-period/list.phtml:37
-#: HR/view/hr/employee/applicant-list.phtml:128
-#: HR/view/hr/employee/list.phtml:128 HR/view/hr/leave-reason/list.phtml:37
+#: HR/view/hr/employee/applicant-list.phtml:127
+#: HR/view/hr/employee/list.phtml:144 HR/view/hr/leave-reason/list.phtml:37
+#: HR/view/hr/minimum-wage/index.phtml:19 HR/view/hr/sso/index.phtml:19
 msgid "Action"
 msgstr "Hành động"
 
@@ -375,6 +378,90 @@ msgstr "Mở"
 #: Finance/view/finance/posting-period/list.phtml:66
 msgid "Close"
 msgstr "Đóng"
+
+#: HR/view/hr/employee-contract/add.phtml:5
+#: HR/view/hr/employee-contract/index.phtml:5 HR/view/hr/setting/index.phtml:5
+msgid "HR SETTING"
+msgstr "Thiết Lập HR"
+
+#: HR/view/hr/employee-contract/add.phtml:9
+#: HR/view/hr/employee-contract/index.phtml:9
+#: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
+#: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
+#: HR/view/hr/setting/index.phtml:11 Application/view/hr_menu.php:11
+msgid "Leave Reason"
+msgstr "Lý do nghỉ"
+
+#: HR/view/hr/employee-contract/list1.phtml:7
+msgid "Employment Contract Summary:"
+msgstr ""
+
+#: HR/view/hr/employee-contract/list1.phtml:9
+msgid "Contract status"
+msgstr "Tình trang Hợp đồng"
+
+#: HR/view/hr/employee-contract/list1.phtml:10
+#, fuzzy
+#| msgid "All PR"
+msgid "All"
+msgstr "Tất cả yêu cầu mua. Tiếng Việt"
+
+#: HR/view/hr/employee-contract/list1.phtml:12
+#: HR/view/hr/employee-contract/list1.phtml:51
+#: HR/view/hr/leave-reason/add.phtml:33 HR/view/hr/minimum-wage/index.phtml:40
+#: HR/view/hr/sso/index.phtml:40
+msgid "Active"
+msgstr "hoạt động"
+
+#: HR/view/hr/employee-contract/list1.phtml:13
+#: HR/view/hr/employee-contract/list1.phtml:41
+msgid "Terminated"
+msgstr "Đã kết thúc"
+
+#: HR/view/hr/employee-contract/list1.phtml:21
+msgid "Contract number"
+msgstr "Liên lạc"
+
+#: HR/view/hr/employee-contract/list1.phtml:22
+#: HR/view/hr/employee-contract/list1.phtml:24
+msgid "Number of Revision"
+msgstr "Số lần sửa"
+
+#: HR/view/hr/employee-contract/list1.phtml:25
+#, fuzzy
+#| msgid "Actual Working Days"
+msgid "Start Working Date"
+msgstr "Ngày làm việc thực tế"
+
+#: HR/view/hr/employee-contract/list1.phtml:26
+msgid "Termination Date"
+msgstr "Ngày kết thúc"
+
+#: HR/view/hr/employee-contract/list1.phtml:27
+msgid "Contract Status"
+msgstr "Tình trang Hợp đồng"
+
+#: HR/view/hr/employee-contract/list1.phtml:42
+#: HR/view/hr/employee-contract/list1.phtml:52
+#: HR/view/hr/employee/applicant-list.phtml:152
+#: HR/view/hr/employee/list.phtml:169 HR/view/hr/leave-reason/list.phtml:59
+#: HR/view/hr/minimum-wage/index.phtml:32
+#: HR/view/hr/minimum-wage/index.phtml:41 HR/view/hr/sso/index.phtml:32
+#: HR/view/hr/sso/index.phtml:41
+msgid "Show"
+msgstr "Xem"
+
+#: HR/view/hr/employee-contract/list1.phtml:52
+msgid "Amend"
+msgstr "Sửa"
+
+#: HR/view/hr/employee-contract/list1.phtml:52
+msgid "Terminate"
+msgstr "Kết thúc"
+
+#: HR/view/hr/employee-contract/list1.phtml:62
+msgid "Current Contract:"
+msgstr "Hợp đồng hiện tại"
 
 #: HR/view/hr/employee/applicant-list.phtml:5
 msgid "Applicant List"
@@ -390,8 +477,8 @@ msgid "Search Applicant"
 msgstr "Tìm ứng viên"
 
 #: HR/view/hr/employee/applicant-list.phtml:17
-#: HR/view/hr/employee/applicant-list.phtml:89
-#: HR/view/hr/employee/list.phtml:17 HR/view/hr/employee/list.phtml:89
+#: HR/view/hr/employee/applicant-list.phtml:88
+#: HR/view/hr/employee/list.phtml:17 HR/view/hr/employee/list.phtml:105
 msgid "Filter"
 msgstr "Lọc"
 
@@ -400,72 +487,67 @@ msgid "Applicant Status"
 msgstr "Trạng thái ưng viên"
 
 #: HR/view/hr/employee/applicant-list.phtml:42
-#: HR/view/hr/employee/applicant-list.phtml:100
-#: HR/view/hr/employee/list.phtml:42 HR/view/hr/employee/list.phtml:100
+#: HR/view/hr/employee/applicant-list.phtml:99
+#: HR/view/hr/employee/list.phtml:59 HR/view/hr/employee/list.phtml:116
 msgid "Sort by"
 msgstr "Sếp xếp  theo"
 
 #: HR/view/hr/employee/applicant-list.phtml:48
-#: HR/view/hr/employee/applicant-list.phtml:122
-#: HR/view/hr/employee/list.phtml:48 HR/view/hr/employee/list.phtml:122
+#: HR/view/hr/employee/applicant-list.phtml:121
+#: HR/view/hr/employee/list.phtml:65 HR/view/hr/employee/list.phtml:138
 msgid "Employee Code"
 msgstr "Mã nhân viên"
 
-#: HR/view/hr/employee/applicant-list.phtml:52
-#: HR/view/hr/employee/list.phtml:52 HR/view/hr/leave-reason/list.phtml:36
+#: HR/view/hr/employee/applicant-list.phtml:51
+#: HR/view/hr/employee/list.phtml:68 HR/view/hr/leave-reason/list.phtml:36
 msgid "Created Date"
 msgstr "Ngày tạo"
 
-#: HR/view/hr/employee/applicant-list.phtml:55
-#: HR/view/hr/employee/list.phtml:55
+#: HR/view/hr/employee/applicant-list.phtml:54
+#: HR/view/hr/employee/list.phtml:71
 msgid "ASC"
 msgstr "Tăng dần"
 
-#: HR/view/hr/employee/applicant-list.phtml:57
-#: HR/view/hr/employee/list.phtml:57
+#: HR/view/hr/employee/applicant-list.phtml:56
+#: HR/view/hr/employee/list.phtml:73
 msgid "DESC"
 msgstr "Giảm dần"
 
-#: HR/view/hr/employee/applicant-list.phtml:64
-#: HR/view/hr/employee/list.phtml:64
+#: HR/view/hr/employee/applicant-list.phtml:63
+#: HR/view/hr/employee/list.phtml:80
 msgid "Result per page"
 msgstr "Kết quả mỗi trang"
 
-#: HR/view/hr/employee/applicant-list.phtml:100
-#: HR/view/hr/employee/applicant-list.phtml:127
-#: HR/view/hr/employee/list.phtml:28 HR/view/hr/employee/list.phtml:100
-#: HR/view/hr/employee/list.phtml:127
+#: HR/view/hr/employee/applicant-list.phtml:99
+#: HR/view/hr/employee/applicant-list.phtml:126
+#: HR/view/hr/employee/list.phtml:28 HR/view/hr/employee/list.phtml:116
+#: HR/view/hr/employee/list.phtml:143
 msgid "Employee Status"
 msgstr "Trạng thái Nhân viên"
 
-#: HR/view/hr/employee/applicant-list.phtml:100
-#: HR/view/hr/employee/list.phtml:100
+#: HR/view/hr/employee/applicant-list.phtml:99
+#: HR/view/hr/employee/list.phtml:116
 msgid "Sort"
 msgstr "Sếp xếp"
 
+#: HR/view/hr/employee/applicant-list.phtml:122
 #: HR/view/hr/employee/applicant-list.phtml:123
-#: HR/view/hr/employee/applicant-list.phtml:124
-#: HR/view/hr/employee/list.phtml:123 HR/view/hr/employee/list.phtml:124
+#: HR/view/hr/employee/list.phtml:139 HR/view/hr/employee/list.phtml:140
 msgid "Name"
 msgstr "Tên"
 
-#: HR/view/hr/employee/applicant-list.phtml:125
-#: HR/view/hr/employee/list.phtml:125
+#: HR/view/hr/employee/applicant-list.phtml:124
+#: HR/view/hr/employee/list.phtml:141
 msgid "Birthday"
 msgstr "Ngày sinh"
 
-#: HR/view/hr/employee/applicant-list.phtml:126
-#: HR/view/hr/employee/list.phtml:126
+#: HR/view/hr/employee/applicant-list.phtml:125
+#: HR/view/hr/employee/list.phtml:142
 msgid "Gender"
 msgstr "Giới tính"
 
 #: HR/view/hr/employee/applicant-list.phtml:153
-#: HR/view/hr/employee/list.phtml:153 HR/view/hr/leave-reason/list.phtml:59
-msgid "Show"
-msgstr "Xem"
-
-#: HR/view/hr/employee/applicant-list.phtml:154
-#: HR/view/hr/employee/list.phtml:154 HR/view/hr/leave-reason/list.phtml:60
+#: HR/view/hr/employee/list.phtml:170 HR/view/hr/leave-reason/list.phtml:60
 msgid "Edit"
 msgstr "Sửa"
 
@@ -482,19 +564,19 @@ msgstr "Thêm nhân viên"
 msgid "Search Employee"
 msgstr "Tìm nhân viên"
 
+#: HR/view/hr/employee/list.phtml:42
+#, fuzzy
+#| msgid "Filter"
+msgid "Filter by"
+msgstr "Lọc"
+
+#: HR/view/hr/employee/show.phtml:25
+msgid "Disciplinary"
+msgstr "Kỷ luật"
+
 #: HR/view/hr/leave-reason/add.phtml:19 HR/view/hr/leave-reason/list.phtml:8
 msgid "New Leave Reason"
 msgstr "Thêm lý do nghỉ"
-
-#: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
-#: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
-#: HR/view/hr/setting/index.phtml:9 Application/view/hr_menu.php:11
-msgid "Leave Reason"
-msgstr "Lý do nghỉ"
-
-#: HR/view/hr/leave-reason/add.phtml:33
-msgid "Active"
-msgstr "hoạt động"
 
 #: HR/view/hr/leave-reason/add.phtml:45 HR/view/hr/leave-reason/list.phtml:32
 msgid "Reference"
@@ -516,6 +598,38 @@ msgstr "Chi tiết"
 msgid "Cancel"
 msgstr "Thoát"
 
+#: HR/view/hr/minimum-wage/index.phtml:5
+#, fuzzy
+#| msgid "User Management"
+msgid "Minimum Wage Management"
+msgstr "Quản lý người dùng"
+
+#: HR/view/hr/minimum-wage/index.phtml:14 HR/view/hr/setting/index.phtml:12
+msgid "Minimum Wage"
+msgstr "Lương tối thiểu"
+
+#: HR/view/hr/minimum-wage/index.phtml:15
+msgid "Currency"
+msgstr "Đơn vị tiền tệ"
+
+#: HR/view/hr/minimum-wage/index.phtml:16 HR/view/hr/sso/index.phtml:16
+msgid "Effective from"
+msgstr "Có giá trị từ"
+
+#: HR/view/hr/minimum-wage/index.phtml:17 HR/view/hr/sso/index.phtml:17
+msgid "Effective to"
+msgstr "Có giá trị đến"
+
+#: HR/view/hr/minimum-wage/index.phtml:31 HR/view/hr/sso/index.phtml:31
+#, fuzzy
+#| msgid "Active"
+msgid "Inactive"
+msgstr "hoạt động"
+
+#: HR/view/hr/minimum-wage/index.phtml:41 HR/view/hr/sso/index.phtml:41
+msgid "Update"
+msgstr "Cập nhất"
+
 #: HR/view/hr/reporting/index.phtml:5 Application/view/hr_menu.php:14
 msgid "Reporting"
 msgstr "Báo Cáo"
@@ -536,9 +650,39 @@ msgstr "Báo cáo quý"
 msgid "Annual Reporting"
 msgstr "Báo cáo năm"
 
-#: HR/view/hr/setting/index.phtml:5
-msgid "HR SETTING"
-msgstr "Thiết Lập HR"
+#: HR/view/hr/setting/index.phtml:13
+msgid "Social Security (SSO)"
+msgstr "Bảo hiểm xã hội (SSO)"
+
+#: HR/view/hr/setting/index.phtml:14
+msgid "Default Income Setup"
+msgstr "Thiết lập các khoản thu nhập"
+
+#: HR/view/hr/setting/index.phtml:15
+msgid "Default Bonus Setup"
+msgstr "Thiết lập Bonus"
+
+#: HR/view/hr/setting/index.phtml:16
+msgid "Default Allowances Setup"
+msgstr "Thiết lập các khác trợ cấp"
+
+#: HR/view/hr/setting/index.phtml:17
+msgid "Default Deduction Setup"
+msgstr "Thiết lập các khoản khấu trừ"
+
+#: HR/view/hr/sso/index.phtml:5
+#, fuzzy
+#| msgid "User Management"
+msgid "Social Security Management"
+msgstr "Quản lý người dùng"
+
+#: HR/view/hr/sso/index.phtml:14
+msgid "SSO Rate"
+msgstr "Tỷ lệ SSO"
+
+#: HR/view/hr/sso/index.phtml:15
+msgid "Percentage"
+msgstr "Phần trăm"
 
 #: HR/view/layout/layout-fluid.phtml:189
 msgid "HR MANAGEMENT"

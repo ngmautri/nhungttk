@@ -1,6 +1,6 @@
 <?php
 
-namespace HR\Payroll;
+namespace HR\Payroll\Income;
 
 
 /*
@@ -8,18 +8,20 @@ namespace HR\Payroll;
  */
 class PITIncome implements IncomeInterface{
     
+    public function getCurrency()
+    {}
+
     public function getCalculatedAmount()
     {}
- 
+
     public function getIncomeName()
     {}
 
     public function getAmount()
     {}
-    public function getCurrency()
-    {}
 
-
+    
+   
 }
 
 

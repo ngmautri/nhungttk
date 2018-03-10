@@ -111,7 +111,7 @@ class Bootstrap {
 				
 		);
 		
-		$serviceManager = new ServiceManager ( new ServiceManagerConfig ( $smConfig ) );
+		$serviceManager = new ServiceManager ( new ServiceManagerConfig ($smConfig) );
 		$serviceManager->setService ( 'ApplicationConfig', $config );
 		
 		// load modules -- which will provide services, configuration, and more
@@ -136,8 +136,8 @@ class Bootstrap {
 				$zf2Path = ZF2_PATH;
 			} elseif (is_dir ( $vendorPath . '/ZF2/library' )) {
 				$zf2Path = $vendorPath . '/ZF2/library';
-			} elseif (is_dir ( $vendorPath . '/zendframework/zendframework/library' )) {
-				$zf2Path = $vendorPath . '/zendframework/zendframework/library';
+			} elseif (is_dir ( $vendorPath . '/zendframework' )) {
+				$zf2Path = $vendorPath . '/zendframework';
 			}
 		}
 		

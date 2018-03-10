@@ -1,11 +1,10 @@
 <?php
 
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Configuration Module: User
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 namespace User;
 
@@ -42,8 +41,10 @@ class Module
      */
     public function onBootstrap(MvcEvent $e)
     {
-        $eventManager = $e->getApplication()->getEventManager();
-        $serviceManager = $e->getApplication()->getServiceManager();
+         
+        $eventManager = $e->getApplication ()->getEventManager ();
+        $moduleRouteListener = new ModuleRouteListener ();
+        $moduleRouteListener->attach ( $eventManager );
         
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array(
             $this,

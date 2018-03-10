@@ -1,7 +1,7 @@
 <?php
-namespace HR\Payroll\Decorator;
+namespace HR\Payroll\Income\Decorator;
 
-use HR\Payroll\IncomeInterface;
+use HR\Payroll\Income\IncomeInterface;
 
 /**
  * 

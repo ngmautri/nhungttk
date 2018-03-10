@@ -1,8 +1,8 @@
 <?php
-namespace HR\Payroll\Decorator\Factory;
+namespace HR\Payroll\Income\Decorator\Factory;
 
-use HR\Payroll\ConsolidatedPayrollInput;
-use HR\Payroll\IncomeInterface;
+use HR\Payroll\Input\ConsolidatedPayrollInput;
+use HR\Payroll\Income\IncomeInterface;
 
 /**
  * 
@@ -15,6 +15,7 @@ Abstract class AbstractDecoratorFactory
     /**
      * 
      * @param IncomeInterface $incomeComponent
+     * @param ConsolidatedPayrollInput $consolidatedPayrollInput
      * @param unknown $ytd
      * @return unknown
      */

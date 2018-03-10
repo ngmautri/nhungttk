@@ -12,6 +12,11 @@ use Zend\View\Model\ViewModel;
  */
 class SalaryController extends AbstractActionController {
 	
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
 	public function indexAction() {
 		return new ViewModel ();
 	}
@@ -23,6 +28,16 @@ class SalaryController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function addAction() {
+	    return new ViewModel ();
+	}
+	
+	/**
+	 * Assign a Salary component for an contract revision
+	 * @param: contract revision
+	 *
+	 * @return \Zend\View\Model\ViewModel
+	 */
+	public function assignAction() {
 	    return new ViewModel ();
 	}
 	

@@ -1,6 +1,5 @@
 <?php
-namespace HR\Payroll\Decorator;
-use HR\Payroll\AbstractIncomeDecorator;
+namespace HR\Payroll\Income\Decorator;
 
 
 /**
@@ -10,12 +9,11 @@ use HR\Payroll\AbstractIncomeDecorator;
  */
 class TransportationAllowanceDecorator extends AbstractIncomeDecorator
 {
-    /**
-     * Transportation allownace is based on actual working day
-     * 
-     * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getCalculatedAmount()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
+    */
     public function getCalculatedAmount()
     {
         $payrollInput = $this->getConsolidatedPayrollInput();
@@ -27,27 +25,14 @@ class TransportationAllowanceDecorator extends AbstractIncomeDecorator
         return $this->getIncomeComponent()->getAmount()*$c2/$c1;
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getCurrentcy()
-     */
+   
     public function getCurrency()
     {}
 
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getIncomeName()
-     */
     public function getIncomeName()
     {}
 
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getAmount()
-     */
+   
     public function getAmount()
     {}
 

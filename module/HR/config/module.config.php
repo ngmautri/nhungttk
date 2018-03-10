@@ -121,6 +121,7 @@ return array(
             'HR\Controller\EmployeeContract' => 'HR\Controller\EmployeeContractControllerFactory',
             'HR\Controller\MinimumWage' => 'HR\Controller\MinimumWageControllerFactory',
             'HR\Controller\Salary' => 'HR\Controller\SalaryControllerFactory',
+            'HR\Controller\SSO' => 'HR\Controller\SSOControllerFactory',
             
         )
     ),

@@ -1,9 +1,9 @@
 <?php
-namespace HR\Payroll\Decorator\Factory;
+namespace HR\Payroll\Income\Decorator\Factory;
 
-use HR\Payroll\ConsolidatedPayrollInput;
-use HR\Payroll\IncomeInterface;
-use HR\Payroll\Decorator\TransportationAllowanceDecorator;
+use HR\Payroll\Input\ConsolidatedPayrollInput;
+use HR\Payroll\Income\IncomeInterface;
+use HR\Payroll\Income\Decorator\TransportationAllowanceDecorator;
 
 
 /**

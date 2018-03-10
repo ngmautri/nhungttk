@@ -2,25 +2,9 @@
 
 namespace WorkflowTest;
 
-use PHPUnit_Framework_TestCase;
-use Zend\Db\TableGateway;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\EventManager\EventManager;
-use Zend\EventManager\Event;
-use User\Model\UserTable;
-use WorkflowTest\Bootstrap;
 use Application\Entity\NmtProcurePr;
+use PHPUnit_Framework_TestCase;
 
-
-use Zend\Mail\Message;
-use Zend\Mail\Transport\File;
-use Zend\Mime\Part as MimePart;
-use Zend\Mime\Message as MimeMessage;
-use Zend\Mime\Mime;
-
-use Zend\Mail\Header\ContentType;
-use User\Service\Acl;
 
 class WorkflowTest extends PHPUnit_Framework_TestCase {
  	 protected $tree;

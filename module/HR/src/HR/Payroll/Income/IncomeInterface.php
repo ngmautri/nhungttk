@@ -1,5 +1,5 @@
 <?php
-namespace HR\Payroll;
+namespace HR\Payroll\Income;
 
 
 /**

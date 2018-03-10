@@ -1,6 +1,5 @@
 <?php
-namespace HR\Payroll\Decorator;
-use HR\Payroll\AbstractIncomeDecorator;
+namespace HR\Payroll\Income\Decorator;
 
 /**
  * 
@@ -12,11 +11,22 @@ class OvertimeDecorator extends AbstractIncomeDecorator
     /**
      * 
      * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getCalculatedAmount()
+     * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
      */
     public function getCalculatedAmount()
     {
+        return null;
     }
+    
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \HR\Payroll\Income\Decorator\AbstractIncomeDecorator::getDescription()
+    */
+    public function getDescription(){
+        return "Overtime = overtime*rate/26";
+    }
+    
     
     public function getIncomeName()
     {}

@@ -1,6 +1,5 @@
 <?php
-namespace HR\Payroll\Decorator;
-use HR\Payroll\AbstractIncomeDecorator;
+namespace HR\Payroll\Income\Decorator;
 
 /**
  * 
@@ -12,7 +11,7 @@ class AttendanceBonusDecorator extends AbstractIncomeDecorator
     /**
      * 
      * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getCalculatedAmount()
+     * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
      */
     public function getCalculatedAmount()
     {

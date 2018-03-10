@@ -1,5 +1,7 @@
 <?php
-namespace HR\Payroll;
+
+namespace HR\Payroll\Input;
+use HR\Payroll\Input\AbstractPayrollInput;
 
 /**
  * Consolidated Payroll Input
@@ -7,12 +9,11 @@ namespace HR\Payroll;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-Class ConsolidatedPayrollInput
+Class ConsolidatedPayrollInput extends AbstractPayrollInput implements PayrollInputInterface
 {
     private $totalWorkingDays;
     private $publicHolidays;
-    private $coporateLeaves;
-    
+    private $coporateLeaves;    
     private $actualWorkedDays;
     private $outOfOfficeDays;
     private $annualLeaves;
@@ -23,6 +24,9 @@ Class ConsolidatedPayrollInput
     private $maternityLeaves;
     private $sickLeavesPaidBySSO;
     private $overTime;
+    
+    private $numberOfWarningsLetter;    
+    private $numberOfLoadedContainer;
     
     private $otherLeaves;    
     
@@ -248,6 +252,38 @@ Class ConsolidatedPayrollInput
     {
         $this->overTime = $overTime;
     }
+    /**
+     * @return mixed
+     */
+    public function getNumberOfWarningsLetter()
+    {
+        return $this->numberOfWarningsLetter;
+    }
+
+    /**
+     * @param mixed $numberOfWarningsLetter
+     */
+    public function setNumberOfWarningsLetter($numberOfWarningsLetter)
+    {
+        $this->numberOfWarningsLetter = $numberOfWarningsLetter;
+    }
+    /**
+     * @return mixed
+     */
+    public function getNumberOfLoadedContainer()
+    {
+        return $this->numberOfLoadedContainer;
+    }
+
+    /**
+     * @param mixed $numberOfLoadedContainer
+     */
+    public function setNumberOfLoadedContainer($numberOfLoadedContainer)
+    {
+        $this->numberOfLoadedContainer = $numberOfLoadedContainer;
+    }
+
+
 
 
       

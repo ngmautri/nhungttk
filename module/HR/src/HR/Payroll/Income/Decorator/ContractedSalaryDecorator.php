@@ -1,7 +1,5 @@
 <?php
-namespace HR\Payroll\Decorator;
-
-use HR\Payroll\AbstractIncomeDecorator;
+namespace HR\Payroll\Income\Decorator;
 
 /**
  *
@@ -10,35 +8,29 @@ use HR\Payroll\AbstractIncomeDecorator;
  */
 class ContractedSalaryDecorator extends AbstractIncomeDecorator
 {
-
     /**
-     *
-     * {@inheritdoc}
-     * @see \HR\Payroll\IncomeInterface::getCalculatedAmount()
+     * 
+     * {@inheritDoc}
+     * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
      */
     public function getCalculatedAmount()
     {
         $payrollInput = $this->getConsolidatedPayrollInput();
-        
+        $payrollInput->getEmployee()->getEmployeeCode();
         $c1 = $payrollInput->getTotalWorkingDays();
         $c2 = $payrollInput->getActualWorkedDays();
         $c3 = $payrollInput->getPaidSickleaves();
-        return $this->getIncomeComponent()->getAmount() * ($c2 + $c3) / $c1;
+        return $this->getIncomeComponent()->getAmount() * (($c2 + $c3) / $c1);
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \HR\Payroll\IncomeInterface::getIncomeName()
-     */
+    public function getDescription()
+    {
+        return "Calculated base on paid days divided by total working days in period";
+    }
+
     public function getIncomeName()
     {}
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \HR\Payroll\IncomeInterface::getAmount()
-     */
     public function getAmount()
     {}
 

@@ -1,6 +1,5 @@
 <?php
-namespace HR\Payroll\Decorator;
-use HR\Payroll\AbstractIncomeDecorator;
+namespace HR\Payroll\Income\Decorator;
 
 /**
  * Full Payment decorator
@@ -14,7 +13,7 @@ class FullPaymentDecorator extends AbstractIncomeDecorator
     /**
      * 
      * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getCalculatedAmount()
+     * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
      */
     public function getCalculatedAmount()
     {
@@ -25,7 +24,7 @@ class FullPaymentDecorator extends AbstractIncomeDecorator
     /**
      * 
      * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getCurrency()
+     * @see \HR\Payroll\Income\IncomeInterface::getCurrency()
      */
     public function getCurrency()
     {}
@@ -33,7 +32,7 @@ class FullPaymentDecorator extends AbstractIncomeDecorator
     /**
      * 
      * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getIncomeName()
+     * @see \HR\Payroll\Income\IncomeInterface::getIncomeName()
      */
     public function getIncomeName()
     {}
@@ -41,7 +40,7 @@ class FullPaymentDecorator extends AbstractIncomeDecorator
     /**
      * 
      * {@inheritDoc}
-     * @see \HR\Payroll\IncomeInterface::getAmount()
+     * @see \HR\Payroll\Income\IncomeInterface::getAmount()
      */
     public function getAmount()
     {}

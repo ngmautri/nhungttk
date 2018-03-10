@@ -1,7 +1,9 @@
 <?php
-namespace HR\Payroll;
+namespace HR\Payroll\Income\Decorator;
 
 use HR\Payroll\Exception\InvalidArgumentException;
+use HR\Payroll\Income\IncomeInterface;
+use HR\Payroll\Input\ConsolidatedPayrollInput;
 
 /**
  *
@@ -14,6 +16,8 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
     protected $incomeComponent;
     protected $consolidatedPayrollInput; 
     protected $identifer;
+    protected $description;
+    
 
     /**
      * 
@@ -46,16 +50,17 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
         return $this->identifer;
     }
 
-    /**
-     *
-     * @return \HR\Payroll\IncomeInterface
-     */
+   /**
+    * 
+    * @return \HR\Payroll\Income\IncomeInterface
+    */
     public function getIncomeComponent()
     {
         return $this->incomeComponent;
     }
     /**
-     * @return \HR\Payroll\ConsolidatedPayrollInput
+     * 
+     * @return unknown|\HR\Payroll\Input\ConsolidatedPayrollInput
      */
     public function getConsolidatedPayrollInput()
     {
@@ -63,7 +68,8 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
     }
 
     /**
-     * @param \HR\Payroll\ConsolidatedPayrollInput $consolidatedPayrollInput
+     * 
+     * @param unknown $consolidatedPayrollInput
      */
     public function setConsolidatedPayrollInput($consolidatedPayrollInput)
     {
@@ -76,7 +82,21 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
     {
         $this->identifer = $identifer;
     }
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
 
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
 
 }
 

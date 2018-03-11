@@ -40,8 +40,9 @@ class LoyaltyBonusDecorator extends AbstractIncomeDecorator
      */
     public function getDescription()
     {
-        return "Loyalty has been applied since 1st January 2018. 
-It is calculated base on hire (re-hired) date and the end date of the salary period.";
+        $des=$this->incomeComponent->getDescription() ."\n";
+        $des= $des. "It is calculated base on hire (re-hired) date and the end date of the salary period.";
+        return $des;
     }
     
 }

@@ -1,0 +1,18 @@
+
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general"><?php echo $this->translate('Income Calculation Method'); ?></a></li>
+	</ul>
+	<div id="general" style="font-size: 9.5pt">
+	
+	<ul>
+		
+	<?php foreach ($decorators as $d):
+	/**@var \HR\Payroll\Income\Decorator\AbstractIncomeDecorator $d ; */
+        echo "<li>" . $d. "</li>";
+     endforeach;?>
+	</ul>
+
+	</div>
+</div>

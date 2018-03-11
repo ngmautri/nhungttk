@@ -17,9 +17,19 @@ class TransportationAllowanceDecorator extends AbstractIncomeDecorator
     public function getCalculatedAmount()
     {
         $payrollInput = $this->getConsolidatedPayrollInput();
-        
         $c1 = $payrollInput->getTotalWorkingDays();
         $c2 = $payrollInput->getActualWorkedDays();
         return $this->getIncomeComponent()->getAmount()*$c2/$c1;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     * @see \HR\Payroll\Income\Decorator\AbstractIncomeDecorator::getDescription()
+     */
+    public function getDescription()
+    {
+        // TODO Auto-generated method stub
+        return "Transporation amount 120.000 LAK.";
     }
 }

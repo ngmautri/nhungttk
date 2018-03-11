@@ -1,7 +1,7 @@
 <?php
 
 namespace HR\Payroll\Income;
-use HR\Payroll\PaymentFrequency;
+
 
 
 /**
@@ -19,8 +19,10 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     private $currency;
     private $amount;
     private $calculatedAmount;
-    
+   
+    private $paymentFrequency;
     private $decoratorFactory;
+    private $description;
     
   
     /**
@@ -125,16 +127,47 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     {
         
     }
-    
+   
     /**
-     * 
-     * {@inheritDoc}
-     * @see \HR\Payroll\Income\AbstractIncomeComponent::getPaymentFrequency()
+     * @return unknown
      */
+    public function getDecoratorFactory()
+    {
+        return $this->decoratorFactory;
+    }
+
+    /**
+     * @param unknown $decoratorFactory
+     */
+    public function setDecoratorFactory($decoratorFactory)
+    {
+        $this->decoratorFactory = $decoratorFactory;
+    }
+    /**
+     * @param mixed $paymentFrequency
+     */
+    public function setPaymentFrequency($paymentFrequency)
+    {
+        $this->paymentFrequency = $paymentFrequency;
+    }
     public function getPaymentFrequency()
     {
-        return PaymentFrequency::MONTHLY;
+        return $this->paymentFrequency;
     }
+    
+    public function getDescription()
+    {
+        return $this->description;
+    }
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+
 
 }
 

@@ -26,16 +26,5 @@ class OvertimeDecorator extends AbstractIncomeDecorator
     public function getDescription(){
         return "Overtime = overtime*rate/26";
     }
-    
-    
-    public function getIncomeName()
-    {}
-
-    public function getAmount()
-    {}
-    public function getCurrency()
-    {}
-
-
-
+  
 }

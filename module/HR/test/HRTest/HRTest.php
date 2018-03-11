@@ -7,6 +7,10 @@ use HR\Payroll\Payroll;
 use HR\Payroll\Income\GenericIncomeComponent;
 use HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactoryRegistry;
 use HR\Payroll\Input\ConsolidatedPayrollInput;
+use HR\Payroll\Income\Factory\AttendanceBonusFactory;
+use HR\Payroll\Income\Factory\BasicSalaryFactory;
+use HR\Payroll\Income\Factory\FixedAmountFactory;
+use HR\Payroll\Income\Factory\LoyaltyBonusFactory;
 
 /**
  * test hr
@@ -34,25 +38,29 @@ class HRTest extends phpunit_framework_testcase
             $incomeList = array();
             
             // $sv = bootstrap::getservicemanager ()->get ( 'hr\service\employeesearchservice' );
-            $incomeComponent = new GenericIncomeComponent("basic salary", 1000000, 0, "usd", TRUE, TRUE, TRUE);
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory("HR\Payroll\Income\Decorator\Factory\ContractedSalaryDecoratorFactory");
-            /** @var \HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactory  $decoratedIncome; */
+            $incomeFactory= new BasicSalaryFactory(900000, "LAK");
+            $incomeComponent = $incomeFactory->createIncomeComponent();
+            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
             $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
             $incomeList[] = $decoratedIncome;
             
-            $incomeComponent = new GenericIncomeComponent("Loyalty Bonus", 0, 0, "usd", TRUE, FALSE, TRUE);
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory("HR\Payroll\Income\Decorator\Factory\LoyaltyBonusDecoratorFactory");
-            /** @var \HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactory  $decoratedIncome; */
+            $incomeFactory= new FixedAmountFactory(217000, "LAK");
+            $incomeComponent = $incomeFactory->createIncomeComponent();
+            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
+            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
+            $incomeList[] = $decoratedIncome;
+                  
+            $incomeFactory= new AttendanceBonusFactory(350000, "LAK");
+            $incomeComponent = $incomeFactory->createIncomeComponent();
+            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
             $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
             $incomeList[] = $decoratedIncome;
             
-            
-            $incomeComponent = new GenericIncomeComponent("Transportation  Allowance", 120000, 0, "usd", TRUE, FALSE, TRUE);
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory("HR\Payroll\Income\Decorator\Factory\TransportationAllowanceDecoratorFactory");
-            /** @var \HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactory  $decoratedIncome; */
+            $incomeFactory= new LoyaltyBonusFactory(0, "LAK");
+            $incomeComponent = $incomeFactory->createIncomeComponent();
+            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
             $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
             $incomeList[] = $decoratedIncome;
-            
             
             /*
              * echo sprintf('identifer" "%s"; calculated salary:"%s"; description: "%s"',

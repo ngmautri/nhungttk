@@ -2,12 +2,12 @@
 namespace HR\Payroll\Income\Decorator;
 
 use HR\Payroll\Exception\InvalidArgumentException;
-use HR\Payroll\Income\AbstractIncomeComponent;
 use HR\Payroll\Income\IncomeInterface;
 use HR\Payroll\Input\ConsolidatedPayrollInput;
 
 /**
- *
+ * Abstract Income Decorator to calculate income.
+ * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
@@ -19,8 +19,6 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
     protected $consolidatedPayrollInput;
 
     protected $identifer;
-
-    protected $description;
 
     /**
      *
@@ -93,7 +91,7 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
      */
     public function getDescription()
     {
-        return $this->description;
+        return $this->incomeComponent->getDescription();
     }
 
     /**

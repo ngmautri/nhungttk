@@ -15,7 +15,6 @@ Interface IncomeInterface
     public function getIncomeName();
 
     /**
-     * Get amount of income.
      * Original Amount
      */
     public function getAmount();
@@ -34,10 +33,24 @@ Interface IncomeInterface
      * SSO Payble
      */
     public function isSSOPayable();
-
+    
+    /**
+     * Pay or not pay
+     */
     public function isPayable();
 
+    /**
+     * Decorator, Income calculation
+     */
     public function getIncomeDecoratorFactory();
 
+    /**
+     * Payment Frequency
+     */
     public function getPaymentFrequency();
+    
+    /**
+     * Payment Description
+     */
+    public function getDescription();
 }

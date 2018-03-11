@@ -1,7 +1,6 @@
 <?php
 namespace HR\Payroll;
 
-use HR\Payroll\Income\AbstractIncomeComponent;
 use HR\Payroll\Income\GenericIncomeComponent;
 use HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactoryRegistry;
 use HR\Payroll\Exception\LogicException;
@@ -35,6 +34,10 @@ class Payroll
         $this->incomeList = $incomeList;
     }
 
+    /**
+     * Calculation 
+     * @throws LogicException
+     */
     public function calculate()
     {
         $incomeList = $this->incomeList;
@@ -46,8 +49,7 @@ class Payroll
             if (! $income instanceof AbstractIncomeDecorator) {
                throw new LogicException("Invalid argurment! IncomeComponent Decorator is expected.");
             }
-            
-            $grossAmount = $grossAmount + $income->getCalculatedAmount();
+               $grossAmount = $grossAmount + $income->getCalculatedAmount();
             
             if ($income->isSSOPayable()) {
                 $ssoIncomeAmount = $ssoIncomeAmount + $income->getCalculatedAmount();
@@ -55,14 +57,16 @@ class Payroll
             if ($income->isPITPayable()) {
                 $pitIncomeAmount = $pitIncomeAmount + $income->getCalculatedAmount();
             }
+            
+            echo "\n Income Name: ". $income->getIncomeName(). "\n Description: ". $income->getDescription() . "--\n Amount: " . $income->getAmount() ."--\n Calculated Amount:". $income->getCalculatedAmount()."--\n";
+            
         }
         
         $ssoIncome = new GenericIncomeComponent("SSO Payable", $ssoIncomeAmount, 0, "usd", FALSE, FALSE, FALSE);
         $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory("HR\Payroll\Income\Decorator\Factory\SSOIncomeDecoratorFactory");
         /** @var \HR\Payroll\Income\Decorator\AbstractIncomeDecorator  $decoratedIncome ; */
         $decoratedIncome = $n->createIncomeDecorator($ssoIncome, $this->payrollInput, 2018);
-        echo $decoratedIncome->getDescription() . "--" . $decoratedIncome->getCalculatedAmount();
-        
+          
         $pitBase = $pitIncomeAmount-1000000 - $decoratedIncome->getCalculatedAmount();
         $pit = new GenericIncomeComponent("PIT Payable", $pitBase, 0, "usd", FALSE, FALSE, FALSE);
          
@@ -73,7 +77,7 @@ class Payroll
         echo $decoratedIncome->getDescription() . "--Base " . $decoratedIncome->getAmount() ."-- PIT". $decoratedIncome->getCalculatedAmount();
         
         
-        echo sprintf('SSO: " "%s"; PIT:"%s"; Gross: "%s"', $ssoIncomeAmount, $pitIncomeAmount, $grossAmount);
+        echo sprintf('SSO: " "%s";\n PIT:"%s";\n Gross: "%s"', $ssoIncomeAmount, $pitIncomeAmount, $grossAmount);
     }
 }
  

@@ -15,8 +15,7 @@ class SSOIncomeDecorator extends AbstractIncomeDecorator
     */
     public function getCalculatedAmount()
     {    
-        $this->getAmount();
-        return $this->getAmount()*5.5/100;
+         return $this->getAmount()*5.5/100;
     }
     /**
      * {@inheritDoc}
@@ -25,7 +24,7 @@ class SSOIncomeDecorator extends AbstractIncomeDecorator
     public function getDescription()
     {
         // TODO Auto-generated method stub
-        return "SSO in 5.5%";
+        return "SSO Employee Contribution: 5.5%";
     }
 
     

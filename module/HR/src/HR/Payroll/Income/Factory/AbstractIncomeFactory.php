@@ -8,21 +8,35 @@ use HR\Payroll\Income\IncomeInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-Abstract class AbstractIncomeFactory
+abstract class AbstractIncomeFactory
 {
+    private $amount;
+    private $currency;
     
+   /**
+    * 
+    * @param number $amount
+    * @param unknown $currency
+    */
+    function __construct($amount=0, $currency=null){
+        $this->amount = $amount;
+        $this->currency = $currency;
+    }
     
+   /**
+    * 
+    * @return unknown
+    */
     public function createIncomeComponent(){
-        $income =  $this->createIncome();
+        $income =  $this->createIncome($this->amount, $this->currency);
         return $income;
     }
   
     
-    /**
-     * 
-     * @param IncomeInterface $incomeComponent
-     * @param unknown $ytd
-     */
-    protected abstract function createIncome();
+   /**
+    * 
+    * @param number $amount
+    */
+    protected abstract function createIncome($currency);
     
 }

@@ -122,6 +122,8 @@ return array(
             'HR\Controller\MinimumWage' => 'HR\Controller\MinimumWageControllerFactory',
             'HR\Controller\Salary' => 'HR\Controller\SalaryControllerFactory',
             'HR\Controller\SSO' => 'HR\Controller\SSOControllerFactory',
+            'HR\Controller\IncomeSetup' => 'HR\Controller\IncomeSetupControllerFactory',
+            'HR\Controller\IncomeDecorator' => 'HR\Controller\IncomeDecoratorControllerFactory',
             
         )
     ),

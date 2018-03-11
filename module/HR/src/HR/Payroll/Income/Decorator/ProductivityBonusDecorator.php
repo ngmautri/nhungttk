@@ -15,17 +15,7 @@ class AttendanceBonusDecorator extends AbstractIncomeDecorator
      */
     public function getCalculatedAmount()
     {
-        return;
+        return $this->getAmount();
     }
-    
-    public function getIncomeName()
-    {}
-
-    public function getAmount()
-    {}
-    public function getCurrency()
-    {}
-
-
-
+  
 }

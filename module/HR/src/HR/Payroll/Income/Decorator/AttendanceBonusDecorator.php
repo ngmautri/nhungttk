@@ -25,14 +25,18 @@ class AttendanceBonusDecorator extends AbstractIncomeDecorator
         return $this->getIncomeComponent()->getAmount() * $percentage;
     }
     
-    public function getIncomeName()
-    {}
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \HR\Payroll\Income\Decorator\AbstractIncomeDecorator::getDescription()
+     */
+    public function getDescription()
+    {
+        $des=$this->incomeComponent->getDescription() ."\n";
+        $des= $des."Calculation: based on unapproved and approved leaves.";
+        
+        return $des;
+    }
 
-    public function getAmount()
-    {}
-    public function getCurrency()
-    {}
-
-
-
+ 
 }

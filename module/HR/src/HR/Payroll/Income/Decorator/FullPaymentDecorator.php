@@ -18,32 +18,19 @@ class FullPaymentDecorator extends AbstractIncomeDecorator
     public function getCalculatedAmount()
     {
         //return unmodified amount   
-        return parent::getAmount();
+        return $this->getAmount();
     }
     
     /**
-     * 
      * {@inheritDoc}
-     * @see \HR\Payroll\Income\IncomeInterface::getCurrency()
+     * @see \HR\Payroll\Income\Decorator\AbstractIncomeDecorator::getDescription()
      */
-    public function getCurrency()
-    {}
+    public function getDescription()
+    {
+        // TODO Auto-generated method stub
+        $des="No modification!";
+        return $des;
+    }
 
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \HR\Payroll\Income\IncomeInterface::getIncomeName()
-     */
-    public function getIncomeName()
-    {}
-    
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \HR\Payroll\Income\IncomeInterface::getAmount()
-     */
-    public function getAmount()
-    {}
-
-
+   
 }

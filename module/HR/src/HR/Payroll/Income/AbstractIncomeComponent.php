@@ -8,7 +8,7 @@ namespace HR\Payroll\Income;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-abstract class AbstractIncomeComponent implements IncomeInterface{
+Abstract class AbstractIncomeComponent implements IncomeInterface{
     
     private $incomeName;
     private $isPITPayable;
@@ -34,7 +34,7 @@ abstract class AbstractIncomeComponent implements IncomeInterface{
      * @param unknown $isPayable
      * @param unknown $decoratorFactory
      */
-    function __construct($incomeName=null, $amount, $calculatedAmount=null,$currency,
+    function __construct($incomeName=null, $amount=0, $calculatedAmount=0,$currency,
         $isPITPayable,$isSSOPayable,$isPayable,$decoratorFactory=null)
     {
         $this->incomeName = $incomeName;

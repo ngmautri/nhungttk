@@ -1,7 +1,6 @@
 <?php
 
 namespace HR\Payroll\Input;
-use HR\Payroll\Input\AbstractPayrollInput;
 
 /**
  * Consolidated Payroll Input
@@ -13,7 +12,8 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput implements PayrollIn
 {
     private $totalWorkingDays;
     private $publicHolidays;
-    private $coporateLeaves;    
+    private $coporateLeaves;
+    
     private $actualWorkedDays;
     private $outOfOfficeDays;
     private $annualLeaves;
@@ -23,6 +23,7 @@ Class ConsolidatedPayrollInput extends AbstractPayrollInput implements PayrollIn
     private $unapprovedLeaves;
     private $maternityLeaves;
     private $sickLeavesPaidBySSO;
+    
     private $overTime;
     
     private $numberOfWarningsLetter;    

@@ -28,12 +28,5 @@ class ContractedSalaryDecorator extends AbstractIncomeDecorator
         return "Calculated base on paid days divided by total working days in period";
     }
 
-    public function getIncomeName()
-    {}
-
-    public function getAmount()
-    {}
-
-    public function getCurrency()
-    {}
+   
 }

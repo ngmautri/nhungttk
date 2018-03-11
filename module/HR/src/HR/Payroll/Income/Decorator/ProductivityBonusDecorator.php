@@ -15,8 +15,7 @@ class AttendanceBonusDecorator extends AbstractIncomeDecorator
      */
     public function getCalculatedAmount()
     {
-         //base on unapproved leave, approved leave
-        parent::getAmount()*parent::getConsolidatedPayrollInput()->getActualWorkedDays()/parent::getConsolidatedPayrollInput()->getTotalWorkingDays();
+        return;
     }
     
     public function getIncomeName()

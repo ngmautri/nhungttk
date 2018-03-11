@@ -3,20 +3,50 @@
 namespace HR\Payroll\Income;
 
 /**
- * Abstract Income Componente
+ * Abstract Income Component
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 abstract class AbstractIncomeComponent implements IncomeInterface{
-   
-    abstract public function isPITPayable();
     
-    abstract public function isSSOPayable();
+    private $incomeName;
+    private $isPITPayable;
+    private $isSSOPayable;
+    private $isPayable;
     
-    abstract public function isPayable();
+    private $currency;
+    private $amount;
+    private $calculatedAmount;    
     
-    abstract public function getIncomeDecoratorFactory();
+    private $decoratorFactory;
+    private $paymentFrequency;
+    
+    
+    /**
+     * 
+     * @param unknown $incomeName
+     * @param unknown $amount
+     * @param unknown $calculatedAmount
+     * @param unknown $currency
+     * @param unknown $isPITPayable
+     * @param unknown $isSSOPayable
+     * @param unknown $isPayable
+     * @param unknown $decoratorFactory
+     */
+    function __construct($incomeName=null, $amount, $calculatedAmount=null,$currency,
+        $isPITPayable,$isSSOPayable,$isPayable,$decoratorFactory=null)
+    {
+        $this->incomeName = $incomeName;
+        $this->amount = $amount;
+        $this->calculatedAmount = $amount;
+        $this->currency = $currency;
+        $this->isPayable = $isPayable;
+        $this->isPITPayable = $isPITPayable;
+        $this->isSSOPayable = $isSSOPayable;
+        $this->decoratorFactory=$decoratorFactory;
+    }
+ 
 }
 
 

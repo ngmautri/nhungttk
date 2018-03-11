@@ -15,17 +15,20 @@ class SSOIncomeDecorator extends AbstractIncomeDecorator
     */
     public function getCalculatedAmount()
     {    
-       
+        $this->getAmount();
+        return $this->getAmount()*5.5/100;
     }
+    /**
+     * {@inheritDoc}
+     * @see \HR\Payroll\Income\Decorator\AbstractIncomeDecorator::getDescription()
+     */
+    public function getDescription()
+    {
+        // TODO Auto-generated method stub
+        return "SSO in 5.5%";
+    }
+
     
-    public function getIncomeName()
-    {}
-
-    public function getAmount()
-    {}
-    public function getCurrency()
-    {}
-
-
-
+    
+ 
 }

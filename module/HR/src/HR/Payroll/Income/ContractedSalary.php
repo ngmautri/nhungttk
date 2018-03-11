@@ -10,7 +10,7 @@ use HR\Payroll\PaymentFrequency;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GenericIncomeComponent extends AbstractIncomeComponent{
+class ContractedSalary extends AbstractIncomeComponent{
     
     private $incomeName;
     private $isPITPayable;
@@ -23,16 +23,17 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     private $decoratorFactory;
     
   
-    /**
-     * Immutable Object
-     * @param unknown $incomeName
-     * @param unknown $amount
-     * @param unknown $calculatedAmount
-     * @param unknown $currency
-     * @param unknown $isPITPayable
-     * @param unknown $isSSOPayable
-     * @param unknown $isPayable
-     */
+   /**
+    * 
+    * @param unknown $incomeName
+    * @param unknown $amount
+    * @param unknown $calculatedAmount
+    * @param unknown $currency
+    * @param unknown $isPITPayable
+    * @param unknown $isSSOPayable
+    * @param unknown $isPayable
+    * @param unknown $decoratorFactory
+    */
     function __construct($incomeName=null, $amount, $calculatedAmount=null,$currency,
         $isPITPayable,$isSSOPayable,$isPayable,$decoratorFactory=null)
     {
@@ -135,6 +136,9 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     {
         return PaymentFrequency::MONTHLY;
     }
+
+
+
 
 }
 

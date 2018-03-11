@@ -13,11 +13,11 @@ use HR\Payroll\Income\Decorator\TransportationAllowanceDecorator;
  */
 Class TransportationAllowanceDecoratorFactory extends AbstractDecoratorFactory
 {
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \HR\Payroll\Decorator\Factory\AbstractDecoratorFactory::createDecorator()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactory::createDecorator()
+    */
     protected function createDecorator(IncomeInterface $incomeComponent,
         ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd)
     {

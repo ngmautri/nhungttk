@@ -20,21 +20,6 @@ class TransportationAllowanceDecorator extends AbstractIncomeDecorator
         
         $c1 = $payrollInput->getTotalWorkingDays();
         $c2 = $payrollInput->getActualWorkedDays();
-        $c3 = $payrollInput->getPaidSickleaves();
-        
         return $this->getIncomeComponent()->getAmount()*$c2/$c1;
     }
-
-   
-    public function getCurrency()
-    {}
-
-    public function getIncomeName()
-    {}
-
-   
-    public function getAmount()
-    {}
-
-    
 }

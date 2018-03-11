@@ -13,7 +13,6 @@
 	<li><a href="/hr/reporting/index"><small><span
 				class="glyphicon glyphicon-list"></span></small>&nbsp;&nbsp;<?php echo $this->translate('Reporting'); ?></a></li>
 	<li class="divider"></li>
-	<li><a href="/hr/setting/index"><small><span
-				class="glyphicon glyphicon-wrench"></span></small>&nbsp;&nbsp;<?php echo $this->translate('Setup'); ?></a></li>
+	<li><a href="/hr/setting/index"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Setup'); ?></a></li>
 
 </ul>

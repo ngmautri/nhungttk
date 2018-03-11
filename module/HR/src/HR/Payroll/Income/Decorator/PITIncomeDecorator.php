@@ -15,16 +15,19 @@ class PITIncomeDecorator extends AbstractIncomeDecorator
     */
     public function getCalculatedAmount()
     {    
+       return $this->getAmount()*0.05;
     }
+    /**
+     * {@inheritDoc}
+     * @see \HR\Payroll\Income\Decorator\AbstractIncomeDecorator::getDescription()
+     */
+    public function getDescription()
+    {
+        // TODO Auto-generated method stub
+        return "PIT 5%";
+    }
+
     
-    public function getIncomeName()
-    {}
-
-    public function getAmount()
-    {}
-    public function getCurrency()
-    {}
-
-
-
+    
+ 
 }

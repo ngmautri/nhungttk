@@ -13,7 +13,7 @@ Class Employee
     private $employeeName;
     
     private $status;
-    private $startDate;
+    private $startWorkingDate;
     
     /**
      * @return mixed
@@ -39,13 +39,7 @@ Class Employee
         return $this->status;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getStartDate()
-    {
-        return $this->startDate;
-    }
+   
 
     /**
      * @param mixed $employeeCode
@@ -70,16 +64,38 @@ Class Employee
     {
         $this->status = $status;
     }
-
     /**
-     * @param mixed $startDate
+     * @return mixed
      */
-    public function setStartDate($startDate)
+    public function getEmployeeName()
     {
-        $this->startDate = $startDate;
+        return $this->employeeName;
     }
 
-    
+    /**
+     * @return mixed
+     */
+    public function getStartWorkingDate()
+    {
+        return $this->startWorkingDate;
+    }
+
+    /**
+     * @param mixed $employeeName
+     */
+    public function setEmployeeName($employeeName)
+    {
+        $this->employeeName = $employeeName;
+    }
+
+    /**
+     * @param mixed $startWorkingDate
+     */
+    public function setStartWorkingDate($startWorkingDate)
+    {
+        $this->startWorkingDate = $startWorkingDate;
+    }
+
+
    
-  
 }

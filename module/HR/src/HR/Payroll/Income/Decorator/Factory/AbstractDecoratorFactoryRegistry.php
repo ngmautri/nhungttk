@@ -59,6 +59,9 @@ class AbstractDecoratorFactoryRegistry
         $s = new PITIncomeDecoratorFactory();
         $supportedFactory[] = get_class($s);
         
+        $s = new LoyaltyBonusDecoratorFactory();
+        $supportedFactory[] = get_class($s);
+        
        
         return $supportedFactory;
     }

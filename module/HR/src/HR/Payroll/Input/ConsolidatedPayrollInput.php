@@ -8,7 +8,7 @@ namespace HR\Payroll\Input;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-Class ConsolidatedPayrollInput extends AbstractPayrollInput implements PayrollInputInterface
+Class ConsolidatedPayrollInput extends AbstractPayrollInput
 {
     private $totalWorkingDays;
     private $publicHolidays;

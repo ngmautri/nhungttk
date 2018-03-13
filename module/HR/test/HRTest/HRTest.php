@@ -11,6 +11,9 @@ use HR\Payroll\Income\Factory\AttendanceBonusFactory;
 use HR\Payroll\Income\Factory\BasicSalaryFactory;
 use HR\Payroll\Income\Factory\FixedAmountFactory;
 use HR\Payroll\Income\Factory\LoyaltyBonusFactory;
+use HR\Payroll\Income\Factory\TransportationBonusFactory;
+use HR\Payroll\Income\Factory\OneTimeBonusFactory;
+use HR\Payroll\Income\Factory\AnnualBonusFactory;
 
 /**
  * test hr
@@ -29,6 +32,9 @@ class HRTest extends phpunit_framework_testcase
             $employee->setemployeecode("0651");
             $employee->setstatus("LC");
             $employee->setstartworkingdate(new \DateTime("2008-11-01"));
+            
+            $incomeFactory= new BasicSalaryFactory(900000, "LAK");
+            $employee->setBasicSalary($incomeFactory->createIncomeComponent());
             
             $input = new ConsolidatedPayrollInput($employee, new \Datetime('2018-01-01'), new \Datetime('2018-01-31'));
             $input->setactualworkeddays(23);
@@ -57,6 +63,25 @@ class HRTest extends phpunit_framework_testcase
             $incomeList[] = $decoratedIncome;
             
             $incomeFactory= new LoyaltyBonusFactory(0, "LAK");
+            $incomeComponent = $incomeFactory->createIncomeComponent();
+            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
+            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
+            $incomeList[] = $decoratedIncome;
+            
+            
+            $incomeFactory= new TransportationBonusFactory(120000, "LAK");
+            $incomeComponent = $incomeFactory->createIncomeComponent();
+            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
+            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
+            $incomeList[] = $decoratedIncome;
+            
+            $incomeFactory= new OneTimeBonusFactory(135000, "LAK");
+            $incomeComponent = $incomeFactory->createIncomeComponent();
+            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
+            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
+            $incomeList[] = $decoratedIncome;
+            
+            $incomeFactory= new AnnualBonusFactory(900000, "LAK");
             $incomeComponent = $incomeFactory->createIncomeComponent();
             $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
             $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);

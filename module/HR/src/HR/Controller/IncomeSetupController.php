@@ -3,6 +3,7 @@ namespace HR\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use HR\Payroll\Income\Factory\AbstractIncomeFactoryRegistry;
 
 /**
  * 
@@ -17,6 +18,10 @@ class IncomeSetupController extends AbstractActionController {
      * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
      */
 	public function indexAction() {
-		return new ViewModel ();
+	    
+	    $incomes = AbstractIncomeFactoryRegistry::getSupportedFactory();
+	    return new ViewModel(array(
+	        'incomes' => $incomes
+	    ));
 	}
 }

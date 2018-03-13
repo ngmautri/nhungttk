@@ -28,8 +28,10 @@ class FullPaymentDecorator extends AbstractIncomeDecorator
     public function getDescription()
     {
         // TODO Auto-generated method stub
-        $des="No modification!";
+        $des=$this->incomeComponent->getDescription() ."\n";
+        $des= $des. "It will be paid fullly";
         return $des;
+        
     }
 
    

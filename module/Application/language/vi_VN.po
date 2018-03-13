@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-08 23:53+0700\n"
-"PO-Revision-Date: 2018-03-08 23:55+0700\n"
+"POT-Creation-Date: 2018-03-11 17:26+0700\n"
+"PO-Revision-Date: 2018-03-11 17:28+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -381,6 +381,7 @@ msgstr "Đóng"
 
 #: HR/view/hr/employee-contract/add.phtml:5
 #: HR/view/hr/employee-contract/index.phtml:5 HR/view/hr/setting/index.phtml:5
+#: HR/view/hr/setting/index.phtml:23
 msgid "HR SETTING"
 msgstr "Thiết Lập HR"
 
@@ -388,7 +389,7 @@ msgstr "Thiết Lập HR"
 #: HR/view/hr/employee-contract/index.phtml:9
 #: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
 #: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
-#: HR/view/hr/setting/index.phtml:11 Application/view/hr_menu.php:11
+#: HR/view/hr/setting/index.phtml:13 Application/view/hr_menu.php:11
 msgid "Leave Reason"
 msgstr "Lý do nghỉ"
 
@@ -428,10 +429,8 @@ msgid "Number of Revision"
 msgstr "Số lần sửa"
 
 #: HR/view/hr/employee-contract/list1.phtml:25
-#, fuzzy
-#| msgid "Actual Working Days"
 msgid "Start Working Date"
-msgstr "Ngày làm việc thực tế"
+msgstr "Ngày bắt đầu làm việc"
 
 #: HR/view/hr/employee-contract/list1.phtml:26
 msgid "Termination Date"
@@ -565,14 +564,20 @@ msgid "Search Employee"
 msgstr "Tìm nhân viên"
 
 #: HR/view/hr/employee/list.phtml:42
-#, fuzzy
-#| msgid "Filter"
 msgid "Filter by"
-msgstr "Lọc"
+msgstr "Lọc theo"
 
 #: HR/view/hr/employee/show.phtml:25
 msgid "Disciplinary"
 msgstr "Kỷ luật"
+
+#: HR/view/hr/income-decorator/index.phtml:5 HR/view/hr/setting/index.phtml:17
+msgid "Income Calculation Method"
+msgstr "Phương pháp tính thu nhập"
+
+#: HR/view/hr/income-setup/index.phtml:5 HR/view/hr/setting/index.phtml:16
+msgid "Income Setup"
+msgstr "Thiết lập các khoản thu nhập"
 
 #: HR/view/hr/leave-reason/add.phtml:19 HR/view/hr/leave-reason/list.phtml:8
 msgid "New Leave Reason"
@@ -599,12 +604,10 @@ msgid "Cancel"
 msgstr "Thoát"
 
 #: HR/view/hr/minimum-wage/index.phtml:5
-#, fuzzy
-#| msgid "User Management"
 msgid "Minimum Wage Management"
-msgstr "Quản lý người dùng"
+msgstr "Quản lý Lương tối thiểu"
 
-#: HR/view/hr/minimum-wage/index.phtml:14 HR/view/hr/setting/index.phtml:12
+#: HR/view/hr/minimum-wage/index.phtml:14 HR/view/hr/setting/index.phtml:14
 msgid "Minimum Wage"
 msgstr "Lương tối thiểu"
 
@@ -621,10 +624,8 @@ msgid "Effective to"
 msgstr "Có giá trị đến"
 
 #: HR/view/hr/minimum-wage/index.phtml:31 HR/view/hr/sso/index.phtml:31
-#, fuzzy
-#| msgid "Active"
 msgid "Inactive"
-msgstr "hoạt động"
+msgstr "không hoạt động"
 
 #: HR/view/hr/minimum-wage/index.phtml:41 HR/view/hr/sso/index.phtml:41
 msgid "Update"
@@ -650,31 +651,21 @@ msgstr "Báo cáo quý"
 msgid "Annual Reporting"
 msgstr "Báo cáo năm"
 
-#: HR/view/hr/setting/index.phtml:13
+#: HR/view/hr/setting/index.phtml:15
 msgid "Social Security (SSO)"
 msgstr "Bảo hiểm xã hội (SSO)"
 
-#: HR/view/hr/setting/index.phtml:14
-msgid "Default Income Setup"
-msgstr "Thiết lập các khoản thu nhập"
-
-#: HR/view/hr/setting/index.phtml:15
-msgid "Default Bonus Setup"
-msgstr "Thiết lập Bonus"
-
-#: HR/view/hr/setting/index.phtml:16
+#: HR/view/hr/setting/index.phtml:18
 msgid "Default Allowances Setup"
 msgstr "Thiết lập các khác trợ cấp"
 
-#: HR/view/hr/setting/index.phtml:17
+#: HR/view/hr/setting/index.phtml:19
 msgid "Default Deduction Setup"
 msgstr "Thiết lập các khoản khấu trừ"
 
 #: HR/view/hr/sso/index.phtml:5
-#, fuzzy
-#| msgid "User Management"
 msgid "Social Security Management"
-msgstr "Quản lý người dùng"
+msgstr "Quản lý Bảo Hiểm Xã hội"
 
 #: HR/view/hr/sso/index.phtml:14
 msgid "SSO Rate"
@@ -724,7 +715,7 @@ msgstr "Thêm nhân viên"
 msgid "Finger Scan"
 msgstr "Dữ liệu vân tay"
 
-#: Application/view/hr_menu.php:17 Application/view/navbar.php:77
+#: Application/view/hr_menu.php:16 Application/view/navbar.php:77
 msgid "Setup"
 msgstr "Cài Đặt"
 
@@ -787,6 +778,9 @@ msgstr ""
 #: Application/view/setting_menu.php:20
 msgid "System Information"
 msgstr "Thông tin hệ thống"
+
+#~ msgid "Default Bonus Setup"
+#~ msgstr "Thiết lập Bonus"
 
 #~ msgid "Business Partner"
 #~ msgstr "Doi tac"

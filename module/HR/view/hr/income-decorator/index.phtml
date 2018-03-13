@@ -7,12 +7,40 @@
 	<div id="general" style="font-size: 9.5pt">
 	
 	<ul>
+
+<table style="font-size: 10pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b><?php echo $this->translate('Income Calculation Method'); ?></b></td>
+			<td><b><?php echo $this->translate('Action'); ?></b></td>
+			</tr>
+	</thead>
+
+	<tbody>
+
 		
-	<?php foreach ($decorators as $d):
+	<?php 
+	$count = 0;
+	
+	foreach ($decorators as $d):	
 	/**@var \HR\Payroll\Income\Decorator\AbstractIncomeDecorator $d ; */
-        echo "<li>" . $d. "</li>";
-     endforeach;?>
-	</ul>
+	$count ++;
+	
+	?>
+	
+		 <tr>
+	  		<td><?php echo $count;?></td>
+	  		<td><?php echo $d;?></td>
+		 <td>
+        </td>
+		
+		</tr>
+<?php endforeach; ?>
+
+</tbody>
+</table>
+
 
 	</div>
 </div>

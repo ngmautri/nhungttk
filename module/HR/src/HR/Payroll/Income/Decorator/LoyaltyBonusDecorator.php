@@ -22,7 +22,7 @@ class LoyaltyBonusDecorator extends AbstractIncomeDecorator
         $working_year=$working_year->days/365;
          
         $bonus = 0;
-        if($working_year>1 && $working_year<3){
+        if($working_year >=1 && $working_year<3){
             $bonus= 50000;
         }elseif($working_year>= 3 &&  $working_year<5){
             $bonus= 100000;

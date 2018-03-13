@@ -1,6 +1,8 @@
 <?php
 namespace HR\Payroll;
 
+use HR\Payroll\Income\IncomeInterface;
+
 /**
  * Employee
  * 
@@ -11,6 +13,7 @@ Class Employee
 {
     private $employeeCode;
     private $employeeName;
+    private $basicSalary;
     
     private $status;
     private $startWorkingDate;
@@ -95,6 +98,23 @@ Class Employee
     {
         $this->startWorkingDate = $startWorkingDate;
     }
+    /**
+     * @return mixed
+     */
+    public function getBasicSalary()
+    {
+        return $this->basicSalary;
+    }
+
+    /**
+     * 
+     * @param IncomeInterface $basicSalary
+     */
+    public function setBasicSalary(IncomeInterface $basicSalary)
+    {
+        $this->basicSalary = $basicSalary;
+    }
+
 
 
    

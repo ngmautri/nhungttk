@@ -3,7 +3,7 @@
 namespace HR\Payroll;
 
 /**
- * Abstract Income Componente
+ * Payment Frequency
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *

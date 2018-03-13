@@ -25,7 +25,8 @@ Class BasicSalaryFactory extends AbstractIncomeFactory
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f =  ContractedSalaryDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);
-        $incomeComponent->setDescription("Basic Salary as per contract.");
+        $incomeComponent->setDescription("Basic Salary as per contract. Basic salary must be in compliance with minumum wage by law.");
+        
         return $incomeComponent;
     }
 

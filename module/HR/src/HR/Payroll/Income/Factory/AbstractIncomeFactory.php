@@ -37,6 +37,6 @@ abstract class AbstractIncomeFactory
     * 
     * @param number $amount
     */
-    protected abstract function createIncome($currency);
+    protected abstract function createIncome($amount=0, $currency=null);
     
 }

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NMT\n"
-"POT-Creation-Date: 2018-02-26 22:41+0700\n"
-"PO-Revision-Date: 2018-02-26 23:07+0700\n"
+"POT-Creation-Date: 2018-03-11 19:32+0700\n"
+"PO-Revision-Date: 2018-03-11 21:11+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -16,6 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: Application/view/application/department/list.phtml:4
+#: HR/view/hr/employee/list.phtml:48 HR/view/hr/employee/list.phtml:51
 #: Application/view/setting_menu.php:3
 msgid "Department"
 msgstr "Abteilungen"
@@ -272,7 +273,8 @@ msgstr "Periodenname"
 
 #: Finance/view/finance/posting-period/add.phtml:43
 #: Finance/view/finance/posting-period/list.phtml:36
-#: HR/view/hr/leave-reason/list.phtml:35
+#: HR/view/hr/leave-reason/list.phtml:35 HR/view/hr/minimum-wage/index.phtml:18
+#: HR/view/hr/sso/index.phtml:18
 msgid "Status"
 msgstr "Status"
 
@@ -333,16 +335,17 @@ msgid "Posting Period"
 msgstr "Peride"
 
 #: Finance/view/finance/posting-period/list.phtml:20
-#: HR/view/hr/employee/applicant-list.phtml:111
-#: HR/view/hr/employee/applicant-list.phtml:113
-#: HR/view/hr/employee/list.phtml:111 HR/view/hr/employee/list.phtml:113
+#: HR/view/hr/employee/applicant-list.phtml:110
+#: HR/view/hr/employee/applicant-list.phtml:112
+#: HR/view/hr/employee/list.phtml:127 HR/view/hr/employee/list.phtml:129
 #: HR/view/hr/leave-reason/list.phtml:22
 msgid "records"
 msgstr "Datensatz"
 
 #: Finance/view/finance/posting-period/list.phtml:37
-#: HR/view/hr/employee/applicant-list.phtml:128
-#: HR/view/hr/employee/list.phtml:128 HR/view/hr/leave-reason/list.phtml:37
+#: HR/view/hr/employee/applicant-list.phtml:127
+#: HR/view/hr/employee/list.phtml:144 HR/view/hr/leave-reason/list.phtml:37
+#: HR/view/hr/minimum-wage/index.phtml:19 HR/view/hr/sso/index.phtml:19
 msgid "Action"
 msgstr "Aktionen"
 
@@ -353,6 +356,87 @@ msgstr "Öffnen"
 #: Finance/view/finance/posting-period/list.phtml:66
 msgid "Close"
 msgstr "Schließen"
+
+#: HR/view/hr/employee-contract/add.phtml:5
+#: HR/view/hr/employee-contract/index.phtml:5 HR/view/hr/setting/index.phtml:5
+#: HR/view/hr/setting/index.phtml:23
+msgid "HR SETTING"
+msgstr "HR Einrichten"
+
+#: HR/view/hr/employee-contract/add.phtml:9
+#: HR/view/hr/employee-contract/index.phtml:9
+#: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
+#: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
+#: HR/view/hr/setting/index.phtml:13 Application/view/hr_menu.php:11
+msgid "Leave Reason"
+msgstr "Abwesenheitsgrund"
+
+#: HR/view/hr/employee-contract/list1.phtml:7
+msgid "Employment Contract Summary:"
+msgstr "Vertragsübersicht"
+
+#: HR/view/hr/employee-contract/list1.phtml:9
+msgid "Contract status"
+msgstr "Vertragsstatus"
+
+#: HR/view/hr/employee-contract/list1.phtml:10
+msgid "All"
+msgstr "Alle "
+
+#: HR/view/hr/employee-contract/list1.phtml:12
+#: HR/view/hr/employee-contract/list1.phtml:51
+#: HR/view/hr/leave-reason/add.phtml:33 HR/view/hr/minimum-wage/index.phtml:40
+#: HR/view/hr/sso/index.phtml:40
+msgid "Active"
+msgstr "Aktiviert"
+
+#: HR/view/hr/employee-contract/list1.phtml:13
+#: HR/view/hr/employee-contract/list1.phtml:41
+msgid "Terminated"
+msgstr "gekündigt"
+
+#: HR/view/hr/employee-contract/list1.phtml:21
+msgid "Contract number"
+msgstr "Vertragsnumber"
+
+#: HR/view/hr/employee-contract/list1.phtml:22
+#: HR/view/hr/employee-contract/list1.phtml:24
+msgid "Number of Revision"
+msgstr "Rivisionsnumber"
+
+#: HR/view/hr/employee-contract/list1.phtml:25
+msgid "Start Working Date"
+msgstr "Erster Arbeitsdatum"
+
+#: HR/view/hr/employee-contract/list1.phtml:26
+msgid "Termination Date"
+msgstr "Kündigungsdatum"
+
+#: HR/view/hr/employee-contract/list1.phtml:27
+msgid "Contract Status"
+msgstr "Vertragsstatus"
+
+#: HR/view/hr/employee-contract/list1.phtml:42
+#: HR/view/hr/employee-contract/list1.phtml:52
+#: HR/view/hr/employee/applicant-list.phtml:152
+#: HR/view/hr/employee/list.phtml:169 HR/view/hr/leave-reason/list.phtml:59
+#: HR/view/hr/minimum-wage/index.phtml:32
+#: HR/view/hr/minimum-wage/index.phtml:41 HR/view/hr/sso/index.phtml:32
+#: HR/view/hr/sso/index.phtml:41
+msgid "Show"
+msgstr "Sehen"
+
+#: HR/view/hr/employee-contract/list1.phtml:52
+msgid "Amend"
+msgstr "Ändern"
+
+#: HR/view/hr/employee-contract/list1.phtml:52
+msgid "Terminate"
+msgstr "kündigen"
+
+#: HR/view/hr/employee-contract/list1.phtml:62
+msgid "Current Contract:"
+msgstr "Aktueller Vertrag"
 
 #: HR/view/hr/employee/applicant-list.phtml:5
 msgid "Applicant List"
@@ -368,8 +452,8 @@ msgid "Search Applicant"
 msgstr "Suche Bewerber"
 
 #: HR/view/hr/employee/applicant-list.phtml:17
-#: HR/view/hr/employee/applicant-list.phtml:89
-#: HR/view/hr/employee/list.phtml:17 HR/view/hr/employee/list.phtml:89
+#: HR/view/hr/employee/applicant-list.phtml:88
+#: HR/view/hr/employee/list.phtml:17 HR/view/hr/employee/list.phtml:105
 msgid "Filter"
 msgstr "Filter"
 
@@ -378,72 +462,67 @@ msgid "Applicant Status"
 msgstr "Berwerbersstatus"
 
 #: HR/view/hr/employee/applicant-list.phtml:42
-#: HR/view/hr/employee/applicant-list.phtml:100
-#: HR/view/hr/employee/list.phtml:42 HR/view/hr/employee/list.phtml:100
+#: HR/view/hr/employee/applicant-list.phtml:99
+#: HR/view/hr/employee/list.phtml:59 HR/view/hr/employee/list.phtml:116
 msgid "Sort by"
 msgstr "Sortieren nach"
 
 #: HR/view/hr/employee/applicant-list.phtml:48
-#: HR/view/hr/employee/applicant-list.phtml:122
-#: HR/view/hr/employee/list.phtml:48 HR/view/hr/employee/list.phtml:122
+#: HR/view/hr/employee/applicant-list.phtml:121
+#: HR/view/hr/employee/list.phtml:65 HR/view/hr/employee/list.phtml:138
 msgid "Employee Code"
 msgstr "Mitarbeitersnummer"
 
-#: HR/view/hr/employee/applicant-list.phtml:52
-#: HR/view/hr/employee/list.phtml:52 HR/view/hr/leave-reason/list.phtml:36
+#: HR/view/hr/employee/applicant-list.phtml:51
+#: HR/view/hr/employee/list.phtml:68 HR/view/hr/leave-reason/list.phtml:36
 msgid "Created Date"
 msgstr "Erstellsdatum"
 
-#: HR/view/hr/employee/applicant-list.phtml:55
-#: HR/view/hr/employee/list.phtml:55
+#: HR/view/hr/employee/applicant-list.phtml:54
+#: HR/view/hr/employee/list.phtml:71
 msgid "ASC"
 msgstr "Steigend"
 
-#: HR/view/hr/employee/applicant-list.phtml:57
-#: HR/view/hr/employee/list.phtml:57
+#: HR/view/hr/employee/applicant-list.phtml:56
+#: HR/view/hr/employee/list.phtml:73
 msgid "DESC"
 msgstr "Sinkend"
 
-#: HR/view/hr/employee/applicant-list.phtml:64
-#: HR/view/hr/employee/list.phtml:64
+#: HR/view/hr/employee/applicant-list.phtml:63
+#: HR/view/hr/employee/list.phtml:80
 msgid "Result per page"
 msgstr "Ergebnisse per Seite"
 
-#: HR/view/hr/employee/applicant-list.phtml:100
-#: HR/view/hr/employee/applicant-list.phtml:127
-#: HR/view/hr/employee/list.phtml:28 HR/view/hr/employee/list.phtml:100
-#: HR/view/hr/employee/list.phtml:127
+#: HR/view/hr/employee/applicant-list.phtml:99
+#: HR/view/hr/employee/applicant-list.phtml:126
+#: HR/view/hr/employee/list.phtml:28 HR/view/hr/employee/list.phtml:116
+#: HR/view/hr/employee/list.phtml:143
 msgid "Employee Status"
 msgstr "Mitarbeiterstatus"
 
-#: HR/view/hr/employee/applicant-list.phtml:100
-#: HR/view/hr/employee/list.phtml:100
+#: HR/view/hr/employee/applicant-list.phtml:99
+#: HR/view/hr/employee/list.phtml:116
 msgid "Sort"
 msgstr "Sortieren"
 
+#: HR/view/hr/employee/applicant-list.phtml:122
 #: HR/view/hr/employee/applicant-list.phtml:123
-#: HR/view/hr/employee/applicant-list.phtml:124
-#: HR/view/hr/employee/list.phtml:123 HR/view/hr/employee/list.phtml:124
+#: HR/view/hr/employee/list.phtml:139 HR/view/hr/employee/list.phtml:140
 msgid "Name"
 msgstr "Namen"
 
-#: HR/view/hr/employee/applicant-list.phtml:125
-#: HR/view/hr/employee/list.phtml:125
+#: HR/view/hr/employee/applicant-list.phtml:124
+#: HR/view/hr/employee/list.phtml:141
 msgid "Birthday"
 msgstr "Geburtstag"
 
-#: HR/view/hr/employee/applicant-list.phtml:126
-#: HR/view/hr/employee/list.phtml:126
+#: HR/view/hr/employee/applicant-list.phtml:125
+#: HR/view/hr/employee/list.phtml:142
 msgid "Gender"
 msgstr "Geschlecht"
 
 #: HR/view/hr/employee/applicant-list.phtml:153
-#: HR/view/hr/employee/list.phtml:153 HR/view/hr/leave-reason/list.phtml:59
-msgid "Show"
-msgstr "Sehen"
-
-#: HR/view/hr/employee/applicant-list.phtml:154
-#: HR/view/hr/employee/list.phtml:154 HR/view/hr/leave-reason/list.phtml:60
+#: HR/view/hr/employee/list.phtml:170 HR/view/hr/leave-reason/list.phtml:60
 msgid "Edit"
 msgstr "Editieren"
 
@@ -460,19 +539,25 @@ msgstr "Neuer Mitarbeiter"
 msgid "Search Employee"
 msgstr "Suche Mitarbeiter"
 
+#: HR/view/hr/employee/list.phtml:42
+msgid "Filter by"
+msgstr "Filtern nach"
+
+#: HR/view/hr/employee/show.phtml:25
+msgid "Disciplinary"
+msgstr "Disziplin"
+
+#: HR/view/hr/income-decorator/index.phtml:5 HR/view/hr/setting/index.phtml:17
+msgid "Income Calculation Method"
+msgstr "Einkommensberechnen"
+
+#: HR/view/hr/income-setup/index.phtml:5 HR/view/hr/setting/index.phtml:16
+msgid "Income Setup"
+msgstr "Einkommen einrichten"
+
 #: HR/view/hr/leave-reason/add.phtml:19 HR/view/hr/leave-reason/list.phtml:8
 msgid "New Leave Reason"
 msgstr "Neuer Abwesenheitsgrund"
-
-#: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
-#: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
-#: HR/view/hr/setting/index.phtml:9 Application/view/hr_menu.php:11
-msgid "Leave Reason"
-msgstr "Abwesenheitsgrund"
-
-#: HR/view/hr/leave-reason/add.phtml:33
-msgid "Active"
-msgstr "Activiert"
 
 #: HR/view/hr/leave-reason/add.phtml:45 HR/view/hr/leave-reason/list.phtml:32
 msgid "Reference"
@@ -494,6 +579,34 @@ msgstr "Beschreibung"
 msgid "Cancel"
 msgstr "Abbrechen"
 
+#: HR/view/hr/minimum-wage/index.phtml:5
+msgid "Minimum Wage Management"
+msgstr "Mindestlohn"
+
+#: HR/view/hr/minimum-wage/index.phtml:14 HR/view/hr/setting/index.phtml:14
+msgid "Minimum Wage"
+msgstr "Mindestlohne"
+
+#: HR/view/hr/minimum-wage/index.phtml:15
+msgid "Currency"
+msgstr "Währung"
+
+#: HR/view/hr/minimum-wage/index.phtml:16 HR/view/hr/sso/index.phtml:16
+msgid "Effective from"
+msgstr "Gültig von"
+
+#: HR/view/hr/minimum-wage/index.phtml:17 HR/view/hr/sso/index.phtml:17
+msgid "Effective to"
+msgstr "Gültig bis"
+
+#: HR/view/hr/minimum-wage/index.phtml:31 HR/view/hr/sso/index.phtml:31
+msgid "Inactive"
+msgstr "Inaktiviert"
+
+#: HR/view/hr/minimum-wage/index.phtml:41 HR/view/hr/sso/index.phtml:41
+msgid "Update"
+msgstr "Aktualisieren"
+
 #: HR/view/hr/reporting/index.phtml:5 Application/view/hr_menu.php:14
 msgid "Reporting"
 msgstr "Berichten"
@@ -514,9 +627,29 @@ msgstr "Vierteljährliche Berichten"
 msgid "Annual Reporting"
 msgstr "Jährliche Berichten"
 
-#: HR/view/hr/setting/index.phtml:5
-msgid "HR SETTING"
-msgstr "HR Einrichten"
+#: HR/view/hr/setting/index.phtml:15
+msgid "Social Security (SSO)"
+msgstr "Soziale Beiträgen"
+
+#: HR/view/hr/setting/index.phtml:18
+msgid "Default Allowances Setup"
+msgstr ""
+
+#: HR/view/hr/setting/index.phtml:19
+msgid "Default Deduction Setup"
+msgstr "Abzügen"
+
+#: HR/view/hr/sso/index.phtml:5
+msgid "Social Security Management"
+msgstr "Soziale Beiterägen"
+
+#: HR/view/hr/sso/index.phtml:14
+msgid "SSO Rate"
+msgstr "SSO Rate"
+
+#: HR/view/hr/sso/index.phtml:15
+msgid "Percentage"
+msgstr "Prozentsatz"
 
 #: HR/view/layout/layout-fluid.phtml:189
 msgid "HR MANAGEMENT"
@@ -558,7 +691,7 @@ msgstr "Neuer Mitarbeiter"
 msgid "Finger Scan"
 msgstr "Fingersabdruck"
 
-#: Application/view/hr_menu.php:17 Application/view/navbar.php:77
+#: Application/view/hr_menu.php:16 Application/view/navbar.php:77
 msgid "Setup"
 msgstr "Einrichten"
 
@@ -592,7 +725,7 @@ msgstr "Benutzerverwaltung"
 
 #: Application/view/setting_menu.php:6
 msgid "Access Control List (ACL)"
-msgstr ""
+msgstr "Zugriffrechten (ACL)"
 
 #: Application/view/setting_menu.php:8
 msgid "Workflow Management"

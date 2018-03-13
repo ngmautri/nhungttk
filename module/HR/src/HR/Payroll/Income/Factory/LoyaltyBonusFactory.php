@@ -22,7 +22,7 @@ Class LoyaltyBonusFactory extends AbstractIncomeFactory
      */
     protected function createIncome($amount=0, $currency=null)
     {        
-        $incomeComponent = new GenericIncomeComponent("Loyalty Bonus", $amount, 0, $currency, TRUE, TRUE, TRUE);
+        $incomeComponent = new GenericIncomeComponent("Loyalty Bonus", $amount, 0, $currency, TRUE, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f =  LoyaltyBonusDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);

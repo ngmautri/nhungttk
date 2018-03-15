@@ -1,4 +1,6 @@
+<?php /**@var \Application\Entity\NmtHrEmployee $target ; */
 
+ ?>
 
 	<ul class="nav nav-tabs">
   		<li class="active"><a data-toggle="tab" href="#tc_eval">TC/PC Evaluation</a></li>
@@ -10,8 +12,8 @@
 
 <div id="tc_eval" class="tab-pane fade in active" style="font-size: 9.5pt;padding-top: 10px">
 
-<a class="btn btn-default" href="#"><small><i
-		class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Evaluation</a>
+<a class="btn btn-default btn-sm" href="/hr/employee-evaluation/evaluate?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>"><small><i
+		class="glyphicon glyphicon-plus"> </i></small>&nbsp;Evaluate</a>
 <hr>
 
 <table style="font-size: 9pt;" class="table table-bordered table-hover">

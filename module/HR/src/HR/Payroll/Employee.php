@@ -26,13 +26,7 @@ Class Employee
         return $this->employeeCode;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
+    
 
     /**
      * @return mixed

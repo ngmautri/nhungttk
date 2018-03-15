@@ -1,4 +1,4 @@
-<?php /**@var \Application\Entity*/ ?>
+<?php /**@var \Application\Entity\NmtHrEmployee $target ;*/ ?>
 <h4><?php echo (!$target == null)? "Employee: " . $target->getEmployeeName() ." - ". $target->getEmployeeCode():"";?></h4>
 
 <?php
@@ -37,8 +37,13 @@ if (count ( $errors ) > 0) {
 		<div class="col-sm-3">
 			<select class="form-control input-sm required" name="leaveReason">
 				<option value="">Please select</option>
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='M')?'selected="selected"':''; endif;?> value="M">Sick Leave</option>
-				<option <?php if(!$entity == null):	echo ($entity->getGender()=='F')?'selected="selected"':''; endif;?> value="F">Personal Paid leave</option>
+				<?php foreach ($leaveReasons as $r):
+				/**@var \Application\Entity\NmtHrLeaveReason $r ;*/
+				
+				?>
+				<option <?php if(!$r == null):	echo ($r->getLeaveReason()=='M')?'selected="selected"':''; endif;?> value="M"><?php echo $r->getLeaveReason();?></option>
+				<?php endforeach;?>
+			
 			</select>
 		</div>
 	</div>

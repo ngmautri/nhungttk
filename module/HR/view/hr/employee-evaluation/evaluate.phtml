@@ -1,0 +1,84 @@
+<?php /**@var \Application\Entity\NmtHrEmployee $target ;*/ ?>
+<h4><?php echo (!$target == null)? "Employee: " . $target->getEmployeeName() ." - ". $target->getEmployeeCode():"";?></h4>
+
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+    
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><?php echo $this->translate("Evaluation");?></a></li>
+	</ul>
+
+	<div id="general">
+
+
+		<form id="evaluation_form" class="form-horizontal"
+			action="/hr/employee-leave/add" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
+
+
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag">Result: </label>
+				<div class="col-sm-3">
+					<input type="radio" name="sort" value="ASC">&nbsp;<?php echo $this->translate('Score 1-6 (TC)'); ?>&nbsp;&nbsp; 
+					<br> <input type="radio" name="sort" value="DESC">&nbsp;<?php echo $this->translate('Score 7-10 (LC)'); ?>&nbsp;&nbsp;
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">New Position</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						id="employeeName" name="employeeName"
+						value="<?php echo (!$entity == null)? $entity->getEmployeeName():"";?>">
+				</div>
+
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2">Remarks:</label>
+				<div class="col-sm-8">
+					<textarea class="form-control input-sm" rows="4" cols="10"
+						name="comment"></textarea>
+				</div>
+			</div>
+
+			<hr>
+
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<a tabindex="10" class="btn btn-default btn-sm"
+						onclick="submitForm('evaluation_form');" href="javascript:;"><small><i
+							class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;<?php echo $this->translate("Evaluate");?></a>
+				</div>
+			</div>
+
+
+		</form>
+	</div>
+</div>
+
+<script>
+$(function() {
+   $( "input[id='birthday']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+});
+
+</script>
+
+

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace HR\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -19,14 +12,14 @@ use Zend\Validator\Date;
 use Zend\Math\Rand;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
- * @author nmt
- *        
  */
 class EmployeeLeaveController extends AbstractActionController
 {
 
-    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
 
     protected $doctrineEM;
 
@@ -37,8 +30,52 @@ class EmployeeLeaveController extends AbstractActionController
     {}
 
     /**
+     * 
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
+    {
+        $redirectUrl = null;
+        $target = null;
+        $entity = null;
+        
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+        
+        // Target: Employee
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
+        
+        if ($target !== null) {
+            
+            
+            $criteria = array();
+            $sort_criteria = array();
+            
+            $leaveReasons = $this->doctrineEM->getRepository('Application\Entity\NmtHrLeaveReason')->findBy($criteria, $sort_criteria);
+            
+            
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'errors' => null,
+                'target' => $target,
+                'entity' => $entity,
+                'leaveReasons' => $leaveReasons,
+            ));
+        }
+        return $this->redirect()->toRoute('access_denied');
+    }
+    
+    
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function applyAction()
     {
         $redirectUrl = null;
         $target = null;
@@ -59,7 +96,8 @@ class EmployeeLeaveController extends AbstractActionController
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
                 'target' => $target,
-                'entity' => $entity
+                'entity' => $entity,
+                'leaveReasons' => $leaveReasons,
             ));
         }
         return $this->redirect()->toRoute('access_denied');

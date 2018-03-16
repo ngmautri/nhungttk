@@ -1,27 +1,29 @@
 <?php
 
-namespace Application\Listener;
+namespace HR\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-
-/*
- * @author nmt
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class LoggingListenerFactory implements FactoryInterface {
+class EntityChangeLogControllerFactory implements FactoryInterface {
 	
-		/**
-	 * 
+	/**
+	 *
 	 * {@inheritDoc}
+	 *
 	 * @see \Zend\ServiceManager\FactoryInterface::createService()
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
-		$container = $serviceLocator;		
-		$listener = new LoggingListener();
+		$container= $serviceLocator->getServiceLocator();
+		$controller = new EntityChangeLogController();
+		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
-		$listener->setDoctrineEM($sv);
-		return $listener;
+		$controller->setDoctrineEM($sv);
+		return $controller;
 	}
 }

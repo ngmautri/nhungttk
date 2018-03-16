@@ -124,6 +124,8 @@ return array(
             'HR\Controller\SSO' => 'HR\Controller\SSOControllerFactory',
             'HR\Controller\IncomeSetup' => 'HR\Controller\IncomeSetupControllerFactory',
             'HR\Controller\IncomeDecorator' => 'HR\Controller\IncomeDecoratorControllerFactory',
+            'HR\Controller\EntityChangeLog' => 'HR\Controller\EntityChangeLogControllerFactory',
+            
             
         )
     ),

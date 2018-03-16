@@ -32,14 +32,14 @@ class HRTest extends phpunit_framework_testcase
             $employee->setEmployeeName("Nguyen mau Tri");
             
             $employee->setEmployeecode("0651");
-            $employee->setStatus("LC");
+            $employee->setStatus(1);
             $employee->setStartWorkingdate(new \DateTime("2008-11-01"));
              
-            $employee1 = new Employee();
+            $employee1 = clone($employee);
             $employee1->setEmployeeName("Nguyen mau Tri");
             
             $employee1->setEmployeecode("0651");
-            $employee1->setStatus("Terminated");
+            $employee1->setStatus(2);
             $employee1->setStartWorkingdate(new \DateTime("2008-11-01"));
             
             $diffArray = $this->objectsAreIdentical($employee, $employee1);
@@ -153,6 +153,7 @@ class HRTest extends phpunit_framework_testcase
                     $diffArray[$key] = array(
                         "className" => $p1->getDeclaringClass()->getName(),
                         "fieldName" => $p1->getName(),
+                        "fieldType" => gettype($v1),
                         "oldValue" => $v1,
                         "newValue" => $v2
                     );

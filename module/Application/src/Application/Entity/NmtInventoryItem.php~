@@ -351,6 +351,13 @@ class NmtInventoryItem
     private $sysNumber;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks_text", type="text", length=65535, nullable=true)
+     */
+    private $remarksText;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

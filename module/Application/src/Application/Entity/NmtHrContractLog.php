@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtHrChangeLog
+ * NmtHrContractLog
  *
- * @ORM\Table(name="nmt_hr_change_log", indexes={@ORM\Index(name="nmt_hr_change_log_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_change_log_IDX1", columns={"class_name"}), @ORM\Index(name="nmt_hr_change_log_IDX2", columns={"field_name"}), @ORM\Index(name="nmt_hr_change_log_IDX3", columns={"object_id"}), @ORM\Index(name="nmt_hr_change_log_IDX4", columns={"object_token"})})
+ * @ORM\Table(name="nmt_hr_contract_log", indexes={@ORM\Index(name="nmt_hr_contract_log_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_contract_log_IDX1", columns={"class_name"}), @ORM\Index(name="nmt_hr_contract_log_IDX2", columns={"field_name"}), @ORM\Index(name="nmt_hr_contract_log_IDX3", columns={"object_id"}), @ORM\Index(name="nmt_hr_contract_log_IDX4", columns={"object_token"})})
  * @ORM\Entity
  */
-class NmtHrChangeLog
+class NmtHrContractLog
 {
     /**
      * @var integer
@@ -99,6 +99,34 @@ class NmtHrChangeLog
     private $fieldType;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="effective_from", type="datetime", nullable=true)
+     */
+    private $effectiveFrom;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="effective_to", type="datetime", nullable=true)
+     */
+    private $effectiveTo;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_valid", type="boolean", nullable=true)
+     */
+    private $isValid;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -125,7 +153,7 @@ class NmtHrChangeLog
      *
      * @param string $token
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setToken($token)
     {
@@ -149,7 +177,7 @@ class NmtHrChangeLog
      *
      * @param integer $objectId
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setObjectId($objectId)
     {
@@ -173,7 +201,7 @@ class NmtHrChangeLog
      *
      * @param string $objectToken
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setObjectToken($objectToken)
     {
@@ -197,7 +225,7 @@ class NmtHrChangeLog
      *
      * @param string $className
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setClassName($className)
     {
@@ -221,7 +249,7 @@ class NmtHrChangeLog
      *
      * @param string $fieldName
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setFieldName($fieldName)
     {
@@ -245,7 +273,7 @@ class NmtHrChangeLog
      *
      * @param string $columnName
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setColumnName($columnName)
     {
@@ -269,7 +297,7 @@ class NmtHrChangeLog
      *
      * @param string $oldValue
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setOldValue($oldValue)
     {
@@ -293,7 +321,7 @@ class NmtHrChangeLog
      *
      * @param string $newValue
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setNewValue($newValue)
     {
@@ -317,7 +345,7 @@ class NmtHrChangeLog
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setCreatedOn($createdOn)
     {
@@ -341,7 +369,7 @@ class NmtHrChangeLog
      *
      * @param string $remarks
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setRemarks($remarks)
     {
@@ -365,7 +393,7 @@ class NmtHrChangeLog
      *
      * @param string $fieldType
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setFieldType($fieldType)
     {
@@ -385,11 +413,107 @@ class NmtHrChangeLog
     }
 
     /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtHrContractLog
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * Set effectiveFrom
+     *
+     * @param \DateTime $effectiveFrom
+     *
+     * @return NmtHrContractLog
+     */
+    public function setEffectiveFrom($effectiveFrom)
+    {
+        $this->effectiveFrom = $effectiveFrom;
+
+        return $this;
+    }
+
+    /**
+     * Get effectiveFrom
+     *
+     * @return \DateTime
+     */
+    public function getEffectiveFrom()
+    {
+        return $this->effectiveFrom;
+    }
+
+    /**
+     * Set effectiveTo
+     *
+     * @param \DateTime $effectiveTo
+     *
+     * @return NmtHrContractLog
+     */
+    public function setEffectiveTo($effectiveTo)
+    {
+        $this->effectiveTo = $effectiveTo;
+
+        return $this;
+    }
+
+    /**
+     * Get effectiveTo
+     *
+     * @return \DateTime
+     */
+    public function getEffectiveTo()
+    {
+        return $this->effectiveTo;
+    }
+
+    /**
+     * Set isValid
+     *
+     * @param boolean $isValid
+     *
+     * @return NmtHrContractLog
+     */
+    public function setIsValid($isValid)
+    {
+        $this->isValid = $isValid;
+
+        return $this;
+    }
+
+    /**
+     * Get isValid
+     *
+     * @return boolean
+     */
+    public function getIsValid()
+    {
+        return $this->isValid;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtHrChangeLog
+     * @return NmtHrContractLog
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {

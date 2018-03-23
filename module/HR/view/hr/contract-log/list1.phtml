@@ -18,7 +18,7 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b><?php echo $this->translate('class name');?></b></td>
+			<td><b><?php echo $this->translate('Revision Number');?></b></td>
 			<td><b><?php echo $this->translate('field name');?></b></td>
 			<td><b><?php echo $this->translate('old value');?></b></td>
 			<td><b><?php echo $this->translate('new value');?></b></td>
@@ -33,16 +33,16 @@ if ($total_records <= 0) {
 	
 	$count = 0;
 	foreach ( $list as $a ) :
-        /** @var \Application\Entity\NmtHrChangeLog $a ; */
+        /** @var \Application\Entity\NmtHrContractLog $a ; */
 		$count ++;
 		?>
 	 <tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	  		<td><?php echo $this->escapeHtml($a->getClassName());?></td>
+	  		<td><?php echo $this->escapeHtml($a->getRevisionNo());?></td>
 	  		<td><?php echo $this->escapeHtml($a->getFieldName());?></td>
 			 <td><?php echo $a->getOldValue();?></td>
 	 		<td><?php echo $a->getNewValue();?></td>
-	 		<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d-m-y H:m:i"):"";?> </td>
+	 		<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "Y-m-d H:i:s"):"";?> </td>
 	 		
 				
 		</tr>
@@ -57,7 +57,7 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/hr/entity-change-log/list1?object_token='. $objectToken.'&object_id='.$objectId .'&class_name='.$this->escapeHtml($className);
+	$base = $this->baseUrl . '/hr/contract-log/list1?object_token='. $objectToken.'&object_id='.$objectId .'&class_name='.$this->escapeHtml($className);
 		$_connector_symbol = '&';
 		
 		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;

@@ -27,10 +27,10 @@ if (count ( $errors ) > 0) {
 
 <div id="general" style="font-size: 9pt"> 
 
-<form id="create_form" class="form-horizontal" action="/hr/employee-contract/add" method="post" enctype="multipart/form-data">
+<form id="create_form" class="form-horizontal" action="/hr/employee-contract/amend" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-<input type="hidden" name="target_id" value="<?php echo (!$target == null)? $target->getId():"";?>" />
-<input type="hidden" name="target_token" value="<?php echo (!$target == null)? $target->getToken():"";?>" />
+<input type="hidden" name="entity_id" value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
+<input type="hidden" name="token" value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
 
 	<fieldset>
 	<legend style="font-size: 9pt; color: gray;">
@@ -201,6 +201,7 @@ if (count ( $errors ) > 0) {
 </div>
 </div>
 
+
 <script>
 $(function() {
    $( "input[id='validFrom']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
@@ -208,8 +209,6 @@ $(function() {
    $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
    
 });
-
-
 
 </script>
 

@@ -38,8 +38,8 @@
 		<li><a	href="/hr/payroll-input/list1?period_id=2&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
 			<i class="fa fa-calculator" aria-hidden="true"></i>&nbsp;Caculation</a></li>
 	<li><a
-			href="/hr/entity-change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
-				class="glyphicon glyphicon-paperclip"></span>&nbsp;Log</a></li>
+			href="/hr/entity-change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getID():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 
 	</ul>
 

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrPosition
  *
- * @ORM\Table(name="nmt_hr_position", indexes={@ORM\Index(name="nmt_hr_position_FK1_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_hr_position", indexes={@ORM\Index(name="nmt_hr_position_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_position_FK2_idx", columns={"department_id"}), @ORM\Index(name="nmt_hr_position_FK3_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtHrPosition
@@ -31,7 +31,7 @@ class NmtHrPosition
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=200, nullable=true)
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
     private $description;
 
@@ -64,6 +64,48 @@ class NmtHrPosition
     private $createdOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="job_description", type="text", length=65535, nullable=true)
+     */
+    private $jobDescription;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="accounting_account", type="string", length=45, nullable=true)
+     */
+    private $accountingAccount;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="position_code", type="string", length=45, nullable=true)
+     */
+    private $positionCode;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -72,6 +114,26 @@ class NmtHrPosition
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationDepartment
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationDepartment")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="department_id", referencedColumnName="node_id")
+     * })
+     */
+    private $department;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
 
 
 
@@ -230,6 +292,150 @@ class NmtHrPosition
     }
 
     /**
+     * Set jobDescription
+     *
+     * @param string $jobDescription
+     *
+     * @return NmtHrPosition
+     */
+    public function setJobDescription($jobDescription)
+    {
+        $this->jobDescription = $jobDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get jobDescription
+     *
+     * @return string
+     */
+    public function getJobDescription()
+    {
+        return $this->jobDescription;
+    }
+
+    /**
+     * Set accountingAccount
+     *
+     * @param string $accountingAccount
+     *
+     * @return NmtHrPosition
+     */
+    public function setAccountingAccount($accountingAccount)
+    {
+        $this->accountingAccount = $accountingAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get accountingAccount
+     *
+     * @return string
+     */
+    public function getAccountingAccount()
+    {
+        return $this->accountingAccount;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtHrPosition
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtHrPosition
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set positionCode
+     *
+     * @param string $positionCode
+     *
+     * @return NmtHrPosition
+     */
+    public function setPositionCode($positionCode)
+    {
+        $this->positionCode = $positionCode;
+
+        return $this;
+    }
+
+    /**
+     * Get positionCode
+     *
+     * @return string
+     */
+    public function getPositionCode()
+    {
+        return $this->positionCode;
+    }
+
+    /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return NmtHrPosition
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -251,5 +457,53 @@ class NmtHrPosition
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set department
+     *
+     * @param \Application\Entity\NmtApplicationDepartment $department
+     *
+     * @return NmtHrPosition
+     */
+    public function setDepartment(\Application\Entity\NmtApplicationDepartment $department = null)
+    {
+        $this->department = $department;
+
+        return $this;
+    }
+
+    /**
+     * Get department
+     *
+     * @return \Application\Entity\NmtApplicationDepartment
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtHrPosition
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

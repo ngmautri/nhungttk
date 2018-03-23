@@ -34,13 +34,22 @@ class HRTest extends phpunit_framework_testcase
             $employee->setEmployeecode("0651");
             $employee->setStatus(1);
             $employee->setStartWorkingdate(new \DateTime("2008-11-01"));
+            
+            $incomeFactory = new BasicSalaryFactory(900000, "LAK");
+            $employee->setBasicSalary($incomeFactory->createIncomeComponent());
+            
              
             $employee1 = clone($employee);
             $employee1->setEmployeeName("Nguyen mau Tri");
             
             $employee1->setEmployeecode("0651");
             $employee1->setStatus(2);
-            $employee1->setStartWorkingdate(new \DateTime("2008-11-01"));
+            $employee1->setStartWorkingdate(new \DateTime("2008-12-01 10:20:20"));
+            $incomeFactory = new BasicSalaryFactory(1200000, "LAK");
+            $employee->setBasicSalary($incomeFactory->createIncomeComponent());
+            
+            
+            
             
             $diffArray = $this->objectsAreIdentical($employee, $employee1);
             var_dump($diffArray);
@@ -48,7 +57,7 @@ class HRTest extends phpunit_framework_testcase
             $incomeFactory = new BasicSalaryFactory(900000, "LAK");
             $employee->setBasicSalary($incomeFactory->createIncomeComponent());
             
-            $input = new ConsolidatedPayrollInput($employee, new \Datetime('2018-01-01'), new \Datetime('2018-01-31'));
+            $input = new ConsolidatedPayrollInput($employee, new \Datetime('2018-01-01'), new \Datetime('2018-01-31 10:30:00'));
             $input->setactualworkeddays(23);
             $input->setpaidsickleaves(2);
             $input->settotalworkingdays(26);
@@ -158,6 +167,31 @@ class HRTest extends phpunit_framework_testcase
                         "newValue" => $v2
                     );
                 }
+            }else{
+                
+                if($v1 instanceof \Datetime){
+                    //echo $v1->format("Y-m-d H:i:s")."\n";
+                    //echo $v2->format("Y-m-d H:i:s");
+                    
+                    if($v1!==$v2)
+                    $diffArray[$key] = array(
+                        "className" => $p1->getDeclaringClass()->getName(),
+                        "fieldName" => $p1->getName(),
+                        "fieldType" => gettype($v1),
+                        "oldValue" => $v1->format("Y-m-d H:i:s"),
+                        "newValue" => $v2->format("Y-m-d H:i:s"),
+                    );
+                    
+                }else{
+                    try{
+                        $objV1 = new \ReflectionObject($v1);
+                        $p1 =  $objV1->getProperty("amount");
+                        var_dump($p1->getValue($objV1));
+                    }catch(\Exception $e){
+                        
+                    }
+                }
+                
             }
         }
         

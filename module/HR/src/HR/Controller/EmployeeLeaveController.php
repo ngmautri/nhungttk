@@ -39,15 +39,7 @@ class EmployeeLeaveController extends AbstractActionController
         $target = null;
         $entity = null;
         
-        $id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $id,
-            'token' => $token
-        );
-        
-        // Target: Employee
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
+       
         
         if ($target !== null) {
             
@@ -535,11 +527,7 @@ class EmployeeLeaveController extends AbstractActionController
         
         if ($target !== null) {
             
-            /**
-             *
-             * @todo : Change Target
-             */
-            $criteria = array(
+              $criteria = array(
                 'employee' => $target_id,
                 'isActive' => 1,
                 'markedForDeletion' => 0

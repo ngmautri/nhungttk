@@ -2,10 +2,10 @@
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
-		<li><a href="#general"><?php echo $this->translate('Leave Reason'); ?></a></li>
+		<li><a href="#general"><?php echo $this->translate('Postion'); ?></a></li>
 	</ul>
 <div id="general" style="font-size: 9pt">
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/leave-reason/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;<?php echo $this->translate('New Leave Reason'); ?></a>
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/position/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;<?php echo $this->translate('New Postion'); ?></a>
 <hr>
 
 
@@ -28,11 +28,10 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b><?php echo $this->translate('Leave Reason'); ?></a></b></td>
-			<td><b><?php echo $this->translate('Reference'); ?></a></b></td>
+			<td><b><?php echo $this->translate('Postion name'); ?></a></b></td>
+			<td><b><?php echo $this->translate('Cost Center'); ?></a></b></td>
 			<td><b><?php echo $this->translate('Vadid From'); ?></a></b></td>
 			<td><b><?php echo $this->translate('Vadid To'); ?></a></b></td>
-			<td><b><?php echo $this->translate('Status'); ?></b></td>
 			<td><b><?php echo $this->translate('Created Date'); ?></a></b></td>
 			<td><b><?php echo $this->translate('Action'); ?></a></b></td>
 			</tr>
@@ -45,19 +44,18 @@ if ($total_records <= 0) {
 	$count = 0;
 	foreach ( $list as $a ) :
 		$count ++;
-        /**@var \Application\Entity\NmtHrLeaveReason $a ; */
+        /**@var \Application\Entity\NmtHrPosition $a ; */
 		?>
 	 <tr>
 	  		<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	  		<td><?php echo $this->escapeHtml($a->getLeaveReason());?></td>
-			<td><?php echo $this->escapeHtml($a->getLegalReference());?></td>
-			<td>1/1/2014</td>
-			<td>1/1/9999</td>
-			<td><?php echo $this->escapeHtml($a->getIsActive());?></td>
+	  		<td><?php echo $this->escapeHtml($a->getPositionName());?></td>
+			<td><?php echo $this->escapeHtml($a->getCostCenter());?></td>
+			<td><?php echo ($a->getValidFrom()!==null )? date_format ( $a->getValidFrom(), "d-m-y"):"";?> </td>
+			<td><?php echo ($a->getValidTo()!==null )? date_format ( $a->getValidTo(), "d-m-y"):"";?> </td>
 			<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d-m-y"):"";?> </td>
 		 <td>
-<a href="<?php echo $this->baseUrl ?>/hr/leave-reason/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate('Show'); ?></a>
-<a href="<?php echo $this->baseUrl ?>/hr/leave-reason/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate('Edit'); ?></a>
+<a href="<?php echo $this->baseUrl ?>/hr/position/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate('Show'); ?></a>
+<a href="<?php echo $this->baseUrl ?>/hr/position/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate('Edit'); ?></a>
 </td>
 		
 		</tr>
@@ -72,8 +70,8 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
-		$_connector_symbol = '&';
+	$base = $this->baseUrl . '/hr/position/list';
+		$_connector_symbol = '?';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
 		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;

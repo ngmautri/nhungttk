@@ -22,7 +22,11 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
-  <li ><a href="#general"><?php echo $this->translate('New Contract'); ?></a></li>
+  <li ><a href="#general"><?php echo $this->translate('Contract'); ?></a></li>
+    <li><a
+			href="/hr/contract-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getID():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Change Log</a></li>
+   
    </ul>
 
 <div id="general" style="font-size: 9pt"> 
@@ -187,11 +191,10 @@ if (count ( $errors ) > 0) {
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-	 			<a tabindex="10" class="btn btn-default btn-sm" onclick="submitForm('create_form');"
-								href="javascript:;"><small><i
-									class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;<?php echo $this->translate('Save'); ?></a>
+	 			<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($entity->getToken());?>&entity_id=<?php echo $this->escapeHtml($entity->getID());?>"><?php echo $this->translate("Edit")?></a>
+
  					<a tabindex="11" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/hr/position/list"><small><i
+								href="<?php echo $redirectUrl; ?>"><small><i
 									class=""></i></small>&nbsp;<?php echo $this->translate('Cancel'); ?></a>
   		</div>
 	</div> 
@@ -201,16 +204,10 @@ if (count ( $errors ) > 0) {
 </div>
 </div>
 
+
+
+
 <script>
-$(function() {
-   $( "input[id='validFrom']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
-   $( "input[id='validTo']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
-   $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
-   
-});
-
-
-
+$("#create_form :input").attr("disabled", "disabled");
 </script>
-
 

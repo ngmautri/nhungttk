@@ -112,6 +112,8 @@ return array(
             'HR\Controller\EmployeeEvaluation' => 'HR\Controller\EmployeeEvaluationControllerFactory',
             'HR\Controller\EmployeeOT' => 'HR\Controller\EmployeeOTControllerFactory',
             'HR\Controller\leaveReason' => 'HR\Controller\LeaveReasonControllerFactory',
+            'HR\Controller\Position' => 'HR\Controller\PositionControllerFactory',
+            
             'HR\Controller\Fingerscan' => 'HR\Controller\FingerscanControllerFactory',
             
             'HR\Controller\Payroll' => 'HR\Controller\PayrollControllerFactory',
@@ -124,6 +126,8 @@ return array(
             'HR\Controller\SSO' => 'HR\Controller\SSOControllerFactory',
             'HR\Controller\IncomeSetup' => 'HR\Controller\IncomeSetupControllerFactory',
             'HR\Controller\IncomeDecorator' => 'HR\Controller\IncomeDecoratorControllerFactory',
+            'HR\Controller\Contract' => 'HR\Controller\ContractControllerFactory',
+            'HR\Controller\ContractLog' => 'HR\Controller\ContractLogControllerFactory',            
             'HR\Controller\EntityChangeLog' => 'HR\Controller\EntityChangeLogControllerFactory',
             
             

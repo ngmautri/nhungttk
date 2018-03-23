@@ -186,7 +186,7 @@ class ItemController extends AbstractActionController
             $location = $request->getPost('location');
             $localAvailabiliy = (int) $request->getPost('localAvailabiliy');
             
-            $remarks = $request->getPost('remarks');
+            $remarks = $request->getPost('remarksText');
             
             // Create NEW ITEM
             $entity = new NmtInventoryItem();
@@ -281,7 +281,7 @@ class ItemController extends AbstractActionController
             // $entity->setValidToDate($validToDate);
             // $entity->setWarehouse ();
             
-            $entity->setRemarks($remarks);
+            $entity->setRemarksText($remarks);
             $entity->setLocation($location);
             $entity->setLocalAvailabiliy($localAvailabiliy);
             $entity->setLeadTime($leadTime);
@@ -501,7 +501,7 @@ class ItemController extends AbstractActionController
                 $location = $request->getPost('location');
                 $localAvailabiliy = (int) $request->getPost('localAvailabiliy');
                 
-                $remarks = $request->getPost('remarks');
+                $remarks = $request->getPost('remarksText');
                 
                 if ($itemSku === '' or $itemSku === null) {
                     $errors[] = 'Please give Item ID';
@@ -594,7 +594,7 @@ class ItemController extends AbstractActionController
                 // $entity->setValidToDate($validToDate);
                 // $entity->setWarehouse ();
                 
-                $entity->setRemarks($remarks);
+                $entity->setRemarksText($remarks);
                 $entity->setLocation($location);
                 $entity->setLocalAvailabiliy($localAvailabiliy);
                 $entity->setLeadTime($leadTime);
@@ -680,7 +680,7 @@ class ItemController extends AbstractActionController
                     'changeArray' =>$changeArray
                 ));
                 
-                $this->flashMessenger()->addMessage("Item " . $itemName . " has been updated sucessfully". "No.of change: ".count($changeArray));
+                $this->flashMessenger()->addMessage("Item " . $itemName . " has been updated sucessfully". " No.of change: ".count($changeArray));
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
@@ -1449,7 +1449,7 @@ class ItemController extends AbstractActionController
      * @param unknown $o2
      * @return NULL|string[][]|NULL[][]|unknown[][]|mixed[][]
      */
-    private function objectsAreIdentical($o1, $o2)
+    private function objectsAreIdentical($o1, $o2, $ignoredProperities=null)
     {
         $diffArray = array();
         

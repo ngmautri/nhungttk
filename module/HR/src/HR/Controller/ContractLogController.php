@@ -16,7 +16,7 @@ use Application\Entity\NmtHrEmployee;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class EntityChangeLogController extends AbstractActionController
+class ContractLogController extends AbstractActionController
 {
 
     const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
@@ -40,10 +40,10 @@ class EntityChangeLogController extends AbstractActionController
         $request = $this->getRequest();
         
         // accepted only ajax request
-       /*  if (! $request->isXmlHttpRequest()) {
+        if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
-         */
+        
         $this->layout("layout/user/ajax");
         
         $object_token = $this->params()->fromQuery('object_token');
@@ -75,13 +75,13 @@ class EntityChangeLogController extends AbstractActionController
             'createdOn' => 'DESC'
         );
         
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrChangeLog')->findBy($criteria, $sort_criteria);
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrContractLog')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
         
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrChangeLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrContractLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
         
         return new ViewModel(array(

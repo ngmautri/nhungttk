@@ -10,6 +10,7 @@ use Zend\Log\Writer\Stream;
 use Doctrine\ORM\EntityManager;
 use Application\Entity\NmtHrChangeLog;
 use Zend\Math\Rand;
+use Application\Entity\NmtHrContractLog;
 
 /**
  *
@@ -56,6 +57,11 @@ class LoggingListener implements ListenerAggregateInterface
         $this->listeners[] = $events->attach('inventory.activity.log', array(
             $this,
             'onInventoryActivityLogging'
+        ), 200);
+        
+        $this->listeners[] = $events->attach('hr.contract.log', array(
+            $this,
+            'onContractLogging'
         ), 200);
     }
 
@@ -144,19 +150,24 @@ class LoggingListener implements ListenerAggregateInterface
         $changeBy = $e->getParam('changeBy');
         $changeOn = $e->getParam('changeOn');
         
-        $filename = 'inventory_activity_log_' . date('F') . '_' . date('Y') . '.txt';
+        $filename = 'hr_change_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
         
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
-        $log->log(Logger::INFO, $log_message);
+       // $log->log(Logger::INFO, $log_message);
         
+        $detail= $log_message;
         foreach ($changeArray as $key => $value) {
-            $log->log(Logger::INFO, $key . " ID: " . $objectId);
-            foreach ($value as $v) {
-                $log->log(Logger::INFO, $v);
-            }
+            $detail_1 = $detail ." {" . $key . "}{Object ID: " . $objectId . "}";
+            //  $log->log(Logger::INFO, $key . " ID: " . $objectId);
+            foreach ($value as $k=>$v) {
+                $detail_1 = $detail_1 . "{". $k.":".$v . "}";
+             }
+             $log->log(Logger::INFO, $detail_1);
         }
+        
+         
         
         foreach ($changeArray as $key => $value) {
             
@@ -166,6 +177,78 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setObjectId($objectId);
             $entity->setCreatedBy($changeBy);
             $entity->setCreatedOn($changeOn);
+            
+            foreach ($value as $k => $v1) {
+                
+                switch ($k) {
+                    case "className":
+                        $entity->setClassName($v1);
+                        break;
+                    case "fieldName":
+                        $entity->setFieldName($v1);
+                        $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())
+                            ->getColumnName($v1));
+                        break;
+                    case "oldValue":
+                        $entity->setOldValue($v1);
+                        break;
+                    case "newValue":
+                        $entity->setNewValue($v1);
+                        break;
+                }
+            }
+            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            $this->doctrineEM->persist($entity);
+        }
+        
+        $this->doctrineEM->flush();
+    }
+    
+    /**
+     * ON Contract Log 
+     * 
+     * @param EventInterface $e
+     */
+    public function onContractLogging(EventInterface $e)
+    {
+        $log_priority = $e->getParam('priotiry');
+        $log_message = $e->getParam('message');
+        $objectId = $e->getParam('objectId');
+        $objectToken = $e->getParam('objectToken');
+        $changeArray = $e->getParam('changeArray');
+        $changeBy = $e->getParam('changeBy');
+        $changeOn = $e->getParam('changeOn');
+        $revisionNumber = $e->getParam('revisionNumber');
+        
+        
+        $filename = 'hr_contract_log_' . date('F') . '_' . date('Y') . '.txt';
+        $log = new Logger();
+        
+        $writer = new Stream('./data/log/' . $filename);
+        $log->addWriter($writer);
+        // $log->log(Logger::INFO, $log_message);
+        
+        $detail= $log_message;
+        foreach ($changeArray as $key => $value) {
+            $detail_1 = $detail ." {" . $key . "}{Object ID: " . $objectId . "}";
+            //  $log->log(Logger::INFO, $key . " ID: " . $objectId);
+            foreach ($value as $k=>$v) {
+                $detail_1 = $detail_1 . "{". $k.":".$v . "}";
+            }
+            $log->log(Logger::INFO, $detail_1);
+        }
+        
+        
+        
+        foreach ($changeArray as $key => $value) {
+            
+            // update database
+            $entity = new NmtHrContractLog();
+            $entity->setObjectToken($objectToken);
+            $entity->setObjectId($objectId);
+            $entity->setCreatedBy($changeBy);
+            $entity->setCreatedOn($changeOn);
+            $entity->setRevisionNo($revisionNumber);
             
             foreach ($value as $k => $v1) {
                 

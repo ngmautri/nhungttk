@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrContract
  *
- * @ORM\Table(name="nmt_hr_contract", indexes={@ORM\Index(name="nmt_hr_contract_FK1_idx", columns={"employee_id"}), @ORM\Index(name="nmt_hr_contract_IDX1", columns={"token"})})
+ * @ORM\Table(name="nmt_hr_contract", indexes={@ORM\Index(name="nmt_hr_contract_FK1_idx", columns={"employee_id"}), @ORM\Index(name="nmt_hr_contract_IDX1", columns={"token"}), @ORM\Index(name="nmt_hr_contract_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_contract_FK3_idx", columns={"currency_id"}), @ORM\Index(name="nmt_hr_contract_FK4_idx", columns={"position_id"})})
  * @ORM\Entity
  */
 class NmtHrContract
@@ -29,6 +29,20 @@ class NmtHrContract
     private $token;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_revision_id", type="integer", nullable=true)
+     */
+    private $lastRevisionId;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="contract_number", type="string", length=45, nullable=true)
@@ -36,9 +50,9 @@ class NmtHrContract
     private $contractNumber;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="contract_date", type="string", length=45, nullable=true)
+     * @ORM\Column(name="contract_date", type="datetime", nullable=true)
      */
     private $contractDate;
 
@@ -59,9 +73,30 @@ class NmtHrContract
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="termination_date", type="datetime", nullable=true)
+     * @ORM\Column(name="effective_from", type="datetime", nullable=true)
      */
-    private $terminationDate;
+    private $effectiveFrom;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="effective_to", type="datetime", nullable=true)
+     */
+    private $effectiveTo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="working_time_from", type="integer", nullable=true)
+     */
+    private $workingTimeFrom;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="working_time_to", type="integer", nullable=true)
+     */
+    private $workingTimeTo;
 
     /**
      * @var string
@@ -73,7 +108,28 @@ class NmtHrContract
     /**
      * @var string
      *
-     * @ORM\Column(name="is_active", type="string", length=45, nullable=true)
+     * @ORM\Column(name="position_name", type="string", length=100, nullable=true)
+     */
+    private $positionName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
+     */
+    private $currentState;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="basic_salary", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $basicSalary;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
 
@@ -85,25 +141,11 @@ class NmtHrContract
     private $createdOn;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="created_by", type="integer", nullable=true)
-     */
-    private $createdBy;
-
-    /**
      * @var string
      *
-     * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
+     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
      */
-    private $currentState;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="last_revision_id", type="integer", nullable=true)
-     */
-    private $lastRevisionId;
+    private $remarks;
 
     /**
      * @var integer
@@ -113,11 +155,60 @@ class NmtHrContract
     private $terminationId;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="termination_notice_date", type="datetime", nullable=true)
+     */
+    private $terminationNoticeDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="termination_date", type="datetime", nullable=true)
+     */
+    private $terminationDate;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="termination_type", type="string", nullable=true)
      */
-    private $remarks;
+    private $terminationType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="termination_reason", type="text", length=65535, nullable=true)
+     */
+    private $terminationReason;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_working_date", type="datetime", nullable=true)
+     */
+    private $lastWorkingDate;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_terminated", type="boolean", nullable=true)
+     */
+    private $isTerminated;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="contract_status", type="string", length=45, nullable=true)
+     */
+    private $contractStatus;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_gross", type="boolean", nullable=true)
+     */
+    private $isGross;
 
     /**
      * @var \Application\Entity\NmtHrEmployee
@@ -128,6 +219,36 @@ class NmtHrContract
      * })
      */
     private $employee;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="currency_id", referencedColumnName="id")
+     * })
+     */
+    private $currency;
+
+    /**
+     * @var \Application\Entity\NmtHrPosition
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrPosition")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="position_id", referencedColumnName="id")
+     * })
+     */
+    private $position;
 
 
 
@@ -166,6 +287,54 @@ class NmtHrContract
     }
 
     /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtHrContract
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * Set lastRevisionId
+     *
+     * @param integer $lastRevisionId
+     *
+     * @return NmtHrContract
+     */
+    public function setLastRevisionId($lastRevisionId)
+    {
+        $this->lastRevisionId = $lastRevisionId;
+
+        return $this;
+    }
+
+    /**
+     * Get lastRevisionId
+     *
+     * @return integer
+     */
+    public function getLastRevisionId()
+    {
+        return $this->lastRevisionId;
+    }
+
+    /**
      * Set contractNumber
      *
      * @param string $contractNumber
@@ -192,7 +361,7 @@ class NmtHrContract
     /**
      * Set contractDate
      *
-     * @param string $contractDate
+     * @param \DateTime $contractDate
      *
      * @return NmtHrContract
      */
@@ -206,7 +375,7 @@ class NmtHrContract
     /**
      * Get contractDate
      *
-     * @return string
+     * @return \DateTime
      */
     public function getContractDate()
     {
@@ -262,27 +431,99 @@ class NmtHrContract
     }
 
     /**
-     * Set terminationDate
+     * Set effectiveFrom
      *
-     * @param \DateTime $terminationDate
+     * @param \DateTime $effectiveFrom
      *
      * @return NmtHrContract
      */
-    public function setTerminationDate($terminationDate)
+    public function setEffectiveFrom($effectiveFrom)
     {
-        $this->terminationDate = $terminationDate;
+        $this->effectiveFrom = $effectiveFrom;
 
         return $this;
     }
 
     /**
-     * Get terminationDate
+     * Get effectiveFrom
      *
      * @return \DateTime
      */
-    public function getTerminationDate()
+    public function getEffectiveFrom()
     {
-        return $this->terminationDate;
+        return $this->effectiveFrom;
+    }
+
+    /**
+     * Set effectiveTo
+     *
+     * @param \DateTime $effectiveTo
+     *
+     * @return NmtHrContract
+     */
+    public function setEffectiveTo($effectiveTo)
+    {
+        $this->effectiveTo = $effectiveTo;
+
+        return $this;
+    }
+
+    /**
+     * Get effectiveTo
+     *
+     * @return \DateTime
+     */
+    public function getEffectiveTo()
+    {
+        return $this->effectiveTo;
+    }
+
+    /**
+     * Set workingTimeFrom
+     *
+     * @param integer $workingTimeFrom
+     *
+     * @return NmtHrContract
+     */
+    public function setWorkingTimeFrom($workingTimeFrom)
+    {
+        $this->workingTimeFrom = $workingTimeFrom;
+
+        return $this;
+    }
+
+    /**
+     * Get workingTimeFrom
+     *
+     * @return integer
+     */
+    public function getWorkingTimeFrom()
+    {
+        return $this->workingTimeFrom;
+    }
+
+    /**
+     * Set workingTimeTo
+     *
+     * @param integer $workingTimeTo
+     *
+     * @return NmtHrContract
+     */
+    public function setWorkingTimeTo($workingTimeTo)
+    {
+        $this->workingTimeTo = $workingTimeTo;
+
+        return $this;
+    }
+
+    /**
+     * Get workingTimeTo
+     *
+     * @return integer
+     */
+    public function getWorkingTimeTo()
+    {
+        return $this->workingTimeTo;
     }
 
     /**
@@ -310,9 +551,81 @@ class NmtHrContract
     }
 
     /**
+     * Set positionName
+     *
+     * @param string $positionName
+     *
+     * @return NmtHrContract
+     */
+    public function setPositionName($positionName)
+    {
+        $this->positionName = $positionName;
+
+        return $this;
+    }
+
+    /**
+     * Get positionName
+     *
+     * @return string
+     */
+    public function getPositionName()
+    {
+        return $this->positionName;
+    }
+
+    /**
+     * Set currentState
+     *
+     * @param string $currentState
+     *
+     * @return NmtHrContract
+     */
+    public function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+
+        return $this;
+    }
+
+    /**
+     * Get currentState
+     *
+     * @return string
+     */
+    public function getCurrentState()
+    {
+        return $this->currentState;
+    }
+
+    /**
+     * Set basicSalary
+     *
+     * @param string $basicSalary
+     *
+     * @return NmtHrContract
+     */
+    public function setBasicSalary($basicSalary)
+    {
+        $this->basicSalary = $basicSalary;
+
+        return $this;
+    }
+
+    /**
+     * Get basicSalary
+     *
+     * @return string
+     */
+    public function getBasicSalary()
+    {
+        return $this->basicSalary;
+    }
+
+    /**
      * Set isActive
      *
-     * @param string $isActive
+     * @param boolean $isActive
      *
      * @return NmtHrContract
      */
@@ -326,7 +639,7 @@ class NmtHrContract
     /**
      * Get isActive
      *
-     * @return string
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -358,75 +671,27 @@ class NmtHrContract
     }
 
     /**
-     * Set createdBy
+     * Set remarks
      *
-     * @param integer $createdBy
+     * @param string $remarks
      *
      * @return NmtHrContract
      */
-    public function setCreatedBy($createdBy)
+    public function setRemarks($remarks)
     {
-        $this->createdBy = $createdBy;
+        $this->remarks = $remarks;
 
         return $this;
     }
 
     /**
-     * Get createdBy
-     *
-     * @return integer
-     */
-    public function getCreatedBy()
-    {
-        return $this->createdBy;
-    }
-
-    /**
-     * Set currentState
-     *
-     * @param string $currentState
-     *
-     * @return NmtHrContract
-     */
-    public function setCurrentState($currentState)
-    {
-        $this->currentState = $currentState;
-
-        return $this;
-    }
-
-    /**
-     * Get currentState
+     * Get remarks
      *
      * @return string
      */
-    public function getCurrentState()
+    public function getRemarks()
     {
-        return $this->currentState;
-    }
-
-    /**
-     * Set lastRevisionId
-     *
-     * @param integer $lastRevisionId
-     *
-     * @return NmtHrContract
-     */
-    public function setLastRevisionId($lastRevisionId)
-    {
-        $this->lastRevisionId = $lastRevisionId;
-
-        return $this;
-    }
-
-    /**
-     * Get lastRevisionId
-     *
-     * @return integer
-     */
-    public function getLastRevisionId()
-    {
-        return $this->lastRevisionId;
+        return $this->remarks;
     }
 
     /**
@@ -454,27 +719,195 @@ class NmtHrContract
     }
 
     /**
-     * Set remarks
+     * Set terminationNoticeDate
      *
-     * @param string $remarks
+     * @param \DateTime $terminationNoticeDate
      *
      * @return NmtHrContract
      */
-    public function setRemarks($remarks)
+    public function setTerminationNoticeDate($terminationNoticeDate)
     {
-        $this->remarks = $remarks;
+        $this->terminationNoticeDate = $terminationNoticeDate;
 
         return $this;
     }
 
     /**
-     * Get remarks
+     * Get terminationNoticeDate
+     *
+     * @return \DateTime
+     */
+    public function getTerminationNoticeDate()
+    {
+        return $this->terminationNoticeDate;
+    }
+
+    /**
+     * Set terminationDate
+     *
+     * @param \DateTime $terminationDate
+     *
+     * @return NmtHrContract
+     */
+    public function setTerminationDate($terminationDate)
+    {
+        $this->terminationDate = $terminationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get terminationDate
+     *
+     * @return \DateTime
+     */
+    public function getTerminationDate()
+    {
+        return $this->terminationDate;
+    }
+
+    /**
+     * Set terminationType
+     *
+     * @param string $terminationType
+     *
+     * @return NmtHrContract
+     */
+    public function setTerminationType($terminationType)
+    {
+        $this->terminationType = $terminationType;
+
+        return $this;
+    }
+
+    /**
+     * Get terminationType
      *
      * @return string
      */
-    public function getRemarks()
+    public function getTerminationType()
     {
-        return $this->remarks;
+        return $this->terminationType;
+    }
+
+    /**
+     * Set terminationReason
+     *
+     * @param string $terminationReason
+     *
+     * @return NmtHrContract
+     */
+    public function setTerminationReason($terminationReason)
+    {
+        $this->terminationReason = $terminationReason;
+
+        return $this;
+    }
+
+    /**
+     * Get terminationReason
+     *
+     * @return string
+     */
+    public function getTerminationReason()
+    {
+        return $this->terminationReason;
+    }
+
+    /**
+     * Set lastWorkingDate
+     *
+     * @param \DateTime $lastWorkingDate
+     *
+     * @return NmtHrContract
+     */
+    public function setLastWorkingDate($lastWorkingDate)
+    {
+        $this->lastWorkingDate = $lastWorkingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get lastWorkingDate
+     *
+     * @return \DateTime
+     */
+    public function getLastWorkingDate()
+    {
+        return $this->lastWorkingDate;
+    }
+
+    /**
+     * Set isTerminated
+     *
+     * @param boolean $isTerminated
+     *
+     * @return NmtHrContract
+     */
+    public function setIsTerminated($isTerminated)
+    {
+        $this->isTerminated = $isTerminated;
+
+        return $this;
+    }
+
+    /**
+     * Get isTerminated
+     *
+     * @return boolean
+     */
+    public function getIsTerminated()
+    {
+        return $this->isTerminated;
+    }
+
+    /**
+     * Set contractStatus
+     *
+     * @param string $contractStatus
+     *
+     * @return NmtHrContract
+     */
+    public function setContractStatus($contractStatus)
+    {
+        $this->contractStatus = $contractStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get contractStatus
+     *
+     * @return string
+     */
+    public function getContractStatus()
+    {
+        return $this->contractStatus;
+    }
+
+    /**
+     * Set isGross
+     *
+     * @param boolean $isGross
+     *
+     * @return NmtHrContract
+     */
+    public function setIsGross($isGross)
+    {
+        $this->isGross = $isGross;
+
+        return $this;
+    }
+
+    /**
+     * Get isGross
+     *
+     * @return boolean
+     */
+    public function getIsGross()
+    {
+        return $this->isGross;
     }
 
     /**
@@ -499,5 +932,77 @@ class NmtHrContract
     public function getEmployee()
     {
         return $this->employee;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return NmtHrContract
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set currency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $currency
+     *
+     * @return NmtHrContract
+     */
+    public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
+     * Set position
+     *
+     * @param \Application\Entity\NmtHrPosition $position
+     *
+     * @return NmtHrContract
+     */
+    public function setPosition(\Application\Entity\NmtHrPosition $position = null)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return \Application\Entity\NmtHrPosition
+     */
+    public function getPosition()
+    {
+        return $this->position;
     }
 }

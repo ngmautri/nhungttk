@@ -219,7 +219,8 @@ class LoggingListener implements ListenerAggregateInterface
         $changeBy = $e->getParam('changeBy');
         $changeOn = $e->getParam('changeOn');
         $revisionNumber = $e->getParam('revisionNumber');
-        
+        $changeValidFrom = $e->getParam('changeValidFrom');
+         
         
         $filename = 'hr_contract_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
@@ -249,6 +250,7 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setCreatedBy($changeBy);
             $entity->setCreatedOn($changeOn);
             $entity->setRevisionNo($revisionNumber);
+            $entity->setEffectiveFrom($changeValidFrom);
             
             foreach ($value as $k => $v1) {
                 
@@ -256,6 +258,11 @@ class LoggingListener implements ListenerAggregateInterface
                     case "className":
                         $entity->setClassName($v1);
                         break;
+                        
+                    case "fieldType":
+                        $entity->setFieldType($v1);
+                        break;
+                        
                     case "fieldName":
                         $entity->setFieldName($v1);
                         $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())

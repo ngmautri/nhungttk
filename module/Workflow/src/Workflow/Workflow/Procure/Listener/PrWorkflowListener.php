@@ -62,7 +62,7 @@ class PrWorkflowListener extends AbstractWorkflowListener
             $workflowName = $event->getWorkflowName();
             
             // to handle the proxie object
-            $className = $this->doctrineEM->getClassMetadata(get_class($event->getSubject()))
+            $className = $this->doctrineEM->getClassMetadata(get_class($event->getSubject()))->get
                 ->getName();
             $subjectClass = $className;
             

@@ -13,13 +13,13 @@ class NmtPlugin extends AbstractPlugin
 {
 
     protected $doctrineEM;
-    
-  /**
-   * 
-   * @param unknown $o1
-   * @param unknown $o2
-   * @return NULL|string[][]|NULL[][]|unknown[][]|mixed[][]
-   */
+
+    /**
+     *
+     * @param unknown $o1
+     * @param unknown $o2
+     * @return NULL|string[][]|NULL[][]|mixed[][]|unknown[][]
+     */
     public function objectsAreIdentical($o1, $o2)
     {
         $diffArray = array();
@@ -40,7 +40,7 @@ class NmtPlugin extends AbstractPlugin
             }
             $key = sprintf('%s::%s', $p1->getDeclaringClass()->getName(), $p1->getName());
             
-            //echo $key . "\n";
+            // echo $key . "\n";
             $p1->setAccessible(true);
             
             $v1 = $p1->getValue($o1);
@@ -59,6 +59,69 @@ class NmtPlugin extends AbstractPlugin
                         "oldValue" => $v1,
                         "newValue" => $v2
                     );
+                }
+            } else {
+                
+                if ($v1 instanceof \Datetime) {
+                    
+                    if ($v1->format("Y-m-d H:i:s") != $v2->format("Y-m-d H:i:s"))
+                        $diffArray[$key] = array(
+                            "className" => $p1->getDeclaringClass()->getName(),
+                            "fieldName" => $p1->getName(),
+                            "fieldType" => gettype($v1),
+                            "oldValue" => $v1->format("Y-m-d H:i:s"),
+                            "newValue" => $v2->format("Y-m-d H:i:s")
+                        );
+                } else {
+                    // var_dump($v1);
+                    
+                    try {
+                        
+                        // to handle the proxie object
+                        // $className1 = $this->doctrineEM->getClassMetadata(get_class($v1));
+                        
+                        $objV1_1 = new \ReflectionObject($v1);
+                        $objV1 = $objV1_1->getParentClass();
+                        
+                        if ($objV1 != null) {
+                            $p11 = $objV1->getProperty("id");
+                            $p11->setAccessible(true);
+                            $v11 = $p11->getValue($v1);
+                        } else {
+                            $p11 = $objV1_1->getProperty("id");
+                            $p11->setAccessible(true);
+                            $v11 = $p11->getValue($v1);
+                        }
+                        
+                        // to handle the proxie object in doctrine
+                        // $className2 = $this->doctrineEM->getClassMetadata(get_class($v2));
+                        
+                        $objV2_1 = new \ReflectionObject($v2);
+                        $objV2 = $objV2_1->getParentClass();
+                        
+                        if ($objV2 != null) {
+                            $p12 = $objV2->getProperty("id");
+                            $p12->setAccessible(true);
+                            $v12 = $p12->getValue($v2);
+                        } else {
+                            $p12 = $objV2_1->getProperty("id");
+                            $p12->setAccessible(true);
+                            $v12 = $p12->getValue($v2);
+                        }
+                        
+                        if ($v11 != $v12) {
+                            var_dump($v11);
+                            $diffArray[$key] = array(
+                                "className" => $p1->getDeclaringClass()->getName(),
+                                "fieldName" => $p1->getName(),
+                                "fieldType" => gettype($v1),
+                                "oldValue" => $v11,
+                                "newValue" => $v12
+                            );
+                        }
+                    } catch (\Exception $e) {
+                        echo $e->getMessage();
+                    }
                 }
             }
         }

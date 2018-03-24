@@ -72,7 +72,8 @@ class ContractLogController extends AbstractActionController
         
         $sort_criteria = array(
             'fieldName' => 'ASC',
-            'createdOn' => 'DESC'
+            'revisionNo' => 'DESC',
+            'createdOn' => 'DESC',
         );
         
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrContractLog')->findBy($criteria, $sort_criteria);

@@ -32,6 +32,23 @@ if (count ( $errors ) > 0) {
 <input type="hidden" name="entity_id" value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
 <input type="hidden" name="token" value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
 
+<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" ><?php echo $this->translate('Change Date'); ?>:</label>
+		<div class="col-sm-3">
+		<input class="form-control input-sm" type="text" name="changeDate" id="changeDate" value="" /></div>
+	</div>
+	
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" ><?php echo $this->translate('Change Effective From:'); ?>:</label>
+		<div class="col-sm-3">
+			<input class="form-control input-sm" type="text"  placeholder=""
+				name="changeValidFrom" id="changeValidFrom" value="">
+		</div>
+	</div>
+	
+	<hr>
+
+
 	<fieldset>
 	<legend style="font-size: 9pt; color: gray;">
 		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
@@ -204,6 +221,9 @@ if (count ( $errors ) > 0) {
 
 <script>
 $(function() {
+	  $( "input[id='changeDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+	  $( "input[id='changeValidFrom']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+	  
    $( "input[id='validFrom']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
    $( "input[id='validTo']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
    $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});

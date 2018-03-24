@@ -49,7 +49,7 @@ class EmployeeContractController extends AbstractActionController
         $redirectUrl = null;
         
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect ()->toRoute ( 'access_denied' );
+            return $this->redirect()->toRoute('access_denied');
         } else {
             $redirectUrl = $request->getHeader('Referer')->getUri();
         }
@@ -66,12 +66,33 @@ class EmployeeContractController extends AbstractActionController
         
         if ($entity instanceof \Application\Entity\NmtHrContract) {
             
+            $criteria = array(
+                'isActive' => 1
+            );
+            $sort_criteria = array(
+                'currency' => 'ASC'
+            );
+            
+            $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+            
+            $criteria = array(
+                'isActive' => 1
+            );
+            $sort_criteria = array(
+                'positionName' => 'ASC'
+            );
+            
+            $position_list = $this->doctrineEM->getRepository('Application\Entity\NmtHrPosition')->findBy($criteria, $sort_criteria);
+            
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
                 'entity' => $entity,
                 'target' => $entity->getEmployee(),
-             ));
+                'currency_list' => $currency_list,
+                'position_list' => $position_list
+            
+            ));
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
@@ -113,23 +134,23 @@ class EmployeeContractController extends AbstractActionController
         /**@var \Application\Entity\NmtHrEmployee $target ; */
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
         
-        if ($target instanceof  \Application\Entity\NmtHrEmployee) {
-            $criteria = array (
-                'employee' => $target_id,
+        if ($target instanceof \Application\Entity\NmtHrEmployee) {
+            $criteria = array(
+                'employee' => $target_id
             );
             
-            $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtHrContract' )->findBy ( $criteria );
-            $total_records = count ( $list );
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrContract')->findBy($criteria);
+            $total_records = count($list);
             $paginator = null;
             
-            return new ViewModel ( array (
+            return new ViewModel(array(
                 'list' => $list,
                 'total_records' => $total_records,
                 'paginator' => $paginator,
                 'target' => $target
-            ) );
+            ));
         } else {
-            return $this->redirect ()->toRoute ( 'access_denied' );
+            return $this->redirect()->toRoute('access_denied');
         }
     }
 
@@ -198,18 +219,6 @@ class EmployeeContractController extends AbstractActionController
                     $isActive = 0;
                 }
                 
-                $currency = null;
-                if ($currency_id > 0) {
-                    /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
-                    $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
-                }
-                
-                $position = null;
-                if ($position_id > 0) {
-                    /** @var \Application\Entity\NmtHrPosition  $position ; */
-                    $position = $this->doctrineEM->getRepository('Application\Entity\NmtHrPosition')->find($currency_id);
-                }
-                
                 $entity = new NmtHrContract();
                 $entity->setEmployee($target);
                 
@@ -268,10 +277,28 @@ class EmployeeContractController extends AbstractActionController
                     $entity->setBasicSalary($basicSalary);
                 }
                 
+                $currency = null;
+                if ($currency_id > 0) {
+                    /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
+                    $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+                }
+                
+                $position = null;
+                if ($position_id > 0) {
+                    /** @var \Application\Entity\NmtHrPosition  $position ; */
+                    $position = $this->doctrineEM->getRepository('Application\Entity\NmtHrPosition')->find($currency_id);
+                }
+                
                 if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
                     $entity->setCurrency($currency);
                 } else {
-                    $errors[] = 'Currency can\'t be empty. Please select a vendor!';
+                    $errors[] = 'Currency can\'t be empty. Please select a currency!';
+                }
+                
+                if ($position instanceof \Application\Entity\NmtHrPosition) {
+                    $entity->setPosition($position);
+                } else {
+                    $errors[] = 'Position can\'t be empty. Please select a postion!';
                 }
                 
                 $entity->setWorkingTimeFrom($workingTimeFrom);
@@ -319,7 +346,7 @@ class EmployeeContractController extends AbstractActionController
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn(new \DateTime());
                 
-                //$redirectUrl = "/hr/position/list";
+                // $redirectUrl = "/hr/position/list";
                 
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
@@ -425,8 +452,7 @@ class EmployeeContractController extends AbstractActionController
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtHrContract')->findOneBy($criteria);
             $errors = array();
             
-            
-            if (!$entity instanceof \Application\Entity\NmtHrContract) {
+            if (! $entity instanceof \Application\Entity\NmtHrContract) {
                 
                 $errors[] = 'Entity object can\'t be empty!';
                 return new ViewModel(array(
@@ -439,10 +465,13 @@ class EmployeeContractController extends AbstractActionController
                 // might need redirect
             } else {
                 
-                $oldEntity =  clone($entity);
-                
+                $oldEntity = clone ($entity);
                 
                 $minimum_wage = 900000;
+                
+                $changeDate = $request->getPost('changeDate');
+                $changeValidFrom = $request->getPost('changeValidFrom');
+                
                 $contractNumber = $request->getPost('contractNumber');
                 $contractDate = $request->getPost('contractDate');
                 $effectiveFrom = $request->getPost('effectiveFrom');
@@ -461,18 +490,6 @@ class EmployeeContractController extends AbstractActionController
                     $isActive = 0;
                 }
                 
-                $currency = null;
-                if ($currency_id > 0) {
-                    /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
-                    $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
-                }
-                
-                $position = null;
-                if ($position_id > 0) {
-                    /** @var \Application\Entity\NmtHrPosition  $position ; */
-                    $position = $this->doctrineEM->getRepository('Application\Entity\NmtHrPosition')->find($currency_id);
-                }
-                
                 if ($contractNumber == null) {
                     $errors[] = 'Please enter Contract Number!';
                 } else {
@@ -480,6 +497,30 @@ class EmployeeContractController extends AbstractActionController
                 }
                 
                 $validator = new Date();
+                
+                $changeOn = new \DateTime();
+                
+                
+                if ($changeDate != null) {
+                    if (! $validator->isValid($changeDate)) {
+                        $errors[] = 'Change Date is not correct or empty!';
+                     }else{
+                         $newChangeDate =  new \DateTime($changeDate);
+                         
+                    }
+                }else{
+                    $newChangeDate = $changeOn;
+                }
+                
+                if ($changeValidFrom != null) {
+                    if (! $validator->isValid($changeValidFrom)) {
+                        $errors[] = 'Change Valid From is not correct or empty!';
+                    }else{
+                        $newChangeValidFrom =  new \DateTime($changeValidFrom);
+                    }
+                }else{
+                    $newChangeValidFrom =$changeOn;
+                }
                 
                 if (! $validator->isValid($contractDate)) {
                     $errors[] = 'Employement Contract Date is not correct or empty!';
@@ -507,14 +548,8 @@ class EmployeeContractController extends AbstractActionController
                 
                 if ($validated == 2) {
                     if (new \DateTime($effectiveTo) < new \DateTime($effectiveFrom)) {
-                        $errors[] = 'Contract End Date must be in the futuret!';
+                        $errors[] = 'Contract End Date must be in the future!';
                     }
-                }
-                
-                if ($position instanceof \Application\Entity\NmtHrPosition) {
-                    $entity->setPosition($position);
-                } else {
-                    $errors[] = 'Position can\'t be empty. Please select a postiton!';
                 }
                 
                 if (! is_numeric($basicSalary)) {
@@ -528,10 +563,22 @@ class EmployeeContractController extends AbstractActionController
                     $entity->setBasicSalary($basicSalary);
                 }
                 
-                if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
-                    $entity->setCurrency($currency);
-                } else {
-                    $errors[] = 'Currency can\'t be empty. Please select a vendor!';
+                $currency = null;
+                if ($currency_id != $oldEntity->getCurrency()->getId()) {
+                    /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
+                    $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+                    if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
+                        $entity->setCurrency($currency);
+                    }
+                }
+                
+                $position = null;
+                if ($position_id != $oldEntity->getPosition()->getId()) {
+                    /** @var \Application\Entity\NmtHrPosition  $position ; */
+                    $position = $this->doctrineEM->getRepository('Application\Entity\NmtHrPosition')->find($position_id);
+                    if ($position instanceof \Application\Entity\NmtHrPosition) {
+                        $entity->setPosition($position);
+                    }
                 }
                 
                 $entity->setWorkingTimeFrom($workingTimeFrom);
@@ -556,7 +603,7 @@ class EmployeeContractController extends AbstractActionController
                     );
                     
                     $position_list = $this->doctrineEM->getRepository('Application\Entity\NmtHrPosition')->findBy($criteria, $sort_criteria);
-                     
+                    
                     return new ViewModel(array(
                         'redirectUrl' => $redirectUrl,
                         'errors' => $errors,
@@ -570,46 +617,43 @@ class EmployeeContractController extends AbstractActionController
                 // NO ERROR
                 // +++++++++++++++++++++++++++++++++
                 
-                
                 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
                 $nmtPlugin = $this->Nmtplugin();
                 $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-                $changeOn =new \DateTime();
-                
+                 
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
                 
-                $entity->setRevisionNo($entity->getRevisionNo()+1);
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
                 
                 // trigger log. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('hr.contract.log', __CLASS__, array(
                     'priority' => 7,
-                    'message' => 'Contract ' . $entity->getContractNumber() .' changed!',
-                    'objectId'=> $entity->getId(),
-                    'objectToken'=> $entity->getToken(),
-                    'changeArray' =>$changeArray,
-                    'changeBy' =>$u,
-                    'changeOn' =>$changeOn,
-                    'revisionNumber' =>$entity->getRevisionNo(),                    
+                    'message' => 'Contract ' . $entity->getContractNumber() . ' changed!',
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $newChangeDate,
+                    'changeValidFrom' => $newChangeValidFrom,
                 ));
                 
+                // $entity->setLastchangeBy($u);
+                // $entity->setLastchangeOn($changeOn);
                 
-                
-                //$entity->setLastchangeBy($u);
-                //$entity->setLastchangeOn($changeOn);
-                 
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 $this->flashMessenger()->addMessage("Contract '" . $entity->getContractNumber() . "' changed!");
                 return $this->redirect()->toUrl($redirectUrl);
-                
             }
         }
         
-        //NO POST
-        //++++++++++++++++++++++
-         
+        // NO POST
+        // ++++++++++++++++++++++
+        
         $criteria = array(
             'isActive' => 1
         );
@@ -631,7 +675,7 @@ class EmployeeContractController extends AbstractActionController
         $redirectUrl = null;
         
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect ()->toRoute ( 'access_denied' );
+            return $this->redirect()->toRoute('access_denied');
         } else {
             $redirectUrl = $request->getHeader('Referer')->getUri();
         }
@@ -655,7 +699,7 @@ class EmployeeContractController extends AbstractActionController
                 'target' => $entity->getEmployee(),
                 'currency_list' => $currency_list,
                 'position_list' => $position_list
-                
+            
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');

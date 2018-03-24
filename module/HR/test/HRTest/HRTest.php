@@ -23,11 +23,15 @@ use HR\Payroll\Income\Factory\AnnualBonusFactory;
  */
 class HRTest extends phpunit_framework_testcase
 {
+    private $result;
 
     public function testHR()
     {
+         
         // var_dump(abstractdecoratorfactoryregistry::getsupportedfactory());
         try {
+            $this->result = array();
+            
             $employee = new Employee();
             $employee->setEmployeeName("Nguyen mau Tri");
             
@@ -38,21 +42,20 @@ class HRTest extends phpunit_framework_testcase
             $incomeFactory = new BasicSalaryFactory(900000, "LAK");
             $employee->setBasicSalary($incomeFactory->createIncomeComponent());
             
-             
-            $employee1 = clone($employee);
+            $employee1 = clone ($employee);
             $employee1->setEmployeeName("Nguyen mau Tri");
             
             $employee1->setEmployeecode("0651");
-            $employee1->setStatus(2);
+            $employee1->setStatus(2222);
             $employee1->setStartWorkingdate(new \DateTime("2008-12-01 10:20:20"));
-            $incomeFactory = new BasicSalaryFactory(1200000, "LAK");
-            $employee->setBasicSalary($incomeFactory->createIncomeComponent());
-            
-            
-            
+            $incomeFactory = new BasicSalaryFactory(20000000, "LAK");
+            $employee1->setBasicSalary($incomeFactory->createIncomeComponent());
             
             $diffArray = $this->objectsAreIdentical($employee, $employee1);
             var_dump($diffArray);
+            
+            //'$this->saveDiffArray($diffArray);
+            //var_dump($this->result);
             
             $incomeFactory = new BasicSalaryFactory(900000, "LAK");
             $employee->setBasicSalary($incomeFactory->createIncomeComponent());
@@ -140,14 +143,14 @@ class HRTest extends phpunit_framework_testcase
         $objReflection2 = new \ReflectionObject($o2);
         
         $arrProperties1 = $objReflection1->getProperties();
-         
+        
         foreach ($arrProperties1 as $p1) {
             if ($p1->isStatic()) {
                 continue;
             }
             $key = sprintf('%s::%s', $p1->getDeclaringClass()->getName(), $p1->getName());
             
-            //echo $key . "\n";
+            // echo $key . "\n";
             $p1->setAccessible(true);
             
             $v1 = $p1->getValue($o1);
@@ -157,7 +160,7 @@ class HRTest extends phpunit_framework_testcase
             $v2 = $p2->getValue($o2);
             
             if (! is_object($v1)) {
-       
+                
                 if ($v1 !== $v2) {
                     $diffArray[$key] = array(
                         "className" => $p1->getDeclaringClass()->getName(),
@@ -167,36 +170,73 @@ class HRTest extends phpunit_framework_testcase
                         "newValue" => $v2
                     );
                 }
-            }else{
+            } else {
                 
-                if($v1 instanceof \Datetime){
-                    //echo $v1->format("Y-m-d H:i:s")."\n";
-                    //echo $v2->format("Y-m-d H:i:s");
+                //$diffArray[$key] = $this->objectsAreIdentical($v1, $v2);
+                
+                if ($v1 instanceof \Datetime) {
+                    // echo $v1->format("Y-m-d H:i:s")."\n";
+                    // echo $v2->format("Y-m-d H:i:s");
                     
-                    if($v1!==$v2)
-                    $diffArray[$key] = array(
-                        "className" => $p1->getDeclaringClass()->getName(),
-                        "fieldName" => $p1->getName(),
-                        "fieldType" => gettype($v1),
-                        "oldValue" => $v1->format("Y-m-d H:i:s"),
-                        "newValue" => $v2->format("Y-m-d H:i:s"),
-                    );
                     
-                }else{
-                    try{
+                      if($v1!==$v2)
+                      $diffArray[$key] = array(
+                      "className" => $p1->getDeclaringClass()->getName(),
+                      "fieldName" => $p1->getName(),
+                      "fieldType" => gettype($v1),
+                      "oldValue" => $v1->format("Y-m-d H:i:s"),
+                      "newValue" => $v2->format("Y-m-d H:i:s"),
+                      );
+                    
+                    
+                    // $diffArray[$key] = $this->objectsAreIdentical ($v1,$v2);
+                } else {
+                    try {
                         $objV1 = new \ReflectionObject($v1);
-                        $p1 =  $objV1->getProperty("amount");
-                        var_dump($p1->getValue($objV1));
-                    }catch(\Exception $e){
+                        $p11 = $objV1->getProperty("amount");
+                        $p11->setAccessible(true);
+                        $v11 = $p11->getValue($v1);
                         
+                        $objV2 = new \ReflectionObject($v2);
+                        $p12 = $objV2->getProperty("amount");
+                        $p12->setAccessible(true);
+                        $v12 = $p12->getValue($v2);
+                        
+                        if($v11!==$v12)
+                            $diffArray[$key] = array(
+                                "className" => $p1->getDeclaringClass()->getName(),
+                                "fieldName" => $p1->getName(),
+                                "fieldType" => gettype($v1),
+                                "oldValue" => $v11,
+                                "newValue" => $v12,
+                            );
+                        
+                        
+                        
+                        // $diffArray = $this->objectsAreIdentical($employee, $employee1);
+                        // $diffArray[$key] = $this->objectsAreIdentical ($v1,$v2);
+                    } catch (\Exception $e) {
+                        echo $e->getMessage();
                     }
                 }
-                
             }
         }
         
         return $diffArray;
     }
+
+    function saveDiffArray($changeArray)
+    {
+         if (count($changeArray) > 0) {
+            foreach ($changeArray as $key => $value) {
+                 if (! is_array($value)) {
+                    $this->result[][$key] = $value;
+                } else {
+                   $this->saveDiffArray($value);
+                }
+            }
+        }
+     }
 
     function arraysAreIdentical(array $arr1, array $arr2): bool
     {
@@ -260,26 +300,25 @@ class HRTest extends phpunit_framework_testcase
             
             case 'object':
                 $bool = objectsAreIdentical($v1, $v2);
-                if($bool===false){
+                if ($bool === false) {
                     return false;
                 }
                 break;
-                
+            
             case 'NULL':
-                //Since both types were of type NULL, consider their "values" equal.
+                // Since both types were of type NULL, consider their "values" equal.
                 break;
-                
+            
             case 'resource':
-                //How to compare if at all?
+                // How to compare if at all?
                 break;
-                
+            
             case 'unknown type':
-                //How to compare if at all?
+                // How to compare if at all?
                 break;
-        } //end switch
-        
-        //All tests passed.
+        } // end switch
+          
+        // All tests passed.
         return true;
     }
-   
 }

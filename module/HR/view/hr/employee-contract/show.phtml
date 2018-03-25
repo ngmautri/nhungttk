@@ -26,6 +26,7 @@ if (count ( $errors ) > 0) {
     <li><a
 			href="/hr/contract-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getID():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
 				class="glyphicon glyphicon-list"></span>&nbsp;Change Log</a></li>
+  <li ><a href="#posting"><?php echo $this->translate('Posting'); ?></a></li>
    
    </ul>
 
@@ -52,8 +53,10 @@ if (count ( $errors ) > 0) {
 		<div class="col-sm-4">
 	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;<?php echo $this->translate('Active'); ?>&nbsp;&nbsp;
 		</div>
-		<?php echo (!$entity == null)? '<span style="color:gray">Revision: '. $entity->getRevisionNo().'</span>':'';?>
-	
+		<?php echo (!$entity == null)? '<span style="color:gray;font-size: 9pt">Revision #: '. $entity->getRevisionNo().'</span>':'';?>
+		<br>
+		<?php if (!$entity == null): if($entity->getLastChangeOn()!==null): echo '<span style="color:gray;font-size: 9pt">Last Revision: '. $entity->getLastChangeOn()->format('d-m-Y h:i:s').'</span>'; endif; endif;?>
+		
 	</div>
 	
 	<div class="form-group margin-bottom required">
@@ -61,6 +64,9 @@ if (count ( $errors ) > 0) {
 		<div class="col-sm-3">
 		<input class="form-control input-sm" type="text" name="contractDate" id="contractDate" 
 		value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>" placeholder ="<?php echo $this->translate('Select contract date!'); ?>" id="" /></div>
+		<div class="col-sm-4">
+		</div>
+	
 	</div>
 	
 	<div class="form-group margin-bottom">
@@ -114,10 +120,10 @@ if (count ( $errors ) > 0) {
 		?>
 	</select>
 	</div>
-	<label class="control-label col-sm-2" ><?php echo $this->translate('Status'); ?>:</label>
+	<label class="control-label col-sm-2" ><?php echo $this->translate('Contract Status'); ?>:</label>
 		<div class="col-sm-3">
 			<input class="form-control input-sm" type="text"  placeholder=""
-				name="status" id="" value="<?php echo (!$entity == null)? $entity->getStatus():"";?>">
+				name="status" id="" value="<?php echo (!$entity == null)? $entity->getContractStatus():"";?>">
 		</div>
 		
 	</div>
@@ -191,7 +197,8 @@ if (count ( $errors ) > 0) {
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-	 			<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($entity->getToken());?>&entity_id=<?php echo $this->escapeHtml($entity->getID());?>"><?php echo $this->translate("Edit")?></a>
+	 			<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($entity->getToken());?>&entity_id=<?php echo $this->escapeHtml($entity->getID());?>">
+	 			<i class="fa fa-pencil-square-o" aria-hidden="true"></i> <?php echo $this->translate("Edit")?></a>
 
  					<a tabindex="11" class="btn btn-default btn-sm"
 								href="<?php echo $redirectUrl; ?>"><small><i

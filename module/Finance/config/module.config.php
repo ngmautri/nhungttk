@@ -14,13 +14,14 @@ return array(
                 'route' => 'application',
                 'icon' => 'glyphicon glyphicon-home'
             ),
-            array(
+            /*
+			array(
                 'label' => 'Add New Period',
                 'route' => 'finance/default',
                 'controller' => 'posting-period',
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
-            ),
+            ),*/
             array(
                 'label' => 'New A/P Invoice',
                 'route' => 'finance/default',

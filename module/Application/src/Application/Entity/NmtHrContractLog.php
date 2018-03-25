@@ -127,6 +127,13 @@ class NmtHrContractLog
     private $isValid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="triggeredBy", type="string", length=255, nullable=true)
+     */
+    private $triggeredby;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -506,6 +513,30 @@ class NmtHrContractLog
     public function getIsValid()
     {
         return $this->isValid;
+    }
+
+    /**
+     * Set triggeredby
+     *
+     * @param string $triggeredby
+     *
+     * @return NmtHrContractLog
+     */
+    public function setTriggeredby($triggeredby)
+    {
+        $this->triggeredby = $triggeredby;
+
+        return $this;
+    }
+
+    /**
+     * Get triggeredby
+     *
+     * @return string
+     */
+    public function getTriggeredby()
+    {
+        return $this->triggeredby;
     }
 
     /**

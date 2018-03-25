@@ -251,6 +251,7 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setCreatedOn($changeOn);
             $entity->setRevisionNo($revisionNumber);
             $entity->setEffectiveFrom($changeValidFrom);
+            $entity->setTriggeredby($e->getTarget());
             
             foreach ($value as $k => $v1) {
                 
@@ -264,6 +265,22 @@ class LoggingListener implements ListenerAggregateInterface
                         break;
                         
                     case "fieldName":
+                        
+                        // Set all resources as inactive;
+                        $sql ="UPDATE Application\Entity\NmtHrContractLog log SET log.isValid = 0";
+                        
+                        $w = sprintf(" WHERE log.objectId=%s AND log.objectToken='%s' AND log.fieldName = '%s' ", 
+                            $objectId,
+                            $objectToken,
+                            $v1);
+                        
+                        $sql = $sql . $w;
+                        
+                        $q = $this->doctrineEM->createQuery($sql);
+                        $q->execute();
+                        
+                        
+                        
                         $entity->setFieldName($v1);
                         $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())
                             ->getColumnName($v1));
@@ -277,6 +294,7 @@ class LoggingListener implements ListenerAggregateInterface
                 }
             }
             $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            $entity->setIsValid(1);
             $this->doctrineEM->persist($entity);
         }
         

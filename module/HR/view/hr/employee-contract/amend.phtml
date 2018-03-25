@@ -65,7 +65,7 @@ if (count ( $errors ) > 0) {
 		<div class="col-sm-4">
 	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;<?php echo $this->translate('Active'); ?>&nbsp;&nbsp;
 		</div>
-		<?php echo (!$entity == null)? '<span style="color:gray">Revision: '. $entity->getRevisionNo().'</span>':'';?>
+		<?php echo (!$entity == null)? '<span style="color:gray; font-size:9pt">Revision: '. $entity->getRevisionNo().'</span>':'';?>
 	
 	</div>
 	
@@ -73,7 +73,7 @@ if (count ( $errors ) > 0) {
 		<label class="control-label col-sm-2" ><?php echo $this->translate('Contract Date'); ?>:</label>
 		<div class="col-sm-3">
 		<input class="form-control input-sm" type="text" name="contractDate" id="contractDate" 
-		value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>" placeholder ="<?php echo $this->translate('Select contract date!'); ?>" id="" /></div>
+		value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>" placeholder ="<?php echo $this->translate('Select contract date!'); ?>"/></div>
 	</div>
 	
 	<div class="form-group margin-bottom">
@@ -127,10 +127,10 @@ if (count ( $errors ) > 0) {
 		?>
 	</select>
 	</div>
-	<label class="control-label col-sm-2" ><?php echo $this->translate('Status'); ?>:</label>
+	<label class="control-label col-sm-2" ><?php echo $this->translate('Contract Status'); ?>:</label>
 		<div class="col-sm-3">
 			<input class="form-control input-sm" type="text"  placeholder=""
-				name="status" id="" value="<?php echo (!$entity == null)? $entity->getStatus():"";?>">
+				name="contractStatus" id="contractStatus" value="<?php echo (!$entity == null)? $entity->getContractStatus():"";?>">
 		</div>
 		
 	</div>
@@ -164,7 +164,7 @@ if (count ( $errors ) > 0) {
 				name="basicSalary" id="" value="<?php echo (!$entity == null)? $entity->getBasicSalary():"";?>">
 		</div>
 		<div class="col-sm-4">
-	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;<?php echo $this->translate('Is Gross'); ?>&nbsp;&nbsp;
+	  	     <input <?php if(!$entity == null): echo ($entity->getIsGross()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isGross" value="1">&nbsp;<?php echo $this->translate('Is Gross'); ?>&nbsp;&nbsp;
 		</div>
 
 	</div>

@@ -18,12 +18,15 @@ if ($total_records <= 0) {
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b><?php echo $this->translate('Revision Number');?></b></td>
+			<td><b><?php echo $this->translate('Revision');?></b></td>
 			<td><b><?php echo $this->translate('field name');?></b></td>
 			<td><b><?php echo $this->translate('old value');?></b></td>
 			<td><b><?php echo $this->translate('new value');?></b></td>
 			<td><b><?php echo $this->translate('change date');?></b></td>
 			<td><b><?php echo $this->translate('effective from');?></b></td>
+			<td><b><?php echo $this->translate('effective to');?></b></td>
+	
+			<td><b><?php echo $this->translate('Valid');?></b></td>
 	
 		</tr>
 	</thead>
@@ -43,9 +46,12 @@ if ($total_records <= 0) {
 	  		<td><?php echo $this->escapeHtml($a->getFieldName());?></td>
 			 <td><?php echo $a->getOldValue();?></td>
 	 		<td><?php echo $a->getNewValue();?></td>
-	 		<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "Y-m-d H:i:s"):"";?> </td>
-	 		<td><?php echo ($a->getEffectiveFrom()!==null )? date_format ( $a->getEffectiveFrom(), "Y-m-d H:i:s"):"";?> </td>
-	 		
+	 		<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d-m-Y"):"";?> </td>
+	 		<td><?php echo ($a->getEffectiveFrom()!==null )? date_format ( $a->getEffectiveFrom(), "d-m-Y"):"";?> </td>
+			<td><?php echo ($a->getEffectiveTo()!==null )? date_format ( $a->getEffectiveTo(), "d-m-Y"):"";?> </td>
+	
+	 		<td><?php echo $a->getIsValid();?></td>
+	 
 				
 		</tr>
 <?php endforeach; ?>

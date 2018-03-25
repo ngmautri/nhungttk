@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrContract
  *
- * @ORM\Table(name="nmt_hr_contract", indexes={@ORM\Index(name="nmt_hr_contract_FK1_idx", columns={"employee_id"}), @ORM\Index(name="nmt_hr_contract_IDX1", columns={"token"}), @ORM\Index(name="nmt_hr_contract_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_contract_FK3_idx", columns={"currency_id"}), @ORM\Index(name="nmt_hr_contract_FK4_idx", columns={"position_id"})})
+ * @ORM\Table(name="nmt_hr_contract", indexes={@ORM\Index(name="nmt_hr_contract_FK1_idx", columns={"employee_id"}), @ORM\Index(name="nmt_hr_contract_IDX1", columns={"token"}), @ORM\Index(name="nmt_hr_contract_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_contract_FK3_idx", columns={"currency_id"}), @ORM\Index(name="nmt_hr_contract_FK4_idx", columns={"position_id"}), @ORM\Index(name="nmt_hr_contract_FK5_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtHrContract
@@ -211,6 +211,13 @@ class NmtHrContract
     private $isGross;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -249,6 +256,16 @@ class NmtHrContract
      * })
      */
     private $position;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
 
 
 
@@ -911,6 +928,30 @@ class NmtHrContract
     }
 
     /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return NmtHrContract
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
      * Set employee
      *
      * @param \Application\Entity\NmtHrEmployee $employee
@@ -1004,5 +1045,29 @@ class NmtHrContract
     public function getPosition()
     {
         return $this->position;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtHrContract
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

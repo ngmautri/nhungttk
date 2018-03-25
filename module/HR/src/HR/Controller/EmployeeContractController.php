@@ -471,6 +471,8 @@ class EmployeeContractController extends AbstractActionController
                 
                 $changeDate = $request->getPost('changeDate');
                 $changeValidFrom = $request->getPost('changeValidFrom');
+                $contractStatus = $request->getPost('contractStatus');
+                
                 
                 $contractNumber = $request->getPost('contractNumber');
                 $contractDate = $request->getPost('contractDate');
@@ -486,7 +488,7 @@ class EmployeeContractController extends AbstractActionController
                 $currency_id = (int) $request->getPost('currency_id');
                 $isActive = (int) $request->getPost('isActive');
                 
-                if ($isActive !== 1) {
+                if ($isActive != 1) {
                     $isActive = 0;
                 }
                 
@@ -495,6 +497,9 @@ class EmployeeContractController extends AbstractActionController
                 } else {
                     $entity->setContractNumber($contractNumber);
                 }
+                
+                $entity->setContractStatus($contractStatus);
+                $entity->setIsActive($isActive);
                 
                 $validator = new Date();
                 
@@ -544,6 +549,8 @@ class EmployeeContractController extends AbstractActionController
                         $entity->setEffectiveTo(new \DateTime($effectiveTo));
                         $validated ++;
                     }
+                }else{
+                    $entity->setEffectiveTo(NULL);
                 }
                 
                 if ($validated == 2) {
@@ -584,6 +591,14 @@ class EmployeeContractController extends AbstractActionController
                 $entity->setWorkingTimeFrom($workingTimeFrom);
                 $entity->setWorkingTimeTo($workingTimeTo);
                 
+                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+                $nmtPlugin = $this->Nmtplugin();
+                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+                
+                if(count($changeArray)==0){
+                    $errors[] = 'Nothing changed!';                    
+                }
+                
                 if (count($errors) > 0) {
                     
                     $criteria = array(
@@ -617,10 +632,8 @@ class EmployeeContractController extends AbstractActionController
                 // NO ERROR
                 // +++++++++++++++++++++++++++++++++
                 
-                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-                $nmtPlugin = $this->Nmtplugin();
-                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-                 
+               
+                
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
@@ -641,8 +654,8 @@ class EmployeeContractController extends AbstractActionController
                     'changeValidFrom' => $newChangeValidFrom,
                 ));
                 
-                // $entity->setLastchangeBy($u);
-                // $entity->setLastchangeOn($changeOn);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
                 
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();

@@ -867,6 +867,133 @@ class ItemController extends AbstractActionController
             'item_type' => $item_type
         ));
     }
+    
+    /**
+     * 
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function list1Action()
+    {
+        $request = $this->getRequest();
+        
+        
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $this->layout("layout/user/ajax");
+        $sort_criteria = array();
+        $criteria = array();
+        
+        $item_type = $this->params()->fromQuery('item_type');
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $is_fixed_asset = (int) $this->params()->fromQuery('is_fixed_asset');
+        
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        
+        $criteria1 = array();
+        if (! $item_type == null) {
+            $criteria1 = array(
+                "itemType" => $item_type
+            );
+        }
+        
+        if ($is_active == null) {
+            $is_active = 1;
+        }
+        
+        $criteria2 = array();
+        
+        if ($is_active == 1) {
+            $criteria2 = array(
+                "isActive" => 1
+            );
+        } elseif ($is_active == - 1) {
+            $criteria2 = array(
+                "isActive" => 0
+            );
+        }
+        
+        $criteria3 = array();
+        if (! $is_fixed_asset == '') {
+            $criteria3 = array(
+                "isFixedAsset" => $is_fixed_asset
+            );
+            
+            if ($is_fixed_asset == - 1) {
+                $criteria3 = array(
+                    "isFixedAsset" => 0
+                );
+            }
+        }
+        
+        if ($sort_by == null) :
+        $sort_by = "createdOn";
+        endif;
+        
+        if ($sort == null) :
+        $sort = "DESC";
+        endif;
+        
+        $sort_criteria = array(
+            $sort_by => $sort
+        );
+        
+        $criteria = array_merge($criteria1, $criteria2, $criteria3);
+        // var_dump($criteria);
+        
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+        
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+        
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        
+        $total_recored_cache_key = "item_list_type" . $item_type . "_is_active" . $is_active . "_is_fixed_asset" . $is_fixed_asset;
+        
+        $ck = $this->cacheService->hasItem($total_recored_cache_key);
+        
+        if ($ck) {
+            $total_records = $this->cacheService->getItem($total_recored_cache_key);
+        } else {
+            $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
+            $this->cacheService->setItem($total_recored_cache_key, $total_records);
+        }
+      
+        $paginator = null;
+        $list = null;
+        
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+        } else {
+            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
+        }
+        
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'is_active' => $is_active,
+            'is_fixed_asset' => $is_fixed_asset,
+            'per_pape' => $resultsPerPage,
+            'item_type' => $item_type
+        ));
+    }
 
     /**
      *

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrSalary
  *
- * @ORM\Table(name="nmt_hr_salary", indexes={@ORM\Index(name="nmt_hr_salary_FK1_idx", columns={"employee_id"}), @ORM\Index(name="nmt_hr_salary_FK2_idx", columns={"contract_revision_id"})})
+ * @ORM\Table(name="nmt_hr_salary", indexes={@ORM\Index(name="nmt_hr_salary_FK1_idx", columns={"employee_id"}), @ORM\Index(name="nmt_hr_salary_FK2_idx", columns={"contract_revision_id"}), @ORM\Index(name="nmt_hr_salary_FK3_idx", columns={"contract_id"}), @ORM\Index(name="nmt_hr_salary_FK4_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtHrSalary
@@ -113,6 +113,27 @@ class NmtHrSalary
     private $decoratorFactory;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="effective_from", type="datetime", nullable=true)
+     */
+    private $effectiveFrom;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="effective_to", type="datetime", nullable=true)
+     */
+    private $effectiveTo;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -131,6 +152,26 @@ class NmtHrSalary
      * })
      */
     private $contractRevision;
+
+    /**
+     * @var \Application\Entity\NmtHrContract
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrContract")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="contract_id", referencedColumnName="id")
+     * })
+     */
+    private $contract;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
 
 
 
@@ -457,6 +498,78 @@ class NmtHrSalary
     }
 
     /**
+     * Set effectiveFrom
+     *
+     * @param \DateTime $effectiveFrom
+     *
+     * @return NmtHrSalary
+     */
+    public function setEffectiveFrom($effectiveFrom)
+    {
+        $this->effectiveFrom = $effectiveFrom;
+
+        return $this;
+    }
+
+    /**
+     * Get effectiveFrom
+     *
+     * @return \DateTime
+     */
+    public function getEffectiveFrom()
+    {
+        return $this->effectiveFrom;
+    }
+
+    /**
+     * Set effectiveTo
+     *
+     * @param \DateTime $effectiveTo
+     *
+     * @return NmtHrSalary
+     */
+    public function setEffectiveTo($effectiveTo)
+    {
+        $this->effectiveTo = $effectiveTo;
+
+        return $this;
+    }
+
+    /**
+     * Get effectiveTo
+     *
+     * @return \DateTime
+     */
+    public function getEffectiveTo()
+    {
+        return $this->effectiveTo;
+    }
+
+    /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return NmtHrSalary
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
      * Set employee
      *
      * @param \Application\Entity\NmtHrEmployee $employee
@@ -502,5 +615,53 @@ class NmtHrSalary
     public function getContractRevision()
     {
         return $this->contractRevision;
+    }
+
+    /**
+     * Set contract
+     *
+     * @param \Application\Entity\NmtHrContract $contract
+     *
+     * @return NmtHrSalary
+     */
+    public function setContract(\Application\Entity\NmtHrContract $contract = null)
+    {
+        $this->contract = $contract;
+
+        return $this;
+    }
+
+    /**
+     * Get contract
+     *
+     * @return \Application\Entity\NmtHrContract
+     */
+    public function getContract()
+    {
+        return $this->contract;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtHrSalary
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

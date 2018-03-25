@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_hr_fingerscan", indexes={@ORM\Index(name="nmt_hr_fingerscan_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_fingerscan_KF2_idx", columns={"employee_code"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtHrFingerscanRepository")
  */
 class NmtHrFingerscan
 {

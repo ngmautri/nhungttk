@@ -4,6 +4,8 @@ namespace HR\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Entity\NmtHrSalary;
+use Doctrine\ORM\EntityManager;
 
 /**
  * 
@@ -11,7 +13,11 @@ use Zend\View\Model\ViewModel;
  *
  */
 class SalaryController extends AbstractActionController {
-	
+    
+    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    protected $doctrineEM;
+    
+    
     /**
      * 
      * {@inheritDoc}
@@ -38,7 +44,34 @@ class SalaryController extends AbstractActionController {
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function assignAction() {
-	    return new ViewModel ();
+	    
+	    $request = $this->getRequest();
+	    $redirectUrl = $request->getHeader('Referer');
+	    
+	    $id = (int) $this->params()->fromQuery('target_id');
+	    $token = $this->params()->fromQuery('token');
+	    $criteria = array(
+	        'id' => $id,
+	        'token' => $token
+	    );
+	    
+	    /**@var \Application\Entity\NmtHrContract $target ; */
+	    $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrContract')->findOneBy($criteria);
+	    
+	    if ($target instanceof \Application\Entity\NmtHrContract) {
+	        
+	        $entity = new NmtHrSalary();
+	        $entity->setContract($target);
+	        $target->setEmployee($target->getEmployee());
+	         
+	        return new ViewModel(array(
+	            'redirectUrl' => $redirectUrl,
+	            'errors' => null,
+	            'entity' => $entity,
+	            'target' => $target,
+	           ));
+	    }
+	    return $this->redirect()->toRoute('access_denied');
 	}
 	
 	/**
@@ -59,7 +92,7 @@ class SalaryController extends AbstractActionController {
 	
 	/**
 	 * Show an salary Compoent
-	 * Ajax accepted onluy
+	 * Ajax accepted only
 	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function list1Action() {
@@ -72,5 +105,14 @@ class SalaryController extends AbstractActionController {
 	 */
 	public function listAction() {
 	    return new ViewModel ();
+	}
+	
+	/**
+	 *
+	 * @param mixed $doctrineEM
+	 */
+	public function setDoctrineEM(EntityManager $doctrineEM)
+	{
+	    $this->doctrineEM = $doctrineEM;
 	}
 }

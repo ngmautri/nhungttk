@@ -21,8 +21,8 @@ class SalaryControllerFactory implements FactoryInterface {
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		$container= $serviceLocator->getServiceLocator();
 		$controller = new SalaryController();
-		//$sv =  $container->get('doctrine.entitymanager.orm_default');
-		//$controller->setDoctrineEM($sv);
+		$sv =  $container->get('doctrine.entitymanager.orm_default');
+		$controller->setDoctrineEM($sv);
 		return $controller;
 	}
 }

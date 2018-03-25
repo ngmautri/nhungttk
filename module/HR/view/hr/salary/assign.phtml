@@ -1,0 +1,19 @@
+
+<?php /**@var \Application\Entity\NmtHrContract $target ; 
+         @var \Application\Entity\NmtHrSalary $entity ;
+       */ 
+?>
+
+<h4><?php echo (!$target == null)? "Employee: " . $target->getEmployee()->getEmployeeName() ." - ". $target->getEmployee()->getEmployeeCode():"";?></h4>
+
+
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general"><?php echo $this->translate('New salary component'); ?></a></li>
+   </ul>
+
+<div id="general" style="font-size: 9pt"> 
+	<?php echo $target->getBasicSalary() . $target->getCurrency()->getCurrency();?>
+</div>
+</div>
+

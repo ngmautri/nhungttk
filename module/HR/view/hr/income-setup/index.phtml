@@ -7,8 +7,9 @@
 	<div id="general" style="font-size: 9.5pt">
 	
 
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee/add"><i class="fa fa-plus"
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/income-setup/add"><i class="fa fa-plus"
 			aria-hidden="true"></i>&nbsp;<?php echo $this->translate('New Income'); ?></a>
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/income-setup/update">&nbsp;<?php echo $this->translate('Update...'); ?></a>
 
 <hr>
 <table style="font-size: 10pt;" class="table table-bordered table-hover">
@@ -16,19 +17,18 @@
 		<tr>
 			<td><b>#</b></td>
 			<td><b><?php echo $this->translate('default income name'); ?></b></td>
+			<td><b><?php echo $this->translate('default income name'); ?></b></td>
+	
 			<td><b><?php echo $this->translate('default description'); ?></b></td>
 			<td><b><?php echo $this->translate('SSO Payable'); ?></b></td>
 			<td><b><?php echo $this->translate('PIT Payable'); ?></b></td>
 			<td><b><?php echo $this->translate('payment frequency'); ?></b></td>
-		
 			<td><b><?php echo $this->translate('Type'); ?></b></td>
-		
 			<td><b><?php echo $this->translate('Action'); ?></b></td>
 			</tr>
 	</thead>
 
 	<tbody>
-
 		
 	<?php 
 	$count = 0;
@@ -44,13 +44,13 @@
 	
 		 <tr>
 	  		<td><?php echo $count;?></td>
-	  		<td><?php echo $incomeComponent->getIncomeName();;?></td>
+	  		<td><?php echo $incomeComponent->getIncomeName();?></td>
+	  		<td><?php echo $incomeComponent->getIncomeDecoratorFactory();?></td>
+	  
 	  		<td><?php echo $incomeComponent->getDescription();?></td>
-	 				<td><?php echo ($incomeComponent->isSSOPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
-		
-	 				<td><?php echo ($incomeComponent->isPITPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
-	 	
-	  		<td><?php echo $incomeComponent->getPaymentFrequency();?></td>
+			<td><?php echo ($incomeComponent->isSSOPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+			<td><?php echo ($incomeComponent->isPITPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+	   		<td><?php echo $incomeComponent->getPaymentFrequency();?></td>
 	  		<td><?php echo "default";?></td>
 	
 	      <td>

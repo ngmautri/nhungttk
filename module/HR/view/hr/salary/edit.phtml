@@ -1,0 +1,126 @@
+
+<?php /**@var \Application\Entity\NmtHrContract $target ; 
+         @var \Application\Entity\NmtHrSalary $entity ;
+       */ 
+?>
+
+<h4>
+
+<a href="/hr/employee/show?token=<?php if (!$target == null): echo $target->getEmployee()->getToken(); endif;?>&entity_id=<?php if (!$target == null): echo $target->getEmployee()->getId(); endif;?>&checksum=<?php if (!$target == null): echo $target->getEmployee()->getChecksum(); endif;?>">
+<?php echo (!$target == null)? "Employee: " . $target->getEmployee()->getEmployeeName() ." - ". $target->getEmployee()->getEmployeeCode():"";?>
+</a>
+</h4>
+
+<h5>
+<a href="/hr/employee-contract/show?token=<?php if (!$target == null): echo $target->getToken(); endif;?>&entity_id=<?php if (!$target == null): echo $target->getId(); endif;?>">
+<?php if (!$target == null): echo "Contract: " . $target->getContractNumber(); endif;?>
+</a>
+</h5>
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general"><?php if ($entity !==null):echo $entity->getSalaryName(); endif;?></a></li>
+   <li><a
+			href="/hr/contract-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getID():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Change Log</a></li>
+ 
+   </ul>
+
+<div id="general" style="font-size: 9pt"> 
+
+<form id="create_form" class="form-horizontal" action="/hr/salary/edit" method="post" enctype="multipart/form-data">
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+<input type="hidden" name="entity_id" value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
+<input type="hidden" name="token" value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
+
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" ></label>
+		<div class="col-sm-3">
+		<?php if ($entity !==null):echo 'Revision#:' . $entity->getRevisionNo(); endif;?>
+		</div>	
+	</div>
+	
+	<div class="form-group margin-bottom required">
+	<label class="control-label col-sm-2" ><?php echo $this->translate('Amount'); ?>:</label>
+		<div class="col-sm-3">
+		<input class="form-control input-sm" type="text" name="salaryAmount" value="<?php if ($entity !==null):if($entity->getSalaryAmount()!==null): echo number_format($entity->getSalaryAmount(),2);endif; endif;?>"/>
+		     <input <?php if(!$entity == null): echo ($entity->getIsPitPayable()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isPitPayable" value="1">&nbsp;PIT&nbsp;&nbsp;
+			 <input <?php if(!$entity == null): echo ($entity->getIsSsoPayable()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isSsoPayable" value="1">&nbsp;SSO&nbsp;&nbsp;
+		</div>
+	
+	</div>
+	
+	<div class="form-group margin-bottom required">
+	<label class="control-label col-sm-2" ><?php echo $this->translate('Payment Frequerency'); ?>:</label>
+		<div class="col-sm-3">
+		<input disabled class="form-control input-sm" type="text" name="salaryType" value="<?php if ($entity !==null):echo $entity->getPaymentFrequency(); endif;?>"/></div>
+	</div>
+	
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" ><?php echo $this->translate('Valid from'); ?>:</label>
+		<div class="col-sm-3">
+		<input class="form-control input-sm" type="text" name="effectiveFrom" value="<?php if ($entity !==null):echo $entity->getEffectiveFrom(); endif;?>"/></div>
+		<label class="control-label col-sm-2" ><?php echo $this->translate('Valid to'); ?>:</label>
+		<div class="col-sm-3">
+		<input class="form-control input-sm" type="text" name="effectiveTo" value="<?php if ($entity !==null):echo $entity->getEffectiveTo(); endif;?>"/></div>
+	</div>
+	
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" ><?php echo $this->translate('Description'); ?>:</label>
+		<div style="color: gray;" class="col-sm-3">
+		<br>
+		<?php if ($entity !==null):if($entity->getDefaultSalary()!==null): echo $entity->getDefaultSalary()->getDescription(); endif; endif;?>
+		<br>
+		<br>
+		<?php if ($entity !==null):echo $entity->getDecoratorFactory(); endif;?>	
+		
+		</div>
+	</div>
+	
+	<hr>
+		
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" for="inputTag"></label>
+		<div class="col-sm-3">
+	 			<a tabindex="10" class="btn btn-default btn-sm" onclick="submitForm('create_form');"
+								href="javascript:;"><small><i
+									class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;<?php echo $this->translate('Save'); ?></a>
+ 					<a tabindex="11" class="btn btn-default btn-sm"
+								href="<?php echo $redirectUrl;?>"><small><i
+									class=""></i></small>&nbsp;<?php echo $this->translate('Cancel'); ?></a>
+  		</div>
+	</div> 
+	
+	
+</form>
+</div>
+</div>
+
+
+<script>
+$(function() {
+	  $( "input[id='changeDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+	  $( "input[id='changeValidFrom']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+	  
+   $( "input[id='validFrom']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+   $( "input[id='validTo']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+   $( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X', changeMonth: true, changeYear: true});
+   
+});
+
+</script>
+
+

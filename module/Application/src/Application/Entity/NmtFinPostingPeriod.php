@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_fin_posting_period", uniqueConstraints={@ORM\UniqueConstraint(name="posting_from_date_UNIQUE", columns={"posting_from_date"}), @ORM\UniqueConstraint(name="posting_to_date_UNIQUE", columns={"posting_to_date"})}, indexes={@ORM\Index(name="nmt_fin_posting_period_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_fin_posting_period_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_fin_posting_period_IDX1", columns={"posting_from_date"}), @ORM\Index(name="nmt_fin_posting_period_IDX2", columns={"posting_to_date"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtFinPostingPeriodRepository")
  */
 class NmtFinPostingPeriod
 {
@@ -20,98 +21,98 @@ class NmtFinPostingPeriod
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="period_code", type="string", length=20, nullable=false)
      */
     private $periodCode;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="period_name", type="string", length=20, nullable=false)
      */
     private $periodName;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="posting_from_date", type="datetime", nullable=true)
      */
     private $postingFromDate;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="posting_to_date", type="datetime", nullable=true)
      */
     private $postingToDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="period_status", type="string", nullable=false)
      */
     private $periodStatus;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="plan_working_days", type="integer", nullable=true)
      */
     private $planWorkingDays;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="actual_workding_days", type="integer", nullable=true)
      */
     private $actualWorkdingDays;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="cooperate_leave", type="integer", nullable=true)
      */
     private $cooperateLeave;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="national_holidays", type="integer", nullable=true)
      */
     private $nationalHolidays;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=200, nullable=true)
      */
     private $remarks;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -121,7 +122,7 @@ class NmtFinPostingPeriod
      * })
      */
     private $createdBy;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -131,9 +132,9 @@ class NmtFinPostingPeriod
      * })
      */
     private $lastChangeBy;
-
-
-
+    
+    
+    
     /**
      * Get id
      *
@@ -143,7 +144,7 @@ class NmtFinPostingPeriod
     {
         return $this->id;
     }
-
+    
     /**
      * Set token
      *
@@ -154,10 +155,10 @@ class NmtFinPostingPeriod
     public function setToken($token)
     {
         $this->token = $token;
-
+        
         return $this;
     }
-
+    
     /**
      * Get token
      *
@@ -167,7 +168,7 @@ class NmtFinPostingPeriod
     {
         return $this->token;
     }
-
+    
     /**
      * Set periodCode
      *
@@ -178,10 +179,10 @@ class NmtFinPostingPeriod
     public function setPeriodCode($periodCode)
     {
         $this->periodCode = $periodCode;
-
+        
         return $this;
     }
-
+    
     /**
      * Get periodCode
      *
@@ -191,7 +192,7 @@ class NmtFinPostingPeriod
     {
         return $this->periodCode;
     }
-
+    
     /**
      * Set periodName
      *
@@ -202,10 +203,10 @@ class NmtFinPostingPeriod
     public function setPeriodName($periodName)
     {
         $this->periodName = $periodName;
-
+        
         return $this;
     }
-
+    
     /**
      * Get periodName
      *
@@ -215,7 +216,7 @@ class NmtFinPostingPeriod
     {
         return $this->periodName;
     }
-
+    
     /**
      * Set postingFromDate
      *
@@ -226,10 +227,10 @@ class NmtFinPostingPeriod
     public function setPostingFromDate($postingFromDate)
     {
         $this->postingFromDate = $postingFromDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get postingFromDate
      *
@@ -239,7 +240,7 @@ class NmtFinPostingPeriod
     {
         return $this->postingFromDate;
     }
-
+    
     /**
      * Set postingToDate
      *
@@ -250,10 +251,10 @@ class NmtFinPostingPeriod
     public function setPostingToDate($postingToDate)
     {
         $this->postingToDate = $postingToDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get postingToDate
      *
@@ -263,7 +264,7 @@ class NmtFinPostingPeriod
     {
         return $this->postingToDate;
     }
-
+    
     /**
      * Set periodStatus
      *
@@ -274,10 +275,10 @@ class NmtFinPostingPeriod
     public function setPeriodStatus($periodStatus)
     {
         $this->periodStatus = $periodStatus;
-
+        
         return $this;
     }
-
+    
     /**
      * Get periodStatus
      *
@@ -287,7 +288,7 @@ class NmtFinPostingPeriod
     {
         return $this->periodStatus;
     }
-
+    
     /**
      * Set createdOn
      *
@@ -298,10 +299,10 @@ class NmtFinPostingPeriod
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdOn
      *
@@ -311,7 +312,7 @@ class NmtFinPostingPeriod
     {
         return $this->createdOn;
     }
-
+    
     /**
      * Set lastChangeOn
      *
@@ -322,10 +323,10 @@ class NmtFinPostingPeriod
     public function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastChangeOn
      *
@@ -335,7 +336,7 @@ class NmtFinPostingPeriod
     {
         return $this->lastChangeOn;
     }
-
+    
     /**
      * Set planWorkingDays
      *
@@ -346,10 +347,10 @@ class NmtFinPostingPeriod
     public function setPlanWorkingDays($planWorkingDays)
     {
         $this->planWorkingDays = $planWorkingDays;
-
+        
         return $this;
     }
-
+    
     /**
      * Get planWorkingDays
      *
@@ -359,7 +360,7 @@ class NmtFinPostingPeriod
     {
         return $this->planWorkingDays;
     }
-
+    
     /**
      * Set actualWorkdingDays
      *
@@ -370,10 +371,10 @@ class NmtFinPostingPeriod
     public function setActualWorkdingDays($actualWorkdingDays)
     {
         $this->actualWorkdingDays = $actualWorkdingDays;
-
+        
         return $this;
     }
-
+    
     /**
      * Get actualWorkdingDays
      *
@@ -383,7 +384,7 @@ class NmtFinPostingPeriod
     {
         return $this->actualWorkdingDays;
     }
-
+    
     /**
      * Set cooperateLeave
      *
@@ -394,10 +395,10 @@ class NmtFinPostingPeriod
     public function setCooperateLeave($cooperateLeave)
     {
         $this->cooperateLeave = $cooperateLeave;
-
+        
         return $this;
     }
-
+    
     /**
      * Get cooperateLeave
      *
@@ -407,7 +408,7 @@ class NmtFinPostingPeriod
     {
         return $this->cooperateLeave;
     }
-
+    
     /**
      * Set nationalHolidays
      *
@@ -418,10 +419,10 @@ class NmtFinPostingPeriod
     public function setNationalHolidays($nationalHolidays)
     {
         $this->nationalHolidays = $nationalHolidays;
-
+        
         return $this;
     }
-
+    
     /**
      * Get nationalHolidays
      *
@@ -431,7 +432,7 @@ class NmtFinPostingPeriod
     {
         return $this->nationalHolidays;
     }
-
+    
     /**
      * Set remarks
      *
@@ -442,10 +443,10 @@ class NmtFinPostingPeriod
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-
+        
         return $this;
     }
-
+    
     /**
      * Get remarks
      *
@@ -455,7 +456,7 @@ class NmtFinPostingPeriod
     {
         return $this->remarks;
     }
-
+    
     /**
      * Set createdBy
      *
@@ -466,10 +467,10 @@ class NmtFinPostingPeriod
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdBy
      *
@@ -479,7 +480,7 @@ class NmtFinPostingPeriod
     {
         return $this->createdBy;
     }
-
+    
     /**
      * Set lastChangeBy
      *
@@ -490,10 +491,10 @@ class NmtFinPostingPeriod
     public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
         $this->lastChangeBy = $lastChangeBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastChangeBy
      *

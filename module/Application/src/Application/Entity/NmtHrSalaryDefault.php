@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtHrSalary
+ * NmtHrSalaryDefault
  *
- * @ORM\Table(name="nmt_hr_salary", indexes={@ORM\Index(name="nmt_hr_salary_FK1_idx", columns={"employee_id"}), @ORM\Index(name="nmt_hr_salary_FK3_idx", columns={"contract_id"}), @ORM\Index(name="nmt_hr_salary_FK4_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_hr_salary_FK5_idx", columns={"default_salary_id"}), @ORM\Index(name="nmt_hr_salary_FK6_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_hr_salary_default", indexes={@ORM\Index(name="nmt_hr_salary_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_salary_default_FK2_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
-class NmtHrSalary
+class NmtHrSalaryDefault
 {
     /**
      * @var integer
@@ -48,13 +48,6 @@ class NmtHrSalary
      * @ORM\Column(name="salary_name", type="string", length=45, nullable=true)
      */
     private $salaryName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="salary_amount", type="decimal", precision=14, scale=6, nullable=false)
-     */
-    private $salaryAmount;
 
     /**
      * @var boolean
@@ -134,6 +127,13 @@ class NmtHrSalary
     private $revisionNo;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
+     */
+    private $description;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -148,24 +148,14 @@ class NmtHrSalary
     private $paymentFrequency;
 
     /**
-     * @var \Application\Entity\NmtHrEmployee
+     * @var \Application\Entity\MlaUsers
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * })
      */
-    private $employee;
-
-    /**
-     * @var \Application\Entity\NmtHrContract
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrContract")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="contract_id", referencedColumnName="id")
-     * })
-     */
-    private $contract;
+    private $createdBy;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -176,26 +166,6 @@ class NmtHrSalary
      * })
      */
     private $lastChangeBy;
-
-    /**
-     * @var \Application\Entity\NmtHrSalaryDefault
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrSalaryDefault")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="default_salary_id", referencedColumnName="id")
-     * })
-     */
-    private $defaultSalary;
-
-    /**
-     * @var \Application\Entity\MlaUsers
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
-     * })
-     */
-    private $createdBy;
 
 
 
@@ -214,7 +184,7 @@ class NmtHrSalary
      *
      * @param string $token
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setToken($token)
     {
@@ -238,7 +208,7 @@ class NmtHrSalary
      *
      * @param string $salaryType
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setSalaryType($salaryType)
     {
@@ -262,7 +232,7 @@ class NmtHrSalary
      *
      * @param string $salaryCode
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setSalaryCode($salaryCode)
     {
@@ -286,7 +256,7 @@ class NmtHrSalary
      *
      * @param string $salaryName
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setSalaryName($salaryName)
     {
@@ -306,35 +276,11 @@ class NmtHrSalary
     }
 
     /**
-     * Set salaryAmount
-     *
-     * @param string $salaryAmount
-     *
-     * @return NmtHrSalary
-     */
-    public function setSalaryAmount($salaryAmount)
-    {
-        $this->salaryAmount = $salaryAmount;
-
-        return $this;
-    }
-
-    /**
-     * Get salaryAmount
-     *
-     * @return string
-     */
-    public function getSalaryAmount()
-    {
-        return $this->salaryAmount;
-    }
-
-    /**
      * Set isDecorator
      *
      * @param boolean $isDecorator
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setIsDecorator($isDecorator)
     {
@@ -358,7 +304,7 @@ class NmtHrSalary
      *
      * @param boolean $isPitPayable
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setIsPitPayable($isPitPayable)
     {
@@ -382,7 +328,7 @@ class NmtHrSalary
      *
      * @param boolean $isSsoPayable
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setIsSsoPayable($isSsoPayable)
     {
@@ -406,7 +352,7 @@ class NmtHrSalary
      *
      * @param boolean $isPayable
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setIsPayable($isPayable)
     {
@@ -430,7 +376,7 @@ class NmtHrSalary
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setCreatedOn($createdOn)
     {
@@ -454,7 +400,7 @@ class NmtHrSalary
      *
      * @param string $curentState
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setCurentState($curentState)
     {
@@ -478,7 +424,7 @@ class NmtHrSalary
      *
      * @param string $decoratorFactory
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setDecoratorFactory($decoratorFactory)
     {
@@ -502,7 +448,7 @@ class NmtHrSalary
      *
      * @param \DateTime $effectiveFrom
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setEffectiveFrom($effectiveFrom)
     {
@@ -526,7 +472,7 @@ class NmtHrSalary
      *
      * @param \DateTime $effectiveTo
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setEffectiveTo($effectiveTo)
     {
@@ -550,7 +496,7 @@ class NmtHrSalary
      *
      * @param \DateTime $lastChangeOn
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setLastChangeOn($lastChangeOn)
     {
@@ -574,7 +520,7 @@ class NmtHrSalary
      *
      * @param integer $revisionNo
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setRevisionNo($revisionNo)
     {
@@ -594,11 +540,35 @@ class NmtHrSalary
     }
 
     /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return NmtHrSalaryDefault
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
      * Set isActive
      *
      * @param boolean $isActive
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setIsActive($isActive)
     {
@@ -622,7 +592,7 @@ class NmtHrSalary
      *
      * @param string $paymentFrequency
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setPaymentFrequency($paymentFrequency)
     {
@@ -642,107 +612,11 @@ class NmtHrSalary
     }
 
     /**
-     * Set employee
-     *
-     * @param \Application\Entity\NmtHrEmployee $employee
-     *
-     * @return NmtHrSalary
-     */
-    public function setEmployee(\Application\Entity\NmtHrEmployee $employee = null)
-    {
-        $this->employee = $employee;
-
-        return $this;
-    }
-
-    /**
-     * Get employee
-     *
-     * @return \Application\Entity\NmtHrEmployee
-     */
-    public function getEmployee()
-    {
-        return $this->employee;
-    }
-
-    /**
-     * Set contract
-     *
-     * @param \Application\Entity\NmtHrContract $contract
-     *
-     * @return NmtHrSalary
-     */
-    public function setContract(\Application\Entity\NmtHrContract $contract = null)
-    {
-        $this->contract = $contract;
-
-        return $this;
-    }
-
-    /**
-     * Get contract
-     *
-     * @return \Application\Entity\NmtHrContract
-     */
-    public function getContract()
-    {
-        return $this->contract;
-    }
-
-    /**
-     * Set lastChangeBy
-     *
-     * @param \Application\Entity\MlaUsers $lastChangeBy
-     *
-     * @return NmtHrSalary
-     */
-    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
-    {
-        $this->lastChangeBy = $lastChangeBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastChangeBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getLastChangeBy()
-    {
-        return $this->lastChangeBy;
-    }
-
-    /**
-     * Set defaultSalary
-     *
-     * @param \Application\Entity\NmtHrSalaryDefault $defaultSalary
-     *
-     * @return NmtHrSalary
-     */
-    public function setDefaultSalary(\Application\Entity\NmtHrSalaryDefault $defaultSalary = null)
-    {
-        $this->defaultSalary = $defaultSalary;
-
-        return $this;
-    }
-
-    /**
-     * Get defaultSalary
-     *
-     * @return \Application\Entity\NmtHrSalaryDefault
-     */
-    public function getDefaultSalary()
-    {
-        return $this->defaultSalary;
-    }
-
-    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtHrSalary
+     * @return NmtHrSalaryDefault
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
@@ -759,5 +633,29 @@ class NmtHrSalary
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtHrSalaryDefault
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

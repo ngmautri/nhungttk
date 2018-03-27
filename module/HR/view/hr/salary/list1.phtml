@@ -1,40 +1,42 @@
-<div id="tabs_contract" style="font-size: 9pt;">
+<?php 
+/** @var \Application\Entity\NmtHrContract $target ;
+*/
+?>
 
- <ul>
-  <li><a href="#contract_list">List</a></li>
- </ul>
-
-<div id="contract_list">
-
-<?php
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary/assign?token=<?php echo $this->escapeHtml($target->getToken());?>&target_id=<?php echo $this->escapeHtml($target->getID());?>">
+<i class="fa fa-plus" aria-hidden="true"></i> <?php echo $this->translate("Add Income")?></a>
+<br><br>
+<?php 
 
 if ($total_records <= 0) {
 	
-	echo 'No record found!';
+    echo '<span style="font-size: 9pt; color: gray;">' . $this->translate('No record found!'). '</span>';
 } else {
 	
 	if (! is_null ( $paginator )) {
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
+		echo '<span style="font-size: 9pt; color: gray;"> Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!</span>';
 	} else {
-		echo $total_records. ' records found!';
+		echo '<span style="font-size: 9pt; color: gray;">' . $total_records. ' records found!</span>';
 	}
 	
 	?>
 
-<table style="font-size: 10pt;" class="table table-bordered table-hover">
+<table style="font-size: 9pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b><?php echo $this->translate("Contract Number")?></b></td>
-			<td><b><?php echo $this->translate("Contract Date")?></b></td>
-			<td><b><?php echo $this->translate("Contract Status")?></b></td>
-		
+			<td><b><?php echo $this->translate("Revision#")?></b></td>
+			
+			<td><b><?php echo $this->translate("Income Name")?></b></td>
+			<td><b><?php echo $this->translate("Amount")?></b></td>
+			<td><b><?php echo $this->translate("Currency")?></b></td>		
+			<td><b><?php echo $this->translate("SSO")?></b></td>
+			<td><b><?php echo $this->translate("PIT")?></b></td>
+		    <td><b><?php echo $this->translate("Frequency")?></b></td>
+
 			<td><b><?php echo $this->translate("Valid From")?></b></td>
-			<td><b><?php echo $this->translate("Valid To")?></b></td>
-			<td><b><?php echo $this->translate("Basic Salary")?></b></td>
-			<td><b><?php echo $this->translate("Currency")?></b></td>
+		    <td><b><?php echo $this->translate("Valid To")?></b></td>
 			<td><b><?php echo $this->translate("Action")?></b></td>
-	
 			</tr>
 	</thead>
 
@@ -43,23 +45,41 @@ if ($total_records <= 0) {
 	 <?php
 	
 	$count = 0;
+	$total=0;
+	$currency='';
+	if($target!==null){
+	    if($target->getCurrency()!==null){
+	        $currency = $target->getCurrency()->getCurrency();
+	    }
+	}
+	    
 	foreach ( $list as $a ) :
-	   /**@var \Application\Entity\NmtHrContract $a ; */
+	   /**@var \Application\Entity\NmtHrSalary $a ; */
+	
 	
 		$count ++;
 		?>
 	 <tr>
   		    <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 		<td><?php echo $this->escapeHtml($a->getContractNumber());?></td>
-	        <td><?php if( $a->getContractDate()!==null): echo date_format ( $a->getContractDate(), "d/m/y"); endif;?> </td>
-	        <td><?php if( $a->getContractStatus()!==null): echo $a->getContractStatus(); endif;?> </td>
-	        <td><?php if( $a->getEffectiveFrom()!==null): echo date_format ( $a->getEffectiveFrom(), "d/m/y"); endif;?> </td>
-	        <td><?php if( $a->getEffectiveTo()!==null): echo date_format ( $a->getEffectiveTo(), "d/m/y"); endif;?> </td>
-        	<td><?php if( $a->getBasicSalary()!==null): echo number_format($a->getBasicSalary(),2); endif;?> </td>
-	        <td><?php if( $a->getCurrency()!==null): echo $a->getCurrency()->getCurrency(); endif;?> </td>
-        	 <td>
-<a href="<?php echo $this->baseUrl ?>/hr/employee-contract/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate("Show")?></a>
-<a href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate("Edit")?></a>
+  			     		<td>
+  		     		<a style="color: navy;" href="javascript:;"
+onclick="showJqueryDialog('Change Log: <?php echo (!$a == null)? $a->getSalaryName():"";?>','900','500', '/hr/contract-log/list1?object_token=<?php echo (!$a == null)? $a->getToken():"";?>&object_id=<?php echo (!$a == null)? $a->getID():"";?>&class_name=<?php echo (!$a == null)? get_class($a):"";?>','j_loaded_data', true);"><?php echo $a->getRevisionNo();?>
+</a>
+  		     		</td>
+  		    
+	 		<td><?php echo $this->escapeHtml($a->getSalaryName());?></td>
+	    	<td><?php if($a->getSalaryAmount()!==null): echo number_format($a->getSalaryAmount(),2); $total=$total+$a->getSalaryAmount(); endif;?></td>
+	    	<td><?php echo $currency;?></td>
+		 	<td><?php echo ($a->getIsSsoPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+	 		<td><?php echo ($a->getIsPitPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
+	  	 	<td><?php echo $this->escapeHtml($a->getPaymentFrequency()   );?></td>
+	
+    	<td><?php if($a->getEffectiveFrom()!==null):echo $a->getEffectiveFrom()->format("d-m-Y");endif;?></td>
+		    	<td><?php if($a->getEffectiveTo()!==null):echo $a->getEffectiveTo()->format("d-m-Y");endif;?></td>
+	    	
+	  
+	       	 <td>
+<a href="<?php echo $this->baseUrl ?>/hr/salary/edit?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> <?php echo $this->translate("Edit")?></a>
       
 </td>
  
@@ -70,22 +90,10 @@ if ($total_records <= 0) {
 </table>
 
 <?php
-	
+echo '<strong> Total: ' .  number_format($total,2) .'</strong>';	
 	
 	
 }
 // ===============================
 ?>
-
-</div>
-</div>
-<script type="text/javascript">
-$( "#tabs_contract1" ).tabs({
-
-	beforeLoad:function(e,ui){
-		$( ui.panel ).html('<p>Loading...</p>');       
-	    },
-	   
-});
-</script>
 

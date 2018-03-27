@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_hr_payroll_input", indexes={@ORM\Index(name="nmt_hr_payroll_input_FK1_idx", columns={"period_id"}), @ORM\Index(name="nmt_hr_payroll_input_FK2_idx", columns={"employee_id"}), @ORM\Index(name="nmt_hr_payroll_input_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_payroll_input_IDX1", columns={"revision_number"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtHrPayrollInputRepository")
  */
 class NmtHrPayrollInput
 {
@@ -20,189 +21,189 @@ class NmtHrPayrollInput
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="period_name", type="string", length=45, nullable=true)
      */
     private $periodName;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="employee_name", type="string", length=45, nullable=true)
      */
     private $employeeName;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="present_day", type="integer", nullable=true)
      */
     private $presentDay;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="out_of_office_day", type="integer", nullable=true)
      */
     private $outOfOfficeDay;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="annual_leave", type="integer", nullable=true)
      */
     private $annualLeave;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="approved_leave", type="integer", nullable=true)
      */
     private $approvedLeave;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="unapproved_leave", type="integer", nullable=true)
      */
     private $unapprovedLeave;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="sick_leave", type="integer", nullable=true)
      */
     private $sickLeave;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="personal_paid_leave", type="integer", nullable=true)
      */
     private $personalPaidLeave;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="maternity_leave", type="integer", nullable=true)
      */
     private $maternityLeave;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="other_leave1", type="integer", nullable=true)
      */
     private $otherLeave1;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="other_leave2", type="integer", nullable=true)
      */
     private $otherLeave2;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="other_leave3", type="integer", nullable=true)
      */
     private $otherLeave3;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="overtime1", type="integer", nullable=true)
      */
     private $overtime1;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="overtime2", type="integer", nullable=true)
      */
     private $overtime2;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="overtime3", type="integer", nullable=true)
      */
     private $overtime3;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="overtime4", type="integer", nullable=true)
      */
     private $overtime4;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="overtime5", type="integer", nullable=true)
      */
     private $overtime5;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="revision_number", type="integer", nullable=true)
      */
     private $revisionNumber;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
      */
     private $status;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
      */
     private $currentState;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="consumed_on", type="datetime", nullable=true)
      */
     private $consumedOn;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-
+    
     /**
      * @var \Application\Entity\NmtFinPostingPeriod
      *
@@ -212,7 +213,7 @@ class NmtHrPayrollInput
      * })
      */
     private $period;
-
+    
     /**
      * @var \Application\Entity\NmtHrEmployee
      *
@@ -222,7 +223,7 @@ class NmtHrPayrollInput
      * })
      */
     private $employee;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -232,9 +233,9 @@ class NmtHrPayrollInput
      * })
      */
     private $createdBy;
-
-
-
+    
+    
+    
     /**
      * Get id
      *
@@ -244,7 +245,7 @@ class NmtHrPayrollInput
     {
         return $this->id;
     }
-
+    
     /**
      * Set token
      *
@@ -255,10 +256,10 @@ class NmtHrPayrollInput
     public function setToken($token)
     {
         $this->token = $token;
-
+        
         return $this;
     }
-
+    
     /**
      * Get token
      *
@@ -268,7 +269,7 @@ class NmtHrPayrollInput
     {
         return $this->token;
     }
-
+    
     /**
      * Set periodName
      *
@@ -279,10 +280,10 @@ class NmtHrPayrollInput
     public function setPeriodName($periodName)
     {
         $this->periodName = $periodName;
-
+        
         return $this;
     }
-
+    
     /**
      * Get periodName
      *
@@ -292,7 +293,7 @@ class NmtHrPayrollInput
     {
         return $this->periodName;
     }
-
+    
     /**
      * Set employeeName
      *
@@ -303,10 +304,10 @@ class NmtHrPayrollInput
     public function setEmployeeName($employeeName)
     {
         $this->employeeName = $employeeName;
-
+        
         return $this;
     }
-
+    
     /**
      * Get employeeName
      *
@@ -316,7 +317,7 @@ class NmtHrPayrollInput
     {
         return $this->employeeName;
     }
-
+    
     /**
      * Set presentDay
      *
@@ -327,10 +328,10 @@ class NmtHrPayrollInput
     public function setPresentDay($presentDay)
     {
         $this->presentDay = $presentDay;
-
+        
         return $this;
     }
-
+    
     /**
      * Get presentDay
      *
@@ -340,7 +341,7 @@ class NmtHrPayrollInput
     {
         return $this->presentDay;
     }
-
+    
     /**
      * Set outOfOfficeDay
      *
@@ -351,10 +352,10 @@ class NmtHrPayrollInput
     public function setOutOfOfficeDay($outOfOfficeDay)
     {
         $this->outOfOfficeDay = $outOfOfficeDay;
-
+        
         return $this;
     }
-
+    
     /**
      * Get outOfOfficeDay
      *
@@ -364,7 +365,7 @@ class NmtHrPayrollInput
     {
         return $this->outOfOfficeDay;
     }
-
+    
     /**
      * Set annualLeave
      *
@@ -375,10 +376,10 @@ class NmtHrPayrollInput
     public function setAnnualLeave($annualLeave)
     {
         $this->annualLeave = $annualLeave;
-
+        
         return $this;
     }
-
+    
     /**
      * Get annualLeave
      *
@@ -388,7 +389,7 @@ class NmtHrPayrollInput
     {
         return $this->annualLeave;
     }
-
+    
     /**
      * Set approvedLeave
      *
@@ -399,10 +400,10 @@ class NmtHrPayrollInput
     public function setApprovedLeave($approvedLeave)
     {
         $this->approvedLeave = $approvedLeave;
-
+        
         return $this;
     }
-
+    
     /**
      * Get approvedLeave
      *
@@ -412,7 +413,7 @@ class NmtHrPayrollInput
     {
         return $this->approvedLeave;
     }
-
+    
     /**
      * Set unapprovedLeave
      *
@@ -423,10 +424,10 @@ class NmtHrPayrollInput
     public function setUnapprovedLeave($unapprovedLeave)
     {
         $this->unapprovedLeave = $unapprovedLeave;
-
+        
         return $this;
     }
-
+    
     /**
      * Get unapprovedLeave
      *
@@ -436,7 +437,7 @@ class NmtHrPayrollInput
     {
         return $this->unapprovedLeave;
     }
-
+    
     /**
      * Set sickLeave
      *
@@ -447,10 +448,10 @@ class NmtHrPayrollInput
     public function setSickLeave($sickLeave)
     {
         $this->sickLeave = $sickLeave;
-
+        
         return $this;
     }
-
+    
     /**
      * Get sickLeave
      *
@@ -460,7 +461,7 @@ class NmtHrPayrollInput
     {
         return $this->sickLeave;
     }
-
+    
     /**
      * Set personalPaidLeave
      *
@@ -471,10 +472,10 @@ class NmtHrPayrollInput
     public function setPersonalPaidLeave($personalPaidLeave)
     {
         $this->personalPaidLeave = $personalPaidLeave;
-
+        
         return $this;
     }
-
+    
     /**
      * Get personalPaidLeave
      *
@@ -484,7 +485,7 @@ class NmtHrPayrollInput
     {
         return $this->personalPaidLeave;
     }
-
+    
     /**
      * Set maternityLeave
      *
@@ -495,10 +496,10 @@ class NmtHrPayrollInput
     public function setMaternityLeave($maternityLeave)
     {
         $this->maternityLeave = $maternityLeave;
-
+        
         return $this;
     }
-
+    
     /**
      * Get maternityLeave
      *
@@ -508,7 +509,7 @@ class NmtHrPayrollInput
     {
         return $this->maternityLeave;
     }
-
+    
     /**
      * Set otherLeave1
      *
@@ -519,10 +520,10 @@ class NmtHrPayrollInput
     public function setOtherLeave1($otherLeave1)
     {
         $this->otherLeave1 = $otherLeave1;
-
+        
         return $this;
     }
-
+    
     /**
      * Get otherLeave1
      *
@@ -532,7 +533,7 @@ class NmtHrPayrollInput
     {
         return $this->otherLeave1;
     }
-
+    
     /**
      * Set otherLeave2
      *
@@ -543,10 +544,10 @@ class NmtHrPayrollInput
     public function setOtherLeave2($otherLeave2)
     {
         $this->otherLeave2 = $otherLeave2;
-
+        
         return $this;
     }
-
+    
     /**
      * Get otherLeave2
      *
@@ -556,7 +557,7 @@ class NmtHrPayrollInput
     {
         return $this->otherLeave2;
     }
-
+    
     /**
      * Set otherLeave3
      *
@@ -567,10 +568,10 @@ class NmtHrPayrollInput
     public function setOtherLeave3($otherLeave3)
     {
         $this->otherLeave3 = $otherLeave3;
-
+        
         return $this;
     }
-
+    
     /**
      * Get otherLeave3
      *
@@ -580,7 +581,7 @@ class NmtHrPayrollInput
     {
         return $this->otherLeave3;
     }
-
+    
     /**
      * Set overtime1
      *
@@ -591,10 +592,10 @@ class NmtHrPayrollInput
     public function setOvertime1($overtime1)
     {
         $this->overtime1 = $overtime1;
-
+        
         return $this;
     }
-
+    
     /**
      * Get overtime1
      *
@@ -604,7 +605,7 @@ class NmtHrPayrollInput
     {
         return $this->overtime1;
     }
-
+    
     /**
      * Set overtime2
      *
@@ -615,10 +616,10 @@ class NmtHrPayrollInput
     public function setOvertime2($overtime2)
     {
         $this->overtime2 = $overtime2;
-
+        
         return $this;
     }
-
+    
     /**
      * Get overtime2
      *
@@ -628,7 +629,7 @@ class NmtHrPayrollInput
     {
         return $this->overtime2;
     }
-
+    
     /**
      * Set overtime3
      *
@@ -639,10 +640,10 @@ class NmtHrPayrollInput
     public function setOvertime3($overtime3)
     {
         $this->overtime3 = $overtime3;
-
+        
         return $this;
     }
-
+    
     /**
      * Get overtime3
      *
@@ -652,7 +653,7 @@ class NmtHrPayrollInput
     {
         return $this->overtime3;
     }
-
+    
     /**
      * Set overtime4
      *
@@ -663,10 +664,10 @@ class NmtHrPayrollInput
     public function setOvertime4($overtime4)
     {
         $this->overtime4 = $overtime4;
-
+        
         return $this;
     }
-
+    
     /**
      * Get overtime4
      *
@@ -676,7 +677,7 @@ class NmtHrPayrollInput
     {
         return $this->overtime4;
     }
-
+    
     /**
      * Set overtime5
      *
@@ -687,10 +688,10 @@ class NmtHrPayrollInput
     public function setOvertime5($overtime5)
     {
         $this->overtime5 = $overtime5;
-
+        
         return $this;
     }
-
+    
     /**
      * Get overtime5
      *
@@ -700,7 +701,7 @@ class NmtHrPayrollInput
     {
         return $this->overtime5;
     }
-
+    
     /**
      * Set revisionNumber
      *
@@ -711,10 +712,10 @@ class NmtHrPayrollInput
     public function setRevisionNumber($revisionNumber)
     {
         $this->revisionNumber = $revisionNumber;
-
+        
         return $this;
     }
-
+    
     /**
      * Get revisionNumber
      *
@@ -724,7 +725,7 @@ class NmtHrPayrollInput
     {
         return $this->revisionNumber;
     }
-
+    
     /**
      * Set status
      *
@@ -735,10 +736,10 @@ class NmtHrPayrollInput
     public function setStatus($status)
     {
         $this->status = $status;
-
+        
         return $this;
     }
-
+    
     /**
      * Get status
      *
@@ -748,7 +749,7 @@ class NmtHrPayrollInput
     {
         return $this->status;
     }
-
+    
     /**
      * Set currentState
      *
@@ -759,10 +760,10 @@ class NmtHrPayrollInput
     public function setCurrentState($currentState)
     {
         $this->currentState = $currentState;
-
+        
         return $this;
     }
-
+    
     /**
      * Get currentState
      *
@@ -772,7 +773,7 @@ class NmtHrPayrollInput
     {
         return $this->currentState;
     }
-
+    
     /**
      * Set createdOn
      *
@@ -783,10 +784,10 @@ class NmtHrPayrollInput
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdOn
      *
@@ -796,7 +797,7 @@ class NmtHrPayrollInput
     {
         return $this->createdOn;
     }
-
+    
     /**
      * Set consumedOn
      *
@@ -807,10 +808,10 @@ class NmtHrPayrollInput
     public function setConsumedOn($consumedOn)
     {
         $this->consumedOn = $consumedOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get consumedOn
      *
@@ -820,7 +821,7 @@ class NmtHrPayrollInput
     {
         return $this->consumedOn;
     }
-
+    
     /**
      * Set isActive
      *
@@ -831,10 +832,10 @@ class NmtHrPayrollInput
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isActive
      *
@@ -844,7 +845,7 @@ class NmtHrPayrollInput
     {
         return $this->isActive;
     }
-
+    
     /**
      * Set remarks
      *
@@ -855,10 +856,10 @@ class NmtHrPayrollInput
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-
+        
         return $this;
     }
-
+    
     /**
      * Get remarks
      *
@@ -868,7 +869,7 @@ class NmtHrPayrollInput
     {
         return $this->remarks;
     }
-
+    
     /**
      * Set period
      *
@@ -879,10 +880,10 @@ class NmtHrPayrollInput
     public function setPeriod(\Application\Entity\NmtFinPostingPeriod $period = null)
     {
         $this->period = $period;
-
+        
         return $this;
     }
-
+    
     /**
      * Get period
      *
@@ -892,7 +893,7 @@ class NmtHrPayrollInput
     {
         return $this->period;
     }
-
+    
     /**
      * Set employee
      *
@@ -903,10 +904,10 @@ class NmtHrPayrollInput
     public function setEmployee(\Application\Entity\NmtHrEmployee $employee = null)
     {
         $this->employee = $employee;
-
+        
         return $this;
     }
-
+    
     /**
      * Get employee
      *
@@ -916,7 +917,7 @@ class NmtHrPayrollInput
     {
         return $this->employee;
     }
-
+    
     /**
      * Set createdBy
      *
@@ -927,10 +928,10 @@ class NmtHrPayrollInput
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdBy
      *

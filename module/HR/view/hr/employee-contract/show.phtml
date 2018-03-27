@@ -148,7 +148,7 @@ if (count ( $errors ) > 0) {
 		<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 		<a style="font-size: 9pt; color: gray;" href="#contract_salary" class="" data-toggle="collapse">REMUNERATION:</a>
 	</legend>
-	<div id="contract_salary" class="collapse in">
+	<div id="contract_salary" class="collapse">
 	<!-- -- -->
 	<div class="form-group margin-bottom required">
 		<label class="control-label col-sm-2" ><?php echo $this->translate('Basic Salary'); ?>:</label>
@@ -192,12 +192,10 @@ if (count ( $errors ) > 0) {
 	
 	</fieldset>
 	
-	<hr>
-	<a class="btn btn-primary btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary/assign?token=<?php echo $this->escapeHtml($entity->getToken());?>&target_id=<?php echo $this->escapeHtml($entity->getID());?>">
-	<i class="fa fa-pluss" aria-hidden="true"></i> <?php echo $this->translate("Add income")?></a>
-		
-	<hr>
-		
+	<div id="other_income">
+	
+	</div>		
+			
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
@@ -220,5 +218,6 @@ if (count ( $errors ) > 0) {
 
 <script>
 $("#create_form :input").attr("disabled", "disabled");
+ajaxloadData('<?php echo $this->baseUrl ?>/hr/salary/list1?token=<?php echo $this->escapeHtml($entity->getToken());?>&target_id=<?php echo $this->escapeHtml($entity->getID());?>','#other_income');
 </script>
 

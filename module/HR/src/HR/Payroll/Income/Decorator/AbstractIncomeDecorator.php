@@ -111,7 +111,9 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
     public function getIncomeDecoratorFactory()
     {
         // TODO Auto-generated method stub
-    }
+        return $this->incomeComponent->getIncomeDecoratorFactory();
+    }     
+    
 
     /**
      *

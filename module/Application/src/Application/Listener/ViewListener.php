@@ -46,7 +46,7 @@ class ViewListener implements ListenerAggregateInterface
      */
     public function addTimeStamp(EventInterface $e)
     {
-        $body = $e->getResponse()->getContent();
+       /*  $body = $e->getResponse()->getContent();
         $html = '<div class="container" style="margin-bottom: 10px;">';
         $html.= '<span class="label label-primary">';
         $html.= round(microtime(true) - TIMESTAMP_START, 5) * 1000 . 'ms';
@@ -54,6 +54,15 @@ class ViewListener implements ListenerAggregateInterface
         $html.= '</div>';
         $e->getResponse()->setContent(
             str_replace('</footer>', $html . '</footer>', $body)
+        ); */
+        
+        $body = $e->getResponse()->getContent();
+        $html= '<span style="font-size:8.5pt; color:gray;">Page loaded in: ';
+        $html.= round(microtime(true) - TIMESTAMP_START, 5) * 1000 . 'ms';
+        $html.= '</span>';
+        
+        $e->getResponse()->setContent(
+        str_replace('</footer>', $html . '</footer>', $body)
         );
     }
 	

@@ -27,6 +27,7 @@ if ($total_records <= 0) {
 			<td><b><?php echo $this->translate('effective to');?></b></td>
 	
 			<td><b><?php echo $this->translate('Valid');?></b></td>
+			<td><b><?php echo $this->translate('Changed By');?></b></td>
 	
 		</tr>
 	</thead>
@@ -49,9 +50,9 @@ if ($total_records <= 0) {
 	 		<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d-m-Y"):"";?> </td>
 	 		<td><?php echo ($a->getEffectiveFrom()!==null )? date_format ( $a->getEffectiveFrom(), "d-m-Y"):"";?> </td>
 			<td><?php echo ($a->getEffectiveTo()!==null )? date_format ( $a->getEffectiveTo(), "d-m-Y"):"";?> </td>
+			<td><?php echo $a->getIsValid();?></td>
+	  		<td><?php if($a->getCreatedBy()!==null): echo $a->getCreatedBy()->getFirstname() . " ". $a->getCreatedBy()->getLastname(); endif;?></td>
 	
-	 		<td><?php echo $a->getIsValid();?></td>
-	 
 				
 		</tr>
 <?php endforeach; ?>

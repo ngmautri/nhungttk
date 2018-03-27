@@ -21,8 +21,8 @@ class IncomeSetupControllerFactory implements FactoryInterface {
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		$container= $serviceLocator->getServiceLocator();
 		$controller = new IncomeSetupController();
-		//$sv =  $container->get('doctrine.entitymanager.orm_default');
-		//$controller->setDoctrineEM($sv);
+		$sv =  $container->get('doctrine.entitymanager.orm_default');
+		$controller->setDoctrineEM($sv);
 		return $controller;
 	}
 }

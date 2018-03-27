@@ -67,6 +67,12 @@ class AbstractIncomeFactoryRegistry
         $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
         $supportedFactory[AttendanceBonusFactory::class] = $decoratedIncome;
         
+        $incomeFactory= new TransportationBonusFactory();
+        $incomeComponent = $incomeFactory->createIncomeComponent();
+        $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
+        $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
+        $supportedFactory[TransportationBonusFactory::class] = $decoratedIncome;
+        
         
         $incomeFactory= new Overtime150Factory();
         $incomeComponent = $incomeFactory->createIncomeComponent();

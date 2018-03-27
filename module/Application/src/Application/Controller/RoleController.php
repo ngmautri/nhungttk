@@ -507,8 +507,7 @@ class RoleController extends AbstractActionController {
 		
 		return new ViewModel ( array (
 				'total_resources' => $totalResults,
-				'role_id' => $role_id,
-				
+				'role_id' => $role_id,				
 				'resources' => $resources,
 				'paginator' => $paginator
 		) );	

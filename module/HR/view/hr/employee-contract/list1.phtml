@@ -58,14 +58,15 @@ if ($total_records <= 0) {
         	<td><?php if( $a->getBasicSalary()!==null): echo number_format($a->getBasicSalary(),2); endif;?> </td>
 	        <td><?php if( $a->getCurrency()!==null): echo $a->getCurrency()->getCurrency(); endif;?> </td>
         	 <td>
-<a href="<?php echo $this->baseUrl ?>/hr/employee-contract/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate("Show")?></a>
-<a href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate("Edit")?></a>
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/show?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><?php echo $this->translate("Show")?></a>
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate("Edit")?></a>
+<a style="color:red;" class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/terminate?token=<?php echo $this->escapeHtml($a->getToken());?>&entity_id=<?php echo $this->escapeHtml($a->getID());?>"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;<?php echo $this->translate("Terminate")?></a>
       
 </td>
  
 		</tr>
 <?php endforeach; ?>
-
+&nbsp;
  </tbody>
 </table>
 

@@ -46,6 +46,7 @@
   <li ><a href="<?php echo $this->baseUrl ?>/procure/pr-row/pr-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PR</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/procure/po-row/po-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PO</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/ap-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">A/P Invoice</a></li>
+  <li ><a href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
  
   
    </ul>
@@ -68,11 +69,12 @@ Not implemented!
 			<input class="form-control input-sm" type="text"  placeholder=""
 				name="itemSku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
 	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isStocked" value="1">&nbsp;Stocked &nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isPurchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
+			 <input <?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isStocked" value="1">&nbsp;Stocked &nbsp;&nbsp;<br>
+			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset &nbsp;&nbsp; 
+	   		 <input <?php if(!$entity == null): echo ($entity->getIsSparepart()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isSparepart" value="1">&nbsp;Spare Part&nbsp;&nbsp; <br>
+			 <input <?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isPurchased" value="1">&nbsp;Purchased &nbsp;&nbsp;
 	 		 <input <?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isSaleItem" value="1">&nbsp;For Sale &nbsp;&nbsp;
-			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset
-	   
+		
 		</div>
 	
 	</div>
@@ -232,7 +234,7 @@ value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
 
 <input  name="localAvailabiliy" <?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" value="1">&nbsp;Local Availability
 					<div style="color: gray;padding-top: 10pt; font-size: 8pt"><?php if(!$entity == null): echo ($entity->getCreatedOn() !== null)?'Created date: ' . date_format($entity->getCreatedOn(),"Y/m/d H:i:s"):""; endif;?></div>
-				<div style="color: gray;padding-top: 2pt; font-size: 8pt"><?php if(!$entity == null): echo  ($entity->getLastChangeOn() !== null)?'Last Change: ' . date_format($entity->getLastChangeOn(),"Y/m/d H:i:s"):""; endif;?></div>
+				<div style="color: gray;padding-top: 2pt; font-size: 8pt"><?php if(!$entity == null): echo  ($entity->getLastChangeOn() !== null)?'Revision# '. $entity->getRevisionNo(). ' - Last Change: ' . date_format($entity->getLastChangeOn(),"Y/m/d H:i:s"):""; endif;?></div>
 	
 		</div>
 

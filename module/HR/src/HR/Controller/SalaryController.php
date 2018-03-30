@@ -5,7 +5,11 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\NmtHrSalary;
 use Doctrine\ORM\EntityManager;
+use HR\Payroll\Employee;
+use HR\Payroll\Payroll;
+use HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactoryRegistry;
 use HR\Payroll\Income\Factory\AbstractIncomeFactoryRegistry;
+use HR\Payroll\Input\ConsolidatedPayrollInput;
 use Zend\Math\Rand;
 
 /**
@@ -109,6 +113,8 @@ class SalaryController extends AbstractActionController
                                 $entity->setIsPitPayable($salaryDefault->getIsPitPayable());
                                 $entity->setIsSsoPayable($salaryDefault->getIsSsoPayable());
                                 $entity->setPaymentFrequency($salaryDefault->getPaymentFrequency());
+                                $entity->setSalaryFactory($salaryDefault->getSalaryFactory());
+                                
                             }
                             
                             $entity->setSalaryAmount(0);
@@ -316,6 +322,86 @@ class SalaryController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function simulateAction()
+    {
+        $request = $this->getRequest();
+        
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $this->layout("layout/user/ajax");
+        $target_id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        $criteria = array(
+            'id' => $target_id,
+            'token' => $token
+        );
+        
+        /**@var \Application\Entity\NmtHrContract $target ; */
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrContract')->findOneBy($criteria);
+        
+        if ($target instanceof \Application\Entity\NmtHrContract) {
+            
+            $criteria = array(
+                'contract' => $target_id
+            );
+            $incomes = $this->doctrineEM->getRepository('Application\Entity\NmtHrSalary')->findby($criteria);
+            
+            if(count($incomes)>0){
+                
+                $incomeList = array();
+                $employee = new Employee();
+                
+                $employee->setEmployeecode($target->getEmployee()->getEmployeeCode());
+                $employee->setStatus($target->getContractStatus());
+                $employee->setStartWorkingdate($target->getEffectiveFrom());
+                $employee->setEmployeeName($target->getEmployee()->getEmployeeName());
+                
+                $input = new ConsolidatedPayrollInput($employee, new \Datetime('2018-01-01'), new \Datetime('2018-01-31 10:30:00'));
+                $input->setactualworkeddays(24);
+                $input->setpaidsickleaves(2);
+                $input->settotalworkingdays(26);
+                $ytd = 2018;
+                
+                
+                foreach($incomes as $income){
+                    /**@var \Application\Entity\NmtHrSalary $income ; */
+                    
+                    // $sv = bootstrap::getservicemanager ()->get ( 'hr\service\employeesearchservice' );
+                    $salaryFactory=$income->getSalaryFactory();
+                    $incomeFactory = new $salaryFactory($income->getSalaryAmount(), "LAK");
+                    $incomeComponent = $incomeFactory->createIncomeComponent();
+                    $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
+                    $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
+                    $incomeList[] = $decoratedIncome;
+                    
+                }
+                
+                $payroll = new Payroll($employee, $input, $incomeList);
+                $payroll->calculate();
+                
+            }
+            
+            
+            
+            return new ViewModel(array(
+                'target' => $target,
+                'list' => $incomes,
+                'total_records' => count($incomes),
+                'paginator' => null
+                
+            ));
+        }
+        return $this->redirect()->toRoute('access_denied');
+    }
+    
 
     /**
      * Show an salary Compoent

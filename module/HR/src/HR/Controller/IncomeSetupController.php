@@ -51,12 +51,13 @@ class IncomeSetupController extends AbstractActionController
             
             $n=0;
             
-            foreach ($incomes as $incomeComponent) {
+            foreach ($incomes as $k  => $incomeComponent) {
                 /**@var \HR\Payroll\Income\IncomeInterface $incomeComponent ; */
                 
                 $criteria = array(
                     'decoratorFactory' => $incomeComponent->getIncomeDecoratorFactory(),
-                    'salaryName' => $incomeComponent->getIncomeName()
+                    'salaryName' => $incomeComponent->getIncomeName(),
+                    'salaryFactory' => $k,
                     // 'className' => $class_name
                 );
                 $ck = $this->doctrineEM->getRepository('Application\Entity\NmtHrSalaryDefault')->findOneBy($criteria);
@@ -65,6 +66,7 @@ class IncomeSetupController extends AbstractActionController
                     $entity = new \Application\Entity\NmtHrSalaryDefault();
                     $entity->setSalaryName($incomeComponent->getIncomeName());
                     $entity->setDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
+                    $entity->setSalaryFactory($k);
                     
                     $entity->setIsPayable($incomeComponent->isPayable());
                     $entity->setIsSsoPayable($incomeComponent->isSSOPayable());

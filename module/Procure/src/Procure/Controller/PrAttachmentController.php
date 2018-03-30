@@ -1322,13 +1322,10 @@ class PrAttachmentController extends AbstractActionController {
 					'checksum' => $checksum
 			);
 			
-			/**
-			 *
-			 * @todo : Update Target
-			 */
+			/**@var \Application\Entity\NmtProcurePr $target ;*/
 			$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 			
-			if ($target == null) {
+			if (!$target instanceof \Application\Entity\NmtProcurePr ) {
 				
 				$errors [] = 'Target object can\'t be empty. Token key might be not valid. Please try again!!';
 				$this->flashMessenger ()->addMessage ( 'Something wrong!' );
@@ -1369,11 +1366,7 @@ class PrAttachmentController extends AbstractActionController {
 					file_put_contents ( $tmp_name, base64_decode ( $uri ) );
 					$checksum = md5_file ( $tmp_name );
 					
-					/**
-					 *
-					 * @todo : CHANGE TARGET
-					 */
-					$criteria = array (
+				    $criteria = array (
 							"checksum" => $checksum,
 							"pr" => $target_id
 					);
@@ -1396,10 +1389,6 @@ class PrAttachmentController extends AbstractActionController {
 						
 						$entity = new NmtApplicationAttachment ();
 						
-						/**
-						 *
-						 * @todo : CHANGE: target
-						 */
 						$entity->setPr ( $target );
 						
 						// $entity->setFilePassword ( $filePassword );
@@ -1427,8 +1416,10 @@ class PrAttachmentController extends AbstractActionController {
 								"email" => $this->identity ()
 						) );
 						
+						$createdOn =  new \DateTime ();
+						
 						$entity->setCreatedBy ( $u );
-						$entity->setCreatedOn ( new \DateTime () );
+						$entity->setCreatedOn ($createdOn);
 						
 						
 						// get Old Entity, if any
@@ -1458,19 +1449,29 @@ class PrAttachmentController extends AbstractActionController {
 						$success ++;
 						
 						// Trigger uploadPicture. AbtractController is EventManagerAware.
-				         $this->getEventManager ()->trigger ( 'uploadPicture', __CLASS__, array (
+						$this->getEventManager ()->trigger ( 'uploadPicture', __METHOD__, array (
 								'picture_name' => $name,
 								'pictures_dir' => $folder
 						) );
 						
+						$m = sprintf('Image #%s for PR #%s - %s uploaded sucessfully.', $entity->getId(), $target->getId(), $target->getPrAutoNumber());
 						
-						
+						// Trigger Activity Log . AbtractController is EventManagerAware.
+						$this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+						    'priority' => \Zend\Log\Logger::INFO,
+						    'message' => $m,
+						    'createdBy' => $u,
+						    'createdOn' => $createdOn
+						));
+				         
 					} else {
 						$this->flashMessenger ()->addMessage ( "'" . $original_filename . "' exits already!" );
 						$result [] = $original_filename . ' exits already. Please select other file!';
 						$failed ++;
 					}
 				}
+				
+				
 				
 				// $data['filetype'] = $filetype;
 				$data = array ();
@@ -1485,10 +1486,12 @@ class PrAttachmentController extends AbstractActionController {
 			}
 		}
 		
-		$redirectUrl = null;
+		// NO POST
+		//========================
 		
+		$redirectUrl = null;		
 		if ($request->getHeader ( 'Referer' ) == null) {
-			// return $this->redirect ()->toRoute ( 'access_denied' );
+			return $this->redirect ()->toRoute ( 'access_denied' );
 		} else {
 			$redirectUrl = $request->getHeader ( 'Referer' )->getUri ();
 		}
@@ -1502,13 +1505,10 @@ class PrAttachmentController extends AbstractActionController {
 				'token' => $token
 		);
 		
-		/**
-		 *
-		 * @todo Update target
-		 */
+		/**@var \Application\Entity\NmtProcurePr $target ;*/
 		$target = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePr' )->findOneBy ( $criteria );
 		
-		if ($target !== null) {
+		if ($target instanceof \Application\Entity\NmtProcurePr) {
 			return new ViewModel ( array (
 					'redirectUrl' => $redirectUrl,
 					'errors' => null,

@@ -146,10 +146,12 @@ class PrRowController extends AbstractActionController
             if ($pr == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
-            
+           
+            /**@var \Application\Entity\NmtProcurePr $target ;*/
             $target = null;
             if ($pr[0] instanceof NmtProcurePr) {
-                $target = $pr[0];
+                
+                 $target = $pr[0];
             }
             
             if ($target == null) {
@@ -278,48 +280,51 @@ class PrRowController extends AbstractActionController
                 
                 // NO ERROR
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setChecksum(md5(uniqid("pr_row_"  . microtime())));
                 
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
                 
-                $entity->setCreatedBy($u);
-                $entity->setCreatedOn(new \DateTime());
+                $createdOn = new \DateTime();
+                
+                  $entity->setCreatedBy($u);
+                $entity->setCreatedOn($createdOn);
                 
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 
-                /**
-                 *
-                 * @todo : UPDATE
-                 */
-                $entity->setChecksum(md5(uniqid("pr_row_" . $entity->getId()) . microtime()));
-                $this->doctrineEM->flush();
+                $m = sprintf('Row #%s for PR#%s - %s created sucessfully.',$entity->getId(), $target->getId(),$target->getPrAutoNumber());
                 
-                // AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('procure.activity.log', __CLASS__, array(
-                    'priority' => 7,
-                    'message' => 'PR Line #'. $entity->getId() . ' has been added.',
+                //Trigger: procure.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $createdOn
                 ));
                 
                 $index_update_status = $this->prSearchService->updateIndex(1, $entity, FALSE);
                 
                 $redirectUrl = "/procure/pr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getID() . "&checksum=" . $target->getChecksum();
-                $this->flashMessenger()->addMessage("Row '" . $entity->getRowIdentifer() . "' has been created successfully!");
+                $this->flashMessenger()->addMessage($m);
                 
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
-        // NO POST ================
+        // NO POST
+        //++++++++++++++++++++++++++++
+        
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') !== null) {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
                 ->getUri();
+        }else{
+            return $this->redirect()->toRoute('access_denied');
         }
         
         $target_id = (int) $this->params()->fromQuery('target_id');
-        $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
         
         /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
@@ -330,13 +335,14 @@ class PrRowController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
         
+        /**@var \Application\Entity\NmtProcurePr $target ;*/
         $target = null;
         if ($pr[0] instanceof NmtProcurePr) {
             $target = $pr[0];
         }
         
-        if ($target !== null) {
-            
+        if ($target instanceof  \Application\Entity\NmtProcurePr) {
+           
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
@@ -2093,12 +2099,16 @@ class PrRowController extends AbstractActionController
             $redirectUrl = $request->getPost('redirectUrl');
             $entity_id = $request->getPost('entity_id');
             $token = $request->getPost('token');
+            $nTry= $request->getPost('n');
+            
+            
             
             $criteria = array(
                 'id' => $entity_id,
                 'token' => $token
             );
             
+            /**@var \Application\Entity\NmtProcurePrRow $entity ;*/
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
             
             if ($entity == null) {
@@ -2115,8 +2125,7 @@ class PrRowController extends AbstractActionController
                 // might need redirect
             } else {
                 
-                $errors = array();
-                $redirectUrl = $request->getPost('redirectUrl');
+                $oldEntity= clone($entity);
                 
                 $edt = $request->getPost('edt');
                 $isActive = $request->getPost('isActive');
@@ -2203,34 +2212,78 @@ class PrRowController extends AbstractActionController
                     }
                 }
                 
+                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+                $nmtPlugin = $this->Nmtplugin();
+                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+                
+                if(count($changeArray)==0){
+                    $nTry++;
+                    $errors[] = sprintf('Nothing changed! n = %s',$nTry);
+                }
+                
+                if($nTry >=3){
+                   $errors[] = sprintf('Do you really want to edit "%s"?',$entity->getPr()->getPrName() . '=>'.  $entity->getRowIdentifer());
+                }
+                
+                if($nTry == 5){
+                    $m=sprintf('You might be not ready to edit "%s". Please try later!',$entity->getPr()->getPrName() .'=>'.  $entity->getRowIdentifer());
+                    $this->flashMessenger()->addMessage($m);
+                    return $this->redirect()->toUrl($redirectUrl);
+                }
+                
                 if (count($errors) > 0) {
                     return new ViewModel(array(
                         
                         'redirectUrl' => $redirectUrl,
                         'errors' => $errors,
                         'entity' => $entity,
-                        'target' => $entity->getPr()
-                    
+                        'target' => $entity->getPr(),
+                        'n'=>$nTry,                    
                     ));
                 }
                 
                 // NO ERROR
-                // $entity->setToken ( Rand::getString ( 10, self::CHAR_LIST, true ) . "_" . Rand::getString ( 21, self::CHAR_LIST, true ) );
+                //=====================
+                
+                $changeOn = new \DateTime();
                 
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
                 
-                $entity->setLastChangeBy($u);
-                $entity->setLastChangeOn(new \DateTime());
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                
+                $m = sprintf('"PR Row #%s; %s" updated sucessfully. No. of change: %s', $entity->getId(),$entity->getRowIdentifer(),count($changeArray));
+                
+                
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
+                
                 
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 
-                // AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('procure.activity.log', __CLASS__, array(
+                // trigger log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.change.log', __CLASS__, array(
                     'priority' => 7,
-                    'message' => 'PR Line #'. $entity->getId() . ' has been edited.',
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn,
+                ));
+                
+                
+                //Trigger: procure.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $changeOn
                 ));
                 
                 $index_update_status = $this->prSearchService->updateIndex(0, $entity, fasle);
@@ -2265,7 +2318,8 @@ class PrRowController extends AbstractActionController
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
                 'target' => $entity->getPr(),
-                'entity' => $entity
+                'entity' => $entity,
+                'n'=>0
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');

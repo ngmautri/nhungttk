@@ -206,6 +206,7 @@ return array(
             'Inventory\Controller\GR' => 'Inventory\Controller\GRControllerFactory',
             'Inventory\Controller\GI' => 'Inventory\Controller\GIControllerFactory',
             'Inventory\Controller\Transfer' => 'Inventory\Controller\TransferControllerFactory',
+            'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
             
         )
     

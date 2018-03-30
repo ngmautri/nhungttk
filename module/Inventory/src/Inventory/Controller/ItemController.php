@@ -49,8 +49,8 @@ class ItemController extends AbstractActionController
     {}
 
     /**
-     *
-     * @return \Zend\View\Model\ViewModel
+     * 
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function showAction()
     {
@@ -137,8 +137,8 @@ class ItemController extends AbstractActionController
     }
 
     /**
-     *
-     * @return \Zend\View\Model\ViewModel
+     * 
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
     {
@@ -301,6 +301,7 @@ class ItemController extends AbstractActionController
             }
             
             // No Error
+            // =======================
             try {
                 
                 // generate document
@@ -343,10 +344,10 @@ class ItemController extends AbstractActionController
                 $entity->setCreatedOn(new \DateTime());
                 $entity->setCreatedBy($u);
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 $new_id = $entity->getId();
+            
                 $new_item = $this->doctrineEM->find('Application\Entity\NmtInventoryItem', $new_id);
                 $entity->setChecksum(md5($new_id . uniqid(microtime())));
                 $this->doctrineEM->flush();
@@ -374,8 +375,9 @@ class ItemController extends AbstractActionController
                     $entity->setDepartment($department);
                     $entity->setItem($new_item);
                     
+                    $createdOn = new \DateTime();
                     $entity->setCreatedBy($u);
-                    $entity->setCreatedOn(new \DateTime());
+                    $entity->setCreatedOn($createdOn);
                     
                     $this->doctrineEM->persist($entity);
                     $this->doctrineEM->flush();
@@ -384,6 +386,20 @@ class ItemController extends AbstractActionController
                 // update search index.
                 // $this->itemSearchService->addDocument ( $new_item, true );
                 $this->itemSearchService->updateIndex(1, $new_item, false);
+                
+                $m = sprintf('Item #%s %s (%s) created sucessfully.', $new_item->getId(), $new_item->getSysNumber(),$itemName);
+                
+                // Trigger. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $createdOn
+                ));
+                
+                $this->flashMessenger()->addMessage($m);
+                $redirectUrl = "/inventory/item/show?token=" . $new_item->getToken() . "&entity_id=" . $new_item->getId() . "&checksum=" . $new_item->getChecksum();
+                return $this->redirect()->toUrl($redirectUrl);
             } catch (Exception $e) {
                 
                 $errors[] = $e->getMessage();
@@ -395,22 +411,14 @@ class ItemController extends AbstractActionController
                     'category' => $category
                 ));
             }
-            
-            $this->flashMessenger()->addMessage("Item " . $itemName . " has been created sucessfully");
-            
-            // trigger uploadPicture. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('inventory.activity.log', __CLASS__, array(
-                'priority' => 7,
-                'message' => 'Item #' . $entity->getId() . ' (' . $entity->getSysNumber() . ') has been added!'
-            ));
-            
-            $redirectUrl = "/inventory/item/show?token=" . $new_item->getToken() . "&entity_id=" . $new_item->getId() . "&checksum=" . $new_item->getChecksum();
-            return $this->redirect()->toUrl($redirectUrl);
         }
+        
+        // No Post.
+        // =======================
         
         $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
-            // return $this->redirect ()->toRoute ( 'access_denied' );
+            return $this->redirect()->toRoute('access_denied');
         } else {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
@@ -439,6 +447,7 @@ class ItemController extends AbstractActionController
             $redirectUrl = $request->getPost('redirectUrl');
             $entity_id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
+            $nTry = $request->getPost('n');
             
             $criteria = array(
                 'id' => $entity_id,
@@ -447,7 +456,6 @@ class ItemController extends AbstractActionController
             
             /**@var \Application\Entity\NmtInventoryItem $entity ;*/
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
-            $oldEntity= clone($entity);
             
             if ($entity == null) {
                 
@@ -457,11 +465,14 @@ class ItemController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'department' => null,
-                    'category' => null
+                    'category' => null,
+                    'n' => $nTry
                 ));
                 
                 // might need redirect
             } else {
+                
+                $oldEntity = clone ($entity);
                 
                 $itemSku = $request->getPost('itemSku');
                 $itemName = $request->getPost('itemName');
@@ -603,28 +614,52 @@ class ItemController extends AbstractActionController
                 $company = $this->doctrineEM->find('Application\Entity\NmtApplicationCompany', $company_id);
                 $entity->setCompany($company);
                 
+                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+                $nmtPlugin = $this->Nmtplugin();
+                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+                
+                if (count($changeArray) == 0) {
+                    $nTry ++;
+                    $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+                }
+                
+                if ($nTry >= 3) {
+                    $errors[] = sprintf('Do you really want to edit "%s (%s)"?', $entity->getItemName(), $entity->getSysNumber);
+                }
+                
+                if ($nTry == 5) {
+                    $m = sprintf('You might be not ready to edit "%s (%s)". Please try later!', $entity->getItemName(), $entity->getSysNumber());
+                    $this->flashMessenger()->addMessage($m);
+                    return $this->redirect()->toUrl($redirectUrl);
+                }
+                
                 if (count($errors) > 0) {
                     return new ViewModel(array(
                         'errors' => $errors,
                         'redirectUrl' => $redirectUrl,
                         'entity' => $entity,
                         'department' => $department,
-                        'category' => $category
+                        'category' => $category,
+                        'n' => $nTry
                     ));
                 }
                 
-                // No Error
+                // NO ERROR
+                // ++++++++++++++++++++++++
                 try {
                     
-                    $changeArray=$this->objectsAreIdentical($oldEntity, $entity);
-                    //var_dump($changeArray);
+                    $changeOn = new \DateTime();
                     
                     $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                         'email' => $this->identity()
                     ));
                     
-                    $entity->setLastChangeOn(new \DateTime());
-                    $entity->setLastChangeBy($u);
+                    $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                    
+                    $entity->setLastchangeBy($u);
+                    $entity->setLastchangeOn($changeOn);
+                    
+                    $this->doctrineEM->persist($entity);
                     $this->doctrineEM->flush();
                     
                     $new_item = $entity;
@@ -655,37 +690,55 @@ class ItemController extends AbstractActionController
                         $this->doctrineEM->flush();
                     }
                     
-                    /**
-                     *
-                     * @todo : update search index.
-                     */
+                    // update index
                     $this->itemSearchService->updateIndex(0, $new_item, false);
+                    
+                    $m = sprintf('"#%s %s (%s)" has been updated sucessfully. No. of change %s', $new_item->getId(),$new_item->getSysNumber(), $itemName, count($changeArray));
+                    
+                    // Trigger Change Log. AbtractController is EventManagerAware.
+                    $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
+                        'priority' => \Zend\Log\Logger::INFO,
+                        'message' => $m,
+                        'objectId' => $new_item->getId(),
+                        'objectToken' => $new_item->getToken(),
+                        'changeArray' => $changeArray,
+                        'changeBy' => $u,
+                        'changeOn' => $changeOn,
+                        'revisionNumber' => $new_item->getRevisionNo(),
+                        'changeDate' => $changeOn,
+                        'changeValidFrom' => $changeOn
+                    ));
+                    
+                    // Trigger Activity Log . AbtractController is EventManagerAware.
+                    $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                        'priority' => \Zend\Log\Logger::INFO,
+                        'message' => $m,
+                        'createdBy' => $u,
+                        'createdOn' => $changeOn
+                    ));
+                    
+                    $this->flashMessenger()->addMessage($m);
+                    return $this->redirect()->toUrl($redirectUrl);
                 } catch (Exception $e) {
+                    
+                    $errors[] = $e->getMessage();
+                    
                     return new ViewModel(array(
-                        'errors' => $e->getMessage(),
+                        'errors' => $errors,
                         'redirectUrl' => $redirectUrl,
-                        'entity' => $entity,
+                        'entity' => $new_item,
                         'department' => $department,
-                        'category' => $category
+                        'category' => $category,
+                        'n' => $nTry
                     
                     ));
                 }
-                
-                // trigger uploadPicture. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('inventory.activity.log', __CLASS__, array(
-                    'priority' => 7,
-                    'message' => 'Item #' . $entity->getId() . ' (' . $entity->getSysNumber() . ') has been edited!',
-                    'objectId'=> $entity->getId(),
-                    'objectToken'=> $entity->getToken(),
-                    'changeArray' =>$changeArray
-                ));
-                
-                $this->flashMessenger()->addMessage("Item " . $itemName . " has been updated sucessfully". " No.of change: ".count($changeArray));
-                return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
         // NO POST
+        // ==================================
+        
         $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
@@ -712,7 +765,9 @@ class ItemController extends AbstractActionController
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
                 'category' => null,
-                'department' => null
+                'department' => null,
+                'n' => 0
+            
             ));
         }
         return $this->redirect()->toRoute('access_denied');
@@ -867,15 +922,14 @@ class ItemController extends AbstractActionController
             'item_type' => $item_type
         ));
     }
-    
+
     /**
-     * 
+     *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function list1Action()
     {
         $request = $this->getRequest();
-        
         
         // accepted only ajax request
         if (! $request->isXmlHttpRequest()) {
@@ -930,11 +984,11 @@ class ItemController extends AbstractActionController
         }
         
         if ($sort_by == null) :
-        $sort_by = "createdOn";
+            $sort_by = "createdOn";
         endif;
         
         if ($sort == null) :
-        $sort = "DESC";
+            $sort = "DESC";
         endif;
         
         $sort_criteria = array(
@@ -971,7 +1025,7 @@ class ItemController extends AbstractActionController
             $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
             $this->cacheService->setItem($total_recored_cache_key, $total_records);
         }
-      
+        
         $paginator = null;
         $list = null;
         
@@ -1316,7 +1370,6 @@ class ItemController extends AbstractActionController
     }
 
     /**
-     * 
      */
     public function barcodeAction()
     {
@@ -1547,14 +1600,19 @@ class ItemController extends AbstractActionController
         return $this;
     }
 
-    public function getItemSearchService() {
-		return $this->itemSearchService;
-	}
-	public function setItemSearchService(ItemSearchService $itemSearchService) {
-		$this->itemSearchService = $itemSearchService;
-		return $this;
-	}
+    public function getItemSearchService()
+    {
+        return $this->itemSearchService;
+    }
+
+    public function setItemSearchService(ItemSearchService $itemSearchService)
+    {
+        $this->itemSearchService = $itemSearchService;
+        return $this;
+    }
+
     /**
+     *
      * @return mixed
      */
     public function getCacheService()
@@ -1563,63 +1621,11 @@ class ItemController extends AbstractActionController
     }
 
     /**
+     *
      * @param mixed $cacheService
      */
     public function setCacheService(StorageInterface $cacheService)
     {
         $this->cacheService = $cacheService;
     }
-
-    /**
-     * 
-     * @param unknown $o1
-     * @param unknown $o2
-     * @return NULL|string[][]|NULL[][]|unknown[][]|mixed[][]
-     */
-    private function objectsAreIdentical($o1, $o2, $ignoredProperities=null)
-    {
-        $diffArray = array();
-        
-        if (get_class($o1) !== get_class($o2)) {
-            return null;
-        }
-        
-        // Now do strict(er) comparison.
-        $objReflection1 = new \ReflectionObject($o1);
-        $objReflection2 = new \ReflectionObject($o2);
-        
-        $arrProperties1 = $objReflection1->getProperties();
-        
-        foreach ($arrProperties1 as $p1) {
-            if ($p1->isStatic()) {
-                continue;
-            }
-            $key = sprintf('%s::%s', $p1->getDeclaringClass()->getName(), $p1->getName());
-            
-            //echo $key . "\n";
-            $p1->setAccessible(true);
-            
-            $v1 = $p1->getValue($o1);
-            $p2 = $objReflection2->getProperty($p1->getName());
-            
-            $p2->setAccessible(true);
-            $v2 = $p2->getValue($o2);
-            
-            if (! is_object($v1)) {
-                
-                if ($v1 != $v2) {
-                    $diffArray[$key] = array(
-                        "className" => $p1->getDeclaringClass()->getName(),
-                        "fieldName" => $p1->getName(),
-                        "fieldType" => gettype($v1),
-                        "oldValue" => $v1,
-                        "newValue" => $v2
-                    );
-                }
-            }
-        }
-        
-        return $diffArray;
-    }
-    
 }

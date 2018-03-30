@@ -45,6 +45,11 @@ class Payroll
         $pitIncomeAmount = 0;
         $grossAmount = 0;
         
+        /**@var \HR\Payroll\Employee $e; */
+        $e = $this->employee;
+        echo $e->getStatus();
+        echo $e->getEmployeeName();
+        
         foreach ($incomeList as $income) {
             if (! $income instanceof AbstractIncomeDecorator) {
                throw new LogicException("Invalid argurment! IncomeComponent Decorator is expected.");
@@ -58,7 +63,7 @@ class Payroll
                 $pitIncomeAmount = $pitIncomeAmount + $income->getCalculatedAmount();
             }
             
-            echo "\n Income Name: ". $income->getIncomeName(). "\n Description: ". $income->getDescription() . "--\n Amount: " . $income->getAmount() ."--\n Calculated Amount:". $income->getCalculatedAmount()."--\n";
+            echo "\n<br> Income Name: ". $income->getIncomeName(). "\n<br> Description: ". $income->getDescription() . "--\n<br> Amount: " . $income->getAmount() ."--\n<br> Calculated Amount:". $income->getCalculatedAmount()."--\n<br>";
             
         }
         
@@ -77,7 +82,7 @@ class Payroll
         echo $decoratedIncome->getDescription() . "--Base " . $decoratedIncome->getAmount() ."-- PIT". $decoratedIncome->getCalculatedAmount();
         
         
-        echo sprintf('SSO: " "%s";\n PIT:"%s";\n Gross: "%s"', $ssoIncomeAmount, $pitIncomeAmount, $grossAmount);
+        echo sprintf('SSO: " "%s";\n<br> PIT:"%s";\n<br> Gross: "%s"', $ssoIncomeAmount, $pitIncomeAmount, $grossAmount);
     }
 }
  

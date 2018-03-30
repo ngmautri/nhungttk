@@ -1,5 +1,12 @@
 <?php   /**@var \Application\Entity\NmtProcurePr $entity ;*/ ?>
 
+<div>
+<h4><?php echo (!$entity == null)?$entity->getPrNumber():"";?>
+<span style="color: gray; font-size: 10pt"><?php echo (!$entity == null)? " // PR #" . $entity->getPrAutoNumber() :"";?></span></h4>
+</div>
+
+
+
 <!-- 
 <img class= "img-rounded" width="100" height="100" src="/procure/pr/get-pqcode-png?id=<?php  echo $entity->getId();?>&token=<?php  echo $entity->getToken();?>"/>
  -->
@@ -12,6 +19,7 @@
 		<li><a
 			href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
 <small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
+ <li ><a href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 
 	</ul>
 
@@ -55,6 +63,18 @@ Full Screen</a>
 					<a href="#pr_header" class="" data-toggle="collapse">PR HEADER: <?php echo (!$entity == null)? "(". $entity->getPrName() .")" :"";?></a>
 				</legend>
 				<div id="pr_header" class="collapse">
+				
+				<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" ><?php echo $this->translate('PR#'); ?>:</label>
+		<div class="col-sm-3">
+		<input disabled class="form-control input-sm" type="text" value="<?php if(!$entity == null): echo $entity->getPrAutoNumber(); endif;?>"/></div>
+		<div class="col-sm-4">
+		<?php echo (!$entity == null)? '<span style="color:gray;font-size: 9pt">Revision #'. $entity->getRevisionNo().';</span>':'';?>
+		<?php if (!$entity == null): if($entity->getLastChangeOn()!==null): echo '<span style="color:gray;font-size: 9pt"> Last Revision: '. $entity->getLastChangeOn()->format('d-m-Y h:i:s').'</span>'; endif; endif;?>
+		
+	  </div>
+			
+	</div>
 
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">PR Number:</label>
@@ -63,8 +83,6 @@ Full Screen</a>
 								name="prNumber"
 								value="<?php echo (!$entity == null)? $entity->getPrNumber():"";?>">
 						</div>
-
-						<label class="control-label col-sm-1" for="inputTag"></label>
 						<div class="col-sm-4">
 							<input
 								<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
@@ -74,8 +92,7 @@ Full Screen</a>
 								type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
 
 						</div>
-
-					</div>
+						</div>
 
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">PR Name:</label>

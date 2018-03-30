@@ -148,6 +148,13 @@ class NmtHrSalary
     private $paymentFrequency;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="salary_factory", type="string", length=255, nullable=true)
+     */
+    private $salaryFactory;
+
+    /**
      * @var \Application\Entity\NmtHrEmployee
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtHrEmployee")
@@ -639,6 +646,30 @@ class NmtHrSalary
     public function getPaymentFrequency()
     {
         return $this->paymentFrequency;
+    }
+
+    /**
+     * Set salaryFactory
+     *
+     * @param string $salaryFactory
+     *
+     * @return NmtHrSalary
+     */
+    public function setSalaryFactory($salaryFactory)
+    {
+        $this->salaryFactory = $salaryFactory;
+
+        return $this;
+    }
+
+    /**
+     * Get salaryFactory
+     *
+     * @return string
+     */
+    public function getSalaryFactory()
+    {
+        return $this->salaryFactory;
     }
 
     /**

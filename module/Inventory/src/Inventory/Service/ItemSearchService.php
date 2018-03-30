@@ -199,7 +199,7 @@ class ItemSearchService
                 
                 $index->addDocument($doc);
                 
-                if (optimized === true) {
+                if ($optimized === true) {
                     $index->optimize();
                 }
                 return $row->getItemName() . " has been updated /added successfully!";

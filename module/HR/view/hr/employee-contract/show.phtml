@@ -26,7 +26,8 @@ if (count ( $errors ) > 0) {
     <li><a
 			href="/hr/contract-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getID():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
 				class="glyphicon glyphicon-list"></span>&nbsp;Change Log</a></li>
-  <li ><a href="#posting"><?php echo $this->translate('Posting'); ?></a></li>
+  <li ><a href="/hr/salary/simulate?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
+		><?php echo $this->translate('Posting'); ?></a></li>
    
    </ul>
 

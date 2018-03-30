@@ -15,9 +15,14 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
+<div>
+<h4><a href="/procure/pr/show?token=<?php if(!$entity == null):echo $entity->getToken(); endif;?>&entity_id=<?php if(!$entity == null):echo $entity->getId(); endif;?>"><?php echo (!$entity == null)?$entity->getPrNumber():"";?></a>
+<span style="color: gray; font-size: 10pt"><?php echo (!$entity == null)? " // PR #" . $entity->getPrAutoNumber() :"";?></span></h4>
+</div>
+
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
-  <li ><a href="#general">New Purchase Request</a></li>
+  <li ><a href="#general">Edit Purchase Request</a></li>
    </ul>
 
 <div id="general" style="font-size: 9pt"> 
@@ -27,6 +32,19 @@ if (count ( $errors ) > 0) {
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 <input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
 <input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+<input type="hidden" name="n" value="<?php echo $n;?>" />
+
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" ><?php echo $this->translate('PR#'); ?>:</label>
+		<div class="col-sm-3">
+		<input disabled class="form-control input-sm" type="text" value="<?php if(!$entity == null): echo $entity->getPrAutoNumber(); endif;?>"/></div>
+		<div class="col-sm-4">
+		<?php echo (!$entity == null)? '<span style="color:gray;font-size: 9pt">Revision #'. $entity->getRevisionNo().';</span>':'';?>
+		<?php if (!$entity == null): if($entity->getLastChangeOn()!==null): echo '<span style="color:gray;font-size: 9pt"> Last Revision: '. $entity->getLastChangeOn()->format('d-m-Y h:i:s').'</span>'; endif; endif;?>
+		
+	  </div>
+			
+	</div>
 
 
 	<div class="form-group margin-bottom">
@@ -35,8 +53,6 @@ if (count ( $errors ) > 0) {
 			<input class="form-control input-sm" type="text"  placeholder=""
 				name="prNumber" value="<?php echo (!$entity == null)? $entity->getPrNumber():"";?>">
 		</div>
-		
-		<label class="control-label col-sm-1" for="inputTag"></label>
 		<div class="col-sm-4">
 <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 <input <?php if(!$entity == null): echo ($entity->getIsDraft()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;

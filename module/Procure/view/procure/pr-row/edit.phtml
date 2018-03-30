@@ -1,12 +1,9 @@
+<?php 
+/** @var \Application\Entity\NmtProcurePr $target ;
+    @var \Application\Entity\NmtProcurePrRow $entity ;
+*/
 
-<h4>
-	 <?php
-// target
-echo (! $target == null) ? 'PR: ' . $target->getPrNumber() : "";
-?>
-</h4>
 
-<?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
     
@@ -20,9 +17,16 @@ if (count($errors) > 0) {
 }
 ?>
 
+<div>
+<h4><a href="/procure/pr/show?token=<?php if(!$target == null):echo $target->getToken(); endif;?>&entity_id=<?php if(!$target == null):echo $target->getId(); endif;?>"><?php echo (!$target == null)?$target->getPrNumber():"";?></a>
+<span style="color: gray; font-size: 10pt"><?php echo (!$target == null)? " // PR #" . $target->getPrAutoNumber() :"";?></span></h4>
+</div>
+
 <div id="tabs" style="font-size: 10pt">
 	<ul>
 		<li><a href="#general">PR Row</a></li>
+		<li ><a href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+		
 	</ul>
 
 	<div id="general">
@@ -36,6 +40,21 @@ if (count($errors) > 0) {
 				type="hidden" name="token"
 				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" /> <input
 				type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
+				<input type="hidden" name="n" value="<?php echo $n;?>" />
+				
+
+
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" ><?php echo $this->translate('Row ID'); ?>:</label>
+		<div class="col-sm-3">
+		<input disabled class="form-control input-sm" type="text" value="<?php if(!$entity == null): echo $entity->getRowIdentifer(); endif;?>"/></div>
+		<div class="col-sm-4">
+		<?php echo (!$entity == null)? '<span style="color:gray;font-size: 9pt">Revision #: '. $entity->getRevisionNo().'</span>':'';?>
+		<?php if (!$entity == null): if($entity->getLastChangeOn()!==null): echo '<span style="color:gray;font-size: 9pt">; Last Revision: '. $entity->getLastChangeOn()->format('d-m-Y h:i:s').'</span>'; endif; endif;?>
+		
+	  </div>
+			
+	</div>
 
 			<div class="form-group margin-bottom margin-bottom">
 				<label class="control-label col-sm-2">Item: </label>

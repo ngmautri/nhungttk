@@ -209,6 +209,7 @@ return array(
             'Procure\Controller\PrSearch' => 'Procure\Controller\PrSearchControllerFactory',            
             'Procure\Controller\PrRest' => 'Procure\Controller\PrRestControllerFactory',
             'Procure\Controller\PrConsole' => 'Procure\Controller\PrConsoleControllerFactory',
+            'Procure\Controller\ChangeLog' => 'Procure\Controller\ChangeLogControllerFactory',
             
             
         

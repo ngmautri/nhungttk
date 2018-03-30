@@ -144,6 +144,8 @@ return array(
         'exception_template' => 'error/index',
         'template_map' => array(
             'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+            'User/login' => __DIR__ . '/../view/layout/login.phtml',
+            
             'User/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
             
             'layout/user/ajax' => __DIR__ . '/../view/layout/ajax.phtml',

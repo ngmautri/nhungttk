@@ -57,7 +57,7 @@ class ViewListener implements ListenerAggregateInterface
         ); */
         
         $body = $e->getResponse()->getContent();
-        $html= '<span style="font-size:8.5pt; color:gray;">Page loaded in: ';
+        $html= '<br><span style="font-size:8.5pt; color:gray;">Page loaded in: ';
         $html.= round(microtime(true) - TIMESTAMP_START, 5) * 1000 . 'ms';
         $html.= '</span>';
         

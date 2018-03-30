@@ -14,54 +14,25 @@
 <link href="/bootstrap3/css/bootstrap-theme.min.css" media="screen" rel="stylesheet" type="text/css">
 <link href="/bootstrap3/css/style.css" media="screen" rel="stylesheet" type="text/css">
 	           
-
-<link href="/css/lightgallery.css" rel="stylesheet"  type="text/css">
-<link href="/css/lg-transitions.min.css" rel="stylesheet"   type="text/css">
-<link href="/css/jstree/style.css" rel="stylesheet"  type="text/css">
 <link href="/css/bootstrap-editable.css" rel="stylesheet" type="text/css">
-<link href="/css/calendar.css" media="screen" rel="stylesheet"  type="text/css">
 <!-- <link href="/css/tables.css" rel="stylesheet"  type="text/css">  -->
 
 <link href="/jquery/jquery-ui.min.css" rel="stylesheet"  type="text/css">
 <link href="/jquery/jquery-ui.theme.min.css" rel="stylesheet"  type="text/css">
 <link href="/jquery/jquery-ui.structure.min.css" rel="stylesheet"  type="text/css">
 
-
-	<!--PQ Grid files-->
-    <link rel="stylesheet" href="/pqgird/css/pqgrid.min.css" />
-   <link rel="stylesheet" href="/pqselect/pqselect.min.css" />
-
-    
-    <!--PQ Grid Office theme-->
-    <link rel="stylesheet" href="/pqgird/themes/office/pqgrid.css" />
-    <link rel="stylesheet" href="/awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/awesome-4.7.0/css/font-awesome.min.css">
     
   
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/bootstrap3/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/jquery/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/exif.js"></script>								
-<script type="text/javascript" src="/js/lightgallery-all.min.js"></script>
-<script type="text/javascript" src="/js/lg-thumbnail.js"></script>
-<script type="text/javascript" src="/js/lg-fullscreen.min.js"></script>
-<script type="text/javascript" src="/js/Observer.js"></script>
-
-<script type="text/javascript" src="/js/jstree.min.js"></script>
-<script type="text/javascript" src="/js/jquery.tabledit.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap-editable.min.js"></script>		
-<script type="text/javascript" src="/js/mla.js"></script>
 <script type="text/javascript" src="/js/NMT.js"></script>
-<script type="text/javascript" src="/js/mla-hr.js"></script>
-<script type="text/javascript" src="/js/mla-proc.js"></script>
-<script type="text/javascript" src="/js/nmt-inventory.js"></script>
-
-<script src="/pqgird/js/pqgrid.min.js"></script>
-<script src="/pqselect/pqselect.min.js"></script>
 
   <script>
 	   startTime();
   </script>
-
 
 </head>
 <body>
@@ -273,10 +244,9 @@
  
 <div id="flash_messages" class="global-notice" style="display: none;">
 <?php
-if($this->flashMessenger()!==null){
+if($this->flashMessenger()!=null){
 	echo $this->flashMessenger()->render();
-}?>
-</div>
+}?></div>
 
 <script>
 		var flash_message = $( "#flash_messages" ).text();
@@ -284,12 +254,6 @@ if($this->flashMessenger()!==null){
 			$( "#flash_messages" ).show();
 			$( "#flash_messages" ).delay(2200).fadeOut(1000);
 		}
-
-		 $('[data-toggle="offcanvas"]').click(function () {
-			    $('.row-offcanvas').toggleClass('active')
-			  });
-	
-		// $("#main_container").height() =  $(window).height()-50;
 </script>
  
  <!-- Modal -->

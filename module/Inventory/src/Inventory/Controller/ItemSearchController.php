@@ -22,16 +22,18 @@ class ItemSearchController extends AbstractActionController {
 	protected $doctrineEM;
 	protected $itemSearchService;
 	
-	/*
-	 * Defaul Action
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
 	 */
 	public function indexAction() {
 		return new ViewModel ( array () );
 	}
 	
 	/**
-	 *
-	 * @return \Zend\View\Model\ViewModel
+	 * 
+	 * @return \Zend\Stdlib\ResponseInterface
 	 */
 	public function autocompleteAction() {
 		/* retrieve the search term that autocomplete sends */
@@ -47,6 +49,8 @@ class ItemSearchController extends AbstractActionController {
 				$n=1;
 				foreach ( $results['hits'] as $a ) {
 					$a_json_row ["id"] = $a->item_id;
+					$a_json_row ["token"] = $a->token;
+					$a_json_row ["checksum"] = $a->checksum;
 					$a_json_row ["value"] = $a->item_name;
 					$a_json_row ["item_sku"] = $a->item_sku ;
 					$a_json_row ["item_serial"] = $a->manufacturer_code ;					

@@ -113,7 +113,7 @@ class ItemController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $entity_id,
-            'checksum' => $checksum,
+            //'checksum' => $checksum,
             'token' => $token
         );
         

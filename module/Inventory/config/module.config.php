@@ -68,6 +68,14 @@ return array(
                 'icon' => 'glyphicon glyphicon-list'
             ),
             
+            array(
+                'label' => 'Log',
+                'route' => 'Inventory/default',
+                'controller' => 'activity-log',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
+            
         )
     ),
     
@@ -207,6 +215,7 @@ return array(
             'Inventory\Controller\GI' => 'Inventory\Controller\GIControllerFactory',
             'Inventory\Controller\Transfer' => 'Inventory\Controller\TransferControllerFactory',
             'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
+            'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
             
         )
     

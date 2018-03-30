@@ -91,6 +91,14 @@ return array(
                 'action' => 'all',
                 'icon' => 'glyphicon glyphicon-list'
             
+            ),
+            array(
+                'label' => 'Log',
+                'route' => 'procure/default',
+                'controller' => 'activity-log',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+                
             )
         )
     ),
@@ -210,6 +218,7 @@ return array(
             'Procure\Controller\PrRest' => 'Procure\Controller\PrRestControllerFactory',
             'Procure\Controller\PrConsole' => 'Procure\Controller\PrConsoleControllerFactory',
             'Procure\Controller\ChangeLog' => 'Procure\Controller\ChangeLogControllerFactory',
+            'Procure\Controller\ActivityLog' => 'Procure\Controller\ActivityLogControllerFactory',
             
             
         

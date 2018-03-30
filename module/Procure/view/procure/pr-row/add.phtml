@@ -41,7 +41,7 @@ if (count ( $errors ) > 0) {
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a href="#pr_header" class="" data-toggle="collapse">PR HEADER: <?php echo (!$target == null)? "(". $target->getPrAutoNumber() .")" :"";?></a>
+								<a style="font-size: 9pt; color: gray;" href="#pr_header" class="" data-toggle="collapse">PR HEADER: <?php echo (!$target == null)? "(". $target->getPrAutoNumber() .")" :"";?></a>
 	
 				</legend>
 				<div id="pr_header" class="collapse">
@@ -150,7 +150,7 @@ value="<?php if(!$target == null): if ($target->getSubmittedOn() !== null): echo
 				<fieldset>
 				<legend style="font-size: 9pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#transaction" class="" data-toggle="collapse">PR ROW:</a>
+					<a style="font-size: 9pt; color: gray;" href="#transaction" class="" data-toggle="collapse">PR ROW:</a>
 				</legend>
 				<div id="transaction" class="collapse in">
 				
@@ -171,7 +171,19 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
 
 					<input type="hidden" id="item_id" placeholder="" name="item_id"
 						value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
+				
+				<div id="item_url" style="display: none;"></div>		
+				
+				<div id="item_detail" style="display: none;">		
+				&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
+					onclick="showSelectedItem();">Detail
+				</a>
+				<br>&nbsp;
 				</div>
+				</div>
+				
+				
+				
 				<div class="col-sm-3">
 				<a style="color: #0080ff;" href="javascript:;"
 					onclick="showJqueryDialog('Select Item','1300',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
@@ -252,7 +264,7 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
 			<fieldset>
 				<legend style="font-size: 9pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#reference" class="" data-toggle="collapse">REFERENCE:</a>
+					<a style="font-size: 9pt; color: gray;" href="#reference" class="" data-toggle="collapse">REFERENCE:</a>
 				</legend>
 
 				<div id="reference" class="collapse in">
@@ -313,12 +325,16 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
      source: "/inventory/item-search/auto-complete",
      minLength: 2,
      select: function( event, ui ) {
-   	  $( "#item_id" ).val(ui.item.id);
-     
-   	 	$('#global-notice').show();
+   	  	$( "#item_id" ).val(ui.item.id);
+   	  	
+  		$('#item_url').text('/inventory/item/show1?entity_id='+ui.item.id+'&token='+ui.item.token+'&checksum='+ui.item.checksum);
+  	 	$('#global-notice').show();
    		$('#global-notice').html('"' + ui.item.value + '" selected');
    		$('#global-notice').fadeOut(5000);
    		//$("#jquery_dialog").dialog("close");
+
+   		$('#item_detail').show();
+   	  
      }
     
    })
@@ -336,5 +352,12 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
     
 
     $("#item_name").focus();
+
+
+    function showSelectedItem(){
+		var url= $('#item_url').text(); 
+    	showJqueryDialog('Item Detail','1200',$(window).height()-40, url,'j_loaded_data', true);
+	}
+    
 </script>
 

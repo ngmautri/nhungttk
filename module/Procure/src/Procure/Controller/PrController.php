@@ -318,7 +318,6 @@ class PrController extends AbstractActionController
                         
             $m = sprintf('PR #%s - %s created sucessfully.',$entity->getId(), $entity->getPrAutoNumber());
             $this->flashMessenger()->addMessage($m);
-            $this->doctrineEM->flush();
             
             //Trigger: procure.activity.log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(

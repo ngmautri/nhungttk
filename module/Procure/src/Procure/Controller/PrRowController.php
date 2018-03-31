@@ -272,6 +272,8 @@ class PrRowController extends AbstractActionController
                 }
                 
                 // NO ERROR
+                // +++++++++++++++++++++++++++++++
+                
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                 $entity->setChecksum(md5(uniqid("pr_row_" . microtime())));
                 

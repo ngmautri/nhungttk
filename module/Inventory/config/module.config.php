@@ -10,8 +10,10 @@ return array(
     'navigation' => array(
         'inventory_navi' => array(
             array(
-                'label' => 'Home',
-                'route' => 'application',
+                'label' => 'Dashboard',
+                'route' => 'Inventory/default',
+                'controller' => 'dashboard',
+                'action' => 'index',
                 'icon' => 'glyphicon glyphicon-home'
             ),
             array(
@@ -75,6 +77,8 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
+            
+           
             
         )
     ),
@@ -216,6 +220,7 @@ return array(
             'Inventory\Controller\Transfer' => 'Inventory\Controller\TransferControllerFactory',
             'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
             'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
+            'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory',
             
         )
     

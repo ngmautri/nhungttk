@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinVendorInvoiceRow
  *
- * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK7_idx", columns={"po_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_IDX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_IDX2", columns={"is_active"})})
+ * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK7_idx", columns={"po_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_IDX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_IDX2", columns={"is_active"})})
  * @ORM\Entity
  */
 class FinVendorInvoiceRow
@@ -227,10 +227,10 @@ class FinVendorInvoiceRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="lastchanged_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="lastchange_by", referencedColumnName="id")
      * })
      */
-    private $lastchangedBy;
+    private $lastchangeBy;
 
     /**
      * @var \Application\Entity\NmtProcurePoRow
@@ -913,27 +913,27 @@ class FinVendorInvoiceRow
     }
 
     /**
-     * Set lastchangedBy
+     * Set lastchangeBy
      *
-     * @param \Application\Entity\MlaUsers $lastchangedBy
+     * @param \Application\Entity\MlaUsers $lastchangeBy
      *
      * @return FinVendorInvoiceRow
      */
-    public function setLastchangedBy(\Application\Entity\MlaUsers $lastchangedBy = null)
+    public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
     {
-        $this->lastchangedBy = $lastchangedBy;
+        $this->lastchangeBy = $lastchangeBy;
 
         return $this;
     }
 
     /**
-     * Get lastchangedBy
+     * Get lastchangeBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getLastchangedBy()
+    public function getLastchangeBy()
     {
-        return $this->lastchangedBy;
+        return $this->lastchangeBy;
     }
 
     /**

@@ -16,10 +16,18 @@ if (count ( $errors ) > 0) {
 ?>
 
 
+<div>
+<h4><a href="/finance/v-invoice/add1?token=<?php if(!$target == null):echo $target->getToken(); endif;?>&entity_id=<?php if(!$target == null):echo $target->getId(); endif;?>"><?php echo (!$target == null)?  $this->translate("AP Invoice: "). $target->getInvoiceNo():"";?></a>
+<span style="color: gray; font-size: 10pt"><?php echo (!$target == null)? " // #" . $target->getSysNumber() :"";?></span></h4>
+</div>
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
  	 <li ><a href="#general">Edit Invoice Row</a></li>
+ 	 		<li><a
+			href="<?php echo $this->baseUrl ?>/finance/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+ 	 
  </ul>
    
  <div id="general" style="font-size: 9pt;">
@@ -28,6 +36,7 @@ if (count ( $errors ) > 0) {
 			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
+					
 			<fieldset>
 				<legend style="font-size: 9pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
@@ -169,7 +178,8 @@ if (count ( $errors ) > 0) {
 	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 	<input type="hidden" id="entity_id" name="entity_id" value="<?php if (!$entity == null): echo $entity->getId();endif;?>"/>
 	<input type="hidden" id="token" name="token" value="<?php if (!$entity == null): echo $entity->getToken();endif;?>"/>
-	
+	<input type="hidden" name="n" value="<?php echo $n;?>" />
+		
 
 		<fieldset>
 				<legend style="font-size: 9pt; color: gray;">

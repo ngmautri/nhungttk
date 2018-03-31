@@ -9,6 +9,10 @@
 		<li><a
 			href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
 <small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
+	<li><a
+			href="<?php echo $this->baseUrl ?>/finance/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+
 
 	</ul>
 

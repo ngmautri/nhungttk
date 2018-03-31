@@ -1,4 +1,8 @@
 <?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
+<div>
+<h4><a href="/finance/v-invoice/add1?token=<?php if(!$entity == null):echo $entity->getToken(); endif;?>&entity_id=<?php if(!$entity == null):echo $entity->getId(); endif;?>"><?php echo (!$entity == null)?  $this->translate("AP Invoice: "). $entity->getInvoiceNo():"";?></a>
+<span style="color: gray; font-size: 10pt"><?php echo (!$entity == null)? " // #" . $entity->getSysNumber() :"";?></span></h4>
+</div>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -16,7 +20,11 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general"><small><i class="glyphicon glyphicon-usd"></i></small>&nbsp;Vendor Invoice</a></li>
+		<li><a href="#general">A/P Invoice</a></li>
+			<li><a
+			href="<?php echo $this->baseUrl ?>/finance/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+		
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
@@ -27,6 +35,8 @@ if (count ( $errors ) > 0) {
 				value="<?php echo $redirectUrl ?>" />
 <input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
 <input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+<input type="hidden" name="n" value="<?php echo $n;?>" />
+
 			
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">

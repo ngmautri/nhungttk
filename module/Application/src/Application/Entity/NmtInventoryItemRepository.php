@@ -171,149 +171,15 @@ WHERE 1
     ";
     
     /**
-     * 
-     *  @param int $item_id
-     *  @param string $item_token
-     *  @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
      *
-     */
-    public function getItem($item_id=null, $item_token='')
-    {
-        // PICTURE
-        $join1_tmp="
-JOIN
-(
-SELECT
-	nmt_inventory_item.id AS item_id,
-  	COUNT(CASE WHEN nmt_inventory_item_picture.is_active =1 THEN (nmt_inventory_item_picture.id) ELSE NULL END) AS total_picture
-FROM nmt_inventory_item
-LEFT JOIN nmt_inventory_item_picture
-ON nmt_inventory_item_picture.item_id = nmt_inventory_item.id
-WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
-)
-AS nmt_inventory_item_picture
-ON nmt_inventory_item.id=nmt_inventory_item_picture.item_id ";
-        $join1 = sprintf($join1_tmp,$item_id,$item_token);
-        
-        //Attachment
-        $join2_tmp="
-JOIN
-(
-SELECT
-	nmt_inventory_item.id AS item_id,
-  	COUNT(CASE WHEN nmt_application_attachment.is_active =1 THEN (nmt_application_attachment.id) ELSE NULL END) AS total_attachment
-FROM nmt_inventory_item
-LEFT JOIN nmt_application_attachment
-ON nmt_application_attachment.item_id = nmt_inventory_item.id
-WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
-)
-AS nmt_application_attachment
-ON nmt_inventory_item.id=nmt_application_attachment.item_id ";
-        $join2 = sprintf($join2_tmp,$item_id,$item_token);
-        
-        // PR_ROW
-        $join3_tmp="
-JOIN
-(
-SELECT
-	nmt_inventory_item.id AS item_id,
-  	COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.id) ELSE NULL END) AS total_pr_row
-FROM nmt_inventory_item
-LEFT JOIN nmt_procure_pr_row
-ON nmt_procure_pr_row.item_id = nmt_inventory_item.id
-WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
-)
-AS nmt_procure_pr_row
-ON nmt_inventory_item.id=nmt_procure_pr_row.item_id ";
-        $join3 = sprintf($join3_tmp,$item_id,$item_token);
-       
-        // AP ROW
-        $join4_tmp="
-JOIN
-(
-SELECT
-	nmt_inventory_item.id AS item_id,
-  	COUNT(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.id) ELSE NULL END) AS total_ap_row
-FROM nmt_inventory_item
-LEFT JOIN fin_vendor_invoice_row
-ON fin_vendor_invoice_row.item_id = nmt_inventory_item.id
-WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
-)
-AS fin_vendor_invoice_row
-ON nmt_inventory_item.id=fin_vendor_invoice_row.item_id ";
-        $join4 = sprintf($join4_tmp,$item_id,$item_token);
-        
-        $sql = "
-SELECT
-	nmt_inventory_item.*,
-	nmt_application_attachment.total_attachment,
-	nmt_procure_pr_row.total_pr_row,
-	fin_vendor_invoice_row.total_ap_row,
-	nmt_inventory_item_picture.total_picture
-FROM nmt_inventory_item";
-        
-        $sql =  $sql.$join1.$join2.$join3.$join4;
-        //echo $sql;
-        try {
-            $rsm = new ResultSetMappingBuilder($this->_em);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
-            $rsm->addScalarResult("total_pr_row", "total_pr_row");
-            $rsm->addScalarResult("total_picture", "total_picture");
-            $rsm->addScalarResult("total_attachment", "total_attachment");
-            $rsm->addScalarResult("total_ap_row", "total_ap_row");
-            $query = $this->_em->createNativeQuery($sql, $rsm);
-            $result = $query->getSingleResult();
-            return $result;
-        } catch (NoResultException $e) {
-            return null;
-        }
-    }
-    
-    /**
-     *  GET most order Items
-     *  
-     *  @param number $limit
-     *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
-     *
-     */
-    public function getMostOrderItems($limit=50)
-    {
-  
-        $sql_tmp = "
-SELECT
-	nmt_inventory_item.*,
-  	COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.id) ELSE NULL END) AS total_pr_row
-FROM nmt_inventory_item
-LEFT JOIN nmt_procure_pr_row
-ON nmt_procure_pr_row.item_id = nmt_inventory_item.id
-group by nmt_inventory_item.id
-order by COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.id) ELSE NULL END) DESC LIMIT %s";
-        
-        $sql=sprintf($sql_tmp,$limit);
-        
-        try {
-            $rsm = new ResultSetMappingBuilder($this->_em);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
-            $rsm->addScalarResult("total_pr_row", "total_pr_row");
-            $query = $this->_em->createNativeQuery($sql, $rsm);
-            $result = $query->getResult();
-            return $result;
-        } catch (NoResultException $e) {
-             return null;
-        }
-    }
-    
-    /**
-     * 
-     *  @param string $item_type
-     *  @param int $is_active
-     *  @param int $is_fixed_asset
-     *  @param string $sort_by
-     *  @param string $sort
-     *  @param number $limit
-     *  @param number $offset
-     *  @return array
-     *
+     * @param unknown $item_type
+     * @param unknown $is_active
+     * @param unknown $is_fixed_asset
+     * @param unknown $sort_by
+     * @param unknown $sort
+     * @param number $limit
+     * @param number $offset
+     * @return array
      */
     public function getItems($item_type = null, $is_active = null, $is_fixed_asset = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
@@ -385,9 +251,9 @@ order by COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_ro
 
     /**
      *
-     * @param string $item_type
-     * @param boolean $is_active
-     * @param boolean $is_fixed_asset
+     * @param unknown $item_type
+     * @param unknown $is_active
+     * @param unknown $is_fixed_asset
      * @return mixed
      */
     public function getTotalItem($item_type = null, $is_active = null, $is_fixed_asset = null)
@@ -425,7 +291,7 @@ order by COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_ro
 
     /**
      *
-     * @param int $cat_id
+     * @param unknown $cat_id
      * @return array
      */
     public function getAlbum($cat_id)
@@ -442,11 +308,11 @@ order by COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_ro
 
     /**
      *
-     * @param string $item_type
-     * @param boolean $is_active
-     * @param boolean $is_fixed_asset
-     * @param string $sort_by
-     * @param string $sort
+     * @param unknown $item_type
+     * @param unknown $is_active
+     * @param unknown $is_fixed_asset
+     * @param unknown $sort_by
+     * @param unknown $sort
      * @param number $limit
      * @param number $offset
      * @return array

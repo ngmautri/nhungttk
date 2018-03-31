@@ -1,0 +1,115 @@
+<did id="activity_log">
+<?php
+
+if ($total_records <= 0) {
+	
+	echo 'No record found!';
+} else {
+	
+	if (! is_null ( $paginator )) {
+		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' records found!';
+	} else {
+		echo $total_records. ' records found!';
+	}
+	
+	?>
+
+<table style="font-size: 9.5pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b><?php echo $this->translate('Priority');?></b></td>
+			<td><b><?php echo $this->translate('Message');?></b></td>
+			<td><b><?php echo $this->translate('Trigger');?></b></td>
+			<td><b><?php echo $this->translate('Date');?></b></td>
+			<td><b><?php echo $this->translate('Changed By');?></b></td>
+	
+		</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $a ) :
+        /** @var \Application\Entity\NmtProcureLog $a ; */
+		$count ++;
+		?>
+	 <tr>
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	   	    <td><?php echo $a->getPriority();?></td>
+	  		<td><?php echo $this->escapeHtml($a->getMessage());?></td>
+	  		<td><?php echo $this->escapeHtml($a->getTriggeredby());?></td>
+			<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d-m-Y"):"";?> </td>
+	   		<td><?php if($a->getCreatedBy()!==null): echo $a->getCreatedBy()->getFirstname() . " ". $a->getCreatedBy()->getLastname(); endif;?></td>
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<?php
+	
+	// ===============================
+	if (! is_null ( $paginator )) :
+		
+		// change it only
+	$base = $this->baseUrl . '/finance/activity-log/list1';
+		$_connector_symbol = '?';
+		
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		
+		$first_js = "doPaginator('".$first . "','hr_change_log')";
+		$last_js = "doPaginator('". $last . "','hr_change_log')";
+		
+		
+		
+		$p1 = ($paginator->page) - 1;
+		$p2 = ($paginator->page) + 1;
+		
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		$next_js = "doPaginator('". $next . "','activity_log')";
+		$prev_js = "doPaginator('". $prev . "','activity_log')";
+		
+		echo '<ul class="pagination pagination-sm">';
+		
+		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+			//echo '<li><a href="' . $first . '"> |< </a></li>';
+			//echo '<li><a href="' . $prev . '"> < </a></li>';
+			
+		    echo '<li><a href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
+		    echo '<li><a href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
+		    
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			$url_js = "doPaginator('". $url . "','activity_log')";
+		    
+		    
+			if ($i == $paginator->page) {
+				echo '<li><a class="active" href="#">' . $i . '</a></li>';
+			} else {
+				//echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+			    echo '<li><a href="javascript:;" onclick="' . $url_js . '">'.$i.'</a></li>';
+				
+			}
+		}
+		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+			//echo '<li><a href="' . $next . '"> > </a></li>';
+		    echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
+		    echo '<li><a href="javascript:;" onclick="' . $last_js . '"> >| </a></li>';
+		    
+		}
+		echo '</ul>';
+endif;
+	
+}
+// ===============================
+?>
+
+

@@ -78,6 +78,34 @@ class NmtInventoryLog
     private $extraInfo;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="event_name", type="string", length=100, nullable=true)
+     */
+    private $eventName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="entity_id", type="integer", nullable=true)
+     */
+    private $entityId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="entity_class", type="string", length=100, nullable=true)
+     */
+    private $entityClass;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="entity_token", type="string", length=45, nullable=true)
+     */
+    private $entityToken;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -289,6 +317,102 @@ class NmtInventoryLog
     public function getExtraInfo()
     {
         return $this->extraInfo;
+    }
+
+    /**
+     * Set eventName
+     *
+     * @param string $eventName
+     *
+     * @return NmtInventoryLog
+     */
+    public function setEventName($eventName)
+    {
+        $this->eventName = $eventName;
+
+        return $this;
+    }
+
+    /**
+     * Get eventName
+     *
+     * @return string
+     */
+    public function getEventName()
+    {
+        return $this->eventName;
+    }
+
+    /**
+     * Set entityId
+     *
+     * @param integer $entityId
+     *
+     * @return NmtInventoryLog
+     */
+    public function setEntityId($entityId)
+    {
+        $this->entityId = $entityId;
+
+        return $this;
+    }
+
+    /**
+     * Get entityId
+     *
+     * @return integer
+     */
+    public function getEntityId()
+    {
+        return $this->entityId;
+    }
+
+    /**
+     * Set entityClass
+     *
+     * @param string $entityClass
+     *
+     * @return NmtInventoryLog
+     */
+    public function setEntityClass($entityClass)
+    {
+        $this->entityClass = $entityClass;
+
+        return $this;
+    }
+
+    /**
+     * Get entityClass
+     *
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return $this->entityClass;
+    }
+
+    /**
+     * Set entityToken
+     *
+     * @param string $entityToken
+     *
+     * @return NmtInventoryLog
+     */
+    public function setEntityToken($entityToken)
+    {
+        $this->entityToken = $entityToken;
+
+        return $this;
+    }
+
+    /**
+     * Get entityToken
+     *
+     * @return string
+     */
+    public function getEntityToken()
+    {
+        return $this->entityToken;
     }
 
     /**

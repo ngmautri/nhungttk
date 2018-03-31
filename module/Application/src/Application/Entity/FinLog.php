@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtProcureLog
+ * FinLog
  *
- * @ORM\Table(name="nmt_procure_log", indexes={@ORM\Index(name="nmt_procure_log_FK1_idx", columns={"created_by"})})
+ * @ORM\Table(name="fin_log", indexes={@ORM\Index(name="fin_log_FK1_idx", columns={"created_by"})})
  * @ORM\Entity
  */
-class NmtProcureLog
+class FinLog
 {
     /**
      * @var integer
@@ -132,7 +132,7 @@ class NmtProcureLog
      *
      * @param string $token
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setToken($token)
     {
@@ -156,7 +156,7 @@ class NmtProcureLog
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setCreatedOn($createdOn)
     {
@@ -180,7 +180,7 @@ class NmtProcureLog
      *
      * @param string $remarks
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setRemarks($remarks)
     {
@@ -204,7 +204,7 @@ class NmtProcureLog
      *
      * @param string $triggeredby
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setTriggeredby($triggeredby)
     {
@@ -228,7 +228,7 @@ class NmtProcureLog
      *
      * @param integer $priority
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setPriority($priority)
     {
@@ -252,7 +252,7 @@ class NmtProcureLog
      *
      * @param string $priorityName
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setPriorityName($priorityName)
     {
@@ -276,7 +276,7 @@ class NmtProcureLog
      *
      * @param string $message
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setMessage($message)
     {
@@ -300,7 +300,7 @@ class NmtProcureLog
      *
      * @param string $extraInfo
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setExtraInfo($extraInfo)
     {
@@ -324,7 +324,7 @@ class NmtProcureLog
      *
      * @param string $eventName
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setEventName($eventName)
     {
@@ -348,7 +348,7 @@ class NmtProcureLog
      *
      * @param integer $entityId
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setEntityId($entityId)
     {
@@ -372,7 +372,7 @@ class NmtProcureLog
      *
      * @param string $entityClass
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setEntityClass($entityClass)
     {
@@ -396,7 +396,7 @@ class NmtProcureLog
      *
      * @param string $entityToken
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setEntityToken($entityToken)
     {
@@ -420,7 +420,7 @@ class NmtProcureLog
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtProcureLog
+     * @return FinLog
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {

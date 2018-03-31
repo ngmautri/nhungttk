@@ -1,12 +1,4 @@
 <?php
-
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace Inventory\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -26,8 +18,10 @@ use Zend\Cache\StorageFactory;
 use Zend\Cache\Storage\StorageInterface;
 use Zend\Serializer\Serializer;
 
-/*
- * Control Panel Controller
+/**
+ *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class ItemController extends AbstractActionController
 {
@@ -49,7 +43,7 @@ class ItemController extends AbstractActionController
     {}
 
     /**
-     * 
+     *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function showAction()
@@ -64,26 +58,37 @@ class ItemController extends AbstractActionController
         }
         
         $entity_id = (int) $this->params()->fromQuery('entity_id');
-        $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $entity_id,
-            'checksum' => $checksum,
-            'token' => $token
-        );
         
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $item = $res->getItem($entity_id, $token);
+        
+        if ($item == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($item[0] instanceof NmtInventoryItem) {
+            $entity = $item[0];
+        }
+        
+        // $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
         $pictures = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy(array(
             "item" => $entity_id
         ));
         
-        if (! $entity == null) {
+        if ($entity instanceof NmtInventoryItem) {
             return new ViewModel(array(
                 'entity' => $entity,
                 'department' => null,
                 'category' => null,
                 'pictures' => $pictures,
-                'redirectUrl' => $redirectUrl
+                'redirectUrl' => $redirectUrl,
+                'total_picture' => $item['total_picture'],
+                'total_attachment' => $item['total_attachment'],
+                'total_pr_row' => $item['total_pr_row'],
+                'total_ap_row' => $item['total_ap_row']
             
             ));
         }
@@ -108,27 +113,46 @@ class ItemController extends AbstractActionController
         
         $this->layout("layout/user/ajax");
         
-        $entity_id = (int) $this->params()->fromQuery('entity_id');
-        $checksum = $this->params()->fromQuery('checksum');
-        $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $entity_id,
-            //'checksum' => $checksum,
-            'token' => $token
-        );
+        $request = $this->getRequest();
         
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
+        $redirectUrl = null;
+        if ($request->getHeader('Referer') == null) {
+            // return $this->redirect ()->toRoute ( 'access_denied' );
+        } else {
+            $redirectUrl = $request->getHeader('Referer')->getUri();
+        }
+        
+        $entity_id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $item = $res->getItem($entity_id, $token);
+        
+        if ($item == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($item[0] instanceof NmtInventoryItem) {
+            $entity = $item[0];
+        }
+        
         $pictures = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy(array(
             "item" => $entity_id
         ));
         
-        if (! $entity == null) {
+        if ($entity instanceof NmtInventoryItem) {
             return new ViewModel(array(
                 'entity' => $entity,
                 'department' => null,
                 'category' => null,
                 'pictures' => $pictures,
-                'redirectUrl' => $redirectUrl
+                'redirectUrl' => $redirectUrl,
+                'total_picture' => $item['total_picture'],
+                'total_attachment' => $item['total_attachment'],
+                'total_pr_row' => $item['total_pr_row'],
+                'total_ap_row' => $item['total_ap_row']
             
             ));
         }
@@ -137,7 +161,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
-     * 
+     *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
@@ -347,7 +371,7 @@ class ItemController extends AbstractActionController
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 $new_id = $entity->getId();
-            
+                
                 $new_item = $this->doctrineEM->find('Application\Entity\NmtInventoryItem', $new_id);
                 $entity->setChecksum(md5($new_id . uniqid(microtime())));
                 $this->doctrineEM->flush();
@@ -387,7 +411,7 @@ class ItemController extends AbstractActionController
                 // $this->itemSearchService->addDocument ( $new_item, true );
                 $this->itemSearchService->updateIndex(1, $new_item, false);
                 
-                $m = sprintf('Item #%s %s (%s) created sucessfully.', $new_item->getId(), $new_item->getSysNumber(),$itemName);
+                $m = sprintf('Item #%s %s (%s) created sucessfully.', $new_item->getId(), $new_item->getSysNumber(), $itemName);
                 
                 // Trigger. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
@@ -693,7 +717,7 @@ class ItemController extends AbstractActionController
                     // update index
                     $this->itemSearchService->updateIndex(0, $new_item, false);
                     
-                    $m = sprintf('"#%s %s (%s)" has been updated sucessfully. No. of change %s', $new_item->getId(),$new_item->getSysNumber(), $itemName, count($changeArray));
+                    $m = sprintf('"#%s %s (%s)" has been updated sucessfully. No. of change %s', $new_item->getId(), $new_item->getSysNumber(), $itemName, count($changeArray));
                     
                     // Trigger Change Log. AbtractController is EventManagerAware.
                     $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(

@@ -35,6 +35,14 @@ return array(
                 'controller' => 'v-invoice',
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
+            
+            array(
+                'label' => 'Log',
+                'route' => 'finance/default',
+                'controller' => 'activity-log',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-triangle-right'
             )
         )
     ),
@@ -86,8 +94,9 @@ return array(
             'Finance\Controller\VInvoice' => 'Finance\Controller\VInvoiceControllerFactory',
             'Finance\Controller\VInvoiceRow' => 'Finance\Controller\VInvoiceRowControllerFactory',
             'Finance\Controller\VInvoiceAttachment' => 'Finance\Controller\VInvoiceAttachmentControllerFactory',
-            
-         )
+            'Finance\Controller\ActivityLog' => 'Finance\Controller\ActivityLogControllerFactory',
+            'Finance\Controller\ChangeLog' => 'Finance\Controller\ChangeLogControllerFactory',
+          )
     
     ),
     'view_manager' => array(

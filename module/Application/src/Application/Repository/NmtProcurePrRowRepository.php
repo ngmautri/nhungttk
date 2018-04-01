@@ -348,10 +348,11 @@ WHERE 1
 ";
 
     /**
-     * 
-     * @param unknown $pr_id
-     * @param unknown $token
-     * @return unknown|NULL
+     *
+     * @param string $pr_id
+     * @param string $token
+     * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+     *
      */
     public function getPR($pr_id, $token)
     {
@@ -373,6 +374,41 @@ WHERE 1
             return null;
         }
     }
+
+    /**
+     * GET recent pr row
+     *
+     * @param number $limit
+     * @param number $offset
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     *
+     */
+    public function getLastCreatedPrRow($limit = 100, $offset = 0)
+    {
+        $sql_tmp = "
+SELECT
+	nmt_procure_pr_row.*
+FROM nmt_procure_pr_row
+ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
+        
+        if ($offset > 0) {
+            $sql_tmp = $sql_tmp . " OFFSET " . $offset;
+        }
+        
+        $sql = sprintf($sql_tmp, $limit);
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+   
 
     /**
      *
@@ -461,7 +497,7 @@ WHERE 1
         if ($balance == - 1) {
             $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
         }
-               
+        
         switch ($sort_by) {
             case "itemName":
                 $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
@@ -488,7 +524,6 @@ WHERE 1
                 break;
         }
         
-            
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }
@@ -525,9 +560,9 @@ WHERE 1
 
     /**
      *
-     * @param unknown $item_type
-     * @param unknown $is_active
-     * @param unknown $is_fixed_asset
+     * @param string $item_type
+     * @param boolean $is_active
+     * @param boolean $is_fixed_asset
      * @return mixed
      */
     public function getTotalPrRow1($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
@@ -643,9 +678,8 @@ WHERE 1
             $sql = $sql . " AND nmt_procure_pr_row.is_active = 0)";
         }
         
-        $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id .  " AND nmt_procure_pr.token ='". $pr_token. "'";
+        $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token ='" . $pr_token . "'";
         
-     
         $sql = $sql . ";";
         
         try {
@@ -695,7 +729,7 @@ WHERE 1
         
         if ($is_active == 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active=  1";
-          } elseif ($is_active == - 1) {
+        } elseif ($is_active == - 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active = 0";
         }
         
@@ -735,7 +769,7 @@ WHERE 1
 
     /**
      *
-     * @param unknown $project_id
+     * @param int $project_id
      * @return array
      */
     public function getProjectItem($project_id)
@@ -752,11 +786,11 @@ WHERE 1
 
     /**
      *
-     * @param unknown $invoice_id
-     * @param unknown $token
-     * @param unknown $filter_by
-     * @param unknown $sort_by
-     * @param unknown $sort
+     * @param int $invoice_id
+     * @param string $token
+     * @param string $filter_by
+     * @param string $sort_by
+     * @param string $sort
      * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
      */
     public function downloadAllPrRows($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
@@ -873,8 +907,7 @@ WHERE 1
             return null;
         }
     }
-    
-    
+
     /**
      *
      * @return array|NULL
@@ -888,16 +921,16 @@ WHERE 1
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-            //$rsm->addScalarResult("item_name", "item_name");
-            //$rsm->addScalarResult("item_sku", "item_sku");
-            //$rsm->addScalarResult("pr_number", "pr_number");
-            //$rsm->addScalarResult("submitted_on", "submitted_on");
-            //$rsm->addScalarResult("vendor_name", "vendor_name");
-            //$rsm->addScalarResult("vendor_id", "vendor_id");
-            //$rsm->addScalarResult("vendor_token", "vendor_token");
-            //$rsm->addScalarResult("vendor_checksum", "vendor_checksum");
-            //$rsm->addScalarResult("currency", "currency");
-            //$rsm->addScalarResult("vendor_item_unit", "vendor_item_unit");
+            // $rsm->addScalarResult("item_name", "item_name");
+            // $rsm->addScalarResult("item_sku", "item_sku");
+            // $rsm->addScalarResult("pr_number", "pr_number");
+            // $rsm->addScalarResult("submitted_on", "submitted_on");
+            // $rsm->addScalarResult("vendor_name", "vendor_name");
+            // $rsm->addScalarResult("vendor_id", "vendor_id");
+            // $rsm->addScalarResult("vendor_token", "vendor_token");
+            // $rsm->addScalarResult("vendor_checksum", "vendor_checksum");
+            // $rsm->addScalarResult("currency", "currency");
+            // $rsm->addScalarResult("vendor_item_unit", "vendor_item_unit");
             $rsm->addScalarResult("total_received", "total_received");
             $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
             $rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
@@ -909,7 +942,7 @@ WHERE 1
             return null;
         }
     }
-    
+
     /**
      *
      * @return array|NULL

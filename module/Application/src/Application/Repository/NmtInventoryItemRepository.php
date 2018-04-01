@@ -314,6 +314,67 @@ order by COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_ro
     }
     
     /**
+     *  Get Last AP Row
+     *
+     *  @param number $limit
+     *  @param number $offset
+     *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     *
+     */
+    public function getLastAPRows($limit=100,$offset=0)
+    {
+        
+        $sql_tmp = "
+SELECT
+	fin_vendor_invoice_row.*
+	FROM fin_vendor_invoice_row
+    where fin_vendor_invoice_row.current_state='finalInvoice'
+	ORDER BY fin_vendor_invoice_row.created_on DESC LIMIT  %s";
+        
+        if($offset>0){
+            $sql_tmp = $sql_tmp . " OFFSET " . $offset;
+        }
+        
+        $sql=sprintf($sql_tmp,$limit);
+        
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+  /**
+   * 
+   *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+   *
+   */
+    public function getRandomItem()
+    {
+        
+        $sql_tmp = "
+SELECT * FROM nmt_inventory_item_picture ORDER BY RAND() LIMIT 0,1 ";
+        //$sql=sprintf($sql_tmp,$limit);
+        $sql= $sql_tmp;
+        //echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItemPicture', 'nmt_inventory_item_picture');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getSingleResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    /**
      *  Get Last created Items
      *
      *  @param number $limit

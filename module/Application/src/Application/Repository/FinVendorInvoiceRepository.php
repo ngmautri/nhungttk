@@ -71,11 +71,11 @@ WHERE 1";
 
     /**
      *
-     * @param unknown $invoice_id
-     * @param unknown $token
-     * @param unknown $filter_by
-     * @param unknown $sort_by
-     * @param unknown $sort
+     * @param int $invoice_id
+     * @param string $token
+     * @param string $filter_by
+     * @param string $sort_by
+     * @param string $sort
      * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
      */
     public function getVendorInvoice($invoice_id, $token, $filter_by = null, $sort_by = null, $sort = null)
@@ -107,8 +107,8 @@ WHERE 1";
     
     /**
      * 
-     * @param unknown $invoice_id
-     * @param unknown $token
+     * @param int $invoice_id
+     * @param string $token
      */
     public function getAPInvoice($invoice_id, $token)
     {
@@ -136,11 +136,11 @@ WHERE 1";
     
     /**
      *
-     * @param unknown $invoice_id
-     * @param unknown $token
-     * @param unknown $filter_by
-     * @param unknown $sort_by
-     * @param unknown $sort
+     * @param int $invoice_id
+     * @param string $token
+     * @param string $filter_by
+     * @param string $sort_by
+     * @param string $sort
      * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
      */
     public function getVendorInvoiceTmp($invoice_id, $token, $filter_by = null, $sort_by = null, $sort = null)
@@ -171,10 +171,10 @@ WHERE 1";
     /**
      *
      * @param number $is_active
-     * @param unknown $current_state
-     * @param unknown $filter_by
-     * @param unknown $sort_by
-     * @param unknown $sort
+     * @param string $current_state
+     * @param string $filter_by
+     * @param string $sort_by
+     * @param string $sort
      * @param number $limit
      * @param number $offset
      * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
@@ -245,13 +245,13 @@ WHERE 1";
     
     /**
      * 
-     * @param unknown $vendor_id
-     * @param unknown $token
-     * @param number $is_active
-     * @param unknown $current_state
-     * @param unknown $filter_by
-     * @param unknown $sort_by
-     * @param unknown $sort
+     * @param int $vendor_id
+     * @param string $token
+     * @param int $is_active
+     * @param string $current_state
+     * @param string $filter_by
+     * @param string $sort_by
+     * @param string $sort
      * @param number $limit
      * @param number $offset
      * @return array|NULL

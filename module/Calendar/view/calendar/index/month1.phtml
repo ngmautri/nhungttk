@@ -1,9 +1,27 @@
-<?php echo $mm_name . ' '. $yy; ?>
+<div id="dashboard_calender">
+
+<?php echo '<strong>'. $mm_name . ' '. $yy . '</strong>&nbsp;&nbsp;' ; 
+
+$n_mm =  $mm+1;
+$p_mm =  $mm-1;
+
+$next = "'/calendar/index/month1?mm=".$n_mm . "&yy= ". $yy. "'";
+$pre = "'/calendar/index/month1?mm=".$p_mm . "&yy= ". $yy. "'";
+$td = "'/calendar/index/month1'";
+
+?>
 
 <?php if($isCurrentMonth == 0):?>
-<a class="btn btn-default btn-sm"
-				href="http://localhost:81/calendar/index/month">Today</a>
+<a class="" style="color: navy" href="javascript:;" onclick="doPaginator(<?php echo $td;?>,'calendar_containter');">Today</a>				
+|
 <?php endif;?>
+
+<a class="" style="color: navy" href="javascript:;" onclick="doPaginator(<?php echo $pre;?>,'calendar_containter');"><i
+				class="fa fa-caret-left" aria-hidden="true"></i> Previous&nbsp;</a>|				
+<a class="" style="color: navy" href="javascript:;" onclick="doPaginator(<?php echo $next;?>,'calendar_containter');">&nbsp;Next <i
+				class="fa fa-caret-right" aria-hidden="true"></i> </a>				
+				
+
 
 		</div>
 
@@ -14,9 +32,10 @@
 <div style="display: none" id="nmt_current_month"><?php echo $mm ?></div>
 <div style="display: none" id="nmt_current_year"><?php echo $yy ?></div>
 
+
 <script>
 add_lunar();
 </script>
 
-
+</div>
 

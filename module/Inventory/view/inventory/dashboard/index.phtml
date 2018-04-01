@@ -1,14 +1,15 @@
-<div id="tabs" style="font-size: 9.5pt">
-
-	<ul>
-		<li><a href="#general">DASHBOARD</a></li>
-	</ul>
-	<div id="general">
-
+<div style="padding-top: 2px; font-size: 9.5pt;">
 
 		<div class="row">
 			<div class="col-sm-4" style="">
-
+				
+				<div class="panel panel-info">
+					<div class="panel-heading"><strong>Random Item</strong></div>
+					<div class="panel-body" style="padding: 0px;">
+						<div id="random_item_containter" style="">
+						</div>
+					</div>
+				</div>
 				
 				<div class="panel panel-info">
 					<div class="panel-heading"><strong>Recent Created Items</strong></div>
@@ -18,22 +19,25 @@
 				</div>
 
 			
+			
 			</div>
 
 
 			<div class="col-sm-4">
-			<div class="panel panel-default">
-					<div class="panel-heading"><strong>Most Order Items</strong></div>
+			
+			<div class="panel panel-primary">
+					<div class="panel-heading"><strong>Recent Received Items</strong></div>
 					<div class="panel-body" style="padding: 0px;">
-						<div id="most_order_items_containter" style=""></div>
+						<div id="recent_received_items_containter" style=""></div>
 					</div>
 				</div>
+			
 				
 			
 				<div class="panel panel-warning">
-					<div class="panel-heading">Recent Ordered Items</div>
+					<div class="panel-heading"><strong>Recent Ordered Items</strong></div>
 					<div class="panel-body" style="padding: 0px;">
-						<div id="last_created_items_containter" style=""></div>
+						<div id="last_ordered_items_containter" style=""></div>
 					</div>
 				</div>
 
@@ -45,16 +49,27 @@
 						<div id="calendar_containter" style=""></div>
 					</div>
 				</div>
+				
+				<div class="panel panel-default">
+					<div class="panel-heading"><strong>Most Order Items</strong></div>
+					<div class="panel-body" style="padding: 0px;">
+						<div id="most_order_items_containter" style=""></div>
+					</div>
+				</div>
+				
 			</div>
 		</div>
 
 
-	</div>
-</div>
 
 <script>
 	doPaginator('/inventory/dashboard/most-order-items','most_order_items_containter');
 	doPaginator('/inventory/dashboard/last-created-items','last_created_items_containter');
 	doPaginator('/calendar/index/month1','calendar_containter');
+	doPaginator('/inventory/dashboard/last-ordered-items','last_ordered_items_containter');
+	doPaginator('/inventory/dashboard/last-received-items','recent_received_items_containter');
+	doPaginator('/inventory/dashboard/random-item','random_item_containter');
 	
 </script>
+
+</div>

@@ -1,0 +1,113 @@
+<div id="last-ordered-items" style="min-height: 280;">
+	
+<?php
+
+
+if (count($list) == 0) :
+    ?>
+
+<h5>no thing found!</h5>
+
+<?php else: ?>
+ <div style="color: gray; font-size: 9pt;" id="total_ordered"></div>
+	<div style="color: gray; font-size: 9pt;" id="total_received"></div>
+	<div style="color: gray; font-size: 9pt;" id="total_balance"></div>
+
+	<table  id="mytable" style="font-size: 9pt; margin-bottom: 0px; padding:0px;"
+		class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<td><b>#</b></td>
+				<td><b><?php echo $this->translate("Item name")?></b></td>
+				<td><b><?php echo $this->translate("Pr Name")?></b></td>
+			</tr>
+		</thead>
+		<tbody>
+ 
+	 <?php
+    
+    $count = 0;
+    foreach ($list as $r) :
+        $count ++;
+        /**@var \Application\Entity\NmtProcurePrRow $a ;*/
+        $a = $r;
+        ?>
+	 <tr style="font-size: 9pt;">
+				<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+				<td><a
+					href="/inventory/item/show?entity_id=<?php echo $a->getItem()->getId();?>&token=<?php echo $a->getItem()->getToken();?>"
+					target="_blank"><?php echo $this->escapeHtml($a->getItem()->getItemName());?></a></td>
+				</td>
+					<td><?php echo $a->getPr()->getPrName();?></td>
+				</td>
+	
+			</tr>
+<?php endforeach; ?>
+
+ </tbody>
+	</table>
+
+
+<?php endif; ?>
+
+
+
+
+<?php
+
+// ===============================
+
+if (! is_null($paginator)) :
+    
+    // change it only
+    $target_id = "'last-ordered-items'";
+    $base = $this->baseUrl . '/inventory/dashboard/last-ordered-items';
+    $_connector_symbol = '?';
+    
+    $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+    $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+    
+    $first_js = "doPaginator('" . $first . "',$target_id)";
+    $last_js = "doPaginator('" . $last . "',$target_id)";
+    
+    $p1 = ($paginator->page) - 1;
+    $p2 = ($paginator->page) + 1;
+    
+    $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+    $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+    $next_js = "doPaginator('" . $next . "',$target_id)";
+    $prev_js = "doPaginator('" . $prev . "',$target_id)";
+    
+    echo '<ul  margin-top: 0px; padding:0px" class="pagination pagination-sm">';
+    
+    if ($paginator->page != 1 and $paginator->totalPages > 10) {
+        // echo '<li><a href="' . $first . '"> |< </a></li>';
+        // echo '<li><a href="' . $prev . '"> < </a></li>';
+        
+        echo '<li><a style="font-size: 8pt; href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
+        echo '<li><a style="font-size: 8pt; href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
+    }
+    
+    for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+        
+        $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+        $url_js = "doPaginator('" . $url . "',$target_id)";
+        
+        if ($i == $paginator->page) {
+            echo '<li><a style="font-size: 8pt;" class="active" href="#">' . $i . '</a></li>';
+        } else {
+            // echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            echo '<li><a style="font-size: 8pt;" href="javascript:;" onclick="' . $url_js . '">' . $i . '</a></li>';
+        }
+    }
+    if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+        // echo '<li><a href="' . $next . '"> > </a></li>';
+        echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
+        echo '<li><a href="javascript:;" onclick="' . $last_js . '"> >| </a></li>';
+    }
+    echo '</ul>';
+endif;
+
+    // ===============================
+?>
+</div>

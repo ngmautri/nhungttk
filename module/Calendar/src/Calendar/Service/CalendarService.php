@@ -151,7 +151,7 @@ class CalendarService
 	 *	@public
 	 *	return string
 	 */
-	public function createMonthView($mm=null, $yy=null, $base_url)
+	public function createMonthView($mm=null, $yy=null, $base_url,$shortDayName=0)
 	{
 	    $calendar_url =  $base_url . '/calendar/index/month/';
 	    
@@ -189,7 +189,12 @@ class CalendarService
 	    
 	    //echo $firstday;
 	    
+	    if($shortDayName==0){
 	    $dayname = array("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday");
+	    }else{
+	        $dayname = array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
+	        
+	    }
 	    
 	    $showcalendar='<div id="calendar">';
 	    $showcalendar.='<ul class="weekdays">';
@@ -231,7 +236,7 @@ class CalendarService
 	            if ($i==$date && $mm==$month && $yy==$year)
 	            {
 	                $showcalendar .= '</ul><ul class="days"><li class="day today"><div class="date" id="' . $id .'">';
-	                $showcalendar .= '<div><div class="solar_div">' . $i . ' (Today)</div>';
+	                $showcalendar .= '<div><div class="solar_div">' . $i . ' (td)</div>';
 	                $showcalendar .= '<div class="lunar_div" id="' . $id_lunar . '"></div></div></div></li>';
 	                
 	            }else{
@@ -244,7 +249,7 @@ class CalendarService
 	        else{
 	            if ($i==$date && $mm==$month && $yy==$year)
 	            {
-	                $showcalendar .= '<li class="day today"><div class="date" id="' . $id . '"><div><div class="solar_div">' . $i . ' (Today)</div>';
+	                $showcalendar .= '<li class="day today"><div class="date" id="' . $id . '"><div><div class="solar_div">' . $i . ' (td)</div>';
 	                $showcalendar .= '<div class="lunar_div" id="' . $id_lunar . '"></div></div></div></li>';
 	            }else{
 	                $showcalendar .= '<li class="day"><div class="date" id="' . $id . '"><div><div  class="solar_div">' . $i . '</div>';

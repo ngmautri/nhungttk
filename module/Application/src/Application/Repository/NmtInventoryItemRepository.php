@@ -269,14 +269,17 @@ FROM nmt_inventory_item";
         }
     }
     
+    
+    
     /**
-     *  GET most order Items
+     *  Get Most Ordered Items
      *  
      *  @param number $limit
+     *  @param number $offset
      *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
      *
      */
-    public function getMostOrderItems($limit=50)
+    public function getMostOrderItems($limit=50,$offset=0)
     {
   
         $sql_tmp = "
@@ -289,7 +292,14 @@ ON nmt_procure_pr_row.item_id = nmt_inventory_item.id
 group by nmt_inventory_item.id
 order by COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.id) ELSE NULL END) DESC LIMIT %s";
         
+        if($offset>0){
+            $sql_tmp = $sql_tmp . " OFFSET " . $offset;
+        }
+        
+        
         $sql=sprintf($sql_tmp,$limit);
+        
+        //echo $sql;
         
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
@@ -300,6 +310,42 @@ order by COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_ro
             return $result;
         } catch (NoResultException $e) {
              return null;
+        }
+    }
+    
+    /**
+     *  Get Last created Items
+     *
+     *  @param number $limit
+     *  @param number $offset
+     *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     *
+     */
+    public function getLastCreatedItems($limit=100,$offset=0)
+    {
+        
+        $sql_tmp = "
+select
+    nmt_inventory_item.*
+    From nmt_inventory_item
+order by nmt_inventory_item.created_on desc LIMIT %s";
+        
+        if($offset>0){
+            $sql_tmp = $sql_tmp . " OFFSET " . $offset;
+        }
+        
+        $sql=sprintf($sql_tmp,$limit);
+        
+        //echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+             $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
         }
     }
     

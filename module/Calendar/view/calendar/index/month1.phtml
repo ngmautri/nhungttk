@@ -1,0 +1,22 @@
+<?php echo $mm_name . ' '. $yy; ?>
+
+<?php if($isCurrentMonth == 0):?>
+<a class="btn btn-default btn-sm"
+				href="http://localhost:81/calendar/index/month">Today</a>
+<?php endif;?>
+
+		</div>
+
+		<div id="calendar-wrap">
+			<?php echo $calendar ?>
+		</div>
+
+<div style="display: none" id="nmt_current_month"><?php echo $mm ?></div>
+<div style="display: none" id="nmt_current_year"><?php echo $yy ?></div>
+
+<script>
+add_lunar();
+</script>
+
+
+

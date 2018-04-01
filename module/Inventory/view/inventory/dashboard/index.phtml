@@ -1,48 +1,60 @@
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">DASHBOARD</a></li>
+	</ul>
+	<div id="general">
 
 
-<?php 
-$rows = $mostOrderItems;
+		<div class="row">
+			<div class="col-sm-4" style="">
 
-if (count($rows)==0): ?>
+				
+				<div class="panel panel-info">
+					<div class="panel-heading"><strong>Recent Created Items</strong></div>
+					<div class="panel-body" style="padding: 0px;">
+						<div id="last_created_items_containter" style=""></div>
+					</div>
+				</div>
 
-<h5>no thing found!</h5>
-
-<?php else: ?>
-<div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
-<div style="color: gray;font-size: 9pt;" id="total_received"></div>
-<div style="color: gray;font-size: 9pt;" id="total_balance"></div>
-
-<table style="font-size: 9pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>Pr No.</b></td>
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
-	<tbody>
- 
-	 <?php
-	
-	$count = 0;
-	foreach ( $rows as $r ) :
-		$count ++;
-		/**@var \Application\Entity\NmtInventoryItem $a ;*/		
-		$a = $r[0];
-		?>
-	 <tr>
-	 <td><?php echo $count;?></td>
-	 <td><a href="/inventory/item/show?entity_id=<?php echo $a->getId();?>&token=<?php echo $a->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getItemName());?></a></td>
 			
-	 		<td><?php echo $this->escapeHtml($a->getItemName());?></td>
-			<td><?php echo $r['total_pr_row'];?></td>
-			</td>
-	</tr>
-<?php endforeach; ?>
-
- </tbody>
-</table>
+			</div>
 
 
-<?php endif; ?>
+			<div class="col-sm-4">
+			<div class="panel panel-default">
+					<div class="panel-heading"><strong>Most Order Items</strong></div>
+					<div class="panel-body" style="padding: 0px;">
+						<div id="most_order_items_containter" style=""></div>
+					</div>
+				</div>
+				
+			
+				<div class="panel panel-warning">
+					<div class="panel-heading">Recent Ordered Items</div>
+					<div class="panel-body" style="padding: 0px;">
+						<div id="last_created_items_containter" style=""></div>
+					</div>
+				</div>
+
+			</div>
+			<div class="col-sm-4">
+				<div class="panel panel-success">
+					<div class="panel-heading"><strong>Calendar</strong></div>
+					<div class="panel-body" style="padding: 0px;">
+						<div id="calendar_containter" style=""></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+<script>
+	doPaginator('/inventory/dashboard/most-order-items','most_order_items_containter');
+	doPaginator('/inventory/dashboard/last-created-items','last_created_items_containter');
+	doPaginator('/calendar/index/month1','calendar_containter');
 	
+</script>

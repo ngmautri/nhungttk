@@ -106,6 +106,76 @@ class IndexController extends AbstractActionController {
 	 * {@inheritDoc}
 	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
 	 */
+	public function month1Action()
+	{
+	    
+	    $request = $this->getRequest();
+	    
+	    // accepted only ajax request
+	    if (! $request->isXmlHttpRequest()) {
+	        return $this->redirect()->toRoute('access_denied');
+	    }
+	    
+	    $this->layout("layout/user/ajax");
+	    
+	    if ($request->getHeader('Referer') == null) {
+	        return $this->redirect()->toRoute('access_denied');
+	    }
+	    
+	    
+	    $mm = $this->params()->fromQuery('mm');
+	    $yy = $this->params()->fromQuery('yy');
+	    
+	    $monthName = array("January","February","March","April","May",
+	        "Juni","Juli","August","September","October","November","December");
+	    
+	    
+	    $current_month = date("n")-1;
+	    $current_year = date("Y");
+	    
+	    
+	    if ($yy == 0) :
+	    $yy = $current_year;
+	    endif;
+	    
+	    if ($mm == 0) :
+	    $mm = $current_month;
+	    endif;
+	    
+	    if ($mm<0){
+	        $mm = 11;
+	        $yy -= 1;
+	    }
+	    
+	    if ($mm>11){
+	        $mm = 0;
+	        $yy += 1;
+	    }
+	    
+	    
+	    
+	    $isCurrentMonth=0;
+	    
+	    if (($mm == $current_month) AND ($yy == $current_year)){
+	        $isCurrentMonth = 1;
+	    }
+	    
+	    $calendar= $this->calendarService->createMonthView($mm,$yy,'http://localhost:81/calendar',1);
+	    return new ViewModel ( array (
+	        'calendar' => $calendar,
+	        'mm'=>$mm,
+	        'mm_name'=>$monthName[$mm],
+	        'yy'=>$yy,
+	        'isCurrentMonth'=>$isCurrentMonth,
+	    ) );
+	    
+	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+	 */
 	public function weekAction()
 	{
 	    

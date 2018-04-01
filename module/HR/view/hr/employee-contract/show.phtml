@@ -31,9 +31,22 @@ if (count ( $errors ) > 0) {
    
    </ul>
 
-<div id="general" style="font-size: 9pt"> 
+<div id="general" style="font-size: 9pt">
 
-<form id="create_form" class="form-horizontal" action="/hr/employee-contract/add" method="post" enctype="multipart/form-data">
+		<div style="position: relative; float: right;">
+			<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($entity->getToken());?>&entity_id=<?php echo $this->escapeHtml($entity->getID());?>">
+				<i class="fa fa-pencil-square-o" aria-hidden="true"></i> <?php echo $this->translate("Edit")?></a>
+
+			<a tabindex="11" class="btn btn-default btn-sm"
+				href="<?php echo $redirectUrl; ?>"><small><i class=""></i></small>&nbsp;<?php echo $this->translate('Cancel'); ?></a>
+			<a style="color: red;" class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/hr/employee-contract/terminate?token=<?php echo $this->escapeHtml($entity->getToken());?>&entity_id=<?php echo $this->escapeHtml($entity->getID());?>"><i
+				class="fa fa-times" aria-hidden="true"></i>&nbsp;<?php echo $this->translate("Terminate")?></a>
+
+	</div>
+<hr>
+		<form id="create_form" class="form-horizontal" action="/hr/employee-contract/add" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 <input type="hidden" name="target_id" value="<?php echo (!$target == null)? $target->getId():"";?>" />
 <input type="hidden" name="target_token" value="<?php echo (!$target == null)? $target->getToken():"";?>" />
@@ -197,18 +210,7 @@ if (count ( $errors ) > 0) {
 	
 	</div>		
 			
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-	 			<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/employee-contract/amend?token=<?php echo $this->escapeHtml($entity->getToken());?>&entity_id=<?php echo $this->escapeHtml($entity->getID());?>">
-	 			<i class="fa fa-pencil-square-o" aria-hidden="true"></i> <?php echo $this->translate("Edit")?></a>
 
- 					<a tabindex="11" class="btn btn-default btn-sm"
-								href="<?php echo $redirectUrl; ?>"><small><i
-									class=""></i></small>&nbsp;<?php echo $this->translate('Cancel'); ?></a>
-  		</div>
-	</div> 
-		
 	
 </form>
 </div>

@@ -1,19 +1,28 @@
-<div style="padding-top: 2px; font-size: 9.5pt;">
+<div style="padding: 2px; font-size: 9.5pt;">
 
 		<div class="row">
 			<div class="col-sm-4" style="">
+			
+			<div class="panel panel-danger">
+					<div  style="height: 28px;padding:5px" class="panel-heading"><strong>Items to order</strong></div>
+					<div class="panel-body" style="padding: 2px;">
+						<div id="items_to_ordercontainter" style="">
+							<p>Their are nn items need to order now!</p>
+						</div>
+					</div>
+				</div>
 				
-				<div class="panel panel-info">
-					<div class="panel-heading"><strong>Random Item</strong></div>
-					<div class="panel-body" style="padding: 0px;">
-						<div id="random_item_containter" style="">
+				<div class="panel panel-default">
+					<div style="height: 28px;padding:5px" class="panel-heading"><strong>Random Item</strong></div>
+					<div class="panel-body" style="padding: 2px;">
+						<div id="random_item_containter" style="height: 230px;">
 						</div>
 					</div>
 				</div>
 				
 				<div class="panel panel-info">
-					<div class="panel-heading"><strong>Recent Created Items</strong></div>
-					<div class="panel-body" style="padding: 0px;">
+					<div style="height: 28px;padding:5px" class="panel-heading"><strong>Recent Created Items</strong></div>
+					<div class="panel-body" style="padding: 2px;">
 						<div id="last_created_items_containter" style=""></div>
 					</div>
 				</div>
@@ -25,9 +34,10 @@
 
 			<div class="col-sm-4">
 			
-			<div class="panel panel-primary">
-					<div class="panel-heading"><strong>Recent Received Items</strong></div>
-					<div class="panel-body" style="padding: 0px;">
+			<div class="panel panel-default">
+					<div style="height: 28px;padding:5px" class="panel-heading"><i class="fa fa-truck" aria-hidden="true"></i> 
+					<strong><?php echo $this->translate('Recently received items');?></strong></div>
+					<div class="panel-body" style="padding: 2px;">
 						<div id="recent_received_items_containter" style=""></div>
 					</div>
 				</div>
@@ -35,24 +45,26 @@
 				
 			
 				<div class="panel panel-warning">
-					<div class="panel-heading"><strong>Recent Ordered Items</strong></div>
-					<div class="panel-body" style="padding: 0px;">
+					<div style="height: 28px;padding:5px" class="panel-heading"><i class="fa fa-shopping-cart" aria-hidden="true"></i>
+					 <strong>Recent Ordered Items</strong></div>
+					<div class="panel-body" style="padding:2px;">
 						<div id="last_ordered_items_containter" style=""></div>
 					</div>
 				</div>
 
 			</div>
 			<div class="col-sm-4">
-				<div class="panel panel-success">
-					<div class="panel-heading"><strong>Calendar</strong></div>
-					<div class="panel-body" style="padding: 0px;">
+				<div class="panel panel-primary">
+					<div style="height: 28px;padding:5px" class="panel-heading"><i class="fa fa-calendar" aria-hidden="true"></i> <strong>Calendar</strong></div>
+					<div class="panel-body" style="padding:0px;">
 						<div id="calendar_containter" style=""></div>
 					</div>
 				</div>
 				
 				<div class="panel panel-default">
-					<div class="panel-heading"><strong>Most Order Items</strong></div>
-					<div class="panel-body" style="padding: 0px;">
+					<div style="height: 28px;padding:5px" class="panel-heading"><i class="fa fa-shopping-cart" aria-hidden="true"></i>
+					 <strong>Most Order Items</strong></div>
+					<div class="panel-body" style="padding: 1px;">
 						<div id="most_order_items_containter" style=""></div>
 					</div>
 				</div>
@@ -63,13 +75,14 @@
 
 
 <script>
+	doPaginator('/inventory/dashboard/random-item','random_item_containter');
+
 	doPaginator('/inventory/dashboard/most-order-items','most_order_items_containter');
 	doPaginator('/inventory/dashboard/last-created-items','last_created_items_containter');
 	doPaginator('/calendar/index/month1','calendar_containter');
 	doPaginator('/inventory/dashboard/last-ordered-items','last_ordered_items_containter');
 	doPaginator('/inventory/dashboard/last-received-items','recent_received_items_containter');
-	doPaginator('/inventory/dashboard/random-item','random_item_containter');
-	
+		
 </script>
 
 </div>

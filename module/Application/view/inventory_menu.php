@@ -1,5 +1,8 @@
 
 <ul class="dropdown-menu">
+<li><a href="/inventory/dashboard/index"><small><i
+				class="glyphicon glyphicon-home"></i></small>&nbsp;<?php echo $this->translate('Dashboard'); ?></a></li>
+<li class="divider"></li>
 	<li><a href="/inventory/item/add"><small><i
 				class="glyphicon glyphicon-plus"></i></small>&nbsp;<?php echo $this->translate('Create new item'); ?></a></li>
 	<li><a href="/inventory/item/list"><small><i

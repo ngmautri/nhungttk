@@ -162,9 +162,12 @@ class PrSearchService
     }
 
     /**
+     * 
+     *  @param number $is_new
+     *  @param object $row
+     *  @param boolean $optimized
+     *  @return string|array
      *
-     * @param unknown $item
-     * @return string|unknown
      */
     public function updateIndex($is_new = 0, $row, $optimized)
     {

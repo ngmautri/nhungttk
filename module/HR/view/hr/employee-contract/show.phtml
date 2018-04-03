@@ -4,7 +4,17 @@
        */ 
 ?>
 
-<h4><?php echo (!$target == null)? "Employee: " . $target->getEmployeeName() ." - ". $target->getEmployeeCode():"";?></h4>
+<h4><?php if (!$target == null):
+
+echo sprintf('<a href="/hr/employee/show?token=%s&entity_id=%s&checksum=%s" >%s</a>',
+    $target->getToken(),
+    $target->getId(),
+    $target->getChecksum(),
+    strtoupper($target->getEmployeeName()) . ' #' .  $target->getEmployeeCode()
+    );
+endif;
+
+    ?></h4>
 
 <?php
 if (count ( $errors ) > 0) {

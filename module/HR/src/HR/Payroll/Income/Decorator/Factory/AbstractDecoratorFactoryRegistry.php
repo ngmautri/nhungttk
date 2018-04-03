@@ -11,7 +11,7 @@ class AbstractDecoratorFactoryRegistry
 
     /**
      * 
-     * @param unknown $factory_class
+     * @param string $factory_class
      * @return \HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactory|NULL
      */
     public static function getDecoratorFactory($factory_class)

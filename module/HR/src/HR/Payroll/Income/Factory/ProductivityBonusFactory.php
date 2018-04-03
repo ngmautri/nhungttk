@@ -23,7 +23,7 @@ Class ProductivityBonusFactory extends AbstractIncomeFactory
      */
     protected function createIncome($amount=0, $currency=null)
     {        
-        $incomeComponent = new GenericIncomeComponent("Productivity Bonus", $amount, 0, $currency, TRUE, False, TRUE);
+        $incomeComponent = new GenericIncomeComponent("Productivity Bonus", $amount, 0, $currency,FALSE, TRUE, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f = TransportationAllowanceDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);

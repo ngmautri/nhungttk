@@ -20,6 +20,7 @@
 			<td><b><?php echo $this->translate('default income name'); ?></b></td>
 	
 			<td><b><?php echo $this->translate('default description'); ?></b></td>
+			<td><b><?php echo $this->translate('Default'); ?></b></td>		
 			<td><b><?php echo $this->translate('SSO Payable'); ?></b></td>
 			<td><b><?php echo $this->translate('PIT Payable'); ?></b></td>
 			<td><b><?php echo $this->translate('payment frequency'); ?></b></td>
@@ -48,6 +49,7 @@
 	  		<td><?php echo $incomeComponent->getIncomeDecoratorFactory();?></td>
 	  
 	  		<td><?php echo $incomeComponent->getDescription();?></td>
+			<td><?php echo ($incomeComponent->isDefault()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>		
 			<td><?php echo ($incomeComponent->isSSOPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
 			<td><?php echo ($incomeComponent->isPITPayable()==1)?'<small><i class="glyphicon glyphicon-ok"></i></small>':'';?></td>
 	   		<td><?php echo $incomeComponent->getPaymentFrequency();?></td>

@@ -2,6 +2,7 @@
 namespace HR\Payroll;
 
 use HR\Payroll\Income\IncomeInterface;
+use HR\Payroll\Exception\InvalidArgumentException;
 
 /**
  * Employee
@@ -14,9 +15,32 @@ Class Employee
     private $employeeCode;
     private $employeeName;
     private $basicSalary;
-    
+    private $email;
     private $status;
     private $startWorkingDate;
+    
+    
+    /**
+     * 
+     *  @param string $employeeCode
+     *  @param string $employeeName
+     *  @throws InvalidArgumentException
+     */
+    public function __construct($employeeCode, $employeeName){
+        
+        if ($employeeCode == null) {
+            throw new InvalidArgumentException(sprintf('Invalid Argurment. "%s" is expected!', 'Employee Code'));
+        }
+        
+        if ($employeeName == null) {
+            throw new InvalidArgumentException(sprintf('Invalid Argurment. "%s" is expected!', 'Employee Name'));
+        }
+        
+        $this->employeeCode = $employeeCode;
+        $this->employeeName = $employeeName;
+    }
+    
+    
     
     /**
      * @return mixed

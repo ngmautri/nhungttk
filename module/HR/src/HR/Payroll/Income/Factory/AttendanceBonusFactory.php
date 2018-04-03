@@ -20,7 +20,7 @@ Class AttendanceBonusFactory extends AbstractIncomeFactory
      */
     protected function createIncome($amount=0, $currency=null)
     {        
-        $incomeComponent = new GenericIncomeComponent("Attendance Bonus", $amount, 0, $currency, TRUE, False, TRUE);
+        $incomeComponent = new GenericIncomeComponent("Attendance Bonus", $amount, 0, $currency, False, TRUE, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f =  AttendanceBonusDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);

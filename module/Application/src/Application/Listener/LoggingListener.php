@@ -17,6 +17,7 @@ use Application\Entity\NmtInventoryChangeLog;
 use Application\Entity\NmtProcureLog;
 use Application\Entity\FinLog;
 use Application\Entity\FinChangeLog;
+use Application\Entity\NmtHrLog;
 
 /**
  *
@@ -68,6 +69,12 @@ class LoggingListener implements ListenerAggregateInterface
         $this->listeners[] = $events->attach('inventory.change.log', array(
             $this,
             'onInventoryChangeLogging'
+        ), 200);
+        
+        // HR ACT LOG
+        $this->listeners[] = $events->attach('hr.activity.log', array(
+            $this,
+            'onHRActivityLogging'
         ), 200);
         
         // PROCURE ACT LOG
@@ -139,6 +146,45 @@ class LoggingListener implements ListenerAggregateInterface
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         $log->log(Logger::INFO, $log_message);
+    }
+    
+    /**
+     * HR Activity Loag
+     *
+     * @param EventInterface $e
+     */
+    public function onHRActivityLogging(EventInterface $e)
+    {
+        $log_priority = $e->getParam('priority');
+        $log_message = $e->getParam('message');
+        $createdBy = $e->getParam('createdBy');
+        $createdOn = $e->getParam('createdOn');
+        $entityId = $e->getParam('entity_id');
+        $entityClass = $e->getParam('entity_class');
+        $entityToken = $e->getParam('entity_token');
+        
+        
+        $filename = 'hr_activity_log_' . date('F') . '_' . date('Y') . '.txt';
+        $log = new Logger();
+        $writer = new Stream('./data/log/' . $filename);
+        $log->addWriter($writer);
+        $log->log($log_priority, $log_message);
+        
+        // update DB
+        $entity = new NmtHrLog();
+        $entity->setPriority($log_priority);
+        $entity->setMessage($log_message);
+        $entity->setTriggeredby($e->getTarget());
+        $entity->setCreatedBy($createdBy);
+        $entity->setCreatedOn($createdOn);
+        $entity->setEntityId($entityId);
+        $entity->setEntityClass($entityClass);
+        $entity->setEntityToken($entityToken);
+        
+        $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+        
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
     }
 
     /**

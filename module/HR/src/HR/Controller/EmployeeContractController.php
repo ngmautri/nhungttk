@@ -1,12 +1,4 @@
 <?php
-
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace HR\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -18,10 +10,11 @@ use Zend\Validator\Date;
 use Zend\Math\Rand;
 use HR\Service\EmployeeSearchService;
 use Application\Entity\NmtHrContract;
+use Application\Entity\NmtHrSalary;
 
 /**
  *
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
 class EmployeeContractController extends AbstractActionController
@@ -260,12 +253,6 @@ class EmployeeContractController extends AbstractActionController
                     }
                 }
                 
-                if ($position instanceof \Application\Entity\NmtHrPosition) {
-                    $entity->setPosition($position);
-                } else {
-                    $errors[] = 'Position can\'t be empty. Please select a postiton!';
-                }
-                
                 if (! is_numeric($basicSalary)) {
                     $errors[] = 'BasicSalary is not valid. It must be a number.';
                 } else {
@@ -274,6 +261,7 @@ class EmployeeContractController extends AbstractActionController
                     } elseif ($basicSalary < $minimum_wage) {
                         $errors[] = 'BasicSalary is less than minumum wage!';
                     }
+                    
                     $entity->setBasicSalary($basicSalary);
                 }
                 
@@ -336,26 +324,92 @@ class EmployeeContractController extends AbstractActionController
                 }
                 
                 // NO ERROR
+                // =======================
                 
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                 
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
+                $createdOn = new \DateTime();
                 
                 $entity->setCreatedBy($u);
-                $entity->setCreatedOn(new \DateTime());
-                
-                // $redirectUrl = "/hr/position/list";
-                
+                $entity->setCreatedOn($createdOn);
+                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setIsActive(1);
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
-                $this->flashMessenger()->addMessage("Contract: '" . $entity->getContractNumber() . "' has been created!");
+                
+                $m = sprintf('Contract #%s - %s created. OK', $entity->getId(), $target->getEmployeeName());
+                $this->flashMessenger()->addMessage($m);
+                
+                // Trigger: hr.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('hr.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $createdOn,
+                    'entity_id' => $entity->getId(),
+                    'entity_class' => get_class($entity),
+                    'entity_token' => $entity->getToken()
+                ));
+                
+                // Create Default Salary
+                $defaultBasicSalary = new NmtHrSalary();
+                
+                /**@var \Application\Entity\NmtHrSalaryDefault $salaryDefault ; */
+                $criteria = array(
+                    'isDefault' => 1
+                );
+                $salaryDefault = $this->doctrineEM->getRepository('Application\Entity\NmtHrSalaryDefault')->findOneBy($criteria);
+                
+                if (count($salaryDefault) == 1) {
+                    
+                    if ($salaryDefault instanceof \Application\Entity\NmtHrSalaryDefault) {
+                        $defaultBasicSalary->setDefaultSalary($salaryDefault);
+                        $defaultBasicSalary->setSalaryName($salaryDefault->getSalaryName());
+                        $defaultBasicSalary->setDecoratorFactory($salaryDefault->getDecoratorFactory());
+                        $defaultBasicSalary->setIsPayable($salaryDefault->getIsPayable());
+                        $defaultBasicSalary->setIsPitPayable($salaryDefault->getIsPitPayable());
+                        $defaultBasicSalary->setIsSsoPayable($salaryDefault->getIsSsoPayable());
+                        $defaultBasicSalary->setPaymentFrequency($salaryDefault->getPaymentFrequency());
+                        $defaultBasicSalary->setSalaryFactory($salaryDefault->getSalaryFactory());
+                        
+                        $defaultBasicSalary->setSalaryAmount($basicSalary);
+                        $defaultBasicSalary->setContract($entity);
+                        $defaultBasicSalary->setEmployee($entity->getEmployee());
+                        
+                        $defaultBasicSalary->setCreatedOn($createdOn);
+                        $defaultBasicSalary->setCreatedBy($u);
+                        $defaultBasicSalary->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                        $this->doctrineEM->persist($defaultBasicSalary);
+                        $this->doctrineEM->flush();
+                        
+                        $m = sprintf('%s #%s for Contract #%s - %s added. OK', $defaultBasicSalary->getSalaryName(), 
+                            $defaultBasicSalary->getId(), 
+                            $entity->getId(), 
+                            $target->getEmployeeName());
+           
+                         // Trigger: hr.activity.log. AbtractController is EventManagerAware.
+                        $this->getEventManager()->trigger('hr.activity.log', __METHOD__, array(
+                            'priority' => \Zend\Log\Logger::INFO,
+                            'message' => $m,
+                            'createdBy' => $u,
+                            'createdOn' => $createdOn,
+                            'entity_id' => $defaultBasicSalary->getId(),
+                            'entity_class' => get_class($defaultBasicSalary),
+                            'entity_token' => $defaultBasicSalary->getToken()
+                        ));
+                    }
+                }
+                
+                $redirectUrl = sprintf('/hr/employee-contract/show?entity_id=%s&token=%s', $entity->getId(), $entity->getToken());                
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
         // NO POST
+        // ============================
         
         $criteria = array(
             'isActive' => 1
@@ -394,6 +448,25 @@ class EmployeeContractController extends AbstractActionController
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
         
         if ($target instanceof \Application\Entity\NmtHrEmployee) {
+            
+            $criteria = array(
+                'employee' => $target->getId(),
+                'isActive' => 1
+            );
+            
+            /**@var \Application\Entity\NmtHrContract $contract ; */
+            
+            $contract = $this->doctrineEM->getRepository('Application\Entity\NmtHrContract')->findOneBy($criteria);
+            
+            if (count($contract) == 1) {
+                $url = sprintf('/hr/employee-contract/show?token=%s&entity_id=%s', $contract->getToken(), $contract->getId());
+                
+                $m = sprintf('Contract %s is still active! It is not posible to add new one!', $contract->getContractNumber());
+                
+                $this->flashMessenger()->addMessage($m);
+                
+                return $this->redirect()->toUrl($url);
+            }
             
             $entity = new NmtHrContract();
             $entity->setIsActive(1);
@@ -473,7 +546,6 @@ class EmployeeContractController extends AbstractActionController
                 $changeValidFrom = $request->getPost('changeValidFrom');
                 $contractStatus = $request->getPost('contractStatus');
                 
-                
                 $contractNumber = $request->getPost('contractNumber');
                 $contractDate = $request->getPost('contractDate');
                 $effectiveFrom = $request->getPost('effectiveFrom');
@@ -505,26 +577,24 @@ class EmployeeContractController extends AbstractActionController
                 
                 $changeOn = new \DateTime();
                 
-                
                 if ($changeDate != null) {
                     if (! $validator->isValid($changeDate)) {
                         $errors[] = 'Change Date is not correct or empty!';
-                     }else{
-                         $newChangeDate =  new \DateTime($changeDate);
-                         
+                    } else {
+                        $newChangeDate = new \DateTime($changeDate);
                     }
-                }else{
+                } else {
                     $newChangeDate = $changeOn;
                 }
                 
                 if ($changeValidFrom != null) {
                     if (! $validator->isValid($changeValidFrom)) {
                         $errors[] = 'Change Valid From is not correct or empty!';
-                    }else{
-                        $newChangeValidFrom =  new \DateTime($changeValidFrom);
+                    } else {
+                        $newChangeValidFrom = new \DateTime($changeValidFrom);
                     }
-                }else{
-                    $newChangeValidFrom =$changeOn;
+                } else {
+                    $newChangeValidFrom = $changeOn;
                 }
                 
                 if (! $validator->isValid($contractDate)) {
@@ -549,7 +619,7 @@ class EmployeeContractController extends AbstractActionController
                         $entity->setEffectiveTo(new \DateTime($effectiveTo));
                         $validated ++;
                     }
-                }else{
+                } else {
                     $entity->setEffectiveTo(NULL);
                 }
                 
@@ -595,8 +665,8 @@ class EmployeeContractController extends AbstractActionController
                 $nmtPlugin = $this->Nmtplugin();
                 $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
                 
-                if(count($changeArray)==0){
-                    $errors[] = 'Nothing changed!';                    
+                if (count($changeArray) == 0) {
+                    $errors[] = 'Nothing changed!';
                 }
                 
                 if (count($errors) > 0) {
@@ -632,34 +702,46 @@ class EmployeeContractController extends AbstractActionController
                 // NO ERROR
                 // +++++++++++++++++++++++++++++++++
                 
-               
-                
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
                 
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
                 
-                // trigger log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('hr.contract.log', __CLASS__, array(
+                $this->doctrineEM->persist($entity);
+                $this->doctrineEM->flush();
+                
+                $m = sprintf('Contract #%s - %s updated. No. of change:%s. OK!', $entity->getId(),$entity->getContractNumber(),count($changeArray));
+                
+                // Trigger Change Log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('hr.contract.log', __METHOD__, array(
                     'priority' => 7,
-                    'message' => 'Contract ' . $entity->getContractNumber() . ' changed!',
+                    'message' => $m,
                     'objectId' => $entity->getId(),
                     'objectToken' => $entity->getToken(),
                     'changeArray' => $changeArray,
                     'changeBy' => $u,
                     'changeOn' => $changeOn,
                     'revisionNumber' => $entity->getRevisionNo(),
-                    'changeDate' => $newChangeDate,
-                    'changeValidFrom' => $newChangeValidFrom,
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn,
                 ));
                 
-                $entity->setLastchangeBy($u);
-                $entity->setLastchangeOn($changeOn);
+                //Trigger: finance.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('hr.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $changeOn,
+                    'entity_id' => $entity->getId(),
+                    'entity_class' => get_class($entity),
+                    'entity_token' => $entity->getToken(),
+                ));
                 
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-                $this->flashMessenger()->addMessage("Contract '" . $entity->getContractNumber() . "' changed!");
+                
+                $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
@@ -765,7 +847,6 @@ class EmployeeContractController extends AbstractActionController
                 $changeValidFrom = $request->getPost('changeValidFrom');
                 $contractStatus = $request->getPost('contractStatus');
                 
-                
                 $contractNumber = $request->getPost('contractNumber');
                 $contractDate = $request->getPost('contractDate');
                 $effectiveFrom = $request->getPost('effectiveFrom');
@@ -797,26 +878,24 @@ class EmployeeContractController extends AbstractActionController
                 
                 $changeOn = new \DateTime();
                 
-                
                 if ($changeDate != null) {
                     if (! $validator->isValid($changeDate)) {
                         $errors[] = 'Change Date is not correct or empty!';
-                    }else{
-                        $newChangeDate =  new \DateTime($changeDate);
-                        
+                    } else {
+                        $newChangeDate = new \DateTime($changeDate);
                     }
-                }else{
+                } else {
                     $newChangeDate = $changeOn;
                 }
                 
                 if ($changeValidFrom != null) {
                     if (! $validator->isValid($changeValidFrom)) {
                         $errors[] = 'Change Valid From is not correct or empty!';
-                    }else{
-                        $newChangeValidFrom =  new \DateTime($changeValidFrom);
+                    } else {
+                        $newChangeValidFrom = new \DateTime($changeValidFrom);
                     }
-                }else{
-                    $newChangeValidFrom =$changeOn;
+                } else {
+                    $newChangeValidFrom = $changeOn;
                 }
                 
                 if (! $validator->isValid($contractDate)) {
@@ -841,7 +920,7 @@ class EmployeeContractController extends AbstractActionController
                         $entity->setEffectiveTo(new \DateTime($effectiveTo));
                         $validated ++;
                     }
-                }else{
+                } else {
                     $entity->setEffectiveTo(NULL);
                 }
                 
@@ -887,7 +966,7 @@ class EmployeeContractController extends AbstractActionController
                 $nmtPlugin = $this->Nmtplugin();
                 $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
                 
-                if(count($changeArray)==0){
+                if (count($changeArray) == 0) {
                     $errors[] = 'Nothing changed!';
                 }
                 
@@ -924,8 +1003,6 @@ class EmployeeContractController extends AbstractActionController
                 // NO ERROR
                 // +++++++++++++++++++++++++++++++++
                 
-                
-                
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
@@ -943,7 +1020,7 @@ class EmployeeContractController extends AbstractActionController
                     'changeOn' => $changeOn,
                     'revisionNumber' => $entity->getRevisionNo(),
                     'changeDate' => $newChangeDate,
-                    'changeValidFrom' => $newChangeValidFrom,
+                    'changeValidFrom' => $newChangeValidFrom
                 ));
                 
                 $entity->setLastchangeBy($u);
@@ -1004,7 +1081,7 @@ class EmployeeContractController extends AbstractActionController
                 'target' => $entity->getEmployee(),
                 'currency_list' => $currency_list,
                 'position_list' => $position_list
-                
+            
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');

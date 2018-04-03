@@ -25,7 +25,7 @@ Class LoadingBonusFactory extends AbstractIncomeFactory
      */
     protected function createIncome($amount=0, $currency=null)
     {        
-        $incomeComponent = new GenericIncomeComponent("Loading Bonus", $amount, 0, $currency, TRUE, False, TRUE);
+        $incomeComponent = new GenericIncomeComponent("Loading Bonus", $amount, 0, $currency, FALSE,TRUE, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f = LoadingBonusDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);

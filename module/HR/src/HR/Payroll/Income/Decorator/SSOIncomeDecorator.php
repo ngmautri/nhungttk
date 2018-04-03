@@ -15,6 +15,9 @@ class SSOIncomeDecorator extends AbstractIncomeDecorator
     */
     public function getCalculatedAmount()
     {    
+        if($this->getAmount()>4500000){
+            return 4500000 *5.5/100;
+        }
          return $this->getAmount()*5.5/100;
     }
     /**

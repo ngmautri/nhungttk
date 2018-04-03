@@ -10,6 +10,10 @@
 	<li><a href="/hr/leave-reason/list"><small><span
 				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;&nbsp;<?php echo $this->translate('Leave Reason'); ?></a></li>
 	<li class="divider"></li>
+	<li><a href="/hr/salary-calculator/index"><small><span
+				class="glyphicon glyphicon-calendar"></span></small>&nbsp;&nbsp;<?php echo $this->translate('Salary Calculation'); ?></a></li>
+
+	<li class="divider"></li>
 	<li><a href="/hr/reporting/index"><small><span
 				class="glyphicon glyphicon-list"></span></small>&nbsp;&nbsp;<?php echo $this->translate('Reporting'); ?></a></li>
 	<li class="divider"></li>

@@ -14,10 +14,11 @@ Abstract class AbstractDecoratorFactory
     
     /**
      * 
-     * @param IncomeInterface $incomeComponent
-     * @param ConsolidatedPayrollInput $consolidatedPayrollInput
-     * @param unknown $ytd
-     * @return unknown
+     *  @param IncomeInterface $incomeComponent
+     *  @param ConsolidatedPayrollInput $consolidatedPayrollInput
+     *  @param int $ytd
+     *  @return mixed
+     *
      */
     public function createIncomeDecorator(IncomeInterface $incomeComponent, ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd){
         $decorator =  $this->createDecorator($incomeComponent, $consolidatedPayrollInput, $ytd);
@@ -29,9 +30,8 @@ Abstract class AbstractDecoratorFactory
     /**
      * 
      * @param IncomeInterface $incomeComponent
-     * @param unknown $ytd
+     * @param int $ytd
      */
     protected abstract function createDecorator(IncomeInterface $incomeComponent, 
-        ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd);
-    
+        ConsolidatedPayrollInput $consolidatedPayrollInput, $ytd);    
 }

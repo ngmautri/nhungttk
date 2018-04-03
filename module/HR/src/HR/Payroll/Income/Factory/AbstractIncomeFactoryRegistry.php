@@ -15,7 +15,7 @@ class AbstractIncomeFactoryRegistry
 
     /**
      * 
-     * @param unknown $factory_class
+     * @param string $factory_class
      * @return \HR\Payroll\Income\Factory\AbstractIncomeFactory|NULL
      */
     public static function getIncomeFactory($factory_class)
@@ -35,8 +35,7 @@ class AbstractIncomeFactoryRegistry
     */
     public static function getSupportedFactory()
     {
-        $employee = new Employee();
-        $employee->setemployeecode("0651");
+        $employee = new Employee("0651","Default Name");
         $employee->setstatus("LC");
         $employee->setstartworkingdate(new \DateTime("2008-11-01"));
         

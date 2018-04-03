@@ -23,7 +23,7 @@ Class TransportationBonusFactory extends AbstractIncomeFactory
      */
     protected function createIncome($amount=0, $currency=null)
     {        
-        $incomeComponent = new GenericIncomeComponent("Transporation Bonus", $amount, 0, $currency, TRUE, False, TRUE);
+        $incomeComponent = new GenericIncomeComponent("Transporation Bonus", $amount, 0, $currency, FALSE, TRUE, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f = TransportationAllowanceDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);

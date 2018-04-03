@@ -282,7 +282,7 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->flush();
             
             
-            $m = sprintf('AP Invoice #%s - %s created sucessfully.',$entity->getId(), $entity->getSysNumber());
+            $m = sprintf('AP Invoice #%s - %s created. OK!',$entity->getId(), $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
             
             //Trigger: finance.activity.log. AbtractController is EventManagerAware.
@@ -1293,7 +1293,7 @@ class VInvoiceController extends AbstractActionController
                 $this->doctrineEM->flush();
                 
                 
-                $m = sprintf('AP Invoice #%s - %s updated sucessfully. No. of change: %s', $entity->getId(),$entity->getSysNumber(),count($changeArray));
+                $m = sprintf('AP Invoice #%s - %s updated. No. of change: %s. OK!', $entity->getId(),$entity->getSysNumber(),count($changeArray));
                 
                 // Trigger Change Log. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(

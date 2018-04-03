@@ -25,6 +25,11 @@ Interface IncomeInterface
     public function getCurrency();
     
     /**
+     * Default Component is assigned to any contract.
+     */
+    public function isDefault();
+    
+    /**
      * PIT Payable
      */
     public function isPITPayable();

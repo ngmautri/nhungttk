@@ -24,7 +24,7 @@ Class LunchAllowanceFactory extends AbstractIncomeFactory
      */
     protected function createIncome($amount=0, $currency=null)
     {        
-        $incomeComponent = new GenericIncomeComponent("Lunch Allowance", $amount, 0, $currency, false, False, TRUE);
+        $incomeComponent = new GenericIncomeComponent("Lunch Allowance", $amount, 0, $currency,FALSE, false, False, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f = FullPaymentDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);

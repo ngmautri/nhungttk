@@ -20,7 +20,7 @@ Class Overtime300Factory extends AbstractIncomeFactory
      */
     protected function createIncome($amount=0, $currency=null)
     {
-        $incomeComponent = new GenericIncomeComponent("Overtime 300%", $amount, 0, $currency, TRUE, FALSE, TRUE);
+        $incomeComponent = new GenericIncomeComponent("Overtime 300%", $amount, 0, $currency,FALSE, TRUE, FALSE, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::ONE_TIME);
         $f = FullPaymentDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);

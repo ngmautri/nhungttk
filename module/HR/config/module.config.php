@@ -38,6 +38,14 @@ return array(
                 'action' => 'applicant-list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
+            
+            array(
+                'label' => 'Salary Calculation',
+                'route' => 'hr/default',
+                'controller' => 'salary-calculator',
+                'action' => 'index',
+                'icon' => 'glyphicon glyphicon-calendar'
+            ),
             array(
                 'label' => 'Reporting',
                   'route' => 'hr/default',
@@ -129,7 +137,7 @@ return array(
             'HR\Controller\Contract' => 'HR\Controller\ContractControllerFactory',
             'HR\Controller\ContractLog' => 'HR\Controller\ContractLogControllerFactory',            
             'HR\Controller\EntityChangeLog' => 'HR\Controller\EntityChangeLogControllerFactory',
-            
+            'HR\Controller\SalaryCalculator' => 'HR\Controller\SalaryCalculatorControllerFactory',            
             
         )
     ),

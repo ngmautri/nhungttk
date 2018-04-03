@@ -28,7 +28,7 @@ abstract class AbstractPayrollInput implements PayrollInputInterface
     function __construct(Employee $employee, \DateTime $startDate, \DateTime $endDate)
     {
         if (! $employee instanceof Employee) {
-            throw new InvalidArgumentException(sprintf('Invalid Argurment! "%s" is expected. Given is "%s".', get_class(new Employee()), $employee));
+            throw new InvalidArgumentException(sprintf('Invalid Argurment. "%s" is expected!', 'Employee Class'));
         }
         
         $validator = new Date();

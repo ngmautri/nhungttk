@@ -23,8 +23,8 @@ Class AnnualBonusFactory extends AbstractIncomeFactory
      * @see \HR\Payroll\Income\Factory\AbstractIncomeFactory::createIncome()
      */
     protected function createIncome($amount=0, $currency=null)
-    {        
-        $incomeComponent = new GenericIncomeComponent("Annual Bonus", $amount, 0, $currency, TRUE, FALSE, TRUE);
+    {   
+        $incomeComponent = new GenericIncomeComponent("Annual Bonus", $amount, 0, $currency, False, TRUE, FALSE, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::YEARLY);
         $f = FullPaymentDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);

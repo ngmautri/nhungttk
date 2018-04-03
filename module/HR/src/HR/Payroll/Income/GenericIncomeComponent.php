@@ -1,8 +1,5 @@
 <?php
-
 namespace HR\Payroll\Income;
-
-
 
 /**
  * Generic Income Component
@@ -13,6 +10,7 @@ namespace HR\Payroll\Income;
 class GenericIncomeComponent extends AbstractIncomeComponent{
     
     private $incomeName;
+    private $isDefault;
     private $isPITPayable;
     private $isSSOPayable;
     private $isPayable;
@@ -24,24 +22,26 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     private $decoratorFactory;
     private $description;
     
-  
     /**
-     * Immutable Object
-     * @param unknown $incomeName
-     * @param unknown $amount
-     * @param unknown $calculatedAmount
-     * @param unknown $currency
-     * @param unknown $isPITPayable
-     * @param unknown $isSSOPayable
-     * @param unknown $isPayable
+     *  Mutable Object
+     *  @param string $incomeName
+     *  @param number $amount
+     *  @param number $calculatedAmount
+     *  @param string $currency
+     *  @param boolean $isDefault
+     *  @param boolean $isPITPayable
+     *  @param boolean $isSSOPayable
+     *  @param boolean $isPayable
+     *  @param string $decoratorFactory
      */
-    function __construct($incomeName=null, $amount, $calculatedAmount=null,$currency,
+    function __construct($incomeName=null, $amount, $calculatedAmount=null,$currency,$isDefault,
         $isPITPayable,$isSSOPayable,$isPayable,$decoratorFactory=null)
     {
         $this->incomeName = $incomeName;
         $this->amount = $amount;
         $this->calculatedAmount = $amount;
         $this->currency = $currency;
+        $this->isDefault = $isDefault;
         $this->isPayable = $isPayable;
         $this->isPITPayable = $isPITPayable;
         $this->isSSOPayable = $isSSOPayable;
@@ -129,7 +129,7 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     }
    
     /**
-     * @return unknown
+     * @return string
      */
     public function getDecoratorFactory()
     {
@@ -137,7 +137,7 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     }
 
     /**
-     * @param unknown $decoratorFactory
+     * @param string $decoratorFactory
      */
     public function setDecoratorFactory($decoratorFactory)
     {
@@ -166,9 +166,10 @@ class GenericIncomeComponent extends AbstractIncomeComponent{
     {
         $this->description = $description;
     }
-
-
-
+    public function isDefault()
+    {
+        return $this->isDefault;
+    }
 }
 
 

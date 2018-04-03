@@ -32,8 +32,7 @@ class BasicSalaryDecorator extends AbstractIncomeDecorator
     {   
         $des=$this->incomeComponent->getDescription() ."\n";
         $des= $des."Calculation: Base on paid days divided by total working days in period";
-        
-        return  $des;
+         return  $des;
     }
 
    

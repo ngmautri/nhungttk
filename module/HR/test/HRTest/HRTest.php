@@ -51,8 +51,8 @@ class HRTest extends phpunit_framework_testcase
             $incomeFactory = new BasicSalaryFactory(20000000, "LAK");
             $employee1->setBasicSalary($incomeFactory->createIncomeComponent());
             
-            $diffArray = $this->objectsAreIdentical($employee, $employee1);
-            var_dump($diffArray);
+            //$diffArray = $this->objectsAreIdentical($employee, $employee1);
+            //var_dump($diffArray);
             
             //'$this->saveDiffArray($diffArray);
             //var_dump($this->result);
@@ -60,7 +60,7 @@ class HRTest extends phpunit_framework_testcase
             $incomeFactory = new BasicSalaryFactory(900000, "LAK");
             $employee->setBasicSalary($incomeFactory->createIncomeComponent());
             
-            $input = new ConsolidatedPayrollInput($employee, new \Datetime('2018-01-01'), new \Datetime('2018-01-31 10:30:00'));
+            $input = new ConsolidatedPayrollInput($employee, new \Datetime('2018-01-01'), new \Datetime('2018-01-31'));
             $input->setactualworkeddays(23);
             $input->setpaidsickleaves(2);
             $input->settotalworkingdays(26);
@@ -70,52 +70,31 @@ class HRTest extends phpunit_framework_testcase
             // $sv = bootstrap::getservicemanager ()->get ( 'hr\service\employeesearchservice' );
             $incomeFactory = new BasicSalaryFactory(900000, "LAK");
             $incomeComponent = $incomeFactory->createIncomeComponent();
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
-            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
-            $incomeList[] = $decoratedIncome;
+            $incomeList[] = $incomeComponent;
             
             $incomeFactory = new FixedAmountFactory(217000, "LAK");
             $incomeComponent = $incomeFactory->createIncomeComponent();
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
-            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
-            $incomeList[] = $decoratedIncome;
+            $incomeList[] = $incomeComponent;
             
             $incomeFactory = new AttendanceBonusFactory(350000, "LAK");
             $incomeComponent = $incomeFactory->createIncomeComponent();
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
-            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
-            $incomeList[] = $decoratedIncome;
+            $incomeList[] = $incomeComponent;
             
             $incomeFactory = new LoyaltyBonusFactory(0, "LAK");
             $incomeComponent = $incomeFactory->createIncomeComponent();
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
-            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
-            $incomeList[] = $decoratedIncome;
+            $incomeList[] = $incomeComponent;
             
             $incomeFactory = new TransportationBonusFactory(120000, "LAK");
             $incomeComponent = $incomeFactory->createIncomeComponent();
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
-            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
-            $incomeList[] = $decoratedIncome;
+            $incomeList[] = $incomeComponent;
             
             $incomeFactory = new OneTimeBonusFactory(135000, "LAK");
             $incomeComponent = $incomeFactory->createIncomeComponent();
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
-            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
-            $incomeList[] = $decoratedIncome;
+            $incomeList[] = $incomeComponent;
             
             $incomeFactory = new AnnualBonusFactory(900000, "LAK");
             $incomeComponent = $incomeFactory->createIncomeComponent();
-            $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
-            $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
-            $incomeList[] = $decoratedIncome;
-            
-            /*
-             * echo sprintf('identifer" "%s"; calculated salary:"%s"; description: "%s"',
-             * $decoratedincome->getidentifer(),
-             * $decoratedincome->getcalculatedamount(),
-             * $decoratedincome->getdescription());
-             */
+            $incomeList[] = $incomeComponent;
             
             $payroll = new Payroll($employee, $input, $incomeList);
             $payroll->calculate();
@@ -124,12 +103,7 @@ class HRTest extends phpunit_framework_testcase
         }
     }
 
-    /**
-     *
-     * @param unknown $o1
-     * @param unknown $o2
-     * @return bool
-     */
+   
     function objectsAreIdentical($o1, $o2)
     {
         $diffArray = array();

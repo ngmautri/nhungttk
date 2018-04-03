@@ -7,7 +7,7 @@ use HR\Payroll\Input\ConsolidatedPayrollInput;
 
 /**
  * Abstract Income Decorator to calculate income.
- * 
+ *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
@@ -42,7 +42,8 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
 
     /**
      *
-     * @return unknown
+     * @return mixed
+     *
      */
     public function getIdentifer()
     {
@@ -60,7 +61,8 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
 
     /**
      *
-     * @return unknown|\HR\Payroll\Input\ConsolidatedPayrollInput
+     * @return \HR\Payroll\Input\ConsolidatedPayrollInput
+     *
      */
     public function getConsolidatedPayrollInput()
     {
@@ -69,9 +71,10 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
 
     /**
      *
-     * @param unknown $consolidatedPayrollInput
+     * @param ConsolidatedPayrollInput $consolidatedPayrollInput
+     *
      */
-    public function setConsolidatedPayrollInput($consolidatedPayrollInput)
+    public function setConsolidatedPayrollInput(ConsolidatedPayrollInput $consolidatedPayrollInput)
     {
         $this->consolidatedPayrollInput = $consolidatedPayrollInput;
     }
@@ -112,8 +115,7 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
     {
         // TODO Auto-generated method stub
         return $this->incomeComponent->getIncomeDecoratorFactory();
-    }     
-    
+    }
 
     /**
      *
@@ -200,10 +202,16 @@ abstract class AbstractIncomeDecorator implements IncomeInterface
     {
         // TODO Auto-generated method stub
         return $this->incomeComponent->getIncomeName();
-        
     }
-
-
+    /**
+     * {@inheritDoc}
+     * @see \HR\Payroll\Income\IncomeInterface::isDefault()
+     */
+    public function isDefault()
+    {
+        return $this->incomeComponent->isDefault();
+    }
+    
 }
 
 

@@ -5,9 +5,10 @@
 <?php else: ?>
 <div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
 <div style="color: gray;font-size: 9pt;" id="total_received"></div>
-<div style="color: gray;font-size: 9pt;" id="total_balance"></div>
 
-<table style="font-size: 9pt;" class="table table-bordered table-hover">
+<div style="font-size: 14pt; font-weight: trong" id="total_balance"></div>
+
+<table id = "mytable28" style="font-size: 9pt;" class="table table-bordered table-striped table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
@@ -65,7 +66,13 @@
 <script type="text/javascript">
 $('#total_ordered').text("<?php echo "Ordered Q'ty: " . $total_ordered; ?>");
 $('#total_received').text("<?php echo "Received Q'ty: ". $total_received; ?>");
-$('#total_balance').text("<?php echo "Balance Q'ty: " . $total_balance; ?>");
+<?php if($total_balance>0): ?>
+$('#total_balance').html('<?php echo '<span class="label label-danger"> Balance Qty: ' . $total_balance .'<br></div>'; ?>');
+<?php else: ?>
+$('#total_balance').html("<?php echo "Balance Q'ty: " . $total_balance; ?>");
+<?php
+endif;
+?>
 
 </script>
 

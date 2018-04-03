@@ -8,8 +8,7 @@ namespace HR\Payroll;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PaymentFrequency {
-    
+class PaymentFrequency {    
     const ONE_TIME =  "one_time";
     const DAILY =  "monthly";
     const MONTHLY =  "monthly";

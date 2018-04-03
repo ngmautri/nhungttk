@@ -28,7 +28,7 @@ class ActivityLogController extends AbstractActionController
         $request = $this->getRequest();
         
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 10;
+            $resultsPerPage = 20;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -61,7 +61,7 @@ class ActivityLogController extends AbstractActionController
         
         
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 10;
+            $resultsPerPage = 20;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }

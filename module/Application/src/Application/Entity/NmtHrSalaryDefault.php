@@ -155,6 +155,13 @@ class NmtHrSalaryDefault
     private $salaryFactory;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_default", type="boolean", nullable=true)
+     */
+    private $isDefault;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -640,6 +647,30 @@ class NmtHrSalaryDefault
     public function getSalaryFactory()
     {
         return $this->salaryFactory;
+    }
+
+    /**
+     * Set isDefault
+     *
+     * @param boolean $isDefault
+     *
+     * @return NmtHrSalaryDefault
+     */
+    public function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
+
+        return $this;
+    }
+
+    /**
+     * Get isDefault
+     *
+     * @return boolean
+     */
+    public function getIsDefault()
+    {
+        return $this->isDefault;
     }
 
     /**

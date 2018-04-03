@@ -1,7 +1,5 @@
 <?php
 namespace HR\Payroll\Income\Factory;
-use HR\Payroll\Income\IncomeInterface;
-
 /**
  * Abstract Income Factory
  * 
@@ -16,17 +14,18 @@ abstract class AbstractIncomeFactory
    /**
     * 
     * @param number $amount
-    * @param unknown $currency
+    * @param string $currency
     */
     function __construct($amount=0, $currency=null){
         $this->amount = $amount;
         $this->currency = $currency;
     }
     
-   /**
-    * 
-    * @return unknown
-    */
+  /**
+   * 
+   *  @return number
+   *
+   */
     public function createIncomeComponent(){
         $income =  $this->createIncome($this->amount, $this->currency);
         return $income;

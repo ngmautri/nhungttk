@@ -11,6 +11,8 @@ use HR\Payroll\Income\Decorator\Factory\AbstractDecoratorFactoryRegistry;
 use HR\Payroll\Income\Factory\AbstractIncomeFactoryRegistry;
 use HR\Payroll\Input\ConsolidatedPayrollInput;
 use Zend\Math\Rand;
+use Exception;
+use HR\Payroll\Income\Factory\AbstractIncomeFactory;
 
 /**
  *
@@ -106,6 +108,8 @@ class SalaryController extends AbstractActionController
                             $salaryDefault = $this->doctrineEM->find('Application\Entity\NmtHrSalaryDefault', $income);
                             
                             if ($salaryDefault instanceof \Application\Entity\NmtHrSalaryDefault) {
+                                
+                                
                                 $entity->setDefaultSalary($salaryDefault);
                                 $entity->setSalaryName($salaryDefault->getSalaryName());
                                 $entity->setDecoratorFactory($salaryDefault->getDecoratorFactory());
@@ -115,23 +119,42 @@ class SalaryController extends AbstractActionController
                                 $entity->setPaymentFrequency($salaryDefault->getPaymentFrequency());
                                 $entity->setSalaryFactory($salaryDefault->getSalaryFactory());
                                 
+                                $entity->setSalaryAmount(0);
+                                $entity->setContract($target);
+                                $entity->setEmployee($target->getEmployee());
+                                $entity->setCreatedOn(new \DateTime());
+                                $entity->setCreatedBy($u);
+                                
+                                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                                
+                                $this->doctrineEM->persist($entity);
+                                $this->doctrineEM->flush();
+                                
+                                
+                                $m = sprintf('%s #%s for Contract #%s - %s added. OK', $entity->getSalaryName(),
+                                    $entity->getId(),
+                                    $target->getId(),
+                                    $target->getEmployee()->getEmployeeName());
+                                
+                                $createdOn = new \DateTime();
+                                
+                                // Trigger: hr.activity.log. AbtractController is EventManagerAware.
+                                $this->getEventManager()->trigger('hr.activity.log', __METHOD__, array(
+                                    'priority' => \Zend\Log\Logger::INFO,
+                                    'message' => $m,
+                                    'createdBy' => $u,
+                                    'createdOn' => $createdOn,
+                                    'entity_id' => $entity->getId(),
+                                    'entity_class' => get_class($entity),
+                                    'entity_token' => $entity->getToken()
+                                ));
+                                
                             }
-                            
-                            $entity->setSalaryAmount(0);
-                            $entity->setContract($target);
-                            $entity->setEmployee($target->getEmployee());
-                            $entity->setCreatedOn(new \DateTime());
-                            $entity->setCreatedBy($u);
-                            
-                            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                            
-                            $this->doctrineEM->persist($entity);
                         }
                     }
                 }
                 
-                $this->doctrineEM->flush();
-                return $this->redirect()->toUrl($redirectUrl);
+                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
@@ -215,25 +238,25 @@ class SalaryController extends AbstractActionController
                 
                 $oldEntity = clone ($entity);
                 $salaryAmount = $request->getPost('salaryAmount');
-                 
+                
                 $isPitPayable = (int) $request->getPost('isPitPayable');
                 $isSsoPayable = (int) $request->getPost('isSsoPayable');
                 
                 if (! is_numeric($salaryAmount)) {
-                    $errors[] = sprintf('salaryAmount "%s" is not valid. It must be a number.',$salaryAmount);
+                    $errors[] = sprintf('salaryAmount "%s" is not valid. It must be a number.', $salaryAmount);
                 } else {
                     if ($salaryAmount < 0) {
-                        $errors[] = sprintf('salaryAmount "%s" is not valid. It must be greate than 0!',$salaryAmount);
+                        $errors[] = sprintf('salaryAmount "%s" is not valid. It must be greate than 0!', $salaryAmount);
                     }
                     $entity->setSalaryAmount($salaryAmount);
                 }
                 
                 if ($isPitPayable != 1) {
-                    $isPitPayable=0;
+                    $isPitPayable = 0;
                 }
                 
                 if ($isSsoPayable != 1) {
-                    $isSsoPayable=0;
+                    $isSsoPayable = 0;
                 }
                 $entity->setIsPitPayable($isPitPayable);
                 $entity->setIsSsoPayable($isSsoPayable);
@@ -266,11 +289,24 @@ class SalaryController extends AbstractActionController
                 ));
                 
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
+                
+                $this->doctrineEM->persist($entity);
+                $this->doctrineEM->flush();
+                
+                $m = sprintf('%s #%s - Contract #%s - %s updated. No. of change: %s. OK!',
+                    $entity->getSalaryName(),
+                    $entity->getId(),
+                    $entity->getContract()->getId(),
+                    $entity->getContract()->getEmployee()->getEmployeeName(),
+                    count($changeArray));
+                
                 
                 // trigger log. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('hr.contract.log', __CLASS__, array(
                     'priority' => 7,
-                    'message' => 'Component ' . $entity->getSalaryName() . ' changed!',
+                    'message' => $m,
                     'objectId' => $entity->getId(),
                     'objectToken' => $entity->getToken(),
                     'changeArray' => $changeArray,
@@ -281,12 +317,20 @@ class SalaryController extends AbstractActionController
                     'changeValidFrom' => $changeOn
                 ));
                 
-                $entity->setLastchangeBy($u);
-                $entity->setLastchangeOn($changeOn);
                 
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-                $this->flashMessenger()->addMessage("Componet '" . $entity->getSalaryName() . "' changed!");
+                //Trigger: finance.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('hr.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $changeOn,
+                    'entity_id' => $entity->getId(),
+                    'entity_class' => get_class($entity),
+                    'entity_token' => $entity->getToken(),
+                ));
+                
+                
+                $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
@@ -322,7 +366,7 @@ class SalaryController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-    
+
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -354,54 +398,51 @@ class SalaryController extends AbstractActionController
             );
             $incomes = $this->doctrineEM->getRepository('Application\Entity\NmtHrSalary')->findby($criteria);
             
-            if(count($incomes)>0){
+            if (count($incomes) > 0) {
                 
-                $incomeList = array();
-                $employee = new Employee();
-                
-                $employee->setEmployeecode($target->getEmployee()->getEmployeeCode());
-                $employee->setStatus($target->getContractStatus());
-                $employee->setStartWorkingdate($target->getEffectiveFrom());
-                $employee->setEmployeeName($target->getEmployee()->getEmployeeName());
-                
-                $input = new ConsolidatedPayrollInput($employee, new \Datetime('2018-01-01'), new \Datetime('2018-01-31 10:30:00'));
-                $input->setactualworkeddays(24);
-                $input->setpaidsickleaves(2);
-                $input->settotalworkingdays(26);
-                $ytd = 2018;
-                
-                
-                foreach($incomes as $income){
-                    /**@var \Application\Entity\NmtHrSalary $income ; */
+                Try {
+                    $incomeList = array();
+                    $employee = new Employee($target->getEmployee()->getEmployeeCode(), $target->getEmployee()->getEmployeeName());
                     
-                    // $sv = bootstrap::getservicemanager ()->get ( 'hr\service\employeesearchservice' );
-                    $salaryFactory=$income->getSalaryFactory();
-                    $incomeFactory = new $salaryFactory($income->getSalaryAmount(), "LAK");
-                    $incomeComponent = $incomeFactory->createIncomeComponent();
-                    $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory($incomeComponent->getIncomeDecoratorFactory());
-                    $decoratedIncome = $n->createIncomeDecorator($incomeComponent, $input, $ytd);
-                    $incomeList[] = $decoratedIncome;
+                    $employee->setStatus($target->getContractStatus());
+                    $employee->setStartWorkingdate($target->getEffectiveFrom());
                     
+                    $input = new ConsolidatedPayrollInput($employee, new \Datetime('2018-01-01'), new \Datetime('2018-01-31 10:30:00'));
+                    $input->setactualworkeddays(24);
+                    $input->setpaidsickleaves(0);
+                    $input->settotalworkingdays(26);
+                    $ytd = 2018;
+                    
+                    foreach ($incomes as $income) {
+                        
+                        /**@var \Application\Entity\NmtHrSalary $income ; */
+                        
+                        $salaryFactory = $income->getSalaryFactory();
+                        $incomeFactory = new $salaryFactory($income->getSalaryAmount(), "LAK");
+                        
+                        if ($incomeFactory instanceof AbstractIncomeFactory) {
+                            $incomeComponent = $incomeFactory->createIncomeComponent();
+                            $incomeList[] = $incomeComponent;
+                        }
+                    }
+                    
+                    $payroll = new Payroll($employee, $input, $incomeList);
+                    $payroll->calculate();
+                } catch (Exception $e) {
+                    echo $e->getMessage();
                 }
-                
-                $payroll = new Payroll($employee, $input, $incomeList);
-                $payroll->calculate();
-                
             }
-            
-            
             
             return new ViewModel(array(
                 'target' => $target,
                 'list' => $incomes,
                 'total_records' => count($incomes),
                 'paginator' => null
-                
+            
             ));
         }
         return $this->redirect()->toRoute('access_denied');
     }
-    
 
     /**
      * Show an salary Compoent
@@ -465,14 +506,14 @@ class SalaryController extends AbstractActionController
     public function listAction()
     {
         return new ViewModel();
-	}
-	
-	/**
-	 *
-	 * @param mixed $doctrineEM
-	 */
-	public function setDoctrineEM(EntityManager $doctrineEM)
-	{
-	    $this->doctrineEM = $doctrineEM;
-	}
+    }
+
+    /**
+     *
+     * @param mixed $doctrineEM
+     */
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+    }
 }

@@ -21,7 +21,7 @@ Class BasicSalaryFactory extends AbstractIncomeFactory
      */
     protected function createIncome($amount=0, $currency=null)
     {        
-        $incomeComponent = new GenericIncomeComponent("Basic Salary", $amount, 0, $currency, TRUE, TRUE, TRUE);
+        $incomeComponent = new GenericIncomeComponent("Basic Salary", $amount, 0, $currency,TRUE, TRUE, TRUE, TRUE);
         $incomeComponent->setPaymentFrequency(PaymentFrequency::MONTHLY);
         $f =  ContractedSalaryDecoratorFactory::class;
         $incomeComponent->setDecoratorFactory($f);

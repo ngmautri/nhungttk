@@ -14,7 +14,11 @@ class PITIncomeDecorator extends AbstractIncomeDecorator
     * @see \HR\Payroll\Income\IncomeInterface::getCalculatedAmount()
     */
     public function getCalculatedAmount()
-    {    
+    {  
+        if($this->getAmount()<0){
+            return 0;
+        }
+        
        return $this->getAmount()*0.05;
     }
     /**
@@ -27,7 +31,4 @@ class PITIncomeDecorator extends AbstractIncomeDecorator
         return "PIT 5%";
     }
 
-    
-    
- 
 }

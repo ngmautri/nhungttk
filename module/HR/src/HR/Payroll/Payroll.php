@@ -109,7 +109,7 @@ class Payroll extends AbstractVisitorElement
         
         $ssoAmount = $decoratedIncome->getCalculatedAmount();
         
-        $pitBase = $pitIncomeAmount - 1000000 - $decoratedIncome->getCalculatedAmount();
+        $pitBase = $pitIncomeAmount - 1000000 - $ssoAmount;
         $pit = new GenericIncomeComponent("PIT Payable", $pitBase, 0, "usd",FALSE, FALSE, FALSE, FALSE);
         
         $n = AbstractDecoratorFactoryRegistry::getDecoratorFactory("HR\Payroll\Income\Decorator\Factory\PITIncomeDecoratorFactory");

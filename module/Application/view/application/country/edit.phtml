@@ -1,0 +1,66 @@
+<?php /**@var \Application\Entity\NmtApplicationCountry $entity ;*/?>
+
+
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+    
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><?php echo $this->translate("Edit Country");?></a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt">
+
+		<!-- UPDATE -->
+		<form id="Edit_PR_Form" class="form-horizontal"
+			action="/application/country/edit" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				name="entity_id"
+				value="<?php echo (!$entity== null)? $entity->getId():"";?>" /> <input
+				type="hidden" name="token"
+				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" /> <input
+				type="hidden" name="n" value="<?php echo $n;?>" />
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2"><?php echo $this->translate('Country Name'); ?>:</label>
+				<div class="col-sm-3">
+					<input disabled class="form-control input-sm" type="text"
+						value="<?php if(!$entity == null): echo $entity->getCountryName(); endif;?>" />
+				</div>
+				<div class="col-sm-4">
+					<input
+						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+			</div>
+
+			</div>
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<button onclick="submitForm('Edit_PR_Form');"
+						class="btn btn-default">
+						<i class="glyphicon glyphicon-floppy-disk"> </i> Save
+					</button>
+				</div>
+			</div>
+
+
+		</form>
+	</div>
+</div>
+

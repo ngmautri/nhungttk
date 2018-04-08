@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationCountry
  *
- * @ORM\Table(name="nmt_application_country", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_country_country_name_UNIQUE", columns={"country_name"})}, indexes={@ORM\Index(name="nmt_application_country_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_application_country", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_country_country_name_UNIQUE", columns={"country_name"})}, indexes={@ORM\Index(name="nmt_application_country_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_country_IDX1", columns={"token"})})
  * @ORM\Entity
  */
 class NmtApplicationCountry
@@ -230,6 +230,13 @@ class NmtApplicationCountry
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
 
     /**
      * @var \Application\Entity\MlaUsers

@@ -316,7 +316,7 @@ class PrController extends AbstractActionController
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
                         
-            $m = sprintf('PR #%s - %s created sucessfully.',$entity->getId(), $entity->getPrAutoNumber());
+            $m = sprintf('PR #%s - %s created. OK!',$entity->getId(), $entity->getPrAutoNumber());
             $this->flashMessenger()->addMessage($m);
             
             //Trigger: procure.activity.log. AbtractController is EventManagerAware.
@@ -971,7 +971,7 @@ class PrController extends AbstractActionController
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 
-                $m = sprintf('"PR #%s - %s" updated sucessfully. No. of change: %s', $entity->getId(),$entity->getPrAutoNumber(),count($changeArray));
+                $m = sprintf('"PR #%s - %s" updated. Change No.:%s. OK!', $entity->getId(),$entity->getPrAutoNumber(),count($changeArray));
                 
                 
                 // Trigger Change Log. AbtractController is EventManagerAware.

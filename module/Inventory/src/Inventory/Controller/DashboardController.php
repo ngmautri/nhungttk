@@ -148,7 +148,7 @@ class DashboardController extends AbstractActionController
         $this->layout("layout/user/ajax");
         
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 5;
+            $resultsPerPage = 12;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -163,7 +163,7 @@ class DashboardController extends AbstractActionController
         
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-        $mostOrderItems = $res->getMostOrderItems(45);
+        $mostOrderItems = $res->getMostOrderItems(108);
         
         $total_records = count($mostOrderItems);
         
@@ -234,6 +234,57 @@ class DashboardController extends AbstractActionController
         ));
     }
     
+    /**
+     *
+     *  @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     *
+     */
+    public function mostValueItemsAction()
+    {
+        $request = $this->getRequest();
+        
+        // accepted only ajax request
+        
+       /*  if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        } */
+        
+        $this->layout("layout/user/ajax");
+        
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+        
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+        
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $list = $res->getMostValueItems(8200,135,0);
+        
+        $total_records = count($list);
+        
+        $paginator = null;
+        
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            // $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getMostValueItems(8200,($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+        }
+        
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator
+        ));
+    }
     
     /**
      *

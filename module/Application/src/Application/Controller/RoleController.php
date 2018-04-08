@@ -479,6 +479,8 @@ class RoleController extends AbstractActionController {
 		}
 		
 		// NO POST
+		//=================================
+		
 		
 		if (is_null ( $this->params ()->fromQuery ( 'perPage' ) )) {
 			$resultsPerPage = 18;

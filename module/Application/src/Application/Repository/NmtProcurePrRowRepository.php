@@ -15,6 +15,7 @@ class NmtProcurePrRowRepository extends EntityRepository
 
     /** @var \Application\Entity\NmtProcurePrRow $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
+    
     private $sql = "
 SELECT
 	nmt_procure_pr_row.*,

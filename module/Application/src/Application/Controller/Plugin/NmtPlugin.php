@@ -15,10 +15,44 @@ class NmtPlugin extends AbstractPlugin
     protected $doctrineEM;
 
     /**
+     *  Return List of Currency
+     *  @return array
+     */
+    public function currencyList()
+    {
+        $criteria = array(
+            'isActive' => 1
+        );
+        $sort_criteria = array(
+            'currency' => 'ASC'
+        );
+        
+        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        return $currency_list;
+    }
+    
+    /**
+     *  Return List of Country
+     *  @return array
+     */
+    public function countryList()
+    {
+        $criteria = array(
+            "isActive" => 1
+        );
+        $sort_criteria = array(
+            "countryName" => "ASC"
+        );
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCountry')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
+
+    /**
      *
-     * @param unknown $o1
-     * @param unknown $o2
-     * @return NULL|string[][]|NULL[][]|mixed[][]|unknown[][]
+     * @param object $o1
+     * @param object $o2
+     * @return array
      */
     public function objectsAreIdentical($o1, $o2)
     {
@@ -258,7 +292,7 @@ class NmtPlugin extends AbstractPlugin
      *
      * @var \Doctrine\ORM\EntityManager $doctrineEM ;
      *      $doctrineEM = $this->NmtPlugin()->doctrineEM();
-     * @return unknown
+     * @return \Doctrine\ORM\EntityManager
      */
     public function doctrineEM()
     {
@@ -267,7 +301,7 @@ class NmtPlugin extends AbstractPlugin
 
     /**
      *
-     * @return mixed
+     * @return \Doctrine\ORM\EntityManager
      */
     public function getDoctrineEM()
     {
@@ -276,7 +310,7 @@ class NmtPlugin extends AbstractPlugin
 
     /**
      *
-     * @param mixed $doctrineEM
+     * @param EntityManager $doctrineEM
      */
     public function setDoctrineEM(EntityManager $doctrineEM)
     {

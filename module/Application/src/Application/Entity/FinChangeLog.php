@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinChangeLog
  *
- * @ORM\Table(name="fin_change_log", indexes={@ORM\Index(name="fin_change_log_FK1_idx", columns={"created_by"}), @ORM\Index(name="fin_change_log_IDX1", columns={"class_name"}), @ORM\Index(name="fin_change_log_IDX2", columns={"field_name"}), @ORM\Index(name="fin_change_log_IDX3", columns={"object_id"}), @ORM\Index(name="fin_change_log_IDX4", columns={"object_token"})})
+ * @ORM\Table(name="fin_change_log", indexes={@ORM\Index(name="fin_change_log_FK1_idx", columns={"created_by"}), @ORM\Index(name="fin_change_log_IDX1", columns={"class_name"}), @ORM\Index(name="fin_change_log_IDX2", columns={"field_name"}), @ORM\Index(name="fin_change_log_IDX3", columns={"object_id"}), @ORM\Index(name="fin_change_log_IDX4", columns={"object_token"}), @ORM\Index(name="fin_change_log_FK2_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class FinChangeLog
@@ -142,6 +142,16 @@ class FinChangeLog
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCountry
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 
@@ -561,5 +571,29 @@ class FinChangeLog
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCountry $company
+     *
+     * @return FinChangeLog
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCountry $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCountry
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

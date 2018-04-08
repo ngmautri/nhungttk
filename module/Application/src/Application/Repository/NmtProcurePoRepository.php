@@ -48,15 +48,6 @@ ON nmt_procure_po.id = nmt_procure_po_row.po_id
 WHERE 1
 ";
 
-  /**
-   * 
-   * @param unknown $po_id
-   * @param unknown $token
-   * @param unknown $filter_by
-   * @param unknown $sort_by
-   * @param unknown $sort
-   * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
-   */
     public function getPo($po_id, $token, $filter_by = null, $sort_by = null, $sort = null)
     {
         $sql = $this->sql;
@@ -84,17 +75,7 @@ WHERE 1
     }
 
     
-    /**
-     * 
-     * @param number $is_active
-     * @param unknown $current_state
-     * @param unknown $filter_by
-     * @param unknown $sort_by
-     * @param unknown $sort
-     * @param number $limit
-     * @param number $offset
-     * @return unknown|NULL
-     */
+    
     public function getPoList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql;
@@ -161,19 +142,7 @@ WHERE 1
     }
     
     
-    /**
-     * 
-     * @param unknown $vendor_id
-     * @param unknown $token
-     * @param number $is_active
-     * @param unknown $current_state
-     * @param unknown $filter_by
-     * @param unknown $sort_by
-     * @param unknown $sort
-     * @param number $limit
-     * @param number $offset
-     * @return array|NULL
-     */
+   
     public function getPoOf($vendor_id,$is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql;
@@ -247,15 +216,7 @@ WHERE 1
     
     
     
-    /**
-     * 
-     * @param unknown $po_id
-     * @param unknown $token
-     * @param unknown $filter_by
-     * @param unknown $sort_by
-     * @param unknown $sort
-     * @return array|NULL
-     */
+    
     public function downLoadVendorPo($po_id, $token, $filter_by = null, $sort_by = null, $sort = null)
     {
         $sql = 
@@ -280,12 +241,7 @@ WHERE 1
         }
     }
     
-    /**
-     *
-     * @param unknown $item_id
-     * @param unknown $token
-     * @return array|NULL
-     */
+    
     public function getPoOfItem($item_id, $token)
     {
         $sql = "

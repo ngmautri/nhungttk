@@ -23,7 +23,7 @@ Class PayslipVisitor implements VisitorInterface
         }
         
         // Lset make paysslip
-        echo $element->getEmployee()->getEmployeeCode() . "accepted me. thanks";
+        echo $element->getEmployee()->getEmployeeCode() . " accepted me. thanks <br>\n";
         
         
     }

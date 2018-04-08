@@ -48,7 +48,7 @@ return array(
             ),
             array(
                 'label' => 'Reporting',
-                  'route' => 'hr/default',
+                'route' => 'hr/default',
                 'controller' => 'reporting',
                 'action' => 'index',
                 'icon' => 'glyphicon glyphicon-triangle-right'
@@ -59,6 +59,15 @@ return array(
                 'controller' => 'setting',
                 'action' => 'index',
                 'icon' => 'glyphicon glyphicon-wrench'
+            
+            ),
+            
+            array(
+                'label' => 'Log',
+                'route' => 'hr/default',
+                'controller' => 'activity-log',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
             )
         )
     ),
@@ -135,10 +144,11 @@ return array(
             'HR\Controller\IncomeSetup' => 'HR\Controller\IncomeSetupControllerFactory',
             'HR\Controller\IncomeDecorator' => 'HR\Controller\IncomeDecoratorControllerFactory',
             'HR\Controller\Contract' => 'HR\Controller\ContractControllerFactory',
-            'HR\Controller\ContractLog' => 'HR\Controller\ContractLogControllerFactory',            
+            'HR\Controller\ContractLog' => 'HR\Controller\ContractLogControllerFactory',
             'HR\Controller\EntityChangeLog' => 'HR\Controller\EntityChangeLogControllerFactory',
-            'HR\Controller\SalaryCalculator' => 'HR\Controller\SalaryCalculatorControllerFactory',            
-            
+            'HR\Controller\SalaryCalculator' => 'HR\Controller\SalaryCalculatorControllerFactory',
+            'HR\Controller\ActivityLog' => 'HR\Controller\ActivityLogControllerFactory'
+        
         )
     ),
     'view_manager' => array(

@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Controller;
+namespace HR\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -28,7 +28,7 @@ class ActivityLogController extends AbstractActionController
         $request = $this->getRequest();
         
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 15;
+            $resultsPerPage = 10;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -61,7 +61,7 @@ class ActivityLogController extends AbstractActionController
         
         
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 15;
+            $resultsPerPage = 10;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -80,13 +80,13 @@ class ActivityLogController extends AbstractActionController
             'createdOn' => 'DESC',
         );
         
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria);
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrLog')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
         
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
         
         return new ViewModel(array(

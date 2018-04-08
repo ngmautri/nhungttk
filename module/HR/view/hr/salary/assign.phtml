@@ -19,8 +19,17 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-<h4><?php echo (!$target == null)? "Employee: " . $target->getEmployee()->getEmployeeName() ." - ". $target->getEmployee()->getEmployeeCode():"";?></h4>
+<h4><?php if (!$target == null):
 
+echo sprintf('<a href="/hr/employee-contract/show?token=%s&entity_id=%s" >%s</a>',
+    $target->getToken(),
+    $target->getId(),
+    strtoupper($target->getContractNumber()). ' #' .  $target->getEmployee()->getEmployeeCode()
+    );
+endif;
+
+    ?>
+    </h4>
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
@@ -35,10 +44,10 @@ if (count ( $errors ) > 0) {
 <input type="hidden" name="token" value="<?php if(!$target == null):echo $target->getToken(); endif;?>" />
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl;?>" />
 	
-	<table style="font-size: 10pt;" class="table table-bordered table-hover">
+	<table style="font-size: 10pt;" class="table table-bordered table-striped table-hover">
 	<thead>
 		<tr>
-			<td><input type="checkbox" id="select_ALL" name="SelectAll" value="YES"/><?php echo $this->translate('All'); ?></td>
+			<td><input type="checkbox" id="select_ALL" name="SelectAll" value="YES"/> <?php echo $this->translate('All'); ?></td>
  	
 			<td><b>#</b></td>
 			<td><b><?php echo $this->translate('default income name'); ?></b></td>
@@ -82,6 +91,8 @@ if (count ( $errors ) > 0) {
 </tbody>
 </table>
 	<input class="btn btn-primary btn-sm" type="submit" name="Assign" value="<?php echo $this->translate('Assign'); ?>" />
+<a class="btn btn-default btn-sm" href="<?php echo sprintf('/hr/employee-contract/show?entity_id=%s&token=%s',$target->getId(),$target->getToken())?>">&nbsp;<?php echo $this->translate('Cancel'); ?></a>
+
 </form>	
 </div>
 </div>

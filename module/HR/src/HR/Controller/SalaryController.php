@@ -59,8 +59,6 @@ class SalaryController extends AbstractActionController
         
         if ($request->isPost()) {
             
-            // echo "isPosted";
-            
             $target_id = (int) $request->getPost('target_id');
             $token = $request->getPost('token');
             $incomes = $request->getPost('incomes');
@@ -90,6 +88,9 @@ class SalaryController extends AbstractActionController
                     $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                         "email" => $this->identity()
                     ));
+                    
+                    $createdOn = new \DateTime();
+                    
                     
                     foreach ($incomes as $income) {
                         
@@ -122,7 +123,7 @@ class SalaryController extends AbstractActionController
                                 $entity->setSalaryAmount(0);
                                 $entity->setContract($target);
                                 $entity->setEmployee($target->getEmployee());
-                                $entity->setCreatedOn(new \DateTime());
+                                $entity->setCreatedOn($createdOn);
                                 $entity->setCreatedBy($u);
                                 
                                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
@@ -135,8 +136,6 @@ class SalaryController extends AbstractActionController
                                     $entity->getId(),
                                     $target->getId(),
                                     $target->getEmployee()->getEmployeeName());
-                                
-                                $createdOn = new \DateTime();
                                 
                                 // Trigger: hr.activity.log. AbtractController is EventManagerAware.
                                 $this->getEventManager()->trigger('hr.activity.log', __METHOD__, array(
@@ -158,13 +157,16 @@ class SalaryController extends AbstractActionController
             }
         }
         
-        // +++++++++++ NO POST REQUEST ++++++++++++
+        // NO POST
+        //+++++++++++++++++++++++
         
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
         } else {
             $redirectUrl = $request->getHeader('Referer')->getUri();
         }
+        
+         
         
         $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
@@ -185,7 +187,12 @@ class SalaryController extends AbstractActionController
             $criteria = array(
                 'isActive' => 1
             );
-            $incomes = $this->doctrineEM->getRepository('Application\Entity\NmtHrSalaryDefault')->findby($criteria);
+            
+            /**@var \Application\Repository\NmtHrEmployeeRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee');
+            
+            //$incomes = $this->doctrineEM->getRepository('Application\Entity\NmtHrSalaryDefault')->findby($criteria);
+            $incomes = $res->getNoneComponentOfContract($id, $token);
             
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,

@@ -1,9 +1,9 @@
-<div id="most_order_items" style="min-height: 280;">
-
+<div id="most-value-items" style="min-height: 280;">
+	
 <?php
-$rows = $mostOrderItems;
 
-if (count($rows) == 0) :
+
+if (count($list) == 0) :
     ?>
 
 <h5>no thing found!</h5>
@@ -13,13 +13,13 @@ if (count($rows) == 0) :
 	<div style="color: gray; font-size: 9pt;" id="total_received"></div>
 	<div style="color: gray; font-size: 9pt;" id="total_balance"></div>
 
-	<table id="mytable" style="font-size: 9pt; margin-bottom: 0px; padding:0px;"
+	<table  id="mytable" style="font-size: 9pt; margin-bottom: 0px; padding:0px;"
 		class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<td><b>#</b></td>
 				<td><b><?php echo $this->translate("Item name")?></b></td>
-				<td><b><?php echo $this->translate("No. Orders")?></b></td>
+				<td><b><?php echo $this->translate("U/P LAK")?></b></td>
 			</tr>
 		</thead>
 		<tbody>
@@ -27,18 +27,34 @@ if (count($rows) == 0) :
 	 <?php
     
     $count = 0;
-    foreach ($rows as $r) :
+    foreach ($list as $r) :
         $count ++;
-        /**@var \Application\Entity\NmtInventoryItem $a ;*/
-        $a = $r[0];
+        /**@var \Application\Entity\FinVendorInvoiceRow $entity ;*/
+        $entity = $r[0];
         ?>
 	 <tr style="font-size: 9pt;">
 				<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-				<td><a href="/inventory/item/show?entity_id=<?php echo $a->getId();?>&token=<?php echo $a->getToken();?>"
-					target="_blank"><?php echo $this->escapeHtml($a->getItemName());?></a></td>
-
-				<td><?php echo $r['total_pr_row'];?></td>
+				<td>
+<?php 				
+if ($entity->getItem() !== null) {
+    if (strlen($entity->getItem()->getItemName()) < 35) {
+        echo sprintf('<div><a target ="_blank" title="%s" href="%s" style="color:gray">%s</a></div>',
+            'SKU: ' . $entity->getItem()->getItemSku().' // '. $entity->getItem()->getSysNumber() . '<br>' . $entity->getItem()->getItemName(),
+            '/inventory/item/show?token='.$entity->getItem()->getToken().'&entity_id='.$entity->getItem()->getId(), 
+            $entity->getItem()->getItemName());
+    } else {
+        
+        echo sprintf('<div><a target ="_blank" title="%s" href="%s" style="color:gray">%s</a></div>',
+            'SKU: ' . $entity->getItem()->getItemSku().' // '. $entity->getItem()->getSysNumber() . '<br>' . $entity->getItem()->getItemName(),
+            '/inventory/item/show?token='.$entity->getItem()->getToken().'&entity_id='.$entity->getItem()->getId(),
+            substr($entity->getItem()->getItemName(), 0, 30).'...');
+      }
+}				
+?>				
+				
 				</td>
+			
+			<td><?php if($r['lak_unit_price']!==null): echo number_format($r['lak_unit_price'],0);endif;?></td>
 			</tr>
 <?php endforeach; ?>
 
@@ -58,8 +74,8 @@ if (count($rows) == 0) :
 if (! is_null($paginator)) :
     
     // change it only
-    $target_id = "'most_order_items'";
-    $base = $this->baseUrl . '/inventory/dashboard/most-order-items';
+    $target_id = "'most-value-items'";
+    $base = $this->baseUrl . '/inventory/dashboard/most-value-items';
     $_connector_symbol = '?';
     
     $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
@@ -76,14 +92,14 @@ if (! is_null($paginator)) :
     $next_js = "doPaginator('" . $next . "',$target_id)";
     $prev_js = "doPaginator('" . $prev . "',$target_id)";
     
-    echo '<ul  margin-top: 0px;" class="pagination pagination-sm">';
+    echo '<ul  margin-top: 0px; padding:0px" class="pagination pagination-sm">';
     
     if ($paginator->page != 1 and $paginator->totalPages > 10) {
         // echo '<li><a href="' . $first . '"> |< </a></li>';
         // echo '<li><a href="' . $prev . '"> < </a></li>';
         
-        echo '<li><a style="font-size: 8.5pt; href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
-        echo '<li><a style="font-size: 8.5pt; href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
+        echo '<li><a style="font-size: 8pt; href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
+        echo '<li><a style="font-size: 8pt; href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
     }
     
     for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
@@ -92,10 +108,10 @@ if (! is_null($paginator)) :
         $url_js = "doPaginator('" . $url . "',$target_id)";
         
         if ($i == $paginator->page) {
-            echo '<li><a style="font-size: 8.5pt;" class="active" href="#">' . $i . '</a></li>';
+            echo '<li><a style="font-size: 8pt;" class="active" href="#">' . $i . '</a></li>';
         } else {
             // echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-            echo '<li><a style="font-size: 8.5pt;" href="javascript:;" onclick="' . $url_js . '">' . $i . '</a></li>';
+            echo '<li><a style="font-size: 8pt;" href="javascript:;" onclick="' . $url_js . '">' . $i . '</a></li>';
         }
     }
     if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
@@ -108,5 +124,4 @@ endif;
 
     // ===============================
 ?>
-
 </div>

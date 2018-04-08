@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtHrChangeLog
  *
- * @ORM\Table(name="nmt_hr_change_log", indexes={@ORM\Index(name="nmt_hr_change_log_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_change_log_IDX1", columns={"class_name"}), @ORM\Index(name="nmt_hr_change_log_IDX2", columns={"field_name"}), @ORM\Index(name="nmt_hr_change_log_IDX3", columns={"object_id"}), @ORM\Index(name="nmt_hr_change_log_IDX4", columns={"object_token"})})
+ * @ORM\Table(name="nmt_hr_change_log", indexes={@ORM\Index(name="nmt_hr_change_log_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_change_log_IDX1", columns={"class_name"}), @ORM\Index(name="nmt_hr_change_log_IDX2", columns={"field_name"}), @ORM\Index(name="nmt_hr_change_log_IDX3", columns={"object_id"}), @ORM\Index(name="nmt_hr_change_log_IDX4", columns={"object_token"}), @ORM\Index(name="nmt_hr_change_log_FK2_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class NmtHrChangeLog
@@ -107,6 +107,16 @@ class NmtHrChangeLog
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 
@@ -406,5 +416,29 @@ class NmtHrChangeLog
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCompany $company
+     *
+     * @return NmtHrChangeLog
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

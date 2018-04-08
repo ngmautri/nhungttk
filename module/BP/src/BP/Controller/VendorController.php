@@ -71,6 +71,7 @@ class VendorController extends AbstractActionController {
 	 * Defaul Action
 	 */
 	public function addAction() {
+	    
 		$request = $this->getRequest ();
 		if ($request->getHeader ( 'Referer' ) == null) {
 			return $this->redirect ()->toRoute ( 'access_denied' );

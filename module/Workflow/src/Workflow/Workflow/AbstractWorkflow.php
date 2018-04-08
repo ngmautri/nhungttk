@@ -20,27 +20,20 @@ abstract class AbstractWorkflow
 
     abstract public function createWorkflow();
 
-    /**
-     * 
-     * @return field_type
-     */
+    
     public function getSubject()
     {
         return $this->subject;
     }
 
-    /**
-     *
-     * @return the $workflowFactory
-     */
     public function getWorkflowFactory()
     {
         return $this->workflowFactory;
     }
-
+    
     /**
-     *
-     * @param field_type $subject
+     * 
+     *  @param object $subject
      */
     public function setSubject($subject)
     {

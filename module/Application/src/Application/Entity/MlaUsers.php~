@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * MlaUsers
  *
- * @ORM\Table(name="mla_users", uniqueConstraints={@ORM\UniqueConstraint(name="CT_users_1", columns={"email"})})
+ * @ORM\Table(name="mla_users", uniqueConstraints={@ORM\UniqueConstraint(name="CT_users_1", columns={"email"})}, indexes={@ORM\Index(name="mla_users_FK1_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class MlaUsers
@@ -118,6 +118,16 @@ class MlaUsers
      * @ORM\Column(name="block", type="boolean", nullable=false)
      */
     private $block = '0';
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 }

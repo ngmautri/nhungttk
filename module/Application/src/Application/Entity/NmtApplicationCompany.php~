@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationCompany
  *
- * @ORM\Table(name="nmt_application_company", uniqueConstraints={@ORM\UniqueConstraint(name="nmt_application_company_company_name_UNIQUE", columns={"company_name"}), @ORM\UniqueConstraint(name="company_code_UNIQUE", columns={"company_code"})}, indexes={@ORM\Index(name="nmt_application_company_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_company_FK1_idx", columns={"default_currency_id"}), @ORM\Index(name="nmt_application_company_FK4_idx", columns={"default_address_id"})})
+ * @ORM\Table(name="nmt_application_company", indexes={@ORM\Index(name="nmt_application_company_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_company_FK1_idx", columns={"default_currency_id"}), @ORM\Index(name="nmt_application_company_FK4_idx", columns={"default_address_id"}), @ORM\Index(name="nmt_application_company_IDX1", columns={"token"})})
  * @ORM\Entity
  */
 class NmtApplicationCompany
@@ -62,6 +62,13 @@ class NmtApplicationCompany
      * @ORM\Column(name="is_default", type="boolean", nullable=true)
      */
     private $isDefault;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
 
     /**
      * @var \Application\Entity\NmtApplicationCurrency

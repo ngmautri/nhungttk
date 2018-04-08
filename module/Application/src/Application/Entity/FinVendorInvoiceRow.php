@@ -183,6 +183,34 @@ class FinVendorInvoiceRow
     private $revisionNo;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="local_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $localUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $docUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="exw_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $exwUnitPrice;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="exw_currency", type="integer", nullable=true)
+     */
+    private $exwCurrency;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -814,6 +842,102 @@ class FinVendorInvoiceRow
     public function getRevisionNo()
     {
         return $this->revisionNo;
+    }
+
+    /**
+     * Set localUnitPrice
+     *
+     * @param string $localUnitPrice
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setLocalUnitPrice($localUnitPrice)
+    {
+        $this->localUnitPrice = $localUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get localUnitPrice
+     *
+     * @return string
+     */
+    public function getLocalUnitPrice()
+    {
+        return $this->localUnitPrice;
+    }
+
+    /**
+     * Set docUnitPrice
+     *
+     * @param string $docUnitPrice
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setDocUnitPrice($docUnitPrice)
+    {
+        $this->docUnitPrice = $docUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get docUnitPrice
+     *
+     * @return string
+     */
+    public function getDocUnitPrice()
+    {
+        return $this->docUnitPrice;
+    }
+
+    /**
+     * Set exwUnitPrice
+     *
+     * @param string $exwUnitPrice
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setExwUnitPrice($exwUnitPrice)
+    {
+        $this->exwUnitPrice = $exwUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get exwUnitPrice
+     *
+     * @return string
+     */
+    public function getExwUnitPrice()
+    {
+        return $this->exwUnitPrice;
+    }
+
+    /**
+     * Set exwCurrency
+     *
+     * @param integer $exwCurrency
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setExwCurrency($exwCurrency)
+    {
+        $this->exwCurrency = $exwCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get exwCurrency
+     *
+     * @return integer
+     */
+    public function getExwCurrency()
+    {
+        return $this->exwCurrency;
     }
 
     /**

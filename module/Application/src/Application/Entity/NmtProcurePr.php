@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePr
  *
- * @ORM\Table(name="nmt_procure_pr", indexes={@ORM\Index(name="nmt_procure_pr_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_KF2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_pr_KF3_idx", columns={"department_id"})})
+ * @ORM\Table(name="nmt_procure_pr", indexes={@ORM\Index(name="nmt_procure_pr_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_KF2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_pr_KF3_idx", columns={"department_id"}), @ORM\Index(name="nmt_procure_pr_KF4_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class NmtProcurePr
@@ -162,6 +162,16 @@ class NmtProcurePr
      * })
      */
     private $department;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 
@@ -629,5 +639,29 @@ class NmtProcurePr
     public function getDepartment()
     {
         return $this->department;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCompany $company
+     *
+     * @return NmtProcurePr
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

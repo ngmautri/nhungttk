@@ -1,117 +1,123 @@
-<div id="tabs" style="font-size: 9.5pt"> 
-  <ul>
-  <li ><a href="#general">Country List</a></li>
-   </ul>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">Country List</a></li>
+	</ul>
 
-<div id="general">
-
-
-<ul class="nav nav-pills">
-	<li><a style="color: #0080ff;" href="<?php echo $this->baseUrl ?>/application/country/add"><i class="glyphicon glyphicon-plus"> </i> Add New Country</a></li>
-	<li><a style="color: #0080ff;" href="javascript:;"
-	onclick="showBootstrapDialog('Country List','/application/country/list1','loaded_data');"> <i class="glyphicon glyphicon-list">  </i> Test Ajax List
-</a>
-
-</ul>
+	<div id="general">
 
 
-<hr>
+		<ul class="nav nav-pills">
+			<li><a style="color: #0080ff;"
+				href="<?php echo $this->baseUrl ?>/application/country/add"><i
+					class="glyphicon glyphicon-plus"> </i> Add New Country</a></li>
+			<li><a style="color: #0080ff;" href="javascript:;"
+				onclick="showBootstrapDialog('Country List','/application/country/list1','loaded_data');">
+					<i class="glyphicon glyphicon-list"> </i> Test Ajax List
+			</a>
+		
+		</ul>
+
+
+		<hr>
 
 <?php
 
 if ($total_records <= 0) {
-	
-	echo 'No Resources found!';
+    
+    echo 'No Resources found!';
 } else {
-	
-	if (! is_null ( $paginator )) {
-		echo 'Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records. ' Resources found!';
-	} else {
-		echo $total_records. ' Resources found!';
-	}
-	
-	?>
+    
+    if (! is_null($paginator)) {
+        echo 'Result ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' Resources found!';
+    } else {
+        echo $total_records . ' Resources found!';
+    }
+    
+    ?>
 
-<table class="table table-bordered table-striped">
-	<thead>
-		<tr>
-			<td><b>Country Name</b></td>
-			<td><b>Code 2</b></td>
-			<td><b>Code 3</b></td>
-			<td><b>Numeric Code</b></td>
-			<td><b>Status</b></td>
-			<td><b>Date</b></td>
-		</tr>
-	</thead>
+<table id="mytable26" class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b>Country Name</b></td>
+					<td><b>Code 2</b></td>
+					<td><b>Code 3</b></td>
+					<td><b>Numeric Code</b></td>
+					<td><b>Status</b></td>
+					<td><b>Created on</b></td>
+					<td><b><?php echo $this->translate('Action')?></b></td>
+				</tr>
+			</thead>
 
-	<tbody>
+			<tbody>
  
 	 <?php
-	
-	$count = 0;
-	foreach ( $list as $a ) :
-		$count ++;
-		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-		// $instock = $a['totalINFLOW']-$a['totalOUTFLOW'];
-		
-		?>
+    
+    $count = 0;
+    foreach ($list as $a) :
+        /**@var \Application\Entity\NmtApplicationCountry $a ;*/
+        $edit_url = sprintf('/application/country/edit?token=%s&entity_id=%s', $a->getToken(), $a->getId());
+        $count ++;
+        ?>
 	 <tr>
-			<td><?php echo $this->escapeHtml($a->getCountryName());?></td>
-			<td><?php echo $this->escapeHtml($a->getCountryCode2());?></td>
-			<td><?php echo $this->escapeHtml($a->getCountryCode3());?></td>
-			<td><?php echo $this->escapeHtml($a->getCountryNumericCode());?></td>
-			<td><?php echo $this->escapeHtml($a->getStatus());?></td>
-			<td><?php echo date_format ( $a->getCreatedOn(), "d/m/Y  h:m");?> </td>
-		
-		</tr>
+	 		     	<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+	  			<td><?php echo $this->escapeHtml($a->getCountryName());?></td>
+					<td><?php echo $this->escapeHtml($a->getCountryCode2());?></td>
+					<td><?php echo $this->escapeHtml($a->getCountryCode3());?></td>
+					<td><?php echo $this->escapeHtml($a->getCountryNumericCode());?></td>
+					<td><?php echo $this->escapeHtml($a->getIsActive());?></td>
+					<td><?php echo date_format ( $a->getCreatedOn(), "d/m/Y  h:m");?> </td>
+					<td><a href="<?php echo $edit_url ;?>"><?php echo $this->translate("Edit");?></a></td>
+				</tr>
 <?php endforeach; ?>
 
  </tbody>
-</table>
+		</table>
 
 <?php
-	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-		$base = $this->baseUrl . '/application/country/list';
-		$_connector_symbol = '?';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
+    
+    // ===============================
+    if (! is_null($paginator)) :
+        
+        // change it only
+        $base = $this->baseUrl . '/application/country/list';
+        $_connector_symbol = '?';
+        
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+        
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+        
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        
+        echo '<ul class="pagination pagination-sm">';
+        
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+        
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+            
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+            
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
-	
+    
 }
 // ===============================
 ?>
-</div></div>
+</div>
+</div>

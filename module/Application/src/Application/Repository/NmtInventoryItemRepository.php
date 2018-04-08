@@ -16,6 +16,7 @@ class NmtInventoryItemRepository extends EntityRepository
 
     /** @var \Application\Entity\NmtInventoryItem $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
+   
     private $sql = "SELECT * FROM nmt_inventory_item ";
 
     private $sql_cat_album = "

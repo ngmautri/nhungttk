@@ -28,11 +28,11 @@ Abstract class AbstractIncomeComponent implements IncomeInterface{
      *  @param string $incomeName
      *  @param number $amount
      *  @param number $calculatedAmount
-     *  @param unknown $currency
-     *  @param unknown $isPITPayable
-     *  @param unknown $isSSOPayable
-     *  @param unknown $isPayable
-     *  @param unknown $decoratorFactory
+     *  @param string $currency
+     *  @param boolean $isPITPayable
+     *  @param boolean $isSSOPayable
+     *  @param boolean $isPayable
+     *  @param string $decoratorFactory
      */
     function __construct($incomeName=null, $amount=0, $calculatedAmount=0,$currency,
         $isPITPayable,$isSSOPayable,$isPayable,$decoratorFactory=null)

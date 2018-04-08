@@ -18,12 +18,12 @@ class MlaUsersRepository extends EntityRepository
     
    /**
     * 
-    * @param unknown $transition_id
-    * @param unknown $limit
-    * @param unknown $offset
-    * @return array
+    *  @param number $transition_id
+    *  @param number $limit
+    *  @param number $offset
+    *  @return array
     */
-    public function getOtherAgentOfWfTransition($transition_id, $limit=null, $offset=null)
+    public function getOtherAgentOfWfTransition($transition_id, $limit=0, $offset=0)
     {
         $sql_AgentOf = "
             SELECT nmt_wf_transition_agent.agent_id FROM nmt_wf_transition_agent

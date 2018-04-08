@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureLog
  *
- * @ORM\Table(name="nmt_procure_log", indexes={@ORM\Index(name="nmt_procure_log_FK1_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_procure_log", indexes={@ORM\Index(name="nmt_procure_log_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_log_FK2_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class NmtProcureLog
@@ -114,6 +114,16 @@ class NmtProcureLog
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 
@@ -437,5 +447,29 @@ class NmtProcureLog
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCompany $company
+     *
+     * @return NmtProcureLog
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

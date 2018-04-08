@@ -328,7 +328,7 @@ class ItemController extends AbstractActionController
             // =======================
             try {
                 
-                // generate document
+			    // generate document
                 // ==================
                 $criteria = array(
                     'isActive' => 1,
@@ -364,6 +364,9 @@ class ItemController extends AbstractActionController
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     'email' => $this->identity()
                 ));
+				
+				$createdOn = new \DateTime();
+               
                 
                 $entity->setCreatedOn(new \DateTime());
                 $entity->setCreatedBy($u);
@@ -385,7 +388,7 @@ class ItemController extends AbstractActionController
                     $entity->setCategory($itemCategory);
                     
                     $entity->setCreatedBy($u);
-                    $entity->setCreatedOn(new \DateTime());
+                    $entity->setCreatedOn($createdOn);
                     
                     $this->doctrineEM->persist($entity);
                     $this->doctrineEM->flush();
@@ -399,7 +402,6 @@ class ItemController extends AbstractActionController
                     $entity->setDepartment($department);
                     $entity->setItem($new_item);
                     
-                    $createdOn = new \DateTime();
                     $entity->setCreatedBy($u);
                     $entity->setCreatedOn($createdOn);
                     
@@ -411,7 +413,7 @@ class ItemController extends AbstractActionController
                 // $this->itemSearchService->addDocument ( $new_item, true );
                 $this->itemSearchService->updateIndex(1, $new_item, false);
                 
-                $m = sprintf('Item #%s %s (%s) created sucessfully.', $new_item->getId(), $new_item->getSysNumber(), $itemName);
+                $m = sprintf('(%s) #%s %s created. OK!', $itemName, $new_item->getId(), $new_item->getSysNumber());
                 
                 // Trigger. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
@@ -717,7 +719,7 @@ class ItemController extends AbstractActionController
                     // update index
                     $this->itemSearchService->updateIndex(0, $new_item, false);
                     
-                    $m = sprintf('"#%s %s (%s)" has been updated sucessfully. No. of change %s', $new_item->getId(), $new_item->getSysNumber(), $itemName, count($changeArray));
+                    $m = sprintf('(%s) #%s %s updated. Change no.:%s. OK!', $itemName, $new_item->getId(), $new_item->getSysNumber(),count($changeArray));
                     
                     // Trigger Change Log. AbtractController is EventManagerAware.
                     $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(

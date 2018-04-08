@@ -28,7 +28,9 @@ class PayrollCalculator{
         $this->payrollList = $payrollList;
     }
     
-    
+    /**
+     * 
+     */
     public function calculate(){
         $payrollList=  $this->payrollList;
         

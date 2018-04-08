@@ -7,16 +7,15 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class FinVendorInvoiceRepository extends EntityRepository
 {
 
     /** @var \Application\Entity\FinVendorInvoice $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\FinVendorInvoiceRepository")
-    
     private $sql = "
 SELECT
 	fin_vendor_invoice.*,
@@ -53,8 +52,7 @@ where 1
 
 
 ";
-    
-    
+
     private $sql_tmp = "
 SELECT
 	fin_vendor_invoice.*,
@@ -104,9 +102,9 @@ WHERE 1";
             return null;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param int $invoice_id
      * @param string $token
      */
@@ -125,15 +123,15 @@ WHERE 1";
             $rsm->addScalarResult("total_attachment", "total_attachment");
             $rsm->addScalarResult("net_amount", "net_amount");
             $rsm->addScalarResult("tax_amount", "tax_amount");
-            $rsm->addScalarResult("gross_amount", "gross_amount");            
-            $query = $this->_em->createNativeQuery($sql, $rsm);            
+            $rsm->addScalarResult("gross_amount", "gross_amount");
+            $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getSingleResult();
             return $result;
         } catch (NoResultException $e) {
             return null;
         }
     }
-    
+
     /**
      *
      * @param int $invoice_id
@@ -190,7 +188,7 @@ WHERE 1";
         }
         
         if ($current_state != null) {
-            $sql = $sql . " AND fin_vendor_invoice.current_state = '".$current_state."'";
+            $sql = $sql . " AND fin_vendor_invoice.current_state = '" . $current_state . "'";
         }
         
         $sql = $sql . " GROUP BY fin_vendor_invoice.id";
@@ -212,7 +210,6 @@ WHERE 1";
                 $sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
                 break;
         }
-        
         
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
@@ -241,10 +238,9 @@ WHERE 1";
             return null;
         }
     }
-    
-    
+
     /**
-     * 
+     *
      * @param int $vendor_id
      * @param string $token
      * @param int $is_active
@@ -256,13 +252,13 @@ WHERE 1";
      * @param number $offset
      * @return array|NULL
      */
-    public function getInvoicesOf($vendor_id,$is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getInvoicesOf($vendor_id, $is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql;
         
-        if($vendor_id > 0){
-            $sql = $sql . " AND fin_vendor_invoice.vendor_id =" . $vendor_id ;
-        }else{
+        if ($vendor_id > 0) {
+            $sql = $sql . " AND fin_vendor_invoice.vendor_id =" . $vendor_id;
+        } else {
             return null;
         }
         
@@ -273,7 +269,7 @@ WHERE 1";
         }
         
         if ($current_state != null) {
-            $sql = $sql . " AND fin_vendor_invoice.current_state = '".$current_state."'";
+            $sql = $sql . " AND fin_vendor_invoice.current_state = '" . $current_state . "'";
         }
         
         $sql = $sql . " GROUP BY fin_vendor_invoice.id";
@@ -295,7 +291,6 @@ WHERE 1";
                 $sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
                 break;
         }
-        
         
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
@@ -324,21 +319,19 @@ WHERE 1";
             return null;
         }
     }
-    
-    
-   /**
-    * 
-    * @param unknown $invoice_id
-    * @param unknown $token
-    * @param unknown $filter_by
-    * @param unknown $sort_by
-    * @param unknown $sort
-    * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
-    */
+
+    /**
+     *
+     * @param number $invoice_id
+     * @param string $token
+     * @param string $filter_by
+     * @param string $sort_by
+     * @param string $sort
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     */
     public function downLoadVendorInvoice($invoice_id, $token, $filter_by = null, $sort_by = null, $sort = null)
     {
-        $sql = 
-"
+        $sql = "
 SELECT 
 fin_vendor_invoice_row.*
 FROM fin_vendor_invoice_row
@@ -358,20 +351,19 @@ WHERE 1
             return null;
         }
     }
-    
+
     /**
-     * 
-     * @param unknown $invoice_id
-     * @param unknown $token
-     * @param unknown $filter_by
-     * @param unknown $sort_by
-     * @param unknown $sort
+     *
+     * @param number $invoice_id
+     * @param string $token
+     * @param string $filter_by
+     * @param string $sort_by
+     * @param string $sort
      * @return array|NULL
      */
     public function getAPInvoiceTmp($invoice_id, $token, $filter_by = null, $sort_by = null, $sort = null)
     {
-        $sql =
-        "
+        $sql = "
 SELECT
 fin_vendor_invoice_row_tmp.*
 FROM fin_vendor_invoice_row_tmp
@@ -391,12 +383,11 @@ WHERE 1
             return null;
         }
     }
-    
-    
+
     /**
      *
-     * @param unknown $item_id
-     * @param unknown $token
+     * @param number $item_id
+     * @param string $token
      * @return array|NULL
      */
     public function getAPOfItem($item_id, $token)
@@ -416,7 +407,7 @@ WHERE 1
             
 ";
         
-        //$sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
+        // $sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
         
         $sql = $sql . " AND nmt_inventory_item.id =" . $item_id . " AND nmt_inventory_item.token='" . $token . "'";
         $sql = $sql . " ORDER BY fin_vendor_invoice.invoice_date DESC ";
@@ -433,6 +424,50 @@ WHERE 1
             return null;
         }
     }
-    
+
+    /**
+     *
+     * @param number $rate
+     * @param number $limit
+     * @param number $offset
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     */
+    public function getMostValueItems($rate = 8100, $limit = 100, $offset = 0)
+    {
+        $sql_tmp = "
+SELECT
+
+(CASE WHEN fin_vendor_invoice.currency_id = 248 THEN (fin_vendor_invoice_row.unit_price)*%s ELSE fin_vendor_invoice_row.unit_price END) AS lak_unit_price,
+fin_vendor_invoice_row.*
+
+FROM fin_vendor_invoice_row
+
+LEFT JOIN fin_vendor_invoice
+ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+
+WHERE fin_vendor_invoice_row.is_active=1
+group by fin_vendor_invoice_row.item_id
+ORDER BY (CASE WHEN fin_vendor_invoice.currency_id = 248 THEN (fin_vendor_invoice_row.unit_price)*%s ELSE fin_vendor_invoice_row.unit_price END) DESC
+ LIMIT %s
+";
+        
+        if ($offset > 0) {
+            $sql_tmp = $sql_tmp . " OFFSET " . $offset;
+        }
+        
+        $sql = sprintf($sql_tmp, $rate, $rate, $limit);
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
+            $rsm->addScalarResult("lak_unit_price", "lak_unit_price");
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }
 

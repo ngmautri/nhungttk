@@ -12,25 +12,24 @@
  */
 
 // SQL: 2nyAf8CT3hujzGLM
-return array (
-		'doctrine' => array (
-				'connection' => array (
-						'orm_default' => array (
-								'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
-								'params' => array (
-										'host' => 'localhost',
-										'port' => '3306',
-										'user' => 'root',
-										'password' => 'kflg79',
-										'dbname' => 'mla' 
-								),
-								// To automatically convert enum to string
-								'doctrine_type_mappings' => array (
-										'enum' => 'string' 
-								) 
-						
-						) 
-				
-				) 
-		) 
+return array(
+    'doctrine' => array(
+        'connection' => array(
+            'orm_default' => array(
+                'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
+                'params' => array(
+                    'host' => 'localhost',
+                    'port' => '3306',
+                    'user' => 'root',
+                    'password' => 'kflg79',
+                    'dbname' => 'mla'
+                ),
+                
+                // To automatically convert enum to string
+                'doctrine_type_mappings' => array(
+                    'enum' => 'string'
+                ),
+            )
+        )
+    )
 );

@@ -33,10 +33,11 @@ class PayrollCalculator{
      */
     public function calculate(){
         $payrollList=  $this->payrollList;
-        
-        foreach ($payrollList as $payroll){
+         foreach ($payrollList as $payroll){
             $payroll->calculate();
         }
+        
+        return $payrollList;
     }
     
     /**

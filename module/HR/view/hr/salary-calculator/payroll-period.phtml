@@ -6,7 +6,7 @@
 <div id="general" style="font-size: 9pt">
 
 <div class="row">
-  <div class="col-xs-6 col-md-3">
+  <div class="col-xs-6 col-md-2">
  
 				 <?php 
     					$current_step="STEP1";
@@ -15,7 +15,7 @@
  
   </div>
   
-  <div class="col-xs-12 col-sm-6 col-md-9" style="">
+  <div class="col-xs-12 col-sm-6 col-md-10" style="">
    <!-- Col2 -->
 
 	<form id="Create_Inv_Form" class="form-horizontal"
@@ -35,7 +35,7 @@
                         	
                         	    /**@var \Application\Entity\NmtFinPostingPeriod $a*/
                         		?>
-                        			<option><?php echo $a->getPeriodName();?></option>
+                        			<option value="<?php echo $a->getId();?>"><?php echo $a->getPeriodName();?></option>
                         	<?php endforeach; ?>
                         </select>
 

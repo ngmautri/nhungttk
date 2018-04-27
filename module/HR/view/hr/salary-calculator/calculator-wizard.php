@@ -1,51 +1,59 @@
 
-<div class="list-group" style="">
+<div class="list-group">
 	<?php if ($current_step=="STEP1") :?>
-		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Period'); ?></a>
+		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Period'); ?>&nbsp;&nbsp;&nbsp;<i
+		class="fa fa-chevron-right" aria-hidden="true"></i></a>
 	<?php else:?>
-		<a class="list-group-item" href="/hr/salary-calculator/payroll-period"><?php echo $this->translate('Payroll Period'); ?></a>
+		<a style="color: gray" class="list-group-item"
+		href="/hr/salary-calculator/payroll-period"><?php echo $this->translate('Payroll Period'); ?></a>
 	<?php endif;?>
 	
 	<?php if ($current_step=="STEP2") :?>
-		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Input Consolidate'); ?></a>
+		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Input Consolidate'); ?>&nbsp;&nbsp;&nbsp;<i
+		class="fa fa-chevron-right" aria-hidden="true"></i></a>
 	<?php else:?>
-		<a class="list-group-item" href="/hr/salary-calculator/input-consolidate"><?php echo $this->translate('Payroll Input Consolidate'); ?></a>
+		<a style="color: gray" class="list-group-item"
+		href="/hr/salary-calculator/input-consolidate"><?php echo $this->translate('Payroll Input Consolidate'); ?></a>
 	<?php endif;?>
 	
 	<?php if ($current_step=="STEP3") :?>
-		<a class="list-group-item active" href="#"><?php echo $this->translate('Input Checking'); ?></a>
+		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Input Review'); ?>&nbsp;&nbsp;&nbsp;<i
+		class="fa fa-chevron-right" aria-hidden="true"></i></a>
 	<?php else:?>
-		<a class="list-group-item" href="/hr/salary-calculator/input-check"><?php echo $this->translate('Input Checking'); ?></a>
+		<a style="color: gray" class="list-group-item"
+		href="/hr/salary-calculator/input-check"><?php echo $this->translate('Payroll Input Review'); ?></a>
 	<?php endif;?>
 	
-	<?php if ($current_step=="STEP4") :?>
-		<a class="list-group-item active" href="#"><?php echo $this->translate('Close period'); ?></a>
-	<?php else:?>
-		<a class="list-group-item" href="/hr/salary-calculator/close-period"><?php echo $this->translate('Close period'); ?></a>
-	<?php endif;?>
 	
 	<?php if ($current_step=="STEP5") :?>
-		<a class="list-group-item active" href="#"><?php echo $this->translate('Draft Payroll'); ?></a>
+		<a class="list-group-item active" href="#"><?php echo $this->translate('Draft Payroll'); ?>&nbsp;&nbsp;&nbsp;<i
+		class="fa fa-chevron-right" aria-hidden="true"></i></a>
 	<?php else:?>
-		<a class="list-group-item" href="/hr/salary-calculator/simulate"><?php echo $this->translate('Draft Payroll'); ?></a>
+		<a style="color: gray" class="list-group-item"
+		href="/hr/salary-calculator/simulate"><?php echo $this->translate('Draft Payroll'); ?></a>
 	<?php endif;?>
 
 	<?php if ($current_step=="STEP6") :?>
-		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Adjustment'); ?></a>
+		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Adjustment'); ?>&nbsp;&nbsp;&nbsp;<i
+		class="fa fa-chevron-right" aria-hidden="true"></i></a>
 	<?php else:?>
-		<a class="list-group-item" href="/hr/salary-calculator/adjust-payroll"><?php echo $this->translate('Payroll Adjustment'); ?></a>
+		<a style="color: gray" class="list-group-item"
+		href="/hr/salary-calculator/adjust-payroll"><?php echo $this->translate('Payroll Review'); ?></a>
 	<?php endif;?>
 	
 	<?php if ($current_step=="STEP7") :?>
-		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Adjustment'); ?></a>
+		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Review'); ?>&nbsp;&nbsp;&nbsp;<i
+		class="fa fa-chevron-right" aria-hidden="true"></i></a>
 	<?php else:?>
-		<a class="list-group-item" href="/hr/salary-calculator/adjust-payroll"><?php echo $this->translate('Final Payroll'); ?></a>
+		<a style="color: gray" class="list-group-item"
+		href="/hr/salary-calculator/adjust-payroll"><?php echo $this->translate('Final Payroll'); ?></a>
 	<?php endif;?>
 	
 	<?php if ($current_step=="STEP8") :?>
 		<a class="list-group-item active" href="#"><?php echo $this->translate('Submision for Approval'); ?></a>
 	<?php else:?>
-		<a class="list-group-item" href="/hr/salary-calculator/payroll-submit"><?php echo $this->translate('Submision for Approval'); ?></a>
+		<a style="color: gray" class="list-group-item"
+		href="/hr/salary-calculator/payroll-submit"><?php echo $this->translate('Submision for Approval'); ?></a>
 	<?php endif;?>
 	
 </div>

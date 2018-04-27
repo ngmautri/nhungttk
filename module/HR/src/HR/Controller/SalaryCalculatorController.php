@@ -71,8 +71,17 @@ class SalaryCalculatorController extends AbstractActionController
     public function inputConsolidateAction()
     {
         $this->layout("HR/layout-fullscreen");
+        $period_id = $this->params()->fromQuery('period_id');
+        $period_id = 2;
+        $criteria = array(
+            "id" => $period_id
+        );
         
-        return new ViewModel();
+        $period = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
+        
+        return new ViewModel(array(
+            'period' => $period,
+        ));
     }
 
     /**
@@ -88,29 +97,29 @@ class SalaryCalculatorController extends AbstractActionController
         $request = $this->getRequest();
         $period_id = $this->params()->fromQuery('period_id');
         
-        $period_id=2;
+        $period_id = 2;
         $criteria = array(
-             'period' => $period_id
+            'period' => $period_id
         );
+        
+        
         
         /**@var \Application\Entity\NmtHrPayrollInput */
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrPayrollInput')->findBy($criteria);
         $total_records = count($list);
         
-        
         $criteria = array(
-            'id' => $period_id,
+            'id' => $period_id
         );
         
         /**@var \Application\Entity\NmtFinPostingPeriod $period*/
         $period = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
         
-       
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
-            'period'=>$period,
-            
+            'period' => $period
+        
         ));
     }
 
@@ -195,12 +204,24 @@ class SalaryCalculatorController extends AbstractActionController
         }
         
         $calculator = new PayrollCalculator(null, $payrollList, null);
-        $calculator->calculate();
+        $list=$calculator->calculate();
         
         $v1 = new PayslipVisitor();
         $calculator->accept($v1);
         
-        return new ViewModel(array());
+        
+        $criteria = array(
+            'id' => 2   
+        );
+        
+        /**@var \Application\Entity\NmtFinPostingPeriod $period*/
+        $period = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
+        
+        
+        return new ViewModel(array(
+            "list"=>$list,     
+            "period"=>$period,
+        ));
     }
 
     /**

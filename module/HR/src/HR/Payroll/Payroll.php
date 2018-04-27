@@ -66,9 +66,9 @@ class Payroll extends AbstractVisitorElement
         
         /**@var \HR\Payroll\Employee $e; */
         $e = $this->employee;
-        echo sprintf('==============<h4>%s</h4>',$e->getEmployeeName());
-        echo sprintf('<h5>%s</h5>',$e->getStartWorkingDate()->format("d-m-Y"));
-        echo sprintf('Status: %s </br>',$e->getStatus());
+        //echo sprintf('==============<h4>%s</h4>',$e->getEmployeeName());
+        //echo sprintf('<h5>%s</h5>',$e->getStartWorkingDate()->format("d-m-Y"));
+        //echo sprintf('Status: %s </br>',$e->getStatus());
            
         $this->calculatedIncomeList = array();
         
@@ -95,7 +95,7 @@ class Payroll extends AbstractVisitorElement
                 $pitIncomeAmount = $pitIncomeAmount + $decoratedIncome->getCalculatedAmount();
             }
             
-            echo "\n<br> Income Name: " . $decoratedIncome->getIncomeName() . "\n<br> Description: " . $decoratedIncome->getDescription() . "--\n<br> Amount: " . $decoratedIncome->getAmount() . "--\n<br> Calculated Amount:" . $decoratedIncome->getCalculatedAmount() . "--\n<br>";
+           // echo "\n<br> Income Name: " . $decoratedIncome->getIncomeName() . "\n<br> Description: " . $decoratedIncome->getDescription() . "--\n<br> Amount: " . $decoratedIncome->getAmount() . "--\n<br> Calculated Amount:" . $decoratedIncome->getCalculatedAmount() . "--\n<br>";
         }
         
         $ssoIncome = new GenericIncomeComponent("SSO Payable", $ssoIncomeAmount, 0, "usd", FALSE, FALSE, FALSE, FALSE);
@@ -105,7 +105,7 @@ class Payroll extends AbstractVisitorElement
         $decoratedIncome = $n->createIncomeDecorator($ssoIncome, $this->payrollInput, 2018);
         
         $this->calculatedIncomeList[] = $decoratedIncome;
-        echo "\n<br> Income Name: " . $decoratedIncome->getIncomeName() . "\n<br> Description: " . $decoratedIncome->getDescription() . "--\n<br> Amount: " . $decoratedIncome->getAmount() . "--\n<br> Calculated Amount:" . $decoratedIncome->getCalculatedAmount() . "--\n<br>";
+        //echo "\n<br> Income Name: " . $decoratedIncome->getIncomeName() . "\n<br> Description: " . $decoratedIncome->getDescription() . "--\n<br> Amount: " . $decoratedIncome->getAmount() . "--\n<br> Calculated Amount:" . $decoratedIncome->getCalculatedAmount() . "--\n<br>";
         
         $ssoAmount = $decoratedIncome->getCalculatedAmount();
         
@@ -120,14 +120,14 @@ class Payroll extends AbstractVisitorElement
         
         $pitAmount=$decoratedIncome->getCalculatedAmount();
         
-        echo "\n<br> Income Name: " . $decoratedIncome->getIncomeName() . "\n<br> Description: " . $decoratedIncome->getDescription() . "--\n<br> Amount: " . $decoratedIncome->getAmount() . "--\n<br> Calculated Amount:" . $decoratedIncome->getCalculatedAmount() . "--\n<br>";
+        //echo "\n<br> Income Name: " . $decoratedIncome->getIncomeName() . "\n<br> Description: " . $decoratedIncome->getDescription() . "--\n<br> Amount: " . $decoratedIncome->getAmount() . "--\n<br> Calculated Amount:" . $decoratedIncome->getCalculatedAmount() . "--\n<br>";
         
-        echo "<br> Gross: " . $grossAmount;
-        echo "<br> SSO: " . $ssoAmount;
-        echo "<br> PIT: " . $pitAmount;
+        //echo "<br> Gross: " . $grossAmount;
+        //echo "<br> SSO: " . $ssoAmount;
+        //echo "<br> PIT: " . $pitAmount;
         
         $net = $grossAmount - $ssoAmount -$pitAmount;
-        echo "<br> NET: " . $net . '<br>';
+        //echo "<br> NET: " . $net . '<br>';
         
         return $this;
     }

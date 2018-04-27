@@ -10,6 +10,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use HR\Payroll\Calculator\PayrollCalculator;
 use HR\Payroll\Calculator\Visitor\PayslipVisitor;
+use MLA\Paginator;
 
 /**
  *
@@ -30,6 +31,111 @@ class SalaryCalculatorController extends AbstractActionController
      */
     public function indexAction()
     {
+        $this->layout("HR/layout-fullscreen");
+        return new ViewModel();
+    }
+
+    /**
+     * Step1
+     *
+     * {@inheritdoc}
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
+    public function payrollPeriodAction()
+    {
+        $this->layout("HR/layout-fullscreen");
+        
+        $criteria = array();
+        
+        $sort_criteria = array(
+            "postingToDate" => "DESC"
+        );
+        ;
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findBy($criteria, $sort_criteria);
+        $total_records = count($list);
+        
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => null
+        ));
+    }
+
+    /**
+     * Step1
+     *
+     * {@inheritdoc}
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
+    public function inputConsolidateAction()
+    {
+        $this->layout("HR/layout-fullscreen");
+        
+        return new ViewModel();
+    }
+
+    /**
+     * Step2
+     *
+     * {@inheritdoc}
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
+    public function inputCheckAction()
+    {
+        $this->layout("HR/layout-fullscreen");
+        
+        $request = $this->getRequest();
+        $period_id = $this->params()->fromQuery('period_id');
+        
+        $period_id=2;
+        $criteria = array(
+             'period' => $period_id
+        );
+        
+        /**@var \Application\Entity\NmtHrPayrollInput */
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrPayrollInput')->findBy($criteria);
+        $total_records = count($list);
+        
+        
+        $criteria = array(
+            'id' => $period_id,
+        );
+        
+        /**@var \Application\Entity\NmtFinPostingPeriod $period*/
+        $period = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
+        
+       
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'period'=>$period,
+            
+        ));
+    }
+
+    /**
+     * Step3
+     *
+     * {@inheritdoc}
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
+    public function closePeriodAction()
+    {
+        $this->layout("HR/layout-fullscreen");
+        
+        return new ViewModel();
+    }
+
+    /**
+     * Step4
+     *
+     * {@inheritdoc}
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
+    public function createDraftAction()
+    {
+        $this->layout("HR/layout-fullscreen");
         return new ViewModel();
     }
 
@@ -39,6 +145,8 @@ class SalaryCalculatorController extends AbstractActionController
      */
     public function simulateAction()
     {
+        $this->layout("HR/layout-fullscreen");
+        
         $criteria = array(
             'isActive' => 1
         );
@@ -71,7 +179,7 @@ class SalaryCalculatorController extends AbstractActionController
                 
                 foreach ($incomes as $income) {
                     
-                    /**@var \Application\Entity\NmtHrSalary $income ; */                    
+                    /**@var \Application\Entity\NmtHrSalary $income ; */
                     $salaryFactory = $income->getSalaryFactory();
                     $incomeFactory = new $salaryFactory($income->getSalaryAmount(), "LAK");
                     
@@ -92,8 +200,33 @@ class SalaryCalculatorController extends AbstractActionController
         $v1 = new PayslipVisitor();
         $calculator->accept($v1);
         
-        
         return new ViewModel(array());
+    }
+
+    /**
+     * step5
+     *
+     * {@inheritdoc}
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
+    public function adjustPayrollAction()
+    {
+        $this->layout("HR/layout-fullscreen");
+        
+        return new ViewModel();
+    }
+
+    /**
+     * step5
+     *
+     * {@inheritdoc}
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     */
+    public function submitAction()
+    {
+        $this->layout("HR/layout-fullscreen");
+        
+        return new ViewModel();
     }
 
     /**

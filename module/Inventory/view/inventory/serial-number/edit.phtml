@@ -17,6 +17,8 @@ if (count ( $errors ) > 0) {
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;Serial Number</a></li>
+ 		 <li ><a href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+ 
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
@@ -27,6 +29,7 @@ if (count ( $errors ) > 0) {
 				value="<?php echo $redirectUrl ?>" />
 				<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
 				<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+				<input type="hidden" name="n" value="<?php echo $n;?>" />
 				
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
@@ -130,7 +133,7 @@ if (count ( $errors ) > 0) {
 						<div class="col-sm-3">
 	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
 							<a tabindex="11" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
+								href="<?php echo $redirectUrl ?>"><small><i
 									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 	
 						</div>

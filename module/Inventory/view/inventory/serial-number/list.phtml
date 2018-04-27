@@ -119,6 +119,7 @@ else:
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Serial Number</b></td>
+			<td><b><?php echo $this->translate("Item");?></b></td>
 			<td><b>Mgf</b></td>
 			<td><b>Mgf. date</b></td>
 			<td><b>Action</b></td>
@@ -132,7 +133,6 @@ else:
 	$count = 0;
 	foreach ( $list as $l ) :	
 		$count ++;
-	
 		 		
         /**@var \Application\Entity\NmtInventorySerial $a ; */
 		
@@ -144,6 +144,7 @@ else:
 <?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
 			</td>
 			<td><?php echo $a->getSerialNumber()?></td>
+			<td><?php if(!$a->getItem()==null): echo $a->getItem()->getItemName() ; endif; ?></td>
 			<td><?php echo $a->getMfgName()?></td>
 			<td>
 <?php if(!$a == null): if ($a->getMfgDate() !== null): echo date_format($a->getMfgDate(),"Y-m-d"); endif; endif;?></td>

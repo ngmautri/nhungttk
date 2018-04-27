@@ -471,7 +471,7 @@ class PrAttachmentController extends AbstractActionController {
 			 */
 			$criteria = array (
 					'pr' => $target_id,
-					'isActive' => 1,
+					//'isActive' => 1,
 					'markedForDeletion' => 0
 			);
 			

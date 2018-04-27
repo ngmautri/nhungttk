@@ -160,6 +160,7 @@ return array(
         'template_map' => array(
             'layout1/layout' => __DIR__ . '/../view/layout/layout.phtml',
             'HR/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
+            'HR/layout-fullscreen' => __DIR__ . '/../view/layout/layout-fullscreen.phtml',
             'hr/index/index' => __DIR__ . '/../view/hr/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',
             'error/index' => __DIR__ . '/../view/error/index.phtml'

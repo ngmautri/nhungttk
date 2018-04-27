@@ -1,0 +1,61 @@
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general"><?php echo $this->translate('Salary calculation'); ?></a></li>
+	</ul>
+<div id="general" style="font-size: 9pt">
+
+<div class="row">
+  <div class="col-xs-6 col-md-3">
+ 
+				 <?php 
+    					$current_step="STEP1";
+    					include ('calculator-wizard.php'); 
+  				  ?>
+ 
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-9" style="">
+   <!-- Col2 -->
+
+	<form id="Create_Inv_Form" class="form-horizontal"
+			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
+			
+		<div class="form-group margin-bottom required">
+					
+					<label class="control-label col-sm-2"><?php echo $this->translate('Payroll Period'); ?>:</label>
+					<div class="col-sm-3">
+			
+
+                         <select name="payrollPeriod" class="form-control input-sm">
+                        	 <?php
+                        	
+                        	$count = 0;
+                        	foreach ( $list as $a ) :
+                        	
+                        	    /**@var \Application\Entity\NmtFinPostingPeriod $a*/
+                        		?>
+                        			<option><?php echo $a->getPeriodName();?></option>
+                        	<?php endforeach; ?>
+                        </select>
+
+  					</div>
+ 		 </div>
+ 			<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2" for="inputTag"></label>
+						<div class="col-sm-3">
+ 
+   <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/finance/posting-period/add"><i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Back'); ?></a>
+  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/hr/salary-calculator/input-consolidate"><?php echo $this->translate('Next'); ?>&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+ 		</div>
+ 		</div>
+ 	</form>
+ 
+  
+</div>	
+<!-- Col2 -->
+
+</div>
+</div>
+</div>
+

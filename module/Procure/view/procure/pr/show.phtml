@@ -18,10 +18,10 @@
 				Request</a></li>
 		<li><a
 			href="/procure/pr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
-				class="glyphicon glyphicon-picture"></span>&nbsp;Picture</a></li>
+				class="glyphicon glyphicon-picture"></span>&nbsp;Picture<?php if($total_picture!==null): echo sprintf('&nbsp;(%s)',$total_picture); endif;?></a></li>
 		<li><a
 			href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment
+				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment<?php if($total_attachment!==null): echo sprintf('&nbsp;(%s)',$total_attachment); endif;?>
 		</a></li>
 		<li><a
 			href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span

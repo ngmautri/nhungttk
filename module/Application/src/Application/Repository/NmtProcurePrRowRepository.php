@@ -375,6 +375,85 @@ WHERE 1
             return null;
         }
     }
+    
+    /**
+     *
+     *  @param int $item_id
+     *  @param string $item_token
+     *  @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+     *
+     */
+    public function getPrNew($item_id=null, $item_token=null)
+    {
+        // PR ROW
+        $join1_tmp="
+JOIN
+(
+SELECT 
+	COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.id) ELSE NULL END) AS active_row,
+    ifnull(MAX(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.row_number) ELSE null END),0) AS max_row_number,
+	COUNT(nmt_procure_pr_row.id) AS total_row,
+   	nmt_procure_pr.id as pr_id
+FROM nmt_procure_pr
+
+LEFT JOIN nmt_procure_pr_row
+	ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
+
+WHERE nmt_procure_pr.id = %s and nmt_procure_pr.token='%s'
+)
+AS nmt_procure_pr_row
+ON nmt_procure_pr.id=nmt_procure_pr_row.pr_id ";      
+        
+        
+        $join1 = sprintf($join1_tmp,$item_id,$item_token);
+        
+        //Attachment
+        $join2_tmp="
+JOIN
+(
+SELECT 
+   	COUNT(CASE WHEN nmt_application_attachment.is_active =1 THEN (nmt_application_attachment.id) ELSE NULL END) AS total_attachment,
+ 	COUNT(CASE WHEN (nmt_application_attachment.is_picture =1 AND nmt_application_attachment.is_active =1) THEN (nmt_application_attachment.id) ELSE NULL END) AS total_picture,
+	nmt_procure_pr.id as pr_id
+FROM nmt_procure_pr
+LEFT JOIN nmt_application_attachment
+	ON nmt_procure_pr.id = nmt_application_attachment.pr_id
+WHERE nmt_procure_pr.id = %s and nmt_procure_pr.token='%s'
+)
+AS nmt_application_attachment
+ON nmt_procure_pr.id=nmt_application_attachment.pr_id ";
+        
+        $join2 = sprintf($join2_tmp,$item_id,$item_token);
+        
+         $sql = "
+SELECT
+	nmt_procure_pr.*,
+	nmt_application_attachment.total_attachment,
+	nmt_application_attachment.total_picture,
+	nmt_procure_pr_row.active_row,
+	nmt_procure_pr_row.total_row,
+	nmt_procure_pr_row.max_row_number
+FROM nmt_procure_pr ";
+        
+        $sql =  $sql.$join1.$join2;
+        
+        //echo $sql;
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
+            $rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("max_row_number", "max_row_number");
+            $rsm->addScalarResult("total_attachment", "total_attachment");
+            $rsm->addScalarResult("total_picture", "total_picture");
+      
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getSingleResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 
     /**
      * GET recent pr row

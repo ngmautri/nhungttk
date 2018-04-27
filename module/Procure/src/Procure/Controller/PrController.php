@@ -544,7 +544,7 @@ class PrController extends AbstractActionController
         
         /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
-        $pr = $res->getPR($id, $token);
+        $pr = $res->getPrNew($id, $token);
         
         if ($pr == null) {
             return $this->redirect()->toRoute('access_denied');
@@ -555,7 +555,7 @@ class PrController extends AbstractActionController
             $entity = $pr[0];
         }
         
-        if ($entity !== null) {
+        if ($entity instanceof \Application\Entity\NmtProcurePr) {
             
             try {
                 /** @var \Symfony\Component\Workflow\Workflow $wf */
@@ -588,7 +588,11 @@ class PrController extends AbstractActionController
                 'errors' => null,
                 'total_row' => $pr['total_row'],
                 'max_row_number' => $pr['max_row_number'],
-                'active_row' => $pr['active_row']
+                'active_row' => $pr['active_row'],
+                'total_attachment' => $pr['total_attachment'],
+                'total_picture' => $pr['total_picture'],
+                
+                
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
@@ -865,8 +869,9 @@ class PrController extends AbstractActionController
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => $entity
-                ));
+                    'entity' => $entity,
+                    'n' => $nTry,
+                 ));
             } else {
                 
                 $oldEntity= clone($entity);

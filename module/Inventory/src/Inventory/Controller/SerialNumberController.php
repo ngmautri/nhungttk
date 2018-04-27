@@ -39,7 +39,6 @@ class SerialNumberController extends AbstractActionController
     {}
 
     /**
-     * adding new vendor invoce
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
@@ -47,6 +46,7 @@ class SerialNumberController extends AbstractActionController
     {
         $request = $this->getRequest();
         if ($request->isPost()) {
+            
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
             
@@ -67,8 +67,8 @@ class SerialNumberController extends AbstractActionController
             }
             
             $entity = new NmtInventorySerial();
-            $entity->setIsActive($isActive);
             
+            $entity->setIsActive($isActive);
             $entity->setSerialNumber($serialNumber);
             $entity->setLocation($location);
             $entity->setCategory($category);
@@ -76,7 +76,7 @@ class SerialNumberController extends AbstractActionController
             $entity->setMfgName($mfgName);
             $entity->setMfgSerialNumber($mfgSerialNumber);
             $entity->setLotNumber($lotNumber);
-             $entity->setRemarks($remarks);
+            $entity->setRemarks($remarks);
             
             if ($serialNumber == "") {
                 $errors[] = 'Pls give serial number!';
@@ -113,12 +113,12 @@ class SerialNumberController extends AbstractActionController
                 }
             }
             
-            $n_validated =0;
+            $n_validated = 0;
             if (! $mfgWarrantyStart == null) {
                 if (! $validator->isValid($mfgWarrantyStart)) {
                     $errors[] = 'Warranty Start Date is not correct!';
                 } else {
-                    $n_validated++;
+                    $n_validated ++;
                     $entity->setMfgDate(new \DateTime($mfgWarrantyStart));
                 }
             }
@@ -127,13 +127,13 @@ class SerialNumberController extends AbstractActionController
                 if (! $validator->isValid($mfgWarrantyEnd)) {
                     $errors[] = 'Warranty End Date is not correct!';
                 } else {
-                    $n_validated++;
+                    $n_validated ++;
                     $entity->setMfgWarrantyEnd(new \DateTime($mfgWarrantyEnd));
                 }
             }
             
-            if($n_validated==2){                
-                if($mfgWarrantyEnd <= $mfgWarrantyStart){
+            if ($n_validated == 2) {
+                if ($mfgWarrantyEnd <= $mfgWarrantyStart) {
                     $errors[] = 'Warranty End Date is not correct!';
                 }
             }
@@ -147,29 +147,131 @@ class SerialNumberController extends AbstractActionController
             }
             
             // NO ERROR
+            // +++++++++++++++++++++++++
+            
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
+            $createdOn = new \DateTime();
             
             $entity->setCreatedBy($u);
-            $entity->setCreatedOn(new \DateTime());
+            $entity->setCreatedOn($createdOn);
             $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
-            $this->flashMessenger()->addMessage($serialNumber . '" is created successfully!');
+            $m = sprintf('S/N %s - #%s created. OK!', $entity->getSerialNumber(), $entity->getId());
             
-            $redirectUrl = "/inventory/serial-number/list";
+            // Trigger: procure.activity.log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $createdOn
+            ));
+            
+            $this->flashMessenger()->addMessage($m);
             return $this->redirect()->toUrl($redirectUrl);
         }
         
+        // NO POST
+        // ==========================
+        
+        $redirectUrl = null;
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+        
         $entity = null;
         return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity
         ));
     }
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function assignAction()
+    {
+        $request = $this->getRequest();
+        
+        if ($request->isPost()) {
+            
+            $target_id = (int) $request->getPost('target_id');
+            $token = $request->getPost('token');
+            $incomes = $request->getPost('incomes');
+            $redirectUrl = $request->getPost('redirectUrl');
+            
+            $criteria = array(
+                'id' => $target_id,
+                'token' => $token
+            );
+            
+            /**@var \Application\Entity\NmtHrContract $target ; */
+            $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrContract')->findOneBy($criteria);
+            $errors = array();
+            
+            if (! $target instanceof \Application\Entity\NmtHrContract) {
+                
+                $errors[] = 'Entity object can\'t be empty!';
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors
+                ));
+                
+                // might need redirect
+            } else {
+    
+                return $this->redirect()->toUrl($redirectUrl);
+            }
+        }
+        
+        // NO POST
+        // ==============================
+        
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        } else {
+            $redirectUrl = $request->getHeader('Referer')->getUri();
+        }
+ 
+        $n = (int) $this->params()->fromQuery('n');        
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+        
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $list =$res->getVacantSerialNumbers();
+     
+        /**@var \Application\Entity\NmtInventoryItem $target ; */
+        $target = $res->findOneBy($criteria);
+        
+        
+        //if ($target instanceof \Application\Entity\NmtInventoryItem) {
+            
+             return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'errors' => null,
+                'target' => $target,
+                'serialList' => $list,
+                'n'=>$n 
+            ));
+        //}
+        //return $this->redirect()->toRoute('access_denied');
+    }
+    
 
     /**
      *
@@ -218,13 +320,14 @@ class SerialNumberController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
+        
         if ($request->isPost()) {
             
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-            
             $entity_id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
+            $nTry = $request->getPost('n');
             
             $criteria = array(
                 'id' => $entity_id,
@@ -234,16 +337,21 @@ class SerialNumberController extends AbstractActionController
             /** @var \Application\Entity\NmtInventorySerial $entity ; */
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findOneBy($criteria);
             
-            if ($entity == null) {
+            if (! $entity instanceof \Application\Entity\NmtInventorySerial) {
+                $errors[] = 'Entity not found or emty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => null
+                    'entity' => null,
+                    'n' => $nTry
+                
                 ));
                 
                 // might need redirect
             } else {
+                
+                $oldEntity = clone ($entity);
                 
                 $serialNumber = $request->getPost('serialNumber');
                 $location = $request->getPost('location');
@@ -276,16 +384,18 @@ class SerialNumberController extends AbstractActionController
                     $errors[] = 'Pls give serial number!';
                 } else {
                     
-                    $criteria = array(
-                        'serialNumber' => $serialNumber
-                    );
-                    
-                    /** @var \Application\Entity\NmtInventorySerial $entity_ck ; */
-                    $entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findOneBy($criteria);
-                    if ($entity_ck == null) {
-                        $entity->setSerialNumber($serialNumber);
-                    } else {
-                        $errors[] = $serialNumber . ' exists already!';
+                    if($serialNumber!== $oldEntity->getSerialNumber()){
+                        $criteria = array(
+                            'serialNumber' => $serialNumber
+                        );
+                        
+                        /** @var \Application\Entity\NmtInventorySerial $entity_ck ; */
+                        $entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findOneBy($criteria);
+                        if ($entity_ck == null) {
+                            $entity->setSerialNumber($serialNumber);
+                        } else {
+                            $errors[] = $serialNumber . ' exists already!';
+                        }
                     }
                 }
                 
@@ -307,12 +417,12 @@ class SerialNumberController extends AbstractActionController
                     }
                 }
                 
-                $n_validated =0;
+                $n_validated = 0;
                 if (! $mfgWarrantyStart == null) {
                     if (! $validator->isValid($mfgWarrantyStart)) {
                         $errors[] = 'Warranty Start Date is not correct!';
                     } else {
-                        $n_validated++;
+                        $n_validated ++;
                         $entity->setMfgDate(new \DateTime($mfgWarrantyStart));
                     }
                 }
@@ -321,49 +431,98 @@ class SerialNumberController extends AbstractActionController
                     if (! $validator->isValid($mfgWarrantyEnd)) {
                         $errors[] = 'Warranty End Date is not correct!';
                     } else {
-                        $n_validated++;
+                        $n_validated ++;
                         $entity->setMfgWarrantyEnd(new \DateTime($mfgWarrantyEnd));
                     }
                 }
                 
-                if($n_validated==2){
-                    if($mfgWarrantyEnd <= $mfgWarrantyStart){
+                if ($n_validated == 2) {
+                    if ($mfgWarrantyEnd <= $mfgWarrantyStart) {
                         $errors[] = 'Warranty End Date is not correct!';
                     }
                 }
+                
+                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+                $nmtPlugin = $this->Nmtplugin();
+                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+                
+                if (count($changeArray) == 0) {
+                    $nTry ++;
+                    $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+                }
+                
+                if ($nTry >= 3) {
+                    $errors[] = sprintf('Do you really want to edit (%s)?', $entity->getSerialNumber());
+                }
+                
+                if ($nTry == 5) {
+                    $m = sprintf('You might be not ready to edit (%s). Please try later!', $entity->getSerialNumber());
+                    $this->flashMessenger()->addMessage($m);
+                    return $this->redirect()->toUrl($redirectUrl);
+                }
+                
                 if (count($errors) > 0) {
                     return new ViewModel(array(
                         'redirectUrl' => $redirectUrl,
                         'errors' => $errors,
-                        'entity' => $entity
+                        'entity' => $entity,
+                        'n' => $nTry
+                    
                     ));
                 }
                 
                 // NO ERROR
+                // ++++++++++++++++++++++++++++++
+                
+                $changeOn = new \DateTime();
+                
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
                 
                 $entity->setLastchangeBy($u);
-                $entity->setLastchangeOn(new \DateTime());
+                $entity->setLastchangeOn($changeOn);
                 
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 
-                $this->flashMessenger()->addMessage($serialNumber . '" is updated successfully!');
+                $m = sprintf('S/N %s - #%s updated. Change No %s. OK!', $entity->getSerialNumber(), $entity->getId(), count($changeArray));
                 
-                $redirectUrl = "/inventory/serial-number/list";
+                // Trigger Change Log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => 1,
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+                
+                // Trigger Activity Log . AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $changeOn
+                ));
+                
+                $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
         // NO POST
+        // =======================
         
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') !== null) {
             $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+                ->getHeader('Referer')
+                ->getUri();
         }
         
         $id = (int) $this->params()->fromQuery('entity_id');
@@ -371,7 +530,7 @@ class SerialNumberController extends AbstractActionController
         $criteria = array(
             'id' => $id,
             'token' => $token
-            
+        
         );
         
         /** @var \Application\Entity\NmtInventorySerial $entity ; */
@@ -379,8 +538,8 @@ class SerialNumberController extends AbstractActionController
         return new ViewModel(array(
             'errors' => null,
             'entity' => $entity,
-            'redirectUrl' => $redirectUrl
-            
+            'redirectUrl' => $redirectUrl,
+            'n' => 0
         ));
     }
 
@@ -415,11 +574,11 @@ class SerialNumberController extends AbstractActionController
         }
         
         if ($sort_by == null) :
-        $sort_by = "createdOn";
+            $sort_by = "createdOn";
         endif;
         
         if ($sort == null) :
-        $sort = "DESC";
+            $sort = "DESC";
         endif;
         
         $criteria = array();
@@ -444,7 +603,7 @@ class SerialNumberController extends AbstractActionController
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
             'currentState' => $currentState
-            
+        
         ));
     }
 

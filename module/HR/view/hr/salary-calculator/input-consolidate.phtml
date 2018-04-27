@@ -1,0 +1,34 @@
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general"><?php echo $this->translate('Salary calculation'); ?></a></li>
+	</ul>
+<div id="general" style="font-size: 9pt">
+
+<div class="row">
+  <div class="col-xs-6 col-md-3">
+ 
+				 <?php 
+    					$current_step="STEP2";
+    					include ('calculator-wizard.php'); 
+  				  ?>
+ 
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-9" style="">
+  <!-- Col2 -->
+  
+  <h5><?php echo $this->translate('Input consolidated'); ?></h5>
+  
+  <span class="color:gray">
+  		Input for salary calulation has been calculated. 	
+  </span>
+    
+  
+  <!-- Col2 -->  
+  </div>
+  
+</div>	
+
+</div>
+</div>

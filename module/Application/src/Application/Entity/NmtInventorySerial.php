@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventorySerial
  *
- * @ORM\Table(name="nmt_inventory_serial", uniqueConstraints={@ORM\UniqueConstraint(name="serial_number_UNIQUE", columns={"serial_number"})}, indexes={@ORM\Index(name="nmt_inventory_serial_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_serial_FK2_idx", columns={"lastchange_by"})})
+ * @ORM\Table(name="nmt_inventory_serial", uniqueConstraints={@ORM\UniqueConstraint(name="serial_number_UNIQUE", columns={"serial_number"})}, indexes={@ORM\Index(name="nmt_inventory_serial_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_serial_FK2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_serial_FK3_idx", columns={"item_id"})})
  * @ORM\Entity
  */
 class NmtInventorySerial
@@ -34,13 +34,6 @@ class NmtInventorySerial
      * @ORM\Column(name="serial_number", type="string", length=45, nullable=true)
      */
     private $serialNumber;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="item_id", type="string", length=45, nullable=true)
-     */
-    private $itemId;
 
     /**
      * @var boolean
@@ -141,6 +134,13 @@ class NmtInventorySerial
     private $lastchangeOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="nmt_inventory_serialcol", type="string", length=45, nullable=true)
+     */
+    private $nmtInventorySerialcol;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -159,6 +159,16 @@ class NmtInventorySerial
      * })
      */
     private $lastchangeBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_id", referencedColumnName="id")
+     * })
+     */
+    private $item;
 
 
 
@@ -218,30 +228,6 @@ class NmtInventorySerial
     public function getSerialNumber()
     {
         return $this->serialNumber;
-    }
-
-    /**
-     * Set itemId
-     *
-     * @param string $itemId
-     *
-     * @return NmtInventorySerial
-     */
-    public function setItemId($itemId)
-    {
-        $this->itemId = $itemId;
-
-        return $this;
-    }
-
-    /**
-     * Get itemId
-     *
-     * @return string
-     */
-    public function getItemId()
-    {
-        return $this->itemId;
     }
 
     /**
@@ -581,6 +567,30 @@ class NmtInventorySerial
     }
 
     /**
+     * Set nmtInventorySerialcol
+     *
+     * @param string $nmtInventorySerialcol
+     *
+     * @return NmtInventorySerial
+     */
+    public function setNmtInventorySerialcol($nmtInventorySerialcol)
+    {
+        $this->nmtInventorySerialcol = $nmtInventorySerialcol;
+
+        return $this;
+    }
+
+    /**
+     * Get nmtInventorySerialcol
+     *
+     * @return string
+     */
+    public function getNmtInventorySerialcol()
+    {
+        return $this->nmtInventorySerialcol;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -626,5 +636,29 @@ class NmtInventorySerial
     public function getLastchangeBy()
     {
         return $this->lastchangeBy;
+    }
+
+    /**
+     * Set item
+     *
+     * @param \Application\Entity\NmtInventoryItem $item
+     *
+     * @return NmtInventorySerial
+     */
+    public function setItem(\Application\Entity\NmtInventoryItem $item = null)
+    {
+        $this->item = $item;
+
+        return $this;
+    }
+
+    /**
+     * Get item
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getItem()
+    {
+        return $this->item;
     }
 }

@@ -659,5 +659,32 @@ order by nmt_inventory_item.created_on desc LIMIT %s";
         }
     }
     
+   /**
+    *  Get Vacant Serial Number
+    *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+    */
+    public function getVacantSerialNumbers()
+    {
+        $sql_tmp = "
+select
+*
+from nmt_inventory_serial
+where nmt_inventory_serial.is_active=%s AND nmt_inventory_serial.item_id is null";
+        
+        $sql = sprintf($sql_tmp, 1);
+        
+        //echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventorySerial', 'nmt_inventory_serial');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
 }
 

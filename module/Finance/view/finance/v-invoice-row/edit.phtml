@@ -276,6 +276,24 @@ if (count ( $errors ) > 0) {
         <div class="col-sm-3">
         		<input tabindex="6" class="form-control input-sm" type="text" id="quantity" name="quantity" value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
          </div>
+               <label class="control-label col-sm-2" for="inputTag"></label>
+  
+               <div class="col-sm-4">
+               		<?php
+               		$sn_url="";
+               		if($entity->getItem()!==null):
+                     $sn_url = sprintf('/inventory/serial-number/assign?token=%s&target_id=%s&n=%s',
+                         $entity->getItem()->getToken(),
+                         $entity->getItem()->getId(),
+                         $entity->getQuantity()
+                          );
+               		endif;
+               		?>	
+               
+ 					<a style="color: white;" tabindex="" class="btn btn-primary btn-sm"
+							href="<?php echo $sn_url;?>">Assign Serial No.</a>
+          </div>
+  
     </div>
     
       <div class="form-group margin-bottom required">

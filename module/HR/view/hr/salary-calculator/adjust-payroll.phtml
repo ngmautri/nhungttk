@@ -1,0 +1,35 @@
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general"><?php echo $this->translate('Salary calculation'); ?></a></li>
+	</ul>
+<div id="general" style="font-size: 9pt">
+
+<div class="row">
+  <div class="col-xs-6 col-md-3">
+ 
+				 <?php 
+    					$current_step="STEP7";
+    					include ('calculator-wizard.php'); 
+  				  ?>
+ 
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-9" style="">
+  <h5><?php echo $this->translate('Payroll Adjustment:'); ?></h5>
+  <!-- Col2 -->
+
+
+  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/finance/posting-period/add"><i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Back'); ?></a>
+  
+  <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/finance/posting-period/add"><?php echo $this->translate('Next'); ?>&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>
+</a>
+  
+  
+</div>	
+<!-- Col2 -->
+
+</div>
+</div>
+</div>
+

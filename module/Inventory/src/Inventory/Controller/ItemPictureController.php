@@ -45,6 +45,8 @@ class ItemPictureController extends AbstractActionController
             $pic = new \Application\Entity\NmtInventoryItemPicture();
             $pic = $entity;
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . $pic->getFileName();
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+            
             $imageContent = file_get_contents($pic_folder);
             
             $response = $this->getResponse();
@@ -82,6 +84,8 @@ class ItemPictureController extends AbstractActionController
             $pic = new \Application\Entity\NmtInventoryItemPicture();
             $pic = $entity;
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+            
             $imageContent = file_get_contents($pic_folder);
             
             $response = $this->getResponse();

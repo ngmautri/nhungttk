@@ -80,8 +80,8 @@ class EmployeeSearchService {
 	
 	/**
 	 *
-	 * @param unknown $item        	
-	 * @return string|unknown
+	 * @param object $item        	
+	 * @return string
 	 */
 	public function addDocument($item, $optimized) {
 		
@@ -119,7 +119,7 @@ class EmployeeSearchService {
 	
 	/**
 	 *
-	 * @return string|unknown
+	 * @return string
 	 */
 	public function optimizeIndex() {
 		
@@ -136,8 +136,8 @@ class EmployeeSearchService {
 	
 	/**
 	 *
-	 * @param unknown $q
-	 * @param unknown $department_id
+	 * @param string $q
+	 * @param int $department_id
 	 */
 	public function search($q) {
 		try {
@@ -171,8 +171,8 @@ class EmployeeSearchService {
 	
 	/**
 	 *
-	 * @param unknown $q        	
-	 * @param unknown $department_id        	
+	 * @param string $q        	
+	 * @param int $department_id        	
 	 */
 	public function searchAllItem($q) {
 		try {
@@ -222,8 +222,8 @@ class EmployeeSearchService {
 	
 	/**
 	 *
-	 * @param unknown $q        	
-	 * @param unknown $department_id        	
+	 * @param string $q        	
+	 * @param int $department_id        	
 	 */
 	public function searchAssetItem($q) {
 		try {
@@ -266,7 +266,7 @@ class EmployeeSearchService {
 	
 	/**
 	 *
-	 * @param unknown $q        	
+	 * @param string $q        	
 	 * @return string[]|array[]|\ZendSearch\Lucene\Search\QueryHit[]|string[]|NULL[]
 	 */
 	public function searchSPItem($q) {

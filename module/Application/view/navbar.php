@@ -11,22 +11,28 @@
 							</li>
 
 <!-- FINANCE MENU -->
-<li class="dropdown <?php if ($current_module=="FINANCE"): echo "active";endif;?>"><a class="dropdown-toggle" data-toggle="dropdown"
-	href="#" style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Finance");?> <span
+<li
+	class="dropdown <?php if ($current_module=="FINANCE"): echo "active";endif;?>"><a
+	class="dropdown-toggle" data-toggle="dropdown" href="#"
+	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Finance");?> <span
 		class="caret"></span></a>
 							<?php include (ROOT.'\module\application\view\finance_menu.php'); ?>
 						</li>
 
 <!-- INVENTORY MENU -->
-<li class="dropdown <?php if ($current_module=="INVENTORY"): echo "active";endif;?>"><a class="dropdown-toggle" data-toggle="dropdown"
-	href="#" style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Inventory")?> <span
+<li
+	class="dropdown <?php if ($current_module=="INVENTORY"): echo "active";endif;?>"><a
+	class="dropdown-toggle" data-toggle="dropdown" href="#"
+	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Inventory")?> <span
 		class="caret"></span></a>
 							<?php include (ROOT.'\module\application\view\inventory_menu.php'); ?>			
 						</li>
 
 <!-- BP MENU -->
-<li class="dropdown <?php if ($current_module=="BP"): echo "active";endif;?>" style="padding: 0px; margin: 0px;"><a
-	class="dropdown-toggle" data-toggle="dropdown" href="#"
+<li
+	class="dropdown <?php if ($current_module=="BP"): echo "active";endif;?>"
+	style="padding: 0px; margin: 0px;"><a class="dropdown-toggle"
+	data-toggle="dropdown" href="#"
 	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Partner")?> <span
 		class="caret"></span></a>
 							<?php include (ROOT.'\module\application\view\bp_menu.php'); ?>
@@ -35,17 +41,23 @@
 <!-- PROCURE MENU -->
 <?php if ($this->cart_items !== null): ?>
 
-<li class="dropdown <?php if ($current_module=="PROCURE"): echo "active";endif;?>"><a class="dropdown-toggle" data-toggle="dropdown"
-	href="#" style="padding-left: 10px; padding-right: 10px;">
+<li
+	class="dropdown <?php if ($current_module=="PROCURE"): echo "active";endif;?>"><a
+	class="dropdown-toggle" data-toggle="dropdown" href="#"
+	style="padding-left: 10px; padding-right: 10px;">
 						    
 						    <?php if ($this->cart_items >0): ?>
 						 	   <span id="cart_items" class="badge">
-						    <?php echo $this->cart_items;
-							     else :?>
+						    <?php
+            
+echo $this->cart_items;
+        else :
+            ?>
 	  					   		<span id="cart_items" class="">
 						    <?php endif;?>						    
 						    
-							    </span>&nbsp;<?php echo $this->translate("Procure");?> <span class="caret"></span>
+							    </span>&nbsp;<?php echo $this->translate("Procure");?> <span
+			class="caret"></span>
 
 </a>			    
 						    	<?php include (ROOT.'\module\application\view\procure_menu.php'); ?>
@@ -53,16 +65,19 @@
 <?php endif;?>
 
 <!-- HR MENU -->
-<li class="dropdown <?php if ($current_module=="HR"): echo "active";endif;?>"><a class="dropdown-toggle" data-toggle="dropdown"
-	href="#" style="padding-left: 10px; padding-right: 10px;">HR <span
-		class="caret"></span></a>
+<li
+	class="dropdown <?php if ($current_module=="HR"): echo "active";endif;?>"><a
+	class="dropdown-toggle" data-toggle="dropdown" href="#"
+	style="padding-left: 10px; padding-right: 10px;">HR <span class="caret"></span></a>
 							<?php include (ROOT.'\module\application\view\hr_menu.php'); ?>
 						  </li>
 
 
 <!-- OTHER MENU -->
-<li class="dropdown <?php if ($current_module=="OTHER"): echo "active";endif;?>"><a class="dropdown-toggle" data-toggle="dropdown"
-	href="#" style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Other");?> <span
+<li
+	class="dropdown <?php if ($current_module=="OTHER"): echo "active";endif;?>"><a
+	class="dropdown-toggle" data-toggle="dropdown" href="#"
+	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Other");?> <span
 		class="caret"></span></a>
 						  <?php include (ROOT.'\module\application\view\other_menu.php'); ?>
 						  </li>
@@ -70,11 +85,14 @@
 <!-- SETTING MENU -->
 <?php if ($this->isAdmin==true): ?>
 
-<li class="dropdown <?php if ($current_module=="APPLICATION"): echo "active";endif;?>"><a class="dropdown-toggle" data-toggle="dropdown"
-	href="#" style="padding-left: 10px; padding-right: 10px;"> <span
+<li
+	class="dropdown <?php if ($current_module=="APPLICATION"): echo "active";endif;?>"><a
+	class="dropdown-toggle" data-toggle="dropdown" href="#"
+	style="padding-left: 10px; padding-right: 10px;"> <span
 		class="label label-success"> <small> <span
 				class="glyphicon glyphicon-wrench"> </span></small>
-	</span>&nbsp;&nbsp;<?php echo $this->translate("Setup");?> <span class="caret"></span></a>
+	</span>&nbsp;&nbsp;<?php echo $this->translate("Setup");?> <span
+		class="caret"></span></a>
 								  <?php include (ROOT.'\module\application\view\setting_menu.php'); ?>
 				 			</li>
 <?php endif;?>
@@ -101,30 +119,29 @@
 	</ul></li>
 <?php endif;?>
 
-<?php if ($this->currentLocale !== null): ?>						
-					<!-- LOCALE MENU -->
+<?php if ($this->currentLocale !== null): ?>
+<!-- LOCALE MENU -->
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"
-	href="#" style="padding-left: 10px; padding-right: 10px;">
-	<!-- <i class="fa fa-globe fa-lg" aria-hidden="true"></i>  -->
-	<?php 
-	
-	switch ($this->currentLocale) {
-	    
-	    case 'en_US':
-	        echo '<img alt="" src="/images/flag/flag_uk.png">&nbsp;EN';
-	        ;
-	        break;
-	    case 'vi_VN':
-	        echo '<img alt="" src="/images/flag/flag_vn.png">&nbsp;VN';
-	        break;
-	    case 'lo_LA':
-	        echo '<img alt="" src="/images/flag/flag_la.png">&nbsp;LA';
-	        break;
-	    case 'de_DE':
-	        echo '<img alt="" src="/images/flag/flag_germany.png">&nbsp;DE';
-	}
-	
-	?>
+	href="#" style="padding-left: 10px; padding-right: 10px;"> <!-- <i class="fa fa-globe fa-lg" aria-hidden="true"></i>  -->
+	<?php
+        
+        switch ($this->currentLocale) {
+            
+            case 'en_US':
+                echo '<img alt="" src="/images/flag/flag_uk.png">&nbsp;EN';
+                ;
+                break;
+            case 'vi_VN':
+                echo '<img alt="" src="/images/flag/flag_vn.png">&nbsp;VN';
+                break;
+            case 'lo_LA':
+                echo '<img alt="" src="/images/flag/flag_la.png">&nbsp;LA';
+                break;
+            case 'de_DE':
+                echo '<img alt="" src="/images/flag/flag_germany.png">&nbsp;DE';
+        }
+        
+        ?>
 	<span class="caret"></span></a>
 							 <?php include (ROOT.'\module\application\view\locale_menu.php'); ?>
 						</li>

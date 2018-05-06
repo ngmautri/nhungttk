@@ -112,7 +112,7 @@ class Module
 
     /**
      *
-     * @return unknown
+     * @return array
      */
     public function getConfig()
     {

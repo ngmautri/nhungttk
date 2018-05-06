@@ -77,6 +77,23 @@ function loadPrRow(url) {
  * @param cat_name
  * @returns
  */
+function ajaxloadData(url,target_id) {
+
+	$(target_id).text("Loading...");
+		$.get(url, {
+	}, function(data, status) {
+		// alert(status);
+		$(target_id).html(data);
+
+	});
+}
+
+/**
+ * 
+ * @param cat_id
+ * @param cat_name
+ * @returns
+ */
 function filterPrRow(url) {
 	var row_balance;
 	var is_active;
@@ -333,6 +350,28 @@ function loadData1(source, context = null) {
 			$(target_id).html(text);
 			$(search_term_id).focus();
 		}
+	});
+}
+
+
+/*
+ * @param source @param target
+ */
+function doPaginator(source, target=null) {
+	var target_id = '#' + target;
+	
+	$(target_id).text("Loading...");
+	//$('#b_modal_no_header').modal();
+	
+	$.ajax({
+		url : source,
+		success : function(text) {
+			//alert(id);
+			
+			$(target_id).html(text);
+			//$('#b_modal_no_header').modal('hide');
+
+			}
 	});
 }
 /**

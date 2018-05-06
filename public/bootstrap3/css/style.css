@@ -414,3 +414,16 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
   .nav > li.active > a{
    font-weight:bold;
   }
+  
+  #mytable26 >tbody>tr>td{
+  height:26px;
+  padding:4px;
+  border-top: 0px;
+} 
+
+
+  #mytable28 >tbody>tr>td{
+  height:29px;
+  padding:4px;
+  border-top: 0px;
+} 

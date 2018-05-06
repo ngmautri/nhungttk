@@ -1,7 +1,7 @@
 
 
 .today{
-		background:url(../../images/m_heute.gif) repeat-x #FFFFFF; color:#000000; font-size: 10pt; font-weight:bold; 
+		background:url(../../images/m_heute.gif) repeat-x #FFFFFF; color:#000000; font-size: 9pt; font-weight:bold; 
 }
 
 
@@ -29,7 +29,7 @@
     display: block;
     float: left;
     width:14.342%;
-    padding: 5px;
+    padding: 1px;
     box-sizing:border-box;
     border: 1px solid #ccc;
     margin-right: -1px;
@@ -37,9 +37,10 @@
 }
 
 #calendar ul.weekdays {
-    height: 30px;
+    height: 20px;
     /*background:url(../../images/ui-bg.png) repeat-x #FFFFFF; color:#000000; font-size: 8pt; font-weight:bold; */
     background: #dadada;
+    font-size: 9pt
  }
 
 #calendar ul.weekdays li {
@@ -48,14 +49,14 @@
     font-weight:bold;
     line-height: 20px;
     /*border: none !important;*/
-    padding: 5px 1px;
+    padding: 1px 1px;
     color: black;
     border: 1px solid #ccc;
-    font-size: 12px;
+    font-size: 9.5px;
 }
 
 #calendar .days li {
-    height: 90px;
+    height: 40px;
 }
 
 #calendar .days li:hover {
@@ -66,11 +67,11 @@
 
 #calendar .date {
     text-align: center;
-    margin-bottom: 5px;
-    padding: 5px;
+    margin-bottom: 1px;
+    padding: 1px;
     color: black;
-    border-radius: 10%;
-    font-size: 10pt;
+    border-radius: 2%;
+    font-size: 9pt;
     font-weight:bold;
     float: right;
 }
@@ -101,12 +102,18 @@
     color: black;
 }
 
+#mytable >tbody>tr>td{
+  height:25px;
+  padding:0px;
+  border-top: 0px;
+}
+
 /* ============================
                 Mobile Responsiveness
    ============================*/
 
 
-@media(max-width: 768px) {
+@media(max-width: 450px) {
 
     #calendar .weekdays, #calendar .other-month {
         display: none;
@@ -116,13 +123,11 @@
         height: auto !important;
         border: 1px solid #ededed;
         width: 100%;
-        padding: 10px;
+        padding: 1px;
         margin-bottom: -1px;
     }
 
     #calendar .date {
         float: none;
     }
-    
- 
   

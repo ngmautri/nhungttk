@@ -1370,6 +1370,7 @@ class ItemController extends AbstractActionController
             $pic = new NmtInventoryItemPicture();
             $pic = $pic1;
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
+            $pic_folder = str_replace('\\', '/', $pic_folder);
             $imageContent = file_get_contents($pic_folder);
             
             $response = $this->getResponse();

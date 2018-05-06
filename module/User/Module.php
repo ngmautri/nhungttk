@@ -57,10 +57,7 @@ class Module
         ), 100);
     }
 
-    /**
-     *
-     * @return unknown
-     */
+   
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
@@ -297,7 +294,12 @@ class Module
          * ) );
          */
         
-        $url = "http://localhost:81/user/auth/authenticate?redirect=" . $requestUri;
+        
+        $router = $e->getRouter();
+        $url = $router->assemble(array(), array(
+            'name' => 'login'
+        ));
+        //$url = "http://localhost:81/user/auth/authenticate?redirect=" . $requestUri;
         // echo $url;
         // $response->setHeaders ( $response->getHeaders ()->addHeaderLine ( 'Location', $url ) );
         

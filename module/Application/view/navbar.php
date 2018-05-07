@@ -7,7 +7,7 @@
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"
 	href="#" style="padding-left: 20px; padding-right: 10px;">My Inbox <span
 		class="caret"></span></a>
-							<?php include (ROOT.'/module/application/view/inbox_menu.php'); ?>
+							<?php include (ROOT.'/module/Application/view/inbox_menu.php'); ?>
 							</li>
 
 <!-- FINANCE MENU -->
@@ -16,7 +16,7 @@
 	class="dropdown-toggle" data-toggle="dropdown" href="#"
 	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Finance");?> <span
 		class="caret"></span></a>
-							<?php include (ROOT.'/module/application/view/finance_menu.php'); ?>
+							<?php include (ROOT.'/module/Application/view/finance_menu.php'); ?>
 						</li>
 
 <!-- INVENTORY MENU -->
@@ -25,7 +25,7 @@
 	class="dropdown-toggle" data-toggle="dropdown" href="#"
 	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Inventory")?> <span
 		class="caret"></span></a>
-							<?php include (ROOT.'/module/application/view/inventory_menu.php'); ?>			
+							<?php include (ROOT.'/module/Application/view/inventory_menu.php'); ?>			
 						</li>
 
 <!-- BP MENU -->
@@ -35,7 +35,7 @@
 	data-toggle="dropdown" href="#"
 	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Partner")?> <span
 		class="caret"></span></a>
-							<?php include (ROOT.'/module/application/view/bp_menu.php'); ?>
+							<?php include (ROOT.'/module/Application/view/bp_menu.php'); ?>
 						</li>
 
 <!-- PROCURE MENU -->
@@ -60,7 +60,7 @@ echo $this->cart_items;
 			class="caret"></span>
 
 </a>			    
-						    	<?php include (ROOT.'/module/application/view/procure_menu.php'); ?>
+						    	<?php include (ROOT.'/module/Application/view/procure_menu.php'); ?>
 							</li>
 <?php endif;?>
 
@@ -69,7 +69,7 @@ echo $this->cart_items;
 	class="dropdown <?php if ($current_module=="HR"): echo "active";endif;?>"><a
 	class="dropdown-toggle" data-toggle="dropdown" href="#"
 	style="padding-left: 10px; padding-right: 10px;">HR <span class="caret"></span></a>
-							<?php include (ROOT.'/module/application/view/hr_menu.php'); ?>
+							<?php include (ROOT.'/module/Application/view/hr_menu.php'); ?>
 						  </li>
 
 
@@ -79,21 +79,21 @@ echo $this->cart_items;
 	class="dropdown-toggle" data-toggle="dropdown" href="#"
 	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Other");?> <span
 		class="caret"></span></a>
-						  <?php include (ROOT.'/module/application/view/other_menu.php'); ?>
+						  <?php include (ROOT.'/module/Application/view/other_menu.php'); ?>
 						  </li>
 
 <!-- SETTING MENU -->
 <?php if ($this->isAdmin==true): ?>
 
 <li
-	class="dropdown <?php if ($current_module=="APPLICATION"): echo "active";endif;?>"><a
+	class="dropdown <?php if ($current_module=="Application"): echo "active";endif;?>"><a
 	class="dropdown-toggle" data-toggle="dropdown" href="#"
 	style="padding-left: 10px; padding-right: 10px;"> <span
 		class="label label-success"> <small> <span
 				class="glyphicon glyphicon-wrench"> </span></small>
 	</span>&nbsp;&nbsp;<?php echo $this->translate("Setup");?> <span
 		class="caret"></span></a>
-								  <?php include (ROOT.'/module/application/view/setting_menu.php'); ?>
+								  <?php include (ROOT.'/module/Application/view/setting_menu.php'); ?>
 				 			</li>
 <?php endif;?>
 			
@@ -143,7 +143,7 @@ echo $this->cart_items;
         
         ?>
 	<span class="caret"></span></a>
-							 <?php include (ROOT.'/module/application/view/locale_menu.php'); ?>
+							 <?php include (ROOT.'/module/Application/view/locale_menu.php'); ?>
 						</li>
 <?php endif;?>
 <!-- PROFIL MENU -->
@@ -152,7 +152,7 @@ echo $this->cart_items;
 		class="label label-primary"> <small><span
 				class="glyphicon glyphicon-user"> </span></small>
 	</span>&nbsp;&nbsp;<?php echo $this->user?> <span class="caret"></span></a>
-							 <?php include (ROOT.'/module/application/view/profil_menu.php'); ?>
+							 <?php include (ROOT.'/module/Application/view/profil_menu.php'); ?>
 						</li>
 
 <?php endif;?>

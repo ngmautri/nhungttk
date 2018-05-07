@@ -1346,20 +1346,20 @@ class ItemController extends AbstractActionController
         }
     }
 
-    /**
-     *
-     * @return \Zend\Stdlib\ResponseInterface
-     */
+   /**
+    * 
+    *  @return \Zend\Stdlib\ResponseInterface
+    */
     public function getPictureAction()
     {
-        /*
-         * $request = $this->getRequest ();
-         *
-         * // accepted only ajax request
-         * if (!$request->isXmlHttpRequest ()) {
-         * return $this->redirect ()->toRoute ( 'access_denied' );
-         * }
-         */
+         /*  $request = $this->getRequest ();
+        
+          // accepted only ajax request
+          if (!$request->isXmlHttpRequest ()) {
+          return $this->redirect ()->toRoute ( 'access_denied' );
+          }
+          */
+        
         $item_id = (int) $this->params()->fromQuery('item_id');
         $pic1 = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
             'item' => $item_id

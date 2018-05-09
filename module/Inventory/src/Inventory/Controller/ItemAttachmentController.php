@@ -1575,6 +1575,10 @@ class ItemAttachmentController extends AbstractActionController {
 		
 		if ($attachment !== null) {
 			$f = ROOT . $attachment->getAttachmentFolder () . DIRECTORY_SEPARATOR . $attachment->getFilename ();
+			
+			// for Ubuntu
+			$f = str_replace('\\', '/', $f);
+			
 			$output = file_get_contents ( $f );
 			
 			$response = $this->getResponse ();

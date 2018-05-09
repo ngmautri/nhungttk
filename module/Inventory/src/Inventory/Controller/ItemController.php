@@ -328,7 +328,7 @@ class ItemController extends AbstractActionController
             // =======================
             try {
                 
-			    // generate document
+                // generate document
                 // ==================
                 $criteria = array(
                     'isActive' => 1,
@@ -364,9 +364,8 @@ class ItemController extends AbstractActionController
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     'email' => $this->identity()
                 ));
-				
-				$createdOn = new \DateTime();
-               
+                
+                $createdOn = new \DateTime();
                 
                 $entity->setCreatedOn(new \DateTime());
                 $entity->setCreatedBy($u);
@@ -719,7 +718,7 @@ class ItemController extends AbstractActionController
                     // update index
                     $this->itemSearchService->updateIndex(0, $new_item, false);
                     
-                    $m = sprintf('(%s) #%s %s updated. Change no.:%s. OK!', $itemName, $new_item->getId(), $new_item->getSysNumber(),count($changeArray));
+                    $m = sprintf('(%s) #%s %s updated. Change no.:%s. OK!', $itemName, $new_item->getId(), $new_item->getSysNumber(), count($changeArray));
                     
                     // Trigger Change Log. AbtractController is EventManagerAware.
                     $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
@@ -1346,19 +1345,18 @@ class ItemController extends AbstractActionController
         }
     }
 
-   /**
-    * 
-    *  @return \Zend\Stdlib\ResponseInterface
-    */
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function getPictureAction()
     {
-         /*  $request = $this->getRequest ();
+        $request = $this->getRequest();
         
-          // accepted only ajax request
-          if (!$request->isXmlHttpRequest ()) {
-          return $this->redirect ()->toRoute ( 'access_denied' );
-          }
-          */
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
         
         $item_id = (int) $this->params()->fromQuery('item_id');
         $pic1 = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
@@ -1378,8 +1376,8 @@ class ItemController extends AbstractActionController
             $response->setContent($imageContent);
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', $pic->getFiletype())
-                ->addHeaderLine('Content-Length', mb_strlen($imageContent));
+                ->addHeaderLine('Content-Type', $pic->getFiletype());
+            // ->addHeaderLine('Content-Length', mb_strlen($imageContent));
             return $response;
         } else {
             $pic_folder = getcwd() . "/public/images/no-pic.jpg";
@@ -1390,8 +1388,8 @@ class ItemController extends AbstractActionController
             $response->setContent($imageContent);
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', 'image/jpeg')
-                ->addHeaderLine('Content-Length', mb_strlen($imageContent));
+                ->addHeaderLine('Content-Type', 'image/jpeg');
+            // ->addHeaderLine('Content-Length', mb_strlen($imageContent));
             return $response;
         }
     }

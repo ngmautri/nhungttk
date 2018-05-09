@@ -1351,7 +1351,7 @@ class ItemController extends AbstractActionController
      */
     public function getPictureAction()
     {
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         
         // accepted only ajax request
         /* if (! $request->isXmlHttpRequest()) {

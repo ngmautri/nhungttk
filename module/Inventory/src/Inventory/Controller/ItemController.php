@@ -1359,6 +1359,7 @@ class ItemController extends AbstractActionController
         } */
         
         $item_id = (int) $this->params()->fromQuery('item_id');
+        
         /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
         $pic = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
             'item' => $item_id

@@ -1377,7 +1377,7 @@ class ItemController extends AbstractActionController
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
                 ->addHeaderLine('Content-Type', $pic->getFiletype());
-            // ->addHeaderLine('Content-Length', mb_strlen($imageContent));
+            // ->addHeaderLine('Content-Length', mb_strlen($imageContent)); // can cause problme in Ubuntu
             return $response;
             
         } else {

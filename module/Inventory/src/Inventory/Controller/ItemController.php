@@ -1354,31 +1354,31 @@ class ItemController extends AbstractActionController
         $request = $this->getRequest();
         
         // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
+        /* if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
-        }
+        } */
         
         $item_id = (int) $this->params()->fromQuery('item_id');
-        $pic1 = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
+        /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
+        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
             'item' => $item_id
         ));
         
-        if ($pic1 instanceof NmtInventoryItemPicture) {
+        if ($pic instanceof NmtInventoryItemPicture) {
             
-            $pic = new NmtInventoryItemPicture();
-            $pic = $pic1;
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
             $pic_folder = str_replace('\\', '/', $pic_folder);
             $imageContent = file_get_contents($pic_folder);
             
-            $response = $this->getResponse();
-            
+            $response = $this->getResponse();            
             $response->setContent($imageContent);
+
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
                 ->addHeaderLine('Content-Type', $pic->getFiletype());
             // ->addHeaderLine('Content-Length', mb_strlen($imageContent));
             return $response;
+            
         } else {
             $pic_folder = getcwd() . "/public/images/no-pic.jpg";
             $imageContent = file_get_contents($pic_folder);

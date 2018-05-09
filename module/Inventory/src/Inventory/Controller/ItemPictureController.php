@@ -54,8 +54,8 @@ class ItemPictureController extends AbstractActionController
             $response->setContent($imageContent);
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', $pic->getFiletype())
-                ->addHeaderLine('Content-Length', mb_strlen($imageContent));
+                ->addHeaderLine('Content-Type', $pic->getFiletype());
+                //->addHeaderLine('Content-Length', mb_strlen($imageContent));
             return $response;
         } else {
             return;

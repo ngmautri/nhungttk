@@ -345,6 +345,10 @@ class ItemAttachmentController extends AbstractActionController {
 						$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
 						$folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
 						
+						/** Important! for UBUNTU */
+						$folder = str_replace('\\', '/', $folder);
+						
+						
 						if (! is_dir ( $folder )) {
 							mkdir ( $folder, 0777, true ); // important
 						}
@@ -601,12 +605,19 @@ class ItemAttachmentController extends AbstractActionController {
 		$pic = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
 		if ($pic !== null) {
 			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . $pic->getFileName ();
+			
+			/** Important! for UBUNTU */
+			$pic_folder = str_replace('\\', '/', $pic_folder);
+			
 			$imageContent = file_get_contents ( $pic_folder );
 			
 			$response = $this->getResponse ();
 			
 			$response->setContent ( $imageContent );
-			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )->addHeaderLine ( 'Content-Type', $pic->getFiletype () )->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
+			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )
+			->addHeaderLine ( 'Content-Type', $pic->getFiletype () );
+			
+			//->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
 			return $response;
 		} else {
 			return;
@@ -639,6 +650,10 @@ class ItemAttachmentController extends AbstractActionController {
 		
 		if ($pic !== null) {
 			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . "thumbnail_200_" . $pic->getFileName ();
+			
+			/** Important! for UBUNTU */
+			$pic_folder = str_replace('\\', '/', $pic_folder);
+			
 			$imageContent = file_get_contents ( $pic_folder );
 			
 			$response = $this->getResponse ();
@@ -677,12 +692,19 @@ class ItemAttachmentController extends AbstractActionController {
 		if ($pic !== null) {
 			
 			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . "thumbnail_450_" . $pic->getFileName ();
+			
+			/** Important! for UBUNTU */
+			$pic_folder = str_replace('\\', '/', $pic_folder);
+			
+			
 			$imageContent = file_get_contents ( $pic_folder );
 			
 			$response = $this->getResponse ();
 			
 			$response->setContent ( $imageContent );
-			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )->addHeaderLine ( 'Content-Type', $pic->getFiletype () )->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
+			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )
+			->addHeaderLine ( 'Content-Type', $pic->getFiletype () );
+			//->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
 			return $response;
 		} else {
 			return;
@@ -927,6 +949,11 @@ class ItemAttachmentController extends AbstractActionController {
 						$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
 						$folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
 						
+						
+						/** Important! for UBUNTU */
+						$folder = str_replace('\\', '/', $folder);
+						
+												
 						if (! is_dir ( $folder )) {
 							mkdir ( $folder, 0777, true ); // important
 						}
@@ -1246,6 +1273,10 @@ class ItemAttachmentController extends AbstractActionController {
 						$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
 						$folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
 						
+						/** Important! for UBUNTU */
+						$folder = str_replace('\\', '/', $folder);
+						
+						
 						if (! is_dir ( $folder )) {
 							mkdir ( $folder, 0777, true ); // important
 						}
@@ -1413,6 +1444,10 @@ class ItemAttachmentController extends AbstractActionController {
 						$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
 						$folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
 						
+						/** Important! for UBUNTU */
+						$folder = str_replace('\\', '/', $folder);
+						
+						
 						if (! is_dir ( $folder )) {
 							mkdir ( $folder, 0777, true ); // important
 						}
@@ -1576,7 +1611,7 @@ class ItemAttachmentController extends AbstractActionController {
 		if ($attachment !== null) {
 			$f = ROOT . $attachment->getAttachmentFolder () . DIRECTORY_SEPARATOR . $attachment->getFilename ();
 			
-			// for Ubuntu
+			/** Important! for UBUNTU */
 			$f = str_replace('\\', '/', $f);
 			
 			$output = file_get_contents ( $f );

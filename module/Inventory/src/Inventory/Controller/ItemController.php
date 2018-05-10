@@ -1249,6 +1249,10 @@ class ItemController extends AbstractActionController
                         
                         $folder = $root_dir . DIRECTORY_SEPARATOR . $folder_relative;
                         
+                        /** Important! for UBUNTU */
+                        $folder = str_replace('\\', '/', $folder);
+                        
+                        
                         if (! is_dir($folder)) {
                             mkdir($folder, 0777, true); // important
                         }
@@ -1368,7 +1372,10 @@ class ItemController extends AbstractActionController
         if ($pic instanceof NmtInventoryItemPicture) {
             
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
+            
+            /** Important! for UBUNTU */
             $pic_folder = str_replace('\\', '/', $pic_folder);
+            
             $imageContent = file_get_contents($pic_folder);
             
             $response = $this->getResponse();            

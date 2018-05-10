@@ -45,6 +45,8 @@ class ItemPictureController extends AbstractActionController
             $pic = new \Application\Entity\NmtInventoryItemPicture();
             $pic = $entity;
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . $pic->getFileName();
+            
+            /** Important! for UBUNTU */
             $pic_folder = str_replace('\\', '/', $pic_folder);
             
             $imageContent = file_get_contents($pic_folder);
@@ -84,6 +86,8 @@ class ItemPictureController extends AbstractActionController
             $pic = new \Application\Entity\NmtInventoryItemPicture();
             $pic = $entity;
             $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+            
+            /** Important! for UBUNTU */
             $pic_folder = str_replace('\\', '/', $pic_folder);
             
             $imageContent = file_get_contents($pic_folder);
@@ -95,7 +99,7 @@ class ItemPictureController extends AbstractActionController
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
                 ->addHeaderLine('Content-Type', $pic->getFiletype());
             
-                
+                /** Important! can cause for UBUNTU */
                 //->addHeaderLine('Content-Length', mb_strlen($imageContent)); // can cause problem 
             return $response;
         } else {

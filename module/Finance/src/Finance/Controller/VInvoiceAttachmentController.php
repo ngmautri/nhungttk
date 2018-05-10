@@ -1404,7 +1404,8 @@ class VInvoiceAttachmentController extends AbstractActionController
                         $ext = 'png';
                     }
                     
-                    $tmp_name = md5($target_id . uniqid(microtime())) . '.' . $ext;
+                    // fix uix folder.
+                    $tmp_name = ROOT ."/temp/". md5($id . uniqid(microtime())) . '.' . $ext;
                     
                     // remove "data:image/png;base64,"
                     $uri = substr($p[1], strpos($p[1], ",") + 1);

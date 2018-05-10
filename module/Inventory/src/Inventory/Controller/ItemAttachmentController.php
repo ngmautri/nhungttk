@@ -997,7 +997,8 @@ class ItemAttachmentController extends AbstractActionController {
 						$this->doctrineEM->persist ( $entity );
 						$this->doctrineEM->flush ();
 						
-						$this->flashMessenger ()->addMessage ( "'" . $file_name . "' has been uploaded successfully!" );
+						$m = sprintf("[0K] %s  uploaded!", $file_name);
+						$this->flashMessenger ()->addMessage ( $m);
 						return $this->redirect ()->toUrl ( $redirectUrl );
 					}
 				}

@@ -1221,6 +1221,7 @@ class ItemController extends AbstractActionController
                     $ext = 'png';
                 }
                 
+                // fix uix folder.
                 $tmp_name = ROOT ."/temp/". md5($id . uniqid(microtime())) . '.' . $ext;
                 
                 // remove "data:image/png;base64,"

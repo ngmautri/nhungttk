@@ -1221,7 +1221,7 @@ class ItemController extends AbstractActionController
                     $ext = 'png';
                 }
                 
-                $tmp_name = md5($id . uniqid(microtime())) . '.' . $ext;
+                $tmp_name = ROOT ."/temp/". md5($id . uniqid(microtime())) . '.' . $ext;
                 
                 // remove "data:image/png;base64,"
                 $uri = substr($p[1], strpos($p[1], ",") + 1);
@@ -1296,7 +1296,9 @@ class ItemController extends AbstractActionController
                             'pictures_dir' => $folder
                         ));
                         
-                        $this->flashMessenger()->addMessage("'" . $original_filename . "' has been uploaded sucessfully");
+                        $m = sprintf("[OK] %s uploaded sucessfully!", $original_filename);
+                        $this->flashMessenger()->addMessage($m);
+                        
                         $result[] = $original_filename . ' uploaded sucessfully';
                         $success ++;
                     } catch (Exception $e) {

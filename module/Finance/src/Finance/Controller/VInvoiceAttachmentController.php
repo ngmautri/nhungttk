@@ -978,7 +978,11 @@ class VInvoiceAttachmentController extends AbstractActionController
                         $this->doctrineEM->persist($entity);
                         $this->doctrineEM->flush();
                         
-                        $this->flashMessenger()->addMessage("'" . $file_name . "' has been uploaded successfully!");
+                         
+                        $m = sprintf("[OK] %s uploaded !", $file_name);
+                        $this->flashMessenger()->addMessage($m);
+                        
+                        
                         return $this->redirect()->toUrl($redirectUrl);
                     }
                 }
@@ -1405,7 +1409,7 @@ class VInvoiceAttachmentController extends AbstractActionController
                     }
                     
                     // fix uix folder.
-                    $tmp_name = ROOT ."/temp/". md5($id . uniqid(microtime())) . '.' . $ext;
+                    $tmp_name = ROOT ."/temp/". md5($target_id. uniqid(microtime())) . '.' . $ext;
                     
                     // remove "data:image/png;base64,"
                     $uri = substr($p[1], strpos($p[1], ",") + 1);

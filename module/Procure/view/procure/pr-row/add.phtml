@@ -32,7 +32,21 @@ if (count ( $errors ) > 0) {
 
 	<div id="general" style="font-size: 9pt;">
 		
-		
+	<div class="row">
+  <!-- ROW -->
+  
+  <div class="col-xs-5 col-md-2">
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP2";
+    					include (ROOT.'/module/Procure/view/procure/pr-create-wizard.php');
+  					?>
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10" style="">
+  <!-- C2 --> 
+  	
 		<form id="pr_header_form" class="form-horizontal"
 			action="" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
@@ -312,6 +326,14 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
 
 
 		</form>
+		
+		<!-- C2 ends-->
+  </div>
+  
+  <!-- ROW -->
+</div>	
+
+
 	</div>
 </div>
 

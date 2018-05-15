@@ -20,8 +20,25 @@ if (count ( $errors ) > 0) {
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
-
-		<form id="Create_Inv_Form" class="form-horizontal"
+	<!-- Tab1 -->
+	
+  <div class="row">
+  <!-- ROW -->
+  
+  <div class="col-xs-5 col-md-2">
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP1";
+    					include (ROOT.'/module/Procure/view/procure/create-wizard.php');
+  					?>
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10" style="">
+  <!-- C2 -->
+ 
+ 
+ <form id="Create_Inv_Form" class="form-horizontal"
 			action="/procure/po/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
@@ -133,14 +150,26 @@ if (count ( $errors ) > 0) {
 						<label class="control-label col-sm-2" for="inputTag"></label>
 						<div class="col-sm-3">
 	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
-							<a tabindex="11" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
-									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+  						<a class="btn btn-default btn-sm"
+								href="<?php echo $redirectUrl; ?>"><small><ilass=""></i></small>&nbsp;Cancel</a>
 	
 						</div>
 					</div>
 			</fieldset>
-		</form>
+		</form> 
+  
+  
+  <!-- C2 ends-->
+  </div>
+  
+  <!-- ROW -->
+</div>	
+	
+	
+	
+	
+
+	<!-- Tab1 -->
 	</div>
 </div>
 

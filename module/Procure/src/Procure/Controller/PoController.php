@@ -172,8 +172,8 @@ class PoController extends AbstractActionController
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-            
-            $this->flashMessenger()->addMessage('Document' . $currentDoc . ' is created successfully!');
+            $m = sprintf("[OK] Contract /PO: %s created!",  $currentDoc);
+            $this->flashMessenger()->addMessage($m);
             
             $redirectUrl = "/procure/po/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);

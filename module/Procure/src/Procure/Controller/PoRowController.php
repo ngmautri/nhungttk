@@ -46,6 +46,8 @@ class PoRowController extends AbstractActionController
      */
     public function addAction()
     {
+        $this->layout("Procure/layout-fullscreen");
+        
         $criteria = array(
             'isActive' => 1
         );
@@ -260,7 +262,10 @@ class PoRowController extends AbstractActionController
                  * $this->doctrineEM->flush();
                  */
                 $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-                $this->flashMessenger()->addMessage('Row ' . $rowIdentifer . ' has been created successfully!');
+                $m = sprintf("[OK] Contract /PO Line: %s created!",  $rowIdentifer);
+                $this->flashMessenger()->addMessage($m);
+                
+                
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }

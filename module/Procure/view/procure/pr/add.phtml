@@ -19,7 +19,22 @@ if (count ( $errors ) > 0) {
   <li ><a href="#general">New Purchase Request</a></li>
    </ul>
 
-<div id="general" style="font-size: 9pt"> 
+<div id="general" style="font-size: 9pt">
+
+ <div class="row">
+  <!-- ROW -->
+  
+  <div class="col-xs-5 col-md-2">
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP1";
+    					include (ROOT.'/module/Procure/view/procure/pr-create-wizard.php');
+  					?>
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10" style="">
+  <!-- C2 --> 
 
 <form id="Create_PR_Form" class="form-horizontal" action="/procure/pr/add" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
@@ -97,12 +112,24 @@ name="department_id" value="<?php if (!$entity== null):if($entity->getDepartment
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
-	   	<button onclick="submitForm('Create_PR_Form');" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+	   	<button onclick="submitForm('Create_PR_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+  						<a class="btn btn-default btn-sm"
+								href="<?php echo $redirectUrl; ?>"><small><ilass=""></i></small>&nbsp;Cancel</a>
+		
   		</div>
 	</div> 
 		
 	
 </form>
+
+<!-- C2 ends-->
+  </div>
+  
+  <!-- ROW -->
+</div>	
+
+
+<!-- Tab1 -->
 </div>
 </div>
 

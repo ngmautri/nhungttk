@@ -233,6 +233,7 @@ return array(
         'exception_template' => 'error/index',
         'template_map' => array(
             'Procure/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
+            'Procure/layout-fullscreen' => __DIR__ . '/../view/layout/layout-fullscreen.phtml',
             'procure/index/index' => __DIR__ . '/../view/procure/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',
             'error/index' => __DIR__ . '/../view/error/index.phtml',

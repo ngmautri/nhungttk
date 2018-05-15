@@ -1,4 +1,7 @@
 
+
+
+
 <div class="list-group">
 	<?php if ($current_step=="STEP1") :?>
 		<a class="list-group-item active" href="#"><?php echo $this->translate('Payroll Period'); ?>&nbsp;&nbsp;&nbsp;<i
@@ -57,3 +60,5 @@
 	<?php endif;?>
 	
 </div>
+
+

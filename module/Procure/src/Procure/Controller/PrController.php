@@ -187,6 +187,9 @@ class PrController extends AbstractActionController
     */
     public function addAction()
     {
+        $this->layout("Procure/layout-fullscreen");
+        
+        
         $request = $this->getRequest();
         
         if ($request->isPost()) {            

@@ -134,11 +134,11 @@ class NmtInventorySerial
     private $lastchangeOn;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="nmt_inventory_serialcol", type="string", length=45, nullable=true)
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
      */
-    private $nmtInventorySerialcol;
+    private $revisionNo;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -567,27 +567,27 @@ class NmtInventorySerial
     }
 
     /**
-     * Set nmtInventorySerialcol
+     * Set revisionNo
      *
-     * @param string $nmtInventorySerialcol
+     * @param integer $revisionNo
      *
      * @return NmtInventorySerial
      */
-    public function setNmtInventorySerialcol($nmtInventorySerialcol)
+    public function setRevisionNo($revisionNo)
     {
-        $this->nmtInventorySerialcol = $nmtInventorySerialcol;
+        $this->revisionNo = $revisionNo;
 
         return $this;
     }
 
     /**
-     * Get nmtInventorySerialcol
+     * Get revisionNo
      *
-     * @return string
+     * @return integer
      */
-    public function getNmtInventorySerialcol()
+    public function getRevisionNo()
     {
-        return $this->nmtInventorySerialcol;
+        return $this->revisionNo;
     }
 
     /**

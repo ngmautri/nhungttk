@@ -43,6 +43,8 @@ class PoController extends AbstractActionController
      */
     public function addAction()
     {
+        $this->layout("Procure/layout-fullscreen");
+        
         $criteria = array(
             'isActive' => 1
         );

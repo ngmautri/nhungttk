@@ -24,7 +24,7 @@ if (count ( $errors ) > 0) {
  <div class="row">
   <!-- ROW -->
   
-  <div class="col-xs-5 col-md-2">
+  <div class="col-xs-5 col-md-2" >
   <!-- C1 -->
   					<?php 
     					$current_step="STEP1";
@@ -33,7 +33,7 @@ if (count ( $errors ) > 0) {
   <!-- C1 ends-->	
   </div>
   
-  <div class="col-xs-12 col-sm-6 col-md-10" style="">
+  <div class="col-xs-12 col-sm-6 col-md-10">
   <!-- C2 --> 
 
 <form id="Create_PR_Form" class="form-horizontal" action="/procure/pr/add" method="post" enctype="multipart/form-data">
@@ -114,7 +114,7 @@ name="department_id" value="<?php if (!$entity== null):if($entity->getDepartment
 		<div class="col-sm-3">
 	   	<button onclick="submitForm('Create_PR_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
   						<a class="btn btn-default btn-sm"
-								href="<?php echo $redirectUrl; ?>"><small><ilass=""></i></small>&nbsp;Cancel</a>
+								href="<?php echo $redirectUrl; ?>"><small><i class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 		
   		</div>
 	</div> 

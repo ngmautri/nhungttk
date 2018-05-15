@@ -21,7 +21,7 @@ class EmployeeAttachmentController extends AbstractActionController {
 	 *
 	 * @todo : TO UPDATE
 	 */
-	const ATTACHMENT_FOLDER = "/data/hr/attachment/employee";
+	const ATTACHMENT_FOLDER = "/data/hr/fingerscan";
 	const PDFBOX_FOLDER = "/vendor/pdfbox/";
 	const PDF_PASSWORD = "mla2017";
 	const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";

@@ -16,7 +16,12 @@ use MLA\Paginator;
 use Zend\Http\Headers;
 use Zend\Validator\Date;
 use Zend\Math\Rand;
+use PHPExcel_Cell;
+use PHPExcel_Cell_DataType;
+use PHPExcel_IOFactory;
+use PHPExcel_Shared_Date;
 use Application\Entity\NmtHrLeaveReason;
+use Application\Entity\NmtHrFingerscan;
 
 /**
  *
@@ -55,8 +60,8 @@ class FingerscanController extends AbstractActionController
             // $condition = $request->getPost('condition');
             $isActive = (int) $request->getPost('isActive');
             
-            if($isActive!==1){
-                $isActive =0;
+            if ($isActive !== 1) {
+                $isActive = 0;
             }
             
             if ($leaveReason == null) {
@@ -116,6 +121,203 @@ class FingerscanController extends AbstractActionController
     }
 
     /**
+     * php.ini
+     * memory_limit=512M
+     * 
+     * import fingerscan data
+     */
+    public function importAction()
+    {
+        
+        // take long time
+        set_time_limit ( 1500 );
+        
+        // 1. import excel file
+        
+        // 2. check file format
+        
+        // 3. processing file
+        $request = $this->getRequest();
+        
+        if ($request->isPost()) {
+            
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+            
+            $errors = array();
+            
+            if (isset($_FILES['uploaded_file'])) {
+                $file_name = $_FILES['uploaded_file']['name'];
+                $file_size = $_FILES['uploaded_file']['size'];
+                $file_tmp = $_FILES['uploaded_file']['tmp_name'];
+                $file_type = $_FILES['uploaded_file']['type'];
+                
+                $file_ext = strtolower(end(explode('.', $_FILES['uploaded_file']['name'])));
+                
+                // attachement required?
+                if ($file_tmp == "" or $file_tmp === null) {
+                    
+                    $errors[] = 'Attachment can\'t be empty!';
+                    $this->flashMessenger()->addMessage('Something wrong!');
+                    return new ViewModel(array(
+                        'errors' => $errors
+                    ));
+                } else {
+                    
+                    $ext = '';
+                    if (preg_match('/(jpg|jpeg)$/', $file_type)) {
+                        $ext = 'jpg';
+                        $isPicture = 1;
+                    } else if (preg_match('/(gif)$/', $file_type)) {
+                        $ext = 'gif';
+                        $isPicture = 1;
+                    } else if (preg_match('/(png)$/', $file_type)) {
+                        $ext = 'png';
+                        $isPicture = 1;
+                    } else if (preg_match('/(pdf)$/', $file_type)) {
+                        $ext = 'pdf';
+                    } else if (preg_match('/(vnd.ms-excel)$/', $file_type)) {
+                        $ext = 'xls';
+                    } else if (preg_match('/(vnd.openxmlformats-officedocument.spreadsheetml.sheet)$/', $file_type)) {
+                        $ext = 'xlsx';
+                    } else if (preg_match('/(msword)$/', $file_type)) {
+                        $ext = 'doc';
+                    } else if (preg_match('/(vnd.openxmlformats-officedocument.wordprocessingml.document)$/', $file_type)) {
+                        $ext = 'docx';
+                    } else if (preg_match('/(x-zip-compressed)$/', $file_type)) {
+                        $ext = 'zip';
+                    } else if (preg_match('/(octet-stream)$/', $file_type)) {
+                        $ext = $file_ext;
+                    }
+                    
+                    $expensions = array(
+                        "xlsx",
+                        "xls",
+                        "csv"
+                    );
+                    
+                    if (in_array($ext, $expensions) === false) {
+                        $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "xlsx","xlx", "csv"!';
+                    }
+                    
+                    if ($file_size > 2097152) {
+                        $errors[] = 'File size must be  2 MB';
+                    }
+                    
+                    if (count($errors) > 0) {
+                        $this->flashMessenger()->addMessage('Something wrong!');
+                        return new ViewModel(array(
+                            'errors' => $errors
+                        ));
+                    }
+                    ;
+                    
+                    $folder = ROOT . "/data/hr/fingerscan";
+                    
+                    if (! is_dir($folder)) {
+                        mkdir($folder, 0777, true); // important
+                    }
+                    
+                    // echo ("$folder/$name");
+                    move_uploaded_file($file_tmp, "$folder/$file_name");
+                    
+                    $objPHPExcel = PHPExcel_IOFactory::load("$folder/$file_name");
+                    foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+                        //echo $worksheet->getTitle();
+                        
+                        $worksheetTitle = $worksheet->getTitle();
+                        $highestRow = $worksheet->getHighestRow(); // e.g. 10
+                        $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+                        $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+                        $nrColumns = ord($highestColumn) - 64;
+                        // echo $worksheetTitle;
+                        // echo $highestRow;
+                        // echo $highestColumn;
+                        
+                        for ($row = 2; $row <= $highestRow; ++ $row) {
+                            
+                            $entity = new NmtHrFingerscan();
+                            
+                            
+                            for ($col = 0; $col < $highestColumnIndex; ++ $col) {
+                                
+                                $cell = $worksheet->getCellByColumnAndRow($col, $row);
+                                $val = $cell->getValue();
+                                //echo $val . ';';
+                                 
+                                $entity->setEmployeeId(1);
+                                $entity->setCreatedBy($u);
+                                $entity->setCreatedOn(new \Datetime());
+                                
+                                if ($col == 0) {
+                                    $entity->setEmployeeCode($val);
+                                   //echo $val . ' code';
+                                }
+                                
+                                if ($col == 2) {
+                                    $PHPTimeStamp = PHPExcel_Shared_Date::ExcelToPHP($val);
+                                    //$dt = date('Y-m-d', $PHPTimeStamp);
+                                    $dt = new \Datetime();
+                                    $dt->setTimestamp ($PHPTimeStamp);
+                                    
+                                    $entity->setAttendanceDate($dt);
+                                    //echo date('Y-m-d', $PHPTimeStamp) . ' date';
+                                    //echo $dt->format("m-d-Y");
+                                }
+                                
+                                if ($col == 3) {
+                                    $entity->setClockIn($val);
+                                }
+                                
+                                if ($col == 4) {
+                                   $entity->setClockOut($val);
+                                }
+                            }
+                            
+                            
+                            $this->doctrineEM->persist($entity);
+                            if($row % 1000==0 OR $row == $highestRow){
+                                $this->doctrineEM->flush();
+                             }
+                            
+                            //echo "<br>";
+                        }
+                    }
+                    
+                    $m = sprintf("[OK] %s uploaded !", $file_name);
+                    $this->flashMessenger()->addMessage($m);
+                    // return $this->redirect()->toUrl($redirectUrl);
+                }
+            }
+        }
+        
+        // ==================
+        // NO POST
+        
+        $redirectUrl = null;
+        if ($this->getRequest()->getHeader('Referer') !== null) {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
+        }
+        
+        $id = (int) $this->params()->fromQuery('period_id');
+        $token = $this->params()->fromQuery('token');
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+        
+        // $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
+        
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null
+        ));
+    }
+
+    /**
      *
      * @return \Zend\View\Model\ViewModel
      */
@@ -150,7 +352,7 @@ class FingerscanController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-    
+
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -158,26 +360,27 @@ class FingerscanController extends AbstractActionController
     public function show1Action()
     {
         $request = $this->getRequest();
-       
+        
         // accepted only ajax request
-       /*  if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        ;
+        /*
+         * if (! $request->isXmlHttpRequest()) {
+         * return $this->redirect()->toRoute('access_denied');
+         * }
+         * ;
          */
         $this->layout("layout/user/ajax");
         
-        //$entity_id = (int) $this->params()->fromQuery('entity_id');
-        //$token = $this->params()->fromQuery('token');
+        // $entity_id = (int) $this->params()->fromQuery('entity_id');
+        // $token = $this->params()->fromQuery('token');
         $criteria = array(
             'employeeCode' => 2211
         );
         
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrFingerscan')->findBy($criteria);
         
-             return new ViewModel(array(
-                'list' => $list
-            ));
+        return new ViewModel(array(
+            'list' => $list
+        ));
     }
 
     /**
@@ -230,8 +433,8 @@ class FingerscanController extends AbstractActionController
                 // $condition = $request->getPost('condition');
                 $isActive = (int) $request->getPost('isActive');
                 
-                if($isActive!==1){
-                    $isActive =0;
+                if ($isActive !== 1) {
+                    $isActive = 0;
                 }
                 
                 if ($leaveReason == null) {
@@ -242,8 +445,8 @@ class FingerscanController extends AbstractActionController
                     $errors[] = 'Please enter leave reason in local language!';
                 }
                 
-                if($isActive!==1){
-                    $isActive =0;
+                if ($isActive !== 1) {
+                    $isActive = 0;
                 }
                 
                 $entity->setLeaveReasonLocal($leaveReasonLocal);
@@ -279,7 +482,6 @@ class FingerscanController extends AbstractActionController
                 $this->doctrineEM->flush();
                 $this->flashMessenger()->addMessage("Leave Reason '" . $entity->getLeaveReason() . "' has been updated!");
                 return $this->redirect()->toUrl($redirectUrl);
-                
             }
         }
         
@@ -290,7 +492,7 @@ class FingerscanController extends AbstractActionController
         } else {
             $redirectUrl = $request->getHeader('Referer')->getUri();
         }
-            
+        
         $entity_id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
@@ -342,14 +544,16 @@ class FingerscanController extends AbstractActionController
         /**@var \Application\Repository\NmtHrFingerscanRepository $res ;  */
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtHrFingerscan');
         $list = $res->getFingerscan(null, null, 7, 2017);
-        //var_dump($list);
+        // var_dump($list);
         $total_records = count($list);
         $paginator = null;
         
-        /* if ($total_records > $resultsPerPage) {
-            $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrLeaveReason')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-        } */
+        /*
+         * if ($total_records > $resultsPerPage) {
+         * $paginator = new Paginator($total_records, $page, $resultsPerPage);
+         * $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrLeaveReason')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+         * }
+         */
         
         // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
         // var_dump (count($all));
@@ -418,9 +622,6 @@ class FingerscanController extends AbstractActionController
         }
     }
 
-    
-    
-    
     /**
      *
      * @return \Zend\View\Model\ViewModel

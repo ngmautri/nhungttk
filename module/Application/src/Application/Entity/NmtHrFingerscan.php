@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="nmt_hr_fingerscan", indexes={@ORM\Index(name="nmt_hr_fingerscan_KF1_idx", columns={"created_by"}), @ORM\Index(name="nmt_hr_fingerscan_KF2_idx", columns={"employee_code"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\NmtHrFingerscanRepository")
+
  */
 class NmtHrFingerscan
 {
@@ -37,9 +38,9 @@ class NmtHrFingerscan
     private $employeeId;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="employee_code", type="integer", nullable=false)
+     * @ORM\Column(name="employee_code", type="string", length=10, nullable=false)
      */
     private $employeeCode;
 
@@ -72,16 +73,16 @@ class NmtHrFingerscan
     private $endTime;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="clock_in", type="time", nullable=true)
+     * @ORM\Column(name="clock_in", type="string", length=10, nullable=true)
      */
     private $clockIn;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="clock_out", type="time", nullable=true)
+     * @ORM\Column(name="clock_out", type="string", length=10, nullable=true)
      */
     private $clockOut;
 
@@ -179,7 +180,7 @@ class NmtHrFingerscan
     /**
      * Set employeeCode
      *
-     * @param integer $employeeCode
+     * @param string $employeeCode
      *
      * @return NmtHrFingerscan
      */
@@ -193,7 +194,7 @@ class NmtHrFingerscan
     /**
      * Get employeeCode
      *
-     * @return integer
+     * @return string
      */
     public function getEmployeeCode()
     {
@@ -299,7 +300,7 @@ class NmtHrFingerscan
     /**
      * Set clockIn
      *
-     * @param \DateTime $clockIn
+     * @param string $clockIn
      *
      * @return NmtHrFingerscan
      */
@@ -313,7 +314,7 @@ class NmtHrFingerscan
     /**
      * Get clockIn
      *
-     * @return \DateTime
+     * @return string
      */
     public function getClockIn()
     {
@@ -323,7 +324,7 @@ class NmtHrFingerscan
     /**
      * Set clockOut
      *
-     * @param \DateTime $clockOut
+     * @param string $clockOut
      *
      * @return NmtHrFingerscan
      */
@@ -337,7 +338,7 @@ class NmtHrFingerscan
     /**
      * Get clockOut
      *
-     * @return \DateTime
+     * @return string
      */
     public function getClockOut()
     {

@@ -366,6 +366,20 @@ class NmtInventoryItem
     private $revisionNo;
     
     /**
+     * @var string
+     *
+     * @ORM\Column(name="item_sku1", type="string", length=45, nullable=true)
+     */
+    private $itemSku1;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_sku2", type="string", length=45, nullable=true)
+     */
+    private $itemSku2;
+    
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1641,6 +1655,54 @@ class NmtInventoryItem
     public function getRevisionNo()
     {
         return $this->revisionNo;
+    }
+    
+    /**
+     * Set itemSku1
+     *
+     * @param string $itemSku1
+     *
+     * @return NmtInventoryItem
+     */
+    public function setItemSku1($itemSku1)
+    {
+        $this->itemSku1 = $itemSku1;
+        
+        return $this;
+    }
+    
+    /**
+     * Get itemSku1
+     *
+     * @return string
+     */
+    public function getItemSku1()
+    {
+        return $this->itemSku1;
+    }
+    
+    /**
+     * Set itemSku2
+     *
+     * @param string $itemSku2
+     *
+     * @return NmtInventoryItem
+     */
+    public function setItemSku2($itemSku2)
+    {
+        $this->itemSku2 = $itemSku2;
+        
+        return $this;
+    }
+    
+    /**
+     * Get itemSku2
+     *
+     * @return string
+     */
+    public function getItemSku2()
+    {
+        return $this->itemSku2;
     }
     
     /**

@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_item_IDX2", columns={"is_fixed_asset"}), @ORM\Index(name="nmt_inventory_item_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_FK3_idx", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_pr_row"}), @ORM\Index(name="nmt_inventory_item_FK6_idx", columns={"last_po_row"}), @ORM\Index(name="nmt_inventory_item_FK7_idx", columns={"last_ap_invoice_row"}), @ORM\Index(name="nmt_inventory_item_FK8_idx", columns={"last_trx_row"}), @ORM\Index(name="nmt_inventory_item_FK9_idx", columns={"last_purchasing"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
  */
 class NmtInventoryItem
 {
@@ -20,350 +21,364 @@ class NmtInventoryItem
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="warehouse_id", type="integer", nullable=true)
      */
     private $warehouseId;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="item_sku", type="string", length=45, nullable=false)
      */
     private $itemSku;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="item_name", type="string", length=100, nullable=false)
      */
     private $itemName;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="item_name_foreign", type="string", length=100, nullable=true)
      */
     private $itemNameForeign;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="item_description", type="string", length=255, nullable=true)
      */
     private $itemDescription;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="item_type", type="string", nullable=true)
      */
     private $itemType;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="item_group", type="string", length=45, nullable=true)
      */
     private $itemGroup;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="item_category", type="string", length=45, nullable=true)
      */
     private $itemCategory;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="keywords", type="string", length=100, nullable=true)
      */
     private $keywords;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_stocked", type="boolean", nullable=true)
      */
     private $isStocked;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_sale_item", type="boolean", nullable=true)
      */
     private $isSaleItem;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_purchased", type="boolean", nullable=true)
      */
     private $isPurchased;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_fixed_asset", type="boolean", nullable=true)
      */
     private $isFixedAsset;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_sparepart", type="boolean", nullable=true)
      */
     private $isSparepart;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="uom", type="string", length=45, nullable=true)
      */
     private $uom;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="barcode", type="string", length=40, nullable=true)
      */
     private $barcode;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="barcode39", type="string", length=40, nullable=true)
      */
     private $barcode39;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="barcode128", type="string", length=50, nullable=true)
      */
     private $barcode128;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=45, nullable=true)
      */
     private $status;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="manufacturer", type="string", length=50, nullable=true)
      */
     private $manufacturer;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="manufacturer_code", type="string", length=100, nullable=true)
      */
     private $manufacturerCode;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="manufacturer_catalog", type="string", length=45, nullable=true)
      */
     private $manufacturerCatalog;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="manufacturer_model", type="string", length=45, nullable=true)
      */
     private $manufacturerModel;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="manufacturer_serial", type="string", length=45, nullable=true)
      */
     private $manufacturerSerial;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="origin", type="string", length=45, nullable=true)
      */
     private $origin;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="serial_number", type="string", length=45, nullable=true)
      */
     private $serialNumber;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="last_purchase_price", type="decimal", precision=19, scale=6, nullable=true)
      */
     private $lastPurchasePrice;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="last_purchase_currency", type="string", length=3, nullable=true)
      */
     private $lastPurchaseCurrency;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_purchase_date", type="datetime", nullable=true)
      */
     private $lastPurchaseDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="lead_time", type="string", length=50, nullable=true)
      */
     private $leadTime;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="valid_from_date", type="datetime", nullable=true)
      */
     private $validFromDate;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="valid_to_date", type="datetime", nullable=true)
      */
     private $validToDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=45, nullable=true)
      */
     private $location;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="item_internal_label", type="string", length=50, nullable=true)
      */
     private $itemInternalLabel;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="asset_label", type="string", length=45, nullable=true)
      */
     private $assetLabel;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="sparepart_label", type="string", length=45, nullable=true)
      */
     private $sparepartLabel;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="local_availabiliy", type="boolean", nullable=true)
      */
     private $localAvailabiliy;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
      */
     private $lastChangeOn;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="checksum", type="string", length=45, nullable=true)
      */
     private $checksum;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
      */
     private $currentState;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="doc_number", type="string", length=45, nullable=true)
      */
     private $docNumber;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="monitored_by", type="string", nullable=true)
      */
     private $monitoredBy;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
      */
     private $sysNumber;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="remarks_text", type="text", length=65535, nullable=true)
      */
     private $remarksText;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
      */
     private $revisionNo;
-
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_sku1", type="string", length=45, nullable=true)
+     */
+    private $itemSku1;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_sku2", type="string", length=45, nullable=true)
+     */
+    private $itemSku2;
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -373,7 +388,7 @@ class NmtInventoryItem
      * })
      */
     private $createdBy;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -383,7 +398,7 @@ class NmtInventoryItem
      * })
      */
     private $lastChangeBy;
-
+    
     /**
      * @var \Application\Entity\NmtApplicationUom
      *
@@ -393,7 +408,7 @@ class NmtInventoryItem
      * })
      */
     private $standardUom;
-
+    
     /**
      * @var \Application\Entity\NmtApplicationCompany
      *
@@ -403,7 +418,7 @@ class NmtInventoryItem
      * })
      */
     private $company;
-
+    
     /**
      * @var \Application\Entity\NmtProcurePrRow
      *
@@ -413,7 +428,7 @@ class NmtInventoryItem
      * })
      */
     private $lastPrRow;
-
+    
     /**
      * @var \Application\Entity\NmtProcurePoRow
      *
@@ -423,7 +438,7 @@ class NmtInventoryItem
      * })
      */
     private $lastPoRow;
-
+    
     /**
      * @var \Application\Entity\FinVendorInvoiceRow
      *
@@ -433,7 +448,7 @@ class NmtInventoryItem
      * })
      */
     private $lastApInvoiceRow;
-
+    
     /**
      * @var \Application\Entity\NmtInventoryTrx
      *
@@ -443,7 +458,7 @@ class NmtInventoryItem
      * })
      */
     private $lastTrxRow;
-
+    
     /**
      * @var \Application\Entity\NmtInventoryItemPurchasing
      *
@@ -453,9 +468,9 @@ class NmtInventoryItem
      * })
      */
     private $lastPurchasing;
-
-
-
+    
+    
+    
     /**
      * Get id
      *
@@ -465,7 +480,7 @@ class NmtInventoryItem
     {
         return $this->id;
     }
-
+    
     /**
      * Set warehouseId
      *
@@ -476,10 +491,10 @@ class NmtInventoryItem
     public function setWarehouseId($warehouseId)
     {
         $this->warehouseId = $warehouseId;
-
+        
         return $this;
     }
-
+    
     /**
      * Get warehouseId
      *
@@ -489,7 +504,7 @@ class NmtInventoryItem
     {
         return $this->warehouseId;
     }
-
+    
     /**
      * Set itemSku
      *
@@ -500,10 +515,10 @@ class NmtInventoryItem
     public function setItemSku($itemSku)
     {
         $this->itemSku = $itemSku;
-
+        
         return $this;
     }
-
+    
     /**
      * Get itemSku
      *
@@ -513,7 +528,7 @@ class NmtInventoryItem
     {
         return $this->itemSku;
     }
-
+    
     /**
      * Set itemName
      *
@@ -524,10 +539,10 @@ class NmtInventoryItem
     public function setItemName($itemName)
     {
         $this->itemName = $itemName;
-
+        
         return $this;
     }
-
+    
     /**
      * Get itemName
      *
@@ -537,7 +552,7 @@ class NmtInventoryItem
     {
         return $this->itemName;
     }
-
+    
     /**
      * Set itemNameForeign
      *
@@ -548,10 +563,10 @@ class NmtInventoryItem
     public function setItemNameForeign($itemNameForeign)
     {
         $this->itemNameForeign = $itemNameForeign;
-
+        
         return $this;
     }
-
+    
     /**
      * Get itemNameForeign
      *
@@ -561,7 +576,7 @@ class NmtInventoryItem
     {
         return $this->itemNameForeign;
     }
-
+    
     /**
      * Set itemDescription
      *
@@ -572,10 +587,10 @@ class NmtInventoryItem
     public function setItemDescription($itemDescription)
     {
         $this->itemDescription = $itemDescription;
-
+        
         return $this;
     }
-
+    
     /**
      * Get itemDescription
      *
@@ -585,7 +600,7 @@ class NmtInventoryItem
     {
         return $this->itemDescription;
     }
-
+    
     /**
      * Set itemType
      *
@@ -596,10 +611,10 @@ class NmtInventoryItem
     public function setItemType($itemType)
     {
         $this->itemType = $itemType;
-
+        
         return $this;
     }
-
+    
     /**
      * Get itemType
      *
@@ -609,7 +624,7 @@ class NmtInventoryItem
     {
         return $this->itemType;
     }
-
+    
     /**
      * Set itemGroup
      *
@@ -620,10 +635,10 @@ class NmtInventoryItem
     public function setItemGroup($itemGroup)
     {
         $this->itemGroup = $itemGroup;
-
+        
         return $this;
     }
-
+    
     /**
      * Get itemGroup
      *
@@ -633,7 +648,7 @@ class NmtInventoryItem
     {
         return $this->itemGroup;
     }
-
+    
     /**
      * Set itemCategory
      *
@@ -644,10 +659,10 @@ class NmtInventoryItem
     public function setItemCategory($itemCategory)
     {
         $this->itemCategory = $itemCategory;
-
+        
         return $this;
     }
-
+    
     /**
      * Get itemCategory
      *
@@ -657,7 +672,7 @@ class NmtInventoryItem
     {
         return $this->itemCategory;
     }
-
+    
     /**
      * Set keywords
      *
@@ -668,10 +683,10 @@ class NmtInventoryItem
     public function setKeywords($keywords)
     {
         $this->keywords = $keywords;
-
+        
         return $this;
     }
-
+    
     /**
      * Get keywords
      *
@@ -681,7 +696,7 @@ class NmtInventoryItem
     {
         return $this->keywords;
     }
-
+    
     /**
      * Set isActive
      *
@@ -692,10 +707,10 @@ class NmtInventoryItem
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isActive
      *
@@ -705,7 +720,7 @@ class NmtInventoryItem
     {
         return $this->isActive;
     }
-
+    
     /**
      * Set isStocked
      *
@@ -716,10 +731,10 @@ class NmtInventoryItem
     public function setIsStocked($isStocked)
     {
         $this->isStocked = $isStocked;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isStocked
      *
@@ -729,7 +744,7 @@ class NmtInventoryItem
     {
         return $this->isStocked;
     }
-
+    
     /**
      * Set isSaleItem
      *
@@ -740,10 +755,10 @@ class NmtInventoryItem
     public function setIsSaleItem($isSaleItem)
     {
         $this->isSaleItem = $isSaleItem;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isSaleItem
      *
@@ -753,7 +768,7 @@ class NmtInventoryItem
     {
         return $this->isSaleItem;
     }
-
+    
     /**
      * Set isPurchased
      *
@@ -764,10 +779,10 @@ class NmtInventoryItem
     public function setIsPurchased($isPurchased)
     {
         $this->isPurchased = $isPurchased;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isPurchased
      *
@@ -777,7 +792,7 @@ class NmtInventoryItem
     {
         return $this->isPurchased;
     }
-
+    
     /**
      * Set isFixedAsset
      *
@@ -788,10 +803,10 @@ class NmtInventoryItem
     public function setIsFixedAsset($isFixedAsset)
     {
         $this->isFixedAsset = $isFixedAsset;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isFixedAsset
      *
@@ -801,7 +816,7 @@ class NmtInventoryItem
     {
         return $this->isFixedAsset;
     }
-
+    
     /**
      * Set isSparepart
      *
@@ -812,10 +827,10 @@ class NmtInventoryItem
     public function setIsSparepart($isSparepart)
     {
         $this->isSparepart = $isSparepart;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isSparepart
      *
@@ -825,7 +840,7 @@ class NmtInventoryItem
     {
         return $this->isSparepart;
     }
-
+    
     /**
      * Set uom
      *
@@ -836,10 +851,10 @@ class NmtInventoryItem
     public function setUom($uom)
     {
         $this->uom = $uom;
-
+        
         return $this;
     }
-
+    
     /**
      * Get uom
      *
@@ -849,7 +864,7 @@ class NmtInventoryItem
     {
         return $this->uom;
     }
-
+    
     /**
      * Set barcode
      *
@@ -860,10 +875,10 @@ class NmtInventoryItem
     public function setBarcode($barcode)
     {
         $this->barcode = $barcode;
-
+        
         return $this;
     }
-
+    
     /**
      * Get barcode
      *
@@ -873,7 +888,7 @@ class NmtInventoryItem
     {
         return $this->barcode;
     }
-
+    
     /**
      * Set barcode39
      *
@@ -884,10 +899,10 @@ class NmtInventoryItem
     public function setBarcode39($barcode39)
     {
         $this->barcode39 = $barcode39;
-
+        
         return $this;
     }
-
+    
     /**
      * Get barcode39
      *
@@ -897,7 +912,7 @@ class NmtInventoryItem
     {
         return $this->barcode39;
     }
-
+    
     /**
      * Set barcode128
      *
@@ -908,10 +923,10 @@ class NmtInventoryItem
     public function setBarcode128($barcode128)
     {
         $this->barcode128 = $barcode128;
-
+        
         return $this;
     }
-
+    
     /**
      * Get barcode128
      *
@@ -921,7 +936,7 @@ class NmtInventoryItem
     {
         return $this->barcode128;
     }
-
+    
     /**
      * Set status
      *
@@ -932,10 +947,10 @@ class NmtInventoryItem
     public function setStatus($status)
     {
         $this->status = $status;
-
+        
         return $this;
     }
-
+    
     /**
      * Get status
      *
@@ -945,7 +960,7 @@ class NmtInventoryItem
     {
         return $this->status;
     }
-
+    
     /**
      * Set createdOn
      *
@@ -956,10 +971,10 @@ class NmtInventoryItem
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdOn
      *
@@ -969,7 +984,7 @@ class NmtInventoryItem
     {
         return $this->createdOn;
     }
-
+    
     /**
      * Set manufacturer
      *
@@ -980,10 +995,10 @@ class NmtInventoryItem
     public function setManufacturer($manufacturer)
     {
         $this->manufacturer = $manufacturer;
-
+        
         return $this;
     }
-
+    
     /**
      * Get manufacturer
      *
@@ -993,7 +1008,7 @@ class NmtInventoryItem
     {
         return $this->manufacturer;
     }
-
+    
     /**
      * Set manufacturerCode
      *
@@ -1004,10 +1019,10 @@ class NmtInventoryItem
     public function setManufacturerCode($manufacturerCode)
     {
         $this->manufacturerCode = $manufacturerCode;
-
+        
         return $this;
     }
-
+    
     /**
      * Get manufacturerCode
      *
@@ -1017,7 +1032,7 @@ class NmtInventoryItem
     {
         return $this->manufacturerCode;
     }
-
+    
     /**
      * Set manufacturerCatalog
      *
@@ -1028,10 +1043,10 @@ class NmtInventoryItem
     public function setManufacturerCatalog($manufacturerCatalog)
     {
         $this->manufacturerCatalog = $manufacturerCatalog;
-
+        
         return $this;
     }
-
+    
     /**
      * Get manufacturerCatalog
      *
@@ -1041,7 +1056,7 @@ class NmtInventoryItem
     {
         return $this->manufacturerCatalog;
     }
-
+    
     /**
      * Set manufacturerModel
      *
@@ -1052,10 +1067,10 @@ class NmtInventoryItem
     public function setManufacturerModel($manufacturerModel)
     {
         $this->manufacturerModel = $manufacturerModel;
-
+        
         return $this;
     }
-
+    
     /**
      * Get manufacturerModel
      *
@@ -1065,7 +1080,7 @@ class NmtInventoryItem
     {
         return $this->manufacturerModel;
     }
-
+    
     /**
      * Set manufacturerSerial
      *
@@ -1076,10 +1091,10 @@ class NmtInventoryItem
     public function setManufacturerSerial($manufacturerSerial)
     {
         $this->manufacturerSerial = $manufacturerSerial;
-
+        
         return $this;
     }
-
+    
     /**
      * Get manufacturerSerial
      *
@@ -1089,7 +1104,7 @@ class NmtInventoryItem
     {
         return $this->manufacturerSerial;
     }
-
+    
     /**
      * Set origin
      *
@@ -1100,10 +1115,10 @@ class NmtInventoryItem
     public function setOrigin($origin)
     {
         $this->origin = $origin;
-
+        
         return $this;
     }
-
+    
     /**
      * Get origin
      *
@@ -1113,7 +1128,7 @@ class NmtInventoryItem
     {
         return $this->origin;
     }
-
+    
     /**
      * Set serialNumber
      *
@@ -1124,10 +1139,10 @@ class NmtInventoryItem
     public function setSerialNumber($serialNumber)
     {
         $this->serialNumber = $serialNumber;
-
+        
         return $this;
     }
-
+    
     /**
      * Get serialNumber
      *
@@ -1137,7 +1152,7 @@ class NmtInventoryItem
     {
         return $this->serialNumber;
     }
-
+    
     /**
      * Set lastPurchasePrice
      *
@@ -1148,10 +1163,10 @@ class NmtInventoryItem
     public function setLastPurchasePrice($lastPurchasePrice)
     {
         $this->lastPurchasePrice = $lastPurchasePrice;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastPurchasePrice
      *
@@ -1161,7 +1176,7 @@ class NmtInventoryItem
     {
         return $this->lastPurchasePrice;
     }
-
+    
     /**
      * Set lastPurchaseCurrency
      *
@@ -1172,10 +1187,10 @@ class NmtInventoryItem
     public function setLastPurchaseCurrency($lastPurchaseCurrency)
     {
         $this->lastPurchaseCurrency = $lastPurchaseCurrency;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastPurchaseCurrency
      *
@@ -1185,7 +1200,7 @@ class NmtInventoryItem
     {
         return $this->lastPurchaseCurrency;
     }
-
+    
     /**
      * Set lastPurchaseDate
      *
@@ -1196,10 +1211,10 @@ class NmtInventoryItem
     public function setLastPurchaseDate($lastPurchaseDate)
     {
         $this->lastPurchaseDate = $lastPurchaseDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastPurchaseDate
      *
@@ -1209,7 +1224,7 @@ class NmtInventoryItem
     {
         return $this->lastPurchaseDate;
     }
-
+    
     /**
      * Set leadTime
      *
@@ -1220,10 +1235,10 @@ class NmtInventoryItem
     public function setLeadTime($leadTime)
     {
         $this->leadTime = $leadTime;
-
+        
         return $this;
     }
-
+    
     /**
      * Get leadTime
      *
@@ -1233,7 +1248,7 @@ class NmtInventoryItem
     {
         return $this->leadTime;
     }
-
+    
     /**
      * Set validFromDate
      *
@@ -1244,10 +1259,10 @@ class NmtInventoryItem
     public function setValidFromDate($validFromDate)
     {
         $this->validFromDate = $validFromDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get validFromDate
      *
@@ -1257,7 +1272,7 @@ class NmtInventoryItem
     {
         return $this->validFromDate;
     }
-
+    
     /**
      * Set validToDate
      *
@@ -1268,10 +1283,10 @@ class NmtInventoryItem
     public function setValidToDate($validToDate)
     {
         $this->validToDate = $validToDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get validToDate
      *
@@ -1281,7 +1296,7 @@ class NmtInventoryItem
     {
         return $this->validToDate;
     }
-
+    
     /**
      * Set location
      *
@@ -1292,10 +1307,10 @@ class NmtInventoryItem
     public function setLocation($location)
     {
         $this->location = $location;
-
+        
         return $this;
     }
-
+    
     /**
      * Get location
      *
@@ -1305,7 +1320,7 @@ class NmtInventoryItem
     {
         return $this->location;
     }
-
+    
     /**
      * Set itemInternalLabel
      *
@@ -1316,10 +1331,10 @@ class NmtInventoryItem
     public function setItemInternalLabel($itemInternalLabel)
     {
         $this->itemInternalLabel = $itemInternalLabel;
-
+        
         return $this;
     }
-
+    
     /**
      * Get itemInternalLabel
      *
@@ -1329,7 +1344,7 @@ class NmtInventoryItem
     {
         return $this->itemInternalLabel;
     }
-
+    
     /**
      * Set assetLabel
      *
@@ -1340,10 +1355,10 @@ class NmtInventoryItem
     public function setAssetLabel($assetLabel)
     {
         $this->assetLabel = $assetLabel;
-
+        
         return $this;
     }
-
+    
     /**
      * Get assetLabel
      *
@@ -1353,7 +1368,7 @@ class NmtInventoryItem
     {
         return $this->assetLabel;
     }
-
+    
     /**
      * Set sparepartLabel
      *
@@ -1364,10 +1379,10 @@ class NmtInventoryItem
     public function setSparepartLabel($sparepartLabel)
     {
         $this->sparepartLabel = $sparepartLabel;
-
+        
         return $this;
     }
-
+    
     /**
      * Get sparepartLabel
      *
@@ -1377,7 +1392,7 @@ class NmtInventoryItem
     {
         return $this->sparepartLabel;
     }
-
+    
     /**
      * Set remarks
      *
@@ -1388,10 +1403,10 @@ class NmtInventoryItem
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-
+        
         return $this;
     }
-
+    
     /**
      * Get remarks
      *
@@ -1401,7 +1416,7 @@ class NmtInventoryItem
     {
         return $this->remarks;
     }
-
+    
     /**
      * Set localAvailabiliy
      *
@@ -1412,10 +1427,10 @@ class NmtInventoryItem
     public function setLocalAvailabiliy($localAvailabiliy)
     {
         $this->localAvailabiliy = $localAvailabiliy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get localAvailabiliy
      *
@@ -1425,7 +1440,7 @@ class NmtInventoryItem
     {
         return $this->localAvailabiliy;
     }
-
+    
     /**
      * Set lastChangeOn
      *
@@ -1436,10 +1451,10 @@ class NmtInventoryItem
     public function setLastChangeOn($lastChangeOn)
     {
         $this->lastChangeOn = $lastChangeOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastChangeOn
      *
@@ -1449,7 +1464,7 @@ class NmtInventoryItem
     {
         return $this->lastChangeOn;
     }
-
+    
     /**
      * Set token
      *
@@ -1460,10 +1475,10 @@ class NmtInventoryItem
     public function setToken($token)
     {
         $this->token = $token;
-
+        
         return $this;
     }
-
+    
     /**
      * Get token
      *
@@ -1473,7 +1488,7 @@ class NmtInventoryItem
     {
         return $this->token;
     }
-
+    
     /**
      * Set checksum
      *
@@ -1484,10 +1499,10 @@ class NmtInventoryItem
     public function setChecksum($checksum)
     {
         $this->checksum = $checksum;
-
+        
         return $this;
     }
-
+    
     /**
      * Get checksum
      *
@@ -1497,7 +1512,7 @@ class NmtInventoryItem
     {
         return $this->checksum;
     }
-
+    
     /**
      * Set currentState
      *
@@ -1508,10 +1523,10 @@ class NmtInventoryItem
     public function setCurrentState($currentState)
     {
         $this->currentState = $currentState;
-
+        
         return $this;
     }
-
+    
     /**
      * Get currentState
      *
@@ -1521,7 +1536,7 @@ class NmtInventoryItem
     {
         return $this->currentState;
     }
-
+    
     /**
      * Set docNumber
      *
@@ -1532,10 +1547,10 @@ class NmtInventoryItem
     public function setDocNumber($docNumber)
     {
         $this->docNumber = $docNumber;
-
+        
         return $this;
     }
-
+    
     /**
      * Get docNumber
      *
@@ -1545,7 +1560,7 @@ class NmtInventoryItem
     {
         return $this->docNumber;
     }
-
+    
     /**
      * Set monitoredBy
      *
@@ -1556,10 +1571,10 @@ class NmtInventoryItem
     public function setMonitoredBy($monitoredBy)
     {
         $this->monitoredBy = $monitoredBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get monitoredBy
      *
@@ -1569,7 +1584,7 @@ class NmtInventoryItem
     {
         return $this->monitoredBy;
     }
-
+    
     /**
      * Set sysNumber
      *
@@ -1580,10 +1595,10 @@ class NmtInventoryItem
     public function setSysNumber($sysNumber)
     {
         $this->sysNumber = $sysNumber;
-
+        
         return $this;
     }
-
+    
     /**
      * Get sysNumber
      *
@@ -1593,7 +1608,7 @@ class NmtInventoryItem
     {
         return $this->sysNumber;
     }
-
+    
     /**
      * Set remarksText
      *
@@ -1604,10 +1619,10 @@ class NmtInventoryItem
     public function setRemarksText($remarksText)
     {
         $this->remarksText = $remarksText;
-
+        
         return $this;
     }
-
+    
     /**
      * Get remarksText
      *
@@ -1617,7 +1632,7 @@ class NmtInventoryItem
     {
         return $this->remarksText;
     }
-
+    
     /**
      * Set revisionNo
      *
@@ -1628,10 +1643,10 @@ class NmtInventoryItem
     public function setRevisionNo($revisionNo)
     {
         $this->revisionNo = $revisionNo;
-
+        
         return $this;
     }
-
+    
     /**
      * Get revisionNo
      *
@@ -1641,7 +1656,55 @@ class NmtInventoryItem
     {
         return $this->revisionNo;
     }
-
+    
+    /**
+     * Set itemSku1
+     *
+     * @param string $itemSku1
+     *
+     * @return NmtInventoryItem
+     */
+    public function setItemSku1($itemSku1)
+    {
+        $this->itemSku1 = $itemSku1;
+        
+        return $this;
+    }
+    
+    /**
+     * Get itemSku1
+     *
+     * @return string
+     */
+    public function getItemSku1()
+    {
+        return $this->itemSku1;
+    }
+    
+    /**
+     * Set itemSku2
+     *
+     * @param string $itemSku2
+     *
+     * @return NmtInventoryItem
+     */
+    public function setItemSku2($itemSku2)
+    {
+        $this->itemSku2 = $itemSku2;
+        
+        return $this;
+    }
+    
+    /**
+     * Get itemSku2
+     *
+     * @return string
+     */
+    public function getItemSku2()
+    {
+        return $this->itemSku2;
+    }
+    
     /**
      * Set createdBy
      *
@@ -1652,10 +1715,10 @@ class NmtInventoryItem
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdBy
      *
@@ -1665,7 +1728,7 @@ class NmtInventoryItem
     {
         return $this->createdBy;
     }
-
+    
     /**
      * Set lastChangeBy
      *
@@ -1676,10 +1739,10 @@ class NmtInventoryItem
     public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
         $this->lastChangeBy = $lastChangeBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastChangeBy
      *
@@ -1689,7 +1752,7 @@ class NmtInventoryItem
     {
         return $this->lastChangeBy;
     }
-
+    
     /**
      * Set standardUom
      *
@@ -1700,10 +1763,10 @@ class NmtInventoryItem
     public function setStandardUom(\Application\Entity\NmtApplicationUom $standardUom = null)
     {
         $this->standardUom = $standardUom;
-
+        
         return $this;
     }
-
+    
     /**
      * Get standardUom
      *
@@ -1713,7 +1776,7 @@ class NmtInventoryItem
     {
         return $this->standardUom;
     }
-
+    
     /**
      * Set company
      *
@@ -1724,10 +1787,10 @@ class NmtInventoryItem
     public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
     {
         $this->company = $company;
-
+        
         return $this;
     }
-
+    
     /**
      * Get company
      *
@@ -1737,7 +1800,7 @@ class NmtInventoryItem
     {
         return $this->company;
     }
-
+    
     /**
      * Set lastPrRow
      *
@@ -1748,10 +1811,10 @@ class NmtInventoryItem
     public function setLastPrRow(\Application\Entity\NmtProcurePrRow $lastPrRow = null)
     {
         $this->lastPrRow = $lastPrRow;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastPrRow
      *
@@ -1761,7 +1824,7 @@ class NmtInventoryItem
     {
         return $this->lastPrRow;
     }
-
+    
     /**
      * Set lastPoRow
      *
@@ -1772,10 +1835,10 @@ class NmtInventoryItem
     public function setLastPoRow(\Application\Entity\NmtProcurePoRow $lastPoRow = null)
     {
         $this->lastPoRow = $lastPoRow;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastPoRow
      *
@@ -1785,7 +1848,7 @@ class NmtInventoryItem
     {
         return $this->lastPoRow;
     }
-
+    
     /**
      * Set lastApInvoiceRow
      *
@@ -1796,10 +1859,10 @@ class NmtInventoryItem
     public function setLastApInvoiceRow(\Application\Entity\FinVendorInvoiceRow $lastApInvoiceRow = null)
     {
         $this->lastApInvoiceRow = $lastApInvoiceRow;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastApInvoiceRow
      *
@@ -1809,7 +1872,7 @@ class NmtInventoryItem
     {
         return $this->lastApInvoiceRow;
     }
-
+    
     /**
      * Set lastTrxRow
      *
@@ -1820,10 +1883,10 @@ class NmtInventoryItem
     public function setLastTrxRow(\Application\Entity\NmtInventoryTrx $lastTrxRow = null)
     {
         $this->lastTrxRow = $lastTrxRow;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastTrxRow
      *
@@ -1833,7 +1896,7 @@ class NmtInventoryItem
     {
         return $this->lastTrxRow;
     }
-
+    
     /**
      * Set lastPurchasing
      *
@@ -1844,10 +1907,10 @@ class NmtInventoryItem
     public function setLastPurchasing(\Application\Entity\NmtInventoryItemPurchasing $lastPurchasing = null)
     {
         $this->lastPurchasing = $lastPurchasing;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastPurchasing
      *

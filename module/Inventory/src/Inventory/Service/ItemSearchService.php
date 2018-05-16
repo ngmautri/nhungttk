@@ -60,6 +60,8 @@ class ItemSearchService
                         $doc->addField(Field::Keyword('item_token_keyword', $row->getToken() . "__" . $row->getId()));
                         
                         $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
+                        $doc->addField(Field::Keyword('item_sku1_key', $row->getItemSku1()));
+                        
                         $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
                         
                         $doc->addField(Field::Keyword('manufacturer_key', $row->getManufacturer()));
@@ -123,9 +125,9 @@ class ItemSearchService
     /**
      *
      * @param number $is_new
-     * @param unknown $row
-     * @param unknown $optimized
-     * @return string|unknown
+     * @param object $row
+     * @param bool $optimized
+     * @return string
      */
     public function updateIndex($is_new = 0, $row, $optimized)
     {
@@ -156,6 +158,8 @@ class ItemSearchService
                 $doc->addField(Field::Keyword('item_token_keyword', $row->getToken() . "__" . $row->getId()));
                 
                 $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
+                $doc->addField(Field::Keyword('item_sku1_key', $row->getItemSku1()));
+                
                 $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
                 
                 $doc->addField(Field::Keyword('manufacturer_key', $row->getManufacturer()));
@@ -176,6 +180,8 @@ class ItemSearchService
                 // echo $row->getId () ."::".$row->getItemName () . '::: ' . mb_detect_encoding($row->getItemName ()) . '<br>'; // false
                 
                 $doc->addField(Field::text('item_sku', $row->getItemSku()), 'UTF-8');
+                $doc->addField(Field::text('item_sku1', $row->getItemSku1()), 'UTF-8');
+                
                 $doc->addField(Field::text('item_name', $row->getItemName()));
                 // $doc->addField ( Field::text ( 'item_name1', $row->getItemNameForeign () ) );
                 $doc->addField(Field::text('item_description', $row->getItemDescription()));
@@ -213,8 +219,8 @@ class ItemSearchService
 
     /**
      *
-     * @param unknown $item
-     * @return string|unknown
+     * @param object $item
+     * @return string
      */
     public function addDocument($item, $optimized)
     {
@@ -236,6 +242,8 @@ class ItemSearchService
                 $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
                 
                 $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
+                $doc->addField(Field::Keyword('item_sku1_key', $row->getItemSku1()));
+                
                 $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
                 
                 $doc->addField(Field::Keyword('manufacturer_key', $row->getManufacturer()));
@@ -254,6 +262,8 @@ class ItemSearchService
                 $doc->addField(Field::Keyword('asset_label_key', $row->getAssetLabel()));
                 
                 $doc->addField(Field::text('item_sku', $row->getItemSku()), 'UTF-8');
+                $doc->addField(Field::text('item_sku1', $row->getItemSku1()), 'UTF-8');
+                
                 $doc->addField(Field::text('item_name', $row->getItemName()));
                 // $doc->addField ( Field::text ( 'item_name1', $row->getItemNameForeign () ) );
                 $doc->addField(Field::text('item_description', $row->getItemDescription()));

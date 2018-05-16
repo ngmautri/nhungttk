@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_procure_po", indexes={@ORM\Index(name="nmt_procure_po_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_po_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx1", columns={"currency_id"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePoRepository")
  */
 class NmtProcurePo
 {
@@ -20,154 +21,154 @@ class NmtProcurePo
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="vendor_name", type="string", length=100, nullable=true)
      */
     private $vendorName;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="invoice_no", type="string", length=45, nullable=true)
      */
     private $invoiceNo;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
      */
     private $invoiceDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="currency_iso3", type="string", length=3, nullable=true)
      */
     private $currencyIso3;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=2, nullable=true)
      */
     private $exchangeRate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
     private $createdOn;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="current_state", type="string", length=45, nullable=true)
      */
     private $currentState;
-
+    
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     private $isActive;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="trx_type", type="string", length=45, nullable=true)
      */
     private $trxType;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
      */
     private $lastchangeOn;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
      */
     private $postingDate;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="gr_date", type="datetime", nullable=true)
      */
     private $grDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="sap_doc", type="string", length=45, nullable=true)
      */
     private $sapDoc;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="contract_no", type="string", length=45, nullable=true)
      */
     private $contractNo;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="contract_date", type="datetime", nullable=true)
      */
     private $contractDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="quotation_no", type="string", length=45, nullable=true)
      */
     private $quotationNo;
-
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="quotation_date", type="datetime", nullable=true)
      */
     private $quotationDate;
-
+    
     /**
      * @var string
      *
      * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
      */
     private $sysNumber;
-
+    
     /**
      * @var integer
      *
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
      */
     private $revisionNo;
-
+    
     /**
      * @var \Application\Entity\NmtBpVendor
      *
@@ -177,7 +178,7 @@ class NmtProcurePo
      * })
      */
     private $vendor;
-
+    
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
      *
@@ -187,7 +188,7 @@ class NmtProcurePo
      * })
      */
     private $warehouse;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -197,7 +198,7 @@ class NmtProcurePo
      * })
      */
     private $createdBy;
-
+    
     /**
      * @var \Application\Entity\MlaUsers
      *
@@ -207,7 +208,7 @@ class NmtProcurePo
      * })
      */
     private $lastchangeBy;
-
+    
     /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
@@ -217,9 +218,9 @@ class NmtProcurePo
      * })
      */
     private $currency;
-
-
-
+    
+    
+    
     /**
      * Get id
      *
@@ -229,7 +230,7 @@ class NmtProcurePo
     {
         return $this->id;
     }
-
+    
     /**
      * Set token
      *
@@ -240,10 +241,10 @@ class NmtProcurePo
     public function setToken($token)
     {
         $this->token = $token;
-
+        
         return $this;
     }
-
+    
     /**
      * Get token
      *
@@ -253,7 +254,7 @@ class NmtProcurePo
     {
         return $this->token;
     }
-
+    
     /**
      * Set vendorName
      *
@@ -264,10 +265,10 @@ class NmtProcurePo
     public function setVendorName($vendorName)
     {
         $this->vendorName = $vendorName;
-
+        
         return $this;
     }
-
+    
     /**
      * Get vendorName
      *
@@ -277,7 +278,7 @@ class NmtProcurePo
     {
         return $this->vendorName;
     }
-
+    
     /**
      * Set invoiceNo
      *
@@ -288,10 +289,10 @@ class NmtProcurePo
     public function setInvoiceNo($invoiceNo)
     {
         $this->invoiceNo = $invoiceNo;
-
+        
         return $this;
     }
-
+    
     /**
      * Get invoiceNo
      *
@@ -301,7 +302,7 @@ class NmtProcurePo
     {
         return $this->invoiceNo;
     }
-
+    
     /**
      * Set invoiceDate
      *
@@ -312,10 +313,10 @@ class NmtProcurePo
     public function setInvoiceDate($invoiceDate)
     {
         $this->invoiceDate = $invoiceDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get invoiceDate
      *
@@ -325,7 +326,7 @@ class NmtProcurePo
     {
         return $this->invoiceDate;
     }
-
+    
     /**
      * Set currencyIso3
      *
@@ -336,10 +337,10 @@ class NmtProcurePo
     public function setCurrencyIso3($currencyIso3)
     {
         $this->currencyIso3 = $currencyIso3;
-
+        
         return $this;
     }
-
+    
     /**
      * Get currencyIso3
      *
@@ -349,7 +350,7 @@ class NmtProcurePo
     {
         return $this->currencyIso3;
     }
-
+    
     /**
      * Set exchangeRate
      *
@@ -360,10 +361,10 @@ class NmtProcurePo
     public function setExchangeRate($exchangeRate)
     {
         $this->exchangeRate = $exchangeRate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get exchangeRate
      *
@@ -373,7 +374,7 @@ class NmtProcurePo
     {
         return $this->exchangeRate;
     }
-
+    
     /**
      * Set remarks
      *
@@ -384,10 +385,10 @@ class NmtProcurePo
     public function setRemarks($remarks)
     {
         $this->remarks = $remarks;
-
+        
         return $this;
     }
-
+    
     /**
      * Get remarks
      *
@@ -397,7 +398,7 @@ class NmtProcurePo
     {
         return $this->remarks;
     }
-
+    
     /**
      * Set createdOn
      *
@@ -408,10 +409,10 @@ class NmtProcurePo
     public function setCreatedOn($createdOn)
     {
         $this->createdOn = $createdOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdOn
      *
@@ -421,7 +422,7 @@ class NmtProcurePo
     {
         return $this->createdOn;
     }
-
+    
     /**
      * Set currentState
      *
@@ -432,10 +433,10 @@ class NmtProcurePo
     public function setCurrentState($currentState)
     {
         $this->currentState = $currentState;
-
+        
         return $this;
     }
-
+    
     /**
      * Get currentState
      *
@@ -445,7 +446,7 @@ class NmtProcurePo
     {
         return $this->currentState;
     }
-
+    
     /**
      * Set isActive
      *
@@ -456,10 +457,10 @@ class NmtProcurePo
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-
+        
         return $this;
     }
-
+    
     /**
      * Get isActive
      *
@@ -469,7 +470,7 @@ class NmtProcurePo
     {
         return $this->isActive;
     }
-
+    
     /**
      * Set trxType
      *
@@ -480,10 +481,10 @@ class NmtProcurePo
     public function setTrxType($trxType)
     {
         $this->trxType = $trxType;
-
+        
         return $this;
     }
-
+    
     /**
      * Get trxType
      *
@@ -493,7 +494,7 @@ class NmtProcurePo
     {
         return $this->trxType;
     }
-
+    
     /**
      * Set lastchangeOn
      *
@@ -504,10 +505,10 @@ class NmtProcurePo
     public function setLastchangeOn($lastchangeOn)
     {
         $this->lastchangeOn = $lastchangeOn;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastchangeOn
      *
@@ -517,7 +518,7 @@ class NmtProcurePo
     {
         return $this->lastchangeOn;
     }
-
+    
     /**
      * Set postingDate
      *
@@ -528,10 +529,10 @@ class NmtProcurePo
     public function setPostingDate($postingDate)
     {
         $this->postingDate = $postingDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get postingDate
      *
@@ -541,7 +542,7 @@ class NmtProcurePo
     {
         return $this->postingDate;
     }
-
+    
     /**
      * Set grDate
      *
@@ -552,10 +553,10 @@ class NmtProcurePo
     public function setGrDate($grDate)
     {
         $this->grDate = $grDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get grDate
      *
@@ -565,7 +566,7 @@ class NmtProcurePo
     {
         return $this->grDate;
     }
-
+    
     /**
      * Set sapDoc
      *
@@ -576,10 +577,10 @@ class NmtProcurePo
     public function setSapDoc($sapDoc)
     {
         $this->sapDoc = $sapDoc;
-
+        
         return $this;
     }
-
+    
     /**
      * Get sapDoc
      *
@@ -589,7 +590,7 @@ class NmtProcurePo
     {
         return $this->sapDoc;
     }
-
+    
     /**
      * Set contractNo
      *
@@ -600,10 +601,10 @@ class NmtProcurePo
     public function setContractNo($contractNo)
     {
         $this->contractNo = $contractNo;
-
+        
         return $this;
     }
-
+    
     /**
      * Get contractNo
      *
@@ -613,7 +614,7 @@ class NmtProcurePo
     {
         return $this->contractNo;
     }
-
+    
     /**
      * Set contractDate
      *
@@ -624,10 +625,10 @@ class NmtProcurePo
     public function setContractDate($contractDate)
     {
         $this->contractDate = $contractDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get contractDate
      *
@@ -637,7 +638,7 @@ class NmtProcurePo
     {
         return $this->contractDate;
     }
-
+    
     /**
      * Set quotationNo
      *
@@ -648,10 +649,10 @@ class NmtProcurePo
     public function setQuotationNo($quotationNo)
     {
         $this->quotationNo = $quotationNo;
-
+        
         return $this;
     }
-
+    
     /**
      * Get quotationNo
      *
@@ -661,7 +662,7 @@ class NmtProcurePo
     {
         return $this->quotationNo;
     }
-
+    
     /**
      * Set quotationDate
      *
@@ -672,10 +673,10 @@ class NmtProcurePo
     public function setQuotationDate($quotationDate)
     {
         $this->quotationDate = $quotationDate;
-
+        
         return $this;
     }
-
+    
     /**
      * Get quotationDate
      *
@@ -685,7 +686,7 @@ class NmtProcurePo
     {
         return $this->quotationDate;
     }
-
+    
     /**
      * Set sysNumber
      *
@@ -696,10 +697,10 @@ class NmtProcurePo
     public function setSysNumber($sysNumber)
     {
         $this->sysNumber = $sysNumber;
-
+        
         return $this;
     }
-
+    
     /**
      * Get sysNumber
      *
@@ -709,7 +710,7 @@ class NmtProcurePo
     {
         return $this->sysNumber;
     }
-
+    
     /**
      * Set revisionNo
      *
@@ -720,10 +721,10 @@ class NmtProcurePo
     public function setRevisionNo($revisionNo)
     {
         $this->revisionNo = $revisionNo;
-
+        
         return $this;
     }
-
+    
     /**
      * Get revisionNo
      *
@@ -733,7 +734,7 @@ class NmtProcurePo
     {
         return $this->revisionNo;
     }
-
+    
     /**
      * Set vendor
      *
@@ -744,10 +745,10 @@ class NmtProcurePo
     public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
     {
         $this->vendor = $vendor;
-
+        
         return $this;
     }
-
+    
     /**
      * Get vendor
      *
@@ -757,7 +758,7 @@ class NmtProcurePo
     {
         return $this->vendor;
     }
-
+    
     /**
      * Set warehouse
      *
@@ -768,10 +769,10 @@ class NmtProcurePo
     public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
     {
         $this->warehouse = $warehouse;
-
+        
         return $this;
     }
-
+    
     /**
      * Get warehouse
      *
@@ -781,7 +782,7 @@ class NmtProcurePo
     {
         return $this->warehouse;
     }
-
+    
     /**
      * Set createdBy
      *
@@ -792,10 +793,10 @@ class NmtProcurePo
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
         $this->createdBy = $createdBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get createdBy
      *
@@ -805,7 +806,7 @@ class NmtProcurePo
     {
         return $this->createdBy;
     }
-
+    
     /**
      * Set lastchangeBy
      *
@@ -816,10 +817,10 @@ class NmtProcurePo
     public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
     {
         $this->lastchangeBy = $lastchangeBy;
-
+        
         return $this;
     }
-
+    
     /**
      * Get lastchangeBy
      *
@@ -829,7 +830,7 @@ class NmtProcurePo
     {
         return $this->lastchangeBy;
     }
-
+    
     /**
      * Set currency
      *
@@ -840,10 +841,10 @@ class NmtProcurePo
     public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
     {
         $this->currency = $currency;
-
+        
         return $this;
     }
-
+    
     /**
      * Get currency
      *

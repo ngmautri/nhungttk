@@ -292,7 +292,7 @@ class PrRowController extends AbstractActionController
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 
-                $m = sprintf('Row #%s for PR#%s - %s created. OK!', $entity->getId(), $target->getId(), $target->getPrAutoNumber());
+                $m = sprintf('[OK] Row #%s for PR#%s created.', $entity->getRowIdentifer(), $target->getId());
                 
                 // Trigger: procure.activity.log. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(

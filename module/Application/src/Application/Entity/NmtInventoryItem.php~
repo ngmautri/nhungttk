@@ -365,6 +365,20 @@ class NmtInventoryItem
     private $revisionNo;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="item_sku1", type="string", length=45, nullable=true)
+     */
+    private $itemSku1;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_sku2", type="string", length=45, nullable=true)
+     */
+    private $itemSku2;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

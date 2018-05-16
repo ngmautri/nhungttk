@@ -41,6 +41,17 @@ if (count ( $errors ) > 0) {
     					$current_step="STEP2";
     					include (ROOT.'/module/Procure/view/procure/pr-create-wizard.php');
   					?>
+  					
+  					<hr>
+  					<span style="color: gray;"><?php echo $this->translate('Summary:'); ?></span>
+  					
+  					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9pt">
+					<ul style="font-size: 9pt">
+					 	<li><?php if(!$target == null): echo $target->getPrName();endif;?></li>
+		                <li>#<?php if(!$target == null): echo $target->getPrAutoNumber();endif;?></li>
+		                <li>Total Item: <?php echo ($total_row);?></li>
+		   			</ul>	
+					</div>
   <!-- C1 ends-->	
   </div>
   

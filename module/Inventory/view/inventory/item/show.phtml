@@ -68,6 +68,8 @@ Not implemented!
 		<div class="col-sm-3">
 			<input class="form-control input-sm" type="text"  placeholder=""
 				name="itemSku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
+				<input class="form-control input-sm" type="text"  placeholder=""
+				name="itemSku1" value="<?php echo (!$entity == null)? $entity->getItemSku1():"";?>">
 	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 			 <input <?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isStocked" value="1">&nbsp;Stocked &nbsp;&nbsp;<br>
 			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset &nbsp;&nbsp; 

@@ -174,6 +174,8 @@ class ItemController extends AbstractActionController
             $redirectUrl = $request->getPost('redirectUrl');
             
             $itemSku = $request->getPost('itemSku');
+            $itemSku1 = $request->getPost('itemSku1');
+            
             $itemName = $request->getPost('itemName');
             $itemNameForeign = $request->getPost('itemNameForeign');
             $itemDescription = $request->getPost('itemDescription');
@@ -220,6 +222,8 @@ class ItemController extends AbstractActionController
             } else {
                 $entity->setItemSku($itemSku);
             }
+            
+            $entity->setItemSku1($itemSku1);
             
             if ($itemName === '' or $itemName === null) {
                 $errors[] = 'Please give item name';
@@ -412,7 +416,7 @@ class ItemController extends AbstractActionController
                 // $this->itemSearchService->addDocument ( $new_item, true );
                 $this->itemSearchService->updateIndex(1, $new_item, false);
                 
-                $m = sprintf('(%s) #%s %s created. OK!', $itemName, $new_item->getId(), $new_item->getSysNumber());
+                $m = sprintf('[OK] (%s) #%s %s created.', $itemName, $new_item->getId(), $new_item->getSysNumber());
                 
                 // Trigger. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
@@ -500,6 +504,8 @@ class ItemController extends AbstractActionController
                 $oldEntity = clone ($entity);
                 
                 $itemSku = $request->getPost('itemSku');
+                $itemSku1 = $request->getPost('itemSku1');
+                
                 $itemName = $request->getPost('itemName');
                 $itemNameForeign = $request->getPost('itemNameForeign');
                 $itemDescription = $request->getPost('itemDescription');
@@ -544,6 +550,8 @@ class ItemController extends AbstractActionController
                 } else {
                     $entity->setItemSku($itemSku);
                 }
+                
+                $entity->setItemSku1($itemSku1);
                 
                 if ($itemName === '' or $itemName === null) {
                     $errors[] = 'Please give item name';
@@ -718,7 +726,7 @@ class ItemController extends AbstractActionController
                     // update index
                     $this->itemSearchService->updateIndex(0, $new_item, false);
                     
-                    $m = sprintf('(%s) #%s %s updated. Change no.:%s. OK!', $itemName, $new_item->getId(), $new_item->getSysNumber(), count($changeArray));
+                    $m = sprintf('[OK] (%s) #%s %s updated. Change no.:%s.', $itemName, $new_item->getId(), $new_item->getSysNumber(), count($changeArray));
                     
                     // Trigger Change Log. AbtractController is EventManagerAware.
                     $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(

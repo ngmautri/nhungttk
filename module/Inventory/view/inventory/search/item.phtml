@@ -36,6 +36,7 @@ if (! $hits == null) :
 			<td><b>ID</b></td>
 			<td><b>Name</b></td>
 			<td><b>SKU</b></td>
+			<td><b>SKU1</b></td>
 			<td><b>Manufacturer Code</b></td>
 			<td><b>Manufacturer Serial</b></td>
 			<td><b>Manufacturer Model</b></td>
@@ -67,6 +68,8 @@ if (! $hits == null) :
 				
 				</span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
+				<td><span id=""><?php if (isset($hit->item_sku1)): echo $this->escapeHtml($hit->item_sku1);endif; ?></span></td>
+		
 				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_serial);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_model);?></span></td>

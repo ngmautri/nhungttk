@@ -319,7 +319,7 @@ class PrController extends AbstractActionController
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
                         
-            $m = sprintf('PR #%s - %s created. OK!',$entity->getId(), $entity->getPrAutoNumber());
+            $m = sprintf('[OK] PR #%s - %s created',$entity->getId(), $entity->getPrAutoNumber());
             $this->flashMessenger()->addMessage($m);
             
             //Trigger: procure.activity.log. AbtractController is EventManagerAware.
@@ -347,7 +347,9 @@ class PrController extends AbstractActionController
             $qrCode->setSize(100);
             $qrCode->writeFile($folder . $qr_code_name);
             
-            $redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
+            //$redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
+            $redirectUrl = "/procure/pr-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
+            
             return $this->redirect()->toUrl($redirectUrl);
         }
         

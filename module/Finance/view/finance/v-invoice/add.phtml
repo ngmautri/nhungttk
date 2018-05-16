@@ -19,8 +19,27 @@ if (count ( $errors ) > 0) {
 		<li><a href="#general">New A/P Invoice</a></li>
 	</ul>
 
-	<div id="general" style="font-size: 9pt">
+<div id="general" style="font-size: 9pt">
+ <!-- Tab1 -->
 
+ 
+  <div class="row">
+  <!-- ROW-->
+  
+  <div class="col-xs-5 col-md-2">
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP1";
+    					include (ROOT.'/module/Finance/view/finance/ap-create-wizard.php');
+  					?>
+  					
+  	
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10" style="">
+  <!-- C2 -->
+  
 		<form id="Create_Inv_Form" class="form-horizontal"
 			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
@@ -202,6 +221,15 @@ if (count ( $errors ) > 0) {
 					</div>
 			</fieldset>
 		</form>
+		
+		  <!-- C2 ends-->
+  </div>
+  
+  <!-- ROW ends-->
+  </div>
+  
+
+	<!-- Tab1 -->
 	</div>
 </div>
 

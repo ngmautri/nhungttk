@@ -5,25 +5,9 @@
 
 <div>
 
-<div class="alert alert-warning" role="alert" style="position: relative; float: right; margin-bottom: 1px; margin-right: 10pt; padding:0px; font-size: 9.5pt">
-					
-
-		<ul style="font-size: 9.5pt">
-						<li>Net: <?php echo number_format($net_amount,2) . " " . $target->getCurrency()->getCurrency() ;?></li>
-                        <li>Tax: <?php echo number_format($tax_amount,2);?></li>
-                        <li>Gross: <?php echo number_format($gross_amount,2) . " " .$target->getCurrency()->getCurrency();?></li>
-                        <li>Total Rows:<?php echo ($total_row);?></li>
-		</ul>
-</div>
-
 <h4>
 <?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
 </h4>
-<span style="font-size: 9pt; color: gray;">Invoice No.:<?php echo (!$target == null)? $target->getInvoiceNo():"";?> // <?php echo (!$target == null)? $target->getSapDoc():"";?></span>
-<br>
-<span style="font-size: 9pt; color: gray;" >Invoice Date:<?php if(!$target == null): if ($target->getInvoiceDate() !== null): echo date_format($target->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
-<br>
-<span style="font-size: 9pt; color: gray;">Doc.No.: <?php echo (!$target == null)? $target->getSysNumber():"";?></span>
 </div>
 <?php
 if (count ( $errors ) > 0) {
@@ -46,7 +30,45 @@ if (count ( $errors ) > 0) {
  </ul>
    
  <div id="general" style="font-size: 9pt;">
+ <!-- Tab1 -->
  
+ 
+  <div class="row">
+  <!-- ROW-->
+  
+  <div class="col-xs-5 col-md-2">
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP2";
+    					include (ROOT.'/module/Finance/view/finance/ap-create-wizard.php');
+  					?>
+  					
+  					<hr>
+  					<span style="color: gray;"><?php echo $this->translate('Summary:'); ?></span>
+  					
+  					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9.5pt">
+					<ul style="font-size: 9pt">
+						<li><span style="color: gray;"> Vendor: <?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?></li>
+					    <li><span style="color: gray;">Invoice No.: <?php echo (!$target == null)? $target->getInvoiceNo():"";?> // <?php echo (!$target == null)? $target->getSapDoc():"";?></span></li>
+		      			<li><span style="color: gray;" >Invoice Date: <?php if(!$target == null): if ($target->getInvoiceDate() !== null): echo date_format($target->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
+</li>
+		           		<li> <span style="color: gray;">A/P #<?php echo (!$target == null)? $target->getSysNumber():"";?></span></li>
+		           		<li> <span style="color: gray;">Status: <?php echo (!$target == null)? $target->getCurrentState():"";?></span></li>
+	
+		                <li>-----</li>
+				
+		                <li><span style="color: gray;">Total Line: <?php echo ($total_row);?></span></li>
+		       			<li><span style="color: gray;">Net: <?php echo number_format($net_amount,2) . " " . $target->getCurrency()->getCurrency() ;?></span></li>
+                        <li><span style="color: gray;">Tax: <?php echo number_format($tax_amount,2);?></span></li>
+                        <li><span style="color: gray;">Gross: <?php echo number_format($gross_amount,2) . " " .$target->getCurrency()->getCurrency();?></span></li>
+           			</ul>	
+					</div>
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10" style="">
+  <!-- C2 -->
+  
  		<form id="Create_Inv_Form" class="form-horizontal"
 			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
@@ -379,7 +401,15 @@ if (count ( $errors ) > 0) {
  </div>
  </fieldset>
     </form>
+    
+     <!-- C2 ends-->
+  </div>
+  
+  <!-- ROW ends-->
+  </div>
+  
 
+	<!-- Tab1 -->
  </div>
 </div>
 

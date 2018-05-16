@@ -33,6 +33,10 @@ class VInvoiceController extends AbstractActionController
      */
     public function addAction()
     {
+        
+        $this->layout("Finance/layout-fullscreen");
+        
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
@@ -271,7 +275,7 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
-            $m = sprintf('AP Invoice #%s - %s created. OK!', $entity->getId(), $entity->getSysNumber());
+            $m = sprintf('[OK] A/P Invoice #%s - %s created', $entity->getId(), $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
             
             // Trigger: finance.activity.log. AbtractController is EventManagerAware.
@@ -285,7 +289,9 @@ class VInvoiceController extends AbstractActionController
                 'entity_token' => $entity->getToken()
             ));
             
-            $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            //$redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            $redirectUrl = "/finance/v-invoice-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
+            
             return $this->redirect()->toUrl($redirectUrl);
         }
         
@@ -720,6 +726,7 @@ class VInvoiceController extends AbstractActionController
                 $this->doctrineEM->flush();
             }
             
+            $m = sprintf();
             $this->flashMessenger()->addMessage('A/P Invoice ' . $entity->getSysNumber() . ' is created from Contract /PO (' . $target->getSysNumber() . ')successfully!');
             
             $redirectUrl = "/finance/v-invoice/copy-from-po1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();

@@ -32,6 +32,9 @@ class VInvoiceRowController extends AbstractActionController
      */
     public function addAction()
     {
+        
+        $this->layout("Finance/layout-fullscreen");
+        
         $criteria = array(
             'isActive' => 1
         );

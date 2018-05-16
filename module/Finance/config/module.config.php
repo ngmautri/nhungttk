@@ -107,6 +107,7 @@ return array(
         'exception_template' => 'error/index',
         'template_map' => array(
             'Finance/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
+            'Finance/layout-fullscreen' => __DIR__ . '/../view/layout/layout-fullscreen.phtml',            
             'Finance/index/index' => __DIR__ . '/../view/procure/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',
             'error/index' => __DIR__ . '/../view/error/index.phtml',

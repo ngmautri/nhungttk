@@ -17,7 +17,7 @@ if (count ( $errors ) > 0) {
 	echo '</div>';
 }
 ?>
-
+<h4><strong>Purchase Request</strong></h4>
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li ><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;New Row</a></li>
@@ -332,6 +332,10 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
 					<a tabindex="8" class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
 									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					<a tabindex="8" class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
+									class="glyphicon glyphicon-ok"></i></small>&nbsp;Finish</a>
 				</div>
 			</div>
 
@@ -360,7 +364,7 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
      select: function( event, ui ) {
    	  	$( "#item_id" ).val(ui.item.id);
    	  	
-  		$('#item_url').text('/inventory/item/show1?entity_id='+ui.item.id+'&token='+ui.item.token+'&checksum='+ui.item.checksum);
+  		$('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.id+'&token='+ui.item.token+'&checksum='+ui.item.checksum);
   	 	$('#global-notice').show();
    		$('#global-notice').html('"' + ui.item.value + '" selected');
    		$('#global-notice').fadeOut(5000);

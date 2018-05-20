@@ -244,16 +244,36 @@ AS fin_vendor_invoice_row
 ON nmt_inventory_item.id=fin_vendor_invoice_row.item_id ";
         $join4 = sprintf($join4_tmp,$item_id,$item_token);
         
+        
+        // PO_ROW
+        $join5_tmp="
+JOIN
+(
+SELECT
+	nmt_inventory_item.id AS item_id,
+  	COUNT(CASE WHEN nmt_procure_po_row.is_active =1 THEN (nmt_procure_po_row.id) ELSE NULL END) AS total_po_row
+FROM nmt_inventory_item
+LEFT JOIN nmt_procure_po_row
+ON nmt_procure_po_row.item_id = nmt_inventory_item.id
+WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
+)
+AS nmt_procure_po_row
+ON nmt_inventory_item.id=nmt_procure_po_row.item_id ";
+        $join5 = sprintf($join5_tmp,$item_id,$item_token);
+        
         $sql = "
 SELECT
 	nmt_inventory_item.*,
 	nmt_application_attachment.total_attachment,
 	nmt_procure_pr_row.total_pr_row,
+	nmt_procure_po_row.total_po_row,
+
 	fin_vendor_invoice_row.total_ap_row,
+
 	nmt_inventory_item_picture.total_picture
 FROM nmt_inventory_item";
         
-        $sql =  $sql.$join1.$join2.$join3.$join4;
+        $sql =  $sql.$join1.$join2.$join3.$join4.$join5;
         //echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
@@ -261,6 +281,7 @@ FROM nmt_inventory_item";
             $rsm->addScalarResult("total_pr_row", "total_pr_row");
             $rsm->addScalarResult("total_picture", "total_picture");
             $rsm->addScalarResult("total_attachment", "total_attachment");
+            $rsm->addScalarResult("total_po_row", "total_po_row");
             $rsm->addScalarResult("total_ap_row", "total_ap_row");
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getSingleResult();

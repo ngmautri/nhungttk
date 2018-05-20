@@ -7,15 +7,16 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
- * @author nmt
- *        
  */
 class NmtProcurePoRepository extends EntityRepository
 {
 
     /** @var \Application\Entity\NmtProcurePo $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePoRepository")
+    
     private $sql = "
 SELECT
 	nmt_procure_po.*,
@@ -261,7 +262,7 @@ WHERE 1
         
         //$sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
         
-        $sql = $sql . " AND nmt_inventory_item.id =" . $item_id . " AND nmt_inventory_item.token='" . $token . "'";
+        $sql = $sql.  sprintf(" AND nmt_inventory_item.id =%s AND nmt_inventory_item.token='%s'", $item_id, $token);
         $sql = $sql . " ORDER BY nmt_procure_po.contract_date DESC ";
          try {
             $rsm = new ResultSetMappingBuilder($this->_em);

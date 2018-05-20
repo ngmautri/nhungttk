@@ -1270,7 +1270,7 @@ class VInvoiceController extends AbstractActionController
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 
-                $m = sprintf('AP Invoice #%s - %s updated. No. of change: %s. OK!', $entity->getId(), $entity->getSysNumber(), count($changeArray));
+                $m = sprintf('[OK] AP Invoice #%s - %s updated. Change No.: %s.', $entity->getId(), $entity->getSysNumber(), count($changeArray));
                 
                 // Trigger Change Log. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
@@ -1299,7 +1299,7 @@ class VInvoiceController extends AbstractActionController
                 
                 $this->flashMessenger()->addMessage($m);
                 
-                // Update current state of row invoice row
+                /** === Update current state of row invoice row === */
                 
                 $query = $this->doctrineEM->createQuery('
 UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state WHERE r.invoice =:invoice_id
@@ -1307,17 +1307,18 @@ UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state 
                     'new_state' => $entity->getCurrentState(),
                     'invoice_id' => $entity->getId()
                 ));
-                $query->getResult();
+                $query->getResult();                
                 
+                
+                /** === Update current state of stock row. ===*/
+                                
                 $criteria = array(
                     'isActive' => 1,
                     'invoice' => $entity->getId()
                 );
                 $sort_criteria = array();
                 $invoice_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria, $sort_criteria);
-                
-                // update current state of stock row.
-                if (count($invoice_rows) > 0) {
+                   if (count($invoice_rows) > 0) {
                     foreach ($invoice_rows as $r) {
                         $query = $this->doctrineEM->createQuery('
 UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.isActive=:is_active WHERE t.invoiceRow =:invoice_row_id

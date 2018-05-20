@@ -15,8 +15,10 @@
 			<td><b>Pr Date</b></td>
 			<td><b>Vendor</b></td>
 			<td><b>Unit</b></td>
-			<td><b>Quantity <br> Q'ty</b></td>
-			<td><b>Price<br>Q'ty</b></td>
+			<td><b>Q'ty</b></td>
+			<td><b>UP Price</b></td>
+			<td><b>Total</b></td>
+		
 			<td><b>Currency</b></td>
 			<td><b>Status</b></td>
 	
@@ -47,8 +49,8 @@
 		
 			<td><?php echo $a->getQuantity();?></td>
 			<td><?php echo number_format($a->getUnitPrice(),2);?></td>
-			<td><?php echo $a->getPo()->getCurrency()->getCurrency();?></td>
-			
+			<td><?php echo number_format($a->getUnitPrice()*$a->getQuantity(),2);?></td>		
+			<td><?php echo $a->getPo()->getCurrency()->getCurrency();?></td>			
 			<td><?php echo $a->getCurrentState();?></td>
 			<td>
 			</td>

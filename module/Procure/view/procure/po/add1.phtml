@@ -38,10 +38,10 @@ if (count ( $errors ) > 0) {
 				<div style="position:relative; float:right;">
 				<a class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Edit</a>       		
-   <a class="btn btn-default btn-sm"
+   <a title="<?php echo $this->translate("Download Excel File");?>" class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/po-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
-	<a class="btn btn-default btn-sm"
+	<a title="<?php echo $this->translate("Create A/P Invoice from this P/O");?>"class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/finance/v-invoice/copy-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;A/P Invoice</a>      	
 <a class="btn btn-default btn-sm" href="javascript:;" onclick = "showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1550',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i class="fa fa-window-maximize" aria-hidden="true"></i>
@@ -164,7 +164,7 @@ Full Screen</a>
                         &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
                         &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
 					</span>
-					<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
+					<div id="pr_row_gird" style="margin: 1px; font-size: 8pt;"></div>
 			</fieldset>
 			</form>
 	</div>

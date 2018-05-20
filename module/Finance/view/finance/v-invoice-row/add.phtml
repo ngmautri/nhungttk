@@ -3,12 +3,7 @@
 */?>
 
 
-<div>
 
-<h4>
-<?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
-</h4>
-</div>
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
@@ -25,7 +20,7 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
- 	 <li ><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;New Row</a></li>
+ 	 <li ><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;<?php echo $this->translate("New Row")?></a></li>
  	  <li ><a href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/list?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current Rows</a></li>
  </ul>
    
@@ -38,6 +33,8 @@ if (count ( $errors ) > 0) {
   
   <div class="col-xs-5 col-md-2">
   <!-- C1 -->
+  
+
   					<?php 
     					$current_step="STEP2";
     					include (ROOT.'/module/Finance/view/finance/ap-create-wizard.php');
@@ -68,6 +65,12 @@ if (count ( $errors ) > 0) {
   
   <div class="col-xs-12 col-sm-6 col-md-10" style="">
   <!-- C2 -->
+  
+    <h4>
+<?php //if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
+<strong>A/P Invoice</strong>
+</h4>
+  
   
  		<form id="Create_Inv_Form" class="form-horizontal"
 			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
@@ -393,8 +396,10 @@ if (count ( $errors ) > 0) {
 									class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
  					<a tabindex="11" class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
-									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
-	 	  
+									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		
+	 	  <a tabindex="12" class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+									class="glyphicon glyphicon-ok"></i></small>&nbsp;Finish</a>
   	    </div>
  </div>
  
@@ -426,7 +431,7 @@ if (count ( $errors ) > 0) {
             $( "#item_id" ).val(ui.item.item_id);
             $( "#item_name" ).val(ui.item.item_name);
 
-            $('#item_url').text('/inventory/item/show1?entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
+            $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
             $('#pr_row_url').text('/procure/pr-row/show1?entity_id='+ui.item.pr_row_id+'&token='+ui.item.token);
          	 
             

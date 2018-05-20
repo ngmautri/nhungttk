@@ -88,7 +88,8 @@ class ItemController extends AbstractActionController
                 'total_picture' => $item['total_picture'],
                 'total_attachment' => $item['total_attachment'],
                 'total_pr_row' => $item['total_pr_row'],
-                'total_ap_row' => $item['total_ap_row']
+                'total_ap_row' => $item['total_ap_row'],
+                'total_po_row' => $item['total_po_row'],
             
             ));
         }
@@ -109,10 +110,9 @@ class ItemController extends AbstractActionController
         if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
-        ;
-        
-        $this->layout("layout/user/ajax");
-        
+        ;        
+		
+        $this->layout("layout/user/ajax");        
         $request = $this->getRequest();
         
         $redirectUrl = null;
@@ -124,6 +124,7 @@ class ItemController extends AbstractActionController
         
         $entity_id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
+        $tab_idx = (int) $this->params()->fromQuery('tab_idx');
         
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
@@ -152,7 +153,10 @@ class ItemController extends AbstractActionController
                 'total_picture' => $item['total_picture'],
                 'total_attachment' => $item['total_attachment'],
                 'total_pr_row' => $item['total_pr_row'],
-                'total_ap_row' => $item['total_ap_row']
+                'total_ap_row' => $item['total_ap_row'],
+				 'tab_idx' => $tab_idx,
+                'total_po_row' => $item['total_po_row'],
+                
             
             ));
         }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryTrx
  *
- * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"})})
+ * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"})})
  * @ORM\Entity
  */
 class NmtInventoryTrx
@@ -190,6 +190,13 @@ class NmtInventoryTrx
     private $currentState;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="current_status", type="string", length=45, nullable=true)
+     */
+    private $currentStatus;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -218,6 +225,46 @@ class NmtInventoryTrx
      * })
      */
     private $item;
+
+    /**
+     * @var \Application\Entity\NmtProcurePr
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePr")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="pr_id", referencedColumnName="id")
+     * })
+     */
+    private $pr;
+
+    /**
+     * @var \Application\Entity\NmtProcurePo
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="po_id", referencedColumnName="id")
+     * })
+     */
+    private $po;
+
+    /**
+     * @var \Application\Entity\FinVendorInvoice
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="vendor_invoice_id", referencedColumnName="id")
+     * })
+     */
+    private $vendorInvoice;
+
+    /**
+     * @var \Application\Entity\NmtProcurePrRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="po_row_id", referencedColumnName="id")
+     * })
+     */
+    private $poRow;
 
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
@@ -868,6 +915,30 @@ class NmtInventoryTrx
     }
 
     /**
+     * Set currentStatus
+     *
+     * @param string $currentStatus
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setCurrentStatus($currentStatus)
+    {
+        $this->currentStatus = $currentStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get currentStatus
+     *
+     * @return string
+     */
+    public function getCurrentStatus()
+    {
+        return $this->currentStatus;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -937,6 +1008,102 @@ class NmtInventoryTrx
     public function getItem()
     {
         return $this->item;
+    }
+
+    /**
+     * Set pr
+     *
+     * @param \Application\Entity\NmtProcurePr $pr
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setPr(\Application\Entity\NmtProcurePr $pr = null)
+    {
+        $this->pr = $pr;
+
+        return $this;
+    }
+
+    /**
+     * Get pr
+     *
+     * @return \Application\Entity\NmtProcurePr
+     */
+    public function getPr()
+    {
+        return $this->pr;
+    }
+
+    /**
+     * Set po
+     *
+     * @param \Application\Entity\NmtProcurePo $po
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setPo(\Application\Entity\NmtProcurePo $po = null)
+    {
+        $this->po = $po;
+
+        return $this;
+    }
+
+    /**
+     * Get po
+     *
+     * @return \Application\Entity\NmtProcurePo
+     */
+    public function getPo()
+    {
+        return $this->po;
+    }
+
+    /**
+     * Set vendorInvoice
+     *
+     * @param \Application\Entity\FinVendorInvoice $vendorInvoice
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setVendorInvoice(\Application\Entity\FinVendorInvoice $vendorInvoice = null)
+    {
+        $this->vendorInvoice = $vendorInvoice;
+
+        return $this;
+    }
+
+    /**
+     * Get vendorInvoice
+     *
+     * @return \Application\Entity\FinVendorInvoice
+     */
+    public function getVendorInvoice()
+    {
+        return $this->vendorInvoice;
+    }
+
+    /**
+     * Set poRow
+     *
+     * @param \Application\Entity\NmtProcurePrRow $poRow
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setPoRow(\Application\Entity\NmtProcurePrRow $poRow = null)
+    {
+        $this->poRow = $poRow;
+
+        return $this;
+    }
+
+    /**
+     * Get poRow
+     *
+     * @return \Application\Entity\NmtProcurePrRow
+     */
+    public function getPoRow()
+    {
+        return $this->poRow;
     }
 
     /**

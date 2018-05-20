@@ -6,6 +6,7 @@
 			List</a></li>
 	<li class="divider"></li>
 	<li><a href="/finance/posting-period/list"><small><span
-				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Posting
-			Period</a></li>
+				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;<?php echo $this->translate("Posting Period");?></a></li>
+	<li><a href="/finance/fx/list"><small><span
+				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;<?php echo $this->translate("Exchange Rate");?></a></li>
 </ul>

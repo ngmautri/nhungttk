@@ -211,6 +211,20 @@ class FinVendorInvoiceRow
     private $exwCurrency;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="local_net_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $localNetAmount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="local_gross_amount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $localGrossAmount;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -938,6 +952,54 @@ class FinVendorInvoiceRow
     public function getExwCurrency()
     {
         return $this->exwCurrency;
+    }
+
+    /**
+     * Set localNetAmount
+     *
+     * @param string $localNetAmount
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setLocalNetAmount($localNetAmount)
+    {
+        $this->localNetAmount = $localNetAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get localNetAmount
+     *
+     * @return string
+     */
+    public function getLocalNetAmount()
+    {
+        return $this->localNetAmount;
+    }
+
+    /**
+     * Set localGrossAmount
+     *
+     * @param string $localGrossAmount
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setLocalGrossAmount($localGrossAmount)
+    {
+        $this->localGrossAmount = $localGrossAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get localGrossAmount
+     *
+     * @return string
+     */
+    public function getLocalGrossAmount()
+    {
+        return $this->localGrossAmount;
     }
 
     /**

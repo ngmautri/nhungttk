@@ -54,7 +54,14 @@ if ($entity->getItem() !== null) {
 				
 				</td>
 			
-			<td><?php if($r['lak_unit_price']!==null): echo number_format($r['lak_unit_price'],0);endif;?></td>
+			<?php
+			$m='';
+			if($entity->getInvoice()->getVendor()!==null): $m = $m.  $entity->getInvoice()->getVendor()->getVendorName();endif;
+			if($entity->getUnitPrice()!==null): $m = $m. '<br>'. number_format($entity->getUnitPrice(),0);endif;
+			if($entity->getInvoice()->getCurrency()!==null): $m = $m. ' '. $entity->getInvoice()->getCurrency()->getCurrency();endif;
+			?>
+			<td title="<?php echo $m;?>"><?php if($r['lak_unit_price']!==null): echo number_format($r['lak_unit_price'],0);endif;?>
+			</td>
 			</tr>
 <?php endforeach; ?>
 

@@ -96,6 +96,8 @@ return array(
             'Finance\Controller\VInvoiceAttachment' => 'Finance\Controller\VInvoiceAttachmentControllerFactory',
             'Finance\Controller\ActivityLog' => 'Finance\Controller\ActivityLogControllerFactory',
             'Finance\Controller\ChangeLog' => 'Finance\Controller\ChangeLogControllerFactory',
+            'Finance\Controller\Fx' => 'Finance\Controller\FxControllerFactory',
+            
           )
     
     ),

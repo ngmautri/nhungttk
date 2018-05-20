@@ -437,7 +437,7 @@ WHERE 1
         $sql_tmp = "
 SELECT
 
-(CASE WHEN fin_vendor_invoice.currency_id = 248 THEN (fin_vendor_invoice_row.unit_price)*%s ELSE fin_vendor_invoice_row.unit_price END) AS lak_unit_price,
+fin_vendor_invoice_row.unit_price*fin_vendor_invoice.exchange_rate as lak_unit_price,
 fin_vendor_invoice_row.*
 
 FROM fin_vendor_invoice_row
@@ -447,15 +447,15 @@ ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
 
 WHERE fin_vendor_invoice_row.is_active=1
 group by fin_vendor_invoice_row.item_id
-ORDER BY (CASE WHEN fin_vendor_invoice.currency_id = 248 THEN (fin_vendor_invoice_row.unit_price)*%s ELSE fin_vendor_invoice_row.unit_price END) DESC
- LIMIT %s
+ORDER BY (fin_vendor_invoice_row.unit_price*fin_vendor_invoice.exchange_rate) DESC
+LIMIT %s
 ";
         
         if ($offset > 0) {
             $sql_tmp = $sql_tmp . " OFFSET " . $offset;
         }
         
-        $sql = sprintf($sql_tmp, $rate, $rate, $limit);
+        $sql = sprintf($sql_tmp,$limit);
         
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);

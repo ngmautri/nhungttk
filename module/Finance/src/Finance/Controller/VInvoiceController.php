@@ -1,5 +1,4 @@
 <?php
-
 namespace Finance\Controller;
 
 use Zend\Math\Rand;
@@ -15,9 +14,9 @@ use Application\Entity\NmtProcurePo;
 use Application\Entity\FinVendorInvoiceRowTmp;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class VInvoiceController extends AbstractActionController
 {
@@ -33,16 +32,14 @@ class VInvoiceController extends AbstractActionController
      */
     public function addAction()
     {
-        
         $this->layout("Finance/layout-fullscreen");
-        
         
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
         
         /**@var \Application\Entity\MlaUsers $u ;*/
-         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
         
@@ -59,12 +56,15 @@ class VInvoiceController extends AbstractActionController
             
             $vendor_id = (int) $request->getPost('vendor_id');
             $currency_id = (int) $request->getPost('currency_id');
+            $exchangeRate = (int) $request->getPost('exchangeRate');
+            
             $warehouse_id = (int) $request->getPost('target_wh_id');
             
             $postingDate = $request->getPost('postingDate');
             $grDate = $request->getPost('grDate');
             $invoiceDate = $request->getPost('invoiceDate');
             $invoiceNo = $request->getPost('invoiceNo');
+            
             $sapDoc = $request->getPost('sapDoc');
             $isActive = (int) $request->getPost('isActive');
             $remarks = $request->getPost('remarks');
@@ -101,13 +101,23 @@ class VInvoiceController extends AbstractActionController
                 $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
             }
             
-            if ($currency !== null) {
+            if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
                 $entity->setCurrency($currency);
                 $entity->setCurrencyIso3($currency->getCurrency());
             } else {
                 $errors[] = 'Currency can\'t be empty. Please select a Currency!';
             }
             
+            if ($exchangeRate !== null) {
+                if (! is_numeric($exchangeRate)) {
+                    $errors[] = 'FX rate is not valid. It must be a number.';
+                } else {
+                    if ($exchangeRate <= 0) {
+                        $errors[] = 'FX rate must be greate than 0!';
+                    }
+                    $entity->setExchangeRate($exchangeRate);
+                }
+            }
             $validator = new Date();
             
             switch ($currentState) {
@@ -266,7 +276,7 @@ class VInvoiceController extends AbstractActionController
                 $entity->setSysNumber($currentDoc);
             }
             
-             $createdOn = new \DateTime();
+            $createdOn = new \DateTime();
             
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($createdOn);
@@ -289,7 +299,7 @@ class VInvoiceController extends AbstractActionController
                 'entity_token' => $entity->getToken()
             ));
             
-            //$redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            // $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             $redirectUrl = "/finance/v-invoice-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
             
             return $this->redirect()->toUrl($redirectUrl);
@@ -304,14 +314,14 @@ class VInvoiceController extends AbstractActionController
                 ->getUri();
         }
         
-        //get company
+        // get company
         
         $entity = new FinVendorInvoice();
         $entity->setIsActive(1);
         
-        $default_cur=null;
-        if($u->getCompany() instanceof  \Application\Entity\NmtApplicationCompany){
-            $default_cur = $u->getCompany() ->getDefaultCurrency();
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
             $entity->setCurrency($default_cur);
         }
         
@@ -1299,7 +1309,9 @@ class VInvoiceController extends AbstractActionController
                 
                 $this->flashMessenger()->addMessage($m);
                 
-                /** === Update current state of row invoice row === */
+                /**
+                 * === Update current state of row invoice row ===
+                 */
                 
                 $query = $this->doctrineEM->createQuery('
 UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state WHERE r.invoice =:invoice_id
@@ -1307,18 +1319,20 @@ UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state 
                     'new_state' => $entity->getCurrentState(),
                     'invoice_id' => $entity->getId()
                 ));
-                $query->getResult();                
+                $query->getResult();
                 
+                /**
+                 * === Update current state of stock row.
+                 * ===
+                 */
                 
-                /** === Update current state of stock row. ===*/
-                                
                 $criteria = array(
                     'isActive' => 1,
                     'invoice' => $entity->getId()
                 );
                 $sort_criteria = array();
                 $invoice_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria, $sort_criteria);
-                   if (count($invoice_rows) > 0) {
+                if (count($invoice_rows) > 0) {
                     foreach ($invoice_rows as $r) {
                         $query = $this->doctrineEM->createQuery('
 UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.isActive=:is_active WHERE t.invoiceRow =:invoice_row_id

@@ -85,6 +85,13 @@ class NmtApplicationCurrency
     private $createdOn;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="decimal_places", type="integer", nullable=true)
+     */
+    private $decimalPlaces;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -320,6 +327,30 @@ class NmtApplicationCurrency
     public function getCreatedOn()
     {
         return $this->createdOn;
+    }
+
+    /**
+     * Set decimalPlaces
+     *
+     * @param integer $decimalPlaces
+     *
+     * @return NmtApplicationCurrency
+     */
+    public function setDecimalPlaces($decimalPlaces)
+    {
+        $this->decimalPlaces = $decimalPlaces;
+
+        return $this;
+    }
+
+    /**
+     * Get decimalPlaces
+     *
+     * @return integer
+     */
+    public function getDecimalPlaces()
+    {
+        return $this->decimalPlaces;
     }
 
     /**

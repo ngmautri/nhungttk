@@ -18,10 +18,13 @@
 			<td><b>Pr Date</b></td>
 			<td><b>Unit</b></td>
 			<td><b>Quantity <br> Q'ty</b></td>
-			<td><b>Price<br>Q'ty</b></td>
-			<td><b>Currency</b></td>
-			<td><b>Status</b></td>
+			<td><b>U/P<br>Doc.</b></td>
+			<td><b>Total<br>Doc.</b></td>
+			<td><b>Doc.<br>Curr</b></td>
+			<td><b>U/P.<br>Loc.</b></td>
+			<td><b>Total.<br>Loc.</b></td>
 	
+			<td><b>Status</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -61,9 +64,12 @@
 			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
 		
 			<td><?php echo $a->getQuantity();?></td>
-			<td><?php echo number_format($a->getUnitPrice(),2);?></td>
+			<td><?php echo number_format($a->getUnitPrice(),$a->getInvoice()->getCurrency()->getDecimalPlaces());?></td>
+			<td><?php echo number_format($a->getUnitPrice()*$a->getQuantity(),$a->getInvoice()->getCurrency()->getDecimalPlaces());?></td>
 			<td><?php echo $a->getInvoice()->getCurrency()->getCurrency();?></td>
-			
+			<td><?php echo number_format($a->getUnitPrice()*$a->getInvoice()->getExchangeRate(),0);?></td>
+			<td><?php echo number_format($a->getUnitPrice()*$a->getInvoice()->getExchangeRate()*$a->getQuantity(),0);?></td>
+		
 			<td><?php echo $a->getCurrentState();?></td>
 			<td>
 			</td>

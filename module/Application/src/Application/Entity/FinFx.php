@@ -31,7 +31,7 @@ class FinFx
     /**
      * @var string
      *
-     * @ORM\Column(name="fx_rate", type="decimal", precision=14, scale=2, nullable=true)
+     * @ORM\Column(name="fx_rate", type="decimal", precision=14, scale=5, nullable=true)
      */
     private $fxRate;
 

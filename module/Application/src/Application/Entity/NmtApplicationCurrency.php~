@@ -85,6 +85,13 @@ class NmtApplicationCurrency
     private $createdOn;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="decimal_places", type="integer", nullable=true)
+     */
+    private $decimalPlaces;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

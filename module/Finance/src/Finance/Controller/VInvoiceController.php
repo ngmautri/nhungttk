@@ -43,6 +43,11 @@ class VInvoiceController extends AbstractActionController
             "email" => $this->identity()
         ));
         
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+        
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -56,7 +61,7 @@ class VInvoiceController extends AbstractActionController
             
             $vendor_id = (int) $request->getPost('vendor_id');
             $currency_id = (int) $request->getPost('currency_id');
-            $exchangeRate = (int) $request->getPost('exchangeRate');
+            $exchangeRate = (double) $request->getPost('exchangeRate');
             
             $warehouse_id = (int) $request->getPost('target_wh_id');
             
@@ -95,29 +100,56 @@ class VInvoiceController extends AbstractActionController
                 $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
             }
             
+            /**
+             * Check default currency
+             */
+            if (! $default_cur instanceof \Application\Entity\NmtApplicationCurrency) {
+                $errors[] = 'Company currency can\'t be defined!';
+            }
+            
             $currency = null;
             if ($currency_id > 0) {
                 /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
                 $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
             }
             
+            // check if posting period is close
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+            
             if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
                 $entity->setCurrency($currency);
                 $entity->setCurrencyIso3($currency->getCurrency());
+                
+                if ($currency == $default_cur) {
+                    $entity->setExchangeRate(1);
+                } else {
+                    
+                    if ($exchangeRate != 0) {
+                        if (! is_numeric($exchangeRate)) {
+                            $errors[] = 'FX rate is not valid. It must be a number.';
+                        } else {
+                            if ($exchangeRate <= 0) {
+                                $errors[] = 'FX rate must be greate than 0!';
+                            }
+                            $entity->setExchangeRate($exchangeRate);
+                        }
+                    } else {
+                        // get default exchange rate.
+                        /** @var \Application\Entity\FinFx $lastest_fx */
+                        
+                        $lastest_fx = $p->getLatestFX($currency_id, $default_cur->getId());
+                        if ($lastest_fx instanceof \Application\Entity\FinFx) {
+                            $entity->setExchangeRate($lastest_fx->getFxRate());
+                        } else {
+                            $errors[] = sprintf('FX rate for %s not definded yet!', $currency->getCurrency());
+                        }
+                    }
+                }
             } else {
                 $errors[] = 'Currency can\'t be empty. Please select a Currency!';
             }
             
-            if ($exchangeRate !== null) {
-                if (! is_numeric($exchangeRate)) {
-                    $errors[] = 'FX rate is not valid. It must be a number.';
-                } else {
-                    if ($exchangeRate <= 0) {
-                        $errors[] = 'FX rate must be greate than 0!';
-                    }
-                    $entity->setExchangeRate($exchangeRate);
-                }
-            }
             $validator = new Date();
             
             switch ($currentState) {
@@ -186,10 +218,6 @@ class VInvoiceController extends AbstractActionController
                     } else {
                         
                         $entity->setPostingDate(new \DateTime($postingDate));
-                        
-                        // check if posting period is close
-                        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-                        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
                         
                         /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                         $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
@@ -319,9 +347,7 @@ class VInvoiceController extends AbstractActionController
         $entity = new FinVendorInvoice();
         $entity->setIsActive(1);
         
-        $default_cur = null;
-        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
-            $default_cur = $u->getCompany()->getDefaultCurrency();
+        if ($default_cur instanceof \Application\Entity\NmtApplicationCompany) {
             $entity->setCurrency($default_cur);
         }
         

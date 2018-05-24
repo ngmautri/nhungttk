@@ -18,6 +18,8 @@ use Application\Entity\NmtProcureLog;
 use Application\Entity\FinLog;
 use Application\Entity\FinChangeLog;
 use Application\Entity\NmtHrLog;
+use Application\Entity\NmtBpLog;
+use Application\Entity\NmtBpChangeLog;
 
 /**
  *
@@ -99,6 +101,18 @@ class LoggingListener implements ListenerAggregateInterface
         $this->listeners[] = $events->attach('finance.change.log', array(
             $this,
             'onFinanceChangeLogging'
+        ), 200);
+        
+        // BP ACT LOG
+        $this->listeners[] = $events->attach('bp.activity.log', array(
+            $this,
+            'onBpActivityLogging'
+        ), 200);
+        
+        // BP CHANGE LOG
+        $this->listeners[] = $events->attach('bp.change.log', array(
+            $this,
+            'onBpChangeLogging'
         ), 200);
     }
 
@@ -715,6 +729,137 @@ class LoggingListener implements ListenerAggregateInterface
         $this->doctrineEM->flush();
     }
     
+    
+    /**
+     * BP Activity Loag
+     *
+     * @param EventInterface $e
+     */
+    public function onBpActivityLogging(EventInterface $e)
+    {
+        $log_priority = $e->getParam('priority');
+        $log_message = $e->getParam('message');
+        $createdBy = $e->getParam('createdBy');
+        $createdOn = $e->getParam('createdOn');
+        $entityId = $e->getParam('entity_id');
+        $entityClass = $e->getParam('entity_class');
+        $entityToken = $e->getParam('entity_token');
+        
+        
+        $filename = 'bp_activity_log_' . date('F') . '_' . date('Y') . '.txt';
+        $log = new Logger();
+        $writer = new Stream('./data/log/' . $filename);
+        $log->addWriter($writer);
+        $log->log($log_priority, $log_message);
+        
+        // update DB
+        $entity = new NmtBpLog();
+        $entity->setPriority($log_priority);
+        $entity->setMessage($log_message);
+        $entity->setTriggeredby($e->getTarget());
+        $entity->setCreatedBy($createdBy);
+        $entity->setCreatedOn($createdOn);
+        $entity->setEntityId($entityId);
+        $entity->setEntityClass($entityClass);
+        $entity->setEntityToken($entityToken);
+        
+        $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+        
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+    }
+    
+    /**
+     * ON BP Change Log
+     *
+     * @param EventInterface $e
+     */
+    public function onBpChangeLogging(EventInterface $e)
+    {
+        // $log_priority = $e->getParam('priotiry');
+        $log_message = $e->getParam('message');
+        $objectId = $e->getParam('objectId');
+        $objectToken = $e->getParam('objectToken');
+        $changeArray = $e->getParam('changeArray');
+        $changeBy = $e->getParam('changeBy');
+        $changeOn = $e->getParam('changeOn');
+        $revisionNumber = $e->getParam('revisionNumber');
+        $changeValidFrom = $e->getParam('changeValidFrom');
+        
+        $filename = 'bp_change_log_' . date('F') . '_' . date('Y') . '.txt';
+        $log = new Logger();
+        
+        $writer = new Stream('./data/log/' . $filename);
+        $log->addWriter($writer);
+        // $log->log(Logger::INFO, $log_message);
+        
+        $detail = $log_message;
+        foreach ($changeArray as $key => $value) {
+            $detail_1 = $detail . " {" . $key . "}{Object ID: " . $objectId . "}";
+            // $log->log(Logger::INFO, $key . " ID: " . $objectId);
+            foreach ($value as $k => $v) {
+                $detail_1 = $detail_1 . "{" . $k . ":" . $v . "}";
+            }
+            $log->log(Logger::INFO, $detail_1);
+        }
+        
+        foreach ($changeArray as $key => $value) {
+            
+            // update database
+            $entity = new NmtBpChangeLog();
+            $entity->setObjectToken($objectToken);
+            $entity->setObjectId($objectId);
+            $entity->setCreatedBy($changeBy);
+            $entity->setCreatedOn($changeOn);
+            $entity->setRevisionNo($revisionNumber);
+            $entity->setEffectiveFrom($changeValidFrom);
+            $entity->setTriggeredby($e->getTarget());
+            
+            foreach ($value as $k => $v1) {
+                
+                switch ($k) {
+                    case "className":
+                        $entity->setClassName($v1);
+                        break;
+                        
+                    case "fieldType":
+                        $entity->setFieldType($v1);
+                        break;
+                        
+                    case "fieldName":
+                        
+                        // Set all resources as inactive;
+                        $sql = "UPDATE Application\Entity\NmtBpChangeLog log SET log.isValid = 0";
+                        $w = sprintf(" WHERE log.objectId=%s AND log.objectToken='%s' AND log.fieldName = '%s' ", $objectId, $objectToken, $v1);
+                        
+                        $sql = $sql . $w;
+                        
+                        $q = $this->doctrineEM->createQuery($sql);
+                        $q->execute();
+                        
+                        $entity->setFieldName($v1);
+                        $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())
+                            ->getColumnName($v1));
+                        break;
+                    case "oldValue":
+                        $entity->setOldValue($v1);
+                        break;
+                    case "newValue":
+                        /**
+                         *
+                         * @todo text
+                         */
+                        $entity->setNewValue($v1);
+                        break;
+                }
+            }
+            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            $entity->setIsValid(1);
+            $this->doctrineEM->persist($entity);
+        }
+        
+        $this->doctrineEM->flush();
+    }
 
   
     /**

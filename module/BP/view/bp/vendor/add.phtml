@@ -1,3 +1,6 @@
+<?php /**@var \Application\Entity\NmtBpVendor $entity ;*/?>
+
+
 <?php
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert">';
@@ -17,16 +20,16 @@ if (count ( $errors ) > 0) {
   <li ><a href="#general">New Vendor</a></li>
    </ul>
 
-<div id="general">
+<div id="general" style="font-size: 9pt">
 
 <form id="Create_Vendor_Form" class="form-horizontal"
 	action="<?php echo $this->baseUrl ?>/bp/vendor/add" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Vendor Number</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
 				name="vendorNumber" value="<?php echo (!$entity == null)? $entity->getVendorNumber():"";?>">
 		</div>
 		
@@ -35,32 +38,51 @@ if (count ( $errors ) > 0) {
 		</div>
 	</div>
 
-	<div class="form-group required">
-		<label class="control-label col-sm-2" for="inputTag">Vendor Name</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" for="inputTag">Vendor Name:</label>
+		<div class="col-sm-6">
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
 				name="vendorName" value="<?php echo (!$entity == null)? $entity->getVendorName():"";?>">
 		</div>
 		
-		<label class="control-label col-sm-2" for="inputTag">Short name</label>
+		</div>
+	
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" for="inputTag">Short name:</label>
 		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
 				name="vendorShortName" value="<?php echo (!$entity == null)? $entity->getVendorShortname():"";?>">
 		</div>
 	</div>
 	
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputTag">Keywords</label>
-		<div class="col-sm-3">
-			<input class="form-control" type="text" id="inputTag" placeholder=""
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" for="inputTag">Keywords:</label>
+		<div class="col-sm-6">
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
 				name="keywords" value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
 		</div>
 	</div>
+	<hr>
 	
-	<div class="form-group required">
-		<label class="control-label col-sm-2" >Country</label>
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" for="inputTag">Street:</label>
+		<div class="col-sm-6">
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
+				name="street" value="<?php echo (!$entity == null)? $entity->getStreet():"";?>">
+		</div>
+		
+		</div>
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" for="inputTag">City:</label>
 		<div class="col-sm-3">
-<input disabled class="form-control" type="text" id="country_name" placeholder="Please select country" name="country_name" 
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
+				name="city" value="<?php echo (!$entity == null)? $entity->getCity():"";?>">
+		</div>
+	</div>
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" >Country:</label>
+		<div class="col-sm-3">
+<input disabled class="form-control input-sm" type="text" id="country_name" placeholder="Please select country" name="country_name" 
 value="<?php if (!$entity == null): if (!$entity->getCountry() == null):echo $entity->getCountry()->getCountryName();endif;endif;?>">
 
 <input type="hidden" id="country_id" placeholder=""  name="country_id" 
@@ -72,16 +94,40 @@ value="<?php if (!$entity == null): if (!$entity->getCountry() == null):echo $en
 </a>
 		
 	</div>
-
-	<div class="form-group">
-		<label class="control-label col-sm-2" for="inputDescription">remarks</label>
+	<hr>
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" for="inputTag">Contact Person:</label>
 		<div class="col-sm-3">
-			<textarea class="form-control" id="inputDescription" placeholder=""
-				rows="3" name="remarks"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
+				name="vendorName" value="<?php echo (!$entity == null)? $entity->getVendorName():"";?>">
+		</div>
+		
+	</div>
+	<div class="form-group margin-bottom required">
+		<label class="control-label col-sm-2" for="inputTag">Telephone:</label>
+		<div class="col-sm-3">
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
+				name="telephone" value="<?php echo (!$entity == null)? $entity->getTelephone():"";?>">
+		</div>
+		
+	</div>
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" for="inputTag">Email:</label>
+		<div class="col-sm-3">
+			<input class="form-control input-sm" type="text" id="inputTag" placeholder=""
+				name="email" value="<?php echo (!$entity == null)? $entity->getEmail():"";?>">
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group margin-bottom">
+		<label class="control-label col-sm-2" for="inputDescription">Remarks:</label>
+		<div class="col-sm-6">
+			<textarea class="form-control input-sm" id="inputDescription" placeholder=""
+				rows="5" name="remarks"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+		</div>
+	</div>
+
+	<div class="form-group margin-bottom">
 		<div class="col-sm-offset-2 col-sm-10">
    	<button onclick="submitForm('Create_Vendor_Form');" type="submit" id = "save" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i>&nbsp;Save</button>
  		</div>

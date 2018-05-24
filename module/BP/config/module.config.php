@@ -28,6 +28,14 @@ return array(
                 'controller' => 'vendor',
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
+            array(
+                'label' => 'Log',
+                'route' => 'bp/default',
+                'controller' => 'activity-log',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+                
             )
         )
     ),
@@ -83,7 +91,11 @@ return array(
             'BP\Controller\VendorAttachment' => 'BP\Controller\VendorAttachmentControllerFactory',
             
             'BP\Controller\Debtor' => 'BP\Controller\DebtorControllerFactory',
-            'BP\Controller\DebtorContract' => 'BP\Controller\DebtorContractControllerFactory'
+            'BP\Controller\DebtorContract' => 'BP\Controller\DebtorContractControllerFactory',
+            
+            'BP\Controller\ChangeLog' => 'BP\Controller\ChangeLogControllerFactory',
+            'BP\Controller\ActivityLog' => 'BP\Controller\ActivityLogControllerFactory',
+            
         )
     
     ),

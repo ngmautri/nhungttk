@@ -16,7 +16,7 @@ use PHPExcel;
 use PHPExcel_IOFactory;
 
 /**
- * 
+ * Good Receipt PO or PR or AP
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
@@ -27,11 +27,6 @@ class GrRowController extends AbstractActionController
 
     protected $doctrineEM;
 
-    /*
-     * Defaul Action
-     */
-    public function indexAction()
-    {}
 
     /**
      *

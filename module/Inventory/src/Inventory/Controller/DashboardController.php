@@ -25,7 +25,18 @@ class DashboardController extends AbstractActionController
      * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
      */
     public function indexAction()
-    {}
+    {
+        $request = $this->getRequest();
+        
+        if ($request->getHeader('Referer') == null) {
+           return $this->redirect ()->toRoute ( 'access_denied' );
+        } 
+        
+        return new ViewModel ( array (
+            
+        ) );
+        
+    }
     
     /**
      *

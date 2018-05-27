@@ -11,7 +11,7 @@ use Procure\Controller\PrRowController;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class PoRowControllerFactory implements FactoryInterface {
+class GrRowControllerFactory implements FactoryInterface {
 	
 	/**
 	 *

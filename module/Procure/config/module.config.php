@@ -208,20 +208,32 @@ return array(
     'controllers' => array(
         'factories' => array(
             'Procure\Controller\Index' => 'Procure\Controller\IndexControllerFactory',
-            'Procure\Controller\Pr' => 'Procure\Controller\PrControllerFactory',
-            'Procure\Controller\PrAttachment' => 'Procure\Controller\PrAttachmentControllerFactory',
-            'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
-            'Procure\Controller\Po' => 'Procure\Controller\PoControllerFactory',
-            'Procure\Controller\PoAttachment' => 'Procure\Controller\PoAttachmentControllerFactory',
-            'Procure\Controller\PoRow' => 'Procure\Controller\PoRowControllerFactory',
             'Procure\Controller\PrSearch' => 'Procure\Controller\PrSearchControllerFactory',            
             'Procure\Controller\PrRest' => 'Procure\Controller\PrRestControllerFactory',
             'Procure\Controller\PrConsole' => 'Procure\Controller\PrConsoleControllerFactory',
             'Procure\Controller\ChangeLog' => 'Procure\Controller\ChangeLogControllerFactory',
             'Procure\Controller\ActivityLog' => 'Procure\Controller\ActivityLogControllerFactory',
+                 
+            'Procure\Controller\Pr' => 'Procure\Controller\PrControllerFactory',
+            'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
+            'Procure\Controller\PrAttachment' => 'Procure\Controller\PrAttachmentControllerFactory',
             
+            'Procure\Controller\Quote' => 'Procure\Controller\QuoteControllerFactory',
+            'Procure\Controller\QuoteRow' => 'Procure\Controller\QuoteRowControllerFactory',
+            'Procure\Controller\QuoteAttachment' => 'Procure\Controller\QuoteAttachmentControllerFactory',
             
-        
+            'Procure\Controller\Po' => 'Procure\Controller\PoControllerFactory',
+            'Procure\Controller\PoRow' => 'Procure\Controller\PoRowControllerFactory',
+            'Procure\Controller\PoAttachment' => 'Procure\Controller\PoAttachmentControllerFactory',
+            
+            'Procure\Controller\Gr' => 'Procure\Controller\GrControllerFactory',
+            'Procure\Controller\GrRow' => 'Procure\Controller\GrRowControllerFactory',
+            'Procure\Controller\GrAttachment' => 'Procure\Controller\GrAttachmentControllerFactory',
+            
+            'Procure\Controller\Return' => 'Procure\Controller\ReturnControllerFactory',
+            'Procure\Controller\ReturnRow' => 'Procure\Controller\ReturnRowControllerFactory',
+            'Procure\Controller\ReturnAttachment' => 'Procure\Controller\ReturnAttachmentControllerFactory',
+            
         )
     
     ),

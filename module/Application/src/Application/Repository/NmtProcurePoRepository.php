@@ -277,6 +277,178 @@ WHERE 1
             return null;
         }
     }
+    
+    
+    
+    public function getOpenPoGr($id, $token)
+    {
+        $sql = "
+SELECT
+    nmt_procure_gr_row.id AS gr_row_id,
+    nmt_procure_gr_row.po_row_id AS po_row_id,
+	IFNULL(SUM(CASE WHEN nmt_procure_gr_row.is_draft=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS draft_gr,
+    IFNULL(SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS confirmed_gr,
+    nmt_procure_po_row.quantity-SUM(CASE WHEN nmt_procure_gr_row.is_draft=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END)-SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 THEN  nmt_procure_gr_row.quantity ELSE 0 END) AS open_gr,
+    nmt_procure_po_row.*
+FROM nmt_procure_po_row
+LEFT JOIN nmt_procure_gr_row
+ON nmt_procure_gr_row.po_row_id =  nmt_procure_po_row.id
+WHERE nmt_procure_po_row.po_id=%s
+GROUP BY nmt_procure_po_row.id            
+";
+        
+        //$sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
+        
+        $sql = sprintf($sql, $id);
+        
+        //echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
+            $rsm->addScalarResult("draft_gr", "draft_gr");
+            $rsm->addScalarResult("confirmed_gr", "confirmed_gr");
+            $rsm->addScalarResult("open_gr", "open_gr");
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    
+    public function getGrOfPoRow($id, $token)
+    {
+        $sql = "
+SELECT
+	nmt_procure_gr_row.*
+FROM nmt_procure_gr_row
+left join nmt_procure_po_row
+on nmt_procure_po_row.id = nmt_procure_gr_row.po_row_id
+where nmt_procure_gr_row.po_row_id=%s	
+	
+";
+        
+        //$sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
+        
+        $sql = sprintf($sql, $id);
+        
+        //echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureGrRow', 'nmt_procure_gr_row');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    
+
+     /**
+     * @todo GOODS RECEIPT
+     */
+    public function getGr($id, $token)
+    {
+        $sql = " 
+SELECT
+    nmt_procure_gr.*,
+    count(nmt_procure_gr_row.id) as total_row
+   FROM nmt_procure_gr
+LEFT JOIN nmt_procure_gr_row
+ON nmt_procure_gr_row.gr_id = nmt_procure_gr.id
+WHERE 1
+";
+        
+        $sql = sprintf($sql . " AND nmt_procure_gr.id = %s AND nmt_procure_gr.token='%s' Group BY nmt_procure_gr_row.gr_id",
+            $id, $token);
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureGr', 'nmt_procure_gr');
+            $rsm->addScalarResult("total_row", "total_row");
+            
+           /*  $rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("max_row_number", "max_row_number");
+            $rsm->addScalarResult("net_amount", "net_amount");
+            $rsm->addScalarResult("tax_amount", "tax_amount");
+            $rsm->addScalarResult("gross_amount", "gross_amount");
+            $rsm->addScalarResult("billed_amount", "billed_amount"); */
+            
+            //echo $sql;
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            
+            $result = $query->getSingleResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    /**
+     * GR List
+     */
+    public function getGrList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = 
+"SELECT
+   nmt_procure_gr.*,
+   count(nmt_procure_gr_row.id) as total_row
+FROM nmt_procure_gr
+LEFT JOIN nmt_procure_gr_row
+ON nmt_procure_gr_row.gr_id = nmt_procure_gr.id
+WHERE 1
+";
+            
+         
+        if ($is_active == 1) {
+            $sql = $sql . " AND nmt_procure_gr.is_active=  1";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND nmt_procure_gr.is_active = 0";
+        }
+        
+        if ($current_state != null) {
+            $sql = $sql . " AND nmt_procure_gr.current_state = '".$current_state."'";
+        }
+        
+        $sql = $sql . " GROUP BY nmt_procure_gr_row.gr_id";
+               
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureGr', 'nmt_procure_gr');
+            //$rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            //$rsm->addScalarResult("max_row_number", "max_row_number");
+            //$rsm->addScalarResult("net_amount", "net_amount");
+            //$rsm->addScalarResult("tax_amount", "tax_amount");
+            //$rsm->addScalarResult("gross_amount", "gross_amount");
+            //$rsm->addScalarResult("billed_amount", "billed_amount");            
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
   
 }
 

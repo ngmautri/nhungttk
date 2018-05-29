@@ -342,12 +342,12 @@ class VInvoiceController extends AbstractActionController
                 ->getUri();
         }
         
-        // get company
-        
+        // get company        
         $entity = new FinVendorInvoice();
         $entity->setIsActive(1);
         
-        if ($default_cur instanceof \Application\Entity\NmtApplicationCompany) {
+        //Default currency  
+        if ($default_cur instanceof \Application\Entity\NmtApplicationCurrency) {
             $entity->setCurrency($default_cur);
         }
         
@@ -762,8 +762,8 @@ class VInvoiceController extends AbstractActionController
                 $this->doctrineEM->flush();
             }
             
-            $m = sprintf();
-            $this->flashMessenger()->addMessage('A/P Invoice ' . $entity->getSysNumber() . ' is created from Contract /PO (' . $target->getSysNumber() . ')successfully!');
+            $m = sprintf("[OK] A/P Invoice #%s created from P/O #%s", $entity->getSysNumber(), $target->getSysNumber());
+            $this->flashMessenger()->addMessage($m);
             
             $redirectUrl = "/finance/v-invoice/copy-from-po1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);

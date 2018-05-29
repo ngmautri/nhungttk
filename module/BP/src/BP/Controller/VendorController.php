@@ -109,7 +109,6 @@ class VendorController extends AbstractActionController
             $entity->setIsActive($isActive);
             $entity->setKeywords($keywords);
             $entity->setRemarks($remarks);
-            $entity->setVendorName($vendorName);
             $entity->setVendorShortName($vendorShortName);
             $entity->setStreet($street);
             $entity->setCity($city);
@@ -120,6 +119,9 @@ class VendorController extends AbstractActionController
             
             if ($vendorName === '' or $vendorName === null) {
                 $errors[] = 'Please give vendor name';
+            }else{
+                $entity->setVendorName($vendorName);
+                
             }
             
             if ($country_id === '' or $country_id === null) {
@@ -142,9 +144,10 @@ class VendorController extends AbstractActionController
             
             try {
                 
+                $createdOn =new \DateTime();
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                 
-                $entity->setCreatedOn(new \DateTime());
+                $entity->setCreatedOn($createdOn);
                 $entity->setCreatedBy($u);
                 
                 $this->doctrineEM->persist($entity);
@@ -154,19 +157,32 @@ class VendorController extends AbstractActionController
                 
                 $entity->setChecksum(md5($new_entity_id . uniqid(microtime())));
                 $this->doctrineEM->flush();
+                $m = sprintf('"[OK] Vendor #%s - %s" created.', $entity->getId(), $entity->getVendorName());
+                
+                // Trigger Activity Log . AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('bp.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $createdOn
+                    
+                ));
                 
                 $this->vendorSearchService->updateIndex(1, $entity, false);
+                
+                  $this->flashMessenger()->addSuccessMessage($m);
+                return $this->redirect()->toUrl($redirectUrl);
             } catch (Exception $e) {
                 return new ViewModel(array(
                     'errors' => $e->getMessage(),
                     'redirectUrl' => $redirectUrl,
-                    'entity' => null
+                    'entity' => $entity
                 ));
             }
-            
-            $this->flashMessenger()->addSuccessMessage('Vendor " ' . $vendorName . '" has been created sucessfully!');
-            return $this->redirect()->toUrl($redirectUrl);
         }
+        
+        // NO POST
+        // ========================
         
         $redirectUrl = $this->getRequest()
             ->getHeader('Referer')
@@ -248,7 +264,7 @@ class VendorController extends AbstractActionController
                 
                 $entity->setKeywords($keywords);
                 $entity->setRemarks($remarks);
-                 $entity->setIsActive($isActive);
+                $entity->setIsActive($isActive);
                 
                 $entity->setStreet($street);
                 $entity->setCity($city);
@@ -316,7 +332,7 @@ class VendorController extends AbstractActionController
                     
                     $this->vendorSearchService->updateIndex(0, $entity, false);
                     
-                    $m = sprintf('"[OK] Vendor #%s - %s" updated. Change No.:%s. OK!', $entity->getId(), $entity->getVendorName(), count($changeArray));
+                    $m = sprintf('[OK] Vendor #%s - %s updated. Change No.:%s.', $entity->getId(), $entity->getVendorName(), count($changeArray));
                     
                     // Trigger Change Log. AbtractController is EventManagerAware.
                     $this->getEventManager()->trigger('bp.change.log', __METHOD__, array(

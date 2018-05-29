@@ -262,9 +262,8 @@ class PoRowController extends AbstractActionController
                  * $this->doctrineEM->flush();
                  */
                 $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-                $m = sprintf("[OK] Contract /PO Line: %s created!",  $rowIdentifer);
+                $m = sprintf("[OK] Contract /PO Line: %s created!", $rowIdentifer);
                 $this->flashMessenger()->addMessage($m);
-                
                 
                 return $this->redirect()->toUrl($redirectUrl);
             }
@@ -512,7 +511,7 @@ class PoRowController extends AbstractActionController
                         'target' => $target,
                         'entity' => $entity,
                         'currency_list' => $currency_list
-                        
+                    
                     ));
                 }
                 
@@ -525,20 +524,23 @@ class PoRowController extends AbstractActionController
                 $entity->setLastChangeOn(new \DateTime());
                 $this->doctrineEM->persist($entity);
                 
-               /*  $criteria = array(
-                    'invoiceRow' => $entity->getId()
-                );
-                */ 
+                /*
+                 * $criteria = array(
+                 * 'invoiceRow' => $entity->getId()
+                 * );
+                 */
                 
                 /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/
                 
-                /* $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-                if ($gr_entity !== null) {
-                    $gr_entity->setIsActive($isActive);
-                    $gr_entity->setLastChangeBy($u);
-                    $gr_entity->setLastChangeOn(new \DateTime());
-                    $this->doctrineEM->persist($gr_entity);
-                } */ 
+                /*
+                 * $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+                 * if ($gr_entity !== null) {
+                 * $gr_entity->setIsActive($isActive);
+                 * $gr_entity->setLastChangeBy($u);
+                 * $gr_entity->setLastChangeOn(new \DateTime());
+                 * $this->doctrineEM->persist($gr_entity);
+                 * }
+                 */
                 
                 $this->doctrineEM->flush();
                 
@@ -612,30 +614,37 @@ class PoRowController extends AbstractActionController
         
         if ($target !== null) {
             
-            $criteria = array(
-                'invoice' => $target_id,
-                'isActive' => 1
-            );
+            /*
+             * $criteria = array(
+             * 'invoice' => $target_id,
+             * 'isActive' => 1
+             * );
+             *
+             * $query = 'SELECT e FROM Application\Entity\NmtProcurePoRow e
+             * WHERE e.po=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
+             *
+             * $list = $this->doctrineEM->createQuery($query)
+             * ->setParameters(array(
+             * "1" => $target,
+             * "2" => 1
+             *
+             * ))
+             * ->getResult();
+             */
             
-            $query = 'SELECT e FROM Application\Entity\NmtProcurePoRow e
-            WHERE e.po=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
-            
-            $list = $this->doctrineEM->createQuery($query)
-                ->setParameters(array(
-                "1" => $target,
-                "2" => 1
-            
-            ))
-                ->getResult();
+            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+            $list = $res->getOpenPoGr($target_id, $token);
             
             $total_records = 0;
             if (count($list) > 0) {
                 $escaper = new Escaper();
                 
                 $total_records = count($list);
-                foreach ($list as $a) {
+                foreach ($list as $r) {
                     
                     /** @var \Application\Entity\NmtProcurePoRow $a ;*/
+                    $a = $r[0];
                     
                     $a_json_row["row_identifer"] = $a->getRowIdentifer();
                     $a_json_row["row_id"] = $a->getId();
@@ -672,28 +681,31 @@ class PoRowController extends AbstractActionController
                     if ($a->getPrRow() !== null) {
                         if ($a->getPrRow()->getPr() !== null) {
                             
-                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
+                            $link = sprintf('<a title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;&nbsp;...</a>', $a->getPrRow()
                                 ->getPr()
-                                ->getToken() . '&entity_id=' . $a->getPrRow()
+                                ->getPrName(), $a->getPrRow()
                                 ->getPr()
-                                ->getId() . '&checkum=' . $a->getPrRow()
+                                ->getToken(), $a->getPrRow()
                                 ->getPr()
-                                ->getChecksum() . '"> ... </a>';
+                                ->getId(), $a->getPrRow()
+                                ->getPr()
+                                ->getChecksum());
                             
-                            $a_json_row["pr_number"] = $a->getPrRow()
-                                ->getPr()
-                                ->getPrNumber() . $link;
+                            $a_json_row["pr_number"] = $a->getPrRow()->getRowIdentifer() . $link;
                         }
                     }
                     
-                    // $a_json_row ["item_name"]="";
-                    /*
-                     * if( $a_json_row ["item_name"]!==null){
-                     * $a_json_row ["item_name"] = $escaper->escapeJs($a->getItem()->getItemName());
-                     * }
-                     */
+                    $a_json_row["confirmed_gr"] = $r['confirmed_gr'];
+                    $a_json_row["draft_gr"] = $r['draft_gr'];
                     
-                    $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
+                    $url = sprintf("/procure/po-row/gr-of?token=%s&entity_id=%s",$a->getToken(),$a->getId());
+                    $onclick1 = sprintf("showJqueryDialog('Goods Receipt ','1200',$(window).height()-100,'%s','j_loaded_data', true);", $url);
+                    $received_detail = sprintf('<a title="click for goods receipt!" style="color: #337ab7;" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>',$onclick1);
+                    $a_json_row["open_gr"] = $r['open_gr'] . $received_detail;
+                    
+                    
+                    $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->getItem()->getToken(), $a->getItem()->getChecksum(), $a->getItem()->getId());
+                    
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
                             ->getItemName()) . "','1200',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
@@ -702,9 +714,9 @@ class PoRowController extends AbstractActionController
                     }
                     
                     if (strlen($a->getItem()->getItemName()) < 35) {
-                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
+                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                     } else {
-                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:#337ab7"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                     }
                     
                     // $a_json_row["item_name"] = $a->getItem()->getItemName();
@@ -777,7 +789,7 @@ class PoRowController extends AbstractActionController
                 $header = 3;
                 $i = 0;
                 
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', "Contract/PO:". $target->getSysNumber());
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', "Contract/PO:" . $target->getSysNumber());
                 
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $header, "FA Remarks");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $header, "#");
@@ -799,8 +811,6 @@ class PoRowController extends AbstractActionController
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Ref.No.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "Item.No.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $header, "Po.Item Name");
-                
-                
                 
                 foreach ($rows as $r) {
                     
@@ -853,9 +863,9 @@ class PoRowController extends AbstractActionController
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRowIdentifer());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()->getSysNumber());                    
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()
+                        ->getSysNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $l, $a->getVendorItemCode());
-                    
                 }
                 
                 // Rename worksheet
@@ -940,7 +950,7 @@ class PoRowController extends AbstractActionController
         
         return $this->redirect()->toRoute('access_denied');
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -960,11 +970,35 @@ class PoRowController extends AbstractActionController
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         $rows = $res->getPoOfItem($item_id, $token);
-         return new ViewModel(array(
+        return new ViewModel(array(
             'rows' => $rows
         ));
     }
     
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function grOfAction()
+    {
+        $request = $this->getRequest();
+        // accepted only ajax request
+        /* if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        } */
+        $this->layout("layout/user/ajax");
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $rows = $res->getGrOfPoRow($id, $token);
+        
+         return new ViewModel(array(
+            'rows' => $rows
+        ));
+    }
 
     /**
      *

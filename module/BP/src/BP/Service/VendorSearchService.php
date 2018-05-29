@@ -172,11 +172,7 @@ class VendorSearchService
         }
     }
 
-    /**
-     *
-     * @param unknown $item
-     * @return string|unknown
-     */
+   
     public function addDocument($item, $optimized)
     {
         
@@ -219,10 +215,6 @@ class VendorSearchService
         }
     }
 
-    /**
-     *
-     * @return string|unknown
-     */
     public function optimizeIndex()
     {
         
@@ -237,11 +229,7 @@ class VendorSearchService
         }
     }
 
-    /**
-     *
-     * @param unknown $q
-     * @param unknown $department_id
-     */
+   
     public function search($q, $isActive = 1)
     {
         try {

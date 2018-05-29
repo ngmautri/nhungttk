@@ -294,11 +294,7 @@ class PrSearchService
         }
     }
 
-    /**
-     *
-     * @param unknown $item
-     * @return string|unknown
-     */
+   
     public function addDocument($item, $optimized)
     {
         
@@ -373,10 +369,7 @@ class PrSearchService
         }
     }
 
-    /**
-     *
-     * @return string|unknown
-     */
+  
     public function optimizeIndex()
     {
         
@@ -391,11 +384,7 @@ class PrSearchService
         }
     }
 
-    /**
-     *
-     * @param unknown $q
-     * @param unknown $department_id
-     */
+    
     public function search($q)
     {
         try {
@@ -472,11 +461,7 @@ class PrSearchService
         }
     }
 
-    /**
-     *
-     * @param unknown $q
-     * @param unknown $department_id
-     */
+   
     public function searchAssetItem($q)
     {
         try {
@@ -517,11 +502,7 @@ class PrSearchService
         }
     }
 
-    /**
-     *
-     * @param unknown $q
-     * @return string[]|array[]|\ZendSearch\Lucene\Search\QueryHit[]|string[]|NULL[]
-     */
+   
     public function searchSPItem($q)
     {
         try {

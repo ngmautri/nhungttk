@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtProcurePoRow
+ * NmtProcureGrRow
  *
- * @ORM\Table(name="nmt_procure_po_row", indexes={@ORM\Index(name="nmt_procure_po_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_po_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_po_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_po_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_po_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_po_row_FK7_idx", columns={"po_id"})})
+ * @ORM\Table(name="nmt_procure_gr_row", indexes={@ORM\Index(name="nmt_procure_gr_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_gr_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_gr_row_IDX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_gr_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_gr_row_FK9_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK10_idx", columns={"gr_id"}), @ORM\Index(name="nmt_procure_gr_row_IDX2", columns={"token"})})
  * @ORM\Entity
  */
-class NmtProcurePoRow
+class NmtProcureGrRow
 {
     /**
      * @var integer
@@ -22,6 +22,13 @@ class NmtProcurePoRow
     private $id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="row_number", type="integer", nullable=true)
@@ -31,9 +38,9 @@ class NmtProcurePoRow
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
      */
-    private $token;
+    private $rowIdentifer;
 
     /**
      * @var integer
@@ -94,7 +101,7 @@ class NmtProcurePoRow
     /**
      * @var string
      *
-     * @ORM\Column(name="remarks", type="string", length=100, nullable=true)
+     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
      */
     private $remarks;
 
@@ -162,13 +169,6 @@ class NmtProcurePoRow
     private $faRemarks;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
-     */
-    private $rowIdentifer;
-
-    /**
      * @var integer
      *
      * @ORM\Column(name="discount_rate", type="integer", nullable=true)
@@ -211,6 +211,20 @@ class NmtProcurePoRow
     private $sourceObjectId;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_status", type="string", nullable=true)
+     */
+    private $docStatus = 'O';
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_draft", type="boolean", nullable=true)
+     */
+    private $isDraft;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -219,6 +233,16 @@ class NmtProcurePoRow
      * })
      */
     private $invoice;
+
+    /**
+     * @var \Application\Entity\NmtProcureGr
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGr")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="gr_id", referencedColumnName="id")
+     * })
+     */
+    private $gr;
 
     /**
      * @var \Application\Entity\NmtProcurePrRow
@@ -261,16 +285,6 @@ class NmtProcurePoRow
     private $lastchangedBy;
 
     /**
-     * @var \Application\Entity\NmtProcurePo
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePo")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="po_id", referencedColumnName="id")
-     * })
-     */
-    private $po;
-
-    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -279,6 +293,16 @@ class NmtProcurePoRow
      * })
      */
     private $item;
+
+    /**
+     * @var \Application\Entity\NmtProcurePoRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePoRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="po_row_id", referencedColumnName="id")
+     * })
+     */
+    private $poRow;
 
 
 
@@ -293,35 +317,11 @@ class NmtProcurePoRow
     }
 
     /**
-     * Set rowNumber
-     *
-     * @param integer $rowNumber
-     *
-     * @return NmtProcurePoRow
-     */
-    public function setRowNumber($rowNumber)
-    {
-        $this->rowNumber = $rowNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get rowNumber
-     *
-     * @return integer
-     */
-    public function getRowNumber()
-    {
-        return $this->rowNumber;
-    }
-
-    /**
      * Set token
      *
      * @param string $token
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setToken($token)
     {
@@ -341,11 +341,59 @@ class NmtProcurePoRow
     }
 
     /**
+     * Set rowNumber
+     *
+     * @param integer $rowNumber
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setRowNumber($rowNumber)
+    {
+        $this->rowNumber = $rowNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get rowNumber
+     *
+     * @return integer
+     */
+    public function getRowNumber()
+    {
+        return $this->rowNumber;
+    }
+
+    /**
+     * Set rowIdentifer
+     *
+     * @param string $rowIdentifer
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setRowIdentifer($rowIdentifer)
+    {
+        $this->rowIdentifer = $rowIdentifer;
+
+        return $this;
+    }
+
+    /**
+     * Get rowIdentifer
+     *
+     * @return string
+     */
+    public function getRowIdentifer()
+    {
+        return $this->rowIdentifer;
+    }
+
+    /**
      * Set quantity
      *
      * @param integer $quantity
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setQuantity($quantity)
     {
@@ -369,7 +417,7 @@ class NmtProcurePoRow
      *
      * @param string $unitPrice
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setUnitPrice($unitPrice)
     {
@@ -393,7 +441,7 @@ class NmtProcurePoRow
      *
      * @param string $netAmount
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setNetAmount($netAmount)
     {
@@ -417,7 +465,7 @@ class NmtProcurePoRow
      *
      * @param string $unit
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setUnit($unit)
     {
@@ -441,7 +489,7 @@ class NmtProcurePoRow
      *
      * @param string $itemUnit
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setItemUnit($itemUnit)
     {
@@ -465,7 +513,7 @@ class NmtProcurePoRow
      *
      * @param string $conversionFactor
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setConversionFactor($conversionFactor)
     {
@@ -489,7 +537,7 @@ class NmtProcurePoRow
      *
      * @param string $converstionText
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setConverstionText($converstionText)
     {
@@ -513,7 +561,7 @@ class NmtProcurePoRow
      *
      * @param integer $taxRate
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setTaxRate($taxRate)
     {
@@ -537,7 +585,7 @@ class NmtProcurePoRow
      *
      * @param string $remarks
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setRemarks($remarks)
     {
@@ -561,7 +609,7 @@ class NmtProcurePoRow
      *
      * @param boolean $isActive
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setIsActive($isActive)
     {
@@ -585,7 +633,7 @@ class NmtProcurePoRow
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setCreatedOn($createdOn)
     {
@@ -609,7 +657,7 @@ class NmtProcurePoRow
      *
      * @param \DateTime $lastchangeOn
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setLastchangeOn($lastchangeOn)
     {
@@ -633,7 +681,7 @@ class NmtProcurePoRow
      *
      * @param string $currentState
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setCurrentState($currentState)
     {
@@ -657,7 +705,7 @@ class NmtProcurePoRow
      *
      * @param string $vendorItemCode
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setVendorItemCode($vendorItemCode)
     {
@@ -681,7 +729,7 @@ class NmtProcurePoRow
      *
      * @param boolean $traceStock
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setTraceStock($traceStock)
     {
@@ -705,7 +753,7 @@ class NmtProcurePoRow
      *
      * @param string $grossAmount
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setGrossAmount($grossAmount)
     {
@@ -729,7 +777,7 @@ class NmtProcurePoRow
      *
      * @param string $taxAmount
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setTaxAmount($taxAmount)
     {
@@ -753,7 +801,7 @@ class NmtProcurePoRow
      *
      * @param string $faRemarks
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setFaRemarks($faRemarks)
     {
@@ -773,35 +821,11 @@ class NmtProcurePoRow
     }
 
     /**
-     * Set rowIdentifer
-     *
-     * @param string $rowIdentifer
-     *
-     * @return NmtProcurePoRow
-     */
-    public function setRowIdentifer($rowIdentifer)
-    {
-        $this->rowIdentifer = $rowIdentifer;
-
-        return $this;
-    }
-
-    /**
-     * Get rowIdentifer
-     *
-     * @return string
-     */
-    public function getRowIdentifer()
-    {
-        return $this->rowIdentifer;
-    }
-
-    /**
      * Set discountRate
      *
      * @param integer $discountRate
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setDiscountRate($discountRate)
     {
@@ -825,7 +849,7 @@ class NmtProcurePoRow
      *
      * @param integer $revisionNo
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setRevisionNo($revisionNo)
     {
@@ -849,7 +873,7 @@ class NmtProcurePoRow
      *
      * @param string $targetObject
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setTargetObject($targetObject)
     {
@@ -873,7 +897,7 @@ class NmtProcurePoRow
      *
      * @param string $sourceObject
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setSourceObject($sourceObject)
     {
@@ -897,7 +921,7 @@ class NmtProcurePoRow
      *
      * @param integer $targetObjectId
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setTargetObjectId($targetObjectId)
     {
@@ -921,7 +945,7 @@ class NmtProcurePoRow
      *
      * @param integer $sourceObjectId
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setSourceObjectId($sourceObjectId)
     {
@@ -941,11 +965,59 @@ class NmtProcurePoRow
     }
 
     /**
+     * Set docStatus
+     *
+     * @param string $docStatus
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get docStatus
+     *
+     * @return string
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
+    }
+
+    /**
+     * Set isDraft
+     *
+     * @param boolean $isDraft
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setIsDraft($isDraft)
+    {
+        $this->isDraft = $isDraft;
+
+        return $this;
+    }
+
+    /**
+     * Get isDraft
+     *
+     * @return boolean
+     */
+    public function getIsDraft()
+    {
+        return $this->isDraft;
+    }
+
+    /**
      * Set invoice
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setInvoice(\Application\Entity\FinVendorInvoice $invoice = null)
     {
@@ -965,11 +1037,35 @@ class NmtProcurePoRow
     }
 
     /**
+     * Set gr
+     *
+     * @param \Application\Entity\NmtProcureGr $gr
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setGr(\Application\Entity\NmtProcureGr $gr = null)
+    {
+        $this->gr = $gr;
+
+        return $this;
+    }
+
+    /**
+     * Get gr
+     *
+     * @return \Application\Entity\NmtProcureGr
+     */
+    public function getGr()
+    {
+        return $this->gr;
+    }
+
+    /**
      * Set prRow
      *
      * @param \Application\Entity\NmtProcurePrRow $prRow
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setPrRow(\Application\Entity\NmtProcurePrRow $prRow = null)
     {
@@ -993,7 +1089,7 @@ class NmtProcurePoRow
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
@@ -1017,7 +1113,7 @@ class NmtProcurePoRow
      *
      * @param \Application\Entity\NmtInventoryWarehouse $warehouse
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
     {
@@ -1041,7 +1137,7 @@ class NmtProcurePoRow
      *
      * @param \Application\Entity\MlaUsers $lastchangedBy
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setLastchangedBy(\Application\Entity\MlaUsers $lastchangedBy = null)
     {
@@ -1061,35 +1157,11 @@ class NmtProcurePoRow
     }
 
     /**
-     * Set po
-     *
-     * @param \Application\Entity\NmtProcurePo $po
-     *
-     * @return NmtProcurePoRow
-     */
-    public function setPo(\Application\Entity\NmtProcurePo $po = null)
-    {
-        $this->po = $po;
-
-        return $this;
-    }
-
-    /**
-     * Get po
-     *
-     * @return \Application\Entity\NmtProcurePo
-     */
-    public function getPo()
-    {
-        return $this->po;
-    }
-
-    /**
      * Set item
      *
      * @param \Application\Entity\NmtInventoryItem $item
      *
-     * @return NmtProcurePoRow
+     * @return NmtProcureGrRow
      */
     public function setItem(\Application\Entity\NmtInventoryItem $item = null)
     {
@@ -1106,5 +1178,29 @@ class NmtProcurePoRow
     public function getItem()
     {
         return $this->item;
+    }
+
+    /**
+     * Set poRow
+     *
+     * @param \Application\Entity\NmtProcurePoRow $poRow
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setPoRow(\Application\Entity\NmtProcurePoRow $poRow = null)
+    {
+        $this->poRow = $poRow;
+
+        return $this;
+    }
+
+    /**
+     * Get poRow
+     *
+     * @return \Application\Entity\NmtProcurePoRow
+     */
+    public function getPoRow()
+    {
+        return $this->poRow;
     }
 }

@@ -170,6 +170,41 @@ class NmtProcurePo
     private $revisionNo;
     
     /**
+     * @var string
+     *
+     * @ORM\Column(name="delivery_mode", type="string", length=45, nullable=true)
+     */
+    private $deliveryMode;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="incoterm", type="string", length=45, nullable=true)
+     */
+    private $incoterm;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="incoterm_place", type="string", length=100, nullable=true)
+     */
+    private $incotermPlace;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="payment_term", type="string", length=45, nullable=true)
+     */
+    private $paymentTerm;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="payment_method", type="string", length=45, nullable=true)
+     */
+    private $paymentMethod;
+    
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -733,6 +768,126 @@ class NmtProcurePo
     public function getRevisionNo()
     {
         return $this->revisionNo;
+    }
+    
+    /**
+     * Set deliveryMode
+     *
+     * @param string $deliveryMode
+     *
+     * @return NmtProcurePo
+     */
+    public function setDeliveryMode($deliveryMode)
+    {
+        $this->deliveryMode = $deliveryMode;
+        
+        return $this;
+    }
+    
+    /**
+     * Get deliveryMode
+     *
+     * @return string
+     */
+    public function getDeliveryMode()
+    {
+        return $this->deliveryMode;
+    }
+    
+    /**
+     * Set incoterm
+     *
+     * @param string $incoterm
+     *
+     * @return NmtProcurePo
+     */
+    public function setIncoterm($incoterm)
+    {
+        $this->incoterm = $incoterm;
+        
+        return $this;
+    }
+    
+    /**
+     * Get incoterm
+     *
+     * @return string
+     */
+    public function getIncoterm()
+    {
+        return $this->incoterm;
+    }
+    
+    /**
+     * Set incotermPlace
+     *
+     * @param string $incotermPlace
+     *
+     * @return NmtProcurePo
+     */
+    public function setIncotermPlace($incotermPlace)
+    {
+        $this->incotermPlace = $incotermPlace;
+        
+        return $this;
+    }
+    
+    /**
+     * Get incotermPlace
+     *
+     * @return string
+     */
+    public function getIncotermPlace()
+    {
+        return $this->incotermPlace;
+    }
+    
+    /**
+     * Set paymentTerm
+     *
+     * @param string $paymentTerm
+     *
+     * @return NmtProcurePo
+     */
+    public function setPaymentTerm($paymentTerm)
+    {
+        $this->paymentTerm = $paymentTerm;
+        
+        return $this;
+    }
+    
+    /**
+     * Get paymentTerm
+     *
+     * @return string
+     */
+    public function getPaymentTerm()
+    {
+        return $this->paymentTerm;
+    }
+    
+    /**
+     * Set paymentMethod
+     *
+     * @param string $paymentMethod
+     *
+     * @return NmtProcurePo
+     */
+    public function setPaymentMethod($paymentMethod)
+    {
+        $this->paymentMethod = $paymentMethod;
+        
+        return $this;
+    }
+    
+    /**
+     * Get paymentMethod
+     *
+     * @return string
+     */
+    public function getPaymentMethod()
+    {
+        return $this->paymentMethod;
     }
     
     /**

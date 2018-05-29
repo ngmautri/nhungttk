@@ -1,69 +1,43 @@
-<?php /**@var \Application\Entity\NmtProcurePo $entity ;*/?>
+<?php /**@var \Application\Entity\NmtProcureGr $entity ;*/?>
 
-<?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
-}
-?>
-
-<h4><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
+<h4><strong>Goods Receipt:<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Contract /PO</a></li>
+		<li><a href="#general">&nbsp;Goods Receipt</a></li>
 		<li><a
-			href="/procure/po-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
-			<li><a href="#logistic"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Logistic</a></li>
-			<li><a href="#accounting"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Accounting</a></li>
-	
-	
+			href="/finance/v-invoice-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
 		
-				<li><a			href="/procure/po-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+		
+				<li><a			href="/finance/v-invoice-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
 <small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
 		
 	</ul>
 	
 
 	<div id="general" style="font-size: 9pt">
+	
+					<div style="position:relative; float:right;">
+<a class="btn btn-default btn-sm" href="javascript:;" onclick="refreshGird();"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>       		
+					
+<a class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/accept-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Accept</a>       		
+   <a class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>       		
+				
+				</div>
 
 		<form id="Create_Inv_Form" class="form-horizontal"
-			action="" method="post" enctype="multipart/form-data">
+			action="/finance/v-invoice/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
-				
-				<div style="position:relative; float:right;">
-				<a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Edit</a>       		
-   <a title="<?php echo $this->translate("Download Excel File");?>" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
-
-	<a title="<?php echo $this->translate("Create Good Receipt from this P/O");?>"class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/gr/copy-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&source_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Good Receipt</a>      	
-
-
-	<a title="<?php echo $this->translate("Create A/P Invoice from this P/O");?>"class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/copy-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;A/P Invoice</a>      	
-
-
-<a class="btn btn-default btn-sm" href="javascript:;" onclick = "showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i class="fa fa-window-maximize" aria-hidden="true"></i>
-Full Screen</a>	
-								      	
-</div>
+			
+					
 				
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getSysNumber():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
+					<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
 				</legend>
 				<div id="invoice_header" class="collapse">
 					
@@ -72,9 +46,10 @@ Full Screen</a>
 					<div class="col-sm-3">
 					<select name="currentState" class="form-control input-sm">
 							<option value="">Please Select</option>
-							<option <?php if($entity->getCurrentState()=="draftPo"): echo "selected"; endif ?> value="draftPo">Draft</option>
-							<option <?php if($entity->getCurrentState()=="finalPo"): echo "selected"; endif ?> value="finalPo">Final</option>
-    	   				</select>
+							<option <?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?> value="contract">Contract /PO</option>
+							<option <?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?> value="draftInvoice">Draft Invoice</option>
+							<option <?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?> value="finalInvoice">Final Invoice</option>
+    				</select>
    					</div>
    					
    					<div class="col-sm-3">
@@ -106,7 +81,7 @@ Full Screen</a>
 						</div>
 					</div>
 					
-					<div class="form-group margin-bottom required">
+					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">Contract /PO:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
@@ -151,6 +126,61 @@ Full Screen</a>
    					</div>
 					
 					
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Invoice number:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="invoiceNo" name="invoiceNo" 
+								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
+						</div>
+						<label class="control-label col-sm-2">SAP Document No.:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="sapDoc" name="sapDoc" 
+								value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
+						</div>
+						
+						
+					</div>
+					
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2 required">Invoice Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm input-sm" type="text"
+								id="invoiceDate" name="invoiceDate"
+								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+							</div>
+					</div>
+					
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Posting Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm input-sm" type="text"
+								id="postingDate" name="postingDate"
+								value="<?php if(!$entity == null): if ($entity->getPostingDate() !== null): echo date_format($entity->getPostingDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+							</div>
+					</div>
+					
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Goods Receipt Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm input-sm" type="text"
+								id="grDate" name="grDate"
+								value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+							</div>
+						<label class="control-label col-sm-2" for="inputTag">Target Warehouse:</label>
+					<div class="col-sm-3">
+<input class="form-control input-sm" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+<input type="hidden" id="target_wh_id" name="target_wh_id" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+					</div>
+				</div>
+		
 				<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2" >Description</label>
             		<div class="col-sm-8">
@@ -158,6 +188,7 @@ Full Screen</a>
             				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
             		</div>
 				</div>
+					
 			</div>
 			</fieldset>
 		</form>
@@ -169,20 +200,11 @@ Full Screen</a>
 				<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
 			</legend>
 			<div id="rows" class="collapse in">
-					<span class="" style="padding:3px;margin-bottom:2px; font-size: 10pt; color: gray">
-						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
-                        &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>
-                        &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
-                        &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
-					</span>
-					<div id="pr_row_gird" style="font-size: 8pt;"></div>
+				<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
+			</div>
 			</fieldset>
 			</form>
 	</div>
-	
-	<div id="logistic" style="font-size: 9pt">SHIP-TO, PAY-TO etc.</div>
-	<div id="accounting" style="font-size: 9pt">Payment Term, Payment method etc.</div>
-	
 </div>
 
 <hr>
@@ -241,7 +263,7 @@ $( "#pr_item_name" ).autocomplete({
 
 
 
-//$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 $( "#vendor_name_1" ).autocomplete({
     source: "/bp/vendor-search/auto-complete",
@@ -398,7 +420,7 @@ $( "#vendor_name_1" ).autocomplete({
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "100%", height: $(window).height()-280, showTitle : false,
+	var obj = { width: "100%", height: $(window).height()-230, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
@@ -419,7 +441,7 @@ $( "#vendor_name_1" ).autocomplete({
                                 var $grid = $(this).closest('.pq-grid');
                                 //addRow($grid);
                                 
-   		     redirectUrl="/procure/po-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
+   		     redirectUrl="/procure/gr-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
               window.location.href= redirectUrl;
                                  
                                 //debugger;
@@ -482,7 +504,7 @@ $( "#vendor_name_1" ).autocomplete({
                 //alert(sent_list);
                   
                   $.ajax({
-                      url: '/procure/po-row/update-row',
+                      url: '/procure/gr-row/update-row',
                       data: {
                           sent_list: sent_list
                       },
@@ -528,24 +550,20 @@ $( "#vendor_name_1" ).autocomplete({
          
        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-        { title: "Ref", dataType: "integer", dataIndx: "row_identifer", width:80,editable: false},
-        
+
         { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
         { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
         { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},
         
-        { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: false},
-        { title: "Unit Price", dataType: "integer", dataIndx: "row_unit_price", width:90, align: 'right',editable: false},
+        { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: true},
+        { title: "Unit Price", dataType: "decimal", dataIndx: "row_unit_price", width:90, align: 'right',editable: true},
         { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},
-        { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
+        { title: "Tax %", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: true},
         { title: "Gross", dataType: "decimal", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
-
-        { title: "Receiving", dataType: "string", dataIndx: "draft_gr", width:80,editable: false },
-        { title: "Received", dataType: "string", dataIndx: "confirmed_gr", width:70,editable: false },
-        { title: "Balance", dataType: "string", dataIndx: "open_gr", width:70,editable: false },
  		{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
- 	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
+ 		      
+        { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         
         { title: "", editable: false, minWidth: 100, sortable: false,
             render: function (ui) {
@@ -560,7 +578,7 @@ $( "#vendor_name_1" ).autocomplete({
               location: "remote",
               method: "GET",
               recIndx: "row_id",
-              url: "/procure/po-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+              url: "/procure/gr-row/gird-tmp?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }
@@ -601,7 +619,7 @@ $( "#vendor_name_1" ).autocomplete({
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/procure/po-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+            redirectUrl="/finance/v-invoice-row/edit-tmp?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');
@@ -648,5 +666,8 @@ $( "#vendor_name_1" ).autocomplete({
         }
     });        
 
+    function refreshGird(){
+    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+	}
 </script>
 

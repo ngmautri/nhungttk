@@ -1,0 +1,53 @@
+<?php if (count($rows)==0): ?>
+
+<h5>no thing found!</h5>
+
+<?php else: ?>
+
+<table style="font-size: 9pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Doc#</b></td>
+		
+			<td><b>Receipt Date</b></td>
+			<td><b>Item</b></td>
+		
+			<td><b>Quantity</b></td>
+			<td><b>Draft</b></td>
+			<td><b>WH</b></td>
+			<td><b>Created By</b></td>
+
+		</tr>
+	</thead>
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $rows as $r ) :
+		$count ++;
+		/**@var \Application\Entity\NmtProcureGrRow $a ;*/		
+		$a = $r;
+		?>
+		 <tr>
+	 		<td><?php echo $count;?></td>
+	 		<td><?php if(!$a->getGr()->getSysNumber()==null): echo $a->getGr()->getSysNumber();endif;?> </td>
+	 		<td><?php if(!$a->getGr()->getGrDate()==null): echo date_format ( $a->getGr()->getGrDate(), "d/m/Y");endif;?> </td>
+	 		<td><?php echo $a->getItem()->getItemName(); ?> </td>
+	 		<td><?php echo $a->getQuantity(); ?> </td>
+			<td><?php echo $a->getIsDraft(); ?> </td>
+			<td><?php if(!$a->getGr()->getWarehouse()==null): echo $a->getGr()->getWarehouse()->getWhName();endif;?> </td>
+	 		<td><?php if(!$a->getGr()->getCreatedBy()==null): echo $a->getGr()->getCreatedBy()->getEmail();endif;?> </td>
+	 
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<script type="text/javascript">
+</script>
+
+<?php endif; ?>
+	

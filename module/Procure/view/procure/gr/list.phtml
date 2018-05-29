@@ -132,6 +132,8 @@ else:
 		<tr>
 			<td><b>#</b></td>
 			<td><b><?php echo $this->translate("Ref.No.");?></b></td>
+				<td><b><?php echo $this->translate("Doc Status");?></b></td>
+		
 			<td><b><?php echo $this->translate("Receipt Date");?></b></td>
 			<td><b><?php echo $this->translate("Draft");?></b></td>
 			<td><b><?php echo $this->translate("Vendor");?></b></b></td>
@@ -162,6 +164,8 @@ else:
 			<td>
 <a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/gr/copy-from-po1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
 			</td>
+						<td><?php echo $a->getDocStatus();?></td>
+	
 <td><span style="color: gray;"><?php if($a->getGrDate()!==null):echo date_format($a->getGrDate(),"d-m-Y");   endif;?></span></td>
 				<td><?php echo $a->getIsDraft();?></td>
 		

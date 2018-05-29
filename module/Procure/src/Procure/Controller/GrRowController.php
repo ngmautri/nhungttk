@@ -135,13 +135,6 @@ class GrRowController extends AbstractActionController
                         }
                     }
                     
-                    // $a_json_row ["item_name"]="";
-                    /*
-                     * if( $a_json_row ["item_name"]!==null){
-                     * $a_json_row ["item_name"] = $escaper->escapeJs($a->getItem()->getItemName());
-                     * }
-                     */
-                    
                     $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
@@ -1178,10 +1171,11 @@ class GrRowController extends AbstractActionController
                 'token' => $a['row_token']
             );
             
-            /** @var \Application\Entity\NmtProcurePoRow $entity */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findOneBy($criteria);
+            /** @var \Application\Entity\NmtProcureGrRow $entity */
+            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
             
             if ($entity != null) {
+                $entity->setQuantity($a['row_quantity']);                
                 $entity->setFaRemarks($a['fa_remarks']);
                 $entity->setRowNumber($a['row_number']);
                 // $a_json_final['updateList']=$a['row_id'] . 'has been updated';

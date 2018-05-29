@@ -124,11 +124,16 @@ class GrController extends AbstractActionController
                 /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                 $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
                 
-                if ($postingPeriod->getPeriodStatus() == "C") {
-                    $errors[] = sprintf('Period "%s" is closed or not created yet', $postingPeriod->getPeriodName());
-                } else {
-                    $entity->setGrDate(new \DateTime($grDate));
+                if ($postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                    if ($postingPeriod->getPeriodStatus() == "C") {
+                        $errors[] = sprintf('Period "%s" is closed', $postingPeriod->getPeriodName());
+                    } else {
+                        $entity->setGrDate(new \DateTime($grDate));
+                    }
+                }else{   
+                    $errors[] = sprintf('Period for GR Date "%s" is not created yet',$grDate);
                 }
+                
             }
             
             $warehouse = null;
@@ -149,7 +154,7 @@ class GrController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'target' => $source,
+                    'source' => $source,
                     'currency_list' => $currency_list
                 ));
             }
@@ -213,20 +218,17 @@ class GrController extends AbstractActionController
                 'rowNumber' => 'ASC'
             );
             
-            //$po_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findBy($criteria, $sort_criteria);
+            // $po_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findBy($criteria, $sort_criteria);
             
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
             $po_rows = $res->getOpenPoGr($id, $token);
-            
-            
             
             if (count($po_rows > 0)) {
                 $n = 0;
                 foreach ($po_rows as $l) {
                     /** @var \Application\Entity\NmtProcurePoRow $l ; */
                     $r = $l[0];
-                    
                     
                     $n ++;
                     $row_tmp = new NmtProcureGrRow();
@@ -238,7 +240,7 @@ class GrController extends AbstractActionController
                     // $row_tmp->setRowIndentifer($entity->getSysNumber() . "-$n");
                     $row_tmp->setCurrentState("DRAFT");
                     $row_tmp->setPoRow($r);
-                    $row_tmp->setPrRow($r->getPrRow());                    
+                    $row_tmp->setPrRow($r->getPrRow());
                     $row_tmp->setItem($r->getItem());
                     $row_tmp->setQuantity($l['open_gr']);
                     $row_tmp->setUnit($r->getUnit());
@@ -277,7 +279,6 @@ class GrController extends AbstractActionController
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         
-        
         /**@var \Application\Entity\NmtProcurePo $source ;*/
         $po = $res->getPo($id, $token);
         
@@ -291,7 +292,6 @@ class GrController extends AbstractActionController
         }
         
         $po_rows = $res->getOpenPoGr($id, $token);
-              
         
         if ($po_rows == null) {
             return $this->redirect()->toRoute('access_denied');
@@ -303,8 +303,7 @@ class GrController extends AbstractActionController
             
             $total_open_gr = 0;
             foreach ($po_rows as $r) {
-                 $total_open_gr = $total_open_gr + $r['open_gr'];
-               
+                $total_open_gr = $total_open_gr + $r['open_gr'];
             }
             
             if ($total_open_gr == 0) {
@@ -320,8 +319,6 @@ class GrController extends AbstractActionController
                 ));
             }
         }
-        
-       
         
         $entity = new NmtProcureGr();
         $entity->setContractNo($source->getContractNo());
@@ -352,6 +349,8 @@ class GrController extends AbstractActionController
      */
     public function copyFromPo1Action()
     {
+        $this->layout("Procure/layout-fullscreen");
+        
         $criteria = array(
             'isActive' => 1
         );
@@ -396,6 +395,88 @@ class GrController extends AbstractActionController
             ));
         }
         // return $this->redirect()->toRoute('access_denied');
+    }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function postGrAction()
+    {
+        $request = $this->getRequest();
+        
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $gr = $res->getGr($id, $token);
+        
+        if ($gr == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        if ($gr[0] instanceof \Application\Entity\NmtProcureGr) {
+            
+            /**@var \Application\Entity\NmtProcureGr $entity ;*/
+            $entity = $gr[0];
+            
+            // Set Header:
+            $entity->setDocStatus("C");
+            $entity->setIsDraft(0);
+            
+            /**@var \Application\Entity\MlaUsers $u ;*/
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+            
+            $createdOn = new \Datetime();
+            
+            // $entity->setCreatedBy($u);
+            // $entity->setCreatedOn($changeOn);
+            
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+            
+            $m = sprintf('[OK] GR #%s - %s posted', $entity->getId(), $entity->getSysNumber());
+            $this->flashMessenger()->addMessage($m);
+            
+            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $createdOn,
+                'entity_id' => $entity->getId(),
+                'entity_class' => get_class($entity),
+                'entity_token' => $entity->getToken()
+            ));
+            
+            // update current state of gr row
+            $query = $this->doctrineEM->createQuery('
+UPDATE Application\Entity\NmtProcureGrRow r SET r.isDraft=0, r.docStatus = :new_state WHERE r.gr =:po_id
+                    ')->setParameters(array(
+                'new_state' => $entity->getDocStatus(),
+                'po_id' => $entity->getId()
+            ));
+            $query->getResult();
+            
+            // update P/O
+            $message = $res->updatePOofGR($entity->getId());
+            
+            echo count($message);
+            
+            $redirectUrl = "/procure/gr/list";
+            // return $this->redirect()->toUrl($redirectUrl);
+        }
+        return $this->redirect()->toRoute('access_denied');
     }
 
     /**

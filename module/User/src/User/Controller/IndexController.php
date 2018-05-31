@@ -157,8 +157,10 @@ class IndexController extends AbstractActionController {
 	public function denyAction() {
 		
 		$request = $this->getRequest();
-		if(!$request->isXmlHttpRequest()){
-				$this->layout("layout/layout");
+		if($request->isXmlHttpRequest()){
+				$this->layout("layout/user/ajax");
+		}else{
+		    $this->layout("layout/layout");
 		}
 		
 		return new ViewModel ( array (

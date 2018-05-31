@@ -13,6 +13,7 @@ use Application\Entity\FinVendorInvoiceRow;
 use Application\Entity\NmtInventoryTrx;
 use PHPExcel;
 use PHPExcel_IOFactory;
+use Application\Entity\NmtProcureGrRow;
 
 /**
  *
@@ -243,47 +244,102 @@ class VInvoiceRowController extends AbstractActionController
                     'entity_token' => $entity->getToken()
                 ));
                 
-                //update good receipt
+                /** create procure good receipt
+                  * ===================*/
                 
-                // update pr status
+                $procure_gr_entity = new NmtProcureGrRow();
                 
-                // update po status
+                $procure_gr_entity->setIsDraft(1);
+                $procure_gr_entity->setDocStatus("Open");
+                $procure_gr_entity->setIsPosted(0);
                 
+                $procure_gr_entity->setInvoice($entity->getInvoice());
+                $procure_gr_entity->getItem($entity->getItem());
+                $procure_gr_entity->setApInvoiceRow($entity);
+                $procure_gr_entity->setPrRow($entity->getPrRow());
+                $procure_gr_entity->setPoRow($entity->getPoRow());
                 
+                $procure_gr_entity->setQuantity($entity->getQuantity());
+                $procure_gr_entity->setVendorItemCode($entity->getVendorItemCode());
+                $procure_gr_entity->setUnit($entity->getUnit());
+                $procure_gr_entity->setUnitPrice($entity->getUnitPrice());
+                $procure_gr_entity->setGrDate($target->getGrDate()  );                
+                $procure_gr_entity->setRemarks($entity->getRowIndentifer());
+                $procure_gr_entity->setWarehouse($target->getWarehouse());
                 
+                $procure_gr_entity->setCreatedBy($u);
+                $procure_gr_entity->setCreatedOn(new \DateTime());
+                $procure_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $this->doctrineEM->persist($procure_gr_entity);
                 
-                $gr_entity = new NmtInventoryTrx();
-                $gr_entity->setVendor($target->getVendor());
-                $gr_entity->setFlow('IN');
-                $gr_entity->setInvoiceRow($entity);
-                $gr_entity->setItem($entity->getItem());
-                $gr_entity->setPrRow($entity->getPrRow());
-                $gr_entity->setQuantity($quantity);
-                $gr_entity->setVendorItemCode($entity->getVendorItemCode());
-                $gr_entity->setVendorItemUnit($entity->getUnit());
-                $gr_entity->setVendorUnitPrice($entity->getUnitPrice());
-                $gr_entity->setTrxDate($target->getGrDate());
-                $gr_entity->setCurrency($target->getCurrency());
-                $gr_entity->setRemarks("Auto created");
-                $gr_entity->setWh($target->getWarehouse());
-                $gr_entity->setCreatedBy($u);
-                $gr_entity->setCreatedOn(new \DateTime());
-                $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                $gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
+                 
+                /** create procure good receipt. only for item controlled inventory 
+                 *===================
+                 */
+                $stock_gr_entity = new NmtInventoryTrx();
+                $stock_gr_entity->setVendor($target->getVendor());
+                $stock_gr_entity->setFlow('IN');
+                $stock_gr_entity->setInvoiceRow($entity);
+                $stock_gr_entity->setItem($entity->getItem());
+                $stock_gr_entity->setPrRow($entity->getPrRow());
+                $stock_gr_entity->setQuantity($quantity);
+                $stock_gr_entity->setVendorItemCode($entity->getVendorItemCode());
+                $stock_gr_entity->setVendorItemUnit($entity->getUnit());
+                $stock_gr_entity->setVendorUnitPrice($entity->getUnitPrice());
+                $stock_gr_entity->setTrxDate($target->getGrDate());
+                $stock_gr_entity->setCurrency($target->getCurrency());
+                $stock_gr_entity->setRemarks($entity->getRowIndentifer());
+                $stock_gr_entity->setWh($target->getWarehouse());
+                $stock_gr_entity->setCreatedBy($u);
+                $stock_gr_entity->setCreatedOn(new \DateTime());
+                $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $stock_gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
                 
-                $gr_entity->setTaxRate($entity->getTaxRate());
+                $stock_gr_entity->setTaxRate($entity->getTaxRate());
                 
-                $gr_entity->setCurrentState($target->getCurrentState());
+                $stock_gr_entity->setCurrentState($target->getCurrentState());
                 
                 if ($target->getCurrentState() == "finalInvoice") {
-                    $gr_entity->setIsActive(1);
+                    $stock_gr_entity->setIsActive(1);
                 } else {
-                    $gr_entity->setIsActive(0);
+                    $stock_gr_entity->setIsActive(0);
                 }
                 
-                $this->doctrineEM->persist($gr_entity);
+                
+                $this->doctrineEM->persist($stock_gr_entity);
                 $this->doctrineEM->flush();
                 
+                //LOG
+                
+                $m = sprintf('[OK] GR #%s - %s created, based on AP Row %s', $procure_gr_entity->getId(), 
+                    $procure_gr_entity->getRowIdentifer(), $entity->getRowIndentifer() );
+                 
+                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $createdOn,
+                    'entity_id' => $procure_gr_entity->getId(),
+                    'entity_class' => get_class($procure_gr_entity),
+                    'entity_token' => $procure_gr_entity->getToken()
+                ));
+                
+                $m = sprintf('[OK] Stock GR #%s - %s created, based on AP Row %s', $stock_gr_entity->getId(),
+                    $stock_gr_entity->getSysNumber(), $entity->getId() );
+                
+                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $createdOn,
+                    'entity_id' => $stock_gr_entity->getId(),
+                    'entity_class' => get_class($stock_gr_entity),
+                    'entity_token' => $stock_gr_entity->getToken()
+                ));
+                
+                 
                 $redirectUrl = "/finance/v-invoice-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
                 return $this->redirect()->toUrl($redirectUrl);
             }
@@ -610,13 +666,13 @@ class VInvoiceRowController extends AbstractActionController
                         'invoiceRow' => $entity->getId()
                     );
                     
-                    /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/
-                    $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-                    if ($gr_entity instanceof \Application\Entity\NmtInventoryTrx) {
-                        $gr_entity->setIsActive($isActive);
-                        $gr_entity->setLastChangeBy($u);
-                        $gr_entity->setLastChangeOn($changeOn);
-                        $this->doctrineEM->persist($gr_entity);
+                    /**@var \Application\Entity\NmtInventoryTrx $stock_gr_entity*/
+                    $stock_gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+                    if ($stock_gr_entity instanceof \Application\Entity\NmtInventoryTrx) {
+                        $stock_gr_entity->setIsActive($isActive);
+                        $stock_gr_entity->setLastChangeBy($u);
+                        $stock_gr_entity->setLastChangeOn($changeOn);
+                        $this->doctrineEM->persist($stock_gr_entity);
                     }
                     
                     $this->doctrineEM->flush();

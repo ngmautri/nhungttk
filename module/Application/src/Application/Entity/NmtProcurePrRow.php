@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"}), @ORM\Index(name="nmt_procure_pr_row_FK5_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_procure_pr_row_IDX2", columns={"current_state"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
+ 
  */
 class NmtProcurePrRow
 {
@@ -168,6 +169,20 @@ class NmtProcurePrRow
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
      */
     private $revisionNo;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
+     */
+    private $docStatus;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
+     */
+    private $workflowStatus;
     
     /**
      * @var \Application\Entity\MlaUsers
@@ -733,6 +748,54 @@ class NmtProcurePrRow
     public function getRevisionNo()
     {
         return $this->revisionNo;
+    }
+    
+    /**
+     * Set docStatus
+     *
+     * @param string $docStatus
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+        
+        return $this;
+    }
+    
+    /**
+     * Get docStatus
+     *
+     * @return string
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
+    }
+    
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+        
+        return $this;
+    }
+    
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
     }
     
     /**

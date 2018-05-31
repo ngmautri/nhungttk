@@ -213,9 +213,9 @@ class NmtProcureGrRow
     /**
      * @var string
      *
-     * @ORM\Column(name="doc_status", type="string", nullable=true)
+     * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
      */
-    private $docStatus = 'Open';
+    private $docStatus;
 
     /**
      * @var boolean
@@ -237,6 +237,13 @@ class NmtProcureGrRow
      * @ORM\Column(name="gr_date", type="datetime", nullable=true)
      */
     private $grDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
+     */
+    private $workflowStatus;
 
     /**
      * @var \Application\Entity\FinVendorInvoice
@@ -1082,6 +1089,30 @@ class NmtProcureGrRow
     public function getGrDate()
     {
         return $this->grDate;
+    }
+
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
     }
 
     /**

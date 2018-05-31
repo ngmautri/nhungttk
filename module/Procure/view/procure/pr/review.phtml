@@ -209,6 +209,8 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body" id="b_modal_sm_body">
+					<h5>PR #<?php echo (!$entity == null)? $entity->getPrAutoNumber() . ' will be submitted.':"";?></h5>
+			
 				<div class="alert alert-warning">
 					<strong>Info!</strong> Document can't be changed after submitted. Are
 					you ok?

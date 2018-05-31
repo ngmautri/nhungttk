@@ -211,6 +211,20 @@ class NmtProcurePoRow
     private $sourceObjectId;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
+     */
+    private $docStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
+     */
+    private $workflowStatus;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -938,6 +952,54 @@ class NmtProcurePoRow
     public function getSourceObjectId()
     {
         return $this->sourceObjectId;
+    }
+
+    /**
+     * Set docStatus
+     *
+     * @param string $docStatus
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get docStatus
+     *
+     * @return string
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
+    }
+
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
     }
 
     /**

@@ -206,9 +206,9 @@ class NmtProcureGr
     /**
      * @var string
      *
-     * @ORM\Column(name="doc_status", type="string", nullable=true)
+     * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
      */
-    private $docStatus = 'O';
+    private $docStatus;
 
     /**
      * @var boolean
@@ -216,6 +216,13 @@ class NmtProcureGr
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
      */
     private $isDraft;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
+     */
+    private $workflowStatus;
 
     /**
      * @var \Application\Entity\NmtBpVendor
@@ -949,6 +956,30 @@ class NmtProcureGr
     public function getIsDraft()
     {
         return $this->isDraft;
+    }
+
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return NmtProcureGr
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
     }
 
     /**

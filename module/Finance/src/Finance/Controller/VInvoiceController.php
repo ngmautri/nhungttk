@@ -21,7 +21,7 @@ use Application\Entity\FinVendorInvoiceRowTmp;
 class VInvoiceController extends AbstractActionController
 {
 
-    const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
+    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
 
     protected $doctrineEM;
 
@@ -423,6 +423,65 @@ class VInvoiceController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
+    
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function reviewAction()
+    {
+        
+        $this->layout("Procure/layout-fullscreen");
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        
+        $request = $this->getRequest();
+        
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $redirectUrl = $this->getRequest()
+        ->getHeader('Referer')
+        ->getUri();
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $invoice = $res->getVendorInvoice($id, $token);
+        
+        if ($invoice == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($invoice[0] instanceof FinVendorInvoice) {
+            $entity = $invoice[0];
+        }
+        
+        if ($entity instanceof FinVendorInvoice) {
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'entity' => $entity,
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'total_row' => $invoice['total_row'],
+                'active_row' => $invoice['active_row'],
+                'max_row_number' => $invoice['total_row'],
+                'total_picture' => $invoice['total_picture'],
+                'total_attachment' => $invoice['total_attachment'],
+                'net_amount' => $invoice['net_amount'],
+                'tax_amount' => $invoice['tax_amount'],
+                'gross_amount' => $invoice['gross_amount']
+            ));
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+    }
+    
 
     /**
      * Make A/P Invoice from PO

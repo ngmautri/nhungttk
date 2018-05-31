@@ -75,7 +75,7 @@ if (count($errors) > 0) {
 
 				<h4>
 <?php //if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
-<strong>A/P Invoice</strong>
+<strong>A/P #<?php echo (!$target == null)? $target->getSysNumber():"";?></strong>
 				</h4>
 
 
@@ -363,7 +363,7 @@ if (count($errors) > 0) {
 								</div>
 
 							</div>
-							<hr>
+					
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
 								<div class="col-sm-3">
@@ -437,18 +437,17 @@ if (count($errors) > 0) {
 							<hr>
 							<div class="form-group margin-bottom">
 								<label class="control-label col-sm-2" for="inputTag"></label>
-								<div class="col-sm-3">
+								<div class="col-sm-10">
 									<a tabindex="10" class="btn btn-default btn-sm"
 										onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i
 											class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
 									<a tabindex="11" class="btn btn-default btn-sm"
 										href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
 											class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
-									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a tabindex="12"
-										class="btn btn-default btn-sm"
-										href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
-											class="glyphicon glyphicon-ok"></i></small>&nbsp;Finish</a>
-								</div>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					<a tabindex="8" class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>">A/P Review&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+										</div>
 							</div>
 
 						</div>

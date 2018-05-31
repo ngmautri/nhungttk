@@ -105,10 +105,10 @@ class PostingPeriodController extends AbstractActionController
             } else {
                 
                 if (! is_numeric($nationalHolidays)) {
-                    $errors[] = '$nationalHolidays be a number.';
+                    $errors[] = 'nationalHolidays be a number.';
                 } else {
                     if ($nationalHolidays <= 0) {
-                        $errors[] = '$$nationalHolidays must be greater than 0!';
+                        $errors[] = 'nationalHolidays must be greater than 0!';
                     }
                     $entity->setNationalHolidays($nationalHolidays);
                 }
@@ -119,10 +119,10 @@ class PostingPeriodController extends AbstractActionController
             } else {
                 
                 if (! is_numeric($cooperateLeave)) {
-                    $errors[] = '$cooperateLeave be a number.';
+                    $errors[] = 'CooperateLeave be a number.';
                 } else {
                     if ($cooperateLeave <= 0) {
-                        $errors[] = '$cooperateLeave must be greater than 0!';
+                        $errors[] = 'CooperateLeave must be greater than 0!';
                     }
                     $entity->setCooperateLeave($cooperateLeave);
                 }
@@ -150,6 +150,8 @@ class PostingPeriodController extends AbstractActionController
             }
             
             // NO ERROR
+            //=====================
+            
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
@@ -419,14 +421,14 @@ class PostingPeriodController extends AbstractActionController
         if ($entity !== null) {
             
             if ($action == "open") {
-                $entity->setPeriodStatus("N");
+                $entity->setPeriodStatus(\Application\Model\Constants::PERIOD_STATUS_OPEN);
                 $entity->setLastChangeBy($u);
                 $entity->setLastChangeOn(new \DateTime());
                 
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
             } elseif ($action == "close") {
-                $entity->setPeriodStatus("C");
+                $entity->setPeriodStatus(\Application\Model\Constants::PERIOD_STATUS_CLOSED);
                 $entity->setLastChangeBy($u);
                 $entity->setLastChangeOn(new \DateTime());
                 

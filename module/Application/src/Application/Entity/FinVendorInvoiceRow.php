@@ -232,6 +232,20 @@ class FinVendorInvoiceRow
     private $grRowId;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
+     */
+    private $docStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
+     */
+    private $workflowStatus;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1031,6 +1045,54 @@ class FinVendorInvoiceRow
     public function getGrRowId()
     {
         return $this->grRowId;
+    }
+
+    /**
+     * Set docStatus
+     *
+     * @param string $docStatus
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get docStatus
+     *
+     * @return string
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
+    }
+
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
     }
 
     /**

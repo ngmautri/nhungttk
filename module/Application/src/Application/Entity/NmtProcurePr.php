@@ -134,6 +134,20 @@ class NmtProcurePr
     private $revisionNo;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_status", type="string", length=30, nullable=true)
+     */
+    private $docStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
+     */
+    private $workflowStatus;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -567,6 +581,54 @@ class NmtProcurePr
     public function getRevisionNo()
     {
         return $this->revisionNo;
+    }
+
+    /**
+     * Set docStatus
+     *
+     * @param string $docStatus
+     *
+     * @return NmtProcurePr
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get docStatus
+     *
+     * @return string
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
+    }
+
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return NmtProcurePr
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
     }
 
     /**

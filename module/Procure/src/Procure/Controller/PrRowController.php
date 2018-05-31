@@ -119,7 +119,7 @@ class PrRowController extends AbstractActionController
     {
         $this->layout("Procure/layout-fullscreen");
         
-        
+       
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -308,13 +308,12 @@ class PrRowController extends AbstractActionController
         // ++++++++++++++++++++++++++++
         
         $redirectUrl = null;
-        if ($this->getRequest()->getHeader('Referer') !== null) {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
+        if ($this->getRequest()->getHeader('Referer') != null) {
+            $redirectUrl = $this->getRequest()->getHeader('Referer')->getUri();
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
+        
         
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
@@ -1428,9 +1427,9 @@ class PrRowController extends AbstractActionController
                 $a_json_row["item_sku"] = '<span title="' . $pr_row_entity->getItem()->getItemSku() . '">' . substr($pr_row_entity->getItem()->getItemSku(), 0, 5) . '</span>';
                 
                 if (strlen($pr_row_entity->getItem()->getItemName()) < 35) {
-                    $a_json_row["item_name"] = $pr_row_entity->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
+                    $a_json_row["item_name"] = $pr_row_entity->getItem()->getItemName() . '<a style="cursor:pointer; color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                 } else {
-                    $a_json_row["item_name"] = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                    $a_json_row["item_name"] = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                 }
                 
                 $a_json_row["quantity"] = $pr_row_entity->getQuantity();
@@ -2021,6 +2020,7 @@ class PrRowController extends AbstractActionController
             if ($entity != null) {
                 $entity->setFaRemarks($a['fa_remarks']);
                 $entity->setRowNumber($a['row_number']);
+                $entity->setQuantity($a['quantity']);
                 // $a_json_final['updateList']=$a['row_id'] . 'has been updated';
                 $this->doctrineEM->persist($entity);
             }
@@ -2316,8 +2316,11 @@ class PrRowController extends AbstractActionController
         }
         
         // NO Post
+        //++++++++++++++++++++++
+        
+        
         $redirectUrl = null;
-        if ($this->getRequest()->getHeader('Referer') !== null) {
+        if ($this->getRequest()->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
                 ->getUri();

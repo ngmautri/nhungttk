@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureGrRow
  *
- * @ORM\Table(name="nmt_procure_gr_row", indexes={@ORM\Index(name="nmt_procure_gr_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_gr_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_gr_row_IDX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_gr_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_gr_row_FK9_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK10_idx", columns={"gr_id"}), @ORM\Index(name="nmt_procure_gr_row_IDX2", columns={"token"})})
+ * @ORM\Table(name="nmt_procure_gr_row", indexes={@ORM\Index(name="nmt_procure_gr_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_gr_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_gr_row_IDX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_gr_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_gr_row_FK9_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK10_idx", columns={"gr_id"}), @ORM\Index(name="nmt_procure_gr_row_IDX2", columns={"token"}), @ORM\Index(name="nmt_procure_gr_row_FK11_idx", columns={"ap_invoice_row_id"})})
  * @ORM\Entity
  */
 class NmtProcureGrRow
@@ -215,7 +215,7 @@ class NmtProcureGrRow
      *
      * @ORM\Column(name="doc_status", type="string", nullable=true)
      */
-    private $docStatus = 'O';
+    private $docStatus = 'Open';
 
     /**
      * @var boolean
@@ -223,6 +223,20 @@ class NmtProcureGrRow
      * @ORM\Column(name="is_draft", type="boolean", nullable=true)
      */
     private $isDraft;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
+     */
+    private $isPosted;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="gr_date", type="datetime", nullable=true)
+     */
+    private $grDate;
 
     /**
      * @var \Application\Entity\FinVendorInvoice
@@ -243,6 +257,16 @@ class NmtProcureGrRow
      * })
      */
     private $gr;
+
+    /**
+     * @var \Application\Entity\FinVendorInvoiceRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ap_invoice_row_id", referencedColumnName="id")
+     * })
+     */
+    private $apInvoiceRow;
 
     /**
      * @var \Application\Entity\NmtProcurePrRow
@@ -1013,6 +1037,54 @@ class NmtProcureGrRow
     }
 
     /**
+     * Set isPosted
+     *
+     * @param boolean $isPosted
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPosted
+     *
+     * @return boolean
+     */
+    public function getIsPosted()
+    {
+        return $this->isPosted;
+    }
+
+    /**
+     * Set grDate
+     *
+     * @param \DateTime $grDate
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setGrDate($grDate)
+    {
+        $this->grDate = $grDate;
+
+        return $this;
+    }
+
+    /**
+     * Get grDate
+     *
+     * @return \DateTime
+     */
+    public function getGrDate()
+    {
+        return $this->grDate;
+    }
+
+    /**
      * Set invoice
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
@@ -1058,6 +1130,30 @@ class NmtProcureGrRow
     public function getGr()
     {
         return $this->gr;
+    }
+
+    /**
+     * Set apInvoiceRow
+     *
+     * @param \Application\Entity\FinVendorInvoiceRow $apInvoiceRow
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setApInvoiceRow(\Application\Entity\FinVendorInvoiceRow $apInvoiceRow = null)
+    {
+        $this->apInvoiceRow = $apInvoiceRow;
+
+        return $this;
+    }
+
+    /**
+     * Get apInvoiceRow
+     *
+     * @return \Application\Entity\FinVendorInvoiceRow
+     */
+    public function getApInvoiceRow()
+    {
+        return $this->apInvoiceRow;
     }
 
     /**

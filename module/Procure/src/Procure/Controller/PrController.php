@@ -603,6 +603,87 @@ class PrController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
+    
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function reviewAction()
+    {
+        
+        $request = $this->getRequest();
+        
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $this->layout("Procure/layout-fullscreen");
+        
+        
+        // $u = $this->doctrineEM->getRepository( 'Application\Entity\MlaUsers')->findOneBy(array("email"=>$this->identity() ));
+        
+        $redirectUrl = $this->getRequest()
+        ->getHeader('Referer')
+        ->getUri();
+        $id = (int) $this->params()->fromQuery('entity_id');
+        // $checksum = $this->params()->fromQuery('checksum');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $pr = $res->getPrNew($id, $token);
+        
+        if ($pr == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($pr[0] instanceof NmtProcurePr) {
+            $entity = $pr[0];
+        }
+        
+        if ($entity instanceof \Application\Entity\NmtProcurePr) {
+            
+            try {
+                /** @var \Symfony\Component\Workflow\Workflow $wf */
+                // $wf = $this->ProcureWfPlugin()->createWorkflow($entity);
+                
+                // var_dump($wf->getEnabledTransitions($entity));
+                
+                // $wf->apply($entity, "recall");
+                // $dumper = new GraphvizDumper();
+                // echo $dumper->dump($wf->getDefinition());
+                
+                /** @var \Workflow\Controller\Plugin\WfPlugin $wf_plugin */
+                $wf_plugin = $this->WfPlugin();
+                
+                /** @var \Workflow\Service\WorkflowService $wfService */
+                $wfService = $wf_plugin->getWorkflowSerive();
+                
+                /** @var \Workflow\Workflow\Procure\Factory\PrWorkflowFactoryAbstract $wf_factory */
+                $wf_factory = $wfService->getWorkFlowFactory($entity);
+                
+                /** @var \Symfony\Component\Workflow\Workflow  $wf */
+                // $wf = $wf_factory->makePrSendingWorkflow()->createWorkflow();
+                // $wf->apply($entity,"send");
+            } catch (LogicException $e) {
+                // echo $e->getMessage();
+            }
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'entity' => $entity,
+                'errors' => null,
+                'total_row' => $pr['total_row'],
+                'max_row_number' => $pr['max_row_number'],
+                'active_row' => $pr['active_row'],
+                'total_attachment' => $pr['total_attachment'],
+                'total_picture' => $pr['total_picture'],
+                
+                
+            ));
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+    }
 
     /**
      *

@@ -173,10 +173,10 @@ class VInvoiceRowController extends AbstractActionController
                 
                 if ($taxRate !== null) {
                     if (! is_numeric($taxRate)) {
-                        $errors[] = '$taxRate is not valid. It must be a number.';
+                        $errors[] = 'taxRate is not valid. It must be a number.';
                     } else {
                         if ($taxRate < 0) {
-                            $errors[] = '$taxRate must be greate than 0!';
+                            $errors[] = 'taxRate must be greate than 0!';
                         }
                         $entity->setTaxRate($taxRate);
                         $n_validated ++;
@@ -242,6 +242,15 @@ class VInvoiceRowController extends AbstractActionController
                     'entity_class' => get_class($entity),
                     'entity_token' => $entity->getToken()
                 ));
+                
+                //update good receipt
+                
+                // update pr status
+                
+                // update po status
+                
+                
+                
                 
                 $gr_entity = new NmtInventoryTrx();
                 $gr_entity->setVendor($target->getVendor());

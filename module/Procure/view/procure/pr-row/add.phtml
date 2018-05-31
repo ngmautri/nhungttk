@@ -17,7 +17,7 @@ if (count ( $errors ) > 0) {
 	echo '</div>';
 }
 ?>
-<h4><strong>Purchase Request</strong></h4>
+
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li ><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;New Row</a></li>
@@ -58,6 +58,7 @@ if (count ( $errors ) > 0) {
   <div class="col-xs-12 col-sm-6 col-md-10" style="">
   <!-- C2 --> 
   	
+  	<h4><strong>PR #<?php echo $target->getPrAutoNumber()?></strong></h4>
 		<form id="pr_header_form" class="form-horizontal"
 			action="" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
@@ -327,15 +328,14 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
 
 					<a tabindex="7" class="btn btn-default btn-sm" style="" href="javascript:;"
 						onClick="submitForm('pr_row_form');"> <small><i
-							class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;Save
+							class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;Add
 					</a>
 					<a tabindex="8" class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
 									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
 					<a tabindex="8" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
-									class="glyphicon glyphicon-ok"></i></small>&nbsp;Finish</a>
+								href="<?php echo $this->baseUrl ?>/procure/pr/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>">PR Review&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></a>
 				</div>
 			</div>
 

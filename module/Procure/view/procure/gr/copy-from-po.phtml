@@ -33,7 +33,17 @@ if (count ( $errors ) > 0) {
     					include (ROOT.'/module/Procure/view/procure/gr-create-wizard.php');
   					?>
   					
-  					
+  					<div class="alert alert-info" role="alert" style="padding:1px; font-size: 9pt">
+					<ul style="font-size: 9pt">
+						<li>Update GR date!</li>
+					 	<li>Update quantity to be received!</li>
+		                <li>Post the receipt!</li>
+		      		</ul>	
+					</div>
+					
+					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9pt">
+						Document can't be changed when posted!
+					</div>
   <!-- C1 ends-->	
   </div>
   

@@ -1,17 +1,5 @@
 <?php   /**@var \Application\Entity\NmtProcurePr $entity ;*/ ?>
 
-<div>
-	<h4><?php echo (!$entity == null)?$entity->getPrNumber():"";?>
-<span style="color: gray; font-size: 10pt"><?php echo (!$entity == null)? " // PR #" . $entity->getPrAutoNumber() :"";?></span>
-	</h4>
-</div>
-
-
-
-<!-- 
-<img class= "img-rounded" width="100" height="100" src="/procure/pr/get-pqcode-png?id=<?php  echo $entity->getId();?>&token=<?php  echo $entity->getToken();?>"/>
- -->
-
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general"><i class="glyphicon glyphicon-shopping-cart"></i>&nbsp;Purchase
@@ -30,8 +18,39 @@
 
 	<div id="general" style="font-size: 9pt">
 
-		<div style="position: relative; float: right;">
+<div class="row">
+  <!-- ROW -->
+  
+  <div class="col-xs-5 col-md-2">
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP3";
+    					include (ROOT.'/module/Procure/view/procure/pr-create-wizard.php');
+  					?>
+  					
+  					<hr>
+  					<div class="alert alert-info" role="alert" style="padding:1px; font-size: 9pt">
+					<ul style="font-size: 9pt">
+		                <li>Total Item: <?php echo ($total_row);?></li>
+		                <li>-----------------</li>
+					 	<li>Review and change line, if needed</li>
+		                <li>Then sumbit PR</li>
+		   			</ul>	
+					</div>
+					
+					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9pt">
+						Document can't be changed anymore when submitted!
+					</div>
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10" style="">
+  <!-- C2 --> 
+  	
+  	<h4><strong>PR #<?php echo $entity->getPrAutoNumber()?></strong></h4>
+			<div style="position: relative; float: right;">
 
+<a class="btn btn-primary btn-sm" style="color: white" onclick="confirmPost();" href="javascript:;"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> &nbsp;Submit</a>
 			<a class="btn btn-default btn-sm" href="javascript:;"
 				onclick="refreshGird();"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>
 		<a class="btn btn-default btn-sm"
@@ -46,8 +65,8 @@
 			</a> <a target="_blank" class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/procure/pr/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 				<i class="fa fa-file-pdf-o" aria-hidden="true"></i> &nbsp;PDF
-			</a> <a class="btn btn-default btn-sm" href="javascript:;"
-				onclick="showJqueryDialog('<?php echo $entity->getPrAutoNumber().' - '. $entity->getPrNumber() ; ?>','1550',$(window).height()-50,'/procure/pr/show1?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>&checksum=<?php echo $entity->getChecksum() ?>','j_loaded_data',true);"><i
+			</a>  <a class="btn btn-default btn-sm" href="javascript:;"
+				onclick="showJqueryDialog('<?php echo $entity->getPrAutoNumber().' - '. $entity->getPrNumber() ; ?>','1800',$(window).height()-50,'/procure/pr/show1?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>&checksum=<?php echo $entity->getChecksum() ?>','j_loaded_data',true);"><i
 				class="fa fa-window-maximize" aria-hidden="true"></i> Full Screen</a>
 	</div>
 	<hr>
@@ -171,12 +190,52 @@
 				<div id="pr_row_gird" style="margin: 1px;"></div>
 			</div>
 		</fieldset>
+		
+		
+			<!-- C2 ends-->
+  </div>
+  
+  <!-- ROW -->
+</div>	
+		
 	</div>
 </div>
 
-
+<!-- Modal -->
+<div class="modal" id="confirm_modal_sm" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<div class="alert alert-warning">
+					<strong>Info!</strong> Document can't be changed after submitted. Are
+					you ok?
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button onclick="doPosting();" type="button"
+					class="btn btn-primary btn-sm">YES</button>
+				<button type="button" class="btn btn-default btn-sm"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <script>
+
+function confirmPost() {
+ 	$('#confirm_modal_sm').modal();
+}
+
+function doPosting() {
+
+	var url="<?php echo $this->baseUrl ?>/procure/pr/submit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"
+	//alert(url);
+	window.location = url;
+}
 
 	//loadPrRow('<?php echo $this->baseUrl . '/procure/pr-row/row?target_id='. $entity->getId().'&token='.$entity->getToken().'&checksum='.$entity->getChecksum()?>');
 	$("#Create_PR_Form :input").attr("disabled", "disabled");
@@ -415,7 +474,7 @@
                       success: function (changes) {
                           //commit the changes.
                           //alert(changes.updateList);
-                           $("#global-notice").text("Updated...").show();
+                           $("#global-notice").text("[OK] Row updated...").show();
             		      //alert('it is ok');                
                           /* grid.commit({ type: 'add', rows: changes.addList });
                           grid.commit({ type: 'update', rows: changes.updateList });
@@ -448,7 +507,7 @@
         { title: "#", dataType: "integer", dataIndx: "row_number", width:5,editable: true },
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
         { title: "Item", dataType: "string", dataIndx: "item_name", width:250,editable: false },
-        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: false},
+        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: true},
         { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
         { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
         { title: "buying", dataType: "integer", dataIndx: "buying", width: 70,align: 'right',editable: false},
@@ -459,9 +518,9 @@
              
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         
-        { title: "", editable: false, minWidth: 200, sortable: false,
+        { title: "", editable: false, minWidth: 100, sortable: false,
             render: function (ui) {
-                return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
+                return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button>";
 	           }
         },
    ];

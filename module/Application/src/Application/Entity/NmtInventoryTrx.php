@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryTrx
  *
- * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"})})
+ * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK16_idx", columns={"gr_row_id"})})
  * @ORM\Entity
  */
 class NmtInventoryTrx
@@ -197,6 +197,76 @@ class NmtInventoryTrx
     private $currentStatus;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="target_id", type="integer", nullable=true)
+     */
+    private $targetId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="target_class", type="string", length=45, nullable=true)
+     */
+    private $targetClass;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="source_id", type="integer", nullable=true)
+     */
+    private $sourceId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="source_class", type="string", length=45, nullable=true)
+     */
+    private $sourceClass;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_status", type="string", nullable=true)
+     */
+    private $docStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
+     */
+    private $sysNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="change_on", type="string", length=45, nullable=true)
+     */
+    private $changeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="change_by", type="integer", nullable=true)
+     */
+    private $changeBy;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_number", type="integer", nullable=true)
+     */
+    private $revisionNumber;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
+     */
+    private $isPosted;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -265,6 +335,16 @@ class NmtInventoryTrx
      * })
      */
     private $poRow;
+
+    /**
+     * @var \Application\Entity\NmtProcureGrRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="gr_row_id", referencedColumnName="id")
+     * })
+     */
+    private $grRow;
 
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
@@ -939,6 +1019,246 @@ class NmtInventoryTrx
     }
 
     /**
+     * Set targetId
+     *
+     * @param integer $targetId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setTargetId($targetId)
+    {
+        $this->targetId = $targetId;
+
+        return $this;
+    }
+
+    /**
+     * Get targetId
+     *
+     * @return integer
+     */
+    public function getTargetId()
+    {
+        return $this->targetId;
+    }
+
+    /**
+     * Set targetClass
+     *
+     * @param string $targetClass
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setTargetClass($targetClass)
+    {
+        $this->targetClass = $targetClass;
+
+        return $this;
+    }
+
+    /**
+     * Get targetClass
+     *
+     * @return string
+     */
+    public function getTargetClass()
+    {
+        return $this->targetClass;
+    }
+
+    /**
+     * Set sourceId
+     *
+     * @param integer $sourceId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setSourceId($sourceId)
+    {
+        $this->sourceId = $sourceId;
+
+        return $this;
+    }
+
+    /**
+     * Get sourceId
+     *
+     * @return integer
+     */
+    public function getSourceId()
+    {
+        return $this->sourceId;
+    }
+
+    /**
+     * Set sourceClass
+     *
+     * @param string $sourceClass
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setSourceClass($sourceClass)
+    {
+        $this->sourceClass = $sourceClass;
+
+        return $this;
+    }
+
+    /**
+     * Get sourceClass
+     *
+     * @return string
+     */
+    public function getSourceClass()
+    {
+        return $this->sourceClass;
+    }
+
+    /**
+     * Set docStatus
+     *
+     * @param string $docStatus
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get docStatus
+     *
+     * @return string
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
+    }
+
+    /**
+     * Set sysNumber
+     *
+     * @param string $sysNumber
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get sysNumber
+     *
+     * @return string
+     */
+    public function getSysNumber()
+    {
+        return $this->sysNumber;
+    }
+
+    /**
+     * Set changeOn
+     *
+     * @param string $changeOn
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setChangeOn($changeOn)
+    {
+        $this->changeOn = $changeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get changeOn
+     *
+     * @return string
+     */
+    public function getChangeOn()
+    {
+        return $this->changeOn;
+    }
+
+    /**
+     * Set changeBy
+     *
+     * @param integer $changeBy
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setChangeBy($changeBy)
+    {
+        $this->changeBy = $changeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get changeBy
+     *
+     * @return integer
+     */
+    public function getChangeBy()
+    {
+        return $this->changeBy;
+    }
+
+    /**
+     * Set revisionNumber
+     *
+     * @param integer $revisionNumber
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setRevisionNumber($revisionNumber)
+    {
+        $this->revisionNumber = $revisionNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNumber
+     *
+     * @return integer
+     */
+    public function getRevisionNumber()
+    {
+        return $this->revisionNumber;
+    }
+
+    /**
+     * Set isPosted
+     *
+     * @param boolean $isPosted
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPosted
+     *
+     * @return boolean
+     */
+    public function getIsPosted()
+    {
+        return $this->isPosted;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -1104,6 +1424,30 @@ class NmtInventoryTrx
     public function getPoRow()
     {
         return $this->poRow;
+    }
+
+    /**
+     * Set grRow
+     *
+     * @param \Application\Entity\NmtProcureGrRow $grRow
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setGrRow(\Application\Entity\NmtProcureGrRow $grRow = null)
+    {
+        $this->grRow = $grRow;
+
+        return $this;
+    }
+
+    /**
+     * Get grRow
+     *
+     * @return \Application\Entity\NmtProcureGrRow
+     */
+    public function getGrRow()
+    {
+        return $this->grRow;
     }
 
     /**

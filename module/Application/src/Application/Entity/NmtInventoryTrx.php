@@ -227,7 +227,7 @@ class NmtInventoryTrx
     /**
      * @var string
      *
-     * @ORM\Column(name="doc_status", type="string", nullable=true)
+     * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
      */
     private $docStatus;
 

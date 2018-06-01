@@ -84,8 +84,8 @@ class VInvoiceController extends AbstractActionController
             
             $entity = new FinVendorInvoice();
             $entity->setIsActive($isActive);
-            
             $entity->setCurrentState($currentState);
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
             
             $vendor = null;
             if ($vendor_id > 0) {
@@ -170,35 +170,11 @@ class VInvoiceController extends AbstractActionController
                     
                     break;
                 case "draftInvoice":
-                    
-                    /**
-                     *
-                     * @todo
-                     */
-                    
-                    /*
-                     * if ($invoiceNo == null) {
-                     * $errors[] = 'Please enter Invoice Number!';
-                     * } else {
-                     * $entity->setInvoiceNo($invoiceNo);
-                     * }
-                     *
-                     * if (! $validator->isValid($invoiceDate)) {
-                     * $errors[] = 'Invoice Date is not correct or empty!';
-                     * } else {
-                     * $entity->setInvoiceDate(new \DateTime($invoiceDate));
-                     * }
-                     */
-                    
+                    // blank                
                     break;
                 
                 case "finalInvoice":
-                    
-                    /**
-                     *
-                     * @todo
-                     */
-                    
+           
                     if ($invoiceNo == null) {
                         $errors[] = 'Please enter Invoice Number!';
                     } else {
@@ -222,9 +198,14 @@ class VInvoiceController extends AbstractActionController
                         /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                         $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
                         
-                        if ($postingPeriod->getPeriodStatus() == "C") {
-                            $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
-                        }
+                        if (!$postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                            $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
+                        }else{
+                            if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                                $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                            }
+                         }
+                        
                     }
                     
                     if (! $validator->isValid($grDate)) {
@@ -238,8 +219,13 @@ class VInvoiceController extends AbstractActionController
                         /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                         $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
                         
-                        if ($postingPeriod->getPeriodStatus() == "C") {
-                            $errors[] = ' period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
+                        
+                        if (!$postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                            $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
+                        }else{
+                            if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                                $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                            }
                         }
                     }
                     
@@ -251,10 +237,10 @@ class VInvoiceController extends AbstractActionController
                 $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
             }
             
-            if ($warehouse !== null) {
+            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
                 $entity->setWarehouse($warehouse);
             } else {
-                $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
+                $errors[] = 'Warehouse can\'t be empty. Please select a warehouse!';
             }
             
             $entity->setRemarks($remarks);
@@ -429,6 +415,65 @@ class VInvoiceController extends AbstractActionController
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function reviewAction()
+    {
+        
+        $this->layout("Procure/layout-fullscreen");
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        
+        $request = $this->getRequest();
+        
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $redirectUrl = $this->getRequest()
+        ->getHeader('Referer')
+        ->getUri();
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $invoice = $res->getVendorInvoice($id, $token);
+        
+        if ($invoice == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($invoice[0] instanceof FinVendorInvoice) {
+            $entity = $invoice[0];
+        }
+        
+        if ($entity instanceof FinVendorInvoice) {
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'entity' => $entity,
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'total_row' => $invoice['total_row'],
+                'active_row' => $invoice['active_row'],
+                'max_row_number' => $invoice['total_row'],
+                'total_picture' => $invoice['total_picture'],
+                'total_attachment' => $invoice['total_attachment'],
+                'net_amount' => $invoice['net_amount'],
+                'tax_amount' => $invoice['tax_amount'],
+                'gross_amount' => $invoice['gross_amount']
+            ));
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+    }
+    
+    
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function postAction()
     {
         
         $this->layout("Procure/layout-fullscreen");

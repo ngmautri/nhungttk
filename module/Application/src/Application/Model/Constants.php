@@ -13,7 +13,7 @@ class Constants {
     * Period is open
     * @var string
     */
-    Const PERIOD_STATUS_OPEN = 'N'; // not closed
+    Const PERIOD_STATUS_OPEN = 'N';
     
     /**
      * Period is closted
@@ -35,6 +35,7 @@ class Constants {
     
     //====================
         
+    Const DOC_STATUS_DRAFT = 'draft';
     Const DOC_STATUS_OPEN = 'open';
     Const DOC_STATUS_CLOSED = 'closed';
     Const DOC_STATUS_POSTED = 'posted';
@@ -46,6 +47,11 @@ class Constants {
     Const TRANSACTION_STATUS_CLOSED = 'closed';
     Const TRANSACTION_STATUS_COMPLETED='completed';
     Const TRANSACTION_STATUS_UNCOMPLETED='uncompleted';
+    
+    //=====================
+    Const PAYMENT_STATUS_OPEN = 'open';
+    Const PAYMENT_STATUS_PAID='paid';
+    Const PAYMENT_STATUS_UNPAID='unpaid';    
    
 }
 

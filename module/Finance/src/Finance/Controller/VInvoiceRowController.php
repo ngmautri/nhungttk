@@ -115,6 +115,8 @@ class VInvoiceRowController extends AbstractActionController
                 
                 $entity = new FinVendorInvoiceRow();
                 $entity->setIsActive($isActive);
+                $entity->setDocStatus($target->getDocStatus());
+                
                 
                 $entity->setInvoice($target);
                 $entity->setRowNumber($rowNumber);
@@ -122,12 +124,16 @@ class VInvoiceRowController extends AbstractActionController
                 $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
                 $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
                 
+                
+                // PR and be empty
                 if ($pr_row == null) {
                     // $errors[] = 'Item can\'t be empty!';
                 } else {
                     $entity->setPrRow($pr_row);
                 }
                 
+                
+                //Item cant be empty
                 if ($item == null) {
                     $errors[] = 'Item can\'t be empty!';
                 } else {
@@ -140,6 +146,7 @@ class VInvoiceRowController extends AbstractActionController
                 $entity->setConverstionText($converstionText);
                 
                 $n_validated = 0;
+                
                 if ($quantity == null) {
                     $errors[] = 'Please  enter quantity!';
                 } else {
@@ -250,10 +257,12 @@ class VInvoiceRowController extends AbstractActionController
                 $procure_gr_entity = new NmtProcureGrRow();
                 
                 $procure_gr_entity->setIsDraft(1);
-                $procure_gr_entity->setDocStatus("Open");
+                $procure_gr_entity->setDocStatus($entity->getDocStatus());
                 $procure_gr_entity->setIsPosted(0);
                 
-                $procure_gr_entity->setInvoice($entity->getInvoice());
+                
+                $procure_gr_entity->setInvoice($target);
+                
                 $procure_gr_entity->getItem($entity->getItem());
                 $procure_gr_entity->setApInvoiceRow($entity);
                 $procure_gr_entity->setPrRow($entity->getPrRow());
@@ -264,12 +273,17 @@ class VInvoiceRowController extends AbstractActionController
                 $procure_gr_entity->setUnit($entity->getUnit());
                 $procure_gr_entity->setUnitPrice($entity->getUnitPrice());
                 $procure_gr_entity->setGrDate($target->getGrDate()  );                
-                $procure_gr_entity->setRemarks($entity->getRowIndentifer());
+                $procure_gr_entity->setRemarks('A/P '. $entity->getRowIndentifer());
                 $procure_gr_entity->setWarehouse($target->getWarehouse());
                 
                 $procure_gr_entity->setCreatedBy($u);
                 $procure_gr_entity->setCreatedOn(new \DateTime());
                 $procure_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $procure_gr_entity->setSourceObject(get_class($entity));
+                $procure_gr_entity->setSourceObjectId($entity->getId());
+                
+                
+                
                 $this->doctrineEM->persist($procure_gr_entity);
                 
                  
@@ -277,6 +291,10 @@ class VInvoiceRowController extends AbstractActionController
                  *===================
                  */
                 $stock_gr_entity = new NmtInventoryTrx();
+                
+                $stock_gr_entity->setCurrentState($target->getCurrentState());
+                $stock_gr_entity->setDocStatus($entity->getDocStatus());
+                
                 $stock_gr_entity->setVendor($target->getVendor());
                 $stock_gr_entity->setFlow('IN');
                 $stock_gr_entity->setInvoiceRow($entity);
@@ -288,7 +306,7 @@ class VInvoiceRowController extends AbstractActionController
                 $stock_gr_entity->setVendorUnitPrice($entity->getUnitPrice());
                 $stock_gr_entity->setTrxDate($target->getGrDate());
                 $stock_gr_entity->setCurrency($target->getCurrency());
-                $stock_gr_entity->setRemarks($entity->getRowIndentifer());
+                $stock_gr_entity->setRemarks('A/P.'.$entity->getRowIndentifer());
                 $stock_gr_entity->setWh($target->getWarehouse());
                 $stock_gr_entity->setCreatedBy($u);
                 $stock_gr_entity->setCreatedOn(new \DateTime());
@@ -297,19 +315,16 @@ class VInvoiceRowController extends AbstractActionController
                 
                 $stock_gr_entity->setTaxRate($entity->getTaxRate());
                 
-                $stock_gr_entity->setCurrentState($target->getCurrentState());
-                
                 if ($target->getCurrentState() == "finalInvoice") {
                     $stock_gr_entity->setIsActive(1);
                 } else {
                     $stock_gr_entity->setIsActive(0);
                 }
                 
-                
                 $this->doctrineEM->persist($stock_gr_entity);
                 $this->doctrineEM->flush();
                 
-                //LOG
+                //LOGGING
                 
                 $m = sprintf('[OK] GR #%s - %s created, based on AP Row %s', $procure_gr_entity->getId(), 
                     $procure_gr_entity->getRowIdentifer(), $entity->getRowIndentifer() );

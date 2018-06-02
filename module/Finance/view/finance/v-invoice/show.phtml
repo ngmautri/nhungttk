@@ -1,116 +1,255 @@
+<?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
+<?php /**@var \Application\Model\Constants $const;*/?>
 
-<h4><?php echo (!$entity == null)? $entity->getPrName():"";?></h4>
+
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+    
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+
+
+?>
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general">Purchase Request</a></li>
+		<li><a href="#general"><small><i class="fa fa-calculator"
+					aria-hidden="true"></i></small>&nbsp;A/P Invoice</a></li>
 		<li><a
-			href="/procure/pr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
+			href="/finance/v-invoice-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
+				class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture (<?php echo $total_picture;?>)</a></li>
 		<li><a
-			href="/procure/pr-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
-	<li><a
+			href="/finance/v-invoice-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment (<?php echo $total_attachment;?>)</a></li>
+		<li><a
 			href="<?php echo $this->baseUrl ?>/finance/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
 				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 
-
 	</ul>
 
-	<div id="general">
 
-		<form id="Create_PR_Form" class="form-horizontal"
-			action="/procure/pr/add" method="post" enctype="multipart/form-data">
+	<div id="general" style="font-size: 9pt">
+		<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
+		<div style="position: relative; float: right;">
+			<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
+				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Review & Post</a>
+			<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
+			</a>
+
+		</div>
+		<?php endif;?>
+		
+		<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_POSTED): ?>
+		<div style="position: relative; float: right;">
+			<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
+				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Journal Entry</a>
+			<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;WH Journal
+			</a>
+			
+					<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Goods Return
+			</a>
+			
+
+		</div>
+		<?php endif;?>
+
+		<form id="Create_Inv_Form" class="form-horizontal"
+			action="/finance/v-invoice/add" method="post"
+			enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 
 
+
 			<fieldset>
-				<legend style="font-size: 10pt; color: gray;">
+				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#pr_header" class="" data-toggle="collapse">PR HEADER:</a>
+					<a href="#invoice_header" class="" data-toggle="collapse">HEADER: <?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo() . ' ['.$entity->getDocStatus().']':"";?></a>
 				</legend>
-				<div id="pr_header" class="collapse">
+				<div id="invoice_header" class="collapse">
 
-					<div class="form-group">
-						<label class="control-label col-sm-2">PR Number:</label>
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Current State:</label>
 						<div class="col-sm-3">
-							<input class="form-control" type="text" placeholder=""
-								name="prNumber"
-								value="<?php echo (!$entity == null)? $entity->getPrNumber():"";?>">
+							<select name="currentState" class="form-control input-sm">
+								<option value="">Please Select</option>
+								<option
+									<?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?>
+									value="contract">Contract /PO</option>
+								<option
+									<?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?>
+									value="draftInvoice">Draft Invoice</option>
+								<option
+									<?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?>
+									value="finalInvoice">Final Invoice</option>
+							</select>
 						</div>
 
-						<label class="control-label col-sm-1" for="inputTag"></label>
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<input
-								<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-							<input
-								<?php if(!$entity == null): echo ($entity->getIsDraft()== "1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
+								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								type="checkbox" name="isActive" value="1">&nbsp;Is
+							Active&nbsp;&nbsp;&nbsp;&nbsp;
 
 						</div>
 
 					</div>
 
-					<div class="form-group">
-						<label class="control-label col-sm-2">PR Name:</label>
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2 ">Vendor:</label>
 						<div class="col-sm-3">
-							<input class="form-control" type="text" placeholder=""
-								id="prName" name="prName"
-								value="<?php echo (!$entity == null)? $entity->getPrName():"";?>">
+							<input class="form-control input-sm input-sm" type="text"
+								id="vendor_name_1" placeholder="Enter term to search vendor"
+								name="vendor_name"
+								value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
+
+							<input type="hidden" id="vendor_id" placeholder=""
+								name="vendor_id"
+								value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
 						</div>
-
-						<label class="control-label col-sm-2">Keywords:</label>
 						<div class="col-sm-3">
-							<input class="form-control" type="text" placeholder=""
-								id="keywords" name="keywords"
-								value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
-						</div>
-					</div>
-					
-						<div class="form-group">
-		<label class="control-label col-sm-2" >Date:</label>
-		<div class="col-sm-3">
-<input class="form-control" type="text"  placeholder="" id = "submittedOn" name="submittedOn" 
-value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo date_format($entity->getSubmittedOn(),"Y-m-d"); endif; endif;?>" placeholder =" please select"/>
-		</div>
-	</div>
 
-					<div class="form-group">
-						<label class="control-label col-sm-2">Department</label>
-						<div class="col-sm-3">
-							<input disabled class="form-control" type="text"
-								id="department_name" placeholder="Please select!"
-								name="deparment_name"
-								value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeName(); endif;endif;?>">
-
-							<input type="hidden" class="form-control" type="text"
-								id="department_name_selected" placeholder="Please select!"
-								name="department_id"
-								value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeId(); endif;endif;?>">
-						</div>
-
-						<a style="color: #0080ff;" href="javascript:;"
-							onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i
-							class="glyphicon glyphicon-folder-open"></i>
-						</a>
-					</div>
-
-					<div class="form-group">
-						<label class="control-label col-sm-2">Remarks:</label>
-						<div class="col-sm-3">
-							<textarea class="form-control" type="text" rows="4"
-								placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+							<a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor
+								List&nbsp;&nbsp;</a><small><i
+								class="glyphicon glyphicon-new-window"></i></small>
 						</div>
 					</div>
 
-					<div class="form-group">
-						<label class="control-label col-sm-2" for="inputTag"></label>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Contract /PO:</label>
 						<div class="col-sm-3">
-							<a class="btn btn-default"
-								href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
-									class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="contractNo" name="contractNo"
+								value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
+						</div>
+						<label class="control-label col-sm-2">Contract /PO Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="contractDate" name="contractDate"
+								value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
+						</div>
+					</div>
 
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Currency:</label>
+						<div class="col-sm-3">
+							<select name="currency_id" class="form-control input-sm">
+								<option value="">Select Currency</option>
+   	    							<?php
+            if ($currency_list !== null) :
+                foreach ($currency_list as $curr) :
+                    if ($entity !== null) :
+                        if ($entity->getCurrency() !== null) :
+                            if ($entity->getCurrency()->getCurrency() == $curr->getCurrency()) :
+                                echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            else :
+                                echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+            
+            ?>
+   					</select>
+						</div>
+						<label class="control-label col-sm-2">Exchange Rate:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="exchangeRate" name="exchangeRate" 
+								value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
+						</div>
+						
+					</div>
+
+
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Invoice number:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="invoiceNo" name="invoiceNo"
+								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
+						</div>
+						<label class="control-label col-sm-2">SAP Document No.:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="sapDoc" name="sapDoc"
+								value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
+						</div>
+
+
+					</div>
+
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2 required">Invoice Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm input-sm" type="text"
+								id="invoiceDate" name="invoiceDate"
+								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Posting Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm input-sm" type="text"
+								id="postingDate" name="postingDate"
+								value="<?php if(!$entity == null): if ($entity->getPostingDate() !== null): echo date_format($entity->getPostingDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Goods Receipt Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm input-sm" type="text"
+								id="grDate" name="grDate"
+								value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+						</div>
+						<label class="control-label col-sm-2" for="inputTag">Target
+							Warehouse:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" readonly type="text"
+								id="target_wh_name" placeholder="Please select!"
+								name="target_wh"
+								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+							<input type="hidden" id="target_wh_id" name="target_wh_id"
+								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Description</label>
+						<div class="col-sm-8">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="remarks"
+								value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
 						</div>
 					</div>
 
@@ -118,31 +257,106 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
 			</fieldset>
 		</form>
 
-
-		<fieldset>
-			<legend style="font-size: 10pt; color: gray;">
-				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-				<a href="#transaction" class="" data-toggle="collapse">PR ROWS:</a>
-			</legend>
-			<div id="transaction" class="collapse in">
-
-				<div id="pr_rows"></div>
-				<div id="pr_row_gird" style="margin: 1px;"></div>
-		</fieldset>
-
-
-
+		<form action="">
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
+				</legend>
+				<div id="rows" class="collapse in">
+					<span class=""
+						style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
+						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
+                        &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>
+                        &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
+                        &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
+					</span>
+					<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
+			
+			</fieldset>
+		</form>
 	</div>
-
-
 </div>
+
+<hr>
 
 
 
 <script>
 
-	//loadPrRow('<?php echo $this->baseUrl . '/procure/pr-row/row?target_id='. $entity->getId().'&token='.$entity->getToken().'&checksum='.$entity->getChecksum()?>');
-	$("#Create_PR_Form :input").attr("disabled", "disabled");
+$("#Create_Inv_Form :input").attr("disabled", "disabled");
+
+
+$( "#pr_item_name" ).autocomplete({
+    source: "/procure/pr-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#pr_row_id" ).val(ui.item.pr_row_id);
+  	  
+     alert	( ui.item.pr_row_id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.item_name + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
+      .appendTo( ul );
+    };
+
+    $( "#item_name" ).autocomplete({
+        source: "/inventory/item-search/auto-complete",
+        minLength: 2,
+        select: function( event, ui ) {
+      	  $( "#item_id" ).val(ui.item.id);
+        
+      	 	$('#global-notice').show();
+      		$('#global-notice').html('"' + ui.item.value + '" selected');
+      		$('#global-notice').fadeOut(5000);
+      		//$("#jquery_dialog").dialog("close");
+        }
+       
+      })
+      .autocomplete( "instance" )._renderItem = function( ul, item ) {
+   	  var serial_no = "";
+   	  if(item.item_serial!=""){
+   		  serial_no = " : " + item.item_serial;
+   	  }
+    	   
+         return $( "<li>" )
+           .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
+           .appendTo( ul );
+       };
+
+
+
+$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+	
+	//$("#Create_PR_Form :input").attr("disabled", "disabled");
 
 
 	 //to check whether any row is currently being edited.
@@ -277,12 +491,12 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "100%", height: $(window).height()-350, showTitle : false,
+	var obj = { width: "100%", height: $(window).height()-230, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
 			hoverMode: 'cell',
-		   	pageModel: { type: "remote", rPP: 50, strRpp: "{0}" },
+		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
 		  	editModel: {
                 allowInvalid: true,
                 saveKey: $.ui.keyCode.ENTER
@@ -293,14 +507,12 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
 		 columnBorders: true,
     	   toolbar: {
                     items: [
-                        { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
+                        { type: 'button', icon: 'ui-icon-refresh', label: 'Refresh', listeners: [
                             { "click": function (evt, ui) {
                                 var $grid = $(this).closest('.pq-grid');
                                 //addRow($grid);
-                                
-   		     redirectUrl="/procure/pr-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>";
-              window.location.href= redirectUrl;
-                                 
+               //redirectUrl="/finance/v-invoice-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
+              //window.location.href= redirectUrl;
                                 //debugger;
                             }
                             }
@@ -361,7 +573,7 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
                 //alert(sent_list);
                   
                   $.ajax({
-                      url: '/procure/pr-row/update-row',
+                      url: '/finance/v-invoice-row/update-row',
                       data: {
                           sent_list: sent_list
                       },
@@ -407,22 +619,25 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
          
        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-       
+
+        { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
-        { title: "Item", dataType: "string", dataIndx: "item_name", width:200,editable: false },
-        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: false},
-        { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
-        { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
-        { title: "Project", dataType: "string", dataIndx: "project_id", width: 70, align: 'right',editable: false},
-        { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 90, align: 'left',editable: false},
-        { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 82, align: 'right',editable: false},
-        { title: "Curr", dataType: "string", dataIndx: "currency", width:3, align: 'center',editable: false},
-             
+        { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
+        { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},
+        
+        { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: false},
+        { title: "Unit Price", dataType: "integer", dataIndx: "row_unit_price", width:90, align: 'right',editable: false},
+        { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},
+        { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
+        { title: "Gross", dataType: "decimal", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
+ 		{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
+ 		      
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         
-        { title: "", editable: false, minWidth: 200, sortable: false,
+        { title: "", editable: false, minWidth: 100, sortable: false,
             render: function (ui) {
-                return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
+                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
+            	return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button>";
 	           }
         },
    ];
@@ -432,7 +647,7 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
               location: "remote",
               method: "GET",
               recIndx: "row_id",
-              url: "/procure/pr-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>",
+              url: "/finance/v-invoice-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }
@@ -473,7 +688,7 @@ value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/procure/pr-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+            redirectUrl="/finance/v-invoice-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

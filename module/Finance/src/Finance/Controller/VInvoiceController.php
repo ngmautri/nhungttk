@@ -170,11 +170,11 @@ class VInvoiceController extends AbstractActionController
                     
                     break;
                 case "draftInvoice":
-                    // blank                
+                    // blank
                     break;
                 
                 case "finalInvoice":
-           
+                    
                     if ($invoiceNo == null) {
                         $errors[] = 'Please enter Invoice Number!';
                     } else {
@@ -198,14 +198,13 @@ class VInvoiceController extends AbstractActionController
                         /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                         $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
                         
-                        if (!$postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                        if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
                             $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
-                        }else{
+                        } else {
                             if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
                                 $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
                             }
-                         }
-                        
+                        }
                     }
                     
                     if (! $validator->isValid($grDate)) {
@@ -219,10 +218,9 @@ class VInvoiceController extends AbstractActionController
                         /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                         $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
                         
-                        
-                        if (!$postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                        if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
                             $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
-                        }else{
+                        } else {
                             if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
                                 $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
                             }
@@ -328,11 +326,11 @@ class VInvoiceController extends AbstractActionController
                 ->getUri();
         }
         
-        // get company        
+        // get company
         $entity = new FinVendorInvoice();
         $entity->setIsActive(1);
         
-        //Default currency  
+        // Default currency
         if ($default_cur instanceof \Application\Entity\NmtApplicationCurrency) {
             $entity->setCurrency($default_cur);
         }
@@ -409,14 +407,13 @@ class VInvoiceController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function reviewAction()
     {
-        
         $this->layout("Procure/layout-fullscreen");
         
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -429,8 +426,8 @@ class VInvoiceController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
         $redirectUrl = $this->getRequest()
-        ->getHeader('Referer')
-        ->getUri();
+            ->getHeader('Referer')
+            ->getUri();
         
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
@@ -449,6 +446,16 @@ class VInvoiceController extends AbstractActionController
         }
         
         if ($entity instanceof FinVendorInvoice) {
+            
+            if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
+                
+                $m = sprintf('AP Invoice #%s - %s already posted!', $entity->getId(), $entity->getSysNumber());
+                
+                $this->flashMessenger()->addMessage($m);
+                $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+                return $this->redirect()->toUrl($redirectUrl);
+            }
+            
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
@@ -467,15 +474,23 @@ class VInvoiceController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-    
-    
+
     /**
+     * Posting A/P Invoice: Document can not be change:
+     *
+     * 1. change doc status of invoice and its rows to "posted"
+     * 2. update relevant document
+     * - update procurement good receipts
+     * - upate PR
+     * - update PO
+     * - update GR
+     * - update stock good receipt
+     * 3. Created Accounting Journal Entry
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function postAction()
     {
-        
         $this->layout("Procure/layout-fullscreen");
         
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -484,12 +499,14 @@ class VInvoiceController extends AbstractActionController
         
         $request = $this->getRequest();
         
+        $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+            // return $this->redirect()->toRoute('access_denied');
+        } else {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
         }
-        $redirectUrl = $this->getRequest()
-        ->getHeader('Referer')
-        ->getUri();
         
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
@@ -499,7 +516,7 @@ class VInvoiceController extends AbstractActionController
         $invoice = $res->getVendorInvoice($id, $token);
         
         if ($invoice == null) {
-            return $this->redirect()->toRoute('access_denied');
+            // return $this->redirect()->toRoute('access_denied');
         }
         
         $entity = null;
@@ -508,25 +525,54 @@ class VInvoiceController extends AbstractActionController
         }
         
         if ($entity instanceof FinVendorInvoice) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => $invoice['total_row'],
-                'active_row' => $invoice['active_row'],
-                'max_row_number' => $invoice['total_row'],
-                'total_picture' => $invoice['total_picture'],
-                'total_attachment' => $invoice['total_attachment'],
-                'net_amount' => $invoice['net_amount'],
-                'tax_amount' => $invoice['tax_amount'],
-                'gross_amount' => $invoice['gross_amount']
+            
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
             ));
+            $changeOn = new \DateTime();
+            
+            $oldEntity = clone ($entity);
+            
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+            
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+            
+            //POST AP
+            $res->postAP($entity->getId(), $entity->getDocStatus());
+            
+            // LOG
+            /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+            $nmtPlugin = $this->Nmtplugin();
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+            
+            $m = sprintf('[OK] AP Invoice #%s - %s posted.', $entity->getId(), $entity->getSysNumber());
+            
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+            
+            $this->flashMessenger()->addMessage($m);
+            $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            
+            return $this->redirect()->toUrl($redirectUrl);
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
     }
-    
 
     /**
      * Make A/P Invoice from PO
@@ -1124,6 +1170,10 @@ class VInvoiceController extends AbstractActionController
      */
     public function showAction()
     {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {
@@ -1135,17 +1185,34 @@ class VInvoiceController extends AbstractActionController
         
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $id,
-            'token' => $token
-        );
         
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
-        if ($entity !== null) {
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $invoice = $res->getVendorInvoice($id, $token);
+        
+        if ($invoice == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($invoice[0] instanceof FinVendorInvoice) {
+            $entity = $invoice[0];
+        }
+        
+        if ($entity instanceof FinVendorInvoice) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
-                'errors' => null
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'total_row' => $invoice['total_row'],
+                'active_row' => $invoice['active_row'],
+                'max_row_number' => $invoice['total_row'],
+                'total_picture' => $invoice['total_picture'],
+                'total_attachment' => $invoice['total_attachment'],
+                'net_amount' => $invoice['net_amount'],
+                'tax_amount' => $invoice['tax_amount'],
+                'gross_amount' => $invoice['gross_amount']
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');

@@ -164,15 +164,15 @@ else:
 		
 	<tr>
 			<td>
-<a style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
+<a style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/v-invoice/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
 			</td>
 
 			<td>
-<a  style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
+<a  style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/v-invoice/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
 			</td>
 			
 			<td>
-<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
+<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
 			
 			</td>
 			<td><?php echo $a->getContractNo()?></td>

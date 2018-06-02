@@ -52,6 +52,11 @@ class Constants {
     Const PAYMENT_STATUS_OPEN = 'open';
     Const PAYMENT_STATUS_PAID='paid';
     Const PAYMENT_STATUS_UNPAID='unpaid';    
+    
+    //=====================
+    Const WH_TRANSACTION_STATUS_OPEN = 'draft';
+    Const WH_TRANSACTION_STATUS_POSTED='posted';
+    
    
 }
 

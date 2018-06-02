@@ -455,7 +455,7 @@ LIMIT %s
             $sql_tmp = $sql_tmp . " OFFSET " . $offset;
         }
         
-        $sql = sprintf($sql_tmp,$limit);
+        $sql = sprintf($sql_tmp, $limit);
         
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
@@ -469,5 +469,187 @@ LIMIT %s
             return null;
         }
     }
+
+    /**
+     *
+     * @param int $invoice_id
+     * @param string $token
+     */
+    public function getRowsOfAP($invoice_id, $token = null)
+    {
+        $sql = "
+SELECT
+    fin_vendor_invoice_row.*
+FROM fin_vendor_invoice_row
+LEFT JOIN fin_vendor_invoice
+ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+WHERE fin_vendor_invoice_row.is_active=1 AND fin_vendor_invoice.id=%s;
+";
+        
+        $sql = sprintf($sql, $invoice_id);
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param int $invoice_id
+     * @param string $token
+     */
+    public function postAP($invoice_id, $status)
+    {
+        $sql_update_ap_row = "
+UPDATE fin_vendor_invoice_row
+SET fin_vendor_invoice_row.doc_status = '%s'
+WHERE fin_vendor_invoice_row.invoice_id = %s AND fin_vendor_invoice_row.is_active =1
+";
+        
+        $sql_ap_row_id = "
+SELECT 
+    fin_vendor_invoice_row.id 
+FROM fin_vendor_invoice_row 
+WHERE fin_vendor_invoice_row.is_active=1 AND fin_vendor_invoice_row.invoice_id=%s
+";
+        
+        $sql_update_procure_gr_row = "
+UPDATE nmt_procure_gr_row
+SET 
+nmt_procure_gr_row.is_posted=1,
+nmt_procure_gr_row.is_draft=0,
+nmt_procure_gr_row.doc_status = '%s'
+WHERE nmt_procure_gr_row.is_active=1 AND nmt_procure_gr_row.ap_invoice_row_id IN (%s)
+";
+        
+        $sql_update_stock_gr_row = "
+UPDATE nmt_inventory_trx
+SET nmt_inventory_trx.doc_status = '%s'
+WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
+";
+        
+        try {
+            
+            // update ap_row
+            $sql_update_ap_row = sprintf($sql_update_ap_row, $status, $invoice_id);
+            $this->_em->getConnection()->executeUpdate($sql_update_ap_row);
+            
+            // ap_row_id
+            $sql_ap_row_id = sprintf($sql_ap_row_id, $invoice_id);
+            
+            // update procure gr_row
+            $sql_update_procure_gr_row = sprintf($sql_update_procure_gr_row, $status, $sql_ap_row_id);
+            $this->_em->getConnection()->executeUpdate($sql_update_procure_gr_row);
+            
+            // update stock gr_row
+            $sql_update_stock_gr_row = sprintf($sql_update_stock_gr_row, $status, $sql_ap_row_id);
+            $this->_em->getConnection()->executeUpdate($sql_update_stock_gr_row);
+        } catch (NoResultException $e) {}
+    }
+
+    /**
+     *
+     * @param object $entity
+     */
+    public function updateDependencyAPRow($entity)
+    {
+        if (! $entity instanceof \Application\Entity\FinVendorInvoiceRow) {
+            return;
+        }
+        
+        try {
+            $m = '';
+            
+            /** @var \Application\Entity\FinVendorInvoiceRow $entity ; */
+            
+            // update good receipt if any.
+            
+            $criteria = array(
+                'apInvoiceRow' => $entity
+            );
+            
+            /** @var \Application\Entity\NmtProcureGrRow $gr_row ; */
+            $gr_row = $this->_em->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
+            
+            if ($gr_row instanceof \Application\Entity\NmtProcureGrRow) {
+                
+                $gr_row->setIsActive($entity->getIsActive());
+                // $gr_row->setIsDraft(1);
+                $gr_row->setDocStatus($entity->getDocStatus());
+                // $gr_row->setIsPosted(0);
+                
+                //$gr_row->setInvoice($entity->getInvoice());
+                
+                $gr_row->setItem($entity->getItem());
+                //$gr_row->setApInvoiceRow($entity);
+                $gr_row->setPrRow($entity->getPrRow());
+                $gr_row->setPoRow($entity->getPoRow());
+                
+                $gr_row->setQuantity($entity->getQuantity());
+                $gr_row->setVendorItemCode($entity->getVendorItemCode());
+                $gr_row->setUnit($entity->getUnit());
+                $gr_row->setUnitPrice($entity->getUnitPrice());
+                $gr_row->setGrDate($entity->getInvoice()->getGrDate());
+                //$gr_row->setRemarks('A/P ' . $entity->getRowIndentifer());
+                $gr_row->setWarehouse($entity->getInvoice()
+                    ->getWarehouse());
+                
+                //$gr_row->setLastchangeOn($entity->getLastchangeOn());
+                //$gr_row->setLastchangeBy($entity->getLastchangeBy());
+                
+                $this->_em->persist($gr_row);
+                $this->_em->flush();
+                
+                $m = 'GR #. ' . $gr_row->getId() . ' updated!';
+            }
+            
+            // update STOCK good receipt if any.
+            
+            $criteria = array(
+                'invoiceRow' => $entity
+            );
+            
+            /** @var \Application\Entity\NmtInventoryTrx $stock_gr_entity ; */
+            $stock_gr_entity = $this->_em->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+            
+            if ($stock_gr_entity instanceof \Application\Entity\NmtInventoryTrx) {
+                
+                $stock_gr_entity->setCurrentState($entity->getInvoice()->getCurrentState());
+                $stock_gr_entity->setDocStatus($entity->getDocStatus());
+                $stock_gr_entity->setIsActive($entity->getIsActive());
+                
+                $stock_gr_entity->setVendor($entity->getInvoice()->getVendor());
+                //$stock_gr_entity->setFlow('IN');
+                //$stock_gr_entity->setInvoiceRow($entity);
+                $stock_gr_entity->setItem($entity->getItem());
+                $stock_gr_entity->setPrRow($entity->getPrRow());
+                $stock_gr_entity->setPoRow($entity->getPoRow());
+                
+                $stock_gr_entity->setQuantity($entity->getQuantity());
+                $stock_gr_entity->setVendorItemCode($entity->getVendorItemCode());
+                $stock_gr_entity->setVendorItemUnit($entity->getUnit());
+                $stock_gr_entity->setVendorUnitPrice($entity->getUnitPrice());
+                $stock_gr_entity->setTrxDate($entity->getInvoice()->getGrDate());
+                $stock_gr_entity->setCurrency($entity->getInvoice()->getCurrency());
+                //$stock_gr_entity->setRemarks('A/P.'.$entity->getRowIndentifer());
+                $stock_gr_entity->setWh($entity->getInvoice()->getWarehouse());
+                
+                $this->_em->persist($stock_gr_entity);
+                $this->_em->flush();
+                $m= $m. ' // Stock GR #. '. $gr_row->getId(). ' updated!';
+                
+            }
+            
+           return $m;
+            
+        } catch (NoResultException $e) {
+        }
+    }
+
 }
 

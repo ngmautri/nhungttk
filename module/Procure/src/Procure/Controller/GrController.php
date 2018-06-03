@@ -268,21 +268,30 @@ class GrController extends AbstractActionController
             $errors = array();
             
             $total_open_gr = 0;
+            $total_draft_gr = 0;
+            
             foreach ($po_rows as $r) {
                 $total_open_gr = $total_open_gr + $r['open_gr'];
+                $total_draft_gr= $total_draft_gr + $r['draft_gr'];
             }
+            
+            if ($total_draft_gr > 0) {
+                
+                $redirectUrl = '/procure/gr/list';
+                $m = sprintf("[OK] There is draft GR for PO #. Pls review and post it!",$source->getSysNumber());
+                $this->flashMessenger()->addMessage($m);
+                
+                return $this->redirect()->toUrl($redirectUrl);
+             }
             
             if ($total_open_gr == 0) {
                 
-                $errors[] = "All items of PO received!";
+                $redirectUrl = sprintf('/procure/po/add1?token=%s&entity_id=%s',$source->getToken(),$source->getId());
+                $m = sprintf("[INFO] Items of PO # received fully!",$source->getSysNumber());
+                $this->flashMessenger()->addMessage($m);
                 
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => null,
-                    'source' => $source,
-                    'currency_list' => $currency_list
-                ));
+                return $this->redirect()->toUrl($redirectUrl);
+                
             }
         }
         
@@ -502,6 +511,10 @@ class GrController extends AbstractActionController
                     $r->setDocStatus($entity->getDocStatus());
                     $r->setRowIdentifer($entity->getSysNumber().'-'.$n);
                     $r->setRowNumber($n);
+                    //$r->setSourceObject(get_class($entity));
+                    //$r->setSourceObject($entity->getId());
+                    
+                    
                     /**
                      * create procure good receipt.
                      * only for item controlled inventory
@@ -510,6 +523,9 @@ class GrController extends AbstractActionController
                     $stock_gr_entity = new NmtInventoryTrx();
                     
                     $stock_gr_entity->setGrRow($r);
+                    $stock_gr_entity->setSourceClass(get_class($r));
+                    $stock_gr_entity->setSourceId($r->getId());
+                    
                     $stock_gr_entity->setTransactionType($r->getTransactionType());
                     $stock_gr_entity->setCurrentState($entity->getCurrentState());
                     $stock_gr_entity->setDocStatus($r->getDocStatus());
@@ -1112,6 +1128,78 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
             'per_pape' => $resultsPerPage,
             'currentState' => $currentState
         
+        ));
+    }
+    
+    /**
+     *
+     * @return \Zend\View\Helper\ViewModel
+     */
+    public function listOfPOAction()
+    {
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $currentState = $this->params()->fromQuery('currentState');
+        
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+        
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+        
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        
+        if ($is_active == null) {
+            $is_active = 1;
+        }
+        
+        if ($sort_by == null) :
+        $sort_by = "createdOn";
+        endif;
+        
+        if ($sort == null) :
+        $sort = "DESC";
+        endif;
+        
+        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+        // $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+        
+        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+        // $postingPeriod = $p->getPostingPeriodStatus(new \DateTime());
+        // echo $postingPeriod->getPeriodName() . $postingPeriod->getPeriodStatus();
+        // echo $postingPeriod;
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $list = $res->getGrList($is_active, $currentState, null, $sort_by, $sort, 0, 0);
+        $total_records = count($list);
+        $paginator = null;
+        
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getGrList($is_active, $currentState, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+        }
+        
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'is_active' => $is_active,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $resultsPerPage,
+            'currentState' => $currentState
+            
         ));
     }
 

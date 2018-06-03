@@ -136,6 +136,8 @@ else:
 		
 			<td><b><?php echo $this->translate("Receipt Date");?></b></td>
 			<td><b><?php echo $this->translate("Draft");?></b></td>
+			<td><b><?php echo $this->translate("Posted");?></b></td>
+		
 			<td><b><?php echo $this->translate("Vendor");?></b></b></td>
 			<td><b>Current State</b></td>
 			<td><b>Action</b></td>
@@ -168,8 +170,7 @@ else:
 	
 <td><span style="color: gray;"><?php if($a->getGrDate()!==null):echo date_format($a->getGrDate(),"d-m-Y");   endif;?></span></td>
 				<td><?php echo $a->getIsDraft();?></td>
-		
-			<td>
+				<td>
 <a href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>			
 			</td>
 			<td><?php echo $a->getCurrentState()?></td>

@@ -285,6 +285,10 @@ class VInvoiceRowController extends AbstractActionController
                  */
                 $stock_gr_entity = new NmtInventoryTrx();
                 
+                $stock_gr_entity->setSourceClass(get_class($entity));
+                $stock_gr_entity->setSourceId($entity->getId());
+                
+                
                 $stock_gr_entity->setTransactionType($entity->getTransactionType());                
                 $stock_gr_entity->setCurrentState($target->getCurrentState());
                 $stock_gr_entity->setDocStatus($entity->getDocStatus());

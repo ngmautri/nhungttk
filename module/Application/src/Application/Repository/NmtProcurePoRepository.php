@@ -282,7 +282,7 @@ SELECT
 FROM nmt_procure_po_row
 LEFT JOIN nmt_procure_gr_row
 ON nmt_procure_gr_row.po_row_id =  nmt_procure_po_row.id
-WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_gr_row.is_active=1
+WHERE nmt_procure_po_row.po_id=%s
 GROUP BY nmt_procure_po_row.id            
 ";
         
@@ -297,9 +297,9 @@ GROUP BY nmt_procure_po_row.id
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
             $rsm->addScalarResult("draft_gr", "draft_gr");
             $rsm->addScalarResult("confirmed_gr", "confirmed_gr");
-            $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
-            
+            $rsm->addScalarResult("confirmed_balance", "confirmed_balance");            
             $rsm->addScalarResult("open_gr", "open_gr");
+            
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;

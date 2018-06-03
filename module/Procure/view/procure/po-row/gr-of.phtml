@@ -15,6 +15,8 @@
 		
 			<td><b>Quantity</b></td>
 			<td><b>Draft</b></td>
+			<td><b>Doc Status</b></td>
+	
 			<td><b>WH</b></td>
 			<td><b>Created By</b></td>
 
@@ -37,6 +39,7 @@
 	 		<td><?php echo $a->getItem()->getItemName(); ?> </td>
 	 		<td><?php echo $a->getQuantity(); ?> </td>
 			<td><?php echo $a->getIsDraft(); ?> </td>
+			<td><?php echo $a->getDocStatus(); ?> </td>	
 			<td><?php if(!$a->getGr()->getWarehouse()==null): echo $a->getGr()->getWarehouse()->getWhName();endif;?> </td>
 	 		<td><?php if(!$a->getGr()->getCreatedBy()==null): echo $a->getGr()->getCreatedBy()->getEmail();endif;?> </td>
 	 

@@ -596,6 +596,7 @@ class PoRowController extends AbstractActionController
         
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
+        
         $criteria = array(
             'id' => $target_id,
             'token' => $token
@@ -612,7 +613,7 @@ class PoRowController extends AbstractActionController
         $a_json_row = array();
         $escaper = new Escaper();
         
-        if ($target !== null) {
+        if ($target instanceof \Application\Entity\NmtProcurePo) {
             
             /*
              * $criteria = array(

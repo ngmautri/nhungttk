@@ -48,11 +48,6 @@ class GrRowController extends AbstractActionController
             'id' => $target_id,
             'token' => $token
         );
-        
-        /**
-         *
-         * @todo : Change Target
-         */
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGr')->findOneBy($criteria);
         
         $a_json_final = array();
@@ -60,21 +55,16 @@ class GrRowController extends AbstractActionController
         $a_json_row = array();
         $escaper = new Escaper();
         
-        if ($target !== null) {
-            
-            $criteria = array(
-                'gr' => $target_id,
-                'isActive' => 1
-            );
+        if ($target instanceof \Application\Entity\NmtProcureGr) {
             
             $query = 'SELECT e FROM Application\Entity\NmtProcureGrRow e
-            WHERE e.gr=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
+            WHERE e.gr=?1 AND e.isActive =?2 AND e.isDraft =?3 ORDER BY e.rowNumber';
             
             $list = $this->doctrineEM->createQuery($query)
             ->setParameters(array(
                 "1" => $target,
-                "2" => 0
-                
+                "2" => 1,
+                "3" => 1
             ))
             ->getResult();
             

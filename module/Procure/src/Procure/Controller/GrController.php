@@ -163,42 +163,8 @@ class GrController extends AbstractActionController
             // NO ERROR
             // ======================================================
             
-            // Generate document BEGINN
-            // =======================
-            $criteria = array(
-                'isActive' => 1,
-                'subjectClass' => get_class($entity)
-            );
-            
-            /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
-            $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
-            if ($docNumber != null) {
-                $maxLen = strlen($docNumber->getToNumber());
-                $currentLen = 1;
-                $currentDoc = $docNumber->getPrefix();
-                $current_no = $docNumber->getCurrentNumber();
-                
-                if ($current_no == null) {
-                    $current_no = $docNumber->getFromNumber();
-                } else {
-                    $current_no ++;
-                    $currentLen = strlen($current_no);
-                }
-                
-                $docNumber->setCurrentNumber($current_no);
-                
-                $tmp = "";
-                for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
-                    
-                    $tmp = $tmp . "0";
-                }
-                
-                $currentDoc = $currentDoc . $tmp . $current_no;
-                $entity->setSysNumber($currentDoc);
-            }
-            // Generate document END
-            // =======================
-            
+            $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
+             
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
             $entity->setTransactionStatus(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             
@@ -232,10 +198,11 @@ class GrController extends AbstractActionController
                     
                     $row_tmp->setGr($entity);
                     $row_tmp->setIsDraft(1);
-                    $row_tmp->setIsActive(0);
+                    $row_tmp->setIsActive(1);
                     
                     $row_tmp->setRowNumber($n);
                     
+                    // do when posted.
                     // $row_tmp->setRowIndentifer($entity->getSysNumber() . "-$n");
                     $row_tmp->setCurrentState("DRAFT");
                     $row_tmp->setPoRow($r);
@@ -523,15 +490,18 @@ class GrController extends AbstractActionController
             
             if(count($gr_rows)>0)
             {
+                $n=0;
                 foreach($gr_rows as $r){
-                    
                     /** @var \Application\Entity\NmtProcureGrRow $r ; */
                     
+                    
                     // UPDATE status
+                    $n++;
                     $r->setIsPosted(1);
                     $r->setIsDraft(0);
                     $r->setDocStatus($entity->getDocStatus());
-                    
+                    $r->setRowIdentifer($entity->getSysNumber().'-'.$n);
+                    $r->setRowNumber($n);
                     /**
                      * create procure good receipt.
                      * only for item controlled inventory
@@ -557,7 +527,7 @@ class GrController extends AbstractActionController
                     $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
                     $stock_gr_entity->setTrxDate($entity->getGrDate());
                     $stock_gr_entity->setCurrency($entity->getCurrency());
-                    $stock_gr_entity->setRemarks('PO-GR '.$r->getRowIdentifer());
+                    $stock_gr_entity->setRemarks('PO Gr '.$r->getRowIdentifer());
                     $stock_gr_entity->setWh($entity->getWarehouse());
                     $stock_gr_entity->setCreatedBy($u);
                     $stock_gr_entity->setCreatedOn(new \DateTime());

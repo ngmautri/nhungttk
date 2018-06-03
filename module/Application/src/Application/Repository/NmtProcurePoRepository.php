@@ -264,7 +264,10 @@ WHERE 1
             return null;
         }
     }
-
+    
+    /**
+     * Get Open Po 
+     */
     public function getOpenPoGr($id, $token)
     {
         $sql = "
@@ -272,15 +275,14 @@ SELECT
     nmt_procure_gr_row.id AS gr_row_id,
     nmt_procure_gr_row.po_row_id AS po_row_id,
 	IFNULL(SUM(CASE WHEN nmt_procure_gr_row.is_draft=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS draft_gr,
-    IFNULL(SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS confirmed_gr,
-    IFNULL(nmt_procure_po_row.quantity-SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS confirmed_balance,
-
-    nmt_procure_po_row.quantity-SUM(CASE WHEN nmt_procure_gr_row.is_draft=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END)-SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 THEN  nmt_procure_gr_row.quantity ELSE 0 END) AS open_gr,
+    IFNULL(SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 AND nmt_procure_gr_row.is_posted=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS confirmed_gr,
+    IFNULL(nmt_procure_po_row.quantity-SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 AND nmt_procure_gr_row.is_posted=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END),0) AS confirmed_balance,
+    nmt_procure_po_row.quantity-SUM(CASE WHEN nmt_procure_gr_row.is_draft=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END)-SUM(CASE WHEN nmt_procure_gr_row.is_draft=0 AND nmt_procure_gr_row.is_posted=1 THEN  nmt_procure_gr_row.quantity ELSE 0 END) AS open_gr,
     nmt_procure_po_row.*
 FROM nmt_procure_po_row
 LEFT JOIN nmt_procure_gr_row
 ON nmt_procure_gr_row.po_row_id =  nmt_procure_po_row.id
-WHERE nmt_procure_po_row.po_id=%s
+WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_gr_row.is_active=1
 GROUP BY nmt_procure_po_row.id            
 ";
         

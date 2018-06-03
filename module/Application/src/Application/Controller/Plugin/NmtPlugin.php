@@ -15,8 +15,9 @@ class NmtPlugin extends AbstractPlugin
     protected $doctrineEM;
 
     /**
-     *  Return List of Currency
-     *  @return array
+     * Return List of Currency
+     *
+     * @return array
      */
     public function currencyList()
     {
@@ -30,10 +31,11 @@ class NmtPlugin extends AbstractPlugin
         $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
         return $currency_list;
     }
-    
+
     /**
-     *  Return List of Country
-     *  @return array
+     * Return List of Country
+     *
+     * @return array
      */
     public function countryList()
     {
@@ -286,6 +288,50 @@ class NmtPlugin extends AbstractPlugin
         }
         
         return $diffArray;
+    }
+
+   /**
+    * 
+    *  @param object $entity
+    *  @return string|NULL
+    */
+    public function getDocNumber($entity)
+    {
+        $criteria = array(
+            'isActive' => 1,
+            'subjectClass' => get_class($entity)
+        );
+        
+        /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
+        $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
+        
+        if ($docNumber instanceof \Application\Entity\NmtApplicationDocNumber) {
+            
+            $maxLen = strlen($docNumber->getToNumber());
+            $currentLen = 1;
+            $currentDoc = $docNumber->getPrefix();
+            $current_no = $docNumber->getCurrentNumber();
+            
+            if ($current_no == null) {
+                $current_no = $docNumber->getFromNumber();
+            } else {
+                $current_no ++;
+                $currentLen = strlen($current_no);
+            }
+            
+            $docNumber->setCurrentNumber($current_no);
+            
+            $tmp = "";
+            for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
+                
+                $tmp = $tmp . "0";
+            }
+            
+            $currentDoc = $currentDoc . $tmp . $current_no;
+            return $currentDoc;
+        }
+        
+        return null;
     }
 
     /**

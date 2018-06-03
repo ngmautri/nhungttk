@@ -83,6 +83,8 @@ class VInvoiceController extends AbstractActionController
             }
             
             $entity = new FinVendorInvoice();
+            
+            $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setIsActive($isActive);
             $entity->setCurrentState($currentState);
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
@@ -263,7 +265,7 @@ class VInvoiceController extends AbstractActionController
             
             /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
             $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
-            if ($docNumber != null) {
+            if ($docNumber instanceof \Application\Entity\NmtApplicationDocNumber) {
                 $maxLen = strlen($docNumber->getToNumber());
                 $currentLen = 1;
                 $currentDoc = $docNumber->getPrefix();
@@ -542,7 +544,12 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->flush();
             
             //POST AP
-            $res->postAP($entity->getId(), $entity->getDocStatus());
+            $res->postAP($entity);
+            
+            //Update PROCURE GR
+            
+            //Update INVENTORY GR
+            
             
             // LOG
             /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/

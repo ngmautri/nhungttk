@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePo
  *
- * @ORM\Table(name="nmt_procure_po", indexes={@ORM\Index(name="nmt_procure_po_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_po_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx1", columns={"currency_id"})})
+ * @ORM\Table(name="nmt_procure_po", indexes={@ORM\Index(name="nmt_procure_po_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_po_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_po_FK6_idx", columns={"payment_method"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePoRepository")
-  */
+ */
 class NmtProcurePo
 {
     /**
@@ -212,6 +212,13 @@ class NmtProcurePo
     private $workflowStatus;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
+     */
+    private $transactionStatus;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -260,6 +267,16 @@ class NmtProcurePo
      * })
      */
     private $currency;
+
+    /**
+     * @var \Application\Entity\NmtApplicationPmtMethod
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationPmtMethod")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="payment_method", referencedColumnName="id")
+     * })
+     */
+    private $paymentMethod;
 
 
 
@@ -922,6 +939,30 @@ class NmtProcurePo
     }
 
     /**
+     * Set transactionStatus
+     *
+     * @param string $transactionStatus
+     *
+     * @return NmtProcurePo
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionStatus
+     *
+     * @return string
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
+    }
+
+    /**
      * Set vendor
      *
      * @param \Application\Entity\NmtBpVendor $vendor
@@ -1039,5 +1080,29 @@ class NmtProcurePo
     public function getCurrency()
     {
         return $this->currency;
+    }
+
+    /**
+     * Set paymentMethod
+     *
+     * @param \Application\Entity\NmtApplicationPmtMethod $paymentMethod
+     *
+     * @return NmtProcurePo
+     */
+    public function setPaymentMethod(\Application\Entity\NmtApplicationPmtMethod $paymentMethod = null)
+    {
+        $this->paymentMethod = $paymentMethod;
+
+        return $this;
+    }
+
+    /**
+     * Get paymentMethod
+     *
+     * @return \Application\Entity\NmtApplicationPmtMethod
+     */
+    public function getPaymentMethod()
+    {
+        return $this->paymentMethod;
     }
 }

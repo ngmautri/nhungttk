@@ -246,6 +246,13 @@ class FinVendorInvoiceRow
     private $workflowStatus;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
+     */
+    private $transactionType;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1093,6 +1100,30 @@ class FinVendorInvoiceRow
     public function getWorkflowStatus()
     {
         return $this->workflowStatus;
+    }
+
+    /**
+     * Set transactionType
+     *
+     * @param string $transactionType
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setTransactionType($transactionType)
+    {
+        $this->transactionType = $transactionType;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionType
+     *
+     * @return string
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
     }
 
     /**

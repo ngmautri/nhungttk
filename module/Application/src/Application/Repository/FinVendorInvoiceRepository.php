@@ -16,6 +16,7 @@ class FinVendorInvoiceRepository extends EntityRepository
 
     /** @var \Application\Entity\FinVendorInvoice $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\FinVendorInvoiceRepository")
+    
     private $sql = "
 SELECT
 	fin_vendor_invoice.*,
@@ -499,11 +500,10 @@ WHERE fin_vendor_invoice_row.is_active=1 AND fin_vendor_invoice.id=%s;
     }
 
     /**
-     *
-     * @param int $invoice_id
-     * @param string $token
+     * 
+     *  @param object $entity
      */
-    public function postAP($invoice_id, $status)
+    public function postAP($entity)
     {
         $sql_update_ap_row = "
 UPDATE fin_vendor_invoice_row
@@ -533,7 +533,17 @@ SET nmt_inventory_trx.doc_status = '%s'
 WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
 ";
         
+        
+        if(!$entity instanceof \Application\Entity\FinVendorInvoice){
+            return;
+        }
+            
         try {
+            
+            /** @var \Application\Entity\FinVendorInvoice $entity ;*/
+            
+            $status = $entity->getDocStatus();
+            $invoice_id = $entity->getId();
             
             // update ap_row
             $sql_update_ap_row = sprintf($sql_update_ap_row, $status, $invoice_id);
@@ -549,7 +559,11 @@ WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
             // update stock gr_row
             $sql_update_stock_gr_row = sprintf($sql_update_stock_gr_row, $status, $sql_ap_row_id);
             $this->_em->getConnection()->executeUpdate($sql_update_stock_gr_row);
-        } catch (NoResultException $e) {}
+            
+            
+        } catch (NoResultException $e) {
+            return;
+        }
     }
 
     /**
@@ -641,7 +655,7 @@ WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
                 
                 $this->_em->persist($stock_gr_entity);
                 $this->_em->flush();
-                $m= $m. ' // Stock GR #. '. $gr_row->getId(). ' updated!';
+                $m= $m. ' // Stock GR #. '. $stock_gr_entity->getId(). ' updated!';
                 
             }
             

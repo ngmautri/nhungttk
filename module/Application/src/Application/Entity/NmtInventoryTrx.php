@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryTrx
  *
- * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK16_idx", columns={"gr_row_id"})})
+ * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK16_idx", columns={"gr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx", columns={"inventory_gi_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx1", columns={"inventory_gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK19_idx", columns={"inventory_transfer_id"})})
  * @ORM\Entity
  */
 class NmtInventoryTrx
@@ -267,6 +267,34 @@ class NmtInventoryTrx
     private $isPosted;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="actual_quantity", type="integer", nullable=true)
+     */
+    private $actualQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
+     */
+    private $transactionStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="stock_remarks", type="string", length=45, nullable=true)
+     */
+    private $stockRemarks;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
+     */
+    private $transactionType;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -327,9 +355,9 @@ class NmtInventoryTrx
     private $vendorInvoice;
 
     /**
-     * @var \Application\Entity\NmtProcurePrRow
+     * @var \Application\Entity\NmtProcurePoRow
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePoRow")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="po_row_id", referencedColumnName="id")
      * })
@@ -345,6 +373,36 @@ class NmtInventoryTrx
      * })
      */
     private $grRow;
+
+    /**
+     * @var \Application\Entity\NmtInventoryGi
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryGi")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="inventory_gi_id", referencedColumnName="id")
+     * })
+     */
+    private $inventoryGi;
+
+    /**
+     * @var \Application\Entity\NmtInventoryGr
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryGr")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="inventory_gr_id", referencedColumnName="id")
+     * })
+     */
+    private $inventoryGr;
+
+    /**
+     * @var \Application\Entity\NmtInventoryTransfer
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryTransfer")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="inventory_transfer_id", referencedColumnName="id")
+     * })
+     */
+    private $inventoryTransfer;
 
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
@@ -1259,6 +1317,102 @@ class NmtInventoryTrx
     }
 
     /**
+     * Set actualQuantity
+     *
+     * @param integer $actualQuantity
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setActualQuantity($actualQuantity)
+    {
+        $this->actualQuantity = $actualQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get actualQuantity
+     *
+     * @return integer
+     */
+    public function getActualQuantity()
+    {
+        return $this->actualQuantity;
+    }
+
+    /**
+     * Set transactionStatus
+     *
+     * @param string $transactionStatus
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionStatus
+     *
+     * @return string
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
+    }
+
+    /**
+     * Set stockRemarks
+     *
+     * @param string $stockRemarks
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setStockRemarks($stockRemarks)
+    {
+        $this->stockRemarks = $stockRemarks;
+
+        return $this;
+    }
+
+    /**
+     * Get stockRemarks
+     *
+     * @return string
+     */
+    public function getStockRemarks()
+    {
+        return $this->stockRemarks;
+    }
+
+    /**
+     * Set transactionType
+     *
+     * @param string $transactionType
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setTransactionType($transactionType)
+    {
+        $this->transactionType = $transactionType;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionType
+     *
+     * @return string
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -1405,11 +1559,11 @@ class NmtInventoryTrx
     /**
      * Set poRow
      *
-     * @param \Application\Entity\NmtProcurePrRow $poRow
+     * @param \Application\Entity\NmtProcurePoRow $poRow
      *
      * @return NmtInventoryTrx
      */
-    public function setPoRow(\Application\Entity\NmtProcurePrRow $poRow = null)
+    public function setPoRow(\Application\Entity\NmtProcurePoRow $poRow = null)
     {
         $this->poRow = $poRow;
 
@@ -1419,7 +1573,7 @@ class NmtInventoryTrx
     /**
      * Get poRow
      *
-     * @return \Application\Entity\NmtProcurePrRow
+     * @return \Application\Entity\NmtProcurePoRow
      */
     public function getPoRow()
     {
@@ -1448,6 +1602,78 @@ class NmtInventoryTrx
     public function getGrRow()
     {
         return $this->grRow;
+    }
+
+    /**
+     * Set inventoryGi
+     *
+     * @param \Application\Entity\NmtInventoryGi $inventoryGi
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setInventoryGi(\Application\Entity\NmtInventoryGi $inventoryGi = null)
+    {
+        $this->inventoryGi = $inventoryGi;
+
+        return $this;
+    }
+
+    /**
+     * Get inventoryGi
+     *
+     * @return \Application\Entity\NmtInventoryGi
+     */
+    public function getInventoryGi()
+    {
+        return $this->inventoryGi;
+    }
+
+    /**
+     * Set inventoryGr
+     *
+     * @param \Application\Entity\NmtInventoryGr $inventoryGr
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setInventoryGr(\Application\Entity\NmtInventoryGr $inventoryGr = null)
+    {
+        $this->inventoryGr = $inventoryGr;
+
+        return $this;
+    }
+
+    /**
+     * Get inventoryGr
+     *
+     * @return \Application\Entity\NmtInventoryGr
+     */
+    public function getInventoryGr()
+    {
+        return $this->inventoryGr;
+    }
+
+    /**
+     * Set inventoryTransfer
+     *
+     * @param \Application\Entity\NmtInventoryTransfer $inventoryTransfer
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setInventoryTransfer(\Application\Entity\NmtInventoryTransfer $inventoryTransfer = null)
+    {
+        $this->inventoryTransfer = $inventoryTransfer;
+
+        return $this;
+    }
+
+    /**
+     * Get inventoryTransfer
+     *
+     * @return \Application\Entity\NmtInventoryTransfer
+     */
+    public function getInventoryTransfer()
+    {
+        return $this->inventoryTransfer;
     }
 
     /**

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinVendorInvoice
  *
- * @ORM\Table(name="fin_vendor_invoice", indexes={@ORM\Index(name="fin_vendor_invoice_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="fin_vendor_invoice_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_FK3_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="fin_vendor_invoice_FK6_idx", columns={"po_id"}), @ORM\Index(name="fin_vendor_invoice_FK7_idx", columns={"company_id"})})
+ * @ORM\Table(name="fin_vendor_invoice", indexes={@ORM\Index(name="fin_vendor_invoice_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="fin_vendor_invoice_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_FK3_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="fin_vendor_invoice_FK6_idx", columns={"po_id"}), @ORM\Index(name="fin_vendor_invoice_FK7_idx", columns={"company_id"}), @ORM\Index(name="fin_vendor_invoice_FK8_idx", columns={"payment_method"}), @ORM\Index(name="fin_vendor_invoice_FK9_idx", columns={"inventory_gr_id"}), @ORM\Index(name="fin_vendor_invoice_FK10_idx", columns={"procure_gr_id"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\FinVendorInvoiceRepository")
  */
@@ -191,6 +191,20 @@ class FinVendorInvoice
     private $workflowStatus;
     
     /**
+     * @var string
+     *
+     * @ORM\Column(name="payment_term", type="string", length=45, nullable=true)
+     */
+    private $paymentTerm;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
+     */
+    private $transactionType;
+    
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -199,6 +213,16 @@ class FinVendorInvoice
      * })
      */
     private $vendor;
+    
+    /**
+     * @var \Application\Entity\NmtProcureGr
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGr")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="procure_gr_id", referencedColumnName="id")
+     * })
+     */
+    private $procureGr;
     
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
@@ -259,6 +283,26 @@ class FinVendorInvoice
      * })
      */
     private $company;
+    
+    /**
+     * @var \Application\Entity\NmtApplicationPmtMethod
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationPmtMethod")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="payment_method", referencedColumnName="id")
+     * })
+     */
+    private $paymentMethod;
+    
+    /**
+     * @var \Application\Entity\NmtInventoryGr
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryGr")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="inventory_gr_id", referencedColumnName="id")
+     * })
+     */
+    private $inventoryGr;
     
     
     
@@ -849,6 +893,54 @@ class FinVendorInvoice
     }
     
     /**
+     * Set paymentTerm
+     *
+     * @param string $paymentTerm
+     *
+     * @return FinVendorInvoice
+     */
+    public function setPaymentTerm($paymentTerm)
+    {
+        $this->paymentTerm = $paymentTerm;
+        
+        return $this;
+    }
+    
+    /**
+     * Get paymentTerm
+     *
+     * @return string
+     */
+    public function getPaymentTerm()
+    {
+        return $this->paymentTerm;
+    }
+    
+    /**
+     * Set transactionType
+     *
+     * @param string $transactionType
+     *
+     * @return FinVendorInvoice
+     */
+    public function setTransactionType($transactionType)
+    {
+        $this->transactionType = $transactionType;
+        
+        return $this;
+    }
+    
+    /**
+     * Get transactionType
+     *
+     * @return string
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
+    }
+    
+    /**
      * Set vendor
      *
      * @param \Application\Entity\NmtBpVendor $vendor
@@ -870,6 +962,30 @@ class FinVendorInvoice
     public function getVendor()
     {
         return $this->vendor;
+    }
+    
+    /**
+     * Set procureGr
+     *
+     * @param \Application\Entity\NmtProcureGr $procureGr
+     *
+     * @return FinVendorInvoice
+     */
+    public function setProcureGr(\Application\Entity\NmtProcureGr $procureGr = null)
+    {
+        $this->procureGr = $procureGr;
+        
+        return $this;
+    }
+    
+    /**
+     * Get procureGr
+     *
+     * @return \Application\Entity\NmtProcureGr
+     */
+    public function getProcureGr()
+    {
+        return $this->procureGr;
     }
     
     /**
@@ -1014,5 +1130,53 @@ class FinVendorInvoice
     public function getCompany()
     {
         return $this->company;
+    }
+    
+    /**
+     * Set paymentMethod
+     *
+     * @param \Application\Entity\NmtApplicationPmtMethod $paymentMethod
+     *
+     * @return FinVendorInvoice
+     */
+    public function setPaymentMethod(\Application\Entity\NmtApplicationPmtMethod $paymentMethod = null)
+    {
+        $this->paymentMethod = $paymentMethod;
+        
+        return $this;
+    }
+    
+    /**
+     * Get paymentMethod
+     *
+     * @return \Application\Entity\NmtApplicationPmtMethod
+     */
+    public function getPaymentMethod()
+    {
+        return $this->paymentMethod;
+    }
+    
+    /**
+     * Set inventoryGr
+     *
+     * @param \Application\Entity\NmtInventoryGr $inventoryGr
+     *
+     * @return FinVendorInvoice
+     */
+    public function setInventoryGr(\Application\Entity\NmtInventoryGr $inventoryGr = null)
+    {
+        $this->inventoryGr = $inventoryGr;
+        
+        return $this;
+    }
+    
+    /**
+     * Get inventoryGr
+     *
+     * @return \Application\Entity\NmtInventoryGr
+     */
+    public function getInventoryGr()
+    {
+        return $this->inventoryGr;
     }
 }

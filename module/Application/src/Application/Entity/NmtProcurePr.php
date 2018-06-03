@@ -148,6 +148,13 @@ class NmtProcurePr
     private $workflowStatus;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
+     */
+    private $transactionStatus;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -629,6 +636,30 @@ class NmtProcurePr
     public function getWorkflowStatus()
     {
         return $this->workflowStatus;
+    }
+
+    /**
+     * Set transactionStatus
+     *
+     * @param string $transactionStatus
+     *
+     * @return NmtProcurePr
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionStatus
+     *
+     * @return string
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
     }
 
     /**

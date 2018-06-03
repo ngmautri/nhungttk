@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtProcureGr
+ * NmtInventoryTransfer
  *
- * @ORM\Table(name="nmt_procure_gr", indexes={@ORM\Index(name="nmt_procure_gr_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_gr_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_gr_FK6_idx", columns={"currency_id"})})
+ * @ORM\Table(name="nmt_inventory_transfer", indexes={@ORM\Index(name="nmt_inventory_transfer_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_transfer_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_transfer_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_transfer_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_transfer_FK6_idx", columns={"currency_id"})})
  * @ORM\Entity
  */
-class NmtProcureGr
+class NmtInventoryTransfer
 {
     /**
      * @var integer
@@ -298,7 +298,7 @@ class NmtProcureGr
      *
      * @param string $token
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setToken($token)
     {
@@ -322,7 +322,7 @@ class NmtProcureGr
      *
      * @param string $vendorName
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setVendorName($vendorName)
     {
@@ -346,7 +346,7 @@ class NmtProcureGr
      *
      * @param string $invoiceNo
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setInvoiceNo($invoiceNo)
     {
@@ -370,7 +370,7 @@ class NmtProcureGr
      *
      * @param \DateTime $invoiceDate
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setInvoiceDate($invoiceDate)
     {
@@ -394,7 +394,7 @@ class NmtProcureGr
      *
      * @param string $currencyIso3
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setCurrencyIso3($currencyIso3)
     {
@@ -418,7 +418,7 @@ class NmtProcureGr
      *
      * @param string $exchangeRate
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setExchangeRate($exchangeRate)
     {
@@ -442,7 +442,7 @@ class NmtProcureGr
      *
      * @param string $remarks
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setRemarks($remarks)
     {
@@ -466,7 +466,7 @@ class NmtProcureGr
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setCreatedOn($createdOn)
     {
@@ -490,7 +490,7 @@ class NmtProcureGr
      *
      * @param string $currentState
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setCurrentState($currentState)
     {
@@ -514,7 +514,7 @@ class NmtProcureGr
      *
      * @param boolean $isActive
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setIsActive($isActive)
     {
@@ -538,7 +538,7 @@ class NmtProcureGr
      *
      * @param string $trxType
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setTrxType($trxType)
     {
@@ -562,7 +562,7 @@ class NmtProcureGr
      *
      * @param \DateTime $lastchangeOn
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setLastchangeOn($lastchangeOn)
     {
@@ -586,7 +586,7 @@ class NmtProcureGr
      *
      * @param \DateTime $postingDate
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setPostingDate($postingDate)
     {
@@ -610,7 +610,7 @@ class NmtProcureGr
      *
      * @param \DateTime $grDate
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setGrDate($grDate)
     {
@@ -634,7 +634,7 @@ class NmtProcureGr
      *
      * @param string $sapDoc
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setSapDoc($sapDoc)
     {
@@ -658,7 +658,7 @@ class NmtProcureGr
      *
      * @param string $contractNo
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setContractNo($contractNo)
     {
@@ -682,7 +682,7 @@ class NmtProcureGr
      *
      * @param \DateTime $contractDate
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setContractDate($contractDate)
     {
@@ -706,7 +706,7 @@ class NmtProcureGr
      *
      * @param string $quotationNo
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setQuotationNo($quotationNo)
     {
@@ -730,7 +730,7 @@ class NmtProcureGr
      *
      * @param \DateTime $quotationDate
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setQuotationDate($quotationDate)
     {
@@ -754,7 +754,7 @@ class NmtProcureGr
      *
      * @param string $sysNumber
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setSysNumber($sysNumber)
     {
@@ -778,7 +778,7 @@ class NmtProcureGr
      *
      * @param integer $revisionNo
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setRevisionNo($revisionNo)
     {
@@ -802,7 +802,7 @@ class NmtProcureGr
      *
      * @param string $deliveryMode
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setDeliveryMode($deliveryMode)
     {
@@ -826,7 +826,7 @@ class NmtProcureGr
      *
      * @param string $incoterm
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setIncoterm($incoterm)
     {
@@ -850,7 +850,7 @@ class NmtProcureGr
      *
      * @param string $incotermPlace
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setIncotermPlace($incotermPlace)
     {
@@ -874,7 +874,7 @@ class NmtProcureGr
      *
      * @param string $paymentTerm
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setPaymentTerm($paymentTerm)
     {
@@ -898,7 +898,7 @@ class NmtProcureGr
      *
      * @param string $paymentMethod
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setPaymentMethod($paymentMethod)
     {
@@ -922,7 +922,7 @@ class NmtProcureGr
      *
      * @param string $docStatus
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setDocStatus($docStatus)
     {
@@ -946,7 +946,7 @@ class NmtProcureGr
      *
      * @param boolean $isDraft
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setIsDraft($isDraft)
     {
@@ -970,7 +970,7 @@ class NmtProcureGr
      *
      * @param string $workflowStatus
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setWorkflowStatus($workflowStatus)
     {
@@ -994,7 +994,7 @@ class NmtProcureGr
      *
      * @param string $transactionStatus
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setTransactionStatus($transactionStatus)
     {
@@ -1018,7 +1018,7 @@ class NmtProcureGr
      *
      * @param \Application\Entity\NmtBpVendor $vendor
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
     {
@@ -1042,7 +1042,7 @@ class NmtProcureGr
      *
      * @param \Application\Entity\NmtInventoryWarehouse $warehouse
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
     {
@@ -1066,7 +1066,7 @@ class NmtProcureGr
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
@@ -1090,7 +1090,7 @@ class NmtProcureGr
      *
      * @param \Application\Entity\MlaUsers $lastchangeBy
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
     {
@@ -1114,7 +1114,7 @@ class NmtProcureGr
      *
      * @param \Application\Entity\NmtApplicationCurrency $currency
      *
-     * @return NmtProcureGr
+     * @return NmtInventoryTransfer
      */
     public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
     {

@@ -350,6 +350,9 @@ GROUP BY nmt_procure_po_row.id
         }
     }
 
+    /**
+     * 
+      */
     public function updatePOofGR($id)
     {
         $sql = "
@@ -426,6 +429,8 @@ where nmt_procure_gr_row.po_row_id=%s
         }
     }
 
+    
+    //===================================
     /**
      *
      * @todo GOODS RECEIPT
@@ -467,6 +472,66 @@ WHERE 1
             return $result;
         } catch (NoResultException $e) {
             return null;
+        }
+    }
+
+    
+    /**
+     *
+     *  @param object $entity
+     */
+    public function postGR($entity)
+    {
+        $sql_update_gr_row = "
+UPDATE nmt_procure_gr_row
+SET 
+nmt_procure_gr_row.doc_status = '%s',
+nmt_procure_gr_row.is_posted=1,
+nmt_procure_gr_row.is_draft=0
+WHERE nmt_procure_gr_row.gr_id = %s AND nmt_procure_gr_row.is_active =1
+";
+        
+        $sql_gr_row_id = "
+SELECT
+    fin_vendor_invoice_row.id
+FROM fin_vendor_invoice_row
+WHERE fin_vendor_invoice_row.is_active=1 AND fin_vendor_invoice_row.invoice_id=%s
+";
+        
+           $sql_update_stock_gr_row = "
+UPDATE nmt_inventory_trx
+SET nmt_inventory_trx.doc_status = '%s'
+WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
+";
+        
+        
+        if(!$entity instanceof \Application\Entity\NmtProcureGr){
+            return;
+        }
+        
+        try {
+            
+            /** @var \Application\Entity\NmtProcureGr $entity ;*/
+            
+            $status = $entity->getDocStatus();
+            $entity_id = $entity->getId();
+            
+                       
+            // update procure_gr_row
+            $sql_update_gr_row = sprintf($sql_update_gr_row, $status, $entity_id);
+            $this->_em->getConnection()->executeUpdate($sql_update_gr_row);
+            
+            // $sql_gr_row_id
+            $sql_gr_row_id = sprintf($sql_gr_row_id, $entity_id);
+            
+               
+            // update stock gr_row
+            $sql_update_stock_gr_row = sprintf($sql_update_stock_gr_row, $status, $sql_ap_row_id);
+            $this->_em->getConnection()->executeUpdate($sql_update_stock_gr_row);
+            
+            
+        } catch (NoResultException $e) {
+            return;
         }
     }
 

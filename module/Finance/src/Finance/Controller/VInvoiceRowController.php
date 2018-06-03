@@ -103,6 +103,7 @@ class VInvoiceRowController extends AbstractActionController
                 }
                 
                 $entity = new FinVendorInvoiceRow();
+                $entity->setTransactionType($target->getTransactionType());
                 $entity->setIsActive($isActive);
                 $entity->setDocStatus($target->getDocStatus());
                 
@@ -239,39 +240,44 @@ class VInvoiceRowController extends AbstractActionController
                 
                 /**
                  * create procure good receipt
+                 * if have PR or PO
                  * ===================
                  */
                 
-                $procure_gr_entity = new NmtProcureGrRow();
-                
-                $procure_gr_entity->setIsActive($entity->getIsActive());
-                $procure_gr_entity->setIsDraft(1);
-                $procure_gr_entity->setDocStatus($entity->getDocStatus());
-                $procure_gr_entity->setIsPosted(0);
-                
-                $procure_gr_entity->setInvoice($target);
-                
-                $procure_gr_entity->getItem($entity->getItem());
-                $procure_gr_entity->setApInvoiceRow($entity);
-                $procure_gr_entity->setPrRow($entity->getPrRow());
-                $procure_gr_entity->setPoRow($entity->getPoRow());
-                
-                $procure_gr_entity->setQuantity($entity->getQuantity());
-                $procure_gr_entity->setVendorItemCode($entity->getVendorItemCode());
-                $procure_gr_entity->setUnit($entity->getUnit());
-                $procure_gr_entity->setUnitPrice($entity->getUnitPrice());
-                $procure_gr_entity->setGrDate($target->getGrDate());
-                $procure_gr_entity->setRemarks('A/P ' . $entity->getRowIndentifer());
-                $procure_gr_entity->setWarehouse($target->getWarehouse());
-                
-                $procure_gr_entity->setCreatedBy($u);
-                $procure_gr_entity->setCreatedOn(new \DateTime());
-                $procure_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                $procure_gr_entity->setSourceObject(get_class($entity));
-                $procure_gr_entity->setSourceObjectId($entity->getId());
-                
-                $this->doctrineEM->persist($procure_gr_entity);
-                
+                $procure_gr_entity = null;
+                if ($entity->getPrRow() != null || $entity->getPoRow() != null) {
+                    
+                    $procure_gr_entity = new NmtProcureGrRow();
+                    
+                    $procure_gr_entity->setTransactionType($entity->getTransactionType());
+                    $procure_gr_entity->setIsActive($entity->getIsActive());
+                    $procure_gr_entity->setIsDraft(1);
+                    $procure_gr_entity->setDocStatus($entity->getDocStatus());
+                    $procure_gr_entity->setIsPosted(0);
+                    
+                    $procure_gr_entity->setInvoice($target);
+                    
+                    $procure_gr_entity->getItem($entity->getItem());
+                    $procure_gr_entity->setApInvoiceRow($entity);
+                    $procure_gr_entity->setPrRow($entity->getPrRow());
+                    $procure_gr_entity->setPoRow($entity->getPoRow());
+                    
+                    $procure_gr_entity->setQuantity($entity->getQuantity());
+                    $procure_gr_entity->setVendorItemCode($entity->getVendorItemCode());
+                    $procure_gr_entity->setUnit($entity->getUnit());
+                    $procure_gr_entity->setUnitPrice($entity->getUnitPrice());
+                    $procure_gr_entity->setGrDate($target->getGrDate());
+                    $procure_gr_entity->setRemarks('A/P ' . $entity->getRowIndentifer());
+                    $procure_gr_entity->setWarehouse($target->getWarehouse());
+                    
+                    $procure_gr_entity->setCreatedBy($u);
+                    $procure_gr_entity->setCreatedOn(new \DateTime());
+                    $procure_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $procure_gr_entity->setSourceObject(get_class($entity));
+                    $procure_gr_entity->setSourceObjectId($entity->getId());
+                    
+                    $this->doctrineEM->persist($procure_gr_entity);
+                }
                 /**
                  * create procure good receipt.
                  * only for item controlled inventory
@@ -279,6 +285,7 @@ class VInvoiceRowController extends AbstractActionController
                  */
                 $stock_gr_entity = new NmtInventoryTrx();
                 
+                $stock_gr_entity->setTransactionType($entity->getTransactionType());                
                 $stock_gr_entity->setCurrentState($target->getCurrentState());
                 $stock_gr_entity->setDocStatus($entity->getDocStatus());
                 $stock_gr_entity->setIsActive($entity->getIsActive());
@@ -315,18 +322,20 @@ class VInvoiceRowController extends AbstractActionController
                 
                 // LOGGING
                 
-                $m = sprintf('[OK] GR #%s - %s created, based on AP Row %s', $procure_gr_entity->getId(), $procure_gr_entity->getRowIdentifer(), $entity->getRowIndentifer());
-                
-                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
-                    'priority' => \Zend\Log\Logger::INFO,
-                    'message' => $m,
-                    'createdBy' => $u,
-                    'createdOn' => $createdOn,
-                    'entity_id' => $procure_gr_entity->getId(),
-                    'entity_class' => get_class($procure_gr_entity),
-                    'entity_token' => $procure_gr_entity->getToken()
-                ));
+                if ($procure_gr_entity instanceof NmtProcureGrRow) {
+                    $m = sprintf('[OK] GR #%s - %s created, based on AP Row %s', $procure_gr_entity->getId(), $procure_gr_entity->getRowIdentifer(), $entity->getRowIndentifer());
+                    
+                    // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+                    $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                        'priority' => \Zend\Log\Logger::INFO,
+                        'message' => $m,
+                        'createdBy' => $u,
+                        'createdOn' => $createdOn,
+                        'entity_id' => $procure_gr_entity->getId(),
+                        'entity_class' => get_class($procure_gr_entity),
+                        'entity_token' => $procure_gr_entity->getToken()
+                    ));
+                }
                 
                 $m = sprintf('[OK] Stock GR #%s - %s created, based on AP Row %s', $stock_gr_entity->getId(), $stock_gr_entity->getSysNumber(), $entity->getId());
                 
@@ -522,167 +531,155 @@ class VInvoiceRowController extends AbstractActionController
                     $isActive = 0;
                 }
                 
+                
                 $entity->setRemarks($remarks);
                 $entity->setIsActive($isActive);
+                $quantity = $request->getPost('quantity');
+                $unitPrice = $request->getPost('unitPrice');
+                $taxRate = $request->getPost('taxRate');
                 
-                //
-                if ($entity->getCurrentState() != "finalInvoice") {
-                    $quantity = $request->getPost('quantity');
-                    $unitPrice = $request->getPost('unitPrice');
-                    $taxRate = $request->getPost('taxRate');
+                $n_validated = 0;
+                if ($quantity == null) {
+                    $errors[] = 'Please  enter quantity!';
+                } else {
                     
-                    $n_validated = 0;
-                    if ($quantity == null) {
-                        $errors[] = 'Please  enter quantity!';
+                    if (! is_numeric($quantity)) {
+                        $errors[] = 'Quantity must be a number.';
                     } else {
-                        
-                        if (! is_numeric($quantity)) {
-                            $errors[] = 'Quantity must be a number.';
-                        } else {
-                            if ($quantity <= 0) {
-                                $errors[] = 'Quantity must be greater than 0!';
-                            }
-                            $entity->setQuantity($quantity);
-                            $n_validated ++;
+                        if ($quantity <= 0) {
+                            $errors[] = 'Quantity must be greater than 0!';
                         }
+                        $entity->setQuantity($quantity);
+                        $n_validated ++;
                     }
-                    
-                    if ($unitPrice !== null) {
-                        if (! is_numeric($unitPrice)) {
-                            $errors[] = 'Price is not valid. It must be a number.';
-                        } else {
-                            if ($unitPrice <= 0) {
-                                $errors[] = 'Price must be greate than 0!';
-                            }
-                            $entity->setUnitPrice($unitPrice);
-                            $n_validated ++;
+                }
+                
+                if ($unitPrice !== null) {
+                    if (! is_numeric($unitPrice)) {
+                        $errors[] = 'Price is not valid. It must be a number.';
+                    } else {
+                        if ($unitPrice <= 0) {
+                            $errors[] = 'Price must be greate than 0!';
                         }
+                        $entity->setUnitPrice($unitPrice);
+                        $n_validated ++;
                     }
-                    
-                    if ($n_validated == 2) {
-                        $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
-                        $entity->setNetAmount($netAmount);
-                    }
-                    
-                    if ($taxRate !== null) {
-                        if (! is_numeric($taxRate)) {
-                            $errors[] = '$taxRate is not valid. It must be a number.';
-                        } else {
-                            if ($taxRate < 0) {
-                                $errors[] = '$taxRate must be greate than 0!';
-                            }
-                            $entity->setTaxRate($taxRate);
-                            $n_validated ++;
+                }
+                
+                if ($n_validated == 2) {
+                    $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
+                    $entity->setNetAmount($netAmount);
+                }
+                
+                if ($taxRate !== null) {
+                    if (! is_numeric($taxRate)) {
+                        $errors[] = '$taxRate is not valid. It must be a number.';
+                    } else {
+                        if ($taxRate < 0) {
+                            $errors[] = '$taxRate must be greate than 0!';
                         }
+                        $entity->setTaxRate($taxRate);
+                        $n_validated ++;
                     }
-                    
-                    if ($n_validated == 3) {
-                        $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                        $grossAmount = $entity->getNetAmount() + $taxAmount;
-                        $entity->setTaxAmount($taxAmount);
-                        $entity->setGrossAmount($grossAmount);
-                    }
-                    
-                    /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-                    $nmtPlugin = $this->Nmtplugin();
-                    $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-                    
-                    if (count($changeArray) == 0) {
-                        $nTry ++;
-                        $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-                    }
-                    
-                    if ($nTry >= 3) {
-                        $errors[] = sprintf('Do you really want to edit "AP Row. %s"?', $entity->getRowIndentifer());
-                    }
-                    
-                    if ($nTry == 5) {
-                        $m = sprintf('You might be not ready to edit AP Row (%s). Please try later!', $entity->getRowIndentifer());
-                        $this->flashMessenger()->addMessage($m);
-                        return $this->redirect()->toUrl($redirectUrl);
-                    }
-                    
-                    if (count($errors) > 0) {
-                        return new ViewModel(array(
-                            'redirectUrl' => $redirectUrl,
-                            'errors' => $errors,
-                            'entity' => $entity,
-                            'target' => $target,
-                            'currency_list' => $currency_list,
-                            'n' => $nTry
-                        ));
-                    }
-                    
-                    // NO ERROR
-                    // ++++++++++++++++++++++++
-                    
-                    $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                        "email" => $this->identity()
-                    ));
-                    
-                    $changeOn = new \DateTime();
-                    
-                    $entity->setRevisionNo($entity->getRevisionNo() + 1);
-                    $entity->setLastchangeBy($u);
-                    $entity->setLastchangeOn($changeOn);
-                    
-                    $this->doctrineEM->persist($entity);
-                    $this->doctrineEM->flush();
-                    
-                    $m = sprintf('[OK] A/P Invoice Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIndentifer(), count($changeArray));
-                    
-                    // Trigger Change Log. AbtractController is EventManagerAware.
-                    $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
-                        'priority' => 7,
-                        'message' => $m,
-                        'objectId' => $entity->getId(),
-                        'objectToken' => $entity->getToken(),
-                        'changeArray' => $changeArray,
-                        'changeBy' => $u,
-                        'changeOn' => $changeOn,
-                        'revisionNumber' => $entity->getRevisionNo(),
-                        'changeDate' => $changeOn,
-                        'changeValidFrom' => $changeOn
-                    ));
-                    
-                    // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-                    $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-                        'priority' => \Zend\Log\Logger::INFO,
-                        'message' => $m,
-                        'createdBy' => $u,
-                        'createdOn' => $changeOn,
-                        'entity_id' => $entity->getId(),
-                        'entity_class' => get_class($entity),
-                        'entity_token' => $entity->getToken()
-                    ));
-                    
+                }
+                
+                if ($n_validated == 3) {
+                    $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
+                    $grossAmount = $entity->getNetAmount() + $taxAmount;
+                    $entity->setTaxAmount($taxAmount);
+                    $entity->setGrossAmount($grossAmount);
+                }
+                
+                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+                $nmtPlugin = $this->Nmtplugin();
+                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+                
+                if (count($changeArray) == 0) {
+                    $nTry ++;
+                    $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+                }
+                
+                if ($nTry >= 3) {
+                    $errors[] = sprintf('Do you really want to edit "AP Row. %s"?', $entity->getRowIndentifer());
+                }
+                
+                if ($nTry == 5) {
+                    $m = sprintf('You might be not ready to edit AP Row (%s). Please try later!', $entity->getRowIndentifer());
                     $this->flashMessenger()->addMessage($m);
-                    
-                    $criteria = array(
-                        'invoiceRow' => $entity->getId()
-                    );
-                    
-                    /**@var \Application\Entity\NmtInventoryTrx $stock_gr_entity*/
-                    $stock_gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-                    if ($stock_gr_entity instanceof \Application\Entity\NmtInventoryTrx) {
-                        $stock_gr_entity->setIsActive($isActive);
-                        $stock_gr_entity->setLastChangeBy($u);
-                        $stock_gr_entity->setLastChangeOn($changeOn);
-                        $this->doctrineEM->persist($stock_gr_entity);
-                    }
-                    
-                    $this->doctrineEM->flush();
-                    
-                    $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getInvoice()->getToken() . "&entity_id=" . $entity->getInvoice()->getId();
                     return $this->redirect()->toUrl($redirectUrl);
                 }
+                
+                if (count($errors) > 0) {
+                    return new ViewModel(array(
+                        'redirectUrl' => $redirectUrl,
+                        'errors' => $errors,
+                        'entity' => $entity,
+                        'target' => $entity->getInvoice(),
+                        'currency_list' => $currency_list,
+                        'n' => $nTry
+                    ));
+                }
+                
+                // NO ERROR
+                // ++++++++++++++++++++++++
+                
+                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                    "email" => $this->identity()
+                ));
+                
+                $changeOn = new \DateTime();
+                
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
+                
+                $this->doctrineEM->persist($entity);
+                $this->doctrineEM->flush();
+                
+                $m = sprintf('[OK] A/P Invoice Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIndentifer(), count($changeArray));
+                
+                // Trigger Change Log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+                
+                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $changeOn,
+                    'entity_id' => $entity->getId(),
+                    'entity_class' => get_class($entity),
+                    'entity_token' => $entity->getToken()
+                ));
+                
+                $this->flashMessenger()->addMessage($m);
+                $this->doctrineEM->flush();
+                
+                /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+                $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+                
+                $m = $res->updateDependencyAPRow($entity);
+                
+                // $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getInvoice()->getToken() . "&entity_id=" . $entity->getInvoice()->getId();
+                return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
         // NO Post
         // ====================================
         $redirectUrl = null;
-        if ($this->getRequest()->getHeader('Referer') !== null) {
+        if ($this->getRequest()->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
                 ->getUri();
@@ -699,6 +696,14 @@ class VInvoiceRowController extends AbstractActionController
         $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findOneBy($criteria);
         
         if ($entity instanceof \Application\Entity\FinVendorInvoiceRow) {
+            
+            
+            if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_POSTED){                
+                 $m = sprintf('[Info] A/P Invoice Row #%s - %s  already posted!', $entity->getId(), $entity->getRowIndentifer());
+                 $this->flashMessenger()->addMessage($m);                 
+                return $this->redirect()->toUrl($redirectUrl);
+            }
+            
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
@@ -1327,7 +1332,10 @@ class VInvoiceRowController extends AbstractActionController
                 }
                 
                 if (! is_numeric($unitPrice)) {
-                    /**@todo */
+                /**
+                 *
+                 * @todo
+                 */
                     // $errors[] = 'Price is not valid. It must be a number.';
                 } else {
                     if ($unitPrice <= 0) {
@@ -1365,8 +1373,6 @@ class VInvoiceRowController extends AbstractActionController
                 $entity->setFaRemarks($a['fa_remarks']);
                 $entity->setRowNumber($a['row_number']);
                 $entity->setUnit($a['row_unit']);
-                
-                
                 
                 /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
                 $nmtPlugin = $this->Nmtplugin();

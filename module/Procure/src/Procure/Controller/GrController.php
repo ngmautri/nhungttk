@@ -11,6 +11,7 @@ use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePoRow;
 use Application\Entity\NmtProcureGr;
 use Application\Entity\NmtProcureGrRow;
+use Application\Entity\NmtInventoryTrx;
 
 /**
  * Good Receipt Controller
@@ -21,7 +22,7 @@ use Application\Entity\NmtProcureGrRow;
 class GrController extends AbstractActionController
 {
 
-    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     protected $doctrineEM;
 
@@ -68,7 +69,7 @@ class GrController extends AbstractActionController
                 }
             }
             
-            if ($source == null) {
+            if (! $source instanceof \Application\Entity\NmtProcurePo) {
                 $errors[] = 'PO can\'t be empty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 return new ViewModel(array(
@@ -94,6 +95,7 @@ class GrController extends AbstractActionController
             }
             
             $entity = new NmtProcureGr();
+            
             $entity->setIsActive($isActive);
             // $entity->setGr($source);
             $entity->setCurrentState($currentState);
@@ -120,20 +122,20 @@ class GrController extends AbstractActionController
                 
                 // check if posting period is close
                 /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-                $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                $res = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                
                 /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
+                $postingPeriod = $res->getPostingPeriod(new \DateTime($grDate));
                 
                 if ($postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                    if ($postingPeriod->getPeriodStatus() == "C") {
+                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
                         $errors[] = sprintf('Period "%s" is closed', $postingPeriod->getPeriodName());
                     } else {
                         $entity->setGrDate(new \DateTime($grDate));
                     }
-                }else{   
-                    $errors[] = sprintf('Period for GR Date "%s" is not created yet',$grDate);
+                } else {
+                    $errors[] = sprintf('Period for GR Date "%s" is not created yet', $grDate);
                 }
-                
             }
             
             $warehouse = null;
@@ -197,6 +199,9 @@ class GrController extends AbstractActionController
             // Generate document END
             // =======================
             
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            $entity->setTransactionStatus(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+            
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
@@ -209,16 +214,6 @@ class GrController extends AbstractActionController
             $this->doctrineEM->flush();
             
             // COPY open PO Row to GR document
-            $criteria = array(
-                'isActive' => 1,
-                'po' => $source
-            );
-            
-            $sort_criteria = array(
-                'rowNumber' => 'ASC'
-            );
-            
-            // $po_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findBy($criteria, $sort_criteria);
             
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
@@ -232,11 +227,15 @@ class GrController extends AbstractActionController
                     
                     $n ++;
                     $row_tmp = new NmtProcureGrRow();
+                    $row_tmp->setDocStatus($entity->getDocStatus());
+                    $row_tmp->setTransactionType($entity->getTransactionStatus());
+                    
                     $row_tmp->setGr($entity);
                     $row_tmp->setIsDraft(1);
                     $row_tmp->setIsActive(0);
                     
                     $row_tmp->setRowNumber($n);
+                    
                     // $row_tmp->setRowIndentifer($entity->getSysNumber() . "-$n");
                     $row_tmp->setCurrentState("DRAFT");
                     $row_tmp->setPoRow($r);
@@ -401,8 +400,19 @@ class GrController extends AbstractActionController
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
-    public function postGrAction()
+    public function reviewAction()
     {
+        $this->layout("Procure/layout-fullscreen");
+        
+        $criteria = array(
+            'isActive' => 1
+        );
+        $sort_criteria = array(
+            'currency' => 'ASC'
+        );
+        
+        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {
@@ -424,12 +434,55 @@ class GrController extends AbstractActionController
         }
         
         if ($gr[0] instanceof \Application\Entity\NmtProcureGr) {
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'entity' => $gr[0],
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'total_row' => $gr['total_row']
+                // 'active_row' => $invoice['active_row'],
+                // 'max_row_number' => $invoice['total_row'],
+                // 'net_amount' => $invoice['net_amount'],
+                // 'tax_amount' => $invoice['tax_amount'],
+                // 'gross_amount' => $invoice['gross_amount']
+            ));
+        }
+        // return $this->redirect()->toRoute('access_denied');
+    }
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function postGrAction()
+    {
+        $request = $this->getRequest();
+        
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        } else {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
+        }
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $gr = $res->getGr($id, $token);
+        
+        if ($gr == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        if ($gr[0] instanceof \Application\Entity\NmtProcureGr) {
             
             /**@var \Application\Entity\NmtProcureGr $entity ;*/
             $entity = $gr[0];
             
-            // Set Header:
-            $entity->setDocStatus("C");
+            // UPDATE status
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
             $entity->setIsDraft(0);
             
             /**@var \Application\Entity\MlaUsers $u ;*/
@@ -459,22 +512,72 @@ class GrController extends AbstractActionController
                 'entity_token' => $entity->getToken()
             ));
             
-            // update current state of gr row
-            $query = $this->doctrineEM->createQuery('
-UPDATE Application\Entity\NmtProcureGrRow r SET r.isDraft=0, r.docStatus = :new_state WHERE r.gr =:po_id
-                    ')->setParameters(array(
-                'new_state' => $entity->getDocStatus(),
-                'po_id' => $entity->getId()
-            ));
-            $query->getResult();
+            
+           // CREATE STOCK GR
+           // get gr_row.
+            $criteria = array(
+                'isActive' => 1,
+                'gr' => $entity
+            );
+            $gr_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
+            
+            if(count($gr_rows)>0)
+            {
+                foreach($gr_rows as $r){
+                    
+                    /** @var \Application\Entity\NmtProcureGrRow $r ; */
+                    
+                    // UPDATE status
+                    $r->setIsPosted(1);
+                    $r->setIsDraft(0);
+                    $r->setDocStatus($entity->getDocStatus());
+                    
+                    /**
+                     * create procure good receipt.
+                     * only for item controlled inventory
+                     * ===================
+                     */
+                    $stock_gr_entity = new NmtInventoryTrx();
+                    
+                    $stock_gr_entity->setGrRow($r);
+                    $stock_gr_entity->setTransactionType($r->getTransactionType());
+                    $stock_gr_entity->setCurrentState($entity->getCurrentState());
+                    $stock_gr_entity->setDocStatus($r->getDocStatus());
+                    $stock_gr_entity->setIsActive($r->getIsActive());
+                    
+                    $stock_gr_entity->setVendor($entity->getVendor());
+                    $stock_gr_entity->setFlow('IN');
+                    
+                    $stock_gr_entity->setItem($r->getItem());
+                    $stock_gr_entity->setPrRow($r->getPrRow());
+                    $stock_gr_entity->setPoRow($r->getPoRow());
+                    $stock_gr_entity->setQuantity($r->getQuantity());
+                    $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
+                    $stock_gr_entity->setVendorItemUnit($r->getUnit());
+                    $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
+                    $stock_gr_entity->setTrxDate($entity->getGrDate());
+                    $stock_gr_entity->setCurrency($entity->getCurrency());
+                    $stock_gr_entity->setRemarks('PO-GR '.$r->getRowIdentifer());
+                    $stock_gr_entity->setWh($entity->getWarehouse());
+                    $stock_gr_entity->setCreatedBy($u);
+                    $stock_gr_entity->setCreatedOn(new \DateTime());
+                    $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $stock_gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
+                    
+                    $stock_gr_entity->setTaxRate($r->getTaxRate());
+                      
+                    $this->doctrineEM->persist($stock_gr_entity);
+                }
+                
+                $this->doctrineEM->flush();
+                
+            }
             
             // update P/O
             $message = $res->updatePOofGR($entity->getId());
-            
-            echo count($message);
-            
+              
             $redirectUrl = "/procure/gr/list";
-            // return $this->redirect()->toUrl($redirectUrl);
+            return $this->redirect()->toUrl($redirectUrl);
         }
         return $this->redirect()->toRoute('access_denied');
     }

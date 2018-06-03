@@ -57,6 +57,12 @@ class Constants {
     Const WH_TRANSACTION_STATUS_OPEN = 'draft';
     Const WH_TRANSACTION_STATUS_POSTED='posted';
     
+    //=====================
+    Const TRANSACTION_TYPE_PURCHASED = 'purchased';
+    Const TRANSACTION_TYPE_PURCHASED_RETURN = 'purchase-returned';
+    Const TRANSACTION_TYPE_SALE='sale';
+    Const TRANSACTION_TYPE_SALE_RETURN='sale-returned';
+    
    
 }
 

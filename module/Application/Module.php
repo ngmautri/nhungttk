@@ -63,6 +63,16 @@ class Module
             $controller->getEventManager()
                 ->attachAggregate($LoggingListener);
             
+            // FINANCE Module Listener
+            $financeListener = $sm->get('Application\Listener\FinanceListener');
+            $controller->getEventManager()
+                ->attachAggregate($financeListener);
+            
+            // PROCURE Module Listener
+            $procureListener = $sm->get('Application\Listener\ProcureListener');
+            $controller->getEventManager()
+                ->attachAggregate($procureListener);
+            
             // change module layout
             $controllerClass = get_class($controller);
             $moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
@@ -136,7 +146,7 @@ class Module
 
     /**
      * always put closure here.
-     * 
+     *
      * @return NULL[][]
      */
     public function getServiceConfig()

@@ -56,6 +56,10 @@ class Constants {
     //=====================
     Const WH_TRANSACTION_STATUS_OPEN = 'draft';
     Const WH_TRANSACTION_STATUS_POSTED='posted';
+
+    Const WH_TRANSACTION_IN = 'IN';
+    Const WH_TRANSACTION_OUT='OUT';
+    
     
     //=====================
     Const TRANSACTION_TYPE_PURCHASED = 'purchased';
@@ -63,6 +67,14 @@ class Constants {
     Const TRANSACTION_TYPE_SALE='sale';
     Const TRANSACTION_TYPE_SALE_RETURN='sale-returned';
     
-   
+    //=====================
+    
+    Const ITEM_WITH_SERIAL_NO ='SN';
+    Const ITEM_WITH_BATCH_NO ='B';
+    
+    Const ITEM_TYPE_ITEM ='ITEM';
+    Const ITEM_TYPE_SERVICE ='SERVICE';
+    Const ITEM_TYPE_SOFTWARE ='SOFTWARE';
+    
 }
 

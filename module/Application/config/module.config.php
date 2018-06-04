@@ -230,6 +230,8 @@ return array(
             'Application\Listener\PictureUploadListener' => 'Application\Listener\PictureUploadListenerFactory',
             'Application\Listener\LoggingListener' => 'Application\Listener\LoggingListenerFactory',
             'Application\Listener\ViewListener' => 'Application\Listener\ViewListenerFactory',
+            'Application\Listener\FinanceListener' => 'Application\Listener\FinanceListenerFactory',
+            'Application\Listener\ProcureListener' => 'Application\Listener\ProcureListenerFactory',
             
             
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',

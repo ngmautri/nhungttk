@@ -495,15 +495,12 @@ class VInvoiceController extends AbstractActionController
     {
         $this->layout("Procure/layout-fullscreen");
         
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
         
         $request = $this->getRequest();
         
         $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
-            // return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('access_denied');
         } else {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
@@ -544,13 +541,10 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->flush();
             
             //POST AP
+            //change status of row created before.
             $res->postAP($entity);
             
-            //Update PROCURE GR
-            
-            //Update INVENTORY GR
-            
-            
+                 
             // LOG
             /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
             $nmtPlugin = $this->Nmtplugin();

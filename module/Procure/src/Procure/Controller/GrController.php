@@ -164,7 +164,7 @@ class GrController extends AbstractActionController
             // ======================================================
             
             $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
-             
+            
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
             $entity->setTransactionStatus(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             
@@ -272,26 +272,25 @@ class GrController extends AbstractActionController
             
             foreach ($po_rows as $r) {
                 $total_open_gr = $total_open_gr + $r['open_gr'];
-                $total_draft_gr= $total_draft_gr + $r['draft_gr'];
+                $total_draft_gr = $total_draft_gr + $r['draft_gr'];
             }
             
             if ($total_draft_gr > 0) {
                 
                 $redirectUrl = '/procure/gr/list';
-                $m = sprintf("[OK] There is draft GR for PO #. Pls review and post it!",$source->getSysNumber());
+                $m = sprintf("[OK] There is draft GR for PO #. Pls review and post it!", $source->getSysNumber());
                 $this->flashMessenger()->addMessage($m);
                 
                 return $this->redirect()->toUrl($redirectUrl);
-             }
+            }
             
             if ($total_open_gr == 0) {
                 
-                $redirectUrl = sprintf('/procure/po/add1?token=%s&entity_id=%s',$source->getToken(),$source->getId());
-                $m = sprintf("[INFO] Items of PO # received fully!",$source->getSysNumber());
+                $redirectUrl = sprintf('/procure/po/add1?token=%s&entity_id=%s', $source->getToken(), $source->getId());
+                $m = sprintf("[INFO] Items of PO # received fully!", $source->getSysNumber());
                 $this->flashMessenger()->addMessage($m);
                 
                 return $this->redirect()->toUrl($redirectUrl);
-                
             }
         }
         
@@ -427,6 +426,7 @@ class GrController extends AbstractActionController
     }
 
     /**
+     * POST GR
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
@@ -456,20 +456,21 @@ class GrController extends AbstractActionController
             
             /**@var \Application\Entity\NmtProcureGr $entity ;*/
             $entity = $gr[0];
+            $oldEntity = clone ($entity);
             
             // UPDATE status
-            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-            $entity->setIsDraft(0);
             
             /**@var \Application\Entity\MlaUsers $u ;*/
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
             
-            $createdOn = new \Datetime();
+            $lastchangeOn = new \Datetime();
             
-            // $entity->setCreatedBy($u);
-            // $entity->setCreatedOn($changeOn);
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+            $entity->setIsDraft(0);
+            $entity->getLastchangeBy($u);
+            $entity->setLastchangeOn($lastchangeOn);
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
@@ -477,52 +478,89 @@ class GrController extends AbstractActionController
             $m = sprintf('[OK] GR #%s - %s posted', $entity->getId(), $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
             
+            // LOGGING
+            
             // Trigger: finance.activity.log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'createdBy' => $u,
-                'createdOn' => $createdOn,
+                'createdOn' => $lastchangeOn,
                 'entity_id' => $entity->getId(),
                 'entity_class' => get_class($entity),
                 'entity_token' => $entity->getToken()
             ));
             
+            /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+            $nmtPlugin = $this->Nmtplugin();
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
             
-           // CREATE STOCK GR
-           // get gr_row.
+            $m = sprintf('[OK] GR #%s - %s posted.', $entity->getId(), $entity->getSysNumber());
+            
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $lastchangeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $lastchangeOn,
+                'changeValidFrom' => $lastchangeOn
+            ));
+            
+            // UPDATE GR ROW & CREATE STOCK GR
             $criteria = array(
                 'isActive' => 1,
                 'gr' => $entity
             );
             $gr_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
             
-            if(count($gr_rows)>0)
-            {
-                $n=0;
-                foreach($gr_rows as $r){
+            if (count($gr_rows) > 0) {
+                $n = 0;
+                foreach ($gr_rows as $r) {
                     /** @var \Application\Entity\NmtProcureGrRow $r ; */
                     
-                    
                     // UPDATE status
-                    $n++;
+                    $n ++;
                     $r->setIsPosted(1);
                     $r->setIsDraft(0);
                     $r->setDocStatus($entity->getDocStatus());
-                    $r->setRowIdentifer($entity->getSysNumber().'-'.$n);
+                    $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
                     $r->setRowNumber($n);
-                    //$r->setSourceObject(get_class($entity));
-                    //$r->setSourceObject($entity->getId());
-                    
                     
                     /**
                      * create procure good receipt.
                      * only for item controlled inventory
                      * ===================
                      */
-                    $stock_gr_entity = new NmtInventoryTrx();
+                    
+                    /**
+                     *
+                     * @todo: only for item in stock.
+                     */
+                    if ($r->getItem()->getIsStocked() == 0) {
+                        // continue;
+                    }
+                    
+                    $criteria = array(
+                        'isActive' => 1,
+                        'grRow' => $r
+                    );
+                    $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+                    
+                    $stock_gr_entity = null;
+                    
+                    if ($stock_gr_entity_ck instanceof \Application\Entity\NmtInventoryTrx) {
+                        $stock_gr_entity = $stock_gr_entity_ck;
+                    } else {
+                        $stock_gr_entity = new NmtInventoryTrx();
+                    }
                     
                     $stock_gr_entity->setGrRow($r);
+                    
                     $stock_gr_entity->setSourceClass(get_class($r));
                     $stock_gr_entity->setSourceId($r->getId());
                     
@@ -532,7 +570,7 @@ class GrController extends AbstractActionController
                     $stock_gr_entity->setIsActive($r->getIsActive());
                     
                     $stock_gr_entity->setVendor($entity->getVendor());
-                    $stock_gr_entity->setFlow('IN');
+                    $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
                     
                     $stock_gr_entity->setItem($r->getItem());
                     $stock_gr_entity->setPrRow($r->getPrRow());
@@ -543,7 +581,7 @@ class GrController extends AbstractActionController
                     $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
                     $stock_gr_entity->setTrxDate($entity->getGrDate());
                     $stock_gr_entity->setCurrency($entity->getCurrency());
-                    $stock_gr_entity->setRemarks('PO Gr '.$r->getRowIdentifer());
+                    $stock_gr_entity->setRemarks('PO Gr ' . $r->getRowIdentifer());
                     $stock_gr_entity->setWh($entity->getWarehouse());
                     $stock_gr_entity->setCreatedBy($u);
                     $stock_gr_entity->setCreatedOn(new \DateTime());
@@ -551,17 +589,22 @@ class GrController extends AbstractActionController
                     $stock_gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
                     
                     $stock_gr_entity->setTaxRate($r->getTaxRate());
-                      
+                    
                     $this->doctrineEM->persist($stock_gr_entity);
                 }
                 
                 $this->doctrineEM->flush();
-                
             }
             
+            
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            /* $this->getEventManager()->trigger('procure.gr.post', __METHOD__, array(
+                'entity' => $entity,
+            )); */
+            
             // update P/O
-            $message = $res->updatePOofGR($entity->getId());
-              
+           $res->updatePOofGR($entity->getId());
+            
             $redirectUrl = "/procure/gr/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -1130,7 +1173,7 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         
         ));
     }
-    
+
     /**
      *
      * @return \Zend\View\Helper\ViewModel
@@ -1163,20 +1206,20 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         }
         
         if ($sort_by == null) :
-        $sort_by = "createdOn";
+            $sort_by = "createdOn";
         endif;
         
         if ($sort == null) :
-        $sort = "DESC";
+            $sort = "DESC";
         endif;
         
         /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-        // $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+            // $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
         
         /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-        // $postingPeriod = $p->getPostingPeriodStatus(new \DateTime());
-        // echo $postingPeriod->getPeriodName() . $postingPeriod->getPeriodStatus();
-        // echo $postingPeriod;
+            // $postingPeriod = $p->getPostingPeriodStatus(new \DateTime());
+            // echo $postingPeriod->getPeriodName() . $postingPeriod->getPeriodStatus();
+            // echo $postingPeriod;
         
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
@@ -1199,7 +1242,7 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
             'currentState' => $currentState
-            
+        
         ));
     }
 

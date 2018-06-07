@@ -164,7 +164,7 @@ class Module
                         'hostname' => 'localhost',
                         'database' => 'mla',
                         'username' => 'root',
-                        'password' => 'kflg79'
+                        'password' => 'kflg7986'
                     ));
                 },
                 

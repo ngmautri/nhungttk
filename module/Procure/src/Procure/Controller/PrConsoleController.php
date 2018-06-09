@@ -43,7 +43,7 @@ class PrConsoleController extends AbstractActionController
 
     /**
      *
-     *php C:\1-NMT\1-Eclipse\Workspace\mla-02\public\index.php validate
+     *php C:\1-NMT\1-Eclipse\Workspace\mla-03\public\index.php validate
      * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
      */
     public function validate1Action()
@@ -108,7 +108,7 @@ EOT;
     
     /**
      *
-     *php C:\1-NMT\1-Eclipse\Workspace\mla-02\public\index.php validate
+     *php C:\1-NMT\1-Eclipse\Workspace\mla-03\public\index.php validate
      * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
      */
     public function validateAction()
@@ -129,7 +129,7 @@ EOT;
         $fileName = ROOT.self::BACKUP_FOLDER.'/sql_' . date ("m-d-Y");
         
         //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-        exec('mysqldump -u root --password=kflg79 mla --result-file=' . $fileName . '.sql');
+        exec('mysqldump -u root --password=kflg7986 mla --result-file ' . $fileName . '.sql');
    
         //AbtractController is EventManagerAware.
         $this->getEventManager()->trigger('system.log', __CLASS__, array(

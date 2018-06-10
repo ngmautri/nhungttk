@@ -499,36 +499,38 @@ class QuoteAttachmentController extends AbstractActionController
         $request = $this->getRequest();
         
         // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        ;
+        /*
+         * if (! $request->isXmlHttpRequest()) {
+         * return $this->redirect()->toRoute('access_denied');
+         * }
+         * ;
+         */
         
         $this->layout("layout/user/ajax");
         
         $target_id = (int) $this->params()->fromQuery('target_id');
-        $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
-            'checksum' => $checksum,
             'token' => $token
         );
         
         /**
          *
-         * @todo : Update Target
+         * @todo : Change Target
+         * @var \Application\Entity\NmtProcureQo $target ;
+         *     
          */
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
         
-        if ($target !== null) {
+        if ($target instanceof \Application\Entity\NmtProcureQo) {
             
             /**
              *
              * @todo : Update Target
              */
             $criteria = array(
-                'pr' => $target_id,
+                'qo' => $target_id,
                 'isActive' => 1,
                 'markedForDeletion' => 0,
                 'isPicture' => 1
@@ -576,6 +578,11 @@ class QuoteAttachmentController extends AbstractActionController
         $pic = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
         if ($pic !== null) {
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . $pic->getFileName();
+            
+            /** Important! for UBUNTU */
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+            
+            
             $imageContent = file_get_contents($pic_folder);
             
             $response = $this->getResponse();
@@ -618,6 +625,10 @@ class QuoteAttachmentController extends AbstractActionController
         
         if ($pic !== null) {
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+           
+            /** Important! for UBUNTU */
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+            
             $imageContent = file_get_contents($pic_folder);
             
             $response = $this->getResponse();
@@ -660,6 +671,10 @@ class QuoteAttachmentController extends AbstractActionController
         if ($pic !== null) {
             
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
+            /** Important! for UBUNTU */
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+            
+            
             $imageContent = file_get_contents($pic_folder);
             
             $response = $this->getResponse();
@@ -691,7 +706,7 @@ class QuoteAttachmentController extends AbstractActionController
             
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-            $target_id = $request->getPost('target_id');
+            $target_id = (int) $request->getPost('target_id');
             $token = $request->getPost('token');
             
             $criteria = array(
@@ -738,6 +753,7 @@ class QuoteAttachmentController extends AbstractActionController
                  *
                  * @todo : updated.
                  */
+                $entity->setQo($target);
                 $entity->setTargetClass(get_class($target));
                 $entity->setTargetId($target->getId());
                 
@@ -808,11 +824,8 @@ class QuoteAttachmentController extends AbstractActionController
                 
                 $entity->setRemarks($remarks);
                 
-                // need to set context id
-                $vendor = null;
-                if ($vendor_id > 0) {
-                    $vendor = $this->doctrineEM->find('Application\Entity\NmtBpVendor', $vendor_id);
-                    $entity->setVendor($vendor);
+                if ($target->getVendor() instanceof \Application\Entity\NmtBpVendor) {
+                    $entity->setVendor($target->getVendor());
                 }
                 
                 if (isset($_FILES['attachments'])) {
@@ -892,7 +905,7 @@ class QuoteAttachmentController extends AbstractActionController
                         $criteria = array(
                             "checksum" => $checksum,
                             'targetId' => $target_id,
-                            'targetClass' => get_class($target),
+                            'targetClass' => get_class($target)
                         );
                         $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
                         
@@ -914,7 +927,6 @@ class QuoteAttachmentController extends AbstractActionController
                         // NO ERRORS
                         // Saving into DB....................
                         // ==================================
-                        
                         
                         $name_part1 = Rand::getString(6, self::CHAR_LIST, true) . "_" . Rand::getString(10, self::CHAR_LIST, true);
                         
@@ -996,7 +1008,6 @@ class QuoteAttachmentController extends AbstractActionController
          *
          * @todo : Change Target
          * @var \Application\Entity\NmtProcureQo $target ;
-         *     
          */
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
         
@@ -1046,10 +1057,15 @@ class QuoteAttachmentController extends AbstractActionController
                 'token' => $token
             );
             
-            // Target: Employee
-            $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
+            /**
+             *
+             * @todo : Change Target
+             * @var \Application\Entity\NmtProcureQo $target ;
+             *     
+             */
+            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
             
-            if ($target == null) {
+            if ($target instanceof \Application\Entity\NmtProcureQo) {
                 
                 $errors[] = 'Target object can\'t be empty. Token key might be not valid. Please try again!!';
                 return new ViewModel(array(
@@ -1353,13 +1369,12 @@ class QuoteAttachmentController extends AbstractActionController
             $criteria = array(
                 'id' => $target_id,
                 'token' => $token,
-                'checksum' => $checksum
             );
             
-            /**@var \Application\Entity\NmtProcurePr $target ;*/
-            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+            /**@var \Application\Entity\NmtProcureQo $target ;*/
+            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
             
-            if (! $target instanceof \Application\Entity\NmtProcurePr) {
+            if (! $target instanceof \Application\Entity\NmtProcureQo) {
                 
                 $errors[] = 'Target object can\'t be empty. Token key might be not valid. Please try again!!';
                 $this->flashMessenger()->addMessage('Something wrong!');
@@ -1391,7 +1406,7 @@ class QuoteAttachmentController extends AbstractActionController
                         $ext = 'png';
                     }
                     
-                    // fix uix folder.
+                    // fix unix folder.
                     $tmp_name = ROOT . "/temp/" . md5($target_id . uniqid(microtime())) . '.' . $ext;
                     
                     // remove "data:image/png;base64,"
@@ -1401,9 +1416,13 @@ class QuoteAttachmentController extends AbstractActionController
                     file_put_contents($tmp_name, base64_decode($uri));
                     $checksum = md5_file($tmp_name);
                     
+                    /**
+                     *
+                     * @todo: Update target
+                     */
                     $criteria = array(
                         "checksum" => $checksum,
-                        "pr" => $target_id
+                        "qo" => $target_id
                     );
                     $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
                     
@@ -1413,6 +1432,11 @@ class QuoteAttachmentController extends AbstractActionController
                         
                         $folder_relative = $name[0] . $name[1] . DIRECTORY_SEPARATOR . $name[2] . $name[3] . DIRECTORY_SEPARATOR . $name[4] . $name[5];
                         $folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
+                        
+                        /**
+                         * Important! for UBUNTU
+                         */
+                        $folder = str_replace('\\', '/', $folder);
                         
                         if (! is_dir($folder)) {
                             mkdir($folder, 0777, true); // important
@@ -1424,7 +1448,14 @@ class QuoteAttachmentController extends AbstractActionController
                         
                         $entity = new NmtApplicationAttachment();
                         
-                        $entity->setPr($target);
+                        /**
+                         *
+                         * @todo: Update target
+                         */
+                        $entity->setQo($target);
+                        $entity->setTargetClass(get_class($target));
+                        $entity->setTargetId($target->getId());
+                        
                         
                         // $entity->setFilePassword ( $filePassword );
                         if ($documentSubject == null) {
@@ -1463,17 +1494,23 @@ class QuoteAttachmentController extends AbstractActionController
                         );
                         $old_entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
                         
-                        if ($old_entity !== null) {
+                        if ($old_entity instanceof \Application\Entity\NmtApplicationAttachment) {
                             $old_entity->setIsActive(0);
                             $old_entity->setMarkedForDeletion(1);
                             $old_entity->setLastChangeBy($u);
                             $old_entity->setLastChangeOn(new \DateTime());
                             $entity->setChangeFor($old_entity->getId());
                             
-                            $this->flashMessenger()->addMessage("'" . $old_entity->getDocumentSubject() . "' has been update with new file!");
+                            $m = sprintf('[INFO] %s updated with new file.', $old_entity->getDocumentSubject());
+                            //$this->flashMessenger()->addMessage("'" . $old_entity->getDocumentSubject() . "' has been update with new file!");
                         } else {
-                            $this->flashMessenger()->addMessage("'" . $original_filename . "' has been uploaded sucessfully");
+                            //$this->flashMessenger()->addMessage("'" . $original_filename . "' has been uploaded sucessfully");
+                            $m = sprintf('[OK] %s uploaded.', $original_filename);
+                            
                         }
+                        
+                        $this->flashMessenger()->addMessage($m);
+                        
                         
                         $this->doctrineEM->persist($entity);
                         $this->doctrineEM->flush();
@@ -1487,7 +1524,7 @@ class QuoteAttachmentController extends AbstractActionController
                             'pictures_dir' => $folder
                         ));
                         
-                        $m = sprintf('Image #%s for PR #%s - %s uploaded sucessfully.', $entity->getId(), $target->getId(), $target->getPrAutoNumber());
+                        $m = sprintf('[OK] Image #%s for Quotation #%s - %s uploaded.', $entity->getId(), $target->getId(), $target->getSysNumber());
                         
                         // Trigger Activity Log . AbtractController is EventManagerAware.
                         $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
@@ -1497,7 +1534,7 @@ class QuoteAttachmentController extends AbstractActionController
                             'createdOn' => $createdOn
                         ));
                     } else {
-                        $this->flashMessenger()->addMessage("'" . $original_filename . "' exits already!");
+                        $this->flashMessenger()->addMessage(sprintf('[INFO] %s exits!',$original_filename));
                         $result[] = $original_filename . ' exits already. Please select other file!';
                         $failed ++;
                     }
@@ -1517,6 +1554,7 @@ class QuoteAttachmentController extends AbstractActionController
         }
         
         // NO POST
+        // Initiating.............
         // ========================
         
         $redirectUrl = null;
@@ -1527,18 +1565,16 @@ class QuoteAttachmentController extends AbstractActionController
         }
         
         $id = (int) $this->params()->fromQuery('target_id');
-        $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $id,
-            'checksum' => $checksum,
-            'token' => $token
+             'token' => $token
         );
         
-        /**@var \Application\Entity\NmtProcurePr $target ;*/
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
+        /**@var \Application\Entity\NmtProcureQo $target ;*/
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
         
-        if ($target instanceof \Application\Entity\NmtProcurePr) {
+        if ($target instanceof \Application\Entity\NmtProcureQo) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,

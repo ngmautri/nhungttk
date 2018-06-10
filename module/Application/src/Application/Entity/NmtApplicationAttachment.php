@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationAttachment
  *
- * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_application_attachment_FK6_idx", columns={"item_purchasing_id"}), @ORM\Index(name="nmt_application_attachment_FK7_idx", columns={"pr_id"}), @ORM\Index(name="nmt_application_attachment_idx1", columns={"target_class"}), @ORM\Index(name="nmt_application_attachment_idx2", columns={"target_id"}), @ORM\Index(name="nmt_application_attachment_idx3", columns={"target_token"}), @ORM\Index(name="nmt_application_attachment_FK9_idx", columns={"v_invoice_id"}), @ORM\Index(name="nmt_application_attachment_FK10_idx", columns={"item_id"}), @ORM\Index(name="nmt_application_attachment_FK11_idx", columns={"po_id"}), @ORM\Index(name="nmt_application_attachment_FK12_idx", columns={"po_row_id"})})
+ * @ORM\Table(name="nmt_application_attachment", indexes={@ORM\Index(name="nmt_application_attachment_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_attachment_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_application_attachment_FK3_idx", columns={"project_id"}), @ORM\Index(name="nmt_application_attachment_FK4_idx", columns={"employee_id"}), @ORM\Index(name="nmt_application_attachment_FK5_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_application_attachment_FK6_idx", columns={"item_purchasing_id"}), @ORM\Index(name="nmt_application_attachment_FK7_idx", columns={"pr_id"}), @ORM\Index(name="nmt_application_attachment_idx1", columns={"target_class"}), @ORM\Index(name="nmt_application_attachment_idx2", columns={"target_id"}), @ORM\Index(name="nmt_application_attachment_idx3", columns={"target_token"}), @ORM\Index(name="nmt_application_attachment_FK9_idx", columns={"v_invoice_id"}), @ORM\Index(name="nmt_application_attachment_FK10_idx", columns={"item_id"}), @ORM\Index(name="nmt_application_attachment_FK11_idx", columns={"po_id"}), @ORM\Index(name="nmt_application_attachment_FK12_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_application_attachment_FK13_idx", columns={"qo_id"})})
  * @ORM\Entity
  */
 class NmtApplicationAttachment
@@ -263,6 +263,16 @@ class NmtApplicationAttachment
      * })
      */
     private $poRow;
+
+    /**
+     * @var \Application\Entity\NmtProcureQo
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureQo")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="qo_id", referencedColumnName="id")
+     * })
+     */
+    private $qo;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -1136,6 +1146,30 @@ class NmtApplicationAttachment
     public function getPoRow()
     {
         return $this->poRow;
+    }
+
+    /**
+     * Set qo
+     *
+     * @param \Application\Entity\NmtProcureQo $qo
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setQo(\Application\Entity\NmtProcureQo $qo = null)
+    {
+        $this->qo = $qo;
+
+        return $this;
+    }
+
+    /**
+     * Get qo
+     *
+     * @return \Application\Entity\NmtProcureQo
+     */
+    public function getQo()
+    {
+        return $this->qo;
     }
 
     /**

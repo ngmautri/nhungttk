@@ -1,11 +1,11 @@
-<?php /**@var \Application\Entity\NmtProcurePo $target ;*/ ?>
-<?php $attachment_url =  $this->baseUrl . '/procure/po-attachment' ;?>
+<?php /**@var \Application\Entity\NmtProcureQo $target ;*/ ?>
+<?php $attachment_url =  $this->baseUrl . '/procure/quote-attachment' ;?>
 
 
 <h4>
 	 <?php 
 	 /**@todo: UPDATE TARGET */
- 	echo (!$target== null)? 'Contract /PO: ' . $target->getSysNumber():"";?>
+ 	echo (!$target== null)? 'Quotation: ' . $target->getSysNumber():"";?>
 </h4>
 
 
@@ -62,7 +62,7 @@ if (count ( $errors ) > 0) {
 				id="upload">
 				<i class="fa fa-upload" aria-hidden="true"></i>&nbsp;Upload
 			</button>
-			<a class="btn btn-default" href="<?php echo $redirectUrl ?>"><i class="icon-back"> </i> << Back</a>
+			<a class="btn btn-default" href="<?php echo sprintf('/procure/quote/add1?token=%s&entity_id=%s',$target->getToken(),$target->getId());?>"><i class="icon-back"> </i> << Back</a>
 		</div>
 	</div>
 	

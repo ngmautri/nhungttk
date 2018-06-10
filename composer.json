@@ -9,7 +9,7 @@
 	"homepage" : "http://framework.zend.com/",
 	"require" : {
 		"php" : ">=5.3.3",
-		"PHPOffice/PHPExcel" : "1.8.*",
+		"phpoffice/phpspreadsheet" : "1.3.*",
 		"zendframework/zendframework" : ">2.1.3",
 		"doctrine/doctrine-orm-module" : "0.8.*",
 		"florianv/petrinet" : "2.0.0",
@@ -17,5 +17,6 @@
 		"symfony/workflow" : "~3.3",
 		"symfony/event-dispatcher" : "2.8.*",
 		"endroid/qrcode" : "2.5.0"
-	}
+	},
+	"minimum-stability" : "stable"
 }

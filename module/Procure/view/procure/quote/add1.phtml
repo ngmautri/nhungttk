@@ -1,4 +1,4 @@
-<?php /**@var \Application\Entity\NmtProcurePo $entity ;*/?>
+<?php /**@var \Application\Entity\NmtProcureQo $entity ;*/?>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -14,18 +14,18 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-<h4><strong>Contract /PO:<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
+<h4><strong>Quotation:<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Contract /PO</a></li>
+		<li><a href="#general"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Quotation</a></li>
 		<li><a
-			href="/procure/po-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
+			href="/procure/qoute-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
 			<li><a href="#logistic"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Logistic</a></li>
 			<li><a href="#accounting"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Accounting</a></li>
 	
 	
 		
-				<li><a			href="/procure/po-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+				<li><a			href="/procure/quote-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
 <small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
 		
 	</ul>
@@ -419,7 +419,7 @@ $( "#vendor_name_1" ).autocomplete({
                                 var $grid = $(this).closest('.pq-grid');
                                 //addRow($grid);
                                 
-   		     redirectUrl="/procure/po-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
+   		     redirectUrl="/procure/quote-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
               window.location.href= redirectUrl;
                                  
                                 //debugger;
@@ -482,7 +482,7 @@ $( "#vendor_name_1" ).autocomplete({
                 //alert(sent_list);
                   
                   $.ajax({
-                      url: '/procure/po-row/update-row',
+                      url: '/procure/qo-row/update-row',
                       data: {
                           sent_list: sent_list
                       },
@@ -557,7 +557,7 @@ $( "#vendor_name_1" ).autocomplete({
               location: "remote",
               method: "GET",
               recIndx: "row_id",
-              url: "/procure/po-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+              url: "/procure/quote-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
               getData: function (response) {
            	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
              }
@@ -598,7 +598,7 @@ $( "#vendor_name_1" ).autocomplete({
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/procure/po-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+            redirectUrl="/procure/quote-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

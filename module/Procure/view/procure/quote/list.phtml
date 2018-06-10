@@ -1,13 +1,11 @@
-    <?php /**@var \Application\Entity\NmtProcurePo $a ; */ ?>
-
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
-		<li><a href="#general">Contract /PO List:</a></li>
+		<li><a href="#general">Quotation List:</a></li>
 	</ul>
 <div id="general">
 
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/procure/po/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Contract /PO</a>
+<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/procure/quote/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;<?php echo $this->translate('New Quotation');?></a>
 <hr>
 
 <div>
@@ -139,7 +137,6 @@ else:
 			<td><b>Rows</b></td>
 			<td><b>Curr</b></td>
 			<td><b>Gross <br>amount</b></td>
-			<td><b>Billed <br>amount</b></td>
 			<td><b>Current State</b></td>
 			<td><b>Action</b></td>
 		</tr>
@@ -154,7 +151,7 @@ else:
 		$count ++;
 	
 		
-     /**@var \Application\Entity\NmtProcurePo $a ; */ 
+     /**@var \Application\Entity\NmtProcureQo $a ; */ 
 		$a = $l[0];
 		?>
 		
@@ -163,38 +160,23 @@ else:
 				<?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?>
 			</td>
 			<td>
-<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
+<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/quote/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
 			</td>
 
 			<td>
-<a href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
+<a href="<?php echo $this->baseUrl ?>/procure/quote/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
 			
 			</td>
 			<td><?php echo $a->getContractNo()?></td>
 			<td><span style="color: gray;"><?php if($a->getContractDate()!==null):echo date_format($a->getContractDate(),"d-m-Y");   endif;?></span></td>
-			<td><?php echo $l['active_row'];?></td>
+			<td><?php echo $l['total_row'];?></td>
 			<td><?php echo $a->getCurrency()->getCurrency()?></td>
 			<td>
-			<?php if($l['gross_amount']!==null): 
-			if($a->getCurrency()->getCurrency()=="LAK"):
-			     echo number_format($l['gross_amount'],0); 
-			else:
-		  	   echo number_format($l['gross_amount'],2);
-		  	   endif;
-		  	endif;?>
 			</td>
-			<td>
-			<?php if($l['billed_amount']!==null): 
-			if($a->getCurrency()->getCurrency()=="LAK"):
-			     echo number_format($l['billed_amount'],0); 
-			else:
-		  	   echo number_format($l['billed_amount'],2);
-		  	   endif;
-		  	endif;?>
-		  	</td>
+			
 			<td><?php echo $a->getCurrentState()?></td>
 			<td>
-<a href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+<a href="<?php echo $this->baseUrl ?>/procure/qo/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
 			</td>
 	<?php endforeach; ?>
  </tbody>

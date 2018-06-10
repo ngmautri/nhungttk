@@ -1,4 +1,4 @@
-<?php /**@var \Application\Entity\NmtProcurePo $entity ;*/?>
+<?php /**@var \Application\Entity\NmtProcureQo $entity ;*/?>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -39,7 +39,7 @@ if (count ( $errors ) > 0) {
  
  
  <form id="Create_Inv_Form" class="form-horizontal"
-			action="/procure/po/add" method="post" enctype="multipart/form-data">
+			action="/procure/quote/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 			<fieldset>
@@ -94,7 +94,7 @@ if (count ( $errors ) > 0) {
 								id="contractNo" name="contractNo" 
 								value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
 						</div>
-						<label class="control-label col-sm-2">Contract /PO Date:</label>
+						<label class="control-label col-sm-2">Quotation Date:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
 								id="contractDate" name="contractDate" 

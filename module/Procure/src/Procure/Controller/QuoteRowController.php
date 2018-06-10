@@ -1,5 +1,4 @@
 <?php
-
 namespace Procure\Controller;
 
 use Zend\Escaper\Escaper;
@@ -9,16 +8,16 @@ use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
-use Application\Entity\NmtProcurePo;
-use Application\Entity\NmtProcurePoRow;
-use Application\Entity\NmtInventoryTrx;
+use Application\Entity\NmtProcureQo;
+use Application\Entity\NmtProcureQoRow;
 use PHPExcel;
 use PHPExcel_IOFactory;
 
 /**
  * Quote for PR or Item
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class QuoteRowController extends AbstractActionController
 {
@@ -27,8 +26,8 @@ class QuoteRowController extends AbstractActionController
 
     protected $doctrineEM;
 
-
     /**
+     * Adding new Quote Row
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
@@ -36,47 +35,47 @@ class QuoteRowController extends AbstractActionController
     {
         $this->layout("Procure/layout-fullscreen");
         
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
-        
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
         
         $request = $this->getRequest();
         
         if ($request->isPost()) {
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-            $po_id = $request->getPost('po_id');
-            $po_token = $request->getPost('po_token');
+            $id = $request->getPost('target_id');
+            $token = $request->getPost('target_token');
             
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-            $po = $res->getPo($po_id, $po_token);
+            $po = $res->getQoute($id, $token);
             
             if ($po == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
             
             $target = null;
-            if ($po[0] instanceof NmtProcurePo) {
+            if ($po[0] instanceof NmtProcureQo) {
                 
-                /**@var \Application\Entity\NmtProcurePo $target ;*/
+                /**@var \Application\Entity\NmtProcureQo $target ;*/
                 $target = $po[0];
             }
             
-            if ($target == null) {
+            if (! $target instanceof NmtProcureQo) {
                 
-                $errors[] = 'Contract /PO object can\'t be empty. Or token key is not valid!';
+                $errors[] = 'Quotation object can\'t be empty. Or token key is not valid!';
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
                     'entity' => null,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'total_row' => null,
+                    'max_row_number' => null,
+                    'net_amount' => null,
+                    'tax_amount' => null,
+                    'gross_amount' => null
                 ));
                 // might need redirect
             } else {
@@ -103,12 +102,10 @@ class QuoteRowController extends AbstractActionController
                     $isActive = 0;
                 }
                 
-                // Inventory Transaction:
-                
-                $entity = new NmtProcurePoRow();
+                $entity = new NmtProcureQoRow();
                 $entity->setIsActive($isActive);
                 
-                $entity->setPo($target);
+                $entity->setQo($target);
                 $entity->setRowNumber($rowNumber);
                 
                 $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
@@ -120,10 +117,10 @@ class QuoteRowController extends AbstractActionController
                     $entity->setPrRow($pr_row);
                 }
                 
-                if ($item == null) {
-                    $errors[] = 'Item can\'t be empty!';
-                } else {
+                if ($item instanceof \Application\Entity\NmtInventoryItem) {
                     $entity->setItem($item);
+                } else {
+                    $errors[] = 'Item can\'t be empty!';
                 }
                 
                 $entity->setVendorItemCode($vendorItemCode);
@@ -141,21 +138,26 @@ class QuoteRowController extends AbstractActionController
                     } else {
                         if ($quantity <= 0) {
                             $errors[] = 'Quantity must be greater than 0!';
+                        } else {
+                            $entity->setQuantity($quantity);
+                            $n_validated ++;
                         }
-                        $entity->setQuantity($quantity);
-                        $n_validated ++;
                     }
                 }
                 
-                if ($unitPrice !== null) {
+                if ($unitPrice == null) {
+                    $errors[] = 'Price is not given. It must be a number.';
+                } else {
+                    
                     if (! is_numeric($unitPrice)) {
                         $errors[] = 'Price is not valid. It must be a number.';
                     } else {
                         if ($unitPrice <= 0) {
                             $errors[] = 'Price must be greate than 0!';
+                        } else {
+                            $entity->setUnitPrice($unitPrice);
+                            $n_validated ++;
                         }
-                        $entity->setUnitPrice($unitPrice);
-                        $n_validated ++;
                     }
                 }
                 
@@ -164,15 +166,16 @@ class QuoteRowController extends AbstractActionController
                     $entity->setNetAmount($netAmount);
                 }
                 
-                if ($taxRate !== null) {
+                if ($taxRate != null) {
                     if (! is_numeric($taxRate)) {
                         $errors[] = '$taxRate is not valid. It must be a number.';
                     } else {
                         if ($taxRate < 0) {
                             $errors[] = '$taxRate must be greate than 0!';
+                        } else {
+                            $entity->setTaxRate($taxRate);
+                            $n_validated ++;
                         }
-                        $entity->setTaxRate($taxRate);
-                        $n_validated ++;
                     }
                 }
                 
@@ -193,103 +196,90 @@ class QuoteRowController extends AbstractActionController
                         'errors' => $errors,
                         'target' => $target,
                         'entity' => $entity,
-                        'currency_list' => $currency_list
+                        'currency_list' => $currency_list,
+                        'total_row' => $po['total_row'],
+                        'max_row_number' => $po['total_row'],
+                        'net_amount' => $po['net_amount'],
+                        'tax_amount' => $po['tax_amount'],
+                        'gross_amount' => $po['gross_amount']
                     
                     ));
                 }
                 ;
-                // OK now
+                // NO ERROR
+                // Saving into DB....
+                // ====================
+                
+                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                    'email' => $this->identity()
+                ));
+                $createdOn = new \DateTime();
                 
                 $n = $po['total_row'] + 1;
                 $rowIdentifer = $target->getSysNumber() . "-$n";
                 $entity->setRowIdentifer($rowIdentifer);
                 
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    'email' => $this->identity()
-                ));
-                
                 $entity->setCurrentState($target->getCurrentState());
                 $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                 
                 $entity->setCreatedBy($u);
-                $entity->setCreatedOn(new \DateTime());
+                $entity->setCreatedOn($createdOn);
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 
-                /*
-                 * $gr_entity = new NmtInventoryTrx();
-                 * $gr_entity->setVendor($target->getVendor());
-                 * $gr_entity->setFlow('IN');
-                 * $gr_entity->setInvoiceRow($entity);
-                 * $gr_entity->setItem($entity->getItem());
-                 * $gr_entity->setPrRow($entity->getPrRow());
-                 * $gr_entity->setQuantity($quantity);
-                 * $gr_entity->setVendorItemCode($entity->getVendorItemCode());
-                 * $gr_entity->setVendorItemUnit($entity->getUnit());
-                 * $gr_entity->setVendorUnitPrice($entity->getUnitPrice());
-                 * $gr_entity->setTrxDate($target->getGrDate());
-                 * $gr_entity->setCurrency($target->getCurrency());
-                 * $gr_entity->setRemarks("Auto:");
-                 * $gr_entity->setWh($target->getWarehouse());
-                 * $gr_entity->setCreatedBy($u);
-                 * $gr_entity->setCreatedOn(new \DateTime());
-                 * $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                 * $gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
-                 *
-                 * $gr_entity->setTaxRate($entity->getTaxRate());
-                 *
-                 * $gr_entity->setCurrentState($target->getCurrentState());
-                 *
-                 * if ($target->getCurrentState() == "finalInvoice") {
-                 * $gr_entity->setIsActive(1);
-                 * } else {
-                 * $gr_entity->setIsActive(0);
-                 * }
-                 *
-                 * $this->doctrineEM->persist($gr_entity);
-                 * $this->doctrineEM->flush();
-                 */
-                $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-                $m = sprintf("[OK] Contract /PO Line: %s created!",  $rowIdentifer);
+                $m = sprintf("[OK] Quotation Row #%s created!", $entity->getRowIdentifer());
                 $this->flashMessenger()->addMessage($m);
                 
+                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $createdOn,
+                    'entity_id' => $entity->getId(),
+                    'entity_class' => get_class($entity),
+                    'entity_token' => $entity->getToken()
+                ));
                 
+                $redirectUrl = "/procure/quote-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
-        // NO POST ==========================
+        // NO POST
+        // Initiate....
+        // ==========================
         $redirectUrl = Null;
         
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+            // return $this->redirect()->toRoute('access_denied');
+        } else {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
         }
-        
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
         
         $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $po = $res->getPo($id, $token);
+        $po = $res->getQoute($id, $token);
         
         if ($po == null) {
-            return $this->redirect()->toRoute('access_denied');
+            // return $this->redirect()->toRoute('access_denied');
         }
         
         $target = null;
-        if ($po[0] instanceof NmtProcurePo) {
+        if ($po[0] instanceof NmtProcureQo) {
             $target = $po[0];
         }
         
-        if ($target == null) {
-            return $this->redirect()->toRoute('access_denied');
+        if (! $target instanceof NmtProcureQo) {
+            // return $this->redirect()->toRoute('access_denied');
         }
         
-        $entity = new NmtProcurePoRow();
+        $entity = new NmtProcureQoRow();
         
         // set null
         $entity->setIsActive(1);
@@ -382,34 +372,31 @@ class QuoteRowController extends AbstractActionController
      */
     public function editAction()
     {
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
-        
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
         
         $request = $this->getRequest();
         
         if ($request->isPost()) {
             
             $errors = array();
+           
             $redirectUrl = $request->getPost('redirectUrl');
-            
             $entity_id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
+            $nTry = $request->getPost('n');
+            
             
             $criteria = array(
                 'id' => $entity_id,
                 'token' => $token
             );
             
-            /** @var \Application\Entity\NmtProcurePoRow $entity ; */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findOneBy($criteria);
+            /** @var \Application\Entity\NmtProcureQoRow $entity ; */
+            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQoRow')->findOneBy($criteria);
             
-            if ($entity == null) {
+            if (!$entity instanceof \Application\Entity\NmtProcureQoRow) {
                 
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
@@ -418,15 +405,37 @@ class QuoteRowController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'target' => null,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'n' => $nTry
                 
                 ));
                 
                 // might need redirect
             } else {
                 
+                
+                $oldEntity = clone ($entity);
+                
+                
+                $item_id = $request->getPost('item_id');
+                $pr_row_id = $request->getPost('pr_row_id');
                 $isActive = (int) $request->getPost('isActive');
+                
+                $rowNumber = $request->getPost('rowNumber');
+                
+                $vendorItemCode = $request->getPost('vendorItemCode');
+                $unit = $request->getPost('unit');
+                $conversionFactor = $request->getPost('conversionFactor');
+                $converstionText = $request->getPost('converstionText');
+                
+                $quantity = $request->getPost('quantity');
+                $unitPrice = $request->getPost('unitPrice');
+                $taxRate = $request->getPost('taxRate');
+                $traceStock = $request->getPost('traceStock');
+                
                 $remarks = $request->getPost('remarks');
+                
+                
                 
                 if ($isActive != 1) {
                     $isActive = 0;
@@ -435,11 +444,23 @@ class QuoteRowController extends AbstractActionController
                 $entity->setRemarks($remarks);
                 $entity->setIsActive($isActive);
                 
-                //
-                $quantity = $request->getPost('quantity');
-                $unitPrice = $request->getPost('unitPrice');
-                $taxRate = $request->getPost('taxRate');
                 
+                $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+                $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+                
+                if ($pr_row == null) {
+                    $entity->setPrRow(null);
+                } else {
+                    $entity->setPrRow($pr_row);
+                }
+                
+                if ($item instanceof \Application\Entity\NmtInventoryItem) {
+                    $entity->setItem($item);
+                } else {
+                    $errors[] = 'Item can\'t be empty!';
+                }
+                
+                   
                 $n_validated = 0;
                 if ($quantity == null) {
                     $errors[] = 'Please  enter quantity!';
@@ -450,21 +471,25 @@ class QuoteRowController extends AbstractActionController
                     } else {
                         if ($quantity <= 0) {
                             $errors[] = 'Quantity must be greater than 0!';
+                        } else {
+                            $entity->setQuantity($quantity);
+                            $n_validated ++;
                         }
-                        $entity->setQuantity($quantity);
-                        $n_validated ++;
                     }
                 }
                 
-                if ($unitPrice !== null) {
+                if ($unitPrice == null) {
+                    $errors[] = 'Price is empty. It must be a number.';
+                } else {
                     if (! is_numeric($unitPrice)) {
                         $errors[] = 'Price is not valid. It must be a number.';
                     } else {
                         if ($unitPrice <= 0) {
                             $errors[] = 'Price must be greate than 0!';
+                        } else {
+                            $entity->setUnitPrice($unitPrice);
+                            $n_validated ++;
                         }
-                        $entity->setUnitPrice($unitPrice);
-                        $n_validated ++;
                     }
                 }
                 
@@ -473,7 +498,7 @@ class QuoteRowController extends AbstractActionController
                     $entity->setNetAmount($netAmount);
                 }
                 
-                if ($taxRate !== null) {
+                if ($taxRate != null) {
                     if (! is_numeric($taxRate)) {
                         $errors[] = 'taxRate is not valid. It must be a number.';
                     } else {
@@ -492,54 +517,93 @@ class QuoteRowController extends AbstractActionController
                     $entity->setGrossAmount($grossAmount);
                 }
                 
+                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+                
+                if (count($changeArray) == 0) {
+                    $nTry ++;
+                    $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+                }
+                
+                if ($nTry >= 3) {
+                    $errors[] = sprintf('Do you really want to edit "Quotation Row. %s"?', $entity->getRowIdentifer());
+                }
+                
+                if ($nTry == 5) {
+                    $m = sprintf('You might be not ready to edit Quotation Row (%s). Please try later!', $entity->getRowIdentifer());
+                    $this->flashMessenger()->addMessage($m);
+                    return $this->redirect()->toUrl($redirectUrl);
+                }
+                
                 if (count($errors) > 0) {
                     
                     return new ViewModel(array(
                         'redirectUrl' => $redirectUrl,
                         'errors' => $errors,
-                        'target' => $target,
+                        'target' => $entity->getQo(),
                         'entity' => $entity,
-                        'currency_list' => $currency_list
-                        
+                        'currency_list' => $currency_list,
+                        'n' => $nTry
+                    
                     ));
                 }
                 
                 // NO ERROR
+                // Saving into DB....
+                //=========================
+                
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
-                
+                $changeOn = new \DateTime();
+             
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
                 $entity->setLastchangedBy($u);
-                $entity->setLastChangeOn(new \DateTime());
+                $entity->setLastchangeOn($changeOn);
+                
                 $this->doctrineEM->persist($entity);
-                
-               /*  $criteria = array(
-                    'invoiceRow' => $entity->getId()
-                );
-                */ 
-                
-                /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/
-                
-                /* $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-                if ($gr_entity !== null) {
-                    $gr_entity->setIsActive($isActive);
-                    $gr_entity->setLastChangeBy($u);
-                    $gr_entity->setLastChangeOn(new \DateTime());
-                    $this->doctrineEM->persist($gr_entity);
-                } */ 
-                
                 $this->doctrineEM->flush();
                 
-                $redirectUrl = "/procure/po/add1?token=" . $entity->getPo()->getToken() . "&entity_id=" . $entity->getPo()->getId();
-                $this->flashMessenger()->addMessage('Row ' . $entity->getRowIdentifer() . ' is updated successfully!');
-                // $this->flashMessenger()->addMessage($redirectUrl);
+                $m = sprintf('[OK] Quotation Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
+                
+                // Trigger Change Log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+                
+                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $changeOn,
+                    'entity_id' => $entity->getId(),
+                    'entity_class' => get_class($entity),
+                    'entity_token' => $entity->getToken()
+                ));
+                
+                $this->doctrineEM->flush();
+                $this->flashMessenger()->addMessage($m);
+                
+                $redirectUrl = "/procure/quote/add1?token=" . $entity->getQo()->getToken() . "&entity_id=" . $entity->getQo()->getId();
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
-        // NO Post
+        // NO POST
+        // Initiate ....
+        // ================================
+        
         $redirectUrl = null;
-        if ($this->getRequest()->getHeader('Referer') !== null) {
+        if ($this->getRequest()->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
                 ->getUri();
@@ -552,16 +616,17 @@ class QuoteRowController extends AbstractActionController
             'token' => $token
         );
         
-        /** @var \Application\Entity\NmtProcurePoRow $entity ; */
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findOneBy($criteria);
+        /** @var \Application\Entity\NmtProcureQoRow $entity ; */
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQoRow')->findOneBy($criteria);
         
-        if ($entity !== null) {
+        if ($entity instanceof \Application\Entity\NmtProcureQoRow) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
                 'entity' => $entity,
-                'target' => $entity->getPo(),
-                'currency_list' => $currency_list
+                'target' => $entity->getQo(),
+                'currency_list' => $currency_list,
+                'n' => 0
             
             ));
         } else {
@@ -587,26 +652,23 @@ class QuoteRowController extends AbstractActionController
             'token' => $token
         );
         
-        /**
-         *
-         * @todo : Change Target
-         */
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo')->findOneBy($criteria);
+        /** @var \Application\Entity\NmtProcureQo $target ; */
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
         
         $a_json_final = array();
         $a_json = array();
         $a_json_row = array();
         $escaper = new Escaper();
         
-        if ($target !== null) {
+        if ($target instanceof \Application\Entity\NmtProcureQo) {
             
             $criteria = array(
                 'invoice' => $target_id,
                 'isActive' => 1
             );
             
-            $query = 'SELECT e FROM Application\Entity\NmtProcurePoRow e
-            WHERE e.po=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
+            $query = 'SELECT e FROM Application\Entity\NmtProcureQoRow e
+            WHERE e.qo=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
             
             $list = $this->doctrineEM->createQuery($query)
                 ->setParameters(array(
@@ -623,7 +685,7 @@ class QuoteRowController extends AbstractActionController
                 $total_records = count($list);
                 foreach ($list as $a) {
                     
-                    /** @var \Application\Entity\NmtProcurePoRow $a ;*/
+                    /** @var \Application\Entity\NmtProcureQoRow $a ;*/
                     
                     $a_json_row["row_identifer"] = $a->getRowIdentifer();
                     $a_json_row["row_id"] = $a->getId();
@@ -660,28 +722,22 @@ class QuoteRowController extends AbstractActionController
                     if ($a->getPrRow() !== null) {
                         if ($a->getPrRow()->getPr() !== null) {
                             
-                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
+                            $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $a->getPrRow()
                                 ->getPr()
-                                ->getToken() . '&entity_id=' . $a->getPrRow()
+                                ->getPrName(), $a->getPrRow()
                                 ->getPr()
-                                ->getId() . '&checkum=' . $a->getPrRow()
+                                ->getToken(), $a->getPrRow()
                                 ->getPr()
-                                ->getChecksum() . '"> ... </a>';
+                                ->getId(), $a->getPrRow()
+                                ->getPr()
+                                ->getChecksum());
                             
-                            $a_json_row["pr_number"] = $a->getPrRow()
-                                ->getPr()
-                                ->getPrNumber() . $link;
+                            $a_json_row["pr_number"] = $a->getPrRow()->getRowIdentifer() . $link;
                         }
                     }
                     
-                    // $a_json_row ["item_name"]="";
-                    /*
-                     * if( $a_json_row ["item_name"]!==null){
-                     * $a_json_row ["item_name"] = $escaper->escapeJs($a->getItem()->getItemName());
-                     * }
-                     */
+                    $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->getItem()->getToken(), $a->getItem()->getChecksum(), $a->getItem()->getId());
                     
-                    $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
                             ->getItemName()) . "','1200',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
@@ -690,9 +746,9 @@ class QuoteRowController extends AbstractActionController
                     }
                     
                     if (strlen($a->getItem()->getItemName()) < 35) {
-                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
+                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                     } else {
-                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                     }
                     
                     // $a_json_row["item_name"] = $a->getItem()->getItemName();
@@ -739,7 +795,7 @@ class QuoteRowController extends AbstractActionController
             $target = null;
             if (count($rows) > 0) {
                 $pr_row_1 = $rows[0];
-                if ($pr_row_1 instanceof NmtProcurePoRow) {
+                if ($pr_row_1 instanceof NmtProcureQoRow) {
                     $target = $pr_row_1->getPo();
                 }
                 
@@ -765,7 +821,7 @@ class QuoteRowController extends AbstractActionController
                 $header = 3;
                 $i = 0;
                 
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', "Contract/PO:". $target->getSysNumber());
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', "Contract/PO:" . $target->getSysNumber());
                 
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $header, "FA Remarks");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $header, "#");
@@ -787,8 +843,6 @@ class QuoteRowController extends AbstractActionController
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Ref.No.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "Item.No.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $header, "Po.Item Name");
-                
-                
                 
                 foreach ($rows as $r) {
                     
@@ -841,9 +895,9 @@ class QuoteRowController extends AbstractActionController
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRowIdentifer());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()->getSysNumber());                    
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()
+                        ->getSysNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $l, $a->getVendorItemCode());
-                    
                 }
                 
                 // Rename worksheet
@@ -928,7 +982,7 @@ class QuoteRowController extends AbstractActionController
         
         return $this->redirect()->toRoute('access_denied');
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -948,11 +1002,10 @@ class QuoteRowController extends AbstractActionController
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         $rows = $res->getPoOfItem($item_id, $token);
-         return new ViewModel(array(
+        return new ViewModel(array(
             'rows' => $rows
         ));
     }
-    
 
     /**
      *

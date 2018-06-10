@@ -319,7 +319,8 @@ class VInvoiceController extends AbstractActionController
             return $this->redirect()->toUrl($redirectUrl);
         }
         
-        // NOT POST
+        // NO POST
+        // Initiate ....
         // ================================
         $redirectUrl = null;
         if ($request->getHeader('Referer') != null) {

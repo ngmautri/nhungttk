@@ -8,8 +8,8 @@ use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
-use Application\Entity\NmtProcurePo;
-use Application\Entity\NmtProcurePoRow;
+use Application\Entity\NmtProcureQoRow;
+use Application\Entity\NmtProcureQo;
 
 /**
  * Quotation
@@ -24,7 +24,7 @@ class QuoteController extends AbstractActionController
     protected $doctrineEM;
 
     /**
-     * adding new vendor invoce
+     * Create new Quotation:
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
@@ -32,14 +32,18 @@ class QuoteController extends AbstractActionController
     {
         $this->layout("Procure/layout-fullscreen");
         
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+      
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
         
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }       
         
         $request = $this->getRequest();
         
@@ -49,7 +53,6 @@ class QuoteController extends AbstractActionController
             $redirectUrl = $request->getPost('redirectUrl');
             
             $contractDate = $request->getPost('contractDate');
-            $contractNo = $request->getPost('contractNo');
             $currentState = $request->getPost('currentState');
             
             $vendor_id = (int) $request->getPost('vendor_id');
@@ -61,7 +64,7 @@ class QuoteController extends AbstractActionController
                 $isActive = 0;
             }
             
-            $entity = new NmtProcurePo();
+            $entity = new NmtProcureQo();
             
             $entity->setIsActive($isActive);
             $entity->setCurrentState($currentState);
@@ -72,7 +75,7 @@ class QuoteController extends AbstractActionController
                 $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
             }
             
-            if ($vendor !== null) {
+            if ($vendor instanceof \Application\Entity\NmtBpVendor) {
                 $entity->setVendor($vendor);
                 $entity->setVendorName($vendor->getVendorName());
             } else {
@@ -85,7 +88,7 @@ class QuoteController extends AbstractActionController
                 $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
             }
             
-            if ($currency !== null) {
+            if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
                 $entity->setCurrency($currency);
                 $entity->setCurrencyIso3($currency->getCurrency());
             } else {
@@ -94,18 +97,12 @@ class QuoteController extends AbstractActionController
             
             $validator = new Date();
             
-            if ($contractNo == "") {
-                $errors[] = 'Contract is not correct or empty!';
-            } else {
-                $entity->setContractNo($contractNo);
-            }
-            
+            // Quotation Date.
             if (! $validator->isValid($contractDate)) {
-                $errors[] = 'Contract Date is not correct or empty!';
+                $errors[] = 'Quotation Date is not correct or empty!';
             } else {
                 $entity->setContractDate(new \DateTime($contractDate));
-            }
-            
+            }            
             $entity->setRemarks($remarks);
             
             if (count($errors) > 0) {
@@ -118,68 +115,56 @@ class QuoteController extends AbstractActionController
             }
             
             // NO ERROR
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
+            // Saving into DB
+            // ==============================
+            
+            $createdOn = new \DateTime();
             
             $entity->setCreatedBy($u);
-            $entity->setCreatedOn(new \DateTime());
+            $entity->setCreatedOn($createdOn);
             $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
             
-            // generate document
-            $criteria = array(
-                'isActive' => 1,
-                'subjectClass' => get_class($entity)
-            );
-            
-            /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
-            $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
-            if ($docNumber != null) {
-                $maxLen = strlen($docNumber->getToNumber());
-                $currentLen = 1;
-                $currentDoc = $docNumber->getPrefix();
-                $current_no = $docNumber->getCurrentNumber();
-                
-                if ($current_no == null) {
-                    $current_no = $docNumber->getFromNumber();
-                } else {
-                    $current_no ++;
-                    $currentLen = strlen($current_no);
-                }
-                
-                $docNumber->setCurrentNumber($current_no);
-                
-                $tmp = "";
-                for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
-                    
-                    $tmp = $tmp . "0";
-                }
-                
-                $currentDoc = $currentDoc . $tmp . $current_no;
-                $entity->setSysNumber($currentDoc);
-            }
+            //generate SysNumber;
+            $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-            $m = sprintf("[OK] Contract /PO: %s created!",  $currentDoc);
+            
+            $m = sprintf("[OK] Quotation: %s created!",  $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
+           
+            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $createdOn,
+                'entity_id' => $entity->getId(),
+                'entity_class' => get_class($entity),
+                'entity_token' => $entity->getToken()
+            ));
             
             $redirectUrl = "/procure/po/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
         
-        // NOT POST ================================
+        // NO POST 
+        // Initiate ....
+        // ================================
         $redirectUrl = null;
-        if ($request->getHeader('Referer') != null) {
-            
+        if ($request->getHeader('Referer') != null) {            
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
                 ->getUri();
         }
         
-        $entity = new NmtProcurePo();
-        
+        $entity = new NmtProcureQo();
         $entity->setIsActive(1);
+        
+        // Default currency
+        if ($default_cur instanceof \Application\Entity\NmtApplicationCurrency) {
+            $entity->setCurrency($default_cur);
+        }
         
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
@@ -195,19 +180,15 @@ class QuoteController extends AbstractActionController
      */
     public function add1Action()
     {
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
         
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
         
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+            //return $this->redirect()->toRoute('access_denied');
         }
         $redirectUrl = $this->getRequest()
             ->getHeader('Referer')
@@ -218,18 +199,18 @@ class QuoteController extends AbstractActionController
         
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $po = $res->getPo($id, $token);
+        $po = $res->getQoute($id, $token);
         
         if ($po == null) {
-            return $this->redirect()->toRoute('access_denied');
+            //return $this->redirect()->toRoute('access_denied');
         }
         
         $entity = null;
-        if ($po[0] instanceof NmtProcurePo) {
+        if ($po[0] instanceof NmtProcureQo) {
             $entity = $po[0];
         }
         
-        if ($entity !== null) {
+        if ($entity instanceof  \Application\Entity\NmtProcureQo) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
@@ -241,9 +222,10 @@ class QuoteController extends AbstractActionController
                 'net_amount' => $po['net_amount'],
                 'tax_amount' => $po['tax_amount'],
                 'gross_amount' => $po['gross_amount']
-            ));
+                
+               ));
         } else {
-            return $this->redirect()->toRoute('access_denied');
+            //return $this->redirect()->toRoute('access_denied');
         }
     }
 
@@ -292,7 +274,7 @@ class QuoteController extends AbstractActionController
         }
         
         $entity = null;
-        if ($po[0] instanceof NmtProcurePo) {
+        if ($po[0] instanceof NmtProcureQo) {
             $entity = $po[0];
         }
         
@@ -553,17 +535,9 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
             $sort = "DESC";
         endif;
         
-        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-            // $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-        
-        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-            // $postingPeriod = $p->getPostingPeriodStatus(new \DateTime());
-            // echo $postingPeriod->getPeriodName() . $postingPeriod->getPeriodStatus();
-            // echo $postingPeriod;
-        
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $list = $res->getPoList($is_active, $currentState, null, $sort_by, $sort, 0, 0);
+        $list = $res->getQOList($is_active, $currentState, null, $sort_by, $sort, 0, 0);
         $total_records = count($list);
         $paginator = null;
         

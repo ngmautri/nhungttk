@@ -119,11 +119,14 @@ class AclController extends AbstractActionController
         $new_counter = 0;
         $updated_counter = 0;
         
+        echo count($resources);
+        
         foreach ($resources as $res) {
              /** @var \Application\Entity\NmtApplicationAclResource $saved_res */
             $saved_res = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findOneBy(array(
                 'resource' => $res['resource']
             ));
+            
             
             //
             if ($saved_res == null) {

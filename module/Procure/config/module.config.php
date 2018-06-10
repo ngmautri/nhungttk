@@ -200,8 +200,9 @@ return array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'procure_navi' => 'Procure\Service\ProcureNavigationFactory', // <-- add this
             
-            'Procure\Service\PrSearchService' => 'Procure\Service\PrSearchServiceFactory'
-        
+            'Procure\Service\PrSearchService' => 'Procure\Service\PrSearchServiceFactory',
+            'Procure\Service\GrListener' => 'Procure\Service\GrListenereFactory',
+            
         )
     ),
     

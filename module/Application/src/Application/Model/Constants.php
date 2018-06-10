@@ -1,80 +1,114 @@
 <?php
-
 namespace Application\Model;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-class Constants {
-    
-   /**
-    * Period is open
-    * @var string
-    */
-    Const PERIOD_STATUS_OPEN = 'N';
-    
+class Constants
+{
+
+    /**
+     * Period is open
+     *
+     * @var string
+     */
+    const PERIOD_STATUS_OPEN = 'N';
+
     /**
      * Period is closted
+     *
      * @var string
      */
-    Const PERIOD_STATUS_CLOSED = 'C';
-    
+    const PERIOD_STATUS_CLOSED = 'C';
+
     /**
      * Closing
+     *
      * @var string
      */
-    Const PERIOD_STATUS_CLOSING = 'Y';
-    
+    const PERIOD_STATUS_CLOSING = 'Y';
+
     /**
      * Archived
+     *
      * @var string
      */
-    Const PERIOD_STATUS_ARCHIVED = 'A';    
-    
-    //====================
-        
-    Const DOC_STATUS_DRAFT = 'draft';
-    Const DOC_STATUS_OPEN = 'open';
-    Const DOC_STATUS_CLOSED = 'closed';
-    Const DOC_STATUS_POSTED = 'posted';
-    Const DOC_STATUS_ARCHIVED = 'archived';
-    
-    
-    //=====================
-    Const TRANSACTION_STATUS_OPEN = 'open';
-    Const TRANSACTION_STATUS_CLOSED = 'closed';
-    Const TRANSACTION_STATUS_COMPLETED='completed';
-    Const TRANSACTION_STATUS_UNCOMPLETED='uncompleted';
-    
-    //=====================
-    Const PAYMENT_STATUS_OPEN = 'open';
-    Const PAYMENT_STATUS_PAID='paid';
-    Const PAYMENT_STATUS_UNPAID='unpaid';    
-    
-    //=====================
-    Const WH_TRANSACTION_STATUS_OPEN = 'draft';
-    Const WH_TRANSACTION_STATUS_POSTED='posted';
+    const PERIOD_STATUS_ARCHIVED = 'A';
 
-    Const WH_TRANSACTION_IN = 'IN';
-    Const WH_TRANSACTION_OUT='OUT';
+    // ====================
+    const DOC_STATUS_DRAFT = 'draft';
+
+    const DOC_STATUS_OPEN = 'open';
+
+    const DOC_STATUS_CLOSED = 'closed';
+
+    const DOC_STATUS_POSTED = 'posted';
+
+    const DOC_STATUS_ARCHIVED = 'archived';
+
+    // =====================
+    const TRANSACTION_STATUS_OPEN = 'open';
+
+    const TRANSACTION_STATUS_CLOSED = 'closed';
+
+    const TRANSACTION_STATUS_COMPLETED = 'completed';
+
+    const TRANSACTION_STATUS_UNCOMPLETED = 'uncompleted';
+
+    // =====================
+    const PAYMENT_STATUS_OPEN = 'open';
+
+    const PAYMENT_STATUS_PAID = 'paid';
+
+    const PAYMENT_STATUS_UNPAID = 'unpaid';
+
+    // =====================
+    const WH_TRANSACTION_STATUS_OPEN = 'draft';
+
+    const WH_TRANSACTION_STATUS_POSTED = 'posted';
+
+    const WH_TRANSACTION_IN = 'IN';
+
+    const WH_TRANSACTION_OUT = 'OUT';
+
+    // =====================
+    const TRANSACTION_TYPE_PURCHASED = 'purchased';
+
+    const TRANSACTION_TYPE_PURCHASED_RETURN = 'purchase-returned';
+
+    const TRANSACTION_TYPE_SALE = 'sale';
+
+    const TRANSACTION_TYPE_SALE_RETURN = 'sale-returned';
+
+    // =====================
+    const ITEM_WITH_SERIAL_NO = 'SN';
+
+    const ITEM_WITH_BATCH_NO = 'B';
+
+    const ITEM_TYPE_ITEM = 'ITEM';
+
+    const ITEM_TYPE_SERVICE = 'SERVICE';
+
+    const ITEM_TYPE_SOFTWARE = 'SOFTWARE';
+
+    // =====================
     
-    
-    //=====================
-    Const TRANSACTION_TYPE_PURCHASED = 'purchased';
-    Const TRANSACTION_TYPE_PURCHASED_RETURN = 'purchase-returned';
-    Const TRANSACTION_TYPE_SALE='sale';
-    Const TRANSACTION_TYPE_SALE_RETURN='sale-returned';
-    
-    //=====================
-    
-    Const ITEM_WITH_SERIAL_NO ='SN';
-    Const ITEM_WITH_BATCH_NO ='B';
-    
-    Const ITEM_TYPE_ITEM ='ITEM';
-    Const ITEM_TYPE_SERVICE ='SERVICE';
-    Const ITEM_TYPE_SOFTWARE ='SOFTWARE';
-    
+    const PROCURE_DOC_TYPE_PR = 100;
+
+    const PROCURE_DOC_TYPE_QUOTE = 110;
+
+    const PROCURE_DOC_TYPE_PO = 120;
+
+    const PROCURE_DOC_TYPE_GR = 130;
+
+    const PROCURE_DOC_TYPE_RETURN = 140;
+
+    const PROCURE_DOC_TYPE_AP = 150;
+
+    const PROCURE_DOC_TYPE_CREDIT_MEMO = 160;
+
+    const PROCURE_DOC_TYPE_AP_ACCRUAL = 170;
 }
 

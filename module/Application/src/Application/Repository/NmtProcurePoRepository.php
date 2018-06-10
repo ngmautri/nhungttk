@@ -264,9 +264,9 @@ WHERE 1
             return null;
         }
     }
-    
+
     /**
-     * Get Open Po 
+     * Get Open Po
      */
     public function getOpenPoGr($id, $token)
     {
@@ -297,7 +297,7 @@ GROUP BY nmt_procure_po_row.id
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
             $rsm->addScalarResult("draft_gr", "draft_gr");
             $rsm->addScalarResult("confirmed_gr", "confirmed_gr");
-            $rsm->addScalarResult("confirmed_balance", "confirmed_balance");            
+            $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
             $rsm->addScalarResult("open_gr", "open_gr");
             
             $query = $this->_em->createNativeQuery($sql, $rsm);
@@ -308,7 +308,7 @@ GROUP BY nmt_procure_po_row.id
         }
     }
 
-    public function updatePo($id, $token=null)
+    public function updatePo($id, $token = null)
     {
         $message = "";
         
@@ -336,14 +336,14 @@ GROUP BY nmt_procure_po_row.id
                 
                 if ($total_open_gr == 0) {
                     $po->setCurrentState("COMPLETED");
-                }else{
+                } else {
                     $po->setCurrentState("OPEN");
                 }
                 $this->_em->persist($po);
                 
                 $this->_em->flush();
                 
-                $message=sprintf("[OK] PO #%s updated", $po->getSysNumber());
+                $message = sprintf("[OK] PO #%s updated", $po->getSysNumber());
                 return $message;
             }
         } catch (Exception $e) {
@@ -353,8 +353,7 @@ GROUP BY nmt_procure_po_row.id
     }
 
     /**
-     * 
-      */
+     */
     public function updatePOofGR($id)
     {
         $sql = "
@@ -431,8 +430,7 @@ where nmt_procure_gr_row.po_row_id=%s
         }
     }
 
-    
-    //===================================
+    // ===================================
     /**
      *
      * @todo GOODS RECEIPT
@@ -477,10 +475,9 @@ WHERE 1
         }
     }
 
-    
     /**
      *
-     *  @param object $entity
+     * @param object $entity
      */
     public function postGR($entity)
     {
@@ -500,14 +497,13 @@ FROM fin_vendor_invoice_row
 WHERE fin_vendor_invoice_row.is_active=1 AND fin_vendor_invoice_row.invoice_id=%s
 ";
         
-           $sql_update_stock_gr_row = "
+        $sql_update_stock_gr_row = "
 UPDATE nmt_inventory_trx
 SET nmt_inventory_trx.doc_status = '%s'
 WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
 ";
         
-        
-        if(!$entity instanceof \Application\Entity\NmtProcureGr){
+        if (! $entity instanceof \Application\Entity\NmtProcureGr) {
             return;
         }
         
@@ -518,7 +514,6 @@ WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
             $status = $entity->getDocStatus();
             $entity_id = $entity->getId();
             
-                       
             // update procure_gr_row
             $sql_update_gr_row = sprintf($sql_update_gr_row, $status, $entity_id);
             $this->_em->getConnection()->executeUpdate($sql_update_gr_row);
@@ -526,12 +521,9 @@ WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
             // $sql_gr_row_id
             $sql_gr_row_id = sprintf($sql_gr_row_id, $entity_id);
             
-               
             // update stock gr_row
             $sql_update_stock_gr_row = sprintf($sql_update_stock_gr_row, $status, $sql_ap_row_id);
             $this->_em->getConnection()->executeUpdate($sql_update_stock_gr_row);
-            
-            
         } catch (NoResultException $e) {
             return;
         }
@@ -586,6 +578,105 @@ WHERE 1
             $query = $this->_em->createNativeQuery($sql, $rsm);
             
             $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    // ============================
+    /**
+     * GR List
+     */
+    public function getQOList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    {
+        $sql = "SELECT
+   nmt_procure_qo.*,
+   count(nmt_procure_qo_row.id) as total_row
+FROM nmt_procure_qo
+LEFT JOIN nmt_procure_qo_row
+ON nmt_procure_qo_row.qo_id = nmt_procure_qo.id
+WHERE 1
+";
+        
+        if ($is_active == 1) {
+            $sql = $sql . " AND nmt_procure_qo.is_active=  1";
+        } elseif ($is_active == - 1) {
+            $sql = $sql . " AND nmt_procure_qo.is_active = 0";
+        }
+        
+        if ($current_state != null) {
+            $sql = $sql . " AND nmt_procure_qo.current_state = '" . $current_state . "'";
+        }
+        
+        $sql = $sql . " GROUP BY nmt_procure_qo_row.qo_id";
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureQo', 'nmt_procure_qo');
+            // $rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            // $rsm->addScalarResult("max_row_number", "max_row_number");
+            // $rsm->addScalarResult("net_amount", "net_amount");
+            // $rsm->addScalarResult("tax_amount", "tax_amount");
+            // $rsm->addScalarResult("gross_amount", "gross_amount");
+            // $rsm->addScalarResult("billed_amount", "billed_amount");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    public function getQoute($id, $token)
+    {
+        $sql = "
+SELECT
+	nmt_procure_qo.*,
+	COUNT(CASE WHEN nmt_procure_qo_row.is_active =1 THEN (nmt_procure_qo_row.id) ELSE 0 END) AS active_row,
+ 	COUNT(CASE WHEN nmt_procure_qo_row.id is not null THEN (nmt_procure_qo_row.id) ELSE 0 END) AS total_row,
+  	MAX(nmt_procure_qo_row.row_number) AS max_row_number,    
+   	SUM(CASE WHEN nmt_procure_qo_row.is_active =1 THEN (nmt_procure_qo_row.net_amount) ELSE 0 END) AS net_amount,
+   	SUM(CASE WHEN nmt_procure_qo_row.is_active =1 THEN (nmt_procure_qo_row.tax_amount) ELSE 0 END) AS tax_amount,
+   	SUM(CASE WHEN nmt_procure_qo_row.is_active =1 THEN (nmt_procure_qo_row.gross_amount) ELSE 0 END) AS gross_amount
+ FROM nmt_procure_qo
+
+left join nmt_procure_qo_row
+ON nmt_procure_qo_row.qo_id = nmt_procure_qo.id
+WHERE 1
+
+";
+        
+        $sql = sprintf($sql . " AND nmt_procure_qo.id = %s AND nmt_procure_qo.token='%s' Group BY nmt_procure_qo_row.qo_id", $id, $token);
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureQo', 'nmt_procure_qo');
+            $rsm->addScalarResult("total_row", "total_row");            
+            $rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("max_row_number", "max_row_number");
+            $rsm->addScalarResult("net_amount", "net_amount");
+            $rsm->addScalarResult("tax_amount", "tax_amount");
+            $rsm->addScalarResult("gross_amount", "gross_amount");
+             
+            // echo $sql;
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            
+            $result = $query->getSingleResult();
             return $result;
         } catch (NoResultException $e) {
             return null;

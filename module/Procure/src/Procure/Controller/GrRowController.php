@@ -83,33 +83,33 @@ class GrRowController extends AbstractActionController
                     $a_json_row["row_unit"] = $a->getUnit();
                     $a_json_row["row_quantity"] = $a->getQuantity();
                     
-                    if ($a->getUnitPrice() !== null) {
+                    if ($a->getUnitPrice() != null) {
                         $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), 2);
                     } else {
                         $a_json_row["row_unit_price"] = 0;
                     }
                     
-                    if ($a->getNetAmount() !== null) {
+                    if ($a->getNetAmount() != null) {
                         $a_json_row["row_net"] = number_format($a->getNetAmount(), 2);
                     } else {
                         $a_json_row["row_net"] = 0;
                     }
                     
-                    if ($a->getTaxRate() !== null) {
+                    if ($a->getTaxRate() != null) {
                         $a_json_row["row_tax_rate"] = $a->getTaxRate();
                     } else {
                         $a_json_row["row_tax_rate"] = 0;
                     }
                     
-                    if ($a->getGrossAmount() !== null) {
+                    if ($a->getGrossAmount() != null) {
                         $a_json_row["row_gross"] = number_format($a->getGrossAmount(), 2);
                     } else {
                         $a_json_row["row_gross"] = 0;
                     }
                     
                     $a_json_row["pr_number"] = "";
-                    if ($a->getPrRow() !== null) {
-                        if ($a->getPrRow()->getPr() !== null) {
+                    if ($a->getPrRow() != null) {
+                        if ($a->getPrRow()->getPr() != null) {
                             
                             $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
                             ->getPr()

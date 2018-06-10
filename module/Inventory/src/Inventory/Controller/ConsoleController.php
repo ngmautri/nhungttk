@@ -9,7 +9,7 @@
  */
 namespace Inventory\Controller;
 
-use Zend\I18n\Validator\Int;
+//use Zend\I18n\Validator\Int;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;

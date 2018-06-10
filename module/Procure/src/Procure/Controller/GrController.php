@@ -1151,7 +1151,7 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $list = $res->getGrList($is_active, $currentState, null, $sort_by, $sort, 0, 0);
+        $list = $res->getQ($is_active, $currentState, null, $sort_by, $sort, 0, 0);
         $total_records = count($list);
         $paginator = null;
         

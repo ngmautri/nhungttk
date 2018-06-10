@@ -19,8 +19,8 @@ use MLA\Paginator;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePoRow;
 use Application\Entity\NmtInventoryTrx;
-use PHPExcel;
-use PHPExcel_IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
 
 /**
  *
@@ -393,14 +393,9 @@ class PoRowController extends AbstractActionController
      */
     public function editAction()
     {
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
-        
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
         
         $request = $this->getRequest();
         
@@ -682,7 +677,7 @@ class PoRowController extends AbstractActionController
                     if ($a->getPrRow() !== null) {
                         if ($a->getPrRow()->getPr() !== null) {
                             
-                            $link = sprintf('<a title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;&nbsp;...</a>', $a->getPrRow()
+                            $link = sprintf('<a style="cursor:pointer;color:#337ab7" title="%s" target="_blank" href="/procure/pr/show?token=%s&entity_id=%s&checkum=%s">&nbsp;&nbsp;(i)&nbsp;</a>', $a->getPrRow()
                                 ->getPr()
                                 ->getPrName(), $a->getPrRow()
                                 ->getPr()
@@ -699,11 +694,10 @@ class PoRowController extends AbstractActionController
                     $a_json_row["confirmed_gr"] = $r['confirmed_gr'];
                     $a_json_row["draft_gr"] = $r['draft_gr'];
                     
-                    $url = sprintf("/procure/po-row/gr-of?token=%s&entity_id=%s",$a->getToken(),$a->getId());
+                    $url = sprintf("/procure/po-row/gr-of?token=%s&entity_id=%s", $a->getToken(), $a->getId());
                     $onclick1 = sprintf("showJqueryDialog('Goods Receipt ','1200',$(window).height()-100,'%s','j_loaded_data', true);", $url);
-                    $received_detail = sprintf('<a title="click for goods receipt!" style="color: #337ab7;" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>',$onclick1);
+                    $received_detail = sprintf('<a title="click for goods receipt!" style="color: #337ab7;" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', $onclick1);
                     $a_json_row["open_gr"] = $r['open_gr'] . $received_detail;
-                    
                     
                     $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->getItem()->getToken(), $a->getItem()->getChecksum(), $a->getItem()->getId());
                     
@@ -744,6 +738,8 @@ class PoRowController extends AbstractActionController
     }
 
     /**
+     * 
+     *  @return \Zend\Http\Response
      */
     public function downloadAction()
     {
@@ -759,7 +755,7 @@ class PoRowController extends AbstractActionController
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         $rows = $res->downLoadVendorPo($target_id, $token);
         
-        if ($rows !== null) {
+        if ($rows != + null) {
             
             $target = null;
             if (count($rows) > 0) {
@@ -769,7 +765,7 @@ class PoRowController extends AbstractActionController
                 }
                 
                 // Create new PHPExcel object
-                $objPHPExcel = new PHPExcel();
+                $objPHPExcel = new Spreadsheet();
                 
                 // Set document properties
                 $objPHPExcel->getProperties()
@@ -890,12 +886,12 @@ class PoRowController extends AbstractActionController
                 header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
                 header('Pragma: public'); // HTTP/1.0
                 
-                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+                $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($objPHPExcel, 'Xlsx');
                 $objWriter->save('php://output');
-                exit();
+                 exit();
             }
         }
-        return $this->redirect()->toRoute('access_denied');
+         return $this->redirect()->toRoute('access_denied');
     }
 
     /**
@@ -975,7 +971,7 @@ class PoRowController extends AbstractActionController
             'rows' => $rows
         ));
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -984,9 +980,11 @@ class PoRowController extends AbstractActionController
     {
         $request = $this->getRequest();
         // accepted only ajax request
-        /* if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
-        } */
+        /*
+         * if (! $request->isXmlHttpRequest()) {
+         * return $this->redirect()->toRoute('access_denied');
+         * }
+         */
         $this->layout("layout/user/ajax");
         
         $id = (int) $this->params()->fromQuery('entity_id');
@@ -996,7 +994,7 @@ class PoRowController extends AbstractActionController
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         $rows = $res->getGrOfPoRow($id, $token);
         
-         return new ViewModel(array(
+        return new ViewModel(array(
             'rows' => $rows
         ));
     }

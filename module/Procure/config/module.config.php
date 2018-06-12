@@ -218,6 +218,7 @@ return array(
             'Procure\Controller\Pr' => 'Procure\Controller\PrControllerFactory',
             'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
             'Procure\Controller\PrAttachment' => 'Procure\Controller\PrAttachmentControllerFactory',
+            'Procure\Controller\PrRowAttachment' => 'Procure\Controller\PrRowAttachmentControllerFactory',
             
             'Procure\Controller\Quote' => 'Procure\Controller\QuoteControllerFactory',
             'Procure\Controller\QuoteRow' => 'Procure\Controller\QuoteRowControllerFactory',

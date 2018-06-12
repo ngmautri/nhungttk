@@ -1434,6 +1434,12 @@ class VInvoiceAttachmentController extends AbstractActionController
                         
                         $folder_relative = $name[0] . $name[1] . DIRECTORY_SEPARATOR . $name[2] . $name[3] . DIRECTORY_SEPARATOR . $name[4] . $name[5];
                         $folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
+                                          
+                        
+                        /**
+                         * Important! for UBUNTU
+                         */
+                        $folder = str_replace('\\', '/', $folder);
                         
                         if (! is_dir($folder)) {
                             mkdir($folder, 0777, true); // important

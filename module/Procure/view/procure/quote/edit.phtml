@@ -1,4 +1,4 @@
-<?php /**@var \Application\Entity\NmtProcurePo $entity ;*/?>
+<?php /**@var \Application\Entity\NmtProcureQo $entity ;*/?>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -16,17 +16,21 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general"><small><i class="glyphicon glyphicon-usd"></i></small>&nbsp;Vendor Invoice</a></li>
+		<li><a href="#general">Quotation</a></li>
+		<li><a
+			href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
 
 		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/procure/po/edit" method="post" enctype="multipart/form-data">
+			action="/procure/quote/edit" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 <input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
 <input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+<input type="hidden" name="n" value="<?php echo $nTry;?>" />
 			
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">

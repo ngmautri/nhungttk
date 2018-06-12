@@ -15,14 +15,14 @@ use Zend\Math\Rand;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class QuoteAttachmentController extends AbstractActionController
+class PrRowAttachmentController extends AbstractActionController
 {
 
     /**
      *
      * @todo : TO UPDATE
      */
-    const ATTACHMENT_FOLDER = "/data/procure/attachment/quote";
+    const ATTACHMENT_FOLDER = "/data/procure/attachment/pr-row";
 
     const PDFBOX_FOLDER = "/vendor/pdfbox/";
 
@@ -66,7 +66,7 @@ class QuoteAttachmentController extends AbstractActionController
              * @var \Application\Entity\NmtApplicationAttachment $entity ;
              *     
              */
-            $target = $entity->getQo();
+            $target = $entity->getPr();
             
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
@@ -136,7 +136,7 @@ class QuoteAttachmentController extends AbstractActionController
                  *
                  * @todo : Change Target
                  */
-                $target = $entity->getQo();
+                $target = $entity->getPr();
                 
                 // to Add
                 $target_id = null;
@@ -745,12 +745,12 @@ class QuoteAttachmentController extends AbstractActionController
             /**
              *
              * @todo : Change Target
-             * @var \Application\Entity\NmtProcureQo $target ;
+             * @var \Application\Entity\NmtProcurePrRow $target ;
              *     
              */
-            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
+            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
             
-            if (! $target instanceof \Application\Entity\NmtProcureQo) {
+            if (! $target instanceof \Application\Entity\NmtProcurePrRow) {
                 
                 $errors[] = 'Target object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
@@ -781,7 +781,7 @@ class QuoteAttachmentController extends AbstractActionController
                  *
                  * @todo : updated.
                  */
-                $entity->setQo($target);
+                $entity->setPr($target->getPr());
                 $entity->setTargetClass(get_class($target));
                 $entity->setTargetId($target->getId());
                 
@@ -851,10 +851,6 @@ class QuoteAttachmentController extends AbstractActionController
                 }
                 
                 $entity->setRemarks($remarks);
-                
-                if ($target->getVendor() instanceof \Application\Entity\NmtBpVendor) {
-                    $entity->setVendor($target->getVendor());
-                }
                 
                 if (isset($_FILES['attachments'])) {
                     $file_name = $_FILES['attachments']['name'];
@@ -1002,12 +998,23 @@ class QuoteAttachmentController extends AbstractActionController
                         $entity->setChecksum($checksum);
                         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                         
+                        $createdOn = new \DateTime();
+                        
                         $entity->setCreatedBy($u);
-                        $entity->setCreatedOn(new \DateTime());
+                        $entity->setCreatedOn($createdOn);
                         $this->doctrineEM->persist($entity);
                         $this->doctrineEM->flush();
                         
-                        $this->flashMessenger()->addMessage("'" . $file_name . "' has been uploaded successfully!");
+                        $m = sprintf('[OK] Attachment for PR line #%s added.', $target->getRowIdentifer());
+                        $this->flashMessenger()->addMessage($m);
+                        
+                        // Trigger Activity Log . AbtractController is EventManagerAware.
+                        $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                            'priority' => \Zend\Log\Logger::INFO,
+                            'message' => $m,
+                            'createdBy' => $u,
+                            'createdOn' => $createdOn
+                        ));
                         return $this->redirect()->toUrl($redirectUrl);
                     }
                 }
@@ -1023,6 +1030,8 @@ class QuoteAttachmentController extends AbstractActionController
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
                 ->getUri();
+        }else{
+            return $this->redirect()->toRoute('access_denied');
         }
         
         $id = (int) $this->params()->fromQuery('target_id');
@@ -1040,329 +1049,6 @@ class QuoteAttachmentController extends AbstractActionController
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
         
         if ($target instanceof \Application\Entity\NmtProcureQo) {
-            
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'target' => $target,
-                'entity' => null
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
-    }
-
-    /**
-     *
-     * @deprecated
-     *
-     * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
-     */
-    public function uploadPictureAction()
-    {
-        $request = $this->getRequest();
-        $redirectUrl = null;
-        
-        if ($request->getHeader('Referer') == null) {
-            // return $this->redirect ()->toRoute ( 'access_denied' );
-        } else {
-            $redirectUrl = $request->getHeader('Referer')->getUri();
-        }
-        
-        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-            "email" => $this->identity()
-        ));
-        
-        if ($request->isPost()) {
-            
-            $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-            $target_id = $request->getPost('target_id');
-            $token = $request->getPost('token');
-            
-            $criteria = array(
-                'id' => $target_id,
-                'token' => $token
-            );
-            
-            /**
-             *
-             * @todo : Change Target
-             * @var \Application\Entity\NmtProcureQo $target ;
-             *     
-             */
-            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
-            
-            if ($target instanceof \Application\Entity\NmtProcureQo) {
-                
-                $errors[] = 'Target object can\'t be empty. Token key might be not valid. Please try again!!';
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'target' => null,
-                    'entity' => null
-                ));
-                
-                // might need redirect
-            } else {
-                
-                $vendor_id = $request->getPost('vendor_id');
-                $documentSubject = $request->getPost('documentSubject');
-                $validFrom = $request->getPost('validFrom');
-                $validTo = $request->getPost('validTo');
-                $validFrom = $request->getPost('validFrom');
-                
-                $isActive = $request->getPost('isActive');
-                $markedForDeletion = $request->getPost('markedForDeletion');
-                $filePassword = $request->getPost('filePassword');
-                $visibility = $request->getPost('visibility');
-                
-                $entity = new NmtApplicationAttachment();
-                
-                // Target: EMPLOYEE
-                $entity->setEmployee($target);
-                
-                $remarks = $request->getPost('remarks');
-                
-                /*
-                 * if ($documentSubject == null) {
-                 * $errors [] = 'Please give document subject!';
-                 * } else {
-                 * $entity->setDocumentSubject ( $documentSubject );
-                 * }
-                 */
-                
-                if ($documentSubject == null) {
-                    $documentSubject = 'Picture';
-                }
-                $entity->setDocumentSubject($documentSubject);
-                
-                if ($isActive != 1) {
-                    $isActive = 0;
-                }
-                
-                if ($markedForDeletion != 1) {
-                    $markedForDeletion = 0;
-                }
-                
-                if ($visibility != 1) {
-                    $visibility = 0;
-                }
-                
-                if ($filePassword === null or $filePassword == "") {
-                    $filePassword = self::PDF_PASSWORD;
-                }
-                
-                $entity->setIsActive(1);
-                $entity->setMarkedForDeletion(0);
-                $entity->setVisibility(1);
-                // validator.
-                $validator = new Date();
-                $date_to_validate = 2;
-                $date_validated = 0;
-                
-                // Empty is OK
-                if ($validFrom !== null) {
-                    if ($validFrom !== "") {
-                        if (! $validator->isValid($validFrom)) {
-                            $errors[] = 'Start date is not correct or empty!';
-                        } else {
-                            $date_validated ++;
-                            $entity->setValidFrom(new \DateTime($validFrom));
-                        }
-                    }
-                }
-                
-                // Empty is OK
-                if ($validTo !== null) {
-                    if ($validTo !== "") {
-                        
-                        if (! $validator->isValid($validTo)) {
-                            $errors[] = 'End date is not correct or empty!';
-                        } else {
-                            $date_validated ++;
-                            $entity->setValidTo(new \DateTime($validTo));
-                        }
-                    }
-                }
-                
-                // all date corrected
-                if ($date_validated == $date_to_validate) {
-                    
-                    if ($validFrom > $validTo) {
-                        $errors[] = 'End date must be in future!';
-                    }
-                }
-                
-                $entity->setRemarks($remarks);
-                
-                // need to set context id
-                $vendor = null;
-                if ($vendor_id > 0) {
-                    $vendor = $this->doctrineEM->find('Application\Entity\NmtBpVendor', $vendor_id);
-                    $entity->setVendor($vendor);
-                }
-                
-                if (isset($_FILES['attachments'])) {
-                    $file_name = $_FILES['attachments']['name'];
-                    $file_size = $_FILES['attachments']['size'];
-                    $file_tmp = $_FILES['attachments']['tmp_name'];
-                    $file_type = $_FILES['attachments']['type'];
-                    $file_ext = strtolower(end(explode('.', $_FILES['attachments']['name'])));
-                    
-                    // attachement required?
-                    if ($file_tmp == "" or $file_tmp === null) {
-                        
-                        $errors[] = 'Attachment can\'t be empty!';
-                        return new ViewModel(array(
-                            'redirectUrl' => $redirectUrl,
-                            'errors' => $errors,
-                            'target' => $target,
-                            'entity' => $entity
-                        ));
-                    } else {
-                        
-                        $ext = '';
-                        $isPicture = 0;
-                        if (preg_match('/(jpg|jpeg)$/', $file_type)) {
-                            $ext = 'jpg';
-                            $isPicture = 1;
-                        } else if (preg_match('/(gif)$/', $file_type)) {
-                            $ext = 'gif';
-                            $isPicture = 1;
-                        } else if (preg_match('/(png)$/', $file_type)) {
-                            $ext = 'png';
-                            $isPicture = 1;
-                        } else if (preg_match('/(pdf)$/', $file_type)) {
-                            $ext = 'pdf';
-                        } else if (preg_match('/(vnd.ms-excel)$/', $file_type)) {
-                            $ext = 'xls';
-                        } else if (preg_match('/(vnd.openxmlformats-officedocument.spreadsheetml.sheet)$/', $file_type)) {
-                            $ext = 'xlsx';
-                        } else if (preg_match('/(msword)$/', $file_type)) {
-                            $ext = 'doc';
-                        } else if (preg_match('/(vnd.openxmlformats-officedocument.wordprocessingml.document)$/', $file_type)) {
-                            $ext = 'docx';
-                        } else if (preg_match('/(x-zip-compressed)$/', $file_type)) {
-                            $ext = 'zip';
-                        } else if (preg_match('/(octet-stream)$/', $file_type)) {
-                            $ext = $file_ext;
-                        }
-                        
-                        $expensions = array(
-                            "jpeg",
-                            "jpg",
-                            "png",
-                            "gif"
-                        );
-                        
-                        if (in_array($ext, $expensions) === false) {
-                            $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "jpeg","jpg","png","gif"!';
-                        }
-                        
-                        if ($file_size > 2097152) {
-                            $errors[] = 'File size must be  2 MB';
-                        }
-                        
-                        $checksum = md5_file($file_tmp);
-                        
-                        // change target
-                        $criteria = array(
-                            "checksum" => $checksum,
-                            "employee" => $target_id
-                        );
-                        $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
-                        
-                        if (count($ck) > 0) {
-                            $errors[] = 'Document: "' . $file_name . '"  exits already';
-                        }
-                        
-                        if (count($errors) > 0) {
-                            
-                            return new ViewModel(array(
-                                'redirectUrl' => $redirectUrl,
-                                'errors' => $errors,
-                                'target' => $target,
-                                'entity' => $entity
-                            ));
-                        }
-                        ;
-                        
-                        $name_part1 = Rand::getString(6, self::CHAR_LIST, true) . "_" . Rand::getString(10, self::CHAR_LIST, true);
-                        $name = md5($target_id . $checksum . uniqid(microtime())) . '_' . $name_part1 . '.' . $ext;
-                        
-                        $folder_relative = $name[0] . $name[1] . DIRECTORY_SEPARATOR . $name[2] . $name[3] . DIRECTORY_SEPARATOR . $name[4] . $name[5];
-                        $folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
-                        
-                        if (! is_dir($folder)) {
-                            mkdir($folder, 0777, true); // important
-                        }
-                        
-                        // echo ("$folder/$name");
-                        move_uploaded_file($file_tmp, "$folder/$name");
-                        
-                        // trigger uploadPicture. AbtractController is EventManagerAware.
-                        $this->getEventManager()->trigger('uploadPicture', __CLASS__, array(
-                            'picture_name' => $name,
-                            'pictures_dir' => $folder
-                        ));
-                        
-                        /*
-                         * if ($ext == "pdf") {
-                         * $pdf_box = ROOT . self::PDFBOX_FOLDER;
-                         *
-                         * // java -jar pdfbox-app-2.0.5.jar Encrypt [OPTIONS] <password> <inputfile>
-                         * exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-                         *
-                         * // extract text:
-                         * exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar ExtractText -password ' . $filePassword . ' ' . "$folder/$name" . ' ' . "$folder/$name" . '.txt' );
-                         * }
-                         */
-                        
-                        // update database
-                        $entity->setFilePassword($filePassword);
-                        $entity->setIsPicture($isPicture);
-                        $entity->setFilename($name);
-                        $entity->setFiletype($file_type);
-                        $entity->setFilenameOriginal($file_name);
-                        $entity->setSize($file_size);
-                        $entity->setFolder($folder);
-                        // new
-                        $entity->setAttachmentFolder(self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative . DIRECTORY_SEPARATOR);
-                        
-                        $entity->setFolderRelative($folder_relative . DIRECTORY_SEPARATOR);
-                        $entity->setChecksum($checksum);
-                        $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                        
-                        $entity->setCreatedBy($u);
-                        $entity->setCreatedOn(new \DateTime());
-                        $this->doctrineEM->persist($entity);
-                        $this->doctrineEM->flush();
-                        
-                        $this->flashMessenger()->addMessage("'" . $file_name . "' has been uploaded!");
-                        return $this->redirect()->toUrl($redirectUrl);
-                    }
-                }
-            }
-        }
-        
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-        
-        $id = (int) $this->params()->fromQuery('target_id');
-        $checksum = $this->params()->fromQuery('checksum');
-        $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $id,
-            'checksum' => $checksum,
-            'token' => $token
-        );
-        
-        // Target: Employee
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
-        
-        if ($target !== null) {
             
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,

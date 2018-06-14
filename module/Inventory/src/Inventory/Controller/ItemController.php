@@ -1236,6 +1236,9 @@ class ItemController extends AbstractActionController
                 // fix uix folder.
                 $tmp_name = ROOT ."/temp/". md5($id . uniqid(microtime())) . '.' . $ext;
                 
+                /** Important! for UBUNTU */
+                $tmp_name = str_replace('\\', '/', $tmp_name);
+                
                 // remove "data:image/png;base64,"
                 $uri = substr($p[1], strpos($p[1], ",") + 1);
                 

@@ -137,7 +137,7 @@ class PrRowAttachmentController extends AbstractActionController
                  * @todo : Change Target
                  */
                 $target = $entity->getPr();
-                
+                  
                 // to Add
                 $target_id = null;
                 if ($target != null) {
@@ -180,8 +180,8 @@ class PrRowAttachmentController extends AbstractActionController
                 $date_validated = 0;
                 
                 // EMPTY is ok
-                if ($validFrom !== null) {
-                    if ($validFrom !== "") {
+                if ($validFrom != null) {
+                    if ($validFrom != "") {
                         if (! $validator->isValid($validFrom)) {
                             $errors[] = 'Start date is not correct or empty!';
                         } else {
@@ -192,8 +192,8 @@ class PrRowAttachmentController extends AbstractActionController
                 }
                 
                 // EMPTY is ok
-                if ($validTo !== null) {
-                    if ($validTo !== "") {
+                if ($validTo != null) {
+                    if ($validTo != "") {
                         
                         if (! $validator->isValid($validTo)) {
                             $errors[] = 'End date is not correct or empty!';
@@ -217,7 +217,6 @@ class PrRowAttachmentController extends AbstractActionController
                 $vendor = null;
                 if ($vendor_id > 0) {
                     $vendor = $this->doctrineEM->find('Application\Entity\NmtBpVendor', $vendor_id);
-                    // $entity->setVendor ( $vendor );
                 }
                 
                 $entity->setVendor($vendor);
@@ -306,12 +305,14 @@ class PrRowAttachmentController extends AbstractActionController
                         
                         /**
                          *
-                         * @todo : Change Target
+                         * @todo : Update Targert
                          */
                         $criteria = array(
                             "checksum" => $checksum,
-                            "qo" => $target_id
+                            'targetId' => $target_id,
+                            'targetClass' => get_class($target)
                         );
+                        
                         $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
                         
                         if (count($ck) > 0) {
@@ -439,7 +440,7 @@ class PrRowAttachmentController extends AbstractActionController
              *
              * @todo : Update Target
              */
-            $target = $entity->getQo();
+            $target = $entity->getPr();
             
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
@@ -487,12 +488,12 @@ class PrRowAttachmentController extends AbstractActionController
         /**
          *
          * @todo : Change Target
-         * @var \Application\Entity\NmtProcureQo $target ;
+         * @var \Application\Entity\NmtProcurePrRow $target ;
          *     
          */
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
         
-        if ($target instanceof \Application\Entity\NmtProcureQo) {
+        if ($target instanceof \Application\Entity\NmtProcurePrRow) {
             $criteria = array(
                 'targetId' => $target_id,
                 'targetClass' => get_class($target),
@@ -542,12 +543,12 @@ class PrRowAttachmentController extends AbstractActionController
         /**
          *
          * @todo : Change Target
-         * @var \Application\Entity\NmtProcureQo $target ;
+         * @var \Application\Entity\NmtProcurePrRow $target ;
          *     
          */
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
         
-        if ($target instanceof \Application\Entity\NmtProcureQo) {
+        if ($target instanceof \Application\Entity\NmtProcurePrRow) {
             
             /**
              *
@@ -671,9 +672,10 @@ class PrRowAttachmentController extends AbstractActionController
         }
     }
 
-    /*
-     * Defaul Action
-     */
+   /**
+    * 
+    *  @return void|\Zend\Stdlib\ResponseInterface
+    */
     public function thumbnail450Action()
     {
         $id = (int) $this->params()->fromQuery('id');
@@ -782,6 +784,7 @@ class PrRowAttachmentController extends AbstractActionController
                  * @todo : updated.
                  */
                 $entity->setPr($target->getPr());
+                $entity->setItem($target->getItem());
                 $entity->setTargetClass(get_class($target));
                 $entity->setTargetId($target->getId());
                 
@@ -959,6 +962,11 @@ class PrRowAttachmentController extends AbstractActionController
                         $folder_relative = $name[0] . $name[1] . DIRECTORY_SEPARATOR . $name[2] . $name[3] . DIRECTORY_SEPARATOR . $name[4] . $name[5];
                         $folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
                         
+                        /**
+                         * Important! for UBUNTU
+                         */
+                        $folder = str_replace('\\', '/', $folder);
+                        
                         if (! is_dir($folder)) {
                             mkdir($folder, 0777, true); // important
                         }
@@ -1044,11 +1052,11 @@ class PrRowAttachmentController extends AbstractActionController
         /**
          *
          * @todo : Change Target
-         * @var \Application\Entity\NmtProcureQo $target ;
+         * @var \Application\Entity\NmtProcurePrRow $target ;
          */
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
         
-        if ($target instanceof \Application\Entity\NmtProcureQo) {
+        if ($target instanceof \Application\Entity\NmtProcurePrRow) {
             
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
@@ -1057,7 +1065,7 @@ class PrRowAttachmentController extends AbstractActionController
                 'entity' => null
             ));
         } else {
-            return $this->redirect()->toRoute('access_denied');
+            //return $this->redirect()->toRoute('access_denied');
         }
     }
 
@@ -1085,10 +1093,10 @@ class PrRowAttachmentController extends AbstractActionController
                 'token' => $token
             );
             
-            /**@var \Application\Entity\NmtProcureQo $target ;*/
-            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
+            /**@var \Application\Entity\NmtProcurePrRow $target ;*/
+            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
             
-            if (! $target instanceof \Application\Entity\NmtProcureQo) {
+            if (! $target instanceof \Application\Entity\NmtProcurePrRow) {
                 
                 $errors[] = 'Target object can\'t be empty. Token key might be not valid. Please try again!!';
                 $this->flashMessenger()->addMessage('Something wrong!');
@@ -1136,7 +1144,8 @@ class PrRowAttachmentController extends AbstractActionController
                      */
                     $criteria = array(
                         "checksum" => $checksum,
-                        "qo" => $target_id
+                        'targetId' => $target_id,
+                        'targetClass' => get_class($target)
                     );
                     $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
                     
@@ -1156,8 +1165,6 @@ class PrRowAttachmentController extends AbstractActionController
                             mkdir($folder, 0777, true); // important
                         }
                         
-                        // echo ("$folder/$name");
-                        // move_uploaded_file ( $tmp_name, "$folder/$name" );
                         rename($tmp_name, "$folder/$name");
                         
                         $entity = new NmtApplicationAttachment();
@@ -1166,7 +1173,9 @@ class PrRowAttachmentController extends AbstractActionController
                          *
                          * @todo: Update target
                          */
-                        $entity->setQo($target);
+                        $entity->setPr($target->getPr());
+                        $entity->getItem($target->getItem());
+                        
                         $entity->setTargetClass(get_class($target));
                         $entity->setTargetId($target->getId());
                         
@@ -1235,7 +1244,7 @@ class PrRowAttachmentController extends AbstractActionController
                             'pictures_dir' => $folder
                         ));
                         
-                        $m = sprintf('[OK] Image #%s for Quotation #%s - %s uploaded.', $entity->getId(), $target->getId(), $target->getSysNumber());
+                        $m = sprintf('[OK] Image #%s for PR Row #%s - %s uploaded.', $entity->getId(), $target->getId(), $target->getRowIdentifer());
                         
                         // Trigger Activity Log . AbtractController is EventManagerAware.
                         $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
@@ -1282,10 +1291,10 @@ class PrRowAttachmentController extends AbstractActionController
             'token' => $token
         );
         
-        /**@var \Application\Entity\NmtProcureQo $target ;*/
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
+        /**@var \Application\Entity\NmtProcurePrRow $target ;*/
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
         
-        if ($target instanceof \Application\Entity\NmtProcureQo) {
+        if ($target instanceof \Application\Entity\NmtProcurePrRow) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,

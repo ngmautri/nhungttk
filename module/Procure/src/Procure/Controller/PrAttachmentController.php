@@ -58,7 +58,7 @@ class PrAttachmentController extends AbstractActionController {
 		
 		$entity = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
 		
-		if (! $entity == null) {
+		if ($entity instanceof \Application\Entity\NmtApplicationAttachment) {
 			
 			/**
 			 *
@@ -572,14 +572,31 @@ class PrAttachmentController extends AbstractActionController {
 		
 		$pic = new \Application\Entity\NmtApplicationAttachment ();
 		$pic = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
-		if ($pic !== null) {
+		if ($pic instanceof \Application\Entity\NmtApplicationAttachment) {
 			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . $pic->getFileName ();
+			
+			
+			/**
+			 * Important! for UBUNTU
+			 */
+			$tmp_name = str_replace('\\', '/', $pic_folder);
+			
+			
+			
 			$imageContent = file_get_contents ( $pic_folder );
 			
 			$response = $this->getResponse ();
 			
 			$response->setContent ( $imageContent );
-			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )->addHeaderLine ( 'Content-Type', $pic->getFiletype () )->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
+			
+			$response->getHeaders()
+			->addHeaderLine('Content-Transfer-Encoding', 'binary')
+			->addHeaderLine('Content-Type', $pic->getFiletype());
+			
+			/** Important! can cause for UBUNTU */
+			//->addHeaderLine('Content-Length', mb_strlen($imageContent)); // can cause problem
+			
+			
 			return $response;
 		} else {
 			return;
@@ -612,13 +629,25 @@ class PrAttachmentController extends AbstractActionController {
 		
 		if ($pic !== null) {
 			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . "thumbnail_200_" . $pic->getFileName ();
+			
+			/**
+			 * Important! for UBUNTU
+			 */
+			$tmp_name = str_replace('\\', '/', $pic_folder);
+			
 			$imageContent = file_get_contents ( $pic_folder );
 			
 			$response = $this->getResponse ();
 			
 			$response->setContent ( $imageContent );
-			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )->addHeaderLine ( 'Content-Type', $pic->getFiletype () )->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
+			$response->getHeaders()
+			->addHeaderLine('Content-Transfer-Encoding', 'binary')
+			->addHeaderLine('Content-Type', $pic->getFiletype());
+			
+			/** Important! can cause for UBUNTU */
+			//->addHeaderLine('Content-Length', mb_strlen($imageContent)); // can cause problem
 			return $response;
+			
 		} else {
 			return;
 		}
@@ -652,10 +681,20 @@ class PrAttachmentController extends AbstractActionController {
 			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . "thumbnail_450_" . $pic->getFileName ();
 			$imageContent = file_get_contents ( $pic_folder );
 			
-			$response = $this->getResponse ();
+			/**
+			 * Important! for UBUNTU
+			 */
+			$tmp_name = str_replace('\\', '/', $pic_folder);
 			
+			$response = $this->getResponse ();
 			$response->setContent ( $imageContent );
-			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )->addHeaderLine ( 'Content-Type', $pic->getFiletype () )->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
+			
+			$response->getHeaders()
+			->addHeaderLine('Content-Transfer-Encoding', 'binary')
+			->addHeaderLine('Content-Type', $pic->getFiletype());
+			
+			/** Important! can cause for UBUNTU */
+			//->addHeaderLine('Content-Length', mb_strlen($imageContent)); // can cause problem
 			return $response;
 		} else {
 			return;
@@ -1360,6 +1399,13 @@ class PrAttachmentController extends AbstractActionController {
 					// fix uix folder.
 					$tmp_name = ROOT ."/temp/". md5($target_id . uniqid(microtime())) . '.' . $ext;
 					
+					
+					/**
+					 * Important! for UBUNTU
+					 */
+					$tmp_name = str_replace('\\', '/', $tmp_name);
+					
+					
 					// remove "data:image/png;base64,"
 					$uri = substr ( $p [1], strpos ( $p [1], "," ) + 1 );
 					
@@ -1379,6 +1425,13 @@ class PrAttachmentController extends AbstractActionController {
 						
 						$folder_relative = $name [0] . $name [1] . DIRECTORY_SEPARATOR . $name [2] . $name [3] . DIRECTORY_SEPARATOR . $name [4] . $name [5];
 						$folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
+						
+						
+						/**
+						 * Important! for UBUNTU
+						 */
+						$folder = str_replace('\\', '/', $folder);
+						
 						
 						if (! is_dir ( $folder )) {
 							mkdir ( $folder, 0777, true ); // important
@@ -1488,6 +1541,7 @@ class PrAttachmentController extends AbstractActionController {
 		}
 		
 		// NO POST
+		// Initiate...............
 		//========================
 		
 		$redirectUrl = null;		

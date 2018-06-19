@@ -6,6 +6,8 @@
  * This is related to trying to serialise a closure.
  * Never put closures in your config files. Always put them in your modules' service manger related getXxx() methods.
  */
+
+
 return array(
     // This should be an array of module namespaces used in the application.
     

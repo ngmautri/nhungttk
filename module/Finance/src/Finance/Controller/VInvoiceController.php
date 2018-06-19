@@ -522,18 +522,76 @@ class VInvoiceController extends AbstractActionController
         
         if ($entity instanceof FinVendorInvoice) {
             
+           /** check header */
+            $validator = new Date();
+            
+            if ($invoiceNo == null) {
+                $errors[] = 'Please enter Invoice Number!';
+            } else {
+                $entity->setInvoiceNo($invoiceNo);
+            }
+            
+            $entity->setSapDoc($sapDoc);
+            
+            if (! $validator->isValid($invoiceDate)) {
+                $errors[] = 'Invoice Date is not correct or empty!';
+            } else {
+                $entity->setInvoiceDate(new \DateTime($invoiceDate));
+            }
+            
+            if (! $validator->isValid($postingDate)) {
+                $errors[] = 'Posting Date is not correct or empty!';
+            } else {
+                
+                $entity->setPostingDate(new \DateTime($postingDate));
+                
+                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
+                
+                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                    $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
+                } else {
+                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                    }
+                }
+            }
+            
+            if (! $validator->isValid($grDate)) {
+                $errors[] = 'Good receipt Date is not correct or empty!';
+            } else {
+                $entity->setGrDate(new \DateTime($grDate));
+                // check if posting period is close
+                /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                
+                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
+                
+                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                    $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
+                } else {
+                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                    }
+                }
+            }
+            
+            /** check header */
+            
+            
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
-            $changeOn = new \DateTime();
             
+            $changeOn = new \DateTime();
             $oldEntity = clone ($entity);
             
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+            $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setRevisionNo($entity->getRevisionNo() + 1);
             $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);
-            
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
@@ -546,16 +604,16 @@ class VInvoiceController extends AbstractActionController
                 'isActive' => 1,
                 'invoice' => $entity
             );
-            $ap_rows = $this->doctrineEM->getRepository('Application\FinVendorInvoiceRow')->findBy($criteria);
+            $ap_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria);
             
             if (count($ap_rows) > 0) {
                 $n = 0;
                 foreach ($ap_rows as $r) {
                     
-                    /** @var \Application\Entity\FinVendorInvoiceRow $r ; */
-                    
+                    /** @var \Application\Entity\FinVendorInvoiceRow $r ; */                    
                     // ignore row with 0 quantity
                     if ($r->getQuantity() == 0) {
+                        $r->setIsActive(0);
                         continue;
                     }
                     
@@ -566,6 +624,7 @@ class VInvoiceController extends AbstractActionController
                     $r->setIsPosted(1);
                     $r->setIsDraft(0);
                     $r->setDocStatus($entity->getDocStatus());
+                    $r->setTransactionType($entity->getTransactionType());
                     $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
                     $r->setRowNumber($n);
                     
@@ -585,16 +644,24 @@ class VInvoiceController extends AbstractActionController
                     } else {
                         $gr_entity = new \Application\Entity\NmtProcureGrRow();
                     }
+        
+                    $gr_entity->setIsActive(1);
+                    $gr_entity->setInvoice($entity);
+                    $gr_entity->setApInvoiceRow($r);
                     
+                    $gr_entity->setItem($r->getItem());
                     $gr_entity->setPrRow($r->getPrRow());
                     $gr_entity->setPoRow($r->getPoRow());
-                    $gr_entity->setApInvoiceRow($r);
-                    $gr_entity->setItem($r->getItem());
+                    
+                    $gr_entity->setTargetObject(get_class($entity));
+                    $gr_entity->setTargetObjectId($entity->getId());
+                    $gr_entity->setTransactionType($entity->getTransactionType());
+                    
                     
                     $gr_entity->setIsDraft($r->getIsDraft());
                     $gr_entity->setIsPosted($r->getIsPosted());
                     $gr_entity->setDocStatus($r->getDocStatus());
-                    
+               
                     $gr_entity->setQuantity($r->getQuantity());
                     $gr_entity->setUnit($r->getUnit());
                     $gr_entity->setUnitPrice($r->getUnitPrice());
@@ -607,7 +674,6 @@ class VInvoiceController extends AbstractActionController
                     $gr_entity->setCreatedBy($u);
                     $gr_entity->setCreatedOn($createdOn);
                     $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                    $gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
                     $this->doctrineEM->persist($gr_entity);
                     
                     /**
@@ -618,7 +684,7 @@ class VInvoiceController extends AbstractActionController
                     
                     /**
                      *
-                     * @todo: only for item in stock.
+                     * @todo: only for item with stock control.
                      */
                     if ($r->getItem()->getIsStocked() == 0) {
                         // continue;
@@ -635,7 +701,11 @@ class VInvoiceController extends AbstractActionController
                     } else {
                         $stock_gr_entity = new NmtInventoryTrx();
                     }
+               
+                    $stock_gr_entity->setIsActive(1);
+                    $stock_gr_entity->setTrxDate($entity->getGrDate());
                     
+                    $stock_gr_entity->setVendorInvoice($entity);                    
                     $stock_gr_entity->setInvoiceRow($r);
                     $stock_gr_entity->setItem($r->getItem());
                     $stock_gr_entity->setPrRow($r->getPrRow());
@@ -645,6 +715,8 @@ class VInvoiceController extends AbstractActionController
                     $stock_gr_entity->setIsDraft($r->getIsDraft());
                     $stock_gr_entity->setIsPosted($r->getIsPosted());
                     $stock_gr_entity->setDocStatus($r->getDocStatus());
+                    $stock_gr_entity->setTransactionType($entity->getTransactionType());
+                    
                     
                     $stock_gr_entity->setSourceClass(get_class($r));
                     $stock_gr_entity->setSourceId($r->getId());
@@ -668,8 +740,6 @@ class VInvoiceController extends AbstractActionController
                     $stock_gr_entity->setCreatedBy($u);
                     $stock_gr_entity->setCreatedOn($createdOn);
                     $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                    $stock_gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
-                    
                     $this->doctrineEM->persist($stock_gr_entity);
                 }
                 

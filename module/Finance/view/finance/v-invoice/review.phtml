@@ -1,7 +1,5 @@
 <?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
 
-
-
 <?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
@@ -140,7 +138,7 @@ if (count($errors) > 0) {
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2 ">Vendor:</label>
 								<div class="col-sm-3">
-									<input class="form-control input-sm input-sm" type="text"
+									<input class="form-control input-sm" type="text"
 										id="vendor_name_1" placeholder="Enter term to search vendor"
 										name="vendor_name"
 										value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
@@ -232,7 +230,7 @@ if (count($errors) > 0) {
 
 								<label class="control-label col-sm-2 required">Invoice Date:</label>
 								<div class="col-sm-3">
-									<input class="form-control input-sm input-sm" type="text"
+									<input class="form-control input-sm" type="text"
 										id="invoiceDate" name="invoiceDate"
 										value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
 										placeholder=" please select" />
@@ -243,7 +241,7 @@ if (count($errors) > 0) {
 
 								<label class="control-label col-sm-2">Posting Date:</label>
 								<div class="col-sm-3">
-									<input class="form-control input-sm input-sm" type="text"
+									<input class="form-control input-sm" type="text"
 										id="postingDate" name="postingDate"
 										value="<?php if(!$entity == null): if ($entity->getPostingDate() !== null): echo date_format($entity->getPostingDate(),"Y-m-d"); endif; endif;?>"
 										placeholder=" please select" />
@@ -254,7 +252,7 @@ if (count($errors) > 0) {
 
 								<label class="control-label col-sm-2">Goods Receipt Date:</label>
 								<div class="col-sm-3">
-									<input class="form-control input-sm input-sm" type="text"
+									<input class="form-control input-sm" type="text"
 										id="grDate" name="grDate"
 										value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
 										placeholder=" please select" />

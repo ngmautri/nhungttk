@@ -164,9 +164,9 @@ class FinVendorInvoiceRow
     /**
      * @var string
      *
-     * @ORM\Column(name="row_indentifer", type="string", length=45, nullable=true)
+     * @ORM\Column(name="row_identifer", type="string", length=45, nullable=true)
      */
-    private $rowIndentifer;
+    private $rowIdentifer;
 
     /**
      * @var integer
@@ -829,27 +829,27 @@ class FinVendorInvoiceRow
     }
 
     /**
-     * Set rowIndentifer
+     * Set rowIdentifer
      *
-     * @param string $rowIndentifer
+     * @param string $rowIdentifer
      *
      * @return FinVendorInvoiceRow
      */
-    public function setRowIndentifer($rowIndentifer)
+    public function setRowIdentifer($rowIdentifer)
     {
-        $this->rowIndentifer = $rowIndentifer;
+        $this->rowIdentifer = $rowIdentifer;
 
         return $this;
     }
 
     /**
-     * Get rowIndentifer
+     * Get rowIdentifer
      *
      * @return string
      */
-    public function getRowIndentifer()
+    public function getRowIdentifer()
     {
-        return $this->rowIndentifer;
+        return $this->rowIdentifer;
     }
 
     /**

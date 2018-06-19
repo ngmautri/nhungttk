@@ -1,0 +1,2 @@
+doctrine bat file on below folder
+C:\1-NMT\1-Eclipse\Workspace\mla-03\vendor\doctrine\doctrine-module\bin

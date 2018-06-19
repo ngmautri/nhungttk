@@ -253,6 +253,20 @@ class FinVendorInvoiceRow
     private $transactionType;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_draft", type="boolean", nullable=true)
+     */
+    private $isDraft;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
+     */
+    private $isPosted;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1124,6 +1138,54 @@ class FinVendorInvoiceRow
     public function getTransactionType()
     {
         return $this->transactionType;
+    }
+
+    /**
+     * Set isDraft
+     *
+     * @param boolean $isDraft
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setIsDraft($isDraft)
+    {
+        $this->isDraft = $isDraft;
+
+        return $this;
+    }
+
+    /**
+     * Get isDraft
+     *
+     * @return boolean
+     */
+    public function getIsDraft()
+    {
+        return $this->isDraft;
+    }
+
+    /**
+     * Set isPosted
+     *
+     * @param boolean $isPosted
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPosted
+     *
+     * @return boolean
+     */
+    public function getIsPosted()
+    {
+        return $this->isPosted;
     }
 
     /**

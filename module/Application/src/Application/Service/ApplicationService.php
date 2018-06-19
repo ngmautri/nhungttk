@@ -66,7 +66,7 @@ class ApplicationService {
 	
 	/**
 	 * @version 3.0
-	 * @author NMT
+	 * @author Nguyen Mau Tri
 	 * Get App Resources
 	 */
 	public function getAppLoadedResources() {
@@ -118,7 +118,7 @@ class ApplicationService {
 	
 	/**
 	 *
-	 * @param unknown $controller_cls
+	 * @param string $controller_cls
 	 * @return string[]
 	 */
 	public function getActions($controller_cls) {

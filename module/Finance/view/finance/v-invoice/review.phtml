@@ -326,13 +326,12 @@ if (count($errors) > 0) {
 				<h5>A/P #<?php echo (!$entity == null)? $entity->getSysNumber() . " will be posted!":"";?></h5>
 
 				<div class="alert alert-warning">
-					<strong>Info!</strong> Document can't be changed after posted.
+					<strong>[Info]</strong> Document can't be changed after posted.
 					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
-					<hr>
-					<p>Are you ok?</p>
 				</div>
+				<p>Do you want to continue?</p>
 			</div>
 			<div class="modal-footer">
 				<button onclick="doPosting();" type="button"

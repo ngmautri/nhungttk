@@ -15,6 +15,8 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
+
+
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general">New A/P Invoice from Contract/PO: <?php if($target!==null): echo $target->getSysNumber(); endif;?></a></li>
@@ -22,6 +24,27 @@ if (count ( $errors ) > 0) {
 
 	<div id="general" style="font-size: 9pt">
 
+
+ <div class="row">
+  <!-- ROW -->
+  
+  <div class="col-xs-5 col-md-2">
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP1";
+    					include (ROOT.'/module/Finance/view/finance/ap-create-wizard.php');
+  					?>
+  					
+  					
+					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9pt">
+						Document can't be changed when posted!
+					</div>
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10" style="">
+  <!-- C2 -->
+  
 		<form id="Create_Inv_Form" class="form-horizontal"
 			action="/finance/v-invoice/copy-from-po" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
@@ -217,6 +240,15 @@ if (count ( $errors ) > 0) {
 					</div>
 			</fieldset>
 		</form>
+		
+		
+				 <!-- C2 ends-->
+  </div>
+  
+  <!-- ROW -->
+</div>	
+		
+		
 	</div>
 </div>
 

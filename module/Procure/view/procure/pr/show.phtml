@@ -494,7 +494,7 @@
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+            redirectUrl="/procure/pr-row-attachment/upload?token="+rowData['row_token']+"&target_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
           	//alert(rowData['item_name']);
 			
 			window.location.href = redirectUrl;

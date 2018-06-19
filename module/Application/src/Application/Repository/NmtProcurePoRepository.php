@@ -266,7 +266,7 @@ WHERE 1
     }
 
     /**
-     * Get Open Po
+     * Get Open Po GR
      */
     public function getOpenPoGr($id, $token)
     {
@@ -307,7 +307,57 @@ GROUP BY nmt_procure_po_row.id
             return null;
         }
     }
+    
+    
+    /**
+     * 
+     *  @param int $id
+     *  @param string $token
+     *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     */
+    public function getOpenPoAP($id, $token)
+    {
+        $sql = "
+SELECT
+    fin_vendor_invoice_row.id AS ap_row_id,
+    fin_vendor_invoice_row.po_row_id AS po_row_id,
+	IFNULL(SUM(CASE WHEN fin_vendor_invoice_row.is_draft=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS draft_qty,
+    IFNULL(SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS posted_qty,
+    IFNULL(nmt_procure_po_row.quantity-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS confirmed_balance,
+    nmt_procure_po_row.quantity-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END)-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END) AS open_qty,
+    nmt_procure_po_row.*
+FROM nmt_procure_po_row
+LEFT JOIN fin_vendor_invoice_row
+ON fin_vendor_invoice_row.po_row_id =  nmt_procure_po_row.id
+WHERE nmt_procure_po_row.po_id=%s
+GROUP BY nmt_procure_po_row.id
+";
+        
+        
+        $sql = sprintf($sql, $id);
+        
+        // echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
+            $rsm->addScalarResult("draft_qty", "draft_qty");
+            $rsm->addScalarResult("posted_qty", "posted_qty");
+            $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
+            $rsm->addScalarResult("open_qty", "open_qty");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 
+    /**
+     * 
+     * 
+     */
     public function updatePo($id, $token = null)
     {
         $message = "";

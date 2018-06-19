@@ -417,20 +417,21 @@ class VInvoiceController extends AbstractActionController
      */
     public function reviewAction()
     {
+        $request = $this->getRequest();
         $this->layout("Procure/layout-fullscreen");
         
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
         
-        $request = $this->getRequest();
-        
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
+        } else {
+            
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
         }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
         
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
@@ -438,10 +439,6 @@ class VInvoiceController extends AbstractActionController
         /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
         $invoice = $res->getVendorInvoice($id, $token);
-        
-        if ($invoice == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
         
         $entity = null;
         if ($invoice[0] instanceof FinVendorInvoice) {
@@ -479,7 +476,7 @@ class VInvoiceController extends AbstractActionController
     }
 
     /**
-     * Posting A/P Invoice: Document can not be change:
+     * Posting A/P Invoice: Document can not be changed:
      *
      * 1. change doc status of invoice and its rows to "posted"
      * 2. update relevant document
@@ -495,7 +492,6 @@ class VInvoiceController extends AbstractActionController
     public function postAction()
     {
         $this->layout("Procure/layout-fullscreen");
-        
         
         $request = $this->getRequest();
         
@@ -516,7 +512,7 @@ class VInvoiceController extends AbstractActionController
         $invoice = $res->getVendorInvoice($id, $token);
         
         if ($invoice == null) {
-            // return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('access_denied');
         }
         
         $entity = null;
@@ -541,12 +537,146 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
-            //POST AP
-            //change status of row created before.
-            $res->postAP($entity);
+            // POST AP
+            // change status of row created before.
+            // $res->postAP($entity);
             
-                 
-            // LOG
+            // UPDATE AP ROW, CREATE GR & CREATE STOCK GR
+            $criteria = array(
+                'isActive' => 1,
+                'invoice' => $entity
+            );
+            $ap_rows = $this->doctrineEM->getRepository('Application\FinVendorInvoiceRow')->findBy($criteria);
+            
+            if (count($ap_rows) > 0) {
+                $n = 0;
+                foreach ($ap_rows as $r) {
+                    
+                    /** @var \Application\Entity\FinVendorInvoiceRow $r ; */
+                    
+                    // ignore row with 0 quantity
+                    if ($r->getQuantity() == 0) {
+                        continue;
+                    }
+                    
+                    $createdOn = new \DateTime();
+                    
+                    // UPDATE status
+                    $n ++;
+                    $r->setIsPosted(1);
+                    $r->setIsDraft(0);
+                    $r->setDocStatus($entity->getDocStatus());
+                    $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
+                    $r->setRowNumber($n);
+                    
+                    /**
+                     * create procure good receipt.
+                     * ============================
+                     */
+                    
+                    $criteria = array(
+                        'isActive' => 1,
+                        'apInvoiceRow' => $r
+                    );
+                    $gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
+                    
+                    if ($gr_entity_ck instanceof \Application\Entity\NmtProcureGrRow) {
+                        $gr_entity = $gr_entity_ck;
+                    } else {
+                        $gr_entity = new \Application\Entity\NmtProcureGrRow();
+                    }
+                    
+                    $gr_entity->setPrRow($r->getPrRow());
+                    $gr_entity->setPoRow($r->getPoRow());
+                    $gr_entity->setApInvoiceRow($r);
+                    $gr_entity->setItem($r->getItem());
+                    
+                    $gr_entity->setIsDraft($r->getIsDraft());
+                    $gr_entity->setIsPosted($r->getIsPosted());
+                    $gr_entity->setDocStatus($r->getDocStatus());
+                    
+                    $gr_entity->setQuantity($r->getQuantity());
+                    $gr_entity->setUnit($r->getUnit());
+                    $gr_entity->setUnitPrice($r->getUnitPrice());
+                    $gr_entity->setNetAmount($r->getNetAmount());
+                    $gr_entity->setTaxRate($r->getTaxRate());
+                    $gr_entity->setTaxAmount($r->getTaxAmount());
+                    $gr_entity->setGrossAmount($r->getGrossAmount());
+                    $gr_entity->setDiscountRate($r->getDiscountRate());
+                    
+                    $gr_entity->setCreatedBy($u);
+                    $gr_entity->setCreatedOn($createdOn);
+                    $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
+                    $this->doctrineEM->persist($gr_entity);
+                    
+                    /**
+                     * create procure good receipt.
+                     * only for item controlled inventory
+                     * ===================
+                     */
+                    
+                    /**
+                     *
+                     * @todo: only for item in stock.
+                     */
+                    if ($r->getItem()->getIsStocked() == 0) {
+                        // continue;
+                    }
+                    
+                    $criteria = array(
+                        'isActive' => 1,
+                        'invoiceRow' => $r
+                    );
+                    $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+                    
+                    if ($stock_gr_entity_ck instanceof \Application\Entity\NmtInventoryTrx) {
+                        $stock_gr_entity = $stock_gr_entity_ck;
+                    } else {
+                        $stock_gr_entity = new NmtInventoryTrx();
+                    }
+                    
+                    $stock_gr_entity->setInvoiceRow($r);
+                    $stock_gr_entity->setItem($r->getItem());
+                    $stock_gr_entity->setPrRow($r->getPrRow());
+                    $stock_gr_entity->setPoRow($r->getPoRow());
+                    $stock_gr_entity->setGrRow($gr_entity);
+                    
+                    $stock_gr_entity->setIsDraft($r->getIsDraft());
+                    $stock_gr_entity->setIsPosted($r->getIsPosted());
+                    $stock_gr_entity->setDocStatus($r->getDocStatus());
+                    
+                    $stock_gr_entity->setSourceClass(get_class($r));
+                    $stock_gr_entity->setSourceId($r->getId());
+                    
+                    $stock_gr_entity->setTransactionType($r->getTransactionType());
+                    $stock_gr_entity->setCurrentState($entity->getCurrentState());
+                    
+                    $stock_gr_entity->setVendor($entity->getVendor());
+                    $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
+                    
+                    $stock_gr_entity->setQuantity($r->getQuantity());
+                    $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
+                    $stock_gr_entity->setVendorItemUnit($r->getUnit());
+                    $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
+                    $stock_gr_entity->setTrxDate($entity->getGrDate());
+                    $stock_gr_entity->setCurrency($entity->getCurrency());
+                    $stock_gr_entity->setTaxRate($r->getTaxRate());
+                    
+                    $stock_gr_entity->setRemarks('AP Row' . $r->getRowIdentifer());
+                    $stock_gr_entity->setWh($entity->getWarehouse());
+                    $stock_gr_entity->setCreatedBy($u);
+                    $stock_gr_entity->setCreatedOn($createdOn);
+                    $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $stock_gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
+                    
+                    $this->doctrineEM->persist($stock_gr_entity);
+                }
+                
+                $this->doctrineEM->flush();
+            }
+            
+            // LOGGING
             /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
             $nmtPlugin = $this->Nmtplugin();
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
@@ -583,11 +713,12 @@ class VInvoiceController extends AbstractActionController
      */
     public function copyFromPoAction()
     {
+        $request = $this->getRequest();
+        $this->layout("Finance/layout-fullscreen");
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
-        
-        $request = $this->getRequest();
         
         if ($request->isPost()) {
             
@@ -604,13 +735,13 @@ class VInvoiceController extends AbstractActionController
             /**@var \Application\Entity\NmtProcurePo $target ;*/
             $target = null;
             
-            if ($po !== null) {
+            if ($po != null) {
                 if ($po[0] instanceof NmtProcurePo) {
                     $target = $po[0];
                 }
             }
             
-            if ($target == null) {
+            if (! $target instanceof \Application\Entity\NmtProcurePo) {
                 $errors[] = 'Contract /PO can\'t be empty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 return new ViewModel(array(
@@ -649,6 +780,8 @@ class VInvoiceController extends AbstractActionController
             }
             
             $entity = new FinVendorInvoice();
+            
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
             $entity->setIsActive($isActive);
             $entity->setPo($target);
             $entity->setCurrentState($currentState);
@@ -667,7 +800,7 @@ class VInvoiceController extends AbstractActionController
                 $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
             }
             
-            if ($vendor !== null) {
+            if ($vendor instanceof \Application\Entity\NmtBpVendor) {
                 $entity->setVendor($vendor);
                 $entity->setVendorName($vendor->getVendorName());
             } else {
@@ -680,11 +813,11 @@ class VInvoiceController extends AbstractActionController
                 $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
             }
             
-            if ($currency !== null) {
+            if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
                 $entity->setCurrency($currency);
                 $entity->setCurrencyIso3($currency->getCurrency());
             } else {
-                $errors[] = 'Currency can\'t be empty. Please select a vendor!';
+                $errors[] = 'Currency can\'t be empty. Please select a currency!';
             }
             
             switch ($currentState) {
@@ -807,7 +940,7 @@ class VInvoiceController extends AbstractActionController
                 $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
             }
             
-            if ($warehouse !== null) {
+            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
                 $entity->setWarehouse($warehouse);
             } else {
                 $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
@@ -824,44 +957,12 @@ class VInvoiceController extends AbstractActionController
                     'currency_list' => $currency_list
                 ));
             }
+            
             // NO ERROR
-            // ======================================================
+            // Saving into Database..........
+            // ==============================
             
-            // Generate document BEGINN
-            // =======================
-            $criteria = array(
-                'isActive' => 1,
-                'subjectClass' => get_class($entity)
-            );
-            
-            /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
-            $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
-            if ($docNumber != null) {
-                $maxLen = strlen($docNumber->getToNumber());
-                $currentLen = 1;
-                $currentDoc = $docNumber->getPrefix();
-                $current_no = $docNumber->getCurrentNumber();
-                
-                if ($current_no == null) {
-                    $current_no = $docNumber->getFromNumber();
-                } else {
-                    $current_no ++;
-                    $currentLen = strlen($current_no);
-                }
-                
-                $docNumber->setCurrentNumber($current_no);
-                
-                $tmp = "";
-                for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
-                    
-                    $tmp = $tmp . "0";
-                }
-                
-                $currentDoc = $currentDoc . $tmp . $current_no;
-                $entity->setSysNumber($currentDoc);
-            }
-            // Generate document END
-            // =======================
+            $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
             
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
@@ -874,54 +975,65 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
-            // COPY PO Row to AP INvoice Row TMP
-            $criteria = array(
-                'isActive' => 1,
-                'po' => $target
-            );
+            // COPY open PO Row to AP Row
             
-            $sort_criteria = array(
-                'rowNumber' => 'ASC'
-            );
-            
-            $po_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findBy($criteria, $sort_criteria);
+            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+            $po_rows = $res->getOpenPoAP($id, $token);
             
             if (count($po_rows > 0)) {
                 $n = 0;
-                foreach ($po_rows as $r) {
-                    /** @var \Application\Entity\NmtProcurePoRow $r ; */
+                foreach ($po_rows as $l) {
+                    
+                    /** @var \Application\Entity\NmtProcurePoRow $l ; */
+                    $r = $l[0];
+                    
                     $n ++;
-                    $ap_row_tmp = new FinVendorInvoiceRowTmp();
-                    $ap_row_tmp->setIsActive(1);
-                    $ap_row_tmp->setRowNumber($n);
-                    $ap_row_tmp->setRowIndentifer($entity->getSysNumber() . "-$n");
+                    $row_tmp = new FinVendorInvoiceRow();
+                    $row_tmp->setDocStatus($entity->getDocStatus());
+                    // $row_tmp->setTransactionType($entity->getTransactionStatus());
                     
-                    $ap_row_tmp->setCurrentState("DRAFT");
-                    $ap_row_tmp->setInvoice($entity);
-                    $ap_row_tmp->setPoRow($r);
-                    $ap_row_tmp->setPrRow($r->getPrRow());
-                    $ap_row_tmp->setItem($r->getItem());
-                    $ap_row_tmp->setQuantity($r->getQuantity());
-                    $ap_row_tmp->setUnit($r->getUnit());
-                    $ap_row_tmp->setUnitPrice($r->getUnitPrice());
-                    $ap_row_tmp->setCreatedBy($u);
-                    $ap_row_tmp->setCreatedOn(new \DateTime());
-                    $ap_row_tmp->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                    $ap_row_tmp->setRemarks("Ref: Contract/PO " . $r->getRowIdentifer());
+                    /**
+                     *
+                     * @todo Change entity
+                     */
+                    $row_tmp->setInvoice($entity);
+                    $row_tmp->setIsDraft(1);
+                    $row_tmp->setIsActive(1);
+                    $row_tmp->setIsPosted(0);
                     
-                    $this->doctrineEM->persist($ap_row_tmp);
+                    $row_tmp->setRowNumber($n);
+                    
+                    // do when posted.
+                    // $row_tmp->setRowIndentifer($entity->getSysNumber() . "-$n");
+                    
+                    $row_tmp->setCurrentState("DRAFT");
+                    $row_tmp->setPoRow($r);
+                    $row_tmp->setPrRow($r->getPrRow());
+                    $row_tmp->setItem($r->getItem());
+                    $row_tmp->setQuantity($l['open_qty']);
+                    $row_tmp->setUnit($r->getUnit());
+                    $row_tmp->setUnitPrice($r->getUnitPrice());
+                    $row_tmp->setCreatedBy($u);
+                    $row_tmp->setCreatedOn(new \DateTime());
+                    $row_tmp->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $row_tmp->setRemarks("Ref: PO #" . $r->getRowIdentifer());
+                    
+                    $this->doctrineEM->persist($row_tmp);
                 }
                 $this->doctrineEM->flush();
             }
             
-            $m = sprintf("[OK] A/P Invoice #%s created from P/O #%s", $entity->getSysNumber(), $target->getSysNumber());
+            $m = sprintf("[OK] AP #%s created from P/O #%s", $entity->getSysNumber(), $target->getSysNumber());
             $this->flashMessenger()->addMessage($m);
             
-            $redirectUrl = "/finance/v-invoice/copy-from-po1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            $redirectUrl = "/finance/v-invoice/review?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
         
-        // NOT POST ================================
+        // NO POST
+        // Initiate.........
+        // ==============================
         
         $redirectUrl = null;
         if ($request->getHeader('Referer') != null) {

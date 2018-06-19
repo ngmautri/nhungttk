@@ -1,10 +1,14 @@
-<?php /**@var \Application\Entity\NmtProcureQo $target ;*/ ?>
-<?php $attachment_url =  $this->baseUrl . '/procure/quote-attachment' ;?>
+<?php /**@var \Application\Entity\NmtProcurePrRow $target ;*/ ?>
+<?php $attachment_url =  $this->baseUrl . '/procure/pr-row-attachment' ;?>
 
 <h4>
 	 <?php 
 	 /**@todo: UPDATE TARGET */
- 	echo (!$target== null)? 'Quotation: ' . $target->getSysNumber():"";?>
+ 	echo (!$target== null)? 'PR Line: ' . $target->getId():"";
+    if($target->getItem()!=null): echo '<br>'.$target->getItem()->getItemName();endif;
+ 	
+ 	;?>
+ 	
 </h4>
 
 
@@ -31,9 +35,6 @@ if (count ( $errors ) > 0) {
 
 
 <h5 style="color: gray">
-	 <?php echo (!$target== null)? 'Contract /PO: ' . $target->getQuotationNo()."<br>":"";?>
-	 <?php if(!$target == null): if ($target->getContractDate() !== null): echo date_format($target->getContractDate(),"Y-m-d"); endif; endif;?>"
-		
 </h5>
 
 <hr>

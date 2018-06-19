@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -17,9 +10,11 @@ use MLA\Paginator;
 use Zend\Math\Rand;
 
 /**
+ * @copyright 2018 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ * @since 19/6/2018
+ * @version 1.0
  *
- * @author nmt
- *        
  */
 class AclController extends AbstractActionController
 {
@@ -97,15 +92,16 @@ class AclController extends AbstractActionController
         ));
     }
 
-    /**
-     *
-     * @copyright nmt@mascot.dk
-     * @return \Zend\View\Model\ViewModel
-     */
+   /**
+    * changed 19/6
+    * @version: 1.0
+    * @return \Zend\View\Model\ViewModel
+    */
+   
     public function updateSysResourcesAction()
     {
         $resources = $this->appService->getAppLoadedResources();
-        
+         
         /** @var \Application\Entity\MlaUsers $u */
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
@@ -119,17 +115,17 @@ class AclController extends AbstractActionController
         $new_counter = 0;
         $updated_counter = 0;
         
-        echo count($resources);
+        //echo count($resources);
         
         foreach ($resources as $res) {
+            
              /** @var \Application\Entity\NmtApplicationAclResource $saved_res */
             $saved_res = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAclResource')->findOneBy(array(
                 'resource' => $res['resource']
             ));
             
             
-            //
-            if ($saved_res == null) {
+            if (!$saved_res instanceof \Application\Entity\NmtApplicationAclResource) {
                 $new_counter ++;
                 $input = new \Application\Entity\NmtApplicationAclResource();
                 $input->setModule($res['module']);
@@ -141,8 +137,6 @@ class AclController extends AbstractActionController
                 $input->setIsActive(1);
                 $input->setCurrentState("ACTIVE");
                 $input->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                
-               
                 $input->setRemarks("created by " . $u->getFirstname() . " " . $u->getLastname());
                 $input->setCreatedBy($u);
                 $this->doctrineEM->persist($input);

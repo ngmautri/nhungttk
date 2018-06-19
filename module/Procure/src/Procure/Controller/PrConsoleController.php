@@ -1,264 +1,208 @@
 <?php
 
 /**
- * Zend Framework (http://framework.zend.com/)
+ * zend framework (http://framework.zend.com/)
  *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @link      http://github.com/zendframework/zendskeletonapplication for the canonical source repository
+ * @copyright copyright (c) 2005-2013 zend technologies usa inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd new bsd license
  */
-namespace Procure\Controller;
+namespace procure\controller;
 
-use Zend\Validator\EmailAddress;
-use Zend\Mail\Message;
-use Zend\View\Model\ViewModel;
-use Zend\Http\Headers;
-use Zend\Mail\Transport\Smtp as SmtpTransport;
-use Zend\Mime\Part as MimePart;
-use Zend\Mime\Message as MimeMessage;
-use Zend\Mail\Header\ContentType;
+use zend\validator\emailaddress;
+use zend\mail\message;
+use zend\view\model\viewmodel;
+use zend\http\headers;
+use zend\mail\transport\smtp as smtptransport;
+use zend\mime\part as mimepart;
+use zend\mime\message as mimemessage;
+use zend\mail\header\contenttype;
+use zend\mvc\controller\abstractactioncontroller;
+use doctrine\orm\entitymanager;
+use application\service\pdfservice;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Doctrine\ORM\EntityManager;
-use Application\Service\PdfService;
-
-class PrConsoleController extends AbstractActionController
+class prconsolecontroller extends abstractactioncontroller
 {
-    const BACKUP_FOLDER = "/data/back-up/db";
-    
 
-    protected $doctrineEM;
+    const backup_folder = "/data/back-up/db";
 
-    protected $pdfService;
+    protected $doctrineem;
 
-    protected $outlookEmailService;
+    protected $pdfservice;
 
-    protected $SmtpTransportService;
+    protected $outlookemailservice;
+
+    protected $smtptransportservice;
 
     /*
-     * Defaul Action
+     * defaul action
      */
-    public function indexAction()
+    public function indexaction()
     {}
 
     /**
      *
-     *php C:\1-NMT\1-Eclipse\Workspace\mla-03\public\index.php validate
-     * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+     * php c:\1-nmt\1-eclipse\workspace\mla-03\public\index.php validate
+     *
+     * @return \zend\stdlib\responseinterface|\zend\view\model\viewmodel
      */
-    public function validate1Action()
+    public function validate1action()
     {
         
-        //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-        //exec('mysqldump --user=... --password=... --host=... DB_NAME > /path/to/output/file.sql');
+        // exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar encrypt -o mla2017 -u ' . $filepassword . ' ' . "$folder/$name" );
+        // exec('mysqldump --user=... --password=... --host=... db_name > /path/to/output/file.sql');
+        $filename = root . self::backup_folder . '/sql_' . date("m-d-y");
+        echo $filename;
         
-        $fileName = ROOT.self::BACKUP_FOLDER.'/sql_' . date ("m-d-Y");
-        echo $fileName;
+        // exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar encrypt -o mla2017 -u ' . $filepassword . ' ' . "$folder/$name" );
+        exec('mysqldump -u root --password=kflg79 mla --result-file=' . $filename . '.sql');
         
-        //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-        exec('mysqldump -u root --password=kflg79 mla --result-file=' . $fileName . '.sql');
+        $request = $this->getrequest();
         
-        
-        $request = $this->getRequest();
-        
-        // Make sure that we are running in a console and the user has not tricked our
+        // make sure that we are running in a console and the user has not tricked our
         // application into running this action from a public web server.
-        if (! $request instanceof \Zend\Console\Request) {
-            throw new \RuntimeException('You can only use this action from a console-- NMT!');
+        if (! $request instanceof \zend\console\request) {
+            throw new \runtimeexception('you can only use this action from a console-- nmt!');
         }
         
-        $transport = $this->getOutlookEmailService();
+        $transport = $this->getoutlookemailservice();
         
-        $emailText = <<<EOT
+        $emailtext = <<<eot
 		
-<p>Hello Sparepart Controller,</p>
+<p>hello sparepart controller,</p>
 
-EOT;
+eot;
         
         echo 'sent!';
         
-        
-        $html = new MimePart($emailText);
+        $html = new mimepart($emailtext);
         $html->type = "text/html";
         
-        $body = new MimeMessage();
-        $body->setParts(array(
+        $body = new mimemessage();
+        $body->setparts(array(
             $html
         ));
         
         // build message
-        $message = new Message();
-        $message->addFrom('mla-web@outlook.com');
-        $message->addTo("nmt@mascot.dk");
-        $message->addCc("nmt@mascot.dk");
-        $message->setSubject('MLA - Sparepart Order Sugguestion - ' . date("m-d-Y"));
+        $message = new message();
+        $message->addfrom('mla-web@outlook.com');
+        $message->addto("nmt@mascot.dk");
+        $message->addcc("nmt@mascot.dk");
+        $message->setsubject('mla - sparepart order sugguestion - ' . date("m-d-y"));
         
-        $type = new ContentType();
-        $type->setType('text/html');
+        $type = new contenttype();
+        $type->settype('text/html');
         
-        $message->getHeaders()->addHeader($type);
-        $message->setBody("xin chao chu em");
-        $message->setEncoding("UTF-8");
+        $message->getheaders()->addheader($type);
+        $message->setbody("xin chao chu em");
+        $message->setencoding("utf-8");
         
-          
         // send message
         $transport->send($message);
-       
     }
-    
+
     /**
      *
-     *php C:\1-NMT\1-Eclipse\Workspace\mla-03\public\index.php validate
-     * @return \Zend\Stdlib\ResponseInterface|\Zend\View\Model\ViewModel
+     * php c:\1-nmt\1-eclipse\workspace\mla-03\public\index.php validate
+     *
+     * @return \zend\stdlib\responseinterface|\zend\view\model\viewmodel
      */
-    public function validateAction()
+    public function validateaction()
     {
+        $request = $this->getrequest();
         
-        
-        $request = $this->getRequest();
-        
-        // Make sure that we are running in a console and the user has not tricked our
+        // make sure that we are running in a console and the user has not tricked our
         // application into running this action from a public web server.
-        if (! $request instanceof \Zend\Console\Request) {
-            throw new \RuntimeException('You can only use this action from a console-- NMT!');
+        if (! $request instanceof \zend\console\request) {
+            throw new \runtimeexception('you can only use this action from a console-- nmt!');
         }
         
-        //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-        //exec('mysqldump --user=... --password=... --host=... DB_NAME > /path/to/output/file.sql');
+        // exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar encrypt -o mla2017 -u ' . $filepassword . ' ' . "$folder/$name" );
+        // exec('mysqldump --user=... --password=... --host=... db_name > /path/to/output/file.sql');
         
-        $fileName = ROOT.self::BACKUP_FOLDER.'/sql_' . date ("m-d-Y");
+        $filename = root . self::backup_folder . '/sql_' . date("m-d-y");
         
-        //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-        exec('mysqldump -u root --password=kflg7986 mla --result-file ' . $fileName . '.sql');
-   
-        //AbtractController is EventManagerAware.
-        $this->getEventManager()->trigger('system.log', __CLASS__, array(
+        // exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar encrypt -o mla2017 -u ' . $filepassword . ' ' . "$folder/$name" );
+        exec('mysqldump -u root --password=kflg7986 mla --result-file ' . $filename . '.sql');
+        
+        // abtractcontroller is eventmanageraware.
+        $this->geteventmanager()->trigger('system.log', __class__, array(
             'priority' => 7,
-            'message' => 'Database backed up automatically!'
+            'message' => '[ok] database backed up automatically!'
         ));
-        
-        
-        
-        $transport = $this->getOutlookEmailService();
-        
-        $emailText = <<<EOT
-        
-<p>Hello Sparepart Controller,</p>
-<p>Below is the sugguestion for ordering of spare parts!</p>
-<p> Please click <a href="http://laosit02/">http://laosit02/</a> for more detail!</p>
-<p>
-Regards,<br/>
-MLA Team
-</p>
-<p>(<em>This Email is generated by the system automatically. Please do not reply!</em>)</p>
-EOT;
-        
-        $html = new MimePart($emailText);
-        $html->type = "text/html";
-        
-        $body = new MimeMessage();
-        $body->setParts(array(
-            $html
-        ));
-        
-        // build message
-        $message = new Message();
-        $message->addFrom('mla-app@outlook.com');
-        $message->addTo("nmt@mascot.dk");
-        $message->addCc("nmt@mascot.dk");
-        $message->setSubject('MLA - Sparepart Order Sugguestion - ' . date("m-d-Y"));
-        
-        $type = new ContentType();
-        $type->setType('text/html');
-        
-        $message->getHeaders()->addHeader($type);
-        $message->setBody("Xin Chao chu em");
-        $message->setEncoding("UTF-8");
-        
-        
-        // send message
-        $transport->send($message);
-        
-        //AbtractController is EventManagerAware.
-        $this->getEventManager()->trigger('system.log', __CLASS__, array(
-            'priority' => 7,
-            'message' => 'email sent!'
-        ));
-        
-        
     }
 
-    // SETTER AND GETTER
+    // setter and getter
     
     /**
      *
      * @return mixed
      */
-    public function getDoctrineEM()
+    public function getdoctrineem()
     {
-        return $this->doctrineEM;
+        return $this->doctrineem;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getPdfService()
+    public function getpdfservice()
     {
-        return $this->pdfService;
+        return $this->pdfservice;
     }
 
     /**
      *
-     * @param mixed $doctrineEM
+     * @param mixed $doctrineem
      */
-    public function setDoctrineEM(EntityManager $doctrineEM)
+    public function setdoctrineem(entitymanager $doctrineem)
     {
-        $this->doctrineEM = $doctrineEM;
+        $this->doctrineem = $doctrineem;
     }
 
     /**
      *
-     * @param mixed $pdfService
+     * @param mixed $pdfservice
      */
-    public function setPdfService(PdfService $pdfService)
+    public function setpdfservice(pdfservice $pdfservice)
     {
-        $this->pdfService = $pdfService;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getOutlookEmailService()
-    {
-        return $this->outlookEmailService;
+        $this->pdfservice = $pdfservice;
     }
 
     /**
      *
      * @return mixed
      */
-    public function getSmtpTransportService()
+    public function getoutlookemailservice()
     {
-        return $this->SmtpTransportService;
+        return $this->outlookemailservice;
     }
 
     /**
      *
-     * @param mixed $outlookEmailService
+     * @return mixed
      */
-    public function setOutlookEmailService(SmtpTransport $outlookEmailService)
+    public function getsmtptransportservice()
     {
-        $this->outlookEmailService = $outlookEmailService;
+        return $this->smtptransportservice;
     }
 
     /**
      *
-     * @param mixed $SmtpTransportService
+     * @param mixed $outlookemailservice
      */
-    public function setSmtpTransportService($SmtpTransportService)
+    public function setoutlookemailservice(smtptransport $outlookemailservice)
     {
-        $this->SmtpTransportService = $SmtpTransportService;
+        $this->outlookemailservice = $outlookemailservice;
+    }
+
+    /**
+     *
+     * @param mixed $smtptransportservice
+     */
+    public function setsmtptransportservice($smtptransportservice)
+    {
+        $this->smtptransportservice = $smtptransportservice;
     }
 }

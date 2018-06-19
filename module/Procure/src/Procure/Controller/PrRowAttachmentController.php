@@ -137,7 +137,7 @@ class PrRowAttachmentController extends AbstractActionController
                  * @todo : Change Target
                  */
                 $target = $entity->getPr();
-                  
+                
                 // to Add
                 $target_id = null;
                 if ($target != null) {
@@ -616,8 +616,7 @@ class PrRowAttachmentController extends AbstractActionController
             $response->setContent($imageContent);
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', $pic->getFiletype())
-                ->addHeaderLine('Content-Length', mb_strlen($imageContent));
+                ->addHeaderLine('Content-Type', $pic->getFiletype());
             return $response;
         } else {
             return;
@@ -664,18 +663,17 @@ class PrRowAttachmentController extends AbstractActionController
             $response->setContent($imageContent);
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', $pic->getFiletype())
-                ->addHeaderLine('Content-Length', mb_strlen($imageContent));
+                ->addHeaderLine('Content-Type', $pic->getFiletype());
             return $response;
         } else {
             return;
         }
     }
 
-   /**
-    * 
-    *  @return void|\Zend\Stdlib\ResponseInterface
-    */
+    /**
+     *
+     * @return void|\Zend\Stdlib\ResponseInterface
+     */
     public function thumbnail450Action()
     {
         $id = (int) $this->params()->fromQuery('id');
@@ -712,8 +710,7 @@ class PrRowAttachmentController extends AbstractActionController
             $response->setContent($imageContent);
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', $pic->getFiletype())
-                ->addHeaderLine('Content-Length', mb_strlen($imageContent));
+                ->addHeaderLine('Content-Type', $pic->getFiletype());
             return $response;
         } else {
             return;
@@ -1038,7 +1035,7 @@ class PrRowAttachmentController extends AbstractActionController
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
                 ->getUri();
-        }else{
+        } else {
             return $this->redirect()->toRoute('access_denied');
         }
         
@@ -1065,7 +1062,7 @@ class PrRowAttachmentController extends AbstractActionController
                 'entity' => null
             ));
         } else {
-            //return $this->redirect()->toRoute('access_denied');
+            // return $this->redirect()->toRoute('access_denied');
         }
     }
 

@@ -160,8 +160,10 @@ class GrController extends AbstractActionController
                     'currency_list' => $currency_list
                 ));
             }
+            
             // NO ERROR
-            // ======================================================
+            // Saving into Database..........
+            // ==============================
             
             $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
             
@@ -179,7 +181,7 @@ class GrController extends AbstractActionController
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
-            // COPY open PO Row to GR document
+            // COPY open PO Row to GR Row
             
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
@@ -228,8 +230,9 @@ class GrController extends AbstractActionController
             return $this->redirect()->toUrl($redirectUrl);
         }
         
-        // NOT POST
-        // ================================
+        // NO POST
+        // Initiate.........
+        // ==============================
         
         $redirectUrl = null;
         if ($request->getHeader('Referer') != null) {
@@ -377,19 +380,13 @@ class GrController extends AbstractActionController
      */
     public function reviewAction()
     {
-        $this->layout("Procure/layout-fullscreen");
-        
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
-        
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
-        
         $request = $this->getRequest();
-        
+        $this->layout("Procure/layout-fullscreen");
+                
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+                
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
         }
@@ -1151,7 +1148,7 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $list = $res->getQ($is_active, $currentState, null, $sort_by, $sort, 0, 0);
+        $list = $res->getGrList($is_active, $currentState, null, $sort_by, $sort, 0, 0);
         $total_records = count($list);
         $paginator = null;
         

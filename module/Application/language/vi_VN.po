@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-11 17:26+0700\n"
-"PO-Revision-Date: 2018-03-11 17:28+0700\n"
+"POT-Creation-Date: 2018-06-20 18:24+0700\n"
+"PO-Revision-Date: 2018-06-20 18:24+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -17,14 +17,341 @@ msgstr ""
 "X-Poedit-KeywordsList: translate;_\n"
 "X-Poedit-Basepath: ../..\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.0\n"
+"X-Generator: Poedit 2.0.8\n"
 "X-Poedit-SearchPath-0: .\n"
 
+#: Application/view/finance_menu.php:9
+#: Finance/view/finance/posting-period/list.phtml:5
+msgid "Posting Period"
+msgstr "Kỳ hạch toán"
+
+#: Application/view/finance_menu.php:11 Finance/view/finance/fx/list.phtml:5
+msgid "Exchange Rate"
+msgstr ""
+
+#: Application/view/hr_menu.php:4
+msgid "Create New Employee"
+msgstr "Thêm nhân viên"
+
+#: Application/view/hr_menu.php:6 HR/view/hr/employee/list.phtml:5
+#: Procure/view/layout/layout.phtml:218
+msgid "Employee List"
+msgstr "Danh sách Nhân viên"
+
+#: Application/view/hr_menu.php:9
+msgid "Finger Scan"
+msgstr "Dữ liệu vân tay"
+
+#: Application/view/hr_menu.php:11 HR/view/hr/employee-contract/index.phtml:9
+#: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
+#: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
+#: HR/view/hr/salary/index.phtml:9 HR/view/hr/setting/index.phtml:14
+msgid "Leave Reason"
+msgstr "Lý do nghỉ"
+
+#: Application/view/hr_menu.php:14
+msgid "Salary Calculation"
+msgstr ""
+
+#: Application/view/hr_menu.php:18 HR/view/hr/reporting/index.phtml:5
+msgid "Reporting"
+msgstr "Báo Cáo"
+
+#: Application/view/hr_menu.php:21
+msgid "TC/PC Evaluation"
+msgstr ""
+
+#: Application/view/hr_menu.php:23
+msgid "Evaluation for Productivity Bonus"
+msgstr ""
+
+#: Application/view/hr_menu.php:26 Application/view/navbar.php:94
+msgid "Setup"
+msgstr "Cài Đặt"
+
+#: Application/view/inventory_menu.php:4
+msgid "Dashboard"
+msgstr ""
+
+#: Application/view/inventory_menu.php:7
+msgid "Create new item"
+msgstr "Thêm mới hàng hóa"
+
+#: Application/view/navbar.php:17 Application/view/layout/Copy of
+#: layout-fluid.phtml:169
+msgid "Finance"
+msgstr "Kế toán"
+
+#: Application/view/navbar.php:26 Application/view/layout/Copy of
+#: layout-fluid.phtml:175
+msgid "Inventory"
+msgstr "Hàng Hóa"
+
+#: Application/view/navbar.php:36 Application/view/layout/Copy of
+#: layout-fluid.phtml:181
+msgid "Partner"
+msgstr "Đối Tác"
+
+#: Application/view/navbar.php:59 Application/view/layout/Copy of
+#: layout-fluid.phtml:197
+msgid "Procure"
+msgstr "Thu mua"
+
+#: Application/view/navbar.php:80
+msgid "Other"
+msgstr "Khác"
+
+#: Application/view/other_menu.php:2
+msgid "Add Project"
+msgstr "Thêm dự án"
+
+#: Application/view/other_menu.php:4
+msgid "Project List"
+msgstr "Danh sách Dự án /Công việc"
+
+#: Application/view/other_menu.php:6
+msgid "Calendar"
+msgstr "Lịch"
+
+#: Application/view/procure_menu.php:6
+msgid "New Purchase Request (PR)"
+msgstr "Tạo yêu cầu mua (PR)"
+
+#: Application/view/procure_menu.php:10 Procure/view/procure/quote/list.phtml:8
+msgid "New Quotation"
+msgstr ""
+
+#: Application/view/procure_menu.php:11
+msgid "Quotation List"
+msgstr ""
+
+#: Application/view/procure_menu.php:21
+msgid "Goods Return"
+msgstr ""
+
+#: Application/view/procure_menu.php:22
+msgid "Return list"
+msgstr ""
+
+#: Application/view/setting_menu.php:2
+msgid "User Management"
+msgstr "Quản lý người dùng"
+
+#: Application/view/setting_menu.php:3
 #: Application/view/application/department/list.phtml:4
 #: HR/view/hr/employee/list.phtml:48 HR/view/hr/employee/list.phtml:51
-#: Application/view/setting_menu.php:3
 msgid "Department"
 msgstr "Phòng ban"
+
+#: Application/view/setting_menu.php:6
+msgid "Access Control List (ACL)"
+msgstr "Phân quyền (ACL)"
+
+#: Application/view/setting_menu.php:8
+msgid "Workflow Management"
+msgstr "Quản lý quy trình"
+
+#: Application/view/setting_menu.php:10
+msgid "Backup Database"
+msgstr "Sao Lưu dữ liệu"
+
+#: Application/view/setting_menu.php:11
+msgid "Caching Manager"
+msgstr "Quản lý caching"
+
+#: Application/view/setting_menu.php:14
+msgid "Update Search Index"
+msgstr "Cập nhật danh mục tìm kiếm"
+
+#: Application/view/setting_menu.php:16
+msgid "Console"
+msgstr ""
+
+#: Application/view/setting_menu.php:17
+msgid "API"
+msgstr ""
+
+#: Application/view/setting_menu.php:20
+msgid "System Information"
+msgstr "Thông tin hệ thống"
+
+#: Finance/view/finance/ap-create-wizard.php:4
+#: Finance/view/finance/ap-create-wizard.php:8
+msgid "A/P Invoice Header"
+msgstr ""
+
+#: Finance/view/finance/ap-create-wizard.php:12
+#: Finance/view/finance/ap-create-wizard.php:16
+msgid "Add A/P Invoice Line"
+msgstr ""
+
+#: Finance/view/finance/ap-create-wizard.php:20
+#: Finance/view/finance/ap-create-wizard.php:24
+msgid "Review & Post"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/calculator-wizard.php:7
+#: HR/view/hr/salary-calculator/calculator-wizard.php:11
+#: HR/view/hr/salary-calculator/payroll-period.phtml:26
+#, fuzzy
+#| msgid "Posting Period"
+msgid "Payroll Period"
+msgstr "Kỳ hạch toán"
+
+#: HR/view/hr/salary-calculator/calculator-wizard.php:15
+#: HR/view/hr/salary-calculator/calculator-wizard.php:19
+msgid "Payroll Input Consolidate"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/calculator-wizard.php:23
+#: HR/view/hr/salary-calculator/calculator-wizard.php:27
+#: HR/view/hr/salary-calculator/input-check.phtml:24
+msgid "Payroll Input Review"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/calculator-wizard.php:32
+#: HR/view/hr/salary-calculator/calculator-wizard.php:36
+#: HR/view/hr/salary-calculator/simulate.phtml:24
+msgid "Draft Payroll"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/calculator-wizard.php:40
+msgid "Payroll Adjustment"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/calculator-wizard.php:44
+#: HR/view/hr/salary-calculator/calculator-wizard.php:48
+msgid "Payroll Review"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/calculator-wizard.php:52
+msgid "Final Payroll"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/calculator-wizard.php:56
+#: HR/view/hr/salary-calculator/calculator-wizard.php:59
+#: HR/view/hr/salary-calculator/create-draft.phtml:17
+msgid "Submision for Approval"
+msgstr ""
+
+#: Procure/view/procure/create-wizard.php:3
+#: Procure/view/procure/create-wizard.php:7
+msgid "PO Header"
+msgstr ""
+
+#: Procure/view/procure/create-wizard.php:11
+#: Procure/view/procure/create-wizard.php:15
+msgid "PO Line"
+msgstr ""
+
+#: Procure/view/procure/create-wizard.php:19
+#: Procure/view/procure/create-wizard.php:22
+#: Procure/view/procure/gr-create-wizard.php:19
+#: Procure/view/procure/gr-create-wizard.php:22
+#: Procure/view/procure/pr-create-wizard.php:28
+#: Procure/view/procure/pr-create-wizard.php:31
+#: Procure/view/procure/quote-create-wizard.php:19
+#: Procure/view/procure/quote-create-wizard.php:22
+msgid "Finish"
+msgstr ""
+
+#: Procure/view/procure/gr-create-wizard.php:3
+#: Procure/view/procure/gr-create-wizard.php:7
+msgid "Goods Receipt Header"
+msgstr ""
+
+#: Procure/view/procure/gr-create-wizard.php:11
+#: Procure/view/procure/gr-create-wizard.php:15
+msgid "Goods Receipt Line"
+msgstr ""
+
+#: Procure/view/procure/pr-create-wizard.php:3
+#: Procure/view/procure/pr-create-wizard.php:7
+msgid "PR Header"
+msgstr ""
+
+#: Procure/view/procure/pr-create-wizard.php:11
+#: Procure/view/procure/pr-create-wizard.php:15
+msgid "Add PR Line"
+msgstr ""
+
+#: Procure/view/procure/pr-create-wizard.php:20
+#: Procure/view/procure/pr-create-wizard.php:23
+msgid "Review"
+msgstr ""
+
+#: Procure/view/procure/quote-create-wizard.php:3
+#: Procure/view/procure/quote-create-wizard.php:7
+msgid "Quotation Header"
+msgstr ""
+
+#: Procure/view/procure/quote-create-wizard.php:11
+#: Procure/view/procure/quote-create-wizard.php:15
+msgid "Quotation Line"
+msgstr ""
+
+#: Application/view/application/company/edit.phtml:28
+#: Application/view/application/company/show.phtml:28
+msgid "Edit Company"
+msgstr ""
+
+#: Application/view/application/company/edit.phtml:46
+#: Application/view/application/company/show.phtml:46
+#, fuzzy
+#| msgid "Employee Code"
+msgid "Company Code"
+msgstr "Mã nhân viên"
+
+#: Application/view/application/company/edit.phtml:55
+#: Application/view/application/company/show.phtml:55
+msgid "Company Name"
+msgstr ""
+
+#: Application/view/application/company/edit.phtml:70
+#: Application/view/application/company/show.phtml:70
+#, fuzzy
+#| msgid "Currency"
+msgid "Default Currency"
+msgstr "Đơn vị tiền tệ"
+
+#: Application/view/application/company/list.phtml:55
+#: Application/view/application/country/list.phtml:70
+#: Finance/view/finance/fx/list.phtml:76
+#: HR/view/hr/employee-contract/list1.phtml:58
+#: HR/view/hr/employee-contract/show.phtml:49
+#: HR/view/hr/employee/applicant-list.phtml:153
+#: HR/view/hr/employee/list.phtml:170 HR/view/hr/income-setup/index.phtml:60
+#: HR/view/hr/leave-reason/list.phtml:60 HR/view/hr/position/list.phtml:58
+#: HR/view/hr/salary/list1.phtml:82 HR/view/hr/salary/show.phtml:205
+#: HR/view/hr/salary/simulate.phtml:79
+msgid "Edit"
+msgstr "Sửa"
+
+#: Application/view/application/country/edit.phtml:21
+msgid "Edit Country"
+msgstr ""
+
+#: Application/view/application/country/edit.phtml:39
+msgid "Country Name"
+msgstr ""
+
+#: Application/view/application/country/list.phtml:48
+#: Finance/view/finance/posting-period/list.phtml:37
+#: HR/view/hr/contract/index.phtml:20
+#: HR/view/hr/employee-contract/list1.phtml:32
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:19
+#: HR/view/hr/employee-evaluation/tc-list.phtml:19
+#: HR/view/hr/employee/applicant-list.phtml:127
+#: HR/view/hr/employee/list.phtml:144
+#: HR/view/hr/income-decorator/index.phtml:16
+#: HR/view/hr/income-setup/index.phtml:28 HR/view/hr/leave-reason/list.phtml:37
+#: HR/view/hr/minimum-wage/index.phtml:19 HR/view/hr/position/index.phtml:20
+#: HR/view/hr/position/list.phtml:36 HR/view/hr/salary/assign.phtml:59
+#: HR/view/hr/salary/list1.phtml:39 HR/view/hr/salary/simulate.phtml:36
+#: HR/view/hr/sso/index.phtml:20
+#: Inventory/view/inventory/serial-number/assign.phtml:54
+msgid "Action"
+msgstr "Hành động"
 
 #: Application/view/application/department/list.phtml:8
 #: Application/view/application/department/list.phtml:12
@@ -116,9 +443,9 @@ msgstr "wird aufgelöst in %s"
 #: HR/view/error/404.phtml:51 HR/view/error/index.phtml:8
 #: Inventory/view/error/404.phtml:51 Inventory/view/error/index.phtml:8
 #: PM/view/error/404.phtml:51 PM/view/error/index.phtml:8
-#: Procure/view/error/404.phtml:51 Procure/view/error/index.phtml:8
+#: Procure/view/error/404.phtml:51 Procure/view/error/index.phtml:9
 #: Procurement/view/error/404.phtml:51 Procurement/view/error/index.phtml:8
-#: User/view/error/index.phtml:8 Workflow/view/error/404.phtml:51
+#: User/view/error/index.phtml:9 Workflow/view/error/404.phtml:51
 #: Workflow/view/error/index.phtml:8
 #, fuzzy
 msgid "Additional information"
@@ -139,10 +466,10 @@ msgstr "Zusätzliche Information"
 #: PM/view/error/404.phtml:54 PM/view/error/404.phtml:78
 #: PM/view/error/index.phtml:11 PM/view/error/index.phtml:35
 #: Procure/view/error/404.phtml:54 Procure/view/error/404.phtml:78
-#: Procure/view/error/index.phtml:11 Procure/view/error/index.phtml:35
+#: Procure/view/error/index.phtml:12 Procure/view/error/index.phtml:36
 #: Procurement/view/error/404.phtml:54 Procurement/view/error/404.phtml:78
 #: Procurement/view/error/index.phtml:11 Procurement/view/error/index.phtml:35
-#: User/view/error/index.phtml:11 User/view/error/index.phtml:35
+#: User/view/error/index.phtml:12 User/view/error/index.phtml:36
 #: Workflow/view/error/404.phtml:54 Workflow/view/error/404.phtml:78
 #: Workflow/view/error/index.phtml:11 Workflow/view/error/index.phtml:35
 #, fuzzy
@@ -151,23 +478,27 @@ msgstr "Datei"
 
 #: Application/view/error/404.phtml:58 Application/view/error/404.phtml:82
 #: Application/view/error/index.phtml:15 Application/view/error/index.phtml:39
-#: BP/view/error/404.phtml:58 BP/view/error/404.phtml:82
-#: BP/view/error/index.phtml:15 BP/view/error/index.phtml:39
-#: Calendar/view/error/404.phtml:58 Calendar/view/error/404.phtml:82
-#: Calendar/view/error/index.phtml:15 Calendar/view/error/index.phtml:39
-#: Finance/view/error/404.phtml:58 Finance/view/error/404.phtml:82
-#: Finance/view/error/index.phtml:15 Finance/view/error/index.phtml:39
-#: HR/view/error/404.phtml:58 HR/view/error/404.phtml:82
-#: HR/view/error/index.phtml:15 HR/view/error/index.phtml:39
+#: BP/view/bp/activity-log/list1.phtml:22 BP/view/error/404.phtml:58
+#: BP/view/error/404.phtml:82 BP/view/error/index.phtml:15
+#: BP/view/error/index.phtml:39 Calendar/view/error/404.phtml:58
+#: Calendar/view/error/404.phtml:82 Calendar/view/error/index.phtml:15
+#: Calendar/view/error/index.phtml:39 Finance/view/error/404.phtml:58
+#: Finance/view/error/404.phtml:82 Finance/view/error/index.phtml:15
+#: Finance/view/error/index.phtml:39
+#: Finance/view/finance/activity-log/list1.phtml:22 HR/view/error/404.phtml:58
+#: HR/view/error/404.phtml:82 HR/view/error/index.phtml:15
+#: HR/view/error/index.phtml:39 HR/view/hr/activity-log/list1.phtml:22
 #: Inventory/view/error/404.phtml:58 Inventory/view/error/404.phtml:82
 #: Inventory/view/error/index.phtml:15 Inventory/view/error/index.phtml:39
+#: Inventory/view/inventory/activity-log/list1.phtml:22
 #: PM/view/error/404.phtml:58 PM/view/error/404.phtml:82
 #: PM/view/error/index.phtml:15 PM/view/error/index.phtml:39
 #: Procure/view/error/404.phtml:58 Procure/view/error/404.phtml:82
-#: Procure/view/error/index.phtml:15 Procure/view/error/index.phtml:39
+#: Procure/view/error/index.phtml:16 Procure/view/error/index.phtml:40
+#: Procure/view/procure/activity-log/list1.phtml:22
 #: Procurement/view/error/404.phtml:58 Procurement/view/error/404.phtml:82
 #: Procurement/view/error/index.phtml:15 Procurement/view/error/index.phtml:39
-#: User/view/error/index.phtml:15 User/view/error/index.phtml:39
+#: User/view/error/index.phtml:16 User/view/error/index.phtml:40
 #: Workflow/view/error/404.phtml:58 Workflow/view/error/404.phtml:82
 #: Workflow/view/error/index.phtml:15 Workflow/view/error/index.phtml:39
 msgid "Message"
@@ -188,10 +519,10 @@ msgstr "Lời nhắn gửi"
 #: PM/view/error/404.phtml:62 PM/view/error/404.phtml:86
 #: PM/view/error/index.phtml:19 PM/view/error/index.phtml:43
 #: Procure/view/error/404.phtml:62 Procure/view/error/404.phtml:86
-#: Procure/view/error/index.phtml:19 Procure/view/error/index.phtml:43
+#: Procure/view/error/index.phtml:20 Procure/view/error/index.phtml:44
 #: Procurement/view/error/404.phtml:62 Procurement/view/error/404.phtml:86
 #: Procurement/view/error/index.phtml:19 Procurement/view/error/index.phtml:43
-#: User/view/error/index.phtml:19 User/view/error/index.phtml:43
+#: User/view/error/index.phtml:20 User/view/error/index.phtml:44
 #: Workflow/view/error/404.phtml:62 Workflow/view/error/404.phtml:86
 #: Workflow/view/error/index.phtml:19 Workflow/view/error/index.phtml:43
 #, fuzzy
@@ -205,9 +536,9 @@ msgstr "Stapelüberwachung"
 #: HR/view/error/404.phtml:72 HR/view/error/index.phtml:29
 #: Inventory/view/error/404.phtml:72 Inventory/view/error/index.phtml:29
 #: PM/view/error/404.phtml:72 PM/view/error/index.phtml:29
-#: Procure/view/error/404.phtml:72 Procure/view/error/index.phtml:29
+#: Procure/view/error/404.phtml:72 Procure/view/error/index.phtml:30
 #: Procurement/view/error/404.phtml:72 Procurement/view/error/index.phtml:29
-#: User/view/error/index.phtml:29 Workflow/view/error/404.phtml:72
+#: User/view/error/index.phtml:30 Workflow/view/error/404.phtml:72
 #: Workflow/view/error/index.phtml:29
 msgid "Previous exceptions"
 msgstr "Trước"
@@ -219,9 +550,9 @@ msgstr "Trước"
 #: HR/view/error/404.phtml:102 HR/view/error/index.phtml:59
 #: Inventory/view/error/404.phtml:102 Inventory/view/error/index.phtml:59
 #: PM/view/error/404.phtml:102 PM/view/error/index.phtml:59
-#: Procure/view/error/404.phtml:102 Procure/view/error/index.phtml:59
+#: Procure/view/error/404.phtml:102 Procure/view/error/index.phtml:60
 #: Procurement/view/error/404.phtml:102 Procurement/view/error/index.phtml:59
-#: User/view/error/index.phtml:59 Workflow/view/error/404.phtml:102
+#: User/view/error/index.phtml:60 Workflow/view/error/404.phtml:102
 #: Workflow/view/error/index.phtml:59
 msgid "No Exception available"
 msgstr "Không có ngoại lệ sẵn có"
@@ -229,32 +560,12 @@ msgstr "Không có ngoại lệ sẵn có"
 #: Application/view/error/index.phtml:1 BP/view/error/index.phtml:1
 #: Calendar/view/error/index.phtml:1 Finance/view/error/index.phtml:1
 #: HR/view/error/index.phtml:1 Inventory/view/error/index.phtml:1
-#: PM/view/error/index.phtml:1 Procure/view/error/index.phtml:1
-#: Procurement/view/error/index.phtml:1 User/view/error/index.phtml:1
+#: PM/view/error/index.phtml:1 Procure/view/error/index.phtml:2
+#: Procurement/view/error/index.phtml:1 User/view/error/index.phtml:2
 #: Workflow/view/error/index.phtml:1
 #, fuzzy
 msgid "An error occurred"
 msgstr "An error occurred"
-
-#: Application/view/layout/Copy of layout-fluid.phtml:169
-#: Application/view/navbar.php:15
-msgid "Finance"
-msgstr "Kế toán"
-
-#: Application/view/layout/Copy of layout-fluid.phtml:175
-#: Application/view/navbar.php:22
-msgid "Inventory"
-msgstr "Hàng Hóa"
-
-#: Application/view/layout/Copy of layout-fluid.phtml:181
-#: Application/view/navbar.php:30
-msgid "Partner"
-msgstr "Đối Tác"
-
-#: Application/view/layout/Copy of layout-fluid.phtml:197
-#: Application/view/navbar.php:48
-msgid "Procure"
-msgstr "Thu mua"
 
 #: Application/view/layout/layout.phtml:6
 #: Application/view/layout/layout.phtml:34
@@ -279,188 +590,628 @@ msgstr "Trang chủ"
 msgid "All rights reserved."
 msgstr "Bảo lưu mọi quyền."
 
-#: Finance/view/finance/posting-period/add.phtml:19
+#: BP/view/bp/activity-log/list1.phtml:21
+#: Finance/view/finance/activity-log/list1.phtml:21
+#: HR/view/hr/activity-log/list1.phtml:21
+#: Inventory/view/inventory/activity-log/list1.phtml:21
+#: Procure/view/procure/activity-log/list1.phtml:21
+msgid "Priority"
+msgstr ""
+
+#: BP/view/bp/activity-log/list1.phtml:23
+#: Finance/view/finance/activity-log/list1.phtml:23
+#: HR/view/hr/activity-log/list1.phtml:23
+#: Inventory/view/inventory/activity-log/list1.phtml:23
+#: Procure/view/procure/activity-log/list1.phtml:23
+msgid "Trigger"
+msgstr ""
+
+#: BP/view/bp/activity-log/list1.phtml:24
+#: Finance/view/finance/activity-log/list1.phtml:24
+#: HR/view/hr/activity-log/list1.phtml:24
+#: Inventory/view/inventory/activity-log/list1.phtml:24
+#: Procure/view/procure/activity-log/list1.phtml:24
+msgid "Date"
+msgstr ""
+
+#: BP/view/bp/activity-log/list1.phtml:25 BP/view/bp/change-log/list1.phtml:30
+#: Finance/view/finance/activity-log/list1.phtml:25
+#: Finance/view/finance/change-log/list1.phtml:30
+#: HR/view/hr/activity-log/list1.phtml:25
+#: HR/view/hr/contract-log/list1.phtml:30
+#: Inventory/view/inventory/activity-log/list1.phtml:25
+#: Inventory/view/inventory/change-log/list1.phtml:30
+#: Procure/view/procure/activity-log/list1.phtml:25
+#: Procure/view/procure/change-log/list1.phtml:30
+msgid "Changed By"
+msgstr ""
+
+#: BP/view/bp/change-log/list1.phtml:21
+#: Finance/view/finance/change-log/list1.phtml:21
+#: HR/view/hr/contract-log/list1.phtml:21
+#: Inventory/view/inventory/change-log/list1.phtml:21
+#: Procure/view/procure/change-log/list1.phtml:21
+#, fuzzy
+#| msgid "Number of Revision"
+msgid "Revision"
+msgstr "Số lần sửa"
+
+#: BP/view/bp/change-log/list1.phtml:22
+#: Finance/view/finance/change-log/list1.phtml:22
+#: HR/view/hr/contract-log/list1.phtml:22
+#: HR/view/hr/entity-change-log/list1.phtml:22
+#: Inventory/view/inventory/change-log/list1.phtml:22
+#: Procure/view/procure/change-log/list1.phtml:22
+msgid "field name"
+msgstr ""
+
+#: BP/view/bp/change-log/list1.phtml:23
+#: Finance/view/finance/change-log/list1.phtml:23
+#: HR/view/hr/contract-log/list1.phtml:23
+#: HR/view/hr/entity-change-log/list1.phtml:23
+#: Inventory/view/inventory/change-log/list1.phtml:23
+#: Procure/view/procure/change-log/list1.phtml:23
+msgid "old value"
+msgstr ""
+
+#: BP/view/bp/change-log/list1.phtml:24
+#: Finance/view/finance/change-log/list1.phtml:24
+#: HR/view/hr/contract-log/list1.phtml:24
+#: HR/view/hr/entity-change-log/list1.phtml:24
+#: Inventory/view/inventory/change-log/list1.phtml:24
+#: Procure/view/procure/change-log/list1.phtml:24
+msgid "new value"
+msgstr ""
+
+#: BP/view/bp/change-log/list1.phtml:25
+#: Finance/view/finance/change-log/list1.phtml:25
+#: HR/view/hr/contract-log/list1.phtml:25
+#: HR/view/hr/entity-change-log/list1.phtml:25
+#: Inventory/view/inventory/change-log/list1.phtml:25
+#: Procure/view/procure/change-log/list1.phtml:25
+msgid "change date"
+msgstr ""
+
+#: BP/view/bp/change-log/list1.phtml:26
+#: Finance/view/finance/change-log/list1.phtml:26
+#: HR/view/hr/contract-log/list1.phtml:26
+#: Inventory/view/inventory/change-log/list1.phtml:26
+#: Procure/view/procure/change-log/list1.phtml:26
+#, fuzzy
+#| msgid "Effective from"
+msgid "effective from"
+msgstr "Có giá trị từ"
+
+#: BP/view/bp/change-log/list1.phtml:27
+#: Finance/view/finance/change-log/list1.phtml:27
+#: HR/view/hr/contract-log/list1.phtml:27
+#: Inventory/view/inventory/change-log/list1.phtml:27
+#: Procure/view/procure/change-log/list1.phtml:27
+#, fuzzy
+#| msgid "Effective to"
+msgid "effective to"
+msgstr "Có giá trị đến"
+
+#: BP/view/bp/change-log/list1.phtml:29
+#: Finance/view/finance/change-log/list1.phtml:29
+#: HR/view/hr/contract-log/list1.phtml:29
+#: Inventory/view/inventory/change-log/list1.phtml:29
+#: Procure/view/procure/change-log/list1.phtml:29
+msgid "Valid"
+msgstr ""
+
+#: Finance/view/finance/fx/list.phtml:9
+#, fuzzy
+#| msgid "Add New PR"
+msgid "Add new Fx"
+msgstr "Tạo yêu cầu mua"
+
+#: Finance/view/finance/fx/list.phtml:74
+msgid "show"
+msgstr ""
+
+#: Finance/view/finance/posting-period/add.phtml:23
 #: Finance/view/finance/posting-period/list.phtml:9
 msgid "New Posting Period"
 msgstr "Thêm kỳ hạch toán"
 
-#: Finance/view/finance/posting-period/add.phtml:28
+#: Finance/view/finance/posting-period/add.phtml:32
 msgid "Period Code"
 msgstr "Mã kỳ hạch toán"
 
-#: Finance/view/finance/posting-period/add.phtml:34
+#: Finance/view/finance/posting-period/add.phtml:38
 #: Finance/view/finance/posting-period/list.phtml:29
 msgid "Period Name"
 msgstr "Tên kỳ hạch toán"
 
-#: Finance/view/finance/posting-period/add.phtml:43
+#: Finance/view/finance/posting-period/add.phtml:47
 #: Finance/view/finance/posting-period/list.phtml:36
+#: HR/view/hr/contract/index.phtml:19
+#: HR/view/hr/employee-contract/add.phtml:113
 #: HR/view/hr/leave-reason/list.phtml:35 HR/view/hr/minimum-wage/index.phtml:18
-#: HR/view/hr/sso/index.phtml:18
+#: HR/view/hr/position/index.phtml:19 HR/view/hr/sso/index.phtml:19
 msgid "Status"
 msgstr "Trạng thái"
 
-#: Finance/view/finance/posting-period/add.phtml:46
-#: Finance/view/finance/posting-period/list.phtml:65
-msgid "Opened"
-msgstr "Đã mở"
+#: Finance/view/finance/posting-period/add.phtml:50
+#: Finance/view/finance/posting-period/list.phtml:63
+msgid "Open"
+msgstr "Mở"
 
-#: Finance/view/finance/posting-period/add.phtml:47
+#: Finance/view/finance/posting-period/add.phtml:51
 msgid "Closed"
 msgstr "Đã đóng"
 
-#: Finance/view/finance/posting-period/add.phtml:48
-msgid "Locked"
-msgstr "Đã khóa"
-
-#: Finance/view/finance/posting-period/add.phtml:54
+#: Finance/view/finance/posting-period/add.phtml:57
 #: Finance/view/finance/posting-period/list.phtml:30
 msgid "Period Start"
 msgstr "Ngày bắt đầu kỳ"
 
-#: Finance/view/finance/posting-period/add.phtml:60
+#: Finance/view/finance/posting-period/add.phtml:63
 #: Finance/view/finance/posting-period/list.phtml:31
 msgid "Period End"
 msgstr "Ngày kết thúc kỳ"
 
-#: Finance/view/finance/posting-period/add.phtml:69
+#: Finance/view/finance/posting-period/add.phtml:72
 #: Finance/view/finance/posting-period/list.phtml:32
 msgid "Plan Working Days"
 msgstr "Ngày làm việc kế hoạch"
 
-#: Finance/view/finance/posting-period/add.phtml:75
+#: Finance/view/finance/posting-period/add.phtml:78
 #: Finance/view/finance/posting-period/list.phtml:33
 msgid "Actual Working Days"
 msgstr "Ngày làm việc thực tế"
 
-#: Finance/view/finance/posting-period/add.phtml:84
+#: Finance/view/finance/posting-period/add.phtml:87
 #: Finance/view/finance/posting-period/list.phtml:34
 msgid "National Holidays"
 msgstr "Ngày nghỉ theo luật"
 
-#: Finance/view/finance/posting-period/add.phtml:90
+#: Finance/view/finance/posting-period/add.phtml:93
 #: Finance/view/finance/posting-period/list.phtml:35
 msgid "Cooperate Leaves"
 msgstr "Ngày nghỉ của công ty"
 
-#: Finance/view/finance/posting-period/add.phtml:99
+#: Finance/view/finance/posting-period/add.phtml:102
 msgid "Remarks"
 msgstr "Ghi chú"
 
-#: Finance/view/finance/posting-period/add.phtml:109
-#: HR/view/hr/leave-reason/add.phtml:79
+#: Finance/view/finance/posting-period/add.phtml:112
+#: HR/view/hr/employee-contract/add.phtml:192
+#: HR/view/hr/employee-contract/amend.phtml:209
+#: HR/view/hr/employee-contract/terminate.phtml:209
+#: HR/view/hr/leave-reason/add.phtml:79 HR/view/hr/position/add.phtml:82
+#: HR/view/hr/position/edit.phtml:86 HR/view/hr/salary/edit.phtml:100
 msgid "Save"
 msgstr "Ghi"
-
-#: Finance/view/finance/posting-period/list.phtml:5
-msgid "Posting Period"
-msgstr "Kỳ hạch toán"
 
 #: Finance/view/finance/posting-period/list.phtml:20
 #: HR/view/hr/employee/applicant-list.phtml:110
 #: HR/view/hr/employee/applicant-list.phtml:112
 #: HR/view/hr/employee/list.phtml:127 HR/view/hr/employee/list.phtml:129
-#: HR/view/hr/leave-reason/list.phtml:22
+#: HR/view/hr/leave-reason/list.phtml:22 HR/view/hr/position/list.phtml:22
 msgid "records"
 msgstr "bản ghi"
 
-#: Finance/view/finance/posting-period/list.phtml:37
-#: HR/view/hr/employee/applicant-list.phtml:127
-#: HR/view/hr/employee/list.phtml:144 HR/view/hr/leave-reason/list.phtml:37
-#: HR/view/hr/minimum-wage/index.phtml:19 HR/view/hr/sso/index.phtml:19
-msgid "Action"
-msgstr "Hành động"
-
-#: Finance/view/finance/posting-period/list.phtml:63
-msgid "Open"
-msgstr "Mở"
+#: Finance/view/finance/posting-period/list.phtml:65
+msgid "Opened"
+msgstr "Đã mở"
 
 #: Finance/view/finance/posting-period/list.phtml:66
 msgid "Close"
 msgstr "Đóng"
 
-#: HR/view/hr/employee-contract/add.phtml:5
-#: HR/view/hr/employee-contract/index.phtml:5 HR/view/hr/setting/index.phtml:5
-#: HR/view/hr/setting/index.phtml:23
-msgid "HR SETTING"
-msgstr "Thiết Lập HR"
+#: Finance/view/finance/v-invoice-row/add.phtml:26
+msgid "New Row"
+msgstr "Thêm dòng"
 
-#: HR/view/hr/employee-contract/add.phtml:9
-#: HR/view/hr/employee-contract/index.phtml:9
-#: HR/view/hr/leave-reason/add.phtml:27 HR/view/hr/leave-reason/add.phtml:38
-#: HR/view/hr/leave-reason/list.phtml:5 HR/view/hr/leave-reason/list.phtml:31
-#: HR/view/hr/setting/index.phtml:13 Application/view/hr_menu.php:11
-msgid "Leave Reason"
-msgstr "Lý do nghỉ"
-
-#: HR/view/hr/employee-contract/list1.phtml:7
-msgid "Employment Contract Summary:"
+#: Finance/view/finance/v-invoice-row/add.phtml:50
+#: Procure/view/procure/gr-row/add.phtml:39
+#: Procure/view/procure/po-row/add.phtml:39
+#: Procure/view/procure/pr-row/add.phtml:46
+#: Procure/view/procure/quote-row/add.phtml:45
+#: Procure/view/procure/return-row/add.phtml:39
+msgid "Summary:"
 msgstr ""
 
-#: HR/view/hr/employee-contract/list1.phtml:9
-msgid "Contract status"
-msgstr "Tình trang Hợp đồng"
+#: Finance/view/finance/v-invoice-row/edit.phtml:20
+#: Finance/view/finance/v-invoice/edit.phtml:3
+msgid "AP Invoice: "
+msgstr ""
 
-#: HR/view/hr/employee-contract/list1.phtml:10
+#: Finance/view/finance/v-invoice/review.phtml:65
+#: Finance/view/finance/v-invoice/review.phtml:326
+msgid "Document can't be changed anymore when submitted!"
+msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
+
+#: Finance/view/finance/v-invoice/review.phtml:77
+msgid "Post"
+msgstr "Ghi sổ"
+
+#: Finance/view/finance/v-invoice/review.phtml:323
+msgid " will be posted!"
+msgstr " sẽ được ghi sổ!"
+
+#: Finance/view/finance/v-invoice/review.phtml:331
+msgid "Do you want to continue?"
+msgstr "Bạn có muốn thực hiện không?"
+
+#: HR/view/hr/contract/index.phtml:5 HR/view/hr/sso/index.phtml:5
+msgid "Social Security Management"
+msgstr "Quản lý Bảo Hiểm Xã hội"
+
+#: HR/view/hr/contract/index.phtml:14 HR/view/hr/position/index.phtml:14
+#: HR/view/hr/sso/index.phtml:14
 #, fuzzy
-#| msgid "All PR"
-msgid "All"
-msgstr "Tất cả yêu cầu mua. Tiếng Việt"
+#| msgid "Employee Status"
+msgid "SSO Employee Rate"
+msgstr "Trạng thái Nhân viên"
 
-#: HR/view/hr/employee-contract/list1.phtml:12
-#: HR/view/hr/employee-contract/list1.phtml:51
-#: HR/view/hr/leave-reason/add.phtml:33 HR/view/hr/minimum-wage/index.phtml:40
-#: HR/view/hr/sso/index.phtml:40
-msgid "Active"
-msgstr "hoạt động"
+#: HR/view/hr/contract/index.phtml:15 HR/view/hr/position/index.phtml:15
+#: HR/view/hr/sso/index.phtml:15
+#, fuzzy
+#| msgid "Employee Status"
+msgid "SSO Employeer Rate"
+msgstr "Trạng thái Nhân viên"
 
-#: HR/view/hr/employee-contract/list1.phtml:13
-#: HR/view/hr/employee-contract/list1.phtml:41
-msgid "Terminated"
-msgstr "Đã kết thúc"
+#: HR/view/hr/contract/index.phtml:16 HR/view/hr/position/index.phtml:16
+#: HR/view/hr/sso/index.phtml:16
+msgid "Maximum Contribution"
+msgstr ""
 
-#: HR/view/hr/employee-contract/list1.phtml:21
-msgid "Contract number"
-msgstr "Liên lạc"
+#: HR/view/hr/contract/index.phtml:17 HR/view/hr/minimum-wage/index.phtml:16
+#: HR/view/hr/position/index.phtml:17 HR/view/hr/sso/index.phtml:17
+msgid "Effective from"
+msgstr "Có giá trị từ"
 
-#: HR/view/hr/employee-contract/list1.phtml:22
-#: HR/view/hr/employee-contract/list1.phtml:24
-msgid "Number of Revision"
-msgstr "Số lần sửa"
+#: HR/view/hr/contract/index.phtml:18 HR/view/hr/minimum-wage/index.phtml:17
+#: HR/view/hr/position/index.phtml:18 HR/view/hr/sso/index.phtml:18
+msgid "Effective to"
+msgstr "Có giá trị đến"
 
-#: HR/view/hr/employee-contract/list1.phtml:25
-msgid "Start Working Date"
-msgstr "Ngày bắt đầu làm việc"
+#: HR/view/hr/contract/index.phtml:33 HR/view/hr/minimum-wage/index.phtml:31
+#: HR/view/hr/position/index.phtml:33 HR/view/hr/sso/index.phtml:33
+msgid "Inactive"
+msgstr "không hoạt động"
 
-#: HR/view/hr/employee-contract/list1.phtml:26
-msgid "Termination Date"
-msgstr "Ngày kết thúc"
-
-#: HR/view/hr/employee-contract/list1.phtml:27
-msgid "Contract Status"
-msgstr "Tình trang Hợp đồng"
-
-#: HR/view/hr/employee-contract/list1.phtml:42
-#: HR/view/hr/employee-contract/list1.phtml:52
+#: HR/view/hr/contract/index.phtml:34 HR/view/hr/contract/index.phtml:44
+#: HR/view/hr/employee-contract/list1.phtml:57
+#: HR/view/hr/employee-contract/list2.phtml:42
+#: HR/view/hr/employee-contract/list2.phtml:52
 #: HR/view/hr/employee/applicant-list.phtml:152
-#: HR/view/hr/employee/list.phtml:169 HR/view/hr/leave-reason/list.phtml:59
-#: HR/view/hr/minimum-wage/index.phtml:32
-#: HR/view/hr/minimum-wage/index.phtml:41 HR/view/hr/sso/index.phtml:32
-#: HR/view/hr/sso/index.phtml:41
+#: HR/view/hr/employee/list.phtml:169 HR/view/hr/income-setup/index.phtml:59
+#: HR/view/hr/leave-reason/list.phtml:59 HR/view/hr/minimum-wage/index.phtml:32
+#: HR/view/hr/minimum-wage/index.phtml:41 HR/view/hr/position/index.phtml:34
+#: HR/view/hr/position/index.phtml:44 HR/view/hr/position/list.phtml:57
+#: HR/view/hr/salary/list2.phtml:42 HR/view/hr/salary/list2.phtml:52
+#: HR/view/hr/sso/index.phtml:34 HR/view/hr/sso/index.phtml:44
 msgid "Show"
 msgstr "Xem"
 
-#: HR/view/hr/employee-contract/list1.phtml:52
-msgid "Amend"
-msgstr "Sửa"
+#: HR/view/hr/contract/index.phtml:43 HR/view/hr/employee-contract/add.phtml:49
+#: HR/view/hr/employee-contract/amend.phtml:66
+#: HR/view/hr/employee-contract/list2.phtml:12
+#: HR/view/hr/employee-contract/list2.phtml:51
+#: HR/view/hr/employee-contract/show.phtml:78
+#: HR/view/hr/employee-contract/terminate.phtml:66
+#: HR/view/hr/leave-reason/add.phtml:33 HR/view/hr/minimum-wage/index.phtml:40
+#: HR/view/hr/position/add.phtml:35 HR/view/hr/position/edit.phtml:39
+#: HR/view/hr/position/index.phtml:43 HR/view/hr/position/show.phtml:39
+#: HR/view/hr/salary/list2.phtml:12 HR/view/hr/salary/list2.phtml:51
+#: HR/view/hr/salary/show.phtml:54 HR/view/hr/sso/index.phtml:43
+msgid "Active"
+msgstr "hoạt động"
 
-#: HR/view/hr/employee-contract/list1.phtml:52
+#: HR/view/hr/contract/index.phtml:44 HR/view/hr/minimum-wage/index.phtml:41
+#: HR/view/hr/position/index.phtml:44 HR/view/hr/sso/index.phtml:44
+msgid "Update"
+msgstr "Cập nhất"
+
+#: HR/view/hr/employee-contract/add.phtml:25
+#: HR/view/hr/employee-contract/amend.phtml:25
+#, fuzzy
+#| msgid "Current Contract:"
+msgid "New Contract"
+msgstr "Hợp đồng hiện tại"
+
+#: HR/view/hr/employee-contract/add.phtml:44
+#: HR/view/hr/employee-contract/amend.phtml:61
+#: HR/view/hr/employee-contract/list1.phtml:24
+#: HR/view/hr/employee-contract/show.phtml:73
+#: HR/view/hr/employee-contract/terminate.phtml:61
+#: HR/view/hr/salary/show.phtml:49
+msgid "Contract Number"
+msgstr "Số Hợp Đồng"
+
+#: HR/view/hr/employee-contract/add.phtml:47
+#: HR/view/hr/employee-contract/amend.phtml:64
+#: HR/view/hr/employee-contract/show.phtml:76
+#: HR/view/hr/employee-contract/terminate.phtml:64
+#: HR/view/hr/salary/show.phtml:52
+#, fuzzy
+#| msgid "Contract number"
+msgid "please enter contract number"
+msgstr "Liên lạc"
+
+#: HR/view/hr/employee-contract/add.phtml:56
+#: HR/view/hr/employee-contract/amend.phtml:73
+#: HR/view/hr/employee-contract/list1.phtml:25
+#: HR/view/hr/employee-contract/show.phtml:87
+#: HR/view/hr/employee-contract/terminate.phtml:73
+#: HR/view/hr/salary/show.phtml:63
+msgid "Contract Date"
+msgstr "Ngày Hợp đồng"
+
+#: HR/view/hr/employee-contract/add.phtml:59
+#: HR/view/hr/employee-contract/amend.phtml:76
+#: HR/view/hr/employee-contract/show.phtml:90
+#: HR/view/hr/employee-contract/terminate.phtml:76
+#: HR/view/hr/salary/show.phtml:66
+msgid "Select contract date!"
+msgstr ""
+
+#: HR/view/hr/employee-contract/add.phtml:63
+#: HR/view/hr/employee-contract/amend.phtml:80
+#: HR/view/hr/employee-contract/show.phtml:97
+#: HR/view/hr/employee-contract/terminate.phtml:80
+#: HR/view/hr/leave-reason/add.phtml:51 HR/view/hr/leave-reason/list.phtml:33
+#: HR/view/hr/position/add.phtml:54 HR/view/hr/position/edit.phtml:58
+#: HR/view/hr/position/list.phtml:33 HR/view/hr/position/show.phtml:58
+#: HR/view/hr/salary/show.phtml:73
+msgid "Vadid From"
+msgstr "Áp dụng từ"
+
+#: HR/view/hr/employee-contract/add.phtml:68
+#: HR/view/hr/employee-contract/amend.phtml:85
+#: HR/view/hr/employee-contract/show.phtml:102
+#: HR/view/hr/employee-contract/terminate.phtml:85
+#: HR/view/hr/leave-reason/add.phtml:58 HR/view/hr/leave-reason/list.phtml:34
+#: HR/view/hr/position/add.phtml:61 HR/view/hr/position/edit.phtml:65
+#: HR/view/hr/position/list.phtml:34 HR/view/hr/position/show.phtml:65
+#: HR/view/hr/salary/show.phtml:78
+msgid "Vadid To"
+msgstr "Áp dụng đến"
+
+#: HR/view/hr/employee-contract/add.phtml:88
+#: HR/view/hr/employee-contract/amend.phtml:105
+#: HR/view/hr/employee-contract/show.phtml:122
+#: HR/view/hr/employee-contract/terminate.phtml:105
+#: HR/view/hr/position/index.phtml:5 HR/view/hr/position/list.phtml:5
+#: HR/view/hr/position/show.phtml:21 HR/view/hr/salary/show.phtml:98
+#, fuzzy
+#| msgid "Action"
+msgid "Postion"
+msgstr "Hành động"
+
+#: HR/view/hr/employee-contract/add.phtml:91
+#: HR/view/hr/employee-contract/amend.phtml:108
+#: HR/view/hr/employee-contract/show.phtml:125
+#: HR/view/hr/employee-contract/terminate.phtml:108
+#: HR/view/hr/salary/show.phtml:101
+msgid "Select Position"
+msgstr "Chọn Vị trí"
+
+#: HR/view/hr/employee-contract/add.phtml:122
+#: HR/view/hr/employee-contract/amend.phtml:139
+#: HR/view/hr/employee-contract/show.phtml:156
+#: HR/view/hr/employee-contract/terminate.phtml:139
+#: HR/view/hr/salary/show.phtml:132
+msgid "Working Time From"
+msgstr ""
+
+#: HR/view/hr/employee-contract/add.phtml:127
+#: HR/view/hr/employee-contract/amend.phtml:144
+#: HR/view/hr/employee-contract/show.phtml:161
+#: HR/view/hr/employee-contract/terminate.phtml:144
+#: HR/view/hr/salary/show.phtml:137
+msgid "Working Time To"
+msgstr ""
+
+#: HR/view/hr/employee-contract/add.phtml:144
+#: HR/view/hr/employee-contract/amend.phtml:161
+#: HR/view/hr/employee-contract/list1.phtml:30
+#: HR/view/hr/employee-contract/show.phtml:178
+#: HR/view/hr/employee-contract/terminate.phtml:161
+#: HR/view/hr/salary/show.phtml:154
+msgid "Basic Salary"
+msgstr ""
+
+#: HR/view/hr/employee-contract/add.phtml:150
+#: HR/view/hr/employee-contract/amend.phtml:167
+#: HR/view/hr/employee-contract/show.phtml:184
+#: HR/view/hr/employee-contract/terminate.phtml:167
+#: HR/view/hr/salary/show.phtml:160
+msgid "Is Gross"
+msgstr ""
+
+#: HR/view/hr/employee-contract/add.phtml:157
+#: HR/view/hr/employee-contract/amend.phtml:174
+#: HR/view/hr/employee-contract/list1.phtml:31
+#: HR/view/hr/employee-contract/show.phtml:191
+#: HR/view/hr/employee-contract/terminate.phtml:174
+#: HR/view/hr/minimum-wage/index.phtml:15 HR/view/hr/salary/list1.phtml:32
+#: HR/view/hr/salary/show.phtml:167 HR/view/hr/salary/simulate.phtml:29
+msgid "Currency"
+msgstr "Đơn vị tiền tệ"
+
+#: HR/view/hr/employee-contract/add.phtml:195
+#: HR/view/hr/employee-contract/amend.phtml:212
+#: HR/view/hr/employee-contract/show.phtml:52
+#: HR/view/hr/employee-contract/terminate.phtml:212
+#: HR/view/hr/leave-reason/add.phtml:82 HR/view/hr/position/add.phtml:85
+#: HR/view/hr/position/edit.phtml:89 HR/view/hr/salary/assign.phtml:94
+#: HR/view/hr/salary/edit.phtml:103 HR/view/hr/salary/show.phtml:209
+msgid "Cancel"
+msgstr "Thoát"
+
+#: HR/view/hr/employee-contract/amend.phtml:36
+#: HR/view/hr/employee-contract/terminate.phtml:36
+msgid "Change Date"
+msgstr "Ngày sửa"
+
+#: HR/view/hr/employee-contract/amend.phtml:42
+#: HR/view/hr/employee-contract/terminate.phtml:42
+#, fuzzy
+#| msgid "Effective from"
+msgid "Change Effective From:"
+msgstr "Có giá trị từ"
+
+#: HR/view/hr/employee-contract/amend.phtml:130
+#: HR/view/hr/employee-contract/list1.phtml:26
+#: HR/view/hr/employee-contract/list2.phtml:27
+#: HR/view/hr/employee-contract/show.phtml:147
+#: HR/view/hr/employee-contract/terminate.phtml:130
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:17
+#: HR/view/hr/employee-evaluation/tc-list.phtml:17
+#: HR/view/hr/salary/list2.phtml:27 HR/view/hr/salary/show.phtml:123
+msgid "Contract Status"
+msgstr "Tình trang Hợp đồng"
+
+#: HR/view/hr/employee-contract/index.phtml:5
+#: HR/view/hr/income-setup/index.phtml:1 HR/view/hr/income-setup/update.phtml:1
+#: HR/view/hr/leave-reason/list.phtml:1 HR/view/hr/minimum-wage/index.phtml:1
+#: HR/view/hr/position/add.phtml:3 HR/view/hr/position/edit.phtml:3
+#: HR/view/hr/position/index.phtml:1 HR/view/hr/position/list.phtml:1
+#: HR/view/hr/position/show.phtml:3 HR/view/hr/salary/index.phtml:5
+#: HR/view/hr/setting/index.phtml:5 HR/view/hr/setting/index.phtml:24
+#: HR/view/hr/sso/index.phtml:1
+msgid "HR SETTING"
+msgstr "Thiết Lập HR"
+
+#: HR/view/hr/employee-contract/list1.phtml:28 HR/view/hr/salary/list1.phtml:37
+#: HR/view/hr/salary/simulate.phtml:34
+#, fuzzy
+#| msgid "Vadid From"
+msgid "Valid From"
+msgstr "Áp dụng từ"
+
+#: HR/view/hr/employee-contract/list1.phtml:29 HR/view/hr/salary/list1.phtml:38
+#: HR/view/hr/salary/simulate.phtml:35
+#, fuzzy
+#| msgid "Vadid To"
+msgid "Valid To"
+msgstr "Áp dụng đến"
+
+#: HR/view/hr/employee-contract/list1.phtml:59
+#: HR/view/hr/employee-contract/list2.phtml:52
+#: HR/view/hr/employee-contract/show.phtml:55 HR/view/hr/salary/list2.phtml:52
 msgid "Terminate"
 msgstr "Kết thúc"
 
-#: HR/view/hr/employee-contract/list1.phtml:62
+#: HR/view/hr/employee-contract/list2.phtml:7 HR/view/hr/salary/list2.phtml:7
+msgid "Employment Contract Summary:"
+msgstr ""
+
+#: HR/view/hr/employee-contract/list2.phtml:9 HR/view/hr/salary/list2.phtml:9
+msgid "Contract status"
+msgstr "Tình trang Hợp đồng"
+
+#: HR/view/hr/employee-contract/list2.phtml:10
+#: HR/view/hr/salary/assign.phtml:50 HR/view/hr/salary/list2.phtml:10
+#: Inventory/view/inventory/serial-number/assign.phtml:50
+msgid "All"
+msgstr "Tất cả"
+
+#: HR/view/hr/employee-contract/list2.phtml:13
+#: HR/view/hr/employee-contract/list2.phtml:41 HR/view/hr/salary/list2.phtml:13
+#: HR/view/hr/salary/list2.phtml:41
+msgid "Terminated"
+msgstr "Đã kết thúc"
+
+#: HR/view/hr/employee-contract/list2.phtml:21 HR/view/hr/salary/list2.phtml:21
+msgid "Contract number"
+msgstr "Liên lạc"
+
+#: HR/view/hr/employee-contract/list2.phtml:22
+#: HR/view/hr/employee-contract/list2.phtml:24 HR/view/hr/salary/list2.phtml:22
+#: HR/view/hr/salary/list2.phtml:24
+msgid "Number of Revision"
+msgstr "Số lần sửa"
+
+#: HR/view/hr/employee-contract/list2.phtml:25 HR/view/hr/salary/list2.phtml:25
+msgid "Start Working Date"
+msgstr "Ngày bắt đầu làm việc"
+
+#: HR/view/hr/employee-contract/list2.phtml:26 HR/view/hr/salary/list2.phtml:26
+msgid "Termination Date"
+msgstr "Ngày kết thúc"
+
+#: HR/view/hr/employee-contract/list2.phtml:52 HR/view/hr/salary/list2.phtml:52
+msgid "Amend"
+msgstr "Sửa"
+
+#: HR/view/hr/employee-contract/list2.phtml:62 HR/view/hr/salary/list2.phtml:62
 msgid "Current Contract:"
 msgstr "Hợp đồng hiện tại"
+
+#: HR/view/hr/employee-contract/show.phtml:35 HR/view/hr/salary/show.phtml:25
+msgid "Contract"
+msgstr "Hợp đồng"
+
+#: HR/view/hr/employee-contract/show.phtml:40 HR/view/hr/salary/show.phtml:29
+msgid "Posting"
+msgstr "Hạch toán"
+
+#: HR/view/hr/employee-contract/terminate.phtml:25
+msgid "Terminate Contract"
+msgstr "Ngày kết thúc Hợp đồng"
+
+#: HR/view/hr/employee-evaluation/evaluate.phtml:20
+msgid "Evaluation"
+msgstr ""
+
+#: HR/view/hr/employee-evaluation/evaluate.phtml:37
+msgid "Score 1-6 (TC)"
+msgstr ""
+
+#: HR/view/hr/employee-evaluation/evaluate.phtml:38
+msgid "Score 7-10 (LC)"
+msgstr ""
+
+#: HR/view/hr/employee-evaluation/evaluate.phtml:68
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:31
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:44
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:56
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:69
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:82
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:95
+#: HR/view/hr/employee-evaluation/tc-list.phtml:31
+#: HR/view/hr/employee-evaluation/tc-list.phtml:44
+#: HR/view/hr/employee-evaluation/tc-list.phtml:56
+#: HR/view/hr/employee-evaluation/tc-list.phtml:69
+#: HR/view/hr/employee-evaluation/tc-list.phtml:82
+#: HR/view/hr/employee-evaluation/tc-list.phtml:95
+msgid "Evaluate"
+msgstr ""
+
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:3
+#: HR/view/hr/employee-evaluation/tc-list.phtml:3
+msgid "Evaluation List"
+msgstr ""
+
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:13
+#: HR/view/hr/employee-evaluation/tc-list.phtml:13
+#: HR/view/hr/employee/applicant-list.phtml:48
+#: HR/view/hr/employee/applicant-list.phtml:121
+#: HR/view/hr/employee/list.phtml:65 HR/view/hr/employee/list.phtml:138
+msgid "Employee Code"
+msgstr "Mã nhân viên"
+
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:14
+#: HR/view/hr/employee-evaluation/tc-list.phtml:14
+msgid "Employee Name"
+msgstr "Tên Nhân Viên"
+
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:15
+#: HR/view/hr/employee-evaluation/tc-list.phtml:15
+msgid "Hired Date"
+msgstr "Ngày bắt đầu"
+
+#: HR/view/hr/employee-evaluation/productivity-bonus.phtml:16
+#: HR/view/hr/employee-evaluation/tc-list.phtml:16
+#: HR/view/hr/setting/index.phtml:13
+msgid "Position"
+msgstr "Vị Trí"
 
 #: HR/view/hr/employee/applicant-list.phtml:5
 msgid "Applicant List"
@@ -491,14 +1242,9 @@ msgstr "Trạng thái ưng viên"
 msgid "Sort by"
 msgstr "Sếp xếp  theo"
 
-#: HR/view/hr/employee/applicant-list.phtml:48
-#: HR/view/hr/employee/applicant-list.phtml:121
-#: HR/view/hr/employee/list.phtml:65 HR/view/hr/employee/list.phtml:138
-msgid "Employee Code"
-msgstr "Mã nhân viên"
-
 #: HR/view/hr/employee/applicant-list.phtml:51
 #: HR/view/hr/employee/list.phtml:68 HR/view/hr/leave-reason/list.phtml:36
+#: HR/view/hr/position/list.phtml:35
 msgid "Created Date"
 msgstr "Ngày tạo"
 
@@ -545,16 +1291,6 @@ msgstr "Ngày sinh"
 msgid "Gender"
 msgstr "Giới tính"
 
-#: HR/view/hr/employee/applicant-list.phtml:153
-#: HR/view/hr/employee/list.phtml:170 HR/view/hr/leave-reason/list.phtml:60
-msgid "Edit"
-msgstr "Sửa"
-
-#: HR/view/hr/employee/list.phtml:5 Procure/view/layout/layout.phtml:218
-#: Application/view/hr_menu.php:6
-msgid "Employee List"
-msgstr "Danh sách Nhân viên"
-
 #: HR/view/hr/employee/list.phtml:10
 msgid "New Employee"
 msgstr "Thêm nhân viên"
@@ -571,13 +1307,70 @@ msgstr "Lọc theo"
 msgid "Disciplinary"
 msgstr "Kỷ luật"
 
-#: HR/view/hr/income-decorator/index.phtml:5 HR/view/hr/setting/index.phtml:17
+#: HR/view/hr/entity-change-log/list1.phtml:21
+msgid "class name"
+msgstr ""
+
+#: HR/view/hr/fingerscan/list.phtml:10
+msgid "Import"
+msgstr ""
+
+#: HR/view/hr/income-decorator/index.phtml:5
+#: HR/view/hr/income-decorator/index.phtml:15 HR/view/hr/setting/index.phtml:18
 msgid "Income Calculation Method"
 msgstr "Phương pháp tính thu nhập"
 
-#: HR/view/hr/income-setup/index.phtml:5 HR/view/hr/setting/index.phtml:16
+#: HR/view/hr/income-setup/index.phtml:5 HR/view/hr/income-setup/update.phtml:5
+#: HR/view/hr/setting/index.phtml:17
 msgid "Income Setup"
 msgstr "Thiết lập các khoản thu nhập"
+
+#: HR/view/hr/income-setup/index.phtml:11
+msgid "New Income"
+msgstr ""
+
+#: HR/view/hr/income-setup/index.phtml:12
+#, fuzzy
+#| msgid "Update"
+msgid "Update..."
+msgstr "Cập nhất"
+
+#: HR/view/hr/income-setup/index.phtml:19
+#: HR/view/hr/income-setup/index.phtml:20 HR/view/hr/salary/assign.phtml:53
+msgid "default income name"
+msgstr ""
+
+#: HR/view/hr/income-setup/index.phtml:22 HR/view/hr/salary/assign.phtml:54
+#, fuzzy
+#| msgid "Description"
+msgid "default description"
+msgstr "Chi tiết"
+
+#: HR/view/hr/income-setup/index.phtml:23
+msgid "Default"
+msgstr ""
+
+#: HR/view/hr/income-setup/index.phtml:24 HR/view/hr/salary/assign.phtml:55
+#, fuzzy
+#| msgid "SSO Rate"
+msgid "SSO Payable"
+msgstr "Tỷ lệ SSO"
+
+#: HR/view/hr/income-setup/index.phtml:25 HR/view/hr/salary/assign.phtml:56
+msgid "PIT Payable"
+msgstr ""
+
+#: HR/view/hr/income-setup/index.phtml:26 HR/view/hr/salary/assign.phtml:57
+msgid "payment frequency"
+msgstr ""
+
+#: HR/view/hr/income-setup/index.phtml:27 HR/view/hr/salary/assign.phtml:58
+msgid "Type"
+msgstr ""
+
+#: HR/view/hr/income-setup/update.phtml:8
+msgid " components updated."
+msgstr ""
 
 #: HR/view/hr/leave-reason/add.phtml:19 HR/view/hr/leave-reason/list.phtml:8
 msgid "New Leave Reason"
@@ -587,53 +1380,57 @@ msgstr "Thêm lý do nghỉ"
 msgid "Reference"
 msgstr "Tham khảo"
 
-#: HR/view/hr/leave-reason/add.phtml:51 HR/view/hr/leave-reason/list.phtml:33
-msgid "Vadid From"
-msgstr "Áp dụng từ"
-
-#: HR/view/hr/leave-reason/add.phtml:58 HR/view/hr/leave-reason/list.phtml:34
-msgid "Vadid To"
-msgstr "Áp dụng đến"
-
-#: HR/view/hr/leave-reason/add.phtml:65
+#: HR/view/hr/leave-reason/add.phtml:65 HR/view/hr/position/add.phtml:68
+#: HR/view/hr/position/edit.phtml:72 HR/view/hr/position/show.phtml:72
+#: HR/view/hr/salary/edit.phtml:82
 msgid "Description"
 msgstr "Chi tiết"
-
-#: HR/view/hr/leave-reason/add.phtml:82
-msgid "Cancel"
-msgstr "Thoát"
 
 #: HR/view/hr/minimum-wage/index.phtml:5
 msgid "Minimum Wage Management"
 msgstr "Quản lý Lương tối thiểu"
 
-#: HR/view/hr/minimum-wage/index.phtml:14 HR/view/hr/setting/index.phtml:14
+#: HR/view/hr/minimum-wage/index.phtml:14 HR/view/hr/setting/index.phtml:15
 msgid "Minimum Wage"
 msgstr "Lương tối thiểu"
 
-#: HR/view/hr/minimum-wage/index.phtml:15
-msgid "Currency"
-msgstr "Đơn vị tiền tệ"
+#: HR/view/hr/position/add.phtml:21 HR/view/hr/position/edit.phtml:21
+#: HR/view/hr/position/list.phtml:8
+msgid "New Postion"
+msgstr "Thêm vị trí"
 
-#: HR/view/hr/minimum-wage/index.phtml:16 HR/view/hr/sso/index.phtml:16
-msgid "Effective from"
-msgstr "Có giá trị từ"
+#: HR/view/hr/position/add.phtml:29 HR/view/hr/position/edit.phtml:33
+#: HR/view/hr/position/show.phtml:33
+msgid "Postion Code"
+msgstr "Mã Vị Trí"
 
-#: HR/view/hr/minimum-wage/index.phtml:17 HR/view/hr/sso/index.phtml:17
-msgid "Effective to"
-msgstr "Có giá trị đến"
+#: HR/view/hr/position/add.phtml:32 HR/view/hr/position/edit.phtml:36
+#: HR/view/hr/position/show.phtml:36
+msgid "please enter position code"
+msgstr ""
 
-#: HR/view/hr/minimum-wage/index.phtml:31 HR/view/hr/sso/index.phtml:31
-msgid "Inactive"
-msgstr "không hoạt động"
+#: HR/view/hr/position/add.phtml:40 HR/view/hr/position/edit.phtml:44
+#: HR/view/hr/position/show.phtml:44
+#, fuzzy
+#| msgid "Period Name"
+msgid "Postion Name"
+msgstr "Tên kỳ hạch toán"
 
-#: HR/view/hr/minimum-wage/index.phtml:41 HR/view/hr/sso/index.phtml:41
-msgid "Update"
-msgstr "Cập nhất"
+#: HR/view/hr/position/add.phtml:43 HR/view/hr/position/edit.phtml:47
+#: HR/view/hr/position/show.phtml:47
+msgid "please enter position name"
+msgstr ""
 
-#: HR/view/hr/reporting/index.phtml:5 Application/view/hr_menu.php:14
-msgid "Reporting"
-msgstr "Báo Cáo"
+#: HR/view/hr/position/add.phtml:47 HR/view/hr/position/edit.phtml:51
+#: HR/view/hr/position/list.phtml:32 HR/view/hr/position/show.phtml:51
+msgid "Cost Center"
+msgstr ""
+
+#: HR/view/hr/position/list.phtml:31
+#, fuzzy
+#| msgid "Posting Period"
+msgid "Postion name"
+msgstr "Kỳ hạch toán"
 
 #: HR/view/hr/reporting/index.phtml:9
 msgid "Daily Reporting"
@@ -651,39 +1448,218 @@ msgstr "Báo cáo quý"
 msgid "Annual Reporting"
 msgstr "Báo cáo năm"
 
-#: HR/view/hr/setting/index.phtml:15
+#: HR/view/hr/salary-calculator/adjust-payroll.phtml:4
+#: HR/view/hr/salary-calculator/close-period.phtml:4
+#: HR/view/hr/salary-calculator/create-draft.phtml:4
+#: HR/view/hr/salary-calculator/index.phtml:4
+#: HR/view/hr/salary-calculator/input-check.phtml:7
+#: HR/view/hr/salary-calculator/input-consolidate.phtml:7
+#: HR/view/hr/salary-calculator/payroll-period.phtml:4
+#: HR/view/hr/salary-calculator/simulate.phtml:7
+msgid "Salary calculation"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/adjust-payroll.phtml:19
+msgid "Payroll Adjustment:"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/adjust-payroll.phtml:23
+#: HR/view/hr/salary-calculator/input-check.phtml:89
+#: HR/view/hr/salary-calculator/input-consolidate.phtml:32
+#: HR/view/hr/salary-calculator/payroll-period.phtml:48
+#: HR/view/hr/salary-calculator/simulate.phtml:63
+msgid "Back"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/adjust-payroll.phtml:25
+#: HR/view/hr/salary-calculator/input-check.phtml:90
+#: HR/view/hr/salary-calculator/input-consolidate.phtml:33
+#: HR/view/hr/salary-calculator/payroll-period.phtml:49
+#: HR/view/hr/salary-calculator/simulate.phtml:64
+msgid "Next"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/close-period.phtml:18
+msgid "Input check"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/create-draft.phtml:11
+msgid "Payroll Input Consolidation"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/create-draft.phtml:12
+msgid "Input Checking"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/create-draft.phtml:13
+#, fuzzy
+#| msgid "Period Code"
+msgid "Period Closing"
+msgstr "Mã kỳ hạch toán"
+
+#: HR/view/hr/salary-calculator/create-draft.phtml:14
+msgid "Draft Caculation"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/create-draft.phtml:15
+msgid "Adjustment"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/create-draft.phtml:16
+msgid "Final Caculation"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/create-draft.phtml:21
+msgid "Running"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/index.phtml:18
+msgid "Start Payroll Calculation"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/index.phtml:20
+msgid "Start"
+msgstr ""
+
+#: HR/view/hr/salary-calculator/input-consolidate.phtml:24
+msgid "Payroll Input consolidate"
+msgstr ""
+
+#: HR/view/hr/salary/assign.phtml:36
+msgid "New salary component"
+msgstr ""
+
+#: HR/view/hr/salary/assign.phtml:93
+#: Inventory/view/inventory/serial-number/assign.phtml:80
+msgid "Assign"
+msgstr ""
+
+#: HR/view/hr/salary/edit.phtml:57 HR/view/hr/salary/list1.phtml:31
+#: HR/view/hr/salary/simulate.phtml:28
+msgid "Amount"
+msgstr ""
+
+#: HR/view/hr/salary/edit.phtml:67
+msgid "Payment Frequerency"
+msgstr ""
+
+#: HR/view/hr/salary/edit.phtml:73
+msgid "Valid from"
+msgstr ""
+
+#: HR/view/hr/salary/edit.phtml:76
+msgid "Valid to"
+msgstr ""
+
+#: HR/view/hr/salary/list1.phtml:7
+msgid "Add Income"
+msgstr ""
+
+#: HR/view/hr/salary/list1.phtml:13 HR/view/hr/salary/simulate.phtml:10
+msgid "No record found!"
+msgstr ""
+
+#: HR/view/hr/salary/list1.phtml:28 HR/view/hr/salary/simulate.phtml:25
+msgid "Revision#"
+msgstr ""
+
+#: HR/view/hr/salary/list1.phtml:30 HR/view/hr/salary/simulate.phtml:27
+#, fuzzy
+#| msgid "Income Setup"
+msgid "Income Name"
+msgstr "Thiết lập các khoản thu nhập"
+
+#: HR/view/hr/salary/list1.phtml:33 HR/view/hr/salary/simulate.phtml:30
+msgid "SSO"
+msgstr ""
+
+#: HR/view/hr/salary/list1.phtml:34 HR/view/hr/salary/simulate.phtml:31
+msgid "PIT"
+msgstr ""
+
+#: HR/view/hr/salary/list1.phtml:35 HR/view/hr/salary/simulate.phtml:32
+msgid "Frequency"
+msgstr ""
+
+#: HR/view/hr/salary/show.phtml:197
+msgid "Add income"
+msgstr ""
+
+#: HR/view/hr/setting/index.phtml:16
 msgid "Social Security (SSO)"
 msgstr "Bảo hiểm xã hội (SSO)"
 
-#: HR/view/hr/setting/index.phtml:18
+#: HR/view/hr/setting/index.phtml:19
 msgid "Default Allowances Setup"
 msgstr "Thiết lập các khác trợ cấp"
 
-#: HR/view/hr/setting/index.phtml:19
+#: HR/view/hr/setting/index.phtml:20
 msgid "Default Deduction Setup"
 msgstr "Thiết lập các khoản khấu trừ"
 
-#: HR/view/hr/sso/index.phtml:5
-msgid "Social Security Management"
-msgstr "Quản lý Bảo Hiểm Xã hội"
-
-#: HR/view/hr/sso/index.phtml:14
-msgid "SSO Rate"
-msgstr "Tỷ lệ SSO"
-
-#: HR/view/hr/sso/index.phtml:15
-msgid "Percentage"
-msgstr "Phần trăm"
-
-#: HR/view/layout/layout-fluid.phtml:189
+#: HR/view/layout/layout-fluid.phtml:191
 msgid "HR MANAGEMENT"
 msgstr "QUẢN LÝ NHÂN SỰ"
 
-#: HR/view/layout/layout-fluid.phtml:193
+#: HR/view/layout/layout-fluid.phtml:195
 msgid "search term..."
 msgstr "nhập từ khóa để tìm ....."
 
-#: Inventory/view/layout/layout-fluid.phtml:192
+#: Inventory/view/inventory/dashboard/index.phtml:42
+msgid "Recently received items"
+msgstr ""
+
+#: Inventory/view/inventory/dashboard/last-created-items.phtml:21
+#: Inventory/view/inventory/dashboard/last-ordered-items.phtml:16
+#: Inventory/view/inventory/dashboard/last-received-items.phtml:21
+#: Inventory/view/inventory/dashboard/most-order-items.phtml:21
+#: Inventory/view/inventory/dashboard/most-value-items.phtml:21
+msgid "Item name"
+msgstr ""
+
+#: Inventory/view/inventory/dashboard/last-ordered-items.phtml:17
+#, fuzzy
+#| msgid "Period Name"
+msgid "Pr Name"
+msgstr "Tên kỳ hạch toán"
+
+#: Inventory/view/inventory/dashboard/last-received-items.phtml:22
+msgid "Quantity"
+msgstr ""
+
+#: Inventory/view/inventory/dashboard/last-received-items.phtml:23
+msgid "Unit"
+msgstr ""
+
+#: Inventory/view/inventory/dashboard/last-received-items.phtml:25
+msgid "Unit Price"
+msgstr ""
+
+#: Inventory/view/inventory/dashboard/most-order-items.phtml:22
+msgid "No. Orders"
+msgstr ""
+
+#: Inventory/view/inventory/dashboard/most-value-items.phtml:22
+msgid "U/P LAK"
+msgstr ""
+
+#: Inventory/view/inventory/item/edit.phtml:36
+msgid "Item#"
+msgstr ""
+
+#: Inventory/view/inventory/serial-number/assign.phtml:36
+msgid "Assign Serial Number"
+msgstr ""
+
+#: Inventory/view/inventory/serial-number/assign.phtml:53
+msgid "Serial Number"
+msgstr ""
+
+#: Inventory/view/inventory/serial-number/list.phtml:122
+msgid "Item"
+msgstr ""
+
+#: Inventory/view/layout/layout-fluid.phtml:197
 msgid "INVENTORY"
 msgstr "QUẢN LÝ HÀNG HÓA"
 
@@ -707,77 +1683,68 @@ msgstr "Tháng"
 msgid "All PR"
 msgstr "Tất cả yêu cầu mua. Tiếng Việt"
 
-#: Application/view/hr_menu.php:4
-msgid "Create New Employee"
-msgstr "Thêm nhân viên"
+#: Procure/view/procure/gr/add1.phtml:44 Procure/view/procure/po/add1.phtml:44
+#: Procure/view/procure/quote/add1.phtml:53
+#: Procure/view/procure/return/add1.phtml:44
+msgid "Download Excel File"
+msgstr ""
 
-#: Application/view/hr_menu.php:9
-msgid "Finger Scan"
-msgstr "Dữ liệu vân tay"
+#: Procure/view/procure/gr/add1.phtml:48 Procure/view/procure/po/add1.phtml:48
+#: Procure/view/procure/return/add1.phtml:48
+msgid "Create Good Receipt from this P/O"
+msgstr ""
 
-#: Application/view/hr_menu.php:16 Application/view/navbar.php:77
-msgid "Setup"
-msgstr "Cài Đặt"
+#: Procure/view/procure/gr/add1.phtml:53 Procure/view/procure/po/add1.phtml:53
+#: Procure/view/procure/return/add1.phtml:53
+msgid "Create A/P Invoice from this P/O"
+msgstr ""
 
-#: Application/view/inventory_menu.php:4
-msgid "Create new item"
-msgstr "Thêm mới hàng hóa"
-
-#: Application/view/navbar.php:65
-msgid "Other"
-msgstr "Khác"
-
-#: Application/view/other_menu.php:2
-msgid "Add Project"
-msgstr "Thêm dự án"
-
-#: Application/view/other_menu.php:4
-msgid "Project List"
+#: Procure/view/procure/gr/list.phtml:5
+#, fuzzy
+#| msgid "Project List"
+msgid "Goods Receipt List"
 msgstr "Danh sách Dự án /Công việc"
 
-#: Application/view/other_menu.php:6
-msgid "Calendar"
-msgstr "Lịch"
-
-#: Application/view/procure_menu.php:6
-msgid "New Purchase Request (PR)"
-msgstr "Tạo yêu cầu mua (PR)"
-
-#: Application/view/setting_menu.php:2
-msgid "User Management"
-msgstr "Quản lý người dùng"
-
-#: Application/view/setting_menu.php:6
-msgid "Access Control List (ACL)"
-msgstr "Phân quyền (ACL)"
-
-#: Application/view/setting_menu.php:8
-msgid "Workflow Management"
-msgstr "Quản lý quy trình"
-
-#: Application/view/setting_menu.php:10
-msgid "Backup Database"
-msgstr "Sao Lưu dữ liệu"
-
-#: Application/view/setting_menu.php:11
-msgid "Caching Manager"
-msgstr "Quản lý caching"
-
-#: Application/view/setting_menu.php:14
-msgid "Update Search Index"
-msgstr "Cập nhật danh mục tìm kiếm"
-
-#: Application/view/setting_menu.php:16
-msgid "Console"
+#: Procure/view/procure/gr/list.phtml:134
+msgid "Ref.No."
 msgstr ""
 
-#: Application/view/setting_menu.php:17
-msgid "API"
+#: Procure/view/procure/gr/list.phtml:135
+msgid "Doc Status"
+msgstr "Trạng thái tài liệu"
+
+#: Procure/view/procure/gr/list.phtml:137
+msgid "Receipt Date"
 msgstr ""
 
-#: Application/view/setting_menu.php:20
-msgid "System Information"
-msgstr "Thông tin hệ thống"
+#: Procure/view/procure/gr/list.phtml:138
+msgid "Draft"
+msgstr ""
+
+#: Procure/view/procure/gr/list.phtml:139
+msgid "Posted"
+msgstr "Đã ghi sổ"
+
+#: Procure/view/procure/gr/list.phtml:141
+msgid "Vendor"
+msgstr ""
+
+#: Procure/view/procure/pr-row/edit.phtml:48
+#: Procure/view/procure/pr-row/show1.phtml:28
+msgid "Row ID"
+msgstr ""
+
+#: Procure/view/procure/pr/edit.phtml:38
+#: Procure/view/procure/pr/review.phtml:87
+#: Procure/view/procure/pr/show.phtml:68
+msgid "PR#"
+msgstr ""
+
+#~ msgid "Locked"
+#~ msgstr "Đã khóa"
+
+#~ msgid "Percentage"
+#~ msgstr "Phần trăm"
 
 #~ msgid "Default Bonus Setup"
 #~ msgstr "Thiết lập Bonus"

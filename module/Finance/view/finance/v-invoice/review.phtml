@@ -62,8 +62,7 @@ if (count($errors) > 0) {
 				</div>
 
 				<div class="alert alert-warning" role="alert"
-					style="padding: 1px; font-size: 9pt">Document can't be changed
-					anymore when submitted!</div>
+					style="padding: 1px; font-size: 9pt"><?php echo $this->translate('Document can\'t be changed anymore when submitted!');?></div>
 
 				<!-- C1 ends-->
 			</div>
@@ -75,7 +74,7 @@ if (count($errors) > 0) {
 
 					<a class="btn btn-primary btn-sm" style="color: white"
 						onclick="confirmPost();" href="javascript:;"><i
-						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;Post</a> <a
+						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a> <a
 						class="btn btn-default btn-sm" href="javascript:;"
 						onclick="refreshGird();"><i class="fa fa-refresh"
 						aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a> <a
@@ -321,15 +320,15 @@ if (count($errors) > 0) {
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body" id="b_modal_sm_body">
-				<h5>A/P #<?php echo (!$entity == null)? $entity->getSysNumber() . " will be posted!":"";?></h5>
+				<h5>A/P #<?php echo (!$entity == null)? $entity->getSysNumber() . $this->translate(' will be posted!'):"";?></h5>
 
 				<div class="alert alert-warning">
-					<strong>[Info]</strong> Document can't be changed after posted.
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when submitted!');?>
 					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
 				</div>
-				<p>Do you want to continue?</p>
+				<p><?php echo $this->translate('Do you want to continue?');?></p>
 			</div>
 			<div class="modal-footer">
 				<button onclick="doPosting();" type="button"

@@ -93,11 +93,15 @@ if (count($errors) > 0) {
 <strong>A/P #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong>
 				</h4>
 
-				<form id="Create_Inv_Form" class="form-horizontal"
-					action="/finance/v-invoice/add" method="post"
+				<form id="Invoice_Posting_Form" class="form-horizontal"
+					action="/finance/v-invoice/review" method="post"
 					enctype="multipart/form-data">
 					<input type="hidden" name="redirectUrl"
-						value="<?php echo $redirectUrl ?>" />
+						value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+						name="entity_id"
+						value="<?php echo (!$entity == null)? $entity->getId():"";?>" /> <input
+						type="hidden" name="token"
+						value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
 
 
 
@@ -106,7 +110,7 @@ if (count($errors) > 0) {
 							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 							<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
 						</legend>
-						<div id="invoice_header" class="collapse">
+						<div id="invoice_header" class="collapse in">
 
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2">Current State:</label>
@@ -235,10 +239,6 @@ if (count($errors) > 0) {
 										value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
 										placeholder=" please select" />
 								</div>
-							</div>
-
-							<div class="form-group margin-bottom required">
-
 								<label class="control-label col-sm-2">Posting Date:</label>
 								<div class="col-sm-3">
 									<input class="form-control input-sm" type="text"
@@ -252,8 +252,8 @@ if (count($errors) > 0) {
 
 								<label class="control-label col-sm-2">Goods Receipt Date:</label>
 								<div class="col-sm-3">
-									<input class="form-control input-sm" type="text"
-										id="grDate" name="grDate"
+									<input class="form-control input-sm" type="text" id="grDate"
+										name="grDate"
 										value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
 										placeholder=" please select" />
 								</div>
@@ -342,18 +342,28 @@ if (count($errors) > 0) {
 </div>
 
 <script>
+
+$('#invoiceDate').bind('change', function() {
+	$('#postingDate').val($('#invoiceDate').val());
+	$('#grDate').val($('#invoiceDate').val());
+});
+
+$( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='grDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
 function confirmPost() {
  	$('#confirm_modal_sm').modal();
 }
 
 function doPosting() {
-
-	var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"
-	//alert(url);
-	window.location = url;
+	//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"
+	//window.location = url;
+	$('#confirm_modal_sm').modal('hide');
+	submitForm('Invoice_Posting_Form');
 }
-
-$("#Create_Inv_Form :input").attr("disabled", "disabled");
 
 
 $( "#pr_item_name" ).autocomplete({
@@ -375,7 +385,7 @@ $( "#pr_item_name" ).autocomplete({
     return $( "<li>" )
       .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
       .appendTo( ul );
-    };
+	};
 
     $( "#item_name" ).autocomplete({
         source: "/inventory/item-search/auto-complete",
@@ -402,8 +412,8 @@ $( "#pr_item_name" ).autocomplete({
        };
 
 
+      	       
 
-$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 $( "#vendor_name_1" ).autocomplete({
     source: "/bp/vendor-search/auto-complete",
@@ -428,108 +438,110 @@ $( "#vendor_name_1" ).autocomplete({
 	//$("#Create_PR_Form :input").attr("disabled", "disabled");
 
 
-	 //to check whether any row is currently being edited.
-    function isEditing($grid) {
-        var rows = $grid.pqGrid("getRowsByClass", { cls: 'pq-row-edit' });
-        if (rows.length > 0) {
-            //focus on editor if any 
-            $grid.find(".pq-editor-focus").focus();
-            return true;
-        }
-        return false;
+ //to check whether any row is currently being edited.
+function isEditing($grid) {
+    var rows = $grid.pqGrid("getRowsByClass", { cls: 'pq-row-edit' });
+    if (rows.length > 0) {
+        //focus on editor if any 
+        $grid.find(".pq-editor-focus").focus();
+        return true;
     }
+    return false;
+}
 
-    //called by edit button.
-    function editRow(rowIndx, $grid) {
+//called by edit button.
+function editRow(rowIndx, $grid) {
 
-        $grid.pqGrid("addClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
-        $grid.pqGrid("editFirstCellInRow", { rowIndx: rowIndx });
+    $grid.pqGrid("addClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
+    $grid.pqGrid("editFirstCellInRow", { rowIndx: rowIndx });
 
-        //change edit button to update button and delete to cancel.
-        var $tr = $grid.pqGrid("getRow", { rowIndx: rowIndx }),
-            $btn = $tr.find("button.edit_btn");
-        $btn.button("option", { label: "Update", "icons": { primary: "ui-icon-check"} })
-            .unbind("click")
-            .click(function (evt) {
-                evt.preventDefault();
-                return update(rowIndx, $grid);
-            });
-        $btn.next().button("option", { label: "Cancel", "icons": { primary: "ui-icon-cancel"} })
-            .unbind("click")
-            .click(function (evt) {
-                $grid.pqGrid("quitEditMode");
-                $grid.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
-                $grid.pqGrid("refreshRow", { rowIndx: rowIndx });
-                $grid.pqGrid("rollback");
-            });
-    }
-    //called by update button.
-    function update(rowIndx, $grid) {
-
-        if ($grid.pqGrid("saveEditCell") == false) {
-            return false;
-        }
-
-        var isValid = $grid.pqGrid("isValid", { rowIndx: rowIndx }).valid;
-        if (!isValid) {
-            return false;
-        }
-        var isDirty = $grid.pqGrid("isDirty");
-        if (isDirty) {
-            var url,
-                rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
-                recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-
-            $grid.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
-
-            if (rowData[recIndx] == null) {
-                //url to add records.
-                url = "/pro/products/add";
-                //url = "/pro/products.php?pq_add=1";for PHP
-            }
-            else {
-                //url to  update records.
-                url = "/pro/products/update";
-                //url = "/pro/products.php?pq_update=1";for PHP
-            }
-            $.ajax($.extend({}, ajaxObj, {
-                context: $grid,
-                url: url,
-                data: rowData,
-                success: function (response) {
-                    var recIndx = this.pqGrid("option", "dataModel.recIndx");
-                    if (rowData[recIndx] == null) {
-                        rowData[recIndx] = response.recId;
-                    }
-                    this.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
-                    this.pqGrid("commit");
-                }
-            }));
-        }
-        else {
+    //change edit button to update button and delete to cancel.
+    var $tr = $grid.pqGrid("getRow", { rowIndx: rowIndx }),
+        $btn = $tr.find("button.edit_btn");
+    $btn.button("option", { label: "Update", "icons": { primary: "ui-icon-check"} })
+        .unbind("click")
+        .click(function (evt) {
+            evt.preventDefault();
+            return update(rowIndx, $grid);
+        });
+    $btn.next().button("option", { label: "Cancel", "icons": { primary: "ui-icon-cancel"} })
+        .unbind("click")
+        .click(function (evt) {
             $grid.pqGrid("quitEditMode");
             $grid.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
             $grid.pqGrid("refreshRow", { rowIndx: rowIndx });
-        }
-    }
-     
-	  //called by add button in toolbar.
-    function addRow($grid) {
-    	 if (isEditing($grid)) {
-    	        return false;
-    	    }
-    	  
-    	//append empty row in the first row.                            
-        var rowData = { Item: "", Quantity: 0, Received: 0, Balance: 0}; //empty row template
-        $grid.pqGrid("addRow", { rowIndxPage: 0, rowData: rowData });
+            $grid.pqGrid("rollback");
+        });
+}
 
-        var $tr = $grid.pqGrid("getRow", { rowIndxPage: 0 });
-        if ($tr) {
-            //simulate click on edit button.
-            $tr.find("button.edit_btn").click();
-        }
+//called by update button.
+function update(rowIndx, $grid) {
+
+    if ($grid.pqGrid("saveEditCell") == false) {
+        return false;
     }
-    var autoCompleteEditor = function (ui) {
+
+    var isValid = $grid.pqGrid("isValid", { rowIndx: rowIndx }).valid;
+    if (!isValid) {
+        return false;
+    }
+    var isDirty = $grid.pqGrid("isDirty");
+    if (isDirty) {
+        var url,
+            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+        $grid.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
+
+        if (rowData[recIndx] == null) {
+            //url to add records.
+            url = "/pro/products/add";
+            //url = "/pro/products.php?pq_add=1";for PHP
+        }
+        else {
+            //url to  update records.
+            url = "/pro/products/update";
+            //url = "/pro/products.php?pq_update=1";for PHP
+        }
+        $.ajax($.extend({}, ajaxObj, {
+            context: $grid,
+            url: url,
+            data: rowData,
+            success: function (response) {
+                var recIndx = this.pqGrid("option", "dataModel.recIndx");
+                if (rowData[recIndx] == null) {
+                    rowData[recIndx] = response.recId;
+                }
+                this.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
+                this.pqGrid("commit");
+            }
+        }));
+    }
+    else {
+        $grid.pqGrid("quitEditMode");
+        $grid.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
+        $grid.pqGrid("refreshRow", { rowIndx: rowIndx });
+    }
+}
+
+  //called by add button in toolbar.
+function addRow($grid) {
+	 if (isEditing($grid)) {
+	        return false;
+	    }
+	  
+	//append empty row in the first row.                            
+    var rowData = { Item: "", Quantity: 0, Received: 0, Balance: 0}; //empty row template
+    $grid.pqGrid("addRow", { rowIndxPage: 0, rowData: rowData });
+
+    var $tr = $grid.pqGrid("getRow", { rowIndxPage: 0 });
+    if ($tr) {
+        //simulate click on edit button.
+        $tr.find("button.edit_btn").click();
+    }
+}
+
+var autoCompleteEditor = function (ui) {
         var $inp = ui.$cell.find("input");
         var rowData = ui.rowData;
       
@@ -558,266 +570,266 @@ $( "#vendor_name_1" ).autocomplete({
     }
     
 
-    //var container_height = $('#main_container').height();
-    //alert(container_height);
-	var obj = { width: "100%", height: $(window).height()-270, showTitle : false,
-			resizable:true,
-			//draggable:true,
-			sortable: true,
-			hoverMode: 'cell',
-		   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
-		  	editModel: {
-                allowInvalid: true,
-                saveKey: $.ui.keyCode.ENTER
-            },
-            editor: {
-                select: true
-            },
-		 columnBorders: true,
-    	   toolbar: {
-                    items: [
-                        { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
-                            { "click": function (evt, ui) {
-                                var $grid = $(this).closest('.pq-grid');
-                                //addRow($grid);
-                                
-   		     redirectUrl="/finance/v-invoice-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
-              window.location.href= redirectUrl;
-                                 
-                                //debugger;
-                            }
-                            }
-                        ]
+//var container_height = $('#main_container').height();
+//alert(container_height);
+var obj = { width: "100%", height: $(window).height()-270, showTitle : false,
+		resizable:true,
+		//draggable:true,
+		sortable: true,
+		hoverMode: 'cell',
+	   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
+	  	editModel: {
+            allowInvalid: true,
+            saveKey: $.ui.keyCode.ENTER
+        },
+        editor: {
+            select: true
+        },
+	 columnBorders: true,
+	   toolbar: {
+                items: [
+                    { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
+                        { "click": function (evt, ui) {
+                            var $grid = $(this).closest('.pq-grid');
+                            //addRow($grid);
+                            
+	     redirectUrl="/finance/v-invoice-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
+          window.location.href= redirectUrl;
+                             
+                            //debugger;
+                        }
                         }
                     ]
-                },
-
-
-        change: function (evt, ui) {                
-            
-            if (ui.source == 'commit' || ui.source == 'rollback') {
-                return;
-            }
-            console.log(ui);
-            var $grid = $(this),
-                grid = $grid.pqGrid('getInstance').grid;
-            var rowList = ui.rowList,
-                addList = [],
-                recIndx = grid.option('dataModel').recIndx,
-                deleteList = [],
-                updateList = [];
-            
-            for (var i = 0; i < rowList.length; i++) {
-                var obj = rowList[i],
-                    rowIndx = obj.rowIndx,
-                    newRow = obj.newRow,
-                    type = obj.type,
-                    rowData = obj.rowData;
-                 if (type == 'add') {                        
-                    var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
-                    if (valid) {
-                        addList.push(newRow);
                     }
-                }
-                else if (type == 'update') {                        
-                    var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
-                    if (valid) {
-                        if (rowData[recIndx] == null) {
-                            addList.push(rowData);
-                        }
-                        //else if (grid.isDirty({rowData: rowData})) {
-                        else {
-                            updateList.push(rowData);
-                      		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
-                             
-                        }
-                    }
-                }
-              }
+                ]
+            },
 
-              if (addList.length || updateList.length || deleteList.length) {
-				var sent_list = JSON.stringify({
-                    updateList: updateList,
-                    addList: addList,
-                    deleteList: deleteList
-                });
-                //alert(sent_list);
-                  
-                  $.ajax({
-                      url: '/finance/v-invoice-row/update-row',
-                      data: {
-                          sent_list: sent_list
-                      },
-                      dataType: "json",
-                      type: "POST",
-                      async: true,
-                      beforeSend: function (jqXHR, settings) {
-                          //$(".saving", $grid).show();
 
-						  	
-                          //$("#global-notice").text("Updating...").show();
-                          //alert(updateList[0].item_name  +  updateList[0].row_id);
-                      },
-                      success: function (changes) {
-                          //commit the changes.
-                           if(changes.length>0){
-								var m='';
-								var i
-								for (i = 0; i < changes.length; i++) { 
-								    m += changes[i] + "<br>";
-								}
-                           	   $("#global-notice").html(m).show();
-                           }else{
-                        	   $("#global-notice").text("Updated.....").show();
-                           }
-
-                           $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
-                           
-            		      //alert('it is ok');                
-                          /* grid.commit({ type: 'add', rows: changes.addList });
-                          grid.commit({ type: 'update', rows: changes.updateList });
-                          grid.commit({ type: 'delete', rows: changes.deleteList }); */
-                      },
-                      complete: function () {
-                          //$(".saving", $grid).hide();
-                          $("#global-notice").delay(2200).fadeOut(500);
-                          
-                      }
-                  });
-              }
-            //alert(updateList.length);
-           
-        },     
-	              
-	};
-
-    obj.colModel = [
-    	/*  { title: "vendor", dataType: "string", dataIndx: "vendor", align: 'left',minWidth: 100,editable: true,
-             editor: {
-             type: "textbox",
-             init: autoCompleteEditor
-             //type: function (ui) { return dropdowneditor(this, ui); }
-         },},
-         
-       { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
-        { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-
-        { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
-   		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
-        { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
-        { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: true},        
-        { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: true},
-        { title: "Unit Price", dataType: "float", dataIndx: "row_unit_price", width:90, align: 'right',editable: true},
-        { title: "Net", dataType: "float", dataIndx: "row_net", width:90, align: 'right',editable: false},
-        { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: true},
-        { title: "Gross", dataType: "float", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
- 		{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
- 		      
-        { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: true},
+    change: function (evt, ui) {                
         
-        { title: "", editable: false, minWidth: 100, sortable: false,
-            render: function (ui) {
-                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
-            	return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button>";
-	           }
-        },
-   ];
-
-    obj.dataModel = {
-    		  dataType: "JSON",
-              location: "remote",
-              method: "GET",
-              recIndx: "row_id",
-              url: "/finance/v-invoice-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
-              getData: function (response) {
-           	    return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
-             }
-    };
-    
-    var $grid = $("#pr_row_gird").pqGrid(obj);
-
-    $grid.on('pqgridrefresh pqgridrefreshrow', function () {
-        //debugger;
-        var $grid = $(this);
-
-        //receive button
-        $grid.find("button.receive_btn").button({})
-        .unbind("click")
-        .bind("click", function (evt) {
-
-            var $tr = $(this).closest("tr"),
-            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
-
-            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
-            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-    
-            redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
-          	//alert(rowData['item_name']);
-			
-			window.location.href = redirectUrl;
-          	//window.open(redirectUrl,'_blank');
-        });
-
-        //receive button
-        $grid.find("button.edit_btn").button({})
-        .unbind("click")
-        .bind("click", function (evt) {
-
-            var $tr = $(this).closest("tr"),
-            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
-
-            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
-            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-    
-            redirectUrl="/finance/v-invoice-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
-          	//alert(redirectUrl);
-			window.location.href = redirectUrl;
-          	//window.open(redirectUrl,'_blank');
-        });
-
-        //receive button
-        $grid.find("button.receive_inline_btn").button({})
-        .unbind("click")
-        .bind("click", function (evt) {
-            if (isEditing($grid)) {
-                return false;
-            }
-            var $tr = $(this).closest("tr"),
-                rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
-            editRow(rowIndx, $grid);
-            return false;
-        });
-
-      //receive button
-        $grid.find("button.receive_inline_btn").button({})
-        .unbind("click")
-        .bind("click", function (evt) {
-
-            var $tr = $(this).closest("tr"),
-            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
-
-            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
-            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
-    
-            redirectUrl="/inventory/item-transaction/gr1?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
-          	//alert(rowData['item_name']);
-          	
-          	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
-          	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
-          	//window.open(redirectUrl,'_blank');
-          	
-        });
-
-      //rows which were in edit mode before refresh, put them in edit mode again.
-        var rows = $grid.pqGrid("getRowsByClass", { cls: 'pq-row-edit' });
-        if (rows.length > 0) {
-            var rowIndx = rows[0].rowIndx;
-            editRow(rowIndx, $grid);
+        if (ui.source == 'commit' || ui.source == 'rollback') {
+            return;
         }
-    });        
+        console.log(ui);
+        var $grid = $(this),
+            grid = $grid.pqGrid('getInstance').grid;
+        var rowList = ui.rowList,
+            addList = [],
+            recIndx = grid.option('dataModel').recIndx,
+            deleteList = [],
+            updateList = [];
+        
+        for (var i = 0; i < rowList.length; i++) {
+            var obj = rowList[i],
+                rowIndx = obj.rowIndx,
+                newRow = obj.newRow,
+                type = obj.type,
+                rowData = obj.rowData;
+             if (type == 'add') {                        
+                var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
+                if (valid) {
+                    addList.push(newRow);
+                }
+            }
+            else if (type == 'update') {                        
+                var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
+                if (valid) {
+                    if (rowData[recIndx] == null) {
+                        addList.push(rowData);
+                    }
+                    //else if (grid.isDirty({rowData: rowData})) {
+                    else {
+                        updateList.push(rowData);
+                  		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
+                         
+                    }
+                }
+            }
+          }
 
-    function refreshGird(){
-    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
-	} 
+          if (addList.length || updateList.length || deleteList.length) {
+			var sent_list = JSON.stringify({
+                updateList: updateList,
+                addList: addList,
+                deleteList: deleteList
+            });
+            //alert(sent_list);
+              
+              $.ajax({
+                  url: '/finance/v-invoice-row/update-row',
+                  data: {
+                      sent_list: sent_list
+                  },
+                  dataType: "json",
+                  type: "POST",
+                  async: true,
+                  beforeSend: function (jqXHR, settings) {
+                      //$(".saving", $grid).show();
+                      //$("#global-notice").text("Updating...").show();
+                      //alert(updateList[0].row_id +  updateList[0].row_token);
+                  },
+                  success: function (changes) {
+                      //commit the changes.
+                      //alert(changes.length);
+                      //$("#global-notice").text("Updated.....").show();
+                      //$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+                     
+                       if(changes.length>0){
+							var m='';
+							var i
+							for (i = 0; i < changes.length; i++) { 
+							    m += changes[i] + "<br>";
+							}
+                       	   $("#global-notice").html(m).show();
+                       }else{
+                    	   $("#global-notice").text("[INFO] Updated.....").show();
+                       } 
+
+                       $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
+                       
+        		      //alert('it is ok');                
+                      /* grid.commit({ type: 'add', rows: changes.addList });
+                      grid.commit({ type: 'update', rows: changes.updateList });
+                      grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                  },
+                  complete: function () {
+                      //$(".saving", $grid).hide();
+                      $("#global-notice").delay(2200).fadeOut(500);
+                      
+                  }
+              });
+          }
+        //alert(updateList.length);
+       
+    },     
+              
+};
+
+obj.colModel = [
+	/*  { title: "vendor", dataType: "string", dataIndx: "vendor", align: 'left',minWidth: 100,editable: true,
+         editor: {
+         type: "textbox",
+         init: autoCompleteEditor
+         //type: function (ui) { return dropdowneditor(this, ui); }
+     },},
+     
+   { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
+    { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
+    { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
+	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
+    { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
+    { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: true},        
+    { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: true},
+    { title: "Unit Price", dataType: "float", dataIndx: "row_unit_price", width:90, align: 'right',editable: true},
+    { title: "Net", dataType: "float", dataIndx: "row_net", width:90, align: 'right',editable: false},
+    { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: true},
+    { title: "Gross", dataType: "float", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
+	{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
+    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: true},
+    
+    { title: "", editable: false, minWidth: 100, sortable: false,
+        render: function (ui) {
+            //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
+        	return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button>";
+           }
+    },
+];
+
+obj.dataModel = {
+      dataType: "JSON",
+      location: "remote",
+      method: "GET",
+      recIndx: "row_id",
+      url: "/finance/v-invoice-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+      getData: function (response) {
+        return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
+     }
+};
+
+var $grid = $("#pr_row_gird").pqGrid(obj);
+
+$grid.on('pqgridrefresh pqgridrefreshrow', function () {
+    //debugger;
+    var $grid = $(this);
+
+    //receive button
+    $grid.find("button.receive_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+
+        var $tr = $(this).closest("tr"),
+        rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+        rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+        recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+        redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+      	//alert(rowData['item_name']);
+		
+		window.location.href = redirectUrl;
+      	//window.open(redirectUrl,'_blank');
+    });
+
+    //receive button
+    $grid.find("button.edit_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+
+        var $tr = $(this).closest("tr"),
+        rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+        rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+        recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+        redirectUrl="/finance/v-invoice-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+      	//alert(redirectUrl);
+		window.location.href = redirectUrl;
+      	//window.open(redirectUrl,'_blank');
+    });
+
+    //receive button
+    $grid.find("button.receive_inline_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+        if (isEditing($grid)) {
+            return false;
+        }
+        var $tr = $(this).closest("tr"),
+            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+        editRow(rowIndx, $grid);
+        return false;
+    });
+
+  //receive button
+    $grid.find("button.receive_inline_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+
+        var $tr = $(this).closest("tr"),
+        rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+        rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+        recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+        redirectUrl="/inventory/item-transaction/gr1?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+      	//alert(rowData['item_name']);
+      	
+      	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
+      	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
+      	//window.open(redirectUrl,'_blank');
+      	
+    });
+
+  //rows which were in edit mode before refresh, put them in edit mode again.
+    var rows = $grid.pqGrid("getRowsByClass", { cls: 'pq-row-edit' });
+    if (rows.length > 0) {
+        var rowIndx = rows[0].rowIndx;
+        editRow(rowIndx, $grid);
+    }
+});        
+
+function refreshGird(){
+	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+} 
 </script>
 

@@ -445,8 +445,11 @@ if (count($errors) > 0) {
 										href="<?php echo $this->baseUrl ?>/finance/v-invoice/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
 											class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
+					
+					<?php if($active_row>0):?>
 					<a tabindex="8" class="btn btn-default btn-sm"
 								href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>">A/P Review&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+					<?php endif;?>				
 										</div>
 							</div>
 

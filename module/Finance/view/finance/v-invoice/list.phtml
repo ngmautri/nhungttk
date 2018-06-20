@@ -135,6 +135,7 @@ else:
 		<tr>
 			<td><b>#</b></td>
 			<td><b>Ref.No.</b></td>
+			<td><b>Doc Status</b></td>
 			<td><b>Vendor</b></td>
 			<td><b>Contract No</b></td>
 			<td><b>Contract Date</b></td>
@@ -170,7 +171,8 @@ else:
 			<td>
 <a  style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/v-invoice/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
 			</td>
-			
+						<td><?php echo $a->getDocStatus()?></td>
+		
 			<td>
 <a href="<?php echo $this->baseUrl ?>/finance/v-invoice/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
 			

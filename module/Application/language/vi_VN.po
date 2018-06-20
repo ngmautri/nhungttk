@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-20 18:24+0700\n"
-"PO-Revision-Date: 2018-06-20 18:24+0700\n"
+"POT-Creation-Date: 2018-06-20 18:26+0700\n"
+"PO-Revision-Date: 2018-06-20 18:27+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -1719,7 +1719,7 @@ msgstr ""
 
 #: Procure/view/procure/gr/list.phtml:138
 msgid "Draft"
-msgstr ""
+msgstr "Bản nháp"
 
 #: Procure/view/procure/gr/list.phtml:139
 msgid "Posted"

@@ -1,4 +1,10 @@
-	function submitForm(form_id){
+/**
+ * Nguyen Mau TRI
+ */
+
+
+
+function submitForm(form_id){
 	var form_id_tmp;
 	$('#b_modal_no_header').modal();
 	form_id_tmp = '#' + form_id;

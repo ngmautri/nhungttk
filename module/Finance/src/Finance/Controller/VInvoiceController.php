@@ -439,7 +439,7 @@ class VInvoiceController extends AbstractActionController
         /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
         
-        // Do Posing...................
+        // Do Posting .................
         // ============================
         if ($request->isPost()) {
             
@@ -461,15 +461,11 @@ class VInvoiceController extends AbstractActionController
             
             // ========================
             
-            $criteria = array(
-                'isActive' => 1,
-                'invoice' => $entity
-            );
-            $ap_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria);
-            
-            if (count($ap_rows) == 0) {
+            if ($invoice['active_row'] == 0) {
                 $m = sprintf('[INFO] AP Invoice #%s has no lines.', $entity->getSysNumber());
-                $this->flashMessenger()->addMessage($m);
+                $m1 = $nmtPlugin->translate('Document is incomplete!');
+                $this->flashMessenger()->addMessage($m1);
+                
                 $redirectUrl = "/finance/v-invoice/review?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
                 return $this->redirect()->toUrl($redirectUrl);
             }
@@ -806,9 +802,13 @@ class VInvoiceController extends AbstractActionController
                 $stock_gr_entity->setCreatedOn($createdOn);
                 $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                 $this->doctrineEM->persist($stock_gr_entity);
-                
-                $this->doctrineEM->flush();
             }
+            
+            $this->doctrineEM->flush();
+            
+            
+            /**@todo Create Entry Journal */
+            
             
             // LOGGING
             /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -868,9 +868,10 @@ class VInvoiceController extends AbstractActionController
                 return $this->redirect()->toUrl($redirectUrl);
             }
             
-            if (count($invoice['active_row']) == 0) {
+            if ($invoice['active_row'] == 0) {
                 $m = sprintf('[INFO] AP Invoice #%s has no lines.', $entity->getSysNumber());
-                $this->flashMessenger()->addMessage($m);
+                $m1 = $nmtPlugin->translate('Document is incomplete!');
+                $this->flashMessenger()->addMessage($m1);
                 $redirectUrl = "/finance/v-invoice-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
                 return $this->redirect()->toUrl($redirectUrl);
             }
@@ -1532,7 +1533,7 @@ class VInvoiceController extends AbstractActionController
         }
         
         // NO POST
-        // Initiate.........
+        // Initiate.....................
         // ==============================
         
         $redirectUrl = null;
@@ -1589,6 +1590,7 @@ class VInvoiceController extends AbstractActionController
     }
 
     /**
+     * @deprecated
      * Make A/P Invoice from PO
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response

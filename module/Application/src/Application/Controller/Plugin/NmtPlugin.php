@@ -13,6 +13,7 @@ class NmtPlugin extends AbstractPlugin
 {
 
     protected $doctrineEM;
+    protected $translator;
 
     /**
      * Return List of Currency
@@ -333,6 +334,16 @@ class NmtPlugin extends AbstractPlugin
         
         return null;
     }
+    
+    /**
+     * 
+     *  @param string $text
+     *  @return string
+     */
+    public function translate($text)
+    {
+        return $this->translator->translate($text);
+    }
 
     /**
      *
@@ -362,4 +373,20 @@ class NmtPlugin extends AbstractPlugin
     {
         $this->doctrineEM = $doctrineEM;
     }
+    /**
+     * @return mixed
+     */
+    public function getTranslator()
+    {
+        return $this->translator;
+    }
+
+    /**
+     * @param mixed $translator
+     */
+    public function setTranslator($translator)
+    {
+        $this->translator = $translator;
+    }
+
 }

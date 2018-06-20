@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-20 18:26+0700\n"
-"PO-Revision-Date: 2018-06-20 18:27+0700\n"
+"POT-Creation-Date: 2018-06-20 21:56+0700\n"
+"PO-Revision-Date: 2018-06-20 21:57+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -174,6 +174,10 @@ msgstr ""
 #: Application/view/setting_menu.php:20
 msgid "System Information"
 msgstr "Thông tin hệ thống"
+
+#: Finance/src/Finance/Controller/VInvoiceController.php:472
+msgid "Document is incomplete!"
+msgstr "Chứng từ chưa hoàn thiện!"
 
 #: Finance/view/finance/ap-create-wizard.php:4
 #: Finance/view/finance/ap-create-wizard.php:8
@@ -1739,6 +1743,9 @@ msgstr ""
 #: Procure/view/procure/pr/show.phtml:68
 msgid "PR#"
 msgstr ""
+
+#~ msgid "AP Invoice has no line"
+#~ msgstr "Chứng từ chưa hoàn thiện."
 
 #~ msgid "Locked"
 #~ msgstr "Đã khóa"

@@ -24,7 +24,10 @@ class NmtPluginFactory implements FactoryInterface
         
         $p= new NmtPlugin();
         $sv =  $container->get('doctrine.entitymanager.orm_default');
-        $p->setDoctrineEM($sv);        
+        $p->setDoctrineEM($sv);  
+        
+        $sv =  $container->get('translator');
+        $p->setTranslator($sv);        
         return $p;
     }	
 }

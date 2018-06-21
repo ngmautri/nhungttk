@@ -163,7 +163,7 @@ class GrController extends AbstractActionController
             
             // NO ERROR
             // Saving into Database..........
-            // ==============================
+            // ++++++++++++++++++++++++++++++
             
             $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
             
@@ -231,7 +231,7 @@ class GrController extends AbstractActionController
         }
         
         // NO POST
-        // Initiate.........
+        // Initiate.....................
         // ==============================
         
         $redirectUrl = null;
@@ -322,6 +322,7 @@ class GrController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function copyFromPo1Action()
@@ -381,19 +382,64 @@ class GrController extends AbstractActionController
     public function reviewAction()
     {
         $request = $this->getRequest();
+        
         $this->layout("Procure/layout-fullscreen");
-                
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+        
+        // Do Posting .................
+        // ============================
+        if ($request->isPost()) {
+            
+            $errors = array();
+            $redirectUrl = $request->getPost('redirectUrl');
+            $id = (int) $request->getPost('entity_id');
+            $token = $request->getPost('token');
+            
+            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+            $gr = $res->getGr($id, $token);
+            
+            if ($gr == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+            
+            if ($gr[0] instanceof \Application\Entity\NmtProcureGr) {
                 
+                /**@var \Application\Entity\NmtProcureGr $entity ;*/
+                $entity = $gr[0];
+                $oldEntity = clone ($entity);
+            
+               // 1. change header
+               // 2. change line
+               // 3. create Stock GR.
+            }
+            
+            
+        }
+        
+        // NO POST
+        // Initiate.....................
+        // ==============================
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
+        } else {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
         }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-        
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
         
@@ -406,20 +452,163 @@ class GrController extends AbstractActionController
         }
         
         if ($gr[0] instanceof \Application\Entity\NmtProcureGr) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $gr[0],
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => $gr['total_row']
-                // 'active_row' => $invoice['active_row'],
-                // 'max_row_number' => $invoice['total_row'],
-                // 'net_amount' => $invoice['net_amount'],
-                // 'tax_amount' => $invoice['tax_amount'],
-                // 'gross_amount' => $invoice['gross_amount']
+            
+            /**@var \Application\Entity\NmtProcureGr $entity ;*/
+            $entity = $gr[0];
+            $oldEntity = clone ($entity);
+            
+            // UPDATE status
+            
+            /**@var \Application\Entity\MlaUsers $u ;*/
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
             ));
+            
+            $lastchangeOn = new \Datetime();
+            
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+            $entity->setIsDraft(0);
+            $entity->getLastchangeBy($u);
+            $entity->setLastchangeOn($lastchangeOn);
+            
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+            
+            $m = sprintf('[OK] GR #%s - %s posted', $entity->getId(), $entity->getSysNumber());
+            $this->flashMessenger()->addMessage($m);
+            
+            // LOGGING
+            
+            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $lastchangeOn,
+                'entity_id' => $entity->getId(),
+                'entity_class' => get_class($entity),
+                'entity_token' => $entity->getToken()
+            ));
+            
+            /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+            $nmtPlugin = $this->Nmtplugin();
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+            
+            $m = sprintf('[OK] GR #%s - %s posted.', $entity->getId(), $entity->getSysNumber());
+            
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $lastchangeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $lastchangeOn,
+                'changeValidFrom' => $lastchangeOn
+            ));
+            
+            // UPDATE GR ROW & CREATE STOCK GR
+            $criteria = array(
+                'isActive' => 1,
+                'gr' => $entity
+            );
+            $gr_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
+            
+            if (count($gr_rows) > 0) {
+                $n = 0;
+                foreach ($gr_rows as $r) {
+                    /** @var \Application\Entity\NmtProcureGrRow $r ; */
+                    
+                    // UPDATE status
+                    $n ++;
+                    $r->setIsPosted(1);
+                    $r->setIsDraft(0);
+                    $r->setDocStatus($entity->getDocStatus());
+                    $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
+                    $r->setRowNumber($n);
+                    
+                    /**
+                     * create procure good receipt.
+                     * only for item controlled inventory
+                     * ===================
+                     */
+                    
+                    /**
+                     *
+                     * @todo: only for item in stock.
+                     */
+                    if ($r->getItem()->getIsStocked() == 0) {
+                        // continue;
+                    }
+                    
+                    $criteria = array(
+                        'isActive' => 1,
+                        'grRow' => $r
+                    );
+                    $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+                    
+                    $stock_gr_entity = null;
+                    
+                    if ($stock_gr_entity_ck instanceof \Application\Entity\NmtInventoryTrx) {
+                        $stock_gr_entity = $stock_gr_entity_ck;
+                    } else {
+                        $stock_gr_entity = new NmtInventoryTrx();
+                    }
+                    
+                    $stock_gr_entity->setGrRow($r);
+                    
+                    $stock_gr_entity->setSourceClass(get_class($r));
+                    $stock_gr_entity->setSourceId($r->getId());
+                    
+                    $stock_gr_entity->setTransactionType($r->getTransactionType());
+                    $stock_gr_entity->setCurrentState($entity->getCurrentState());
+                    $stock_gr_entity->setDocStatus($r->getDocStatus());
+                    $stock_gr_entity->setIsActive($r->getIsActive());
+                    
+                    $stock_gr_entity->setVendor($entity->getVendor());
+                    $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
+                    
+                    $stock_gr_entity->setItem($r->getItem());
+                    $stock_gr_entity->setPrRow($r->getPrRow());
+                    $stock_gr_entity->setPoRow($r->getPoRow());
+                    $stock_gr_entity->setQuantity($r->getQuantity());
+                    $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
+                    $stock_gr_entity->setVendorItemUnit($r->getUnit());
+                    $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
+                    $stock_gr_entity->setTrxDate($entity->getGrDate());
+                    $stock_gr_entity->setCurrency($entity->getCurrency());
+                    $stock_gr_entity->setRemarks('PO Gr ' . $r->getRowIdentifer());
+                    $stock_gr_entity->setWh($entity->getWarehouse());
+                    $stock_gr_entity->setCreatedBy($u);
+                    $stock_gr_entity->setCreatedOn(new \DateTime());
+                    $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $stock_gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
+                    
+                    $stock_gr_entity->setTaxRate($r->getTaxRate());
+                    
+                    $this->doctrineEM->persist($stock_gr_entity);
+                }
+                
+                $this->doctrineEM->flush();
+            }
+            
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            /*
+             * $this->getEventManager()->trigger('procure.gr.post', __METHOD__, array(
+             * 'entity' => $entity,
+             * ));
+             */
+            
+            // update P/O
+            // $res->updatePOofGR($entity->getId());
+            
+            $redirectUrl = "/procure/gr/list";
+            return $this->redirect()->toUrl($redirectUrl);
         }
-        // return $this->redirect()->toRoute('access_denied');
+        return $this->redirect()->toRoute('access_denied');
     }
 
     /**
@@ -593,14 +782,15 @@ class GrController extends AbstractActionController
                 $this->doctrineEM->flush();
             }
             
-            
             // Trigger Change Log. AbtractController is EventManagerAware.
-            /* $this->getEventManager()->trigger('procure.gr.post', __METHOD__, array(
-                'entity' => $entity,
-            )); */
+            /*
+             * $this->getEventManager()->trigger('procure.gr.post', __METHOD__, array(
+             * 'entity' => $entity,
+             * ));
+             */
             
             // update P/O
-           $res->updatePOofGR($entity->getId());
+            $res->updatePOofGR($entity->getId());
             
             $redirectUrl = "/procure/gr/list";
             return $this->redirect()->toUrl($redirectUrl);

@@ -12,8 +12,8 @@ use MLA\Paginator;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePoRow;
 use Application\Entity\NmtInventoryTrx;
-use PHPExcel;
-use PHPExcel_IOFactory;
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 /**
  * Good Receipt PO or PR or AP
@@ -744,7 +744,7 @@ class ReturnRowController extends AbstractActionController
                 }
                 
                 // Create new PHPExcel object
-                $objPHPExcel = new PHPExcel();
+                $objPHPExcel = new Spreadsheet();
                 
                 // Set document properties
                 $objPHPExcel->getProperties()
@@ -867,7 +867,7 @@ class ReturnRowController extends AbstractActionController
                 header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
                 header('Pragma: public'); // HTTP/1.0
                 
-                $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+                $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($objPHPExcel, 'Xlsx');
                 $objWriter->save('php://output');
                 exit();
             }

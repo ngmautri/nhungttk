@@ -259,38 +259,7 @@ class VInvoiceController extends AbstractActionController
             // NO ERROR
             // ++++++++++++++++++++++++++
             
-            // generate document
-            $criteria = array(
-                'isActive' => 1,
-                'subjectClass' => get_class($entity)
-            );
-            
-            /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
-            $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
-            if ($docNumber instanceof \Application\Entity\NmtApplicationDocNumber) {
-                $maxLen = strlen($docNumber->getToNumber());
-                $currentLen = 1;
-                $currentDoc = $docNumber->getPrefix();
-                $current_no = $docNumber->getCurrentNumber();
-                
-                if ($current_no == null) {
-                    $current_no = $docNumber->getFromNumber();
-                } else {
-                    $current_no ++;
-                    $currentLen = strlen($current_no);
-                }
-                
-                $docNumber->setCurrentNumber($current_no);
-                
-                $tmp = "";
-                for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
-                    
-                    $tmp = $tmp . "0";
-                }
-                
-                $currentDoc = $currentDoc . $tmp . $current_no;
-                $entity->setSysNumber($currentDoc);
-            }
+            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
             
             $createdOn = new \DateTime();
             
@@ -360,6 +329,7 @@ class VInvoiceController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function add1Action()
@@ -439,7 +409,7 @@ class VInvoiceController extends AbstractActionController
         /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
         
-        // Do Posting .................
+        // Is Posting .................
         // ============================
         if ($request->isPost()) {
             
@@ -594,7 +564,6 @@ class VInvoiceController extends AbstractActionController
                 $errors[] = 'Good receipt Date is not correct or empty!';
             } else {
                 
-                $entity->setGrDate(new \DateTime($grDate));
                 // check if posting period is close
                 /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                 $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
@@ -603,7 +572,9 @@ class VInvoiceController extends AbstractActionController
                     $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
                 } else {
                     if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                        $errors[] = sprintf('Period [%s] is closed for Good receipt!', $postingPeriod->getPeriodName());
+                    } else {
+                        $entity->setGrDate(new \DateTime($grDate));
                     }
                 }
             }
@@ -644,6 +615,11 @@ class VInvoiceController extends AbstractActionController
             
             $changeOn = new \DateTime();
             $oldEntity = clone ($entity);
+            
+            // Assign doc number
+            if($entity->getSysNumber()==\Application\Model\Constants::SYS_NUMBER_UNASSIGNED){
+                $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
+            }
             
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
             $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
@@ -702,7 +678,7 @@ class VInvoiceController extends AbstractActionController
                  * create procure good receipt, if has PR or PO.
                  * ============================
                  */
-                if ($r->getPrRow() instanceof \Application\Entity\NmtProcurePrRow || $r->getPoRow() instanceof \Application\Entity\NmtProcurePoRow) {
+                if (!$r->getPrRow()==null OR !$r->getPoRow()==null) {
                     $criteria = array(
                         'isActive' => 1,
                         'apInvoiceRow' => $r
@@ -904,17 +880,18 @@ class VInvoiceController extends AbstractActionController
     }
 
     /**
-     * Posting A/P Invoice: Document can not be changed:
      *
-     * 1. change doc status of invoice and its rows to "posted"
-     * 2. update relevant document
-     * - update procurement good receipts
-     * - upate PR
-     * - update PO
-     * - update GR
-     * - update stock good receipt
-     * 3. Created Accounting Journal Entry
-     *
+     * @deprecated Posting A/P Invoice: Document can not be changed:
+     *            
+     *             1. change doc status of invoice and its rows to "posted"
+     *             2. update relevant document
+     *             - update procurement good receipts
+     *             - upate PR
+     *             - update PO
+     *             - update GR
+     *             - update stock good receipt
+     *             3. Created Accounting Journal Entry
+     *            
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function postAction()
@@ -1219,6 +1196,8 @@ class VInvoiceController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
         
+        // Is Posting .................
+        // ============================
         if ($request->isPost()) {
             
             $errors = array();
@@ -1285,12 +1264,13 @@ class VInvoiceController extends AbstractActionController
             $entity->setPo($target);
             $entity->setCurrentState($currentState);
             
-            if (! $validator->isValid($contractDate)) {
-                $errors[] = 'Contract Date is not correct or empty!';
-            } else {
-                $entity->setContractDate(new \DateTime($contractDate));
+            if (! $contractDate == null) {
+                if (! $validator->isValid($contractDate)) {
+                    $errors[] = 'Contract Date is not correct or empty!';
+                } else {
+                    $entity->setContractDate(new \DateTime($contractDate));
+                }
             }
-            
             $entity->setContractNo($contractNo);
             
             $vendor = null;
@@ -1319,119 +1299,60 @@ class VInvoiceController extends AbstractActionController
                 $errors[] = 'Currency can\'t be empty. Please select a currency!';
             }
             
-            switch ($currentState) {
-                case "draftInvoice":
+            // check later
+            $entity->setInvoiceNo($invoiceNo);
+            
+            $entity->setSapDoc($sapDoc);
+            
+            if (! $invoiceDate == null) {
+                if (! $validator->isValid($invoiceDate)) {
+                    $errors[] = 'Invoice Date is not correct or empty!';
+                } else {
+                    $entity->setInvoiceDate(new \DateTime($invoiceDate));
+                }
+            }
+            
+            // check one more time
+            if (! $postingDate == null) {
+                if (! $validator->isValid($postingDate)) {
+                    $errors[] = 'Posting Date is not correct or empty!';
+                } else {
                     
-                    /**
-                     *
-                     * @todo
-                     */
+                    $entity->setPostingDate(new \DateTime($postingDate));
                     
-                    if ($invoiceNo == null) {
-                        $errors[] = 'Please enter Invoice Number!';
+                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                    $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
+                    
+                    if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                        $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
                     } else {
-                        $entity->setInvoiceNo($invoiceNo);
-                    }
-                    
-                    $entity->setSapDoc($sapDoc);
-                    
-                    if (! $validator->isValid($invoiceDate)) {
-                        $errors[] = 'Invoice Date is not correct or empty!';
-                    } else {
-                        $entity->setInvoiceDate(new \DateTime($invoiceDate));
-                    }
-                    
-                    if (! $validator->isValid($postingDate)) {
-                        $errors[] = 'Posting Date is not correct or empty!';
-                    } else {
-                        
-                        $entity->setPostingDate(new \DateTime($postingDate));
-                        
-                        // check if posting period is close
-                        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-                        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-                        
-                        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                        $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
-                        
-                        if ($postingPeriod->getPeriodStatus() == "C") {
-                            $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
+                        if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                            $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
                         }
                     }
+                }
+            }
+            
+            // check one more time
+            if (! $grDate == null) {
+                if (! $validator->isValid($grDate)) {
+                    $errors[] = 'Good receipt Date is not correct or empty!';
+                } else {
                     
-                    if (! $validator->isValid($grDate)) {
-                        $errors[] = 'Good receipt Date is not correct or empty!';
+                    // check if posting period is close
+                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                    $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
+                    
+                    if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                        $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
                     } else {
-                        $entity->setGrDate(new \DateTime($grDate));
-                        // check if posting period is close
-                        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-                        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-                        
-                        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                        $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
-                        
-                        if ($postingPeriod->getPeriodStatus() == "C") {
-                            $errors[] = ' period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
+                        if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                            $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                        } else {
+                            $entity->setGrDate(new \DateTime($grDate));
                         }
                     }
-                    
-                    break;
-                
-                case "finalInvoice":
-                    
-                    /**
-                     *
-                     * @todo
-                     */
-                    
-                    if ($invoiceNo == null) {
-                        $errors[] = 'Please enter Invoice Number!';
-                    } else {
-                        $entity->setInvoiceNo($invoiceNo);
-                    }
-                    
-                    $entity->setSapDoc($sapDoc);
-                    
-                    if (! $validator->isValid($invoiceDate)) {
-                        $errors[] = 'Invoice Date is not correct or empty!';
-                    } else {
-                        $entity->setInvoiceDate(new \DateTime($invoiceDate));
-                    }
-                    
-                    if (! $validator->isValid($postingDate)) {
-                        $errors[] = 'Posting Date is not correct or empty!';
-                    } else {
-                        
-                        $entity->setPostingDate(new \DateTime($postingDate));
-                        // check if posting period is close
-                        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-                        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-                        
-                        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                        $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
-                        
-                        if ($postingPeriod->getPeriodStatus() == "C") {
-                            $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
-                        }
-                    }
-                    
-                    if (! $validator->isValid($grDate)) {
-                        $errors[] = 'Good receipt Date is not correct or empty!';
-                    } else {
-                        $entity->setGrDate(new \DateTime($grDate));
-                        // check if posting period is close
-                        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-                        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-                        
-                        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                        $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
-                        
-                        if ($postingPeriod->getPeriodStatus() == "C") {
-                            $errors[] = ' period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
-                        }
-                    }
-                    
-                    break;
+                }
             }
             
             $warehouse = null;
@@ -1442,7 +1363,8 @@ class VInvoiceController extends AbstractActionController
             if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
                 $entity->setWarehouse($warehouse);
             } else {
-                $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
+                // check later
+                //$errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
             }
             
             $entity->setRemarks($remarks);
@@ -1461,7 +1383,8 @@ class VInvoiceController extends AbstractActionController
             // Saving into Database..........
             // ++++++++++++++++++++++++++++++
             
-            $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
+            //$entity->setSysNumber($nmtPlugin->getDocNumber($entity));
+            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
             
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
@@ -1598,9 +1521,10 @@ class VInvoiceController extends AbstractActionController
     }
 
     /**
+     * Make A/P Invoice from PO
      *
-     * @deprecated Make A/P Invoice from PO
-     *            
+     * @deprecated
+     *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function acceptFromPoAction()
@@ -1732,6 +1656,7 @@ class VInvoiceController extends AbstractActionController
 
     /**
      *
+     * @deprecated
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function copyFromPo1Action()

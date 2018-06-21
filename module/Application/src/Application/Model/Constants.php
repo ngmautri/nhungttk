@@ -37,7 +37,12 @@ class Constants
      */
     const PERIOD_STATUS_ARCHIVED = 'A';
 
+    
+    
     // ====================
+    const SYS_NUMBER_UNASSIGNED = '0000000';
+    
+    
     const DOC_STATUS_DRAFT = 'draft';
 
     const DOC_STATUS_OPEN = 'open';

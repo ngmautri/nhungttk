@@ -179,6 +179,7 @@ class ItemController extends AbstractActionController
             
             $itemSku = $request->getPost('itemSku');
             $itemSku1 = $request->getPost('itemSku1');
+            $itemSku2 = $request->getPost('itemSku2');
             
             $itemName = $request->getPost('itemName');
             $itemNameForeign = $request->getPost('itemNameForeign');
@@ -228,6 +229,7 @@ class ItemController extends AbstractActionController
             }
             
             $entity->setItemSku1($itemSku1);
+            $entity->setItemSku2($itemSku2);
             
             if ($itemName === '' or $itemName === null) {
                 $errors[] = 'Please give item name';
@@ -509,6 +511,7 @@ class ItemController extends AbstractActionController
                 
                 $itemSku = $request->getPost('itemSku');
                 $itemSku1 = $request->getPost('itemSku1');
+                $itemSku2 = $request->getPost('itemSku2');
                 
                 $itemName = $request->getPost('itemName');
                 $itemNameForeign = $request->getPost('itemNameForeign');
@@ -556,6 +559,7 @@ class ItemController extends AbstractActionController
                 }
                 
                 $entity->setItemSku1($itemSku1);
+                $entity->setItemSku2($itemSku2);
                 
                 if ($itemName === '' or $itemName === null) {
                     $errors[] = 'Please give item name';

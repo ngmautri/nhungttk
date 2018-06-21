@@ -42,9 +42,9 @@ class SearchIndexController extends AbstractActionController
     public function updateAllAction()
     {
         $result = array();
-        $result[] = "ITEM ". $this->itemSearchService->optimizeIndex();
+        $result[] = "ITEM ". $this->itemSearchService->createItemIndex();
         $result[] = "PR ". $this->prSearchService->createIndex();
-        $result[] = "PROJECT " . $this->projectSearchService->optimizeIndex();
+        $result[] = "PROJECT " . $this->projectSearchService->createIndex();
         
         // trigger uploadPicture. AbtractController is EventManagerAware.
         $this->getEventManager()->trigger('system.log', __CLASS__, array(

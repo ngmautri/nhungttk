@@ -52,7 +52,8 @@ if (count ( $errors ) > 0) {
 				name="itemSku" value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
 						<input class="form-control input-sm" type="text"  placeholder=""
 				name="itemSku1" value="<?php echo (!$entity == null)? $entity->getItemSku1():"";?>">
-	
+		<input class="form-control input-sm" type="text"  placeholder=""
+				name="itemSku2" value="<?php echo (!$entity == null)? $entity->getItemSku2():"";?>">
 		</div>		
 		<div class="col-sm-4">
 	  	     <input <?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;

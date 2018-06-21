@@ -1400,9 +1400,9 @@ class PrRowController extends AbstractActionController
                 $item_detail = "/inventory/item/show1?token=" . $pr_row_entity->getItem()->getToken() . "&checksum=" . $pr_row_entity->getItem()->getChecksum() . "&entity_id=" . $pr_row_entity->getItem()->getId();
                 if ($pr_row_entity->getItem()->getItemName() !== null) {
                     $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
-                        ->getItemName()) . "','1200',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                        ->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                 } else {
-                    $onclick = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1200',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                    $onclick = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                 }
                 
                 $count ++;

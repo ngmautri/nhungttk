@@ -777,8 +777,8 @@ class VInvoiceController extends AbstractActionController
                 $stock_gr_entity->setVendorInvoice($entity);
                 $stock_gr_entity->setInvoiceRow($r);
                 $stock_gr_entity->setItem($r->getItem());
-                // $stock_gr_entity->setPrRow($r->getPrRow());
-                // $stock_gr_entity->setPoRow($r->getPoRow());
+                $stock_gr_entity->setPrRow($r->getPrRow());
+                $stock_gr_entity->setPoRow($r->getPoRow());
                 $stock_gr_entity->setGrRow($gr_entity);
                 
                 $stock_gr_entity->setIsDraft($r->getIsDraft());

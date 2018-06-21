@@ -61,6 +61,7 @@ class ItemSearchService
                         
                         $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
                         $doc->addField(Field::Keyword('item_sku1_key', $row->getItemSku1()));
+                        $doc->addField(Field::Keyword('item_sku2_key', $row->getItemSku2()));
                         
                         $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
                         
@@ -82,6 +83,9 @@ class ItemSearchService
                         // echo $row->getId () ."::".$row->getItemName () . '::: ' . mb_detect_encoding($row->getItemName ()) . '<br>'; // false
                         
                         $doc->addField(Field::text('item_sku', $row->getItemSku()), 'UTF-8');
+                        $doc->addField(Field::text('item_sku1', $row->getItemSku1()), 'UTF-8');
+                        $doc->addField(Field::text('item_sku2', $row->getItemSku2()), 'UTF-8');
+                                                
                         $doc->addField(Field::text('item_name', $row->getItemName()));
                         // $doc->addField ( Field::text ( 'item_name1', $row->getItemNameForeign () ) );
                         $doc->addField(Field::text('item_description', $row->getItemDescription()));
@@ -159,6 +163,7 @@ class ItemSearchService
                 
                 $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
                 $doc->addField(Field::Keyword('item_sku1_key', $row->getItemSku1()));
+                $doc->addField(Field::Keyword('item_sku2_key', $row->getItemSku2()));
                 
                 $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
                 
@@ -181,6 +186,7 @@ class ItemSearchService
                 
                 $doc->addField(Field::text('item_sku', $row->getItemSku()), 'UTF-8');
                 $doc->addField(Field::text('item_sku1', $row->getItemSku1()), 'UTF-8');
+                $doc->addField(Field::text('item_sku2', $row->getItemSku2()), 'UTF-8');
                 
                 $doc->addField(Field::text('item_name', $row->getItemName()));
                 // $doc->addField ( Field::text ( 'item_name1', $row->getItemNameForeign () ) );
@@ -243,6 +249,7 @@ class ItemSearchService
                 
                 $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
                 $doc->addField(Field::Keyword('item_sku1_key', $row->getItemSku1()));
+                $doc->addField(Field::Keyword('item_sku2_key', $row->getItemSku2()));
                 
                 $doc->addField(Field::Keyword('item_sys_number', $row->getSysNumber()));
                 
@@ -263,6 +270,7 @@ class ItemSearchService
                 
                 $doc->addField(Field::text('item_sku', $row->getItemSku()), 'UTF-8');
                 $doc->addField(Field::text('item_sku1', $row->getItemSku1()), 'UTF-8');
+                $doc->addField(Field::text('item_sku2', $row->getItemSku2()), 'UTF-8');
                 
                 $doc->addField(Field::text('item_name', $row->getItemName()));
                 // $doc->addField ( Field::text ( 'item_name1', $row->getItemNameForeign () ) );

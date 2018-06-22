@@ -174,7 +174,7 @@ class PoController extends AbstractActionController
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-            $m = sprintf("[OK] Contract /PO: %s created!",  $currentDoc);
+            $m = sprintf("[OK] Contract /PO: %s created!", $currentDoc);
             $this->flashMessenger()->addMessage($m);
             
             $redirectUrl = "/procure/po/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
@@ -290,8 +290,8 @@ class PoController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
         $redirectUrl = $this->getRequest()
-        ->getHeader('Referer')
-        ->getUri();
+            ->getHeader('Referer')
+            ->getUri();
         
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
@@ -326,7 +326,59 @@ class PoController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-   
+
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function statusAction()
+    {
+        $request = $this->getRequest();
+        
+        // accepted only ajax request
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $this->layout("layout/user/ajax");
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $rows = $res->getPOStatus($id, $token);
+        
+        if ($rows == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        return new ViewModel(array(
+            'rows' => $rows,
+            'entity_id' => $id,
+            'token' => $token,
+        ));
+    }
+    
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function updateStatusAction()
+    {
+        $request = $this->getRequest();
+      
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $result = $res->updatePo($id, $token);
+        
+        return new ViewModel(array(
+            'result' => $result
+        ));
+    }
 
     /**
      *
@@ -457,6 +509,7 @@ class PoController extends AbstractActionController
                 $this->flashMessenger()->addMessage('Document ' . $entity->getSysNumber() . ' is updated successfully!');
                 
                 /**
+                 *
                  * @todo
                  */
                 // update current state of po row

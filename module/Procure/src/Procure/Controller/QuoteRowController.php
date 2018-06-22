@@ -986,7 +986,7 @@ class QuoteRowController extends AbstractActionController
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
-    public function poOfItemAction()
+    public function qoOfItemAction()
     {
         $request = $this->getRequest();
         // accepted only ajax request
@@ -1000,7 +1000,7 @@ class QuoteRowController extends AbstractActionController
         
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $rows = $res->getPoOfItem($item_id, $token);
+        $rows = $res->getQoOfItem($item_id, $token);
         return new ViewModel(array(
             'rows' => $rows
         ));

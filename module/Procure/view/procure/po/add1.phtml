@@ -22,7 +22,9 @@ if (count ( $errors ) > 0) {
 			href="/procure/po-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
 			<li><a href="#logistic"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Logistic</a></li>
 			<li><a href="#accounting"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Accounting</a></li>
-	
+	<li><a
+			href="/procure/po/status?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Status</a></li>
+		
 	
 		
 				<li><a			href="/procure/po-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">

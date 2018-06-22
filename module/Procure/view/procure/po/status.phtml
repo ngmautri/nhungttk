@@ -1,0 +1,67 @@
+<?php if (count($rows)==0): ?>
+
+<h5>no thing found!</h5>
+
+<?php else: ?>
+<div style="color: gray; font-size: 9pt;" id="total_ordered"></div>
+<div style="color: gray; font-size: 9pt;" id="total_received"></div>
+<div style="color: gray; font-size: 9pt;" id="total_balance"></div>
+
+<a class="btn btn-default btn-sm" href="/procure/po/update-status?token=<?php echo $token;?>&entity_id=<?php echo $entity_id;?>">refresh</a>
+  
+<hr>
+
+
+<table style="font-size: 9pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Item</b></td>
+			<td><b>Item</b></td>
+			<td><b>PO Qty</b></td>
+			<td><b>Value</b></td>
+			
+			<td><b>Posted GR</b></td>
+			<td><b>Open GR</b></td>
+			<td><b>Posted AP</b></td>
+			<td><b>Open AP</b></td>
+			<td><b>billed amount</b></td>
+	
+		</tr>
+	</thead>
+	<tbody>
+ 
+	 <?php
+    
+    $count = 0;
+    // $total_ordered = 0;
+    // $total_received = 0;
+    // $total_balance = 0;
+    foreach ($rows as $r) :
+        $count ++;
+        /**@var \Application\Entity\NmtProcurePoRow $a ;*/
+        $a = $r[0];
+        
+        ?>
+	 <tr>
+			<td><?php echo $count;?></td>
+			<td><?php echo $a->getCurrentState();?></td>
+			<td><?php echo $a->getItem()->getItemName();?></td>
+		
+			<td><?php echo $a->getQuantity();?></td>
+			<td><?php echo $a->getNetAmount();?></td>
+		
+			<td><?php echo $r['posted_gr_qty'];?></td>
+			<td><?php echo $r['open_gr_qty'];?></td>
+			<td><?php echo $r['posted_ap_qty'];?></td>
+			<td><?php echo $r['open_ap_qty'];?></td>
+			<td><?php echo $r['billed_amount'];?></td>
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+
+<?php endif; ?>
+	

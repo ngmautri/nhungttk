@@ -32,6 +32,7 @@ class VInvoiceController extends AbstractActionController
      */
     public function addAction()
     {
+        $request = $this->getRequest();
         $this->layout("Finance/layout-fullscreen");
         
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -47,8 +48,6 @@ class VInvoiceController extends AbstractActionController
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
         }
-        
-        $request = $this->getRequest();
         
         // Is Posing
         // =============================
@@ -97,18 +96,18 @@ class VInvoiceController extends AbstractActionController
                 $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
             }
             
-            if ($vendor !== null) {
+            if ($vendor instanceof \Application\Entity\NmtBpVendor) {
                 $entity->setVendor($vendor);
                 $entity->setVendorName($vendor->getVendorName());
             } else {
-                $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
+                $errors[] = $nmtPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
             }
             
             /**
              * Check default currency
              */
             if (! $default_cur instanceof \Application\Entity\NmtApplicationCurrency) {
-                $errors[] = 'Company currency can\'t be defined!';
+                $errors[] = $nmtPlugin->translate('Company currency can\'t be defined!');
             }
             
             $currency = null;
@@ -129,12 +128,12 @@ class VInvoiceController extends AbstractActionController
                     $entity->setExchangeRate(1);
                 } else {
                     
-                    if ($exchangeRate != 0) {
+                    if ($exchangeRate !== 0) {
                         if (! is_numeric($exchangeRate)) {
-                            $errors[] = 'FX rate is not valid. It must be a number.';
+                            $errors[] = $nmtPlugin->translate('Foreign exchange rate is not valid. It must be a number.');
                         } else {
                             if ($exchangeRate <= 0) {
-                                $errors[] = 'FX rate must be greate than 0!';
+                                $errors[] = $nmtPlugin->translate('Foreign exchange rate must be greate than 0!');
                             }
                             $entity->setExchangeRate($exchangeRate);
                         }
@@ -151,87 +150,61 @@ class VInvoiceController extends AbstractActionController
                     }
                 }
             } else {
-                $errors[] = 'Currency can\'t be empty. Please select a Currency!';
+                $errors[] = $nmtPlugin->translate('Currency can\'t be empty. Please select a Currency!');
             }
             
             $validator = new Date();
             
-            switch ($currentState) {
-                case "contract":
-                    // contract number not empty
+            // check one more time while posting
+            if (! $invoiceDate == null) {
+                if (! $validator->isValid($invoiceDate)) {
+                    $errors[] = $nmtPlugin->translate('Invoice Date is not valid');
+                } else {
+                    $entity->setInvoiceDate(new \DateTime($invoiceDate));
+                }
+            }
+            
+            //check one more time while posting
+            if (! $postingDate == null) {
+                if (! $validator->isValid($postingDate)) {
+                    $errors[] = $nmtPlugin->translate('Posting Date is not valid!');
+                } else {
                     
-                    if ($contractNo == "") {
-                        $errors[] = 'Contract is not correct or empty!';
+                    $entity->setPostingDate(new \DateTime($postingDate));
+                    
+                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                    $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
+                    
+                    if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                        $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
                     } else {
-                        $entity->setContractNo($contractNo);
-                    }
-                    
-                    if (! $validator->isValid($contractDate)) {
-                        $errors[] = 'Contract Date is not correct or empty!';
-                    } else {
-                        $entity->setContractDate(new \DateTime($contractDate));
-                    }
-                    
-                    break;
-                case "draftInvoice":
-                    // blank
-                    break;
-                
-                case "finalInvoice":
-                    
-                    if ($invoiceNo == null) {
-                        $errors[] = 'Please enter Invoice Number!';
-                    } else {
-                        $entity->setInvoiceNo($invoiceNo);
-                    }
-                    
-                    $entity->setSapDoc($sapDoc);
-                    
-                    if (! $validator->isValid($invoiceDate)) {
-                        $errors[] = 'Invoice Date is not correct or empty!';
-                    } else {
-                        $entity->setInvoiceDate(new \DateTime($invoiceDate));
-                    }
-                    
-                    if (! $validator->isValid($postingDate)) {
-                        $errors[] = 'Posting Date is not correct or empty!';
-                    } else {
-                        
-                        $entity->setPostingDate(new \DateTime($postingDate));
-                        
-                        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                        $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
-                        
-                        if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                            $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
-                        } else {
-                            if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                                $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
-                            }
+                        if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                            $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
                         }
                     }
+                }
+            }
+            
+            // check one more time
+            if (! $grDate == null) {
+                if (! $validator->isValid($grDate)) {
+                    $errors[] = $nmtPlugin->translate('Good receipt Date is not valid!');
+                } else {
                     
-                    if (! $validator->isValid($grDate)) {
-                        $errors[] = 'Good receipt Date is not correct or empty!';
+                    // check if posting period is close
+                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                    $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
+                    
+                    if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                        $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
                     } else {
-                        $entity->setGrDate(new \DateTime($grDate));
-                        // check if posting period is close
-                        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-                        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-                        
-                        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                        $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
-                        
-                        if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                            $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
+                        if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                            $errors[] = sprintf('Period [%s] is closed for Good Receipt!', $postingPeriod->getPeriodName());
                         } else {
-                            if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                                $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
-                            }
+                            $entity->setGrDate(new \DateTime($grDate));
                         }
                     }
-                    
-                    break;
+                }
             }
             
             $warehouse = null;
@@ -242,7 +215,8 @@ class VInvoiceController extends AbstractActionController
             if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
                 $entity->setWarehouse($warehouse);
             } else {
-                $errors[] = 'Warehouse can\'t be empty. Please select a warehouse!';
+                // check when posting
+                // $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
             }
             
             $entity->setRemarks($remarks);
@@ -257,7 +231,8 @@ class VInvoiceController extends AbstractActionController
             }
             
             // NO ERROR
-            // ++++++++++++++++++++++++++
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
             
             $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
             
@@ -291,7 +266,7 @@ class VInvoiceController extends AbstractActionController
         }
         
         // NO POST
-        // Initiate ....
+        // Initiate ......................
         // ================================
         $redirectUrl = null;
         if ($request->getHeader('Referer') != null) {
@@ -300,7 +275,6 @@ class VInvoiceController extends AbstractActionController
                 ->getUri();
         }
         
-        // get company
         $entity = new FinVendorInvoice();
         $entity->setIsActive(1);
         
@@ -318,6 +292,7 @@ class VInvoiceController extends AbstractActionController
         if ($default_wh !== null) {
             $entity->setWarehouse($default_wh);
         }
+        $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
         
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
@@ -506,7 +481,7 @@ class VInvoiceController extends AbstractActionController
                     
                     if ($exchangeRate != 0) {
                         if (! is_numeric($exchangeRate)) {
-                            $errors[] = 'FX rate is not valid. It must be a number.';
+                            $errors[] = $nmtPlugin->translate('FX rate is not valid. It must be a number.');
                         } else {
                             if ($exchangeRate <= 0) {
                                 $errors[] = 'FX rate must be greate than 0!';
@@ -525,25 +500,25 @@ class VInvoiceController extends AbstractActionController
                     }
                 }
             } else {
-                $errors[] = 'Currency can\'t be empty. Please select a Currency!';
+                $errors[] = $nmtPlugin->translate('Currency can\'t be empty. Please select a Currency!');
             }
             
             $validator = new Date();
             
             if ($invoiceNo == null) {
-                $errors[] = 'Please enter Invoice Number!';
+                $errors[] = $nmtPlugin->translate('Please enter Invoice Number!');
             } else {
                 $entity->setInvoiceNo($invoiceNo);
             }
             
             if (! $validator->isValid($invoiceDate)) {
-                $errors[] = 'Invoice Date is not correct or empty!';
+                $errors[] = $nmtPlugin->translate('Invoice Date is not correct or empty!');
             } else {
                 $entity->setInvoiceDate(new \DateTime($invoiceDate));
             }
             
             if (! $validator->isValid($postingDate)) {
-                $errors[] = 'Posting Date is not correct or empty!';
+                $errors[] = $nmtPlugin->translate('Posting Date is not correct or empty!');
             } else {
                 
                 $entity->setPostingDate(new \DateTime($postingDate));
@@ -561,7 +536,7 @@ class VInvoiceController extends AbstractActionController
             }
             
             if (! $validator->isValid($grDate)) {
-                $errors[] = 'Good receipt Date is not correct or empty!';
+                $errors[] = $nmtPlugin->translate('Good receipt Date is not correct or empty!');
             } else {
                 
                 // check if posting period is close
@@ -587,7 +562,7 @@ class VInvoiceController extends AbstractActionController
             if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
                 $entity->setWarehouse($warehouse);
             } else {
-                $errors[] = 'Warehouse can\'t be empty. Please select a warehouse!';
+                $errors[] = $nmtPlugin->translate('Warehouse can\'t be empty. Please select a warehouse!');
             }
             
             $entity->setRemarks($remarks);
@@ -617,7 +592,7 @@ class VInvoiceController extends AbstractActionController
             $oldEntity = clone ($entity);
             
             // Assign doc number
-            if($entity->getSysNumber()==\Application\Model\Constants::SYS_NUMBER_UNASSIGNED){
+            if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
                 $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
             }
             
@@ -678,7 +653,7 @@ class VInvoiceController extends AbstractActionController
                  * create procure good receipt, if has PR or PO.
                  * ============================
                  */
-                if (!$r->getPrRow()==null OR !$r->getPoRow()==null) {
+                if (! $r->getPrRow() == null or ! $r->getPoRow() == null) {
                     $criteria = array(
                         'isActive' => 1,
                         'apInvoiceRow' => $r
@@ -790,9 +765,17 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->flush();
             
             /**
+             * @ update relevant PR & PO
+             */
+            
+            /**
              *
              * @todo Create Entry Journal
+             * 
              */
+            
+            
+           
             
             // LOGGING
             /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -1364,7 +1347,7 @@ class VInvoiceController extends AbstractActionController
                 $entity->setWarehouse($warehouse);
             } else {
                 // check later
-                //$errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
+                // $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
             }
             
             $entity->setRemarks($remarks);
@@ -1383,7 +1366,7 @@ class VInvoiceController extends AbstractActionController
             // Saving into Database..........
             // ++++++++++++++++++++++++++++++
             
-            //$entity->setSysNumber($nmtPlugin->getDocNumber($entity));
+            // $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
             $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
             
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(

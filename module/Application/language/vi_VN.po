@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-20 21:56+0700\n"
-"PO-Revision-Date: 2018-06-20 21:57+0700\n"
+"POT-Creation-Date: 2018-06-22 08:53+0700\n"
+"PO-Revision-Date: 2018-06-22 08:57+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -175,7 +175,38 @@ msgstr ""
 msgid "System Information"
 msgstr "Thông tin hệ thống"
 
-#: Finance/src/Finance/Controller/VInvoiceController.php:472
+#: Finance/src/Finance/Controller/VInvoiceController.php:103
+msgid "Vendor can't be empty. Please select a vendor!"
+msgstr "Nhà cung cấp không hợp lệ. Vui lòng nhập nhà cung cấp!"
+
+#: Finance/src/Finance/Controller/VInvoiceController.php:110
+msgid "Company currency can't be defined!"
+msgstr ""
+
+#: Finance/src/Finance/Controller/VInvoiceController.php:133
+msgid "Foreign exchange rate is not valid. It must be a number."
+msgstr "Tỷ giá không hợp lệ."
+
+#: Finance/src/Finance/Controller/VInvoiceController.php:136
+msgid "Foreign exchange rate must be greate than 0!"
+msgstr ""
+
+#: Finance/src/Finance/Controller/VInvoiceController.php:153
+msgid "Currency can't be empty. Please select a Currency!"
+msgstr "Đơn vị tiền không hợp lệ. Vui lòng nhập Đơn vị tiền tệ!"
+
+#: Finance/src/Finance/Controller/VInvoiceController.php:161
+#, fuzzy
+#| msgid "Good receipt Date is not valid!"
+msgid "Invoice Date is not valid"
+msgstr "Ngày nhận hàng không hợp lệ!"
+
+#: Finance/src/Finance/Controller/VInvoiceController.php:191
+msgid "Good receipt Date is not valid!"
+msgstr "Ngày nhận hàng không hợp lệ!"
+
+#: Finance/src/Finance/Controller/VInvoiceController.php:413
+#: Finance/src/Finance/Controller/VInvoiceController.php:834
 msgid "Document is incomplete!"
 msgstr "Chứng từ chưa hoàn thiện!"
 
@@ -822,6 +853,15 @@ msgstr ""
 #: Finance/view/finance/v-invoice/edit.phtml:3
 msgid "AP Invoice: "
 msgstr ""
+
+#: Finance/view/finance/v-invoice/add.phtml:55
+#: Finance/view/finance/v-invoice/copy-from-po.phtml:65
+#: Finance/view/finance/v-invoice/edit.phtml:49
+#: Finance/view/finance/v-invoice/show.phtml:87
+#, fuzzy
+#| msgid "Contract Number"
+msgid "Document Number"
+msgstr "Số Hợp Đồng"
 
 #: Finance/view/finance/v-invoice/review.phtml:65
 #: Finance/view/finance/v-invoice/review.phtml:326

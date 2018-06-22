@@ -1384,7 +1384,7 @@ class VInvoiceController extends AbstractActionController
             
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-            $po_rows = $res->getOpenPoAP($id, $token);
+            $po_rows = $res->getPOStatus($id, $token);
             
             if (count($po_rows > 0)) {
                 $n = 0;
@@ -1416,7 +1416,7 @@ class VInvoiceController extends AbstractActionController
                     $row_tmp->setPoRow($r);
                     $row_tmp->setPrRow($r->getPrRow());
                     $row_tmp->setItem($r->getItem());
-                    $row_tmp->setQuantity($l['open_qty']);
+                    $row_tmp->setQuantity($l['open_ap_qty']);
                     $row_tmp->setUnit($r->getUnit());
                     $row_tmp->setUnitPrice($r->getUnitPrice());
                     $row_tmp->setTaxRate($r->getTaxRate());

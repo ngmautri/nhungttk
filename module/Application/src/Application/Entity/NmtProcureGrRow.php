@@ -248,9 +248,16 @@ class NmtProcureGrRow
     /**
      * @var string
      *
-     * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
+     * @ORM\Column(name="transaction_type", type="string", length=30, nullable=true)
      */
     private $transactionType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
+     */
+    private $transactionStatus;
 
     /**
      * @var \Application\Entity\FinVendorInvoice
@@ -1144,6 +1151,30 @@ class NmtProcureGrRow
     public function getTransactionType()
     {
         return $this->transactionType;
+    }
+
+    /**
+     * Set transactionStatus
+     *
+     * @param string $transactionStatus
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionStatus
+     *
+     * @return string
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
     }
 
     /**

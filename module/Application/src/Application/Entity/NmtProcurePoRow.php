@@ -225,6 +225,13 @@ class NmtProcurePoRow
     private $workflowStatus;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
+     */
+    private $transactionStatus;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1000,6 +1007,30 @@ class NmtProcurePoRow
     public function getWorkflowStatus()
     {
         return $this->workflowStatus;
+    }
+
+    /**
+     * Set transactionStatus
+     *
+     * @param string $transactionStatus
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionStatus
+     *
+     * @return string
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
     }
 
     /**

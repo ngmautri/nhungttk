@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePo
  *
- * @ORM\Table(name="nmt_procure_po", indexes={@ORM\Index(name="nmt_procure_po_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_po_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_po_FK6_idx", columns={"payment_method"})})
+ * @ORM\Table(name="nmt_procure_po", indexes={@ORM\Index(name="nmt_procure_po_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_po_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_po_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_po_FK7_idx", columns={"token"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePoRepository")
  */
@@ -67,7 +67,7 @@ class NmtProcurePo
     /**
      * @var string
      *
-     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
      */
     private $remarks;
 
@@ -214,9 +214,16 @@ class NmtProcurePo
     /**
      * @var string
      *
-     * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
+     * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
      */
     private $transactionStatus;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_type", type="smallint", nullable=true)
+     */
+    private $docType;
 
     /**
      * @var \Application\Entity\NmtBpVendor
@@ -960,6 +967,30 @@ class NmtProcurePo
     public function getTransactionStatus()
     {
         return $this->transactionStatus;
+    }
+
+    /**
+     * Set docType
+     *
+     * @param integer $docType
+     *
+     * @return NmtProcurePo
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+
+        return $this;
+    }
+
+    /**
+     * Get docType
+     *
+     * @return integer
+     */
+    public function getDocType()
+    {
+        return $this->docType;
     }
 
     /**

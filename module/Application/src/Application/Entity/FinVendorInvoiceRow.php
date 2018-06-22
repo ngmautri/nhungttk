@@ -267,6 +267,13 @@ class FinVendorInvoiceRow
     private $isPosted;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
+     */
+    private $transactionStatus;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1186,6 +1193,30 @@ class FinVendorInvoiceRow
     public function getIsPosted()
     {
         return $this->isPosted;
+    }
+
+    /**
+     * Set transactionStatus
+     *
+     * @param string $transactionStatus
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionStatus
+     *
+     * @return string
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
     }
 
     /**

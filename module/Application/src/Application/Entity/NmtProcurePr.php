@@ -150,7 +150,7 @@ class NmtProcurePr
     /**
      * @var string
      *
-     * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
+     * @ORM\Column(name="transaction_status", type="string", length=30, nullable=true)
      */
     private $transactionStatus;
 

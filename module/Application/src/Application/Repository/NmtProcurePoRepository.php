@@ -476,21 +476,26 @@ GROUP BY nmt_procure_po_row.id
                         $po = $po_row->getPo();
                     }
                     
+                    if($po_row->getIsActive()==0){
+                        $po_row->setTransactionStatus(\Application\Model\Constants::TRANSACTION_STATUS_CLOSED);
+                        continue;
+                    }
+                    
                     // close row
                     if ($r['confirmed_gr_balance'] == 0 and $r['confirmed_ap_balance'] == 0) {
-                        $po_row->setCurrentState(\Application\Model\Constants::TRANSACTION_STATUS_COMPLETED);
+                        $po_row->setTransactionStatus(\Application\Model\Constants::TRANSACTION_STATUS_COMPLETED);
                     } else {
                         $completed = false;
-                        $po_row->setCurrentState(\Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED);
+                        $po_row->setTransactionStatus(\Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED);
                     }
                     
                     $this->_em->persist($po_row);
                 }
                 
                 if ($completed == true) {
-                    $po->setCurrentState(\Application\Model\Constants::TRANSACTION_STATUS_COMPLETED);
+                    $po->setTransactionStatus(\Application\Model\Constants::TRANSACTION_STATUS_COMPLETED);
                 } else {
-                    $po->setCurrentState(\Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED);
+                    $po->setTransactionStatus(\Application\Model\Constants::TRANSACTION_STATUS_UNCOMPLETED);
                 }
                 $this->_em->persist($po);
                 $this->_em->flush();

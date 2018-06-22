@@ -132,6 +132,7 @@ else:
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>Status</b></td>
 			<td><b>Ref.No.</b></td>
 				<td><b>Vendor</b></td>
 			<td><b>Contract No</b></td>
@@ -162,7 +163,7 @@ else:
 			<td>
 				<?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?>
 			</td>
-			
+			<td><?php echo $a->getTransactionStatus();?></td>
 			<td>
 <a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
 			</td>

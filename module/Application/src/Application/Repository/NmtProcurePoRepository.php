@@ -651,8 +651,11 @@ where nmt_procure_gr_row.po_row_id=%s
         $sql = " 
 SELECT
     nmt_procure_gr.*,
-    count(nmt_procure_gr_row.id) as total_row
-   FROM nmt_procure_gr
+    Count(nmt_procure_gr_row.id) as total_row,
+  	COUNT(CASE WHEN nmt_procure_gr_row.is_active =1 THEN (nmt_procure_gr_row.id) ELSE NULL END) AS active_row,
+    ifnull(MAX(CASE WHEN nmt_procure_gr_row.is_active =1 THEN (nmt_procure_gr_row.row_number) ELSE null END),0) AS max_row_number
+
+FROM nmt_procure_gr
 LEFT JOIN nmt_procure_gr_row
 ON nmt_procure_gr_row.gr_id = nmt_procure_gr.id
 WHERE 1
@@ -665,16 +668,11 @@ WHERE 1
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureGr', 'nmt_procure_gr');
             $rsm->addScalarResult("total_row", "total_row");
             
-            /*
-             * $rsm->addScalarResult("active_row", "active_row");
-             * $rsm->addScalarResult("total_row", "total_row");
-             * $rsm->addScalarResult("max_row_number", "max_row_number");
-             * $rsm->addScalarResult("net_amount", "net_amount");
-             * $rsm->addScalarResult("tax_amount", "tax_amount");
-             * $rsm->addScalarResult("gross_amount", "gross_amount");
-             * $rsm->addScalarResult("billed_amount", "billed_amount");
-             */
             
+             $rsm->addScalarResult("active_row", "active_row");
+             $rsm->addScalarResult("total_row", "total_row");
+             $rsm->addScalarResult("max_row_number", "max_row_number");
+             
             // echo $sql;
             
             $query = $this->_em->createNativeQuery($sql, $rsm);

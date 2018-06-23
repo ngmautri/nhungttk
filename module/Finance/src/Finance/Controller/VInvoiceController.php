@@ -21,12 +21,12 @@ use Application\Entity\FinVendorInvoiceRowTmp;
 class VInvoiceController extends AbstractActionController
 {
 
-    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
+    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     protected $doctrineEM;
 
     /**
-     * adding new vendor invoce
+     * Adding new vendor invoce
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
@@ -75,6 +75,10 @@ class VInvoiceController extends AbstractActionController
             $isActive = (int) $request->getPost('isActive');
             $remarks = $request->getPost('remarks');
             
+            
+            
+            
+            $entity = new FinVendorInvoice();
             if ($isActive !== 1) {
                 $isActive = 0;
             }
@@ -82,13 +86,15 @@ class VInvoiceController extends AbstractActionController
             if ($sapDoc == "") {
                 $sapDoc = "N/A";
             }
-            
-            $entity = new FinVendorInvoice();
+            $entity->setSapDoc($sapDoc);
             
             $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setIsActive($isActive);
             $entity->setCurrentState($currentState);
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            
+            // will check later.
+            $entity->setInvoiceNo($invoiceNo);
             
             $vendor = null;
             if ($vendor_id > 0) {
@@ -1417,6 +1423,7 @@ class VInvoiceController extends AbstractActionController
                     $row_tmp->setPrRow($r->getPrRow());
                     $row_tmp->setItem($r->getItem());
                     $row_tmp->setQuantity($l['open_ap_qty']);
+                
                     $row_tmp->setUnit($r->getUnit());
                     $row_tmp->setUnitPrice($r->getUnitPrice());
                     $row_tmp->setTaxRate($r->getTaxRate());

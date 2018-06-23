@@ -232,11 +232,11 @@ class NmtProcureGr
     private $transactionStatus;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(name="nmt_procure_grcol", type="string", length=45, nullable=true)
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
      */
-    private $nmtProcureGrcol;
+    private $isPosted;
 
     /**
      * @var \Application\Entity\NmtBpVendor
@@ -1021,27 +1021,27 @@ class NmtProcureGr
     }
 
     /**
-     * Set nmtProcureGrcol
+     * Set isPosted
      *
-     * @param string $nmtProcureGrcol
+     * @param boolean $isPosted
      *
      * @return NmtProcureGr
      */
-    public function setNmtProcureGrcol($nmtProcureGrcol)
+    public function setIsPosted($isPosted)
     {
-        $this->nmtProcureGrcol = $nmtProcureGrcol;
+        $this->isPosted = $isPosted;
 
         return $this;
     }
 
     /**
-     * Get nmtProcureGrcol
+     * Get isPosted
      *
-     * @return string
+     * @return boolean
      */
-    public function getNmtProcureGrcol()
+    public function getIsPosted()
     {
-        return $this->nmtProcureGrcol;
+        return $this->isPosted;
     }
 
     /**

@@ -164,7 +164,7 @@ else:
 				<?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?>
 			</td>
 			<td>
-<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/gr/copy-from-po1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
+<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/gr/review?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
 			</td>
 						<td><?php echo $a->getDocStatus();?></td>
 	

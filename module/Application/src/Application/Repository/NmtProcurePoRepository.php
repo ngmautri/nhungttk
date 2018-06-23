@@ -358,6 +358,80 @@ WHERE nmt_procure_po_row.po_id=%s";
         }
     }
 
+
+    /**
+     *
+     * @param int $id
+     * @param string $token
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     */
+    public function getGRStatus($id, $token)
+    {
+        $sql1 = "
+SELECT
+    nmt_procure_gr_row.id AS gr_row_id,
+	IFNULL(SUM(CASE WHEN fin_vendor_invoice_row.is_draft=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS draft_ap_qty,
+    IFNULL(SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS posted_ap_qty,
+    IFNULL(nmt_procure_gr_row.quantity-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END),0) AS confirmed_ap_balance,
+    nmt_procure_gr_row.quantity-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END)-SUM(CASE WHEN fin_vendor_invoice_row.is_draft=0 AND fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.quantity ELSE 0 END) AS open_ap_qty,
+    ifnull(SUM(CASE WHEN fin_vendor_invoice_row.is_posted=1 THEN  fin_vendor_invoice_row.net_amount ELSE 0 END),0)AS billed_amount
+            
+FROM nmt_procure_gr_row
+            
+LEFT JOIN fin_vendor_invoice_row
+ON fin_vendor_invoice_row.gr_row_id =  nmt_procure_gr_row.id
+            
+WHERE nmt_procure_gr_row.gr_id=%s
+GROUP BY nmt_procure_gr_row.id
+";
+        
+        $sql2 = "";
+        
+        $sql = "
+SELECT
+*
+FROM nmt_procure_gr_row
+            
+LEFT JOIN
+(%s)
+AS fin_vendor_invoice_row
+ON fin_vendor_invoice_row.gr_row_id = nmt_procure_gr_row.id
+            
+WHERE nmt_procure_gr_row.gr_id=%s";
+        
+        /**@todo To add Return and Credit Memo */
+        
+        $sql1 = sprintf($sql1, $id);
+       // $sql2 = sprintf($sql2, $id);
+        
+        $sql = sprintf($sql, $sql1,  $id);
+        
+        // echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
+            
+            $rsm->addScalarResult("draft_gr_qty", "draft_gr_qty");
+            $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
+            $rsm->addScalarResult("confirmed_gr_balance", "confirmed_gr_balance");
+            $rsm->addScalarResult("open_gr_qty", "open_gr_qty");
+            
+            $rsm->addScalarResult("draft_ap_qty", "draft_ap_qty");
+            $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
+            $rsm->addScalarResult("confirmed_ap_balance", "confirmed_ap_balance");
+            $rsm->addScalarResult("open_ap_qty", "open_ap_qty");
+            $rsm->addScalarResult("billed_amount", "billed_amount");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    
     /**
      *
      * @param int $id

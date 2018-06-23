@@ -36,7 +36,7 @@ class GrRowController extends AbstractActionController
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+            //return $this->redirect()->toRoute('access_denied');
         }
         
         // $pq_curPage = $_GET ["pq_curpage"];
@@ -761,6 +761,10 @@ class GrRowController extends AbstractActionController
     {
         $request = $this->getRequest();
         
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
         // $pq_curPage = $_GET ["pq_curpage"];
         // $pq_rPP = $_GET ["pq_rpp"];
         
@@ -770,35 +774,25 @@ class GrRowController extends AbstractActionController
             'id' => $target_id,
             'token' => $token
         );
-        
-        /**
-         *
-         * @todo : Change Target
-         */
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo')->findOneBy($criteria);
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGr')->findOneBy($criteria);
         
         $a_json_final = array();
         $a_json = array();
         $a_json_row = array();
         $escaper = new Escaper();
         
-        if ($target !== null) {
+        if ($target instanceof \Application\Entity\NmtProcureGr) {
             
-            $criteria = array(
-                'invoice' => $target_id,
-                'isActive' => 1
-            );
-            
-            $query = 'SELECT e FROM Application\Entity\NmtProcurePoRow e
-            WHERE e.po=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
+            $query = 'SELECT e FROM Application\Entity\NmtProcureGrRow e
+            WHERE e.gr=?1 AND e.isActive =?2 AND e.isPosted=?3 ORDER BY e.rowNumber';
             
             $list = $this->doctrineEM->createQuery($query)
-                ->setParameters(array(
+            ->setParameters(array(
                 "1" => $target,
-                "2" => 1
-            
+                "2" => 1,
+                "3" => 1
             ))
-                ->getResult();
+            ->getResult();
             
             $total_records = 0;
             if (count($list) > 0) {
@@ -807,76 +801,68 @@ class GrRowController extends AbstractActionController
                 $total_records = count($list);
                 foreach ($list as $a) {
                     
-                    /** @var \Application\Entity\NmtProcurePoRow $a ;*/
+                    /** @var \Application\Entity\NmtProcureGrRow $a ;*/
                     
-                    $a_json_row["row_identifer"] = $a->getRowIdentifer();
                     $a_json_row["row_id"] = $a->getId();
                     $a_json_row["row_token"] = $a->getToken();
                     $a_json_row["row_number"] = $a->getRowNumber();
                     $a_json_row["row_unit"] = $a->getUnit();
                     $a_json_row["row_quantity"] = $a->getQuantity();
                     
-                    if ($a->getUnitPrice() !== null) {
+                    if ($a->getUnitPrice() != null) {
                         $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), 2);
                     } else {
                         $a_json_row["row_unit_price"] = 0;
                     }
                     
-                    if ($a->getNetAmount() !== null) {
+                    if ($a->getNetAmount() != null) {
                         $a_json_row["row_net"] = number_format($a->getNetAmount(), 2);
                     } else {
                         $a_json_row["row_net"] = 0;
                     }
                     
-                    if ($a->getTaxRate() !== null) {
+                    if ($a->getTaxRate() != null) {
                         $a_json_row["row_tax_rate"] = $a->getTaxRate();
                     } else {
                         $a_json_row["row_tax_rate"] = 0;
                     }
                     
-                    if ($a->getGrossAmount() !== null) {
+                    if ($a->getGrossAmount() != null) {
                         $a_json_row["row_gross"] = number_format($a->getGrossAmount(), 2);
                     } else {
                         $a_json_row["row_gross"] = 0;
                     }
                     
                     $a_json_row["pr_number"] = "";
-                    if ($a->getPrRow() !== null) {
-                        if ($a->getPrRow()->getPr() !== null) {
+                    if ($a->getPrRow() != null) {
+                        if ($a->getPrRow()->getPr() != null) {
                             
                             $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
-                                ->getPr()
-                                ->getToken() . '&entity_id=' . $a->getPrRow()
-                                ->getPr()
-                                ->getId() . '&checkum=' . $a->getPrRow()
-                                ->getPr()
-                                ->getChecksum() . '"> ... </a>';
+                            ->getPr()
+                            ->getToken() . '&entity_id=' . $a->getPrRow()
+                            ->getPr()
+                            ->getId() . '&checkum=' . $a->getPrRow()
+                            ->getPr()
+                            ->getChecksum() . '"> ... </a>';
                             
                             $a_json_row["pr_number"] = $a->getPrRow()
-                                ->getPr()
-                                ->getPrNumber() . $link;
+                            ->getPr()
+                            ->getPrNumber() . $link;
                         }
                     }
-                    
-                    // $a_json_row ["item_name"]="";
-                    /*
-                     * if( $a_json_row ["item_name"]!==null){
-                     * $a_json_row ["item_name"] = $escaper->escapeJs($a->getItem()->getItemName());
-                     * }
-                     */
                     
                     $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
-                            ->getItemName()) . "','1200',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                            ->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1200',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
                     }
                     
                     if (strlen($a->getItem()->getItemName()) < 35) {
-                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
+                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
                     } else {
-                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
+                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
                     }
                     
                     // $a_json_row["item_name"] = $a->getItem()->getItemName();

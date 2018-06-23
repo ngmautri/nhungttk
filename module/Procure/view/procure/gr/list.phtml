@@ -164,14 +164,14 @@ else:
 				<?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?>
 			</td>
 			<td>
-<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/gr/review?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
+<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/gr/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
 			</td>
 						<td><?php echo $a->getDocStatus();?></td>
 	
 <td><span style="color: gray;"><?php if($a->getGrDate()!==null):echo date_format($a->getGrDate(),"d-m-Y");   endif;?></span></td>
 				<td><?php echo $a->getIsDraft();?></td>
 				<td>
-<a href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>			
+<a href="<?php echo $this->baseUrl ?>/procure/gr/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>			
 			</td>
 			<td><?php echo $a->getCurrentState()?></td>
 			<td></td>

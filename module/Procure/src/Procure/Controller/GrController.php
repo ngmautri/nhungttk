@@ -27,6 +27,57 @@ class GrController extends AbstractActionController
     protected $doctrineEM;
 
     /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function showAction()
+    {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        
+        $request = $this->getRequest();
+        
+        if ($request->getHeader('Referer') == null) {
+            // return $this->redirect()->toRoute('access_denied');
+        } else {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
+        }
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $gr = $res->getGr($id, $token);
+        
+        if ($gr == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($gr[0] instanceof NmtProcureGr) {
+            $entity = $gr[0];
+        }
+        
+        if (! $entity == null) {
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'entity' => $entity,
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'total_row' => $gr['total_row'],
+                'active_row' => $gr['active_row'],
+                'max_row_number' => $gr['total_row']
+            ));
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+    }
+
+    /**
      * Make GR from PO
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -79,7 +130,6 @@ class GrController extends AbstractActionController
                 ));
             }
             
-             
             $currentState = $request->getPost('currentState');
             $warehouse_id = (int) $request->getPost('target_wh_id');
             
@@ -210,8 +260,8 @@ class GrController extends AbstractActionController
                     $row_tmp->setPrRow($r->getPrRow());
                     $row_tmp->setItem($r->getItem());
                     
-                    $row_tmp->setQuantity($l['open_gr_qty']);                    
-                     
+                    $row_tmp->setQuantity($l['open_gr_qty']);
+                    
                     $row_tmp->setUnit($r->getUnit());
                     $row_tmp->setUnitPrice($r->getUnitPrice());
                     $row_tmp->setTaxRate($r->getTaxRate());
@@ -415,7 +465,6 @@ class GrController extends AbstractActionController
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         
-        
         // Do Posting .................
         // ============================
         if ($request->isPost()) {
@@ -425,7 +474,7 @@ class GrController extends AbstractActionController
             $id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
             
-              $gr = $res->getGr($id, $token);
+            $gr = $res->getGr($id, $token);
             
             if ($gr == null) {
                 return $this->redirect()->toRoute('access_denied');
@@ -437,9 +486,287 @@ class GrController extends AbstractActionController
                 $entity = $gr[0];
                 $oldEntity = clone ($entity);
                 
-                // 1. change header
-                // 2. change line
-                // 3. create Stock GR.
+                $grDate = $request->getPost('grDate');
+                $currentState = $request->getPost('currentState');
+                $vendor_id = (int) $request->getPost('vendor_id');
+                $currency_id = (int) $request->getPost('currency_id');
+                
+                $warehouse_id = (int) $request->getPost('target_wh_id');
+                $exchangeRate = (double) $request->getPost('exchangeRate');
+                
+                $isActive = (int) $request->getPost('isActive');
+                $remarks = $request->getPost('remarks');
+                
+                if ($isActive != 1) {
+                    $isActive = 0;
+                }
+                
+                $entity->setIsActive($isActive);
+                $entity->setCurrentState($currentState);
+                
+                $vendor = null;
+                if ($vendor_id > 0) {
+                    /** @var \Application\Entity\NmtBpVendor $vendor ; */
+                    $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
+                }
+                
+                if ($vendor instanceof \Application\Entity\NmtBpVendor) {
+                    $entity->setVendor($vendor);
+                    $entity->setVendorName($vendor->getVendorName());
+                } else {
+                    $errors[] = $nmtPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
+                }
+                
+                /**
+                 * Check default currency
+                 */
+                if (! $default_cur instanceof \Application\Entity\NmtApplicationCurrency) {
+                    $errors[] = 'Company currency can\'t be defined!';
+                }
+                
+                $currency = null;
+                if ($currency_id > 0) {
+                    /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
+                    $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+                }
+                
+                // check if posting period is close
+                /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                
+                if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
+                    $entity->setCurrency($currency);
+                    $entity->setCurrencyIso3($currency->getCurrency());
+                    
+                    if ($currency == $default_cur) {
+                        $entity->setExchangeRate(1);
+                    } else {
+                        
+                        if ($exchangeRate != 0) {
+                            if (! is_numeric($exchangeRate)) {
+                                $errors[] = $nmtPlugin->translate('FX rate is not valid. It must be a number.');
+                            } else {
+                                if ($exchangeRate <= 0) {
+                                    $errors[] = $nmtPlugin->translate('FX rate must be greate than 0!');
+                                }
+                                $entity->setExchangeRate($exchangeRate);
+                            }
+                        } else {
+                            // get default exchange rate.
+                            /** @var \Application\Entity\FinFx $lastest_fx */
+                            $lastest_fx = $p->getLatestFX($currency_id, $default_cur->getId());
+                            if ($lastest_fx instanceof \Application\Entity\FinFx) {
+                                $entity->setExchangeRate($lastest_fx->getFxRate());
+                            } else {
+                                $errors[] = sprintf('FX rate for %s not definded yet!', $currency->getCurrency());
+                            }
+                        }
+                    }
+                } else {
+                    $errors[] = $nmtPlugin->translate('Currency can\'t be empty. Please select a Currency!');
+                }
+                
+                $validator = new Date();
+                
+                if (! $validator->isValid($grDate)) {
+                    $errors[] = $nmtPlugin->translate('Goods receipt Date is not correct or empty!');
+                } else {
+                    
+                    // check if posting period is close
+                    /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                    $res = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+                    
+                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                    $postingPeriod = $res->getPostingPeriod(new \DateTime($grDate));
+                    
+                    if ($postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                        if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                            $errors[] = sprintf('Period "%s" is closed', $postingPeriod->getPeriodName());
+                        } else {
+                            $entity->setGrDate(new \DateTime($grDate));
+                        }
+                    } else {
+                        $errors[] = sprintf('Period for GR Date "%s" is not created yet', $grDate);
+                    }
+                }
+                
+                $warehouse = null;
+                if ($warehouse_id > 0) {
+                    $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+                }
+                
+                if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+                    $entity->setWarehouse($warehouse);
+                } else {
+                    $errors[] = 'Warehouse can\'t be empty. Please select a Wahrhouse!';
+                }
+                
+                $entity->setRemarks($remarks);
+                
+                // No ERROR
+                // Saving into Database..........
+                // ++++++++++++++++++++++++++++++
+                
+                $changeOn = new \DateTime();
+                $oldEntity = clone ($entity);
+                
+                // Assign doc number
+                if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+                    $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
+                }
+                
+                $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+                $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
+                $this->doctrineEM->persist($entity);
+                $this->doctrineEM->flush();
+                
+                $criteria = array(
+                    'isActive' => 1,
+                    'gr' => $entity
+                );
+                $ap_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
+                
+                $n = 0;
+                foreach ($ap_rows as $r) {
+                    
+                    /** @var \Application\Entity\NmtProcureGrRow $r ; */
+                    
+                    // ignore row with 0 quantity
+                    if ($r->getQuantity() == 0) {
+                        $r->setIsActive(0);
+                        continue;
+                    }
+                    
+                    $createdOn = new \DateTime();
+                    
+                    $netAmount = $r->getQuantity() * $r->getUnitPrice();
+                    $taxAmount = $netAmount * $r->getTaxRate() / 100;
+                    $grossAmount = $netAmount + $taxAmount;
+                    
+                    // UPDATE status
+                    $n ++;
+                    $r->setIsPosted(1);
+                    $r->setIsDraft(0);
+                    
+                    $r->setNetAmount($netAmount);
+                    $r->setTaxAmount($taxAmount);
+                    $r->setGrossAmount($grossAmount);
+                    
+                    $r->setDocStatus($entity->getDocStatus());
+                    $r->setTransactionType($entity->getTransactionType());
+                    $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
+                    $r->setRowNumber($n);
+                    $this->doctrineEM->persist($r);
+                    
+                    /**
+                     * create procure good receipt.
+                     * only for item controlled inventory
+                     * ===================
+                     */
+                    
+                    /**
+                     *
+                     * @todo: only for item with stock control.
+                     */
+                    if ($r->getItem()->getIsStocked() == 0) {
+                        // continue;
+                    }
+                    
+                    $criteria = array(
+                        'isActive' => 1,
+                        'grRow' => $r
+                    );
+                    $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+                    
+                    if ($stock_gr_entity_ck instanceof \Application\Entity\NmtInventoryTrx) {
+                        $stock_gr_entity = $stock_gr_entity_ck;
+                    } else {
+                        $stock_gr_entity = new NmtInventoryTrx();
+                    }
+                    
+                    $stock_gr_entity->setIsActive(1);
+                    $stock_gr_entity->setTrxDate($entity->getGrDate());
+                    
+                    $stock_gr_entity->setGr($entity);
+                    $stock_gr_entity->setGrRow($r);
+                    
+                    $stock_gr_entity->setItem($r->getItem());
+                    
+                    $stock_gr_entity->setPrRow($r->getPrRow());
+                    $stock_gr_entity->setPoRow($r->getPoRow());
+                    
+                    $stock_gr_entity->setIsDraft($r->getIsDraft());
+                    $stock_gr_entity->setIsPosted($r->getIsPosted());
+                    $stock_gr_entity->setDocStatus($r->getDocStatus());
+                    $stock_gr_entity->setTransactionType($entity->getTransactionType());
+                    
+                    $stock_gr_entity->setSourceClass(get_class($r));
+                    $stock_gr_entity->setSourceId($r->getId());
+                    
+                    $stock_gr_entity->setTransactionType($r->getTransactionType());
+                    $stock_gr_entity->setCurrentState($entity->getCurrentState());
+                    
+                    $stock_gr_entity->setVendor($entity->getVendor());
+                    $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
+                    
+                    $stock_gr_entity->setQuantity($r->getQuantity());
+                    $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
+                    $stock_gr_entity->setVendorItemUnit($r->getUnit());
+                    $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
+                    $stock_gr_entity->setTrxDate($entity->getGrDate());
+                    $stock_gr_entity->setCurrency($entity->getCurrency());
+                    $stock_gr_entity->setTaxRate($r->getTaxRate());
+                    
+                    $stock_gr_entity->setRemarks('GR Row' . $r->getRowIdentifer());
+                    $stock_gr_entity->setWh($entity->getWarehouse());
+                    $stock_gr_entity->setCreatedBy($u);
+                    $stock_gr_entity->setCreatedOn($createdOn);
+                    $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $this->doctrineEM->persist($stock_gr_entity);
+                }
+                
+                $this->doctrineEM->flush();
+                
+                /**
+                 * @ update relevant PR & PO
+                 */
+                
+                /**
+                 *
+                 * @todo Create Entry Journal
+                 * debit: 
+                 * credit: other payables.
+                 *      
+                 */
+                
+                // LOGGING
+                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+                $nmtPlugin = $this->Nmtplugin();
+                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+                
+                $m = sprintf('[OK] GR #%s - %s posted.', $entity->getId(), $entity->getSysNumber());
+                
+                // Trigger Change Log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+                
+                $this->flashMessenger()->addMessage($m);
+                // $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+                $redirectUrl = "/procure/gr/list";
+                return $this->redirect()->toUrl($redirectUrl);
             }
         }
         
@@ -489,10 +816,10 @@ class GrController extends AbstractActionController
                 'currency_list' => $currency_list,
                 'total_row' => $gr['total_row'],
                 'active_row' => $gr['active_row'],
-                'max_row_number' => $gr['total_row'],
+                'max_row_number' => $gr['total_row']
             ));
         } else {
-           // return $this->redirect()->toRoute('access_denied');
+            // return $this->redirect()->toRoute('access_denied');
         }
     }
 
@@ -831,7 +1158,6 @@ class GrController extends AbstractActionController
 
     /**
      *
-     * @deprecated
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function add1Action()

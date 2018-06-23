@@ -239,6 +239,13 @@ class NmtProcureGr
     private $isPosted;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_type", type="string", length=30, nullable=true)
+     */
+    private $transactionType;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1042,6 +1049,30 @@ class NmtProcureGr
     public function getIsPosted()
     {
         return $this->isPosted;
+    }
+
+    /**
+     * Set transactionType
+     *
+     * @param string $transactionType
+     *
+     * @return NmtProcureGr
+     */
+    public function setTransactionType($transactionType)
+    {
+        $this->transactionType = $transactionType;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionType
+     *
+     * @return string
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
     }
 
     /**

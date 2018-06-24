@@ -1687,7 +1687,7 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
-            // COPY open PO Row to AP Row
+            // COPY open GR Row to AP Row
             
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
@@ -1720,7 +1720,7 @@ class VInvoiceController extends AbstractActionController
                     // $row_tmp->setRowIndentifer($entity->getSysNumber() . "-$n");
                     
                     $row_tmp->setCurrentState("DRAFT");
-                    $row_tmp->setPoRow($r);
+                    $row_tmp->setGrRowId($r);
                     $row_tmp->setPrRow($r->getPrRow());
                     $row_tmp->setItem($r->getItem());
                     $row_tmp->setQuantity($l['open_ap_qty']);

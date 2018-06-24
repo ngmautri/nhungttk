@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="mla_users", uniqueConstraints={@ORM\UniqueConstraint(name="CT_users_1", columns={"email"})}, indexes={@ORM\Index(name="mla_users_FK1_idx", columns={"company_id"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\MlaUsersRepository")
  */
 class MlaUsers
 {

@@ -1295,6 +1295,11 @@ class VInvoiceController extends AbstractActionController
                 }
             }
             
+            // check if posting period is close
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+            
+            
             // check one more time
             if (! $postingDate == null) {
                 if (! $validator->isValid($postingDate)) {
@@ -1634,6 +1639,11 @@ class VInvoiceController extends AbstractActionController
                 }
             }
             
+            // check if posting period is close
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+            
+            
             // check one more time
             if (! $postingDate == null) {
                 if (! $validator->isValid($postingDate)) {
@@ -1720,7 +1730,7 @@ class VInvoiceController extends AbstractActionController
                     // $row_tmp->setRowIndentifer($entity->getSysNumber() . "-$n");
                     
                     $row_tmp->setCurrentState("DRAFT");
-                    $row_tmp->setGrRowId($r);
+                    $row_tmp->setGrRow($r);
                     $row_tmp->setPrRow($r->getPrRow());
                     $row_tmp->setItem($r->getItem());
                     $row_tmp->setQuantity($l['open_ap_qty']);

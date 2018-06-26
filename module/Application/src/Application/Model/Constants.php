@@ -86,6 +86,9 @@ class Constants
     const TRANSACTION_TYPE_SALE = 'sale';
 
     const TRANSACTION_TYPE_SALE_RETURN = 'sale-returned';
+    
+    
+    
 
     // =====================
     const ITEM_WITH_SERIAL_NO = 'SN';

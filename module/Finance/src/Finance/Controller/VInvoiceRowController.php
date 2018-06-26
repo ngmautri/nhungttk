@@ -1117,6 +1117,9 @@ class VInvoiceRowController extends AbstractActionController
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $header, "RowNo.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Remarks");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Item.No.");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "SKU1");
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $header, "SKU1");
+                
                 
                 foreach ($rows as $r) {
                     
@@ -1170,12 +1173,17 @@ class VInvoiceRowController extends AbstractActionController
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getItem()
                         ->getSysNumber());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()
+                        ->getItemSku1());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $l, $a->getItem()
+                        ->getItemSku1());
+                    
                 }
                 
                 // Rename worksheet
                 $objPHPExcel->getActiveSheet()->setTitle("invoice");
                 
-                $objPHPExcel->getActiveSheet()->setAutoFilter("A" . $header . ":R" . $header);
+                $objPHPExcel->getActiveSheet()->setAutoFilter("A" . $header . ":T" . $header);
                 
                 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
                 $objPHPExcel->setActiveSheetIndex(0);

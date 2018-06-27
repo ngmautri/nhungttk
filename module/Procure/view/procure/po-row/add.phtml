@@ -205,6 +205,13 @@ if (count ( $errors ) > 0) {
 				name="pr_item_name" value=""> 
 			<input type="hidden" id="pr_row_id"
 				placeholder="" name="pr_row_id" value="">
+				
+				<div id="pr_row_url" style="display: none;"></div>
+
+									<div id="pr_row_detail" style="display: none;">
+										&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
+											onclick="showSelectedPrRow();">Detail </a> <br>&nbsp;
+									</div>
 		</div>
 
 		<div class="col-sm-3">
@@ -231,6 +238,13 @@ if (count ( $errors ) > 0) {
         
         	<input type="hidden" id="item_id" placeholder="" name="item_id"
         		value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
+        		
+        		<div id="item_url" style="display: none;"></div>
+
+									<div id="item_detail" style="display: none;">
+										&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
+											onclick="showSelectedItem();">Detail </a> <br>&nbsp;
+									</div>
         </div>
         <div class="col-sm-3">
         	<a style="color: #0080ff;" href="javascript:;"
@@ -366,11 +380,20 @@ if (count ( $errors ) > 0) {
             $( "#quantity" ).val(ui.item.row_quantity);
             $( "#item_id" ).val(ui.item.item_id);
             $( "#item_name" ).val(ui.item.item_name);
+
+            $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
+            $('#pr_row_url').text('/procure/pr-row/show1?entity_id='+ui.item.pr_row_id+'&token='+ui.item.token);
+       
                         
              //alert(ui.item.item_id);
             $('#global-notice').show();
             $('#global-notice').html('"' + ui.item.item_name + '" selected');
             $('#global-notice').fadeOut(5000);
+
+        	$('#item_detail').show();
+         	$('#pr_row_detail').show();            
+         	$( "#quantity" ).focus();
+  
         }
         })
         .autocomplete( "instance" )._renderItem = function( ul, item ) {
@@ -391,11 +414,18 @@ if (count ( $errors ) > 0) {
         minLength: 2,
         select: function( event, ui ) {
       	  $( "#item_id" ).val(ui.item.id);
+
+          $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.id+'&token='+ui.item.token);
+          
         
       	 	$('#global-notice').show();
       		$('#global-notice').html('"' + ui.item.value + '" selected');
       		$('#global-notice').fadeOut(5000);
       		//$("#jquery_dialog").dialog("close");
+
+       	  	$('#item_detail').show();
+        	$( "#quantity" ).focus();
+    
         }
        
       })
@@ -450,5 +480,15 @@ if (count ( $errors ) > 0) {
         };
           ;
      } );
+
+    function showSelectedItem(){
+		var url= $('#item_url').text(); 
+	   	showJqueryDialog('Item Detail','1350',$(window).height()-40, url,'j_loaded_data', true);
+	}
+
+    function showSelectedPrRow(){
+		var url= $('#pr_row_url').text();
+	   	showJqueryDialog('PR Row Detail','1350',$(window).height()-40, url,'j_loaded_data', true);
+	}
 
  </script>

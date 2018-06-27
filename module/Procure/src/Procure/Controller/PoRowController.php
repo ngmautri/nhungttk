@@ -273,12 +273,14 @@ class PoRowController extends AbstractActionController
         $redirectUrl = Null;
         
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        
-        $redirectUrl = $this->getRequest()
+            //return $this->redirect()->toRoute('access_denied');
+        }else{
+            $redirectUrl = $this->getRequest()
             ->getHeader('Referer')
             ->getUri();
+        }
+        
+        
         
         $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');

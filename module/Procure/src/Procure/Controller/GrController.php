@@ -32,10 +32,7 @@ class GrController extends AbstractActionController
      */
     public function showAction()
     {
-        
-        //$this->layout("Procure/layout-fluid-1");
-        
-        
+         
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
@@ -147,6 +144,9 @@ class GrController extends AbstractActionController
             
             $entity = new NmtProcureGr();
             
+            //unchangeable.
+            $entity->setDocType(\Application\Model\Constants::PROCURE_DOC_TYPE_GR);
+            
             $entity->setIsActive($isActive);
             $entity->setCurrentState($currentState);
             
@@ -224,7 +224,7 @@ class GrController extends AbstractActionController
             $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
             
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
-            $entity->setTransactionStatus(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+            //$entity->setTransactionStatus(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setIsDraft(1);
             $entity->setIsPosted(0);
             
@@ -622,8 +622,9 @@ class GrController extends AbstractActionController
                     $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
                 }
                 
+                //set posted
                 $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-                //$entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+                
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
                 $entity->setLastchangeBy($u);
                 $entity->setLastchangeOn($changeOn);
@@ -711,6 +712,8 @@ class GrController extends AbstractActionController
                     $stock_gr_entity->setIsDraft($r->getIsDraft());
                     $stock_gr_entity->setIsPosted($r->getIsPosted());
                     $stock_gr_entity->setDocStatus($r->getDocStatus());
+                    
+                    //get from gr-row.
                     $stock_gr_entity->setTransactionType($r->getTransactionType());
                     
                     $stock_gr_entity->setSourceClass(get_class($r));

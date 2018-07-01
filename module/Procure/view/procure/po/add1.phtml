@@ -541,12 +541,15 @@ $( "#vendor_name_1" ).autocomplete({
         { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: false},
         { title: "Unit Price", dataType: "integer", dataIndx: "row_unit_price", width:90, align: 'right',editable: false},
         { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},
-        { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
+        { title: "Tax", dataType: "integer", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
         { title: "Gross", dataType: "decimal", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
 
         { title: "Receiving", dataType: "string", dataIndx: "draft_gr", width:80,editable: false },
         { title: "Received", dataType: "string", dataIndx: "confirmed_gr", width:70,editable: false },
-        { title: "Balance", dataType: "string", dataIndx: "open_gr", width:70,editable: false },
+        { title: "Balance", dataType: "integer", dataIndx: "open_gr", width:70,editable: false },
+        { title: "Billed qty", dataType: "integer", dataIndx: "billed_qty", width:70,editable: false },
+        { title: "Billed Amt", dataType: "decimal", dataIndx: "billed_amount", width:70,editable: false },
+ 		
  		{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
  	    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         

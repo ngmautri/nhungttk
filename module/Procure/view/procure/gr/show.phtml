@@ -1,7 +1,7 @@
 <?php /**@var \Application\Entity\NmtProcureGr $entity ;*/?>
 
 
-<h4><strong>Contract /PO:<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
+<h4 style="color: graytext;"><strong><?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Contract /PO</a></li>
@@ -19,23 +19,53 @@
 	
 
 	<div id="general" style="font-size: 9pt ;padding: 3px">
-		<div style="position:relative; float:right;">
-				<a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Edit</a>       		
-   <a title="<?php echo $this->translate("Download Excel File");?>" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
-
 	
-	<a title="<?php echo $this->translate("Create A/P Invoice from this P/O");?>"class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/copy-from-gr?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;A/P Invoice</a>      	
+	
+	<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
+		<div style="position:relative; float:right;">
+		<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/procure/gr/review?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
+				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate('Review & Post');?></a>
 
+					<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
+			</a>
+	
 
 <a class="btn btn-default btn-sm" href="javascript:;" onclick = "showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1550',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i class="fa fa-window-maximize" aria-hidden="true"></i>
 Full Screen</a>	
 								      	
-</div>
+</div>	<?php endif;?>
+	
+	
+	<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_POSTED): ?>
+		<div style="position: relative; float: right;">
+			<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;WH Journal
+			</a>
+
+	<a title="<?php echo $this->translate("Create A/P Invoice from this P/O");?>"class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/copy-from-gr?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+								<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;A/P Invoice</a>      	
+
+			
+					<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Goods Return
+			</a>
+					<a class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+				<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
+			</a>
+			
+
+		</div>
+		<?php endif;?>
+	
+	
+	
+
 <hr>
 		<form id="Create_Inv_Form" class="form-horizontal"
 			action="" method="post" enctype="multipart/form-data">

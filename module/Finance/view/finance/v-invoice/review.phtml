@@ -36,7 +36,7 @@ if (count($errors) > 0) {
 		<div class="row">
 			<!-- ROW-->
 
-			<div class="col-xs-5 col-md-2" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+			<div class="col-xs-5 col-md-2" 	>
 				<!-- C1 -->
   					<?php
     $current_step = "STEP3";
@@ -89,7 +89,7 @@ if (count($errors) > 0) {
 				</div>
 				<h4>
 <?php //if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
-<strong>A/P #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong>
+<h4 style="color: graytext;"><strong>A/P #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
 				</h4>
 
 				<form id="Invoice_Posting_Form" class="form-horizontal"

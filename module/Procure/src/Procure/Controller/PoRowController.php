@@ -632,7 +632,7 @@ class PoRowController extends AbstractActionController
             
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-            $list = $res->getOpenPoGr($target_id, $token);
+            $list = $res->getPOStatus($target_id, $token);
             
             $total_records = 0;
             if (count($list) > 0) {
@@ -693,13 +693,13 @@ class PoRowController extends AbstractActionController
                         }
                     }
                     
-                    $a_json_row["confirmed_gr"] = $r['confirmed_gr'];
-                    $a_json_row["draft_gr"] = $r['draft_gr'];
+                    $a_json_row["confirmed_gr"] = $r['posted_gr_qty'];
+                    $a_json_row["draft_gr"] = $r['draft_gr_qty'];
                     
                     $url = sprintf("/procure/po-row/gr-of?token=%s&entity_id=%s", $a->getToken(), $a->getId());
                     $onclick1 = sprintf("showJqueryDialog('Goods Receipt ','1200',$(window).height()-100,'%s','j_loaded_data', true);", $url);
                     $received_detail = sprintf('<a title="click for goods receipt!" style="color: #337ab7;" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', $onclick1);
-                    $a_json_row["open_gr"] = $r['open_gr'] . $received_detail;
+                    $a_json_row["open_gr"] = $r['open_gr_qty'] . $received_detail;
                     
                     $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->getItem()->getToken(), $a->getItem()->getChecksum(), $a->getItem()->getId());
                     
@@ -723,6 +723,8 @@ class PoRowController extends AbstractActionController
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
                     $a_json_row["fa_remarks"] = $a->getFaRemarks();
                     $a_json_row["remarks"] = $a->getRemarks();
+                    $a_json_row["billed_qty"] = $r['posted_ap_qty'];
+                    $a_json_row["billed_amount"] = $r['billed_amount'];
                     
                     $a_json[] = $a_json_row;
                 }

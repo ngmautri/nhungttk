@@ -246,6 +246,13 @@ class NmtProcureGr
     private $transactionType;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_type", type="smallint", nullable=true)
+     */
+    private $docType;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1073,6 +1080,30 @@ class NmtProcureGr
     public function getTransactionType()
     {
         return $this->transactionType;
+    }
+
+    /**
+     * Set docType
+     *
+     * @param integer $docType
+     *
+     * @return NmtProcureGr
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+
+        return $this;
+    }
+
+    /**
+     * Get docType
+     *
+     * @return integer
+     */
+    public function getDocType()
+    {
+        return $this->docType;
     }
 
     /**

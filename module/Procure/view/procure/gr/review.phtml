@@ -33,7 +33,7 @@ if (count($errors) > 0) {
 		<div class="row">
 			<!-- ROW-->
 
-			<div class="col-xs-5 col-md-2">
+			<div class="col-xs-5 col-md-2" style="font-size: 9pt; padding: 2px 4px 1px 5px">
 				<!-- C1 -->
   					<?php
     $current_step = "STEP3";
@@ -61,7 +61,7 @@ if (count($errors) > 0) {
 				<!-- C1 ends-->
 			</div>
 
-			<div class="col-xs-12 col-sm-6 col-md-10" style="">
+			<div class="col-xs-12 col-sm-6 col-md-10" style="font-size: 9pt; padding: 2px 5px 1px 10px">
 				<!-- C2 -->
 
 				<div style="position: relative; float: right;">
@@ -71,10 +71,7 @@ if (count($errors) > 0) {
 						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
 					<a class="btn btn-default btn-sm" href="javascript:;"
 						onclick="refreshGird();"><i class="fa fa-refresh"
-						aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a> <a
-						class="btn btn-default btn-sm"
-						href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
-						class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Edit</a>
+						aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>
 					<a class="btn btn-default btn-sm"
 						href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 						<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
@@ -83,7 +80,7 @@ if (count($errors) > 0) {
 				</div>
 				<h4>
 <?php //if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
-<strong>A/P #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong>
+<h4 style="color: gray;"><strong><?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong>
 				</h4>
 
 				<form id="Invoice_Posting_Form" class="form-horizontal"
@@ -525,7 +522,7 @@ var autoCompleteEditor = function (ui) {
 
 //var container_height = $('#main_container').height();
 //alert(container_height);
-var obj = { width: "100%", height: $(window).height()-270, showTitle : false,
+var obj = { width: "auto", height: $(window).height()-270, showTitle : false,
 		resizable:true,
 		//draggable:true,
 		sortable: true,
@@ -693,7 +690,7 @@ obj.dataModel = {
       location: "remote",
       method: "GET",
       recIndx: "row_id",
-      url: "/procure/gr-row/gird-tmp?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+      url: "/procure/gr-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
       getData: function (response) {
         return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
      }

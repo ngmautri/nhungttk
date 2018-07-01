@@ -212,22 +212,16 @@ class GrRowController extends AbstractActionController
         $response->setContent(json_encode($sent_list));
         return $response;
     }
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
     {
-        $this->layout("Procure/layout-fullscreen");
-        
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
-        
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
         
         $request = $this->getRequest();
         
@@ -382,11 +376,21 @@ class GrRowController extends AbstractActionController
                     ));
                 }
                 ;
-                // OK now
                 
-                $n = $po['total_row'] + 1;
+                
+                // NO ERROR
+                // Saving into Database..........
+                // ++++++++++++++++++++++++++++++
+                
+                
+                // Goods receipt, Invoice Not receipt
+                $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
+                $entity->setTransactionStatus(\Application\Model\Constants::PROCURE_TRANSACTION_STATUS_PENDING);
+                  
+/*                 $n = $po['total_row'] + 1;
                 $rowIdentifer = $target->getSysNumber() . "-$n";
                 $entity->setRowIdentifer($rowIdentifer);
+ */                
                 
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     'email' => $this->identity()
@@ -399,40 +403,7 @@ class GrRowController extends AbstractActionController
                 $entity->setCreatedOn(new \DateTime());
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
-                
-                /*
-                 * $gr_entity = new NmtInventoryTrx();
-                 * $gr_entity->setVendor($target->getVendor());
-                 * $gr_entity->setFlow('IN');
-                 * $gr_entity->setInvoiceRow($entity);
-                 * $gr_entity->setItem($entity->getItem());
-                 * $gr_entity->setPrRow($entity->getPrRow());
-                 * $gr_entity->setQuantity($quantity);
-                 * $gr_entity->setVendorItemCode($entity->getVendorItemCode());
-                 * $gr_entity->setVendorItemUnit($entity->getUnit());
-                 * $gr_entity->setVendorUnitPrice($entity->getUnitPrice());
-                 * $gr_entity->setTrxDate($target->getGrDate());
-                 * $gr_entity->setCurrency($target->getCurrency());
-                 * $gr_entity->setRemarks("Auto:");
-                 * $gr_entity->setWh($target->getWarehouse());
-                 * $gr_entity->setCreatedBy($u);
-                 * $gr_entity->setCreatedOn(new \DateTime());
-                 * $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                 * $gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
-                 *
-                 * $gr_entity->setTaxRate($entity->getTaxRate());
-                 *
-                 * $gr_entity->setCurrentState($target->getCurrentState());
-                 *
-                 * if ($target->getCurrentState() == "finalInvoice") {
-                 * $gr_entity->setIsActive(1);
-                 * } else {
-                 * $gr_entity->setIsActive(0);
-                 * }
-                 *
-                 * $this->doctrineEM->persist($gr_entity);
-                 * $this->doctrineEM->flush();
-                 */
+             
                 $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
                 $m = sprintf("[OK] Contract /PO Line: %s created!",  $rowIdentifer);
                 $this->flashMessenger()->addMessage($m);
@@ -442,7 +413,10 @@ class GrRowController extends AbstractActionController
             }
         }
         
-        // NO POST ==========================
+        // NO POST
+        // Initiate.....................
+        // ==============================
+        
         $redirectUrl = Null;
         
         if ($request->getHeader('Referer') == null) {
@@ -737,7 +711,7 @@ class GrRowController extends AbstractActionController
         );
         
         /** @var \Application\Entity\NmtProcurePoRow $entity ; */
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findOneBy($criteria);
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
         
         if ($entity !== null) {
             return new ViewModel(array(

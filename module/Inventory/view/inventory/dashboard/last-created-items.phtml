@@ -33,8 +33,7 @@ if (count($list) == 0) :
         ?>
 	 <tr style="font-size: 9pt;">
 				<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-				<td><a
-					href="/inventory/item/show?entity_id=<?php echo $a->getId();?>&token=<?php echo $a->getToken();?>"
+				<td><a style="color:gray href="/inventory/item/show?entity_id=<?php echo $a->getId();?>&token=<?php echo $a->getToken();?>"
 					target="_blank"><?php echo $this->escapeHtml($a->getItemName());?></a></td>
 				</td>
 			</tr>

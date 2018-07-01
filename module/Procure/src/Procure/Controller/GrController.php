@@ -252,7 +252,10 @@ class GrController extends AbstractActionController
                     $n ++;
                     $row_tmp = new NmtProcureGrRow();
                     $row_tmp->setDocStatus($entity->getDocStatus());
-                    $row_tmp->setTransactionType($entity->getTransactionStatus());
+                    
+                    // Goods receipt, Invoice Not receipt
+                    $row_tmp->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
+                    $row_tmp->setTransactionStatus(\Application\Model\Constants::PROCURE_TRANSACTION_STATUS_PENDING);
                     
                     $row_tmp->setGr($entity);
                     $row_tmp->setIsDraft(1);
@@ -620,7 +623,7 @@ class GrController extends AbstractActionController
                 }
                 
                 $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-                $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+                //$entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
                 $entity->setLastchangeBy($u);
                 $entity->setLastchangeOn($changeOn);
@@ -659,9 +662,11 @@ class GrController extends AbstractActionController
                     $r->setTaxAmount($taxAmount);
                     $r->setGrossAmount($grossAmount);
                     
-                    $r->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
+                    // transaction type is not changeable.
+                    //$r->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
+                    //$r->setTransactionType($entity->getTransactionType());
+                    
                     $r->setDocStatus($entity->getDocStatus());
-                    $r->setTransactionType($entity->getTransactionType());
                     $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
                     $r->setRowNumber($n);
                     $this->doctrineEM->persist($r);
@@ -706,7 +711,7 @@ class GrController extends AbstractActionController
                     $stock_gr_entity->setIsDraft($r->getIsDraft());
                     $stock_gr_entity->setIsPosted($r->getIsPosted());
                     $stock_gr_entity->setDocStatus($r->getDocStatus());
-                    $stock_gr_entity->setTransactionType($entity->getTransactionType());
+                    $stock_gr_entity->setTransactionType($r->getTransactionType());
                     
                     $stock_gr_entity->setSourceClass(get_class($r));
                     $stock_gr_entity->setSourceId($r->getId());

@@ -410,7 +410,7 @@ WHERE nmt_procure_gr_row.gr_id=%s";
         
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'nmt_procure_po_row');
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcureGrRow', 'nmt_procure_gr_row');
             
             $rsm->addScalarResult("draft_gr_qty", "draft_gr_qty");
             $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");

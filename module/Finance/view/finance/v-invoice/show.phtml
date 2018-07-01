@@ -20,7 +20,7 @@ if (count($errors) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
-		<li><a href="#general"><small><i class="fa fa-calculator"
+		<li><a href="#general" ><small><i class="fa fa-calculator"
 					aria-hidden="true"></i></small>&nbsp;A/P Invoice</a></li>
 		<li><a
 			href="/finance/v-invoice-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
@@ -35,7 +35,7 @@ if (count($errors) > 0) {
 	</ul>
 
 
-	<div id="general" style="font-size: 9pt">
+	<div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
 		<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
 		<div style="position: relative; float: right;">
 			<a class="btn btn-default btn-sm"

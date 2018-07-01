@@ -29,11 +29,10 @@ if (count($list) == 0) :
         ?>
 	 <tr>
 				<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-				<td><a
-					href="/inventory/item/show?entity_id=<?php echo $a->getItem()->getId();?>&token=<?php echo $a->getItem()->getToken();?>"
+				<td><a style="color:gray" href="/inventory/item/show?entity_id=<?php echo $a->getItem()->getId();?>&token=<?php echo $a->getItem()->getToken();?>"
 					target="_blank"><?php echo $this->escapeHtml($a->getItem()->getItemName());?></a></td>
 				</td>
-					<td><?php echo $a->getPr()->getPrName();?></td>
+					<td style="color:gray"><?php echo $a->getPr()->getPrName();?></td>
 				</td>
 	
 			</tr>

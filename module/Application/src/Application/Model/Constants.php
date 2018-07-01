@@ -37,10 +37,11 @@ class Constants
      */
     const PERIOD_STATUS_ARCHIVED = 'A';
 
+    const SYS_NUMBER_UNASSIGNED = '0000000';
     
     
     // ====================
-    const SYS_NUMBER_UNASSIGNED = '0000000';
+    // ACCOUNTING
     
     
     const DOC_STATUS_DRAFT = 'draft';
@@ -87,13 +88,7 @@ class Constants
 
     const TRANSACTION_TYPE_SALE_RETURN = 'sale-returned';
 
-    const TRANSACTION_TYPE_GRNI = 'G1I0';
-    const TRANSACTION_TYPE_GRIR = 'G1I1';
-    const TRANSACTION_TYPE_IRNG = 'G0I1';
-     
-    
-
-    // =====================
+      // =====================
     const ITEM_WITH_SERIAL_NO = 'SN';
 
     const ITEM_WITH_BATCH_NO = 'B';
@@ -128,18 +123,26 @@ class Constants
      * Goods receipt, Invoice Not receipt.
      * @var string
      */
-    const PROCURE_TRANSACTION_TYPE_GRNI = 'G1I0';
+    const PROCURE_TRANSACTION_TYPE_GRNI = 'GR-NI';
     
     /**
      *  Goods and Invoice receipt.
      * @var string
      */
-    const PROCURE_TRANSACTION_TYPE_GRIR = 'G1I1';
+    const PROCURE_TRANSACTION_TYPE_GRIR = 'GR-IR';
     
      /**
      *  Goods Not receipt and Invoice receipt.
      * @var string
      */
-    const PROCURE_TRANSACTION_TYPE_IRNG = 'G0I1';
+    const PROCURE_TRANSACTION_TYPE_IRNG = 'IR-NG';
+    
+    // =====================
+    
+    const PROCURE_TRANSACTION_STATUS_PENDING = 'pending';
+    const PROCURE_TRANSACTION_STATUS_CLEARED = 'cleared';
+    const PROCURE_TRANSACTION_STATUS_CLOSED = 'closed';
+    
+    
 }
 

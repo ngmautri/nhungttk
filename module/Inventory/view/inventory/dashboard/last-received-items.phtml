@@ -13,7 +13,7 @@ if (count($list) == 0) :
 	<div style="color: gray; font-size: 9pt;" id="total_received"></div>
 	<div style="color: gray; font-size: 9pt;" id="total_balance"></div>
 
-	<table  id="mytable" style="font-size: 9pt; margin-bottom: 0px; padding:0px;"
+	<table  id="mytable" style="font-size: 9pt; margin-bottom: 0px; padding:0px; style="color:gray"
 		class="table table-striped table-hover">
 		<thead>
 			<tr>
@@ -37,8 +37,7 @@ if (count($list) == 0) :
         ?>
 	 <tr style="font-size: 9pt;">
 				<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-				<td><a
-					href="/inventory/item/show?entity_id=<?php echo $a->getItem()->getId();?>&token=<?php echo $a->getItem()->getToken();?>"
+				<td><a style="color:gray" href="/inventory/item/show?entity_id=<?php echo $a->getItem()->getId();?>&token=<?php echo $a->getItem()->getToken();?>"
 					target="_blank"><?php echo $this->escapeHtml($a->getItem()->getItemName());?></a></td>
 				</td>
 				

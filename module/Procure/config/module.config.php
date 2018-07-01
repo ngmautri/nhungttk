@@ -242,6 +242,8 @@ return array(
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => array(
+            'Procure/layout-fluid-1' => __DIR__ . '/../view/layout/layout-fluid-1.phtml',
+            
             'Procure/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
             'Procure/layout-fullscreen' => __DIR__ . '/../view/layout/layout-fullscreen.phtml',
             'procure/index/index' => __DIR__ . '/../view/procure/index/index.phtml',

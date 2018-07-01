@@ -14,7 +14,6 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-<h4><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general"><small><i class="fa fa-calculator" aria-hidden="true"></i></small>&nbsp;Contract /PO</a></li>
@@ -33,7 +32,7 @@ if (count ( $errors ) > 0) {
 	</ul>
 	
 
-	<div id="general" style="font-size: 9pt">
+	<div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
 
 		<form id="Create_Inv_Form" class="form-horizontal"
 			action="" method="post" enctype="multipart/form-data">
@@ -171,6 +170,8 @@ Full Screen</a>
 				<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
 			</legend>
 			<div id="rows" class="collapse in">
+					<span><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?> // </strong></span	>
+			
 					<span class="" style="padding:3px;margin-bottom:2px; font-size: 10pt; color: gray">
 						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
                         &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>

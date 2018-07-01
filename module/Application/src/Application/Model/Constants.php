@@ -86,8 +86,11 @@ class Constants
     const TRANSACTION_TYPE_SALE = 'sale';
 
     const TRANSACTION_TYPE_SALE_RETURN = 'sale-returned';
-    
-    
+
+    const TRANSACTION_TYPE_GRNI = 'G1I0';
+    const TRANSACTION_TYPE_GRIR = 'G1I1';
+    const TRANSACTION_TYPE_IRNG = 'G0I1';
+     
     
 
     // =====================
@@ -118,5 +121,25 @@ class Constants
     const PROCURE_DOC_TYPE_CREDIT_MEMO = 150;
 
     const PROCURE_DOC_TYPE_AP_ACCRUAL = 160;
+    
+    // =====================
+    
+    /**
+     * Goods receipt, Invoice Not receipt.
+     * @var string
+     */
+    const PROCURE_TRANSACTION_TYPE_GRNI = 'G1I0';
+    
+    /**
+     *  Goods and Invoice receipt.
+     * @var string
+     */
+    const PROCURE_TRANSACTION_TYPE_GRIR = 'G1I1';
+    
+     /**
+     *  Goods Not receipt and Invoice receipt.
+     * @var string
+     */
+    const PROCURE_TRANSACTION_TYPE_IRNG = 'G0I1';
 }
 

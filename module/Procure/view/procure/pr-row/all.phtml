@@ -116,6 +116,8 @@
 Full Screen</a>
 <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/procure/pr-row/download-all?pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
     </div> 
+    
+ <hr>   
 <div style="color: gray;font-size: 9pt;margin-top: 8px"><?php echo "Sorted by = ".$sort_by;?>. <?php echo "Sort = ".$sort ?></div>
 <div id="pr_row_gird" style="margin: 1px;font-size: 9pt"></div>
 
@@ -291,7 +293,7 @@ Full Screen</a>
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "100%", height: $(window).height()-190, showTitle : true,
+	var obj = { width: "auto", height: $(window).height()-190, showTitle : true,
 			resizable:true,
 			//draggable:true,
 			sortable: true,

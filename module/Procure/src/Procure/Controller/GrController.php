@@ -32,6 +32,10 @@ class GrController extends AbstractActionController
      */
     public function showAction()
     {
+        
+        //$this->layout("Procure/layout-fluid-1");
+        
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
@@ -655,6 +659,7 @@ class GrController extends AbstractActionController
                     $r->setTaxAmount($taxAmount);
                     $r->setGrossAmount($grossAmount);
                     
+                    $r->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
                     $r->setDocStatus($entity->getDocStatus());
                     $r->setTransactionType($entity->getTransactionType());
                     $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
@@ -927,6 +932,7 @@ class GrController extends AbstractActionController
                     $r->setIsPosted(1);
                     $r->setIsDraft(0);
                     $r->setDocStatus($entity->getDocStatus());
+                    $r->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);                    
                     $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
                     $r->setRowNumber($n);
                     

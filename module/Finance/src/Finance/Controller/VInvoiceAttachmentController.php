@@ -19,9 +19,9 @@ use Zend\Validator\Date;
 use Zend\Math\Rand;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
- * @author nmt
- *        
  */
 class VInvoiceAttachmentController extends AbstractActionController
 {

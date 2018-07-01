@@ -425,6 +425,10 @@ class PrController extends AbstractActionController
         // $this->layout ( "layout/fluid" );
         // $plugin = $this->ProcureWfPlugin();
         // echo($plugin->getWF());
+        
+        //$this->layout("Procure/layout-fluid-1");
+        
+        
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $balance = $this->params()->fromQuery('balance');

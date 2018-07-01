@@ -3,6 +3,8 @@ body {
 	padding-bottom: 40px;
 }
 
+
+
 .zf-green {
 	color: #68b604;
 }
@@ -427,3 +429,7 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
   padding:4px;
   border-top: 0px;
 } 
+
+.navbar {
+    margin-bottom: 0px !important;
+}

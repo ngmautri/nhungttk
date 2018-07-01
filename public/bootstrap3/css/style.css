@@ -5,6 +5,8 @@ body {
 
 
 
+
+
 .zf-green {
 	color: #68b604;
 }
@@ -161,9 +163,6 @@ select.ui-datepicker-month, select.ui-datepicker-year {
 	font-size: 8px;
 }
 
-.ui-tabs-panel {
-	min-height: 350px;
-}
 
 /* #global-notice{position:absolute; background: #FFFFCC; top:55px; left: 40%;
 border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:bold; font-size:10pt 
@@ -432,4 +431,11 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
 
 .navbar {
     margin-bottom: 0px !important;
+}
+
+
+.nav-pills>li>a {
+	 margin-left:9px;
+	 padding:5px;
+	 font-size: 12px;
 }

@@ -447,8 +447,8 @@ if (count($errors) > 0) {
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
 					
 					<?php if($active_row>0):?>
-					<a tabindex="12" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>">A/P Review&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+					<a tabindex="12"  style="color:white;" class="btn btn-primary btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>">A/P Review&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></a>
 					<?php endif;?>				
 										</div>
 							</div>

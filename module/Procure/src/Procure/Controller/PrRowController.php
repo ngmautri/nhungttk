@@ -1272,7 +1272,7 @@ class PrRowController extends AbstractActionController
                     if ($a['item_name'] !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a['item_name']) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                        $onclick = "showJqueryDialog('Detail of Item: " . ($a['item_name']) . "','1350',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
                     }
                     
                     $a_json_row["row_id"] = $a['id'];
@@ -1400,9 +1400,9 @@ class PrRowController extends AbstractActionController
                 $item_detail = "/inventory/item/show1?token=" . $pr_row_entity->getItem()->getToken() . "&checksum=" . $pr_row_entity->getItem()->getChecksum() . "&entity_id=" . $pr_row_entity->getItem()->getId();
                 if ($pr_row_entity->getItem()->getItemName() !== null) {
                     $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
-                        ->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                        ->getItemName()) . "','1250',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                 } else {
-                    $onclick = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                    $onclick = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1250',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                 }
                 
                 $count ++;
@@ -1451,9 +1451,9 @@ class PrRowController extends AbstractActionController
                 
                 if ($pr_row_entity->getItem()->getItemName() !== null) {
                     $onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
-                        ->getItemName()) . "','1200',$(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
+                        ->getItemName()) . "','1350',$(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
                 } else {
-                    $onclick1 = "showJqueryDialog('Receiving of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1200', $(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
+                    $onclick1 = "showJqueryDialog('Receiving of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1350', $(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
                 }
                 
                 if ($a['total_received'] > 0) {

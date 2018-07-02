@@ -109,7 +109,7 @@ if (count($errors) > 0) {
 							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 							<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
 						</legend>
-						<div id="invoice_header" class="collapse in">
+						<div id="invoice_header" class="collapse <?php if (count($errors) > 0): echo 'in'; endif;?>">
 
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2">Current State:</label>

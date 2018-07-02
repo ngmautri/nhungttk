@@ -712,7 +712,6 @@ class VInvoiceController extends AbstractActionController
                     $gr_entity->setCreatedOn($createdOn);
                     $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                     $this->doctrineEM->persist($gr_entity);
-                    $this->doctrineEM->flush();
                     
                     /**
                      * create stock good receipt.
@@ -777,10 +776,11 @@ class VInvoiceController extends AbstractActionController
                     $stock_gr_entity->setCreatedOn($createdOn);
                     $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                     $this->doctrineEM->persist($stock_gr_entity);
-                    $this->doctrineEM->flush();
                 endif;
                 
             }
+            
+            $this->doctrineEM->flush();
             
             /**
              * @ update relevant PR & PO

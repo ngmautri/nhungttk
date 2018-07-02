@@ -236,11 +236,11 @@ function showJqueryDialog(title, width, height, source, target, reponsive = true
 	
 	if (reponsive == true){
 		var container_with = $("#main_container").width();
-		
+		//alert(container_with);
 		if(container_with > width){
 			width = width;
 		}else{
-			width = container_with - 2;
+			width = container_with - 5;
 		}
 	}
 	

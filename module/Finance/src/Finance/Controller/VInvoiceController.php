@@ -600,7 +600,7 @@ class VInvoiceController extends AbstractActionController
             }
             
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-            //$entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+            $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setRevisionNo($entity->getRevisionNo() + 1);
             $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);

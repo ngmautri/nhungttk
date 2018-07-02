@@ -15,6 +15,7 @@ use Application\Entity\FinVendorInvoiceRowTmp;
 
 /**
  * 02/07
+ *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
@@ -656,37 +657,18 @@ class VInvoiceController extends AbstractActionController
                 $this->doctrineEM->persist($r);
                 
                 // posting upon transaction type.
-                
                 /**
-                 * @Todo
-                 * IR-NG
+                 * GR-NT
                  */
-                if ($r->getTransactionStatus() == \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_IRNG) {
-                    // create accrual reserve invoice
-                    
-                }
+                if ($r->getTransactionType() === \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI) :
+                    //clearing
                 
-                
-                /**
-                 * GR-NI
-                 */
-                if ($r->getTransactionStatus() == \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR) {
-                    
-                    $criteria = array(
-                        'isActive' => 1,
-                        'apInvoiceRow' => $r
-                    );
-                    $gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
-                    
-                    if (! $gr_entity_ck == null) {
-                        // clear gr.
-                    }
-                }
+                endif;
                 
                 /**
                  * GR-IR
                  */
-                if ($r->getTransactionStatus() == \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR) {
+                if ($r->getTransactionType() === \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR) :
                     
                     // create procure GR, even no PR, PO.
                     $criteria = array(
@@ -730,6 +712,8 @@ class VInvoiceController extends AbstractActionController
                     $gr_entity->setCreatedOn($createdOn);
                     $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                     $this->doctrineEM->persist($gr_entity);
+                    $this->doctrineEM->flush();
+                    
                     /**
                      * create stock good receipt.
                      * only for item controlled inventory
@@ -769,7 +753,7 @@ class VInvoiceController extends AbstractActionController
                     $stock_gr_entity->setIsDraft($r->getIsDraft());
                     $stock_gr_entity->setIsPosted($r->getIsPosted());
                     $stock_gr_entity->setDocStatus($r->getDocStatus());
-                     
+                    
                     $stock_gr_entity->setSourceClass(get_class($r));
                     $stock_gr_entity->setSourceId($r->getId());
                     
@@ -793,10 +777,10 @@ class VInvoiceController extends AbstractActionController
                     $stock_gr_entity->setCreatedOn($createdOn);
                     $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                     $this->doctrineEM->persist($stock_gr_entity);
-                }
+                    $this->doctrineEM->flush();
+                endif;
+                
             }
-            
-            $this->doctrineEM->flush();
             
             /**
              * @ update relevant PR & PO

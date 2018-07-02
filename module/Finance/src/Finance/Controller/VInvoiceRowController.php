@@ -249,7 +249,7 @@ class VInvoiceRowController extends AbstractActionController
                  * ===================
                  */
                 
-                $procure_gr_entity = null;
+              /*   $procure_gr_entity = null;
                 if ($entity->getPrRow() != null || $entity->getPoRow() != null) {
                     
                     $procure_gr_entity = new NmtProcureGrRow();
@@ -282,13 +282,13 @@ class VInvoiceRowController extends AbstractActionController
                     $procure_gr_entity->setSourceObjectId($entity->getId());
                     
                     $this->doctrineEM->persist($procure_gr_entity);
-                }
+                } */
                 /**
                  * create procure good receipt.
                  * only for item controlled inventory
                  * ===================
                  */
-                $stock_gr_entity = new NmtInventoryTrx();
+              /*   $stock_gr_entity = new NmtInventoryTrx();
                 
                 $stock_gr_entity->setSourceClass(get_class($entity));
                 $stock_gr_entity->setSourceId($entity->getId());
@@ -322,37 +322,9 @@ class VInvoiceRowController extends AbstractActionController
                 $stock_gr_entity->setIsActive(0);
                 
                 $this->doctrineEM->persist($stock_gr_entity);
-                $this->doctrineEM->flush();
+                $this->doctrineEM->flush(); */
                 
                 // LOGGING
-                
-                if ($procure_gr_entity instanceof NmtProcureGrRow) {
-                    $m = sprintf('[OK] GR #%s - %s created, based on AP Row %s', $procure_gr_entity->getId(), $procure_gr_entity->getRowIdentifer(), $entity->getRowIdentifer());
-                    
-                    // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-                    $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
-                        'priority' => \Zend\Log\Logger::INFO,
-                        'message' => $m,
-                        'createdBy' => $u,
-                        'createdOn' => $createdOn,
-                        'entity_id' => $procure_gr_entity->getId(),
-                        'entity_class' => get_class($procure_gr_entity),
-                        'entity_token' => $procure_gr_entity->getToken()
-                    ));
-                }
-                
-                $m = sprintf('[OK] Stock GR #%s - %s created, based on AP Row %s', $stock_gr_entity->getId(), $stock_gr_entity->getSysNumber(), $entity->getId());
-                
-                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                    'priority' => \Zend\Log\Logger::INFO,
-                    'message' => $m,
-                    'createdBy' => $u,
-                    'createdOn' => $createdOn,
-                    'entity_id' => $stock_gr_entity->getId(),
-                    'entity_class' => get_class($stock_gr_entity),
-                    'entity_token' => $stock_gr_entity->getToken()
-                ));
                 
                 $redirectUrl = "/finance/v-invoice-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
                 return $this->redirect()->toUrl($redirectUrl);

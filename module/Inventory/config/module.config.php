@@ -214,6 +214,9 @@ return array(
             'Inventory\Controller\ItemCategory' => 'Inventory\Controller\ItemCategoryControllerFactory',
             'Inventory\Controller\SerialNumber' => 'Inventory\Controller\SerialNumberControllerFactory',
             'Inventory\Controller\BatchNumber' => 'Inventory\Controller\BatchNumberControllerFactory',
+            'Inventory\Controller\ItemSerial' => 'Inventory\Controller\ItemSerialControllerFactory',
+            'Inventory\Controller\ItemBatch' => 'Inventory\Controller\ItemBatchControllerFactory',
+            
             
             'Inventory\Controller\GR' => 'Inventory\Controller\GRControllerFactory',
             'Inventory\Controller\GI' => 'Inventory\Controller\GIControllerFactory',
@@ -221,6 +224,7 @@ return array(
             'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
             'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
             'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory',
+ 
             
         )
     

@@ -17,7 +17,7 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class SerialNumberController extends AbstractActionController
+class ItemSerialController extends AbstractActionController
 {
 
     const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";

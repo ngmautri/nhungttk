@@ -16,7 +16,7 @@ use Zend\View\Model\ViewModel;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class BatchNumberController extends AbstractActionController
+class ItemBatchController extends AbstractActionController
 {
 
     const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
@@ -25,7 +25,12 @@ class BatchNumberController extends AbstractActionController
 
     protected $itemSearchService;
 
-   
+    /*
+     * Defaul Action
+     */
+    public function indexAction()
+    {}
+
     /**
      *
      * @return \Zend\View\Model\ViewModel

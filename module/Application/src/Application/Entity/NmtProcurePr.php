@@ -155,20 +155,6 @@ class NmtProcurePr
     private $transactionStatus;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="doc_type", type="smallint", nullable=true)
-     */
-    private $docType;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="accounting_status", type="string", length=45, nullable=true)
-     */
-    private $accountingStatus;
-
-    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -674,54 +660,6 @@ class NmtProcurePr
     public function getTransactionStatus()
     {
         return $this->transactionStatus;
-    }
-
-    /**
-     * Set docType
-     *
-     * @param integer $docType
-     *
-     * @return NmtProcurePr
-     */
-    public function setDocType($docType)
-    {
-        $this->docType = $docType;
-
-        return $this;
-    }
-
-    /**
-     * Get docType
-     *
-     * @return integer
-     */
-    public function getDocType()
-    {
-        return $this->docType;
-    }
-
-    /**
-     * Set accountingStatus
-     *
-     * @param string $accountingStatus
-     *
-     * @return NmtProcurePr
-     */
-    public function setAccountingStatus($accountingStatus)
-    {
-        $this->accountingStatus = $accountingStatus;
-
-        return $this;
-    }
-
-    /**
-     * Get accountingStatus
-     *
-     * @return string
-     */
-    public function getAccountingStatus()
-    {
-        return $this->accountingStatus;
     }
 
     /**

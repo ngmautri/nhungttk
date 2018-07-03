@@ -11,7 +11,7 @@ use Zend\ServiceManager\FactoryInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class SerialNumberControllerFactory implements FactoryInterface{
+class ItemBatchControllerFactory implements FactoryInterface{
 	
 	
 	/**
@@ -24,7 +24,7 @@ class SerialNumberControllerFactory implements FactoryInterface{
 		
 		$container= $serviceLocator->getServiceLocator();
 		
-		$controller= new SerialNumberController();
+		$controller= new ItemBatchController();
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);

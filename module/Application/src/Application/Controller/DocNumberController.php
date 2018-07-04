@@ -50,6 +50,8 @@ class DocNumberController extends AbstractActionController
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
             
+         
+            $subjectClass = $request->getPost('subjectClass');
             $docNumberName = $request->getPost('docNumberName');
             $docNumberCode = $request->getPost('docNumberCode');
             $fromNumber = $request->getPost('fromNumber');
@@ -60,6 +62,9 @@ class DocNumberController extends AbstractActionController
             $remarks = $request->getPost('remarks');
             
             $entity = new NmtApplicationDocNumber();
+            
+            $entity->setSubjectClass($subjectClass);
+            
             $entity->setCompanyId(1);
             
             if ($docNumberName == "") {
@@ -167,6 +172,7 @@ class DocNumberController extends AbstractActionController
                 // might need redirect
             } else {
                 
+                $subjectClass = $request->getPost('subjectClass');
                 $docNumberName = $request->getPost('docNumberName');
                 $docNumberCode = $request->getPost('docNumberCode');
                 $fromNumber = $request->getPost('fromNumber');
@@ -179,11 +185,14 @@ class DocNumberController extends AbstractActionController
                 if ($docNumberName == "") {
                     $errors[] = 'Pls give document range name!';
                 } else {
-                    $entity->setDocNumberName($docNumberName);
+                    $entity->setDocNumberCode($docNumberName);
                 }
                 
-                $entity->setDocNumberCode($docNumberCode);
+                $entity->setDocNumberName($docNumberName);
                 
+                $entity->setSubjectClass($subjectClass);
+                
+                  
                 $n_validated = 0;
                 if (! is_numeric($fromNumber)) {
                     $errors[] = 'It must be a number.';

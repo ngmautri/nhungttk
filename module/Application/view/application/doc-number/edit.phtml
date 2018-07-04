@@ -35,6 +35,16 @@ if (count ( $errors ) > 0) {
 					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
 				</legend>
 				<div id="invoice_header" class="collapse in">
+				
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Subject class:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="subjectClass" name="subjectClass" 
+								value="<?php echo (!$entity == null)? $entity->getSubjectClass():"";?>">
+						</div>
+						
+					</div>
 					<div class="form-group margin-bottom required">
 						<label class="control-label col-sm-2">Document Number Range:</label>
 						<div class="col-sm-3">

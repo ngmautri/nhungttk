@@ -736,7 +736,7 @@ class GrRowController extends AbstractActionController
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+            //return $this->redirect()->toRoute('access_denied');
         }
         
         // $pq_curPage = $_GET ["pq_curpage"];
@@ -758,14 +758,13 @@ class GrRowController extends AbstractActionController
         if ($target instanceof \Application\Entity\NmtProcureGr) {
             
             $query = 'SELECT e FROM Application\Entity\NmtProcureGrRow e
-            WHERE e.gr=?1 AND e.isActive =?2 AND e.isPosted=?3 ORDER BY e.rowNumber';
+            WHERE e.gr=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
             
             $list = $this->doctrineEM->createQuery($query)
             ->setParameters(array(
                 "1" => $target,
                 "2" => 1,
-                "3" => 1
-            ))
+             ))
             ->getResult();
             
             $total_records = 0;

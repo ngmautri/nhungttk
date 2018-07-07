@@ -287,7 +287,7 @@ FROM nmt_procure_po_row
 LEFT JOIN fin_vendor_invoice_row
 ON fin_vendor_invoice_row.po_row_id =  nmt_procure_po_row.id
 
-WHERE nmt_procure_po_row.po_id=%s
+WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1
 GROUP BY nmt_procure_po_row.id
 ";
         
@@ -305,7 +305,7 @@ FROM nmt_procure_po_row
 LEFT JOIN nmt_procure_gr_row
 ON nmt_procure_gr_row.po_row_id =  nmt_procure_po_row.id
 
-WHERE nmt_procure_po_row.po_id=%s
+WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1
 GROUP BY nmt_procure_po_row.id
 ";
         
@@ -324,7 +324,7 @@ LEFT JOIN
 AS nmt_procure_gr_row
 ON nmt_procure_gr_row.po_row_id = nmt_procure_po_row.id
 
-WHERE nmt_procure_po_row.po_id=%s";
+WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1";
         
         /**@todo To add Return and Credit Memo */
         
@@ -397,7 +397,7 @@ LEFT JOIN
 AS fin_vendor_invoice_row
 ON fin_vendor_invoice_row.gr_row_id = nmt_procure_gr_row.id
             
-WHERE nmt_procure_gr_row.gr_id=%s";
+WHERE nmt_procure_gr_row.gr_id=%s AND nmt_procure_gr_row.is_active=1";
         
         /**@todo To add Return and Credit Memo */
         

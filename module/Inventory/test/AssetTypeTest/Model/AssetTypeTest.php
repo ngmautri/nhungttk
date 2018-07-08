@@ -29,80 +29,91 @@ use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mail\Header\ContentType;
 use Zend\Mail\Message;
+use Inventory\Model\FIFO;
+use Inventory\Model\ItemGr;
 class AssetTypeTest extends PHPUnit_Framework_TestCase {
-	/*
-	public function testArticleCatergoryTest() {
-		$list = Bootstrap::getServiceManager()->get('User\Service\ArticleCategory');
-		//$list = $this->articleCategoryService;
-		$list = $list->initCategory ();
-		$list = $list->updateCategory ( 42, 0 );
-		//$list = $list->generateJSTreeWithTotalMember ( 42 );
-		var_dump($list->getCategories ()['42']);
-		
-	}
-	
-	/*
-	 * public function testAssetTypeTable() {
-	 *
-	 *
-	 * $resultSet = new ResultSet();
-	 * $AssetTypeTable = Bootstrap::getServiceManager()->get('Inventory\Model\AssetTypeTable');
-	 * $assetType = new AssetType;
-	 * $assetType->type = "Machinery";
-	 * $assetType->description = "Machinery";
-	 *
-	 * $AssetTypeTable->add($assetType);
-	 * var_dump($AssetTypeTable->fetchAll());
-	 *
-	 * $as = Bootstrap::getServiceManager()->get('Inventory\Services\AssetService');
-	 * $as->createAssetFolderById ( 7 );
-	 * }
-	 */
-	
-	/*
-	 * public function testAssetCatergoryTest() {
-	 * $resultSet = new ResultSet ();
-	 * $AssetCategoryTable = Bootstrap::getServiceManager()->get('Inventory\Model\AssetCategoryTable');
-	 *
-	 * $assetType = new AssetCategory();
-	 * $assetType->category = "Buiding ";
-	 * $assetType->description = "Machinery details";
-	 *
-	 * //$AssetCategoryTable->add($assetType);
-	 * echo $AssetCategoryTable->add($assetType);
-	 *
-	 * }
-	 */
-	
-	/*
-	public function testAssetServiceTest() {
-		$resultSet = new ResultSet ();
-		
- 		$sv = Bootstrap::getServiceManager ()->get ( 'Inventory\Services\SparepartService' );
-		
-		for($i = 1; $i <= 917; $i ++) {
-			print $sv->createSparepartFolderById ( $i );
-	} 
-	*/
-		
-		
- 	/* 	$sv = Bootstrap::getServiceManager ()->get ( 'Inventory\Services\AssetService' );
-		
-		for($i = 1; $i <= 808; $i ++) {
-			print $sv->createAssetFolderById ( $i );
-		}  
-	}
-	*/
 	
  	public function testAssetGroupTest() {
-		//$resultSet = new ResultSet ();
-		$table = Bootstrap::getServiceManager()->get('Inventory\Model\SparePartCategoryMemberTable');
-			
-			
-		//$table->add($assetType);
-		//$table->update($assetType,1);
-		var_dump($table);
-	
+		
+ 	    $q1 = new FIFO();
+ 	    
+ 	    $itemGR = new ItemGr();
+ 	    $itemGR->setGrQuantity(10);
+ 	    $q1->enqueue($itemGR);
+ 	 
+ 	    $itemGR = new ItemGr();
+ 	    $itemGR->setGrQuantity(20);
+ 	    $q1->enqueue($itemGR);
+ 	    
+ 	    $itemGR = new ItemGr();
+ 	    $itemGR->setGrQuantity(30);
+ 	    $q1->enqueue($itemGR);
+ 	    
+ 	    $itemGR = new ItemGr();
+ 	    $itemGR->setGrQuantity(40);
+ 	    $q1->enqueue($itemGR);
+ 	    
+/*  	$q1->enqueue("San Francisco");
+ 	    $q1->enqueue("Montreal");
+ 	    $q1->enqueue("Barcelona");
+ 	    $q1->enqueue("New York");
+  */	    
+ 	      
+ 	    $issuedQuantity = 66;
+ 	    
+ 	    for ($q1->rewind(); $q1->valid(); $q1->next()) {
+ 	        try {
+ 	            /**@var  ItemGr $value ;*/
+ 	            $value = $q1->current();
+ 	            $grQuantity=$value->getGrQuantity();
+ 	            
+ 	            if($issuedQuantity == 0){
+ 	                break;
+ 	            }
+ 	            
+ 	            if($grQuantity <= $issuedQuantity) {
+ 	                $value->setIssueQuantity($grQuantity);
+ 	                $value->setRemainingQuantity(0);
+ 	                $issuedQuantity = $issuedQuantity-$grQuantity;
+ 	            }else{
+ 	                $value->setIssueQuantity($issuedQuantity);
+ 	                $value->setRemainingQuantity($grQuantity-$issuedQuantity);
+ 	                $issuedQuantity = 0;
+ 	            }
+ 		            
+ 	        } catch (\Exception $exception) {
+ 	            continue;
+ 	        }
+ 	        
+ 	        # ...
+ 	    }
+ 	    
+ 	    $n=0;
+ 	    for ($q1->rewind(); $q1->valid(); $q1->next()) {
+ 	        try {
+ 	            $n++;
+ 	            
+ 	            /**@var  ItemGr $value ;*/
+ 	            $value = $q1->current();
+ 	            $grQuantity=$value->getGrQuantity();
+ 	            echo $n.'GR=' .  $value->getGrQuantity() . '| ';
+ 	            echo $n.'GI=' . $value->getIssueQuantity() . '| ';
+ 	            echo $n.'Remaining=' .$value->getRemainingQuantity()."\n";
+ 	        } catch (\Exception $exception) {
+ 	            continue;
+ 	        }
+ 	        
+ 	        # ...
+ 	    }
+ 	    
+ 	    echo $issuedQuantity;
+ 	    
+ 	    /* print($q1->dequeue()." | ");
+ 	    print($q1->dequeue()." | ");
+ 	    print($q1->dequeue()); */
+ 	    
+ 	    
+ 	    
 	} 
 	
 	/*

@@ -69,6 +69,8 @@
 
 		<li><a
 			href="<?php echo $this->baseUrl ?>/procure/pr-row/pr-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PR(<?php echo $total_pr_row;?>)</a></li>
+			  <li ><a href="<?php echo $this->baseUrl ?>/procure/quote-row/qo-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">QO</a></li>
+
 		<li><a
 			href="<?php echo $this->baseUrl ?>/procure/po-row/po-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PO(<?php echo $total_po_row;?>)</a></li>
 		<li><a

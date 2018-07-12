@@ -144,7 +144,7 @@ class QuoteController extends AbstractActionController
                 'entity_token' => $entity->getToken()
             ));
             
-            $redirectUrl = "/procure/qo/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            $redirectUrl = "/procure/quote/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
         

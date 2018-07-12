@@ -25,16 +25,7 @@ if ($total_records <= 0) {
 			<td><b>PR Number</b></td>
 			<td><b>Vendor</b></td>
 			<td><b>Flow</b></td>
-			<td><b>Q'ty</b></td>
-			<td><b>Price</b></td>
-			<td><b>Total <br>Value</b></td>
-			<td><b>Curr.</b></td>
-			<td><b>Payment<br>Method</b></td>
-			<td><b>Unit</b></td>
-			<td><b>Conversion</b></td>
-			<td><b>Transaction<br>Date</b></td>
-			<td><b>Created Date</b></td>
-			<td><b>Attachment</b></td>
+				<td><b>Attachment</b></td>
 			</tr>
 	</thead>
 
@@ -44,29 +35,17 @@ if ($total_records <= 0) {
 	
 	$count = 0;
 	foreach ( $list as $a ) :
+	
+	      /**@var \Application\Entity\NmtInventoryItemSerial $a; */
 		$count ++;
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 			<td><?php if($a->getPrRow()!==null): echo $a->getPrRow()->getPr()->getPrNumber(); endif;?></td>
-	 
-			<td><?php if($a->getVendor()!==null): echo $a->getVendor()->getVendorName(); endif;?></td>
-			<td><?php echo $this->escapeHtml($a->getFlow());?></td>
+	 		
+	 		<td><?php echo $a->getSysNumber();?></td>
 	
-			<td><?php echo $this->escapeHtml($a->getQuantity());?></td>
-	
-			<td><?php echo number_format( $this->escapeHtml($a->getVendorUnitPrice()), 2, ",", ".");?></td>
-			<td><?php echo $a->getQuantity()*$a->getVendorUnitPrice();?></td>
-			
-			<td><?php if($a->getCurrency()!==null): echo $a->getCurrency()->getCurrency(); endif;?></td>
-		<td><?php echo ($a->getPmtMethod() !==null)? $this->escapeHtml($a->getPmtMethod()->getMethodCode()):"N/A";?></td>
-			<td><?php echo $this->escapeHtml($a->getVendorItemUnit());?></td>
-			<td><?php echo $this->escapeHtml($a->getConversionText());?></td>
-			<td><?php echo ($a->getTrxdate()!==null )? date_format ( $a->getTrxdate(), "d/m/y"):"N/A";?> </td>
-			<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d/m/y"):"N/A";?> </td>
+	 	<td><?php echo $this->escapeHtml($a->getInventoryTrx()->getFlow());?></td>
 		 <td>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Show</a>
-<a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Edit</a>
 </td>
 						
 		</tr>

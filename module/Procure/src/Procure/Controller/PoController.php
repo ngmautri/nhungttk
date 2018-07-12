@@ -1,5 +1,4 @@
 <?php
-
 namespace Procure\Controller;
 
 use Zend\Math\Rand;
@@ -368,6 +367,12 @@ class PoController extends AbstractActionController
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         $result = $res->updatePo($id, $token);
         
+        $m = sprintf("[OK] PO #%s updated!",$id);
+        $this->flashMessenger()->addMessage($m);        
+        
+        $redirectUrl = sprintf("/procure/po/add1?token=%s&entity_id=%s",$token,$id);
+        return $this->redirect()->toUrl($redirectUrl);
+          
         return new ViewModel(array(
             'result' => $result
         ));

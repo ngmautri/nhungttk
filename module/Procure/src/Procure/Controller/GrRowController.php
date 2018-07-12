@@ -1,5 +1,4 @@
 <?php
-
 namespace Procure\Controller;
 
 use Zend\Escaper\Escaper;
@@ -14,11 +13,11 @@ use Application\Entity\NmtProcurePoRow;
 use Application\Entity\NmtInventoryTrx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-
 /**
  * Good Receipt PO or PR or AP
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class GrRowController extends AbstractActionController
 {
@@ -36,7 +35,7 @@ class GrRowController extends AbstractActionController
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {
-            //return $this->redirect()->toRoute('access_denied');
+            // return $this->redirect()->toRoute('access_denied');
         }
         
         // $pq_curPage = $_GET ["pq_curpage"];
@@ -61,12 +60,12 @@ class GrRowController extends AbstractActionController
             WHERE e.gr=?1 AND e.isActive =?2 AND e.isDraft =?3 ORDER BY e.rowNumber';
             
             $list = $this->doctrineEM->createQuery($query)
-            ->setParameters(array(
+                ->setParameters(array(
                 "1" => $target,
                 "2" => 1,
                 "3" => 1
             ))
-            ->getResult();
+                ->getResult();
             
             $total_records = 0;
             if (count($list) > 0) {
@@ -112,16 +111,16 @@ class GrRowController extends AbstractActionController
                         if ($a->getPrRow()->getPr() != null) {
                             
                             $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
-                            ->getPr()
-                            ->getToken() . '&entity_id=' . $a->getPrRow()
-                            ->getPr()
-                            ->getId() . '&checkum=' . $a->getPrRow()
-                            ->getPr()
-                            ->getChecksum() . '"> ... </a>';
+                                ->getPr()
+                                ->getToken() . '&entity_id=' . $a->getPrRow()
+                                ->getPr()
+                                ->getId() . '&checkum=' . $a->getPrRow()
+                                ->getPr()
+                                ->getChecksum() . '"> ... </a>';
                             
                             $a_json_row["pr_number"] = $a->getPrRow()
-                            ->getPr()
-                            ->getPrNumber() . $link;
+                                ->getPr()
+                                ->getPrNumber() . $link;
                         }
                     }
                     
@@ -161,7 +160,7 @@ class GrRowController extends AbstractActionController
         $response->setContent(json_encode($a_json_final));
         return $response;
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -212,7 +211,7 @@ class GrRowController extends AbstractActionController
         $response->setContent(json_encode($sent_list));
         return $response;
     }
-    
+
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -377,20 +376,19 @@ class GrRowController extends AbstractActionController
                 }
                 ;
                 
-                
                 // NO ERROR
                 // Saving into Database..........
                 // ++++++++++++++++++++++++++++++
                 
-                
                 // Goods receipt, Invoice Not receipt
                 $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
                 $entity->setTransactionStatus(\Application\Model\Constants::PROCURE_TRANSACTION_STATUS_PENDING);
-                  
-/*                 $n = $po['total_row'] + 1;
-                $rowIdentifer = $target->getSysNumber() . "-$n";
-                $entity->setRowIdentifer($rowIdentifer);
- */                
+                
+                /*
+                 * $n = $po['total_row'] + 1;
+                 * $rowIdentifer = $target->getSysNumber() . "-$n";
+                 * $entity->setRowIdentifer($rowIdentifer);
+                 */
                 
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     'email' => $this->identity()
@@ -403,11 +401,10 @@ class GrRowController extends AbstractActionController
                 $entity->setCreatedOn(new \DateTime());
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
-             
-                $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-                $m = sprintf("[OK] Contract /PO Line: %s created!",  $rowIdentifer);
-                $this->flashMessenger()->addMessage($m);
                 
+                $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
+                $m = sprintf("[OK] Contract /PO Line: %s created!", $rowIdentifer);
+                $this->flashMessenger()->addMessage($m);
                 
                 return $this->redirect()->toUrl($redirectUrl);
             }
@@ -658,7 +655,7 @@ class GrRowController extends AbstractActionController
                         'target' => $target,
                         'entity' => $entity,
                         'currency_list' => $currency_list
-                        
+                    
                     ));
                 }
                 
@@ -671,20 +668,23 @@ class GrRowController extends AbstractActionController
                 $entity->setLastChangeOn(new \DateTime());
                 $this->doctrineEM->persist($entity);
                 
-               /*  $criteria = array(
-                    'invoiceRow' => $entity->getId()
-                );
-                */ 
+                /*
+                 * $criteria = array(
+                 * 'invoiceRow' => $entity->getId()
+                 * );
+                 */
                 
                 /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/
                 
-                /* $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-                if ($gr_entity !== null) {
-                    $gr_entity->setIsActive($isActive);
-                    $gr_entity->setLastChangeBy($u);
-                    $gr_entity->setLastChangeOn(new \DateTime());
-                    $this->doctrineEM->persist($gr_entity);
-                } */ 
+                /*
+                 * $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+                 * if ($gr_entity !== null) {
+                 * $gr_entity->setIsActive($isActive);
+                 * $gr_entity->setLastChangeBy($u);
+                 * $gr_entity->setLastChangeOn(new \DateTime());
+                 * $this->doctrineEM->persist($gr_entity);
+                 * }
+                 */
                 
                 $this->doctrineEM->flush();
                 
@@ -736,7 +736,7 @@ class GrRowController extends AbstractActionController
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {
-            //return $this->redirect()->toRoute('access_denied');
+            // return $this->redirect()->toRoute('access_denied');
         }
         
         // $pq_curPage = $_GET ["pq_curpage"];
@@ -761,11 +761,11 @@ class GrRowController extends AbstractActionController
             WHERE e.gr=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
             
             $list = $this->doctrineEM->createQuery($query)
-            ->setParameters(array(
+                ->setParameters(array(
                 "1" => $target,
-                "2" => 1,
-             ))
-            ->getResult();
+                "2" => 1
+            ))
+                ->getResult();
             
             $total_records = 0;
             if (count($list) > 0) {
@@ -811,16 +811,16 @@ class GrRowController extends AbstractActionController
                         if ($a->getPrRow()->getPr() != null) {
                             
                             $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
-                            ->getPr()
-                            ->getToken() . '&entity_id=' . $a->getPrRow()
-                            ->getPr()
-                            ->getId() . '&checkum=' . $a->getPrRow()
-                            ->getPr()
-                            ->getChecksum() . '"> ... </a>';
+                                ->getPr()
+                                ->getToken() . '&entity_id=' . $a->getPrRow()
+                                ->getPr()
+                                ->getId() . '&checkum=' . $a->getPrRow()
+                                ->getPr()
+                                ->getChecksum() . '"> ... </a>';
                             
                             $a_json_row["pr_number"] = $a->getPrRow()
-                            ->getPr()
-                            ->getPrNumber() . $link;
+                                ->getPr()
+                                ->getPrNumber() . $link;
                         }
                     }
                     
@@ -889,7 +889,6 @@ class GrRowController extends AbstractActionController
                 // Create new PHPExcel object
                 $objPHPExcel = new Spreadsheet();
                 
-                
                 // Set document properties
                 $objPHPExcel->getProperties()
                     ->setCreator("Nguyen Mau Tri")
@@ -909,7 +908,7 @@ class GrRowController extends AbstractActionController
                 $header = 3;
                 $i = 0;
                 
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', "Contract/PO:". $target->getSysNumber());
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', "Contract/PO:" . $target->getSysNumber());
                 
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $header, "FA Remarks");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $header, "#");
@@ -931,8 +930,6 @@ class GrRowController extends AbstractActionController
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Ref.No.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "Item.No.");
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $header, "Po.Item Name");
-                
-                
                 
                 foreach ($rows as $r) {
                     
@@ -985,9 +982,9 @@ class GrRowController extends AbstractActionController
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRowIdentifer());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()->getSysNumber());                    
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()
+                        ->getSysNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $l, $a->getVendorItemCode());
-                    
                 }
                 
                 // Rename worksheet
@@ -1072,7 +1069,7 @@ class GrRowController extends AbstractActionController
         
         return $this->redirect()->toRoute('access_denied');
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -1092,11 +1089,10 @@ class GrRowController extends AbstractActionController
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         $rows = $res->getPoOfItem($item_id, $token);
-         return new ViewModel(array(
+        return new ViewModel(array(
             'rows' => $rows
         ));
     }
-    
 
     /**
      *
@@ -1125,7 +1121,7 @@ class GrRowController extends AbstractActionController
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
             
             if ($entity != null) {
-                $entity->setQuantity($a['row_quantity']);                
+                $entity->setQuantity($a['row_quantity']);
                 $entity->setFaRemarks($a['fa_remarks']);
                 $entity->setRowNumber($a['row_number']);
                 // $a_json_final['updateList']=$a['row_id'] . 'has been updated';

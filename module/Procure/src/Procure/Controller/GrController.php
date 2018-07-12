@@ -32,7 +32,7 @@ class GrController extends AbstractActionController
      */
     public function showAction()
     {
-         
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
@@ -144,8 +144,8 @@ class GrController extends AbstractActionController
             
             $entity = new NmtProcureGr();
             
-            //unchangeable.
-            //$entity->setDocType(\Application\Model\Constants::PROCURE_DOC_TYPE_GR);
+            // unchangeable.
+            // $entity->setDocType(\Application\Model\Constants::PROCURE_DOC_TYPE_GR);
             
             $entity->setIsActive($isActive);
             $entity->setCurrentState($currentState);
@@ -224,7 +224,7 @@ class GrController extends AbstractActionController
             $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
             
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
-            //$entity->setTransactionStatus(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+            // $entity->setTransactionStatus(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setIsDraft(1);
             $entity->setIsPosted(0);
             
@@ -472,7 +472,7 @@ class GrController extends AbstractActionController
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         
-        // Do Posting .................
+        // Is Posting .................
         // ============================
         if ($request->isPost()) {
             
@@ -622,7 +622,7 @@ class GrController extends AbstractActionController
                     $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
                 }
                 
-                //set posted
+                // set posted
                 $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
                 
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
@@ -664,8 +664,8 @@ class GrController extends AbstractActionController
                     $r->setGrossAmount($grossAmount);
                     
                     // transaction type is not changeable.
-                    //$r->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
-                    //$r->setTransactionType($entity->getTransactionType());
+                    // $r->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
+                    // $r->setTransactionType($entity->getTransactionType());
                     
                     $r->setDocStatus($entity->getDocStatus());
                     $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
@@ -692,7 +692,7 @@ class GrController extends AbstractActionController
                     );
                     $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
                     
-                    if ($stock_gr_entity_ck instanceof \Application\Entity\NmtInventoryTrx) {
+                    if ($stock_gr_entity_ck !== null) {
                         $stock_gr_entity = $stock_gr_entity_ck;
                     } else {
                         $stock_gr_entity = new NmtInventoryTrx();
@@ -713,7 +713,7 @@ class GrController extends AbstractActionController
                     $stock_gr_entity->setIsPosted($r->getIsPosted());
                     $stock_gr_entity->setDocStatus($r->getDocStatus());
                     
-                    //get from gr-row.
+                    // get from gr-row.
                     $stock_gr_entity->setTransactionType($r->getTransactionType());
                     
                     $stock_gr_entity->setSourceClass(get_class($r));
@@ -740,13 +740,18 @@ class GrController extends AbstractActionController
                     $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                     $this->doctrineEM->persist($stock_gr_entity);
                     
-                    /**@todo create serial number*/
-                    if($r->getItem()!==null){
-                        if($r->getItem()->getMonitoredBy()==\Application\Model\Constants::ITEM_WITH_SERIAL_NO){
+                    /**
+                     *
+                     * @todo create serial number
+                     *       if item with Serial
+                     *       or Fixed Asset
+                     */
+                    if ($r->getItem() !== null) {
+                        if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
                             
-                            for ($i = 0; $i < $r->getQuantity(); $i++) {
-                               
-                                //create serial number
+                            for ($i = 0; $i < $r->getQuantity(); $i ++) {
+                                
+                                // create serial number
                                 $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
                                 $sn_entity->setItem($r->getItem());
                                 $sn_entity->setInventoryTrx($stock_gr_entity);
@@ -758,13 +763,9 @@ class GrController extends AbstractActionController
                                 $sn_entity->setCreatedOn($createdOn);
                                 $sn_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                                 $this->doctrineEM->persist($sn_entity);
-                                
-                            } 
-                            
-                            
+                            }
                         }
                     }
-                    
                 }
                 
                 $this->doctrineEM->flush();
@@ -776,8 +777,8 @@ class GrController extends AbstractActionController
                 /**
                  *
                  * @todo Create Entry Journal
-                 * debit: 
-                 * credit: other payables.
+                 *       debit:
+                 *       credit: other payables.
                  *      
                  */
                 
@@ -966,7 +967,7 @@ class GrController extends AbstractActionController
                     $r->setIsPosted(1);
                     $r->setIsDraft(0);
                     $r->setDocStatus($entity->getDocStatus());
-                    $r->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);                    
+                    $r->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
                     $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
                     $r->setRowNumber($n);
                     

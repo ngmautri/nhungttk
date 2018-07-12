@@ -1,7 +1,5 @@
 <?php
-
 namespace Inventory\Controller;
-
 
 use Application\Entity\NmtInventorySerial;
 use Doctrine\ORM\EntityManager;
@@ -13,9 +11,9 @@ use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class ItemSerialController extends AbstractActionController
 {
@@ -26,7 +24,7 @@ class ItemSerialController extends AbstractActionController
 
     protected $itemSearchService;
 
-   /**
+    /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
@@ -182,7 +180,7 @@ class ItemSerialController extends AbstractActionController
             'entity' => $entity
         ));
     }
-    
+
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -217,7 +215,7 @@ class ItemSerialController extends AbstractActionController
                 
                 // might need redirect
             } else {
-    
+                
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }
@@ -230,8 +228,8 @@ class ItemSerialController extends AbstractActionController
         } else {
             $redirectUrl = $request->getHeader('Referer')->getUri();
         }
- 
-        $n = (int) $this->params()->fromQuery('n');        
+        
+        $n = (int) $this->params()->fromQuery('n');
         $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
@@ -241,25 +239,23 @@ class ItemSerialController extends AbstractActionController
         
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-        $list =$res->getVacantSerialNumbers();
-     
+        $list = $res->getVacantSerialNumbers();
+        
         /**@var \Application\Entity\NmtInventoryItem $target ; */
         $target = $res->findOneBy($criteria);
         
+        // if ($target instanceof \Application\Entity\NmtInventoryItem) {
         
-        //if ($target instanceof \Application\Entity\NmtInventoryItem) {
-            
-             return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'target' => $target,
-                'serialList' => $list,
-                'n'=>$n 
-            ));
-        //}
-        //return $this->redirect()->toRoute('access_denied');
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'target' => $target,
+            'serialList' => $list,
+            'n' => $n
+        ));
+        // }
+        // return $this->redirect()->toRoute('access_denied');
     }
-    
 
     /**
      *
@@ -372,7 +368,7 @@ class ItemSerialController extends AbstractActionController
                     $errors[] = 'Pls give serial number!';
                 } else {
                     
-                    if($serialNumber!== $oldEntity->getSerialNumber()){
+                    if ($serialNumber !== $oldEntity->getSerialNumber()) {
                         $criteria = array(
                             'serialNumber' => $serialNumber
                         );
@@ -631,20 +627,12 @@ class ItemSerialController extends AbstractActionController
             'item' => $target
         );
         
-        $sort_criteria = array(
-            'trxDate' => "DESC"
-        );
+        $sort_criteria = array();
         
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria, $sort_criteria);
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
         
-        /*
-         * $this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
-         * $this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
-         * $this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
-         * $this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
-         */
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,

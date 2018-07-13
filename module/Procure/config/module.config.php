@@ -196,8 +196,12 @@ return array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'procure_navi' => 'Procure\Service\ProcureNavigationFactory', // <-- add this
             
-            'Procure\Service\PrSearchService' => 'Procure\Service\PrSearchServiceFactory',
             'Procure\Service\GrListener' => 'Procure\Service\GrListenereFactory',
+     
+            'Procure\Service\PrSearchService' => 'Procure\Service\PrSearchServiceFactory',
+            'Procure\Service\PoSearchService' => 'Procure\Service\PoSearchServiceFactory',
+            'Procure\Service\GrSearchService' => 'Procure\Service\GrSearchServiceFactory',
+            'Procure\Service\QuoteSearchService' => 'Procure\Service\QuoteSearchServiceFactory',
             
         )
     ),
@@ -215,18 +219,22 @@ return array(
             'Procure\Controller\PrRow' => 'Procure\Controller\PrRowControllerFactory',
             'Procure\Controller\PrAttachment' => 'Procure\Controller\PrAttachmentControllerFactory',
             'Procure\Controller\PrRowAttachment' => 'Procure\Controller\PrRowAttachmentControllerFactory',
+            'Procure\Controller\PrSearch' => 'Procure\Controller\PrSearchControllerFactory',
             
             'Procure\Controller\Quote' => 'Procure\Controller\QuoteControllerFactory',
             'Procure\Controller\QuoteRow' => 'Procure\Controller\QuoteRowControllerFactory',
             'Procure\Controller\QuoteAttachment' => 'Procure\Controller\QuoteAttachmentControllerFactory',
+            'Procure\Controller\QuoteSearch' => 'Procure\Controller\QuoteSearchControllerFactory',
             
             'Procure\Controller\Po' => 'Procure\Controller\PoControllerFactory',
             'Procure\Controller\PoRow' => 'Procure\Controller\PoRowControllerFactory',
             'Procure\Controller\PoAttachment' => 'Procure\Controller\PoAttachmentControllerFactory',
+            'Procure\Controller\PoSearch' => 'Procure\Controller\PoSearchControllerFactory',
             
             'Procure\Controller\Gr' => 'Procure\Controller\GrControllerFactory',
             'Procure\Controller\GrRow' => 'Procure\Controller\GrRowControllerFactory',
             'Procure\Controller\GrAttachment' => 'Procure\Controller\GrAttachmentControllerFactory',
+            'Procure\Controller\GrSearch' => 'Procure\Controller\GrSearchControllerFactory',
             
             'Procure\Controller\Return' => 'Procure\Controller\ReturnControllerFactory',
             'Procure\Controller\ReturnRow' => 'Procure\Controller\ReturnRowControllerFactory',

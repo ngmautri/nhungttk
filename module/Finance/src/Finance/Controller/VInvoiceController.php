@@ -753,6 +753,34 @@ class VInvoiceController extends AbstractActionController
                     $stock_gr_entity->setCreatedOn($createdOn);
                     $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                     $this->doctrineEM->persist($stock_gr_entity);
+                    
+                    /**
+                     *
+                     * @todo create serial number
+                     *       if item with Serial
+                     *       or Fixed Asset
+                     */
+                    if ($r->getItem() !== null) {
+                        if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
+                            
+                            for ($i = 0; $i < $r->getQuantity(); $i ++) {
+                                
+                                // create serial number
+                                $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
+                                $sn_entity->setItem($r->getItem());
+                                $sn_entity->setInventoryTrx($stock_gr_entity);
+                                $sn_entity->setIsActive(1);
+                                
+                                $sn_entity->setSysNumber($nmtPlugin->getDocNumber($sn_entity));
+                                $sn_entity->setCreatedBy($u);
+                                $sn_entity->setCreatedBy($u);
+                                $sn_entity->setCreatedOn($createdOn);
+                                $sn_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                                $this->doctrineEM->persist($sn_entity);
+                            }
+                        }
+                    }
+                    
                 endif;
                 
             }

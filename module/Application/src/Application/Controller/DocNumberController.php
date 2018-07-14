@@ -177,6 +177,10 @@ class DocNumberController extends AbstractActionController
                 $docNumberCode = $request->getPost('docNumberCode');
                 $fromNumber = $request->getPost('fromNumber');
                 $toNumber = $request->getPost('toNumber');
+                $toNumber = $request->getPost('toNumber');
+                $currentNumber = $request->getPost('currentNumber');
+                
+                
                 $isActive = (int) $request->getPost('isActive');
                 $prefix = $request->getPost('prefix');
                 $suffix = $request->getPost('suffix');
@@ -191,6 +195,8 @@ class DocNumberController extends AbstractActionController
                 $entity->setDocNumberName($docNumberName);
                 
                 $entity->setSubjectClass($subjectClass);
+           
+                
                 
                   
                 $n_validated = 0;
@@ -213,6 +219,18 @@ class DocNumberController extends AbstractActionController
                     $entity->setToNumber($toNumber);
                     $n_validated ++;
                 }
+                
+                if (! is_numeric($currentNumber)) {
+                    $errors[] = 'Current Number must be a number.';
+                } else {
+                    if ($fromNumber <= 0) {
+                        $errors[] = 'Current Number  must be greater than 0!';
+                    }
+                    $entity->setCurrentNumber($currentNumber);
+                    $n_validated ++;
+                }
+                
+                
                 
                 if ($isActive !== 1) {
                     $isActive = 0;

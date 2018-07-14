@@ -417,6 +417,7 @@ if (count($errors) > 0) {
             $( "#item_id" ).val(ui.item.item_id);
             $( "#item_name" ).val(ui.item.item_name);
 
+			     $( "#quantity" ).focus();   
 
             $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
             $('#pr_row_url').text('/procure/pr-row/show1?entity_id='+ui.item.pr_row_id+'&token='+ui.item.token);
@@ -451,6 +452,7 @@ if (count($errors) > 0) {
       	  $( "#item_id" ).val(ui.item.id);
           $('#item_url').text('/inventory/item/show1?tab_idx=0&entity_id='+ui.item.id+'&token='+ui.item.token);
           
+		  
         
       	 	$('#global-notice').show();
       		$('#global-notice').html('"' + ui.item.value + '" selected');
@@ -458,6 +460,8 @@ if (count($errors) > 0) {
       		//$("#jquery_dialog").dialog("close");
 
     	  	$('#item_detail').show();
+			    $( "#quantity" ).focus();   
+
     	     
         }
        

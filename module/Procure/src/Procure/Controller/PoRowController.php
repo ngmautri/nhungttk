@@ -691,7 +691,7 @@ class PoRowController extends AbstractActionController
                     $a_json_row["draft_gr"] = $r['draft_gr_qty'];
                     
                     $url = sprintf("/procure/po-row/gr-of?token=%s&entity_id=%s", $a->getToken(), $a->getId());
-                    $onclick1 = sprintf("showJqueryDialog('Goods Receipt ','1250',$(window).height()-50,'%s','j_loaded_data', true);", $url);
+                    $onclick1 = sprintf("showJqueryDialog('Goods Receipt ','1350',$(window).height()-50,'%s','j_loaded_data', true);", $url);
                     $received_detail = sprintf('<a title="click for goods receipt!" style="color: #337ab7;" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', $onclick1);
                     $a_json_row["open_gr"] = $r['open_gr_qty'] . $received_detail;
                     
@@ -699,9 +699,9 @@ class PoRowController extends AbstractActionController
                     
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
-                            ->getItemName()) . "','1250',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                            ->getItemName()) . "','1500',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1250',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1500',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     }
                     
                     if (strlen($a->getItem()->getItemName()) < 35) {

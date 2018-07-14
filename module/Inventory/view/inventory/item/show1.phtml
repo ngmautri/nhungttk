@@ -38,6 +38,14 @@
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-picture/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><span class="glyphicon glyphicon-picture"></span>&nbsp;Picture (<?php echo $total_picture;?>)</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-purchase/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Purchasing</a></li>
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Stock</a></li>
+  	<?php if(!$entity!==null):?>		
+		<?php if($entity->getMonitoredBy()==\Application\Model\Constants::ITEM_WITH_SERIAL_NO):?>
+			<li><a
+			href="<?php echo $this->baseUrl ?>/inventory/item-serial/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Serial</a></li>
+		
+		<?php endif;?>
+		<?php endif;?>
+  
   <li ><a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><span class="glyphicon glyphicon-paperclip"></span>&nbsp;File (<?php echo $total_attachment;?>)</a></li>
   <li ><a href="#accounting">&nbsp;Accounting</a></li>
   

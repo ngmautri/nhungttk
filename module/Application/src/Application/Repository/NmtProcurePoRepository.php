@@ -893,7 +893,9 @@ WHERE 1
         }
         
         $sql = $sql . " GROUP BY nmt_procure_qo_row.qo_id";
-        
+      
+		$sql = $sql . " ORDER BY sys_number DESC";
+      	  
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }

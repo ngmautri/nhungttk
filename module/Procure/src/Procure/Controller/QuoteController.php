@@ -540,7 +540,7 @@ class QuoteController extends AbstractActionController
         endif;
         
         if ($sort == null) :
-            $sort = "DESC";
+            $sort = "ASC";
         endif;
         
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
@@ -552,7 +552,7 @@ class QuoteController extends AbstractActionController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getPoList($is_active, $currentState, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getQOList($is_active, $currentState, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
         
         return new ViewModel(array(

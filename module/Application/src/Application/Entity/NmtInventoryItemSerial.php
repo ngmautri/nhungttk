@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemSerial
  *
- * @ORM\Table(name="nmt_inventory_item_serial", indexes={@ORM\Index(name="nmt_inventory_item_serial_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK4_idx", columns={"serial_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK5_idx", columns={"inventory_trx_id"})})
+ * @ORM\Table(name="nmt_inventory_item_serial", indexes={@ORM\Index(name="nmt_inventory_item_serial_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK4_idx", columns={"serial_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK5_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK6_idx", columns={"ap_row_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemSerial
@@ -45,7 +45,7 @@ class NmtInventoryItemSerial
     /**
      * @var string
      *
-     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     * @ORM\Column(name="remarks", type="text", length=65535, nullable=true)
      */
     private $remarks;
 
@@ -169,6 +169,34 @@ class NmtInventoryItemSerial
     private $serialNumber3;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="mfg_model", type="string", length=45, nullable=true)
+     */
+    private $mfgModel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mfg_model1", type="string", length=45, nullable=true)
+     */
+    private $mfgModel1;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mfg_model2", type="string", length=45, nullable=true)
+     */
+    private $mfgModel2;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mfg_description", type="string", length=255, nullable=true)
+     */
+    private $mfgDescription;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -217,6 +245,16 @@ class NmtInventoryItemSerial
      * })
      */
     private $inventoryTrx;
+
+    /**
+     * @var \Application\Entity\FinVendorInvoiceRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ap_row_id", referencedColumnName="id")
+     * })
+     */
+    private $apRow;
 
 
 
@@ -735,6 +773,102 @@ class NmtInventoryItemSerial
     }
 
     /**
+     * Set mfgModel
+     *
+     * @param string $mfgModel
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setMfgModel($mfgModel)
+    {
+        $this->mfgModel = $mfgModel;
+
+        return $this;
+    }
+
+    /**
+     * Get mfgModel
+     *
+     * @return string
+     */
+    public function getMfgModel()
+    {
+        return $this->mfgModel;
+    }
+
+    /**
+     * Set mfgModel1
+     *
+     * @param string $mfgModel1
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setMfgModel1($mfgModel1)
+    {
+        $this->mfgModel1 = $mfgModel1;
+
+        return $this;
+    }
+
+    /**
+     * Get mfgModel1
+     *
+     * @return string
+     */
+    public function getMfgModel1()
+    {
+        return $this->mfgModel1;
+    }
+
+    /**
+     * Set mfgModel2
+     *
+     * @param string $mfgModel2
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setMfgModel2($mfgModel2)
+    {
+        $this->mfgModel2 = $mfgModel2;
+
+        return $this;
+    }
+
+    /**
+     * Get mfgModel2
+     *
+     * @return string
+     */
+    public function getMfgModel2()
+    {
+        return $this->mfgModel2;
+    }
+
+    /**
+     * Set mfgDescription
+     *
+     * @param string $mfgDescription
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setMfgDescription($mfgDescription)
+    {
+        $this->mfgDescription = $mfgDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get mfgDescription
+     *
+     * @return string
+     */
+    public function getMfgDescription()
+    {
+        return $this->mfgDescription;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -852,5 +986,29 @@ class NmtInventoryItemSerial
     public function getInventoryTrx()
     {
         return $this->inventoryTrx;
+    }
+
+    /**
+     * Set apRow
+     *
+     * @param \Application\Entity\FinVendorInvoiceRow $apRow
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setApRow(\Application\Entity\FinVendorInvoiceRow $apRow = null)
+    {
+        $this->apRow = $apRow;
+
+        return $this;
+    }
+
+    /**
+     * Get apRow
+     *
+     * @return \Application\Entity\FinVendorInvoiceRow
+     */
+    public function getApRow()
+    {
+        return $this->apRow;
     }
 }

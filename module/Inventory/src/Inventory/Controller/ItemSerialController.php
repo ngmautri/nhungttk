@@ -321,7 +321,7 @@ class ItemSerialController extends AbstractActionController
                 'token' => $token
             );
             
-            /** @var \Application\Entity\NmtInventorySerial $entity ; */
+            /** @var \Application\Entity\NmtInventoryItemSerial $entity ; */
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findOneBy($criteria);
             
             if ($entity ==null) {
@@ -346,6 +346,8 @@ class ItemSerialController extends AbstractActionController
                 $mfgName = $request->getPost('mfgName');
                 $mfgDate = $request->getPost('mfgDate');
                 $mfgSerialNumber = $request->getPost('mfgSerialNumber');
+                $mfgModel = $request->getPost('mfgModel');
+                
                 $lotNumber = $request->getPost('lotNumber');
                 $mfgWarrantyStart = $request->getPost('mfgWarrantyStart');
                 $mfgWarrantyEnd = $request->getPost('mfgWarrantyEnd');
@@ -363,6 +365,8 @@ class ItemSerialController extends AbstractActionController
                 $entity->setCategory($category);
                 
                 $entity->setMfgName($mfgName);
+                $entity->setMfgModel($mfgModel);
+                
                 $entity->setMfgSerialNumber($mfgSerialNumber);
                 $entity->setLotNumber($lotNumber);
                 $entity->setRemarks($remarks);

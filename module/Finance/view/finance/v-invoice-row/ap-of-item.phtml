@@ -1,8 +1,13 @@
-<?php if (count($rows)==0): ?>
+<?php if (count($rows)==0): 
+
+?>
 
 <h5>no thing found!</h5>
 
-<?php else: ?>
+<?php else: 
+
+$nid = md5("nguyen mau tri");
+?>
 <div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
 <div style="color: gray;font-size: 9pt;" id="total_received"></div>
 <div style="color: gray;font-size: 9pt;" id="total_balance"></div>
@@ -45,18 +50,18 @@
 	 <tr>
 	 <td><?php echo $count;?></td>
 			<?php if($a->getPrRow()!==null):?>			
-			<td><a href="/procure/pr/show?entity_id=<?php echo $a->getPrRow()->getPr()->getId();?>&token=<?php echo $a->getPrRow()->getPr()->getToken();?>" target="_blank"><?php echo $a->getPrRow()->getPr()->getPrAutoNumber();?></a></td>
+			<td><a href="/procure/pr/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPrRow()->getPr()->getId();?>&token=<?php echo $a->getPrRow()->getPr()->getToken();?>" target="_blank"><?php echo $a->getPrRow()->getPr()->getPrAutoNumber();?></a></td>
 			<?php else:?>
 			<td>N/A</td>
 			<?php endif; ?>
 			
 			<?php if($a->getPoRow()!==null):?>			
-			<td><a href="/procure/po/add1?entity_id=<?php echo $a->getPoRow()->getPo()->getId();?>&token=<?php echo $a->getPoRow()->getPo()->getId();?>" target="_blank"><?php echo $a->getPoRow()->getPo()->getSysNumber();?></a></td>
+			<td><a href="/procure/po/add1?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPoRow()->getPo()->getId();?>&token=<?php echo $a->getPoRow()->getPo()->getToken();?>" target="_blank"><?php echo $a->getPoRow()->getPo()->getSysNumber();?></a></td>
 			<?php else:?>
 			<td>N/A</td>
 			<?php endif; ?>
 			
-	 		<td><a href="/finance/v-invoice/add1?entity_id=<?php echo $a->getInvoice()->getId();?>&token=<?php echo $a->getInvoice()->getToken();?>" target="_blank"><?php if($a->getInvoice()->getSysNumber()==null):echo "N/A";else: echo $a->getInvoice()->getSysNumber();endif;?></a></td>
+	 		<td><a href="/finance/v-invoice/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getInvoice()->getId();?>&token=<?php echo $a->getInvoice()->getToken();?>" target="_blank"><?php if($a->getInvoice()->getSysNumber()==null):echo "N/A";else: echo $a->getInvoice()->getSysNumber();endif;?></a></td>
 			
 			<td><?php if(!$a->getInvoice()->getVendor()==null): echo $a->getInvoice()->getVendor()->getVendorName();endif;?> </td>
 	

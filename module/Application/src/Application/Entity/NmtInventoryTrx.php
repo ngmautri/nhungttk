@@ -295,6 +295,20 @@ class NmtInventoryTrx
     private $transactionType;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="item_serial_id", type="integer", nullable=true)
+     */
+    private $itemSerialId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_batch_id", type="string", length=45, nullable=true)
+     */
+    private $itemBatchId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1420,6 +1434,54 @@ class NmtInventoryTrx
     public function getTransactionType()
     {
         return $this->transactionType;
+    }
+
+    /**
+     * Set itemSerialId
+     *
+     * @param integer $itemSerialId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setItemSerialId($itemSerialId)
+    {
+        $this->itemSerialId = $itemSerialId;
+
+        return $this;
+    }
+
+    /**
+     * Get itemSerialId
+     *
+     * @return integer
+     */
+    public function getItemSerialId()
+    {
+        return $this->itemSerialId;
+    }
+
+    /**
+     * Set itemBatchId
+     *
+     * @param string $itemBatchId
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setItemBatchId($itemBatchId)
+    {
+        $this->itemBatchId = $itemBatchId;
+
+        return $this;
+    }
+
+    /**
+     * Get itemBatchId
+     *
+     * @return string
+     */
+    public function getItemBatchId()
+    {
+        return $this->itemBatchId;
     }
 
     /**

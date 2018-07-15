@@ -1,10 +1,13 @@
-<a class="btn btn-default"
+
+
+
+<a class="btn btn-default btn-sm"
 	href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i
 		class="glyphicon glyphicon-plus"> </i></small>&nbsp;Receive</a>
-<a class="btn btn-default"
+<a class="btn btn-default btn-sm"
 	href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gi?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i
 		class="glyphicon glyphicon-minus"> </i></small>&nbsp;Issue</a>
-<a class="btn btn-default"
+<a class="btn btn-default btn-sm"
 	href="<?php echo $this->baseUrl ?>/inventory/item-transaction/transfer?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i
 		class="glyphicon glyphicon-refresh"> </i></small>&nbsp;Transfer</a>
 
@@ -37,7 +40,7 @@ if ($total_records <= 0) {
 			<td><b>Mfg Serial</b></td>
 			<td><b>Mfg Warranty</b></td>
 			<td><b>Mfg Warranty End</b></td>
-			<td><b>Attachment</b></td>
+			<td><b>Remarks</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>

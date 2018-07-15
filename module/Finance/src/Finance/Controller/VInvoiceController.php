@@ -768,9 +768,10 @@ class VInvoiceController extends AbstractActionController
                                 // create serial number
                                 $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
                                 $sn_entity->setItem($r->getItem());
+                                $sn_entity->setApRow($r);
+                                
                                 $sn_entity->setInventoryTrx($stock_gr_entity);
                                 $sn_entity->setIsActive(1);
-                                
                                 $sn_entity->setSysNumber($nmtPlugin->getDocNumber($sn_entity));
                                 $sn_entity->setCreatedBy($u);
                                 $sn_entity->setCreatedBy($u);

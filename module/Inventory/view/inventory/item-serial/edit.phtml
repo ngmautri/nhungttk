@@ -25,6 +25,8 @@ if (count ( $errors ) > 0) {
 
 	<div id="general" style="font-size: 9pt">
 
+<h5 style="color:graytext;"><?php echo (!$entity == null)? $entity->getItem()->getItemName():"";?>:</h5>
+	
 	<img alt="" height="" src="/inventory/item/barcode?barcode=<?php echo (!$entity == null)? $entity->getSysNumber():"";?>">
 
 		<form id="Create_Inv_Form" class="form-horizontal"
@@ -38,7 +40,7 @@ if (count ( $errors ) > 0) {
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+					<a href="#invoice_header" class="" data-toggle="collapse" style="color:graytext;">Serial Detail:</a>
 				</legend>
 				<div id="invoice_header" class="collapse in">
 				
@@ -78,8 +80,6 @@ if (count ( $errors ) > 0) {
 						</div>
 					
    				</div>
-   				<hr>
-   				
    				<div class="form-group margin-bottom required">
 						<label class="control-label col-sm-2">Manufactuer (Mfg):</label>
 						<div class="col-sm-3">
@@ -88,14 +88,29 @@ if (count ( $errors ) > 0) {
 								value="<?php echo (!$entity == null)? $entity->getMfgName():"";?>">
 						</div>
 					</div>
-   				<div class="form-group margin-bottom required">
+					
+				<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Mfg Model:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="mfgModel" name="mfgModel" 
+								value="<?php echo (!$entity == null)? $entity->getMfgModel():"";?>">
+						</div>
 						<label class="control-label col-sm-2">Mfg Serial number:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
 								id="mfgSerialNumber" name="mfgSerialNumber" 
 								value="<?php echo (!$entity == null)? $entity->getMfgSerialNumber():"";?>">
 						</div>
-						<label class="control-label col-sm-2">Lot Number:</label>
+					</div>	
+   						
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Mfg Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="mfgDate" name="mfgDate" value="<?php if(!$entity == null): if ($entity->getMfgDate() !== null): echo date_format($entity->getMfgDate(),"Y-m-d"); endif; endif;?>">
+												</div>
+												<label class="control-label col-sm-2">Lot Number:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
 								id="lotNumber" name="lotNumber" 
@@ -103,15 +118,7 @@ if (count ( $errors ) > 0) {
 						</div>
 					</div>
 					
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Mfg Date:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="mfgDate" name="mfgDate" value="<?php if(!$entity == null): if ($entity->getMfgDate() !== null): echo date_format($entity->getMfgDate(),"Y-m-d"); endif; endif;?>">
-												</div>
-					</div>
-					
-				<div class="form-group margin-bottom required">
+				<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">Mfg Warranty Start:</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text" placeholder=""
@@ -127,12 +134,11 @@ if (count ( $errors ) > 0) {
 						<div class="form-group margin-bottom">
 					<label class="control-label col-sm-2" >Remarks:</label>
             		<div class="col-sm-8">
-            			<input class="form-control input-sm" type="text"  placeholder=""
-            				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
-            		</div>
+   				<textarea class="form-control input-sm" type="text" rows="3"
+						placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+	         		</div>
 				</div>
-   							<hr>
-				<div class="form-group margin-bottom">
+ 				<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2" for="inputTag"></label>
 						<div class="col-sm-3">
 	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>

@@ -305,6 +305,9 @@ class ItemSerialController extends AbstractActionController
     {
         $request = $this->getRequest();
         
+        
+        // Is Posing
+        // =============================
         if ($request->isPost()) {
             
             $errors = array();
@@ -319,9 +322,9 @@ class ItemSerialController extends AbstractActionController
             );
             
             /** @var \Application\Entity\NmtInventorySerial $entity ; */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findOneBy($criteria);
+            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findOneBy($criteria);
             
-            if (! $entity instanceof \Application\Entity\NmtInventorySerial) {
+            if ($entity ==null) {
                 $errors[] = 'Entity not found or emty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 return new ViewModel(array(
@@ -365,7 +368,7 @@ class ItemSerialController extends AbstractActionController
                 $entity->setRemarks($remarks);
                 
                 if ($serialNumber == "") {
-                    $errors[] = 'Pls give serial number!';
+                    //$errors[] = 'Pls give serial number!';
                 } else {
                     
                     if ($serialNumber !== $oldEntity->getSerialNumber()) {
@@ -456,6 +459,7 @@ class ItemSerialController extends AbstractActionController
                 }
                 
                 // NO ERROR
+                // Saving into Database..........
                 // ++++++++++++++++++++++++++++++
                 
                 $changeOn = new \DateTime();
@@ -500,8 +504,8 @@ class ItemSerialController extends AbstractActionController
         }
         
         // NO POST
-        // =======================
-        
+        // Initiate ......................
+        // ================================
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') !== null) {
             $redirectUrl = $this->getRequest()
@@ -514,11 +518,10 @@ class ItemSerialController extends AbstractActionController
         $criteria = array(
             'id' => $id,
             'token' => $token
-        
-        );
+         );
         
         /** @var \Application\Entity\NmtInventorySerial $entity ; */
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findOneBy($criteria);
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findOneBy($criteria);
         return new ViewModel(array(
             'errors' => null,
             'entity' => $entity,
@@ -568,14 +571,14 @@ class ItemSerialController extends AbstractActionController
         $criteria = array();
         $sort_criteria = array();
         
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findBy($criteria, $sort_criteria);
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findBy($criteria, $sort_criteria);
         
         $total_records = count($list);
         $paginator = null;
         
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
         
         return new ViewModel(array(

@@ -1,4 +1,4 @@
-<?php /**@var \Application\Entity\NmtInventorySerial $entity ;*/?>
+<?php /**@var \Application\Entity\NmtInventoryItemSerial $entity ;*/?>
 
 <?php
 if (count ( $errors ) > 0) {
@@ -14,6 +14,8 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
+ 
+
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;Serial Number</a></li>
@@ -23,8 +25,10 @@ if (count ( $errors ) > 0) {
 
 	<div id="general" style="font-size: 9pt">
 
+	<img alt="" height="" src="/inventory/item/barcode?barcode=<?php echo (!$entity == null)? $entity->getSysNumber():"";?>">
+
 		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/inventory/serial-number/edit" method="post" enctype="multipart/form-data">
+			action="/inventory/item-serial/edit" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 				<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />

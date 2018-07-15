@@ -55,6 +55,13 @@ return array(
                 'icon' => 'glyphicon glyphicon-list'
             ),
             array(
+                'label' => 'Item Serial',
+                'route' => 'Inventory/default',
+                'controller' => 'item-serial',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
+            array(
                 'label' => 'Serial Number',
                 'route' => 'Inventory/default',
                 'controller' => 'serial-number',

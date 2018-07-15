@@ -1,127 +1,36 @@
+<h4>Item Serial:</h4>
 
-<div id="tabs" style="font-size: 9.5pt">
-
-	<ul>
-		<li><a href="#general">Serial Number List:</a></li>
-	</ul>
-<div id="general">
-
-<a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/inventory/serial-number/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Serial Number</a>
 <hr>
-
-<div>
-	<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
-		href="#list_filter" class="" data-toggle="collapse">FILTER</a>
-</div>
-<div id="list_filter" class="collapse">
-
-	<div
-		style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
-
-		<form class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/application/doc-number/list" method="get"
-			enctype="multipart/form-data">
-		
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag">Active Items</label>
-				<div class="col-sm-3">
-					<select class="form-control input-sm" name="is_active">
-						<option <?php echo $is_active =='2'? "selected='selected'":"";?>
-							value="2">All</option>
-						<option <?php echo $is_active=='1'? "selected='selected'":"";?>
-							value="1">Active</option>
-						<option <?php echo $is_active=='-1'? "selected='selected'":"";?>
-							value="-1">Inactive</option>
-					</select>
-				</div>
-			</div>
-			
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag">Sort by</label>
-				<div class="col-sm-3">
-					<select class="form-control input-sm" name="sort_by">
-						<option value="">None</option>
-						<option
-							<?php echo $sort_by=='invoiceDate'? "selected='selected'":"";?>
-							value="invoiceDate">Invoice Date</option>
-						<option
-							<?php echo $sort_by=='vendorName'? "selected='selected'":"";?>
-							value="vendorName">Vendor Name</option>
-						<option
-							<?php echo $sort_by=='currencyCode'? "selected='selected'":"";?>
-							value="currencyCode">Currency</option>
-						<option
-							<?php echo $sort_by=='createdOn'? "selected='selected'":"";?>
-							value="createdOn">Created Date</option>
-					</select> <input
-						<?php if(!$sort==null): echo ($sort=='ASC')? "checked":""; else: echo "checked"; endif;?>
-						type="radio" name="sort" value="ASC">&nbsp;ASC&nbsp;&nbsp; <input
-						<?php if(!$sort==null): echo ($sort=='DESC')? "checked":""; else: echo ""; endif;?>
-						type="radio" name="sort" value="DESC">&nbsp;DESC&nbsp;&nbsp;
-
-				</div>
-			</div>
-
-
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag">Result per page</label>
-				<div class="col-sm-3">
-					<select class="form-control input-sm" name="perPage">
-						<option value="">None</option>
-						<option <?php echo $per_pape=='15'? "selected='selected'":"";?>
-							value="15">15</option>
-
-						<option <?php echo $per_pape=='20'? "selected='selected'":"";?>
-							value="20">20</option>
-
-						<option <?php echo $per_pape=='30'? "selected='selected'":"";?>
-							value="30">30</option>
-
-						<option <?php echo $per_pape=='50'? "selected='selected'":"";?>
-							value="50">50</option>
-						<option <?php echo $per_pape=='100'? "selected='selected'":"";?>
-							value="100">100</option>
-						<option <?php echo $per_pape=='200'? "selected='selected'":"";?>
-							value="200">200</option>
-					</select>
-				</div>
-			</div>
-
-			<div class="form-group margin-bottom">
-				<div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" class="btn btn-default">Show</button>
-				</div>
-			</div>
-
-		</form>
-	</div>
-</div>
-
-	<hr>
-
-
-
 <?php
-if ($total_records <= 0): 
-	echo 'No record found!';
-else:
-	
-	if (! is_null ( $paginator)):
-		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
-	else:
-		echo $total_records . ' records found!';
-	endif;
-	
-	?>
 
-<table style="font-size: 9.5pt;" class="table table-bordered table-hover">
+if ($total_records <= 0) {
+    
+    echo 'No record found!';
+} else {
+    
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+    
+    ?>
+
+<table style="font-size: 9pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>Serial Number</b></td>
-			<td><b><?php echo $this->translate("Item");?></b></td>
-			<td><b>Mgf</b></td>
-			<td><b>Mgf. date</b></td>
+			<td><b>BarCode</b></td>
+			<td><b>Item</b></td>
+			<td><b>Flow</b></td>
+			<td><b>Unit Price</b></td>
+					<td><b>Currency</b></td>
+	
+			<td><b>Mfg </b></td>
+			<td><b>Mfg Serial</b></td>
+			<td><b>Mfg Warranty</b></td>
+			<td><b>Mfg Warranty End</b></td>
+			<td><b>Attachment</b></td>
 			<td><b>Action</b></td>
 		</tr>
 	</thead>
@@ -129,79 +38,103 @@ else:
 	<tbody>
  
 	 <?php
+    
+    $count = 0;
+    foreach ($list as $a) :
+        
+        /**@var \Application\Entity\NmtInventoryItemSerial $a ; */
+        $count ++;
+        ?>
+	 <tr>
+			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+			<td>
+			
+			<?php echo $a->getSysNumber(); ?>
+			</td>
+			
+			<td>
+			<?php if($a->getItem()!==null): echo $a->getItem()->getItemName(); endif;?>
+			</td>
 	
-	$count = 0;
-	foreach ( $list as $l ) :	
-		$count ++;
-		 		
-        /**@var \Application\Entity\NmtInventorySerial $a ; */
+
+			<td><?php echo $this->escapeHtml($a->getInventoryTrx()->getFlow());?></td>
+			<td><?php  if($a->getInventoryTrx()->getVendorUnitPrice()!==null): echo number_format($a->getInventoryTrx()->getVendorUnitPrice(),2); endif;?></td>
+				<td><?php  if($a->getInventoryTrx()->getCurrency()!==null): echo $a->getInventoryTrx()->getCurrency()->getCurrency(); endif;?></td>
 		
-		$a = $l;
-		?>
-		
-	<tr>
-			<td>
-<?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
+					<td>
+			<?php echo $a->getMfgName();?>
 			</td>
-			<td><?php echo $a->getSerialNumber()?></td>
-			<td><?php if(!$a->getItem()==null): echo $a->getItem()->getItemName() ; endif; ?></td>
-			<td><?php echo $a->getMfgName()?></td>
+	
+			
+			<td><?php echo $this->escapeHtml($a->getMfgSerialNumber());?></td>
+
 			<td>
-<?php if(!$a == null): if ($a->getMfgDate() !== null): echo date_format($a->getMfgDate(),"Y-m-d"); endif; endif;?></td>
-			<td>
-<a href="<?php echo $this->baseUrl ?>/inventory/serial-number/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+	 	<?php if(!$a == null): if ($a->getMfgDate() !== null): echo date_format($a->getMfgDate(),"Y-m-d"); endif; endif;?></td>
+
 			</td>
-	<?php endforeach; ?>
+			<td>
+		 	<?php if(!$a == null): if ($a->getMfgWarrantyEnd() !== null): echo date_format($a->getMfgWarrantyEnd(),"Y-m-d"); endif; endif;?></td>
+
+			</td>
+			<td>
+			<?php echo $a->getRemarks();?>
+			</td>
+			<td><a
+				href="<?php echo $this->baseUrl ?>/inventory/item-serial/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i
+						class="glyphicon glyphicon-pencil"></i></small>&nbsp;<?php echo $this->translate('Edit');?></a>
+
+			</td>
+		</tr>
+<?php endforeach; ?>
+
  </tbody>
 </table>
 
-
-<?php 	
-	// ===============================
-	if (! is_null ( $paginator )) :
-		
-		// change it only
-	$base = $this->baseUrl . '/finance/v-invoice/list?is_active='. $is_active.'&currentState='. $currentState.
-	'&sort_by='. $sort_by.'&sort='. $sort;
-		$_connector_symbol = '&';
-		
-		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
-		
-		$p1 = ($paginator->page) - 1;
-		$p2 = ($paginator->page) + 1;
-		
-		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-		
-		echo '<ul class="pagination pagination-sm">';
-		
-		if ($paginator->page != 1 and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $first . '"> |< </a></li>';
-			echo '<li><a href="' . $prev . '"> < </a></li>';
-		}
-		
-		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
+<?php
+    
+    // ===============================
+    if (! is_null($paginator)) :
+        
+        // change it only
+        $base = $this->baseUrl . '/inventory/item-serial/list?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort;
+        $_connector_symbol = '&';
+        
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+        
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+        
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+        
+        echo '<ul class="pagination pagination-sm">';
+        
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+        
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+            
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+            
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
+    
+}
 // ===============================
 ?>
 
-</div>
-<?php endif; ?>
-</div>
-<?php
+
 

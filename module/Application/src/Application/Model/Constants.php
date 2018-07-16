@@ -8,7 +8,46 @@ namespace Application\Model;
  */
 class Constants
 {
+    /**
+     * Inventory 
+     * @var string
+     */
+    const INVENTORY_HASH_ID = "7a1eabc3deb7fd02ceb1e16eafc41073_06a19815c7af6d8df4cfe6ab657ec477fe284cda72fbf12cce02dabdd4ce51a8";
+    
+    /**
+     * Procure
+     * @var string
+     */
+    const PROCURE_HASH_ID = "906755664503f7af496028c471cfffcc_06a19815c7af6d8df4cfe6ab657ec477fe284cda72fbf12cce02dabdd4ce51a8";
+    
+    /**
+     * Procure
+     * @var string
+     */
+    const FINANCE_HASH_ID = "906755664503f7af496028c471cfffcc_06a19815c7af6d8df4cfe6ab657ec477fe284cda72fbf12cce02dabdd4ce51a8";
+    
 
+    /**
+     * HR
+     * @var string
+     */
+    const HR_HASH_ID = "adab7b701f23bb82014c8506d3dc784e_06a19815c7af6d8df4cfe6ab657ec477fe284cda72fbf12cce02dabdd4ce51a8";
+   
+    
+    /**
+     * BP
+     * @var string
+     */
+    const BP_HASH_ID = "5cfdb867e96374c7883b31d6928cc4cb_06a19815c7af6d8df4cfe6ab657ec477fe284cda72fbf12cce02dabdd4ce51a8";
+    
+    /**
+     * Setting
+     * @var string
+     */
+    const SETTING_HASH_ID = "7dc22b2c6a992f0232345df41303f5ea_06a19815c7af6d8df4cfe6ab657ec477fe284cda72fbf12cce02dabdd4ce51a8";
+    
+    
+    
     /**
      * Period is open
      *

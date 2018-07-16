@@ -1,11 +1,15 @@
+<?php
+$nid = \Application\Model\Constants::INVENTORY_HASH_ID;
+?>
+
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
 		<li><a href="#general">Item Serial</a></li>
 	</ul>
-<div id="general">
+	<div id="general">
 
-<hr>
+		<hr>
 <?php
 
 if ($total_records <= 0) {
@@ -22,26 +26,26 @@ if ($total_records <= 0) {
     ?>
 
 <table style="font-size: 9pt;" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<td><b>#</b></td>
-			<td><b>BarCode</b></td>
-			<td><b>Item</b></td>
-			<td><b>Flow</b></td>
-			<td><b>Unit Price</b></td>
-			<td><b>Currency</b></td>
-	
-			<td><b>Mfg </b></td>
-			<td><b>Mfg Model</b></td>
-			<td><b>Mfg Serial</b></td>
-			<td><b>Mfg Warranty</b></td>
-			<td><b>Mfg Warranty End</b></td>
-			<td><b>Attachment</b></td>
-			<td><b>Action</b></td>
-		</tr>
-	</thead>
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b>BarCode</b></td>
+					<td><b>Item</b></td>
+					<td><b>Flow</b></td>
+					<td><b>Unit Price</b></td>
+					<td><b>Currency</b></td>
 
-	<tbody>
+					<td><b>Mfg </b></td>
+					<td><b>Mfg Model</b></td>
+					<td><b>Mfg Serial</b></td>
+					<td><b>Mfg Warranty</b></td>
+					<td><b>Mfg Warranty End</b></td>
+					<td><b>Attachment</b></td>
+					<td><b>Action</b></td>
+				</tr>
+			</thead>
+
+			<tbody>
  
 	 <?php
     
@@ -52,52 +56,52 @@ if ($total_records <= 0) {
         $count ++;
         ?>
 	 <tr>
-			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-			<td>
+					<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+					<td>
 			
 			<?php echo $a->getSysNumber(); ?>
 			</td>
-			
-			<td>
+
+					<td>
 			<?php if($a->getItem()!==null): echo $a->getItem()->getItemName(); endif;?>
 			</td>
-	
 
-			<td><?php echo $this->escapeHtml($a->getInventoryTrx()->getFlow());?></td>
-			<td><?php  if($a->getInventoryTrx()->getVendorUnitPrice()!==null): echo number_format($a->getInventoryTrx()->getVendorUnitPrice(),2); endif;?></td>
-				<td><?php  if($a->getInventoryTrx()->getCurrency()!==null): echo $a->getInventoryTrx()->getCurrency()->getCurrency(); endif;?></td>
-		
+
+					<td><?php echo $this->escapeHtml($a->getInventoryTrx()->getFlow());?></td>
+					<td><?php  if($a->getInventoryTrx()->getVendorUnitPrice()!==null): echo number_format($a->getInventoryTrx()->getVendorUnitPrice(),2); endif;?></td>
+					<td><?php  if($a->getInventoryTrx()->getCurrency()!==null): echo $a->getInventoryTrx()->getCurrency()->getCurrency(); endif;?></td>
+
 					<td>
 			<?php echo $a->getMfgName();?>
 			</td>
-	
-				<td><?php echo $this->escapeHtml($a->getMfgModel());?></td>
-			
-			<td><?php echo $this->escapeHtml($a->getMfgSerialNumber());?></td>
 
-			<td>
+					<td><?php echo $this->escapeHtml($a->getMfgModel());?></td>
+
+					<td><?php echo $this->escapeHtml($a->getMfgSerialNumber());?></td>
+
+					<td>
 	 	<?php if(!$a == null): if ($a->getMfgDate() !== null): echo date_format($a->getMfgDate(),"Y-m-d"); endif; endif;?></td>
 
-			</td>
-			<td>
+					</td>
+					<td>
 		 	<?php if(!$a == null): if ($a->getMfgWarrantyEnd() !== null): echo date_format($a->getMfgWarrantyEnd(),"Y-m-d"); endif; endif;?></td>
 
-			</td>
-			<td>
+					</td>
+					<td>
 			<?php echo $a->getRemarks();?>
 			</td>
-			<td><a
-				href="<?php echo $this->baseUrl ?>/inventory/item-serial/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i
-						class="glyphicon glyphicon-pencil"></i></small>&nbsp;<?php echo $this->translate('Edit');?></a>
-
-			</td>
-		</tr>
+					<td><a
+						href="<?php echo $this->baseUrl ?>/inventory/item-serial/edit?nid=<?php echo $nid;?>&token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $this->translate('Show');?></a>
+						<a
+							href="<?php echo $this->baseUrl ?>/inventory/item-serial/edit?nid=<?php echo $nid;?>&token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $this->translate('Edit');?></a></td>
+				</tr>
 <?php endforeach; ?>
 
  </tbody>
-</table>
+		</table>
+	</div>
 </div>
-</div>
+&n
 
 <?php
     

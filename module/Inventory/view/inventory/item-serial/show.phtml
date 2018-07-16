@@ -1,4 +1,8 @@
 <?php
+
+$nid = \Application\Model\Constants::INVENTORY_HASH_ID;
+
+
 if (count ( $errors ) > 0) {
 	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
 	
@@ -16,6 +20,11 @@ if (count ( $errors ) > 0) {
 <div id="tabs" style="font-size: 10pt"> 
   <ul>
   <li ><a href="#general">Item Receiving</a></li>
+ 	<li><a
+			href="<?php echo $this->baseUrl ?>/inventory/item-picture/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><span
+				class="glyphicon glyphicon-picture"></span>&nbsp;Picture</a></li>
+		
+ 	
  	</ul>
    
  <div id="general">

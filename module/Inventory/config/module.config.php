@@ -222,6 +222,8 @@ return array(
             'Inventory\Controller\SerialNumber' => 'Inventory\Controller\SerialNumberControllerFactory',
             'Inventory\Controller\BatchNumber' => 'Inventory\Controller\BatchNumberControllerFactory',
             'Inventory\Controller\ItemSerial' => 'Inventory\Controller\ItemSerialControllerFactory',
+            'Inventory\Controller\ItemSerialAttachment' => 'Inventory\Controller\ItemSerialAttachmentControllerFactory',
+            
             'Inventory\Controller\ItemBatch' => 'Inventory\Controller\ItemBatchControllerFactory',
             
             

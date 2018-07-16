@@ -75,6 +75,8 @@ class Module
             $controllerClass = get_class($controller);
             $moduleNamespace = substr($controllerClass, 0, strpos($controllerClass, '\\'));
             $controller->layout($moduleNamespace . '/layout-fluid');
+            
+            
         }, 101);
     }
 

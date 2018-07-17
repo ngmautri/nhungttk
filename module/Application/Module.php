@@ -164,7 +164,7 @@ class Module
                         'hostname' => 'localhost',
                         'database' => 'mla',
                         'username' => 'root',
-                        'password' => 'kflg7986'
+                        'password' => 'NMTerfolgkflg#7986'
                     ));
                 },
                 

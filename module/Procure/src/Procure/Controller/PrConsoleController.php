@@ -100,6 +100,7 @@ eot;
     /**
      *
      * php c:\1-nmt\1-eclipse\workspace\mla-02-01\public\index.php validate
+     * create enviroment varibles: C:\Program Files\MySQL\MySQL Server 5.7\bin
      *
      * @return \zend\stdlib\responseinterface|\zend\view\model\viewmodel
      */
@@ -119,7 +120,7 @@ eot;
         $filename = ROOT . self::BACKUP_FOLDER . '/sql_' . date("m-d-Y");
         
         // exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar encrypt -o mla2017 -u ' . $filepassword . ' ' . "$folder/$name" );
-        exec('mysqldump -u root --password=kflg7986 mla --result-file ' . $filename . '.sql');
+        exec('mysqldump -u root --password=NMTerfolgkflg#7986 mla --result-file ' . $filename . '.sql');
         
         // abtractcontroller is eventmanageraware.
         $this->getEventmanager()->trigger('system.log', __class__, array(

@@ -19,9 +19,9 @@ use Zend\Validator\Date;
 use Zend\Math\Rand;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
- * @author nmt
- *        
  */
 class ItemAttachmentController extends AbstractActionController {
 	
@@ -558,7 +558,7 @@ class ItemAttachmentController extends AbstractActionController {
 			 * @todo : Update Target
 			 */
 			$criteria = array (
-					'pr' => $target_id,
+					'item'=> $target_id,
 					'isActive' => 1,
 					'markedForDeletion' => 0,
 					'isPicture' => 1 

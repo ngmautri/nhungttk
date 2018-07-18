@@ -41,6 +41,7 @@ if (count ( $errors ) > 0) {
 			 <input <?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?> type="checkbox" name="isPurchased" value="1">&nbsp;Purchased &nbsp;&nbsp;<br>
 	 		 <input <?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isSaleItem" value="1">&nbsp;For Sale &nbsp;&nbsp;
 			 <input <?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset
+			 <input <?php if(!$entity == null): echo ($entity->getIsSparepart()=="1")?"checked":""; else: echo ""; endif;?> type="checkbox" name="isSparePart" value="1">&nbsp;Spare Part	
 		
 		</div>
 		

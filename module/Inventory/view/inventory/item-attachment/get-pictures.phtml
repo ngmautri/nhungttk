@@ -1,5 +1,7 @@
+<?php /**@var \Application\Entity\NmtInventory $target ;*/ ?>
+<?php $attachment_url =  $this->baseUrl . '/inventory/item-attachment' ;?>
 
-<a class="btn btn-default" href="<?php echo $this->baseUrl ?>/procure/pr-attachment/upload-pictures?token=<?php echo (!$target== null)? $target->getToken():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;Upload picture</a>
+<a class="btn btn-default" href="<?php echo $attachment_url ?>/upload-pictures?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>"><small><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;</small>&nbsp;Upload picture</a>
    
 <hr>
 
@@ -9,8 +11,8 @@
 <div id="picture" style="padding: 10pt">
 	<div id="lightgallery">
 		 <?php foreach ($list as $pic) : ?>
-	    <a href="/procure/pr-attachment/picture?id=<?php  echo $this->escapeHtml($pic->getId());?>&checksum=<?php  echo $this->escapeHtml($pic->getCheckSum());?>&token=<?php  echo $this->escapeHtml($pic->getToken());?>">
-	    <img class= "img-rounded" width="150" height="150" src="/procure/pr-attachment/thumbnail200?id=<?php  echo $this->escapeHtml($pic->getId());?>&checksum=<?php  echo $this->escapeHtml($pic->getCheckSum());?>&token=<?php  echo $this->escapeHtml($pic->getToken());?>"/>
+	    <a href="<?php echo $attachment_url ?>/picture?id=<?php  echo $this->escapeHtml($pic->getId());?>&checksum=<?php  echo $this->escapeHtml($pic->getCheckSum());?>&token=<?php  echo $this->escapeHtml($pic->getToken());?>">
+	    <img class= "img-rounded" width="150" height="150" src="<?php echo $attachment_url ?>/thumbnail200?id=<?php  echo $this->escapeHtml($pic->getId());?>&checksum=<?php  echo $this->escapeHtml($pic->getCheckSum());?>&token=<?php  echo $this->escapeHtml($pic->getToken());?>"/>
 	    </a>
 	<?php endforeach; ?>
 	 </div>

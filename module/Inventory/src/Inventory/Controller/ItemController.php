@@ -172,6 +172,12 @@ class ItemController extends AbstractActionController
     {
         $request = $this->getRequest();
         
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        
+        
+        // Is Posing
+        // =============================
         if ($request->isPost()) {
             
             $errors = array();
@@ -334,42 +340,15 @@ class ItemController extends AbstractActionController
                 ));
             }
             
-            // No Error
-            // =======================
+            // NO ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+            
             try {
                 
-                // generate document
-                // ==================
-                $criteria = array(
-                    'isActive' => 1,
-                    'subjectClass' => get_class($entity)
-                );
                 
-                /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
-                $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
-                if ($docNumber != null) {
-                    $maxLen = strlen($docNumber->getToNumber());
-                    $currentLen = 1;
-                    $currentDoc = $docNumber->getPrefix();
-                    $current_no = $docNumber->getCurrentNumber();
-                    
-                    if ($current_no == null) {
-                        $current_no = $docNumber->getFromNumber();
-                    } else {
-                        $current_no ++;
-                        $currentLen = strlen($current_no);
-                    }
-                    $docNumber->setCurrentNumber($current_no);
-                    
-                    $tmp = "";
-                    for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
-                        
-                        $tmp = $tmp . "0";
-                    }
-                    
-                    $currentDoc = $currentDoc . $tmp . $current_no;
-                    $entity->setSysNumber($currentDoc);
-                }
+                // Assign doc number
+                 $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
                 
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     'email' => $this->identity()
@@ -448,9 +427,9 @@ class ItemController extends AbstractActionController
             }
         }
         
-        // No Post.
-        // =======================
-        
+        // NO POST
+        // Initiate ......................
+        // =====================================================        
         $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');

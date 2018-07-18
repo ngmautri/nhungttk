@@ -1154,8 +1154,9 @@ class ItemSerialAttachmentController extends AbstractActionController
                      * @todo: Update target
                      */
                     $criteria = array(
-                        'targetId' => $target_id,
-                        'targetClass' => get_class($target)
+                        'targetId' => $target->getId(),
+                        'targetClass' => get_class($target),
+                        "checksum" => $checksum,
                     );
                     $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
                     
@@ -1183,7 +1184,7 @@ class ItemSerialAttachmentController extends AbstractActionController
                          *
                          * @todo: Update target
                          */
-                        $entity->getItem($target->getItem());
+                        $entity->setItem($target->getItem());
                         $entity->setTargetClass(get_class($target));
                         $entity->setTargetId($target->getId());
                         

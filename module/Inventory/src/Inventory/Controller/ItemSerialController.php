@@ -511,12 +511,12 @@ class ItemSerialController extends AbstractActionController
         // Initiate ......................
         // ================================
        $redirectUrl = null;
-       /* 
+       
         if ($this->getRequest()->getHeader('Referer') !== null) {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
                 ->getUri();
-        } */
+        }
         
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');

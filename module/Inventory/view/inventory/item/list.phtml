@@ -1,3 +1,7 @@
+<?php 
+$nid = \Application\Model\Constants::INVENTORY_HASH_ID;
+?>
+
 <div id="tabs" style="font-size: 9.5pt">
 
 	<ul>
@@ -195,7 +199,7 @@ if ($total_records <= 0) {
 	
 			<!-- <td><?php echo date_format ( $a['created_on'], "d/m/y");?> </td>  -->
 			<td>
-	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($a['id']);?>" item_name="<?php echo $this->escapeHtml($a['item_name']);?>" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $this->escapeHtml($a['token']);?>&entity_id=<?php echo $this->escapeHtml($a['id']);?>&checksum=<?php echo $this->escapeHtml($a['checksum']);?>">Show</a>
+	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($a['id']);?>" item_name="<?php echo $this->escapeHtml($a['item_name']);?>" href="<?php echo $this->baseUrl ?>/inventory/item/show?nid=<?php echo $nid;?>&token=<?php echo $this->escapeHtml($a['token']);?>&entity_id=<?php echo $this->escapeHtml($a['id']);?>&checksum=<?php echo $this->escapeHtml($a['checksum']);?>">Show</a>
 			</td>
 		
 		</tr>

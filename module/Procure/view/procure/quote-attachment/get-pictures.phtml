@@ -8,8 +8,8 @@
 
 <?php if( count($list)>0): ?>
 
-<div id="picture" style="padding: 10pt">
-	<div id="lightgallery">
+<div id="picture" style="padding: 9.5pt">
+	<div id="lightgallery1">
 		 <?php foreach ($list as $pic) : ?>
 	    <a href="<?php echo $attachment_url ?>/picture?id=<?php  echo $this->escapeHtml($pic->getId());?>&checksum=<?php  echo $this->escapeHtml($pic->getCheckSum());?>&token=<?php  echo $this->escapeHtml($pic->getToken());?>">
 	    <img class= "img-rounded" width="150" height="150" src="<?php echo $attachment_url ?>/thumbnail200?id=<?php  echo $this->escapeHtml($pic->getId());?>&checksum=<?php  echo $this->escapeHtml($pic->getCheckSum());?>&token=<?php  echo $this->escapeHtml($pic->getToken());?>"/>
@@ -27,6 +27,6 @@ No record found!
 
 <script>
 
-$("#lightgallery").lightGallery({});
+$("#lightgallery1").lightGallery({});
 
 </script>

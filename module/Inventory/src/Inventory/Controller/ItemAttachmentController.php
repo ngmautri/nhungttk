@@ -601,10 +601,11 @@ class ItemAttachmentController extends AbstractActionController {
 		
 		);
 		
-		$pic = new \Application\Entity\NmtApplicationAttachment ();
+		
+		/**@var \Application\Entity\NmtApplicationAttachment $pic ;*/
 		$pic = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
 		if ($pic !== null) {
-			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . $pic->getFileName ();
+		    $pic_folder = getcwd () . $pic->getAttachmentFolder() .  $pic->getFileName ();
 			
 			/** Important! for UBUNTU */
 			$pic_folder = str_replace('\\', '/', $pic_folder);
@@ -617,7 +618,6 @@ class ItemAttachmentController extends AbstractActionController {
 			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )
 			->addHeaderLine ( 'Content-Type', $pic->getFiletype () );
 			
-			//->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
 			return $response;
 		} else {
 			return;
@@ -649,8 +649,8 @@ class ItemAttachmentController extends AbstractActionController {
 		$pic = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
 		
 		if ($pic !== null) {
-			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . "thumbnail_200_" . $pic->getFileName ();
-			
+		    $pic_folder = getcwd () . $pic->getAttachmentFolder() .  $pic->getFileName ();
+		    
 			/** Important! for UBUNTU */
 			$pic_folder = str_replace('\\', '/', $pic_folder);
 			
@@ -659,7 +659,7 @@ class ItemAttachmentController extends AbstractActionController {
 			$response = $this->getResponse ();
 			
 			$response->setContent ( $imageContent );
-			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )->addHeaderLine ( 'Content-Type', $pic->getFiletype () )->addHeaderLine ( 'Content-Length', mb_strlen ( $imageContent ) );
+			$response->getHeaders ()->addHeaderLine ( 'Content-Transfer-Encoding', 'binary' )->addHeaderLine ( 'Content-Type', $pic->getFiletype () );
 			return $response;
 		} else {
 			return;
@@ -691,8 +691,8 @@ class ItemAttachmentController extends AbstractActionController {
 		$pic = $this->doctrineEM->getRepository ( 'Application\Entity\NmtApplicationAttachment' )->findOneBy ( $criteria );
 		if ($pic !== null) {
 			
-			$pic_folder = getcwd () . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative () . "thumbnail_450_" . $pic->getFileName ();
-			
+		    $pic_folder = getcwd () . $pic->getAttachmentFolder() .  $pic->getFileName ();
+		    
 			/** Important! for UBUNTU */
 			$pic_folder = str_replace('\\', '/', $pic_folder);
 			

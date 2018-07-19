@@ -30,6 +30,7 @@ if ($total_records <= 0) {
 				<tr>
 					<td><b>#</b></td>
 					<td><b>BarCode</b></td>
+					<td><b>SN</b></td>
 					<td><b>Item</b></td>
 					<td><b>Flow</b></td>
 					<td><b>Unit Price</b></td>
@@ -61,6 +62,12 @@ if ($total_records <= 0) {
 			
 			<?php echo $a->getSysNumber(); ?>
 			</td>
+			
+							<td>
+			
+			<?php echo $a->getSerialNumber(); ?>
+			</td>
+			
 
 					<td>
 			<?php if($a->getItem()!==null): echo $a->getItem()->getItemName(); endif;?>

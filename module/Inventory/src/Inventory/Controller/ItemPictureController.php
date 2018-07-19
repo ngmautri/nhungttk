@@ -117,10 +117,10 @@ class ItemPictureController extends AbstractActionController
         $request = $this->getRequest();
         
         // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
+      /*   if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
-        ;
+        ; */
         
         $this->layout("layout/user/ajax");
         

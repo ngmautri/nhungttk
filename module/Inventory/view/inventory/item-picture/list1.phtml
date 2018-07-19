@@ -1,3 +1,5 @@
+<?php                /** @var \Application\Entity\NmtInventoryItem $target ; */ ?>
+
 
 <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i class="glyphicon glyphicon-upload"> </i></small>&nbsp;Upload picture</a>
 <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/inventory/item-picture/list?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>&checksum=<?php echo (!$target== null)? $target->getChecksum():"";?>"><small><i class="glyphicon glyphicon-list"> </i></small>&nbsp;Picture Manager</a>
@@ -23,8 +25,40 @@ No record found!
 <?php endif; ?>
 
 
+<hr>
+
+
+
+<div id="item-attachment-picture"></div>
+
+
+
+
+
+
+
 <script>
 
 $("#lightgallery").lightGallery({});
+
+var itemPictureUrl;
+
+<?php
+$target_token=null;
+$target_id=null;
+$target_checksum=null;
+
+if($target!==null):
+    $target_token=$target->getToken();
+    $target_id=$target->getId();
+    $target_checksum=$target->getChecksum();
+endif;
+$itemPictureUrl = sprintf("/inventory/item-attachment/get-pictures?token=%s&target_id=%s&checksum=%s",$target_token,$target_id,$target_checksum);
+?>
+
+itemPictureUrl="<?php echo $itemPictureUrl;?>";
+ajaxloadData (itemPictureUrl,'#item-attachment-picture')
+
+
 
 </script>

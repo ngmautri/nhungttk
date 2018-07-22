@@ -11,6 +11,8 @@
  * credentials from accidentally being committed into version control.
  */
 
+
+// good thing
 return array(
     // Whether or not to enable a configuration cache.
     // If enabled, the merged configuration will be cached and used in

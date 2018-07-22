@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -16,7 +9,7 @@ use MLA\Paginator;
 
 /**
  * 
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class UserController extends AbstractActionController
@@ -68,17 +61,19 @@ class UserController extends AbstractActionController
 	    ));
 	}
 	
-    /**
-     * @return the $doctrineEM
-     */
+   /**
+    * 
+    *  @return \Doctrine\ORM\EntityManager
+    */
     public function getDoctrineEM()
     {
         return $this->doctrineEM;
     }
 
-    /**
-     * @param field_type $doctrineEM
-     */
+  /**
+   * 
+   *  @param EntityManager $doctrineEM
+   */
     public function setDoctrineEM(EntityManager $doctrineEM)
     {
         $this->doctrineEM = $doctrineEM;

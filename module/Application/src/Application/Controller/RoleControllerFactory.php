@@ -6,8 +6,9 @@ use Application\Controller\RoleController;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
 
-/*
- * @author nmt
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class RoleControllerFactory implements FactoryInterface {
@@ -22,16 +23,9 @@ class RoleControllerFactory implements FactoryInterface {
 			
 		$controller = new RoleController();
 		
-		//User Table
-		$tbl =  $container->get ('User\Model\UserTable' );
-		$controller->setUserTable($tbl);
 		
 		$tbl =  $container->get ('Application\Model\AclRoleTable' );
 		$controller->setAclRoleTable($tbl);
-		
-		//Auth Service
-		$sv =  $container->get ('AuthService' );
-		$controller->setAuthService($sv );
 		
 		//Auth Service
 		$sv =  $container->get ('Application\Service\AclService' );

@@ -6,8 +6,9 @@ namespace Application\Controller;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-/*
- * @author nmt
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class BackupControllerFactory implements FactoryInterface {

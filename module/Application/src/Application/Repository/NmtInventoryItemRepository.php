@@ -8,7 +8,7 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  *
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
 class NmtInventoryItemRepository extends EntityRepository
@@ -16,7 +16,6 @@ class NmtInventoryItemRepository extends EntityRepository
 
     /** @var \Application\Entity\NmtInventoryItem $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
-   
     private $sql = "SELECT * FROM nmt_inventory_item ";
 
     private $sql_cat_album = "
@@ -115,7 +114,7 @@ WHERE 1
 
 ";
 
-    private $sql_item_last_trx= "
+    private $sql_item_last_trx = "
 
 SELECT
 nmt_inventory_trx_max.trx_total_record,
@@ -144,9 +143,8 @@ AND nmt_inventory_trx.id = nmt_inventory_trx_max.max_id
 WHERE 1
 
 ";
-    
-    
-    private $sql_item_purchasing="
+
+    private $sql_item_purchasing = "
     SELECT
     nmt_inventory_item_purchasing_max.purchasing_total_record,
     nmt_inventory_item_purchasing.*
@@ -170,18 +168,18 @@ WHERE 1
         AND nmt_inventory_item_purchasing_max.max_id = nmt_inventory_item_purchasing.id
         WHERE 1
     ";
-    
+
     /**
-     * 
-     *  @param int $item_id
-     *  @param string $item_token
-     *  @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+     *
+     * @param int $item_id
+     * @param string $item_token
+     * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
      *
      */
-    public function getItem($item_id=null, $item_token='')
+    public function getItem($item_id = null, $item_token = '')
     {
         // PICTURE
-        $join1_tmp="
+        $join1_tmp = "
 JOIN
 (
 SELECT
@@ -194,10 +192,10 @@ WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
 )
 AS nmt_inventory_item_picture
 ON nmt_inventory_item.id=nmt_inventory_item_picture.item_id ";
-        $join1 = sprintf($join1_tmp,$item_id,$item_token);
-        
-        //Attachment
-        $join2_tmp="
+        $join1 = sprintf($join1_tmp, $item_id, $item_token);
+
+        // Attachment
+        $join2_tmp = "
 JOIN
 (
 SELECT
@@ -210,10 +208,10 @@ WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
 )
 AS nmt_application_attachment
 ON nmt_inventory_item.id=nmt_application_attachment.item_id ";
-        $join2 = sprintf($join2_tmp,$item_id,$item_token);
-        
+        $join2 = sprintf($join2_tmp, $item_id, $item_token);
+
         // PR_ROW
-        $join3_tmp="
+        $join3_tmp = "
 JOIN
 (
 SELECT
@@ -226,10 +224,10 @@ WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
 )
 AS nmt_procure_pr_row
 ON nmt_inventory_item.id=nmt_procure_pr_row.item_id ";
-        $join3 = sprintf($join3_tmp,$item_id,$item_token);
-       
+        $join3 = sprintf($join3_tmp, $item_id, $item_token);
+
         // AP ROW
-        $join4_tmp="
+        $join4_tmp = "
 JOIN
 (
 SELECT
@@ -242,11 +240,10 @@ WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
 )
 AS fin_vendor_invoice_row
 ON nmt_inventory_item.id=fin_vendor_invoice_row.item_id ";
-        $join4 = sprintf($join4_tmp,$item_id,$item_token);
-        
-        
+        $join4 = sprintf($join4_tmp, $item_id, $item_token);
+
         // PO_ROW
-        $join5_tmp="
+        $join5_tmp = "
 JOIN
 (
 SELECT
@@ -259,8 +256,8 @@ WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
 )
 AS nmt_procure_po_row
 ON nmt_inventory_item.id=nmt_procure_po_row.item_id ";
-        $join5 = sprintf($join5_tmp,$item_id,$item_token);
-        
+        $join5 = sprintf($join5_tmp, $item_id, $item_token);
+
         $sql = "
 SELECT
 	nmt_inventory_item.*,
@@ -272,9 +269,9 @@ SELECT
 
 	nmt_inventory_item_picture.total_picture
 FROM nmt_inventory_item";
-        
-        $sql =  $sql.$join1.$join2.$join3.$join4.$join5;
-        //echo $sql;
+
+        $sql = $sql . $join1 . $join2 . $join3 . $join4 . $join5;
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
@@ -290,20 +287,17 @@ FROM nmt_inventory_item";
             return null;
         }
     }
-    
-    
-    
+
     /**
-     *  Get Most Ordered Items
-     *  
-     *  @param number $limit
-     *  @param number $offset
-     *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     * Get Most Ordered Items
+     *
+     * @param number $limit
+     * @param number $offset
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
      *
      */
-    public function getMostOrderItems($limit=50,$offset=0)
+    public function getMostOrderItems($limit = 50, $offset = 0)
     {
-  
         $sql_tmp = "
 SELECT
 	nmt_inventory_item.*,
@@ -313,16 +307,15 @@ LEFT JOIN nmt_procure_pr_row
 ON nmt_procure_pr_row.item_id = nmt_inventory_item.id
 group by nmt_inventory_item.id
 order by COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_row.id) ELSE NULL END) DESC LIMIT %s";
-        
-        if($offset>0){
+
+        if ($offset > 0) {
             $sql_tmp = $sql_tmp . " OFFSET " . $offset;
         }
-        
-        
-        $sql=sprintf($sql_tmp,$limit);
-        
-        //echo $sql;
-        
+
+        $sql = sprintf($sql_tmp, $limit);
+
+        // echo $sql;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
@@ -331,35 +324,33 @@ order by COUNT(CASE WHEN nmt_procure_pr_row.is_active =1 THEN (nmt_procure_pr_ro
             $result = $query->getResult();
             return $result;
         } catch (NoResultException $e) {
-             return null;
+            return null;
         }
     }
-    
+
     /**
-     *  Get Last AP Row
+     * Get Last AP Row
      *
-     *  @param number $limit
-     *  @param number $offset
-     *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     * @param number $limit
+     * @param number $offset
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
      *
      */
-    public function getLastAPRows($limit=100,$offset=0)
+    public function getLastAPRows($limit = 100, $offset = 0)
     {
-        
         $sql_tmp = "
 SELECT
 	fin_vendor_invoice_row.*
 	FROM fin_vendor_invoice_row
     where fin_vendor_invoice_row.current_state='finalInvoice'
 	ORDER BY fin_vendor_invoice_row.created_on DESC LIMIT  %s";
-        
-        if($offset>0){
+
+        if ($offset > 0) {
             $sql_tmp = $sql_tmp . " OFFSET " . $offset;
         }
-        
-        $sql=sprintf($sql_tmp,$limit);
-        
-        
+
+        $sql = sprintf($sql_tmp, $limit);
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
@@ -370,21 +361,20 @@ SELECT
             return null;
         }
     }
-    
-  /**
-   * 
-   *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
-   *
-   */
+
+    /**
+     *
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     *
+     */
     public function getRandomItem()
     {
-        
         $sql_tmp = "
 SELECT * FROM nmt_inventory_item_picture ORDER BY RAND() LIMIT 0,1 ";
-        //$sql=sprintf($sql_tmp,$limit);
-        $sql= $sql_tmp;
-        //echo $sql;
-        
+        // $sql=sprintf($sql_tmp,$limit);
+        $sql = $sql_tmp;
+        // echo $sql;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItemPicture', 'nmt_inventory_item_picture');
@@ -395,112 +385,111 @@ SELECT * FROM nmt_inventory_item_picture ORDER BY RAND() LIMIT 0,1 ";
             return null;
         }
     }
-    
+
     /**
-     *  Get Last created Items
+     * Get Last created Items
      *
-     *  @param number $limit
-     *  @param number $offset
-     *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     * @param number $limit
+     * @param number $offset
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
      *
      */
-    public function getLastCreatedItems($limit=100,$offset=0)
+    public function getLastCreatedItems($limit = 100, $offset = 0)
     {
-        
         $sql_tmp = "
 select
     nmt_inventory_item.*
     From nmt_inventory_item
 order by nmt_inventory_item.created_on desc LIMIT %s";
-        
-        if($offset>0){
+
+        if ($offset > 0) {
             $sql_tmp = $sql_tmp . " OFFSET " . $offset;
         }
-        
-        $sql=sprintf($sql_tmp,$limit);
-        
-        //echo $sql;
-        
+
+        $sql = sprintf($sql_tmp, $limit);
+
+        // echo $sql;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
-             $query = $this->_em->createNativeQuery($sql, $rsm);
+            $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;
         } catch (NoResultException $e) {
             return null;
         }
     }
-    
+
     /**
-     * 
-     *  @param string $item_type
-     *  @param int $is_active
-     *  @param int $is_fixed_asset
-     *  @param string $sort_by
-     *  @param string $sort
-     *  @param number $limit
-     *  @param number $offset
-     *  @return array
+     *
+     * @param string $item_type
+     * @param int $is_active
+     * @param int $is_fixed_asset
+     * @param string $sort_by
+     * @param string $sort
+     * @param number $limit
+     * @param number $offset
+     * @return array
      *
      */
     public function getItems($item_type = null, $is_active = null, $is_fixed_asset = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = "SELECT * FROM nmt_inventory_item";
-        
+
         // when paginator needed
         if ($limit > 0) {
             $sql1 = "SELECT id from nmt_inventory_item";
-            
+
             $sql1 = $sql1 . " WHERE 1";
-            
+
             if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
                 $sql1 = $sql1 . " AND nmt_inventory_item.item_type =" . $item_type;
             }
-            
+
             if ($is_active == 1) {
                 $sql1 = $sql1 . " AND nmt_inventory_item.is_active = 1";
             } elseif ($is_active == - 1) {
                 $sql1 = $sql1 . " AND nmt_inventory_item.is_active = 0";
             }
-            
+
             if ($is_fixed_asset == 1) {
                 $sql1 = $sql1 . " AND nmt_inventory_item.is_fixed_asset = 1";
             } elseif ($is_fixed_asset == - 1) {
                 $sql1 = $sql1 . " AND nmt_inventory_item.is_fixed_asset = 0";
             }
-            
+
             if ($sort_by == "itemName") {
                 $sql1 = $sql1 . " ORDER BY nmt_inventory_item.item_name " . $sort;
             } elseif ($sort_by == "createdOn") {
                 $sql1 = $sql1 . " ORDER BY nmt_inventory_item.created_on " . $sort;
             }
-            
+
             $sql1 = $sql1 . " LIMIT " . $limit;
-            
+
             $sql1 = $sql1 . " OFFSET " . $offset;
-            
+
             $sql = $sql . " INNER JOIN (" . $sql1 . ") as t1 on t1.id = nmt_inventory_item.id";
         } else {
-            
+
             $sql = $sql . " WHERE 1";
-            
+
             if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
                 $sql = $sql . " AND nmt_inventory_item.item_type =" . $item_type;
             }
-            
+
             if ($is_active == 1) {
                 $sql = $sql . " AND nmt_inventory_item.is_active = 1";
             } elseif ($is_active == - 1) {
                 $sql = $sql . " AND nmt_inventory_item.is_active = 0";
             }
-            
+
             if ($is_fixed_asset == 1) {
                 $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 1";
             } elseif ($is_fixed_asset == - 1) {
                 $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 0";
             }
-            
+
             if ($sort_by == "itemName") {
                 $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
             } elseif ($sort_by == "createdOn") {
@@ -522,24 +511,23 @@ order by nmt_inventory_item.created_on desc LIMIT %s";
     public function getTotalItem($item_type = null, $is_active = null, $is_fixed_asset = null)
     {
         $sql = "SELECT count(*) as total_row FROM nmt_inventory_item Where 1 ";
-        
-       if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
+
+        if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
             $sql = $sql . " AND nmt_inventory_item.item_type =" . $item_type;
         }
-        
+
         if ($is_active == 1) {
             $sql = $sql . " AND nmt_inventory_item.is_active = 1";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND nmt_inventory_item.is_active = 0";
         }
-        
+
         if ($is_fixed_asset == 1) {
             $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 1";
         } elseif ($is_fixed_asset == - 1) {
             $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 0";
-        } 
-        
-        
+        }
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
@@ -560,7 +548,7 @@ order by nmt_inventory_item.created_on desc LIMIT %s";
     public function getAlbum($cat_id)
     {
         $sql = $this->sql_cat_album;
-        
+
         if ($cat_id > 0) {
             $sql = $sql . " AND nmt_inventory_item_category_member.category_id=" . $cat_id;
         }
@@ -583,23 +571,23 @@ order by nmt_inventory_item.created_on desc LIMIT %s";
     public function getItemPrice($item_type = null, $is_active = null, $is_fixed_asset = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql_item_price;
-        
+
         if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
             $sql = $sql . " AND nmt_inventory_item.item_type =" . $item_type;
         }
-        
+
         if ($is_active == 1) {
             $sql = $sql . " AND nmt_inventory_item.is_active = 1";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND nmt_inventory_item.is_active = 0";
         }
-        
+
         if ($is_fixed_asset == 1) {
             $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 1";
         } elseif ($is_fixed_asset == - 1) {
             $sql = $sql . " AND nmt_inventory_item.is_fixed_asset = 0";
         }
-        
+
         if ($sort_by == "itemName") {
             $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
         } elseif ($sort_by == "createdOn") {
@@ -607,71 +595,43 @@ order by nmt_inventory_item.created_on desc LIMIT %s";
         } elseif ($sort_by == "vendorName") {
             $sql = $sql . " ORDER BY IFNULL(nmt_bp_vendor.vendor_name,nmt_bp_vendor_1.vendor_name) " . $sort;
         }
-        
+
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }
-        
+
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
         $sql = $sql . ";";
-        
+
         // echo $sql;
-        
+
         $stmt = $this->_em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
     }
-    
-   /**
-    * 
-    * @param number $item_id
-    * @return array|NULL
-    */
-    public function getItemLastTrx($item_id=0)
-    {
-        $sql = $this->sql_item_last_trx;
-        
-        if($item_id>0){
-            $sql = $sql . " AND nmt_inventory_trx.item_id=. $item_id ";
-        }
-         
-        try {
-            $rsm = new ResultSetMappingBuilder($this->_em);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryTrx', 'nmt_inventory_trx');
-            $rsm->addScalarResult("trx_total_record", "trx_total_record");
-            //$rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
-            //$rsm->addScalarResult("processing_quantity", "processing_quantity");
-            
-            $query = $this->_em->createNativeQuery($sql, $rsm);
-            $result = $query->getResult();
-            return $result;
-        } catch (NoResultException $e) {
-            return null;
-        }
-    }
-    
+
     /**
      *
      * @param number $item_id
      * @return array|NULL
      */
-    public function getItemPurchasing($item_id=0)
+    public function getItemLastTrx($item_id = 0)
     {
-        $sql = $this->sql_item_purchasing;
-        
-        if($item_id>0){
-            $sql = $sql . " AND nmt_inventory_item_purchasing.item_id=. $item_id ";
+        $sql = $this->sql_item_last_trx;
+
+        if ($item_id > 0) {
+            $sql = $sql . " AND nmt_inventory_trx.item_id=. $item_id ";
         }
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItemPurchasing', 'nmt_inventory_item_purchasing');
-            $rsm->addScalarResult("purchasing_total_record", "purchasing_total_record");
-            //$rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
-            //$rsm->addScalarResult("processing_quantity", "processing_quantity");
-            
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryTrx', 'nmt_inventory_trx');
+            $rsm->addScalarResult("trx_total_record", "trx_total_record");
+            // $rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
+            // $rsm->addScalarResult("processing_quantity", "processing_quantity");
+
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;
@@ -679,11 +639,40 @@ order by nmt_inventory_item.created_on desc LIMIT %s";
             return null;
         }
     }
-    
-   /**
-    *  Get Vacant Serial Number
-    *  @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
-    */
+
+    /**
+     *
+     * @param number $item_id
+     * @return array|NULL
+     */
+    public function getItemPurchasing($item_id = 0)
+    {
+        $sql = $this->sql_item_purchasing;
+
+        if ($item_id > 0) {
+            $sql = $sql . " AND nmt_inventory_item_purchasing.item_id=. $item_id ";
+        }
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItemPurchasing', 'nmt_inventory_item_purchasing');
+            $rsm->addScalarResult("purchasing_total_record", "purchasing_total_record");
+            // $rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
+            // $rsm->addScalarResult("processing_quantity", "processing_quantity");
+
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get Vacant Serial Number
+     *
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     */
     public function getVacantSerialNumbers()
     {
         $sql_tmp = "
@@ -691,11 +680,11 @@ select
 *
 from nmt_inventory_serial
 where nmt_inventory_serial.is_active=%s AND nmt_inventory_serial.item_id is null";
-        
+
         $sql = sprintf($sql_tmp, 1);
-        
-        //echo $sql;
-        
+
+        // echo $sql;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventorySerial', 'nmt_inventory_serial');
@@ -706,6 +695,46 @@ where nmt_inventory_serial.is_active=%s AND nmt_inventory_serial.item_id is null
             return null;
         }
     }
+
+    public function getAllItemWithSerial()
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('i', 's')
+            ->from('\Application\Entity\NmtInventoryItem', 'i')
+            ->leftjoin('\Application\Entity\NmtInventoryItemSerial', 's', \Doctrine\ORM\Query\Expr\Join::WITH, 's.item=i.id')
+            ->where('i.monitoredBy = :m')
+            ->setParameter('m', 'SN');
+        ;
+       return $qb->getQuery()->getResult();
+    }
     
+    
+    public function getAllItemWithSerial1()
+    {
+        $sql_tmp = "
+select 
+    nmt_inventory_item.*,
+    nmt_inventory_item_serial.id,
+    nmt_inventory_item_serial.sys_number as sn
+    from nmt_inventory_item
+left join nmt_inventory_item_serial
+on nmt_inventory_item_serial.item_id = nmt_inventory_item.id
+where nmt_inventory_item.id =926";
+        
+        $sql = $sql_tmp;
+        echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+            $rsm->addScalarResult("sn", "sn");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }
 

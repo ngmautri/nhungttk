@@ -2,13 +2,11 @@
 
 namespace Application\Controller;
 
-use Application\Controller\DepartmentController;
-
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
-
-/*
- * @author nmt
+use Zend\ServiceManager\ServiceLocatorInterface;
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class DepartmentControllerFactory implements FactoryInterface {
@@ -25,18 +23,11 @@ class DepartmentControllerFactory implements FactoryInterface {
 			
 		$controller = new DepartmentController();
 		
-		//User Table
-		$tbl =  $container->get ('User\Model\UserTable' );
-		$controller->setUserTable($tbl);
-		
+			
 		$tbl =  $container->get ('Application\Model\AclRoleTable' );
 		$controller->setAclRoleTable($tbl);
 		
-		//Auth Service
-		$sv =  $container->get ('AuthService' );
-		$controller->setAuthService($sv );
-		
-		//Auth Service
+    	//Auth Service
 		$sv =  $container->get ('Application\Service\DepartmentService' );
 		$controller->setDepartmentService($sv );
 		

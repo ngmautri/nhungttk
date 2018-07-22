@@ -73,8 +73,8 @@ class PdfService {
 	
 	/**
 	 * 
-	 * @param unknown $detail
-	 * @param unknown $pr_code
+	 * @param string $detail
+	 * @param string $pr_code
 	 */
 	public function printPrPdf($detail,$pr_code) {
 	    

@@ -2,12 +2,12 @@
 
 namespace Application\Controller;
 
-use Application\Controller\IndexController;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-/*
- * @author nmt
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class IndexControllerFactory implements FactoryInterface {

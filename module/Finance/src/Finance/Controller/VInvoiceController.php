@@ -765,16 +765,29 @@ class VInvoiceController extends AbstractActionController
                             
                             for ($i = 0; $i < $r->getQuantity(); $i ++) {
                                 
+                                
+                                $criteria = array(
+                                    'isActive' => 1,
+                                    'item' => $r->getItem(),
+                                );
+                                
+                                $sn_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findOneBy($criteria);
+                                
+                                
                                 // create serial number
-                                $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
+                                if (! $sn_ck == null) {
+                                    $sn_entity = $sn_ck;
+                                } else {
+                                    $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
+                                }
+                                
                                 $sn_entity->setItem($r->getItem());
                                 $sn_entity->setApRow($r);
                                 
                                 $sn_entity->setInventoryTrx($stock_gr_entity);
                                 $sn_entity->setIsActive(1);
                                 $sn_entity->setSysNumber($nmtPlugin->getDocNumber($sn_entity));
-                                $sn_entity->setCreatedBy($u);
-                                $sn_entity->setCreatedBy($u);
+                                 $sn_entity->setCreatedBy($u);
                                 $sn_entity->setCreatedOn($createdOn);
                                 $sn_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
                                 $this->doctrineEM->persist($sn_entity);

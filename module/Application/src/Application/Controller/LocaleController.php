@@ -2,12 +2,11 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Session\Container;
 use Doctrine\ORM\EntityManager;
-use Zend\Mvc\I18n\Translator;
-use Zend\Cache\StorageFactory;
 use Zend\Cache\Storage\StorageInterface;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\I18n\Translator;
+use Zend\Session\Container;
 /**
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com

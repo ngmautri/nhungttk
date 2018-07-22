@@ -6,8 +6,9 @@ use Application\Controller\AclController;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
 
-/*
- * @author nmt
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class AclControllerFactory implements FactoryInterface {

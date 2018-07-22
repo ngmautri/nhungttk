@@ -43,7 +43,7 @@ class ItemController extends AbstractActionController
         /**@var \Application\Repository\NmtInventoryItemRepository $rep ;*/
         $rep = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
 
-        $list = $rep->getAllItemWithSerial();
+        $list = $rep->getAllItemWithSerial1();
 
         echo count($list);
         

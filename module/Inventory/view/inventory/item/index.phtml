@@ -36,20 +36,21 @@ else:
 	 <?php
 	
 	$count = 0;
-	foreach ( $list as $l ) :	
+	foreach ( $list as $l ) :
+	var_dump($l);
 		$count ++;
 	
 		
      /**@var \Application\Entity\NmtInventoryItem $a ; */ 
-		$a = $l;
+		$a = $l[0];
 		?>
 		
 	<tr>
 			<td>
 				<?php echo $count;?>
 			</td>
-			<td><?php if($a!==null):echo $a->getSerialNumber();endif;?></td>
-		<td><?php if($a!==null):echo $a->getItemName();endif;?></td>
+		<td><?php if($a!==null):echo get_class($a) .  $a->getId();endif;?></td>
+		<td><?php echo $l['sn'];?></td>
 			
 	</tr>
 	<?php endforeach; ?>

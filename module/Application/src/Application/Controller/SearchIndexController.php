@@ -8,6 +8,7 @@ use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
 use Inventory\Service\ItemSearchService;
+use Inventory\Service\ItemSerialSearchService;
 use Procure\Service\PrSearchService;
 use PM\Service\ProjectSearchService;
 /**
@@ -20,8 +21,10 @@ class SearchIndexController extends AbstractActionController
 
     protected $doctrineEM;
     protected $itemSearchService;
+    protected $itemSerialSearchService;
     protected $prSearchService;
     protected $projectSearchService;
+    
 
     /*
      * Defaul Action
@@ -36,9 +39,12 @@ class SearchIndexController extends AbstractActionController
     public function updateAllAction()
     {
         $result = array();
-        $result[] = "ITEM ". $this->itemSearchService->createItemIndex();
+       // $result[] = "ITEM ". $this->itemSearchService->createItemIndex();
+        $result[] = "ITEM Serial". $this->itemSerialSearchService->createItemIndex();
+        
         $result[] = "PR ". $this->prSearchService->createIndex();
         $result[] = "PROJECT " . $this->projectSearchService->createIndex();
+     
         
         // trigger uploadPicture. AbtractController is EventManagerAware.
         $this->getEventManager()->trigger('system.log', __CLASS__, array(
@@ -94,16 +100,18 @@ class SearchIndexController extends AbstractActionController
 	}
 	
     /**
-     * @return the $doctrineEM
+     * 
+     *  @return \Doctrine\ORM\EntityManager
      */
     public function getDoctrineEM()
     {
         return $this->doctrineEM;
     }
 
-    /**
-     * @param field_type $doctrineEM
-     */
+   /**
+    * 
+    *  @param EntityManager $doctrineEM
+    */
     public function setDoctrineEM(EntityManager $doctrineEM)
     {
         $this->doctrineEM = $doctrineEM;
@@ -153,6 +161,22 @@ class SearchIndexController extends AbstractActionController
     {
         $this->projectSearchService = $projectSearchService;
     }
+    /**
+     * @return mixed
+     */
+    public function getItemSerialSearchService()
+    {
+        return $this->itemSerialSearchService;
+    }
+
+    /**
+     * @param mixed $itemSerialSearchService
+     */
+    public function setItemSerialSearchService(ItemSerialSearchService $itemSerialSearchService)
+    {
+        $this->itemSerialSearchService = $itemSerialSearchService;
+    }
+
 
 
 

@@ -73,6 +73,11 @@ class LoggingListener implements ListenerAggregateInterface
             'onInventoryChangeLogging'
         ), 200);
         
+        $this->listeners[] = $events->attach('inventory.item-indexing.log', array(
+            $this,
+            'onInventoryItemIndexing'
+        ), 200);
+        
         // HR ACT LOG
         $this->listeners[] = $events->attach('hr.activity.log', array(
             $this,
@@ -859,6 +864,20 @@ class LoggingListener implements ListenerAggregateInterface
         }
         
         $this->doctrineEM->flush();
+    }
+    
+    /**
+     *
+     * @param EventInterface $e
+     */
+    public function onInventoryItemIndexing(EventInterface $e)
+    {
+        $log_message = $e->getParam('message');
+        $filename = 'inventory_item_sn_indexing_' . date('F') . '_' . date('Y') . '.txt';
+        $log = new Logger();
+        $writer = new Stream('./data/log/' . $filename);
+        $log->addWriter($writer);
+        $log->log(Logger::INFO, $log_message);
     }
 
   

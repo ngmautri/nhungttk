@@ -698,43 +698,12 @@ where nmt_inventory_serial.is_active=%s AND nmt_inventory_serial.item_id is null
 
     public function getAllItemWithSerial()
     {
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select('i', 's')
-            ->from('\Application\Entity\NmtInventoryItem', 'i')
-            ->leftjoin('\Application\Entity\NmtInventoryItemSerial', 's', \Doctrine\ORM\Query\Expr\Join::WITH, 's.item=i.id')
-            ->where('i.monitoredBy = :m')
-            ->setParameter('m', 'SN');
-        ;
-       return $qb->getQuery()->getResult();
+        $sql ='';
+        $stmt = $this->_em->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
-    
-    
-    public function getAllItemWithSerial1()
-    {
-        $sql_tmp = "
-select 
-    nmt_inventory_item.*,
-    nmt_inventory_item_serial.id,
-    nmt_inventory_item_serial.sys_number as sn
-    from nmt_inventory_item
-left join nmt_inventory_item_serial
-on nmt_inventory_item_serial.item_id = nmt_inventory_item.id
-where nmt_inventory_item.id =926";
-        
-        $sql = $sql_tmp;
-        echo $sql;
-        
-        try {
-            $rsm = new ResultSetMappingBuilder($this->_em);
-            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
-            $rsm->addScalarResult("sn", "sn");
-            
-            $query = $this->_em->createNativeQuery($sql, $rsm);
-            $result = $query->getResult();
-            return $result;
-        } catch (NoResultException $e) {
-            return null;
-        }
-    }
+
+   
 }
 

@@ -29,6 +29,10 @@ class SearchIndexControllerFactory implements FactoryInterface {
 		
 		$sv =  $container->get ('Inventory\Service\ItemSearchService' );
 		$controller->setItemSearchService($sv );
+
+		$sv =  $container->get ('Inventory\Service\ItemSerialSearchService' );
+		$controller->setItemSerialSearchService($sv );
+		
 		
 		$sv =  $container->get ('Procure\Service\PrSearchService' );
 		$controller->setPrSearchService($sv );

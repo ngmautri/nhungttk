@@ -158,15 +158,6 @@ class Module
             ),
             
             'factories' => array(
-                'Zend\Db\Adapter\Adapter' => function ($sm) {
-                    return new Adapter(array(
-                        'driver' => 'Pdo_Mysql',
-                        'hostname' => 'localhost',
-                        'database' => 'mla',
-                        'username' => 'root',
-                        'password' => 'NMTerfolgkflg#7986'
-                    ));
-                },
                 
                 // Authentication Service
                 'AuthService' => function ($sm) {
@@ -177,25 +168,6 @@ class Module
                     return $authService;
                 },
                 
-                // Email Service
-                'SmtpTransportService' => function ($sm) {
-                    
-                    $transport = new SmtpTransport();
-                    $options = new SmtpOptions(array(
-                        'name' => 'Web.de',
-                        'host' => 'smtp.web.de',
-                        'port' => '587',
-                        'connection_class' => 'login',
-                        'connection_config' => array(
-                            'username' => 'mib-team@web.de',
-                            'password' => 'mib2009',
-                            'ssl' => 'tls'
-                        )
-                    ));
-                    
-                    $transport->setOptions($options);
-                    return $transport;
-                },
                 
                 // Email Service
                 'SmtpTransportService1' => function ($sm) {
@@ -208,7 +180,7 @@ class Module
                         'connection_class' => 'login',
                         'connection_config' => array(
                             'username' => 'mla-web@outlook.com',
-                            'password' => 'MLA#2016',
+                            'password' => '',
                             'ssl' => 'tls'
                         )
                     ));

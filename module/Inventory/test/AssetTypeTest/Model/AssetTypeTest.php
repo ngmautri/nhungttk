@@ -2,38 +2,21 @@
 
 namespace AssetTypeTest\Model;
 
-use PHPUnit_Framework_TestCase;
-use Zend\Db\TableGateway;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\EventManager\EventManager;
-use Zend\EventManager\Event;
-use Inventory\Model\AssetCategory;
-use Inventory\Model\AssetCategoryTable;
-use Inventory\Model\AssetGroup;
-use Inventory\Model\AssetGroupTable;
-use AssetTypeTest\Bootstrap;
-use Inventory\Services\AssetService;
-
-
-use Inventory\Model\SparepartCategory;
-use Inventory\Model\SparepartCategoryMember;
-use Inventory\Model\ArticleLastDN;
-use Inventory\Model\ArticleLastDNTable;
-
-use Inventory\Model\SparepartLastDN;
-use Inventory\Model\SparepartLastDNTable;
-
-use Inventory\Services\EpartnerService;
-use Zend\Mime\Part as MimePart;
-use Zend\Mime\Message as MimeMessage;
-use Zend\Mail\Header\ContentType;
-use Zend\Mail\Message;
-use Inventory\Model\FIFO;
 use Inventory\Model\ItemGr;
+use Inventory\Model\Valuation\Strategy\FIFO;
+use PHPUnit_Framework_TestCase;
+
+
 class AssetTypeTest extends PHPUnit_Framework_TestCase {
+    
+    public function testAssetGroupTest() {
+        $rep = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');        
+        $list = $rep->getAllItemWithSerial1();        
+        echo count($list);
+        
+    }
 	
- 	public function testAssetGroupTest() {
+ 	public function atestAssetGroupTest() {
 		
  	    $q1 = new FIFO();
  	    

@@ -48,7 +48,8 @@ class BackupController extends AbstractActionController {
 	}
 	
     /**
-     * @return the $doctrineEM
+     * 
+     *  @return \Doctrine\ORM\EntityManager
      */
     public function getDoctrineEM()
     {
@@ -56,7 +57,8 @@ class BackupController extends AbstractActionController {
     }
 
     /**
-     * @param field_type $doctrineEM
+     * 
+     *  @param EntityManager $doctrineEM
      */
     public function setDoctrineEM(EntityManager $doctrineEM)
     {

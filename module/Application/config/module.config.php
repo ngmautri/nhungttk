@@ -230,6 +230,9 @@ return array(
             'Application\Listener\FinanceListener' => 'Application\Listener\FinanceListenerFactory',
             'Application\Listener\ProcureListener' => 'Application\Listener\ProcureListenerFactory',
             
+            'Application\Service\SmtpOutlookService' => 'Application\Service\SmtpOutlookServiceFactory',
+            'Application\Service\SmtpWebDeService' => 'Application\Service\SmtpWebDeServiceFactory',
+            
             
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory', // <-- add this

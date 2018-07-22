@@ -13,7 +13,7 @@
 
 // SQL: 2nyAf8CT3hujzGLM
 return array(
-    
+
     'locale' => array(
         'default' => 'en_US',
         'available' => array(
@@ -21,17 +21,26 @@ return array(
             'vi_VN' => 'Tieng Viet',
             'lo_LA' => 'Lao',
             'de_DE' => 'Deutsch'
-        
+        )
+    ),
+
+    'db' => array(
+        'driver' => 'Pdo',
+        'dsn' => 'mysql:dbname=mla;host=localhost',
+        'driver_options' => array(
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
         )
     ),
     
+   
+
     'service_manager' => array(
-        
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory'
-        
-        )
-    
-    )
+        ),
 
+        'factories' => array(
+            'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory'
+        )
+    )
 );

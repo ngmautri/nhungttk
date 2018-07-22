@@ -1,36 +1,26 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
+
 namespace Inventory\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use ZendSearch\Lucene\Index\Term;
-use ZendSearch\Lucene\Search\Query\MultiTerm;
-use ZendSearch\Lucene\Search\Query\Wildcard;
+use Inventory\Service\ItemSearchService;
 use Inventory\Services\ArticleSearchService;
 use Inventory\Services\AssetSearchService;
 use Inventory\Services\SparePartsSearchService;
-use Procurement\Model\PurchaseRequestCartItemTable;
 use User\Model\UserTable;
+use ZendSearch\Lucene\Index\Term;
+use ZendSearch\Lucene\Search\Query\Wildcard;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
-use Inventory\Service\ItemSearchService;
-
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *
+ */
 class SearchController extends AbstractActionController {
 	
-	private $assetSearchService;
-	private $sparePartSearchService;
-	private $articleSearchService;
-	private $purchaseRequestCartItemTable;
-	private $authService;
-	private $userTable;
-	
+		
 	protected $itemSearchService;
 	
 	/*
@@ -374,67 +364,11 @@ class SearchController extends AbstractActionController {
 		));
 	}
 	
-	public function getAssetSearchService() {
-		return $this->assetSearchService;
-	}
-	
-		public function setAssetSearchService(AssetSearchService $assetSearchService) {
-		$this->assetSearchService = $assetSearchService;
-		return $this;
-	}
-	
-	public function getSparePartSearchService() {
-		return $this->sparePartSearchService;
-	}
-	
-	public function setSparePartSearchService(SparePartsSearchService $sparePartSearchService) {
-		$this->sparePartSearchService = $sparePartSearchService;
-		return $this;
-	}
-	
-	public function getArticleSearchService() {
-		return $this->articleSearchService;
-	}
-	
-	public function setArticleSearchService(ArticleSearchService $articleSearchService) {
-		$this->articleSearchService = $articleSearchService;
-		return $this;
-	}
-	
-	
-	public function getPurchaseRequestCartItemTable() {
-		return $this->purchaseRequestCartItemTable;
-	}
-	
-	public function setPurchaseRequestCartItemTable($purchaseRequestCartItemTable) {
-		$this->purchaseRequestCartItemTable = $purchaseRequestCartItemTable;
-		return $this;
-	}
-	
-	public function getAuthService() {
-		return $this->authService;
-	}
-	public function setAuthService($authService) {
-		$this->authService = $authService;
-		return $this;
-	}
-	public function getUserTable() {
-		return $this->userTable;
-	}
-	public function setUserTable(UserTable $userTable) {
-		$this->userTable = $userTable;
-		return $this;
-	}
-	public function getItemSearchService() {
-		return $this->itemSearchService;
-	}
+
 	public function setItemSearchService(ItemSearchService $itemSearchService) {
 		$this->itemSearchService = $itemSearchService;
 		return $this;
 	}
-	
-	
-	
 
 }
 

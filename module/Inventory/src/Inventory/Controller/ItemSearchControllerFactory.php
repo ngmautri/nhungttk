@@ -6,8 +6,9 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Inventory\Controller\ItemSearchController;
 
-/*
- * @author nmt
+/**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class ItemSearchControllerFactory implements FactoryInterface {

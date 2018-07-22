@@ -21,7 +21,6 @@ class ItemSerialController extends AbstractActionController
     const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     protected $doctrineEM;
-
     protected $itemSearchService;
 
     /**
@@ -574,7 +573,7 @@ class ItemSerialController extends AbstractActionController
         endif;
         
         $criteria = array();
-        $sort_criteria = array();
+        $sort_criteria = array("sysNumber"=>"DESC");
         
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findBy($criteria, $sort_criteria);
         

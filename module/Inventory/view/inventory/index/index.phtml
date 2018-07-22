@@ -1,13 +1,57 @@
+    <?php /**@var \Application\Entity\NmtInventoryItem $a ; */ ?>
 
-	
-	<ul id="menu" >
-	 <li> <a href="<?php echo $this->baseUrl ?>/application">Settings</a> </li>
-	 <li> <a href="<?php echo $this->baseUrl ?>/inventory/asset/category">Asset Management</a> </li>
-	 <li> <a href="<?php echo $this->baseUrl ?>/inventory/spareparts/category">Spare-Part Management</a> </li>
-	 <li> <a href="<?php echo $this->baseUrl ?>/inventory/article/list">Items Management</a> </li>
-	 <li> <a href="<?php echo $this->baseUrl ?>/procurement/pr/list">Procurement Management</a> </li>
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Contract /PO List:</a></li>
 	</ul>
-	
-	 
+<div id="general" style="padding: 10px 10px 1px 3px">
 
-    
+
+
+<?php
+if ($total_records <= 0): 
+	echo 'No record found!';
+else:
+	
+	if (! is_null ( $paginator)):
+		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+	else:
+		echo $total_records . ' records found!';
+	endif;
+	
+	?>
+
+<table style="font-size: 9.3pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Status</b></td>
+			</tr>
+	</thead>
+
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $l ) :	
+		$count ++;
+	
+		
+     /**@var \Application\Entity\NmtInventoryItem $a ; */ 
+		$a = $l;
+		?>
+		
+	<tr>
+			<td>
+				<?php echo $count;?>
+			</td>
+			<td><?php echo $a->getItemName();?></td>
+			
+	</tr>
+	<?php endforeach; ?>
+ </tbody>
+</table>
+
+<?php endif;?>

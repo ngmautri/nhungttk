@@ -1,10 +1,8 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
+ * @author Nguyen Mau Tri
  *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 return array(
     'navigation' => array(
@@ -23,7 +21,7 @@ return array(
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
             ),
-            
+
             array(
                 'label' => 'Item List',
                 'route' => 'Inventory/default',
@@ -38,7 +36,7 @@ return array(
                 'action' => 'item-price',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            
+
             array(
                 'label' => 'Item Category',
                 'route' => 'Inventory/default',
@@ -46,7 +44,7 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            
+
             array(
                 'label' => 'Item Transaction',
                 'route' => 'Inventory/default',
@@ -68,7 +66,7 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            
+
             array(
                 'label' => 'Batch Number',
                 'route' => 'Inventory/default',
@@ -76,23 +74,20 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            
+
             array(
                 'label' => 'Log',
                 'route' => 'Inventory/default',
                 'controller' => 'activity-log',
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
-            ),
-            
-           
-            
+            )
         )
     ),
-    
+
     'router' => array(
         'routes' => array(
-            
+
             'home' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
@@ -103,7 +98,7 @@ return array(
                     )
                 )
             ),
-            
+
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
@@ -118,7 +113,7 @@ return array(
                         'action' => 'index'
                     )
                 ),
-                
+
                 'may_terminate' => true,
                 'child_routes' => array(
                     'default' => array(
@@ -133,37 +128,11 @@ return array(
                         )
                     )
                 )
-            ),
-            
-            'Asset_Category' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/inventory/asset/category',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Inventory\Controller',
-                        'controller' => 'Asset',
-                        'action' => 'category'
-                    )
-                )
-            ),
-            
-            'Spareparts_Category' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/inventory/spareparts/category',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Inventory\Controller',
-                        'controller' => 'Spareparts',
-                        'action' => 'category'
-                    )
-                )
             )
-        
         )
-    
     ),
-    
-    'console' => array(
+
+    /* 'console' => array(
         'router' => array(
             'routes' => array(
                 'order_suggestion_console' => array(
@@ -177,39 +146,30 @@ return array(
                 )
             )
         )
-    ),
-    
+    ), */
+
     'service_manager' => array(
         'factories' => array(
+
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-            'inventory_navi' => 'Inventory\Service\InventoryNavigationFactory', // <-- add this
-            
-            'Inventory\Services\ArticleService' => 'Inventory\Services\ArticleServiceFactory',
-            'Inventory\Services\ArticleSearchService' => 'Inventory\Services\ArticleSearchServiceFactory',
-            'Inventory\Services\AssetService' => 'Inventory\Services\AssetServiceFactory',
-            'Inventory\Services\SparepartService' => 'Inventory\Services\SparepartServiceFactory'
-        
+
+            // navagation
+            'inventory_navi' => 'Inventory\Service\InventoryNavigationFactory',
+
+            'Inventory\Service\ItemSearchService' => 'Inventory\Service\ItemSearchServiceFactory',
+            'Inventory\Service\ItemSerialSearchService' => 'Inventory\Service\ItemSerialSearchServiceFactory'
         )
     ),
-    
-   
+
     'controllers' => array(
-       
+
         'factories' => array(
             'Inventory\Controller\Index' => 'Inventory\Controller\IndexControllerFactory',
-            'Inventory\Controller\Admin' => 'Inventory\Controller\AdminControllerFactory',
-            'Inventory\Controller\Spareparts' => 'Inventory\Controller\SparepartsControllerFactory',
-            'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
-            'Inventory\Controller\Count' => 'Inventory\Controller\CountControllerFactory',
-            'Inventory\Controller\Article' => 'Inventory\Controller\ArticleControllerFactory',
             'Inventory\Controller\Search' => 'Inventory\Controller\SearchControllerFactory',
-            'Inventory\Controller\Console' => 'Inventory\Controller\ConsoleControllerFactory',
-            'Inventory\Controller\Purchasing' => 'Inventory\Controller\PurchasingControllerFactory',
             'Inventory\Controller\Warehouse' => 'Inventory\Controller\WarehouseControllerFactory',
-            'Inventory\Controller\Transaction' => 'Inventory\Controller\TransactionControllerFactory',
-            'Inventory\Controller\Image' => 'Inventory\Controller\ImageControllerFactory',
+
             // refactory
-            
+
             'Inventory\Controller\Item' => 'Inventory\Controller\ItemControllerFactory',
             'Inventory\Controller\Category' => 'Inventory\Controller\CategoryControllerFactory',
             'Inventory\Controller\ItemAttachment' => 'Inventory\Controller\ItemAttachmentControllerFactory',
@@ -223,20 +183,13 @@ return array(
             'Inventory\Controller\BatchNumber' => 'Inventory\Controller\BatchNumberControllerFactory',
             'Inventory\Controller\ItemSerial' => 'Inventory\Controller\ItemSerialControllerFactory',
             'Inventory\Controller\ItemSerialAttachment' => 'Inventory\Controller\ItemSerialAttachmentControllerFactory',
-            
-            'Inventory\Controller\ItemBatch' => 'Inventory\Controller\ItemBatchControllerFactory',
-            
-            
-            'Inventory\Controller\GR' => 'Inventory\Controller\GRControllerFactory',
+            'Inventory\Controller\ItemBatch' => 'Inventory\Controller\ItemBatchControllerFactory',            'Inventory\Controller\GR' => 'Inventory\Controller\GRControllerFactory',
             'Inventory\Controller\GI' => 'Inventory\Controller\GIControllerFactory',
             'Inventory\Controller\Transfer' => 'Inventory\Controller\TransferControllerFactory',
             'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
             'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
-            'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory',
- 
-            
+            'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory'
         )
-    
     ),
     'view_manager' => array(
         'display_not_found_reason' => true,
@@ -259,5 +212,5 @@ return array(
             __DIR__ . '/../view'
         ),
         'ViewJsonStrategy'
-    ),
+    )
 );

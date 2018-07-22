@@ -1,22 +1,59 @@
+    <?php /**@var \Application\Entity\NmtInventoryItem $a ; */ ?>
+
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Contract /PO List:</a></li>
+	</ul>
+<div id="general" style="padding: 10px 10px 1px 3px">
+
+
+
 <?php
-if (count ( $message ) > 0) {
-	echo '<div id="flash_message" class="global-notice">';
-	foreach ( $message as $m ) :
-	echo   $m. '<br>';
-	endforeach;
-	echo '</div>';
-}
-?>
+if ($total_records <= 0): 
+	echo 'No record found!';
+else:
+	
+	if (! is_null ( $paginator)):
+		echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+	else:
+		echo $total_records . ' records found!';
+	endif;
+	
+	?>
 
-<h3>Item Management</h3>
+<table style="font-size: 9.3pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Status</b></td>
+			<td><b>Status</b></td>
+			</tr>
+	</thead>
 
-<hr>
-<ul id="menu">
-	<li><a href="<?php echo $this->baseUrl ?>/inventory/item/add">Create new item</a></li>
-		<li><a href="<?php echo $this->baseUrl ?>/inventory/item/list">All items</a></li>
-</ul>
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	foreach ( $list as $l ) :	
+		$count ++;
+	
+		
+     /**@var \Application\Entity\NmtInventoryItem $a ; */ 
+		$a = $l;
+		?>
+		
+	<tr>
+			<td>
+				<?php echo $count;?>
+			</td>
+			<td><?php if($a!==null):echo $a->getSerialNumber();endif;?></td>
+		<td><?php if($a!==null):echo $a->getItemName();endif;?></td>
+			
+	</tr>
+	<?php endforeach; ?>
+ </tbody>
+</table>
 
-<script>
-$( "#flash_message" ).fadeOut(4500);
-</script>
-
+<?php endif;?>

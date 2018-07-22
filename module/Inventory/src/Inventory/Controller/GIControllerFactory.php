@@ -7,7 +7,7 @@ use Zend\ServiceManager\FactoryInterface;
 
 /**
  * 
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class GIControllerFactory implements FactoryInterface{

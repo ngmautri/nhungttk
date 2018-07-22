@@ -27,14 +27,6 @@ class ItemControllerFactory implements FactoryInterface{
 		
 		$controller= new ItemController();
 		
-		//attach PictureUploadListener.
-		/* $pictureUploadListener = $container->get('Application\Listener\PictureUploadListener');
-		$controller->getEventManager()->attachAggregate($pictureUploadListener);
-		 */
-		
-		// User Table
-		$tbl = $container->get ( 'User\Model\UserTable' );
-		$controller->setUserTable ( $tbl );
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);

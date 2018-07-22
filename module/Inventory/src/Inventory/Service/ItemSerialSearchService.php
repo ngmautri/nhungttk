@@ -23,7 +23,7 @@ use Zend\EventManager\EventManagerInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class ItemSearchService implements EventManagerAwareInterface
+class ItemSerialSearchService implements EventManagerAwareInterface
 {
 
     const ITEM_INDEX = "/data/inventory/indexes/item";

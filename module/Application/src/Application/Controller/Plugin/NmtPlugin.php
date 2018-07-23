@@ -3,6 +3,7 @@ namespace Application\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Doctrine\ORM\EntityManager;
+use Zend\Mail\Transport\Smtp as SmtpTransport;
 
 /**
  * 
@@ -15,6 +16,7 @@ class NmtPlugin extends AbstractPlugin
     protected $doctrineEM;
     protected $translator;
     protected $dbConfig;
+    protected $stmpOutlook;
 
     /**
      * Return List of Currency
@@ -404,6 +406,25 @@ class NmtPlugin extends AbstractPlugin
     {
         $this->dbConfig = $dbConfig;
     }
+    
+   /**
+    * 
+    *  @return \Zend\Mail\Transport\Smtp
+    */
+    public function getStmpOutlook()
+    {
+        return $this->stmpOutlook;
+    }
+
+   /**
+   * 
+   *  @param SmtpTransport $stmpOutlook
+   */
+    public function setStmpOutlook(SmtpTransport $stmpOutlook)
+    {
+        $this->stmpOutlook = $stmpOutlook;
+    }
+
 
 
 }

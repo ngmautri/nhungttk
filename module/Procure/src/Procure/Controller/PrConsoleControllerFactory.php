@@ -22,16 +22,7 @@ class PrConsoleControllerFactory implements FactoryInterface {
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		
 		$sm = $serviceLocator->getServiceLocator();
-			
 		$controller = new PrConsoleController ();
-		
-		//Auth Service
-		$sv =  $sm->get ('SmtpTransportService' );
-		$controller->setSmtpTransportService($sv);
-		
-		
-		$sv =  $sm->get ('SmtpTransportService1' );
-		$controller->setOutlookEmailService($sv);
 		
 		return $controller;
 	}

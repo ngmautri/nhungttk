@@ -34,6 +34,9 @@ class NmtPluginFactory implements FactoryInterface
         $dbConfig = $config['db'];
         $p->setDbConfig($dbConfig);
         
+        $sv =  $container->get('Application\Service\SmtpOutlookService');
+        $p->setStmpOutlook($sv);
+        
         return $p;
     }	
 }

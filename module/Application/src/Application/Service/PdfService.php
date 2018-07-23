@@ -13,7 +13,7 @@ class PdfService {
 	
 	public function testPdf($detail) {
 		
-		define ( 'PDF_HEADER_LOGO', ROOT . '\public\images\mascot.gif' );
+		define ( 'PDF_HEADER_LOGO', ROOT . '/public/images/mascot.gif' );
 		
 		// create new PDF document
 		$pdf = new MLAPdf ( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
@@ -166,8 +166,8 @@ EOD;
 	    
 	    
 	    // QRCODE,H : QR-CODE Best error correction
-	    //$pdf->write2DBarcode('/procure/pr/show?token=pGtKSwxXug_iF6E_1yXJnRGoao_Rw_ks&entity_id=310&checksum=405ea7dc6c17c272a184328a90015240', 'QRCODE,M', 20, 20, 20, 20, $style, 'N');
-	    //$pdf->Text(170, 20, '');
+	    $pdf->write2DBarcode('/procure/pr/show?token=pGtKSwxXug_iF6E_1yXJnRGoao_Rw_ks&entity_id=310&checksum=405ea7dc6c17c272a184328a90015240', 'QRCODE,M', 20, 20, 20, 20, $style, 'N');
+	    $pdf->Text(170, 20, '');
 	    
 	    
 	    // Close and output PDF document

@@ -635,7 +635,7 @@ class VInvoiceController extends AbstractActionController
                 
                 // posting upon transaction type.
                 /**
-                 * GR-NT
+                 * GR-NI
                  */
                 if ($r->getTransactionType() === \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI) :
                     //clearing
@@ -765,21 +765,8 @@ class VInvoiceController extends AbstractActionController
                             
                             for ($i = 0; $i < $r->getQuantity(); $i ++) {
                                 
-                                
-                                $criteria = array(
-                                    'isActive' => 1,
-                                    'item' => $r->getItem(),
-                                );
-                                
-                                $sn_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemSerial')->findOneBy($criteria);
-                                
-                                
-                                // create serial number
-                                if (! $sn_ck == null) {
-                                    $sn_entity = $sn_ck;
-                                } else {
-                                    $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
-                                }
+                                // create new serial number
+                                $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
                                 
                                 $sn_entity->setItem($r->getItem());
                                 $sn_entity->setApRow($r);

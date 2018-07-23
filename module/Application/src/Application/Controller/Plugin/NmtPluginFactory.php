@@ -27,7 +27,13 @@ class NmtPluginFactory implements FactoryInterface
         $p->setDoctrineEM($sv);  
         
         $sv =  $container->get('translator');
-        $p->setTranslator($sv);        
+        $p->setTranslator($sv);
+        
+        
+        $config = $container->get('config');
+        $dbConfig = $config['db'];
+        $p->setDbConfig($dbConfig);
+        
         return $p;
     }	
 }

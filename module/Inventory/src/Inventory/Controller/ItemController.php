@@ -46,6 +46,7 @@ class ItemController extends AbstractActionController
      */
     public function indexAction()
     {
+       
         
         $emailText = <<<EOT
 <p>Hello</p>

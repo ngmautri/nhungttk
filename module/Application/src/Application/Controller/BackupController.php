@@ -27,17 +27,37 @@ class BackupController extends AbstractActionController {
 
 	
     /**
-     * 
+     * mysql client need to be installed.
      */
 	public function dbAction() {
-	    //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-	    //exec('mysqldump --user=... --password=... --host=... DB_NAME > /path/to/output/file.sql');
 	    
-	    $fileName = ROOT.self::BACKUP_FOLDER.'/sql_' . date ("m-d-Y");
+	    
+	    /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+	    $nmtPlugin = $this->Nmtplugin();
+	    $dbConfig = $nmtPlugin->getDbConfig();
+	    
+	    $user_name = '';
+	    $pw = '';
+	    
+	    if(isset($dbConfig['username'])){
+	        $user_name =$dbConfig['username'];
+	    }
+	    
+	    if(isset($dbConfig['password'])){
+	        $pw =$dbConfig['password'];
+	    }
+		    
+	    $os = PHP_OS;
+	    $fileName = ROOT.self::BACKUP_FOLDER.'/sql_' . date ("m-d-Y").'.sql';
 	    echo $fileName;
 	    
-	    //exec ( 'java -jar ' . $pdf_box . '/pdfbox-app-2.0.5.jar Encrypt -O mla2017 -U ' . $filePassword . ' ' . "$folder/$name" );
-	    exec('mysqldump -u root --password=kflg7986 mla --result-file ' . $fileName . '.sql');
+	    if($os == \Application\Model\Constants::OS_LINUX){
+	        $exe_string = sprintf('mysqldump -u %s --password=%s mla > %s',$user_name,$pw,$fileName);	        
+	    }else{
+	        $exe_string = sprintf('mysqldump -u %s --password=%s mla --result-file %s',$user_name,$pw,$fileName);
+	    }
+	
+	    exec($exe_string);
 	    
 	    //AbtractController is EventManagerAware.
 	    $this->getEventManager()->trigger('system.log', __CLASS__, array(

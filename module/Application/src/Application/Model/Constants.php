@@ -8,6 +8,10 @@ namespace Application\Model;
  */
 class Constants
 {
+    const OS_LINUX = "Linux";
+    const OS_WINNT = "WINNT";
+    
+    
     /**
      * Inventory 
      * @var string

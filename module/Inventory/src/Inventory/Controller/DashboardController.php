@@ -26,9 +26,6 @@ class DashboardController extends AbstractActionController
      */
     public function indexAction()
     {
-        
-        echo PHP_OS;
-        
         $request = $this->getRequest();
         
         if ($request->getHeader('Referer') == null) {

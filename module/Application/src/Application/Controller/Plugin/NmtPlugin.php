@@ -5,15 +5,16 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Doctrine\ORM\EntityManager;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
- * @author nmt
- *        
  */
 class NmtPlugin extends AbstractPlugin
 {
 
     protected $doctrineEM;
     protected $translator;
+    protected $dbConfig;
 
     /**
      * Return List of Currency
@@ -388,5 +389,21 @@ class NmtPlugin extends AbstractPlugin
     {
         $this->translator = $translator;
     }
+    /**
+     * @return mixed
+     */
+    public function getDbConfig()
+    {
+        return $this->dbConfig;
+    }
+
+    /**
+     * @param mixed $dbConfig
+     */
+    public function setDbConfig($dbConfig)
+    {
+        $this->dbConfig = $dbConfig;
+    }
+
 
 }

@@ -78,7 +78,7 @@ class PdfService {
 	 */
 	public function printPrPdf($detail,$pr_code) {
 	    
-	    define ( 'PDF_HEADER_LOGO', ROOT . '\public\images\mascot.gif' );
+	    define ( 'PDF_HEADER_LOGO', ROOT . '/public/images/mascot.gif' );
 	    
 	    // create new PDF document
 	    $pdf = new MLAPdf ( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false );
@@ -152,7 +152,7 @@ class PdfService {
 <h3 style="text-align: center">Purchase Request</h3>
 <table cellpadding="1" cellspacing="1" border="1" style="text-align:center;">
 <tr><td><img src="public\images\mascot.gif" border="0" height="41" width="41" /></td></tr>
-<tr style="text-align:left;"><td><img src="public\images\mascot.gif" border="0" height="41" width="41" align="top" /></td></tr>
+<tr style="text-align:left;"><td>Just a test <img src="public\images\mascot.gif" border="0" height="41" width="41" align="top" /></td></tr>
 </table>
 
 EOD;

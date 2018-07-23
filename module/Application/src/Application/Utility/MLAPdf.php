@@ -15,7 +15,7 @@ class MLAPdf  extends\TCPDF {
 	public function Header() {
 		// Logo
 		
-		$image_file = ROOT. '\public\images\mascot.gif';
+		$image_file = ROOT. '/public/images/mascot.gif';
 		
 		$this->SetFont('helvetica', 'B', 9);
 		$this->Cell(0, 10, 'Mascot International (Lao) Sole co., Ltd', 0, false, 'T', 0, '', 0, false, 'M', 'M');

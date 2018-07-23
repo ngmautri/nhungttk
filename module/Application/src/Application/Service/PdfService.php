@@ -6,7 +6,7 @@ use Application\Utility\MLAPdf;
 
 /**
  * 
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class PdfService {
@@ -159,7 +159,7 @@ EOD;
 	    
 	    // output the HTML content
 	    $pdf->SetFont ( 'helvetica', '', 10 );
-	    $pdf->writeHTML ($tbl, true, false, false, false, '' );	    
+	    $pdf->writeHTML ($detail, true, false, false, false, '' );	    
 	    $pdf->SetFont ( 'helvetica', '', 9 );
 	    
 	   // $pdf->Image($pr_code, 170  , 5, 20, '', 'PNG', '', 'T', false, 100, '', false, false, 0, false, false, false);

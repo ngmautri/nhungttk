@@ -1,5 +1,4 @@
-
-<ul class="dropdown-menu">
+<ul style="font-size: 10.5pt" class="dropdown-menu">
 	<li><a href="/hr/employee/add"><i class="fa fa-user-plus"
 			aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Create New Employee'); ?></a></li>
 	<li><a href="/hr/employee/list"><small><i

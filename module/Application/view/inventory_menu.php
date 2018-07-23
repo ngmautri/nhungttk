@@ -1,5 +1,5 @@
 
-<ul class="dropdown-menu">
+<ul style="font-size: 10.5pt" class="dropdown-menu">
 <li><a href="/inventory/dashboard/index"><small><i
 				class="glyphicon glyphicon-home"></i></small>&nbsp;<?php echo $this->translate('Dashboard'); ?></a></li>
 <li class="divider"></li>

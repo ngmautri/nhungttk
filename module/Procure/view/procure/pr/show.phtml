@@ -44,7 +44,7 @@
 				href="<?php echo $this->baseUrl ?>/procure/pr-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 				<i class="fa fa-file-excel-o" aria-hidden="true"></i> &nbsp;Excel
 			</a> <a target="_blank" class="btn btn-default btn-sm"
-				href="<?php echo $this->baseUrl ?>/procure/pr/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+				href="<?php echo $this->baseUrl ?>/procure/pr-row/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 				<i class="fa fa-file-pdf-o" aria-hidden="true"></i> &nbsp;PDF
 			</a> <a class="btn btn-default btn-sm" href="javascript:;"
 				onclick="showJqueryDialog('<?php echo $entity->getPrAutoNumber().' - '. $entity->getPrNumber() ; ?>','1550',$(window).height()-50,'/procure/pr/show1?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>&checksum=<?php echo $entity->getChecksum() ?>','j_loaded_data',true);"><i

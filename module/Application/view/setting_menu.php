@@ -1,4 +1,4 @@
-<ul class="dropdown-menu">
+<ul style="font-size: 10.5pt" class="dropdown-menu">
 	<li><a href="<?php echo $this->baseUrl ?>/application/user/list"><i class="fa fa-users" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("User Management")?></a></li>
 	<li><a href="<?php echo $this->baseUrl ?>/application/department/list"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Department")?></a>
 	</li>

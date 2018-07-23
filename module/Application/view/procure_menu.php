@@ -1,8 +1,4 @@
-<ul style="font-size: 10pt" class="dropdown-menu">
-	<li><a href="/procurement/pr/cart"> <i class="icon-shopping-cart"> </i>
-			Review Cart
-	</a></li>
-	<li class="divider"></li>
+<ul style="font-size: 10.5pt" class="dropdown-menu">
 	<li><a href="/procure/pr/add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('New Purchase Request (PR)'); ?></a></li>
 	<li><a href="/procure/pr/all/row_number=1/status=pending"><i class="fa fa-caret-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;PR list</a></li>
 	<li><a href="/procure/pr-row/all"><i class="fa fa-caret-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;PR Row list</a></li>

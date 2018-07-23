@@ -1,14 +1,11 @@
 <?php
-
 namespace Application\Utility;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
- * @author nmt
- *        
  */
-
-
 class MLAPdf  extends\TCPDF {
 
 	//Page header

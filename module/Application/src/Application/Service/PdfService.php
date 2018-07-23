@@ -151,8 +151,8 @@ class PdfService {
 	    $tbl = <<<EOD
 <h3 style="text-align: center">Purchase Request</h3>
 <table cellpadding="1" cellspacing="1" border="1" style="text-align:center;">
-<tr><td><img src="public\images\mascot.gif" border="0" height="41" width="41" /></td></tr>
-<tr style="text-align:left;"><td>Just a test <img src="public\images\mascot.gif" border="0" height="41" width="41" align="top" /></td></tr>
+<tr><td><img src="public/images/mascot.gif" border="0" height="41" width="41" /></td></tr>
+<tr style="text-align:left;"><td>Just a test <img src="public/images/mascot.gif" border="0" height="41" width="41" align="top" /></td></tr>
 </table>
 
 EOD;

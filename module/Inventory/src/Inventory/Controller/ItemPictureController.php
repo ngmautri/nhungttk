@@ -106,6 +106,34 @@ class ItemPictureController extends AbstractActionController
             return;
         }
     }
+    
+    
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function thumbnail1Action()
+    {
+        $entity_id = (int) $this->params()->fromQuery('entity_id');
+        $criteria = array(
+            'id' => $entity_id,
+        );
+        
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy($criteria);
+        
+        if ($entity !== null) {
+            
+            $pic = new \Application\Entity\NmtInventoryItemPicture();
+            $pic = $entity;
+            $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+            
+            /** Important! for UBUNTU */
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+            return $pic_folder;
+        } else {
+            return;
+        }
+    }
 
     /**
      * Return attachment of a target

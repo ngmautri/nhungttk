@@ -29,6 +29,15 @@ class ExcelStrategy extends DownloadStrategyAbstract
         // Create new PHPExcel object
         $objPHPExcel = new Spreadsheet();
         
+        
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('Logo');
+        $drawing->setPath(ROOT . '/public/images/mascot.gif');
+        $drawing->setHeight(120);
+        
+        $drawing->setWorksheet($objPHPExcel->getActiveSheet());
+        
         // Set document properties
         $objPHPExcel->getProperties()
         ->setCreator("Nguyen Mau Tri")

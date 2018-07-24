@@ -23,7 +23,8 @@ SELECT
     nmt_inventory_item.item_sku,
 	nmt_inventory_item.checksum AS item_checksum,
 	nmt_inventory_item.token AS item_token,
-	
+    nmt_inventory_item_picture.picture_id,	
+ 
     nmt_procure_pr.checksum AS pr_checksum,
 	nmt_procure_pr.token AS pr_token,
 	nmt_procure_pr.pr_number,
@@ -50,8 +51,18 @@ SELECT
 	ifnull(fin_vendor_invoice_row.processing_quantity,0) as processing_quantity 
     
 FROM nmt_procure_pr_row
+
 LEFT JOIN nmt_inventory_item
 ON nmt_inventory_item.id = nmt_procure_pr_row.item_id
+
+left join
+(
+	SELECT nmt_inventory_item_picture.item_id, MAX(nmt_inventory_item_picture.id) AS picture_id  FROM nmt_inventory_item_picture
+		WHERE nmt_inventory_item_picture.is_active=1 
+	GROUP BY nmt_inventory_item_picture.item_id
+)
+as nmt_inventory_item_picture
+on nmt_inventory_item_picture.item_id = nmt_inventory_item.id
 
 left JOIN nmt_procure_pr
 ON nmt_procure_pr.id = nmt_procure_pr_row.pr_id
@@ -130,7 +141,7 @@ LEFT JOIN
 )
 AS nmt_inventory_item_purchasing
 ON nmt_inventory_item_purchasing.item_id = nmt_procure_pr_row.item_id
-WHERE 1
+WHERE 1 
 	";
 
     private $sql1 = "
@@ -1082,6 +1093,7 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
             $rsm->addScalarResult("item_name", "item_name");
             $rsm->addScalarResult("item_sku", "item_sku");
+            $rsm->addScalarResult("picture_id", "picture_id");
             $rsm->addScalarResult("pr_number", "pr_number");
             $rsm->addScalarResult("submitted_on", "submitted_on");
             $rsm->addScalarResult("vendor_name", "vendor_name");
@@ -1096,6 +1108,7 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
             $rsm->addScalarResult("processing_quantity", "processing_quantity");
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
+            
             return $result;
         } catch (NoResultException $e) {
             return null;

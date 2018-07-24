@@ -256,6 +256,7 @@ WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
 )
 AS nmt_procure_po_row
 ON nmt_inventory_item.id=nmt_procure_po_row.item_id ";
+        
         $join5 = sprintf($join5_tmp, $item_id, $item_token);
 
         $sql = "

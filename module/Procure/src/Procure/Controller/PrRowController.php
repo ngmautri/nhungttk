@@ -17,7 +17,7 @@ use Zend\Escaper\Escaper;
 use Procure\Service\PrSearchService;
 use Zend\Cache\Storage\StorageInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use Zend\Model\Pr\ExcelStrategy;
+
 /**
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -750,6 +750,7 @@ class PrRowController extends AbstractActionController
             }
             
             $downloadStrategy = new \Procure\Model\Pr\PdfStrategy;
+            $downloadStrategy->setDoctrineEM($this->doctrineEM);
             $downloadStrategy->doDownload($target, $rows);            
      
         } else {

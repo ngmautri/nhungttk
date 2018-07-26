@@ -8,6 +8,8 @@ use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
+use Application\Entity\NmtProcureGr;
+use Application\Entity\NmtProcureGrRow;
 use Application\Entity\NmtProcurePo;
 use Application\Entity\NmtProcurePoRow;
 use Application\Entity\NmtInventoryTrx;
@@ -218,12 +220,16 @@ class GrRowController extends AbstractActionController
      */
     public function addAction()
     {
+        $this->layout("Procure/layout-fullscreen");
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
         
         $request = $this->getRequest();
         
+        // Is Posting .................
+        // ============================
         if ($request->isPost()) {
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
@@ -232,22 +238,22 @@ class GrRowController extends AbstractActionController
             
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-            $po = $res->getPo($po_id, $po_token);
+            $gr = $res->getPo($po_id, $po_token);
             
-            if ($po == null) {
+            if ($gr == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
             
             $target = null;
-            if ($po[0] instanceof NmtProcurePo) {
+            if ($gr[0] instanceof NmtProcureGr) {
                 
                 /**@var \Application\Entity\NmtProcurePo $target ;*/
-                $target = $po[0];
+                $target = $gr[0];
             }
             
             if ($target == null) {
                 
-                $errors[] = 'Contract /PO object can\'t be empty. Or token key is not valid!';
+                $errors[] = 'GR object can\'t be empty. Or token key is not valid!';
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -282,10 +288,10 @@ class GrRowController extends AbstractActionController
                 
                 // Inventory Transaction:
                 
-                $entity = new NmtProcurePoRow();
+                $entity = new NmtProcureGrRow();
                 $entity->setIsActive($isActive);
                 
-                $entity->setPo($target);
+                $entity->setGr($target);
                 $entity->setRowNumber($rowNumber);
                 
                 $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
@@ -402,8 +408,8 @@ class GrRowController extends AbstractActionController
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 
-                $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-                $m = sprintf("[OK] Contract /PO Line: %s created!", $rowIdentifer);
+                $redirectUrl = "/procure/gr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
+                $m = sprintf("[OK] GR Line: %s created!", $entity->getId());
                 $this->flashMessenger()->addMessage($m);
                 
                 return $this->redirect()->toUrl($redirectUrl);
@@ -429,22 +435,22 @@ class GrRowController extends AbstractActionController
         
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $po = $res->getPo($id, $token);
+        $gr = $res->getGr($id, $token);
         
-        if ($po == null) {
+        if ($gr == null) {
             return $this->redirect()->toRoute('access_denied');
         }
         
         $target = null;
-        if ($po[0] instanceof NmtProcurePo) {
-            $target = $po[0];
+        if ($gr[0] instanceof NmtProcureGr) {
+            $target = $gr[0];
         }
         
         if ($target == null) {
             return $this->redirect()->toRoute('access_denied');
         }
         
-        $entity = new NmtProcurePoRow();
+        $entity = new NmtProcureGrRow();
         
         // set null
         $entity->setIsActive(1);
@@ -457,12 +463,10 @@ class GrRowController extends AbstractActionController
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list,
-            'total_row' => $po['total_row'],
-            'max_row_number' => $po['total_row'],
-            'net_amount' => $po['net_amount'],
-            'tax_amount' => $po['tax_amount'],
-            'gross_amount' => $po['gross_amount']
-        ));
+            'total_row' => $gr['total_row'],
+            'max_row_number' => $gr['max_row_number'],
+            'active_row' => $gr['active_row'],
+          ));
     }
 
     /**

@@ -18,7 +18,7 @@ if (count ( $errors ) > 0) {
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
  	 <li ><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;New Row</a></li>
- 	  <li ><a href="<?php echo $this->baseUrl ?>/procure/po-row/list?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current Rows</a></li>
+ 	  <li ><a href="<?php echo $this->baseUrl ?>/procure/gr-row/list?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current Rows</a></li>
  </ul>
    
  <div id="general" style="font-size: 9pt;">
@@ -32,7 +32,7 @@ if (count ( $errors ) > 0) {
   <!-- C1 -->
   					<?php 
     					$current_step="STEP2";
-    					include (ROOT.'/module/Procure/view/procure/create-wizard.php');
+    					include (ROOT.'/module/Procure/view/procure/gr-create-wizard.php');
   					?>
   					
   					<hr>
@@ -42,10 +42,7 @@ if (count ( $errors ) > 0) {
 					<ul style="font-size: 9.5pt">
 		                <li>Total Rows: <?php echo ($total_row);?></li>
 		                <li>-----</li>
-						<li>Net: <?php echo number_format($net_amount,2) . " " . $target->getCurrency()->getCurrency() ;?></li>
-                        <li>Tax: <?php echo number_format($tax_amount,2);?></li>
-                        <li>Gross: <?php echo number_format($gross_amount,2) . " " .$target->getCurrency()->getCurrency();?></li>
-           			</ul>	
+          			</ul>	
 					</div>
   <!-- C1 ends-->	
   </div>
@@ -53,7 +50,7 @@ if (count ( $errors ) > 0) {
   <div class="col-xs-12 col-sm-6 col-md-10" style="">
   <!-- C2 -->
  
-		<h4><strong>Purchase Order</strong></h4>
+		<h4><strong>Goods Receipt:</strong></h4>
 
  		<form id="Create_Inv_Form" class="form-horizontal"
 			action="" method="post" enctype="multipart/form-data">
@@ -62,7 +59,7 @@ if (count ( $errors ) > 0) {
 			<fieldset>
 				<legend style="font-size: 9pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a style="font-size: 9pt; color: gray;" href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php echo (!$target == null)? $target->getSysNumber():"";?> <?php echo $gross_amount;?>)</a>
+					<a style="font-size: 9pt; color: gray;" href="#invoice_header" class="" data-toggle="collapse">HEADER (<?php echo (!$target == null)? $target->getSysNumber():"";?>)</a>
 				</legend>
 				
 				<div id="invoice_header" class="collapse">
@@ -263,7 +260,6 @@ if (count ( $errors ) > 0) {
          </div>
   
     </div>
-    <hr>
     <div class="form-group margin-bottom required">
         <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
         <div class="col-sm-3">
@@ -324,8 +320,7 @@ if (count ( $errors ) > 0) {
             				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
             		</div>
 				</div>
-	
-<hr>
+
   <div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">

@@ -84,7 +84,7 @@ function loadPrRow(url) {
  * @returns
  */
 function ajaxloadData(url,target_id) {
-
+	
 	$(target_id).text("Loading...");
 		$.get(url, {
 	}, function(data, status) {

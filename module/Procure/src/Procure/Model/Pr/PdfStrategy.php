@@ -1,9 +1,6 @@
 <?php
 namespace Procure\Model\Pr;
 
-use Application\Entity\NmtProcurePr;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use Application\Service\PdfService;
 
 /**
  *

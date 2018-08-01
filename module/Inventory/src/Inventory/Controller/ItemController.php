@@ -152,7 +152,8 @@ EOT;
                 'total_attachment' => $item['total_attachment'],
                 'total_pr_row' => $item['total_pr_row'],
                 'total_ap_row' => $item['total_ap_row'],
-                'total_po_row' => $item['total_po_row']
+                'total_po_row' => $item['total_po_row'],
+                'total_qo_row' => $item['total_qo_row']
             ));
         }
 
@@ -216,8 +217,9 @@ EOT;
                 'total_attachment' => $item['total_attachment'],
                 'total_pr_row' => $item['total_pr_row'],
                 'total_ap_row' => $item['total_ap_row'],
+                'total_po_row' => $item['total_po_row'],
+                'total_qo_row' => $item['total_qo_row'],
                 'tab_idx' => $tab_idx,
-                'total_po_row' => $item['total_po_row']
             ));
         }
 

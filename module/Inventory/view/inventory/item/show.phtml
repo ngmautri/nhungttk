@@ -43,9 +43,9 @@
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general">Item</a></li>
-		<li><a
+		<li><a title="<?php echo $this->translate("Picture");?>"
 			href="<?php echo $this->baseUrl ?>/inventory/item-picture/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><span
-				class="glyphicon glyphicon-picture"></span>&nbsp;Picture(<?php echo $total_picture;?>)</a></li>
+				class="glyphicon glyphicon-picture"></span>&nbsp;(<?php echo $total_picture;?>)&nbsp;</a></li>
 		<li><a
 			href="<?php echo $this->baseUrl ?>/inventory/item-purchase/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Purchasing</a></li>
 		<li><a
@@ -59,23 +59,24 @@
 		<?php endif;?>
 		<?php endif;?>
 		
-		<li><a
+		<li><a title="<?php echo $this->translate("Attachments");?>"
 			href="<?php echo $this->baseUrl ?>/inventory/item-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><span
-				class="glyphicon glyphicon-paperclip"></span>&nbsp;File(<?php echo $total_attachment;?>)</a></li>
+				class="glyphicon glyphicon-paperclip"></span>&nbsp;(<?php echo $total_attachment;?>)&nbsp;</a></li>
 		<li><a href="#accounting">&nbsp;Accounting</a></li>
 
 		<li><a
 			href="<?php echo $this->baseUrl ?>/inventory/item-assignment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Assignment</a></li>
 
-		<li><a
-			href="<?php echo $this->baseUrl ?>/procure/pr-row/pr-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PR(<?php echo $total_pr_row;?>)</a></li>
-			  <li ><a href="<?php echo $this->baseUrl ?>/procure/quote-row/qo-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">QO</a></li>
+		<li><a title="<?php echo $this->translate("Purchase Request");?>"
+			href="<?php echo $this->baseUrl ?>/procure/pr-row/pr-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PR (<?php echo $total_pr_row;?>)</a></li>
+			  
+			  <li ><a title="<?php echo $this->translate("Quotation");?>" href="<?php echo $this->baseUrl ?>/procure/quote-row/qo-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">QO (<?php echo $total_qo_row;?>)</a></li>
 
-		<li><a
-			href="<?php echo $this->baseUrl ?>/procure/po-row/po-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PO(<?php echo $total_po_row;?>)</a></li>
-		<li><a
-			href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/ap-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">A/P(<?php echo $total_ap_row;?>)</a></li>
-		<li><a
+		<li><a title="<?php echo $this->translate("Purchase Order");?>"
+			href="<?php echo $this->baseUrl ?>/procure/po-row/po-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PO (<?php echo $total_po_row;?>)</a></li>
+		<li><a title="<?php echo $this->translate("AP Invoice");?>"
+			href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/ap-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">A/P (<?php echo $total_ap_row;?>)</a></li>
+		<li><a title="<?php echo $this->translate("Change Logs");?>"
 			href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
 				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 

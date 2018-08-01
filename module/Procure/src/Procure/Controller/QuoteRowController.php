@@ -739,9 +739,9 @@ class QuoteRowController extends AbstractActionController
                     
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
-                            ->getItemName()) . "','1200',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                            ->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1200',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     }
                     
                     if (strlen($a->getItem()->getItemName()) < 35) {

@@ -3,9 +3,8 @@
 <h5>no thing found!</h5>
 
 <?php else: ?>
-<div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
-<div style="color: gray;font-size: 9pt;" id="total_received"></div>
-<div style="color: gray;font-size: 9pt;" id="total_balance"></div>
+
+<h4 style="color:graytext;"><?php echo $this->translate("Quotation");?>:</h4>
 
 <table style="font-size: 9pt;" class="table table-bordered table-hover">
 	<thead>
@@ -41,7 +40,7 @@
 		?>
 	 <tr>
 	 <td><?php echo $count;?></td>
-	 		<td><a href="/procure/quoto/show?entity_id=<?php echo $a->getQo()->getId();?>&token=<?php echo $a->getQo()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getQo()->getSysNumber());?></a></td>
+	 		<td><a href="/procure/quote/add1?entity_id=<?php echo $a->getQo()->getId();?>&token=<?php echo $a->getQo()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getQo()->getSysNumber());?></a></td>
 			<td><?php if(!$a->getQo()==null): if($a->getQo()->getVendor()!==null): echo $a->getQo()->getVendor()->getVendorName();endif;endif;?> </td>
 			
 			<td><?php if(!$a->getQo()->getContractDate()==null): echo date_format ( $a->getQo()->getContractDate(), "d/m/y");endif;?> </td>

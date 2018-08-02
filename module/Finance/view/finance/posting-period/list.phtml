@@ -35,6 +35,8 @@ if ($total_records <= 0) {
 			<td><b><?php echo $this->translate('Cooperate Leaves'); ?></b></td>
 			<td><b><?php echo $this->translate('Status'); ?></b></td>
 			<td><b><?php echo $this->translate('Action'); ?></b></td>
+			<td><b><?php echo $this->translate('Edit'); ?></b></td>
+	
 		</tr>
 	</thead>
 
@@ -66,6 +68,9 @@ if ($total_records <= 0) {
 <td><a style="color:blue;" href="<?php echo $this->baseUrl ?>/finance/posting-period/alter?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>&action=close"><?php echo $this->translate('Close'); ?></a>
 </td>
 <?php endif; ?>
+
+<td><a style="color:navy;" href="<?php echo $this->baseUrl ?>/finance/posting-period/edit?token=<?php echo $a->getToken(); ?>&entity_id=<?php echo $a->getId(); ?>"><?php echo $this->translate('Edit'); ?></a>
+
 		</tr>
 <?php endforeach; ?>
 
@@ -78,8 +83,8 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/procure/pr/all/row_number='.$row_number.'/status='.$status.'?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort. '&balance=' . $balance;
-		$_connector_symbol = '&';
+	$base = $this->baseUrl . '/finance/posting-period/list';
+		$_connector_symbol = '?';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
 		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;

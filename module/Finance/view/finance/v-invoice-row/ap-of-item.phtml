@@ -17,6 +17,8 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 			<td><b>PO No.</b></td>
 			<td><b>AP Invoice</b></td>			
 			<td><b>Vendor</b></td>				
+			<td><b><?php echo $this->translate("Item Name");?></b></td>			
+		
 			<td><b>Pr Date</b></td>
 			<td><b>Unit</b></td>
 			<td><b>Quantity <br> Q'ty</b></td>
@@ -47,7 +49,7 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 	 <tr>
 	 <td><?php echo $count;?></td>
 			<?php if($a->getPrRow()!==null):?>			
-			<td><a href="/procure/pr/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPrRow()->getPr()->getId();?>&token=<?php echo $a->getPrRow()->getPr()->getToken();?>" target="_blank"><?php echo $a->getPrRow()->getPr()->getPrAutoNumber();?></a></td>
+			<td><a href="/procure/pr/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPrRow()->getPr()->getId();?>&token=<?php echo $a->getPrRow()->getPr()->getToken();?>" target="_blank"><?php echo $a->getPrRow()->getPr()->getPrNumber();?></a></td>
 			<?php else:?>
 			<td>N/A</td>
 			<?php endif; ?>
@@ -61,6 +63,8 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 	 		<td><a href="/finance/v-invoice/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getInvoice()->getId();?>&token=<?php echo $a->getInvoice()->getToken();?>" target="_blank"><?php if($a->getInvoice()->getSysNumber()==null):echo "N/A";else: echo $a->getInvoice()->getSysNumber();endif;?></a></td>
 			
 			<td><?php if(!$a->getInvoice()->getVendor()==null): echo $a->getInvoice()->getVendor()->getVendorName();endif;?> </td>
+			<td><?php echo $a->getVendorItemCode();?></td>
+	
 	
 			<td><?php if(!$a->getInvoice()->getInvoiceDate()==null): echo date_format ( $a->getInvoice()->getInvoiceDate(), "d/m/y");endif;?> </td>
 			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>

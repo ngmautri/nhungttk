@@ -100,8 +100,8 @@ class PostingPeriodController extends AbstractActionController
                 if (! is_numeric($nationalHolidays)) {
                     $errors[] = 'nationalHolidays be a number.';
                 } else {
-                    if ($nationalHolidays <= 0) {
-                        $errors[] = 'nationalHolidays must be greater than 0!';
+                    if ($nationalHolidays < 0) {
+                        $errors[] = 'nationalHolidays must be greater or equal 0!';
                     }
                     $entity->setNationalHolidays($nationalHolidays);
                 }
@@ -114,8 +114,8 @@ class PostingPeriodController extends AbstractActionController
                 if (! is_numeric($cooperateLeave)) {
                     $errors[] = 'CooperateLeave be a number.';
                 } else {
-                    if ($cooperateLeave <= 0) {
-                        $errors[] = 'CooperateLeave must be greater than 0!';
+                    if ($cooperateLeave < 0) {
+                        $errors[] = 'CooperateLeave must be greater or equal 0!';
                     }
                     $entity->setCooperateLeave($cooperateLeave);
                 }
@@ -308,7 +308,7 @@ class PostingPeriodController extends AbstractActionController
                     if (! is_numeric($nationalHolidays)) {
                         $errors[] = '$nationalHolidays be a number.';
                     } else {
-                        if ($nationalHolidays <= 0) {
+                        if ($nationalHolidays < 0) {
                             $errors[] = '$$nationalHolidays must be greater than 0!';
                         }
                         $entity->setNationalHolidays($nationalHolidays);
@@ -322,7 +322,7 @@ class PostingPeriodController extends AbstractActionController
                     if (! is_numeric($cooperateLeave)) {
                         $errors[] = '$cooperateLeave be a number.';
                     } else {
-                        if ($cooperateLeave <= 0) {
+                        if ($cooperateLeave < 0) {
                             $errors[] = '$cooperateLeave must be greater than 0!';
                         }
                         $entity->setCooperateLeave($cooperateLeave);
@@ -463,6 +463,8 @@ class PostingPeriodController extends AbstractActionController
         // $postingPeriod = $p->getPostingPeriodStatus(new \DateTime());
         // echo $postingPeriod->getPeriodName() . $postingPeriod->getPeriodStatus();
         // echo $postingPeriod;
+        
+        $sort_criteria=array("createdOn"=>"DESC");
         
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findBy($criteria, $sort_criteria);
         $total_records = count($list);

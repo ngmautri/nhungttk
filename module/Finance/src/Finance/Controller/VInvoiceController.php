@@ -2555,7 +2555,7 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         }
         
         if ($sort_by == null) :
-            $sort_by = "createdOn";
+            $sort_by = "InvoiceDate";
         endif;
         
         if ($sort == null) :

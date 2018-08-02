@@ -62,7 +62,7 @@ class BackupController extends AbstractActionController {
 	    //AbtractController is EventManagerAware.
 	    $this->getEventManager()->trigger('system.log', __CLASS__, array(
 	        'priority' => 7,
-	        'message' => 'Database backed up'
+	        'message' => 'Database backed up manually!'
 	    ));
 	    
 	}

@@ -40,7 +40,7 @@ class SearchIndexController extends AbstractActionController
     {
         $result = array();
        // $result[] = "ITEM ". $this->itemSearchService->createItemIndex();
-        $result[] = "ITEM Serial". $this->itemSerialSearchService->createItemIndex();
+        $result[] = "ITEM Serial". $this->itemSearchService->createItemIndex();
         
         $result[] = "PR ". $this->prSearchService->createIndex();
         $result[] = "PROJECT " . $this->projectSearchService->createIndex();

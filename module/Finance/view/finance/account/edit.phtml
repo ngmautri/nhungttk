@@ -1,0 +1,257 @@
+<?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
+<div>
+<h4><a href="/finance/v-invoice/add1?token=<?php if(!$entity == null):echo $entity->getToken(); endif;?>&entity_id=<?php if(!$entity == null):echo $entity->getId(); endif;?>"><?php echo (!$entity == null)?  $this->translate("AP Invoice: "). $entity->getInvoiceNo():"";?></a>
+<span style="color: gray; font-size: 10pt"><?php echo (!$entity == null)? " // #" . $entity->getSysNumber() :"";?></span></h4>
+</div>
+
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">A/P Invoice</a></li>
+			<li><a
+			href="<?php echo $this->baseUrl ?>/finance/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+		
+	</ul>
+
+	<div id="general" style="font-size: 9pt">
+
+		<form id="Create_Inv_Form" class="form-horizontal"
+			action="/finance/v-invoice/edit" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
+<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
+<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+<input type="hidden" name="n" value="<?php echo $n;?>" />
+
+			
+			<fieldset>
+				<legend style="font-size: 9.5pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+				</legend>
+				<div id="invoice_header" class="collapse in">
+					
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2"><?php echo $this->translate('Document Number')?>:</label>
+						<div class="col-sm-3">
+							<input disabled="disabled" class="form-control input-sm" type="text" placeholder=""
+								id="sysNumber" name="sysNumber" value="<?php echo (!$entity == null)? $entity->getSysNumber():"";?>">
+						</div>
+					</div>
+					
+					<div class="form-group margin-bottom required">
+					<label class="control-label col-sm-2">Current State:</label>
+					<div class="col-sm-3">
+					<select name="currentState" class="form-control input-sm">
+							<option value="">Please Select</option>
+							<option <?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?> value="contract">Contract /PO</option>
+							<option <?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?> value="draftInvoice">Draft Invoice</option>
+							<option <?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?> value="finalInvoice">Final Invoice</option>
+    				</select>
+   					</div>
+   					
+   					<div class="col-sm-3">
+							<input
+								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+						</div>
+   					
+   					</div>
+
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2 ">Vendor:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text"
+								id="vendor_name_1" placeholder="Enter term to search vendor"
+								name="vendor_name"
+								value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
+
+							<input type="hidden" id="vendor_id" placeholder=""
+								name="vendor_id"
+								value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
+						</div>
+						<div class="col-sm-3">
+
+							<a target="blank" style="font-size: 9pt;" href="/bp/vendor/list">Vendor
+								List&nbsp;&nbsp;</a><small><i
+								class="glyphicon glyphicon-new-window"></i></small>
+						</div>
+					</div>
+					
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Contract /PO:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="contractNo" name="contractNo" 
+								value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
+						</div>
+						<label class="control-label col-sm-2">Contract /PO Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="contractDate" name="contractDate" 
+								value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
+						</div>
+					</div>
+					
+					<div class="form-group margin-bottom required">
+					
+					<label class="control-label col-sm-2">Currency:</label>
+					<div class="col-sm-3">
+					<select name="currency_id" class="form-control input-sm">
+								<option value="">Select Currency</option>
+   	    							<?php
+   	    							if($currency_list!== null):
+       	    							foreach ( $currency_list as $curr ) :
+       	    							 if($entity!==null):
+       	    							     if($entity->getCurrency()!==null):
+       	    							         if($entity->getCurrency()->getCurrency() == $curr->getCurrency()):
+       	    							             echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+   	    							             else:
+   	    							                 echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+       	    							         endif;
+       	    							     else:
+       	    							            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+       	    							     endif;
+       	    							 else:
+       	    							     echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+       	    							 endif;
+       									endforeach;
+   	    							endif;
+									?>
+   					</select>
+   					</div>
+   					</div>
+					
+					
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Invoice number:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="invoiceNo" name="invoiceNo" 
+								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
+						</div>
+						<label class="control-label col-sm-2">SAP Document No.:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="sapDoc" name="sapDoc" 
+								value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
+						</div>
+						
+						
+					</div>
+					
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2 required">Invoice Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text"
+								id="invoiceDate" name="invoiceDate"
+								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+							</div>
+					</div>
+					
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Posting Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text"
+								id="postingDate" name="postingDate"
+								value="<?php if(!$entity == null): if ($entity->getPostingDate() !== null): echo date_format($entity->getPostingDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+							</div>
+					</div>
+					
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Goods Receipt Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text"
+								id="grDate" name="grDate"
+								value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+							</div>
+						<label class="control-label col-sm-2" for="inputTag">Target Warehouse:</label>
+					<div class="col-sm-3">
+<input class="form-control input-sm" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+<input type="hidden" id="target_wh_id" name="target_wh_id" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+					</div>
+				</div>
+		
+				<div class="form-group margin-bottom">
+					<label class="control-label col-sm-2" >Description</label>
+            		<div class="col-sm-8">
+            			<input class="form-control input-sm" type="text"  placeholder=""
+            				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+            		</div>
+				</div>
+					
+					
+			</div>
+					
+				<hr>
+				<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2" for="inputTag"></label>
+						<div class="col-sm-3">
+	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+						</div>
+					</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+
+
+<script>
+
+$('#invoiceDate').bind('change', function() {
+	$('#postingDate').val($('#invoiceDate').val());
+	$('#grDate').val($('#invoiceDate').val());
+});
+
+$( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='grDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><b>" + item.value + "</b><br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+
+$( "#vendor_name_1" ).focus();
+  
+</script>
+

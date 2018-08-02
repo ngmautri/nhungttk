@@ -1,0 +1,149 @@
+<?php /**@var \Application\Entity\FinAccount $entity ;*/?>
+
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><?php echo $this->translate("New G/L Account");?></a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt">
+		<!-- Tab1 -->
+
+
+		<div class="row">
+			<!-- ROW-->
+
+			<div class="col-xs-5 col-md-2"
+				style="font-size: 9pt; padding: 10px 10px 1px 5px">
+				<!-- C1 -->
+
+
+				<!-- C1 ends-->
+			</div>
+
+			<div class="col-xs-12 col-sm-6 col-md-10"
+				style="font-size: 9pt; padding: 10px 10px 1px 5px">
+				<!-- C2 -->
+
+				<form id="Create_Inv_Form" class="form-horizontal"
+					action="/finance/account/add" method="post"
+					enctype="multipart/form-data">
+					<input type="hidden" name="redirectUrl"
+						value="<?php echo $redirectUrl ?>" />
+					<fieldset>
+						<legend style="font-size: 9.5pt; color: gray;">
+							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+							<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+						</legend>
+						<div id="invoice_header" class="collapse in">
+
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2"><?php echo $this->translate('Account Number')?>:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm"
+										type="text" placeholder="" id="accountNumber" name="accountNumber"
+										value="<?php echo (!$entity == null)? $entity->getAccountNumber():"";?>">
+								</div>
+								
+									<div class="col-sm-3">
+									<input
+										<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+										type="checkbox" name="isActive" value="1">&nbsp;Is
+									Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+								</div>
+							</div>
+
+
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Description</label>
+								<div class="col-sm-8">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="description"
+										value="<?php echo (!$entity == null)? $entity->getDescription():"";?>">
+								</div>
+							</div>
+
+
+						</div>
+
+						<hr>
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag"></label>
+							<div class="col-sm-3">
+								<button onclick="submitForm('Create_Inv_Form');"
+									class="btn btn-default btn-sm">
+									<i class="glyphicon glyphicon-floppy-disk"> </i> Save
+								</button>
+								<a tabindex="11" class="btn btn-default btn-sm"
+									href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
+										class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+							</div>
+						</div>
+					</fieldset>
+				</form>
+
+				<!-- C2 ends-->
+			</div>
+
+			<!-- ROW ends-->
+		</div>
+
+
+		<!-- Tab1 -->
+	</div>
+</div>
+
+
+
+<script>
+
+$('#invoiceDate').bind('change', function() {
+	$('#postingDate').val($('#invoiceDate').val());
+	$('#grDate').val($('#invoiceDate').val());
+});
+
+$( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='grDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><b>" + item.value + "</b><br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+
+$( "#vendor_name_1" ).focus();
+  
+</script>
+

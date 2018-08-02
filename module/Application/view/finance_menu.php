@@ -6,7 +6,7 @@
 	<li><a href="/finance/v-invoice/list"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;A/P Invoice
 			List</a></li>
 	<li class="divider"></li>
-		<li><a href="/finance/posting-period/list"><small><span
+		<li><a href="/finance/account/list"><small><span
 				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;<?php echo $this->translate("Chart of Accounts");?></a></li>
 	
 	<li><a href="/finance/posting-period/list"><small><span

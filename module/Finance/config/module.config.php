@@ -97,6 +97,7 @@ return array(
             'Finance\Controller\ActivityLog' => 'Finance\Controller\ActivityLogControllerFactory',
             'Finance\Controller\ChangeLog' => 'Finance\Controller\ChangeLogControllerFactory',
             'Finance\Controller\Fx' => 'Finance\Controller\FxControllerFactory',
+            'Finance\Controller\Account' => 'Finance\Controller\AccountControllerFactory',
             
           )
     

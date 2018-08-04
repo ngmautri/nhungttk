@@ -1,6 +1,6 @@
 <?php
 
-namespace Inventory\Model;
+namespace Inventory\Model\Evaluation;
 
 
 /**
@@ -12,6 +12,7 @@ class ItemGr
 {
     protected $grDate;
     protected $grQuantity;
+    protected $unitPrice;    
     protected $issueQuantity;
     protected $remainingQuantity;
     /**
@@ -77,6 +78,22 @@ class ItemGr
     {
         $this->remainingQuantity = $remainingQuantity;
     }
+    /**
+     * @return mixed
+     */
+    public function getUnitPrice()
+    {
+        return $this->unitPrice;
+    }
+
+    /**
+     * @param mixed $unitPrice
+     */
+    public function setUnitPrice($unitPrice)
+    {
+        $this->unitPrice = $unitPrice;
+    }
+
 
     
        

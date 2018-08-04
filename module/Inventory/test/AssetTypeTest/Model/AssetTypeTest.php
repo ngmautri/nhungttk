@@ -2,24 +2,25 @@
 
 namespace AssetTypeTest\Model;
 
-use Inventory\Model\ItemGr;
-use Inventory\Model\Valuation\Strategy\FIFO;
+use Inventory\Model\Evaluation\ItemGr;
+use Inventory\Model\Evaluation\FIFO;
 use PHPUnit_Framework_TestCase;
 
 
 class AssetTypeTest extends PHPUnit_Framework_TestCase {
     
-    public function testAssetGroupTest() {
+   /*  public function testAssetGroupTest() {
         $rep = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');        
         $list = $rep->getAllItemWithSerial1();        
         echo count($list);
         
-    }
+    } */
 	
- 	public function atestAssetGroupTest() {
+ 	public function testAssetGroupTest() {
 		
- 	    $q1 = new FIFO();
+ 	    $q1 = new FIFO;
  	    
+ 	    // Take beginning
  	    $itemGR = new ItemGr();
  	    $itemGR->setGrQuantity(10);
  	    $q1->enqueue($itemGR);
@@ -35,14 +36,8 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
  	    $itemGR = new ItemGr();
  	    $itemGR->setGrQuantity(40);
  	    $q1->enqueue($itemGR);
- 	    
-/*  	$q1->enqueue("San Francisco");
- 	    $q1->enqueue("Montreal");
- 	    $q1->enqueue("Barcelona");
- 	    $q1->enqueue("New York");
-  */	    
  	      
- 	    $issuedQuantity = 66;
+ 	    $issuedQuantity = 100;
  	    
  	    for ($q1->rewind(); $q1->valid(); $q1->next()) {
  	        try {
@@ -51,7 +46,7 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
  	            $grQuantity=$value->getGrQuantity();
  	            
  	            if($issuedQuantity == 0){
- 	                break;
+ 	                 break;
  	            }
  	            
  	            if($grQuantity <= $issuedQuantity) {

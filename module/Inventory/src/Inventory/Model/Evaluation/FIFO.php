@@ -1,6 +1,6 @@
 <?php
 
-namespace Inventory\Model\Valuation;
+namespace Inventory\Model\Evaluation;
 use SplQueue;
 
 /**

@@ -81,7 +81,15 @@ return array(
                 'controller' => 'activity-log',
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
-            )
+            ),
+            
+            array(
+                'label' => 'Setup',
+                'route' => 'Inventory/default',
+                'controller' => 'setting',
+                'action' => 'index',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
         )
     ),
 
@@ -157,7 +165,8 @@ return array(
             'inventory_navi' => 'Inventory\Service\InventoryNavigationFactory',
 
             'Inventory\Service\ItemSearchService' => 'Inventory\Service\ItemSearchServiceFactory',
-            'Inventory\Service\ItemSerialSearchService' => 'Inventory\Service\ItemSerialSearchServiceFactory'
+            'Inventory\Service\ItemSerialSearchService' => 'Inventory\Service\ItemSerialSearchServiceFactory',
+             'Inventory\Service\FIFOLayerService' => 'Inventory\Service\FIFOLayerServiceFactory',            
         )
     ),
 
@@ -188,7 +197,10 @@ return array(
             'Inventory\Controller\Transfer' => 'Inventory\Controller\TransferControllerFactory',
             'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
             'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
-            'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory'
+            'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory',
+            'Inventory\Controller\OpeningBalance' => 'Inventory\Controller\OpeningBalanceControllerFactory',
+            'Inventory\Controller\Setting' => 'Inventory\Controller\SettingControllerFactory',
+            
         )
     ),
     'view_manager' => array(

@@ -11,6 +11,8 @@ class Constants
     const OS_LINUX = "Linux";
     const OS_WINNT = "WINNT";
     
+    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    
     
     /**
      * Inventory 

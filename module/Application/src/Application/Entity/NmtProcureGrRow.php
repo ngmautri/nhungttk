@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureGrRow
  *
- * @ORM\Table(name="nmt_procure_gr_row", indexes={@ORM\Index(name="nmt_procure_gr_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_gr_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_gr_row_IDX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_gr_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_gr_row_FK9_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK10_idx", columns={"gr_id"}), @ORM\Index(name="nmt_procure_gr_row_IDX2", columns={"token"}), @ORM\Index(name="nmt_procure_gr_row_FK11_idx", columns={"ap_invoice_row_id"})})
+ * @ORM\Table(name="nmt_procure_gr_row", indexes={@ORM\Index(name="nmt_procure_gr_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_gr_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_gr_row_IDX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_gr_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_gr_row_FK9_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK10_idx", columns={"gr_id"}), @ORM\Index(name="nmt_procure_gr_row_IDX2", columns={"token"}), @ORM\Index(name="nmt_procure_gr_row_FK11_idx", columns={"ap_invoice_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK12_idx", columns={"GL_account_id"})})
  * @ORM\Entity
  */
 class NmtProcureGrRow
@@ -288,6 +288,16 @@ class NmtProcureGrRow
      * })
      */
     private $apInvoiceRow;
+
+    /**
+     * @var \Application\Entity\FinAccount
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="GL_account_id", referencedColumnName="id")
+     * })
+     */
+    private $glAccount;
 
     /**
      * @var \Application\Entity\NmtProcurePrRow
@@ -1247,6 +1257,30 @@ class NmtProcureGrRow
     public function getApInvoiceRow()
     {
         return $this->apInvoiceRow;
+    }
+
+    /**
+     * Set glAccount
+     *
+     * @param \Application\Entity\FinAccount $glAccount
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setGlAccount(\Application\Entity\FinAccount $glAccount = null)
+    {
+        $this->glAccount = $glAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get glAccount
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getGlAccount()
+    {
+        return $this->glAccount;
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Controller;
+namespace Production\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrControllerFactory implements FactoryInterface
+class IndexControllerFactory implements FactoryInterface
 {
 
     /**
@@ -22,13 +22,10 @@ class GrControllerFactory implements FactoryInterface
     {
         $sm = $serviceLocator->getServiceLocator();
 
-        $controller = new GrController();
+        $controller = new IndexController();
 
-        $sv = $sm->get('doctrine.entitymanager.orm_default');
-        $controller->setDoctrineEM($sv);
-
-        $sv = $sm->get('Procure\Service\GrService' );
-		$controller->setGrService($sv);
+        $sv = $sm->get('doctrine.entitymanager.orm_default' );
+		$controller->setDoctrineEM($sv );
 		
 		
 		return $controller;

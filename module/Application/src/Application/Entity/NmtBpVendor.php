@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtBpVendor
  *
- * @ORM\Table(name="nmt_bp_vendor", indexes={@ORM\Index(name="nmt_bp_vendor_idx", columns={"created_by"}), @ORM\Index(name="nmt_bp_vendor_FK2_idx", columns={"country_id"}), @ORM\Index(name="nmt_bp_vendor_FK3_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_bp_vendor", indexes={@ORM\Index(name="nmt_bp_vendor_idx", columns={"created_by"}), @ORM\Index(name="nmt_bp_vendor_FK2_idx", columns={"country_id"}), @ORM\Index(name="nmt_bp_vendor_FK3_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_bp_vendor_FK4_idx", columns={"GL_account_id"})})
  * @ORM\Entity
  */
 class NmtBpVendor
@@ -176,6 +176,16 @@ class NmtBpVendor
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\FinAccount
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="GL_account_id", referencedColumnName="id")
+     * })
+     */
+    private $glAccount;
 
 
 
@@ -691,5 +701,29 @@ class NmtBpVendor
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set glAccount
+     *
+     * @param \Application\Entity\FinAccount $glAccount
+     *
+     * @return NmtBpVendor
+     */
+    public function setGlAccount(\Application\Entity\FinAccount $glAccount = null)
+    {
+        $this->glAccount = $glAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get glAccount
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getGlAccount()
+    {
+        return $this->glAccount;
     }
 }

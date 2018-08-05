@@ -2,19 +2,6 @@
 namespace Inventory\Service;
 
 use Doctrine\ORM\EntityManager;
-use ZendSearch\Lucene\Lucene;
-use ZendSearch\Lucene\Document;
-use ZendSearch\Lucene\Document\Field;
-use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
-// use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive; // Not worked
-use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
-use ZendSearch\Lucene\Index\Term;
-use ZendSearch\Lucene\Search\Query\MultiTerm;
-use ZendSearch\Lucene\Search\Query\Wildcard;
-use Application\Entity\NmtInventoryItem;
-use ZendSearch\Lucene\Search\Query\Boolean;
-use ZendSearch\Lucene\Search\QueryParser;
-use Exception;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 
@@ -25,6 +12,26 @@ use Zend\EventManager\EventManagerInterface;
  */
 class FIFOLayerService implements EventManagerAwareInterface
 {
+    
+    /**
+     *  Valuation
+     *  
+     *  @param \Application\Entity\NmtInventoryItem $item
+     *  @param double $issuedQuantity
+     *  @param \DateTime $transactionDate
+     */
+    public function valuate(\Application\Entity\NmtInventoryItem $item, $issuedQuantity, $transactionDate){
+        $cost =0;
+        
+        
+        /** @todo Get Layer*/
+        
+        
+        /** @todao Doing Valuation and update FIFO Layer*/
+        
+        
+        return $cost;
+    }
     
   
     /**

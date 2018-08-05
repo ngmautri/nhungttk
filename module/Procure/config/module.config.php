@@ -197,6 +197,8 @@ return array(
             'procure_navi' => 'Procure\Service\ProcureNavigationFactory', // <-- add this
             
             'Procure\Service\GrListener' => 'Procure\Service\GrListenereFactory',
+            'Procure\Service\GrService' => 'Procure\Service\GrServiceFactory',
+            
      
             'Procure\Service\PrSearchService' => 'Procure\Service\PrSearchServiceFactory',
             'Procure\Service\PoSearchService' => 'Procure\Service\PoSearchServiceFactory',

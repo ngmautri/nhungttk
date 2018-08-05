@@ -1,5 +1,5 @@
-<?php /**@var \Application\Entity\NmtProcurePo $target ;
-        @var \Application\Entity\NmtProcurePoRow $entity ; */       
+<?php /**@var \Application\Entity\NmtProcureGr $target ;
+        @var \Application\Entity\NmtProcureGrRow $entity ; */       
 ?>
 
 <?php
@@ -166,10 +166,10 @@ if (count ( $errors ) > 0) {
 		
 			</form>			
  
-<form id ="New_Invoice_Row" class="form-horizontal" action="<?php echo $this->baseUrl ?>/procure/po-row/add"	method="post" enctype="multipart/form-data">
+<form id ="New_Invoice_Row" class="form-horizontal" action="<?php echo $this->baseUrl ?>/procure/gr-row/add"	method="post" enctype="multipart/form-data">
 	<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-	<input type="hidden" id="po_id" name="po_id" value="<?php if (!$target == null): echo $target->getId();endif;?>"/>
-	<input type="hidden" id="po_token" name="po_token" value="<?php if (!$target == null): echo $target->getToken();endif;?>"/>
+	<input type="hidden" id="gr_id" name="gr_id" value="<?php if (!$target == null): echo $target->getId();endif;?>"/>
+	<input type="hidden" id="gr_token" name="gr_token" value="<?php if (!$target == null): echo $target->getToken();endif;?>"/>
 	
 
 		<fieldset>

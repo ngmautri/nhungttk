@@ -28,6 +28,14 @@
 							<?php include (ROOT.'/module/Application/view/inventory_menu.php'); ?>			
 						</li>
 
+<!-- Production MENU -->
+<li
+	class="dropdown <?php if ($current_module=="PRODUCTION"): echo "active";endif;?>"><a
+	class="dropdown-toggle" data-toggle="dropdown" href="#"
+	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Production");?> <span class="caret"></span></a>
+							<?php include (ROOT.'/module/Application/view/production_menu.php'); ?>
+						  </li>
+
 <!-- BP MENU -->
 <li
 	class="dropdown <?php if ($current_module=="BP"): echo "active";endif;?>"
@@ -63,6 +71,8 @@ echo $this->cart_items;
 						    	<?php include (ROOT.'/module/Application/view/procure_menu.php'); ?>
 							</li>
 <?php endif;?>
+
+
 
 <!-- HR MENU -->
 <li

@@ -22,9 +22,9 @@ use Application\Entity\FinVendorInvoiceRowTmp;
 class VInvoiceController extends AbstractActionController
 {
 
-    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-
-    protected $doctrineEM;
+     protected $doctrineEM;
+     protected $apService;
+     
 
     /**
      * Adding new vendor invoce
@@ -221,7 +221,7 @@ class VInvoiceController extends AbstractActionController
             
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($createdOn);
-            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
@@ -585,209 +585,7 @@ class VInvoiceController extends AbstractActionController
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
-            // POST AP
-            // change status of row created before.
-            // $res->postAP($entity);
-            
-            // UPDATE AP ROW, CREATE GR & CREATE STOCK GR
-            // total rows checked.
-            
-            $criteria = array(
-                'isActive' => 1,
-                'invoice' => $entity
-            );
-            $ap_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria);
-            
-            $n = 0;
-            foreach ($ap_rows as $r) {
-                
-                /** @var \Application\Entity\FinVendorInvoiceRow $r ; */
-                
-                // ignore row with 0 quantity
-                if ($r->getQuantity() == 0) {
-                    $r->setIsActive(0);
-                    continue;
-                }
-                
-                $createdOn = new \DateTime();
-                
-                $netAmount = $r->getQuantity() * $r->getUnitPrice();
-                $taxAmount = $netAmount * $r->getTaxRate() / 100;
-                $grossAmount = $netAmount + $taxAmount;
-                
-                // UPDATE status
-                $n ++;
-                $r->setIsPosted(1);
-                $r->setIsDraft(0);
-                
-                $r->setNetAmount($netAmount);
-                $r->setTaxAmount($taxAmount);
-                $r->setGrossAmount($grossAmount);
-                
-                $r->setDocStatus($entity->getDocStatus());
-                
-                // DO NOT change transaction type.
-                // $r->setTransactionType($entity->getTransactionType());
-                
-                $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
-                $r->setRowNumber($n);
-                $this->doctrineEM->persist($r);
-                
-                // posting upon transaction type.
-                /**
-                 * GR-NI
-                 */
-                if ($r->getTransactionType() === \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI) :
-                    //clearing
-                
-                endif;
-                
-                /**
-                 * GR-IR
-                 */
-                if ($r->getTransactionType() === \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR) :
-                    
-                    // create procure GR, even no PR, PO.
-                    $criteria = array(
-                        'isActive' => 1,
-                        'apInvoiceRow' => $r
-                    );
-                    $gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
-                    
-                    if (! $gr_entity_ck == null) {
-                        $gr_entity = $gr_entity_ck;
-                    } else {
-                        $gr_entity = new \Application\Entity\NmtProcureGrRow();
-                    }
-                    
-                    $gr_entity->setIsActive(1);
-                    $gr_entity->setInvoice($entity);
-                    $gr_entity->setApInvoiceRow($r);
-                    
-                    $gr_entity->setItem($r->getItem());
-                    $gr_entity->setPrRow($r->getPrRow());
-                    $gr_entity->setPoRow($r->getPoRow());
-                    
-                    $gr_entity->setTargetObject(get_class($entity));
-                    $gr_entity->setTargetObjectId($entity->getId());
-                    $gr_entity->setTransactionType($r->getTransactionType());
-                    
-                    $gr_entity->setIsDraft($r->getIsDraft());
-                    $gr_entity->setIsPosted($r->getIsPosted());
-                    $gr_entity->setDocStatus($r->getDocStatus());
-                    
-                    $gr_entity->setQuantity($r->getQuantity());
-                    $gr_entity->setUnit($r->getUnit());
-                    $gr_entity->setUnitPrice($r->getUnitPrice());
-                    $gr_entity->setNetAmount($r->getNetAmount());
-                    $gr_entity->setTaxRate($r->getTaxRate());
-                    $gr_entity->setTaxAmount($r->getTaxAmount());
-                    $gr_entity->setGrossAmount($r->getGrossAmount());
-                    $gr_entity->setDiscountRate($r->getDiscountRate());
-                    
-                    $gr_entity->setCreatedBy($u);
-                    $gr_entity->setCreatedOn($createdOn);
-                    $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                    $this->doctrineEM->persist($gr_entity);
-                    
-                    /**
-                     * create stock good receipt.
-                     * only for item controlled inventory
-                     * ===================
-                     */
-                    
-                    /**
-                     *
-                     * @todo: only for item with stock control.
-                     */
-                    if ($r->getItem()->getIsStocked() == 0) {
-                        // continue;
-                    }
-                    
-                    $criteria = array(
-                        'isActive' => 1,
-                        'invoiceRow' => $r
-                    );
-                    $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-                    
-                    if (! $stock_gr_entity_ck == null) {
-                        $stock_gr_entity = $stock_gr_entity_ck;
-                    } else {
-                        $stock_gr_entity = new NmtInventoryTrx();
-                    }
-                    
-                    $stock_gr_entity->setIsActive(1);
-                    $stock_gr_entity->setTrxDate($entity->getGrDate());
-                    
-                    $stock_gr_entity->setVendorInvoice($entity);
-                    $stock_gr_entity->setInvoiceRow($r);
-                    $stock_gr_entity->setItem($r->getItem());
-                    $stock_gr_entity->setPrRow($r->getPrRow());
-                    $stock_gr_entity->setPoRow($r->getPoRow());
-                    $stock_gr_entity->setGrRow($gr_entity);
-                    
-                    $stock_gr_entity->setIsDraft($r->getIsDraft());
-                    $stock_gr_entity->setIsPosted($r->getIsPosted());
-                    $stock_gr_entity->setDocStatus($r->getDocStatus());
-                    
-                    $stock_gr_entity->setSourceClass(get_class($r));
-                    $stock_gr_entity->setSourceId($r->getId());
-                    
-                    $stock_gr_entity->setTransactionType($r->getTransactionType());
-                    $stock_gr_entity->setCurrentState($entity->getCurrentState());
-                    
-                    $stock_gr_entity->setVendor($entity->getVendor());
-                    $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
-                    
-                    $stock_gr_entity->setQuantity($r->getQuantity());
-                    $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
-                    $stock_gr_entity->setVendorItemUnit($r->getUnit());
-                    $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
-                    $stock_gr_entity->setTrxDate($entity->getGrDate());
-                    $stock_gr_entity->setCurrency($entity->getCurrency());
-                    $stock_gr_entity->setTaxRate($r->getTaxRate());
-                    
-                    $stock_gr_entity->setRemarks('AP Row' . $r->getRowIdentifer());
-                    $stock_gr_entity->setWh($entity->getWarehouse());
-                    $stock_gr_entity->setCreatedBy($u);
-                    $stock_gr_entity->setCreatedOn($createdOn);
-                    $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                    $this->doctrineEM->persist($stock_gr_entity);
-                    
-                    /**
-                     *
-                     * @todo create serial number
-                     *       if item with Serial
-                     *       or Fixed Asset
-                     */
-                    if ($r->getItem() !== null) {
-                        if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
-                            
-                            for ($i = 0; $i < $r->getQuantity(); $i ++) {
-                                
-                                // create new serial number
-                                $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
-                                
-                                $sn_entity->setItem($r->getItem());
-                                $sn_entity->setApRow($r);
-                                
-                                $sn_entity->setInventoryTrx($stock_gr_entity);
-                                $sn_entity->setIsActive(1);
-                                $sn_entity->setSysNumber($nmtPlugin->getDocNumber($sn_entity));
-                                 $sn_entity->setCreatedBy($u);
-                                $sn_entity->setCreatedOn($createdOn);
-                                $sn_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                                $this->doctrineEM->persist($sn_entity);
-                            }
-                        }
-                    }
-                    
-                endif;
-                
-            }
-            
-            $this->doctrineEM->flush();
-            
+            $this->apService->post($entity, $u, $nmtPlugin);
             /**
              * @ update relevant PR & PO
              */
@@ -799,9 +597,7 @@ class VInvoiceController extends AbstractActionController
              */
             
             // LOGGING
-            /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-            $nmtPlugin = $this->Nmtplugin();
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
             
             $m = sprintf('[OK] AP Invoice #%s - %s posted.', $entity->getId(), $entity->getSysNumber());
             
@@ -882,309 +678,7 @@ class VInvoiceController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-
-    /**
-     *
-     * @deprecated Posting A/P Invoice: Document can not be changed:
-     *            
-     *             1. change doc status of invoice and its rows to "posted"
-     *             2. update relevant document
-     *             - update procurement good receipts
-     *             - upate PR
-     *             - update PO
-     *             - update GR
-     *             - update stock good receipt
-     *             3. Created Accounting Journal Entry
-     *            
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function postAction()
-    {
-        $this->layout("Procure/layout-fullscreen");
-        
-        $request = $this->getRequest();
-        
-        $redirectUrl = null;
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        } else {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
-        }
-        
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-        
-        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
-        $invoice = $res->getVendorInvoice($id, $token);
-        
-        if ($invoice == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        
-        $entity = null;
-        if ($invoice[0] instanceof FinVendorInvoice) {
-            $entity = $invoice[0];
-        }
-        
-        if ($entity instanceof FinVendorInvoice) {
-            
-            /**
-             * check header
-             */
-            $validator = new Date();
-            
-            if ($invoiceNo == null) {
-                $errors[] = 'Please enter Invoice Number!';
-            } else {
-                $entity->setInvoiceNo($invoiceNo);
-            }
-            
-            $entity->setSapDoc($sapDoc);
-            
-            if (! $validator->isValid($invoiceDate)) {
-                $errors[] = 'Invoice Date is not correct or empty!';
-            } else {
-                $entity->setInvoiceDate(new \DateTime($invoiceDate));
-            }
-            
-            if (! $validator->isValid($postingDate)) {
-                $errors[] = 'Posting Date is not correct or empty!';
-            } else {
-                
-                $entity->setPostingDate(new \DateTime($postingDate));
-                
-                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
-                
-                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                    $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
-                } else {
-                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
-                    }
-                }
-            }
-            
-            if (! $validator->isValid($grDate)) {
-                $errors[] = 'Good receipt Date is not correct or empty!';
-            } else {
-                $entity->setGrDate(new \DateTime($grDate));
-                // check if posting period is close
-                /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-                $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-                
-                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
-                
-                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                    $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
-                } else {
-                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
-                    }
-                }
-            }
-            
-            /**
-             * check header
-             */
-            
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
-            
-            $changeOn = new \DateTime();
-            $oldEntity = clone ($entity);
-            
-            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-            $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
-            $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            $entity->setLastchangeBy($u);
-            $entity->setLastchangeOn($changeOn);
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
-            
-            // POST AP
-            // change status of row created before.
-            // $res->postAP($entity);
-            
-            // UPDATE AP ROW, CREATE GR & CREATE STOCK GR
-            $criteria = array(
-                'isActive' => 1,
-                'invoice' => $entity
-            );
-            $ap_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria);
-            
-            if (count($ap_rows) > 0) {
-                $n = 0;
-                foreach ($ap_rows as $r) {
-                    
-                    /** @var \Application\Entity\FinVendorInvoiceRow $r ; */
-                    // ignore row with 0 quantity
-                    if ($r->getQuantity() == 0) {
-                        $r->setIsActive(0);
-                        continue;
-                    }
-                    
-                    $createdOn = new \DateTime();
-                    
-                    // UPDATE status
-                    $n ++;
-                    $r->setIsPosted(1);
-                    $r->setIsDraft(0);
-                    $r->setDocStatus($entity->getDocStatus());
-                    $r->setTransactionType($entity->getTransactionType());
-                    $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
-                    $r->setRowNumber($n);
-                    
-                    /**
-                     * create procure good receipt.
-                     * ============================
-                     */
-                    
-                    $criteria = array(
-                        'isActive' => 1,
-                        'apInvoiceRow' => $r
-                    );
-                    $gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
-                    
-                    if ($gr_entity_ck instanceof \Application\Entity\NmtProcureGrRow) {
-                        $gr_entity = $gr_entity_ck;
-                    } else {
-                        $gr_entity = new \Application\Entity\NmtProcureGrRow();
-                    }
-                    
-                    $gr_entity->setIsActive(1);
-                    $gr_entity->setInvoice($entity);
-                    $gr_entity->setApInvoiceRow($r);
-                    
-                    $gr_entity->setItem($r->getItem());
-                    $gr_entity->setPrRow($r->getPrRow());
-                    $gr_entity->setPoRow($r->getPoRow());
-                    
-                    $gr_entity->setTargetObject(get_class($entity));
-                    $gr_entity->setTargetObjectId($entity->getId());
-                    $gr_entity->setTransactionType($entity->getTransactionType());
-                    
-                    $gr_entity->setIsDraft($r->getIsDraft());
-                    $gr_entity->setIsPosted($r->getIsPosted());
-                    $gr_entity->setDocStatus($r->getDocStatus());
-                    
-                    $gr_entity->setQuantity($r->getQuantity());
-                    $gr_entity->setUnit($r->getUnit());
-                    $gr_entity->setUnitPrice($r->getUnitPrice());
-                    $gr_entity->setNetAmount($r->getNetAmount());
-                    $gr_entity->setTaxRate($r->getTaxRate());
-                    $gr_entity->setTaxAmount($r->getTaxAmount());
-                    $gr_entity->setGrossAmount($r->getGrossAmount());
-                    $gr_entity->setDiscountRate($r->getDiscountRate());
-                    
-                    $gr_entity->setCreatedBy($u);
-                    $gr_entity->setCreatedOn($createdOn);
-                    $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                    $this->doctrineEM->persist($gr_entity);
-                    
-                    /**
-                     * create procure good receipt.
-                     * only for item controlled inventory
-                     * ===================
-                     */
-                    
-                    /**
-                     *
-                     * @todo: only for item with stock control.
-                     */
-                    if ($r->getItem()->getIsStocked() == 0) {
-                        // continue;
-                    }
-                    
-                    $criteria = array(
-                        'isActive' => 1,
-                        'invoiceRow' => $r
-                    );
-                    $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-                    
-                    if ($stock_gr_entity_ck instanceof \Application\Entity\NmtInventoryTrx) {
-                        $stock_gr_entity = $stock_gr_entity_ck;
-                    } else {
-                        $stock_gr_entity = new NmtInventoryTrx();
-                    }
-                    
-                    $stock_gr_entity->setIsActive(1);
-                    $stock_gr_entity->setTrxDate($entity->getGrDate());
-                    
-                    $stock_gr_entity->setVendorInvoice($entity);
-                    $stock_gr_entity->setInvoiceRow($r);
-                    $stock_gr_entity->setItem($r->getItem());
-                    $stock_gr_entity->setPrRow($r->getPrRow());
-                    $stock_gr_entity->setPoRow($r->getPoRow());
-                    $stock_gr_entity->setGrRow($gr_entity);
-                    
-                    $stock_gr_entity->setIsDraft($r->getIsDraft());
-                    $stock_gr_entity->setIsPosted($r->getIsPosted());
-                    $stock_gr_entity->setDocStatus($r->getDocStatus());
-                    $stock_gr_entity->setTransactionType($entity->getTransactionType());
-                    
-                    $stock_gr_entity->setSourceClass(get_class($r));
-                    $stock_gr_entity->setSourceId($r->getId());
-                    
-                    $stock_gr_entity->setTransactionType($r->getTransactionType());
-                    $stock_gr_entity->setCurrentState($entity->getCurrentState());
-                    
-                    $stock_gr_entity->setVendor($entity->getVendor());
-                    $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
-                    
-                    $stock_gr_entity->setQuantity($r->getQuantity());
-                    $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
-                    $stock_gr_entity->setVendorItemUnit($r->getUnit());
-                    $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
-                    $stock_gr_entity->setTrxDate($entity->getGrDate());
-                    $stock_gr_entity->setCurrency($entity->getCurrency());
-                    $stock_gr_entity->setTaxRate($r->getTaxRate());
-                    
-                    $stock_gr_entity->setRemarks('AP Row' . $r->getRowIdentifer());
-                    $stock_gr_entity->setWh($entity->getWarehouse());
-                    $stock_gr_entity->setCreatedBy($u);
-                    $stock_gr_entity->setCreatedOn($createdOn);
-                    $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                    $this->doctrineEM->persist($stock_gr_entity);
-                }
-                
-                $this->doctrineEM->flush();
-            }
-            
-            // LOGGING
-            /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-            $nmtPlugin = $this->Nmtplugin();
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-            
-            $m = sprintf('[OK] AP Invoice #%s - %s posted.', $entity->getId(), $entity->getSysNumber());
-            
-            // Trigger Change Log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
-                'priority' => 7,
-                'message' => $m,
-                'objectId' => $entity->getId(),
-                'objectToken' => $entity->getToken(),
-                'changeArray' => $changeArray,
-                'changeBy' => $u,
-                'changeOn' => $changeOn,
-                'revisionNumber' => $entity->getRevisionNo(),
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-            
-            $this->flashMessenger()->addMessage($m);
-            $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
-            
-            return $this->redirect()->toUrl($redirectUrl);
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
-    }
+   
 
     /**
      * Make A/P Invoice from PO
@@ -1401,7 +895,7 @@ class VInvoiceController extends AbstractActionController
             
             $entity->setCreatedBy($u);
             $entity->setCreatedOn(new \DateTime());
-            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
@@ -1460,7 +954,7 @@ class VInvoiceController extends AbstractActionController
                     
                     $row_tmp->setCreatedBy($u);
                     $row_tmp->setCreatedOn(new \DateTime());
-                    $row_tmp->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                     $row_tmp->setRemarks("Ref: PO #" . $r->getRowIdentifer());
                     
                     $this->doctrineEM->persist($row_tmp);
@@ -1714,7 +1208,7 @@ class VInvoiceController extends AbstractActionController
             
             $entity->setCreatedBy($u);
             $entity->setCreatedOn(new \DateTime());
-            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
@@ -1776,7 +1270,7 @@ class VInvoiceController extends AbstractActionController
                     
                     $row_tmp->setCreatedBy($u);
                     $row_tmp->setCreatedOn(new \DateTime());
-                    $row_tmp->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                     $row_tmp->setRemarks("Ref: PO #" . $r->getRowIdentifer());
                     
                     $this->doctrineEM->persist($row_tmp);
@@ -1925,7 +1419,7 @@ class VInvoiceController extends AbstractActionController
                     
                     $ap_row->setCreatedBy($u);
                     $ap_row->setCreatedOn(new \DateTime());
-                    $ap_row->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $ap_row->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                     $ap_row->setRemarks($r->getRemarks());
                     
                     $this->doctrineEM->persist($ap_row);
@@ -1950,8 +1444,8 @@ class VInvoiceController extends AbstractActionController
                     $gr_entity->setWh($target->getWarehouse());
                     $gr_entity->setCreatedBy($u);
                     $gr_entity->setCreatedOn(new \DateTime());
-                    $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                    $gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
+                    $gr_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                    $gr_entity->setChecksum(Rand::getString(32, \Application\Model\Constants::CHAR_LIST, true));
                     
                     $gr_entity->setTaxRate($r->getTaxRate());
                     
@@ -2612,7 +2106,7 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
                         ->getCurrency());
                 }
                 
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             }
         }
         
@@ -2642,4 +2136,20 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
+    /**
+     * @return mixed
+     */
+    public function getApService()
+    {
+        return $this->apService;
+    }
+
+    /**
+     * @param mixed $apService
+     */
+    public function setApService(\Finance\Service\APInvoiceService $apService)
+    {
+        $this->apService = $apService;
+    }
+
 }

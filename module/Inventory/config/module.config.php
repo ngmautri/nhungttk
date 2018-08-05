@@ -167,6 +167,8 @@ return array(
             'Inventory\Service\ItemSearchService' => 'Inventory\Service\ItemSearchServiceFactory',
             'Inventory\Service\ItemSerialSearchService' => 'Inventory\Service\ItemSerialSearchServiceFactory',
              'Inventory\Service\FIFOLayerService' => 'Inventory\Service\FIFOLayerServiceFactory',            
+            'Inventory\Service\GIService' => 'Inventory\Service\GIServiceFactory',
+            
         )
     ),
 

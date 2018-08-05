@@ -6,22 +6,30 @@ return array(
                 'label' => 'Home',
                 'route' => 'application'
             ),
-        array (
-        'label' => 'Maintenance & Repair',
-        'route' => 'production/default',
-          'controller' => 'maintenance',
-          'action' => 'add',
-          'icon' => 'glyphicon glyphicon-plus'
-          ),
-            
-            array (
+            array(
+                'label' => 'Maintenance & Repair',
+                'route' => 'production/default',
+                'controller' => 'maintenance',
+                'action' => 'add',
+                'icon' => 'glyphicon glyphicon-plus'
+            ),
+
+            array(
                 'label' => 'IE Project',
                 'route' => 'production/default',
                 'controller' => 'maintenance',
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
             ),
-                 )
+            
+            array(
+                'label' => 'Production Order',
+                'route' => 'production/default',
+                'controller' => 'maintenance',
+                'action' => 'add',
+                'icon' => 'glyphicon glyphicon-plus'
+            )
+        )
     ),
     'router' => array(
         'routes' => array(

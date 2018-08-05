@@ -1,10 +1,8 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 return array(
     'navigation' => array(
@@ -84,7 +82,9 @@ return array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'finance_navi' => 'Finance\Service\FinanceNavigationFactory', // <-- add this
-           )
+            'Finance\Service\APInvoiceService' => 'Finance\Service\APInvoiceServiceFactory',
+            
+        )
     ),
     
     'controllers' => array(

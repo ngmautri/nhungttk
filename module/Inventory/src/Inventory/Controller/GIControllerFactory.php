@@ -30,6 +30,9 @@ class GIControllerFactory implements FactoryInterface{
 		
 		$sv =  $container->get('Inventory\Service\ItemSearchService');
 		$controller->setItemSearchService($sv);
+	
+		$sv =  $container->get('Inventory\Service\GIService');
+		$controller->setGiService($sv);
 		
 		return $controller;
 	}	

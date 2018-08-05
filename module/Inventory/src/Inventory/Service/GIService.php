@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Service;
+namespace Inventory\Service;
 
 use Application\Entity\NmtInventoryTrx;
 use Doctrine\ORM\EntityManager;
@@ -8,32 +8,31 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Math\Rand;
 
 /**
- * Good Receipt Service.
+ *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrService implements EventManagerAwareInterface
+class GIService implements EventManagerAwareInterface
 {
 
     protected $doctrineEM;
 
-    protected $eventManager = null;
+    protected $eventManager;
 
     /**
      *
-     * @param \Application\Entity\NmtProcureGr $entity ;
-     * @param \Application\Entity\MlaUsers $u ;
-     * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+     * @param \Application\Entity\NmtProcureGr $entity
+     *            ;
+     * @param \Application\Entity\MlaUsers $u
+     *            ;
+     * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
+     *            ;
      * @return \Doctrine\ORM\EntityManager
      */
     public function doPosting($entity, $u, $nmtPlugin)
     {
         if (! $entity instanceof \Application\Entity\NmtProcureGr) {
-            throw new \Exception("Invalid Argument");
-        }
-        
-        if (! $u == null) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+            return;
         }
 
         $criteria = array(
@@ -42,18 +41,13 @@ class GrService implements EventManagerAwareInterface
         );
         $gr_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
 
-        
-        if (count($gr_rows)==0) {
-            throw new \Exception("Good receipt is empty. No Posting will be made!");
-        }
-        
-        
         if (count($gr_rows) > 0) {
-            
+
             $n = 0;
             foreach ($gr_rows as $r) {
-                
-                $n ++;                
+
+                $n ++;
+
                 /** @var \Application\Entity\NmtProcureGrRow $r ; */
 
                 // UPDATE status
@@ -150,14 +144,14 @@ class GrService implements EventManagerAwareInterface
                 if ($r->getItem() !== null) {
                     if ($r->getItem()->getIsStocked() == 1) {
                         $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
-                        
                         $fifoLayer->setIsClosed(0);
+
                         $fifoLayer->setItem($r->getItem());
                         $fifoLayer->setQuantity($r->getQuantity());
-                       
+
                         // will be changed uppon inventory transaction.
                         $fifoLayer->setOnhandQuantity($r->getQuantity());
-                   
+
                         $fifoLayer->setDocUnitPrice($r->getUnitPrice());
                         $fifoLayer->setLocalCurrency($r->getGR()
                             ->getCurrency());

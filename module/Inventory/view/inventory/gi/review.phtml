@@ -1,0 +1,785 @@
+<?php /**@var \Application\Entity\NmtProcureGr $entity ;*/?>
+
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+    
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><small><i class="fa fa-calculator"
+					aria-hidden="true"></i></small>&nbsp;Good Receive</a></li>
+		<li><a
+			href="/procure/gr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment (<?php echo 1;?>)</a></li>
+		<li><a
+			href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+
+	</ul>
+
+
+	<div id="general" style="font-size: 9pt">
+
+		<div class="row">
+			<!-- ROW-->
+
+			<div class="col-xs-5 col-md-2" style="font-size: 9pt; padding: 2px 4px 1px 5px">
+				<!-- C1 -->
+  					<?php
+    $current_step = "STEP3";
+    include (ROOT . '/module/Procure/view/procure/gr-create-wizard.php');
+    ?>
+  				<div class="alert alert-info" role="alert"
+					style="padding: 1px; font-size: 9.5pt;">
+					<ul style="font-size: 9pt; padding-left: 15pt;">
+						<li><span style="color: gray;"> Vendor: <?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?></li>
+						<li><span style="color: gray;">Invoice No.: <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?> // <?php echo (!$entity == null)? $entity->getSapDoc():"";?></span></li>
+						<li><span style="color: gray;">Invoice Date: <?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
+						</li>
+						<li><span style="color: gray;">GR #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></span></li>
+						<li><span style="color: gray;">Status: <?php echo (!$entity == null)? $entity->getCurrentState():"";?></span></li>
+
+						<li>-----</li>
+
+						<li><span style="color: gray;">Total Line: <?php echo ($total_row);?></span></li>
+					</ul>
+				</div>
+
+				<div class="alert alert-warning" role="alert"
+					style="padding: 1px; font-size: 9pt"><?php echo $this->translate('Document can\'t be changed anymore when submitted!');?></div>
+
+				<!-- C1 ends-->
+			</div>
+
+			<div class="col-xs-12 col-sm-6 col-md-10" style="font-size: 9pt; padding: 2px 5px 1px 10px">
+				<!-- C2 -->
+
+				<div style="position: relative; float: right;">
+
+					<a class="btn btn-primary btn-sm" style="color: white"
+						onclick="confirmPost();" href="javascript:;"><i
+						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
+					<a class="btn btn-default btn-sm" href="javascript:;"
+						onclick="refreshGird();"><i class="fa fa-refresh"
+						aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>
+					<a class="btn btn-default btn-sm"
+						href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+						<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
+					</a>
+
+				</div>
+				<h4>
+<?php //if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
+<h4 style="color: gray;"><strong><?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong>
+				</h4>
+
+				<form id="Invoice_Posting_Form" class="form-horizontal"
+					action="/procure/gr/review" method="post"
+					enctype="multipart/form-data">
+					<input type="hidden" name="redirectUrl"
+						value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+						name="entity_id"
+						value="<?php echo (!$entity == null)? $entity->getId():"";?>" /> <input
+						type="hidden" name="token"
+						value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
+
+
+
+					<fieldset>
+						<legend style="font-size: 9.5pt; color: gray;">
+							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+							<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
+						</legend>
+						<div id="invoice_header" class="collapse in">
+
+							<div class="form-group margin-bottom required">
+								<label class="control-label col-sm-2">Current State:</label>
+								<div class="col-sm-3">
+									<select name="currentState" class="form-control input-sm">
+										<option value="">Please Select</option>
+										<option
+											<?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?>
+											value="contract">Contract /PO</option>
+										<option
+											<?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?>
+											value="draftInvoice">Draft Invoice</option>
+										<option
+											<?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?>
+											value="finalInvoice">Final Invoice</option>
+									</select>
+								</div>
+
+								<div class="col-sm-3">
+									<input
+										<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+										type="checkbox" name="isActive" value="1">&nbsp;Is
+									Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+								</div>
+
+							</div>
+
+							<div class="form-group margin-bottom required">
+								<label class="control-label col-sm-2 ">Vendor:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text"
+										id="vendor_name_1" placeholder="Enter term to search vendor"
+										name="vendor_name"
+										value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
+
+									<input type="hidden" id="vendor_id" placeholder=""
+										name="vendor_id"
+										value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
+								</div>
+								<div class="col-sm-3">
+
+									<a target="blank" style="font-size: 9pt;"
+										href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
+										class="glyphicon glyphicon-new-window"></i></small>
+								</div>
+							</div>
+
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Contract /PO:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										id="contractNo" name="contractNo"
+										value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
+								</div>
+								<label class="control-label col-sm-2">Contract /PO Date:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										id="contractDate" name="contractDate"
+										value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
+								</div>
+							</div>
+
+							<div class="form-group margin-bottom required">
+
+								<label class="control-label col-sm-2">Currency:</label>
+								<div class="col-sm-3">
+									<select name="currency_id" class="form-control input-sm">
+										<option value="">Select Currency</option>
+   	    							<?php
+            if ($currency_list !== null) :
+                foreach ($currency_list as $curr) :
+                    if ($entity !== null) :
+                        if ($entity->getCurrency() !== null) :
+                            if ($entity->getCurrency()->getCurrency() == $curr->getCurrency()) :
+                                echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            else :
+                                echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+            
+            ?>
+   					</select>
+								</div>
+								<label class="control-label col-sm-2">Exchange Rate:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										id="exchangeRate" name="exchangeRate"
+										value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
+								</div>
+
+							</div>
+
+
+							
+
+							<div class="form-group margin-bottom required">
+
+								<label class="control-label col-sm-2">Goods Receipt Date:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" id="grDate"
+										name="grDate"
+										value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
+										placeholder=" please select" />
+								</div>
+								<label class="control-label col-sm-2" for="inputTag">Target
+									Warehouse:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" readonly type="text"
+										id="target_wh_name" placeholder="Please select!"
+										name="target_wh"
+										value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+									<input type="hidden" id="target_wh_id" name="target_wh_id"
+										value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+								</div>
+							</div>
+
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2">Description</label>
+								<div class="col-sm-8">
+									<input class="form-control input-sm" type="text" placeholder=""
+										name="remarks"
+										value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+								</div>
+							</div>
+
+						</div>
+					</fieldset>
+				</form>
+
+				<form action="">
+					<fieldset>
+						<legend style="font-size: 9pt; color: gray;">
+							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+							<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
+						</legend>
+						<div id="rows" class="collapse in">
+							<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
+					
+					</fieldset>
+				</form>
+
+				<!-- C2 ends-->
+			</div>
+
+			<!-- ROW ends-->
+		</div>
+
+
+	</div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal" id="confirm_modal_sm" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body" id="b_modal_sm_body">
+				<h5>Good Receipt #<?php echo (!$entity == null)? $entity->getSysNumber() . $this->translate(' will be posted!'):"";?></h5>
+
+				<div class="alert alert-warning">
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when submitted!');?>
+					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
+					created.
+					 -->
+				</div>
+				<p><?php echo $this->translate('Do you want to continue?');?></p>
+			</div>
+			<div class="modal-footer">
+				<button onclick="doPosting();" type="button"
+					class="btn btn-primary btn-sm">YES</button>
+				<button type="button" class="btn btn-default btn-sm"
+					data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+$('#invoiceDate').bind('change', function() {
+	$('#postingDate').val($('#invoiceDate').val());
+	$('#grDate').val($('#invoiceDate').val());
+});
+
+$( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='invoiceDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='grDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
+function confirmPost() {
+ 	$('#confirm_modal_sm').modal();
+}
+
+function doPosting() {
+	//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"
+	//window.location = url;
+	$('#confirm_modal_sm').modal('hide');
+	submitForm('Invoice_Posting_Form');
+}
+
+
+$( "#pr_item_name" ).autocomplete({
+    source: "/procure/pr-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#pr_row_id" ).val(ui.item.pr_row_id);
+  	  
+     alert	( ui.item.pr_row_id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.item_name + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
+      .appendTo( ul );
+	};
+
+    $( "#item_name" ).autocomplete({
+        source: "/inventory/item-search/auto-complete",
+        minLength: 2,
+        select: function( event, ui ) {
+      	  $( "#item_id" ).val(ui.item.id);
+        
+      	 	$('#global-notice').show();
+      		$('#global-notice').html('"' + ui.item.value + '" selected');
+      		$('#global-notice').fadeOut(5000);
+      		//$("#jquery_dialog").dialog("close");
+        }
+       
+      })
+      .autocomplete( "instance" )._renderItem = function( ul, item ) {
+   	  var serial_no = "";
+   	  if(item.item_serial!=""){
+   		  serial_no = " : " + item.item_serial;
+   	  }
+    	   
+         return $( "<li>" )
+           .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
+           .appendTo( ul );
+       };
+
+
+      	       
+
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+	
+	//$("#Create_PR_Form :input").attr("disabled", "disabled");
+
+
+ //to check whether any row is currently being edited.
+function isEditing($grid) {
+    var rows = $grid.pqGrid("getRowsByClass", { cls: 'pq-row-edit' });
+    if (rows.length > 0) {
+        //focus on editor if any 
+        $grid.find(".pq-editor-focus").focus();
+        return true;
+    }
+    return false;
+}
+
+//called by edit button.
+function editRow(rowIndx, $grid) {
+
+    $grid.pqGrid("addClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
+    $grid.pqGrid("editFirstCellInRow", { rowIndx: rowIndx });
+
+    //change edit button to update button and delete to cancel.
+    var $tr = $grid.pqGrid("getRow", { rowIndx: rowIndx }),
+        $btn = $tr.find("button.edit_btn");
+    $btn.button("option", { label: "Update", "icons": { primary: "ui-icon-check"} })
+        .unbind("click")
+        .click(function (evt) {
+            evt.preventDefault();
+            return update(rowIndx, $grid);
+        });
+    $btn.next().button("option", { label: "Cancel", "icons": { primary: "ui-icon-cancel"} })
+        .unbind("click")
+        .click(function (evt) {
+            $grid.pqGrid("quitEditMode");
+            $grid.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
+            $grid.pqGrid("refreshRow", { rowIndx: rowIndx });
+            $grid.pqGrid("rollback");
+        });
+}
+
+//called by update button.
+function update(rowIndx, $grid) {
+
+    if ($grid.pqGrid("saveEditCell") == false) {
+        return false;
+    }
+
+    var isValid = $grid.pqGrid("isValid", { rowIndx: rowIndx }).valid;
+    if (!isValid) {
+        return false;
+    }
+    var isDirty = $grid.pqGrid("isDirty");
+    if (isDirty) {
+        var url,
+            rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+            recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+        $grid.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
+
+        if (rowData[recIndx] == null) {
+            //url to add records.
+            url = "/pro/products/add";
+            //url = "/pro/products.php?pq_add=1";for PHP
+        }
+        else {
+            //url to  update records.
+            url = "/pro/products/update";
+            //url = "/pro/products.php?pq_update=1";for PHP
+        }
+        $.ajax($.extend({}, ajaxObj, {
+            context: $grid,
+            url: url,
+            data: rowData,
+            success: function (response) {
+                var recIndx = this.pqGrid("option", "dataModel.recIndx");
+                if (rowData[recIndx] == null) {
+                    rowData[recIndx] = response.recId;
+                }
+                this.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
+                this.pqGrid("commit");
+            }
+        }));
+    }
+    else {
+        $grid.pqGrid("quitEditMode");
+        $grid.pqGrid("removeClass", { rowIndx: rowIndx, cls: 'pq-row-edit' });
+        $grid.pqGrid("refreshRow", { rowIndx: rowIndx });
+    }
+}
+
+  //called by add button in toolbar.
+function addRow($grid) {
+	 if (isEditing($grid)) {
+	        return false;
+	    }
+	  
+	//append empty row in the first row.                            
+    var rowData = { Item: "", Quantity: 0, Received: 0, Balance: 0}; //empty row template
+    $grid.pqGrid("addRow", { rowIndxPage: 0, rowData: rowData });
+
+    var $tr = $grid.pqGrid("getRow", { rowIndxPage: 0 });
+    if ($tr) {
+        //simulate click on edit button.
+        $tr.find("button.edit_btn").click();
+    }
+}
+
+var autoCompleteEditor = function (ui) {
+        var $inp = ui.$cell.find("input");
+        var rowData = ui.rowData;
+      
+        //initialize the editor
+        $inp.autocomplete({
+        	source: "/bp/vendor-search/auto-complete",
+            minLength: 3,
+            select: function( event, ui ) {
+          	  //$( "#vendor_id" ).val(ui.item.id);
+              //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+          	  //alert($( "#vendor_id" ).val());
+          	  //alert(ui.item.id);
+          	  rowData.vendor_id = ui.item.id;
+
+          	 	$('#global-notice').show();
+          		$('#global-notice').html('"' + ui.item.value + '" selected');
+          		$('#global-notice').fadeOut(5000);
+          		//$("#jquery_dialog").dialog("close");
+            }
+            })
+            .autocomplete( "instance" )._renderItem = function( ul, item ) {
+            return $( "<li>" )
+              .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'>" + item.value + "<br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+              .appendTo( ul );
+          };
+    }
+    
+
+//var container_height = $('#main_container').height();
+//alert(container_height);
+var obj = { width: "auto", height: $(window).height()-270, showTitle : false,
+		resizable:true,
+		//draggable:true,
+		sortable: true,
+		hoverMode: 'cell',
+	   	pageModel: { type: "remote", rPP: 100, strRpp: "{0}" },
+	  	editModel: {
+            allowInvalid: true,
+            saveKey: $.ui.keyCode.ENTER
+        },
+        editor: {
+            select: true
+        },
+	 columnBorders: true,
+	   toolbar: {
+                items: [
+                    { type: 'button', icon: 'ui-icon-plus', label: 'Add New Row', listeners: [
+                        { "click": function (evt, ui) {
+                            var $grid = $(this).closest('.pq-grid');
+                            //addRow($grid);
+                            
+	     redirectUrl="/procure/gr-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
+          window.location.href= redirectUrl;
+                             
+                            //debugger;
+                        }
+                        }
+                    ]
+                    }
+                ]
+            },
+
+
+    change: function (evt, ui) {                
+        
+        if (ui.source == 'commit' || ui.source == 'rollback') {
+            return;
+        }
+        console.log(ui);
+        var $grid = $(this),
+            grid = $grid.pqGrid('getInstance').grid;
+        var rowList = ui.rowList,
+            addList = [],
+            recIndx = grid.option('dataModel').recIndx,
+            deleteList = [],
+            updateList = [];
+        
+        for (var i = 0; i < rowList.length; i++) {
+            var obj = rowList[i],
+                rowIndx = obj.rowIndx,
+                newRow = obj.newRow,
+                type = obj.type,
+                rowData = obj.rowData;
+             if (type == 'add') {                        
+                var valid = grid.isValid({ rowData: newRow, allowInvalid: true }).valid;
+                if (valid) {
+                    addList.push(newRow);
+                }
+            }
+            else if (type == 'update') {                        
+                var valid = grid.isValid({ rowData: rowData, allowInvalid: true }).valid;
+                if (valid) {
+                    if (rowData[recIndx] == null) {
+                        addList.push(rowData);
+                    }
+                    //else if (grid.isDirty({rowData: rowData})) {
+                    else {
+                        updateList.push(rowData);
+                  		//alert(rowData[recIndx]  + "remarks: " + rowData.item_name);
+                         
+                    }
+                }
+            }
+          }
+
+          if (addList.length || updateList.length || deleteList.length) {
+			var sent_list = JSON.stringify({
+                updateList: updateList,
+                addList: addList,
+                deleteList: deleteList
+            });
+            //alert(sent_list);
+              
+              $.ajax({
+                  url: '/procure/gr-row/update-row',
+                  data: {
+                      sent_list: sent_list
+                  },
+                  dataType: "json",
+                  type: "POST",
+                  async: true,
+                  beforeSend: function (jqXHR, settings) {
+                      //$(".saving", $grid).show();
+                      //$("#global-notice").text("Updating...").show();
+                      //alert(updateList[0].row_id +  updateList[0].row_token);
+                  },
+                  success: function (changes) {
+                      //commit the changes.
+                      //alert(changes.length);
+                      //$("#global-notice").text("Updated.....").show();
+                      //$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+                     
+                       if(changes.length>0){
+							var m='';
+							var i
+							for (i = 0; i < changes.length; i++) { 
+							    m += changes[i] + "<br>";
+							}
+                       	   $("#global-notice").html(m).show();
+                       }else{
+                    	   $("#global-notice").text("[INFO] Updated.....").show();
+                       } 
+
+                       $( "#pr_row_gird" ).pqGrid( "refreshDataAndView" );
+                       
+        		      //alert('it is ok');                
+                      /* grid.commit({ type: 'add', rows: changes.addList });
+                      grid.commit({ type: 'update', rows: changes.updateList });
+                      grid.commit({ type: 'delete', rows: changes.deleteList }); */
+                  },
+                  complete: function () {
+                      //$(".saving", $grid).hide();
+                      $("#global-notice").delay(2200).fadeOut(500);
+                      
+                  }
+              });
+          }
+        //alert(updateList.length);
+       
+    },     
+              
+};
+
+obj.colModel = [
+	/*  { title: "vendor", dataType: "string", dataIndx: "vendor", align: 'left',minWidth: 100,editable: true,
+         editor: {
+         type: "textbox",
+         init: autoCompleteEditor
+         //type: function (ui) { return dropdowneditor(this, ui); }
+     },},
+     
+   { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
+    { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
+    { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
+	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
+    { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
+    { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: true},        
+    { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: true},
+    { title: "Unit Price", dataType: "float", dataIndx: "row_unit_price", width:90, align: 'right',editable: true},
+    { title: "Net", dataType: "float", dataIndx: "row_net", width:90, align: 'right',editable: false},
+    { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: true},
+    { title: "Gross", dataType: "float", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
+	{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
+    { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: true},
+    
+    { title: "", editable: false, minWidth: 100, sortable: false,
+        render: function (ui) {
+            //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
+        	return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button>";
+           }
+    },
+];
+
+obj.dataModel = {
+      dataType: "JSON",
+      location: "remote",
+      method: "GET",
+      recIndx: "row_id",
+      url: "/procure/gr-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+      getData: function (response) {
+        return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
+     }
+};
+
+var $grid = $("#pr_row_gird").pqGrid(obj);
+
+$grid.on('pqgridrefresh pqgridrefreshrow', function () {
+    //debugger;
+    var $grid = $(this);
+
+    //receive button
+    $grid.find("button.receive_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+
+        var $tr = $(this).closest("tr"),
+        rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+        rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+        recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+        redirectUrl="/inventory/item-transaction/gr?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+      	//alert(rowData['item_name']);
+		
+		window.location.href = redirectUrl;
+      	//window.open(redirectUrl,'_blank');
+    });
+
+    //receive button
+    $grid.find("button.edit_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+
+        var $tr = $(this).closest("tr"),
+        rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+        rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+        recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+        redirectUrl="/procure/gr-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+      	//alert(redirectUrl);
+		window.location.href = redirectUrl;
+      	//window.open(redirectUrl,'_blank');
+    });
+
+    //receive button
+    $grid.find("button.receive_inline_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+        if (isEditing($grid)) {
+            return false;
+        }
+        var $tr = $(this).closest("tr"),
+            rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+        editRow(rowIndx, $grid);
+        return false;
+    });
+
+  //receive button
+    $grid.find("button.receive_inline_btn").button({})
+    .unbind("click")
+    .bind("click", function (evt) {
+
+        var $tr = $(this).closest("tr"),
+        rowIndx = $grid.pqGrid("getRowIndx", { $tr: $tr }).rowIndx;
+
+        rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
+        recIndx = $grid.pqGrid("option", "dataModel.recIndx");
+
+        redirectUrl="/inventory/item-transaction/gr1?token="+rowData['row_token']+"&pr_row_id="+rowData['row_id']+"&checksum="+rowData['row_checksum'];
+      	//alert(rowData['item_name']);
+      	
+      	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
+      	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
+      	//window.open(redirectUrl,'_blank');
+      	
+    });
+
+  //rows which were in edit mode before refresh, put them in edit mode again.
+    var rows = $grid.pqGrid("getRowsByClass", { cls: 'pq-row-edit' });
+    if (rows.length > 0) {
+        var rowIndx = rows[0].rowIndx;
+        editRow(rowIndx, $grid);
+    }
+});        
+
+function refreshGird(){
+	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+} 
+</script>
+

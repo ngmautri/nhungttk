@@ -1,6 +1,6 @@
 <?php
 
-namespace Finance\Service;
+namespace Inventory\Service;
 
 
 use Zend\ServiceManager\FactoryInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class APInvoiceServiceFactory implements FactoryInterface {
+class GIServiceFactory implements FactoryInterface {
 	
 	/**
 	 * 
@@ -22,7 +22,7 @@ class APInvoiceServiceFactory implements FactoryInterface {
 		
 		$container = $serviceLocator;
 		
-		$service = new APInvoiceService();
+		$service = new GIService();
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$service->setDoctrineEM($sv);

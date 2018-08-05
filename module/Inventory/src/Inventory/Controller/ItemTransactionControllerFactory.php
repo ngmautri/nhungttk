@@ -32,6 +32,12 @@ class ItemTransactionControllerFactory implements FactoryInterface{
 		$sv =  $container->get('Inventory\Service\ItemSearchService');
 		$controller->setItemSearchService($sv);
 		
+		$sv =  $container->get('Inventory\Service\GIService');
+		$controller->setGiService($sv);
+		
+		$sv =  $container->get('Inventory\Service\FIFOLayerService');
+		$controller->setFifoLayerService($sv);
+		
 		return $controller;
 	}	
 	

@@ -747,8 +747,10 @@ class GrController extends AbstractActionController
             $grDate = $request->getPost('grDate');
             $currentState = $request->getPost('currentState');
 
+            $warehouse_id = (int) $request->getPost('target_wh_id');            
             $vendor_id = (int) $request->getPost('vendor_id');
             $currency_id = (int) $request->getPost('currency_id');
+
             $isActive = (int) $request->getPost('isActive');
             $remarks = $request->getPost('remarks');
 

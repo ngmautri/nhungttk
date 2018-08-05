@@ -7,6 +7,7 @@ return [
 		'BP',  // Business partner
 		'HR',
 		'PM', // Project manager
+        'Production', // Project manager
         'Calendar', // Calendar    
 		'Procure',
         'Finance',

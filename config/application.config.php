@@ -21,6 +21,7 @@ return array(
         'BP', // Business partner
         'HR',
         'PM', // Project manager
+        'Production', // Production Module
         'Procurement',
         'Calendar', // Calendar
         'Finance',

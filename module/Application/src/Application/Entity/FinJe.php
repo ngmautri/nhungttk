@@ -1,0 +1,602 @@
+<?php
+
+namespace Application\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * FinJe
+ *
+ * @ORM\Table(name="fin_je", indexes={@ORM\Index(name="fin_je_FK1_idx", columns={"currency_id"}), @ORM\Index(name="fin_je_FK2_idx", columns={"created_by"}), @ORM\Index(name="fin_je_FK3_idx", columns={"last_change_by"})})
+ * @ORM\Entity
+ */
+class FinJe
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="je_type", type="string", length=45, nullable=true)
+     */
+    private $jeType;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="posting_date", type="datetime", nullable=true)
+     */
+    private $postingDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="document_date", type="datetime", nullable=true)
+     */
+    private $documentDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="je_reference", type="string", length=45, nullable=true)
+     */
+    private $jeReference;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="je_note", type="string", length=255, nullable=true)
+     */
+    private $jeNote;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="je_remarks", type="text", length=65535, nullable=true)
+     */
+    private $jeRemarks;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="exchange_rate", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $exchangeRate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_type", type="string", length=45, nullable=true)
+     */
+    private $docType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
+     */
+    private $transactionStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
+     */
+    private $workflowStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_type", type="string", length=45, nullable=true)
+     */
+    private $transactionType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="je_status", type="string", length=45, nullable=true)
+     */
+    private $jeStatus;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="currency_id", referencedColumnName="id")
+     * })
+     */
+    private $currency;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return FinJe
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set jeType
+     *
+     * @param string $jeType
+     *
+     * @return FinJe
+     */
+    public function setJeType($jeType)
+    {
+        $this->jeType = $jeType;
+
+        return $this;
+    }
+
+    /**
+     * Get jeType
+     *
+     * @return string
+     */
+    public function getJeType()
+    {
+        return $this->jeType;
+    }
+
+    /**
+     * Set postingDate
+     *
+     * @param \DateTime $postingDate
+     *
+     * @return FinJe
+     */
+    public function setPostingDate($postingDate)
+    {
+        $this->postingDate = $postingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get postingDate
+     *
+     * @return \DateTime
+     */
+    public function getPostingDate()
+    {
+        return $this->postingDate;
+    }
+
+    /**
+     * Set documentDate
+     *
+     * @param \DateTime $documentDate
+     *
+     * @return FinJe
+     */
+    public function setDocumentDate($documentDate)
+    {
+        $this->documentDate = $documentDate;
+
+        return $this;
+    }
+
+    /**
+     * Get documentDate
+     *
+     * @return \DateTime
+     */
+    public function getDocumentDate()
+    {
+        return $this->documentDate;
+    }
+
+    /**
+     * Set jeReference
+     *
+     * @param string $jeReference
+     *
+     * @return FinJe
+     */
+    public function setJeReference($jeReference)
+    {
+        $this->jeReference = $jeReference;
+
+        return $this;
+    }
+
+    /**
+     * Get jeReference
+     *
+     * @return string
+     */
+    public function getJeReference()
+    {
+        return $this->jeReference;
+    }
+
+    /**
+     * Set jeNote
+     *
+     * @param string $jeNote
+     *
+     * @return FinJe
+     */
+    public function setJeNote($jeNote)
+    {
+        $this->jeNote = $jeNote;
+
+        return $this;
+    }
+
+    /**
+     * Get jeNote
+     *
+     * @return string
+     */
+    public function getJeNote()
+    {
+        return $this->jeNote;
+    }
+
+    /**
+     * Set jeRemarks
+     *
+     * @param string $jeRemarks
+     *
+     * @return FinJe
+     */
+    public function setJeRemarks($jeRemarks)
+    {
+        $this->jeRemarks = $jeRemarks;
+
+        return $this;
+    }
+
+    /**
+     * Get jeRemarks
+     *
+     * @return string
+     */
+    public function getJeRemarks()
+    {
+        return $this->jeRemarks;
+    }
+
+    /**
+     * Set exchangeRate
+     *
+     * @param string $exchangeRate
+     *
+     * @return FinJe
+     */
+    public function setExchangeRate($exchangeRate)
+    {
+        $this->exchangeRate = $exchangeRate;
+
+        return $this;
+    }
+
+    /**
+     * Get exchangeRate
+     *
+     * @return string
+     */
+    public function getExchangeRate()
+    {
+        return $this->exchangeRate;
+    }
+
+    /**
+     * Set createdOn
+     *
+     * @param \DateTime $createdOn
+     *
+     * @return FinJe
+     */
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set docType
+     *
+     * @param string $docType
+     *
+     * @return FinJe
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+
+        return $this;
+    }
+
+    /**
+     * Get docType
+     *
+     * @return string
+     */
+    public function getDocType()
+    {
+        return $this->docType;
+    }
+
+    /**
+     * Set transactionStatus
+     *
+     * @param string $transactionStatus
+     *
+     * @return FinJe
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionStatus
+     *
+     * @return string
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
+    }
+
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return FinJe
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
+    }
+
+    /**
+     * Set transactionType
+     *
+     * @param string $transactionType
+     *
+     * @return FinJe
+     */
+    public function setTransactionType($transactionType)
+    {
+        $this->transactionType = $transactionType;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionType
+     *
+     * @return string
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
+    }
+
+    /**
+     * Set jeStatus
+     *
+     * @param string $jeStatus
+     *
+     * @return FinJe
+     */
+    public function setJeStatus($jeStatus)
+    {
+        $this->jeStatus = $jeStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get jeStatus
+     *
+     * @return string
+     */
+    public function getJeStatus()
+    {
+        return $this->jeStatus;
+    }
+
+    /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return FinJe
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
+     * Set currency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $currency
+     *
+     * @return FinJe
+     */
+    public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
+     * Set createdBy
+     *
+     * @param \Application\Entity\MlaUsers $createdBy
+     *
+     * @return FinJe
+     */
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return FinJe
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
+    }
+}

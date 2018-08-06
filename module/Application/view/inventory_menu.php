@@ -25,6 +25,8 @@
 	<li><a href="/inventory/warehouse"><small><span
 				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Warehouse
 			management</a></li>
+<li class="divider"></li>
+	<li><a href="/inventory/setting/index"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Setup'); ?></a></li>
 
 
 </ul>

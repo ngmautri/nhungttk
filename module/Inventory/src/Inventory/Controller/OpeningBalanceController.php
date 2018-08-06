@@ -9,6 +9,8 @@ use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
+use Application\Entity\FinJe;
+use Application\Entity\FinJeRow;
 
 /**
  *
@@ -19,7 +21,6 @@ class OpeningBalanceController extends AbstractActionController
 {
 
     protected $doctrineEM;
-
     protected $itemSearchService;
 
     /**
@@ -28,7 +29,26 @@ class OpeningBalanceController extends AbstractActionController
      */
     public function addAction()
     {
+        
         $request = $this->getRequest();
+        $this->layout("Finance/layout-fullscreen");
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+        
+        // Is Posing
+        // =============================
         if ($request->isPost()) {
 
             $errors = array();
@@ -50,78 +70,56 @@ class OpeningBalanceController extends AbstractActionController
                 $isActive = 0;
             }
 
-            $entity = new NmtInventorySerial();
-
-            $entity->setIsActive($isActive);
-            $entity->setSerialNumber($serialNumber);
-            $entity->setLocation($location);
-            $entity->setCategory($category);
-
-            $entity->setMfgName($mfgName);
-            $entity->setMfgSerialNumber($mfgSerialNumber);
-            $entity->setLotNumber($lotNumber);
-            $entity->setRemarks($remarks);
-
-            if ($serialNumber == "") {
-                $errors[] = 'Pls give serial number!';
-            } else {
-
-                $criteria = array(
-                    'serialNumber' => $serialNumber
-                );
-
-                /** @var \Application\Entity\NmtInventorySerial $entity_ck ; */
-                $entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findOneBy($criteria);
-                if ($entity_ck == null) {
-                    $entity->setSerialNumber($serialNumber);
-                } else {
-                    $errors[] = $serialNumber . ' exists already!';
+            //Create FIFO Layer            
+            /** @var \Application\Entity\NmtInventoryItem $item ; */
+            if ($item !== null) {
+                if ($item->getIsStocked() == 1) {
+                    
+                    $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
+                    $fifoLayer->setIsClosed(0);
+                    $fifoLayer->setItem($item);
+                    $fifoLayer->setQuantity($quantity);
+                    
+                    // will be changed uppon inventory transaction.
+                    $fifoLayer->setOnhandQuantity($quantity);
+                    
+                    $fifoLayer->setDocUnitPrice($unit_price);
+                    $fifoLayer->setLocalCurrency($currency);
+                    $fifoLayer->setExchangeRate($exchange_rate);
+                    $fifoLayer->setPostingDate($postingDate);
+                    
+                    $fifoLayer->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
+                    $fifoLayer->setCreatedBy($u);
+                    $fifoLayer->setCreatedOn($created_on);
+                    
+                    $this->doctrineEM->persist($fifoLayer);
                 }
             }
-
-            $validator = new Date();
-
-            if (! $mfgDate == null) {
-                if (! $validator->isValid($mfgDate)) {
-                    $errors[] = 'Manufacturing Date is not correct!';
-                } else {
-                    $entity->setMfgWarrantyStart(new \DateTime($mfgDate));
-                }
-            }
-
-            if (! $mfgWarrantyStart == null) {
-                if (! $validator->isValid($mfgWarrantyStart)) {
-                    $errors[] = 'Warranty Start Date is not correct!';
-                } else {
-                    $entity->setMfgDate(new \DateTime($mfgWarrantyStart));
-                }
-            }
-
-            $n_validated = 0;
-            if (! $mfgWarrantyStart == null) {
-                if (! $validator->isValid($mfgWarrantyStart)) {
-                    $errors[] = 'Warranty Start Date is not correct!';
-                } else {
-                    $n_validated ++;
-                    $entity->setMfgDate(new \DateTime($mfgWarrantyStart));
-                }
-            }
-
-            if (! $mfgWarrantyEnd == null) {
-                if (! $validator->isValid($mfgWarrantyEnd)) {
-                    $errors[] = 'Warranty End Date is not correct!';
-                } else {
-                    $n_validated ++;
-                    $entity->setMfgWarrantyEnd(new \DateTime($mfgWarrantyEnd));
-                }
-            }
-
-            if ($n_validated == 2) {
-                if ($mfgWarrantyEnd <= $mfgWarrantyStart) {
-                    $errors[] = 'Warranty End Date is not correct!';
-                }
-            }
-
+            
+            
+            // create JE
+            $entity = new FinJe();
+            $entity->setJeType(\Finance\Model\Constants::JE_TYPE_OPEN_BALANCE);
+            $entity->setPostingDate($postingDate);
+            $entity->setDocumentDate($documentDate);
+            
+            $this->doctrineEM->persist($entity);
+            
+            
+            //Create JE-ROW
+            
+            $je_row = new FinJeRow();
+            $je_row->setJe($entity);
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setGlAccount($glAccount);
+            
+            $docAmount = $unit_price * $quantity;
+            $je_row->setDocAmount($docAmount);
+            
+            $this->doctrineEM->persist($je_row);
+            
+            
+       
             if (count($errors) > 0) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
@@ -131,6 +129,8 @@ class OpeningBalanceController extends AbstractActionController
             }
 
             // NO ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
             // +++++++++++++++++++++++++
 
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -160,8 +160,8 @@ class OpeningBalanceController extends AbstractActionController
         }
 
         // NO POST
-        // ==========================
-
+        // Initiate ......................
+        
         $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
@@ -487,7 +487,7 @@ class OpeningBalanceController extends AbstractActionController
         $criteria = array();
         $sort_criteria = array();
 
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findBy($criteria, $sort_criteria);
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventory')->findBy($criteria, $sort_criteria);
 
         $total_records = count($list);
         $paginator = null;

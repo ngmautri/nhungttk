@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class APInvoiceServiceFactory implements FactoryInterface {
+class JEServiceFactory implements FactoryInterface {
 	
 	/**
 	 * 
@@ -22,13 +22,10 @@ class APInvoiceServiceFactory implements FactoryInterface {
 		
 		$container = $serviceLocator;
 		
-		$service = new APInvoiceService();
+		$service = new JEService();
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$service->setDoctrineEM($sv);
-		
-		$sv =  $container->get('Finance\Service\JEService');
-		$service->setJeService($sv);
 		
 		$grListener = $container->get('Application\Listener\LoggingListener');
 	

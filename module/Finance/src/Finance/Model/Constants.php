@@ -24,6 +24,15 @@ class Constants
     
     const GL_ACCOUNT_TYPE_EXPENSE_OTHER = "8xx";    
     
-    const GL_ACCOUNT_TYPE_RESULT = "9xx";    
+    const GL_ACCOUNT_TYPE_RESULT = "9xx";
+    
+    const POSTING_KEY_DEBIT = "D";
+    
+    const POSTING_KEY_CRERIT = "C";
+    
+    const JE_TYPE_OPEN_BALANCE = "OB";
+    
+    
+    
 }
 

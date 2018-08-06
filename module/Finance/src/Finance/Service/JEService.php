@@ -6,29 +6,91 @@ use Doctrine\ORM\EntityManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Math\Rand;
+use Application\Entity\FinJe;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APInvoiceService implements EventManagerAwareInterface
+class JEService implements EventManagerAwareInterface
 {
 
     protected $doctrineEM;
 
     protected $eventManager;
-    
+
     protected $jeService;
-    
+
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     *            ;
+     * @param \Application\Entity\MlaUsers $u
+     *            ;
+     * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
+     *            ;
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function postGR($entity, $gr_rows, $u, $nmtPlugin)
+    {
+        if (! $entity instanceof \Application\Entity\NmtProcureGr) {
+            throw new \Exception("Invalid Argument");
+        }
+
+        if (! $u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+
+        $criteria = array(
+            'isActive' => 1,
+            'gr' => $entity
+        );
+        $gr_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
+
+        if (count($gr_rows) == 0) {
+            throw new \Exception("Good receipt is empty. No Posting will be made!");
+        }
+
+        /**
+         * Debit: Inventory, Expenses
+         * Credit: Payable to supplier.
+         */
+
+        // Create JE
+
+        $je = new \Application\Entity\FinJe();
+        $je->setCurrency($entity->getCurrency());
+        $je->setPostingDate($entity->getPostingDate());
+        $je->getDocType("JE");
+
+        // Create JE Row - DEBIT
+        $n = 0;
+        $total_credit = 0;
+        foreach ($gr_rows as $r) {
+            $n ++;
+            /** @var \Application\Entity\NmtProcureGrRow $r ; */
+
+            $je_row = new \Application\Entity\FinJeRow();
+            $je_row->setGlAccount($r->getGlAccount());
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
+            $total_credit = $total_credit + $r->getQuantity() * $r->getUnitPrice();
+        }
+
+        // Create JE Row - Credit
+        $je_row = new \Application\Entity\FinJeRow();
+        $je_row->setGlAccount($r->getGlAccount());
+        $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CRERIT);
+        $je_row->setDocAmount($total_credit);
+    }
 
     /**
      *
      * @param \Application\Entity\FinVendorInvoice $entity
      * @param \Application\Entity\MlaUsers $u,
      * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
-     *            ;
-     *            
+     *
      * @return \Doctrine\ORM\EntityManager
      */
     public function post($entity, $u, $nmtPlugin)
@@ -250,9 +312,12 @@ class APInvoiceService implements EventManagerAwareInterface
                         $fifoLayer->setOnhandQuantity($r->getQuantity());
 
                         $fifoLayer->setDocUnitPrice($r->getUnitPrice());
-                        $fifoLayer->setLocalCurrency($r->getInvoice()->getCurrency());
-                        $fifoLayer->setExchangeRate($r->getInvoice()->getExchangeRate());
-                        $fifoLayer->setPostingDate($r->getInvoice()->getPostingDate());
+                        $fifoLayer->setLocalCurrency($r->getInvoice()
+                            ->getCurrency());
+                        $fifoLayer->setExchangeRate($r->getInvoice()
+                            ->getExchangeRate());
+                        $fifoLayer->setPostingDate($r->getInvoice()
+                            ->getPostingDate());
                         $fifoLayer->setSourceClass(get_class($r));
                         $fifoLayer->setSourceId($r->getID());
                         $fifoLayer->setSourceToken($r->getToken());
@@ -314,20 +379,4 @@ class APInvoiceService implements EventManagerAwareInterface
     {
         return $this->eventManager;
     }
-    /**
-     * @return mixed
-     */
-    public function getJeService()
-    {
-        return $this->jeService;
-    }
-
-    /**
-     * @param mixed $jeService
-     */
-    public function setJeService(\Finance\Service\JEService $jeService)
-    {
-        $this->jeService = $jeService;
-    }
-
 }

@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class JEControllerFactory implements FactoryInterface {
+class JERowControllerFactory implements FactoryInterface {
 	
 	/**
 	 *
@@ -29,8 +29,7 @@ class JEControllerFactory implements FactoryInterface {
 		
 		$sv =  $sm->get('Finance\Service\JEService');
 		$controller->setJeService($sv);
-		
-		
+				
 		
 		return $controller;
 	}

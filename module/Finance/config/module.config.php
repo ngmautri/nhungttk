@@ -83,6 +83,7 @@ return array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'finance_navi' => 'Finance\Service\FinanceNavigationFactory', // <-- add this
             'Finance\Service\APInvoiceService' => 'Finance\Service\APInvoiceServiceFactory',
+            'Finance\Service\JEService' => 'Finance\Service\JEServiceFactory',
             
         )
     ),
@@ -98,6 +99,8 @@ return array(
             'Finance\Controller\ChangeLog' => 'Finance\Controller\ChangeLogControllerFactory',
             'Finance\Controller\Fx' => 'Finance\Controller\FxControllerFactory',
             'Finance\Controller\Account' => 'Finance\Controller\AccountControllerFactory',
+            'Finance\Controller\JE' => 'Finance\Controller\JEControllerFactory',
+            'Finance\Controller\JERow' => 'Finance\Controller\JERowControllerFactory',
             
           )
     

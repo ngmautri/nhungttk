@@ -26,6 +26,9 @@ class GrServiceFactory implements FactoryInterface {
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$service->setDoctrineEM($sv);
 		
+		$sv =  $container->get('Finance\Service\JEService');
+		$service->setJeService($sv);
+		
 		$grListener = $container->get('Application\Listener\LoggingListener');
 	
 		$eventManager =  $container->get('EventManager');

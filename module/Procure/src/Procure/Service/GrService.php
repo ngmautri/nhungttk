@@ -16,7 +16,8 @@ class GrService implements EventManagerAwareInterface
 {
 
     protected $doctrineEM;
-
+    protected $jeService;
+     
     protected $eventManager = null;
 
     /**
@@ -176,9 +177,18 @@ class GrService implements EventManagerAwareInterface
                         $this->doctrineEM->persist($fifoLayer);
                     }
                 }
+                
+                   
             }
 
             $this->doctrineEM->flush();
+            
+            /**
+             *
+             * @todo: Do Accounting Posting
+             **/
+            $this->jeService->postGR($entity,  $gr_rows, $u, $nmtPlugin);
+            
         }
     }
 
@@ -223,5 +233,21 @@ class GrService implements EventManagerAwareInterface
     public function getEventManager()
     {
         return $this->eventManager;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getJeService()
+    {
+        return $this->jeService;
+    }
+    
+    /**
+     * @param mixed $jeService
+     */
+    public function setJeService(\Finance\Service\JEService $jeService)
+    {
+        $this->jeService = $jeService;
     }
 }

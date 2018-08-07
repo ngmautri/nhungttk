@@ -15,11 +15,11 @@ class FinJeRow
     /**
      * @var integer
      *
-     * @ORM\Column(name="int", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $int;
+    private $id;
 
     /**
      * @var string
@@ -85,6 +85,34 @@ class FinJeRow
     private $sourceToken;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="je_note", type="string", length=45, nullable=true)
+     */
+    private $jeNote;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="je_description", type="string", length=255, nullable=true)
+     */
+    private $jeDescription;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
+     */
+    private $sysNumber;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
      * @var \Application\Entity\FinJe
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinJe")
@@ -127,13 +155,13 @@ class FinJeRow
 
 
     /**
-     * Get int
+     * Get id
      *
      * @return integer
      */
-    public function getInt()
+    public function getId()
     {
-        return $this->int;
+        return $this->id;
     }
 
     /**
@@ -350,6 +378,102 @@ class FinJeRow
     public function getSourceToken()
     {
         return $this->sourceToken;
+    }
+
+    /**
+     * Set jeNote
+     *
+     * @param string $jeNote
+     *
+     * @return FinJeRow
+     */
+    public function setJeNote($jeNote)
+    {
+        $this->jeNote = $jeNote;
+
+        return $this;
+    }
+
+    /**
+     * Get jeNote
+     *
+     * @return string
+     */
+    public function getJeNote()
+    {
+        return $this->jeNote;
+    }
+
+    /**
+     * Set jeDescription
+     *
+     * @param string $jeDescription
+     *
+     * @return FinJeRow
+     */
+    public function setJeDescription($jeDescription)
+    {
+        $this->jeDescription = $jeDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get jeDescription
+     *
+     * @return string
+     */
+    public function getJeDescription()
+    {
+        return $this->jeDescription;
+    }
+
+    /**
+     * Set sysNumber
+     *
+     * @param string $sysNumber
+     *
+     * @return FinJeRow
+     */
+    public function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get sysNumber
+     *
+     * @return string
+     */
+    public function getSysNumber()
+    {
+        return $this->sysNumber;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return FinJeRow
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
     }
 
     /**

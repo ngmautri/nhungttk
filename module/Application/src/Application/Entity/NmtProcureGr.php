@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureGr
  *
- * @ORM\Table(name="nmt_procure_gr", indexes={@ORM\Index(name="nmt_procure_gr_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_gr_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_gr_FK6_idx", columns={"currency_id"})})
+ * @ORM\Table(name="nmt_procure_gr", indexes={@ORM\Index(name="nmt_procure_gr_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_gr_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_gr_FK6_idx", columns={"currency_id"}), @ORM\Index(name="nmt_procure_gr_FK6_idx1", columns={"local_currency_id"}), @ORM\Index(name="nmt_procure_gr_FK7_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_procure_gr_FK8_idx", columns={"posting_period_id"}), @ORM\Index(name="nmt_procure_gr_FK9_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class NmtProcureGr
@@ -287,6 +287,46 @@ class NmtProcureGr
      * })
      */
     private $currency;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="local_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $localCurrency;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doc_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $docCurrency;
+
+    /**
+     * @var \Application\Entity\NmtFinPostingPeriod
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="posting_period_id", referencedColumnName="id")
+     * })
+     */
+    private $postingPeriod;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 
@@ -1162,5 +1202,101 @@ class NmtProcureGr
     public function getCurrency()
     {
         return $this->currency;
+    }
+
+    /**
+     * Set localCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $localCurrency
+     *
+     * @return NmtProcureGr
+     */
+    public function setLocalCurrency(\Application\Entity\NmtApplicationCurrency $localCurrency = null)
+    {
+        $this->localCurrency = $localCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get localCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getLocalCurrency()
+    {
+        return $this->localCurrency;
+    }
+
+    /**
+     * Set docCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $docCurrency
+     *
+     * @return NmtProcureGr
+     */
+    public function setDocCurrency(\Application\Entity\NmtApplicationCurrency $docCurrency = null)
+    {
+        $this->docCurrency = $docCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get docCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getDocCurrency()
+    {
+        return $this->docCurrency;
+    }
+
+    /**
+     * Set postingPeriod
+     *
+     * @param \Application\Entity\NmtFinPostingPeriod $postingPeriod
+     *
+     * @return NmtProcureGr
+     */
+    public function setPostingPeriod(\Application\Entity\NmtFinPostingPeriod $postingPeriod = null)
+    {
+        $this->postingPeriod = $postingPeriod;
+
+        return $this;
+    }
+
+    /**
+     * Get postingPeriod
+     *
+     * @return \Application\Entity\NmtFinPostingPeriod
+     */
+    public function getPostingPeriod()
+    {
+        return $this->postingPeriod;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCompany $company
+     *
+     * @return NmtProcureGr
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

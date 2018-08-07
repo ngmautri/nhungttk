@@ -6,6 +6,11 @@
 	<li><a href="/finance/v-invoice/list"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;A/P Invoice
 			List</a></li>
 	<li class="divider"></li>
+		<li><a href="/finance/je-row/list"><small><span
+				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;<?php echo $this->translate("Journal Entry");?></a></li>
+
+
+	<li class="divider"></li>
 		<li><a href="/finance/account/list"><small><span
 				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;<?php echo $this->translate("Chart of Accounts");?></a></li>
 	

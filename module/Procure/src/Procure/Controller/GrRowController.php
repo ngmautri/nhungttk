@@ -225,6 +225,7 @@ class GrRowController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $gl_list = $nmtPlugin->glAccountList();
 
         $request = $this->getRequest();
 
@@ -259,12 +260,15 @@ class GrRowController extends AbstractActionController
                     'errors' => $errors,
                     'target' => null,
                     'entity' => null,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'gl_list' => $gl_list
                 ));
                 // might need redirect
             } else {
 
                 $item_id = $request->getPost('item_id');
+                $gl_account_id = $request->getPost('gl_account_id');
+
                 $pr_row_id = $request->getPost('pr_row_id');
                 $isActive = (int) $request->getPost('isActive');
 
@@ -296,11 +300,18 @@ class GrRowController extends AbstractActionController
 
                 $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
                 $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+                $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
 
                 if ($pr_row == null) {
                     // $errors[] = 'Item can\'t be empty!';
                 } else {
                     $entity->setPrRow($pr_row);
+                }
+
+                if ($gl == null) {
+                    $errors[] = 'G/L account can\'t be empty!';
+                } else {
+                    $entity->setGlAccount($gl);
                 }
 
                 if ($item == null) {
@@ -376,7 +387,8 @@ class GrRowController extends AbstractActionController
                         'errors' => $errors,
                         'target' => $target,
                         'entity' => $entity,
-                        'currency_list' => $currency_list
+                        'currency_list' => $currency_list,
+                        'gl_list' => $gl_list
                     ));
                 }
                 ;
@@ -388,7 +400,7 @@ class GrRowController extends AbstractActionController
                 // Goods receipt, Invoice Not receipt
                 $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
                 $entity->setTransactionStatus(\Application\Model\Constants::PROCURE_TRANSACTION_STATUS_PENDING);
-       
+
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     'email' => $this->identity()
                 ));
@@ -456,6 +468,7 @@ class GrRowController extends AbstractActionController
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list,
+            'gl_list' => $gl_list,
             'total_row' => $gr['total_row'],
             'max_row_number' => $gr['max_row_number'],
             'active_row' => $gr['active_row']
@@ -839,6 +852,12 @@ class GrRowController extends AbstractActionController
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
                     $a_json_row["fa_remarks"] = $a->getFaRemarks();
                     $a_json_row["remarks"] = $a->getRemarks();
+
+                    if ($a->getGlAccount() !== null) {
+                        $a_json_row["gl_account"] = $a->getGlAccount()->getAccountNumber();
+                    } else {
+                        $a_json_row["gl_account"] = "N/A";
+                    }
 
                     $a_json[] = $a_json_row;
                 }

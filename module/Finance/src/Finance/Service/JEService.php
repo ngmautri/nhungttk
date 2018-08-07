@@ -19,26 +19,127 @@ class JEService implements EventManagerAwareInterface
     protected $doctrineEM;
 
     protected $eventManager;
-
-    protected $jeService;
-
+    
+    
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     *
+     * @param \Application\Entity\MlaUsers $u
+     *
+     * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function postAP($entity, $rows, $u, $nmtPlugin)
+    {
+        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
+            throw new \Exception("Invalid Argument! Invoice is expected");
+        }
+        
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+        
+         
+        if (count($rows) == 0) {
+            throw new \Exception("Invoice is empty. No Posting will be made!");
+        }
+        
+        /**
+         * Debit: Inventory, Expenses
+         * Credit: Payable to supplier.
+         */
+        
+        // Create JE
+        
+        $je = new \Application\Entity\FinJe();
+        $je->setCurrency($entity->getCurrency());
+        $je->setLocalCurrency($entity->getLocalCurrency());
+        $je->setExchangeRate($entity->getExchangeRate());
+        
+        $je->setPostingDate($entity->getPostingDate());
+        $je->setDocumentDate($entity->getPostingDate());
+        $je->setPostingPeriod($entity->getPostingPeriod());
+        
+        $je->getDocType("JE");
+        $je->setCreatedBy($u);
+        $je->setCreatedOn($entity->getCreatedOn());
+        $je->setSysNumber($nmtPlugin->getDocNumber($je));
+        
+        $this->doctrineEM->persist($je);
+        
+        $n = 0;
+        $total_credit = 0;
+        $total_local_credit = 0;
+        
+        foreach ($rows as $r) {
+            $n ++;
+            /** @var \Application\Entity\FinVendorInvoiceRow $r ; */
+            
+            // Create JE Row - DEBIT
+            $je_row = new \Application\Entity\FinJeRow();
+            $je_row->setJe($je);
+            
+            $je_row->setGlAccount($r->getGlAccount());
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            
+            $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
+            $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice()*$je->getExchangeRate());
+            
+            $total_credit = $total_credit + $r->getQuantity() * $r->getUnitPrice();
+            $total_local_credit = $total_local_credit + $r->getQuantity() * $r->getUnitPrice()*$je->getExchangeRate();
+            
+            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+            
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
+            
+            $this->doctrineEM->persist($je_row);
+        }
+        
+        // Create JE Row - Credit
+        $je_row = new \Application\Entity\FinJeRow();
+        
+        $je_row->setJe($je);
+        
+        $criteria = array(
+            'id' => 4
+        );
+        $gl_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
+        $je_row->setGlAccount($gl_account);
+        $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CRERIT);
+        $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CRERIT);
+        
+        $je_row->setDocAmount($total_credit);
+        $je_row->setLocalAmount($total_local_credit);
+        
+        $je_row->setCreatedBy($u);
+        $je_row->setCreatedOn($entity->getCreatedOn());
+        
+        $n = $n + 1;
+        $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+        $this->doctrineEM->persist($je_row);
+    }
+    
     /**
      *
      * @param \Application\Entity\NmtProcureGr $entity
-     *            ;
+     *
      * @param \Application\Entity\MlaUsers $u
-     *            ;
+     *
      * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
-     *            ;
+     *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function postGR($entity, $gr_rows, $u, $nmtPlugin)
+    public function postGR($entity, $rows, $u, $nmtPlugin)
     {
         if (! $entity instanceof \Application\Entity\NmtProcureGr) {
             throw new \Exception("Invalid Argument");
         }
 
-        if (! $u == null) {
+        if ($u == null) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
 
@@ -46,9 +147,9 @@ class JEService implements EventManagerAwareInterface
             'isActive' => 1,
             'gr' => $entity
         );
-        $gr_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
+        $rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
 
-        if (count($gr_rows) == 0) {
+        if (count($rows) == 0) {
             throw new \Exception("Good receipt is empty. No Posting will be made!");
         }
 
@@ -61,28 +162,71 @@ class JEService implements EventManagerAwareInterface
 
         $je = new \Application\Entity\FinJe();
         $je->setCurrency($entity->getCurrency());
-        $je->setPostingDate($entity->getPostingDate());
+        $je->setLocalCurrency($entity->getLocalCurrency());
+        $je->setExchangeRate($entity->getExchangeRate());
+        
+        $je->setPostingDate($entity->getGrDate());
+        $je->setDocumentDate($entity->getGrDate());
+        $je->setPostingPeriod($entity->getPostingPeriod());
+        
         $je->getDocType("JE");
+        $je->setCreatedBy($u);
+        $je->setCreatedOn($entity->getCreatedOn());
+        $je->setSysNumber($nmtPlugin->getDocNumber($je));
+        $this->doctrineEM->persist($je);
 
-        // Create JE Row - DEBIT
         $n = 0;
         $total_credit = 0;
-        foreach ($gr_rows as $r) {
+        $total_local_credit = 0;
+        
+        foreach ($rows as $r) {
             $n ++;
             /** @var \Application\Entity\NmtProcureGrRow $r ; */
 
+            // Create JE Row - DEBIT
             $je_row = new \Application\Entity\FinJeRow();
+            $je_row->setJe($je);
+
             $je_row->setGlAccount($r->getGlAccount());
             $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+
             $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
+            $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice()*$je->getExchangeRate());
+           
             $total_credit = $total_credit + $r->getQuantity() * $r->getUnitPrice();
+            $total_local_credit = $total_local_credit + $r->getQuantity() * $r->getUnitPrice()*$je->getExchangeRate();
+            
+            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
+
+            $this->doctrineEM->persist($je_row);
         }
 
         // Create JE Row - Credit
         $je_row = new \Application\Entity\FinJeRow();
-        $je_row->setGlAccount($r->getGlAccount());
+
+        $je_row->setJe($je);
+
+        $criteria = array(
+            'id' => 4
+        );
+        $gl_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
+        $je_row->setGlAccount($gl_account);
         $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CRERIT);
+        $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CRERIT);
+
         $je_row->setDocAmount($total_credit);
+        $je_row->setLocalAmount($total_local_credit);
+        
+        $je_row->setCreatedBy($u);
+        $je_row->setCreatedOn($entity->getCreatedOn());
+
+        $n = $n + 1;
+        $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+        $this->doctrineEM->persist($je_row);
     }
 
     /**

@@ -269,6 +269,12 @@ class APInvoiceService implements EventManagerAwareInterface
 
         }
 
+        /**
+         *
+         * @todo: Do Accounting Posting
+         **/
+        $this->jeService->postAP($entity,  $ap_rows, $u, $nmtPlugin);
+        
         $this->doctrineEM->flush();
     }
 

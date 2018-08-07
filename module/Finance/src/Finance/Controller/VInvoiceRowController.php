@@ -37,6 +37,8 @@ class VInvoiceRowController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $gl_list = $nmtPlugin->glAccountList();
+        
         
         $request = $this->getRequest();
         
@@ -71,6 +73,8 @@ class VInvoiceRowController extends AbstractActionController
                     'target' => null,
                     'entity' => null,
                     'currency_list' => $currency_list,
+                    'gl_list' => $gl_list,
+                   
                     'active_row' => 0,
                     'total_row' => 0,
                     'max_row_number' => 0,
@@ -84,6 +88,9 @@ class VInvoiceRowController extends AbstractActionController
                 
                 $item_id = $request->getPost('item_id');
                 $pr_row_id = $request->getPost('pr_row_id');
+                $gl_account_id = $request->getPost('gl_account_id');
+                
+                
                 $isActive = (int) $request->getPost('isActive');
                 
                 $rowNumber = $request->getPost('rowNumber');
@@ -116,6 +123,15 @@ class VInvoiceRowController extends AbstractActionController
                 
                 $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
                 $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+                $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
+                
+                if ($gl == null) {
+                    $errors[] = 'G/L account can\'t be empty!';
+                } else {
+                    $entity->setGlAccount($gl);
+                }
+                
+                
                 
                 // PR and be empty
                 if ($pr_row == null) {
@@ -203,6 +219,7 @@ class VInvoiceRowController extends AbstractActionController
                         'target' => $target,
                         'entity' => $entity,
                         'currency_list' => $currency_list,
+                        'gl_list' => $gl_list,
                         'active_row' => $invoice['active_row'],
                         'total_row' => $invoice['total_row'],
                         'max_row_number' => $invoice['max_row_number'],
@@ -376,6 +393,7 @@ class VInvoiceRowController extends AbstractActionController
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list,
+            'gl_list' => $gl_list,
             'active_row' => $invoice['active_row'],
             'total_row' => $invoice['total_row'],
             'max_row_number' => $invoice['total_row'],
@@ -462,6 +480,8 @@ class VInvoiceRowController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $gl_list = $nmtPlugin->glAccountList();
+        
         
         $request = $this->getRequest();
         
@@ -491,6 +511,8 @@ class VInvoiceRowController extends AbstractActionController
                     'entity' => null,
                     'target' => null,
                     'currency_list' => $currency_list,
+                    'gl_list' => $gl_list,
+                    
                     'n' => $nTry
                 
                 ));
@@ -501,6 +523,8 @@ class VInvoiceRowController extends AbstractActionController
                 $oldEntity = clone ($entity);
                 
                 $isActive = (int) $request->getPost('isActive');
+                $gl_account_id = $request->getPost('gl_account_id');
+                
                 $remarks = $request->getPost('remarks');
                 
                 if ($isActive != 1) {
@@ -512,6 +536,13 @@ class VInvoiceRowController extends AbstractActionController
                 $quantity = $request->getPost('quantity');
                 $unitPrice = $request->getPost('unitPrice');
                 $taxRate = $request->getPost('taxRate');
+                
+                $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
+                if ($gl == null) {
+                    $errors[] = 'G/L account can\'t be empty!';
+                } else {
+                    $entity->setGlAccount($gl);
+                }
                 
                 $n_validated = 0;
                 if ($quantity == null) {
@@ -591,6 +622,8 @@ class VInvoiceRowController extends AbstractActionController
                         'entity' => $entity,
                         'target' => $entity->getInvoice(),
                         'currency_list' => $currency_list,
+                        'gl_list' => $gl_list,
+                        
                         'n' => $nTry
                     ));
                 }
@@ -684,6 +717,8 @@ class VInvoiceRowController extends AbstractActionController
                 'entity' => $entity,
                 'target' => $entity->getInvoice(),
                 'currency_list' => $currency_list,
+                'gl_list' => $gl_list,
+                
                 'n' => 0
             
             ));
@@ -860,6 +895,13 @@ class VInvoiceRowController extends AbstractActionController
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
                     $a_json_row["fa_remarks"] = $a->getFaRemarks();
                     $a_json_row["remarks"] = $a->getRemarks();
+                    
+                    if ($a->getGlAccount() !== null) {
+                        $a_json_row["gl_account"] = $a->getGlAccount()->getAccountNumber();
+                    } else {
+                        $a_json_row["gl_account"] = "N/A";
+                    }
+                    
                     
                     $a_json[] = $a_json_row;
                 }

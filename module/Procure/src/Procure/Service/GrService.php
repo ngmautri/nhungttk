@@ -33,7 +33,7 @@ class GrService implements EventManagerAwareInterface
             throw new \Exception("Invalid Argument");
         }
         
-        if (! $u == null) {
+        if ( $u == null) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
 
@@ -181,13 +181,15 @@ class GrService implements EventManagerAwareInterface
                    
             }
 
-            $this->doctrineEM->flush();
             
             /**
              *
              * @todo: Do Accounting Posting
              **/
             $this->jeService->postGR($entity,  $gr_rows, $u, $nmtPlugin);
+            
+            $this->doctrineEM->flush();
+            
             
         }
     }

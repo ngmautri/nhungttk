@@ -588,10 +588,13 @@ class GrController extends AbstractActionController
                     $postingPeriod = $res->getPostingPeriod(new \DateTime($grDate));
 
                     if ($postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                        
+                        
                         if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
                             $errors[] = sprintf('Period "%s" is closed', $postingPeriod->getPeriodName());
                         } else {
                             $entity->setGrDate(new \DateTime($grDate));
+                            $entity->setPostingPeriod();
                         }
                     } else {
                         $errors[] = sprintf('Period for GR Date "%s" is not created yet', $grDate);
@@ -829,6 +832,9 @@ class GrController extends AbstractActionController
             // Saving into Database..........
             // ++++++++++++++++++++++++++++++
 
+            
+            $entity->setLocalCurrency($default_cur);
+            
             $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
             
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);

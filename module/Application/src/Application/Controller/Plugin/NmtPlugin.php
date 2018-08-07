@@ -35,6 +35,25 @@ class NmtPlugin extends AbstractPlugin
         $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
         return $currency_list;
     }
+    
+    
+    /**
+     * Return List of GL Account
+     *
+     * @return array
+     */
+    public function glAccountList()
+    {
+        $criteria = array(
+            'isActive' => 1
+        );
+        $sort_criteria = array(
+            'accountNumber' => 'ASC'
+        );
+        
+        $currency_list = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findBy($criteria, $sort_criteria);
+        return $currency_list;
+    }
 
     /**
      * Return List of Country

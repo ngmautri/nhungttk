@@ -258,6 +258,41 @@ if (count ( $errors ) > 0) {
         		<input tabindex="3" class="form-control input-sm" type="text" id="vendor_item_code" name="vendorItemCode" value="<?php echo (!$entity == null)? $entity->getVendorItemCode():"";?>">
          </div>
     </div>
+        <hr>
+    
+    <div class="form-group margin-bottom required">
+
+								<label class="control-label col-sm-2"><?php echo $this->translate("GL Account");?>:</label>
+								<div class="col-sm-3">
+									<select name="gl_account_id" class="form-control input-sm">
+										<option value=""><?php echo $this->translate("Select GL Account");?></option>
+   	    							<?php
+            if ($gl_list !== null) :
+                foreach ($gl_list as $gl) :
+
+                    /**@var \Application\Entity\FinAccount $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getGlAccount() !== null) :
+                            if ($entity->getGlAccount()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
+                            else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '-' . $gl->getDescription() . '</option>';
+                            endif;
+                        else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '-' .$gl->getDescription() . '</option>';
+                        endif;
+                    else :
+                    echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '-' .$gl->getDescription() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+								</div>
+							</div>
     
  	<div class="form-group margin-bottom required">
         <label class="control-label col-sm-2" for="inputTag">Unit:</label>
@@ -270,7 +305,6 @@ if (count ( $errors ) > 0) {
          </div>
   
     </div>
-    <hr>
     <div class="form-group margin-bottom required">
         <label class="control-label col-sm-2" for="inputTag">Quantity:</label>
         <div class="col-sm-3">

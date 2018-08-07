@@ -1,0 +1,139 @@
+
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general"><?php echo $this->translate("Exchange Rate");?></a></li>
+	</ul>
+	<div id="general">
+
+		<a class="btn btn-default btn-sm"
+			href="<?php echo $this->baseUrl ?>/finance/fx/add"><small><i
+				class="glyphicon glyphicon-plus"> </i></small>&nbsp;<?php echo $this->translate("Add new Fx");?></a>
+		<hr>
+
+		<div>
+			<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
+				href="#list_filter" class="" data-toggle="collapse">FILTER</a>
+		</div>
+		<div id="list_filter" class="collapse">
+
+			<div
+				style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
+
+
+			</div>
+		</div>
+
+		<br>
+
+
+
+<?php
+if ($total_records <= 0) :
+    echo 'No record found!';
+else :
+
+    if (! is_null($paginator)) :
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    else :
+        echo $total_records . ' records found!';
+    endif;
+
+    ?>
+
+<table style="font-size: 9.5pt;"
+			class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b><?php echo $this->translate("Doc. Number");?></b></td>
+					<td><b><?php echo $this->translate("Posting Date");?></b></td>
+					<td><b><?php echo $this->translate("Currency");?></b></td>			
+					<td><b><?php echo $this->translate("D/C");?></b></td>
+					<td><b><?php echo $this->translate("G/L");?></b></td>
+			
+					<td><b><?php echo $this->translate("Doc. Amt");?></b></td>
+					<td><b><?php echo $this->translate("Local. Amt");?></b></td>
+						<td><b>Action</b></td>
+				</tr>
+			</thead>
+
+			<tbody>
+ 
+	 <?php
+
+    $count = 0;
+    foreach ($list as $l) :
+        $count ++;
+
+        /**@var \Application\Entity\FinJeRow $a ; */
+        $a = $l;
+        ?>
+		
+	<tr>
+					<td><?php echo $count;?></td>
+					<td><?php echo $a->getJe()->getSysNumber();?></td>
+		
+					<td><?php if($a->getJe()->getPostingDate()!==null): echo date_format($a->getJe()->getPostingDate(),"d-m-Y"); endif?></td>
+					<td><?php echo $a->getJe()->getCurrency()->getCurrency();?></td>
+					<td><?php echo $a->getPostingCode();?></td>
+					<td><?php if($a->getGlAccount()!==null): echo $a->getGlAccount()->getAccountNumber() . ' - '. $a->getGlAccount()->getDescription(); endif?></td>
+		
+					<td><?php echo number_format($a->getDocAmount(),2);?></td>
+					<td><?php echo number_format($a->getLocalAmount(),0);?></td>
+					<td></td>
+	<?php endforeach; ?>
+ 
+			
+			</tbody>
+		</table>
+
+
+<?php
+    // ===============================
+    if (! is_null($paginator)) :
+
+        // change it only
+        $base = $this->baseUrl . '/finance/fx/list';
+        $_connector_symbol = '?';
+
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+        echo '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+		echo '</ul>';
+endif;
+// ===============================
+?>
+
+</div>
+<?php endif; ?>
+</div>
+<?php
+

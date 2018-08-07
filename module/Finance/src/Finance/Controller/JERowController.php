@@ -453,37 +453,18 @@ class JERowController extends AbstractActionController
         if ($is_active == null) {
             $is_active = 1;
         }
-
-        if ($sort_by == null) :
-            $sort_by = "fxDate";
-        endif;
-
-        if ($sort == null) :
-            $sort = "DESC";
-        endif;
-
-        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-        // $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-
-        /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-        // $postingPeriod = $p->getPostingPeriodStatus(new \DateTime());
-        // echo $postingPeriod->getPeriodName() . $postingPeriod->getPeriodStatus();
-        // echo $postingPeriod;
-
-        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+ 
         $criteria = array();
 
-        $sort_criteria = array(
-            'fxDate' => 'DESC'
-        );
+        $sort_criteria = array();
 
-        $list = $this->doctrineEM->getRepository('Application\Entity\FinFx')->findBy($criteria, $sort_criteria);
+        $list = $this->doctrineEM->getRepository('Application\Entity\FinJeRow')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\FinFx')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\FinJeRow')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
 
         return new ViewModel(array(

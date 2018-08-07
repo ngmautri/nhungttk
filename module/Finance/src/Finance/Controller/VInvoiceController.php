@@ -120,9 +120,14 @@ class VInvoiceController extends AbstractActionController
                 $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
             }
             
+            $entity->setLocalCurrency($default_cur);
+            
             // check if posting period is close
             /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
             $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+            
+            
             
             if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
                 $entity->setCurrency($currency);
@@ -132,14 +137,15 @@ class VInvoiceController extends AbstractActionController
                     $entity->setExchangeRate(1);
                 } else {
                     
-                    if ($exchangeRate !== 0) {
+                    if ($exchangeRate !== null) {
                         if (! is_numeric($exchangeRate)) {
                             $errors[] = $nmtPlugin->translate('Foreign exchange rate is not valid. It must be a number.');
                         } else {
-                            if ($exchangeRate <= 0) {
-                                $errors[] = $nmtPlugin->translate('Foreign exchange rate must be greate than 0!');
+                            if ($exchangeRate < 0) {
+                                $errors[] = $nmtPlugin->translate('Foreign exchange rate must be greater than 0!');
+                            }else{
+                                $entity->setExchangeRate($exchangeRate);
                             }
-                            $entity->setExchangeRate($exchangeRate);
                         }
                     } else {
                         // get default exchange rate.
@@ -506,6 +512,8 @@ class VInvoiceController extends AbstractActionController
                 
                 /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
                 $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
+                
+                $entity->setPostingPeriod($postingPeriod);
                 
                 if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
                     $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);

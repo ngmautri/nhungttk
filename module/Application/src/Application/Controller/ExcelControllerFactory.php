@@ -2,21 +2,17 @@
 
 namespace Application\Controller;
 
-use Application\Controller\ExcelController;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\FactoryInterface;
 
-/*
+/**
+ * @deprecated
  * @author nmt
  *
  */
 class ExcelControllerFactory implements FactoryInterface {
 	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \Zend\ServiceManager\Factory\FactoryInterface::__invoke()
-	 */
+
 	public function __invoke(ContainerInterface $container,
 			$requestedName, array $options = null)
 	{

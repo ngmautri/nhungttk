@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinJe
  *
- * @ORM\Table(name="fin_je", indexes={@ORM\Index(name="fin_je_FK1_idx", columns={"currency_id"}), @ORM\Index(name="fin_je_FK2_idx", columns={"created_by"}), @ORM\Index(name="fin_je_FK3_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="fin_je", indexes={@ORM\Index(name="fin_je_FK1_idx", columns={"currency_id"}), @ORM\Index(name="fin_je_FK2_idx", columns={"created_by"}), @ORM\Index(name="fin_je_FK3_idx", columns={"last_change_by"}), @ORM\Index(name="fin_je_FK4_idx", columns={"local_currency_id"}), @ORM\Index(name="fin_je_FK5_idx", columns={"sys_currency_id"}), @ORM\Index(name="fin_je_FK6_idx", columns={"doc_currency_id"}), @ORM\Index(name="fin_je_FK7_idx", columns={"posting_period_id"})})
  * @ORM\Entity
  */
 class FinJe
@@ -127,6 +127,20 @@ class FinJe
     private $lastChangeOn;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
+     */
+    private $sysNumber;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -155,6 +169,46 @@ class FinJe
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="local_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $localCurrency;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="sys_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $sysCurrency;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doc_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $docCurrency;
+
+    /**
+     * @var \Application\Entity\NmtFinPostingPeriod
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="posting_period_id", referencedColumnName="id")
+     * })
+     */
+    private $postingPeriod;
 
 
 
@@ -529,6 +583,54 @@ class FinJe
     }
 
     /**
+     * Set sysNumber
+     *
+     * @param string $sysNumber
+     *
+     * @return FinJe
+     */
+    public function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get sysNumber
+     *
+     * @return string
+     */
+    public function getSysNumber()
+    {
+        return $this->sysNumber;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return FinJe
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
      * Set currency
      *
      * @param \Application\Entity\NmtApplicationCurrency $currency
@@ -598,5 +700,101 @@ class FinJe
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set localCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $localCurrency
+     *
+     * @return FinJe
+     */
+    public function setLocalCurrency(\Application\Entity\NmtApplicationCurrency $localCurrency = null)
+    {
+        $this->localCurrency = $localCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get localCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getLocalCurrency()
+    {
+        return $this->localCurrency;
+    }
+
+    /**
+     * Set sysCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $sysCurrency
+     *
+     * @return FinJe
+     */
+    public function setSysCurrency(\Application\Entity\NmtApplicationCurrency $sysCurrency = null)
+    {
+        $this->sysCurrency = $sysCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get sysCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getSysCurrency()
+    {
+        return $this->sysCurrency;
+    }
+
+    /**
+     * Set docCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $docCurrency
+     *
+     * @return FinJe
+     */
+    public function setDocCurrency(\Application\Entity\NmtApplicationCurrency $docCurrency = null)
+    {
+        $this->docCurrency = $docCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get docCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getDocCurrency()
+    {
+        return $this->docCurrency;
+    }
+
+    /**
+     * Set postingPeriod
+     *
+     * @param \Application\Entity\NmtFinPostingPeriod $postingPeriod
+     *
+     * @return FinJe
+     */
+    public function setPostingPeriod(\Application\Entity\NmtFinPostingPeriod $postingPeriod = null)
+    {
+        $this->postingPeriod = $postingPeriod;
+
+        return $this;
+    }
+
+    /**
+     * Get postingPeriod
+     *
+     * @return \Application\Entity\NmtFinPostingPeriod
+     */
+    public function getPostingPeriod()
+    {
+        return $this->postingPeriod;
     }
 }

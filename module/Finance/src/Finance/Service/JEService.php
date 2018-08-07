@@ -67,6 +67,10 @@ class JEService implements EventManagerAwareInterface
         $je->setCreatedOn($entity->getCreatedOn());
         $je->setSysNumber($nmtPlugin->getDocNumber($je));
         
+        $je->setSourceClass(get_class($entity));
+        $je->setSourceId($entity->getId());
+        $je->setSourceToken($entity->getToken());
+        
         $this->doctrineEM->persist($je);
         
         $n = 0;
@@ -173,6 +177,12 @@ class JEService implements EventManagerAwareInterface
         $je->setCreatedBy($u);
         $je->setCreatedOn($entity->getCreatedOn());
         $je->setSysNumber($nmtPlugin->getDocNumber($je));
+        
+        $je->setSourceClass(get_class($entity));
+        $je->setSourceId($entity->getId());
+        $je->setSourceToken($entity->getToken());
+        
+        
         $this->doctrineEM->persist($je);
 
         $n = 0;
@@ -211,7 +221,7 @@ class JEService implements EventManagerAwareInterface
         $je_row->setJe($je);
 
         $criteria = array(
-            'id' => 4
+            'id' => 5
         );
         $gl_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
         $je_row->setGlAccount($gl_account);

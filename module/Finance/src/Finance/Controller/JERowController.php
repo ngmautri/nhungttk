@@ -456,7 +456,10 @@ class JERowController extends AbstractActionController
  
         $criteria = array();
 
-        $sort_criteria = array();
+        $sort_criteria = array(
+            'sysNumber' => 'DESC',
+        );
+        
 
         $list = $this->doctrineEM->getRepository('Application\Entity\FinJeRow')->findBy($criteria, $sort_criteria);
         $total_records = count($list);

@@ -141,6 +141,27 @@ class FinJe
     private $revisionNo;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="source_id", type="integer", nullable=true)
+     */
+    private $sourceId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="source_class", type="string", length=255, nullable=true)
+     */
+    private $sourceClass;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="source_token", type="string", length=45, nullable=true)
+     */
+    private $sourceToken;
+
+    /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -628,6 +649,78 @@ class FinJe
     public function getRevisionNo()
     {
         return $this->revisionNo;
+    }
+
+    /**
+     * Set sourceId
+     *
+     * @param integer $sourceId
+     *
+     * @return FinJe
+     */
+    public function setSourceId($sourceId)
+    {
+        $this->sourceId = $sourceId;
+
+        return $this;
+    }
+
+    /**
+     * Get sourceId
+     *
+     * @return integer
+     */
+    public function getSourceId()
+    {
+        return $this->sourceId;
+    }
+
+    /**
+     * Set sourceClass
+     *
+     * @param string $sourceClass
+     *
+     * @return FinJe
+     */
+    public function setSourceClass($sourceClass)
+    {
+        $this->sourceClass = $sourceClass;
+
+        return $this;
+    }
+
+    /**
+     * Get sourceClass
+     *
+     * @return string
+     */
+    public function getSourceClass()
+    {
+        return $this->sourceClass;
+    }
+
+    /**
+     * Set sourceToken
+     *
+     * @param string $sourceToken
+     *
+     * @return FinJe
+     */
+    public function setSourceToken($sourceToken)
+    {
+        $this->sourceToken = $sourceToken;
+
+        return $this;
+    }
+
+    /**
+     * Get sourceToken
+     *
+     * @return string
+     */
+    public function getSourceToken()
+    {
+        return $this->sourceToken;
     }
 
     /**

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureQo
  *
- * @ORM\Table(name="nmt_procure_qo", indexes={@ORM\Index(name="nmt_procure_qo_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_qo_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_qo_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_qo_FK7_idx", columns={"token"})})
+ * @ORM\Table(name="nmt_procure_qo", indexes={@ORM\Index(name="nmt_procure_qo_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_qo_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_qo_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_qo_FK7_idx", columns={"token"}), @ORM\Index(name="nmt_procure_qo_FK7_idx1", columns={"company_id"})})
  * @ORM\Entity
  */
 class NmtProcureQo
@@ -283,6 +283,16 @@ class NmtProcureQo
      * })
      */
     private $paymentMethod;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 
@@ -1134,5 +1144,29 @@ class NmtProcureQo
     public function getPaymentMethod()
     {
         return $this->paymentMethod;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCompany $company
+     *
+     * @return NmtProcureQo
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

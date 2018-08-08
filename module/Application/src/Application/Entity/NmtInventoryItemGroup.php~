@@ -21,6 +21,48 @@ class NmtInventoryItemGroup
      */
     private $id;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="group_name", type="string", length=45, nullable=true)
+     */
+    private $groupName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="inventory_account", type="integer", nullable=true)
+     */
+    private $inventoryAccount;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="cogs_account", type="integer", nullable=true)
+     */
+    private $cogsAccount;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="allocation_account", type="integer", nullable=true)
+     */
+    private $allocationAccount;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revenue_account", type="integer", nullable=true)
+     */
+    private $revenueAccount;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="expense_account", type="integer", nullable=true)
+     */
+    private $expenseAccount;
+
 
 }
 

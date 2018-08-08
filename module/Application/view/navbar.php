@@ -4,11 +4,22 @@
 <?php if ($this->user !== null): ?>
 
 <!-- INBOX MENU -->
+<!-- 
 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"
 	href="#" style="padding-left: 20px; padding-right: 10px;">My Inbox <span
 		class="caret"></span></a>
 							<?php include (ROOT.'/module/Application/view/inbox_menu.php'); ?>
 							</li>
+ -->
+ 
+<!-- FINANCE MENU -->
+<li
+	class="dropdown <?php if ($current_module=="PAYMENT"): echo "active";endif;?>"><a
+	class="dropdown-toggle" data-toggle="dropdown" href="#"
+	style="padding-left: 10px; padding-right: 10px;"><?php echo $this->translate("Cash");?> <span
+		class="caret"></span></a>
+							<?php include (ROOT.'/module/Application/view/payment_menu.php'); ?>
+						</li>
 
 <!-- FINANCE MENU -->
 <li

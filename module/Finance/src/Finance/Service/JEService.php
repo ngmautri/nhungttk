@@ -113,8 +113,8 @@ class JEService implements EventManagerAwareInterface
         );
         $gl_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
         $je_row->setGlAccount($gl_account);
-        $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CRERIT);
-        $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CRERIT);
+        $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+        $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
         
         $je_row->setDocAmount($total_credit);
         $je_row->setLocalAmount($total_local_credit);
@@ -125,7 +125,28 @@ class JEService implements EventManagerAwareInterface
         $n = $n + 1;
         $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
         $this->doctrineEM->persist($je_row);
+   
+        $vendor_bl_row = new \Application\Entity\NmtBpVendorBl();
+        $vendor_bl_row->setVendor($entity->getVendor());
+        $vendor_bl_row->setCompany($entity->getCompany());
+        $vendor_bl_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+        $vendor_bl_row->setDocAmount($total_credit);
+        $vendor_bl_row->setLocalAmount($total_local_credit);
+        $vendor_bl_row->setExchangeRate($entity->getExchangeRate());
+        $vendor_bl_row->setGlAccount($gl_account);
+        $vendor_bl_row->setCreatedBy($u);
+        $vendor_bl_row->setCreatedOn($entity->getCreatedOn());
+        $vendor_bl_row->setPostingDate($entity->getPostingDate());
+        $vendor_bl_row->setPostingPeriod($entity->getPostingPeriod());
+        $vendor_bl_row->setReference($entity->getInvoiceNo());
+        $vendor_bl_row->setDocumentDate($entity->getInvoiceDate());
+        $vendor_bl_row->setSysNumber($entity->getSysNumber());
+        
+        $this->doctrineEM->persist($vendor_bl_row);
+    
     }
+    
+    
     
     /**
      *
@@ -214,8 +235,9 @@ class JEService implements EventManagerAwareInterface
 
             $this->doctrineEM->persist($je_row);
         }
-
-        // Create JE Row - Credit
+        
+          
+        // Create JE Row - Credit - AP account
         $je_row = new \Application\Entity\FinJeRow();
 
         $je_row->setJe($je);
@@ -225,19 +247,20 @@ class JEService implements EventManagerAwareInterface
         );
         $gl_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
         $je_row->setGlAccount($gl_account);
-        $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CRERIT);
-        $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CRERIT);
-
+        $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+        $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
         $je_row->setDocAmount($total_credit);
         $je_row->setLocalAmount($total_local_credit);
         
         $je_row->setCreatedBy($u);
         $je_row->setCreatedOn($entity->getCreatedOn());
-
         $n = $n + 1;
         $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+        
         $this->doctrineEM->persist($je_row);
-    }
+        
+      
+      }
 
     /**
      *

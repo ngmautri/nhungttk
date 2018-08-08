@@ -365,13 +365,13 @@ if (count($errors) > 0) {
                             if ($entity->getGlAccount()->getId() == $gl->getId()) :
                                 echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
                             else :
-                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '-' . $gl->getDescription() . '</option>';
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
                             endif;
                         else :
-                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '-' .$gl->getDescription() . '</option>';
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' .$gl->getDescription() . '</option>';
                         endif;
                     else :
-                    echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '-' .$gl->getDescription() . '</option>';
+                    echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' .$gl->getDescription() . '</option>';
                     endif;
                 endforeach
                 ;

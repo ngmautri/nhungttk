@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItem
  *
- * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_item_IDX2", columns={"is_fixed_asset"}), @ORM\Index(name="nmt_inventory_item_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_FK3_idx", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_pr_row"}), @ORM\Index(name="nmt_inventory_item_FK6_idx", columns={"last_po_row"}), @ORM\Index(name="nmt_inventory_item_FK7_idx", columns={"last_ap_invoice_row"}), @ORM\Index(name="nmt_inventory_item_FK8_idx", columns={"last_trx_row"}), @ORM\Index(name="nmt_inventory_item_FK9_idx", columns={"last_purchasing"})})
+ * @ORM\Table(name="nmt_inventory_item", indexes={@ORM\Index(name="nmt_inventory_item_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_item_IDX2", columns={"is_fixed_asset"}), @ORM\Index(name="nmt_inventory_item_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_item_FK3_idx", columns={"standard_uom_id"}), @ORM\Index(name="nmt_inventory_item_FK4_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_item_FK5_idx", columns={"last_pr_row"}), @ORM\Index(name="nmt_inventory_item_FK6_idx", columns={"last_po_row"}), @ORM\Index(name="nmt_inventory_item_FK7_idx", columns={"last_ap_invoice_row"}), @ORM\Index(name="nmt_inventory_item_FK8_idx", columns={"last_trx_row"}), @ORM\Index(name="nmt_inventory_item_FK9_idx", columns={"last_purchasing"}), @ORM\Index(name="nmt_inventory_item_FK10_idx", columns={"item_group_id"})})
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Application\Repository\NmtInventoryItemRepository")
  */
@@ -380,6 +380,20 @@ class NmtInventoryItem
     private $itemSku2;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="asset_group", type="integer", nullable=true)
+     */
+    private $assetGroup;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="asset_class", type="integer", nullable=true)
+     */
+    private $assetClass;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -388,6 +402,16 @@ class NmtInventoryItem
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryItemGroup
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItemGroup")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="item_group_id", referencedColumnName="id")
+     * })
+     */
+    private $itemGroup2;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -1706,6 +1730,54 @@ class NmtInventoryItem
     }
 
     /**
+     * Set assetGroup
+     *
+     * @param integer $assetGroup
+     *
+     * @return NmtInventoryItem
+     */
+    public function setAssetGroup($assetGroup)
+    {
+        $this->assetGroup = $assetGroup;
+
+        return $this;
+    }
+
+    /**
+     * Get assetGroup
+     *
+     * @return integer
+     */
+    public function getAssetGroup()
+    {
+        return $this->assetGroup;
+    }
+
+    /**
+     * Set assetClass
+     *
+     * @param integer $assetClass
+     *
+     * @return NmtInventoryItem
+     */
+    public function setAssetClass($assetClass)
+    {
+        $this->assetClass = $assetClass;
+
+        return $this;
+    }
+
+    /**
+     * Get assetClass
+     *
+     * @return integer
+     */
+    public function getAssetClass()
+    {
+        return $this->assetClass;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -1727,6 +1799,30 @@ class NmtInventoryItem
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set itemGroup2
+     *
+     * @param \Application\Entity\NmtInventoryItemGroup $itemGroup2
+     *
+     * @return NmtInventoryItem
+     */
+    public function setItemGroup2(\Application\Entity\NmtInventoryItemGroup $itemGroup2 = null)
+    {
+        $this->itemGroup2 = $itemGroup2;
+
+        return $this;
+    }
+
+    /**
+     * Get itemGroup2
+     *
+     * @return \Application\Entity\NmtInventoryItemGroup
+     */
+    public function getItemGroup2()
+    {
+        return $this->itemGroup2;
     }
 
     /**

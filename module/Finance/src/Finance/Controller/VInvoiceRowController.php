@@ -21,9 +21,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 class VInvoiceRowController extends AbstractActionController
 {
-
-    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-
     protected $doctrineEM;
 
     /**
@@ -239,7 +236,7 @@ class VInvoiceRowController extends AbstractActionController
                 $createdOn = new \DateTime();
                 
                 $entity->setCurrentState($target->getCurrentState());
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                 
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn($createdOn);
@@ -294,7 +291,7 @@ class VInvoiceRowController extends AbstractActionController
                     
                     $procure_gr_entity->setCreatedBy($u);
                     $procure_gr_entity->setCreatedOn(new \DateTime());
-                    $procure_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                    $procure_gr_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                     $procure_gr_entity->setSourceObject(get_class($entity));
                     $procure_gr_entity->setSourceObjectId($entity->getId());
                     
@@ -331,8 +328,8 @@ class VInvoiceRowController extends AbstractActionController
                 $stock_gr_entity->setWh($target->getWarehouse());
                 $stock_gr_entity->setCreatedBy($u);
                 $stock_gr_entity->setCreatedOn(new \DateTime());
-                $stock_gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                $stock_gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
+                $stock_gr_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                $stock_gr_entity->setChecksum(Rand::getString(32, \Application\Model\Constants::CHAR_LIST, true));
                 
                 $stock_gr_entity->setTaxRate($entity->getTaxRate());
                 
@@ -1514,7 +1511,7 @@ class VInvoiceRowController extends AbstractActionController
         
         if (count($list) > 0) {
             foreach ($list as $entity) {
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             }
         }
         

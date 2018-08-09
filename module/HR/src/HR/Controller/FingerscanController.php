@@ -1,18 +1,12 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace HR\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
 use MLA\Paginator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Zend\Http\Headers;
 use Zend\Validator\Date;
 use Zend\Math\Rand;
@@ -24,14 +18,13 @@ use Application\Entity\NmtHrLeaveReason;
 use Application\Entity\NmtHrFingerscan;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
- * @author nmt
- *        
  */
+
 class FingerscanController extends AbstractActionController
 {
-
-    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     protected $doctrineEM;
 
@@ -91,7 +84,7 @@ class FingerscanController extends AbstractActionController
             
             // NO ERROR
             
-            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
@@ -130,13 +123,14 @@ class FingerscanController extends AbstractActionController
     {
         
         // take long time
-        set_time_limit ( 1500 );
+        set_time_limit ( 2500 );
         
         // 1. import excel file
         
         // 2. check file format
         
         // 3. processing file
+        
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -153,7 +147,7 @@ class FingerscanController extends AbstractActionController
                 $file_tmp = $_FILES['uploaded_file']['tmp_name'];
                 $file_type = $_FILES['uploaded_file']['type'];
                 
-                $file_ext = strtolower(end(explode('.', $_FILES['uploaded_file']['name'])));
+                $file_ext = strtolower(end(explode('.', $file_name)));
                 
                 // attachement required?
                 if ($file_tmp == "" or $file_tmp === null) {
@@ -222,14 +216,14 @@ class FingerscanController extends AbstractActionController
                     // echo ("$folder/$name");
                     move_uploaded_file($file_tmp, "$folder/$file_name");
                     
-                    $objPHPExcel = PHPExcel_IOFactory::load("$folder/$file_name");
+                    $objPHPExcel = IOFactory::load("$folder/$file_name");
                     foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
                         //echo $worksheet->getTitle();
                         
                         $worksheetTitle = $worksheet->getTitle();
                         $highestRow = $worksheet->getHighestRow(); // e.g. 10
                         $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
-                        $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+                        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
                         $nrColumns = ord($highestColumn) - 64;
                         // echo $worksheetTitle;
                         // echo $highestRow;
@@ -239,8 +233,8 @@ class FingerscanController extends AbstractActionController
                             
                             $entity = new NmtHrFingerscan();
                             
-                            
-                            for ($col = 0; $col < $highestColumnIndex; ++ $col) {
+                            // new A=1
+                            for ($col = 1; $col < $highestColumnIndex; ++ $col) {
                                 
                                 $cell = $worksheet->getCellByColumnAndRow($col, $row);
                                 $val = $cell->getValue();
@@ -250,36 +244,39 @@ class FingerscanController extends AbstractActionController
                                 $entity->setCreatedBy($u);
                                 $entity->setCreatedOn(new \Datetime());
                                 
-                                if ($col == 0) {
+                                if ($col == 1) {
                                     $entity->setEmployeeCode($val);
                                    //echo $val . ' code';
                                 }
                                 
-                                if ($col == 2) {
-                                    $PHPTimeStamp = PHPExcel_Shared_Date::ExcelToPHP($val);
-                                    //$dt = date('Y-m-d', $PHPTimeStamp);
-                                    $dt = new \Datetime();
-                                    $dt->setTimestamp ($PHPTimeStamp);
-                                    
-                                    $entity->setAttendanceDate($dt);
-                                    //echo date('Y-m-d', $PHPTimeStamp) . ' date';
-                                    //echo $dt->format("m-d-Y");
-                                }
-                                
                                 if ($col == 3) {
-                                    $entity->setClockIn($val);
+                                    
+                                    $PHPTimeStamp = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($val);
+                                    //var_dump($PHPTimeStamp);
+                                   //$dt = date('Y-m-d', $PHPTimeStamp);
+                                  // $dt = new \Datetime();
+                                   //$dt->setTimestamp ($PHPTimeStamp);
+                                    
+                                    $entity->setAttendanceDate($PHPTimeStamp);
+                                    //echo date('Y-m-d', $PHPTimeStamp) . ' date';
+                                    //echo $PHPTimeStamp->format("m-d-Y");
                                 }
                                 
                                 if ($col == 4) {
+                                    $entity->setClockIn($val);
+                                }
+                                
+                                if ($col == 5) {
                                    $entity->setClockOut($val);
                                 }
                             }
                             
                             
                             $this->doctrineEM->persist($entity);
-                            if($row % 1000==0 OR $row == $highestRow){
+                            
+                            if($row % 100==0 OR $row == $highestRow){
                                 $this->doctrineEM->flush();
-                             }
+                            }
                             
                             //echo "<br>";
                         }
@@ -467,7 +464,7 @@ class FingerscanController extends AbstractActionController
                 
                 // NO ERROR
                 
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                 
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
@@ -645,7 +642,7 @@ class FingerscanController extends AbstractActionController
                  *
                  * @todo Update Targnet
                  */
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             }
         }
         

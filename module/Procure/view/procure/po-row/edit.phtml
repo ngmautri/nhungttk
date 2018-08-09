@@ -334,22 +334,6 @@ if (count ( $errors ) > 0) {
 
 
 <script type="text/javascript">
-	$("#Create_Inv_Form :input").attr("disabled", "disabled");
-	   
-
-	<?php if($entity->getCurrentState()=="finalInvoice"):?>
-    	$("#New_Invoice_Row :input").attr("disabled", "disabled");
-    <?php else:?>
-        $("#New_Invoice_Row :input").attr("disabled", "disabled");
-    	$("#quantity").removeAttr('disabled');
-    	$("#unit_price").removeAttr('disabled');
-       	$("#tax_rate").removeAttr('disabled');
-	<?php endif;?>
-
-	$("#entity_id").removeAttr('disabled');
-	$("#token").removeAttr('disabled');
-	$("#remarks").removeAttr('disabled');
-  	$("#is_active").removeAttr('disabled');
     
     
     $( "#pr_item_name" ).autocomplete({

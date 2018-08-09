@@ -42,15 +42,12 @@ class PoRowController extends AbstractActionController
     {
         $this->layout("Procure/layout-fullscreen");
         
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
         
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
         
+          
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -87,8 +84,8 @@ class PoRowController extends AbstractActionController
                 // might need redirect
             } else {
                 
-                $item_id = $request->getPost('item_id');
-                $pr_row_id = $request->getPost('pr_row_id');
+                $item_id = (int) $request->getPost('item_id');
+                $pr_row_id = (int) $request->getPost('pr_row_id');
                 $isActive = (int) $request->getPost('isActive');
                 
                 $rowNumber = $request->getPost('rowNumber');
@@ -215,46 +212,13 @@ class PoRowController extends AbstractActionController
                 ));
                 
                 $entity->setCurrentState($target->getCurrentState());
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                 
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn(new \DateTime());
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
-                
-                /*
-                 * $gr_entity = new NmtInventoryTrx();
-                 * $gr_entity->setVendor($target->getVendor());
-                 * $gr_entity->setFlow('IN');
-                 * $gr_entity->setInvoiceRow($entity);
-                 * $gr_entity->setItem($entity->getItem());
-                 * $gr_entity->setPrRow($entity->getPrRow());
-                 * $gr_entity->setQuantity($quantity);
-                 * $gr_entity->setVendorItemCode($entity->getVendorItemCode());
-                 * $gr_entity->setVendorItemUnit($entity->getUnit());
-                 * $gr_entity->setVendorUnitPrice($entity->getUnitPrice());
-                 * $gr_entity->setTrxDate($target->getGrDate());
-                 * $gr_entity->setCurrency($target->getCurrency());
-                 * $gr_entity->setRemarks("Auto:");
-                 * $gr_entity->setWh($target->getWarehouse());
-                 * $gr_entity->setCreatedBy($u);
-                 * $gr_entity->setCreatedOn(new \DateTime());
-                 * $gr_entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                 * $gr_entity->setChecksum(Rand::getString(32, self::CHAR_LIST, true));
-                 *
-                 * $gr_entity->setTaxRate($entity->getTaxRate());
-                 *
-                 * $gr_entity->setCurrentState($target->getCurrentState());
-                 *
-                 * if ($target->getCurrentState() == "finalInvoice") {
-                 * $gr_entity->setIsActive(1);
-                 * } else {
-                 * $gr_entity->setIsActive(0);
-                 * }
-                 *
-                 * $this->doctrineEM->persist($gr_entity);
-                 * $this->doctrineEM->flush();
-                 */
+            
                 $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
                 $m = sprintf("[OK] Contract /PO Line: %s created!", $rowIdentifer);
                 $this->flashMessenger()->addMessage($m);
@@ -389,11 +353,16 @@ class PoRowController extends AbstractActionController
      */
     public function editAction()
     {
+        
+        $request = $this->getRequest();
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
         
-        $request = $this->getRequest();
+        
+        // Is Posing
+        // =============================
         
         if ($request->isPost()) {
             
@@ -427,6 +396,10 @@ class PoRowController extends AbstractActionController
                 // might need redirect
             } else {
                 
+                
+                $item_id = (int) $request->getPost('item_id');
+                $pr_row_id = (int) $request->getPost('pr_row_id');
+                
                 $isActive = (int) $request->getPost('isActive');
                 $remarks = $request->getPost('remarks');
                 
@@ -434,10 +407,26 @@ class PoRowController extends AbstractActionController
                     $isActive = 0;
                 }
                 
+                
+                $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+                $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+                
+                if ($pr_row == null) {
+                    // $errors[] = 'Item can\'t be empty!';
+                } else {
+                    $entity->setPrRow($pr_row);
+                }
+                
+                if ($item == null) {
+                    $errors[] = 'Item can\'t be empty!';
+                } else {
+                    $entity->setItem($item);
+                }
+                
+                
                 $entity->setRemarks($remarks);
                 $entity->setIsActive($isActive);
                 
-                //
                 $quantity = $request->getPost('quantity');
                 $unitPrice = $request->getPost('unitPrice');
                 $taxRate = $request->getPost('taxRate');
@@ -507,6 +496,9 @@ class PoRowController extends AbstractActionController
                 }
                 
                 // NO ERROR
+                // Saving into Database..........
+                // ++++++++++++++++++++++++++++++
+                
                 $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                     "email" => $this->identity()
                 ));
@@ -514,25 +506,7 @@ class PoRowController extends AbstractActionController
                 $entity->setLastchangedBy($u);
                 $entity->setLastChangeOn(new \DateTime());
                 $this->doctrineEM->persist($entity);
-                
-                /*
-                 * $criteria = array(
-                 * 'invoiceRow' => $entity->getId()
-                 * );
-                 */
-                
-                /**@var \Application\Entity\NmtInventoryTrx $gr_entity*/
-                
-                /*
-                 * $gr_entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-                 * if ($gr_entity !== null) {
-                 * $gr_entity->setIsActive($isActive);
-                 * $gr_entity->setLastChangeBy($u);
-                 * $gr_entity->setLastChangeOn(new \DateTime());
-                 * $this->doctrineEM->persist($gr_entity);
-                 * }
-                 */
-                
+                    
                 $this->doctrineEM->flush();
                 
                 $redirectUrl = "/procure/po/add1?token=" . $entity->getPo()->getToken() . "&entity_id=" . $entity->getPo()->getId();
@@ -542,7 +516,9 @@ class PoRowController extends AbstractActionController
             }
         }
         
-        // NO Post
+        // NO POST
+        // Initiate ......................
+        // ================================
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') !== null) {
             $redirectUrl = $this->getRequest()
@@ -1053,7 +1029,7 @@ class PoRowController extends AbstractActionController
         
         if (count($list) > 0) {
             foreach ($list as $entity) {
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             }
         }
         

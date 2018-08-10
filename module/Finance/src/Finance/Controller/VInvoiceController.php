@@ -578,32 +578,10 @@ class VInvoiceController extends AbstractActionController
             // ++++++++++++++++++++++++++++++
             
             $changeOn = new \DateTime();
-            $oldEntity = clone ($entity);
+            $oldEntity = clone ($entity);            
             
-            // Assign doc number
-            if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
-                $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
-            }
-            
-            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-            $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
-            $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            $entity->setLastchangeBy($u);
-            $entity->setLastchangeOn($changeOn);
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
-            
-            $this->apService->post($entity, $u, $nmtPlugin);
-            /**
-             * @ update relevant PR & PO
-             */
-            
-            /**
-             *
-             * @todo Create Entry Journal
-             *      
-             */
-            
+            $this->apService->post($entity, $u, $nmtPlugin, true);
+        
             // LOGGING
              $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
             

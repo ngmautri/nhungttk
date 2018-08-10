@@ -621,21 +621,7 @@ class GrController extends AbstractActionController
                 $changeOn = new \DateTime();
                 $oldEntity = clone ($entity);
 
-                // Assign doc number
-                if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
-                    $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
-                }
-
-                // set posted
-                $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-
-                $entity->setRevisionNo($entity->getRevisionNo() + 1);
-                $entity->setLastchangeBy($u);
-                $entity->setLastchangeOn($changeOn);
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-
-                $this->grService->doPosting($entity, $u, $nmtPlugin);
+                $this->grService->doPosting($entity, $u, $nmtPlugin, true);
 
                 // LOGGING
                 $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);

@@ -23,9 +23,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 class GrRowController extends AbstractActionController
 {
-
-    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-
     protected $doctrineEM;
 
     /**
@@ -345,8 +342,10 @@ class GrRowController extends AbstractActionController
                     if (! is_numeric($unitPrice)) {
                         $errors[] = 'Price is not valid. It must be a number.';
                     } else {
-                        if ($unitPrice <= 0) {
-                            $errors[] = 'Price must be greate than 0!';
+                        if ($unitPrice < 0) {
+                            
+                            // accept ZERO PRICE
+                            $errors[] = 'Price must be greate or equal 0!';
                         }
                         $entity->setUnitPrice($unitPrice);
                         $n_validated ++;

@@ -69,6 +69,9 @@ class FIFOLayerService implements EventManagerAwareInterface
             'item' => $item,
         );
 
+        /**
+         * Important for FIFO
+         */ 
         $sort = array(
             'postingDate' => "ASC"
         );
@@ -78,7 +81,7 @@ class FIFOLayerService implements EventManagerAwareInterface
         if (count($layers) == 0) {
             throw new \Exception("Goods Issue imposible. No FIFO Layer found!");
         }
-        
+                
         $total_onhand = 0;
         $totalIssueQty= $issuedQuantity;
         

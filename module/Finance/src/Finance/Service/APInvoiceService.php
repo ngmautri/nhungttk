@@ -18,9 +18,8 @@ class APInvoiceService implements EventManagerAwareInterface
     protected $doctrineEM;
 
     protected $eventManager;
-    
+
     protected $jeService;
-    
 
     /**
      *
@@ -31,7 +30,7 @@ class APInvoiceService implements EventManagerAwareInterface
      *            
      * @return \Doctrine\ORM\EntityManager
      */
-    public function post($entity, $u, $nmtPlugin)
+    public function post($entity, $u, $nmtPlugin, $isFlush = false)
     {
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument! Invoice can't not found.");
@@ -51,6 +50,20 @@ class APInvoiceService implements EventManagerAwareInterface
             throw new \Exception("Invoice is empty. No Posting will be made!");
         }
 
+        $changeOn = new \DateTime();
+
+        // Assign doc number
+        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+            $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
+        }
+
+        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+        $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+        $entity->setRevisionNo($entity->getRevisionNo() + 1);
+        $entity->setLastchangeBy($u);
+        $entity->setLastchangeOn($changeOn);
+        $this->doctrineEM->persist($entity);
+
         $n = 0;
         foreach ($ap_rows as $r) {
 
@@ -62,7 +75,7 @@ class APInvoiceService implements EventManagerAwareInterface
                 continue;
             }
 
-            $createdOn = new \DateTime();
+            $createdOn = $changeOn;
 
             $netAmount = $r->getQuantity() * $r->getUnitPrice();
             $taxAmount = $netAmount * $r->getTaxRate() / 100;
@@ -112,6 +125,7 @@ class APInvoiceService implements EventManagerAwareInterface
                     $gr_entity = new \Application\Entity\NmtProcureGrRow();
                 }
 
+                // PROCURE GOOD Receipt to clear PR, PO.
                 $gr_entity->setIsActive(1);
                 $gr_entity->setInvoice($entity);
                 $gr_entity->setApInvoiceRow($r);
@@ -142,77 +156,78 @@ class APInvoiceService implements EventManagerAwareInterface
                 $gr_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                 $this->doctrineEM->persist($gr_entity);
 
-                /**
-                 * create stock good receipt.
-                 * only for item controlled inventory
-                 * ===================
-                 */
-
-                /**
-                 *
-                 * @todo: only for item with stock control.
-                 */
-                if ($r->getItem()->getIsStocked() == 0) {
-                    // continue;
-                }
-
-                $criteria = array(
-                    'isActive' => 1,
-                    'invoiceRow' => $r
-                );
-                $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-
-                if (! $stock_gr_entity_ck == null) {
-                    $stock_gr_entity = $stock_gr_entity_ck;
-                } else {
-                    $stock_gr_entity = new NmtInventoryTrx();
-                }
-
-                $stock_gr_entity->setIsActive(1);
-                $stock_gr_entity->setTrxDate($entity->getGrDate());
-
-                $stock_gr_entity->setVendorInvoice($entity);
-                $stock_gr_entity->setInvoiceRow($r);
-                $stock_gr_entity->setItem($r->getItem());
-                $stock_gr_entity->setPrRow($r->getPrRow());
-                $stock_gr_entity->setPoRow($r->getPoRow());
-                $stock_gr_entity->setGrRow($gr_entity);
-
-                $stock_gr_entity->setIsDraft($r->getIsDraft());
-                $stock_gr_entity->setIsPosted($r->getIsPosted());
-                $stock_gr_entity->setDocStatus($r->getDocStatus());
-
-                $stock_gr_entity->setSourceClass(get_class($r));
-                $stock_gr_entity->setSourceId($r->getId());
-
-                $stock_gr_entity->setTransactionType($r->getTransactionType());
-                $stock_gr_entity->setCurrentState($entity->getCurrentState());
-
-                $stock_gr_entity->setVendor($entity->getVendor());
-                $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
-
-                $stock_gr_entity->setQuantity($r->getQuantity());
-                $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
-                $stock_gr_entity->setVendorItemUnit($r->getUnit());
-                $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
-                $stock_gr_entity->setTrxDate($entity->getGrDate());
-                $stock_gr_entity->setCurrency($entity->getCurrency());
-                $stock_gr_entity->setTaxRate($r->getTaxRate());
-
-                $stock_gr_entity->setRemarks('AP Row' . $r->getRowIdentifer());
-                $stock_gr_entity->setWh($entity->getWarehouse());
-                $stock_gr_entity->setCreatedBy($u);
-                $stock_gr_entity->setCreatedOn($createdOn);
-                $stock_gr_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-                $this->doctrineEM->persist($stock_gr_entity);
-
-                /**
-                 *
-                 * @todo create serial number
-                 *       if item with Serial
-                 *       or Fixed Asset
-                 */
                 if ($r->getItem() !== null) {
+
+                    /**
+                     * create stock good receipt.
+                     * only for item controlled inventory
+                     * ===================
+                     */
+
+                    /**
+                     *
+                     * @todo: only for item with stock control.
+                     */
+                    if ($r->getItem()->getIsStocked() == 0) {
+                        // continue;
+                    }
+
+                    $criteria = array(
+                        'isActive' => 1,
+                        'invoiceRow' => $r
+                    );
+                    $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+
+                    if (! $stock_gr_entity_ck == null) {
+                        $stock_gr_entity = $stock_gr_entity_ck;
+                    } else {
+                        $stock_gr_entity = new NmtInventoryTrx();
+                    }
+
+                    $stock_gr_entity->setIsActive(1);
+                    $stock_gr_entity->setTrxDate($entity->getGrDate());
+
+                    $stock_gr_entity->setVendorInvoice($entity);
+                    $stock_gr_entity->setInvoiceRow($r);
+                    $stock_gr_entity->setItem($r->getItem());
+                    $stock_gr_entity->setPrRow($r->getPrRow());
+                    $stock_gr_entity->setPoRow($r->getPoRow());
+                    $stock_gr_entity->setGrRow($gr_entity);
+
+                    $stock_gr_entity->setIsDraft($r->getIsDraft());
+                    $stock_gr_entity->setIsPosted($r->getIsPosted());
+                    $stock_gr_entity->setDocStatus($r->getDocStatus());
+
+                    $stock_gr_entity->setSourceClass(get_class($r));
+                    $stock_gr_entity->setSourceId($r->getId());
+
+                    $stock_gr_entity->setTransactionType($r->getTransactionType());
+                    $stock_gr_entity->setCurrentState($entity->getCurrentState());
+
+                    $stock_gr_entity->setVendor($entity->getVendor());
+                    $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
+
+                    $stock_gr_entity->setQuantity($r->getQuantity());
+                    $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
+                    $stock_gr_entity->setVendorItemUnit($r->getUnit());
+                    $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
+                    $stock_gr_entity->setTrxDate($entity->getGrDate());
+                    $stock_gr_entity->setCurrency($entity->getCurrency());
+                    $stock_gr_entity->setTaxRate($r->getTaxRate());
+
+                    $stock_gr_entity->setRemarks('AP Row' . $r->getRowIdentifer());
+                    $stock_gr_entity->setWh($entity->getWarehouse());
+                    $stock_gr_entity->setCreatedBy($u);
+                    $stock_gr_entity->setCreatedOn($createdOn);
+                    $stock_gr_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                    $this->doctrineEM->persist($stock_gr_entity);
+
+                    /**
+                     *
+                     * @todo create serial number
+                     *       if item with Serial
+                     *       or Fixed Asset
+                     */
                     if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
 
                         for ($i = 0; $i < $r->getQuantity(); $i ++) {
@@ -232,13 +247,19 @@ class APInvoiceService implements EventManagerAwareInterface
                             $this->doctrineEM->persist($sn_entity);
                         }
                     }
-                }
 
-                /**
-                 *
-                 * @todo: Create FIFO Layer
-                 */
-                if ($r->getItem() !== null) {
+                    /**
+                     *
+                     * @todo create batch number
+                     *       if item with Batch
+                     *       or Fixed Asset
+                     */
+                    if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_BATCH_NO) {}
+
+                    /**
+                     *
+                     * @todo: Create FIFO Layer
+                     */
                     if ($r->getItem()->getIsStocked() == 1) {
                         $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
 
@@ -250,9 +271,12 @@ class APInvoiceService implements EventManagerAwareInterface
                         $fifoLayer->setOnhandQuantity($r->getQuantity());
 
                         $fifoLayer->setDocUnitPrice($r->getUnitPrice());
-                        $fifoLayer->setLocalCurrency($r->getInvoice()->getCurrency());
-                        $fifoLayer->setExchangeRate($r->getInvoice()->getExchangeRate());
-                        $fifoLayer->setPostingDate($r->getInvoice()->getPostingDate());
+                        $fifoLayer->setLocalCurrency($r->getInvoice()
+                            ->getCurrency());
+                        $fifoLayer->setExchangeRate($r->getInvoice()
+                            ->getExchangeRate());
+                        $fifoLayer->setPostingDate($r->getInvoice()
+                            ->getPostingDate());
                         $fifoLayer->setSourceClass(get_class($r));
                         $fifoLayer->setSourceId($r->getID());
                         $fifoLayer->setSourceToken($r->getToken());
@@ -272,10 +296,12 @@ class APInvoiceService implements EventManagerAwareInterface
         /**
          *
          * @todo: Do Accounting Posting
-         **/
-        $this->jeService->postAP($entity,  $ap_rows, $u, $nmtPlugin);
-        
-        $this->doctrineEM->flush();
+         */
+        $this->jeService->postAP($entity, $ap_rows, $u, $nmtPlugin);
+
+        if ($isFlush == true) {
+            $this->doctrineEM->flush();
+        }
     }
 
     /**
@@ -320,7 +346,9 @@ class APInvoiceService implements EventManagerAwareInterface
     {
         return $this->eventManager;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getJeService()
@@ -329,11 +357,11 @@ class APInvoiceService implements EventManagerAwareInterface
     }
 
     /**
+     *
      * @param mixed $jeService
      */
     public function setJeService(\Finance\Service\JEService $jeService)
     {
         $this->jeService = $jeService;
     }
-
 }

@@ -2,11 +2,7 @@
 namespace Procure\Service;
 
 use Application\Entity\NmtInventoryTrx;
-use Doctrine\ORM\EntityManager;
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManagerInterface;
 use Zend\Math\Rand;
-use Procure\Controller\GrRowController;
 
 /**
  * Good Receipt Service.
@@ -14,26 +10,16 @@ use Procure\Controller\GrRowController;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrService implements EventManagerAwareInterface
+class GrService extends AbstractProcureService
 {
-
-    protected $doctrineEM;
-
-    protected $jeService;
-
-    protected $eventManager = null;
 
     /**
      *
      * @param \Application\Entity\NmtProcureGr $entity
-     *            ;
      * @param \Application\Entity\MlaUsers $u
-     *            ;
-     * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
-     *            ;
-     * @return \Doctrine\ORM\EntityManager
+     *            
      */
-    public function doPosting($entity, $u, $nmtPlugin, $isFlush = false)
+    public function doPosting($entity, $u, $isFlush = false)
     {
         if ($u == null) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
@@ -53,7 +39,7 @@ class GrService implements EventManagerAwareInterface
             throw new \Exception("Good receipt is empty. No Posting will be made!");
         }
 
-        // OK for POSTING
+        // OK for posting
         // ++++++++++++++++++++++++++++
 
         /**
@@ -65,7 +51,7 @@ class GrService implements EventManagerAwareInterface
 
         // Assign doc number
         if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
-            $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
+            $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
         }
 
         // set posted
@@ -88,7 +74,7 @@ class GrService implements EventManagerAwareInterface
             $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
             $r->setRowNumber($n);
             $r->setLastchangeOn($changeOn);
-         
+
             if ($r->getItem() !== null) {
 
                 /**
@@ -102,7 +88,6 @@ class GrService implements EventManagerAwareInterface
                     if ($r->getItem()->getIsStocked() == 0) {
                         // continue;
                     }
-
                     $criteria = array(
                         'isActive' => 1,
                         'grRow' => $r
@@ -164,7 +149,7 @@ class GrService implements EventManagerAwareInterface
                             $sn_entity->setInventoryTrx($stock_gr_entity);
                             $sn_entity->setIsActive(1);
 
-                            $sn_entity->setSysNumber($nmtPlugin->getDocNumber($sn_entity));
+                            $sn_entity->setSysNumber($this->controllerPlugin->getDocNumber($sn_entity));
                             $sn_entity->setCreatedBy($u);
                             $sn_entity->setCreatedOn($r->getCreatedOn());
                             $sn_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
@@ -224,7 +209,7 @@ class GrService implements EventManagerAwareInterface
              *
              * @todo: Do Accounting Posting
              */
-            $this->jeService->postGR($entity, $gr_rows, $u, $nmtPlugin);
+            $this->jeService->postGR($entity, $gr_rows, $u, $this->controllerPlugin);
 
             if ($isFlush == true) {
                 $this->doctrineEM->flush();
@@ -232,64 +217,5 @@ class GrService implements EventManagerAwareInterface
         }
     }
 
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \Procure\Service\GrService
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventManagerAwareInterface::setEventManager()
-     */
-    public function setEventManager(EventManagerInterface $eventManager)
-    {
-        $eventManager->setIdentifiers(array(
-            __CLASS__
-        ));
-        $this->eventManager = $eventManager;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventsCapableInterface::getEventManager()
-     */
-    public function getEventManager()
-    {
-        return $this->eventManager;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    public function getJeService()
-    {
-        return $this->jeService;
-    }
-
-    /**
-     *
-     * @param mixed $jeService
-     */
-    public function setJeService(\Finance\Service\JEService $jeService)
-    {
-        $this->jeService = $jeService;
-    }
+   
 }

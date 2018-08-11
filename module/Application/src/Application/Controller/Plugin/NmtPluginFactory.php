@@ -1,7 +1,6 @@
 <?php
 
 namespace Application\Controller\Plugin;
-
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
 

@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GrServiceFactory implements FactoryInterface {
+class APInvoiceServiceFactory implements FactoryInterface {
 	
 	/**
 	 * 
@@ -22,10 +22,11 @@ class GrServiceFactory implements FactoryInterface {
 		
 		$container = $serviceLocator;
 		
-		$service = new GrService();
-	
+		$service = new APInvoiceService();
+		
 		$sv =  $container->get('ControllerPluginManager');
 		$service->setControllerPlugin($sv->get('NmtPlugin'));
+		
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$service->setDoctrineEM($sv);

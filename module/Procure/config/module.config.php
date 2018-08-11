@@ -198,6 +198,7 @@ return array(
             
             'Procure\Service\GrListener' => 'Procure\Service\GrListenereFactory',
             'Procure\Service\GrService' => 'Procure\Service\GrServiceFactory',
+            'Procure\Service\APInvoiceService' => 'Procure\Service\APInvoiceServiceFactory',
             
      
             'Procure\Service\PrSearchService' => 'Procure\Service\PrSearchServiceFactory',

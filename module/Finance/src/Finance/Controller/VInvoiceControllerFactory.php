@@ -27,7 +27,7 @@ class VInvoiceControllerFactory implements FactoryInterface
         $sv = $sm->get('doctrine.entitymanager.orm_default');
         $controller->setDoctrineEM($sv);
 
-        $sv = $sm->get('Finance\Service\APInvoiceService');
+        $sv = $sm->get('Procure\Service\APInvoiceService');
         $controller->setApService($sv);
 		
 		return $controller;

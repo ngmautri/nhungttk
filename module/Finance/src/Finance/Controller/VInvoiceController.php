@@ -2133,7 +2133,7 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
     /**
      * @param mixed $apService
      */
-    public function setApService(\Finance\Service\APInvoiceService $apService)
+    public function setApService(\Procure\Service\APInvoiceService $apService)
     {
         $this->apService = $apService;
     }

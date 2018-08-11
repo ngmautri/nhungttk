@@ -1,30 +1,37 @@
 <?php
 namespace Procure\Model\Ap;
 
-use Zend\Math\Rand;
-
 /**
+ * GOOD RECEIPT - INVOICE RECEIPT
+ *
+ * This is standand case
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRIR_Strategy extends \Procure\Model\Ap\APPostingStrategyAbstract
+class GRIR_Strategy extends AbstractAPRowPostingStrategy
 {
 
     /**
-     *
+     * @param \Application\Entity\FinVendorInvoice $entity ;
+     * @param \Application\Entity\FinVendorInvoiceRow $r ;
+     * @param \Application\Entity\MlaUsers $u ;
+ 
      * {@inheritdoc}
-     * @see \Procure\Model\Ap\APPostingStrategyAbstract::doPosting()
+     * @see \Procure\Model\Ap\AbstractAPRowPostingStrategy::doPosting()
      */
-    public function doPosting($ap, $row)
+    public function doPosting($entity, $r, $u)
     {
+        $createdOn = new \Datetime();
+
+        $procureSV = $this->getProcureService();
 
         // create procure GR, even no PR, PO.
         $criteria = array(
             'isActive' => 1,
-            'apInvoiceRow' => $r
+            'apInvoiceRow' => $entity
         );
-        $gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
+        $gr_entity_ck = $procureSV->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
 
         if (! $gr_entity_ck == null) {
             $gr_entity = $gr_entity_ck;
@@ -60,8 +67,8 @@ class GRIR_Strategy extends \Procure\Model\Ap\APPostingStrategyAbstract
 
         $gr_entity->setCreatedBy($u);
         $gr_entity->setCreatedOn($createdOn);
-        $gr_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-        $this->doctrineEM->persist($gr_entity);
+        $gr_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+        $procureSV->doctrineEM->persist($gr_entity);
 
         if ($r->getItem() !== null) {
 
@@ -83,12 +90,12 @@ class GRIR_Strategy extends \Procure\Model\Ap\APPostingStrategyAbstract
                 'isActive' => 1,
                 'invoiceRow' => $r
             );
-            $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+            $stock_gr_entity_ck = $procureSV->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
 
             if (! $stock_gr_entity_ck == null) {
                 $stock_gr_entity = $stock_gr_entity_ck;
             } else {
-                $stock_gr_entity = new NmtInventoryTrx();
+                $stock_gr_entity = new \Application\Entity\NmtInventoryTrx();
             }
 
             $stock_gr_entity->setIsActive(1);
@@ -126,8 +133,8 @@ class GRIR_Strategy extends \Procure\Model\Ap\APPostingStrategyAbstract
             $stock_gr_entity->setWh($entity->getWarehouse());
             $stock_gr_entity->setCreatedBy($u);
             $stock_gr_entity->setCreatedOn($createdOn);
-            $stock_gr_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            $this->doctrineEM->persist($stock_gr_entity);
+            $stock_gr_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $procureSV->doctrineEM->persist($stock_gr_entity);
 
             /**
              *
@@ -147,11 +154,12 @@ class GRIR_Strategy extends \Procure\Model\Ap\APPostingStrategyAbstract
 
                     $sn_entity->setInventoryTrx($stock_gr_entity);
                     $sn_entity->setIsActive(1);
-                    $sn_entity->setSysNumber($nmtPlugin->getDocNumber($sn_entity));
+                    $sn_entity->setSysNumber($this->procureService->getControllerPlugin()
+                        ->getDocNumber($sn_entity));
                     $sn_entity->setCreatedBy($u);
                     $sn_entity->setCreatedOn($createdOn);
-                    $sn_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-                    $this->doctrineEM->persist($sn_entity);
+                    $sn_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                    $procureSV->doctrineEM->persist($sn_entity);
                 }
             }
 
@@ -188,11 +196,11 @@ class GRIR_Strategy extends \Procure\Model\Ap\APPostingStrategyAbstract
                 $fifoLayer->setSourceId($r->getID());
                 $fifoLayer->setSourceToken($r->getToken());
 
-                $fifoLayer->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
+                $fifoLayer->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
                 $fifoLayer->setCreatedBy($u);
                 $fifoLayer->setCreatedOn($r->getCreatedOn());
 
-                $this->doctrineEM->persist($fifoLayer);
+                $procureSV->doctrineEM->persist($fifoLayer);
             }
         }
     }

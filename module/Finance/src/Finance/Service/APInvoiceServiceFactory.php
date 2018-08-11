@@ -7,7 +7,7 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * 
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */

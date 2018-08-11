@@ -23,15 +23,12 @@ use Zend\EventManager\EventManagerInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSerialSearchService implements EventManagerAwareInterface
+class ItemSerialSearchService extends AbstractInventoryService
 {
 
     const ITEM_INDEX = "/data/inventory/indexes/item-serial";
 
-    protected $doctrineEM;
-
-    protected $eventManager = null;
-
+  
     /**
      *
      * @return string[]|NULL[]
@@ -47,7 +44,7 @@ class ItemSerialSearchService implements EventManagerAwareInterface
             Analyzer::setDefault(new CaseInsensitive());
 
             /**@var \Application\Repository\NmtInventoryItemRepository $rep ;*/
-            $rep = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+            $rep = $this->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryItem');
             $list = $rep->getAllItemWithSerial1();
 
             if (count($list) > 0) {
@@ -573,48 +570,5 @@ class ItemSerialSearchService implements EventManagerAwareInterface
      * }
      */
 
-    //
-
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \Inventory\Service\ItemSearchService
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventsCapableInterface::getEventManager()
-     */
-    public function getEventManager()
-    {
-        return $this->eventManager;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventManagerAwareInterface::setEventManager()
-     */
-    public function setEventManager(EventManagerInterface $eventManager)
-    {
-        $eventManager->setIdentifiers(array(
-            __CLASS__
-        ));
-        $this->eventManager = $eventManager;
-    }
+  
 }

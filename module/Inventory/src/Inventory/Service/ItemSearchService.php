@@ -1,35 +1,27 @@
 <?php
 namespace Inventory\Service;
 
-use Doctrine\ORM\EntityManager;
-use ZendSearch\Lucene\Lucene;
+use Application\Entity\NmtInventoryItem;
 use ZendSearch\Lucene\Document;
-use ZendSearch\Lucene\Document\Field;
-use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
-// use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive; // Not worked
+use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
+use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
+use ZendSearch\Lucene\Document\Field;
 use ZendSearch\Lucene\Index\Term;
+use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Search\Query\Wildcard;
-use Application\Entity\NmtInventoryItem;
-use ZendSearch\Lucene\Search\Query\Boolean;
-use ZendSearch\Lucene\Search\QueryParser;
 use Exception;
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManagerInterface;
 
 /**
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class ItemSearchService implements EventManagerAwareInterface
+class ItemSearchService extends AbstractInventoryService
 {
 
     const ITEM_INDEX = "/data/inventory/indexes/item";
-
-    protected $doctrineEM;
-    protected $eventManager = null;
 
     /**
      * 
@@ -47,7 +39,7 @@ class ItemSearchService implements EventManagerAwareInterface
             
             $row = new NmtInventoryItem();
             
-            $records = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findAll();
+            $records = $this->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryItem')->findAll();
             
             if (count($records) > 0) {
                 
@@ -561,49 +553,5 @@ class ItemSearchService implements EventManagerAwareInterface
      * break;
      * }
      */
-    
-    
-    
-    //
-    
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \Inventory\Service\ItemSearchService
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Zend\EventManager\EventsCapableInterface::getEventManager()
-     */
-    public function getEventManager()
-    {
-        return $this->eventManager;
-    }
-
-  /**
-   * 
-   * {@inheritDoc}
-   * @see \Zend\EventManager\EventManagerAwareInterface::setEventManager()
-   */
-    public function setEventManager(EventManagerInterface $eventManager)
-    {
-        $eventManager->setIdentifiers(array(__CLASS__));
-        $this->eventManager = $eventManager;
-    }
-
+   
 }

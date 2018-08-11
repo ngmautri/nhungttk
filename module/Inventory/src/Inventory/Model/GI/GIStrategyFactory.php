@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Model\Ap;
+namespace Inventory\Model\GI;
 
 
 /**
@@ -7,16 +7,16 @@ namespace Procure\Model\Ap;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APRowPostingFactory
+class GIStrategyFactory
 {
 
-    public static function getPostingStrategy($tTransaction)
+    public static function getGIStrategy($tTransaction)
     {
         switch ($tTransaction) {
             case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI:
-                return new GRNIStrategy();
+                return new GIforRepair();
             case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR:
-                return new GRIRStrategy();
+                throw new \Exception("Unknown handler!");
             case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_IRNG:
                 throw new \Exception("Unknown handler!");
             default:

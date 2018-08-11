@@ -8,7 +8,9 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Math\Rand;
 
 /**
- *
+ * @deprecated
+ * 
+ * refactored and moved to Procure Module
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

@@ -39,7 +39,7 @@ class GrService extends AbstractProcureService
             throw new \Exception("Good receipt is empty. No Posting will be made!");
         }
 
-        // OK for posting
+        // OK to post
         // ++++++++++++++++++++++++++++
 
         /**

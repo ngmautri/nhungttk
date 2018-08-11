@@ -25,6 +25,10 @@ class ItemSerialSearchServiceFactory implements FactoryInterface {
 		
 		$service = new ItemSerialSearchService();
 		
+		$sv = $container->get('ControllerPluginManager');
+		$service->setControllerPlugin($sv->get('NmtPlugin'));
+		
+		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$service->setDoctrineEM($sv);
 		

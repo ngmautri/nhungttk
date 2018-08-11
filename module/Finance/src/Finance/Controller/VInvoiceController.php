@@ -580,7 +580,8 @@ class VInvoiceController extends AbstractActionController
             $changeOn = new \DateTime();
             $oldEntity = clone ($entity);            
             
-            $this->apService->post($entity, $u, $nmtPlugin, true);
+            
+            $this->apService->post($entity, $u,true);
         
             // LOGGING
              $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);

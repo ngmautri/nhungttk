@@ -1,17 +1,13 @@
 <?php
 namespace Inventory\Service;
 
-use Doctrine\ORM\EntityManager;
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManagerInterface;
-use Inventory\Model\Evaluation\FIFO;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class FIFOLayerService implements EventManagerAwareInterface
+class FIFOLayerService extends AbstractInventoryService
 {
 
     /**
@@ -184,47 +180,5 @@ class FIFOLayerService implements EventManagerAwareInterface
 
         // Do create
     }
-
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \Inventory\Service\ItemSearchService
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventsCapableInterface::getEventManager()
-     */
-    public function getEventManager()
-    {
-        return $this->eventManager;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventManagerAwareInterface::setEventManager()
-     */
-    public function setEventManager(EventManagerInterface $eventManager)
-    {
-        $eventManager->setIdentifiers(array(
-            __CLASS__
-        ));
-        $this->eventManager = $eventManager;
-    }
+   
 }

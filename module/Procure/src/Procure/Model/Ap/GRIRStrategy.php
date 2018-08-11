@@ -9,7 +9,7 @@ namespace Procure\Model\Ap;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRIR_Strategy extends AbstractAPRowPostingStrategy
+class GRIRStrategy extends AbstractAPRowPostingStrategy
 {
 
     /**
@@ -20,7 +20,7 @@ class GRIR_Strategy extends AbstractAPRowPostingStrategy
      * {@inheritdoc}
      * @see \Procure\Model\Ap\AbstractAPRowPostingStrategy::doPosting()
      */
-    public function doPosting($entity, $r, $u)
+    public function doPosting($entity, $r, $u=null)
     {
         $createdOn = new \Datetime();
 
@@ -31,7 +31,7 @@ class GRIR_Strategy extends AbstractAPRowPostingStrategy
             'isActive' => 1,
             'apInvoiceRow' => $entity
         );
-        $gr_entity_ck = $procureSV->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
+        $gr_entity_ck = $procureSV->getDoctrineEM()->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
 
         if (! $gr_entity_ck == null) {
             $gr_entity = $gr_entity_ck;
@@ -68,7 +68,7 @@ class GRIR_Strategy extends AbstractAPRowPostingStrategy
         $gr_entity->setCreatedBy($u);
         $gr_entity->setCreatedOn($createdOn);
         $gr_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-        $procureSV->doctrineEM->persist($gr_entity);
+       $procureSV->getDoctrineEM()->persist($gr_entity);
 
         if ($r->getItem() !== null) {
 
@@ -90,7 +90,7 @@ class GRIR_Strategy extends AbstractAPRowPostingStrategy
                 'isActive' => 1,
                 'invoiceRow' => $r
             );
-            $stock_gr_entity_ck = $procureSV->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+            $stock_gr_entity_ck = $procureSV->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
 
             if (! $stock_gr_entity_ck == null) {
                 $stock_gr_entity = $stock_gr_entity_ck;
@@ -134,7 +134,7 @@ class GRIR_Strategy extends AbstractAPRowPostingStrategy
             $stock_gr_entity->setCreatedBy($u);
             $stock_gr_entity->setCreatedOn($createdOn);
             $stock_gr_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            $procureSV->doctrineEM->persist($stock_gr_entity);
+            $procureSV->getDoctrineEM()->persist($stock_gr_entity);
 
             /**
              *
@@ -159,7 +159,7 @@ class GRIR_Strategy extends AbstractAPRowPostingStrategy
                     $sn_entity->setCreatedBy($u);
                     $sn_entity->setCreatedOn($createdOn);
                     $sn_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-                    $procureSV->doctrineEM->persist($sn_entity);
+                    $procureSV->getDoctrineEM()->persist($sn_entity);
                 }
             }
 
@@ -200,7 +200,7 @@ class GRIR_Strategy extends AbstractAPRowPostingStrategy
                 $fifoLayer->setCreatedBy($u);
                 $fifoLayer->setCreatedOn($r->getCreatedOn());
 
-                $procureSV->doctrineEM->persist($fifoLayer);
+                $procureSV->getDoctrineEM()->persist($fifoLayer);
             }
         }
     }

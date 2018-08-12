@@ -727,6 +727,44 @@ where nmt_inventory_serial.is_active=%s AND nmt_inventory_serial.item_id is null
         $stmt->execute();
         return $stmt->fetchAll();
     }
+    
+    /**
+     *
+     * @todo GOODS RECEIPT
+     */
+    public function getMovement($id, $token)
+    {
+        $sql = "
+SELECT
+    nmt_inventory_mv.*,
+    Count(nmt_inventory_trx.id) as total_row,
+  	COUNT(CASE WHEN nmt_inventory_trx.is_active =1 THEN (nmt_inventory_trx.id) ELSE NULL END) AS active_row
+             
+FROM nmt_inventory_mv
+LEFT JOIN nmt_inventory_trx
+ON nmt_inventory_trx.movement_id = nmt_inventory_mv.id
+WHERE 1
+";
+        
+        $sql = sprintf($sql . " AND nmt_inventory_mv.id = %s AND nmt_inventory_mv.token='%s' Group BY nmt_inventory_trx.movement_id", $id, $token);
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryMv', 'nmt_inventory_mv');
+            $rsm->addScalarResult("total_row", "total_row");
+            $rsm->addScalarResult("active_row", "active_row");
+            $rsm->addScalarResult("total_row", "total_row");
+            // echo $sql;
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            
+            $result = $query->getSingleResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
 
    
 }

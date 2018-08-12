@@ -11,6 +11,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Application\Entity\NmtInventoryGi;
+use Application\Entity\NmtInventoryMv;
 
 /**
  * Goods Issue
@@ -24,11 +25,26 @@ class GIController extends AbstractActionController
     protected $giService;
     
 
-    /*
-     * Defaul Action
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+    */
     public function indexAction()
-    {}
+    {
+        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes();
+        
+        foreach($issueType as $t){
+            var_dump($t);            
+        }
+        
+        
+        $viewModel =  new ViewModel(array(
+            'redirectUrl' => null,
+         ));
+        $viewModel->setTemplate("inventory/gi/index1");
+        return $viewModel;
+    }
 
     /**
      *
@@ -36,34 +52,46 @@ class GIController extends AbstractActionController
      */
     public function showAction()
     {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
+        
         $request = $this->getRequest();
         
-        // NO POST
-        $redirectUrl = Null;
         if ($request->getHeader('Referer') == null) {
+            // return $this->redirect()->toRoute('access_denied');
+        } else {
+            $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+        }
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $gi = $res->getMovement($id, $token);
+        
+        if ($gi == null) {
             return $this->redirect()->toRoute('access_denied');
         }
         
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-        $entity_id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-        $checksum = $this->params()->fromQuery('checksum');
+        $entity = null;
+        if ($gi[0] instanceof NmtInventoryMv) {
+            $entity = $gi[0];
+        }
         
-        $criteria = array(
-            'id' => $entity_id,
-            // 'checksum' => $checksum,
-            'token' => $token
-        );
-        
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-        if ($entity !== null) {
+           
+        if (! $entity == null) {
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
-                'errors' => null,
                 'entity' => $entity,
-                'target' => $entity->getItem()
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'issueType' => $issueType,
+                
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
@@ -85,21 +113,22 @@ class GIController extends AbstractActionController
     public function addAction()
     {
         $request = $this->getRequest();
-        $this->layout("Procure/layout-fullscreen");
+        $this->layout("Inventory/gi-create-layout");
+        
+        
+         
         
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
+        
         
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
         
-        $default_cur = null;
-        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
-            $default_cur = $u->getCompany()->getDefaultCurrency();
-        }
         
         // Is Posing
         // =============================
@@ -107,11 +136,12 @@ class GIController extends AbstractActionController
             
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-            $grDate = $request->getPost('grDate');
+            $movementType = $request->getPost('movementType');
+            
+            $movementDate = $request->getPost('movementDate');
             $currentState = $request->getPost('currentState');
             
-            $vendor_id = (int) $request->getPost('vendor_id');
-            $currency_id = (int) $request->getPost('currency_id');
+            $warehouse_id = (int) $request->getPost('target_wh_id');
             $isActive = (int) $request->getPost('isActive');
             $remarks = $request->getPost('remarks');
             
@@ -119,48 +149,25 @@ class GIController extends AbstractActionController
                 $isActive = 0;
             }
             
-            $entity = new NmtProcureGr();
+            $entity = new NmtInventoryMv();
             
             $entity->setIsActive($isActive);
             $entity->setCurrentState($currentState);
             
-            $vendor = null;
-            if ($vendor_id > 0) {
-                /** @var \Application\Entity\NmtBpVendor $vendor ; */
-                $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
+            if($movementType == null){
+                $errors[] = 'Goods Issue Type is not valid!';
+            }else{
+                $entity->setMovementType($movementType);
             }
             
-            if ($vendor instanceof \Application\Entity\NmtBpVendor) {
-                $entity->setVendor($vendor);
-                $entity->setVendorName($vendor->getVendorName());
-            } else {
-                $errors[] = $nmtPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
-            }
-            
-            $currency = null;
-            if ($currency_id > 0) {
-                /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
-                $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
-            }
-            
-            /**
-             *
-             * @todo might be problem with proxy class.
-             */
-            if ($currency !== null) {
-                $entity->setCurrency($currency);
-                $entity->setCurrencyIso3($currency->getCurrency());
-            } else {
-                $errors[] = 'Currency can\'t be empty. Please select a currency!';
-            }
-            
+    
             $validator = new Date();
             
-            if ($grDate !== null) {
-                if (! $validator->isValid($grDate)) {
-                    $errors[] = 'Goods Receipt Date is not correct or empty!';
+            if ($movementDate !== null) {
+                if (! $validator->isValid($movementDate)) {
+                    $errors[] = 'Goods Issue Date is not correct or empty!';
                 } else {
-                    $entity->setGrDate(new \DateTime($grDate));
+                    $entity->setMovementDate(new \DateTime($movementDate));
                 }
             }
             
@@ -182,7 +189,8 @@ class GIController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'issueType' => $issueType,
                 ));
             }
             
@@ -194,7 +202,7 @@ class GIController extends AbstractActionController
             
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
             $entity->setIsDraft(1);
-            $entity->setIsPosted(0);
+            //$entity->setIsPosted(0);
             
             
             $createdOn = new \DateTime();
@@ -205,10 +213,10 @@ class GIController extends AbstractActionController
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-            $m = sprintf("[OK] Good Receipts: %s created!", $entity->getId());
+            $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
             
-            $redirectUrl = "/procure/gr-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
+            $redirectUrl = "/inventory/gi-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
         
@@ -216,27 +224,32 @@ class GIController extends AbstractActionController
         // Initiate ......................
         // ================================
         
-        // getItem
-        $id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
-        
-       
-        
-        $redirectUrl = null;
+          
+         $redirectUrl = null;
+         /*
         if ($request->getHeader('Referer') !== null) {
             $redirectUrl = $this->getRequest()
             ->getHeader('Referer')
             ->getUri();
-        }
+        } */
         
-        $entity = new NmtInventoryGi();
+        $entity = new NmtInventoryMv();
         $entity->setIsActive(1);
-    
+        
+        $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
+            'isDefault' => 1
+        ));
+        
+        if ($default_wh !== null) {
+            $entity->setWarehouse($default_wh);
+        }
+     
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'currency_list' => $currency_list
+            'currency_list' => $currency_list,
+            'issueType' => $issueType,
         ));
     }
     

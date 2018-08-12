@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Controller;
+namespace Inventory\Controller;
 
 use Zend\Escaper\Escaper;
 use Zend\Math\Rand;
@@ -8,6 +8,7 @@ use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
+use Application\Entity\NmtInventoryMv;
 use Application\Entity\NmtProcureGr;
 use Application\Entity\NmtProcureGrRow;
 use Application\Entity\NmtProcurePo;
@@ -21,195 +22,10 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrRowController extends AbstractActionController
+class GIRowController extends AbstractActionController
 {
+
     protected $doctrineEM;
-
-    /**
-     *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function girdTmpAction()
-    {
-        $request = $this->getRequest();
-
-        if ($request->getHeader('Referer') == null) {
-            // return $this->redirect()->toRoute('access_denied');
-        }
-
-        // $pq_curPage = $_GET ["pq_curpage"];
-        // $pq_rPP = $_GET ["pq_rpp"];
-
-        $target_id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $target_id,
-            'token' => $token
-        );
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGr')->findOneBy($criteria);
-
-        $a_json_final = array();
-        $a_json = array();
-        $a_json_row = array();
-        $escaper = new Escaper();
-
-        if ($target instanceof \Application\Entity\NmtProcureGr) {
-
-            $query = 'SELECT e FROM Application\Entity\NmtProcureGrRow e
-            WHERE e.gr=?1 AND e.isActive =?2 AND e.isDraft =?3 ORDER BY e.rowNumber';
-
-            $list = $this->doctrineEM->createQuery($query)
-                ->setParameters(array(
-                "1" => $target,
-                "2" => 1,
-                "3" => 1
-            ))
-                ->getResult();
-
-            $total_records = 0;
-            if (count($list) > 0) {
-                $escaper = new Escaper();
-
-                $total_records = count($list);
-                foreach ($list as $a) {
-
-                    /** @var \Application\Entity\NmtProcureGrRow $a ;*/
-
-                    $a_json_row["row_id"] = $a->getId();
-                    $a_json_row["row_token"] = $a->getToken();
-                    $a_json_row["row_number"] = $a->getRowNumber();
-                    $a_json_row["row_unit"] = $a->getUnit();
-                    $a_json_row["row_quantity"] = $a->getQuantity();
-
-                    if ($a->getUnitPrice() != null) {
-                        $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), 2);
-                    } else {
-                        $a_json_row["row_unit_price"] = 0;
-                    }
-
-                    if ($a->getNetAmount() != null) {
-                        $a_json_row["row_net"] = number_format($a->getNetAmount(), 2);
-                    } else {
-                        $a_json_row["row_net"] = 0;
-                    }
-
-                    if ($a->getTaxRate() != null) {
-                        $a_json_row["row_tax_rate"] = $a->getTaxRate();
-                    } else {
-                        $a_json_row["row_tax_rate"] = 0;
-                    }
-
-                    if ($a->getGrossAmount() != null) {
-                        $a_json_row["row_gross"] = number_format($a->getGrossAmount(), 2);
-                    } else {
-                        $a_json_row["row_gross"] = 0;
-                    }
-
-                    $a_json_row["pr_number"] = "";
-                    if ($a->getPrRow() != null) {
-                        if ($a->getPrRow()->getPr() != null) {
-
-                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
-                                ->getPr()
-                                ->getToken() . '&entity_id=' . $a->getPrRow()
-                                ->getPr()
-                                ->getId() . '&checkum=' . $a->getPrRow()
-                                ->getPr()
-                                ->getChecksum() . '"> ... </a>';
-
-                            $a_json_row["pr_number"] = $a->getPrRow()
-                                ->getPr()
-                                ->getPrNumber() . $link;
-                        }
-                    }
-
-                    $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
-                    if ($a->getItem()->getItemName() !== null) {
-                        $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
-                            ->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
-                    } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
-                    }
-
-                    if (strlen($a->getItem()->getItemName()) < 35) {
-                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
-                    } else {
-                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
-                    }
-
-                    // $a_json_row["item_name"] = $a->getItem()->getItemName();
-
-                    $a_json_row["item_sku"] = $a->getItem()->getItemSku();
-                    $a_json_row["item_token"] = $a->getItem()->getToken();
-                    $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
-                    $a_json_row["fa_remarks"] = $a->getFaRemarks();
-                    $a_json_row["remarks"] = $a->getRemarks();
-
-                    $a_json[] = $a_json_row;
-                }
-            }
-
-            $a_json_final['data'] = $a_json;
-            $a_json_final['totalRecords'] = $total_records;
-            // $a_json_final ['curPage'] = $pq_curPage;
-        }
-
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($a_json_final));
-        return $response;
-    }
-
-    /**
-     *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function updateRowTmpAction()
-    {
-        $a_json_final = array();
-        $escaper = new Escaper();
-
-        /*
-         * $pq_curPage = $_GET ["pq_curpage"];
-         * $pq_rPP = $_GET ["pq_rpp"];
-         */
-        $sent_list = json_decode($_POST['sent_list'], true);
-        // echo json_encode($sent_list);
-
-        $to_update = $sent_list['updateList'];
-        foreach ($to_update as $a) {
-            $criteria = array(
-                'id' => $a['row_id'],
-                'token' => $a['row_token']
-            );
-
-            /** @var \Application\Entity\FinVendorInvoiceRowTmp $entity */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRowTmp')->findOneBy($criteria);
-
-            if ($entity != null) {
-                $entity->setFaRemarks($a['fa_remarks']);
-                $entity->setRowNumber($a['row_number']);
-                $entity->setQuantity($a['row_quantity']);
-                $entity->setUnitPrice($a['row_unit_price']);
-                $entity->setTaxRate($a['row_tax_rate']);
-
-                $entity->setNetAmount($a['row_quantity'] * $entity->getUnitPrice());
-                $entity->setTaxAmount($entity->getNetAmount() * $entity->getTaxRate() / 100);
-                $entity->setGrossAmount($entity->getNetAmount() + $entity->getTaxAmount());
-
-                // $a_json_final['updateList']=$a['row_id'] . 'has been updated';
-                $this->doctrineEM->persist($entity);
-            }
-        }
-        $this->doctrineEM->flush();
-
-        // $a_json_final["updateList"]= json_encode($sent_list["updateList"]);
-
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($sent_list));
-        return $response;
-    }
 
     /**
      *
@@ -217,11 +33,12 @@ class GrRowController extends AbstractActionController
      */
     public function addAction()
     {
-        $this->layout("Procure/layout-fullscreen");
-
+        $this->layout("Inventory/gi-create-layout");
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
         $gl_list = $nmtPlugin->glAccountList();
 
         $request = $this->getRequest();
@@ -343,7 +160,7 @@ class GrRowController extends AbstractActionController
                         $errors[] = 'Price is not valid. It must be a number.';
                     } else {
                         if ($unitPrice < 0) {
-                            
+
                             // accept ZERO PRICE
                             $errors[] = 'Price must be greate or equal 0!';
                         }
@@ -426,91 +243,59 @@ class GrRowController extends AbstractActionController
 
         $redirectUrl = Null;
 
-        if ($request->getHeader('Referer') == null) {
+       /*  if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
         }
 
         $redirectUrl = $this->getRequest()
             ->getHeader('Referer')
-            ->getUri();
+            ->getUri(); */
 
         $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
 
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $gr = $res->getGr($id, $token);
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $gi = $res->getMovement($id, $token);
 
-        if ($gr == null) {
+        if ($gi == null) {
             return $this->redirect()->toRoute('access_denied');
         }
 
         $target = null;
-        if ($gr[0] instanceof NmtProcureGr) {
-            $target = $gr[0];
+        if ($gi[0] instanceof NmtInventoryMv) {
+            $target = $gi[0];
         }
 
         if ($target == null) {
             return $this->redirect()->toRoute('access_denied');
         }
 
-        $entity = new NmtProcureGrRow();
+        /**@var \Application\Entity\NmtInventoryMv $target ;*/
+     
+        $entity = new NmtInventoryTrx();
 
         // set null
         $entity->setIsActive(1);
-        $entity->setConversionFactor(1);
-        $entity->setUnit("each");
-
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list,
             'gl_list' => $gl_list,
-            'total_row' => $gr['total_row'],
-            'max_row_number' => $gr['max_row_number'],
-            'active_row' => $gr['active_row']
+            'total_row' => $gi['total_row'],
+            'active_row' => $gi['active_row'],
+            'issueType' => $issueType
         ));
+
+        $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
+        return $viewModel;
     }
 
     /**
      */
     public function showAction()
-    {
-        $request = $this->getRequest();
-
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $id,
-            'token' => $token
-        );
-
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
-    }
-
-    /**
-     *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function processAction()
     {
         $request = $this->getRequest();
 
@@ -1085,7 +870,7 @@ class GrRowController extends AbstractActionController
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
-    public function poOfItemAction()
+    public function giOfItemAction()
     {
         $request = $this->getRequest();
         // accepted only ajax request

@@ -817,7 +817,7 @@ WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
      */
     public function getGrList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
-        $sql = "SELECT
+$sql = "SELECT
    nmt_procure_gr.*,
    count(nmt_procure_gr_row.id) as total_row
 FROM nmt_procure_gr
@@ -835,8 +835,23 @@ WHERE 1
         if ($current_state != null) {
             $sql = $sql . " AND nmt_procure_gr.current_state = '" . $current_state . "'";
         }
+        
+      
 
         $sql = $sql . " GROUP BY nmt_procure_gr_row.gr_id";
+        
+        switch ($sort_by) {
+            case "createdOn":
+                $sql = $sql . " ORDER BY nmt_procure_gr.created_on " . $sort;
+                break;
+            case "sysNumber":
+                $sql = $sql . " ORDER BY nmt_procure_gr.sys_number " . $sort;
+                break;
+                
+            case "currencyCode":
+                $sql = $sql . " ORDER BY nmt_procure_po.currency_iso3 " . $sort;
+                break;
+        }
 
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;

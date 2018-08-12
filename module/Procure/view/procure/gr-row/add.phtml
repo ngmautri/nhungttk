@@ -74,16 +74,6 @@ if (count($errors) > 0) {
 
 						<div id="invoice_header" class="collapse">
 
-							<div class="alert alert-warning" role="alert"
-								style="padding: 1px; font-size: 9.5pt">
-								<ul style="font-size: 9.5pt">
-									<li>Net: <?php echo number_format($net_amount,2) . " " . $target->getCurrency()->getCurrency() ;?></li>
-									<li>Tax: <?php echo number_format($tax_amount,2);?></li>
-									<li>Gross: <?php echo number_format($gross_amount,2) . " " .$target->getCurrency()->getCurrency();?></li>
-									<li>Total Rows:<?php echo ($total_row);?></li>
-								</ul>
-							</div>
-
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2 ">Vendor:</label>
 								<div class="col-sm-3">
@@ -404,7 +394,7 @@ if (count($errors) > 0) {
 										onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i
 											class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
 									<a tabindex="11" class="btn btn-default btn-sm"
-										href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+										href="<?php echo $this->baseUrl ?>/procure/gr/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
 											class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 
 								</div>

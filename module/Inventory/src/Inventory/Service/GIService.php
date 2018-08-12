@@ -12,13 +12,10 @@ use Zend\Math\Rand;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GIService implements EventManagerAwareInterface
+class GIService extends AbstractInventoryService
 {
 
-    protected $doctrineEM;
-
-    protected $eventManager;
-
+  
     /**
      *
      * @param \Application\Entity\NmtProcureGr $entity
@@ -176,46 +173,4 @@ class GIService implements EventManagerAwareInterface
         }
     }
 
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \Procure\Service\GrService
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventManagerAwareInterface::setEventManager()
-     */
-    public function setEventManager(EventManagerInterface $eventManager)
-    {
-        $eventManager->setIdentifiers(array(
-            __CLASS__
-        ));
-        $this->eventManager = $eventManager;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventsCapableInterface::getEventManager()
-     */
-    public function getEventManager()
-    {
-        return $this->eventManager;
-    }
 }

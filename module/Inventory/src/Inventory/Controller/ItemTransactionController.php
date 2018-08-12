@@ -1070,7 +1070,7 @@ class ItemTransactionController extends AbstractActionController
                 $entity = new \Application\Entity\NmtInventoryTrx();
                 $entity->setItem($target);
                 $entity->setRemarks($remarks);
-                
+
                 if ($isDraft !== 1) {
                     $isDraft = 0;
                 }
@@ -1152,7 +1152,7 @@ class ItemTransactionController extends AbstractActionController
 
                 if (count($errors) > 0) {
                     $this->doctrineEM->clear();
-                    
+
                     return new ViewModel(array(
                         'redirectUrl' => $redirectUrl,
                         'errors' => $errors,
@@ -1242,51 +1242,9 @@ class ItemTransactionController extends AbstractActionController
      */
     public function listAction()
     {
-        $item_type = $this->params()->fromQuery('item_type');
         $is_active = (int) $this->params()->fromQuery('is_active');
-        $is_fixed_asset = $this->params()->fromQuery('is_fixed_asset');
-
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
-
-        $criteria1 = array();
-        /*
-         * if (! $item_type == null) {
-         * $criteria1 = array (
-         * "itemType" => $item_type
-         * );
-         * }
-         */
-        $criteria2 = array();
-        if (! $is_active == null) {
-            $criteria2 = array(
-                "isActive" => $is_active
-            );
-
-            if ($is_active == - 1) {
-                $criteria2 = array(
-                    "isActive" => '0'
-                );
-            }
-        }
-
-        $criteria3 = array();
-
-        if ($sort_by == null) :
-            $sort_by = "trxDate";
-        endif;
-
-        if ($sort == null) :
-            $sort = "DESC";
-        endif;
-
-        $sort_criteria = array(
-            $sort_by => $sort
-        );
-
-        $criteria = array_merge($criteria1, $criteria2, $criteria3);
-
-        // var_dump($criteria);
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -1301,55 +1259,17 @@ class ItemTransactionController extends AbstractActionController
             $page = $this->params()->fromQuery('page');
         }
         ;
+        $criteria = array();
+        $sort_criteria = array();
 
-        // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItemPurchasing' )->findBy ( $criteria, $sort_criteria );
-
-        $query = 'SELECT e, i FROM Application\Entity\NmtInventoryTrx e JOIN e.item i JOIN e.vendor v Where 1=?1';
-
-        if ($is_active == 0) {
-            $is_active = 1;
-        }
-
-        if ($is_active == - 1) {
-            $query = $query . " AND e.isActive = 0";
-        } elseif ($is_active == 1) {
-            $query = $query . " AND e.isActive = 1";
-        }
-
-        switch ($sort_by) {
-            case "itemName":
-                $query = $query . ' ORDER BY i.' . $sort_by . ' ' . $sort . ' ,e.currency';
-                break;
-            case "vendorName":
-                $query = $query . ' ORDER BY v.' . $sort_by . ' ' . $sort . ' ,e.currency';
-                break;
-            case "trxDate":
-                $query = $query . ' ORDER BY e.' . $sort_by . ' ' . $sort . ' ,e.currency';
-                break;
-        }
-
-        $list = $this->doctrineEM->createQuery($query)
-            ->setParameters(array(
-            "1" => 1
-        ))
-            ->getResult();
-
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->createQuery($query)
-                ->setParameters(array(
-                "1" => 1
-            ))
-                ->setFirstResult($paginator->minInPage - 1)
-                ->setMaxResults(($paginator->maxInPage - $paginator->minInPage) + 1)
-                ->getResult();
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
-
-        // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
-        // var_dump (count($all));
 
         return new ViewModel(array(
             'list' => $list,
@@ -1358,9 +1278,7 @@ class ItemTransactionController extends AbstractActionController
             'sort_by' => $sort_by,
             'sort' => $sort,
             'is_active' => $is_active,
-            'is_fixed_asset' => $is_fixed_asset,
-            'per_pape' => $resultsPerPage,
-            'item_type' => $item_type
+            'per_pape' => $resultsPerPage
         ));
     }
 

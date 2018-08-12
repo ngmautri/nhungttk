@@ -49,7 +49,7 @@ return array(
                 'label' => 'Item Transaction',
                 'route' => 'Inventory/default',
                 'controller' => 'item-transaction',
-                'action' => 'list',
+                'action' => 'index',
                 'icon' => 'glyphicon glyphicon-list'
             ),
             array(
@@ -82,14 +82,14 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            
+
             array(
                 'label' => 'Setup',
                 'route' => 'Inventory/default',
                 'controller' => 'setting',
                 'action' => 'index',
                 'icon' => 'glyphicon glyphicon-list'
-            ),
+            )
         )
     ),
 
@@ -166,9 +166,8 @@ return array(
 
             'Inventory\Service\ItemSearchService' => 'Inventory\Service\ItemSearchServiceFactory',
             'Inventory\Service\ItemSerialSearchService' => 'Inventory\Service\ItemSerialSearchServiceFactory',
-             'Inventory\Service\FIFOLayerService' => 'Inventory\Service\FIFOLayerServiceFactory',            
-            'Inventory\Service\GIService' => 'Inventory\Service\GIServiceFactory',
-            
+            'Inventory\Service\FIFOLayerService' => 'Inventory\Service\FIFOLayerServiceFactory',
+            'Inventory\Service\GIService' => 'Inventory\Service\GIServiceFactory'
         )
     ),
 
@@ -194,15 +193,17 @@ return array(
             'Inventory\Controller\BatchNumber' => 'Inventory\Controller\BatchNumberControllerFactory',
             'Inventory\Controller\ItemSerial' => 'Inventory\Controller\ItemSerialControllerFactory',
             'Inventory\Controller\ItemSerialAttachment' => 'Inventory\Controller\ItemSerialAttachmentControllerFactory',
-            'Inventory\Controller\ItemBatch' => 'Inventory\Controller\ItemBatchControllerFactory',            'Inventory\Controller\GR' => 'Inventory\Controller\GRControllerFactory',
+            'Inventory\Controller\ItemBatch' => 'Inventory\Controller\ItemBatchControllerFactory',
+            'Inventory\Controller\GR' => 'Inventory\Controller\GRControllerFactory',
             'Inventory\Controller\GI' => 'Inventory\Controller\GIControllerFactory',
+            'Inventory\Controller\GIRow' => 'Inventory\Controller\GIRowControllerFactory',
+            
             'Inventory\Controller\Transfer' => 'Inventory\Controller\TransferControllerFactory',
             'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
             'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
             'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory',
             'Inventory\Controller\OpeningBalance' => 'Inventory\Controller\OpeningBalanceControllerFactory',
-            'Inventory\Controller\Setting' => 'Inventory\Controller\SettingControllerFactory',
-            
+            'Inventory\Controller\Setting' => 'Inventory\Controller\SettingControllerFactory'
         )
     ),
     'view_manager' => array(
@@ -215,6 +216,8 @@ return array(
             // 'inventory/layout' => __DIR__ . '/../view/layout/layout.phtml',
             'layout/layout' => __DIR__ . '/../view/layout/layout-fluid.phtml',
             'Inventory/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
+            'Inventory/gi-create-layout' => __DIR__ . '/../view/layout/create_gi_layout.phtml',
+
             'layout/no-layout' => __DIR__ . '/../view/layout/no-layout.phtml',
             'inventory/index/index' => __DIR__ . '/../view/inventory/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',

@@ -107,12 +107,9 @@ echo $this->cart_items;
 <?php if ($this->isAdmin==true): ?>
 
 <li
-	class="dropdown <?php if ($current_module=="Application"): echo "active";endif;?>"><a
-	class="dropdown-toggle" data-toggle="dropdown" href="#"
-	style="padding-left: 10px; padding-right: 10px;"> <span
-		class="label label-success"> <small> <span
-				class="glyphicon glyphicon-wrench"> </span></small>
-	</span>&nbsp;&nbsp;<?php echo $this->translate("Setup");?> <span
+	class="dropdown <?php if ($current_module=="APPLICATION"): echo "active";endif;?>"><a
+	class="dropdown-toggle" data-toggle="dropdown" href="#" title="<?php echo $this->translate("Setup");?> "
+	style="padding-left: 10px; padding-right: 10px;"> <i class="fa fa-cog fa-lg" aria-hidden="true"></i>&nbsp;</small>&nbsp;<span
 		class="caret"></span></a>
 								  <?php include (ROOT.'/module/Application/view/setting_menu.php'); ?>
 				 			</li>

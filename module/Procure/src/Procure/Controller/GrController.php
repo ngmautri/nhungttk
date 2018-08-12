@@ -643,7 +643,7 @@ class GrController extends AbstractActionController
                 ));
 
                 $this->flashMessenger()->addMessage($m);
-                // $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+                //$redirectUrl = "/finance/gr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
                 $redirectUrl = "/procure/gr/list";
                 return $this->redirect()->toUrl($redirectUrl);
             }
@@ -1239,7 +1239,7 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         }
 
         if ($sort_by == null) :
-            $sort_by = "createdOn";
+            $sort_by = "sysNumber";
         endif;
 
         if ($sort == null) :

@@ -5,12 +5,12 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NmtInventoryGi
+ * NmtInventoryMv
  *
- * @ORM\Table(name="nmt_inventory_gi", indexes={@ORM\Index(name="nmt_inventory_gi_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_gi_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_gi_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_gi_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_gi_FK6_idx", columns={"currency_id"})})
+ * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"})})
  * @ORM\Entity
  */
-class NmtInventoryGi
+class NmtInventoryMv
 {
     /**
      * @var integer
@@ -29,25 +29,11 @@ class NmtInventoryGi
     private $token;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="vendor_name", type="string", length=100, nullable=true)
+     * @ORM\Column(name="currency_id", type="integer", nullable=true)
      */
-    private $vendorName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="invoice_no", type="string", length=45, nullable=true)
-     */
-    private $invoiceNo;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
-     */
-    private $invoiceDate;
+    private $currencyId;
 
     /**
      * @var string
@@ -99,6 +85,13 @@ class NmtInventoryGi
     private $trxType;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="lastchange_by", type="integer", nullable=true)
+     */
+    private $lastchangeBy;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
@@ -111,13 +104,6 @@ class NmtInventoryGi
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
      */
     private $postingDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="gr_date", type="datetime", nullable=true)
-     */
-    private $grDate;
 
     /**
      * @var string
@@ -234,29 +220,30 @@ class NmtInventoryGi
     /**
      * @var string
      *
-     * @ORM\Column(name="movement_type", type="string", length=10, nullable=true)
+     * @ORM\Column(name="movement_type", type="string", length=10, nullable=false)
      */
     private $movementType;
 
     /**
-     * @var \Application\Entity\NmtBpVendor
+     * @var \DateTime
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="vendor_id", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="movement_date", type="datetime", nullable=true)
      */
-    private $vendor;
+    private $movementDate;
 
     /**
-     * @var \Application\Entity\NmtInventoryWarehouse
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="journal_memo", type="string", length=255, nullable=true)
      */
-    private $warehouse;
+    private $journalMemo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="movement_flow", type="string", length=10, nullable=false)
+     */
+    private $movementFlow;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -269,24 +256,24 @@ class NmtInventoryGi
     private $createdBy;
 
     /**
-     * @var \Application\Entity\MlaUsers
+     * @var \Application\Entity\NmtInventoryWarehouse
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="lastchange_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
      * })
      */
-    private $lastchangeBy;
+    private $warehouse;
 
     /**
-     * @var \Application\Entity\NmtApplicationCurrency
+     * @var \Application\Entity\NmtFinPostingPeriod
      *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="currency_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="posting_period", referencedColumnName="id")
      * })
      */
-    private $currency;
+    private $postingPeriod;
 
 
 
@@ -305,7 +292,7 @@ class NmtInventoryGi
      *
      * @param string $token
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setToken($token)
     {
@@ -325,75 +312,27 @@ class NmtInventoryGi
     }
 
     /**
-     * Set vendorName
+     * Set currencyId
      *
-     * @param string $vendorName
+     * @param integer $currencyId
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
-    public function setVendorName($vendorName)
+    public function setCurrencyId($currencyId)
     {
-        $this->vendorName = $vendorName;
+        $this->currencyId = $currencyId;
 
         return $this;
     }
 
     /**
-     * Get vendorName
+     * Get currencyId
      *
-     * @return string
+     * @return integer
      */
-    public function getVendorName()
+    public function getCurrencyId()
     {
-        return $this->vendorName;
-    }
-
-    /**
-     * Set invoiceNo
-     *
-     * @param string $invoiceNo
-     *
-     * @return NmtInventoryGi
-     */
-    public function setInvoiceNo($invoiceNo)
-    {
-        $this->invoiceNo = $invoiceNo;
-
-        return $this;
-    }
-
-    /**
-     * Get invoiceNo
-     *
-     * @return string
-     */
-    public function getInvoiceNo()
-    {
-        return $this->invoiceNo;
-    }
-
-    /**
-     * Set invoiceDate
-     *
-     * @param \DateTime $invoiceDate
-     *
-     * @return NmtInventoryGi
-     */
-    public function setInvoiceDate($invoiceDate)
-    {
-        $this->invoiceDate = $invoiceDate;
-
-        return $this;
-    }
-
-    /**
-     * Get invoiceDate
-     *
-     * @return \DateTime
-     */
-    public function getInvoiceDate()
-    {
-        return $this->invoiceDate;
+        return $this->currencyId;
     }
 
     /**
@@ -401,7 +340,7 @@ class NmtInventoryGi
      *
      * @param string $currencyIso3
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setCurrencyIso3($currencyIso3)
     {
@@ -425,7 +364,7 @@ class NmtInventoryGi
      *
      * @param string $exchangeRate
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setExchangeRate($exchangeRate)
     {
@@ -449,7 +388,7 @@ class NmtInventoryGi
      *
      * @param string $remarks
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setRemarks($remarks)
     {
@@ -473,7 +412,7 @@ class NmtInventoryGi
      *
      * @param \DateTime $createdOn
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setCreatedOn($createdOn)
     {
@@ -497,7 +436,7 @@ class NmtInventoryGi
      *
      * @param string $currentState
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setCurrentState($currentState)
     {
@@ -521,7 +460,7 @@ class NmtInventoryGi
      *
      * @param boolean $isActive
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setIsActive($isActive)
     {
@@ -545,7 +484,7 @@ class NmtInventoryGi
      *
      * @param string $trxType
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setTrxType($trxType)
     {
@@ -565,11 +504,35 @@ class NmtInventoryGi
     }
 
     /**
+     * Set lastchangeBy
+     *
+     * @param integer $lastchangeBy
+     *
+     * @return NmtInventoryMv
+     */
+    public function setLastchangeBy($lastchangeBy)
+    {
+        $this->lastchangeBy = $lastchangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastchangeBy
+     *
+     * @return integer
+     */
+    public function getLastchangeBy()
+    {
+        return $this->lastchangeBy;
+    }
+
+    /**
      * Set lastchangeOn
      *
      * @param \DateTime $lastchangeOn
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setLastchangeOn($lastchangeOn)
     {
@@ -593,7 +556,7 @@ class NmtInventoryGi
      *
      * @param \DateTime $postingDate
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setPostingDate($postingDate)
     {
@@ -613,35 +576,11 @@ class NmtInventoryGi
     }
 
     /**
-     * Set grDate
-     *
-     * @param \DateTime $grDate
-     *
-     * @return NmtInventoryGi
-     */
-    public function setGrDate($grDate)
-    {
-        $this->grDate = $grDate;
-
-        return $this;
-    }
-
-    /**
-     * Get grDate
-     *
-     * @return \DateTime
-     */
-    public function getGrDate()
-    {
-        return $this->grDate;
-    }
-
-    /**
      * Set sapDoc
      *
      * @param string $sapDoc
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setSapDoc($sapDoc)
     {
@@ -665,7 +604,7 @@ class NmtInventoryGi
      *
      * @param string $contractNo
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setContractNo($contractNo)
     {
@@ -689,7 +628,7 @@ class NmtInventoryGi
      *
      * @param \DateTime $contractDate
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setContractDate($contractDate)
     {
@@ -713,7 +652,7 @@ class NmtInventoryGi
      *
      * @param string $quotationNo
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setQuotationNo($quotationNo)
     {
@@ -737,7 +676,7 @@ class NmtInventoryGi
      *
      * @param \DateTime $quotationDate
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setQuotationDate($quotationDate)
     {
@@ -761,7 +700,7 @@ class NmtInventoryGi
      *
      * @param string $sysNumber
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setSysNumber($sysNumber)
     {
@@ -785,7 +724,7 @@ class NmtInventoryGi
      *
      * @param integer $revisionNo
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setRevisionNo($revisionNo)
     {
@@ -809,7 +748,7 @@ class NmtInventoryGi
      *
      * @param string $deliveryMode
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setDeliveryMode($deliveryMode)
     {
@@ -833,7 +772,7 @@ class NmtInventoryGi
      *
      * @param string $incoterm
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setIncoterm($incoterm)
     {
@@ -857,7 +796,7 @@ class NmtInventoryGi
      *
      * @param string $incotermPlace
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setIncotermPlace($incotermPlace)
     {
@@ -881,7 +820,7 @@ class NmtInventoryGi
      *
      * @param string $paymentTerm
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setPaymentTerm($paymentTerm)
     {
@@ -905,7 +844,7 @@ class NmtInventoryGi
      *
      * @param string $paymentMethod
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setPaymentMethod($paymentMethod)
     {
@@ -929,7 +868,7 @@ class NmtInventoryGi
      *
      * @param string $docStatus
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setDocStatus($docStatus)
     {
@@ -953,7 +892,7 @@ class NmtInventoryGi
      *
      * @param boolean $isDraft
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setIsDraft($isDraft)
     {
@@ -977,7 +916,7 @@ class NmtInventoryGi
      *
      * @param string $workflowStatus
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setWorkflowStatus($workflowStatus)
     {
@@ -1001,7 +940,7 @@ class NmtInventoryGi
      *
      * @param string $transactionStatus
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setTransactionStatus($transactionStatus)
     {
@@ -1025,7 +964,7 @@ class NmtInventoryGi
      *
      * @param string $movementType
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setMovementType($movementType)
     {
@@ -1045,51 +984,75 @@ class NmtInventoryGi
     }
 
     /**
-     * Set vendor
+     * Set movementDate
      *
-     * @param \Application\Entity\NmtBpVendor $vendor
+     * @param \DateTime $movementDate
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
-    public function setVendor(\Application\Entity\NmtBpVendor $vendor = null)
+    public function setMovementDate($movementDate)
     {
-        $this->vendor = $vendor;
+        $this->movementDate = $movementDate;
 
         return $this;
     }
 
     /**
-     * Get vendor
+     * Get movementDate
      *
-     * @return \Application\Entity\NmtBpVendor
+     * @return \DateTime
      */
-    public function getVendor()
+    public function getMovementDate()
     {
-        return $this->vendor;
+        return $this->movementDate;
     }
 
     /**
-     * Set warehouse
+     * Set journalMemo
      *
-     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
+     * @param string $journalMemo
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
-    public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
+    public function setJournalMemo($journalMemo)
     {
-        $this->warehouse = $warehouse;
+        $this->journalMemo = $journalMemo;
 
         return $this;
     }
 
     /**
-     * Get warehouse
+     * Get journalMemo
      *
-     * @return \Application\Entity\NmtInventoryWarehouse
+     * @return string
      */
-    public function getWarehouse()
+    public function getJournalMemo()
     {
-        return $this->warehouse;
+        return $this->journalMemo;
+    }
+
+    /**
+     * Set movementFlow
+     *
+     * @param string $movementFlow
+     *
+     * @return NmtInventoryMv
+     */
+    public function setMovementFlow($movementFlow)
+    {
+        $this->movementFlow = $movementFlow;
+
+        return $this;
+    }
+
+    /**
+     * Get movementFlow
+     *
+     * @return string
+     */
+    public function getMovementFlow()
+    {
+        return $this->movementFlow;
     }
 
     /**
@@ -1097,7 +1060,7 @@ class NmtInventoryGi
      *
      * @param \Application\Entity\MlaUsers $createdBy
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
     public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
     {
@@ -1117,50 +1080,50 @@ class NmtInventoryGi
     }
 
     /**
-     * Set lastchangeBy
+     * Set warehouse
      *
-     * @param \Application\Entity\MlaUsers $lastchangeBy
+     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
-    public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
+    public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
     {
-        $this->lastchangeBy = $lastchangeBy;
+        $this->warehouse = $warehouse;
 
         return $this;
     }
 
     /**
-     * Get lastchangeBy
+     * Get warehouse
      *
-     * @return \Application\Entity\MlaUsers
+     * @return \Application\Entity\NmtInventoryWarehouse
      */
-    public function getLastchangeBy()
+    public function getWarehouse()
     {
-        return $this->lastchangeBy;
+        return $this->warehouse;
     }
 
     /**
-     * Set currency
+     * Set postingPeriod
      *
-     * @param \Application\Entity\NmtApplicationCurrency $currency
+     * @param \Application\Entity\NmtFinPostingPeriod $postingPeriod
      *
-     * @return NmtInventoryGi
+     * @return NmtInventoryMv
      */
-    public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
+    public function setPostingPeriod(\Application\Entity\NmtFinPostingPeriod $postingPeriod = null)
     {
-        $this->currency = $currency;
+        $this->postingPeriod = $postingPeriod;
 
         return $this;
     }
 
     /**
-     * Get currency
+     * Get postingPeriod
      *
-     * @return \Application\Entity\NmtApplicationCurrency
+     * @return \Application\Entity\NmtFinPostingPeriod
      */
-    public function getCurrency()
+    public function getPostingPeriod()
     {
-        return $this->currency;
+        return $this->postingPeriod;
     }
 }

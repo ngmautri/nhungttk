@@ -9,7 +9,6 @@ namespace Inventory\Model\GI;
 abstract class AbstractGIStrategy
 {
     protected $contextService;
-
    
     abstract public function execute();
 

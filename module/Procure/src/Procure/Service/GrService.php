@@ -17,7 +17,7 @@ class GrService extends AbstractProcureService
      *
      * @param \Application\Entity\NmtProcureGr $entity
      * @param \Application\Entity\MlaUsers $u
-     *            
+     *
      */
     public function doPosting($entity, $u, $isFlush = false)
     {
@@ -64,8 +64,17 @@ class GrService extends AbstractProcureService
         $n = 0;
         foreach ($gr_rows as $r) {
 
-            $n ++;
             /** @var \Application\Entity\NmtProcureGrRow $r ; */
+
+            /**
+             * Double check only.
+             * Receipt of ZERO quantity not allowed
+             */
+            if ($r->getQuantity() == 0) {
+                continute;
+            }
+
+            $n ++;
 
             // UPDATE row status
             $r->setIsPosted(1);
@@ -77,13 +86,7 @@ class GrService extends AbstractProcureService
 
             if ($r->getItem() !== null) {
 
-                /**
-                 * Double check only.
-                 * Receipt of ZERO quantity not allowed
-                 *
-                 * @var \Procure\Controller\GrRowController ;
-                 */
-                if ($r->getItem()->getItemType() != \Application\Model\Constants::ITEM_TYPE_SERVICE and $r->getQuantity() > 0) {
+                if ($r->getItem()->getItemType() != \Application\Model\Constants::ITEM_TYPE_SERVICE) {
 
                     if ($r->getItem()->getIsStocked() == 0) {
                         // continue;

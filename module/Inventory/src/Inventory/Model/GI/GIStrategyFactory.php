@@ -13,12 +13,8 @@ class GIStrategyFactory
     public static function getGIStrategy($tTransaction)
     {
         switch ($tTransaction) {
-            case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI:
-                return new GIforRepair();
-            case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR:
-                throw new \Exception("Unknown handler!");
-            case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_IRNG:
-                throw new \Exception("Unknown handler!");
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE:
+                return new GIforRepairMachine();
             default:
                 throw new \Exception("Unknown Transaction Type");
         }

@@ -748,6 +748,8 @@ WHERE 1
         
         $sql = sprintf($sql . " AND nmt_inventory_mv.id = %s AND nmt_inventory_mv.token='%s' Group BY nmt_inventory_trx.movement_id", $id, $token);
         
+        //echo $sql;
+        
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryMv', 'nmt_inventory_mv');

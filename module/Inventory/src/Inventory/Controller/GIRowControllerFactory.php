@@ -1,5 +1,4 @@
 <?php
-
 namespace Inventory\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
@@ -7,27 +6,30 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Procure\Controller\PrRowController;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-class GIRowControllerFactory implements FactoryInterface {
-	
-	/**
-	 *
-	 * {@inheritDoc}
-	 *
-	 * @see \Zend\ServiceManager\FactoryInterface::createService()
-	 */
-	public function createService(ServiceLocatorInterface $serviceLocator) {
-		
-		$sm = $serviceLocator->getServiceLocator();
-			
-		$controller = new GiRowController();
-			
-		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
-		$controller->setDoctrineEM($sv );
-		
+class GIRowControllerFactory implements FactoryInterface
+{
+
+    /**
+     *
+     * {@inheritdoc}
+     *
+     * @see \Zend\ServiceManager\FactoryInterface::createService()
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $sm = $serviceLocator->getServiceLocator();
+
+        $controller = new GiRowController();
+
+        $sv = $sm->get('doctrine.entitymanager.orm_default');
+        $controller->setDoctrineEM($sv);
+
+        $sv = $sm->get('Inventory\Service\GIService' );
+		$controller->setGiService($sv );
 			return $controller;
 	}
 }

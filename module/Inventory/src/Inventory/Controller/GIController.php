@@ -115,9 +115,6 @@ class GIController extends AbstractActionController
         $request = $this->getRequest();
         $this->layout("Inventory/gi-create-layout");
         
-        
-         
-        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();

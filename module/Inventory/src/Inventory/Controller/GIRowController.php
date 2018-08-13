@@ -30,7 +30,6 @@ class GIRowController extends AbstractActionController
      */
     public function addAction()
     {
-        
         $request = $this->getRequest();
         $this->layout("Inventory/gi-create-layout");
 
@@ -39,7 +38,6 @@ class GIRowController extends AbstractActionController
         $currency_list = $nmtPlugin->currencyList();
         $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
         $gl_list = $nmtPlugin->glAccountList();
-
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -51,7 +49,7 @@ class GIRowController extends AbstractActionController
         if ($request->isPost()) {
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-            
+
             $mv_id = $request->getPost('mv_id');
             $mv_token = $request->getPost('mv_token');
 
@@ -88,7 +86,7 @@ class GIRowController extends AbstractActionController
 
                 $item_id = $request->getPost('item_id');
                 $issue_for_id = $request->getPost('issue_for_id');
-                
+
                 $isActive = (int) $request->getPost('isActive');
                 $quantity = $request->getPost('quantity');
                 $remarks = $request->getPost('remarks');
@@ -108,11 +106,11 @@ class GIRowController extends AbstractActionController
                 $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
 
                 $for_item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($issue_for_id);
-                
-                if ($for_item!== null) {
-                    $entity->setIssueFor($for_item->getId());
+
+                if ($for_item !== null) {
+                    $entity->setIssueFor($for_item);
                 }
-                
+
                 if ($item == null) {
                     $errors[] = $nmtPlugin->translate('No Item is not select');
                 } else {
@@ -179,7 +177,7 @@ class GIRowController extends AbstractActionController
                         'gl_list' => $gl_list,
                         'issueType' => $issueType
                     ));
-                    
+
                     $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
                     return $viewModel;
                 }
@@ -497,23 +495,22 @@ class GIRowController extends AbstractActionController
             'id' => $target_id,
             'token' => $token
         );
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGr')->findOneBy($criteria);
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findOneBy($criteria);
 
         $a_json_final = array();
         $a_json = array();
         $a_json_row = array();
         $escaper = new Escaper();
 
-        if ($target instanceof \Application\Entity\NmtProcureGr) {
+        if ($target instanceof \Application\Entity\NmtInventoryMv) {
 
-            $query = 'SELECT e FROM Application\Entity\NmtProcureGrRow e
-            WHERE e.gr=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
+            $query = 'SELECT e FROM Application\Entity\NmtInventoryTrx e
+            WHERE e.movement=?1';
 
             $list = $this->doctrineEM->createQuery($query)
                 ->setParameters(array(
                 "1" => $target,
-                "2" => 1
-            ))
+             ))
                 ->getResult();
 
             $total_records = 0;
@@ -523,56 +520,13 @@ class GIRowController extends AbstractActionController
                 $total_records = count($list);
                 foreach ($list as $a) {
 
-                    /** @var \Application\Entity\NmtProcureGrRow $a ;*/
+                    /** @var \Application\Entity\NmtInventoryTrx $a ;*/
 
                     $a_json_row["row_id"] = $a->getId();
                     $a_json_row["row_token"] = $a->getToken();
-                    $a_json_row["row_number"] = $a->getRowNumber();
-                    $a_json_row["row_unit"] = $a->getUnit();
                     $a_json_row["row_quantity"] = $a->getQuantity();
 
-                    if ($a->getUnitPrice() != null) {
-                        $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), 2);
-                    } else {
-                        $a_json_row["row_unit_price"] = 0;
-                    }
-
-                    if ($a->getNetAmount() != null) {
-                        $a_json_row["row_net"] = number_format($a->getNetAmount(), 2);
-                    } else {
-                        $a_json_row["row_net"] = 0;
-                    }
-
-                    if ($a->getTaxRate() != null) {
-                        $a_json_row["row_tax_rate"] = $a->getTaxRate();
-                    } else {
-                        $a_json_row["row_tax_rate"] = 0;
-                    }
-
-                    if ($a->getGrossAmount() != null) {
-                        $a_json_row["row_gross"] = number_format($a->getGrossAmount(), 2);
-                    } else {
-                        $a_json_row["row_gross"] = 0;
-                    }
-
-                    $a_json_row["pr_number"] = "";
-                    if ($a->getPrRow() != null) {
-                        if ($a->getPrRow()->getPr() != null) {
-
-                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
-                                ->getPr()
-                                ->getToken() . '&entity_id=' . $a->getPrRow()
-                                ->getPr()
-                                ->getId() . '&checkum=' . $a->getPrRow()
-                                ->getPr()
-                                ->getChecksum() . '"> ... </a>';
-
-                            $a_json_row["pr_number"] = $a->getPrRow()
-                                ->getPr()
-                                ->getPrNumber() . $link;
-                        }
-                    }
-
+                   
                     $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
@@ -592,15 +546,7 @@ class GIRowController extends AbstractActionController
                     $a_json_row["item_sku"] = $a->getItem()->getItemSku();
                     $a_json_row["item_token"] = $a->getItem()->getToken();
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
-                    $a_json_row["fa_remarks"] = $a->getFaRemarks();
-                    $a_json_row["remarks"] = $a->getRemarks();
-
-                    if ($a->getGlAccount() !== null) {
-                        $a_json_row["gl_account"] = $a->getGlAccount()->getAccountNumber();
-                    } else {
-                        $a_json_row["gl_account"] = "N/A";
-                    }
-
+               
                     $a_json[] = $a_json_row;
                 }
             }

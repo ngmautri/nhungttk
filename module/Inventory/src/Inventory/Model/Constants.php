@@ -9,6 +9,8 @@ namespace Inventory\Model;
 class Constants
 {
 
+    const INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX = 'GI099';
+
     const INVENTORY_GI_FOR_REPAIR_MACHINE = 'GI100';
 
     const INVENTORY_GI_FOR_PROJECT = 'GI101';
@@ -24,10 +26,10 @@ class Constants
     const INVENTORY_GI_FOR_MAINTENANCE_WORK = 'GI106';
 
     const INVENTORY_GI_FOR_ASSET = 'GI107';
-    
-    const WH_TRANSACTION_IN = 'IN';    
+
+    const WH_TRANSACTION_IN = 'IN';
+
     const WH_TRANSACTION_OUT = 'OUT';
-    
 
     /**
      *
@@ -37,23 +39,109 @@ class Constants
     {
         if ($translator !== null) {
             $list = array(
-                self::INVENTORY_GI_FOR_REPAIR_MACHINE => $translator->translate("Issue for reparing machine"),
-                self::INVENTORY_GI_FOR_PROJECT => $translator->translate("Issue for Project (incl.IE)"),
-                self::INVENTORY_GI_FOR_COST_CENTER => $translator->translate("Issue for Cost Center"),
-                self::INVENTORY_GI_FOR_PRODUCTION_ORDER => $translator->translate("Issue for Production Order"),
-                self::INVENTORY_GI_FOR_REPAIRING => $translator->translate("Issue for Repairing"),
-                self::INVENTORY_GI_FOR_MAINTENANCE_WORK => $translator->translate("Issue for Maintenance Work"),
-                self::INVENTORY_GI_FOR_ASSET => $translator->translate("Issue for Asset"),
+
+                self::INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX => array(
+                    "type_name" => $translator->translate("Issue for reparing machine (exchange of part)"),
+                    "type_description" => $translator->translate("Issue part for repairing of machine. The requester must exchange old /defect part")
+                ),
+
+                self::INVENTORY_GI_FOR_REPAIR_MACHINE => array(
+                    "type_name" => $translator->translate("Issue for reparing machine without exchange"),
+                    "type_descripption" => $translator->translate("Issue part for repairing of machine. The requester must not give any part")
+                ),
+
+                self::INVENTORY_GI_FOR_PROJECT => array(
+                    "type_name" => $translator->translate("Issue for Project (e.g IE Project)"),
+                    "type_descripption" => $translator->translate("Spare part, materials will be consumpted by the project.<br>Project must be given! ")
+                ),
+
+                self::INVENTORY_GI_FOR_COST_CENTER => array(
+                    "type_name" => $translator->translate("Issue for Cost Center"),
+                    "type_descripption" => $translator->translate("Spare part, materials will be consumpted by an cost center.<br>Cost Center must be given! ")
+                ),
+
+                self::INVENTORY_GI_FOR_PRODUCTION_ORDER => array(
+                    "type_name" => $translator->translate("Issue for Production Order"),
+                    "type_descripption" => $translator->translate("Spare part, materials will be issued for Production Order.<br>Production Order must be given! ")
+                ),
+
+                self::INVENTORY_GI_FOR_PRODUCTION_ORDER => array(
+                    "type_name" => $translator->translate("Issue for Production Order"),
+                    "type_descripption" => $translator->translate("Spare part, materials will be issued for Production Order.<br>Production Order must be given! ")
+                ),
+
+                self::INVENTORY_GI_FOR_REPAIRING => array(
+                    "type_name" => $translator->translate("Issue for Repairing"),
+                    "type_descripption" => $translator->translate("Spare part, materials will be repaired by external party. After repaired, part will be received again")
+                ),
+
+                self::INVENTORY_GI_FOR_MAINTENANCE_WORK => array(
+                    "type_name" => $translator->translate("Issue for Maintenance Work"),
+                    "type_descripption" => $translator->translate("Spare part, materials will be issued for maintenance  worked.")
+                ),
+
+                self::INVENTORY_GI_FOR_ASSET => array(
+                    "type_name" => $translator->translate("Issue for Asset"),
+                    "type_descripption" => $translator->translate("Spare part, materials will be issued for an asset. Asset ID is required.")
+                ),
+
+                self::INVENTORY_GI_FOR_RETURN_PO => array(
+                    "type_name" => $translator->translate("Issue for return PO"),
+                    "type_descripption" => $translator->translate("goods will be issued for returning to supplier. PO is required!")
+                )
             );
-        }else{
+        } else {
             $list = array(
-                self::INVENTORY_GI_FOR_REPAIR_MACHINE => "Issue for reparing machine",
-                self::INVENTORY_GI_FOR_PROJECT => "Issue for Project (incl.IE)",
-                self::INVENTORY_GI_FOR_COST_CENTER => "Issue for Cost Center",
-                self::INVENTORY_GI_FOR_PRODUCTION_ORDER => "Issue for Production Order",
-                self::INVENTORY_GI_FOR_REPAIRING => "Issue for Repairing",
-                self::INVENTORY_GI_FOR_MAINTENANCE_WORK => "Issue for Maintenance Work",
-                self::INVENTORY_GI_FOR_ASSET => "Issue for Asset"
+
+                self::INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX => array(
+                    "type_name" => "Issue for reparing machine (exchange of part)",
+                    "type_description" => "Issue part for repairing of machine. The requester must exchange old /defect part"
+                ),
+
+                self::INVENTORY_GI_FOR_REPAIR_MACHINE => array(
+                    "type_name" => "Issue for reparing machine without exchange",
+                    "type_descripption" => "Issue part for repairing of machine. The requester must not give any part"
+                ),
+
+                self::INVENTORY_GI_FOR_PROJECT => array(
+                    "type_name" => "Issue for Project (e.g IE Project)",
+                    "type_descripption" => "Spare part, materials will be consumpted by the project.<br>Project must be given! "
+                ),
+
+                self::INVENTORY_GI_FOR_COST_CENTER => array(
+                    "type_name" => "Issue for Cost Center",
+                    "type_descripption" => "Spare part, materials will be consumpted by an cost center.<br>Cost Center must be given! "
+                ),
+
+                self::INVENTORY_GI_FOR_PRODUCTION_ORDER => array(
+                    "type_name" => "Issue for Production Order",
+                    "type_descripption" => "Spare part, materials will be issued for Production Order.<br>Production Order must be given! "
+                ),
+
+                self::INVENTORY_GI_FOR_PRODUCTION_ORDER => array(
+                    "type_name" => "Issue for Production Order",
+                    "type_descripption" => "Spare part, materials will be issued for Production Order.<br>Production Order must be given! "
+                ),
+
+                self::INVENTORY_GI_FOR_REPAIRING => array(
+                    "type_name" => "Issue for Repairing",
+                    "type_descripption" => "Spare part, materials will be repaired by external party. After repaired, part will be received again"
+                ),
+
+                self::INVENTORY_GI_FOR_MAINTENANCE_WORK => array(
+                    "type_name" => "Issue for Maintenance Work",
+                    "type_descripption" => "Spare part, materials will be issued for maintenance  worked."
+                ),
+
+                self::INVENTORY_GI_FOR_ASSET => array(
+                    "type_name" => "Issue for Asset",
+                    "type_descripption" => "Spare part, materials will be issued for an asset. Asset ID is required."
+                ),
+
+                self::INVENTORY_GI_FOR_RETURN_PO => array(
+                    "type_name" => "Issue for return PO",
+                    "type_descripption" => "goods will be issued for returning to supplier. PO is required!"
+                )
             );
         }
 

@@ -43,7 +43,7 @@ class GIforRepairMachine extends AbstractGIStrategy
             throw new \Exception("Invalid Argument! Machine is not give.");
         }
 
-        if ($trx->getIssueFor() == $item->getId()) {
+        if ($trx->getIssueFor() === $item) {
             throw new \Exception("Invalid Argument! transaction is not posible!");
         }
 
@@ -62,4 +62,16 @@ class GIforRepairMachine extends AbstractGIStrategy
      */
     public function doPosting($entity, $u)
     {}
+    
+    /**
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param \DateTime $reversalDate
+ 
+     * {@inheritDoc}
+     * @see \Inventory\Model\GI\AbstractGIStrategy::reverse()
+     */
+    public function reverse($entity, $u, $reversalDate)
+    {}
+
 }

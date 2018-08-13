@@ -47,73 +47,73 @@ class LoggingListener implements ListenerAggregateInterface
             $this,
             'onSystemLogging'
         ), 200);
-        
+
         $this->listeners[] = $events->attach('hr.change.log', array(
             $this,
             'onHRLogging'
         ), 200);
-        
+
         $this->listeners[] = $events->attach('authenticate.log', array(
             $this,
             'onAuthenticationLogging'
         ), 200);
-        
+
         $this->listeners[] = $events->attach('inventory.activity.log', array(
             $this,
             'onInventoryActivityLogging'
         ), 200);
-        
+
         $this->listeners[] = $events->attach('hr.contract.log', array(
             $this,
             'onContractLogging'
         ), 200);
-        
+
         $this->listeners[] = $events->attach('inventory.change.log', array(
             $this,
             'onInventoryChangeLogging'
         ), 200);
-        
+
         $this->listeners[] = $events->attach('inventory.item-indexing.log', array(
             $this,
             'onInventoryItemIndexing'
         ), 200);
-        
+
         // HR ACT LOG
         $this->listeners[] = $events->attach('hr.activity.log', array(
             $this,
             'onHRActivityLogging'
         ), 200);
-        
+
         // PROCURE ACT LOG
         $this->listeners[] = $events->attach('procure.activity.log', array(
             $this,
             'onProcureActivityLogging'
         ), 200);
-        
+
         // PROCURE CHANGE LOG
         $this->listeners[] = $events->attach('procure.change.log', array(
             $this,
             'onProcureChangeLogging'
         ), 200);
-        
+
         // FINANCE ACT LOG
         $this->listeners[] = $events->attach('finance.activity.log', array(
             $this,
             'onFinanceActivityLogging'
         ), 200);
-        
+
         // PROCURE CHANGE LOG
         $this->listeners[] = $events->attach('finance.change.log', array(
             $this,
             'onFinanceChangeLogging'
         ), 200);
-        
+
         // BP ACT LOG
         $this->listeners[] = $events->attach('bp.activity.log', array(
             $this,
             'onBpActivityLogging'
         ), 200);
-        
+
         // BP CHANGE LOG
         $this->listeners[] = $events->attach('bp.change.log', array(
             $this,
@@ -143,7 +143,7 @@ class LoggingListener implements ListenerAggregateInterface
     {
         // $log_priority = $e->getParam('priotiry');
         $log_message = $e->getParam('message');
-        
+
         $filename = 'authentication_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
         $writer = new Stream('./data/log/' . $filename);
@@ -159,14 +159,14 @@ class LoggingListener implements ListenerAggregateInterface
     {
         $log_priority = $e->getParam('priotiry');
         $log_message = $e->getParam('message');
-        
+
         $filename = 'system_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         $log->log(Logger::INFO, $log_message);
     }
-    
+
     /**
      * HR Activity Loag
      *
@@ -181,14 +181,13 @@ class LoggingListener implements ListenerAggregateInterface
         $entityId = $e->getParam('entity_id');
         $entityClass = $e->getParam('entity_class');
         $entityToken = $e->getParam('entity_token');
-        
-        
+
         $filename = 'hr_activity_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         $log->log($log_priority, $log_message);
-        
+
         // update DB
         $entity = new NmtHrLog();
         $entity->setPriority($log_priority);
@@ -199,9 +198,9 @@ class LoggingListener implements ListenerAggregateInterface
         $entity->setEntityId($entityId);
         $entity->setEntityClass($entityClass);
         $entity->setEntityToken($entityToken);
-        
+
         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-        
+
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
@@ -219,14 +218,14 @@ class LoggingListener implements ListenerAggregateInterface
         $changeArray = $e->getParam('changeArray');
         $changeBy = $e->getParam('changeBy');
         $changeOn = $e->getParam('changeOn');
-        
+
         $filename = 'hr_change_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
-        
+
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         // $log->log(Logger::INFO, $log_message);
-        
+
         $detail = $log_message;
         foreach ($changeArray as $key => $value) {
             $detail_1 = $detail . " {" . $key . "}{Object ID: " . $objectId . "}";
@@ -236,18 +235,18 @@ class LoggingListener implements ListenerAggregateInterface
             }
             $log->log(Logger::INFO, $detail_1);
         }
-        
+
         foreach ($changeArray as $key => $value) {
-            
+
             // update database
             $entity = new NmtHrChangeLog();
             $entity->setObjectToken($objectToken);
             $entity->setObjectId($objectId);
             $entity->setCreatedBy($changeBy);
             $entity->setCreatedOn($changeOn);
-            
+
             foreach ($value as $k => $v1) {
-                
+
                 switch ($k) {
                     case "className":
                         $entity->setClassName($v1);
@@ -268,7 +267,7 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
             $this->doctrineEM->persist($entity);
         }
-        
+
         $this->doctrineEM->flush();
     }
 
@@ -288,14 +287,14 @@ class LoggingListener implements ListenerAggregateInterface
         $changeOn = $e->getParam('changeOn');
         $revisionNumber = $e->getParam('revisionNumber');
         $changeValidFrom = $e->getParam('changeValidFrom');
-        
+
         $filename = 'hr_contract_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
-        
+
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         // $log->log(Logger::INFO, $log_message);
-        
+
         $detail = $log_message;
         foreach ($changeArray as $key => $value) {
             $detail_1 = $detail . " {" . $key . "}{Object ID: " . $objectId . "}";
@@ -305,9 +304,9 @@ class LoggingListener implements ListenerAggregateInterface
             }
             $log->log(Logger::INFO, $detail_1);
         }
-        
+
         foreach ($changeArray as $key => $value) {
-            
+
             // update database
             $entity = new NmtHrContractLog();
             $entity->setObjectToken($objectToken);
@@ -317,30 +316,30 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setRevisionNo($revisionNumber);
             $entity->setEffectiveFrom($changeValidFrom);
             $entity->setTriggeredby($e->getTarget());
-            
+
             foreach ($value as $k => $v1) {
-                
+
                 switch ($k) {
                     case "className":
                         $entity->setClassName($v1);
                         break;
-                    
+
                     case "fieldType":
                         $entity->setFieldType($v1);
                         break;
-                    
+
                     case "fieldName":
-                        
+
                         // Set all resources as inactive;
                         $sql = "UPDATE Application\Entity\NmtHrContractLog log SET log.isValid = 0";
-                        
+
                         $w = sprintf(" WHERE log.objectId=%s AND log.objectToken='%s' AND log.fieldName = '%s' ", $objectId, $objectToken, $v1);
-                        
+
                         $sql = $sql . $w;
-                        
+
                         $q = $this->doctrineEM->createQuery($sql);
                         $q->execute();
-                        
+
                         $entity->setFieldName($v1);
                         $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())
                             ->getColumnName($v1));
@@ -349,7 +348,15 @@ class LoggingListener implements ListenerAggregateInterface
                         $entity->setOldValue($v1);
                         break;
                     case "newValue":
-                        $entity->setNewValue($v1);
+                        if (is_string($v1)) {
+                            if (strlen($v1) > 200) {
+                                $entity->setNewValue(substr($v1,0,200));
+                            } else {
+                                $entity->setNewValue($v1);
+                            }
+                        } else {
+                            $entity->setNewValue($v1);
+                        }
                         break;
                 }
             }
@@ -357,7 +364,7 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setIsValid(1);
             $this->doctrineEM->persist($entity);
         }
-        
+
         $this->doctrineEM->flush();
     }
 
@@ -372,13 +379,13 @@ class LoggingListener implements ListenerAggregateInterface
         $log_message = $e->getParam('message');
         $createdBy = $e->getParam('createdBy');
         $createdOn = $e->getParam('createdOn');
-        
+
         $filename = 'inventory_activity_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         $log->log($log_priority, $log_message);
-        
+
         // update DB
         $entity = new NmtInventoryLog();
         $entity->setPriority($log_priority);
@@ -407,14 +414,14 @@ class LoggingListener implements ListenerAggregateInterface
         $changeOn = $e->getParam('changeOn');
         $revisionNumber = $e->getParam('revisionNumber');
         $changeValidFrom = $e->getParam('changeValidFrom');
-        
+
         $filename = 'inventory_change_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
-        
+
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         // $log->log(Logger::INFO, $log_message);
-        
+
         $detail = $log_message;
         foreach ($changeArray as $key => $value) {
             $detail_1 = $detail . " {" . $key . "}{Object ID: " . $objectId . "}";
@@ -424,9 +431,9 @@ class LoggingListener implements ListenerAggregateInterface
             }
             $log->log($log_priority, $detail_1);
         }
-        
+
         foreach ($changeArray as $key => $value) {
-            
+
             // update database
             $entity = new NmtInventoryChangeLog();
             $entity->setObjectToken($objectToken);
@@ -436,30 +443,30 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setRevisionNo($revisionNumber);
             $entity->setEffectiveFrom($changeValidFrom);
             $entity->setTriggeredby($e->getTarget());
-            
+
             foreach ($value as $k => $v1) {
-                
+
                 switch ($k) {
                     case "className":
                         $entity->setClassName($v1);
                         break;
-                    
+
                     case "fieldType":
                         $entity->setFieldType($v1);
                         break;
-                    
+
                     case "fieldName":
-                        
+
                         // Set all resources as inactive;
                         $sql = "UPDATE Application\Entity\NmtInventoryChangeLog log SET log.isValid = 0";
-                        
+
                         $w = sprintf(" WHERE log.objectId=%s AND log.objectToken='%s' AND log.fieldName = '%s' ", $objectId, $objectToken, $v1);
-                        
+
                         $sql = $sql . $w;
-                        
+
                         $q = $this->doctrineEM->createQuery($sql);
                         $q->execute();
-                        
+
                         $entity->setFieldName($v1);
                         $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())
                             ->getColumnName($v1));
@@ -468,7 +475,17 @@ class LoggingListener implements ListenerAggregateInterface
                         $entity->setOldValue($v1);
                         break;
                     case "newValue":
-                        $entity->setNewValue($v1);
+
+                        if (is_string($v1)) {
+                            if (strlen($v1) > 200) {
+                                $entity->setNewValue(substr($v1,0,200));
+                            } else {
+                                $entity->setNewValue($v1);
+                            }
+                        } else {
+                            $entity->setNewValue($v1);
+                        }
+
                         break;
                 }
             }
@@ -476,7 +493,7 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setIsValid(1);
             $this->doctrineEM->persist($entity);
         }
-        
+
         $this->doctrineEM->flush();
     }
 
@@ -491,13 +508,13 @@ class LoggingListener implements ListenerAggregateInterface
         $log_message = $e->getParam('message');
         $createdBy = $e->getParam('createdBy');
         $createdOn = $e->getParam('createdOn');
-        
+
         $filename = 'procure_activity_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         $log->log($log_priority, $log_message);
-        
+
         // update DB
         $entity = new NmtProcureLog();
         $entity->setPriority($log_priority);
@@ -526,14 +543,14 @@ class LoggingListener implements ListenerAggregateInterface
         $changeOn = $e->getParam('changeOn');
         $revisionNumber = $e->getParam('revisionNumber');
         $changeValidFrom = $e->getParam('changeValidFrom');
-        
+
         $filename = 'procure_change_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
-        
+
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         // $log->log(Logger::INFO, $log_message);
-        
+
         $detail = $log_message;
         foreach ($changeArray as $key => $value) {
             $detail_1 = $detail . " {" . $key . "}{Object ID: " . $objectId . "}";
@@ -543,9 +560,9 @@ class LoggingListener implements ListenerAggregateInterface
             }
             $log->log(Logger::INFO, $detail_1);
         }
-        
+
         foreach ($changeArray as $key => $value) {
-            
+
             // update database
             $entity = new NmtProcureChangeLog();
             $entity->setObjectToken($objectToken);
@@ -555,30 +572,30 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setRevisionNo($revisionNumber);
             $entity->setEffectiveFrom($changeValidFrom);
             $entity->setTriggeredby($e->getTarget());
-            
+
             foreach ($value as $k => $v1) {
-                
+
                 switch ($k) {
                     case "className":
                         $entity->setClassName($v1);
                         break;
-                    
+
                     case "fieldType":
                         $entity->setFieldType($v1);
                         break;
-                    
+
                     case "fieldName":
-                        
+
                         // Set all resources as inactive;
                         $sql = "UPDATE Application\Entity\NmtProcureChangeLog log SET log.isValid = 0";
-                        
+
                         $w = sprintf(" WHERE log.objectId=%s AND log.objectToken='%s' AND log.fieldName = '%s' ", $objectId, $objectToken, $v1);
-                        
+
                         $sql = $sql . $w;
-                        
+
                         $q = $this->doctrineEM->createQuery($sql);
                         $q->execute();
-                        
+
                         $entity->setFieldName($v1);
                         $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())
                             ->getColumnName($v1));
@@ -587,11 +604,15 @@ class LoggingListener implements ListenerAggregateInterface
                         $entity->setOldValue($v1);
                         break;
                     case "newValue":
-                        /**
-                         *
-                         * @todo text
-                         */
-                        $entity->setNewValue($v1);
+                        if (is_string($v1)) {
+                            if (strlen($v1) > 200) {
+                                $entity->setNewValue(substr($v1,0,200));
+                            } else {
+                                $entity->setNewValue($v1);
+                            }
+                        } else {
+                            $entity->setNewValue($v1);
+                        }
                         break;
                 }
             }
@@ -599,10 +620,10 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setIsValid(1);
             $this->doctrineEM->persist($entity);
         }
-        
+
         $this->doctrineEM->flush();
     }
-    
+
     /**
      * Finance Activity Loag
      *
@@ -617,14 +638,13 @@ class LoggingListener implements ListenerAggregateInterface
         $entityId = $e->getParam('entity_id');
         $entityClass = $e->getParam('entity_class');
         $entityToken = $e->getParam('entity_token');
-        
-        
+
         $filename = 'finance_activity_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         $log->log($log_priority, $log_message);
-        
+
         // update DB
         $entity = new FinLog();
         $entity->setPriority($log_priority);
@@ -632,16 +652,16 @@ class LoggingListener implements ListenerAggregateInterface
         $entity->setTriggeredby($e->getTarget());
         $entity->setCreatedBy($createdBy);
         $entity->setCreatedOn($createdOn);
-         $entity->setEntityId($entityId);
+        $entity->setEntityId($entityId);
         $entity->setEntityClass($entityClass);
         $entity->setEntityToken($entityToken);
-      
+
         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-        
+
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
-    
+
     /**
      * ON Finance Log
      *
@@ -658,14 +678,14 @@ class LoggingListener implements ListenerAggregateInterface
         $changeOn = $e->getParam('changeOn');
         $revisionNumber = $e->getParam('revisionNumber');
         $changeValidFrom = $e->getParam('changeValidFrom');
-        
+
         $filename = 'finance_change_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
-        
+
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         // $log->log(Logger::INFO, $log_message);
-        
+
         $detail = $log_message;
         foreach ($changeArray as $key => $value) {
             $detail_1 = $detail . " {" . $key . "}{Object ID: " . $objectId . "}";
@@ -675,9 +695,9 @@ class LoggingListener implements ListenerAggregateInterface
             }
             $log->log(Logger::INFO, $detail_1);
         }
-        
+
         foreach ($changeArray as $key => $value) {
-            
+
             // update database
             $entity = new FinChangeLog();
             $entity->setObjectToken($objectToken);
@@ -687,29 +707,29 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setRevisionNo($revisionNumber);
             $entity->setEffectiveFrom($changeValidFrom);
             $entity->setTriggeredby($e->getTarget());
-            
+
             foreach ($value as $k => $v1) {
-                
+
                 switch ($k) {
                     case "className":
                         $entity->setClassName($v1);
                         break;
-                        
+
                     case "fieldType":
                         $entity->setFieldType($v1);
                         break;
-                        
+
                     case "fieldName":
-                        
+
                         // Set all resources as inactive;
                         $sql = "UPDATE Application\Entity\FinChangeLog log SET log.isValid = 0";
                         $w = sprintf(" WHERE log.objectId=%s AND log.objectToken='%s' AND log.fieldName = '%s' ", $objectId, $objectToken, $v1);
-                        
+
                         $sql = $sql . $w;
-                        
+
                         $q = $this->doctrineEM->createQuery($sql);
                         $q->execute();
-                        
+
                         $entity->setFieldName($v1);
                         $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())
                             ->getColumnName($v1));
@@ -718,11 +738,15 @@ class LoggingListener implements ListenerAggregateInterface
                         $entity->setOldValue($v1);
                         break;
                     case "newValue":
-                        /**
-                         *
-                         * @todo text
-                         */
-                        $entity->setNewValue($v1);
+                        if (is_string($v1)) {
+                            if (strlen($v1) > 200) {
+                                $entity->setNewValue(substr($v1,0,200));
+                            } else {
+                                $entity->setNewValue($v1);
+                            }
+                        } else {
+                            $entity->setNewValue($v1);
+                        }
                         break;
                 }
             }
@@ -730,11 +754,10 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setIsValid(1);
             $this->doctrineEM->persist($entity);
         }
-        
+
         $this->doctrineEM->flush();
     }
-    
-    
+
     /**
      * BP Activity Loag
      *
@@ -749,14 +772,13 @@ class LoggingListener implements ListenerAggregateInterface
         $entityId = $e->getParam('entity_id');
         $entityClass = $e->getParam('entity_class');
         $entityToken = $e->getParam('entity_token');
-        
-        
+
         $filename = 'bp_activity_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         $log->log($log_priority, $log_message);
-        
+
         // update DB
         $entity = new NmtBpLog();
         $entity->setPriority($log_priority);
@@ -767,13 +789,13 @@ class LoggingListener implements ListenerAggregateInterface
         $entity->setEntityId($entityId);
         $entity->setEntityClass($entityClass);
         $entity->setEntityToken($entityToken);
-        
+
         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-        
+
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
-    
+
     /**
      * ON BP Change Log
      *
@@ -790,14 +812,14 @@ class LoggingListener implements ListenerAggregateInterface
         $changeOn = $e->getParam('changeOn');
         $revisionNumber = $e->getParam('revisionNumber');
         $changeValidFrom = $e->getParam('changeValidFrom');
-        
+
         $filename = 'bp_change_log_' . date('F') . '_' . date('Y') . '.txt';
         $log = new Logger();
-        
+
         $writer = new Stream('./data/log/' . $filename);
         $log->addWriter($writer);
         // $log->log(Logger::INFO, $log_message);
-        
+
         $detail = $log_message;
         foreach ($changeArray as $key => $value) {
             $detail_1 = $detail . " {" . $key . "}{Object ID: " . $objectId . "}";
@@ -807,9 +829,9 @@ class LoggingListener implements ListenerAggregateInterface
             }
             $log->log(Logger::INFO, $detail_1);
         }
-        
+
         foreach ($changeArray as $key => $value) {
-            
+
             // update database
             $entity = new NmtBpChangeLog();
             $entity->setObjectToken($objectToken);
@@ -819,29 +841,29 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setRevisionNo($revisionNumber);
             $entity->setEffectiveFrom($changeValidFrom);
             $entity->setTriggeredby($e->getTarget());
-            
+
             foreach ($value as $k => $v1) {
-                
+
                 switch ($k) {
                     case "className":
                         $entity->setClassName($v1);
                         break;
-                        
+
                     case "fieldType":
                         $entity->setFieldType($v1);
                         break;
-                        
+
                     case "fieldName":
-                        
+
                         // Set all resources as inactive;
                         $sql = "UPDATE Application\Entity\NmtBpChangeLog log SET log.isValid = 0";
                         $w = sprintf(" WHERE log.objectId=%s AND log.objectToken='%s' AND log.fieldName = '%s' ", $objectId, $objectToken, $v1);
-                        
+
                         $sql = $sql . $w;
-                        
+
                         $q = $this->doctrineEM->createQuery($sql);
                         $q->execute();
-                        
+
                         $entity->setFieldName($v1);
                         $entity->setColumnName($this->doctrineEM->getClassMetadata($entity->getClassName())
                             ->getColumnName($v1));
@@ -850,11 +872,15 @@ class LoggingListener implements ListenerAggregateInterface
                         $entity->setOldValue($v1);
                         break;
                     case "newValue":
-                        /**
-                         *
-                         * @todo text
-                         */
-                        $entity->setNewValue($v1);
+                        if (is_string($v1)) {
+                            if (strlen($v1) > 200) {
+                                $entity->setNewValue(substr($v1,0,200));
+                            } else {
+                                $entity->setNewValue($v1);
+                            }
+                        } else {
+                            $entity->setNewValue($v1);
+                        }
                         break;
                 }
             }
@@ -862,10 +888,10 @@ class LoggingListener implements ListenerAggregateInterface
             $entity->setIsValid(1);
             $this->doctrineEM->persist($entity);
         }
-        
+
         $this->doctrineEM->flush();
     }
-    
+
     /**
      *
      * @param EventInterface $e

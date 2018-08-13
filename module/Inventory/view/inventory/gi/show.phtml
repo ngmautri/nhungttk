@@ -22,8 +22,19 @@ if (count($errors) > 0) {
 	<div id="general" style="font-size: 9pt">
 		<!-- Tab1 -->
 
+<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
+		<div style="position: relative; float: right;">
+			<a style="font-size: 9.5pt; color: white;" class="btn btn-primary btn-sm"
+				href="<?php echo $this->baseUrl ?>/inventory/gi/review?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
+				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Review	& Post</a> 
+		</div>
+		<?php endif;?>
+		
+
+
 		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/inventory/gi/add" method="post" enctype="multipart/form-data">
+			action="/inventory/gi/add" method="post"
+			enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 			<fieldset>
@@ -42,13 +53,13 @@ if (count($errors) > 0) {
             if ($issueType !== null) :
                 foreach ($issueType as $k => $v) :
                     if ($entity !== null) :
-                        if ($entity->getMovementType() ==$k) :
-                        echo '<option selected value="' . $k . '">' . $k .' - '. $this->translate($v) . '</option>';
+                        if ($entity->getMovementType() == $k) :
+                            echo '<option selected value="' . $k . '">' . $k . ' - ' . $this->translate($v) . '</option>';
                         else :
-                        echo '<option value="' . $k . '">' . $k .' - '. $this->translate($v) . '</option>';
+                            echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v) . '</option>';
                         endif;
                     else :
-                    echo '<option value="' . $k . '">' . $k .' - '. $this->translate($v) . '</option>';
+                        echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v) . '</option>';
                     endif;
                 endforeach
                 ;
@@ -96,41 +107,30 @@ if (count($errors) > 0) {
 							value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
 					</div>
 				</div>
-	
-	
-	<hr>
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-			<button onclick="submitForm('Create_Inv_Form');"
-				class="btn btn-default btn-sm">
-				<i class="glyphicon glyphicon-floppy-disk"> </i> Save
-			</button>
-			<a class="btn btn-default btn-sm" href="<?php echo $redirectUrl; ?>"><small><i
-					class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 
-		</div>
-	</div>
-	</fieldset>
-	</form>
 
-	<form action="">
-			<fieldset>
-			<legend style="font-size: 9pt; color: gray;">
-				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-				<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
-			</legend>
-			<div id="rows" class="collapse in">
-							<div id="pr_row_gird" style="margin: 1px; font-size: 8pt;"></div>
+
 			</fieldset>
-			</form>
+		</form>
 
-	<!-- Tab1 -->
+		<form action="">
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
+				</legend>
+				<div id="rows" class="collapse in">
+					<div id="pr_row_gird" style="margin: 1px; font-size: 8pt;"></div>
+			
+			</fieldset>
+		</form>
+
+		<!-- Tab1 -->
+	</div>
 </div>
-</div>
 
 
-						
+
 
 <script>
 
@@ -341,7 +341,7 @@ $( "#vendor_name_1" ).autocomplete({
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "auto", height: $(window).height()-280, showTitle : false,
+	var obj = { width: "auto", height: $(window).height()-400, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
@@ -472,19 +472,12 @@ $( "#vendor_name_1" ).autocomplete({
        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
         { title: "Ref", dataType: "integer", dataIndx: "row_identifer", width:80,editable: false},
-        
         { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
         { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
-        { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},
         
         { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: false},
-        { title: "Unit Price", dataType: "integer", dataIndx: "row_unit_price", width:90, align: 'right',editable: false},
-        { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},
-        { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
-        { title: "Gross", dataType: "decimal", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
- 		{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
- 		      
+     		      
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         
         { title: "", editable: false, minWidth: 100, sortable: false,

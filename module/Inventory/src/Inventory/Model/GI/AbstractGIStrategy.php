@@ -25,23 +25,30 @@ abstract class AbstractGIStrategy
      * @param \Application\Entity\MlaUsers $u
      */
     abstract public function doPosting($entity, $u);
-    
+
     /**
-     * 
-     *  @return \Inventory\Service\AbstractInventoryService
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param \DateTime $reversalDate
+     */
+    abstract public function reverse($entity, $u, $reversalDate);
+
+    /**
+     *
+     * @return \Inventory\Service\AbstractInventoryService
      */
     public function getContextService()
     {
         return $this->contextService;
     }
 
-   /**
-    * 
-    *  @param \Inventory\Service\AbstractInventoryService $contextService
-    */
+    /**
+     *
+     * @param \Inventory\Service\AbstractInventoryService $contextService
+     */
     public function setContextService(\Inventory\Service\AbstractInventoryService $contextService)
     {
         $this->contextService = $contextService;
     }
-
 }

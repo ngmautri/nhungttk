@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryTrx
  *
- * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK16_idx", columns={"gr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx", columns={"inventory_gi_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx1", columns={"inventory_gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK19_idx", columns={"inventory_transfer_id"}), @ORM\Index(name="nmt_inventory_trx_FK20_idx", columns={"gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK21_idx", columns={"movement_id"})})
+ * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK16_idx", columns={"gr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx", columns={"inventory_gi_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx1", columns={"inventory_gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK19_idx", columns={"inventory_transfer_id"}), @ORM\Index(name="nmt_inventory_trx_FK20_idx", columns={"gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK21_idx", columns={"movement_id"}), @ORM\Index(name="nmt_inventory_trx_FK22_idx", columns={"issue_for"})})
  * @ORM\Entity
  */
 class NmtInventoryTrx
@@ -55,13 +55,6 @@ class NmtInventoryTrx
      * @ORM\Column(name="flow", type="string", nullable=false)
      */
     private $flow;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="issue_for", type="integer", nullable=true)
-     */
-    private $issueFor;
 
     /**
      * @var integer
@@ -449,6 +442,16 @@ class NmtInventoryTrx
     private $movement;
 
     /**
+     * @var \Application\Entity\NmtInventoryItem
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="issue_for", referencedColumnName="id")
+     * })
+     */
+    private $issueFor;
+
+    /**
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -628,30 +631,6 @@ class NmtInventoryTrx
     public function getFlow()
     {
         return $this->flow;
-    }
-
-    /**
-     * Set issueFor
-     *
-     * @param integer $issueFor
-     *
-     * @return NmtInventoryTrx
-     */
-    public function setIssueFor($issueFor)
-    {
-        $this->issueFor = $issueFor;
-
-        return $this;
-    }
-
-    /**
-     * Get issueFor
-     *
-     * @return integer
-     */
-    public function getIssueFor()
-    {
-        return $this->issueFor;
     }
 
     /**
@@ -1828,6 +1807,30 @@ class NmtInventoryTrx
     public function getMovement()
     {
         return $this->movement;
+    }
+
+    /**
+     * Set issueFor
+     *
+     * @param \Application\Entity\NmtInventoryItem $issueFor
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setIssueFor(\Application\Entity\NmtInventoryItem $issueFor = null)
+    {
+        $this->issueFor = $issueFor;
+
+        return $this;
+    }
+
+    /**
+     * Get issueFor
+     *
+     * @return \Application\Entity\NmtInventoryItem
+     */
+    public function getIssueFor()
+    {
+        return $this->issueFor;
     }
 
     /**

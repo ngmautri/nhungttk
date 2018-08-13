@@ -48,12 +48,12 @@ if (count($errors) > 0) {
                 foreach ($issueType as $k => $v) :
                     if ($entity !== null) :
                         if ($entity->getMovementType() ==$k) :
-                        echo '<option selected value="' . $k . '">' . $k .' - '. $this->translate($v) . '</option>';
+                        echo '<option selected value="' . $k . '">' . $k .' - '. $this->translate($v['type_name']) . '</option>';
                         else :
-                        echo '<option value="' . $k . '">' . $k .' - '. $this->translate($v) . '</option>';
+                        echo '<option value="' . $k . '">' . $k .' - '. $this->translate($v['type_name']) . '</option>';
                         endif;
                     else :
-                    echo '<option value="' . $k . '">' . $k .' - '. $this->translate($v) . '</option>';
+                    echo '<option value="' . $k . '">' . $k .' - '. $this->translate($v['type_name']) . '</option>';
                     endif;
                 endforeach
                 ;

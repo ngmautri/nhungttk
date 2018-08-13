@@ -2,6 +2,7 @@
 namespace Inventory\Model\GI;
 
 use Zend\Math\Rand;
+use Inventory\Service\FIFOLayerService;
 
 /**
  * Machine ID is required.
@@ -61,17 +62,67 @@ class GIforRepairMachine extends AbstractGIStrategy
      * @see \Inventory\Model\GI\AbstractGIStrategy::doPosting()
      */
     public function doPosting($entity, $u)
-    {}
-    
+    {
+
+        $criteria = array(
+             'movement' => $entity,
+        );
+        
+        $sort = array(
+        );
+        
+        $rows = $this->contextService->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria, $sort);
+        
+        
+        if (count($rows) == 0) {
+            throw new \Exception("Movement is empty");
+        }
+        
+        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+        $entity->setIsDraft(0);
+        $this->contextService->getDoctrineEM()->persist($entity);
+        
+        $fifoLayerService = new FIFOLayerService();
+        $fifoLayerService->setDoctrineEM($this->contextService->getDoctrineEM());
+
+        foreach ($rows as $r) {
+            /** @var \Application\Entity\NmtInventoryTrx $r */
+        
+            $r->setDocStatus($entity->getDocStatus());
+            $this->contextService->getDoctrineEM()->persist($r);
+            
+            // update FIFO Layer
+            $fifoLayerService->valuateTrx($r, $r->getItem(), $r->getQuantity(), $u);
+        
+             // Take defect part back to stock.
+            $item_ex = new \Application\Entity\NmtInventoryItemExchange();
+            $item_ex->setItem($r->getItem());
+            $item_ex->setMovementType($entity->getMovementType());
+            $item_ex->setFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
+            $item_ex->setQuantity($r->getQuantity());
+            $item_ex->setCreatedBy($u);
+            $item_ex->setCreatedOn($r->getTrxDate());
+            $item_ex->setWh($r->getWh());
+            $item_ex->setTrx($r);
+            $this->contextService->getDoctrineEM()->persist($item_ex);
+            
+            
+            // generate Juanal voucher.
+             
+        }
+        
+        $this->contextService->getDoctrineEM()->flush();
+    }
+
     /**
+     *
      * @param \Application\Entity\NmtInventoryMv $entity
      * @param \Application\Entity\MlaUsers $u
      * @param \DateTime $reversalDate
- 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\GI\AbstractGIStrategy::reverse()
      */
     public function reverse($entity, $u, $reversalDate)
     {}
-
 }

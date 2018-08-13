@@ -26,7 +26,10 @@ class Constants
     const INVENTORY_GI_FOR_MAINTENANCE_WORK = 'GI106';
 
     const INVENTORY_GI_FOR_ASSET = 'GI107';
-
+    
+    const INVENTORY_GI_FOR_DISPOSAL = 'GI999';
+    
+    
     const WH_TRANSACTION_IN = 'IN';
 
     const WH_TRANSACTION_OUT = 'OUT';
@@ -46,7 +49,7 @@ class Constants
                 ),
 
                 self::INVENTORY_GI_FOR_REPAIR_MACHINE => array(
-                    "type_name" => $translator->translate("Issue for reparing machine without exchange"),
+                    "type_name" => $translator->translate("Issue for reparing machine (no exchange)"),
                     "type_descripption" => $translator->translate("Issue part for repairing of machine. The requester must not give any part")
                 ),
 
@@ -88,6 +91,11 @@ class Constants
                 self::INVENTORY_GI_FOR_RETURN_PO => array(
                     "type_name" => $translator->translate("Issue for return PO"),
                     "type_descripption" => $translator->translate("goods will be issued for returning to supplier. PO is required!")
+                ),
+                
+                self::INVENTORY_GI_FOR_DISPOSAL => array(
+                    "type_name" => $translator->translate("Issue for diposal"),
+                    "type_descripption" => $translator->translate("goods will be disposed.PO is required!")
                 )
             );
         } else {
@@ -141,6 +149,10 @@ class Constants
                 self::INVENTORY_GI_FOR_RETURN_PO => array(
                     "type_name" => "Issue for return PO",
                     "type_descripption" => "goods will be issued for returning to supplier. PO is required!"
+                ),
+                self::INVENTORY_GI_FOR_DISPOSAL => array(
+                    "type_name" => "Issue for diposal",
+                    "type_descripption" => "goods will be disposed. PO is required!"
                 )
             );
         }

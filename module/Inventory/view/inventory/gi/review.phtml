@@ -33,7 +33,7 @@ if (count($errors) > 0) {
 
 
 		<form id="Posting_Form" class="form-horizontal"
-			action="/inventory/gi/add" method="post"
+			action="/inventory/gi/review" method="post"
 			enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
@@ -168,6 +168,7 @@ if (count($errors) > 0) {
 
 
 <script>
+$( "input[id='movementDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 function confirmPost() {
  	$('#confirm_modal_sm').modal();

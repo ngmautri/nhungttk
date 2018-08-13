@@ -1,0 +1,201 @@
+<?php
+
+/**@var \Application\Entity\NmtInventoryMv $target ;
+ @var \Application\Entity\NmtInventoryTrx $entity ; */
+$current_step = "STEP2";
+
+echo (! $target == null) ? $target->getSysNumber() : "";
+
+?>
+
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;New
+				Row</a></li>
+		<li><a
+			href="<?php echo $this->baseUrl ?>/procure/gr-row/list?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+					class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current
+				Rows</a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt;">
+		<!-- Tab1 -->
+
+		<h4>
+			<strong>Goods Issue:</strong>
+		</h4>
+
+
+		<form id="New_Invoice_Row" class="form-horizontal"
+			action="<?php echo $this->baseUrl ?>/inventory/gi-row/add"
+			method="post" enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				id="mv_id" name="mv_id"
+				value="<?php if (!$target == null): echo $target->getId();endif;?>" />
+			<input type="hidden" id="mv_token" name="mv_token"
+				value="<?php if (!$target == null): echo $target->getToken();endif;?>" />
+
+
+			<fieldset>
+				<legend style="font-size: 9pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a style="font-size: 9pt; color: gray;" href="#new_row" class=""
+						data-toggle="collapse">NEW ROW:</a>
+				</legend>
+				<div id="new_row" class="collapse in">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2"></label>
+						<div class="col-sm-3">
+							<input
+								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								type="checkbox" name="isActive" value="1">&nbsp;Is
+							Active&nbsp;&nbsp;&nbsp;&nbsp;
+						</div>
+					</div>
+					<div class="form-group margin-bottom  required">
+						<label class="control-label col-sm-2">Item: </label>
+						<div class="col-sm-3">
+							<input tabindex="2" class="form-control" type="text"
+								id="item_name" placeholder="Enter keyword to search item..."
+								name="item_name"
+								value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
+
+
+							<input type="hidden" id="item_id" placeholder="" name="item_id"
+								value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
+						</div>
+						<div class="col-sm-3">
+							<a style="color: #0080ff;" href="javascript:;"
+								onclick="showJqueryDialog('Select Item','1280',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+								class="glyphicon glyphicon-folder-open"></i>
+							</a>
+
+
+
+
+						</div>
+
+						<div class="col-sm-3">
+							<a target="_blank" style="font-size: 9pt;"
+								href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i
+								class="glyphicon glyphicon-new-window"></i></small>
+						</div>
+
+						<div id="item_detail">
+							&nbsp;&nbsp;<a title="Item Detail" href="javascript:;"
+								onclick="showSelectedItem();"><i style="color: navy"
+								class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a> <br>&nbsp;
+						</div>
+					</div>
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
+						<div class="col-sm-3">
+							<input tabindex="6" class="form-control input-sm" type="text"
+								id="quantity" name="quantity"
+								value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
+						</div>
+					</div>
+
+
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Issue for: </label>
+						<div class="col-sm-3">
+							<input disabled class="form-control input-sm" type="text"
+								id="issue_for_name" placeholder="Select Item if any"
+								name="issue_for_name"
+								value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getItemName(); endif;endif;?>">
+							<input type="hidden" id="issue_for_id" placeholder=""
+								name="issue_for_id"
+								value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getId(); endif;endif;?>">
+						</div>
+
+
+						<a style="color: #0080ff;" href="javascript:;"
+							onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=issue_for_id&target_name=issue_for_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+							class="glyphicon glyphicon-folder-open"></i>
+						</a>
+
+					</div>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Remark:</label>
+						<div class="col-sm-8">
+							<input tabindex="9" class="form-control input-sm" type="text"
+								placeholder="" name="remarks"
+								value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2" for="inputTag"></label>
+						<div class="col-sm-3">
+							<a tabindex="10" class="btn btn-default btn-sm"
+								onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i
+									class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;Save</a>
+							<a tabindex="11" class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+						</div>
+					</div>
+
+				</div>
+			</fieldset>
+		</form>
+
+
+
+		<!-- Tab1 -->
+	</div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    $( "#item_name" ).autocomplete({
+        source: "/inventory/item-search/auto-complete",
+        minLength: 2,
+        select: function( event, ui ) {
+      	  $( "#item_id" ).val(ui.item.id);
+        
+      	 	$('#global-notice').show();
+      		$('#global-notice').html('"' + ui.item.value + '" selected');
+      		$('#global-notice').fadeOut(5000);
+      		//$("#jquery_dialog").dialog("close");
+        }
+       
+      })
+      .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    	  var serial_no = "";
+    	  if(item.item_serial!=""){
+    		  serial_no = " : " + item.item_serial;
+    	  }
+    	   
+         return $( "<li>" )
+           .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
+           .appendTo( ul );
+       };
+
+    $('#quantity').bind('change', function() {
+         });
+
+     function showSelectedItem(){
+    	var url= '/inventory/item/show1?tab_idx=7&entity_id=<?php echo $target->getId();?>&token=<?php echo $target->getToken();?>';
+       	showJqueryDialog('Item Detail','1350',$(window).height()-40, url,'j_loaded_data', true);
+    }
+
+ </script>

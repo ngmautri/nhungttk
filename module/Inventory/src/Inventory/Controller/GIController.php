@@ -144,6 +144,7 @@ class GIController extends AbstractActionController
 
             $entity = new NmtInventoryMv();
 
+            $entity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_OUT);
             $entity->setIsActive($isActive);
             $entity->setCurrentState($currentState);
 
@@ -312,7 +313,7 @@ class GIController extends AbstractActionController
             
             $movementType = $entity->getMovementType();
             
-            if ($movementType != null) {
+            if ($movementType == null) {
                 $errors[] = 'Goods Issue Type is not valid!';
             }
 
@@ -335,8 +336,8 @@ class GIController extends AbstractActionController
                     if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
                         $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
                     } else {
-                        $entity->setPostingDate($movementDate);
-                        $entity->setMovementDate($movementDate);
+                        $entity->setPostingDate(new \DateTime($movementDate));
+                        $entity->setMovementDate(new \DateTime($movementDate));
                         $entity->setPostingPeriod($postingPeriod);
                     }
                 }
@@ -370,18 +371,21 @@ class GIController extends AbstractActionController
             // ++++++++++++++++++++++++++++++
 
             try {
-                $this->giService->post($entity, $u);
+                 $this->giService->post($entity, $u);
             } catch (\Exception $e) {
+                $errors[]=$e->getMessage();
             }
       
-            $createdOn = new \DateTime();
-            $entity->setCreatedBy($u);
-
-            $entity->setCreatedOn($createdOn);
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'issueType' => $issueType
+                ));
+            }
+            
             $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
 

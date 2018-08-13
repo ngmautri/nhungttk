@@ -16,7 +16,7 @@ class GIStrategyFactory
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE:
                 return new GIforRepairMachine();
             default:
-                throw new \Exception("Unknown Transaction Type");
+                throw new \Exception("Unknown Movement Type!");
         }
     }
 }

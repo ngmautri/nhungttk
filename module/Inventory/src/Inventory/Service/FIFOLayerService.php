@@ -138,8 +138,7 @@ class FIFOLayerService extends AbstractInventoryService
             throw new \Exception("Goods Issue imposible! Issue Quantity > On-hand Quantity");
         }
          
-        $this->getDoctrineEM()->flush();
-
+   
         return $cost;
     }
 

@@ -31,15 +31,13 @@ abstract class AbstractInventoryService implements EventManagerAwareInterface
         return $this->doctrineEM;
     }
 
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \Procure\Service\GrService
-     */
+   /**
+    * 
+    *  @param EntityManager $doctrineEM
+    */
     public function setDoctrineEM(EntityManager $doctrineEM)
     {
         $this->doctrineEM = $doctrineEM;
-        return $this;
     }
 
     /**

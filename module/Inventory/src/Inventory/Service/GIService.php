@@ -2,6 +2,7 @@
 namespace Inventory\Service;
 
 use Inventory\Model\GI\GIStrategyFactory;
+use Inventory\Model\GI\AbstractGIStrategy;
 
 /**
  *
@@ -41,12 +42,31 @@ class GIService extends AbstractInventoryService
 
     /**
      *
-     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param \Application\Entity\NmtInventoryMv $entity
      * @param \Application\Entity\MlaUsers $u,
      * @param bool $isFlush,
      *
      * @return \Doctrine\ORM\EntityManager
      */
     public function post($entity, $u, $isFlush = false)
-    {}
+    {
+        if (! $entity instanceof \Application\Entity\NmtInventoryMv) {
+            throw new \Exception("Invalid Argument! Inventory Moverment Object can't not be found.");
+        }
+        
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            throw new \Exception("User can't not be identified for this transaction");
+        }
+        
+        $postingStrategy = GIStrategyFactory::getGIStrategy($entity->getMovementType());
+        
+        if(!$postingStrategy instanceof AbstractGIStrategy){
+            throw new \Exception("Posting Strategy  can't not be identified for this transaction");
+        }
+        
+        // do posting now
+        $postingStrategy->setContextService($this);
+        $postingStrategy->doPosting($entity, $u);
+        
+    }
 }

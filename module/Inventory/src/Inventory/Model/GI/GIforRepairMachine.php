@@ -138,7 +138,7 @@ class GIforRepairMachine extends AbstractGIStrategy
             $item_ex->setCreatedOn($r->getTrxDate());
             $item_ex->setWh($r->getWh());
             $item_ex->setTrx($r);
-            $item_ex->setRemarks("Auto: receive old /part back");
+            $item_ex->setRemarks("Auto Receipt of old/defect part back into store!");
             $this->contextService->getDoctrineEM()->persist($item_ex);
 
             // generate JE voucher.

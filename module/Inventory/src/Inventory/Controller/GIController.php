@@ -85,12 +85,21 @@ class GIController extends AbstractActionController
         }
 
         if (! $entity == null) {
+            
+            $movementTypeInfo='';
+            $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
+            if($giType!==null)                {
+                $movementTypeInfo =  $giType['type_description'];
+            }
+            
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
                 'errors' => null,
                 'currency_list' => $currency_list,
-                'issueType' => $issueType
+                'issueType' => $issueType,
+                'movementTypeInfo' => $movementTypeInfo,
+                
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
@@ -151,7 +160,15 @@ class GIController extends AbstractActionController
             if ($movementType == null) {
                 $errors[] = 'Goods Issue Type is not valid!';
             } else {
-                $entity->setMovementType($movementType);
+                
+                $giType = \Inventory\Model\Constants::getGoodsIssueType($movementType, $nmtPlugin->getTranslator());
+                if($giType!==null)                {
+                    $entity->setMovementType($movementType);
+                    $entity->setMovementTypeMemo($giType['type_desciption']);
+                }else{
+                    $errors[] = $nmtPlugin->translate('Goods Issue type is not supported');
+                }
+                
             }
 
             $validator = new Date();

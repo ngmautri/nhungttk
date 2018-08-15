@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-15 08:10+0700\n"
-"PO-Revision-Date: 2018-08-15 08:14+0700\n"
+"POT-Creation-Date: 2018-08-15 12:40+0700\n"
+"PO-Revision-Date: 2018-08-15 12:47+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -329,7 +329,13 @@ msgstr ""
 msgid "Submision for Approval"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/GIController.php:327
+#: Inventory/src/Inventory/Controller/GIController.php:169
+#, fuzzy
+#| msgid " will be posted!"
+msgid "Goods Issue type is not supported"
+msgstr " sẽ được ghi sổ!"
+
+#: Inventory/src/Inventory/Controller/GIController.php:344
 #, fuzzy
 #| msgid "Invoice Date is not correct or empty!"
 msgid "Transaction Date is not correct or empty!"
@@ -355,100 +361,105 @@ msgstr "Tỷ giá không hợp lệ."
 msgid "Quantity must be greater than 0!"
 msgstr "Tỷ giá không hợp lệ."
 
-#: Inventory/src/Inventory/Model/Constants.php:47
-msgid "Issue for reparing machine (exchange of part)"
-msgstr "Xuất để sửa chữa Máy móc (Có xuất đổi)"
-
 #: Inventory/src/Inventory/Model/Constants.php:48
-msgid ""
-"Issue part for repairing of machine. The requester must exchange old /defect "
-"part"
-msgstr ""
+msgid "Issue for reparing machine (no exchange of part)"
+msgstr "Xuất để sửa chữa Máy móc (không có thay thế)"
 
-#: Inventory/src/Inventory/Model/Constants.php:52
-msgid "Issue for reparing machine (no exchange)"
-msgstr "Xuất để sửa chữa Máy móc (không xuất đổi)"
-
-#: Inventory/src/Inventory/Model/Constants.php:53
+#: Inventory/src/Inventory/Model/Constants.php:49
 msgid ""
 "Issue part for repairing of machine. The requester must not give any part"
 msgstr ""
+"Xuất mới để sửa chữa Máy móc. Người yêu cầu không cần phải nộp các chi tiết "
+"để đổi."
 
-#: Inventory/src/Inventory/Model/Constants.php:57
+#: Inventory/src/Inventory/Model/Constants.php:53
+msgid "Issue for reparing machine (exchange of part)"
+msgstr "Xuất để sửa chữa Máy móc (Có xuất đổi)"
+
+#: Inventory/src/Inventory/Model/Constants.php:54
+msgid ""
+"Exchange parts for repairing of machine.<ul><li>Spare part controller will "
+"issue new parts and receive old /defect one back to store for disposal "
+"process.</li><li>Asset code is required.</li></ul>"
+msgstr ""
+"Xuất đổi chi tiết để sửa chữa máy móc.\n"
+"<ul>\n"
+"<li>Thủ kho xuất mới chi tiết, đồng thời nhập lai chi tiết bị hỏng để tiêu "
+"hủy .</li>                    \n"
+"<li>Mã máy móc phải được cung cấp</li></ul>"
+
+#: Inventory/src/Inventory/Model/Constants.php:59
 msgid "Issue for Project (e.g IE Project)"
 msgstr "Xuất cho Dự án (v.d. Dự án IE)"
 
-#: Inventory/src/Inventory/Model/Constants.php:58
+#: Inventory/src/Inventory/Model/Constants.php:60
 msgid ""
 "Spare part, materials will be consumpted by the project.<br>Project must be "
 "given! "
 msgstr ""
 
-#: Inventory/src/Inventory/Model/Constants.php:62
+#: Inventory/src/Inventory/Model/Constants.php:64
 msgid "Issue for Cost Center"
-msgstr ""
-"Xuất dung cho bô phận\n"
-"\n"
-"          "
+msgstr "Xuất dùng cho bô phận"
 
-#: Inventory/src/Inventory/Model/Constants.php:63
+#: Inventory/src/Inventory/Model/Constants.php:65
 msgid ""
 "Spare part, materials will be consumpted by an cost center.<br>Cost Center "
 "must be given! "
 msgstr ""
 
-#: Inventory/src/Inventory/Model/Constants.php:67
-#: Inventory/src/Inventory/Model/Constants.php:72
+#: Inventory/src/Inventory/Model/Constants.php:69
+#: Inventory/src/Inventory/Model/Constants.php:74
 msgid "Issue for Production Order"
 msgstr "Xuất theo Lệnh sản xuất"
 
-#: Inventory/src/Inventory/Model/Constants.php:68
-#: Inventory/src/Inventory/Model/Constants.php:73
+#: Inventory/src/Inventory/Model/Constants.php:70
+#: Inventory/src/Inventory/Model/Constants.php:75
 msgid ""
 "Spare part, materials will be issued for Production Order.<br>Production "
 "Order must be given! "
 msgstr ""
 
-#: Inventory/src/Inventory/Model/Constants.php:77
+#: Inventory/src/Inventory/Model/Constants.php:79
 msgid "Issue for Repairing"
 msgstr "Xuất để sủa chữa"
 
-#: Inventory/src/Inventory/Model/Constants.php:78
+#: Inventory/src/Inventory/Model/Constants.php:80
 msgid ""
 "Spare part, materials will be repaired by external party. After repaired, "
 "part will be received again"
 msgstr ""
 
-#: Inventory/src/Inventory/Model/Constants.php:82
+#: Inventory/src/Inventory/Model/Constants.php:84
 msgid "Issue for Maintenance Work"
 msgstr "Xuất cho Bảo trì"
 
-#: Inventory/src/Inventory/Model/Constants.php:83
+#: Inventory/src/Inventory/Model/Constants.php:85
 msgid "Spare part, materials will be issued for maintenance  worked."
 msgstr ""
 
-#: Inventory/src/Inventory/Model/Constants.php:87
+#: Inventory/src/Inventory/Model/Constants.php:89
 msgid "Issue for Asset"
 msgstr "Xuất cho tài sản khác"
 
-#: Inventory/src/Inventory/Model/Constants.php:88
+#: Inventory/src/Inventory/Model/Constants.php:90
 msgid ""
 "Spare part, materials will be issued for an asset. Asset ID is required."
 msgstr ""
 
-#: Inventory/src/Inventory/Model/Constants.php:92
+#: Inventory/src/Inventory/Model/Constants.php:94
 msgid "Issue for return PO"
 msgstr "Xuất để trả lại cho đơn hàng (nhà cung cấp)"
 
-#: Inventory/src/Inventory/Model/Constants.php:93
+#: Inventory/src/Inventory/Model/Constants.php:95
 msgid "goods will be issued for returning to supplier. PO is required!"
 msgstr ""
 
-#: Inventory/src/Inventory/Model/Constants.php:97
+#: Inventory/src/Inventory/Model/Constants.php:99
 msgid "Issue for diposal"
 msgstr "Xuất để tiêu hủy"
 
-#: Inventory/src/Inventory/Model/Constants.php:98
+#: Inventory/src/Inventory/Model/Constants.php:100
 msgid "goods will be disposed.PO is required!"
 msgstr ""
 
@@ -2062,7 +2073,7 @@ msgstr ""
 
 #: Inventory/view/inventory/gi/add.phtml:85
 #: Inventory/view/inventory/gi/review.phtml:100
-#: Inventory/view/inventory/gi/show.phtml:91
+#: Inventory/view/inventory/gi/show.phtml:96
 #: Inventory/view/inventory/item-transaction/gi.phtml:84
 msgid "Source Warehouse"
 msgstr "Kho"
@@ -2265,6 +2276,16 @@ msgstr ""
 #: Procure/view/procure/pr/show.phtml:68
 msgid "PR#"
 msgstr ""
+
+#~ msgid ""
+#~ "Issue part for repairing of machine. The requester must return old /"
+#~ "defect part"
+#~ msgstr ""
+#~ "Xuất đổi để sửa chữa Máy móc (Thay thế). Người yêu cầu phải nộp lại các "
+#~ "bộ phận bị hỏng cần thay thế."
+
+#~ msgid "Issue for reparing machine (no exchange)"
+#~ msgstr "Xuất để sửa chữa Máy móc (không xuất đổi)"
 
 #~ msgid "Locked"
 #~ msgstr "Đã khóa"

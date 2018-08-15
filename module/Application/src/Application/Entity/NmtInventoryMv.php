@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryMv
  *
- * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"})})
+ * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_mv_FK4_idx", columns={"currency_id"})})
  * @ORM\Entity
  */
 class NmtInventoryMv
@@ -27,13 +27,6 @@ class NmtInventoryMv
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="currency_id", type="integer", nullable=true)
-     */
-    private $currencyId;
 
     /**
      * @var string
@@ -246,6 +239,27 @@ class NmtInventoryMv
     private $movementFlow;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="movement_type_memo", type="text", length=65535, nullable=true)
+     */
+    private $movementTypeMemo;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="doc_currency_id", type="integer", nullable=true)
+     */
+    private $docCurrencyId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="local_currency_id", type="integer", nullable=true)
+     */
+    private $localCurrencyId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -274,6 +288,16 @@ class NmtInventoryMv
      * })
      */
     private $postingPeriod;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="currency_id", referencedColumnName="id")
+     * })
+     */
+    private $currency;
 
 
 
@@ -309,30 +333,6 @@ class NmtInventoryMv
     public function getToken()
     {
         return $this->token;
-    }
-
-    /**
-     * Set currencyId
-     *
-     * @param integer $currencyId
-     *
-     * @return NmtInventoryMv
-     */
-    public function setCurrencyId($currencyId)
-    {
-        $this->currencyId = $currencyId;
-
-        return $this;
-    }
-
-    /**
-     * Get currencyId
-     *
-     * @return integer
-     */
-    public function getCurrencyId()
-    {
-        return $this->currencyId;
     }
 
     /**
@@ -1056,6 +1056,78 @@ class NmtInventoryMv
     }
 
     /**
+     * Set movementTypeMemo
+     *
+     * @param string $movementTypeMemo
+     *
+     * @return NmtInventoryMv
+     */
+    public function setMovementTypeMemo($movementTypeMemo)
+    {
+        $this->movementTypeMemo = $movementTypeMemo;
+
+        return $this;
+    }
+
+    /**
+     * Get movementTypeMemo
+     *
+     * @return string
+     */
+    public function getMovementTypeMemo()
+    {
+        return $this->movementTypeMemo;
+    }
+
+    /**
+     * Set docCurrencyId
+     *
+     * @param integer $docCurrencyId
+     *
+     * @return NmtInventoryMv
+     */
+    public function setDocCurrencyId($docCurrencyId)
+    {
+        $this->docCurrencyId = $docCurrencyId;
+
+        return $this;
+    }
+
+    /**
+     * Get docCurrencyId
+     *
+     * @return integer
+     */
+    public function getDocCurrencyId()
+    {
+        return $this->docCurrencyId;
+    }
+
+    /**
+     * Set localCurrencyId
+     *
+     * @param integer $localCurrencyId
+     *
+     * @return NmtInventoryMv
+     */
+    public function setLocalCurrencyId($localCurrencyId)
+    {
+        $this->localCurrencyId = $localCurrencyId;
+
+        return $this;
+    }
+
+    /**
+     * Get localCurrencyId
+     *
+     * @return integer
+     */
+    public function getLocalCurrencyId()
+    {
+        return $this->localCurrencyId;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -1125,5 +1197,29 @@ class NmtInventoryMv
     public function getPostingPeriod()
     {
         return $this->postingPeriod;
+    }
+
+    /**
+     * Set currency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $currency
+     *
+     * @return NmtInventoryMv
+     */
+    public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 }

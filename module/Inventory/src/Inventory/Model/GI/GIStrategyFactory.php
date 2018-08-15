@@ -19,4 +19,16 @@ class GIStrategyFactory
                 throw new \Exception("Unknown Movement Type!");
         }
     }
+    
+    
+    public static function getGIType($tTransaction)
+    {
+        switch ($tTransaction) {
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE:
+                return new GIforRepairMachine();
+            default:
+                throw new \Exception("Unknown Movement Type!");
+        }
+    }
+    
 }

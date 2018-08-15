@@ -93,10 +93,11 @@ class GIforRepairMachine extends AbstractGIStrategy
         // Create JE
         
         $cur = $u->getCompany()->getDefaultCurrency();
+        
 
         $je = new \Application\Entity\FinJe();
         $je->setCurrency($cur);
-        $je->setLocalCurrency($entity->getCurrencyId());
+        $je->setLocalCurrency($cur);
         $je->setExchangeRate($entity->getExchangeRate());
 
         $je->setPostingDate($entity->getMovementDate());
@@ -127,6 +128,7 @@ class GIforRepairMachine extends AbstractGIStrategy
 
             // update FIFO Layer
             $cogs = $fifoLayerService->valuateTrx($r, $r->getItem(), $r->getQuantity(), $u);
+            $r->setCogsDoc($cogs);
 
             // Take defect part back to stock.
             $item_ex = new \Application\Entity\NmtInventoryItemExchange();
@@ -138,7 +140,7 @@ class GIforRepairMachine extends AbstractGIStrategy
             $item_ex->setCreatedOn($r->getTrxDate());
             $item_ex->setWh($r->getWh());
             $item_ex->setTrx($r);
-            $item_ex->setRemarks("Auto Receipt of old/defect part back into store!");
+            $item_ex->setRemarks("Auto receipt old/defect part back into store!");
             $this->contextService->getDoctrineEM()->persist($item_ex);
 
             // generate JE voucher.

@@ -36,7 +36,9 @@ class GIService extends AbstractInventoryService
         }
 
         $giStrategy->check($trx, $trx->getItem(), $u);
-
+        
+        $trx->setTrxDate($target->getMovementDate());
+        $trx->setDocCurrency($target->getCurrency());
         $this->getDoctrineEM()->persist($trx);
     }
 

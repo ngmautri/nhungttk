@@ -159,18 +159,9 @@ class GIController extends AbstractActionController
 
             if ($movementType == null) {
                 $errors[] = 'Goods Issue Type is not valid!';
-            } else {
-                
-                $giType = \Inventory\Model\Constants::getGoodsIssueType($movementType, $nmtPlugin->getTranslator());
-                if($giType!==null)                {
-                    $entity->setMovementType($movementType);
-                    $entity->setMovementTypeMemo($giType['type_desciption']);
-                }else{
-                    $errors[] = $nmtPlugin->translate('Goods Issue type is not supported');
-                }
-                
+            } else{
+                $entity->setMovementType($movementType);
             }
-
             $validator = new Date();
 
             if ($movementDate !== null) {

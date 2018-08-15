@@ -13,7 +13,7 @@ class GIStrategyFactory
     public static function getGIStrategy($tTransaction)
     {
         switch ($tTransaction) {
-            case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE:
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX:
                 return new GIforRepairMachine();
             default:
                 throw new \Exception("Unknown Movement Type!");

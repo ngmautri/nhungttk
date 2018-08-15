@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-12 15:45+0700\n"
-"PO-Revision-Date: 2018-08-12 15:51+0700\n"
+"POT-Creation-Date: 2018-08-15 08:10+0700\n"
+"PO-Revision-Date: 2018-08-15 08:14+0700\n"
 "Last-Translator: \n"
 "Language-Team: Arabic <>\n"
 "Language: vi_VN\n"
@@ -195,8 +195,6 @@ msgid "System Information"
 msgstr "Thông tin hệ thống"
 
 #: Finance/src/Finance/Controller/VInvoiceController.php:107
-#: Inventory/src/Inventory/Controller/GIController.php:152
-#: Inventory/src/Inventory/Controller/GIController.php:341
 #: Procure/src/Procure/Controller/GrController.php:157
 #: Procure/src/Procure/Controller/GrController.php:525
 #: Procure/src/Procure/Controller/GrController.php:765
@@ -219,7 +217,6 @@ msgstr "Tỷ giá không hợp lệ."
 
 #: Finance/src/Finance/Controller/VInvoiceController.php:163
 #: Finance/src/Finance/Controller/VInvoiceController.php:490
-#: Inventory/src/Inventory/Controller/GIController.php:390
 #: Procure/src/Procure/Controller/GrController.php:574
 msgid "Currency can't be empty. Please select a Currency!"
 msgstr "Đơn vị tiền không hợp lệ. Vui lòng nhập Đơn vị tiền tệ!"
@@ -240,13 +237,11 @@ msgstr "Ngày nhận hàng không hợp lệ!"
 
 #: Finance/src/Finance/Controller/VInvoiceController.php:398
 #: Finance/src/Finance/Controller/VInvoiceController.php:644
-#: Inventory/src/Inventory/Controller/GIController.php:512
 #: Procure/src/Procure/Controller/GrController.php:685
 msgid "Document is incomplete!"
 msgstr "Chứng từ chưa hoàn thiện!"
 
 #: Finance/src/Finance/Controller/VInvoiceController.php:471
-#: Inventory/src/Inventory/Controller/GIController.php:371
 #: Procure/src/Procure/Controller/GrController.php:555
 msgid "FX rate is not valid. It must be a number."
 msgstr "Tỷ giá không hợp lệ."
@@ -334,49 +329,128 @@ msgstr ""
 msgid "Submision for Approval"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/GIController.php:374
-#: Procure/src/Procure/Controller/GrController.php:558
-msgid "FX rate must be greate than 0!"
+#: Inventory/src/Inventory/Controller/GIController.php:327
+#, fuzzy
+#| msgid "Invoice Date is not correct or empty!"
+msgid "Transaction Date is not correct or empty!"
+msgstr "Ngày Hóa Đơn không hợp lệ!"
+
+#: Inventory/src/Inventory/Controller/GIRowController.php:115
+msgid "No Item is not select"
 msgstr ""
 
-#: Inventory/src/Inventory/Controller/GIController.php:396
-#: Procure/src/Procure/Controller/GrController.php:173
-#: Procure/src/Procure/Controller/GrController.php:580
+#: Inventory/src/Inventory/Controller/GIRowController.php:118
+msgid "Item is not kept in stock"
+msgstr ""
+
+#: Inventory/src/Inventory/Controller/GIRowController.php:129
 #, fuzzy
-#| msgid "Good receipt Date is not valid!"
-msgid "Goods receipt Date is not correct or empty!"
-msgstr "Ngày nhận hàng không hợp lệ!"
+#| msgid "FX rate is not valid. It must be a number."
+msgid "Quantity must be a number!"
+msgstr "Tỷ giá không hợp lệ."
 
-#: Inventory/src/Inventory/Model/Constants.php:36
-msgid "Issue for reparing machine"
-msgstr "Xuất để sửa chữa Máy móc"
+#: Inventory/src/Inventory/Controller/GIRowController.php:132
+#, fuzzy
+#| msgid "Foreign exchange rate is not valid. It must be a number."
+msgid "Quantity must be greater than 0!"
+msgstr "Tỷ giá không hợp lệ."
 
-#: Inventory/src/Inventory/Model/Constants.php:37
-msgid "Issue for Project (incl.IE)"
-msgstr "Xuất cho Dự án"
+#: Inventory/src/Inventory/Model/Constants.php:47
+msgid "Issue for reparing machine (exchange of part)"
+msgstr "Xuất để sửa chữa Máy móc (Có xuất đổi)"
 
-#: Inventory/src/Inventory/Model/Constants.php:38
+#: Inventory/src/Inventory/Model/Constants.php:48
+msgid ""
+"Issue part for repairing of machine. The requester must exchange old /defect "
+"part"
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:52
+msgid "Issue for reparing machine (no exchange)"
+msgstr "Xuất để sửa chữa Máy móc (không xuất đổi)"
+
+#: Inventory/src/Inventory/Model/Constants.php:53
+msgid ""
+"Issue part for repairing of machine. The requester must not give any part"
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:57
+msgid "Issue for Project (e.g IE Project)"
+msgstr "Xuất cho Dự án (v.d. Dự án IE)"
+
+#: Inventory/src/Inventory/Model/Constants.php:58
+msgid ""
+"Spare part, materials will be consumpted by the project.<br>Project must be "
+"given! "
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:62
 msgid "Issue for Cost Center"
 msgstr ""
 "Xuất dung cho bô phận\n"
 "\n"
 "          "
 
-#: Inventory/src/Inventory/Model/Constants.php:39
+#: Inventory/src/Inventory/Model/Constants.php:63
+msgid ""
+"Spare part, materials will be consumpted by an cost center.<br>Cost Center "
+"must be given! "
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:67
+#: Inventory/src/Inventory/Model/Constants.php:72
 msgid "Issue for Production Order"
 msgstr "Xuất theo Lệnh sản xuất"
 
-#: Inventory/src/Inventory/Model/Constants.php:40
+#: Inventory/src/Inventory/Model/Constants.php:68
+#: Inventory/src/Inventory/Model/Constants.php:73
+msgid ""
+"Spare part, materials will be issued for Production Order.<br>Production "
+"Order must be given! "
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:77
 msgid "Issue for Repairing"
 msgstr "Xuất để sủa chữa"
 
-#: Inventory/src/Inventory/Model/Constants.php:41
+#: Inventory/src/Inventory/Model/Constants.php:78
+msgid ""
+"Spare part, materials will be repaired by external party. After repaired, "
+"part will be received again"
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:82
 msgid "Issue for Maintenance Work"
 msgstr "Xuất cho Bảo trì"
 
-#: Inventory/src/Inventory/Model/Constants.php:42
+#: Inventory/src/Inventory/Model/Constants.php:83
+msgid "Spare part, materials will be issued for maintenance  worked."
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:87
 msgid "Issue for Asset"
 msgstr "Xuất cho tài sản khác"
+
+#: Inventory/src/Inventory/Model/Constants.php:88
+msgid ""
+"Spare part, materials will be issued for an asset. Asset ID is required."
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:92
+msgid "Issue for return PO"
+msgstr "Xuất để trả lại cho đơn hàng (nhà cung cấp)"
+
+#: Inventory/src/Inventory/Model/Constants.php:93
+msgid "goods will be issued for returning to supplier. PO is required!"
+msgstr ""
+
+#: Inventory/src/Inventory/Model/Constants.php:97
+msgid "Issue for diposal"
+msgstr "Xuất để tiêu hủy"
+
+#: Inventory/src/Inventory/Model/Constants.php:98
+msgid "goods will be disposed.PO is required!"
+msgstr ""
 
 #: Inventory/view/inventory/gi-create-wizard.php:3
 #: Inventory/view/inventory/gi-create-wizard.php:6
@@ -398,6 +472,17 @@ msgstr ""
 #| msgid "Currency can't be empty. Please select a Currency!"
 msgid "Currency can't be empty. Please select a currency!"
 msgstr "Đơn vị tiền không hợp lệ. Vui lòng nhập Đơn vị tiền tệ!"
+
+#: Procure/src/Procure/Controller/GrController.php:173
+#: Procure/src/Procure/Controller/GrController.php:580
+#, fuzzy
+#| msgid "Good receipt Date is not valid!"
+msgid "Goods receipt Date is not correct or empty!"
+msgstr "Ngày nhận hàng không hợp lệ!"
+
+#: Procure/src/Procure/Controller/GrController.php:558
+msgid "FX rate must be greate than 0!"
+msgstr ""
 
 #: Procure/view/procure/create-wizard.php:3
 #: Procure/view/procure/create-wizard.php:7
@@ -1123,7 +1208,7 @@ msgid "New Row"
 msgstr "Thêm dòng"
 
 #: Finance/view/finance/v-invoice-row/add.phtml:50
-#: Inventory/view/inventory/gi-row/add.phtml:39
+#: Inventory/view/inventory/gi-row/add.phtml:42
 #: Inventory/view/inventory/gr-row/add.phtml:39
 #: Procure/view/procure/gr-row/add.phtml:45
 #: Procure/view/procure/po-row/add.phtml:39
@@ -1147,8 +1232,6 @@ msgstr "Tên Hàng Hóa"
 
 #: Finance/view/finance/v-invoice/review.phtml:65
 #: Finance/view/finance/v-invoice/review.phtml:326
-#: Inventory/view/inventory/gi/review.phtml:59
-#: Inventory/view/inventory/gi/review.phtml:277
 #: Inventory/view/inventory/item-transaction/gi.phtml:167
 #: Procure/view/procure/gr/review.phtml:59
 #: Procure/view/procure/gr/review.phtml:277
@@ -1156,21 +1239,20 @@ msgid "Document can't be changed anymore when submitted!"
 msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
 
 #: Finance/view/finance/v-invoice/review.phtml:77
-#: Inventory/view/inventory/gi/review.phtml:71
+#: Inventory/view/inventory/gi/review.phtml:29
 #: Inventory/view/inventory/item-transaction/gi.phtml:146
 #: Procure/view/procure/gr/review.phtml:71
 msgid "Post"
 msgstr "Ghi sổ"
 
 #: Finance/view/finance/v-invoice/review.phtml:323
-#: Inventory/view/inventory/gi/review.phtml:274
 #: Inventory/view/inventory/item-transaction/gi.phtml:164
 #: Procure/view/procure/gr/review.phtml:274
 msgid " will be posted!"
 msgstr " sẽ được ghi sổ!"
 
 #: Finance/view/finance/v-invoice/review.phtml:331
-#: Inventory/view/inventory/gi/review.phtml:282
+#: Inventory/view/inventory/gi/review.phtml:157
 #: Inventory/view/inventory/item-transaction/gi.phtml:172
 #: Procure/view/procure/gr/review.phtml:282
 msgid "Do you want to continue?"
@@ -1189,6 +1271,8 @@ msgstr "Bạn có muốn thực hiện không?"
 #: HR/view/hr/salary/list2.phtml:42 HR/view/hr/salary/list2.phtml:52
 #: HR/view/hr/sso/index.phtml:34 HR/view/hr/sso/index.phtml:44
 #: Inventory/view/inventory/item-serial/list.phtml:101
+#: Inventory/view/inventory/item-transaction/list.phtml:188
+#: Inventory/view/inventory/item-transaction/list.phtml:193
 msgid "Show"
 msgstr "Xem"
 
@@ -1976,10 +2060,26 @@ msgstr ""
 msgid "U/P LAK"
 msgstr ""
 
-#: Inventory/view/inventory/gi/add.phtml:79
+#: Inventory/view/inventory/gi/add.phtml:85
+#: Inventory/view/inventory/gi/review.phtml:100
+#: Inventory/view/inventory/gi/show.phtml:91
 #: Inventory/view/inventory/item-transaction/gi.phtml:84
 msgid "Source Warehouse"
 msgstr "Kho"
+
+#: Inventory/view/inventory/gi/review.phtml:149
+#, fuzzy
+#| msgid " will be posted!"
+msgid " Good issue will be posted!"
+msgstr " sẽ được ghi sổ!"
+
+#: Inventory/view/inventory/gi/review.phtml:152
+#, fuzzy
+#| msgid "Document can't be changed anymore when submitted!"
+msgid ""
+"Document can't be changed anymore when submitted! <br> Journal entry will be "
+"created automatically!"
+msgstr "Chứng từ không thể thay đổi khi đã ghi sổ!"
 
 #: Inventory/view/inventory/item-batch/assign.phtml:36
 #: Inventory/view/inventory/item-serial/assign.phtml:36
@@ -2000,6 +2100,49 @@ msgstr "Số Seri"
 #: Inventory/view/inventory/serial-number/list.phtml:122
 msgid "Item"
 msgstr "Hàng Hóa"
+
+#: Inventory/view/inventory/item-transaction/list.phtml:5
+#: Procure/view/procure/gr/list.phtml:5
+#, fuzzy
+#| msgid "Project List"
+msgid "Goods Receipt List"
+msgstr "Danh sách Dự án /Công việc"
+
+#: Inventory/view/inventory/item-transaction/list.phtml:141
+#: Procure/view/procure/gr/list.phtml:134
+msgid "Ref.No."
+msgstr ""
+
+#: Inventory/view/inventory/item-transaction/list.phtml:142
+#: Procure/view/procure/gr/list.phtml:135
+msgid "Doc Status"
+msgstr "Trạng thái tài liệu"
+
+#: Inventory/view/inventory/item-transaction/list.phtml:143
+#: Procure/view/procure/gr/list.phtml:136
+#, fuzzy
+#| msgid "Status"
+msgid "Trx Status"
+msgstr "Trạng thái"
+
+#: Inventory/view/inventory/item-transaction/list.phtml:145
+#: Procure/view/procure/gr/list.phtml:138
+msgid "Receipt Date"
+msgstr ""
+
+#: Inventory/view/inventory/item-transaction/list.phtml:146
+#: Procure/view/procure/gr/list.phtml:139
+msgid "Draft"
+msgstr "Bản nháp"
+
+#: Inventory/view/inventory/item-transaction/list.phtml:147
+#: Procure/view/procure/gr/list.phtml:140
+msgid "Posted"
+msgstr "Đã ghi sổ"
+
+#: Inventory/view/inventory/item-transaction/list.phtml:149
+msgid "Movement Type"
+msgstr ""
 
 #: Inventory/view/inventory/item/edit.phtml:36
 msgid "Item#"
@@ -2107,38 +2250,6 @@ msgstr ""
 #: Procure/view/procure/return/add1.phtml:53
 msgid "Create A/P Invoice from this P/O"
 msgstr ""
-
-#: Procure/view/procure/gr/list.phtml:5
-#, fuzzy
-#| msgid "Project List"
-msgid "Goods Receipt List"
-msgstr "Danh sách Dự án /Công việc"
-
-#: Procure/view/procure/gr/list.phtml:134
-msgid "Ref.No."
-msgstr ""
-
-#: Procure/view/procure/gr/list.phtml:135
-msgid "Doc Status"
-msgstr "Trạng thái tài liệu"
-
-#: Procure/view/procure/gr/list.phtml:136
-#, fuzzy
-#| msgid "Status"
-msgid "Trx Status"
-msgstr "Trạng thái"
-
-#: Procure/view/procure/gr/list.phtml:138
-msgid "Receipt Date"
-msgstr ""
-
-#: Procure/view/procure/gr/list.phtml:139
-msgid "Draft"
-msgstr "Bản nháp"
-
-#: Procure/view/procure/gr/list.phtml:140
-msgid "Posted"
-msgstr "Đã ghi sổ"
 
 #: Procure/view/procure/gr/list.phtml:142
 msgid "Vendor"

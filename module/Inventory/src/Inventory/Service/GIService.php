@@ -61,7 +61,7 @@ class GIService extends AbstractInventoryService
         $postingStrategy = GIStrategyFactory::getGIStrategy($entity->getMovementType());
         
         if(!$postingStrategy instanceof AbstractGIStrategy){
-            throw new \Exception("Posting Strategy  can't not be identified for this transaction");
+            throw new \Exception("Posting Strategy can't not be identified for this inventory movement type!");
         }
         
         // do posting now

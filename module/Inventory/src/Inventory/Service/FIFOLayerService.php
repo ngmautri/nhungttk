@@ -45,8 +45,7 @@ class FIFOLayerService extends AbstractInventoryService
      */
     public function valuateTrx($trx, $item, $issuedQuantity, $u)
     {
-        $cost = 0;
-
+     
         if ($trx == null) {
             throw new \Exception("Invalid Argurment!");
         }
@@ -77,7 +76,10 @@ class FIFOLayerService extends AbstractInventoryService
         if (count($layers) == 0) {
             throw new \Exception("Goods Issue imposible. No FIFO Layer found!");
         }
-                
+        
+        
+        $cogs = 0;
+        
         $total_onhand = 0;
         $totalIssueQty= $issuedQuantity;
         
@@ -102,6 +104,8 @@ class FIFOLayerService extends AbstractInventoryService
 
                 // create comsuption of all, close this layer
                 $consumpted_qty = $on_hand;
+                 
+                
                 $layer->setOnhandQuantity(0);
                 $layer->setIsClosed(1);
                 $layer->setClosedOn($trx->getTrxDate());               
@@ -113,6 +117,9 @@ class FIFOLayerService extends AbstractInventoryService
                 $layer->setOnhandQuantity($on_hand - $issuedQuantity);
                 $issuedQuantity = 0;
             }
+            
+            $cogs =  $cogs + $consumpted_qty*$layer->getDocUnitPrice()*$layer->getExchangeRate();
+            
 
             $this->getDoctrineEM()->persist($layer);
             
@@ -125,6 +132,7 @@ class FIFOLayerService extends AbstractInventoryService
                 $fifo_consume->setItem($layer->getItem());
                 $fifo_consume->setQuantity($consumpted_qty);
                 $fifo_consume->setDocUnitPrice($layer->getDocUnitPrice());
+                
                 $fifo_consume->setLayer($layer);
                 $fifo_consume->setInventoryTrx($trx);
                 $fifo_consume->setCreatedOn($trx->getTrxDate());
@@ -139,7 +147,7 @@ class FIFOLayerService extends AbstractInventoryService
         }
          
    
-        return $cost;
+        return $cogs;
     }
 
     /**

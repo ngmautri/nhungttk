@@ -131,6 +131,11 @@ class GIController extends AbstractActionController
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
+        
+        $localCurrency=null;
+        if($u->getCompany()!==null){
+            $localCurrency = $u->getCompany()->getDefaultCurrency();
+        }
 
         // Is Posing
         // =============================
@@ -156,9 +161,17 @@ class GIController extends AbstractActionController
             $entity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_OUT);
             $entity->setIsActive($isActive);
             $entity->setCurrentState($currentState);
+            
+            if($localCurrency==null){
+                $errors[] = $nmtPlugin->translate("Local currency is not defined. Please check!");
+                
+            }else{
+                $entity->setCurrency($localCurrency);
+            }
+            
 
             if ($movementType == null) {
-                $errors[] = 'Goods Issue Type is not valid!';
+                $errors[] = $nmtPlugin->translate('Goods Issue Type is not valid!');
             } else{
                 $entity->setMovementType($movementType);
             }
@@ -166,7 +179,7 @@ class GIController extends AbstractActionController
 
             if ($movementDate !== null) {
                 if (! $validator->isValid($movementDate)) {
-                    $errors[] = 'Goods Issue Date is not correct or empty!';
+                    $errors[] = $nmtPlugin->translate('Goods Issue Date is not correct or empty!');
                 } else {
                     $entity->setMovementDate(new \DateTime($movementDate));
                 }
@@ -180,7 +193,7 @@ class GIController extends AbstractActionController
             if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
                 $entity->setWarehouse($warehouse);
             } else {
-                $errors[] = 'Warehouse can\'t be empty. Please select a Wahrhouse!';
+                $errors[] = $nmtPlugin->translate('Warehouse can\'t be empty. Please select a Wahrhouse!');
             }
 
             $entity->setRemarks($remarks);
@@ -200,10 +213,9 @@ class GIController extends AbstractActionController
             // ++++++++++++++++++++++++++++++
 
             $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
-
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
             $entity->setIsDraft(1);
-            // $entity->setIsPosted(0);
+            $entity->setIsPosted(0);
 
             $createdOn = new \DateTime();
             $entity->setCreatedBy($u);
@@ -243,7 +255,8 @@ class GIController extends AbstractActionController
         if ($default_wh !== null) {
             $entity->setWarehouse($default_wh);
         }
-
+        
+     
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,

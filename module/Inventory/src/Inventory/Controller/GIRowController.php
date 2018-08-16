@@ -86,9 +86,11 @@ class GIRowController extends AbstractActionController
 
                 $item_id = $request->getPost('item_id');
                 $issue_for_id = $request->getPost('issue_for_id');
-
                 $isActive = (int) $request->getPost('isActive');
                 $quantity = $request->getPost('quantity');
+                $project_id = (int) $request->getPost('project_id');
+                $cost_center_id = (int) $request->getPost('cost_center_id');
+
                 $remarks = $request->getPost('remarks');
 
                 if ($isActive !== 1) {
@@ -97,6 +99,7 @@ class GIRowController extends AbstractActionController
 
                 // Inventory Transaction:
                 $entity = new NmtInventoryTrx();
+
                 $entity->setFlow($target->getMovementFlow());
                 $entity->setWh($target->getWarehouse());
                 $entity->setIsActive($isActive);
@@ -105,14 +108,26 @@ class GIRowController extends AbstractActionController
                 /**@var \Application\Entity\NmtInventoryItem $item ;*/
                 $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
 
-                $for_item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($issue_for_id);
-
-                if ($for_item !== null) {
+                $for_item = null;
+                if ($issue_for_id > 0) {
+                    $for_item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($issue_for_id);
                     $entity->setIssueFor($for_item);
                 }
 
+                $project = null;
+                if ($project_id > 0) {
+                    $project = $this->doctrineEM->getRepository('Application\Entity\NmtPmProject')->find($project_id);
+                    $entity->setProject($project);
+                }
+
+                $costCenter = null;
+                if ($cost_center_id > 0) {
+                    $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
+                    $entity->setCostCenter($costCenter);
+                }
+
                 if ($item == null) {
-                    $errors[] = $nmtPlugin->translate('No Item is not select');
+                    $errors[] = $nmtPlugin->translate('No Item is  selected');
                 } else {
                     if ($item->getIsStocked() != 1) {
                         $errors[] = $nmtPlugin->translate('Item is not kept in stock');
@@ -509,8 +524,8 @@ class GIRowController extends AbstractActionController
 
             $list = $this->doctrineEM->createQuery($query)
                 ->setParameters(array(
-                "1" => $target,
-             ))
+                "1" => $target
+            ))
                 ->getResult();
 
             $total_records = 0;
@@ -526,7 +541,6 @@ class GIRowController extends AbstractActionController
                     $a_json_row["row_token"] = $a->getToken();
                     $a_json_row["row_quantity"] = $a->getQuantity();
 
-                   
                     $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
@@ -546,7 +560,7 @@ class GIRowController extends AbstractActionController
                     $a_json_row["item_sku"] = $a->getItem()->getItemSku();
                     $a_json_row["item_token"] = $a->getItem()->getToken();
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
-               
+
                     $a_json[] = $a_json_row;
                 }
             }

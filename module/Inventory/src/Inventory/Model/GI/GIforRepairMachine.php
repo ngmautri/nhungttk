@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Model\GI;
 
-use Zend\Math\Rand;
+
 use Inventory\Service\FIFOLayerService;
 
 /**
@@ -45,16 +45,10 @@ class GIforRepairMachine extends AbstractGIStrategy
         }
 
         if ($trx->getIssueFor() === $item) {
-            throw new \Exception("Invalid Argument! transaction is not posible!");
+            throw new \Exception("Invalid Argument! It is not posible to use the same item. Please select other!");
         }
 
-        // check on-hand quantity.
-
-        $trx->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
-        $trx->setCreatedBy($u);
-        $trx->setCreatedOn(new \DateTime());
-    }
+       }
 
     /**
      *
@@ -81,6 +75,8 @@ class GIforRepairMachine extends AbstractGIStrategy
 
         $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
         $entity->setIsDraft(0);
+        $entity->setIsPosted(1);
+        
         $this->contextService->getDoctrineEM()->persist($entity);
 
         $fifoLayerService = new FIFOLayerService();
@@ -90,14 +86,10 @@ class GIforRepairMachine extends AbstractGIStrategy
         $total_credit = 0;
         $total_local_credit = 0;
 
-        // Create JE
-        
-        $cur = $u->getCompany()->getDefaultCurrency();
-        
-
+        // Create JE     
         $je = new \Application\Entity\FinJe();
-        $je->setCurrency($cur);
-        $je->setLocalCurrency($cur);
+        $je->setCurrency($entity->getCurrency());
+        $je->setLocalCurrency($entity->getCurrency());
         $je->setExchangeRate($entity->getExchangeRate());
 
         $je->setPostingDate($entity->getMovementDate());
@@ -128,9 +120,9 @@ class GIforRepairMachine extends AbstractGIStrategy
 
             // update FIFO Layer
             $cogs = $fifoLayerService->valuateTrx($r, $r->getItem(), $r->getQuantity(), $u);
-            $r->setCogsDoc($cogs);
-
-            // Take defect part back to stock.
+            $r->setCogsLocal($cogs);
+            
+            // Exchanging Part.
             $item_ex = new \Application\Entity\NmtInventoryItemExchange();
             $item_ex->setItem($r->getItem());
             $item_ex->setMovementType($entity->getMovementType());
@@ -207,6 +199,10 @@ class GIforRepairMachine extends AbstractGIStrategy
             $n = $n + 1;
             $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
             $this->contextService->getDoctrineEM()->persist($je_row);
+        }
+        
+        if($entity->getSysNumber()==\Application\Model\Constants::SYS_NUMBER_UNASSIGNED){
+            $entity->setSysNumber('GI-'.$this->contextService->getControllerPlugin()->getDocNumber($entity));
         }
 
         $this->contextService->getDoctrineEM()->flush();

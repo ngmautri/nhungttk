@@ -10,7 +10,7 @@
 <?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
         echo '<li>' . $error . '</li>';
@@ -37,7 +37,8 @@ if (count($errors) > 0) {
 		<div class="row">
 			<!-- ROW-->
 
-			<div class="col-xs-5 col-md-2" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+			<div class="col-xs-5 col-md-2"
+				style="font-size: 9pt; padding: 10px 10px 1px 5px">
 				<!-- C1 -->
   
 
@@ -70,7 +71,8 @@ if (count($errors) > 0) {
 				<!-- C1 ends-->
 			</div>
 
-			<div class="col-xs-12 col-sm-6 col-md-10" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+			<div class="col-xs-12 col-sm-6 col-md-10"
+				style="font-size: 9pt; padding: 10px 10px 1px 5px">
 				<!-- C2 -->
 
 				<h4>
@@ -171,7 +173,7 @@ if (count($errors) > 0) {
                 endforeach
                 ;
    	    							endif;
-            
+
             ?>
    					</select>
 								</div>
@@ -346,8 +348,8 @@ if (count($errors) > 0) {
 										value="<?php echo (!$entity == null)? $entity->getVendorItemCode():"";?>">
 								</div>
 							</div>
-							
-							
+
+
 							<div class="form-group margin-bottom required">
 
 								<label class="control-label col-sm-2"><?php echo $this->translate("GL Account");?>:</label>
@@ -365,13 +367,13 @@ if (count($errors) > 0) {
                             if ($entity->getGlAccount()->getId() == $gl->getId()) :
                                 echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
                             else :
-                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
                             endif;
                         else :
-                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' .$gl->getDescription() . '</option>';
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
                         endif;
                     else :
-                    echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' .$gl->getDescription() . '</option>';
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
                     endif;
                 endforeach
                 ;
@@ -380,6 +382,38 @@ if (count($errors) > 0) {
             ?>
    					</select>
 								</div>
+
+								<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
+								<div class="col-sm-3">
+									<select name="cost_center_id" class="form-control input-sm">
+										<option value=""><?php echo $this->translate("Select Cost Center");?></option>
+   	    							<?php
+            if ($cost_center_list !== null) :
+                foreach ($cost_center_list as $cc) :
+
+                    /**@var \Application\Entity\FinCostCenter $cc ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getCostCenter() !== null) :
+                            if ($entity->getCostCenter()->getId() == $cc->getId()) :
+                                echo '<option selected value="' . $cc->getId() . '">' . $cc->getCostCenterName() . '</option>';
+                            else :
+                                echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getCostCenterName() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+								</div>
+
 							</div>
 
 							<div class="form-group margin-bottom required">
@@ -398,7 +432,7 @@ if (count($errors) > 0) {
 								</div>
 
 							</div>
-					
+
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
 								<div class="col-sm-3">
@@ -482,8 +516,11 @@ if (count($errors) > 0) {
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;				
 					
 					<?php if($active_row>0):?>
-					<a tabindex="12"  style="color:white;" class="btn btn-primary btn-sm"
-								href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>">A/P Review&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+					<a tabindex="12" style="color: white;"
+										class="btn btn-primary btn-sm"
+										href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>">A/P
+										Review&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>
+									</a>
 					<?php endif;?>				
 										</div>
 							</div>

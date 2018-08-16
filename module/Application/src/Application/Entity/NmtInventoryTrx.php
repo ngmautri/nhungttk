@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryTrx
  *
- * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK16_idx", columns={"gr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx", columns={"inventory_gi_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx1", columns={"inventory_gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK19_idx", columns={"inventory_transfer_id"}), @ORM\Index(name="nmt_inventory_trx_FK20_idx", columns={"gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK21_idx", columns={"movement_id"}), @ORM\Index(name="nmt_inventory_trx_FK22_idx", columns={"issue_for"}), @ORM\Index(name="nmt_inventory_trx_FK23_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK24_idx", columns={"local_currency_id"})})
+ * @ORM\Table(name="nmt_inventory_trx", indexes={@ORM\Index(name="nmt_inventory_trx_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_trx_FK1_idx1", columns={"wh_id"}), @ORM\Index(name="nmt_inventory_trx_FK4_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK7_idx", columns={"pmt_method_id"}), @ORM\Index(name="nmt_inventory_trx_FK5_idx1", columns={"vendor_id"}), @ORM\Index(name="nmt_inventory_trx_FK9_idx", columns={"invoice_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK10_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_trx_FK11_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_trx_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx", columns={"pr_id"}), @ORM\Index(name="nmt_inventory_trx_FK12_idx1", columns={"po_id"}), @ORM\Index(name="nmt_inventory_trx_FK14_idx", columns={"vendor_invoice_id"}), @ORM\Index(name="nmt_inventory_trx_FK15_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK16_idx", columns={"gr_row_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx", columns={"inventory_gi_id"}), @ORM\Index(name="nmt_inventory_trx_FK17_idx1", columns={"inventory_gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK19_idx", columns={"inventory_transfer_id"}), @ORM\Index(name="nmt_inventory_trx_FK20_idx", columns={"gr_id"}), @ORM\Index(name="nmt_inventory_trx_FK21_idx", columns={"movement_id"}), @ORM\Index(name="nmt_inventory_trx_FK22_idx", columns={"issue_for"}), @ORM\Index(name="nmt_inventory_trx_FK23_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK24_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_trx_FK25_idx", columns={"project_id"}), @ORM\Index(name="nmt_inventory_trx_FK26_idx", columns={"cost_center_id"})})
  * @ORM\Entity
  */
 class NmtInventoryTrx
@@ -491,6 +491,26 @@ class NmtInventoryTrx
      * })
      */
     private $localCurrency;
+
+    /**
+     * @var \Application\Entity\NmtPmProject
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtPmProject")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * })
+     */
+    private $project;
+
+    /**
+     * @var \Application\Entity\FinCostCenter
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinCostCenter")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="cost_center_id", referencedColumnName="id")
+     * })
+     */
+    private $costCenter;
 
     /**
      * @var \Application\Entity\NmtProcurePrRow
@@ -1992,6 +2012,54 @@ class NmtInventoryTrx
     public function getLocalCurrency()
     {
         return $this->localCurrency;
+    }
+
+    /**
+     * Set project
+     *
+     * @param \Application\Entity\NmtPmProject $project
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setProject(\Application\Entity\NmtPmProject $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return \Application\Entity\NmtPmProject
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * Set costCenter
+     *
+     * @param \Application\Entity\FinCostCenter $costCenter
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setCostCenter(\Application\Entity\FinCostCenter $costCenter = null)
+    {
+        $this->costCenter = $costCenter;
+
+        return $this;
+    }
+
+    /**
+     * Get costCenter
+     *
+     * @return \Application\Entity\FinCostCenter
+     */
+    public function getCostCenter()
+    {
+        return $this->costCenter;
     }
 
     /**

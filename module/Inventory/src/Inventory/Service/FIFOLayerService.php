@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Service;
 
+use Zend\Math\Rand;
 
 /**
  *
@@ -35,21 +36,20 @@ class FIFOLayerService extends AbstractInventoryService
     }
 
     /**
-     * 
-     *  @param \Application\Entity\NmtInventoryTrx $trx
-     *  @param \Application\Entity\NmtInventoryItem $item
-     *  @param double $issuedQuantity
-     *  @param \Application\Entity\MlaUsers $u
-     *  @throws \Exception
-     *  @return number
+     *
+     * @param \Application\Entity\NmtInventoryTrx $trx
+     * @param \Application\Entity\NmtInventoryItem $item
+     * @param double $issuedQuantity
+     * @param \Application\Entity\MlaUsers $u
+     * @throws \Exception
+     * @return number
      */
     public function valuateTrx($trx, $item, $issuedQuantity, $u)
     {
-     
         if ($trx == null) {
             throw new \Exception("Invalid Argurment!");
         }
-        
+
         if ($item == null) {
             throw new \Exception("Invalid Argurment! Item not found.");
         }
@@ -58,15 +58,14 @@ class FIFOLayerService extends AbstractInventoryService
             throw new \Exception("Nothing to valuate!");
         }
 
-    
         $criteria = array(
             'isClosed' => 0,
-            'item' => $item,
+            'item' => $item
         );
 
         /**
          * Important for FIFO
-         */ 
+         */
         $sort = array(
             'postingDate' => "ASC"
         );
@@ -76,13 +75,12 @@ class FIFOLayerService extends AbstractInventoryService
         if (count($layers) == 0) {
             throw new \Exception("Goods Issue imposible. No FIFO Layer found!");
         }
-        
-        
+
         $cogs = 0;
-        
+
         $total_onhand = 0;
-        $totalIssueQty= $issuedQuantity;
-        
+        $totalIssueQty = $issuedQuantity;
+
         /**
          *
          * @todo Get Layer and caculate Consumption.
@@ -91,8 +89,7 @@ class FIFOLayerService extends AbstractInventoryService
             /**@var \Application\Entity\NmtInventoryFIFOLayer $layer ;*/
 
             $on_hand = $layer->getOnhandQuantity();
-            $total_onhand+= $on_hand;
-            
+            $total_onhand += $on_hand;
 
             if ($issuedQuantity == 0) {
                 break;
@@ -104,49 +101,52 @@ class FIFOLayerService extends AbstractInventoryService
 
                 // create comsuption of all, close this layer
                 $consumpted_qty = $on_hand;
-                 
-                
+
                 $layer->setOnhandQuantity(0);
                 $layer->setIsClosed(1);
-                $layer->setClosedOn($trx->getTrxDate());               
-                
+                $layer->setClosedOn($trx->getTrxDate());
+
                 $issuedQuantity = $issuedQuantity - $consumpted_qty;
-                
             } else {
                 $consumpted_qty = $issuedQuantity;
                 $layer->setOnhandQuantity($on_hand - $issuedQuantity);
                 $issuedQuantity = 0;
             }
-            
-            $cogs =  $cogs + $consumpted_qty*$layer->getDocUnitPrice()*$layer->getExchangeRate();
-            
+
+            $cogs = $cogs + $consumpted_qty * $layer->getDocUnitPrice() * $layer->getExchangeRate();
 
             $this->getDoctrineEM()->persist($layer);
-            
+
             /**
              *
              * @todo Create Layer Consumption
              */
-            if($consumpted_qty > 0){
+            if ($consumpted_qty > 0) {
                 $fifo_consume = new \Application\Entity\NmtInventoryFifoLayerConsume();
+                $fifo_consume->setLayer($layer);
+
                 $fifo_consume->setItem($layer->getItem());
                 $fifo_consume->setQuantity($consumpted_qty);
                 $fifo_consume->setDocUnitPrice($layer->getDocUnitPrice());
+                $fifo_consume->setDocTotalValue($fifo_consume->getQuantity() * $fifo_consume->getDocUnitPrice());
                 
-                $fifo_consume->setLayer($layer);
+                $fifo_consume->setExchangeRate($layer->getExchangeRate());                
+                $fifo_consume->setTotalValue($fifo_consume->getDocTotalValue() * $fifo_consume->getExchangeRate());
+                
                 $fifo_consume->setInventoryTrx($trx);
                 $fifo_consume->setCreatedOn($trx->getTrxDate());
                 $fifo_consume->setCreatedBy($u);
+
+                $trx->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+
                 $this->getDoctrineEM()->persist($fifo_consume);
             }
-            
         }
-        
-        if($total_onhand < $totalIssueQty){
+
+        if ($total_onhand < $totalIssueQty) {
             throw new \Exception("Goods Issue imposible! Issue Quantity > On-hand Quantity");
         }
-         
-   
+
         return $cogs;
     }
 
@@ -187,5 +187,4 @@ class FIFOLayerService extends AbstractInventoryService
 
         // Do create
     }
-   
 }

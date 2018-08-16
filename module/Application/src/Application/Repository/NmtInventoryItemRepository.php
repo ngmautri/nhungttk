@@ -256,10 +256,9 @@ WHERE nmt_inventory_item.id=%s AND nmt_inventory_item.token='%s'
 )
 AS nmt_procure_po_row
 ON nmt_inventory_item.id=nmt_procure_po_row.item_id ";
-        
+
         $join5 = sprintf($join5_tmp, $item_id, $item_token);
-        
-        
+
         // PO_ROW
         $join6_tmp = "
 JOIN
@@ -274,11 +273,8 @@ WHERE nmt_inventory_item.id=%s
 )
 AS nmt_procure_qo_row
 ON nmt_inventory_item.id=nmt_procure_qo_row.item_id ";
-        
+
         $join6 = sprintf($join6_tmp, $item_id);
-        
-        
-        
 
         $sql = "
 SELECT
@@ -292,7 +288,7 @@ SELECT
 	nmt_inventory_item_picture.total_picture
 FROM nmt_inventory_item";
 
-        $sql = $sql . $join1 . $join2 . $join3 . $join4 . $join5.$join6;
+        $sql = $sql . $join1 . $join2 . $join3 . $join4 . $join5 . $join6;
         // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
@@ -303,7 +299,7 @@ FROM nmt_inventory_item";
             $rsm->addScalarResult("total_po_row", "total_po_row");
             $rsm->addScalarResult("total_ap_row", "total_ap_row");
             $rsm->addScalarResult("total_qo_row", "total_qo_row");
-            
+
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getSingleResult();
             return $result;
@@ -722,12 +718,12 @@ where nmt_inventory_serial.is_active=%s AND nmt_inventory_serial.item_id is null
 
     public function getAllItemWithSerial()
     {
-        $sql ='';
+        $sql = '';
         $stmt = $this->_em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
     }
-    
+
     /**
      *
      * @todo GOODS RECEIPT
@@ -745,11 +741,11 @@ LEFT JOIN nmt_inventory_trx
 ON nmt_inventory_trx.movement_id = nmt_inventory_mv.id
 WHERE 1
 ";
-        
+
         $sql = sprintf($sql . " AND nmt_inventory_mv.id = %s AND nmt_inventory_mv.token='%s' Group BY nmt_inventory_trx.movement_id", $id, $token);
-        
-        //echo $sql;
-        
+
+        // echo $sql;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryMv', 'nmt_inventory_mv');
@@ -757,17 +753,52 @@ WHERE 1
             $rsm->addScalarResult("active_row", "active_row");
             $rsm->addScalarResult("total_row", "total_row");
             // echo $sql;
-            
+
             $query = $this->_em->createNativeQuery($sql, $rsm);
-            
+
             $result = $query->getSingleResult();
             return $result;
         } catch (NoResultException $e) {
             return null;
         }
     }
-    
 
+    /**
+     *
+     * @todo GOODS RECEIPT
+     */
+    public function getItemStock($id, $token)
+    {
+        $sql = \Application\Repository\SQL\NmtInventoryItemSQL::ITEM_STOCK_SQL;
+        $sql1 = " AND nmt_inventory_item.id=" . $id;
+
+        $sql = sprintf($sql, $sql1, $sql1, $sql1, $sql1);
+
+        // echo $sql;
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
+            $rsm->addScalarResult("total_gr", "total_gr");
+            $rsm->addScalarResult("total_gr_value", "total_gr_value");
+            $rsm->addScalarResult("total_onhand", "total_onhand");
+            $rsm->addScalarResult("total_onhand_value", "total_onhand_value");
+            $rsm->addScalarResult("total_onhand_local_value", "total_onhand_local_value");
+
+            $rsm->addScalarResult("total_gi", "total_gi");
+            $rsm->addScalarResult("total_gi_value", "total_gi_value");
+            $rsm->addScalarResult("total_ex", "total_ex");
+
+            // echo $sql;
+
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+
+            $result = $query->getSingleResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
    
 }
 

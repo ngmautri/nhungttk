@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryMv
  *
- * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_mv_FK4_idx", columns={"currency_id"})})
+ * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_mv_FK4_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK5_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK6_idx", columns={"local_currency_id"})})
  * @ORM\Entity
  */
 class NmtInventoryMv
@@ -246,18 +246,11 @@ class NmtInventoryMv
     private $movementTypeMemo;
 
     /**
-     * @var integer
+     * @var boolean
      *
-     * @ORM\Column(name="doc_currency_id", type="integer", nullable=true)
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
      */
-    private $docCurrencyId;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="local_currency_id", type="integer", nullable=true)
-     */
-    private $localCurrencyId;
+    private $isPosted;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -298,6 +291,26 @@ class NmtInventoryMv
      * })
      */
     private $currency;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doc_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $docCurrency;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="local_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $localCurrency;
 
 
 
@@ -1080,51 +1093,27 @@ class NmtInventoryMv
     }
 
     /**
-     * Set docCurrencyId
+     * Set isPosted
      *
-     * @param integer $docCurrencyId
+     * @param boolean $isPosted
      *
      * @return NmtInventoryMv
      */
-    public function setDocCurrencyId($docCurrencyId)
+    public function setIsPosted($isPosted)
     {
-        $this->docCurrencyId = $docCurrencyId;
+        $this->isPosted = $isPosted;
 
         return $this;
     }
 
     /**
-     * Get docCurrencyId
+     * Get isPosted
      *
-     * @return integer
+     * @return boolean
      */
-    public function getDocCurrencyId()
+    public function getIsPosted()
     {
-        return $this->docCurrencyId;
-    }
-
-    /**
-     * Set localCurrencyId
-     *
-     * @param integer $localCurrencyId
-     *
-     * @return NmtInventoryMv
-     */
-    public function setLocalCurrencyId($localCurrencyId)
-    {
-        $this->localCurrencyId = $localCurrencyId;
-
-        return $this;
-    }
-
-    /**
-     * Get localCurrencyId
-     *
-     * @return integer
-     */
-    public function getLocalCurrencyId()
-    {
-        return $this->localCurrencyId;
+        return $this->isPosted;
     }
 
     /**
@@ -1221,5 +1210,53 @@ class NmtInventoryMv
     public function getCurrency()
     {
         return $this->currency;
+    }
+
+    /**
+     * Set docCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $docCurrency
+     *
+     * @return NmtInventoryMv
+     */
+    public function setDocCurrency(\Application\Entity\NmtApplicationCurrency $docCurrency = null)
+    {
+        $this->docCurrency = $docCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get docCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getDocCurrency()
+    {
+        return $this->docCurrency;
+    }
+
+    /**
+     * Set localCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $localCurrency
+     *
+     * @return NmtInventoryMv
+     */
+    public function setLocalCurrency(\Application\Entity\NmtApplicationCurrency $localCurrency = null)
+    {
+        $this->localCurrency = $localCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get localCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getLocalCurrency()
+    {
+        return $this->localCurrency;
     }
 }

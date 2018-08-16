@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryFifoLayerConsume
  *
- * @ORM\Table(name="nmt_inventory_fifo_layer_consume", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_consume_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK2_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK3_idx", columns={"layer_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK4_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK5_idx", columns={"item_id"})})
+ * @ORM\Table(name="nmt_inventory_fifo_layer_consume", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_consume_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK2_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK3_idx", columns={"layer_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK4_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK5_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK6_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK7_idx", columns={"posting_period_id"})})
  * @ORM\Entity
  */
 class NmtInventoryFifoLayerConsume
@@ -71,6 +71,20 @@ class NmtInventoryFifoLayerConsume
     private $exchangeRate;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_total_value", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $docTotalValue;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -119,6 +133,26 @@ class NmtInventoryFifoLayerConsume
      * })
      */
     private $item;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doc_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $docCurrency;
+
+    /**
+     * @var \Application\Entity\NmtFinPostingPeriod
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="posting_period_id", referencedColumnName="id")
+     * })
+     */
+    private $postingPeriod;
 
 
 
@@ -301,6 +335,54 @@ class NmtInventoryFifoLayerConsume
     }
 
     /**
+     * Set docTotalValue
+     *
+     * @param string $docTotalValue
+     *
+     * @return NmtInventoryFifoLayerConsume
+     */
+    public function setDocTotalValue($docTotalValue)
+    {
+        $this->docTotalValue = $docTotalValue;
+
+        return $this;
+    }
+
+    /**
+     * Get docTotalValue
+     *
+     * @return string
+     */
+    public function getDocTotalValue()
+    {
+        return $this->docTotalValue;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtInventoryFifoLayerConsume
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -418,5 +500,53 @@ class NmtInventoryFifoLayerConsume
     public function getItem()
     {
         return $this->item;
+    }
+
+    /**
+     * Set docCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $docCurrency
+     *
+     * @return NmtInventoryFifoLayerConsume
+     */
+    public function setDocCurrency(\Application\Entity\NmtApplicationCurrency $docCurrency = null)
+    {
+        $this->docCurrency = $docCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get docCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getDocCurrency()
+    {
+        return $this->docCurrency;
+    }
+
+    /**
+     * Set postingPeriod
+     *
+     * @param \Application\Entity\NmtFinPostingPeriod $postingPeriod
+     *
+     * @return NmtInventoryFifoLayerConsume
+     */
+    public function setPostingPeriod(\Application\Entity\NmtFinPostingPeriod $postingPeriod = null)
+    {
+        $this->postingPeriod = $postingPeriod;
+
+        return $this;
+    }
+
+    /**
+     * Get postingPeriod
+     *
+     * @return \Application\Entity\NmtFinPostingPeriod
+     */
+    public function getPostingPeriod()
+    {
+        return $this->postingPeriod;
     }
 }

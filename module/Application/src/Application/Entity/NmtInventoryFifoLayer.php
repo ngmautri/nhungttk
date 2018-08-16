@@ -134,6 +134,20 @@ class NmtInventoryFifoLayer
     private $exchangeRate;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_open_balance", type="boolean", nullable=true)
+     */
+    private $isOpenBalance;
+
+    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -567,6 +581,54 @@ class NmtInventoryFifoLayer
     public function getExchangeRate()
     {
         return $this->exchangeRate;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set isOpenBalance
+     *
+     * @param boolean $isOpenBalance
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setIsOpenBalance($isOpenBalance)
+    {
+        $this->isOpenBalance = $isOpenBalance;
+
+        return $this;
+    }
+
+    /**
+     * Get isOpenBalance
+     *
+     * @return boolean
+     */
+    public function getIsOpenBalance()
+    {
+        return $this->isOpenBalance;
     }
 
     /**

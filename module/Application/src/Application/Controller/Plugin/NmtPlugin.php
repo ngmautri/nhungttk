@@ -36,6 +36,24 @@ class NmtPlugin extends AbstractPlugin
         return $currency_list;
     }
     
+    /**
+     * Return List of Currency
+     *
+     * @return array
+     */
+    public function costCenterList()
+    {
+        $criteria = array(
+            'isActive' => 1
+        );
+        $sort_criteria = array(
+            'costCenterName' => 'ASC'
+        );
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
+    
     
     /**
      * Return List of GL Account

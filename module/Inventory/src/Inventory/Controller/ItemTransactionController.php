@@ -1300,11 +1300,9 @@ class ItemTransactionController extends AbstractActionController
 
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
-        $checksum = $this->params()->fromQuery('checksum');
-
+   
         $criteria = array(
             'id' => $target_id,
-            'checksum' => $checksum,
             'token' => $token
         );
 
@@ -1325,18 +1323,18 @@ class ItemTransactionController extends AbstractActionController
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
+        
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $item = $res->getItemStock($target_id, $token);
+        
 
-        /*
-         * $this->getResponse()->getHeaders ()->addHeaderLine('Expires', '3800', true);
-         * $this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'public', true);
-         * $this->getResponse()->getHeaders ()->addHeaderLine('Cache-Control', 'max-age=3800');
-         * $this->getResponse()->getHeaders ()->addHeaderLine('Pragma', '', true);
-         */
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
-            'target' => $target
+            'target' => $target,
+            'item' => $item
         ));
     }
 

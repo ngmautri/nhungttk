@@ -69,8 +69,9 @@
 
 		<li><a title="<?php echo $this->translate("Purchase Request");?>"
 			href="<?php echo $this->baseUrl ?>/procure/pr-row/pr-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PR (<?php echo $total_pr_row;?>)</a></li>
-			  
-			  <li ><a title="<?php echo $this->translate("Quotation");?>" href="<?php echo $this->baseUrl ?>/procure/quote-row/qo-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">QO (<?php echo $total_qo_row;?>)</a></li>
+
+		<li><a title="<?php echo $this->translate("Quotation");?>"
+			href="<?php echo $this->baseUrl ?>/procure/quote-row/qo-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">QO (<?php echo $total_qo_row;?>)</a></li>
 
 		<li><a title="<?php echo $this->translate("Purchase Order");?>"
 			href="<?php echo $this->baseUrl ?>/procure/po-row/po-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PO (<?php echo $total_po_row;?>)</a></li>
@@ -83,12 +84,10 @@
 
 	</ul>
 	<div id="accounting" style="font-size: 9pt">
-			- G/L Account <br>
-			- Inventory UoM <br>
-			- Min Quantity <br>
-			- Max	 Quantity <br>
-			
-	
+		- G/L Account <br> - Inventory UoM <br> - Min Quantity <br> - Max
+		Quantity <br>
+
+
 	</div>
 	<div id="general" style="font-size: 9pt">
 

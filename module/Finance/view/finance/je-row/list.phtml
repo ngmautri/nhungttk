@@ -51,6 +51,7 @@ else :
 					<td><b><?php echo $this->translate("Currency");?></b></td>			
 					<td><b><?php echo $this->translate("D/C");?></b></td>
 					<td><b><?php echo $this->translate("G/L");?></b></td>
+					<td><b><?php echo $this->translate("Cost Center");?></b></td>
 			
 					<td><b><?php echo $this->translate("Doc. Amt");?></b></td>
 					<td><b><?php echo $this->translate("Local. Amt");?></b></td>
@@ -78,6 +79,7 @@ else :
 					<td><?php echo $a->getJe()->getCurrency()->getCurrency();?></td>
 					<td><?php echo $a->getPostingCode();?></td>
 					<td><?php if($a->getGlAccount()!==null): echo $a->getGlAccount()->getAccountNumber() . ' - '. $a->getGlAccount()->getDescription(); endif?></td>
+					<td><?php if($a->getCostCenter()!==null): echo $a->getCostCenter()->getCostCenterName(); endif?></td>
 		
 					<td><?php echo number_format($a->getDocAmount(),2);?></td>
 					<td><?php echo number_format($a->getLocalAmount(),0);?></td>

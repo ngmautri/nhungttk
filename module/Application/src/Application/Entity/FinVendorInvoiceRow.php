@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinVendorInvoiceRow
  *
- * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK7_idx", columns={"po_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_IDX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_IDX2", columns={"is_active"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx1", columns={"gr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK10_idx", columns={"GL_account_id"})})
+ * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK7_idx", columns={"po_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_IDX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_IDX2", columns={"is_active"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx1", columns={"gr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK10_idx", columns={"GL_account_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK11_idx", columns={"cost_center_id"})})
  * @ORM\Entity
  */
 class FinVendorInvoiceRow
@@ -285,6 +285,16 @@ class FinVendorInvoiceRow
      * })
      */
     private $glAccount;
+
+    /**
+     * @var \Application\Entity\FinCostCenter
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinCostCenter")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="cost_center_id", referencedColumnName="id")
+     * })
+     */
+    private $costCenter;
 
     /**
      * @var \Application\Entity\NmtProcurePrRow
@@ -1254,6 +1264,30 @@ class FinVendorInvoiceRow
     public function getGlAccount()
     {
         return $this->glAccount;
+    }
+
+    /**
+     * Set costCenter
+     *
+     * @param \Application\Entity\FinCostCenter $costCenter
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setCostCenter(\Application\Entity\FinCostCenter $costCenter = null)
+    {
+        $this->costCenter = $costCenter;
+
+        return $this;
+    }
+
+    /**
+     * Get costCenter
+     *
+     * @return \Application\Entity\FinCostCenter
+     */
+    public function getCostCenter()
+    {
+        return $this->costCenter;
     }
 
     /**

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinJeRow
  *
- * @ORM\Table(name="fin_je_row", indexes={@ORM\Index(name="fin_je_row_FK1_idx", columns={"je_id"}), @ORM\Index(name="fin_je_row_FK2_idx", columns={"GL_account_id"}), @ORM\Index(name="fin_je_row_FK3_idx", columns={"created_by"}), @ORM\Index(name="fin_je_row_FK4_idx", columns={"sub_account_id"})})
+ * @ORM\Table(name="fin_je_row", indexes={@ORM\Index(name="fin_je_row_FK1_idx", columns={"je_id"}), @ORM\Index(name="fin_je_row_FK2_idx", columns={"GL_account_id"}), @ORM\Index(name="fin_je_row_FK3_idx", columns={"created_by"}), @ORM\Index(name="fin_je_row_FK4_idx", columns={"sub_account_id"}), @ORM\Index(name="fin_je_row_FK5_idx", columns={"cost_center_id"})})
  * @ORM\Entity
  */
 class FinJeRow
@@ -48,13 +48,6 @@ class FinJeRow
      * @ORM\Column(name="local_amount", type="decimal", precision=14, scale=4, nullable=true)
      */
     private $localAmount;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="cost_center", type="string", length=45, nullable=true)
-     */
-    private $costCenter;
 
     /**
      * @var \DateTime
@@ -151,6 +144,16 @@ class FinJeRow
      * })
      */
     private $subAccount;
+
+    /**
+     * @var \Application\Entity\FinCostCenter
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinCostCenter")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="cost_center_id", referencedColumnName="id")
+     * })
+     */
+    private $costCenter;
 
 
 
@@ -258,30 +261,6 @@ class FinJeRow
     public function getLocalAmount()
     {
         return $this->localAmount;
-    }
-
-    /**
-     * Set costCenter
-     *
-     * @param string $costCenter
-     *
-     * @return FinJeRow
-     */
-    public function setCostCenter($costCenter)
-    {
-        $this->costCenter = $costCenter;
-
-        return $this;
-    }
-
-    /**
-     * Get costCenter
-     *
-     * @return string
-     */
-    public function getCostCenter()
-    {
-        return $this->costCenter;
     }
 
     /**
@@ -570,5 +549,29 @@ class FinJeRow
     public function getSubAccount()
     {
         return $this->subAccount;
+    }
+
+    /**
+     * Set costCenter
+     *
+     * @param \Application\Entity\FinCostCenter $costCenter
+     *
+     * @return FinJeRow
+     */
+    public function setCostCenter(\Application\Entity\FinCostCenter $costCenter = null)
+    {
+        $this->costCenter = $costCenter;
+
+        return $this;
+    }
+
+    /**
+     * Get costCenter
+     *
+     * @return \Application\Entity\FinCostCenter
+     */
+    public function getCostCenter()
+    {
+        return $this->costCenter;
     }
 }

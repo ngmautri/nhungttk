@@ -85,9 +85,9 @@ class JEService implements EventManagerAwareInterface
                 $je_row->setJe($je);
 
                 $je_row->setGlAccount($r->getGlAccount());
+                $je_row->setCostCenter($r->getCostCenter());
                 $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
                 $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-
                 $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
                 $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate());
 

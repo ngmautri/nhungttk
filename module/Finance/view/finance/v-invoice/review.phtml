@@ -571,7 +571,7 @@ var autoCompleteEditor = function (ui) {
 
 //var container_height = $('#main_container').height();
 //alert(container_height);
-var obj = { width: "100%", height: $(window).height()-270, showTitle : false,
+var obj = { width: "100%", height: $(window).height()-320, showTitle : false,
 		resizable:true,
 		//draggable:true,
 		sortable: true,
@@ -716,6 +716,7 @@ obj.colModel = [
     { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
     { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
 	{ title: "GL", dataType: "string", dataIndx: "gl_account", width:50,editable: false },
+	{ title: "Cost Center", dataType: "string", dataIndx: "cost_center", width:90,editable: false },
 	 
     { title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
     { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
@@ -816,7 +817,7 @@ $grid.on('pqgridrefresh pqgridrefreshrow', function () {
       	//alert(rowData['item_name']);
       	
       	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
-      	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
+      	showJqueryDialog('Item Receiving','1000',$(window).height()-80, redirectUrl,'j_loaded_data', true);
       	//window.open(redirectUrl,'_blank');
       	
     });

@@ -4,6 +4,7 @@
 
 <hr>
 <?php
+/** @var \Application\Entity\NmtInventoryItem $target ; */
 
 if ($total_records <= 0) {
 	
@@ -18,12 +19,20 @@ if ($total_records <= 0) {
 	
 	?>
 
-<table style="font-size: 9pt;" class="table table-bordered table-hover">
+	<?php echo '<br>'.number_format($item['total_gr'],2) . '<br>';?>
+	<?php echo number_format($item['total_gr_value'],2). '<br>';?>
+	
+	
+	<?php echo number_format($item['total_onhand'],2). '<br>';?>
+	<?php echo number_format($item['total_onhand_value'],2). '<br>';?>
+	
+	
+
+<table  id="mytable26" style="font-size: 9pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>PR Number</b></td>
-			<td><b>Vendor</b></td>
+			<td><b>Transaction<br>Date</b></td>
 			<td><b>Flow</b></td>
 			<td><b>Q'ty</b></td>
 			<td><b>Price</b></td>
@@ -32,7 +41,7 @@ if ($total_records <= 0) {
 			<td><b>Payment<br>Method</b></td>
 			<td><b>Unit</b></td>
 			<td><b>Conversion</b></td>
-			<td><b>Transaction<br>Date</b></td>
+			<td><b>Cost</td>
 			<td><b>Created Date</b></td>
 			<td><b>Attachment</b></td>
 			</tr>
@@ -46,15 +55,19 @@ if ($total_records <= 0) {
 	$total_qty = 0;
 	$total_value=0;
 	foreach ( $list as $a ) :
+	
+	/**
+	 * @var \Application\Entity\NmtInventoryTrx $a ;
+	 */
+	
 		$count ++;
 		$total_qty = $total_qty + $a->getQuantity();
 		$total_value = $total_value + $a->getQuantity()*$a->getVendorUnitPrice();
 		?>
 	 <tr>
 	 <td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-	 			<td><?php if($a->getPrRow()!==null): echo $a->getPrRow()->getPr()->getPrNumber(); endif;?></td>
-	 
-			<td><?php if($a->getVendor()!==null): echo $a->getVendor()->getVendorName(); endif;?></td>
+	 	<td><?php echo ($a->getTrxdate()!==null )? date_format ( $a->getTrxdate(), "d/m/y"):"N/A";?> </td>
+	
 			<td><?php echo $this->escapeHtml($a->getFlow());?></td>
 	
 			<td><?php echo $this->escapeHtml($a->getQuantity());?></td>
@@ -66,8 +79,16 @@ if ($total_records <= 0) {
 		<td><?php echo ($a->getPmtMethod() !==null)? $this->escapeHtml($a->getPmtMethod()->getMethodCode()):"N/A";?></td>
 			<td><?php echo $this->escapeHtml($a->getVendorItemUnit());?></td>
 			<td><?php echo $this->escapeHtml($a->getConversionText());?></td>
-			<td><?php echo ($a->getTrxdate()!==null )? date_format ( $a->getTrxdate(), "d/m/y"):"N/A";?> </td>
-			<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d/m/y"):"N/A";?> </td>
+			
+					<td>
+					<?php
+					if($a->getCogsDoc()!==null):
+					 echo number_format( $a->getCogsDoc(), 2, ",", ".");
+					endif;
+					?>
+					</td>
+	
+				<td><?php echo ($a->getCreatedOn()!==null )? date_format ( $a->getCreatedOn(), "d/m/y"):"N/A";?> </td>
 		 <td>
 <a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Show</a>
 <a href="<?php echo $this->baseUrl ?>/inventory/item-transaction/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getID();?>&checksum=<?php echo $a->getChecksum();?>">Edit</a>
@@ -87,7 +108,7 @@ echo "<h5 style='color:black;'><strong>Total Qty: ". $total_qty . ". Total Value
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/inventory/item/list?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
+	$base = $this->baseUrl . '/inventory/item/list1?is_active='. $is_active.'&item_type='. $item_type.'&sort_by='.$sort_by.'&sort='.$sort.'&is_fixed_asset='.$is_fixed_asset;
 		$_connector_symbol = '&';
 		
 		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;

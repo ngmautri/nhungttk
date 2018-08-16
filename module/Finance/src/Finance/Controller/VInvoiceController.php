@@ -586,7 +586,7 @@ class VInvoiceController extends AbstractActionController
             // LOGGING
              $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
             
-            $m = sprintf('[OK] AP Invoice #%s - %s posted.', $entity->getId(), $entity->getSysNumber());
+            $m = sprintf('[OK] AP Invoice %s - posted.',$entity->getSysNumber());
             
             // Trigger Change Log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(

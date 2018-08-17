@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemGroup
  *
- * @ORM\Table(name="nmt_inventory_item_group")
+ * @ORM\Table(name="nmt_inventory_item_group", indexes={@ORM\Index(name="nmt_inventory_item_group_FK1_idx", columns={"inventory_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK5_idx", columns={"revenue_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK3_idx", columns={"cogs_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK4_idx", columns={"allocation_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK6_idx", columns={"expense_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK2_idx", columns={"created_by"})})
  * @ORM\Entity
  */
 class NmtInventoryItemGroup
@@ -29,37 +29,90 @@ class NmtInventoryItemGroup
     private $groupName;
 
     /**
-     * @var integer
+     * @var \DateTime
      *
-     * @ORM\Column(name="inventory_account", type="integer", nullable=true)
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
+     */
+    private $createdOn;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=45, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var \Application\Entity\FinAccount
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="inventory_account_id", referencedColumnName="id")
+     * })
      */
     private $inventoryAccount;
 
     /**
-     * @var integer
+     * @var \Application\Entity\MlaUsers
      *
-     * @ORM\Column(name="cogs_account", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * })
+     */
+    private $createdBy;
+
+    /**
+     * @var \Application\Entity\FinAccount
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="cogs_account_id", referencedColumnName="id")
+     * })
      */
     private $cogsAccount;
 
     /**
-     * @var integer
+     * @var \Application\Entity\FinAccount
      *
-     * @ORM\Column(name="allocation_account", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="allocation_account_id", referencedColumnName="id")
+     * })
      */
     private $allocationAccount;
 
     /**
-     * @var integer
+     * @var \Application\Entity\FinAccount
      *
-     * @ORM\Column(name="revenue_account", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="revenue_account_id", referencedColumnName="id")
+     * })
      */
     private $revenueAccount;
 
     /**
-     * @var integer
+     * @var \Application\Entity\FinAccount
      *
-     * @ORM\Column(name="expense_account", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="expense_account_id", referencedColumnName="id")
+     * })
      */
     private $expenseAccount;
 
@@ -100,13 +153,109 @@ class NmtInventoryItemGroup
     }
 
     /**
-     * Set inventoryAccount
+     * Set createdOn
      *
-     * @param integer $inventoryAccount
+     * @param \DateTime $createdOn
      *
      * @return NmtInventoryItemGroup
      */
-    public function setInventoryAccount($inventoryAccount)
+    public function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    /**
+     * Get createdOn
+     *
+     * @return \DateTime
+     */
+    public function getCreatedOn()
+    {
+        return $this->createdOn;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set inventoryAccount
+     *
+     * @param \Application\Entity\FinAccount $inventoryAccount
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setInventoryAccount(\Application\Entity\FinAccount $inventoryAccount = null)
     {
         $this->inventoryAccount = $inventoryAccount;
 
@@ -116,7 +265,7 @@ class NmtInventoryItemGroup
     /**
      * Get inventoryAccount
      *
-     * @return integer
+     * @return \Application\Entity\FinAccount
      */
     public function getInventoryAccount()
     {
@@ -124,13 +273,37 @@ class NmtInventoryItemGroup
     }
 
     /**
-     * Set cogsAccount
+     * Set createdBy
      *
-     * @param integer $cogsAccount
+     * @param \Application\Entity\MlaUsers $createdBy
      *
      * @return NmtInventoryItemGroup
      */
-    public function setCogsAccount($cogsAccount)
+    public function setCreatedBy(\Application\Entity\MlaUsers $createdBy = null)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * Get createdBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * Set cogsAccount
+     *
+     * @param \Application\Entity\FinAccount $cogsAccount
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setCogsAccount(\Application\Entity\FinAccount $cogsAccount = null)
     {
         $this->cogsAccount = $cogsAccount;
 
@@ -140,7 +313,7 @@ class NmtInventoryItemGroup
     /**
      * Get cogsAccount
      *
-     * @return integer
+     * @return \Application\Entity\FinAccount
      */
     public function getCogsAccount()
     {
@@ -150,11 +323,11 @@ class NmtInventoryItemGroup
     /**
      * Set allocationAccount
      *
-     * @param integer $allocationAccount
+     * @param \Application\Entity\FinAccount $allocationAccount
      *
      * @return NmtInventoryItemGroup
      */
-    public function setAllocationAccount($allocationAccount)
+    public function setAllocationAccount(\Application\Entity\FinAccount $allocationAccount = null)
     {
         $this->allocationAccount = $allocationAccount;
 
@@ -164,7 +337,7 @@ class NmtInventoryItemGroup
     /**
      * Get allocationAccount
      *
-     * @return integer
+     * @return \Application\Entity\FinAccount
      */
     public function getAllocationAccount()
     {
@@ -174,11 +347,11 @@ class NmtInventoryItemGroup
     /**
      * Set revenueAccount
      *
-     * @param integer $revenueAccount
+     * @param \Application\Entity\FinAccount $revenueAccount
      *
      * @return NmtInventoryItemGroup
      */
-    public function setRevenueAccount($revenueAccount)
+    public function setRevenueAccount(\Application\Entity\FinAccount $revenueAccount = null)
     {
         $this->revenueAccount = $revenueAccount;
 
@@ -188,7 +361,7 @@ class NmtInventoryItemGroup
     /**
      * Get revenueAccount
      *
-     * @return integer
+     * @return \Application\Entity\FinAccount
      */
     public function getRevenueAccount()
     {
@@ -198,11 +371,11 @@ class NmtInventoryItemGroup
     /**
      * Set expenseAccount
      *
-     * @param integer $expenseAccount
+     * @param \Application\Entity\FinAccount $expenseAccount
      *
      * @return NmtInventoryItemGroup
      */
-    public function setExpenseAccount($expenseAccount)
+    public function setExpenseAccount(\Application\Entity\FinAccount $expenseAccount = null)
     {
         $this->expenseAccount = $expenseAccount;
 
@@ -212,7 +385,7 @@ class NmtInventoryItemGroup
     /**
      * Get expenseAccount
      *
-     * @return integer
+     * @return \Application\Entity\FinAccount
      */
     public function getExpenseAccount()
     {

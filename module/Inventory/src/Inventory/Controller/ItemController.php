@@ -36,9 +36,11 @@ class ItemController extends AbstractActionController
     const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
 
     protected $doctrineEM;
+
     protected $itemSearchService;
+
     protected $smptService;
-    
+
     protected $cacheService;
 
     /*
@@ -46,8 +48,6 @@ class ItemController extends AbstractActionController
      */
     public function indexAction()
     {
-       
-        
         $emailText = <<<EOT
 <p>Hello</p>
 
@@ -64,44 +64,38 @@ MLA Team
 EOT;
         $html = new MimePart($emailText);
         $html->type = "text/html";
-        
+
         $body = new MimeMessage();
-        $body->setParts(array($html));
-        
+        $body->setParts(array(
+            $html
+        ));
+
         // build message
-        $message = new Message ();
-        $message->addFrom ( 'mla-web@outlook.com' );
-        $message->addTo ('nmt@mascot.dk');
-        $message->setSubject ( 'Mascot Laos Plattform Register' );
-        
+        $message = new Message();
+        $message->addFrom('mla-web@outlook.com');
+        $message->addTo('nmt@mascot.dk');
+        $message->setSubject('Mascot Laos Plattform Register');
+
         $type = new ContentType();
         $type->setType('text/html');
-        
+
         $message->getHeaders()->addHeader($type);
-        $message->setBody ($emailText);
+        $message->setBody($emailText);
         $message->setEncoding("UTF-8");
-        
+
         // send message
-        $this->smptService->send( $message );
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        $this->smptService->send($message);
+
         /**@var \Application\Repository\NmtInventoryItemRepository $rep ;*/
         $rep = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
 
         $list = $rep->getAllItemWithSerial1();
 
         echo count($list);
-        
-      return new ViewModel(array(
-           'list' => $list,
-           'total_records'=>count($list),
+
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => count($list)
         ));
     }
 
@@ -219,7 +213,7 @@ EOT;
                 'total_ap_row' => $item['total_ap_row'],
                 'total_po_row' => $item['total_po_row'],
                 'total_qo_row' => $item['total_qo_row'],
-                'tab_idx' => $tab_idx,
+                'tab_idx' => $tab_idx
             ));
         }
 
@@ -236,6 +230,8 @@ EOT;
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
+        $item_group_list = $nmtPlugin->itemGroupList();
+        $gl_list = $nmtPlugin->glAccountList();
 
         // Is Posing
         // =============================
@@ -274,7 +270,8 @@ EOT;
             $isSaleItem = (int) $request->getPost('isSaleItem');
             $isSparepart = (int) $request->getPost('isSparepart');
             $isStocked = (int) $request->getPost('isStocked');
-
+            $item_group_id = (int) $request->getPost('item_group_id');
+            
             $manufacturer = $request->getPost('manufacturer');
             $manufacturerCatalog = $request->getPost('manufacturerCatalog');
             $manufacturerCode = $request->getPost('manufacturerCode');
@@ -367,6 +364,13 @@ EOT;
                     $entity->setStandardUom($uom);
                 }
             }
+            
+            $item_group = null;
+            if ($item_group_id > 0) {
+                $item_group = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->find($item_group_id);
+                $entity->setItemGroup($item_group);
+            }
+            
 
             $department = null;
             if ($department_id > 0) {
@@ -397,7 +401,8 @@ EOT;
                     'redirectUrl' => $redirectUrl,
                     'entity' => $entity,
                     'department' => $department,
-                    'category' => $category
+                    'category' => $category,
+                    'item_group_list' => $item_group_list
                 ));
             }
 
@@ -482,7 +487,8 @@ EOT;
                     'redirectUrl' => $redirectUrl,
                     'entity' => $entity,
                     'department' => $department,
-                    'category' => $category
+                    'category' => $category,
+                    'item_group_list' => $item_group_list
                 ));
             }
         }
@@ -503,7 +509,8 @@ EOT;
             'redirectUrl' => $redirectUrl,
             'entity' => null,
             'department' => null,
-            'category' => null
+            'category' => null,
+            'item_group_list' => $item_group_list
         ));
     }
 
@@ -513,7 +520,13 @@ EOT;
      */
     public function editAction()
     {
+        
         $request = $this->getRequest();
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $item_group_list = $nmtPlugin->itemGroupList();
+        $gl_list = $nmtPlugin->glAccountList();
+        
 
         if ($request->isPost()) {
 
@@ -540,7 +553,9 @@ EOT;
                     'entity' => null,
                     'department' => null,
                     'category' => null,
-                    'n' => $nTry
+                    'n' => $nTry,
+                    'item_group_list' => $item_group_list
+                    
                 ));
 
                 // might need redirect
@@ -577,6 +592,7 @@ EOT;
                 $isSaleItem = (int) $request->getPost('isSaleItem');
                 $isSparepart = (int) $request->getPost('isSparepart');
                 $isStocked = (int) $request->getPost('isStocked');
+                $item_group_id = (int) $request->getPost('item_group_id');
 
                 $assetLabel = $request->getPost('assetLabel');
 
@@ -670,6 +686,13 @@ EOT;
                         $entity->setStandardUom($uom);
                     }
                 }
+                
+                $item_group = null;
+                if ($item_group_id > 0) {
+                    $item_group = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->find($item_group_id);
+                    $entity->setItemGroup($item_group);
+                }
+                
 
                 $department = null;
                 if ($department_id > 0) {
@@ -720,7 +743,9 @@ EOT;
                         'entity' => $entity,
                         'department' => $department,
                         'category' => $category,
-                        'n' => $nTry
+                        'n' => $nTry,
+                        'item_group_list' => $item_group_list
+                        
                     ));
                 }
 
@@ -809,7 +834,9 @@ EOT;
                         'entity' => $new_item,
                         'department' => $department,
                         'category' => $category,
-                        'n' => $nTry
+                        'n' => $nTry,
+                        'item_group_list' => $item_group_list
+                        
                     ));
                 }
             }
@@ -845,7 +872,8 @@ EOT;
                 'entity' => $entity,
                 'category' => null,
                 'department' => null,
-                'n' => 0
+                'n' => 0,
+                'item_group_list' => $item_group_list
             ));
         }
         return $this->redirect()->toRoute('access_denied');
@@ -1684,8 +1712,6 @@ EOT;
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-
-   
 
     public function getItemSearchService()
     {

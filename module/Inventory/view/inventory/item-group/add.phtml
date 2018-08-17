@@ -1,0 +1,222 @@
+<?php /**@var \Application\Entity\NmtInventoryItemGroup $entity ;*/?>
+
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;<?php echo $this->translate("Item Group");?></a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt">
+
+		<form id="Create_Inv_Form" class="form-horizontal"
+			action="/inventory/item-group/add" method="post"
+			enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
+			<fieldset>
+				<legend style="font-size: 9.5pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+				</legend>
+				<div id="invoice_header" class="collapse in">
+
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2"><?php echo $this->translate("Item Group");?>:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="groupName" name="groupName"
+								value="<?php echo (!$entity == null)? $entity->getGroupName():"";?>">
+						</div>
+
+						<div class="col-sm-3">
+							<input
+								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								type="checkbox" name="isActive" value="1">&nbsp;Is
+							Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+						</div>
+
+					</div>
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2"><?php echo $this->translate("Revenue Account");?>:</label>
+						<div class="col-sm-3">
+							<select name="revenue_account_id" class="form-control input-sm">
+								<option value=""><?php echo $this->translate("Select GL Account");?></option>
+   	    							<?php
+            if ($gl_list !== null) :
+                foreach ($gl_list as $gl) :
+
+                    /**@var \Application\Entity\FinAccount $gl ; */
+
+                    if ($entity !== null) :
+                    if ($entity->getRevenueAccount() !== null) :
+                            if ($entity->getRevenueAccount()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
+                            else :
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+						</div>
+
+						<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Inventory Account (asset)");?>:</label>
+						<div class="col-sm-3">
+							<select name="inventory_account_id" class="form-control input-sm">
+								<option value=""><?php echo $this->translate("Select GL Account");?></option>
+   	    							<?php
+            if ($gl_list !== null) :
+                foreach ($gl_list as $gl) :
+
+                    /**@var \Application\Entity\FinAccount $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getInventoryAccount() !== null) :
+                            if ($entity->getInventoryAccount()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
+                            else :
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+						</div>
+
+					</div>
+
+				<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2"><?php echo $this->translate("Expense Account");?>:</label>
+						<div class="col-sm-3">
+							<select name="expense_account_id" class="form-control input-sm">
+								<option value=""><?php echo $this->translate("Select GL Account");?></option>
+   	    							<?php
+            if ($gl_list !== null) :
+                foreach ($gl_list as $gl) :
+
+                    /**@var \Application\Entity\FinAccount $gl ; */
+
+                    if ($entity !== null) :
+                    if ($entity->getExpenseAccount() !== null) :
+                            if ($entity->getExpenseAccount()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
+                            else :
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+						</div>
+
+						<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("COGS Account");?>:</label>
+						<div class="col-sm-3">
+							<select name="cogs_account_id" class="form-control input-sm">
+								<option value=""><?php echo $this->translate("Select GL Account");?></option>
+   	    							<?php
+            if ($gl_list !== null) :
+                foreach ($gl_list as $gl) :
+
+                    /**@var \Application\Entity\FinAccount $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getCogsAccount() !== null) :
+                            if ($entity->getCogsAccount()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
+                            else :
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+						</div>
+
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Remarks:</label>
+						<div class="col-sm-8">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="description"
+								value="<?php echo (!$entity == null)? $entity->getDescription():"";?>">
+						</div>
+					</div>
+					<hr>
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2" for="inputTag"></label>
+						<div class="col-sm-3">
+							<button onclick="submitForm('Create_Inv_Form');"
+								class="btn btn-default btn-sm">
+								<i class="glyphicon glyphicon-floppy-disk"> </i> Save
+							</button>
+							<a class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
+									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+						</div>
+					</div>
+			
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+
+
+<script>
+
+$( "input[id='mfgDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='mfgWarrantyStart']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='mfgWarrantyEnd']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+  
+</script>
+

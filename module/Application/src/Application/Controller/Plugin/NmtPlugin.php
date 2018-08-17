@@ -54,6 +54,24 @@ class NmtPlugin extends AbstractPlugin
         return $list;
     }
     
+    /**
+     * Return List of Currency
+     *
+     * @return array
+     */
+    public function itemGroupList()
+    {
+        $criteria = array(
+            'isActive' => 1
+        );
+        $sort_criteria = array(
+            'groupName' => 'ASC'
+        );
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
+    
     
     /**
      * Return List of GL Account

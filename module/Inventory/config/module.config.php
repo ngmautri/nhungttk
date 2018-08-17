@@ -203,7 +203,12 @@ return array(
             'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
             'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory',
             'Inventory\Controller\OpeningBalance' => 'Inventory\Controller\OpeningBalanceControllerFactory',
-            'Inventory\Controller\Setting' => 'Inventory\Controller\SettingControllerFactory'
+            'Inventory\Controller\Setting' => 'Inventory\Controller\SettingControllerFactory',
+            
+            'Inventory\Controller\ItemGroup' => 'Inventory\Controller\ItemGroupControllerFactory',
+           'Inventory\Controller\ItemAccounting' => 'Inventory\Controller\ItemAccountingControllerFactory',
+            
+            
         )
     ),
     'view_manager' => array(

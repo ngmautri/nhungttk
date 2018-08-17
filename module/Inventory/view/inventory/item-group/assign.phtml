@@ -1,0 +1,84 @@
+
+<?php /**
+        @var \Application\Entity\NmtInventoryItem $target ; 
+       */ 
+?>
+
+
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<h4><?php if (!$target == null):
+
+echo sprintf('<a href="/inventory/item/show?token=%s&entity_id=%s">%s</a>',
+    $target->getToken(),
+    $target->getId(),
+    $target->getItemName()
+    );
+endif;
+
+    ?>
+    </h4>
+
+<div id="tabs" style="font-size: 9.5pt"> 
+  <ul>
+  <li ><a href="#general"><?php echo $this->translate('Assign Serial Number'); ?></a></li>
+   </ul>
+
+<div id="general" style="font-size: 9.5pt"> 
+<H4><?php echo $n;?></H4>
+
+<form action="<?php echo $this->baseUrl ?>/inventory/serial-number/assign" method="post" enctype="multipart/form-data" id="assign_salary">
+<input type="hidden" name="target_id" value="<?php if(!$target == null):echo $target->getId(); endif;?>" />
+<input type="hidden" name="token" value="<?php if(!$target == null):echo $target->getToken(); endif;?>" />
+<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl;?>" />
+	
+	<table style="font-size: 9.5pt;" class="table table-bordered table-striped table-hover">
+	<thead>
+		<tr>
+			<td><input type="checkbox" id="select_ALL" name="SelectAll" value="YES"/> <?php echo $this->translate('All'); ?></td>
+ 	
+			<td><b>#</b></td>
+			<td><b><?php echo $this->translate('Serial Number'); ?></b></td>
+			<td><b><?php echo $this->translate('Action'); ?></b></td>
+			</tr>
+	</thead>
+
+	<tbody>
+
+		
+	<?php 
+	$count = 0;
+	
+	foreach ($serialList as $a):	
+	/**@var \Application\Entity\NmtInventorySerial $entity ; */
+	$count ++;
+	?>
+	
+		 <tr>
+		  	<td><input class="checkbox1" type="checkbox" name="incomes[]" value="<?php echo $a->getId();?>" /></td>
+	
+	  		<td><?php echo $count;?></td>
+	  		<td><?php echo $a->getSerialNumber();?></td>
+	   		<td><?php echo "Show";?></td>
+		</tr>
+<?php endforeach; ?>
+
+</tbody>
+</table>
+<input class="btn btn-primary btn-sm" type="submit" name="Assign" value="<?php echo $this->translate('Assign'); ?>" />
+</form>	
+</div>
+</div>
+

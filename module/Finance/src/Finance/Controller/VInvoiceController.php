@@ -903,70 +903,21 @@ class VInvoiceController extends AbstractActionController
             $entity->setCreatedBy($u);
             $entity->setCreatedOn(new \DateTime());
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
             $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
+            try {
+                $this->apService->copyFromPO($entity, $target, $u, true);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
 
-            // COPY open PO Row to AP Row
-
-            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-            $po_rows = $res->getPOStatus($id, $token);
-
-            if (count($po_rows > 0)) {
-                $n = 0;
-                foreach ($po_rows as $l) {
-
-                    /** @var \Application\Entity\NmtProcurePoRow $l ; */
-                    $r = $l[0];
-
-                    $n ++;
-                    $row_tmp = new FinVendorInvoiceRow();
-                    $row_tmp->setDocStatus($entity->getDocStatus());
-
-                    // Goods and Invoice receipt
-                    $row_tmp->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
-
-                    /**
-                     *
-                     * @todo Change entity
-                     */
-                    $row_tmp->setInvoice($entity);
-                    $row_tmp->setIsDraft(1);
-                    $row_tmp->setIsActive(1);
-                    $row_tmp->setIsPosted(0);
-
-                    $row_tmp->setRowNumber($n);
-
-                    // do when posted.
-                    // $row_tmp->setRowIndentifer($entity->getSysNumber() . "-$n");
-
-                    $row_tmp->setCurrentState("DRAFT");
-                    $row_tmp->setPoRow($r);
-                    $row_tmp->setPrRow($r->getPrRow());
-                    $row_tmp->setItem($r->getItem());
-                    $row_tmp->setQuantity($l['open_ap_qty']);
-
-                    $row_tmp->setUnit($r->getUnit());
-                    $row_tmp->setUnitPrice($r->getUnitPrice());
-                    $row_tmp->setTaxRate($r->getTaxRate());
-
-                    $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
-                    $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
-                    $grossAmount = $netAmount + $taxAmount;
-
-                    $row_tmp->setNetAmount($netAmount);
-                    $row_tmp->setTaxAmount($taxAmount);
-                    $row_tmp->setGrossAmount($grossAmount);
-
-                    $row_tmp->setCreatedBy($u);
-                    $row_tmp->setCreatedOn(new \DateTime());
-                    $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-                    $row_tmp->setRemarks("Ref: PO #" . $r->getRowIdentifer());
-
-                    $this->doctrineEM->persist($row_tmp);
-                }
-                $this->doctrineEM->flush();
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $target,
+                    'currency_list' => $currency_list
+                ));
             }
 
             $m = sprintf("[OK] AP #%s created from P/O #%s", $entity->getSysNumber(), $target->getSysNumber());
@@ -1071,7 +1022,7 @@ class VInvoiceController extends AbstractActionController
             }
 
             if (! $target instanceof \Application\Entity\NmtProcureGr) {
-                $errors[] = 'GR can\'t be empty!';
+                $errors[] = 'Goods Receipt Object is not found!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
@@ -1090,8 +1041,7 @@ class VInvoiceController extends AbstractActionController
 
             $vendor_id = (int) $request->getPost('vendor_id');
             $currency_id = (int) $request->getPost('currency_id');
-            $warehouse_id = (int) $request->getPost('target_wh_id');
-
+      
             $postingDate = $request->getPost('postingDate');
             // $grDate = $request->getPost('grDate');
             $invoiceDate = $request->getPost('invoiceDate');
@@ -1112,7 +1062,6 @@ class VInvoiceController extends AbstractActionController
 
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
             $entity->setIsActive($isActive);
-            // $entity->setGr($target);
             $entity->setCurrentState($currentState);
 
             if (! $contractDate == null) {
@@ -1218,73 +1167,23 @@ class VInvoiceController extends AbstractActionController
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
             $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
 
-            // COPY open GR Row to AP Row
-
-            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-            $gr_rows = $res->getGRStatus($id, $token);
-
-            if (count($gr_rows > 0)) {
-                $n = 0;
-                foreach ($gr_rows as $l) {
-
-                    /** @var \Application\Entity\NmtProcureGrRow $l ; */
-                    $r = $l[0];
-
-                    $n ++;
-                    $row_tmp = new FinVendorInvoiceRow();
-                    $row_tmp->setDocStatus($entity->getDocStatus());
-                    // $row_tmp->setTransactionType($entity->getTransactionStatus());
-
-                    // Goods receipt, Invoice Not receipt
-                    $row_tmp->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
-
-                    /**
-                     *
-                     * @todo Change entity
-                     */
-                    $row_tmp->setInvoice($entity);
-                    $row_tmp->setIsDraft(1);
-                    $row_tmp->setIsActive(1);
-                    $row_tmp->setIsPosted(0);
-
-                    // $row_tmp->setRowNumber($n);
-
-                    // do when posted.
-                    // $row_tmp->setRowIndentifer($entity->getSysNumber() . "-$n");
-
-                    $row_tmp->setCurrentState("DRAFT");
-                    $row_tmp->setGrRow($r);
-                    $row_tmp->setPrRow($r->getPrRow());
-                    $row_tmp->setPoRow($r->getPoRow());
-
-                    $row_tmp->setItem($r->getItem());
-                    $row_tmp->setQuantity($l['open_ap_qty']);
-
-                    $row_tmp->setUnit($r->getUnit());
-                    $row_tmp->setUnitPrice($r->getUnitPrice());
-                    $row_tmp->setTaxRate($r->getTaxRate());
-
-                    $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
-                    $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
-                    $grossAmount = $netAmount + $taxAmount;
-
-                    $row_tmp->setNetAmount($netAmount);
-                    $row_tmp->setTaxAmount($taxAmount);
-                    $row_tmp->setGrossAmount($grossAmount);
-
-                    $row_tmp->setCreatedBy($u);
-                    $row_tmp->setCreatedOn(new \DateTime());
-                    $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-                    $row_tmp->setRemarks("Ref: PO #" . $r->getRowIdentifer());
-
-                    $this->doctrineEM->persist($row_tmp);
-                }
-                $this->doctrineEM->flush();
+            try {
+                $this->apService->copyFromGR($entity, $target, $u, true);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
             }
 
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $target,
+                    'currency_list' => $currency_list
+                ));
+            }
+            
             $m = sprintf("[OK] AP #%s created from P/O #%s", $entity->getSysNumber(), $target->getSysNumber());
             $this->flashMessenger()->addMessage($m);
 

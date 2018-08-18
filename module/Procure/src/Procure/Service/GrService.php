@@ -220,5 +220,25 @@ class GrService extends AbstractProcureService
         }
     }
 
-   
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     * @param \Application\Entity\NmtProcurePo $target
+     * @param \Application\Entity\MlaUsers $u
+     *
+     */
+    public function copyFromPO($entity, $target, $u, $isFlush = false){
+        
+        if (! $entity instanceof \Application\Entity\NmtProcureGr) {
+            throw new \Exception("Invalid Argument! GR Object is not found.");
+        }
+        
+        if (! $target instanceof \Application\Entity\NmtProcurePo) {
+            throw new \Exception("Invalid Argument! PO Object is not found.");
+        }
+        
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+    }
 }

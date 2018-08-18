@@ -387,7 +387,7 @@ WHERE nmt_procure_gr_row.gr_id=%s
 GROUP BY nmt_procure_gr_row.id
 ";
 
-        $sql2 = "";
+        //$sql2 = "";
 
         $sql = "
 SELECT

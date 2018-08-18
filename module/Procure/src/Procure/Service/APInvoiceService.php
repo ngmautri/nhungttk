@@ -185,12 +185,15 @@ class APInvoiceService extends AbstractProcureService
             $row_tmp->setCreatedOn(new \DateTime());
             $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             $row_tmp->setRemarks("Ref: PO#" . $r->getRowIdentifer());
-
+            
+            $row_tmp->setExwUnitPrice($r->getExwUnitPrice());
+            $row_tmp->setDiscountRate($r->getDiscountRate());
+            
             $this->doctrineEM->persist($row_tmp);
         }
 
         if ($n == 0) {
-            throw new \Exception("PO is billed fully!");
+            throw new \Exception("P/O is billed fully!");
         }
 
         if ($isFlush == true) {
@@ -284,7 +287,7 @@ class APInvoiceService extends AbstractProcureService
         }
 
         if ($n == 0) {
-            throw new \Exception("PO is billed fully!");
+            throw new \Exception("GR is received fully!");
         }
 
         if ($isFlush == true) {

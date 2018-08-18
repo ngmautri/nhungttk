@@ -1944,6 +1944,8 @@ class PrRowController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
+        $this->layout("Procure/layout-fullscreen");
+        
         
         if ($request->isPost()) {
             

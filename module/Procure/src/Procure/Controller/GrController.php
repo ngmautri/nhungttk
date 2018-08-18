@@ -245,9 +245,15 @@ class GrController extends AbstractActionController
             if (count($po_rows > 0)) {
                 $n = 0;
                 foreach ($po_rows as $l) {
-                    /** @var \Application\Entity\NmtProcurePoRow $l ; */
+                    
+                    // if all received, ignore it.
+                    if($l['open_gr_qty']==0){
+                        continue;
+                    }
+                    
+                     /** @var \Application\Entity\NmtProcurePoRow $l ; */
                     $r = $l[0];
-
+                    
                     $n ++;
                     $row_tmp = new NmtProcureGrRow();
                     $row_tmp->setDocStatus($entity->getDocStatus());

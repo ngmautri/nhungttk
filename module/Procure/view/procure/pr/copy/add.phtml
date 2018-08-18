@@ -1,41 +1,8 @@
 <?php /**@var \Application\Entity\NmtProcurePr $entity ;*/?>
 
-
-<div id="wrapper" class="toggled">
-
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
-									<?php
-        $current_step = "STEP1";
-        include (ROOT . '/module/Procure/view/procure/pr-create-wizard.php');
-        ?>
-
-
-	</div>
-	<!-- /#sidebar-wrapper -->
-
-	<!-- Page Content -->
-	<div id="page-content-wrapper"
-		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-		<div class="container-fluid" id="main_container"
-			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
-				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
-				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-					Menu <span></a>
-
-
-			<div id="tabs" style="font-size: 10pt">
-				<ul>
-					<li><a href="#general"><?php echo $this->translate("New Purchase Request");?>:</a></li>
-				</ul>
-
-				<div id="general" style="font-size: 9pt">
-					<!-- Tab1 -->
-
-	<?php
+<?php
 if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
 	
 	echo '<ul>';
 	foreach ( $errors as $error ) :
@@ -47,7 +14,29 @@ if (count ( $errors ) > 0) {
 }
 ?>
 
-			<form id="Create_PR_Form" class="form-horizontal" action="/procure/pr/add" method="post" enctype="multipart/form-data">
+<div id="tabs" style="font-size: 12pt"> 
+  <ul>
+  <li ><a href="#general">New Purchase Request (PR)</a></li>
+   </ul>
+
+<div id="general" style="font-size: 9pt">
+
+ <div class="row">
+  <!-- ROW -->
+  
+  <div class="col-xs-5 col-md-2" >
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP1";
+    					include (ROOT.'/module/Procure/view/procure/pr-create-wizard.php');
+  					?>
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10">
+  <!-- C2 --> 
+
+<form id="Create_PR_Form" class="form-horizontal" action="/procure/pr/add" method="post" enctype="multipart/form-data">
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
 	<div class="form-group margin-bottom">
@@ -133,16 +122,16 @@ name="department_id" value="<?php if (!$entity== null):if($entity->getDepartment
 	
 </form>
 
-				</div>
+<!-- C2 ends-->
+  </div>
+  
+  <!-- ROW -->
+</div>	
 
-				<!-- end tab -->
-			</div>
-		</div>
-	</div>
-	<!-- /#page-content-wrapper -->
 
+<!-- Tab1 -->
 </div>
-<!-- /#wrapper -->
+</div>
 
 <script>
 $(function() {
@@ -150,3 +139,4 @@ $(function() {
 });
 
 </script>
+

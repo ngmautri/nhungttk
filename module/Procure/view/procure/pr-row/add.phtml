@@ -1,65 +1,66 @@
-<?php 
+<?php
 /**@var \Application\Entity\NmtProcurePr $target ;
  * @var \Application\Entity\NmtProcurePrRow $entity ;
  */
-
 ?>
-<?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
+
+<div id="wrapper" class="toggled">
+
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+        <?php
+        $current_step = "STEP2";
+        include (ROOT . '/module/Procure/view/procure/pr-create-wizard.php');
+        ?>
+  					
+  		<div class="alert alert-info" role="alert"
+			style="padding: 1px; font-size: 9pt;  margin: 5px 5px 1px 5pt">
+			<ul style="font-size: 9pt;padding-left: 15px;">
+				<li><?php if(!$target == null): echo $target->getPrName();endif;?></li>
+				<li>#<?php if(!$target == null): echo $target->getPrAutoNumber();endif;?></li>
+				<li>-------------------</li>
+				<li>Total Item: <?php echo ($total_row);?></li>
+			</ul>
+		</div>
+
+
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
+				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+					Menu <span></a>
+
+
+			<div id="tabs" style="font-size: 10pt">
+				<ul>
+					<li><a href="#general"><?php echo $this->translate("New Purchase Request");?>:</a></li>
+				</ul>
+
+				<div id="general" style="font-size: 9pt">
+					<!-- Tab1 -->
+
+	<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
 }
 ?>
 
-<div id="tabs" style="font-size: 9.5pt">
-	<ul>
-		<li ><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;New Row</a></li>
-     	<li ><a href="<?php echo $this->baseUrl ?>/procure/pr-row/list1?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current Rows</a></li>
- 
-			<li><a
-			href="/procure/pr-attachment/get-pictures?token=<?php echo (!$target == null)? $target->getToken():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>&target_id=<?php echo (!$target == null)? $target->getID():"";?>"><small></small><span class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
-			<li><a
-			href="/procure/pr-attachment/list1?token=<?php echo (!$target == null)? $target->getToken():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>&target_id=<?php echo (!$target == null)? $target->getID():"";?>">
-			<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment</a></li>
-	</ul>
-
-	<div id="general" style="font-size: 9pt;">
-		
-	<div class="row">
-  <!-- ROW -->
-  
-  <div class="col-xs-5 col-md-2">
-  <!-- C1 -->
-  					<?php 
-    					$current_step="STEP2";
-    					include (ROOT.'/module/Procure/view/procure/pr-create-wizard.php');
-  					?>
-  					
-  					<hr>
-  					<span style="color: gray;"><?php echo $this->translate('Summary:'); ?></span>
-  					
-  					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9pt">
-					<ul style="font-size: 9pt">
-					 	<li><?php if(!$target == null): echo $target->getPrName();endif;?></li>
-		                <li>#<?php if(!$target == null): echo $target->getPrAutoNumber();endif;?></li>
-		                <li>Total Item: <?php echo ($total_row);?></li>
-		   			</ul>	
-					</div>
-  <!-- C1 ends-->	
-  </div>
-  
-  <div class="col-xs-12 col-sm-6 col-md-10" style="">
-  <!-- C2 --> 
-  	
-  	<h4><strong>PR #<?php echo $target->getPrAutoNumber()?></strong></h4>
-		<form id="pr_header_form" class="form-horizontal"
+			<form id="pr_header_form" class="form-horizontal"
 			action="" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
@@ -341,16 +342,17 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
 
 
 		</form>
-		
-		<!-- C2 ends-->
-  </div>
-  
-  <!-- ROW -->
-</div>	
 
+				</div>
 
+				<!-- end tab -->
+			</div>
+		</div>
 	</div>
+	<!-- /#page-content-wrapper -->
+
 </div>
+<!-- /#wrapper -->
 
 <script type="text/javascript">
 

@@ -90,5 +90,26 @@ class PoService extends AbstractProcureService
         }
     }
 
+    
+    /**
+     *
+     * @param \Application\Entity\NmtProcurePo $entity
+     * @param \Application\Entity\MlaUsers $u
+     *
+     */
+    public function updateStatus($entity, $u, $isFlush = false){
+        
+    }
+    
+    
+    /**
+     *
+     * @param \Application\Entity\NmtProcurePo $entity
+     * @param \Application\Entity\MlaUsers $u
+     *
+     */
+    public function copyToGR($entity, $u, $isFlush = false){
+        
+    }
    
 }

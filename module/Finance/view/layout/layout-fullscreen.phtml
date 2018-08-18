@@ -19,6 +19,7 @@
 <link href="/css/jstree/style.css" rel="stylesheet"  type="text/css">
 <link href="/css/bootstrap-editable.css" rel="stylesheet" type="text/css">
 <link href="/css/calendar.css" media="screen" rel="stylesheet"  type="text/css">
+<link href="/css/simple-sidebar.css" media="screen" rel="stylesheet"  type="text/css">
 <!-- <link href="/css/tables.css" rel="stylesheet"  type="text/css">  -->
 
 <link href="/jquery/jquery-ui.min.css" rel="stylesheet"  type="text/css">
@@ -172,20 +173,15 @@
 
 
   
-	  <div id="main_container" style="padding: 10pt">
+	  <div id="main_container" style="padding: 0pt 10pt 2pt 0px">
   
   
    	      <?= $this->content ?>
- 
-  
-     
        
-    </div><!--/.container-->
+      </div><!--/.container-->
     
     
-     <footer style="margin-top: 10pt">
-        &copy; 2016-2017 Nguyen Mau Tri
-      </footer>
+    
     
 <div id="flash_messages" class="global-notice" style="display: none;"><?php
 if($this->flashMessenger()!==null){
@@ -202,6 +198,27 @@ if($this->flashMessenger()!==null){
 		 $('[data-toggle="offcanvas"]').click(function () {
 			    $('.row-offcanvas').toggleClass('active')
 			  });
+
+		 $(function() {
+			    $( ".procure_menu" ).menu();
+			  });
+				  
+		// $("#main_container").height() =  $(window).height()-50;
+		
+		
+		
+		$("#menu-toggle").click(function(e) {
+          e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+        var toggled = $("#wrapper").attr("class");
+        if(toggled=='toggled'){
+            $("#menu-toggle").html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Menu');
+            
+        }else{
+            $("#menu-toggle").html('Menu <i class="fa fa-chevron-right" aria-hidden="true"></i> ');
+                       
+        }    
+    });
 		
 </script>
  
@@ -260,7 +277,7 @@ if($this->flashMessenger()!==null){
 	</div>
 </div>
     
-    
+     <?php echo $this->inlineScript()?>
     </body>
 </html>
- 
+     

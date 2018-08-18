@@ -132,6 +132,7 @@ else:
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>Doc.Status</b></td>
 			<td><b>Status</b></td>
 			<td><b>Ref.No.</b></td>
 				<td><b>Vendor</b></td>
@@ -163,14 +164,15 @@ else:
 			<td>
 				<?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?>
 			</td>
+			<td><?php echo $a->getDocStatus();?></td>
 			<td><?php echo $a->getTransactionStatus();?></td>
 			<td>
-<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
+<a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/po/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getSysNumber();?></a>
 			</td>
 	
 
 			<td>
-<a href="<?php echo $this->baseUrl ?>/procure/po/add1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
+<a href="<?php echo $this->baseUrl ?>/procure/po/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $a->getVendor()->getVendorName()?></a>
 			
 			</td>
 			<td><?php echo $a->getContractNo()?></td>

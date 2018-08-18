@@ -260,6 +260,20 @@ class NmtProcureGrRow
     private $transactionStatus;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="exw_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $exwUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_exw_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalExwPrice;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1195,6 +1209,54 @@ class NmtProcureGrRow
     public function getTransactionStatus()
     {
         return $this->transactionStatus;
+    }
+
+    /**
+     * Set exwUnitPrice
+     *
+     * @param string $exwUnitPrice
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setExwUnitPrice($exwUnitPrice)
+    {
+        $this->exwUnitPrice = $exwUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get exwUnitPrice
+     *
+     * @return string
+     */
+    public function getExwUnitPrice()
+    {
+        return $this->exwUnitPrice;
+    }
+
+    /**
+     * Set totalExwPrice
+     *
+     * @param string $totalExwPrice
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setTotalExwPrice($totalExwPrice)
+    {
+        $this->totalExwPrice = $totalExwPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get totalExwPrice
+     *
+     * @return string
+     */
+    public function getTotalExwPrice()
+    {
+        return $this->totalExwPrice;
     }
 
     /**

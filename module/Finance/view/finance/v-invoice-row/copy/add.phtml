@@ -6,18 +6,53 @@
 ?>
 
 
-<div id="wrapper" class="toggled">
 
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
-	
-					<?php
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"> </i></i></small>&nbsp;<?php echo $this->translate("New Row")?></a></li>
+		<li><a
+			href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/list?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+					class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current
+				Rows</a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt;">
+		<!-- Tab1 -->
+
+
+		<div class="row">
+			<!-- ROW-->
+
+			<div class="col-xs-5 col-md-2"
+				style="font-size: 9pt; padding: 10px 10px 1px 5px">
+				<!-- C1 -->
+  
+
+  					<?php
     $current_step = "STEP2";
     include (ROOT . '/module/Finance/view/finance/ap-create-wizard.php');
     ?>
-  				<div class="alert alert-info" role="alert"
-					style="padding: 1px; font-size: 9.5pt; margin: 5pt 2pt 5pt 5pt ">
-					<ul style="font-size: 9pt;padding-left: 18pt;">
+  					
+  					<hr>
+				<span style="color: gray;"><?php echo $this->translate('Summary:'); ?></span>
+
+				<div class="alert alert-warning" role="alert"
+					style="padding: 1px; font-size: 9.5pt">
+					<ul style="font-size: 9pt">
 						<li><span style="color: gray;"> Vendor: <?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?></li>
 						<li><span style="color: gray;">Invoice No.: <?php echo (!$target == null)? $target->getInvoiceNo():"";?> // <?php echo (!$target == null)? $target->getSapDoc():"";?></span></li>
 						<li><span style="color: gray;">Invoice Date: <?php if(!$target == null): if ($target->getInvoiceDate() !== null): echo date_format($target->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
@@ -33,44 +68,19 @@
 						<li><span style="color: gray;">Gross: <?php echo number_format($gross_amount,2) . " " .$target->getCurrency()->getCurrency();?></span></li>
 					</ul>
 				</div>
+				<!-- C1 ends-->
+			</div>
+
+			<div class="col-xs-12 col-sm-6 col-md-10"
+				style="font-size: 9pt; padding: 10px 10px 1px 5px">
+				<!-- C2 -->
+
+				<h4>
+<?php //if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
+<!-- <strong>A/P #<?php echo (!$target == null)? $target->getSysNumber():"";?></strong> -->
+				</h4>
 
 
-	</div>
-	<!-- /#sidebar-wrapper -->
-
-	<!-- Page Content -->
-	<div id="page-content-wrapper"
-		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-		<div class="container-fluid" id="main_container"
-			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
-				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
-				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-					Menu <span></a>
-
-
-			<div id="tabs" style="font-size: 10pt">
-				<ul>
-					<li><a href="#general"><?php echo $this->translate("New AP Invoice");?></a></li>
-				</ul>
-
-				<div id="general" style="font-size: 9pt">
-					<!-- Tab1 -->
-	
-	<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
-    
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
-}
-?>
-	
 				<form id="Create_Inv_Form" class="form-horizontal"
 					action="/finance/v-invoice/add" method="post"
 					enctype="multipart/form-data">
@@ -519,19 +529,17 @@ if (count($errors) > 0) {
 						</div>
 					</fieldset>
 				</form>
-	
 
-
-				</div>
-
-				<!-- end tab -->
+				<!-- C2 ends-->
 			</div>
-		</div>
-	</div>
-	<!-- /#page-content-wrapper -->
 
+			<!-- ROW ends-->
+		</div>
+
+
+		<!-- Tab1 -->
+	</div>
 </div>
-<!-- /#wrapper -->
 
 
 

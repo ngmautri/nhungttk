@@ -575,6 +575,22 @@ class GrController extends AbstractActionController
                 }
 
                 $validator = new Date();
+                
+                $validator = new Date();
+                
+                if ($contractNo == "") {
+                    $errors[] = 'Contract is not correct or empty!';
+                } else {
+                    $entity->setContractNo($contractNo);
+                }
+                
+                if (! $validator->isValid($contractDate)) {
+                    $errors[] = 'Contract Date is not correct or empty!';
+                } else {
+                    $entity->setContractDate(new \DateTime($contractDate));
+                }
+                
+                
 
                 if (! $validator->isValid($grDate)) {
                     $errors[] = $nmtPlugin->translate('Goods receipt Date is not correct or empty!');
@@ -806,12 +822,15 @@ class GrController extends AbstractActionController
             $entity->setRemarks($remarks);
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list
                 ));
+                
+                $viewModel->setTemplate("procure/gr/add_gr");
+                return $viewModel;
             }
 
             // NO ERROR
@@ -875,12 +894,15 @@ class GrController extends AbstractActionController
         }
         
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'currency_list' => $currency_list
         ));
+        
+        $viewModel->setTemplate("procure/gr/add_gr");
+        return $viewModel;
     }
 
     /**

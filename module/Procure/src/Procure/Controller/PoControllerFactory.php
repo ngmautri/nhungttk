@@ -27,6 +27,10 @@ class PoControllerFactory implements FactoryInterface {
 			
 		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
 		$controller->setDoctrineEM($sv );
+	
+		$sv =  $sm->get ('Procure\Service\PoService' );
+		$controller->setPoService($sv);
+		
 		
 		return $controller;
 	}

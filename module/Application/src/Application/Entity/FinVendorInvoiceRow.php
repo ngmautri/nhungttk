@@ -267,6 +267,13 @@ class FinVendorInvoiceRow
     private $transactionStatus;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="total_exw_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalExwPrice;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1216,6 +1223,30 @@ class FinVendorInvoiceRow
     public function getTransactionStatus()
     {
         return $this->transactionStatus;
+    }
+
+    /**
+     * Set totalExwPrice
+     *
+     * @param string $totalExwPrice
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setTotalExwPrice($totalExwPrice)
+    {
+        $this->totalExwPrice = $totalExwPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get totalExwPrice
+     *
+     * @return string
+     */
+    public function getTotalExwPrice()
+    {
+        return $this->totalExwPrice;
     }
 
     /**

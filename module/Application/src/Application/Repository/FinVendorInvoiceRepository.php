@@ -209,6 +209,9 @@ WHERE 1";
                 break;
             case "currencyCode":
                 $sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;
+            case "sysNumber":
+                $sql = $sql . " ORDER BY fin_vendor_invoice.sys_number " . $sort;
+                
                 break;
         }
         

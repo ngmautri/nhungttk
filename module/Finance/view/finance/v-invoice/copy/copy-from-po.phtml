@@ -1,61 +1,51 @@
 <?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
 <?php /**@var \Application\Entity\NmtProcurePo $target ;*/?>
 
-
-<div id="wrapper" class="toggled">
-
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
-	<?php
-    $current_step = "STEP1";
-    include (ROOT . '/module/Finance/view/finance/ap-create-wizard.php');
-    ?>
-  					
-  					
-			<div class="alert alert-warning" role="alert"
-			style="padding: 1px; font-size: 9pt; margin: 10px 5px 5px 5pt">Document can't be changed when
-			posted!</div>
-
-
-	</div>
-	<!-- /#sidebar-wrapper -->
-
-	<!-- Page Content -->
-	<div id="page-content-wrapper"
-		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-		<div class="container-fluid" id="main_container"
-			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
-				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
-				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-					Menu <span></a>
-
-
-			<div id="tabs" style="font-size: 10pt">
-				<ul>
-					<li><a href="#general">New A/P Invoice:</a></li>
-				</ul>
-
-				<div id="general" style="font-size: 9pt">
-					<!-- Tab1 -->
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
 	
-	
-	<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
-
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
 }
 ?>
-	
-	
-	<form id="Create_Inv_Form" class="form-horizontal"
+
+
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general">New A/P Invoice from Contract/PO: <?php if($target!==null): echo $target->getSysNumber(); endif;?></a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt">
+
+
+ <div class="row">
+  <!-- ROW -->
+  
+  <div class="col-xs-5 col-md-2" style="font-size: 9pt; padding: 10px 2px 1px 1px">
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP1";
+    					include (ROOT.'/module/Finance/view/finance/ap-create-wizard.php');
+  					?>
+  					
+  					
+					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9pt">
+						Document can't be changed when posted!
+					</div>
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+  <!-- C2 -->
+  
+		<form id="Create_Inv_Form" class="form-horizontal"
 			action="/finance/v-invoice/copy-from-po" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 			<input type="hidden" name="target_id" value="<?php if($target!==null): echo $target->getId(); endif;?>" />
@@ -260,16 +250,18 @@ if (count($errors) > 0) {
 			</fieldset>
 		</form>
 		
-
-
-					<!-- end tab -->
-				</div>
-			</div>
-		</div>
-		<!-- /#page-content-wrapper -->
-
+		
+				 <!-- C2 ends-->
+  </div>
+  
+  <!-- ROW -->
+</div>	
+		
+		
 	</div>
-	<!-- /#wrapper -->
+</div>
+
+
 
 <script>
 

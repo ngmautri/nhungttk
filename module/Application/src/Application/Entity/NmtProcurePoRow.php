@@ -232,6 +232,34 @@ class NmtProcurePoRow
     private $transactionStatus;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
+     */
+    private $isPosted;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_draft", type="boolean", nullable=true)
+     */
+    private $isDraft;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="exw_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $exwUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_exw_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalExwPrice;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1031,6 +1059,102 @@ class NmtProcurePoRow
     public function getTransactionStatus()
     {
         return $this->transactionStatus;
+    }
+
+    /**
+     * Set isPosted
+     *
+     * @param boolean $isPosted
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPosted
+     *
+     * @return boolean
+     */
+    public function getIsPosted()
+    {
+        return $this->isPosted;
+    }
+
+    /**
+     * Set isDraft
+     *
+     * @param boolean $isDraft
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setIsDraft($isDraft)
+    {
+        $this->isDraft = $isDraft;
+
+        return $this;
+    }
+
+    /**
+     * Get isDraft
+     *
+     * @return boolean
+     */
+    public function getIsDraft()
+    {
+        return $this->isDraft;
+    }
+
+    /**
+     * Set exwUnitPrice
+     *
+     * @param string $exwUnitPrice
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setExwUnitPrice($exwUnitPrice)
+    {
+        $this->exwUnitPrice = $exwUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get exwUnitPrice
+     *
+     * @return string
+     */
+    public function getExwUnitPrice()
+    {
+        return $this->exwUnitPrice;
+    }
+
+    /**
+     * Set totalExwPrice
+     *
+     * @param string $totalExwPrice
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setTotalExwPrice($totalExwPrice)
+    {
+        $this->totalExwPrice = $totalExwPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get totalExwPrice
+     *
+     * @return string
+     */
+    public function getTotalExwPrice()
+    {
+        return $this->totalExwPrice;
     }
 
     /**

@@ -1,93 +1,99 @@
-<?php /**@var \Application\Entity\NmtProcureGr $entity ;*/?>
+<?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
 
-<div id="wrapper" class="toggled">
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+    
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
 
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+<div id="tabs" style="font-size: 9.5pt; padding:0;margin: 0">
+	<ul>
+		<li><a href="#general"><small><i class="fa fa-calculator"
+					aria-hidden="true"></i></small>&nbsp;A/P Invoice</a></li>
+		<li><a
+			href="/finance/v-invoice-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
+				class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture (<?php echo $total_picture;?>)</a></li>
+		<li><a
+			href="/finance/v-invoice-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment (<?php echo $total_attachment;?>)</a></li>
+		<li><a
+			href="<?php echo $this->baseUrl ?>/finance/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 
-				<?php
+	</ul>
+
+
+	<div id="general" style="font-size: 9pt">
+
+		<div class="row">
+			<!-- ROW-->
+
+			<div class="col-xs-5 col-md-2" 	style="font-size: 9pt; padding: 10px 10px 1px 5px">
+				<!-- C1 -->
+  					<?php
     $current_step = "STEP3";
-    include (ROOT . '/module/Procure/view/procure/gr-create-wizard.php');
+    include (ROOT . '/module/Finance/view/finance/ap-create-wizard.php');
     ?>
   				<div class="alert alert-info" role="alert"
-			style="padding: 1px; font-size: 9.5pt;">
-			<ul style="font-size: 9pt; padding-left: 18pt;">
-				<li><span style="color: gray;"> Vendor: <?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?></li>
-				<li><span style="color: gray;">Invoice No.: <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?> // <?php echo (!$entity == null)? $entity->getSapDoc():"";?></span></li>
-				<li><span style="color: gray;">Invoice Date: <?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
-				</li>
-				<li><span style="color: gray;">GR #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></span></li>
-				<li><span style="color: gray;">Status: <?php echo (!$entity == null)? $entity->getCurrentState():"";?></span></li>
+					style="padding: 1px; font-size: 9.5pt;">
+					<ul style="font-size: 9pt; padding-left: 15pt;">
+						<li><span style="color: gray;"> Vendor: <?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?></li>
+						<li><span style="color: gray;">Invoice No.: <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?> // <?php echo (!$entity == null)? $entity->getSapDoc():"";?></span></li>
+						<li><span style="color: gray;">Invoice Date: <?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
+						</li>
+						<li><span style="color: gray;">A/P #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></span></li>
+						<li><span style="color: gray;">Status: <?php echo (!$entity == null)? $entity->getCurrentState():"";?></span></li>
 
-				<li>-----</li>
+						<li>-----</li>
 
-				<li><span style="color: gray;">Total Line: <?php echo ($total_row);?></span></li>
-			</ul>
-		</div>
+						<li><span style="color: gray;">Total Line: <?php echo ($total_row);?></span></li>
+						<li><span style="color: gray;">Net: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?></span></li>
+						<li><span style="color: gray;">Tax: <?php echo number_format($tax_amount,2);?></span></li>
+						<li><span style="color: gray;">Gross: <?php echo number_format($gross_amount,2) . " " .$entity->getCurrency()->getCurrency();?></span></li>
+					</ul>
+				</div>
 
-		<div class="alert alert-warning" role="alert"
-			style="padding: 1px; font-size: 9pt"><?php echo $this->translate('Document can\'t be changed anymore when submitted!');?></div>
+				<div class="alert alert-warning" role="alert"
+					style="padding: 1px; font-size: 9pt"><?php echo $this->translate('Document can\'t be changed anymore when submitted!');?></div>
 
+				<!-- C1 ends-->
+			</div>
 
-	</div>
-	<!-- /#sidebar-wrapper -->
+			<div class="col-xs-12 col-sm-6 col-md-10" style="font-size: 9pt; padding: 10px 10px 1px 5px">
+				<!-- C2 -->
 
-	<!-- Page Content -->
-	<div id="page-content-wrapper"
-		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-		<div class="container-fluid" id="main_container"
-			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
-				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
-				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-					Menu <span></a>
-
-
-			<div id="tabs" style="font-size: 9.5pt">
-				<ul>
-					<li><a href="#general"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;Purchase Order</a></li>
-					<li><a
-						href="/procure/po-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
-							class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
-					<li><a href="#logistic"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;Logistic</a></li>
-					<li><a href="#accounting"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;Accounting</a></li>
-					<li><a
-						href="/procure/po/status?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
-							class="glyphicon glyphicon-picture"></span></span>&nbsp;Status</a></li>
-
-
-
-					<li><a
-						href="/procure/po-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-							<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment
-					</a></li>
-
-				</ul>
-
-
-				<div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
-					<!-- Tab1 -->
-					
-					<div style="position: relative; float: right;">
+				<div style="position: relative; float: right;">
 
 					<a class="btn btn-primary btn-sm" style="color: white"
 						onclick="confirmPost();" href="javascript:;"><i
-						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
-					<a class="btn btn-default btn-sm" href="javascript:;"
+						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a> <a
+						class="btn btn-default btn-sm" href="javascript:;"
 						onclick="refreshGird();"><i class="fa fa-refresh"
-						aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>
+						aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a> <a
+						class="btn btn-default btn-sm"
+						href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
+						class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Edit</a>
 					<a class="btn btn-default btn-sm"
 						href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 						<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
 					</a>
 
 				</div>
-	
-	<form id="Invoice_Posting_Form" class="form-horizontal"
-					action="/procure/gr/review" method="post"
+				<h4>
+<?php //if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
+<h4 style="color: graytext;"><strong>A/P #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong></h4>
+				</h4>
+
+				<form id="Invoice_Posting_Form" class="form-horizontal"
+					action="/finance/v-invoice/review" method="post"
 					enctype="multipart/form-data">
 					<input type="hidden" name="redirectUrl"
 						value="<?php echo $redirectUrl ?>" /> <input type="hidden"
@@ -103,7 +109,7 @@
 							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 							<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
 						</legend>
-						<div id="invoice_header" class="collapse in">
+						<div id="invoice_header" class="collapse <?php if (count($errors) > 0): echo 'in'; endif;?>">
 
 							<div class="form-group margin-bottom required">
 								<label class="control-label col-sm-2">Current State:</label>
@@ -206,7 +212,40 @@
 							</div>
 
 
-							
+							<div class="form-group margin-bottom required">
+								<label class="control-label col-sm-2">Invoice number:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										id="invoiceNo" name="invoiceNo"
+										value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
+								</div>
+								<label class="control-label col-sm-2">SAP Document No.:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text" placeholder=""
+										id="sapDoc" name="sapDoc"
+										value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
+								</div>
+
+
+							</div>
+
+							<div class="form-group margin-bottom required">
+
+								<label class="control-label col-sm-2 required">Invoice Date:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text"
+										id="invoiceDate" name="invoiceDate"
+										value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
+										placeholder=" please select" />
+								</div>
+								<label class="control-label col-sm-2">Posting Date:</label>
+								<div class="col-sm-3">
+									<input class="form-control input-sm" type="text"
+										id="postingDate" name="postingDate"
+										value="<?php if(!$entity == null): if ($entity->getPostingDate() !== null): echo date_format($entity->getPostingDate(),"Y-m-d"); endif; endif;?>"
+										placeholder=" please select" />
+								</div>
+							</div>
 
 							<div class="form-group margin-bottom required">
 
@@ -249,20 +288,29 @@
 							<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
 						</legend>
 						<div id="rows" class="collapse in">
+							<span class=""
+								style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
+						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
+                        &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>
+                        &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
+                        &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
+					</span>
 							<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
 					
 					</fieldset>
 				</form>
 
-				<!-- end tab -->
+				<!-- C2 ends-->
 			</div>
+
+			<!-- ROW ends-->
 		</div>
+
+
 	</div>
-	<!-- /#page-content-wrapper -->
-
 </div>
-<!-- /#wrapper -->
 
+<hr>
 
 <!-- Modal -->
 <div class="modal" id="confirm_modal_sm" role="dialog">
@@ -272,10 +320,10 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body" id="b_modal_sm_body">
-				<h5>#<?php echo$this->translate('PO will be posted!');?></h5>
+				<h5>A/P #<?php echo (!$entity == null)? $entity->getSysNumber() . $this->translate(' will be posted!'):"";?></h5>
 
 				<div class="alert alert-warning">
-					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when submitted!');?>
 					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
@@ -523,7 +571,7 @@ var autoCompleteEditor = function (ui) {
 
 //var container_height = $('#main_container').height();
 //alert(container_height);
-var obj = { width: "auto", height: $(window).height()-270, showTitle : false,
+var obj = { width: "100%", height: $(window).height()-320, showTitle : false,
 		resizable:true,
 		//draggable:true,
 		sortable: true,
@@ -544,7 +592,7 @@ var obj = { width: "auto", height: $(window).height()-270, showTitle : false,
                             var $grid = $(this).closest('.pq-grid');
                             //addRow($grid);
                             
-	     redirectUrl="/procure/gr-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
+	     redirectUrl="/finance/v-invoice-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>";
           window.location.href= redirectUrl;
                              
                             //debugger;
@@ -607,7 +655,7 @@ var obj = { width: "auto", height: $(window).height()-270, showTitle : false,
             //alert(sent_list);
               
               $.ajax({
-                  url: '/procure/gr-row/update-row',
+                  url: '/finance/v-invoice-row/update-row',
                   data: {
                       sent_list: sent_list
                   },
@@ -667,8 +715,10 @@ obj.colModel = [
    { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
     { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
     { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
-	{ title: "G/L", dataType: "string", dataIndx: "gl_account", width:50,editable: false },	  
-	{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
+	{ title: "GL", dataType: "string", dataIndx: "gl_account", width:50,editable: false },
+	{ title: "Cost Center", dataType: "string", dataIndx: "cost_center", width:90,editable: false },
+	 
+    { title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
     { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
     { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: true},        
     { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: true},
@@ -692,7 +742,7 @@ obj.dataModel = {
       location: "remote",
       method: "GET",
       recIndx: "row_id",
-      url: "/procure/gr-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
+      url: "/finance/v-invoice-row/gird?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>",
       getData: function (response) {
         return { data: response.data, curPage: response.curPage, totalRecords: response.totalRecords};
      }
@@ -733,7 +783,7 @@ $grid.on('pqgridrefresh pqgridrefreshrow', function () {
         rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
         recIndx = $grid.pqGrid("option", "dataModel.recIndx");
 
-        redirectUrl="/procure/gr-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+        redirectUrl="/finance/v-invoice-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
       	//alert(redirectUrl);
 		window.location.href = redirectUrl;
       	//window.open(redirectUrl,'_blank');
@@ -767,7 +817,7 @@ $grid.on('pqgridrefresh pqgridrefreshrow', function () {
       	//alert(rowData['item_name']);
       	
       	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
-      	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
+      	showJqueryDialog('Item Receiving','1000',$(window).height()-80, redirectUrl,'j_loaded_data', true);
       	//window.open(redirectUrl,'_blank');
       	
     });

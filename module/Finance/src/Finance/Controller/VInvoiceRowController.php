@@ -399,6 +399,8 @@ class VInvoiceRowController extends AbstractActionController
      */
     public function editAction()
     {
+        $this->layout("Finance/layout-fullscreen");
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
@@ -629,6 +631,7 @@ class VInvoiceRowController extends AbstractActionController
 
         // NO Post
         // ====================================
+        
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()

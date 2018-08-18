@@ -23,6 +23,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 class GrRowController extends AbstractActionController
 {
+
     protected $doctrineEM;
 
     /**
@@ -252,172 +253,180 @@ class GrRowController extends AbstractActionController
             if ($target == null) {
 
                 $errors[] = 'GR object can\'t be empty. Or token key is not valid!';
-                return new ViewModel(array(
+                $viewModel =  new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
                     'entity' => null,
                     'currency_list' => $currency_list,
-                    'gl_list' => $gl_list
+                    'gl_list' => $gl_list,
+                    'total_row' => 0,
+                    'max_row_number' => 0,
+                    'active_row' => 0
                 ));
-                // might need redirect
+
+                $viewModel->setTemplate("procure/gr-row/add-row");
+                return $viewModel;
+            }
+            $item_id = $request->getPost('item_id');
+            $gl_account_id = $request->getPost('gl_account_id');
+
+            $pr_row_id = $request->getPost('pr_row_id');
+            $isActive = (int) $request->getPost('isActive');
+
+            $rowNumber = $request->getPost('rowNumber');
+
+            $vendorItemCode = $request->getPost('vendorItemCode');
+            $unit = $request->getPost('unit');
+            $conversionFactor = $request->getPost('conversionFactor');
+            $converstionText = $request->getPost('converstionText');
+
+            $quantity = $request->getPost('quantity');
+            $unitPrice = $request->getPost('unitPrice');
+            $taxRate = $request->getPost('taxRate');
+
+            $remarks = $request->getPost('remarks');
+
+            if ($isActive !== 1) {
+                $isActive = 0;
+            }
+
+            // Inventory Transaction:
+
+            $entity = new NmtProcureGrRow();
+            $entity->setIsActive($isActive);
+
+            $entity->setGr($target);
+            $entity->setRowNumber($rowNumber);
+
+            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+            $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
+
+            if ($pr_row == null) {
+                // $errors[] = 'Item can\'t be empty!';
+            } else {
+                $entity->setPrRow($pr_row);
+            }
+
+            if ($gl == null) {
+                $errors[] = 'G/L account can\'t be empty!';
+            } else {
+                $entity->setGlAccount($gl);
+            }
+
+            if ($item == null) {
+                $errors[] = 'Item can\'t be empty!';
+            } else {
+                $entity->setItem($item);
+            }
+
+            $entity->setVendorItemCode($vendorItemCode);
+            $entity->setUnit($unit);
+            $entity->setConversionFactor($conversionFactor);
+            $entity->setConverstionText($converstionText);
+
+            $n_validated = 0;
+            if ($quantity == null) {
+                $errors[] = 'Please  enter quantity!';
             } else {
 
-                $item_id = $request->getPost('item_id');
-                $gl_account_id = $request->getPost('gl_account_id');
-
-                $pr_row_id = $request->getPost('pr_row_id');
-                $isActive = (int) $request->getPost('isActive');
-
-                $rowNumber = $request->getPost('rowNumber');
-
-                $vendorItemCode = $request->getPost('vendorItemCode');
-                $unit = $request->getPost('unit');
-                $conversionFactor = $request->getPost('conversionFactor');
-                $converstionText = $request->getPost('converstionText');
-
-                $quantity = $request->getPost('quantity');
-                $unitPrice = $request->getPost('unitPrice');
-                $taxRate = $request->getPost('taxRate');
-                $traceStock = $request->getPost('traceStock');
-
-                $remarks = $request->getPost('remarks');
-
-                if ($isActive !== 1) {
-                    $isActive = 0;
-                }
-
-                // Inventory Transaction:
-
-                $entity = new NmtProcureGrRow();
-                $entity->setIsActive($isActive);
-
-                $entity->setGr($target);
-                $entity->setRowNumber($rowNumber);
-
-                $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-                $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-                $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
-
-                if ($pr_row == null) {
-                    // $errors[] = 'Item can\'t be empty!';
+                if (! is_numeric($quantity)) {
+                    $errors[] = 'Quantity must be a number.';
                 } else {
-                    $entity->setPrRow($pr_row);
-                }
-
-                if ($gl == null) {
-                    $errors[] = 'G/L account can\'t be empty!';
-                } else {
-                    $entity->setGlAccount($gl);
-                }
-
-                if ($item == null) {
-                    $errors[] = 'Item can\'t be empty!';
-                } else {
-                    $entity->setItem($item);
-                }
-
-                $entity->setVendorItemCode($vendorItemCode);
-                $entity->setUnit($unit);
-                $entity->setConversionFactor($conversionFactor);
-                $entity->setConverstionText($converstionText);
-
-                $n_validated = 0;
-                if ($quantity == null) {
-                    $errors[] = 'Please  enter quantity!';
-                } else {
-
-                    if (! is_numeric($quantity)) {
-                        $errors[] = 'Quantity must be a number.';
-                    } else {
-                        if ($quantity <= 0) {
-                            $errors[] = 'Quantity must be greater than 0!';
-                        }
-                        $entity->setQuantity($quantity);
-                        $n_validated ++;
+                    if ($quantity <= 0) {
+                        $errors[] = 'Quantity must be greater than 0!';
                     }
+                    $entity->setQuantity($quantity);
+                    $n_validated ++;
                 }
+            }
 
-                if ($unitPrice !== null) {
-                    if (! is_numeric($unitPrice)) {
-                        $errors[] = 'Price is not valid. It must be a number.';
-                    } else {
-                        if ($unitPrice < 0) {
-                            
-                            // accept ZERO PRICE
-                            $errors[] = 'Price must be greate or equal 0!';
-                        }
-                        $entity->setUnitPrice($unitPrice);
-                        $n_validated ++;
+            if ($unitPrice !== null) {
+                if (! is_numeric($unitPrice)) {
+                    $errors[] = 'Price is not valid. It must be a number.';
+                } else {
+                    if ($unitPrice < 0) {
+
+                        // accept ZERO PRICE
+                        $errors[] = 'Price must be greate or equal 0!';
                     }
+                    $entity->setUnitPrice($unitPrice);
+                    $n_validated ++;
                 }
+            }
 
-                if ($n_validated == 2) {
-                    $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
-                    $entity->setNetAmount($netAmount);
-                }
+            if ($n_validated == 2) {
+                $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
+                $entity->setNetAmount($netAmount);
+            }
 
-                if ($taxRate !== null) {
-                    if (! is_numeric($taxRate)) {
-                        $errors[] = '$taxRate is not valid. It must be a number.';
-                    } else {
-                        if ($taxRate < 0) {
-                            $errors[] = '$taxRate must be greate than 0!';
-                        }
-                        $entity->setTaxRate($taxRate);
-                        $n_validated ++;
+            if ($taxRate !== null) {
+                if (! is_numeric($taxRate)) {
+                    $errors[] = '$taxRate is not valid. It must be a number.';
+                } else {
+                    if ($taxRate < 0) {
+                        $errors[] = '$taxRate must be greate than 0!';
                     }
+                    $entity->setTaxRate($taxRate);
+                    $n_validated ++;
                 }
+            }
 
-                if ($n_validated == 3) {
-                    $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                    $grossAmount = $entity->getNetAmount() + $taxAmount;
-                    $entity->setTaxAmount($taxAmount);
-                    $entity->setGrossAmount($grossAmount);
-                }
+            if ($n_validated == 3) {
+                $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
+                $grossAmount = $entity->getNetAmount() + $taxAmount;
+                $entity->setTaxAmount($taxAmount);
+                $entity->setGrossAmount($grossAmount);
+            }
 
-                // $entity->setTraceStock($traceStock);
-                $entity->setRemarks($remarks);
+            // $entity->setTraceStock($traceStock);
+            $entity->setRemarks($remarks);
 
-                if (count($errors) > 0) {
+            if (count($errors) > 0) {
 
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'target' => $target,
-                        'entity' => $entity,
-                        'currency_list' => $currency_list,
-                        'gl_list' => $gl_list
-                    ));
-                }
-                ;
-
-                // NO ERROR
-                // Saving into Database..........
-                // ++++++++++++++++++++++++++++++
-
-                // Goods receipt, Invoice Not receipt
-                $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
-                $entity->setTransactionStatus(\Application\Model\Constants::PROCURE_TRANSACTION_STATUS_PENDING);
-
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    'email' => $this->identity()
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => $target,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'gl_list' => $gl_list,
+                    'total_row' => $gr['total_row'],
+                    'max_row_number' => $gr['max_row_number'],
+                    'active_row' => $gr['active_row']
                 ));
 
-                $entity->setCurrentState($target->getCurrentState());
-                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
-                $entity->setCreatedBy($u);
-                $entity->setCreatedOn(new \DateTime());
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-
-                $redirectUrl = "/procure/gr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-                $m = sprintf("[OK] GR Line: %s created!", $entity->getId());
-                $this->flashMessenger()->addMessage($m);
-
-                return $this->redirect()->toUrl($redirectUrl);
+                $viewModel->setTemplate("procure/gr-row/add-row");
+                return $viewModel;
             }
+            ;
+
+            // NO ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            // Goods receipt, Invoice Not receipt
+            $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
+            $entity->setTransactionStatus(\Application\Model\Constants::PROCURE_TRANSACTION_STATUS_PENDING);
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $entity->setCurrentState($target->getCurrentState());
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn(new \DateTime());
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+
+            $redirectUrl = "/procure/gr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
+            $m = sprintf("[OK] GR Line: %s created!", $entity->getId());
+            $this->flashMessenger()->addMessage($m);
+
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
@@ -461,7 +470,7 @@ class GrRowController extends AbstractActionController
         $entity->setConversionFactor(1);
         $entity->setUnit("each");
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
@@ -472,9 +481,14 @@ class GrRowController extends AbstractActionController
             'max_row_number' => $gr['max_row_number'],
             'active_row' => $gr['active_row']
         ));
+
+        $viewModel->setTemplate("procure/gr-row/add-row");
+        return $viewModel;
     }
 
     /**
+     * 
+     *  @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function showAction()
     {

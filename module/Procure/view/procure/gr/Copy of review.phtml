@@ -1,77 +1,70 @@
 <?php /**@var \Application\Entity\NmtProcureGr $entity ;*/?>
 
-<div id="wrapper" class="toggled">
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+    
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
 
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><small><i class="fa fa-calculator"
+					aria-hidden="true"></i></small>&nbsp;Good Receive</a></li>
+		<li><a
+			href="/procure/gr-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment (<?php echo 1;?>)</a></li>
+		<li><a
+			href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 
-				<?php
+	</ul>
+
+
+	<div id="general" style="font-size: 9pt">
+
+		<div class="row">
+			<!-- ROW-->
+
+			<div class="col-xs-5 col-md-2" style="font-size: 9pt; padding: 2px 4px 1px 5px">
+				<!-- C1 -->
+  					<?php
     $current_step = "STEP3";
     include (ROOT . '/module/Procure/view/procure/gr-create-wizard.php');
     ?>
   				<div class="alert alert-info" role="alert"
-			style="padding: 1px; font-size: 9.5pt;">
-			<ul style="font-size: 9pt; padding-left: 18pt;">
-				<li><span style="color: gray;"> Vendor: <?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?></li>
-				<li><span style="color: gray;">Invoice No.: <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?> // <?php echo (!$entity == null)? $entity->getSapDoc():"";?></span></li>
-				<li><span style="color: gray;">Invoice Date: <?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
-				</li>
-				<li><span style="color: gray;">GR #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></span></li>
-				<li><span style="color: gray;">Status: <?php echo (!$entity == null)? $entity->getCurrentState():"";?></span></li>
+					style="padding: 1px; font-size: 9.5pt;">
+					<ul style="font-size: 9pt; padding-left: 15pt;">
+						<li><span style="color: gray;"> Vendor: <?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?></li>
+						<li><span style="color: gray;">Invoice No.: <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?> // <?php echo (!$entity == null)? $entity->getSapDoc():"";?></span></li>
+						<li><span style="color: gray;">Invoice Date: <?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
+						</li>
+						<li><span style="color: gray;">GR #<?php echo (!$entity == null)? $entity->getSysNumber():"";?></span></li>
+						<li><span style="color: gray;">Status: <?php echo (!$entity == null)? $entity->getCurrentState():"";?></span></li>
 
-				<li>-----</li>
+						<li>-----</li>
 
-				<li><span style="color: gray;">Total Line: <?php echo ($total_row);?></span></li>
-			</ul>
-		</div>
+						<li><span style="color: gray;">Total Line: <?php echo ($total_row);?></span></li>
+					</ul>
+				</div>
 
-		<div class="alert alert-warning" role="alert"
-			style="padding: 1px; font-size: 9pt"><?php echo $this->translate('Document can\'t be changed anymore when submitted!');?></div>
+				<div class="alert alert-warning" role="alert"
+					style="padding: 1px; font-size: 9pt"><?php echo $this->translate('Document can\'t be changed anymore when submitted!');?></div>
 
+				<!-- C1 ends-->
+			</div>
 
-	</div>
-	<!-- /#sidebar-wrapper -->
+			<div class="col-xs-12 col-sm-6 col-md-10" style="font-size: 9pt; padding: 2px 5px 1px 10px">
+				<!-- C2 -->
 
-	<!-- Page Content -->
-	<div id="page-content-wrapper"
-		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-		<div class="container-fluid" id="main_container"
-			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
-				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
-				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-					Menu <span></a>
-
-
-			<div id="tabs" style="font-size: 9.5pt">
-				<ul>
-					<li><a href="#general"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;Purchase Order</a></li>
-					<li><a
-						href="/procure/po-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
-							class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture</a></li>
-					<li><a href="#logistic"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;Logistic</a></li>
-					<li><a href="#accounting"><small><i class="fa fa-calculator"
-								aria-hidden="true"></i></small>&nbsp;Accounting</a></li>
-					<li><a
-						href="/procure/po/status?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><span
-							class="glyphicon glyphicon-picture"></span></span>&nbsp;Status</a></li>
-
-
-
-					<li><a
-						href="/procure/po-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
-							<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;Attachment
-					</a></li>
-
-				</ul>
-
-
-				<div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
-					<!-- Tab1 -->
-					
-					<div style="position: relative; float: right;">
+				<div style="position: relative; float: right;">
 
 					<a class="btn btn-primary btn-sm" style="color: white"
 						onclick="confirmPost();" href="javascript:;"><i
@@ -85,8 +78,12 @@
 					</a>
 
 				</div>
-	
-	<form id="Invoice_Posting_Form" class="form-horizontal"
+				<h4>
+<?php //if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>
+<h4 style="color: gray;"><strong><?php echo (!$entity == null)? $entity->getSysNumber():"";?></strong>
+				</h4>
+
+				<form id="Invoice_Posting_Form" class="form-horizontal"
 					action="/procure/gr/review" method="post"
 					enctype="multipart/form-data">
 					<input type="hidden" name="redirectUrl"
@@ -254,14 +251,16 @@
 					</fieldset>
 				</form>
 
-				<!-- end tab -->
+				<!-- C2 ends-->
 			</div>
-		</div>
-	</div>
-	<!-- /#page-content-wrapper -->
 
+			<!-- ROW ends-->
+		</div>
+
+
+	</div>
 </div>
-<!-- /#wrapper -->
+
 
 
 <!-- Modal -->
@@ -272,10 +271,10 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body" id="b_modal_sm_body">
-				<h5>#<?php echo$this->translate('PO will be posted!');?></h5>
+				<h5>Good Receipt #<?php echo (!$entity == null)? $entity->getSysNumber() . $this->translate(' will be posted!'):"";?></h5>
 
 				<div class="alert alert-warning">
-					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when submitted!');?>
 					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->

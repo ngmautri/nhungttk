@@ -78,6 +78,12 @@ class JEService implements EventManagerAwareInterface
             $n ++;
             /** @var \Application\Entity\FinVendorInvoiceRow $r ; */
 
+            // ignore row with Zero quantity
+            if ($r->getQuantity() == 0) {
+                $r->setIsActive(0);
+                continue;
+            }
+            
             if ($r->getUnitPrice() > 0) {
 
                 // Create JE Row - DEBIT

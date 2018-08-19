@@ -1,34 +1,55 @@
-  	<?php
-    $current_step = "STEP1";
-    ?>
+<?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
 
 
-<?php /**@var \Application\Entity\NmtInventoryMv $entity ;*/?>
+<div id="wrapper" class="toggled">
 
-<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+					<?php 
+					$current_step = "STEP1";
+					include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
+					?>
 
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
-}
-?>
+
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
+				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+				Menu <span></a>
+
 
 <div id="tabs" style="font-size: 10pt">
 	<ul>
-		<li><a href="#general">New Goods Issue:</a></li>
+		<li><a href="#general">New A/P Invoice:</a></li>
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
-		<!-- Tab1 -->
-
-		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/inventory/gi/add" method="post" enctype="multipart/form-data">
+	<!-- Tab1 -->
+	
+	
+	<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+<form id="Create_Inv_Form" class="form-horizontal"
+			action="/inventory/gi/add" method="post"
+			enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 			<fieldset>
@@ -47,13 +68,13 @@ if (count($errors) > 0) {
             if ($issueType !== null) :
                 foreach ($issueType as $k => $v) :
                     if ($entity !== null) :
-                        if ($entity->getMovementType() ==$k) :
-                        echo '<option selected value="' . $k . '">' . $k .' - '. $this->translate($v['type_name']) . '</option>';
+                        if ($entity->getMovementType() == $k) :
+                            echo '<option selected value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
                         else :
-                        echo '<option value="' . $k . '">' . $k .' - '. $this->translate($v['type_name']) . '</option>';
+                            echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
                         endif;
                     else :
-                    echo '<option value="' . $k . '">' . $k .' - '. $this->translate($v['type_name']) . '</option>';
+                        echo '<option value="' . $k . '">' . $k . ' - ' . $this->translate($v['type_name']) . '</option>';
                     endif;
                 endforeach
                 ;
@@ -101,31 +122,35 @@ if (count($errors) > 0) {
 							value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
 					</div>
 				</div>
-	
-	
-	<hr>
-	<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" for="inputTag"></label>
-		<div class="col-sm-3">
-			<button onclick="submitForm('Create_Inv_Form');"
-				class="btn btn-default btn-sm">
-				<i class="glyphicon glyphicon-floppy-disk"> </i> Save
-			</button>
-			<a class="btn btn-default btn-sm" href="<?php echo $redirectUrl; ?>"><small><i
-					class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 
+
+				<hr>
+				<div class="form-group margin-bottom">
+					<label class="control-label col-sm-2" for="inputTag"></label>
+					<div class="col-sm-3">
+						<button onclick="submitForm('Create_Inv_Form');"
+							class="btn btn-default btn-sm">
+							<i class="glyphicon glyphicon-floppy-disk"> </i> Save
+						</button>
+						<a class="btn btn-default btn-sm"
+							href="<?php echo $redirectUrl; ?>"><small><i
+								class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+					</div>
+				</div>
+			</fieldset>
+		</form>	
+	
+	
+
+<!-- end tab -->
+</div>
 		</div>
 	</div>
-	</fieldset>
-	</form>
+	<!-- /#page-content-wrapper -->
 
-
-
-	<!-- Tab1 -->
 </div>
-</div>
-
-
+<!-- /#wrapper -->
 
 <script>
 

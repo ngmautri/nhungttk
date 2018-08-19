@@ -1,8 +1,18 @@
 <?php /**@var \Application\Entity\NmtInventoryMv $entity ;*/?>
 
-<?php
+<div id="tabs" style="font-size: 10pt; padding: 1px">
+	<ul>
+		<li><a href="#general">New Goods Issue:</a></li>
+	</ul>
+
+	<div id="general"
+		style="font-size: 9pt; padding: 2pt; margin: 2pt 10pt 2pt 0">
+		<!-- Tab1 -->
+
+		
+			<?php
 if (count($errors) > 0) {
-    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+    echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
 
     echo '<ul>';
     foreach ($errors as $error) :
@@ -14,19 +24,11 @@ if (count($errors) > 0) {
 }
 ?>
 
-<div id="tabs" style="font-size: 10pt">
-	<ul>
-		<li><a href="#general">New Goods Issue:</a></li>
-	</ul>
-
-	<div id="general" style="font-size: 9pt">
-		<!-- Tab1 -->
-
 <?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
 		<div style="position: relative; float: right;">
-		<a class="btn btn-primary btn-sm" style="color: white"
-						onclick="confirmPost();" href="javascript:;"><i
-						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
+			<a class="btn btn-primary btn-sm" style="color: white"
+				onclick="confirmPost();" href="javascript:;"><i
+				class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
 		</div>
 		<?php endif;?>
 		
@@ -36,28 +38,31 @@ if (count($errors) > 0) {
 			action="/inventory/gi/review" method="post"
 			enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" />
-				<input type="hidden" name="redirectUrl"
-						value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-						name="entity_id"
-						value="<?php echo (!$entity == null)? $entity->getId():"";?>" /> <input
-						type="hidden" name="token"
-						value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
-			
-				
-				
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				name="redirectUrl" value="<?php echo $redirectUrl ?>" /> <input
+				type="hidden" name="entity_id"
+				value="<?php echo (!$entity == null)? $entity->getId():"";?>" /> <input
+				type="hidden" name="token"
+				value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
+
+
+
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+					<a href="#header" class="" data-toggle="collapse">HEADER:</a>
 				</legend>
 
-				<div class="form-group margin-bottom required">
+				<div id="header" class="collapse in">
 
-					<label class="control-label col-sm-2">Movement Type:</label>
-					<div class="col-sm-3">
-						<select  disabled="disabled" name="movementType" class="form-control input-sm">
-							<option value="">Select Movement</option>
+
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Movement Type:</label>
+						<div class="col-sm-3">
+							<select disabled="disabled" name="movementType"
+								class="form-control input-sm">
+								<option value="">Select Movement</option>
    	    							<?php
             if ($issueType !== null) :
                 foreach ($issueType as $k => $v) :
@@ -76,49 +81,49 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
+						</div>
+
+						<div class="col-sm-3">
+							<input
+								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								type="checkbox" name="isActive" value="1">&nbsp;Is
+							Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+						</div>
 					</div>
 
-					<div class="col-sm-3">
-						<input
-							<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-							type="checkbox" name="isActive" value="1">&nbsp;Is
-						Active&nbsp;&nbsp;&nbsp;&nbsp;
 
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Movement Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text"
+								id="movementDate" name="movementDate"
+								value="<?php if(!$entity == null): if ($entity->getMovementDate() !== null): echo date_format($entity->getMovementDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+						</div>
+						<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Source Warehouse");?>:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" readonly type="text"
+								id="target_wh_name" placeholder="Please select!"
+								name="target_wh"
+								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+							<input type="hidden" id="target_wh_id" name="target_wh_id"
+								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+						</div>
 					</div>
+
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Description</label>
+						<div class="col-sm-8">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="remarks"
+								value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+						</div>
+					</div>
+
 				</div>
-
-
-				<div class="form-group margin-bottom required">
-
-					<label class="control-label col-sm-2">Movement Date:</label>
-					<div class="col-sm-3">
-						<input class="form-control input-sm" type="text" id="movementDate"
-							name="movementDate"
-							value="<?php if(!$entity == null): if ($entity->getMovementDate() !== null): echo date_format($entity->getMovementDate(),"Y-m-d"); endif; endif;?>"
-							placeholder=" please select" />
-					</div>
-					<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Source Warehouse");?>:</label>
-					<div class="col-sm-3">
-						<input class="form-control input-sm" readonly type="text"
-							id="target_wh_name" placeholder="Please select!" name="target_wh"
-							value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
-						<input type="hidden" id="target_wh_id" name="target_wh_id"
-							value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
-					</div>
-				</div>
-
-
-				<div class="form-group margin-bottom">
-					<label class="control-label col-sm-2">Description</label>
-					<div class="col-sm-8">
-						<input class="form-control input-sm" type="text" placeholder=""
-							name="remarks"
-							value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
-					</div>
-				</div>
-
-
-
 			</fieldset>
 		</form>
 
@@ -581,7 +586,7 @@ $( "#vendor_name_1" ).autocomplete({
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/procure/gr-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+            redirectUrl="/inventory/gi-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

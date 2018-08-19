@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Service;
 
-use Doctrine\ORM\EntityManager;
+
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Document\Field;
@@ -12,18 +12,17 @@ use ZendSearch\Lucene\Index\Term;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Search\Query\Wildcard;
 use Application\Entity\NmtInventoryItem;
+use Application\Service\AbstractService;
 use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\QueryParser;
 use Exception;
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManagerInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSerialSearchService extends AbstractInventoryService
+class ItemSerialSearchService extends AbstractService
 {
 
     const ITEM_INDEX = "/data/inventory/indexes/item-serial";

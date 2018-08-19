@@ -56,10 +56,10 @@ if (count ( $errors ) > 0) {
 			method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-				id="mv_id" name="mv_id"
-				value="<?php if (!$target == null): echo $target->getId();endif;?>" />
-			<input type="hidden" id="mv_token" name="mv_token"
-				value="<?php if (!$target == null): echo $target->getToken();endif;?>" />
+				id="entity_id" name="entity_id"
+				value="<?php if (!$entity == null): echo $entity->getId();endif;?>" />
+			<input type="hidden" id="token" name="token"
+				value="<?php if (!$entity == null): echo $entity->getToken();endif;?>" />
 
 
 			<fieldset>
@@ -89,21 +89,19 @@ if (count ( $errors ) > 0) {
 
 							<input type="hidden" id="item_id" placeholder="" name="item_id"
 								value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
-						
-						<a style="color: #0080ff;" href="javascript:;"
+						</div>
+						<div class="col-sm-2">
+							<a style="color: #0080ff;" href="javascript:;"
 								onclick="showJqueryDialog('Select Item','1280',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
 								class="glyphicon glyphicon-folder-open"></i>
 							</a>
-						</div>
-						<div class="col-sm-3">
-							
 
 
 
 
 						</div>
 
-						<div class="col-sm-3">
+						<div class="col-sm-2">
 							<a target="_blank" style="font-size: 9pt;"
 								href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i
 								class="glyphicon glyphicon-new-window"></i></small>
@@ -137,11 +135,12 @@ if (count ( $errors ) > 0) {
 								value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getId(); endif;endif;?>">
 						</div>
 
-
+						<div class="col-sm-3">
 						<a style="color: #0080ff;" href="javascript:;"
 							onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=issue_for_id&target_name=issue_for_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
 							class="glyphicon glyphicon-folder-open"></i>
 						</a>
+						</div>
 
 					</div>
 					<div class="form-group margin-bottom">

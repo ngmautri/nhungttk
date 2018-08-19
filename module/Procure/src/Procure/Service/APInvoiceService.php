@@ -3,6 +3,7 @@ namespace Procure\Service;
 
 use Procure\Model\Ap\AbstractAPRowPostingStrategy;
 use Application\Entity\FinVendorInvoiceRow;
+use Application\Service\AbstractService;
 use Zend\Math\Rand;
 
 /**
@@ -10,7 +11,7 @@ use Zend\Math\Rand;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APInvoiceService extends AbstractProcureService
+class APInvoiceService extends AbstractService
 {
 
     /**
@@ -229,7 +230,10 @@ class APInvoiceService extends AbstractProcureService
         if ($gr_rows == null) {
             throw new \Exception("GR Object is empty. Nothing is copied");
         }
-
+        
+        $entity->setWarehouse($target->getWarehouse());
+        $entity->setGrDate($target->getGrDate());
+    
         $n = 0;
         foreach ($gr_rows as $l) {
 
@@ -282,7 +286,10 @@ class APInvoiceService extends AbstractProcureService
             $row_tmp->setCreatedOn(new \DateTime());
             $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             $row_tmp->setRemarks("Ref: GR #" . $r->getRowIdentifer());
-
+            
+            $row_tmp->setGlAccount($r->getGlAccount());
+            $row_tmp->setCostCenter($r->getCostCenter());
+                
             $this->doctrineEM->persist($row_tmp);
         }
 

@@ -1,86 +1,78 @@
-<?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
-<?php /**@var \Application\Entity\NmtProcureGr $target ;*/?>
+<?php /**@var \Application\Entity\NmtProcureGr $entity ;*/?>
+<?php /**@var \Application\Entity\NmtProcurePo $source ;*/?>
 
-
-
-<div id="wrapper" class="toggled">
-
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
-	<?php
-    $current_step = "STEP1";
-    include (ROOT . '/module/Finance/view/finance/ap-create-wizard.php');
-    ?>
-  					
-  					
-			<div class="alert alert-warning" role="alert"
-			style="padding: 1px; font-size: 9pt; margin: 10px 5px 5px 5pt">Document can't be changed when
-			posted!</div>
-
-
-	</div>
-	<!-- /#sidebar-wrapper -->
-
-	<!-- Page Content -->
-	<div id="page-content-wrapper"
-		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
-		<div class="container-fluid" id="main_container"
-			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
-				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
-				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-					Menu <span></a>
-
-
-			<div id="tabs" style="font-size: 10pt">
-				<ul>
-					<li><a href="#general">New A/P Invoice:</a></li>
-				</ul>
-
-				<div id="general" style="font-size: 9pt">
-					<!-- Tab1 -->
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
 	
-	
-	<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
-
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
 }
 ?>
+
+<div id="tabs" style="font-size: 11pt">
+	<ul>
+		<li><a href="#general">Goods Receipt from Contract/PO: <?php if($source!==null): echo $source->getSysNumber(); endif;?></a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt">
+	<!-- Tab1 -->
 	
-	
-	
+  <div class="row">
+  <!-- ROW -->
+  
+  <div class="col-xs-5 col-md-2" style="padding: 1px">
+  <!-- C1 -->
+  					<?php 
+    					$current_step="STEP1";
+    					include (ROOT.'/module/Procure/view/procure/gr-create-wizard.php');
+  					?>
+  					
+  					<div class="alert alert-info" role="alert" style="padding:1px; font-size: 9pt">
+					<ul style="font-size: 9pt">
+						<li>Update GR date!</li>
+					 	<li>Update quantity to be received!</li>
+		                <li>Post the receipt!</li>
+		      		</ul>	
+					</div>
+					
+					<div class="alert alert-warning" role="alert" style="padding:1px; font-size: 9pt">
+						Document can't be changed when posted!
+					</div>
+  <!-- C1 ends-->	
+  </div>
+  
+  <div class="col-xs-12 col-sm-6 col-md-10" style="padding: 2px">
+  <!-- C2 -->
+  
+  <?php if($entity !== null): ?>
+  
 		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/finance/v-invoice/copy-from-gr" method="post" enctype="multipart/form-data">
+			action="/procure/gr/copy-from-po" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-			<input type="hidden" name="target_id" value="<?php if($target!==null): echo $target->getId(); endif;?>" />
-			<input type="hidden" name="target_token" value="<?php if($target!==null): echo $target->getToken(); endif;?>" />
+			<input type="hidden" name="source_id" value="<?php if($source!==null): echo $source->getId(); endif;?>" />
+			<input type="hidden" name="source_token" value="<?php if($source!==null): echo $source->getToken(); endif;?>" />
 				
-				
-				
-				
-			<fieldset>
+				<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
 				</legend>
 				<div id="invoice_header" class="collapse in">
 				
-					<div class="form-group margin-bottom">	
-						<label class="control-label col-sm-2"><?php echo $this->translate('Document Number')?>:</label>
+				<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Doc.No</label>
 						<div class="col-sm-3">
-							<input disabled="disabled" class="form-control input-sm" type="text" placeholder=""
-								id="contractNo" name="contractNo" 
+							<input readonly="readonly" class="form-control input-sm" type="text" placeholder=""
+								id="sysNumber" name="sysNumber" 
 								value="<?php echo (!$entity == null)? $entity->getSysNumber():"";?>">
 						</div>
-					</div>
+						</div>
 					<div class="form-group margin-bottom required">
 					<label class="control-label col-sm-2">Current State:</label>
 					<div class="col-sm-3">
@@ -106,11 +98,11 @@ if (count($errors) > 0) {
 							<input readonly="readonly" class="form-control input-sm" type="text"
 								id="vendor_name_1" placeholder="Enter term to search vendor"
 								name="vendor_name"
-								value="<?php if (!$target== null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>">
+								value="<?php if (!$source== null): if (!$source->getVendor() == null):echo $source->getVendor()->getVendorName();endif;endif;?>">
 
 							<input type="hidden" id="vendor_id" placeholder=""
 								name="vendor_id"
-								value="<?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getId();endif;endif;?>">
+								value="<?php if (!$source == null): if (!$source->getVendor() == null):echo $source->getVendor()->getId();endif;endif;?>">
 						</div>
 					</div>
 					
@@ -119,13 +111,13 @@ if (count($errors) > 0) {
 						<div class="col-sm-3">
 							<input readonly="readonly" class="form-control input-sm" type="text" placeholder=""
 								id="contractNo" name="contractNo" 
-								value="<?php echo (!$target == null)? $target->getContractNo():"";?>">
+								value="<?php echo (!$source == null)? $source->getContractNo():"";?>">
 						</div>
 						<label class="control-label col-sm-2">Contract /PO Date:</label>
 						<div class="col-sm-3">
 							<input readonly="readonly" class="form-control input-sm" type="text" placeholder=""
 								id="contractDate" name="contractDate" 
-								value="<?php if(!$target == null): if ($target->getContractDate() !== null): echo date_format($target->getContractDate(),"Y-m-d"); endif; endif;?>">
+								value="<?php if(!$source == null): if ($source->getContractDate() !== null): echo date_format($source->getContractDate(),"Y-m-d"); endif; endif;?>">
 						</div>
 					</div>
 					
@@ -134,14 +126,14 @@ if (count($errors) > 0) {
     					<div class="col-sm-3">
     					
     					
-    					<select name="currency_id" class="form-control input-sm">
+    					<select disabled="disabled" name="currency_id" class="form-control input-sm">
 								<option value="">Select Currency</option>
    	    							<?php
    	    							if($currency_list!== null):
        	    							foreach ( $currency_list as $curr ) :
-       	    							if($target!==null):
-       	    							     if($target->getCurrency()!==null):
-       	    							         if($target->getCurrency()->getCurrency() == $curr->getCurrency()):
+       	    							if($source!==null):
+       	    							     if($source->getCurrency()!==null):
+       	    							         if($source->getCurrency()->getCurrency() == $curr->getCurrency()):
        	    							             echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
    	    							             else:
    	    							                 echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
@@ -161,10 +153,10 @@ if (count($errors) > 0) {
     			    <!-- 		
     					<input readonly="readonly" class="form-control input-sm" type="text" placeholder=""
     								id="currency_name" name="currency_name" 
-    								value="<?php if($target->getCurrency()!==null): echo $target->getCurrency()->getCurrency(); endif;?>">
+    								value="<?php if($source->getCurrency()!==null): echo $source->getCurrency()->getCurrency(); endif;?>">
     					<input type="hidden" class="form-control input-sm" placeholder=""
     								id="currency_id" name="currency_id" 
-    								value="<?php if($target->getCurrency()!==null): echo $target->getCurrency()->getId(); endif;?>">
+    								value="<?php if($source->getCurrency()!==null): echo $source->getCurrency()->getId(); endif;?>">
     					
    					 -->
    					 	</div>
@@ -178,55 +170,19 @@ if (count($errors) > 0) {
    						 
    					</div>
 					
-					
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Invoice number:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="invoiceNo" name="invoiceNo" 
-								value="<?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>">
-						</div>
-						<label class="control-label col-sm-2">SAP Document No.:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="sapDoc" name="sapDoc" 
-								value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
-						</div>
-						
-						
-					</div>
-					
-					<div class="form-group margin-bottom required">
-
-						<label class="control-label col-sm-2 required">Invoice Date:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text"
-								id="invoiceDate" name="invoiceDate"
-								value="<?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?>"
-								placeholder=" please select" />
-							</div>
-					<label class="control-label col-sm-2">Posting Date:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text"
-								id="postingDate" name="postingDate"
-								value="<?php if(!$entity == null): if ($entity->getPostingDate() !== null): echo date_format($entity->getPostingDate(),"Y-m-d"); endif; endif;?>"
-								placeholder=" please select" />
-							</div>
-					</div>
-					
 					<div class="form-group margin-bottom required">
 
 						<label class="control-label col-sm-2">Goods Receipt Date:</label>
 						<div class="col-sm-3">
-							<input readonly="readonly"  class="form-control input-sm" type="text"
+							<input class="form-control input-sm" type="text"
 								id="grDate" name="grDate"
-								value="<?php if(!$target == null): if ($target->getGrDate() !== null): echo date_format($target->getGrDate(),"Y-m-d"); endif; endif;?>"
+								value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
 								placeholder=" please select" />
 							</div>
 						<label class="control-label col-sm-2" for="inputTag">Target Warehouse:</label>
 					<div class="col-sm-3">
-<input class="form-control input-sm" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh" value="<?php if (!$target == null): if (!$target->getWarehouse() == null):echo $target->getWarehouse()->getWhName();endif;endif;?>">
-<input type="hidden" id="target_wh_id" name="target_wh_id" value="<?php if (!$target == null): if (!$target->getWarehouse() == null):echo $target->getWarehouse()->getId();endif;endif;?>" />
+<input class="form-control input-sm" readonly type="text" id="target_wh_name" placeholder="Please select!" name="target_wh" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+<input type="hidden" id="target_wh_id" name="target_wh_id" value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
 					</div>
 				</div>
 		
@@ -235,8 +191,8 @@ if (count($errors) > 0) {
             		<div class="col-sm-8">
             			<input class="form-control input-sm" type="text"  placeholder=""
             				name="remarks" value="<?php 
-            				if($target!==null): 
-            				echo 'A/P Invoice for GR:'. $target->getSysNumber(); 
+            				if($source!==null): 
+            				echo 'Goods Receipt from PO #'. $source->getSysNumber(); 
             				endif;
             				
             				?>">
@@ -248,25 +204,27 @@ if (count($errors) > 0) {
 				<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2" for="inputTag"></label>
 						<div class="col-sm-3">
-	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save & Next</button>
 							<a tabindex="11" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/gr/list"><small><i
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
 									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 	
 						</div>
 					</div>
 			</fieldset>
 		</form>
-
-
-					<!-- end tab -->
-				</div>
-			</div>
-		</div>
-		<!-- /#page-content-wrapper -->
-
+		  <?php endif; ?>
+		 <!-- C2 ends-->
+  </div>
+  
+  <!-- ROW -->
+</div>	
+		
+		<!-- Tab1 -->
 	</div>
-	<!-- /#wrapper -->
+</div>
+
+
 
 <script>
 

@@ -24,31 +24,35 @@ if (count($errors) > 0) {
 
 <?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
 		<div style="position: relative; float: right;">
-			<a style="font-size: 9.5pt; color: white;" class="btn btn-primary btn-sm"
+			<a style="font-size: 9.5pt; color: white;"
+				class="btn btn-primary btn-sm"
 				href="<?php echo $this->baseUrl ?>/inventory/gi/review?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
-				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Review	& Post</a> 
+				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Review
+				& Post</a>
 		</div>
 		<?php endif;?>
 		
 
 
-		<form id="Create_Inv_Form" class="form-horizontal"
-			action="/inventory/gi/add" method="post"
-			enctype="multipart/form-data">
+		<form id="Create_Inv_Form" class="form-horizontal" action=""
+			method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+					<a href="#header" class="" data-toggle="collapse">HEADER:</a>
 				</legend>
 
-				<div class="form-group margin-bottom required">
+				<div id="header" class="collapse in">
 
-					<label class="control-label col-sm-2">Movement Type:</label>
-					<div class="col-sm-3">
-						<select name="movementType" class="form-control input-sm">
-							<option value="">Select Movement</option>
+
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Movement Type:</label>
+						<div class="col-sm-3">
+							<select name="movementType" class="form-control input-sm">
+								<option value="">Select Movement</option>
    	    							<?php
             if ($issueType !== null) :
                 foreach ($issueType as $k => $v) :
@@ -67,53 +71,54 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
-					</div>
+						</div>
 
-					<div class="col-sm-3">
-						<input
-							<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-							type="checkbox" name="isActive" value="1">&nbsp;Is
-						Active&nbsp;&nbsp;&nbsp;&nbsp;
+						<div class="col-sm-3">
+							<input
+								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								type="checkbox" name="isActive" value="1">&nbsp;Is
+							Active&nbsp;&nbsp;&nbsp;&nbsp;
 
+						</div>
 					</div>
-				</div>
-			<div class="form-group margin-bottom">
-					<label class="control-label col-sm-2"></label>
-					<div class="col-sm-8" style="color: graytext; padding: 5px;">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2"></label>
+						<div class="col-sm-8" style="color: graytext; padding: 5px;">
 								<?php echo $this->translate($movementTypeInfo);?>
 					</div>
-				</div>
-
-				<div class="form-group margin-bottom required">
-
-					<label class="control-label col-sm-2">Movement Date:</label>
-					<div class="col-sm-3">
-						<input class="form-control input-sm" type="text" id="movementDate"
-							name="movementDate"
-							value="<?php if(!$entity == null): if ($entity->getMovementDate() !== null): echo date_format($entity->getMovementDate(),"Y-m-d"); endif; endif;?>"
-							placeholder=" please select" />
 					</div>
-					<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Source Warehouse");?>:</label>
-					<div class="col-sm-3">
-						<input class="form-control input-sm" readonly type="text"
-							id="target_wh_name" placeholder="Please select!" name="target_wh"
-							value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
-						<input type="hidden" id="target_wh_id" name="target_wh_id"
-							value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2">Movement Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text"
+								id="movementDate" name="movementDate"
+								value="<?php if(!$entity == null): if ($entity->getMovementDate() !== null): echo date_format($entity->getMovementDate(),"Y-m-d"); endif; endif;?>"
+								placeholder=" please select" />
+						</div>
+						<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Source Warehouse");?>:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" readonly type="text"
+								id="target_wh_name" placeholder="Please select!"
+								name="target_wh"
+								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+							<input type="hidden" id="target_wh_id" name="target_wh_id"
+								value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+						</div>
 					</div>
-				</div>
 
 
-				<div class="form-group margin-bottom">
-					<label class="control-label col-sm-2">Description</label>
-					<div class="col-sm-8">
-						<input class="form-control input-sm" type="text" placeholder=""
-							name="remarks"
-							value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Description</label>
+						<div class="col-sm-8">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="remarks"
+								value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+						</div>
 					</div>
+
 				</div>
-
-
 
 			</fieldset>
 		</form>
@@ -126,7 +131,8 @@ if (count($errors) > 0) {
 				</legend>
 				<div id="rows" class="collapse in">
 					<div id="pr_row_gird" style="margin: 1px; font-size: 8pt;"></div>
-			
+				</div>
+
 			</fieldset>
 		</form>
 

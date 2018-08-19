@@ -2,6 +2,7 @@
 namespace Procure\Service;
 
 use Application\Entity\NmtInventoryTrx;
+use Application\Service\AbstractService;
 use Zend\Math\Rand;
 
 /**
@@ -10,7 +11,7 @@ use Zend\Math\Rand;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoService extends AbstractProcureService
+class PoService extends AbstractService
 {
 
     /**

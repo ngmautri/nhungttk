@@ -12,10 +12,6 @@
 <link href="/bootstrap3/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
 <link href="/bootstrap3/css/bootstrap-theme.min.css" media="screen" rel="stylesheet" type="text/css">
 <link href="/bootstrap3/css/style.css" media="screen" rel="stylesheet" type="text/css">
-
-<link href="/jquery/jquery-ui.min.css" rel="stylesheet"  type="text/css">
-<link href="/jquery/jquery-ui.theme.min.css" rel="stylesheet"  type="text/css">
-<link href="/jquery/jquery-ui.structure.min.css" rel="stylesheet"  type="text/css">
 	           
 
 <link href="/css/lightgallery.css" rel="stylesheet"  type="text/css">
@@ -24,10 +20,11 @@
 <link href="/css/bootstrap-editable.css" rel="stylesheet" type="text/css">
 <link href="/css/calendar.css" media="screen" rel="stylesheet"  type="text/css">
 <link href="/css/simple-sidebar.css" media="screen" rel="stylesheet"  type="text/css">
-<link href="/css/calendar/calendar-dashboard.css" media="screen" rel="stylesheet"  type="text/css">
-
 <!-- <link href="/css/tables.css" rel="stylesheet"  type="text/css">  -->
 
+<link href="/jquery/jquery-ui.min.css" rel="stylesheet"  type="text/css">
+<link href="/jquery/jquery-ui.theme.min.css" rel="stylesheet"  type="text/css">
+<link href="/jquery/jquery-ui.structure.min.css" rel="stylesheet"  type="text/css">
 
 
 	<!--PQ Grid files-->
@@ -79,10 +76,6 @@
 
 <script src="/pqgird/js/pqgrid.min.js"></script>
 <script src="/pqselect/pqselect.min.js"></script>
-
-<script src="/js/calendar/cal_lunar.js" type="text/javascript"></script>
-<script src="/js/calendar/cal_lunar_v1.js" type="text/javascript"></script>
-<script src="/js/calendar/cal_lunar_v2_pack.js" type="text/javascript"></script>
 
 <script>
 
@@ -154,9 +147,9 @@
 
 	<div style="display: none" id="global-notice"></div>
 
-  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="margin: 0px">
-		<div class="container" style="padding-right: 0px; padding-left: 0px" style="margin: 0px">
-			<div class="navbar-header" style="padding-right: 0px; padding-left: 0px" style="margin: 0px">
+  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="padding: 0px">
+		<div class="container" style="padding-right: 0px; padding-left: 0px">
+			<div class="navbar-header" style="padding-right: 0px; padding-left: 0px">
 				<button type="button" class="navbar-toggle" data-toggle="collapse"
 					data-target=".navbar-collapse">
 					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
@@ -165,7 +158,7 @@
 				<a style="color:#adadad; font-weight: bold;" href="<?= $this->url('home') ?>"> <img src="/img/logo.gif" height="50" alt=""/></a>
 			</div>
 			<div class="collapse navbar-collapse">
-				<ul class="nav navbar-nav" style="margin: 0px">	
+				<ul class="nav navbar-nav">	
 				 
 				 		<?php 
     					$current_module="INVENTORY";
@@ -178,15 +171,16 @@
 	</nav>
 
 <div id="main_container"></div>
+
   
  <div id="wrapper" class="toggled">
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper" style="font-size: 9.5pt;">
-             <h5 style="padding-left: 10px;"><strong><?php echo $this->translate("INVENTORY")?></strong></h5>
-                     <form class="form-inline" action="<?php echo $this->baseUrl ?>/inventory/search/item"	method="get" enctype="multipart/form-data">
+             <h5 style="padding-left: 10px;"><strong><?php echo $this->translate("FINANCE")?></strong></h5>
+                     <form class="form-inline" action="<?php echo $this->baseUrl ?>/procure/pr-search/do"	method="get" enctype="multipart/form-data">
   <div class="form-group" style="padding-left: 8px;">
-    	<input  placeholder ="<?php echo $this->translate("enter search term ...")?>" class="form-control" size="15" type="text" name = "q">
+    	<input placeholder ="<?php echo $this->translate("enter search term ...")?>" class="form-control" size="15" type="text" name = "q">
  
  
   </div>
@@ -216,14 +210,15 @@
         <!-- Page Content -->
         <div id="page-content-wrapper" style="font-size: 9.5pt; padding: 0px; margin: 0px;">
             <div class="container-fluid" id="main_container" style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
-           		<a style="font-size: 9pt;margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i> Menu  <span></a>
-                       	
+        		<a style="font-size: 9pt;margin: 2px; padding: 3px;" href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><i class="fa fa-chevron-left" aria-hidden="true"></i> Menu  </a>
+                           	
      	      <?= $this->content ?>
        
             </div>
         </div>
         <!-- /#page-content-wrapper -->
-      <footer>
+
+     <footer>
         <span  style="font-size: 9pt; font-weight:bold; padding-top: 20px; color:graytext;">&copy; 2016-2018 Nguyen Mau Tri</span>
       </footer>
       
@@ -260,10 +255,10 @@ if($this->flashMessenger()!==null){
         $("#wrapper").toggleClass("toggled");
         var toggled = $("#wrapper").attr("class");
         if(toggled=='toggled'){
-            $("#menu-toggle").html('<span title="Hide Menu"> <i class="fa fa-chevron-left" aria-hidden="true"></i> Menu</span>');
+            $("#menu-toggle").html('<i class="fa fa-chevron-left" aria-hidden="true"></i> Menu');
             
         }else{
-            $("#menu-toggle").html('<span title="Show Menu">Menu <i class="fa fa-chevron-right" aria-hidden="true"></i></span> ');
+            $("#menu-toggle").html('Menu <i class="fa fa-chevron-right" aria-hidden="true"></i> ');
                        
         }    
     });

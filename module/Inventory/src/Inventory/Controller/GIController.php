@@ -120,7 +120,8 @@ class GIController extends AbstractActionController
     public function addAction()
     {
         $request = $this->getRequest();
-        $this->layout("Inventory/gi-create-layout");
+        $this->layout("Inventory/layout-fullscreen");
+        
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();

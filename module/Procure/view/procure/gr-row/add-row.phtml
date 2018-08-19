@@ -16,7 +16,7 @@
     ?>
   					
   					<hr>
-		<span style="color: gray; margin-left: 5pt"><?php echo $this->translate('Summary:'); ?></span>
+		<span style="color: gray; margin-left: 5pt"><?php echo $this  ->translate('Summary:'); ?></span>
 
 		<div class="alert alert-warning" role="alert" style="padding: 1px; font-size: 9.5pt; margin: 5pt 2pt 5pt 5pt">
 			<ul style="font-size: 9.5pt; padding-left: 18pt;">
@@ -300,6 +300,39 @@ if (count($errors) > 0) {
             ?>
    					</select>
 								</div>
+								
+									<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
+								<div class="col-sm-3">
+									<select name="cost_center_id" class="form-control input-sm">
+										<option value=""><?php echo $this->translate("Select Cost Center");?></option>
+   	    							<?php
+            if ($cost_center_list !== null) :
+                foreach ($cost_center_list as $cc) :
+
+                    /**@var \Application\Entity\FinCostCenter $cc ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getCostCenter() !== null) :
+                            if ($entity->getCostCenter()->getId() == $cc->getId()) :
+                                echo '<option selected value="' . $cc->getId() . '">' . $cc->getCostCenterName() . '</option>';
+                            else :
+                                echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getCostCenterName() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+								</div>
+								
+								
 							</div>
 
 

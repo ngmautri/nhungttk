@@ -1,6 +1,7 @@
 <?php
 namespace Inventory\Service;
 
+use Application\Service\AbstractService;
 use Zend\Math\Rand;
 
 /**
@@ -8,7 +9,7 @@ use Zend\Math\Rand;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class FIFOLayerService extends AbstractInventoryService
+class FIFOLayerService extends AbstractService
 {
 
     /**

@@ -2,6 +2,7 @@
 namespace Inventory\Service;
 
 use Application\Entity\NmtInventoryItem;
+use Application\Service\AbstractService;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
@@ -18,7 +19,7 @@ use Exception;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class ItemSearchService extends AbstractInventoryService
+class ItemSearchService extends AbstractService
 {
 
     const ITEM_INDEX = "/data/inventory/indexes/item";

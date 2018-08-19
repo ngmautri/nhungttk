@@ -16,13 +16,14 @@ use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\QueryParser;
 use Exception;
 use Application\Entity\NmtProcurePrRow;
+use Application\Service\AbstractService;
 
 /**
+ * 
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
- * @author nmt
- *        
  */
-class PrSearchService
+class PrSearchService extends AbstractService
 {
 
     const ITEM_INDEX = "/data/procure/indexes/pr";

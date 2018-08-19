@@ -10,8 +10,8 @@
     include (ROOT . '/module/Procure/view/procure/gr-create-wizard.php');
     ?>
   				<div class="alert alert-info" role="alert"
-			style="padding: 1px; font-size: 9.5pt;">
-			<ul style="font-size: 9pt; padding-left: 18pt;">
+			style="padding: 2px; font-size: 9.5pt; margin: 5px 2pt 5px 5pt">
+			<ul style="font-size: 9pt; padding-left: 15pt;">
 				<li><span style="color: gray;"> Vendor: <?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?></li>
 				<li><span style="color: gray;">Invoice No.: <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?> // <?php echo (!$entity == null)? $entity->getSapDoc():"";?></span></li>
 				<li><span style="color: gray;">Invoice Date: <?php if(!$entity == null): if ($entity->getInvoiceDate() !== null): echo date_format($entity->getInvoiceDate(),"Y-m-d"); endif; endif;?></span>
@@ -21,12 +21,11 @@
 
 				<li>-----</li>
 
-				<li><span style="color: gray;">Total Line: <?php echo ($total_row);?></span></li>
 			</ul>
 		</div>
 
 		<div class="alert alert-warning" role="alert"
-			style="padding: 1px; font-size: 9pt"><?php echo $this->translate('Document can\'t be changed anymore when submitted!');?></div>
+			style="padding: 5px; font-size: 9pt; margin: 5px 2pt 5px 5pt"><?php echo $this->translate('Document can\'t be changed anymore when submitted!');?></div>
 
 
 	</div>
@@ -70,109 +69,124 @@
 
 				<div id="general" style="font-size: 9pt; padding: 10px 10px 1px 5px">
 					<!-- Tab1 -->
+		
+		
+			<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
 					
 					<div style="position: relative; float: right;">
 
-					<a class="btn btn-primary btn-sm" style="color: white"
-						onclick="confirmPost();" href="javascript:;"><i
-						class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
-					<a class="btn btn-default btn-sm" href="javascript:;"
-						onclick="refreshGird();"><i class="fa fa-refresh"
-						aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>
-					<a class="btn btn-default btn-sm"
-						href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-						<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
-					</a>
+						<a class="btn btn-primary btn-sm" style="color: white"
+							onclick="confirmPost();" href="javascript:;"><i
+							class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
+						<a class="btn btn-default btn-sm" href="javascript:;"
+							onclick="refreshGird();"><i class="fa fa-refresh"
+							aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a> <a
+							class="btn btn-default btn-sm"
+							href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+							<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
+						</a>
 
-				</div>
-	
-	<form id="Invoice_Posting_Form" class="form-horizontal"
-					action="/procure/gr/review" method="post"
-					enctype="multipart/form-data">
-					<input type="hidden" name="redirectUrl"
-						value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-						name="entity_id"
-						value="<?php echo (!$entity == null)? $entity->getId():"";?>" /> <input
-						type="hidden" name="token"
-						value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
+					</div>
+
+					<form id="Invoice_Posting_Form" class="form-horizontal"
+						action="/procure/gr/review" method="post"
+						enctype="multipart/form-data">
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							name="entity_id"
+							value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
+						<input type="hidden" name="token"
+							value="<?php echo (!$entity == null)? $entity->getToken():"";?>" />
 
 
 
-					<fieldset>
-						<legend style="font-size: 9.5pt; color: gray;">
-							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-							<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
-						</legend>
-						<div id="invoice_header" class="collapse in">
+						<fieldset>
+							<legend style="font-size: 9.5pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a href="#invoice_header" class="" data-toggle="collapse">HEADER: (<?php echo (!$entity == null)? $entity->getContractNo():"";?> <?php echo (!$entity == null)? $entity->getInvoiceNo():"";?>)</a>
+							</legend>
+							<div id="invoice_header" class="collapse in">
 
-							<div class="form-group margin-bottom required">
-								<label class="control-label col-sm-2">Current State:</label>
-								<div class="col-sm-3">
-									<select name="currentState" class="form-control input-sm">
-										<option value="">Please Select</option>
-										<option
-											<?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?>
-											value="contract">Contract /PO</option>
-										<option
-											<?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?>
-											value="draftInvoice">Draft Invoice</option>
-										<option
-											<?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?>
-											value="finalInvoice">Final Invoice</option>
-									</select>
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2">Current State:</label>
+									<div class="col-sm-3">
+										<select name="currentState" class="form-control input-sm">
+											<option value="">Please Select</option>
+											<option
+												<?php if($entity->getCurrentState()=="contract"): echo "selected"; endif ?>
+												value="contract">Contract /PO</option>
+											<option
+												<?php if($entity->getCurrentState()=="draftInvoice"): echo "selected"; endif ?>
+												value="draftInvoice">Draft Invoice</option>
+											<option
+												<?php if($entity->getCurrentState()=="finalInvoice"): echo "selected"; endif ?>
+												value="finalInvoice">Final Invoice</option>
+										</select>
+									</div>
+
+									<div class="col-sm-3">
+										<input
+											<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Is
+										Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+									</div>
+
 								</div>
 
-								<div class="col-sm-3">
-									<input
-										<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-										type="checkbox" name="isActive" value="1">&nbsp;Is
-									Active&nbsp;&nbsp;&nbsp;&nbsp;
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2 ">Vendor:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											id="vendor_name_1" placeholder="Enter term to search vendor"
+											name="vendor_name"
+											value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
 
+										<input type="hidden" id="vendor_id" placeholder=""
+											name="vendor_id"
+											value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
+									</div>
+									<div class="col-sm-3">
+
+										<a target="blank" style="font-size: 9pt;"
+											href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
+											class="glyphicon glyphicon-new-window"></i></small>
+									</div>
 								</div>
 
-							</div>
-
-							<div class="form-group margin-bottom required">
-								<label class="control-label col-sm-2 ">Vendor:</label>
-								<div class="col-sm-3">
-									<input class="form-control input-sm" type="text"
-										id="vendor_name_1" placeholder="Enter term to search vendor"
-										name="vendor_name"
-										value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
-
-									<input type="hidden" id="vendor_id" placeholder=""
-										name="vendor_id"
-										value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Contract /PO:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="contractNo" name="contractNo"
+											value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
+									</div>
+									<label class="control-label col-sm-2">Contract /PO Date:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="contractDate" name="contractDate"
+											value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
+									</div>
 								</div>
-								<div class="col-sm-3">
 
-									<a target="blank" style="font-size: 9pt;"
-										href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
-										class="glyphicon glyphicon-new-window"></i></small>
-								</div>
-							</div>
+								<div class="form-group margin-bottom required">
 
-							<div class="form-group margin-bottom">
-								<label class="control-label col-sm-2">Contract /PO:</label>
-								<div class="col-sm-3">
-									<input class="form-control input-sm" type="text" placeholder=""
-										id="contractNo" name="contractNo"
-										value="<?php echo (!$entity == null)? $entity->getContractNo():"";?>">
-								</div>
-								<label class="control-label col-sm-2">Contract /PO Date:</label>
-								<div class="col-sm-3">
-									<input class="form-control input-sm" type="text" placeholder=""
-										id="contractDate" name="contractDate"
-										value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
-								</div>
-							</div>
-
-							<div class="form-group margin-bottom required">
-
-								<label class="control-label col-sm-2">Currency:</label>
-								<div class="col-sm-3">
-									<select name="currency_id" class="form-control input-sm">
-										<option value="">Select Currency</option>
+									<label class="control-label col-sm-2">Currency:</label>
+									<div class="col-sm-3">
+										<select name="currency_id" class="form-control input-sm">
+											<option value="">Select Currency</option>
    	    							<?php
             if ($currency_list !== null) :
                 foreach ($currency_list as $curr) :
@@ -192,107 +206,107 @@
                 endforeach
                 ;
    	    							endif;
-            
+
             ?>
    					</select>
+									</div>
+									<label class="control-label col-sm-2">Exchange Rate:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="exchangeRate" name="exchangeRate"
+											value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
+									</div>
+
 								</div>
-								<label class="control-label col-sm-2">Exchange Rate:</label>
-								<div class="col-sm-3">
-									<input class="form-control input-sm" type="text" placeholder=""
-										id="exchangeRate" name="exchangeRate"
-										value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
+
+
+
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2">Goods Receipt Date:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text" id="grDate"
+											name="grDate"
+											value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
+											placeholder=" please select" />
+									</div>
+									<label class="control-label col-sm-2" for="inputTag">Target
+										Warehouse:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" readonly type="text"
+											id="target_wh_name" placeholder="Please select!"
+											name="target_wh"
+											value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
+										<input type="hidden" id="target_wh_id" name="target_wh_id"
+											value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Description</label>
+									<div class="col-sm-8">
+										<input class="form-control input-sm" type="text"
+											placeholder="" name="remarks"
+											value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+									</div>
 								</div>
 
 							</div>
+						</fieldset>
+					</form>
 
+					<form action="">
+						<fieldset>
+							<legend style="font-size: 9pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
+							</legend>
+							<div id="rows" class="collapse in">
+								<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
+						
+						</fieldset>
+					</form>
 
-							
-
-							<div class="form-group margin-bottom required">
-
-								<label class="control-label col-sm-2">Goods Receipt Date:</label>
-								<div class="col-sm-3">
-									<input class="form-control input-sm" type="text" id="grDate"
-										name="grDate"
-										value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
-										placeholder=" please select" />
-								</div>
-								<label class="control-label col-sm-2" for="inputTag">Target
-									Warehouse:</label>
-								<div class="col-sm-3">
-									<input class="form-control input-sm" readonly type="text"
-										id="target_wh_name" placeholder="Please select!"
-										name="target_wh"
-										value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
-									<input type="hidden" id="target_wh_id" name="target_wh_id"
-										value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
-								</div>
-							</div>
-
-							<div class="form-group margin-bottom">
-								<label class="control-label col-sm-2">Description</label>
-								<div class="col-sm-8">
-									<input class="form-control input-sm" type="text" placeholder=""
-										name="remarks"
-										value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
-								</div>
-							</div>
-
-						</div>
-					</fieldset>
-				</form>
-
-				<form action="">
-					<fieldset>
-						<legend style="font-size: 9pt; color: gray;">
-							<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-							<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
-						</legend>
-						<div id="rows" class="collapse in">
-							<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
-					
-					</fieldset>
-				</form>
-
-				<!-- end tab -->
+					<!-- end tab -->
+				</div>
 			</div>
 		</div>
+		<!-- /#page-content-wrapper -->
+
 	</div>
-	<!-- /#page-content-wrapper -->
-
-</div>
-<!-- /#wrapper -->
+	<!-- /#wrapper -->
 
 
-<!-- Modal -->
-<div class="modal" id="confirm_modal_sm" role="dialog">
-	<div class="modal-dialog modal-md">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-			</div>
-			<div class="modal-body" id="b_modal_sm_body">
-				<h5>#<?php echo$this->translate('PO will be posted!');?></h5>
+	<!-- Modal -->
+	<div class="modal" id="confirm_modal_sm" role="dialog">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body" id="b_modal_sm_body">
+					<h5>#<?php echo$this->translate('GR will be posted!');?></h5>
 
-				<div class="alert alert-warning">
-					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+					<div class="alert alert-warning">
+						<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
 					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
 					created.
 					 -->
+					</div>
+					<p><?php echo $this->translate('Do you want to continue?');?></p>
 				</div>
-				<p><?php echo $this->translate('Do you want to continue?');?></p>
-			</div>
-			<div class="modal-footer">
-				<button onclick="doPosting();" type="button"
-					class="btn btn-primary btn-sm">YES</button>
-				<button type="button" class="btn btn-default btn-sm"
-					data-dismiss="modal">Cancel</button>
+				<div class="modal-footer">
+					<button onclick="doPosting();" type="button"
+						class="btn btn-primary btn-sm">YES</button>
+					<button type="button" class="btn btn-default btn-sm"
+						data-dismiss="modal">Cancel</button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<script>
+	<script>
 
 $('#invoiceDate').bind('change', function() {
 	$('#postingDate').val($('#invoiceDate').val());
@@ -310,8 +324,6 @@ function confirmPost() {
 }
 
 function doPosting() {
-	//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"
-	//window.location = url;
 	$('#confirm_modal_sm').modal('hide');
 	submitForm('Invoice_Posting_Form');
 }
@@ -784,4 +796,3 @@ function refreshGird(){
 	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
 } 
 </script>
-

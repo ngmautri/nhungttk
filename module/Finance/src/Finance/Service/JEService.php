@@ -83,7 +83,7 @@ class JEService implements EventManagerAwareInterface
                 $r->setIsActive(0);
                 continue;
             }
-            
+
             if ($r->getUnitPrice() > 0) {
 
                 // Create JE Row - DEBIT
@@ -116,7 +116,10 @@ class JEService implements EventManagerAwareInterface
 
             $je_row->setJe($je);
 
-            /** @todo: Using Control G/L account of Vendor*/
+            /**
+             *
+             * @todo: Using Control G/L account of Vendor
+             */
             $criteria = array(
                 'id' => 4
             );
@@ -152,8 +155,11 @@ class JEService implements EventManagerAwareInterface
             $vendor_bl_row->setReference($entity->getInvoiceNo());
             $vendor_bl_row->setDocumentDate($entity->getInvoiceDate());
             $vendor_bl_row->setSysNumber($entity->getSysNumber());
-            
-            /** @todo: Set SourceID, Class, etc. */            
+
+            /**
+             *
+             * @todo: Set SourceID, Class, etc.
+             */
 
             $this->doctrineEM->persist($vendor_bl_row);
         }
@@ -183,11 +189,9 @@ class JEService implements EventManagerAwareInterface
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
 
-        $criteria = array(
-            'isActive' => 1,
-            'gr' => $entity
-        );
-        $rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
+        if ($nmtPlugin == null) {
+            throw new \Exception("Invalid Argument! plugin not found.");
+        }
 
         if (count($rows) == 0) {
             throw new \Exception("Good receipt is empty. No Posting will be made!");

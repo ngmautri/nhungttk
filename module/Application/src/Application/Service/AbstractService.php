@@ -1,17 +1,17 @@
 <?php
-namespace Procure\Service;
+namespace Application\Service;
 
 use Doctrine\ORM\EntityManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 
 /**
- * All Procure Service shall extend this.
+ * All Service shall extend this.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractProcureService implements EventManagerAwareInterface
+abstract class AbstractService implements EventManagerAwareInterface
 {
 
     protected $doctrineEM;

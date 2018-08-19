@@ -3,6 +3,8 @@ namespace Procure\Service;
 
 use Application\Entity\NmtInventoryTrx;
 use Zend\Math\Rand;
+use Application\Entity\NmtProcureGrRow;
+use Application\Service\AbstractService;
 
 /**
  * Good Receipt Service.
@@ -10,7 +12,7 @@ use Zend\Math\Rand;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrService extends AbstractProcureService
+class GrService extends AbstractService
 {
 
     /**
@@ -26,7 +28,7 @@ class GrService extends AbstractProcureService
         }
 
         if (! $entity instanceof \Application\Entity\NmtProcureGr) {
-            throw new \Exception("Invalid Argument");
+            throw new \Exception("Invalid Argument. Good receipt is not found!");
         }
 
         $criteria = array(
@@ -208,6 +210,10 @@ class GrService extends AbstractProcureService
                 }
             }
 
+            if ($n == 0) {
+                throw new \Exception("No Posting will be made!");
+            }
+
             /**
              *
              * @todo: Do Accounting Posting
@@ -227,18 +233,89 @@ class GrService extends AbstractProcureService
      * @param \Application\Entity\MlaUsers $u
      *
      */
-    public function copyFromPO($entity, $target, $u, $isFlush = false){
-        
+    public function copyFromPO($entity, $target, $u, $isFlush = false)
+    {
         if (! $entity instanceof \Application\Entity\NmtProcureGr) {
             throw new \Exception("Invalid Argument! GR Object is not found.");
         }
-        
+
         if (! $target instanceof \Application\Entity\NmtProcurePo) {
             throw new \Exception("Invalid Argument! PO Object is not found.");
         }
-        
+
         if (! $u instanceof \Application\Entity\MlaUsers) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+
+        $createdOn = new \DateTime();
+
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $po_rows = $res->getPOStatus($target->getId(), $target->getToken());
+
+        if ($po_rows == null) {
+            throw new \Exception("PO is empty!");
+        }
+
+        $n = 0;
+        foreach ($po_rows as $l) {
+
+            // if all received, ignore it.
+            if ($l['open_gr_qty'] == 0) {
+                continue;
+            }
+
+            /** @var \Application\Entity\NmtProcurePoRow $l ; */
+            $r = $l[0];
+
+            $n ++;
+            $row_tmp = new NmtProcureGrRow();
+            $row_tmp->setDocStatus($entity->getDocStatus());
+
+            // Goods receipt, Invoice Not receipt
+            $row_tmp->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
+            $row_tmp->setTransactionStatus(\Application\Model\Constants::PROCURE_TRANSACTION_STATUS_PENDING);
+
+            $row_tmp->setGr($entity);
+            $row_tmp->setIsDraft(1);
+            $row_tmp->setIsPosted(0);
+            $row_tmp->setIsActive(1);
+            $row_tmp->setCurrentState("DRAFT");
+
+            $row_tmp->setPoRow($r);
+            $row_tmp->setPrRow($r->getPrRow());
+            $row_tmp->setItem($r->getItem());
+
+            $row_tmp->setQuantity($l['open_gr_qty']);
+
+            $row_tmp->setUnit($r->getUnit());
+            $row_tmp->setUnitPrice($r->getUnitPrice());
+            $row_tmp->setTaxRate($r->getTaxRate());
+
+            $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
+            $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
+            $grossAmount = $netAmount + $taxAmount;
+
+            $row_tmp->setNetAmount($netAmount);
+            $row_tmp->setTaxAmount($taxAmount);
+            $row_tmp->setGrossAmount($grossAmount);
+
+            $row_tmp->setCreatedBy($u);
+            $row_tmp->setCreatedOn($createdOn);
+
+            $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $row_tmp->setRemarks("Ref: PO #" . $r->getRowIdentifer());
+            $row_tmp->setExwUnitPrice($r->getExwUnitPrice());
+
+            $this->doctrineEM->persist($row_tmp);
+        }
+
+        if ($n == 0) {
+            throw new \Exception("PO is empty!");
+        }
+
+        if ($isFlush == True) {
+            $this->doctrineEM->flush();
         }
     }
 }

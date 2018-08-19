@@ -202,7 +202,7 @@ class GIforRepairMachine extends AbstractGIStrategy
         }
         
         if($entity->getSysNumber()==\Application\Model\Constants::SYS_NUMBER_UNASSIGNED){
-            $entity->setSysNumber('GI-'.$this->contextService->getControllerPlugin()->getDocNumber($entity));
+            $entity->setSysNumber($this->contextService->getControllerPlugin()->getDocNumber($entity));
         }
 
         $this->contextService->getDoctrineEM()->flush();

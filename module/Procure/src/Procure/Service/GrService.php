@@ -66,6 +66,7 @@ class GrService extends AbstractService
         $this->doctrineEM->persist($entity);
 
         $n = 0;
+        $inventory_trx_rows = array();
         foreach ($gr_rows as $r) {
 
             /** @var \Application\Entity\NmtProcureGrRow $r ; */
@@ -90,11 +91,7 @@ class GrService extends AbstractService
 
             if ($r->getItem() !== null) {
 
-                if ($r->getItem()->getItemType() != \Application\Model\Constants::ITEM_TYPE_SERVICE) {
-
-                    if ($r->getItem()->getIsStocked() == 0) {
-                        // continue;
-                    }
+                if ($r->getItem()->getIsStocked() == 1) {
                     $criteria = array(
                         'isActive' => 1,
                         'grRow' => $r
@@ -111,7 +108,8 @@ class GrService extends AbstractService
 
                     $stock_gr_entity->setGr($entity);
                     $stock_gr_entity->setGrRow($r);
-                    
+                    $stock_gr_entity->setExchangeRate($r->getGr()
+                        ->getExchangeRate());
                     $stock_gr_entity->setSourceClass(get_class($r));
                     $stock_gr_entity->setSourceId($r->getId());
 
@@ -141,30 +139,13 @@ class GrService extends AbstractService
 
                     $stock_gr_entity->setTaxRate($r->getTaxRate());
                     $this->doctrineEM->persist($stock_gr_entity);
+
+                    $inventory_trx_rows[] = $stock_gr_entity;
                 }
             }
 
             if ($n == 0) {
                 throw new \Exception("No Posting will be made!");
-            }
-
-            $criteria = array(
-                'isActive' => 1,
-                'gr' => $entity
-            );
-            $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
-
-            if (count($inventory_trx_rows) > 0) {
-
-                $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
-
-                if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
-                    throw new \Exception("Posting strategy is not identified for this inventory movement type!");
-                }
-
-                // do posting now
-                $inventoryPostingStrategy->setContextService($this);
-                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u);
             }
 
             /**
@@ -173,9 +154,29 @@ class GrService extends AbstractService
              */
             $this->jeService->postGR($entity, $gr_rows, $u, $this->controllerPlugin);
 
-            if ($isFlush == true) {
-                $this->doctrineEM->flush();
+            $this->doctrineEM->flush();
+
+            try {
+                $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+
+                if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+                    throw new \Exception("Posting strategy is not identified for this inventory movement type!");
+                }
+
+                // do posting now
+                $inventoryPostingStrategy->setContextService($this);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true);
+            } catch (\Exception $e) {
+                // left bank.
             }
+            
+            $m = sprintf('[OK] Goods Receipt %s created', $entity->getSysNumber());
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
         }
     }
 

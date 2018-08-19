@@ -1,5 +1,4 @@
 <?php
-
 namespace Inventory\Controller;
 
 use Application\Entity\NmtInventoryTrx;
@@ -10,351 +9,105 @@ use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
+use Application\Entity\NmtInventoryGr;
+use Application\Entity\NmtInventoryMv;
 
 /**
- * 
+ * Goods Receipt
+ *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-
 class GRController extends AbstractActionController
 {
-
-    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-
+    
     protected $doctrineEM;
-
+    
     protected $itemSearchService;
-
-    /*
-     * Defaul Action
+    
+    protected $giService;
+    
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
      */
     public function indexAction()
-    {}
-
+    {
+        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes();
+        
+        foreach ($issueType as $t) {
+            var_dump($t);
+        }
+        
+        $viewModel = new ViewModel(array(
+            'redirectUrl' => null
+        ));
+        $viewModel->setTemplate("inventory/gi/index1");
+        return $viewModel;
+    }
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function showAction()
     {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        $issueType = \Inventory\Model\Constants::getGoodsReceiptTypes($nmtPlugin->getTranslator());
+        
         $request = $this->getRequest();
         
-        // NO POST
-        $redirectUrl = Null;
         if ($request->getHeader('Referer') == null) {
+            // return $this->redirect()->toRoute('access_denied');
+        } else {
+            $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+        }
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $gi = $res->getMovement($id, $token);
+        
+        if ($gi == null) {
             return $this->redirect()->toRoute('access_denied');
         }
         
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-        $entity_id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-        $checksum = $this->params()->fromQuery('checksum');
+        $entity = null;
+        if ($gi[0] instanceof NmtInventoryMv) {
+            $entity = $gi[0];
+        }
         
-        $criteria = array(
-            'id' => $entity_id,
-            // 'checksum' => $checksum,
-            'token' => $token
-        );
-        
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-        if ($entity !== null) {
+        if (! $entity == null) {
+            
+                 
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
-                'errors' => null,
                 'entity' => $entity,
-                'target' => $entity->getItem()
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'issueType' => $issueType,
+                'movementTypeInfo' => null,
+                
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
     }
-
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function editAction()
-    {
-        $request = $this->getRequest();
-        
-        if ($request->isPost()) {
-            $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-            $entity_id = $request->getPost('entity_id');
-            $token = $request->getPost('token');
-            
-            $criteria = array(
-                'id' => $entity_id,
-                'token' => $token
-            );
-            
-            /**
-             *
-             * @todo Update Target
-             */
-            
-            /** @var \Application\Entity\NmtInventoryTrx $entity */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-            
-            if ($entity == null) {
-                
-                $errors[] = 'Target object can\'t be empty. Or token key is not valid!';
-                $this->flashMessenger()->addMessage('Something went wrong!');
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'target' => null,
-                    'entity' => null
-                ));
-                
-                // might need redirect
-            } else {
-                $vendor_id = $request->getPost('vendor_id');
-                $currency_id = $request->getPost('currency_id');
-                // $pmt_method_id = $request->getPost ( 'pmt_method_id' );
-                
-                $quantity = $request->getPost('quantity');
-                $target_wh_id = $request->getPost('target_wh_id');
-                $trx_date = $request->getPost('trx_date');
-                $isDraft = (int) $request->getPost('isDraft');
-                $isActive = (int) $request->getPost('isActive');
-                
-                $isPreferredVendor = (int) $request->getPost('isPreferredVendor');
-                
-                $conversionFactor = $request->getPost('conversionFactor');
-                $vendorItemCode = $request->getPost('vendorItemCode');
-                $vendorItemUnit = $request->getPost('vendorItemUnit');
-                $vendorUnitPrice = $request->getPost('vendorUnitPrice');
-                $leadTime = $request->getPost('leadTime');
-                
-                $remarks = $request->getPost('remarks');
-                
-                if ($isDraft !== 1) {
-                    $isDraft = 0;
-                }
-                
-                if ($isActive !== 1) {
-                    $isActive = 0;
-                }
-                
-                if ($isPreferredVendor !== 1) {
-                    $isPreferredVendor = 0;
-                }
-                
-                // Inventory Transaction:
-                
-                // $entity = new NmtInventoryTrx ();
-                $target = $entity->getItem();
-                
-                // $entity->setFlow ( 'IN' );
-                // $entity->setItem ( $target );
-                
-                $validator = new Date();
-                if (! $validator->isValid($trx_date)) {
-                    $errors[] = 'Transaction date is not correct or empty!';
-                    $entity->setTrxDate(null);
-                } else {
-                    $entity->setTrxDate(new \DateTime($trx_date));
-                    // $date_validated ++;
-                }
-                
-                $wh = $this->doctrineEM->find('Application\Entity\NmtInventoryWarehouse', $target_wh_id);
-                if ($wh == null) {
-                    $errors[] = 'Warehouse can\'t be empty. Please select a Warehouse!';
-                } else {
-                    $entity->setWH($wh);
-                }
-                
-                if ($quantity == null) {
-                    $errors[] = 'Please  enter quantity!';
-                } else {
-                    
-                    if (! is_numeric($quantity)) {
-                        $errors[] = 'Quantity must be a number.';
-                    } else {
-                        if ($quantity <= 0) {
-                            $errors[] = 'Quantity must be greater than 0!';
-                        }
-                        $entity->setQuantity($quantity);
-                    }
-                }
-                
-                $entity->setIsDraft($isDraft);
-                $entity->setIsActive($isActive);
-                
-                $entity->setIsPreferredVendor($isPreferredVendor);
-                
-                $vendor = $this->doctrineEM->find('Application\Entity\NmtBpVendor', $vendor_id);
-                
-                if ($vendor == null) {
-                    // $errors [] = 'Vendor can\'t be empty. Please select a vendor!';
-                } else {
-                    $entity->setVendor($vendor);
-                }
-                
-                if ($vendorItemUnit == null) {
-                    // $errors [] = 'Please enter unit of purchase';
-                } else {
-                    $entity->setVendorItemUnit($vendorItemUnit);
-                }
-                
-                if ($conversionFactor == null) {
-                    // $errors [] = 'Please enter conversion factor';
-                } else {
-                    
-                    if (! is_numeric($conversionFactor)) {
-                        $errors[] = 'converstion_factor must be a number.';
-                    } else {
-                        if ($conversionFactor <= 0) {
-                            $errors[] = 'converstion_factor must be greater than 0!';
-                        }
-                        $entity->setConversionFactor($conversionFactor);
-                    }
-                }
-                
-                if ($vendorUnitPrice !== null) {
-                    if (! is_numeric($vendorUnitPrice)) {
-                        // $errors [] = 'Price is not valid. It must be a number.';
-                    } else {
-                        if ($vendorUnitPrice <= 0) {
-                            $errors[] = 'Price must be greate than 0!';
-                        }
-                        $entity->setVendorUnitPrice($vendorUnitPrice);
-                    }
-                }
-                
-                $currency = $this->doctrineEM->find('Application\Entity\NmtApplicationCurrency', $currency_id);
-                if ($currency == null) {
-                    // $errors [] = 'Curency can\'t be empty. Please select a currency!';
-                } else {
-                    $entity->setCurrency($currency);
-                }
-                
-                /*
-                 * $pmt_method = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationPmtMethod', $pmt_method_id );
-                 * if (! $pmt_method == null) {
-                 * $entity->setPmtMethod ( $pmt_method );
-                 * }
-                 */
-                
-                /*
-                 * $date_validated = 0;
-                 * $validator = new Date ();
-                 * if (! $validator->isValid ( $priceValidFrom )) {
-                 * $errors [] = 'Start date is not correct or empty!';
-                 * } else {
-                 * $entity->setPriceValidFrom ( new \DateTime ( $priceValidFrom ) );
-                 * $date_validated ++;
-                 * }
-                 *
-                 * if ($priceValidTo !== "") {
-                 * if (! $validator->isValid ( $priceValidTo )) {
-                 * $errors [] = 'End Date to is not correct or empty!';
-                 * } else {
-                 * $entity->setPriceValidTo ( new \DateTime ( $priceValidTo ) );
-                 * $date_validated ++;
-                 * }
-                 *
-                 * if ($date_validated == 2) {
-                 *
-                 * if ($priceValidFrom > $priceValidTo) {
-                 * $errors [] = 'End date must be in the future!';
-                 * }
-                 * }
-                 * }
-                 */
-                $entity->setVendorItemCode($vendorItemCode);
-                
-                $entity->setLeadTime($leadTime);
-                // $entity->setPmtTerm();
-                $entity->setRemarks($remarks);
-                
-                if (count($errors) > 0) {
-                    
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'target' => $target,
-                        'entity' => $entity
-                    ));
-                }
-                ;
-                // OK now
-                $entity->setConversionText($entity->getVendorItemUnit() . ' = ' . $entity->getConversionFactor() . '*' . $target->getStandardUom()
-                    ->getUomCode());
-                
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    'email' => $this->identity()
-                ));
-                
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                
-                $entity->setCreatedBy($u);
-                $entity->setCreatedOn(new \DateTime());
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-                $new_entity_id = $entity->getId();
-                
-                $entity->setChecksum(md5($new_entity_id . uniqid(microtime())));
-                $this->doctrineEM->flush();
-                
-                $this->flashMessenger()->addMessage($quantity . ' of Item "' . $target->getItemName() . '" has been received successfully!');
-                return $this->redirect()->toUrl($redirectUrl);
-            }
-        }
-        
-        // NO POST
-        $redirectUrl = Null;
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-        $entity_id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-        $checksum = $this->params()->fromQuery('checksum');
-        
-        $criteria = array(
-            'id' => $entity_id,
-            'checksum' => $checksum,
-            'token' => $token
-        );
-        
-        /** @var \Application\Entity\NmtInventoryTrx $entity */
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
-        
-        if ($entity !== null) {
-            
-            // check if posting is close
-            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-            
-            /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-            $postingPeriod = $p->getPostingPeriod($entity->getTrxDate());
-            
-            if ($postingPeriod != null) {
-                if ($postingPeriod->getPeriodStatus() == "C") {
-                    $this->flashMessenger()->addMessage("Period :'" . $postingPeriod->getPeriodName() . "' is closed. Can't change!");
-                    return $this->redirect()->toUrl('/inventory/item-transaction/show?token=' . $token . '&entity_id=' . $entity_id);
-                }
-            }
-            
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'entity' => $entity,
-                'target' => $entity->getItem()
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
-    }
-
+    {}
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -362,292 +115,133 @@ class GRController extends AbstractActionController
     public function addAction()
     {
         $request = $this->getRequest();
+        $this->layout("Inventory/layout-fullscreen");
         
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
+        $localCurrency=null;
+        if($u->getCompany()!==null){
+            $localCurrency = $u->getCompany()->getDefaultCurrency();
+        }
+        
+        // Is Posing
+        // =============================
         if ($request->isPost()) {
+            
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-            $pr_row_id = $request->getPost('pr_row_id');
-            $target_id = $request->getPost('item_id');
+            $movementType = $request->getPost('movementType');
             
-            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-            if ($pr_row !== null) {
-                $target = $pr_row->getItem();
-            } else {
-                $criteria = array(
-                    'id' => $target_id
-                );
-                
-                /**
-                 *
-                 * @todo Update Target
-                 */
-                $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
+            $movementDate = $request->getPost('movementDate');
+            $currentState = $request->getPost('currentState');
+            
+            $warehouse_id = (int) $request->getPost('target_wh_id');
+            $isActive = (int) $request->getPost('isActive');
+            $remarks = $request->getPost('remarks');
+            
+            if ($isActive != 1) {
+                $isActive = 0;
             }
             
-            if ($target == null) {
+            $entity = new NmtInventoryMv();
+            
+            $entity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_OUT);
+            $entity->setIsActive($isActive);
+            $entity->setCurrentState($currentState);
+            
+            if($localCurrency==null){
+                $errors[] = $nmtPlugin->translate("Local currency is not defined. Please check!");
                 
-                $errors[] = 'Item or PR Row object can\'t be empty. Or token key is not valid!';
-                $this->flashMessenger()->addMessage('Something went wrong!');
+            }else{
+                $entity->setCurrency($localCurrency);
+            }
+            
+            
+            if ($movementType == null) {
+                $errors[] = $nmtPlugin->translate('Goods Issue Type is not valid!');
+            } else{
+                $entity->setMovementType($movementType);
+            }
+            $validator = new Date();
+            
+            if ($movementDate !== null) {
+                if (! $validator->isValid($movementDate)) {
+                    $errors[] = $nmtPlugin->translate('Goods Issue Date is not correct or empty!');
+                } else {
+                    $entity->setMovementDate(new \DateTime($movementDate));
+                }
+            }
+            
+            $warehouse = null;
+            if ($warehouse_id > 0) {
+                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+            }
+            
+            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+                $entity->setWarehouse($warehouse);
+            } else {
+                $errors[] = $nmtPlugin->translate('Warehouse can\'t be empty. Please select a Wahrhouse!');
+            }
+            
+            $entity->setRemarks($remarks);
+            
+            if (count($errors) > 0) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'target' => null,
-                    'entity' => null
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'issueType' => $issueType
                 ));
-                
-                // might need redirect
-            } else {
-                
-                $vendor_id = $request->getPost('vendor_id');
-                $currency_id = $request->getPost('currency_id');
-                // $pmt_method_id = $request->getPost ( 'pmt_method_id' );
-                
-                $quantity = $request->getPost('quantity');
-                $target_wh_id = $request->getPost('target_wh_id');
-                $trx_date = $request->getPost('trx_date');
-                $isDraft = (int) $request->getPost('isDraft');
-                $isActive = (int) $request->getPost('isActive');
-                
-                $isPreferredVendor = (int) $request->getPost('isPreferredVendor');
-                
-                $conversionFactor = $request->getPost('conversionFactor');
-                $vendorItemCode = $request->getPost('vendorItemCode');
-                $vendorItemUnit = $request->getPost('vendorItemUnit');
-                $vendorUnitPrice = $request->getPost('vendorUnitPrice');
-                $leadTime = $request->getPost('leadTime');
-                
-                $remarks = $request->getPost('remarks');
-                
-                if ($isDraft !== 1) {
-                    $isDraft = 0;
-                }
-                
-                if ($isActive !== 1) {
-                    $isActive = 0;
-                }
-                
-                if ($isPreferredVendor !== 1) {
-                    $isPreferredVendor = 0;
-                }
-                
-                // Inventory Transaction:
-                
-                $entity = new NmtInventoryTrx();
-                
-                $entity->setFlow('IN');
-                $entity->setItem($target);
-                
-                if ($pr_row !== null) {
-                    $entity->setPrRow($pr_row);
-                }
-                
-                $validator = new Date();
-                
-                if (! $validator->isValid($trx_date)) {
-                    $errors[] = 'Transaction date is not correct or empty!';
-                    $entity->setTrxDate(null);
-                } else {
-                    // check if posting is close
-                    /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-                    $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-                    
-                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                    $postingPeriod = $p->getPostingPeriod(new \DateTime($trx_date));
-                    
-                    if ($postingPeriod->getPeriodStatus() !== "C") {
-                        $entity->setTrxDate(new \DateTime($trx_date));
-                    } else {
-                        $errors[] = 'Posting period "' . $postingPeriod->getPeriodName() . '" is closed or not created yet!';
-                    }
-                }
-                
-                $wh = $this->doctrineEM->find('Application\Entity\NmtInventoryWarehouse', $target_wh_id);
-                if ($wh == null) {
-                    $errors[] = 'Warehouse can\'t be empty. Please select a Warehouse!';
-                } else {
-                    $entity->setWH($wh);
-                }
-                
-                if ($quantity == null) {
-                    $errors[] = 'Please  enter quantity!';
-                } else {
-                    
-                    if (! is_numeric($quantity)) {
-                        $errors[] = 'Quantity must be a number.';
-                    } else {
-                        if ($quantity <= 0) {
-                            $errors[] = 'Quantity must be greater than 0!';
-                        }
-                        $entity->setQuantity($quantity);
-                    }
-                }
-                
-                $entity->setIsDraft($isDraft);
-                $entity->setIsActive($isActive);
-                
-                $entity->setIsPreferredVendor($isPreferredVendor);
-                
-                $vendor = $this->doctrineEM->find('Application\Entity\NmtBpVendor', $vendor_id);
-                
-                if ($vendor == null) {
-                    // $errors [] = 'Vendor can\'t be empty. Please select a vendor!';
-                } else {
-                    $entity->setVendor($vendor);
-                }
-                
-                if ($vendorItemUnit == null) {
-                    // $errors [] = 'Please enter unit of purchase';
-                } else {
-                    $entity->setVendorItemUnit($vendorItemUnit);
-                }
-                
-                if ($conversionFactor == null) {
-                    // $errors [] = 'Please enter conversion factor';
-                } else {
-                    
-                    if (! is_numeric($conversionFactor)) {
-                        $errors[] = 'converstion_factor must be a number.';
-                    } else {
-                        if ($conversionFactor <= 0) {
-                            $errors[] = 'converstion_factor must be greater than 0!';
-                        }
-                        $entity->setConversionFactor($conversionFactor);
-                    }
-                }
-                
-                if ($vendorUnitPrice !== null) {
-                    if (! is_numeric($vendorUnitPrice)) {
-                        // $errors [] = 'Price is not valid. It must be a number.';
-                    } else {
-                        if ($vendorUnitPrice <= 0) {
-                            $errors[] = 'Price must be greate than 0!';
-                        }
-                        $entity->setVendorUnitPrice($vendorUnitPrice);
-                    }
-                }
-                
-                $currency = $this->doctrineEM->find('Application\Entity\NmtApplicationCurrency', $currency_id);
-                if ($currency == null) {
-                    // $errors [] = 'Curency can\'t be empty. Please select a currency!';
-                } else {
-                    $entity->setCurrency($currency);
-                }
-                
-                /*
-                 * $pmt_method = $this->doctrineEM->find ( 'Application\Entity\NmtApplicationPmtMethod', $pmt_method_id );
-                 * if (! $pmt_method == null) {
-                 * $entity->setPmtMethod ( $pmt_method );
-                 * }
-                 */
-                
-                /*
-                 * $date_validated = 0;
-                 * $validator = new Date ();
-                 * if (! $validator->isValid ( $priceValidFrom )) {
-                 * $errors [] = 'Start date is not correct or empty!';
-                 * } else {
-                 * $entity->setPriceValidFrom ( new \DateTime ( $priceValidFrom ) );
-                 * $date_validated ++;
-                 * }
-                 *
-                 * if ($priceValidTo !== "") {
-                 * if (! $validator->isValid ( $priceValidTo )) {
-                 * $errors [] = 'End Date to is not correct or empty!';
-                 * } else {
-                 * $entity->setPriceValidTo ( new \DateTime ( $priceValidTo ) );
-                 * $date_validated ++;
-                 * }
-                 *
-                 * if ($date_validated == 2) {
-                 *
-                 * if ($priceValidFrom > $priceValidTo) {
-                 * $errors [] = 'End date must be in the future!';
-                 * }
-                 * }
-                 * }
-                 */
-                $entity->setVendorItemCode($vendorItemCode);
-                
-                $entity->setLeadTime($leadTime);
-                // $entity->setPmtTerm();
-                $entity->setRemarks($remarks);
-                
-                if (count($errors) > 0) {
-                    
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'target' => $target,
-                        'entity' => $entity
-                    ));
-                }
-                ;
-                // OK now
-                $entity->setConversionText($entity->getVendorItemUnit() . ' = ' . $entity->getConversionFactor() . '*' . $target->getStandardUom()
-                    ->getUomCode());
-                
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    'email' => $this->identity()
-                ));
-                
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-                
-                $entity->setCreatedBy($u);
-                $entity->setCreatedOn(new \DateTime());
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-                $new_entity_id = $entity->getId();
-                
-                $entity->setChecksum(md5($new_entity_id . uniqid(microtime())));
-                $this->doctrineEM->flush();
-                
-                $this->flashMessenger()->addMessage($quantity . ' of Item "' . $target->getItemName() . '" has been received successfully!');
-                return $this->redirect()->toUrl($redirectUrl);
             }
+            
+            // NO ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+            
+            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            $entity->setIsDraft(1);
+            $entity->setIsPosted(0);
+            
+            $createdOn = new \DateTime();
+            $entity->setCreatedBy($u);
+            
+            $entity->setCreatedOn($createdOn);
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+            $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
+            $this->flashMessenger()->addMessage($m);
+            
+            $redirectUrl = "/inventory/gi-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
+            return $this->redirect()->toUrl($redirectUrl);
         }
         
         // NO POST
-        $redirectUrl = Null;
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
+        // Initiate ......................
+        // ================================
         
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-        $target_id = (int) $this->params()->fromQuery('target_id');
-        $pr_row_id = (int) $this->params()->fromQuery('pr_row_id');
+        $redirectUrl = null;
+        /*
+         * if ($request->getHeader('Referer') !== null) {
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         * }
+         */
         
-        $token = $this->params()->fromQuery('token');
-        $checksum = $this->params()->fromQuery('checksum');
-        
-        $criteria = array(
-            'id' => $target_id,
-            'checksum' => $checksum,
-            'token' => $token
-        );
-        
-        $criteria1 = array(
-            'id' => $pr_row_id,
-            'checksum' => $checksum,
-            'token' => $token
-        );
-        
-        $entity = new NmtInventoryTrx();
-        
-        if ($pr_row_id > 0) {
-            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy($criteria1);
-            $entity->setPrRow($pr_row);
-        }
-        
-        $target = null;
-        if ($target_id > 0) {
-            $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy($criteria);
-            $entity->setItem($target);
-        }
-        
-        // set null
-        $entity->setTrxDate(null);
+        $entity = new NmtInventoryMv();
         $entity->setIsActive(1);
         
         $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
@@ -655,17 +249,209 @@ class GRController extends AbstractActionController
         ));
         
         if ($default_wh !== null) {
-            $entity->setWh($default_wh);
+            $entity->setWarehouse($default_wh);
+        }
+        
+        
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'entity' => $entity,
+            'currency_list' => $currency_list,
+            'issueType' => $issueType
+        ));
+    }
+    
+    /**
+     * Review and Post GR.
+     * Document can't be changed.
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function reviewAction()
+    {
+        $request = $this->getRequest();
+        $this->layout("Inventory/gi-create-layout");
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
+        // Is Posing
+        // =============================
+        if ($request->isPost()) {
+            
+            $errors = array();
+            $redirectUrl = $request->getPost('redirectUrl');
+            
+            $errors = array();
+            $redirectUrl = $request->getPost('redirectUrl');
+            $id = (int) $request->getPost('entity_id');
+            $token = $request->getPost('token');
+            
+            /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+            $mv = $res->getMovement($id, $token);
+            
+            if ($mv == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+            
+            /**@var \Application\Entity\NmtInventoryMv $entity ;*/
+            
+            $entity = null;
+            if ($mv[0] instanceof NmtInventoryMv) {
+                $entity = $mv[0];
+            }
+            
+            if ($entity == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+            
+            // ========================
+            
+            $movementDate = $request->getPost('movementDate');
+            
+            $warehouse_id = (int) $request->getPost('target_wh_id');
+            $isActive = (int) $request->getPost('isActive');
+            $remarks = $request->getPost('remarks');
+            
+            if ($isActive != 1) {
+                $isActive = 0;
+            }
+            
+            $entity->setIsActive($isActive);
+            
+            $movementType = $entity->getMovementType();
+            
+            if ($movementType == null) {
+                $errors[] = 'Goods Issue Type is not valid!';
+            }
+            
+            // check if posting period is close
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+            
+            $validator = new Date();
+            
+            if (! $validator->isValid($movementDate)) {
+                $errors[] = $nmtPlugin->translate('Transaction Date is not correct or empty!');
+            } else {
+                
+                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                $postingPeriod = $p->getPostingPeriod(new \DateTime($movementDate));
+                
+                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                    $errors[] = sprintf('Posting period for [%s] not created!', $movementDate);
+                } else {
+                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                    } else {
+                        $entity->setPostingDate(new \DateTime($movementDate));
+                        $entity->setMovementDate(new \DateTime($movementDate));
+                        $entity->setPostingPeriod($postingPeriod);
+                    }
+                }
+            }
+            
+            $warehouse = null;
+            if ($warehouse_id > 0) {
+                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+            }
+            
+            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+                $entity->setWarehouse($warehouse);
+            } else {
+                $errors[] = 'Warehouse can\'t be empty. Please select a Wahrhouse!';
+            }
+            
+            $entity->setRemarks($remarks);
+            
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'issueType' => $issueType
+                ));
+            }
+            
+            // NO ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+            
+            try {
+                $this->giService->post($entity, $u);
+            } catch (\Exception $e) {
+                $errors[]=$e->getMessage();
+            }
+            
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'issueType' => $issueType
+                ));
+            }
+            
+            $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
+            $this->flashMessenger()->addMessage($m);
+            
+            $redirectUrl = "/inventory/item-transaction/list";
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+        
+        // NO POST
+        // Initiate ......................
+        // ================================
+        
+        $redirectUrl = null;
+        /*
+         * if ($request->getHeader('Referer') !== null) {
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         * }
+         */
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $gi = $res->getMovement($id, $token);
+        
+        if ($gi == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($gi[0] instanceof NmtInventoryMv) {
+            $entity = $gi[0];
+        }
+        
+        if ($entity == null) {
+            return $this->redirect()->toRoute('access_denied');
         }
         
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'target' => $target
+            'currency_list' => $currency_list,
+            'issueType' => $issueType
         ));
     }
-
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -914,7 +700,7 @@ class GRController extends AbstractActionController
                     'email' => $this->identity()
                 ));
                 
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                 
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn(new \DateTime());
@@ -941,8 +727,8 @@ class GRController extends AbstractActionController
             // return $this->redirect()->toRoute('access_denied');
         } else {
             $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
+            ->getHeader('Referer')
+            ->getUri();
         }
         
         $target_id = (int) $this->params()->fromQuery('target_id');
@@ -1006,9 +792,7 @@ class GRController extends AbstractActionController
             'currency_list' => $currency_list
         ));
     }
-
- 
-
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -1066,7 +850,7 @@ class GRController extends AbstractActionController
             'target' => $target
         ));
     }
-
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -1103,7 +887,7 @@ class GRController extends AbstractActionController
             'paginator' => $paginator
         ));
     }
-
+    
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -1120,7 +904,7 @@ class GRController extends AbstractActionController
         if (count($list) > 0) {
             foreach ($list as $entity) {
                 $entity->setChecksum(md5(uniqid("item_" . $entity->getId()) . microtime()));
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             }
         }
         
@@ -1135,7 +919,7 @@ class GRController extends AbstractActionController
             'total_records' => $total_records
         ));
     }
-
+    
     /**
      *
      * @return \Doctrine\ORM\EntityManager
@@ -1144,21 +928,39 @@ class GRController extends AbstractActionController
     {
         return $this->doctrineEM;
     }
-
+    
     public function setDoctrineEM(EntityManager $doctrineEM)
     {
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-
+    
     public function getItemSearchService()
     {
         return $this->itemSearchService;
     }
-
+    
     public function setItemSearchService(ItemSearchService $itemSearchService)
     {
         $this->itemSearchService = $itemSearchService;
         return $this;
+    }
+    
+    /**
+     *
+     * @return mixed
+     */
+    public function getGiService()
+    {
+        return $this->giService;
+    }
+    
+    /**
+     *
+     * @param mixed $giService
+     */
+    public function setGiService(\Inventory\Service\GIService $giService)
+    {
+        $this->giService = $giService;
     }
 }

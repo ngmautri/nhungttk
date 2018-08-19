@@ -261,6 +261,7 @@ class GrRowController extends AbstractActionController
                     'target' => null,
                     'entity' => null,
                     'currency_list' => $currency_list,
+                    'cost_center_list' => $cost_center_list,
                     'gl_list' => $gl_list,
                     'total_row' => 0,
                     'max_row_number' => 0,
@@ -395,6 +396,8 @@ class GrRowController extends AbstractActionController
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'gl_list' => $gl_list,
+                    'cost_center_list' => $cost_center_list,
+                    
                     'total_row' => $gr['total_row'],
                     'max_row_number' => $gr['max_row_number'],
                     'active_row' => $gr['active_row']
@@ -480,6 +483,7 @@ class GrRowController extends AbstractActionController
             'target' => $target,
             'currency_list' => $currency_list,
             'gl_list' => $gl_list,
+            'cost_center_list' => $cost_center_list,            
             'total_row' => $gr['total_row'],
             'max_row_number' => $gr['max_row_number'],
             'active_row' => $gr['active_row']

@@ -26,28 +26,23 @@ class Constants
     const INVENTORY_GI_FOR_MAINTENANCE_WORK = 'GI106';
 
     const INVENTORY_GI_FOR_ASSET = 'GI107';
-    
+
     const INVENTORY_GI_FOR_DISPOSAL = 'GI999';
-    
-    //========================================
-    
+
+    // ========================================
     const INVENTORY_GR_FROM_PURCHASING = 'GR100';
 
-    const INVENTORY_GR_FROM_PURCHASING = 'GR100';
-    
-    
-    //========================================
-    
+    // ========================================
     const WH_TRANSACTION_IN = 'IN';
 
     const WH_TRANSACTION_OUT = 'OUT';
 
-    //========================================
-    
+    // ========================================
+
     /**
-     * 
-     *  @param object $translator
-     *  @return string[][]|NULL[][]
+     *
+     * @param object $translator
+     * @return string[][]|NULL[][]
      */
     public static function getGoodsIssueTypes($translator = null)
     {
@@ -58,13 +53,12 @@ class Constants
                     "type_name" => $translator->translate("Issue for reparing machine (no exchange of part)"),
                     "type_description" => $translator->translate("Issue part for repairing of machine. The requester must not give any part")
                 ),
-                
+
                 self::INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX => array(
                     "type_name" => $translator->translate("Issue for reparing machine (exchange of part)"),
                     "type_description" => $translator->translate("Exchange parts for repairing of machine.<ul><li>Spare part controller will issue new parts and receive old /defect one back to store for disposal process.</li><li>Asset code is required.</li></ul>")
                 ),
 
-            
                 self::INVENTORY_GI_FOR_PROJECT => array(
                     "type_name" => $translator->translate("Issue for Project (e.g IE Project)"),
                     "type_description" => $translator->translate("Spare part, materials will be consumpted by the project.<br>Project must be given! ")
@@ -104,7 +98,7 @@ class Constants
                     "type_name" => $translator->translate("Issue for return PO"),
                     "type_description" => $translator->translate("goods will be issued for returning to supplier. PO is required!")
                 ),
-                
+
                 self::INVENTORY_GI_FOR_DISPOSAL => array(
                     "type_name" => $translator->translate("Issue for diposal"),
                     "type_description" => $translator->translate("goods will be disposed.PO is required!")
@@ -117,13 +111,12 @@ class Constants
                     "type_name" => "Issue for reparing machine without exchange",
                     "type_description" => "Issue part for repairing of machine. The requester must not give any part"
                 ),
-                
+
                 self::INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX => array(
                     "type_name" => "Issue for reparing machine (exchange of part)",
                     "type_description" => "Issue part for repairing of machine. The requester must return old /defect part."
                 ),
 
-            
                 self::INVENTORY_GI_FOR_PROJECT => array(
                     "type_name" => "Issue for Project (e.g IE Project)",
                     "type_description" => "Spare part, materials will be consumpted by the project.<br>Project must be given! "
@@ -172,25 +165,50 @@ class Constants
 
         return $list;
     }
-    
+
     /**
-     * 
-     *  @param string $movermentType
-     *  @param object $translator
-     *  @return string|NULL
+     *
+     * @param string $movermentType
+     * @param object $translator
+     * @return string|NULL
      */
-    public static function getGoodsIssueType($movementType,$translator=null){
+    public static function getGoodsIssueType($movementType, $translator = null)
+    {
         $list = self::getGoodsIssueTypes($translator);
-        
-        if(isset($list[$movementType])){
+
+        if (isset($list[$movementType])) {
             return $list[$movementType];
         }
-        
+
         return null;
     }
-    
 
-    public static function getGoodsReceiptTypes()
-    {}
+    /**
+     * 
+     *  @param array $translator
+     *  @return NULL[][]
+     */
+    public static function getGoodsReceiptTypes($translator = null)
+    {
+        if ($translator != null) {
+            $list = array(
+
+                self::INVENTORY_GR_FROM_PURCHASING => array(
+                    "type_name" => $translator->translate("Goods receipt from purchase"),
+                    "type_description" => $translator->translate("Goods receipt from purchase")
+                )
+            );
+        } else {
+            $list = array(
+
+                self::INVENTORY_GR_FROM_PURCHASING => array(
+                    "type_name" => $translator->translate("Goods receipt from purchase"),
+                    "type_description" => $translator->translate("Goods receipt from purchase")
+                )
+            );
+        }
+
+        return $list;
+    }
 }
 

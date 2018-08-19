@@ -623,16 +623,14 @@ class GrController extends AbstractActionController
             // No ERROR
             // Saving into Database..........
             // ++++++++++++++++++++++++++++++
-
-            
-            
+    
             $changeOn = new \DateTime();
             $oldEntity = clone ($entity);
 
             try {
                 $this->grService->doPosting($entity, $u, $nmtPlugin, true);
             } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
+                $errors[] = $e->getMessage(). $e->getTraceAsString();
             }
 
             if (count($errors) > 0) {

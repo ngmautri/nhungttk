@@ -55,7 +55,7 @@ class GRfromPurchasing extends AbstractGRStrategy
      * {@inheritdoc}
      * @see \Inventory\Model\GI\AbstractGIStrategy::doPosting()
      */
-    public function doPosting($entity, $u)
+    public function doPosting($entity, $u, $isFlush = false)
     {
         $criteria = array(
             'movement' => $entity
@@ -104,16 +104,19 @@ class GRfromPurchasing extends AbstractGRStrategy
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
 
-        if ($rows == null) {
+        if (count($rows) == 0) {
             throw new \Exception("Invalid Argument! Nothing to create.");
         }
 
-        $mv = new \Application\Entity\NmtInventoryMv();
-        $mv->getMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
-        $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
-        $this->contextService->getDoctrineEM()->persist($mv);
-
         $createdOn = new \DateTime();
+
+        $mv = new \Application\Entity\NmtInventoryMv();
+        $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
+        $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+        $mv->setIsPosted(1);
+        $mv->setIsDraft(0);
+        $mv->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+        $this->contextService->getDoctrineEM()->persist($mv);
 
         $n = 0;
         foreach ($rows as $r) {
@@ -125,9 +128,11 @@ class GRfromPurchasing extends AbstractGRStrategy
 
             $n ++;
             $r->setMovement($mv);
+            $r->setDocStatus($mv->getDocStatus());
+            $this->contextService->getDoctrineEM()->persist($r);
 
             // created FIFO is needed
-            if ($r->getItem() !== null) {
+            if ($r->getItem() != null) {
 
                 /**
                  *
@@ -147,7 +152,8 @@ class GRfromPurchasing extends AbstractGRStrategy
                         $sn_entity->getGrRow($r->getGrRow());
                         $sn_entity->setInventoryTrx($r);
                         $sn_entity->setIsActive(1);
-                        $sn_entity->setSysNumber($this->contextService->getControllerPlugin()->getDocNumber($sn_entity));
+                        $sn_entity->setSysNumber($this->contextService->getControllerPlugin()
+                            ->getDocNumber($sn_entity));
                         $sn_entity->setCreatedBy($u);
                         $sn_entity->setCreatedOn($createdOn);
                         $sn_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
@@ -169,8 +175,7 @@ class GRfromPurchasing extends AbstractGRStrategy
 
                     // will be changed uppon inventory transaction.
                     $fifoLayer->setOnhandQuantity($r->getQuantity());
-
-                    $fifoLayer->setDocUnitPrice($r->getUnitPrice());
+                    $fifoLayer->setDocUnitPrice($r->getVendorUnitPrice());
                     $fifoLayer->setLocalCurrency($r->getCurrency());
                     $fifoLayer->setExchangeRate($r->getExchangeRate());
                     $fifoLayer->setPostingDate($r->getTrxDate());
@@ -178,7 +183,7 @@ class GRfromPurchasing extends AbstractGRStrategy
                     $fifoLayer->setSourceId($r->getID());
                     $fifoLayer->setSourceToken($r->getToken());
 
-                    $fifoLayer->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
+                    $fifoLayer->setToken(Rand::getString(22, \Application\Model\Constants::CHAR_LIST, true));
                     $fifoLayer->setCreatedBy($u);
                     $fifoLayer->setCreatedOn($r->getCreatedOn());
                     $this->contextService->getDoctrineEM()->persist($fifoLayer);
@@ -192,11 +197,26 @@ class GRfromPurchasing extends AbstractGRStrategy
         }
 
         if ($n == 0) {
-            throw new \Exception("Invalid Argument! Nothing to create.");
-        }
+            $mv->setMovementDate($movementDate);
+            $mv->setWarehouse();
+            $mv->setCreatedBy($u);
+            $mv->setCreatedOn($createdOn);
+            $mv->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $mv->setSysNumber($this->contextService->getControllerPlugin()
+                ->getDocNumber($mv));
+            $this->contextService->getDoctrineEM()->persist($mv);
 
-        if ($isFlush == true) {
-            $this->contextService->getDoctrineEM()->flush();
+            if ($isFlush == true) {
+                $this->contextService->getDoctrineEM()->flush();
+            }
+
+            $m = sprintf('[OK] Warehouse goods Receipt %s created', $mv->getSysNumber());
+            $this->contextService->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $createdOn
+            ));
         }
     }
 }

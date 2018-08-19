@@ -95,28 +95,9 @@ class APInvoiceService extends AbstractService
             if (! $rowPostingStrategy instanceof AbstractAPRowPostingStrategy) {
                 throw new \Exception("Posting strategy is not identified for this this transaction!");
             }
-            
+
             $rowPostingStrategy->setContextService($this);
             $rowPostingStrategy->doPosting($entity, $r, $u);
-        }
-
-        $criteria = array(
-            'isActive' => 1,
-            'invoice' => $entity
-        );
-        $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
-
-        if (count($inventory_trx_rows) > 0) {
-
-            $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
-
-            if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
-                throw new \Exception("Posting strategy is not identified for this inventory movement type!");
-            }
-
-            // do posting now
-            $inventoryPostingStrategy->setContextService($this);
-            $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u);
         }
 
         /**
@@ -125,9 +106,40 @@ class APInvoiceService extends AbstractService
          */
         $this->jeService->postAP($entity, $ap_rows, $u, $this->controllerPlugin);
 
-        if ($isFlush == true) {
-            $this->doctrineEM->flush();
+        $this->doctrineEM->flush();
+
+        try {
+            
+            $criteria = array(
+                'isActive' => 1,
+                'vendorInvoice' => $entity
+            );
+
+            $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
+
+            if (count($inventory_trx_rows) > 0) {
+
+                $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+
+                if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+                    throw new \Exception("Posting strategy is not identified for this inventory movement type!");
+                }
+
+                // do posting now
+                $inventoryPostingStrategy->setContextService($this);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true);
+            }
+        } catch (\Exception $e) {
+            // left bank.
         }
+
+        $m = sprintf('[OK] AP Invoice %s posted', $entity->getSysNumber());
+        $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+            'priority' => \Zend\Log\Logger::INFO,
+            'message' => $m,
+            'createdBy' => $u,
+            'createdOn' => $changeOn
+        ));
     }
 
     /**
@@ -324,4 +336,5 @@ class APInvoiceService extends AbstractService
             $this->doctrineEM->flush();
         }
     }
+    
 }

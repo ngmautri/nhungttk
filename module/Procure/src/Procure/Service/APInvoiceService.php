@@ -1,6 +1,8 @@
 <?php
 namespace Procure\Service;
 
+use Inventory\Model\GR\AbstractGRStrategy;
+use Inventory\Model\GR\GRStrategyFactory;
 use Procure\Model\Ap\AbstractAPRowPostingStrategy;
 use Application\Entity\FinVendorInvoiceRow;
 use Application\Service\AbstractService;
@@ -90,10 +92,31 @@ class APInvoiceService extends AbstractService
             $tTransaction = $r->getTransactionType();
             $rowPostingStrategy = \Procure\Model\Ap\APRowPostingFactory::getPostingStrategy($tTransaction);
 
-            if ($rowPostingStrategy instanceof AbstractAPRowPostingStrategy) {
-                $rowPostingStrategy->setProcureService($this);
-                $rowPostingStrategy->doPosting($entity, $r, $u);
+            if (! $rowPostingStrategy instanceof AbstractAPRowPostingStrategy) {
+                throw new \Exception("Posting strategy is not identified for this this transaction!");
             }
+            
+            $rowPostingStrategy->setContextService($this);
+            $rowPostingStrategy->doPosting($entity, $r, $u);
+        }
+
+        $criteria = array(
+            'isActive' => 1,
+            'invoice' => $entity
+        );
+        $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
+
+        if (count($inventory_trx_rows) > 0) {
+
+            $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+
+            if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+                throw new \Exception("Posting strategy is not identified for this inventory movement type!");
+            }
+
+            // do posting now
+            $inventoryPostingStrategy->setContextService($this);
+            $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u);
         }
 
         /**
@@ -186,10 +209,10 @@ class APInvoiceService extends AbstractService
             $row_tmp->setCreatedOn(new \DateTime());
             $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             $row_tmp->setRemarks("Ref: PO#" . $r->getRowIdentifer());
-            
+
             $row_tmp->setExwUnitPrice($r->getExwUnitPrice());
             $row_tmp->setDiscountRate($r->getDiscountRate());
-            
+
             $this->doctrineEM->persist($row_tmp);
         }
 
@@ -230,10 +253,10 @@ class APInvoiceService extends AbstractService
         if ($gr_rows == null) {
             throw new \Exception("GR Object is empty. Nothing is copied");
         }
-        
+
         $entity->setWarehouse($target->getWarehouse());
         $entity->setGrDate($target->getGrDate());
-    
+
         $n = 0;
         foreach ($gr_rows as $l) {
 
@@ -286,10 +309,10 @@ class APInvoiceService extends AbstractService
             $row_tmp->setCreatedOn(new \DateTime());
             $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             $row_tmp->setRemarks("Ref: GR #" . $r->getRowIdentifer());
-            
+
             $row_tmp->setGlAccount($r->getGlAccount());
             $row_tmp->setCostCenter($r->getCostCenter());
-                
+
             $this->doctrineEM->persist($row_tmp);
         }
 

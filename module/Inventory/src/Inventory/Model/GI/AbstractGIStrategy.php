@@ -34,20 +34,20 @@ abstract class AbstractGIStrategy
      */
     abstract public function reverse($entity, $u, $reversalDate);
 
-    /**
-     *
-     * @return \Inventory\Service\AbstractInventoryService
-     */
+   /**
+    * 
+    *  @return \Application\Service\AbstractService
+    */
     public function getContextService()
     {
         return $this->contextService;
     }
 
-    /**
-     *
-     * @param \Inventory\Service\AbstractInventoryService $contextService
-     */
-    public function setContextService(\Inventory\Service\AbstractInventoryService $contextService)
+   /**
+    * 
+    *  @param \Application\Service\AbstractService $contextService
+    */
+    public function setContextService(\Application\Service\AbstractService $contextService)
     {
         $this->contextService = $contextService;
     }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemSerial
  *
- * @ORM\Table(name="nmt_inventory_item_serial", indexes={@ORM\Index(name="nmt_inventory_item_serial_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK4_idx", columns={"serial_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK5_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK6_idx", columns={"ap_row_id"})})
+ * @ORM\Table(name="nmt_inventory_item_serial", indexes={@ORM\Index(name="nmt_inventory_item_serial_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK4_idx", columns={"serial_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK5_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK6_idx", columns={"ap_row_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK7_idx", columns={"gr_row_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemSerial
@@ -255,6 +255,16 @@ class NmtInventoryItemSerial
      * })
      */
     private $apRow;
+
+    /**
+     * @var \Application\Entity\NmtProcureGrRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="gr_row_id", referencedColumnName="id")
+     * })
+     */
+    private $grRow;
 
 
 
@@ -1010,5 +1020,29 @@ class NmtInventoryItemSerial
     public function getApRow()
     {
         return $this->apRow;
+    }
+
+    /**
+     * Set grRow
+     *
+     * @param \Application\Entity\NmtProcureGrRow $grRow
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setGrRow(\Application\Entity\NmtProcureGrRow $grRow = null)
+    {
+        $this->grRow = $grRow;
+
+        return $this;
+    }
+
+    /**
+     * Get grRow
+     *
+     * @return \Application\Entity\NmtProcureGrRow
+     */
+    public function getGrRow()
+    {
+        return $this->grRow;
     }
 }

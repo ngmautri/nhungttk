@@ -5,6 +5,8 @@ use Application\Entity\NmtInventoryTrx;
 use Zend\Math\Rand;
 use Application\Entity\NmtProcureGrRow;
 use Application\Service\AbstractService;
+use Inventory\Model\GR\AbstractGRStrategy;
+use Inventory\Model\GR\GRStrategyFactory;
 
 /**
  * Good Receipt Service.
@@ -107,7 +109,9 @@ class GrService extends AbstractService
                         $stock_gr_entity = new NmtInventoryTrx();
                     }
 
+                    $stock_gr_entity->setGr($entity);
                     $stock_gr_entity->setGrRow($r);
+                    
                     $stock_gr_entity->setSourceClass(get_class($r));
                     $stock_gr_entity->setSourceId($r->getId());
 
@@ -137,81 +141,30 @@ class GrService extends AbstractService
 
                     $stock_gr_entity->setTaxRate($r->getTaxRate());
                     $this->doctrineEM->persist($stock_gr_entity);
-
-                    /**
-                     *
-                     * @todo create serial number
-                     *       if item with Serial
-                     *       or Fixed Asset
-                     */
-                    if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
-
-                        for ($i = 0; $i < $r->getQuantity(); $i ++) {
-
-                            // create serial number
-                            $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
-                            $sn_entity->setItem($r->getItem());
-                            $sn_entity->setInventoryTrx($stock_gr_entity);
-                            $sn_entity->setIsActive(1);
-
-                            $sn_entity->setSysNumber($this->controllerPlugin->getDocNumber($sn_entity));
-                            $sn_entity->setCreatedBy($u);
-                            $sn_entity->setCreatedOn($r->getCreatedOn());
-                            $sn_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-                            $this->doctrineEM->persist($sn_entity);
-                        }
-                    }
-
-                    /**
-                     *
-                     * @todo create batch number
-                     *       if item with Batch
-                     *       or Fixed Asset
-                     */
-                    if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_BATCH_NO) {}
-
-                    if ($r->getItem()->getIsStocked() == 1) {
-
-                        /**
-                         *
-                         * @todo: Create FIFO Layer
-                         */
-                        $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
-
-                        $fifoLayer->setIsClosed(0);
-                        $fifoLayer->setItem($r->getItem());
-                        $fifoLayer->setQuantity($r->getQuantity());
-
-                        // will be changed uppon inventory transaction.
-                        $fifoLayer->setOnhandQuantity($r->getQuantity());
-
-                        $fifoLayer->setDocUnitPrice($r->getUnitPrice());
-                        $fifoLayer->setLocalCurrency($r->getGR()
-                            ->getCurrency());
-                        $fifoLayer->setExchangeRate($r->getGr()
-                            ->getExchangeRate());
-                        $fifoLayer->setPostingDate($r->getGR()
-                            ->getGrDate());
-                        $fifoLayer->setSourceClass(get_class($r));
-                        $fifoLayer->setSourceId($r->getID());
-                        $fifoLayer->setSourceToken($r->getToken());
-
-                        $fifoLayer->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
-                        $fifoLayer->setCreatedBy($u);
-                        $fifoLayer->setCreatedOn($r->getCreatedOn());
-
-                        $this->doctrineEM->persist($fifoLayer);
-
-                    /**
-                     *
-                     * @todo: Calculate Moving Average Price.
-                     */
-                    }
                 }
             }
 
             if ($n == 0) {
                 throw new \Exception("No Posting will be made!");
+            }
+
+            $criteria = array(
+                'isActive' => 1,
+                'gr' => $entity
+            );
+            $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
+
+            if (count($inventory_trx_rows) > 0) {
+
+                $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+
+                if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+                    throw new \Exception("Posting strategy is not identified for this inventory movement type!");
+                }
+
+                // do posting now
+                $inventoryPostingStrategy->setContextService($this);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u);
             }
 
             /**

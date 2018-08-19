@@ -13,38 +13,43 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
 {
 
     /**
-     * @param \Application\Entity\FinVendorInvoice $entity ;
-     * @param \Application\Entity\FinVendorInvoiceRow $r ;
-     * @param \Application\Entity\MlaUsers $u ;
- 
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     *            ;
+     * @param \Application\Entity\FinVendorInvoiceRow $r
+     *            ;
+     * @param \Application\Entity\MlaUsers $u
+     *            ;
+     *            
      * {@inheritdoc}
      * @see \Procure\Model\Ap\AbstractAPRowPostingStrategy::doPosting()
      */
-    public function doPosting($entity, $r, $u=null)
+    public function doPosting($entity, $r, $u = null)
     {
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument! Invoice is not found.");
         }
-        
+
         if (! $r instanceof \Application\Entity\FinVendorInvoiceRow) {
             throw new \Exception("Invalid Argument! Invoice row is not found.");
         }
-        
+
         if (! $u instanceof \Application\Entity\MlaUsers) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
-        
-        
+
         $createdOn = new \Datetime();
 
-        $procureSV = $this->getProcureService();
+        $procureSV = $this->getContextService();
 
         // create procure GR, even no PR, PO.
         $criteria = array(
             'isActive' => 1,
             'apInvoiceRow' => $entity
         );
-        $gr_entity_ck = $procureSV->getDoctrineEM()->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
+        $gr_entity_ck = $procureSV->getDoctrineEM()
+            ->getRepository('Application\Entity\NmtProcureGrRow')
+            ->findOneBy($criteria);
 
         if (! $gr_entity_ck == null) {
             $gr_entity = $gr_entity_ck;
@@ -81,7 +86,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
         $gr_entity->setCreatedBy($u);
         $gr_entity->setCreatedOn($createdOn);
         $gr_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-       $procureSV->getDoctrineEM()->persist($gr_entity);
+        $procureSV->getDoctrineEM()->persist($gr_entity);
 
         if ($r->getItem() !== null) {
 
@@ -103,7 +108,9 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 'isActive' => 1,
                 'invoiceRow' => $r
             );
-            $stock_gr_entity_ck = $procureSV->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+            $stock_gr_entity_ck = $procureSV->getDoctrineEM()
+                ->getRepository('Application\Entity\NmtInventoryTrx')
+                ->findOneBy($criteria);
 
             if (! $stock_gr_entity_ck == null) {
                 $stock_gr_entity = $stock_gr_entity_ck;

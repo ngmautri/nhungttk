@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Procure\Model\Ap;
 
 /**
@@ -10,31 +10,34 @@ abstract class AbstractAPRowPostingStrategy
 {
 
     // Context
-    protected $procureService;
+    protected $contextService;
 
     /**
      *
-     * @param \Application\Entity\FinVendorInvoice $entity ;
-     * @param \Application\Entity\FinVendorInvoiceRow $r ;
-     * @param \Application\Entity\MlaUsers $u ;
+     * @param \Application\Entity\FinVendorInvoice $entity
+     *            ;
+     * @param \Application\Entity\FinVendorInvoiceRow $r
+     *            ;
+     * @param \Application\Entity\MlaUsers $u
+     *            ;
      */
-    abstract public function doPosting($entity, $r, $u=null);
+    abstract public function doPosting($entity, $r, $u = null);
 
     /**
-     *
-     * @return \Procure\Service\AbstractProcureService
+     * 
+     *  @return \Application\Service\AbstractService
      */
-    public function getProcureService()
+    public function getContextService()
     {
-        return $this->procureService;
+        return $this->contextService;
     }
 
     /**
      *
-     * @param \Procure\Service\AbstractProcureService $procureService
+     * @param \Application\Service\AbstractService $contextService
      */
-    public function setProcureService(\Procure\Service\AbstractProcureService $procureService)
+    public function setContextService(\Application\Service\AbstractService $contextService)
     {
-        $this->procureService = $procureService;
+        $this->contextService = $contextService;
     }
 }

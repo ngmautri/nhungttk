@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemBatch
  *
- * @ORM\Table(name="nmt_inventory_item_batch", indexes={@ORM\Index(name="nmt_inventory_item_batch_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_batch_FK2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_item_batch_FK3_idx", columns={"item_id"})})
+ * @ORM\Table(name="nmt_inventory_item_batch", indexes={@ORM\Index(name="nmt_inventory_item_batch_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_batch_FK2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_item_batch_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_batch_FK4_idx", columns={"gr_row_id"}), @ORM\Index(name="nmt_inventory_item_batch_FK5_idx", columns={"ap_row_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemBatch
@@ -169,6 +169,26 @@ class NmtInventoryItemBatch
      * })
      */
     private $item;
+
+    /**
+     * @var \Application\Entity\NmtProcureGrRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="gr_row_id", referencedColumnName="id")
+     * })
+     */
+    private $grRow;
+
+    /**
+     * @var \Application\Entity\FinVendorInvoiceRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ap_row_id", referencedColumnName="id")
+     * })
+     */
+    private $apRow;
 
 
 
@@ -660,5 +680,53 @@ class NmtInventoryItemBatch
     public function getItem()
     {
         return $this->item;
+    }
+
+    /**
+     * Set grRow
+     *
+     * @param \Application\Entity\NmtProcureGrRow $grRow
+     *
+     * @return NmtInventoryItemBatch
+     */
+    public function setGrRow(\Application\Entity\NmtProcureGrRow $grRow = null)
+    {
+        $this->grRow = $grRow;
+
+        return $this;
+    }
+
+    /**
+     * Get grRow
+     *
+     * @return \Application\Entity\NmtProcureGrRow
+     */
+    public function getGrRow()
+    {
+        return $this->grRow;
+    }
+
+    /**
+     * Set apRow
+     *
+     * @param \Application\Entity\FinVendorInvoiceRow $apRow
+     *
+     * @return NmtInventoryItemBatch
+     */
+    public function setApRow(\Application\Entity\FinVendorInvoiceRow $apRow = null)
+    {
+        $this->apRow = $apRow;
+
+        return $this;
+    }
+
+    /**
+     * Get apRow
+     *
+     * @return \Application\Entity\FinVendorInvoiceRow
+     */
+    public function getApRow()
+    {
+        return $this->apRow;
     }
 }

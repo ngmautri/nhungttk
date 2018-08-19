@@ -29,11 +29,21 @@ class Constants
     
     const INVENTORY_GI_FOR_DISPOSAL = 'GI999';
     
+    //========================================
+    
+    const INVENTORY_GR_FROM_PURCHASING = 'GR100';
+
+    const INVENTORY_GR_FROM_PURCHASING = 'GR100';
+    
+    
+    //========================================
     
     const WH_TRANSACTION_IN = 'IN';
 
     const WH_TRANSACTION_OUT = 'OUT';
 
+    //========================================
+    
     /**
      * 
      *  @param object $translator

@@ -2,20 +2,13 @@
 
 namespace HR\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Doctrine\ORM\EntityManager;
-use Zend\View\Model\ViewModel;
-use MLA\Paginator;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use Zend\Http\Headers;
-use Zend\Validator\Date;
-use Zend\Math\Rand;
-use PHPExcel_Cell;
-use PHPExcel_Cell_DataType;
-use PHPExcel_IOFactory;
-use PHPExcel_Shared_Date;
-use Application\Entity\NmtHrLeaveReason;
 use Application\Entity\NmtHrFingerscan;
+use Application\Entity\NmtHrLeaveReason;
+use Doctrine\ORM\EntityManager;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Zend\Math\Rand;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 /**
  * 

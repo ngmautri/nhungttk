@@ -30,6 +30,7 @@ class Constants
     
     const POSTING_KEY_CREDIT = "C";
     
+    //=============================================
     const JE_TYPE_OPEN_BALANCE = "OB";
     
     

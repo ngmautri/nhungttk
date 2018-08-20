@@ -1,16 +1,18 @@
 <?php
 namespace Inventory\Controller;
 
-use Application\Entity\NmtInventorySerial;
+use Application\Entity\FinJe;
+use Application\Entity\FinJeRow;
+use Application\Entity\NmtHrFingerscan;
 use Doctrine\ORM\EntityManager;
 use Inventory\Service\ItemSearchService;
 use MLA\Paginator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
-use Application\Entity\FinJe;
-use Application\Entity\FinJeRow;
+use Application\Entity\NmtInventoryOpeningBalanceRow;
 
 /**
  *
@@ -21,7 +23,225 @@ class OpeningBalanceController extends AbstractActionController
 {
 
     protected $doctrineEM;
+
     protected $itemSearchService;
+
+    /**
+     * php.ini
+     * memory_limit=512M
+     *
+     * import fingerscan data
+     */
+    public function importAction()
+    {
+
+        // take long time
+        set_time_limit(2500);
+
+        $request = $this->getRequest();
+        $this->layout("Inventory/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        $localCurrency = null;
+        if ($u->getCompany() !== null) {
+            $localCurrency = $u->getCompany()->getDefaultCurrency();
+        }
+
+        // Is Posing
+        // =============================
+
+        if ($request->isPost()) {
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+
+            $errors = array();
+
+            if (isset($_FILES['uploaded_file'])) {
+                $file_name = $_FILES['uploaded_file']['name'];
+                $file_size = $_FILES['uploaded_file']['size'];
+                $file_tmp = $_FILES['uploaded_file']['tmp_name'];
+                $file_type = $_FILES['uploaded_file']['type'];
+
+                $file_ext = strtolower(end(explode('.', $file_name)));
+
+                // attachement required?
+                if ($file_tmp == "" or $file_tmp === null) {
+
+                    $errors[] = 'Attachment can\'t be empty!';
+                    $this->flashMessenger()->addMessage('Something wrong!');
+                    return new ViewModel(array(
+                        'errors' => $errors
+                    ));
+                }
+
+                // continue:
+
+                $ext = '';
+                if (preg_match('/(jpg|jpeg)$/', $file_type)) {
+                    $ext = 'jpg';
+                } else if (preg_match('/(gif)$/', $file_type)) {
+                    $ext = 'gif';
+                } else if (preg_match('/(png)$/', $file_type)) {
+                    $ext = 'png';
+                } else if (preg_match('/(pdf)$/', $file_type)) {
+                    $ext = 'pdf';
+                } else if (preg_match('/(vnd.ms-excel)$/', $file_type)) {
+                    $ext = 'xls';
+                } else if (preg_match('/(vnd.openxmlformats-officedocument.spreadsheetml.sheet)$/', $file_type)) {
+                    $ext = 'xlsx';
+                } else if (preg_match('/(msword)$/', $file_type)) {
+                    $ext = 'doc';
+                } else if (preg_match('/(vnd.openxmlformats-officedocument.wordprocessingml.document)$/', $file_type)) {
+                    $ext = 'docx';
+                } else if (preg_match('/(x-zip-compressed)$/', $file_type)) {
+                    $ext = 'zip';
+                } else if (preg_match('/(octet-stream)$/', $file_type)) {
+                    $ext = $file_ext;
+                }
+
+                $expensions = array(
+                    "xlsx",
+                    "xls",
+                    "csv"
+                );
+
+                if (in_array($ext, $expensions) === false) {
+                    $errors[] = 'Extension file"' . $ext . '" not supported, please choose a "xlsx","xlx", "csv"!';
+                }
+
+                if ($file_size > 4097152) {
+                    $errors[] = 'File size must be  4 MB';
+                }
+
+                if (count($errors) > 0) {
+                    $this->flashMessenger()->addMessage('Something wrong!');
+                    return new ViewModel(array(
+                        'errors' => $errors
+                    ));
+                }
+                ;
+
+                // NO ERROR
+                // Saving into Database..........
+                // ++++++++++++++++++++++++++++++
+
+                $folder = ROOT . "/data/temp";
+
+                if (! is_dir($folder)) {
+                    mkdir($folder, 0777, true); // important
+                }
+
+                // echo ("$folder/$name");
+                move_uploaded_file($file_tmp, "$folder/$file_name");
+
+                $objPHPExcel = IOFactory::load("$folder/$file_name");
+
+                foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+                    // echo $worksheet->getTitle();
+
+                    // $worksheetTitle = $worksheet->getTitle();
+
+                    $highestRow = $worksheet->getHighestRow(); // e.g. 10
+                    $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+                    $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+                    $nrColumns = ord($highestColumn) - 64;
+
+                    // echo $worksheetTitle;
+                    // echo $highestRow;
+                    // echo $highestColumn;
+                    
+                    $createdOn = new \DateTime;
+
+                    for ($row = 2; $row <= $highestRow; ++ $row) {
+
+                        $entity = new NmtInventoryOpeningBalanceRow();
+
+                        // new A=1
+                        for ($col = 1; $col < $highestColumnIndex; ++ $col) {
+
+                            $cell = $worksheet->getCellByColumnAndRow($col, $row);
+                            $val = $cell->getValue();
+                            // echo $val . ';';
+
+                            $entity->setEmployeeId(1);
+                            $entity->setCreatedBy($u);
+                            $entity->setCreatedOn(new \Datetime());
+
+                            switch ($col) {
+                                case 1:
+                                    // item id
+                                    $entity->setItem($val);
+                                    break;
+                                case 2:
+                                    $entity->setQuantiy($val);
+                                    break;
+                                case 3:
+                                    $entity->setUnitPrice($val);
+                                    break;
+                                case 4:
+                                    $entity->setGrossAmount($val);
+                                    break;
+                                case 5:
+                                    $entity->setNetAmount($val);
+                                    break;
+                            }
+                        }
+                        
+                        $entity->setCreatedBy($u);
+                        $entity->setCreatedOn($createdOn);
+                        
+                        $this->doctrineEM->persist($entity);
+
+                        if ($row % 100 == 0 or $row == $highestRow) {
+                            $this->doctrineEM->flush();
+                        }
+
+                        // echo "<br>";
+                    }
+                }
+
+                $m = sprintf("[OK] %s uploaded !", $file_name);
+                $this->flashMessenger()->addMessage($m);
+                // return $this->redirect()->toUrl($redirectUrl);
+            }
+        }
+
+        // NO POST
+        // Initiate ......................
+        // ================================
+
+        $redirectUrl = null;
+        if ($this->getRequest()->getHeader('Referer') !== null) {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
+        }
+
+        $id = (int) $this->params()->fromQuery('period_id');
+        $token = $this->params()->fromQuery('token');
+        $criteria = array(
+            'id' => $id,
+            'token' => $token
+        );
+
+        // $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
+
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null
+        ));
+    }
 
     /**
      *
@@ -29,24 +249,23 @@ class OpeningBalanceController extends AbstractActionController
      */
     public function addAction()
     {
-        
         $request = $this->getRequest();
         $this->layout("Finance/layout-fullscreen");
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
+
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
         }
-        
+
         // Is Posing
         // =============================
         if ($request->isPost()) {
@@ -70,56 +289,52 @@ class OpeningBalanceController extends AbstractActionController
                 $isActive = 0;
             }
 
-            //Create FIFO Layer            
+            // Create FIFO Layer
             /** @var \Application\Entity\NmtInventoryItem $item ; */
             if ($item !== null) {
                 if ($item->getIsStocked() == 1) {
-                    
+
                     $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
                     $fifoLayer->setIsClosed(0);
                     $fifoLayer->setItem($item);
                     $fifoLayer->setQuantity($quantity);
-                    
+
                     // will be changed uppon inventory transaction.
                     $fifoLayer->setOnhandQuantity($quantity);
-                    
+
                     $fifoLayer->setDocUnitPrice($unit_price);
                     $fifoLayer->setLocalCurrency($currency);
                     $fifoLayer->setExchangeRate($exchange_rate);
                     $fifoLayer->setPostingDate($postingDate);
-                    
+
                     $fifoLayer->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
                     $fifoLayer->setCreatedBy($u);
                     $fifoLayer->setCreatedOn($created_on);
-                    
+
                     $this->doctrineEM->persist($fifoLayer);
                 }
             }
-            
-            
+
             // create JE
             $entity = new FinJe();
             $entity->setJeType(\Finance\Model\Constants::JE_TYPE_OPEN_BALANCE);
             $entity->setPostingDate($postingDate);
             $entity->setDocumentDate($documentDate);
-            
+
             $this->doctrineEM->persist($entity);
-            
-            
-            //Create JE-ROW
-            
+
+            // Create JE-ROW
+
             $je_row = new FinJeRow();
             $je_row->setJe($entity);
             $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
             $je_row->setGlAccount($glAccount);
-            
+
             $docAmount = $unit_price * $quantity;
             $je_row->setDocAmount($docAmount);
-            
+
             $this->doctrineEM->persist($je_row);
-            
-            
-       
+
             if (count($errors) > 0) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
@@ -161,7 +376,7 @@ class OpeningBalanceController extends AbstractActionController
 
         // NO POST
         // Initiate ......................
-        
+
         $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');

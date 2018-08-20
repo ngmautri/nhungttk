@@ -109,7 +109,7 @@ class APInvoiceService extends AbstractService
         $this->doctrineEM->flush();
 
         try {
-            
+
             $criteria = array(
                 'isActive' => 1,
                 'vendorInvoice' => $entity
@@ -127,10 +127,18 @@ class APInvoiceService extends AbstractService
 
                 // do posting now
                 $inventoryPostingStrategy->setContextService($this);
-                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(), $entity->getWarehouse());
             }
         } catch (\Exception $e) {
             // left bank.
+
+            $m = sprintf('[ERROR] %s', $e->getMessage());
+            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
         }
 
         $m = sprintf('[OK] AP Invoice %s posted', $entity->getSysNumber());

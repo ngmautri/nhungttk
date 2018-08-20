@@ -42,7 +42,7 @@ abstract class AbstractGRStrategy
      *  @param \Application\Entity\MlaUsers $u
      *  @param bool $isFlush
      */
-    abstract public function createMovement($rows, $u, $isFlush = false);
+    abstract public function createMovement($rows, $u, $isFlush = false, $movementDate=null, $wareHouse = null);
     
 
    /**

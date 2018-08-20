@@ -11,20 +11,15 @@
 				class="glyphicon glyphicon-list"></i></small>&nbsp;Item Category</a></li>
 
 	<li class="divider"></li>
-	<li><a href="/inventory/item-attachment/list"><small><span
-				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Items
-			attachement</a></li>
-	<li><a href="/inventory/item-purchase/list"><small><span
-				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Items
-			purchasing data</a></li>
-
-	<li class="divider"></li>
-	<li><a href="/inventory/item-transaction"><small><span
-				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Item
-			Transaction</a></li>
-	<li><a href="/inventory/warehouse"><small><span
-				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Warehouse
-			management</a></li>
+	<li><a href="/inventory/item-transaction/list"><small><span
+				class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;Item Transaction</a></li>
+	<li><a href="/inventory/gi/add"><small><span
+				class="glyphicon glyphicon-plus"></span></small>&nbsp;<?php echo $this->translate("New Goods Issue");?></a></li>
+	<li><a href="/inventory/gr/add"><small><span
+				class="glyphicon glyphicon-plus"></span></small>&nbsp;<?php echo $this->translate("New Goods Receipt");?></a></li>
+	<li><a href="/inventory/transfer/add"><small><span
+				class="glyphicon glyphicon-plus"></span></small>&nbsp;<?php echo $this->translate("New Goods Transfer");?></a></li>
+				
 <li class="divider"></li>
 	<li><a href="/inventory/setting/index"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Setup'); ?></a></li>
 

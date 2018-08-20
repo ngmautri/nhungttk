@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinJeRow
  *
- * @ORM\Table(name="fin_je_row", indexes={@ORM\Index(name="fin_je_row_FK1_idx", columns={"je_id"}), @ORM\Index(name="fin_je_row_FK2_idx", columns={"GL_account_id"}), @ORM\Index(name="fin_je_row_FK3_idx", columns={"created_by"}), @ORM\Index(name="fin_je_row_FK4_idx", columns={"sub_account_id"}), @ORM\Index(name="fin_je_row_FK5_idx", columns={"cost_center_id"})})
+ * @ORM\Table(name="fin_je_row", indexes={@ORM\Index(name="fin_je_row_FK1_idx", columns={"je_id"}), @ORM\Index(name="fin_je_row_FK2_idx", columns={"GL_account_id"}), @ORM\Index(name="fin_je_row_FK3_idx", columns={"created_by"}), @ORM\Index(name="fin_je_row_FK4_idx", columns={"sub_account_id"}), @ORM\Index(name="fin_je_row_FK5_idx", columns={"cost_center_id"}), @ORM\Index(name="fin_je_row_FK6_idx", columns={"gr_row_id"}), @ORM\Index(name="fin_je_row_FK7_idx", columns={"ap_row_id"}), @ORM\Index(name="fin_je_row_FK8_idx", columns={"ap_id"}), @ORM\Index(name="fin_je_row_FK9_idx", columns={"gr_id"})})
  * @ORM\Entity
  */
 class FinJeRow
@@ -106,6 +106,27 @@ class FinJeRow
     private $revisionNo;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="je_memo", type="string", length=100, nullable=true)
+     */
+    private $jeMemo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="je_gr_memo", type="string", length=100, nullable=true)
+     */
+    private $jeGrMemo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="je_ap_memo", type="string", length=100, nullable=true)
+     */
+    private $jeApMemo;
+
+    /**
      * @var \Application\Entity\FinJe
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinJe")
@@ -154,6 +175,46 @@ class FinJeRow
      * })
      */
     private $costCenter;
+
+    /**
+     * @var \Application\Entity\NmtProcureGrRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGrRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="gr_row_id", referencedColumnName="id")
+     * })
+     */
+    private $grRow;
+
+    /**
+     * @var \Application\Entity\FinVendorInvoiceRow
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoiceRow")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ap_row_id", referencedColumnName="id")
+     * })
+     */
+    private $apRow;
+
+    /**
+     * @var \Application\Entity\FinVendorInvoice
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ap_id", referencedColumnName="id")
+     * })
+     */
+    private $ap;
+
+    /**
+     * @var \Application\Entity\NmtProcureGr
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcureGr")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="gr_id", referencedColumnName="id")
+     * })
+     */
+    private $gr;
 
 
 
@@ -456,6 +517,78 @@ class FinJeRow
     }
 
     /**
+     * Set jeMemo
+     *
+     * @param string $jeMemo
+     *
+     * @return FinJeRow
+     */
+    public function setJeMemo($jeMemo)
+    {
+        $this->jeMemo = $jeMemo;
+
+        return $this;
+    }
+
+    /**
+     * Get jeMemo
+     *
+     * @return string
+     */
+    public function getJeMemo()
+    {
+        return $this->jeMemo;
+    }
+
+    /**
+     * Set jeGrMemo
+     *
+     * @param string $jeGrMemo
+     *
+     * @return FinJeRow
+     */
+    public function setJeGrMemo($jeGrMemo)
+    {
+        $this->jeGrMemo = $jeGrMemo;
+
+        return $this;
+    }
+
+    /**
+     * Get jeGrMemo
+     *
+     * @return string
+     */
+    public function getJeGrMemo()
+    {
+        return $this->jeGrMemo;
+    }
+
+    /**
+     * Set jeApMemo
+     *
+     * @param string $jeApMemo
+     *
+     * @return FinJeRow
+     */
+    public function setJeApMemo($jeApMemo)
+    {
+        $this->jeApMemo = $jeApMemo;
+
+        return $this;
+    }
+
+    /**
+     * Get jeApMemo
+     *
+     * @return string
+     */
+    public function getJeApMemo()
+    {
+        return $this->jeApMemo;
+    }
+
+    /**
      * Set je
      *
      * @param \Application\Entity\FinJe $je
@@ -573,5 +706,101 @@ class FinJeRow
     public function getCostCenter()
     {
         return $this->costCenter;
+    }
+
+    /**
+     * Set grRow
+     *
+     * @param \Application\Entity\NmtProcureGrRow $grRow
+     *
+     * @return FinJeRow
+     */
+    public function setGrRow(\Application\Entity\NmtProcureGrRow $grRow = null)
+    {
+        $this->grRow = $grRow;
+
+        return $this;
+    }
+
+    /**
+     * Get grRow
+     *
+     * @return \Application\Entity\NmtProcureGrRow
+     */
+    public function getGrRow()
+    {
+        return $this->grRow;
+    }
+
+    /**
+     * Set apRow
+     *
+     * @param \Application\Entity\FinVendorInvoiceRow $apRow
+     *
+     * @return FinJeRow
+     */
+    public function setApRow(\Application\Entity\FinVendorInvoiceRow $apRow = null)
+    {
+        $this->apRow = $apRow;
+
+        return $this;
+    }
+
+    /**
+     * Get apRow
+     *
+     * @return \Application\Entity\FinVendorInvoiceRow
+     */
+    public function getApRow()
+    {
+        return $this->apRow;
+    }
+
+    /**
+     * Set ap
+     *
+     * @param \Application\Entity\FinVendorInvoice $ap
+     *
+     * @return FinJeRow
+     */
+    public function setAp(\Application\Entity\FinVendorInvoice $ap = null)
+    {
+        $this->ap = $ap;
+
+        return $this;
+    }
+
+    /**
+     * Get ap
+     *
+     * @return \Application\Entity\FinVendorInvoice
+     */
+    public function getAp()
+    {
+        return $this->ap;
+    }
+
+    /**
+     * Set gr
+     *
+     * @param \Application\Entity\NmtProcureGr $gr
+     *
+     * @return FinJeRow
+     */
+    public function setGr(\Application\Entity\NmtProcureGr $gr = null)
+    {
+        $this->gr = $gr;
+
+        return $this;
+    }
+
+    /**
+     * Get gr
+     *
+     * @return \Application\Entity\NmtProcureGr
+     */
+    public function getGr()
+    {
+        return $this->gr;
     }
 }

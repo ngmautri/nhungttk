@@ -59,22 +59,7 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            array(
-                'label' => 'Serial Number',
-                'route' => 'Inventory/default',
-                'controller' => 'serial-number',
-                'action' => 'list',
-                'icon' => 'glyphicon glyphicon-list'
-            ),
-
-            array(
-                'label' => 'Batch Number',
-                'route' => 'Inventory/default',
-                'controller' => 'batch-number',
-                'action' => 'list',
-                'icon' => 'glyphicon glyphicon-list'
-            ),
-
+    
             array(
                 'label' => 'Log',
                 'route' => 'Inventory/default',

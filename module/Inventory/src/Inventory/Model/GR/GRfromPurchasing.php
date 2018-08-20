@@ -2,6 +2,7 @@
 namespace Inventory\Model\GR;
 
 use Zend\Math\Rand;
+use Zend\Validator\Date;
 
 /**
  * Machine ID is required.
@@ -98,7 +99,7 @@ class GRfromPurchasing extends AbstractGRStrategy
      * {@inheritdoc}
      * @see \Inventory\Model\GR\AbstractGRStrategy::createMovement()
      */
-    public function createMovement($rows, $u, $isFlush = false)
+    public function createMovement($rows, $u, $isFlush = false, $movementDate=null, $wareHouse = null)
     {
         if (! $u instanceof \Application\Entity\MlaUsers) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
@@ -107,7 +108,21 @@ class GRfromPurchasing extends AbstractGRStrategy
         if (count($rows) == 0) {
             throw new \Exception("Invalid Argument! Nothing to create.");
         }
-
+        
+        if($movementDate!=null){
+            if (!$movementDate instanceof \DateTime) {
+                throw new \Exception('Movement Date is not correct or empty!');
+            }
+        }
+        if($wareHouse!=null){
+            if (!$wareHouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+                throw new \Exception('Warehouse is not correct or empty!');
+            }
+       }
+        
+       
+       
+       
         $createdOn = new \DateTime();
 
         $mv = new \Application\Entity\NmtInventoryMv();
@@ -196,9 +211,9 @@ class GRfromPurchasing extends AbstractGRStrategy
             }
         }
 
-        if ($n == 0) {
+        if ($n >0 ) {
             $mv->setMovementDate($movementDate);
-            $mv->setWarehouse();
+            $mv->setWarehouse($wareHouse);
             $mv->setCreatedBy($u);
             $mv->setCreatedOn($createdOn);
             $mv->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
@@ -210,7 +225,7 @@ class GRfromPurchasing extends AbstractGRStrategy
                 $this->contextService->getDoctrineEM()->flush();
             }
 
-            $m = sprintf('[OK] Warehouse goods Receipt %s created', $mv->getSysNumber());
+            $m = sprintf('[OK] Warehouse Goods Receipt %s posted', $mv->getSysNumber());
             $this->contextService->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,

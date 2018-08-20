@@ -6,18 +6,15 @@ use Doctrine\ORM\EntityManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Math\Rand;
+use Application\Service\AbstractService;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class JEService implements EventManagerAwareInterface
+class JEService extends AbstractService
 {
-
-    protected $doctrineEM;
-
-    protected $eventManager;
 
     /**
      *
@@ -74,6 +71,12 @@ class JEService implements EventManagerAwareInterface
         $total_credit = 0;
         $total_local_credit = 0;
 
+        // Credit on GR - NI for clearing later.
+        $criteria = array(
+            'id' => 5
+        );
+        $clearing_gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
+
         foreach ($rows as $r) {
             $n ++;
             /** @var \Application\Entity\FinVendorInvoiceRow $r ; */
@@ -90,20 +93,41 @@ class JEService implements EventManagerAwareInterface
                 $je_row = new \Application\Entity\FinJeRow();
                 $je_row->setJe($je);
 
-                $je_row->setGlAccount($r->getGlAccount());
                 $je_row->setCostCenter($r->getCostCenter());
                 $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
                 $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
                 $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
                 $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate());
-
                 $total_credit = $total_credit + $r->getQuantity() * $r->getUnitPrice();
                 $total_local_credit = $total_local_credit + $r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate();
-
                 $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
-
                 $je_row->setCreatedBy($u);
                 $je_row->setCreatedOn($entity->getCreatedOn());
+
+                $je_row->setApRow($r);
+                $je_row->setGrRow($r->getGrRow());
+                $je_row->setAp($r->getInvoice());
+                
+                $t='';
+                if($r->getGrRow()!==null){
+                    $t.= ' // '. $r->getGrRow()->getRowIdentifer();
+                }
+                $je_row->setJeDescription("AP." . $r->getRowIdentifer() . $t);
+                
+                $transactionType = $r->getTransactionType();
+
+                switch ($transactionType) {
+
+                    case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR:
+                        $je_row->setGlAccount($r->getGlAccount());
+
+                        break;
+
+                    case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI:
+                        $je_row->setGlAccount($clearing_gl);
+
+                        break;
+                }
 
                 $this->doctrineEM->persist($je_row);
             }
@@ -228,6 +252,12 @@ class JEService implements EventManagerAwareInterface
         $total_credit = 0;
         $total_local_credit = 0;
 
+        // Credit on GR - NI for clearing later.
+        $criteria = array(
+            'id' => 5
+        );
+        $clearing_gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
+
         foreach ($rows as $r) {
             $n ++;
             /** @var \Application\Entity\NmtProcureGrRow $r ; */
@@ -249,87 +279,46 @@ class JEService implements EventManagerAwareInterface
 
                 $total_credit = $total_credit + $r->getQuantity() * $r->getUnitPrice();
                 $total_local_credit = $total_local_credit + $r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate();
-
+                $je_row->setJeDescription("Goods Receipt ref." . $r->getRowIdentifer());
+                $je_row->setGrRow($r);
+                $je_row->setGr($entity);
+                
+                
                 $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
 
                 $je_row->setCreatedBy($u);
                 $je_row->setCreatedOn($entity->getCreatedOn());
-
                 $this->doctrineEM->persist($je_row);
+
+                $n ++;
+                // Create JE Row - DEBIT
+                // Create JE Row - Credit - AP account
+                $je_row1 = new \Application\Entity\FinJeRow();
+                $je_row1->setJe($je);
+                $je_row1->setGlAccount($clearing_gl);
+                $je_row1->setGrRow($r);
+                $je_row1->setGr($entity);
+                
+
+                $je_row1->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+                $je_row1->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+                $je_row1->setDocAmount($r->getQuantity() * $r->getUnitPrice());
+                $je_row1->setLocalAmount($r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate());
+                $je_row1->setJeDescription("Goods Receipt ref." . $r->getRowIdentifer());
+                $je_row1->setCreatedBy($u);
+                $je_row1->setCreatedOn($entity->getCreatedOn());
+                $je_row1->setSysNumber($je->getSysNumber() . "-" . $n);
+                $je_row1->setJeDescription("Goods Receipt ref." . $r->getRowIdentifer());
+                $this->doctrineEM->persist($je_row1);
             }
         }
 
         if ($total_credit > 0) {
-
-            // Create JE Row - Credit - AP account
-            $je_row = new \Application\Entity\FinJeRow();
-
-            $je_row->setJe($je);
-
-            // Credit on GR - NI for clearing later.
-            $criteria = array(
-                'id' => 5
-            );
-            $gl_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
-            $je_row->setGlAccount($gl_account);
-            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
-            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
-            $je_row->setDocAmount($total_credit);
-            $je_row->setLocalAmount($total_local_credit);
-
-            $je_row->setCreatedBy($u);
-            $je_row->setCreatedOn($entity->getCreatedOn());
-            $n = $n + 1;
-            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
-
-            $this->doctrineEM->persist($je_row);
         }
 
         if ($isFlush == True) {
             $this->doctrineEM->flush();
         }
     }
-
-    /**
-     *
-     * @return \Doctrine\ORM\EntityManager
-     */
-    public function getDoctrineEM()
-    {
-        return $this->doctrineEM;
-    }
-
-    /**
-     *
-     * @param EntityManager $doctrineEM
-     * @return \Procure\Service\GrService
-     */
-    public function setDoctrineEM(EntityManager $doctrineEM)
-    {
-        $this->doctrineEM = $doctrineEM;
-        return $this;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventManagerAwareInterface::setEventManager()
-     */
-    public function setEventManager(EventManagerInterface $eventManager)
-    {
-        $eventManager->setIdentifiers(array(
-            __CLASS__
-        ));
-        $this->eventManager = $eventManager;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Zend\EventManager\EventsCapableInterface::getEventManager()
-     */
-    public function getEventManager()
-    {
-        return $this->eventManager;
-    }
+   
 }

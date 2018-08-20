@@ -165,12 +165,20 @@ class GrService extends AbstractService
 
                 // do posting now
                 $inventoryPostingStrategy->setContextService($this);
-                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(),$entity->getWarehouse());
             } catch (\Exception $e) {
                 // left bank.
+                
+                $m = sprintf('[ERROR] %s', $e->getMessage());
+                $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $changeOn
+                ));
             }
             
-            $m = sprintf('[OK] Goods Receipt %s created', $entity->getSysNumber());
+            $m = sprintf('[OK] Goods Receipt %s posted', $entity->getSysNumber());
             $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
@@ -272,4 +280,17 @@ class GrService extends AbstractService
             $this->doctrineEM->flush();
         }
     }
+
+
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     * @param \Application\Entity\NmtProcurePo $target
+     * @param \Application\Entity\MlaUsers $u
+     *
+     */
+    public function selectFromPO ($entity, $target, $u, $isFlush = false){
+        
+    }
+
 }

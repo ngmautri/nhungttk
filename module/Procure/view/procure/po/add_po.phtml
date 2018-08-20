@@ -1,18 +1,5 @@
 <?php /**@var \Application\Entity\NmtProcurePo $entity ;*/?>
 
-<?php
-if (count ( $errors ) > 0) {
-	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-	
-	echo '<ul>';
-	foreach ( $errors as $error ) :
-		echo '<li>' . $error . '</li>';
-	endforeach
-	;
-	echo '</ul>';
-	echo '</div>';
-}
-?>
 
 <div id="wrapper" class="toggled">
 
@@ -45,7 +32,20 @@ if (count ( $errors ) > 0) {
 
 	<div id="general" style="font-size: 9pt">
 	<!-- Tab1 -->
+		
+	<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
 	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
 	<form id="Create_Inv_Form" class="form-horizontal"
 			action="/procure/po/add" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"

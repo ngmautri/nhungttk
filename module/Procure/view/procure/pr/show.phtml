@@ -32,27 +32,20 @@
 
 		<div style="position: relative; float: right;">
 
-			<a class="btn btn-default btn-sm" href="javascript:;"
-				onclick="refreshGird();"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a>
-		<a class="btn btn-default btn-sm"
+			<a title="<?php echo $this->translate("Refresh");?>" class="btn btn-default btn-sm" href="javascript:;"
+				onclick="refreshGird();">&nbsp;<i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;</a>
+			<a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
 					class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a> <a
 				class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/procure/pr-attachment/upload-pictures?token=<?php echo (!$entity== null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity== null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity== null)? $entity->getID():"";?>"><small><i
 					class="fa fa-upload" aria-hidden="true"></i></small>&nbsp;Upload
-				picture</a> <a class="btn btn-default btn-sm"
-				href="<?php echo $this->baseUrl ?>/procure/pr-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-				<i class="fa fa-file-excel-o" aria-hidden="true"></i> &nbsp;Excel
-			</a> <a target="_blank" class="btn btn-default btn-sm"
-				href="<?php echo $this->baseUrl ?>/procure/pr-row/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-				<i class="fa fa-file-pdf-o" aria-hidden="true"></i> &nbsp;PDF
-			</a> <a class="btn btn-default btn-sm" href="javascript:;"
-				onclick="showJqueryDialog('<?php echo $entity->getPrAutoNumber().' - '. $entity->getPrNumber() ; ?>','1550',$(window).height()-50,'/procure/pr/show1?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>&checksum=<?php echo $entity->getChecksum() ?>','j_loaded_data',true);"><i
-				class="fa fa-window-maximize" aria-hidden="true"></i> Full Screen</a>
-	</div>
-	<hr>
-		<form id="Create_PR_Form" class="form-horizontal"
-			action="" method="post" enctype="multipart/form-data">
+				picture</a><a title="<?php echo $this->translate("Full Screen");?>" class="btn btn-default btn-sm" href="javascript:;"
+				onclick="showJqueryDialog('<?php echo $entity->getPrAutoNumber().' - '. $entity->getPrNumber() ; ?>','1800',$(window).height()-50,'/procure/pr/show1?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>&checksum=<?php echo $entity->getChecksum() ?>','j_loaded_data',true);">&nbsp;<i
+				class="fa fa-window-maximize" aria-hidden="true"></i>&nbsp;</a>
+		</div>
+		<form id="Create_PR_Form" class="form-horizontal" action=""
+			method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl; ?>" />
 
@@ -60,7 +53,8 @@
 			<fieldset>
 				<legend style="font-size: 9pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a style="font-size: 9pt; color: gray;" href="#pr_header" class="" data-toggle="collapse">PR HEADER: <?php echo (!$entity == null)? "(". $entity->getPrName() .")" :"";?></a>
+					<a style="font-size: 9pt; color: gray;" href="#pr_header" class=""
+						data-toggle="collapse">PR HEADER: <?php echo (!$entity == null)? "(". $entity->getPrName() .")" :"";?></a>
 				</legend>
 				<div id="pr_header" class="collapse">
 
@@ -70,8 +64,7 @@
 							<input disabled class="form-control input-sm" type="text"
 								value="<?php if(!$entity == null): echo $entity->getPrAutoNumber(); endif;?>" />
 						</div>
-						<div class="col-sm-4">
-					  	</div>
+						<div class="col-sm-4"></div>
 					</div>
 
 					<div class="form-group margin-bottom">
@@ -156,7 +149,7 @@
 								value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
 						</div>
 					</div>
-			</div>
+				</div>
 			</fieldset>
 		</form>
 
@@ -164,10 +157,44 @@
 		<fieldset>
 			<legend style="font-size: 8pt; color: gray;">
 				<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-				<a style="font-size: 9pt; color: gray;" href="#transaction" class="" data-toggle="collapse">PR ROWS:</a>
+				<a style="font-size: 9pt; color: gray;" href="#transaction" class=""
+					data-toggle="collapse">PR ROWS:</a>
 			</legend>
 			<div id="transaction" class="collapse in">
-				<div id="pr_rows"></div>
+				<div id="pr_rows">
+
+					<div style="font-size: 9pt">
+
+						<div class="dropdown">
+							<button style="font-size: 9.5pt; margin-bottom: 2pt; padding:1pt 10pt 1pt 10pt;"
+								title="<?php echo $this->translate("download");?>"
+								class="btn btn-default dropdown-toggle btn-sm" type="button"
+								id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+								aria-expanded="true">
+								<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;<span
+									class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+								<li><a target="_blank" class=""
+									href="<?php echo $this->baseUrl ?>/procure/pr-row/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+										<i class="fa fa-file-pdf-o" aria-hidden="true"></i> &nbsp;PDF
+								</a></li>
+								<li><a class=""
+									href="<?php echo $this->baseUrl ?>/procure/pr-row/download?format=xlsx&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+										<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+										&nbsp;Excel (*.xlxs)
+								</a></li>
+								<li><a class=""
+									href="<?php echo $this->baseUrl ?>/procure/pr-row/download?format=ods&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+										<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+										&nbsp;Open Office (*.ods)
+								</a></li>
+							</ul>
+						</div>
+
+					</div>
+
+				</div>
 				<div id="pr_row_gird" style="margin: 1px;"></div>
 			</div>
 		</fieldset>
@@ -314,7 +341,7 @@
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "auto", height: $(window).height()-310, showTitle : false,
+	var obj = { width: "auto", height: $(window).height()-320, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,
@@ -546,7 +573,7 @@
           	//alert(rowData['item_name']);
           	
           	//showBootstrapDialog('Select Deparment',redirectUrl,'b_loaded_data');
-          	showJqueryDialog('Item Receiving','1000',$(window).height()-100, redirectUrl,'j_loaded_data', true);
+          	showJqueryDialog('Item Receiving','1000',$(window).height()-200, redirectUrl,'j_loaded_data', true);
           	//window.open(redirectUrl,'_blank');
           	
         });

@@ -68,8 +68,8 @@ if($entity->getDocStatus() !== \Application\Model\Constants::DOC_STATUS_POSTED) 
 								href="<?php echo $this->baseUrl ?>/procure/po-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
 
-<a class="btn btn-default btn-sm" href="javascript:;" onclick = "showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i class="fa fa-window-maximize" aria-hidden="true"></i>
-Full Screen</a>	
+<a title="<?php echo $this->translate("Full Screen");?>" class="btn btn-default btn-sm" href="javascript:;" onclick = "showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i class="fa fa-window-maximize" aria-hidden="true"></i>
+</a>	
 								      	
 </div>
 				
@@ -413,7 +413,7 @@ $( "#vendor_name_1" ).autocomplete({
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "auto", height: $(window).height()-250, showTitle : false,
+	var obj = { width: "auto", height: $(window).height()-280, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,

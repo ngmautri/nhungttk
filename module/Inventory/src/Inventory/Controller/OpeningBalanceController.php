@@ -13,6 +13,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
 use Application\Entity\NmtInventoryOpeningBalanceRow;
+use Application\Entity\NmtInventoryOpeningBalance;
 
 /**
  *
@@ -43,29 +44,44 @@ class OpeningBalanceController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
-        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
+        $gl_list = $nmtPlugin->glAccountList();
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
 
-        $localCurrency = null;
-        if ($u->getCompany() !== null) {
-            $localCurrency = $u->getCompany()->getDefaultCurrency();
-        }
-
         // Is Posing
         // =============================
 
         if ($request->isPost()) {
 
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
+            $target_id = (int) $request->getPost('target_id');
+            $target_token = $request->getPost('token');
+            $redirectUrl = $request->getPost('redirectUrl');
+            
+            /**@var \Application\Entity\NmtInventoryOpeningBalance $target ;*/
+            $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalance')->findOneBy(array(
+                "id" => $target_id,
+                "token" => $target_token
             ));
-
             $errors = array();
+
+            if ($target == null) {
+
+                $errors[] = 'Opening Balance object can\'t be empty. Or token key is not valid!';
+
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => null,
+                    'entity' => null,
+                    'gl_list' => $gl_list
+                ));
+
+                // $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
+                return $viewModel;
+            }
 
             if (isset($_FILES['uploaded_file'])) {
                 $file_name = $_FILES['uploaded_file']['name'];
@@ -160,8 +176,8 @@ class OpeningBalanceController extends AbstractActionController
                     // echo $worksheetTitle;
                     // echo $highestRow;
                     // echo $highestColumn;
-                    
-                    $createdOn = new \DateTime;
+
+                    $createdOn = new \DateTime();
 
                     for ($row = 2; $row <= $highestRow; ++ $row) {
 
@@ -197,10 +213,10 @@ class OpeningBalanceController extends AbstractActionController
                                     break;
                             }
                         }
-                        
+
                         $entity->setCreatedBy($u);
                         $entity->setCreatedOn($createdOn);
-                        
+
                         $this->doctrineEM->persist($entity);
 
                         if ($row % 100 == 0 or $row == $highestRow) {
@@ -221,50 +237,72 @@ class OpeningBalanceController extends AbstractActionController
         // Initiate ......................
         // ================================
 
-        $redirectUrl = null;
-        if ($this->getRequest()->getHeader('Referer') !== null) {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
+        $redirectUrl = Null;
+
+        /*
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('access_denied');
+         * }
+         *
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         */
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+
+        $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalance')->findOneBy(array(
+            "id" => $id,
+            "token" => $token
+        ));
+
+        if ($target == null) {
+            return $this->redirect()->toRoute('access_denied');
         }
 
-        $id = (int) $this->params()->fromQuery('period_id');
-        $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $id,
-            'token' => $token
-        );
+        $entity = new NmtInventoryOpeningBalanceRow();
+        $entity->setIsActive(1);
 
-        // $target = $this->doctrineEM->getRepository('Application\Entity\NmtHrEmployee')->findOneBy($criteria);
-
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'redirectUrl' => $redirectUrl,
-            'errors' => null
+            'errors' => null,
+            'entity' => $entity,
+            'target' => $target,
+            'gl_list' => $gl_list
         ));
+
+        // $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
+        return $viewModel;
     }
 
     /**
      *
-     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     * @return \Zend\View\Model\ViewModel
      */
     public function addAction()
     {
         $request = $this->getRequest();
-        $this->layout("Finance/layout-fullscreen");
+        $this->layout("Inventory/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
+        $gl_list = $nmtPlugin->glAccountList();
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
 
+        $default_wh = null;
+        $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
+            'isDefault' => 1
+        ));
+        
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
         }
+        
 
         // Is Posing
         // =============================
@@ -272,125 +310,113 @@ class OpeningBalanceController extends AbstractActionController
 
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
+            $postingDate = $request->getPost('movementType');
 
-            $serialNumber = $request->getPost('serialNumber');
-            $location = $request->getPost('location');
-            $category = $request->getPost('category');
-            $mfgName = $request->getPost('mfgName');
-            $mfgDate = $request->getPost('mfgDate');
-            $mfgSerialNumber = $request->getPost('mfgSerialNumber');
-            $lotNumber = $request->getPost('lotNumber');
-            $mfgWarrantyStart = $request->getPost('mfgWarrantyStart');
-            $mfgWarrantyEnd = $request->getPost('mfgWarrantyEnd');
+            $warehouse_id = (int) $request->getPost('target_wh_id');
+            $gl_account_id = (int) $request->getPost('gl_account_id');
+
             $isActive = (int) $request->getPost('isActive');
             $remarks = $request->getPost('remarks');
 
-            if ($isActive !== 1) {
+            if ($isActive != 1) {
                 $isActive = 0;
             }
 
-            // Create FIFO Layer
-            /** @var \Application\Entity\NmtInventoryItem $item ; */
-            if ($item !== null) {
-                if ($item->getIsStocked() == 1) {
+            $entity = new NmtInventoryOpeningBalance();
 
-                    $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
-                    $fifoLayer->setIsClosed(0);
-                    $fifoLayer->setItem($item);
-                    $fifoLayer->setQuantity($quantity);
+            $entity->setIsActive($isActive);
+            $entity->setCurrency($default_cur);
+            $validator = new Date();
 
-                    // will be changed uppon inventory transaction.
-                    $fifoLayer->setOnhandQuantity($quantity);
-
-                    $fifoLayer->setDocUnitPrice($unit_price);
-                    $fifoLayer->setLocalCurrency($currency);
-                    $fifoLayer->setExchangeRate($exchange_rate);
-                    $fifoLayer->setPostingDate($postingDate);
-
-                    $fifoLayer->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
-                    $fifoLayer->setCreatedBy($u);
-                    $fifoLayer->setCreatedOn($created_on);
-
-                    $this->doctrineEM->persist($fifoLayer);
+            if ($postingDate !== null) {
+                if (! $validator->isValid($postingDate)) {
+                    $errors[] = $nmtPlugin->translate('Posting Date is not correct or empty!');
+                } else {
+                    $entity->setPostingDate(new \DateTime($postingDate));
                 }
             }
 
-            // create JE
-            $entity = new FinJe();
-            $entity->setJeType(\Finance\Model\Constants::JE_TYPE_OPEN_BALANCE);
-            $entity->setPostingDate($postingDate);
-            $entity->setDocumentDate($documentDate);
+            $warehouse = null;
+            if ($warehouse_id > 0) {
+                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+            }
 
-            $this->doctrineEM->persist($entity);
+            if ($warehouse !== null) {
+                $entity->setWarehouse($warehouse);
+            } else {
+                $errors[] = $nmtPlugin->translate('Warehouse can\'t be empty. Please select a Wahrhouse!');
+            }
 
-            // Create JE-ROW
+            $gl_account = null;
+            if ($gl_account_id > 0) {
+                $gl_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
+            }
 
-            $je_row = new FinJeRow();
-            $je_row->setJe($entity);
-            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-            $je_row->setGlAccount($glAccount);
+            if ($gl_account !== null) {
+                $entity->setGlAccount($gl_account);
+            } else {
+                $errors[] = $nmtPlugin->translate('Warehouse can\'t be empty. Please select a Wahrhouse!');
+            }
 
-            $docAmount = $unit_price * $quantity;
-            $je_row->setDocAmount($docAmount);
-
-            $this->doctrineEM->persist($je_row);
+            $entity->setRemarks($remarks);
 
             if (count($errors) > 0) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => $entity
+                    'entity' => $entity,
+                    'gl_list' => $gl_list
                 ));
             }
 
             // NO ERROR
             // Saving into Database..........
             // ++++++++++++++++++++++++++++++
-            // +++++++++++++++++++++++++
 
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
+            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            $entity->setIsPosted(0);
+
             $createdOn = new \DateTime();
-
             $entity->setCreatedBy($u);
+
             $entity->setCreatedOn($createdOn);
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-
-            $m = sprintf('S/N %s - #%s created. OK!', $entity->getSerialNumber(), $entity->getId());
-
-            // Trigger: procure.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $createdOn
-            ));
-
+            $m = sprintf("[OK] Open Balance: %s created!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
+
+            $redirectUrl = "/inventory/opening-balance-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
         // Initiate ......................
+        // ================================
 
         $redirectUrl = null;
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+        /*
+         * if ($request->getHeader('Referer') !== null) {
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         * }
+         */
+
+        $entity = new NmtInventoryOpeningBalance();
+        $entity->setIsActive(1);
+
+        if ($default_wh !== null) {
+            $entity->setWarehouse($default_wh);
         }
 
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-
-        $entity = null;
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
-            'entity' => $entity
+            'entity' => $entity,
+            'gl_list' => $gl_list
         ));
     }
 
@@ -432,6 +458,194 @@ class OpeningBalanceController extends AbstractActionController
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
+    }
+
+    /**
+     * Review and Post GR.
+     * Document can't be changed.
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function reviewAction()
+    {
+        $request = $this->getRequest();
+        $this->layout("Inventory/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $gl_list = $nmtPlugin->glAccountList();
+   
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
+        $default_wh = null;
+        $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
+            'isDefault' => 1
+        ));
+        
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+
+        // Is Posing
+        // =============================
+        if ($request->isPost()) {
+
+            $errors = array();
+            $redirectUrl = $request->getPost('redirectUrl');
+
+            $errors = array();
+            $redirectUrl = $request->getPost('redirectUrl');
+            $id = (int) $request->getPost('entity_id');
+            $token = $request->getPost('token');
+
+            /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+            $mv = $res->getMovement($id, $token);
+
+            if ($mv == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+
+            /**@var \Application\Entity\NmtInventoryMv $entity ;*/
+
+            $entity = null;
+            if ($mv[0] instanceof NmtInventoryMv) {
+                $entity = $mv[0];
+            }
+
+            if ($entity == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+
+            // ========================
+
+            $movementDate = $request->getPost('movementDate');
+
+            $warehouse_id = (int) $request->getPost('target_wh_id');
+            $isActive = (int) $request->getPost('isActive');
+            $remarks = $request->getPost('remarks');
+
+            if ($isActive != 1) {
+                $isActive = 0;
+            }
+
+            $entity->setIsActive($isActive);
+
+            $movementType = $entity->getMovementType();
+
+            if ($movementType == null) {
+                $errors[] = 'Goods Issue Type is not valid!';
+            }
+
+            // check if posting period is close
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+            $validator = new Date();
+
+            if (! $validator->isValid($movementDate)) {
+                $errors[] = $nmtPlugin->translate('Transaction Date is not correct or empty!');
+            } else {
+
+                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                $postingPeriod = $p->getPostingPeriod(new \DateTime($movementDate));
+
+                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                    $errors[] = sprintf('Posting period for [%s] not created!', $movementDate);
+                } else {
+                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                    } else {
+                        $entity->setPostingDate(new \DateTime($movementDate));
+                        $entity->setMovementDate(new \DateTime($movementDate));
+                        $entity->setPostingPeriod($postingPeriod);
+                    }
+                }
+            }
+
+            $warehouse = null;
+            if ($warehouse_id > 0) {
+                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+            }
+
+            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+                $entity->setWarehouse($warehouse);
+            } else {
+                $errors[] = 'Warehouse can\'t be empty. Please select a Wahrhouse!';
+            }
+
+            $entity->setRemarks($remarks);
+
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'gl_list' => $gl_list
+                ));
+            }
+
+            // NO ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            try {
+                $this->giService->post($entity, $u);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'gl_list' => $gl_list
+                ));
+            }
+
+            $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
+            $this->flashMessenger()->addMessage($m);
+
+            $redirectUrl = "/inventory/item-transaction/list";
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        // NO POST
+        // Initiate ......................
+        // ================================
+
+        $redirectUrl = null;
+        /*
+         * if ($request->getHeader('Referer') !== null) {
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         * }
+         */
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalance')->findOneBy(array(
+            "id" => $id,
+            "token" => $token
+        ));
+
+        if ($entity == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'entity' => $entity,
+            'gl_list' => $gl_list
+        ));
     }
 
     /**
@@ -667,9 +881,9 @@ class OpeningBalanceController extends AbstractActionController
      */
     public function listAction()
     {
+        $is_active = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
-        $currentState = $this->params()->fromQuery('currentState');
 
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
@@ -684,43 +898,26 @@ class OpeningBalanceController extends AbstractActionController
             $page = $this->params()->fromQuery('page');
         }
         ;
-
-        $is_active = (int) $this->params()->fromQuery('is_active');
-
-        if ($is_active == null) {
-            $is_active = 1;
-        }
-
-        if ($sort_by == null) :
-            $sort_by = "createdOn";
-        endif;
-
-        if ($sort == null) :
-            $sort = "DESC";
-        endif;
-
         $criteria = array();
         $sort_criteria = array();
 
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventory')->findBy($criteria, $sort_criteria);
-
+        $list = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryOpeningBalance')->findBy($criteria, $sort_criteria);
         $total_records = count($list);
         $paginator = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalance')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
 
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
-            'is_active' => $is_active,
             'sort_by' => $sort_by,
             'sort' => $sort,
-            'per_pape' => $resultsPerPage,
-            'currentState' => $currentState
+            'is_active' => $is_active,
+            'per_pape' => $resultsPerPage
         ));
     }
 

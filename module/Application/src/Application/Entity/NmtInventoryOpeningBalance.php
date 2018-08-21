@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryOpeningBalance
  *
- * @ORM\Table(name="nmt_inventory_opening_balance", indexes={@ORM\Index(name="nmt_inventory_opening_balance_FK1_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_opening_balance_FK2_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_inventory_opening_balance", indexes={@ORM\Index(name="nmt_inventory_opening_balance_FK1_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_opening_balance_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_opening_balance_FK3_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_opening_balance_FK4_idx", columns={"GL_account_id"})})
  * @ORM\Entity
  */
 class NmtInventoryOpeningBalance
@@ -45,7 +45,7 @@ class NmtInventoryOpeningBalance
     /**
      * @var string
      *
-     * @ORM\Column(name="remarks", type="string", length=45, nullable=true)
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
 
@@ -64,13 +64,6 @@ class NmtInventoryOpeningBalance
     private $createdOn;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="GL_account_id", type="integer", nullable=true)
-     */
-    private $glAccountId;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
@@ -78,11 +71,53 @@ class NmtInventoryOpeningBalance
     private $postingDate;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="local_currency", type="integer", nullable=true)
+     */
+    private $localCurrency;
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="nmt_inventory_opening_balancecol", type="string", length=45, nullable=true)
+     * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
      */
-    private $nmtInventoryOpeningBalancecol;
+    private $docStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
+     */
+    private $sysNumber;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
+     */
+    private $workflowStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
+     */
+    private $transactionStatus;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
+     */
+    private $isPosted;
 
     /**
      * @var \Application\Entity\NmtFinPostingPeriod
@@ -103,6 +138,26 @@ class NmtInventoryOpeningBalance
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
+     * })
+     */
+    private $warehouse;
+
+    /**
+     * @var \Application\Entity\FinAccount
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="GL_account_id", referencedColumnName="id")
+     * })
+     */
+    private $glAccount;
 
 
 
@@ -261,30 +316,6 @@ class NmtInventoryOpeningBalance
     }
 
     /**
-     * Set glAccountId
-     *
-     * @param integer $glAccountId
-     *
-     * @return NmtInventoryOpeningBalance
-     */
-    public function setGlAccountId($glAccountId)
-    {
-        $this->glAccountId = $glAccountId;
-
-        return $this;
-    }
-
-    /**
-     * Get glAccountId
-     *
-     * @return integer
-     */
-    public function getGlAccountId()
-    {
-        return $this->glAccountId;
-    }
-
-    /**
      * Set postingDate
      *
      * @param \DateTime $postingDate
@@ -309,27 +340,171 @@ class NmtInventoryOpeningBalance
     }
 
     /**
-     * Set nmtInventoryOpeningBalancecol
+     * Set localCurrency
      *
-     * @param string $nmtInventoryOpeningBalancecol
+     * @param integer $localCurrency
      *
      * @return NmtInventoryOpeningBalance
      */
-    public function setNmtInventoryOpeningBalancecol($nmtInventoryOpeningBalancecol)
+    public function setLocalCurrency($localCurrency)
     {
-        $this->nmtInventoryOpeningBalancecol = $nmtInventoryOpeningBalancecol;
+        $this->localCurrency = $localCurrency;
 
         return $this;
     }
 
     /**
-     * Get nmtInventoryOpeningBalancecol
+     * Get localCurrency
+     *
+     * @return integer
+     */
+    public function getLocalCurrency()
+    {
+        return $this->localCurrency;
+    }
+
+    /**
+     * Set docStatus
+     *
+     * @param string $docStatus
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get docStatus
      *
      * @return string
      */
-    public function getNmtInventoryOpeningBalancecol()
+    public function getDocStatus()
     {
-        return $this->nmtInventoryOpeningBalancecol;
+        return $this->docStatus;
+    }
+
+    /**
+     * Set sysNumber
+     *
+     * @param string $sysNumber
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get sysNumber
+     *
+     * @return string
+     */
+    public function getSysNumber()
+    {
+        return $this->sysNumber;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
+    }
+
+    /**
+     * Set transactionStatus
+     *
+     * @param string $transactionStatus
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionStatus
+     *
+     * @return string
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
+    }
+
+    /**
+     * Set isPosted
+     *
+     * @param boolean $isPosted
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPosted
+     *
+     * @return boolean
+     */
+    public function getIsPosted()
+    {
+        return $this->isPosted;
     }
 
     /**
@@ -378,5 +553,53 @@ class NmtInventoryOpeningBalance
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set warehouse
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
+    {
+        $this->warehouse = $warehouse;
+
+        return $this;
+    }
+
+    /**
+     * Get warehouse
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getWarehouse()
+    {
+        return $this->warehouse;
+    }
+
+    /**
+     * Set glAccount
+     *
+     * @param \Application\Entity\FinAccount $glAccount
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setGlAccount(\Application\Entity\FinAccount $glAccount = null)
+    {
+        $this->glAccount = $glAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get glAccount
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getGlAccount()
+    {
+        return $this->glAccount;
     }
 }

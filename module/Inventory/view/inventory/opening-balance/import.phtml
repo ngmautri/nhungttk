@@ -1,0 +1,115 @@
+<?php   /**@var \Application\Entity\NmtInventoryOpeningBalance $target ;*/ ?>
+
+<div id="wrapper" class="toggled">
+
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+ <?php
+$current_step = "STEP2.5";
+include (ROOT . '/module/Inventory/view/inventory/ob-create-wizard.php');
+?>			
+  		
+
+
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
+				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+					Menu <span></a>
+
+
+			<div id="tabs" style="font-size: 10pt">
+				<ul>
+					<li><a href="#general"><?php echo $this->translate("Upload");?>:</a></li>
+				</ul>
+
+				<div id="general" style="font-size: 9pt; padding: 5pt">
+					<!-- Tab1 -->
+					
+					
+						
+			<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+
+<!-- TO UPDATE ACTION -->
+					<form id="attachment_upload_form" class="form-horizontal"
+						action="/inventory/opening-balance?import" method="post"
+						enctype="multipart/form-data">
+						<input type="hidden" name="target_id"
+							value="<?php echo (!$target == null)? $target->getId():"";?>" />
+						<input type="hidden" name="token"
+							value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" />
+
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag">File:</label>
+							<div class="col-sm-3">
+								<input style="" type="file" id="uploaded_file"
+									name="uploaded_file" />
+							</div>
+						</div>
+
+						<hr>
+						<div class="form-group margin-bottom">
+							<label class="control-label col-sm-2" for="inputTag"></label>
+							<div class="col-sm-3">
+								<button type="submit" class="btn btn-default btn-sm">
+									<i class="glyphicon glyphicon-upload"> </i> Upload
+								</button>
+							</div>
+						</div>
+
+
+					</form>
+
+					<!-- end tab -->
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+	<script type="text/javascript">
+$('#attachments').bind('change', function() {
+	var file_size;
+	file_size = this.files[0].size
+	if (file_size > 2097152){
+		//alert('This file size is too large : ' + file_size + "MB. Please select new file");
+		
+		$('#b_loaded_data').text('This file size is too large : ' + file_size + "MB. Please select new file");
+		$('#modal1').modal();
+
+		 $("#attachments").val("");
+		 	
+	}else{
+		//alert('This file size is: ' + file_size + "MB, OKE");
+		 //$('#save').removeAttr('disabled');
+	}
+
+});
+
+$( "input[id='valid_from']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='valid_to']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
+</script>

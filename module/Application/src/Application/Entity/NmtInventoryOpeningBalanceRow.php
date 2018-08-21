@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryOpeningBalanceRow
  *
- * @ORM\Table(name="nmt_inventory_opening_balance_row", indexes={@ORM\Index(name="nmt_inventory_opening_balance_row_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_opening_balance_row_FK2_idx", columns={"opening_balance_id"}), @ORM\Index(name="nmt_inventory_opening_balance_row_KF3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_opening_balance_row_FK4_idx", columns={"GL_account_id"})})
+ * @ORM\Table(name="nmt_inventory_opening_balance_row", indexes={@ORM\Index(name="nmt_inventory_opening_balance_row_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_opening_balance_row_FK2_idx", columns={"opening_balance_id"}), @ORM\Index(name="nmt_inventory_opening_balance_row_KF3_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_opening_balance_row_FK4_idx", columns={"GL_account_id"}), @ORM\Index(name="nmt_inventory_opening_balance_row_FK5_idx", columns={"currency_id"})})
  * @ORM\Entity
  */
 class NmtInventoryOpeningBalanceRow
@@ -29,16 +29,16 @@ class NmtInventoryOpeningBalanceRow
     private $token;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="quantiy", type="integer", nullable=true)
+     * @ORM\Column(name="quantity", type="decimal", precision=10, scale=4, nullable=true)
      */
-    private $quantiy;
+    private $quantity;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="unit_price", type="integer", nullable=true)
+     * @ORM\Column(name="unit_price", type="decimal", precision=14, scale=4, nullable=true)
      */
     private $unitPrice;
 
@@ -62,6 +62,62 @@ class NmtInventoryOpeningBalanceRow
      * @ORM\Column(name="net_amount", type="decimal", precision=14, scale=4, nullable=true)
      */
     private $netAmount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
+     */
+    private $remarks;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_status", type="string", length=45, nullable=true)
+     */
+    private $docStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="workflow_status", type="string", length=45, nullable=true)
+     */
+    private $workflowStatus;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="transaction_status", type="string", length=45, nullable=true)
+     */
+    private $transactionStatus;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean", nullable=true)
+     */
+    private $isActive;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
+     */
+    private $isPosted;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sys_number", type="string", length=45, nullable=true)
+     */
+    private $sysNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="exchange_rate", type="decimal", precision=10, scale=0, nullable=true)
+     */
+    private $exchangeRate;
 
     /**
      * @var \Application\Entity\NmtInventoryItem
@@ -92,6 +148,16 @@ class NmtInventoryOpeningBalanceRow
      * })
      */
     private $glAccount;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="currency_id", referencedColumnName="id")
+     * })
+     */
+    private $currency;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -140,33 +206,33 @@ class NmtInventoryOpeningBalanceRow
     }
 
     /**
-     * Set quantiy
+     * Set quantity
      *
-     * @param integer $quantiy
+     * @param string $quantity
      *
      * @return NmtInventoryOpeningBalanceRow
      */
-    public function setQuantiy($quantiy)
+    public function setQuantity($quantity)
     {
-        $this->quantiy = $quantiy;
+        $this->quantity = $quantity;
 
         return $this;
     }
 
     /**
-     * Get quantiy
+     * Get quantity
      *
-     * @return integer
+     * @return string
      */
-    public function getQuantiy()
+    public function getQuantity()
     {
-        return $this->quantiy;
+        return $this->quantity;
     }
 
     /**
      * Set unitPrice
      *
-     * @param integer $unitPrice
+     * @param string $unitPrice
      *
      * @return NmtInventoryOpeningBalanceRow
      */
@@ -180,7 +246,7 @@ class NmtInventoryOpeningBalanceRow
     /**
      * Get unitPrice
      *
-     * @return integer
+     * @return string
      */
     public function getUnitPrice()
     {
@@ -260,6 +326,198 @@ class NmtInventoryOpeningBalanceRow
     }
 
     /**
+     * Set remarks
+     *
+     * @param string $remarks
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    /**
+     * Get remarks
+     *
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * Set docStatus
+     *
+     * @param string $docStatus
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get docStatus
+     *
+     * @return string
+     */
+    public function getDocStatus()
+    {
+        return $this->docStatus;
+    }
+
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
+    }
+
+    /**
+     * Set transactionStatus
+     *
+     * @param string $transactionStatus
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get transactionStatus
+     *
+     * @return string
+     */
+    public function getTransactionStatus()
+    {
+        return $this->transactionStatus;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set isPosted
+     *
+     * @param boolean $isPosted
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPosted
+     *
+     * @return boolean
+     */
+    public function getIsPosted()
+    {
+        return $this->isPosted;
+    }
+
+    /**
+     * Set sysNumber
+     *
+     * @param string $sysNumber
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get sysNumber
+     *
+     * @return string
+     */
+    public function getSysNumber()
+    {
+        return $this->sysNumber;
+    }
+
+    /**
+     * Set exchangeRate
+     *
+     * @param string $exchangeRate
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setExchangeRate($exchangeRate)
+    {
+        $this->exchangeRate = $exchangeRate;
+
+        return $this;
+    }
+
+    /**
+     * Get exchangeRate
+     *
+     * @return string
+     */
+    public function getExchangeRate()
+    {
+        return $this->exchangeRate;
+    }
+
+    /**
      * Set item
      *
      * @param \Application\Entity\NmtInventoryItem $item
@@ -329,6 +587,30 @@ class NmtInventoryOpeningBalanceRow
     public function getGlAccount()
     {
         return $this->glAccount;
+    }
+
+    /**
+     * Set currency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $currency
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 
     /**

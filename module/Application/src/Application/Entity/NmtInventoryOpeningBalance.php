@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryOpeningBalance
  *
- * @ORM\Table(name="nmt_inventory_opening_balance", indexes={@ORM\Index(name="nmt_inventory_opening_balance_FK1_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_opening_balance_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_opening_balance_FK3_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_opening_balance_FK4_idx", columns={"GL_account_id"})})
+ * @ORM\Table(name="nmt_inventory_opening_balance", indexes={@ORM\Index(name="nmt_inventory_opening_balance_FK1_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_opening_balance_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_opening_balance_FK3_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_opening_balance_FK4_idx", columns={"GL_account_id"}), @ORM\Index(name="nmt_inventory_opening_balance_FK5_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_opening_balance_FK6_idx", columns={"local_currency_id"})})
  * @ORM\Entity
  */
 class NmtInventoryOpeningBalance
@@ -38,13 +38,6 @@ class NmtInventoryOpeningBalance
     /**
      * @var string
      *
-     * @ORM\Column(name="currency", type="string", length=45, nullable=true)
-     */
-    private $currency;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
      */
     private $remarks;
@@ -69,13 +62,6 @@ class NmtInventoryOpeningBalance
      * @ORM\Column(name="posting_date", type="datetime", nullable=true)
      */
     private $postingDate;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="local_currency", type="integer", nullable=true)
-     */
-    private $localCurrency;
 
     /**
      * @var string
@@ -159,6 +145,26 @@ class NmtInventoryOpeningBalance
      */
     private $glAccount;
 
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="currency_id", referencedColumnName="id")
+     * })
+     */
+    private $currency;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="local_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $localCurrency;
+
 
 
     /**
@@ -217,30 +223,6 @@ class NmtInventoryOpeningBalance
     public function getAmount()
     {
         return $this->amount;
-    }
-
-    /**
-     * Set currency
-     *
-     * @param string $currency
-     *
-     * @return NmtInventoryOpeningBalance
-     */
-    public function setCurrency($currency)
-    {
-        $this->currency = $currency;
-
-        return $this;
-    }
-
-    /**
-     * Get currency
-     *
-     * @return string
-     */
-    public function getCurrency()
-    {
-        return $this->currency;
     }
 
     /**
@@ -337,30 +319,6 @@ class NmtInventoryOpeningBalance
     public function getPostingDate()
     {
         return $this->postingDate;
-    }
-
-    /**
-     * Set localCurrency
-     *
-     * @param integer $localCurrency
-     *
-     * @return NmtInventoryOpeningBalance
-     */
-    public function setLocalCurrency($localCurrency)
-    {
-        $this->localCurrency = $localCurrency;
-
-        return $this;
-    }
-
-    /**
-     * Get localCurrency
-     *
-     * @return integer
-     */
-    public function getLocalCurrency()
-    {
-        return $this->localCurrency;
     }
 
     /**
@@ -601,5 +559,53 @@ class NmtInventoryOpeningBalance
     public function getGlAccount()
     {
         return $this->glAccount;
+    }
+
+    /**
+     * Set currency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $currency
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setCurrency(\Application\Entity\NmtApplicationCurrency $currency = null)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
+     * Set localCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $localCurrency
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setLocalCurrency(\Application\Entity\NmtApplicationCurrency $localCurrency = null)
+    {
+        $this->localCurrency = $localCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get localCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getLocalCurrency()
+    {
+        return $this->localCurrency;
     }
 }

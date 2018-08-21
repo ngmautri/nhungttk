@@ -32,6 +32,10 @@ class OpeningBalanceRowControllerFactory implements FactoryInterface{
 		$sv =  $container->get('Inventory\Service\ItemSearchService');
 		$controller->setItemSearchService($sv);
 		
+		$sv =  $container->get('Inventory\Service\OpeningBalanceService');
+		$controller->setObService($sv);
+		
+		
 		return $controller;
 	}	
 	

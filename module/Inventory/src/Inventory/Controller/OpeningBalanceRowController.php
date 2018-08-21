@@ -25,9 +25,10 @@ class OpeningBalanceRowController extends AbstractActionController
 {
 
     protected $doctrineEM;
-
     protected $itemSearchService;
-
+    protected $obService;
+    
+    
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -747,4 +748,22 @@ class OpeningBalanceRowController extends AbstractActionController
         $this->itemSearchService = $itemSearchService;
         return $this;
     }
+   
+    /**
+    * 
+    *  @return \Inventory\Service\OpeningBalanceService
+    */
+    public function getObService()
+    {
+        return $this->obService;
+    }
+
+    /**
+     * @param mixed $obService
+     */
+    public function setObService(\Inventory\Service\OpeningBalanceService $obService)
+    {
+        $this->obService = $obService;
+    }
+
 }

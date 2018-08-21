@@ -26,7 +26,7 @@ class OpeningBalanceController extends AbstractActionController
     protected $doctrineEM;
 
     protected $itemSearchService;
-
+    protected $obService;
     /**
      * php.ini
      * memory_limit=512M
@@ -59,7 +59,7 @@ class OpeningBalanceController extends AbstractActionController
             $target_id = (int) $request->getPost('target_id');
             $target_token = $request->getPost('token');
             $redirectUrl = $request->getPost('redirectUrl');
-            
+
             /**@var \Application\Entity\NmtInventoryOpeningBalance $target ;*/
             $target = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalance')->findOneBy(array(
                 "id" => $target_id,
@@ -286,6 +286,7 @@ class OpeningBalanceController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
         $gl_list = $nmtPlugin->glAccountList();
 
         /**@var \Application\Entity\MlaUsers $u ;*/
@@ -297,12 +298,11 @@ class OpeningBalanceController extends AbstractActionController
         $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
             'isDefault' => 1
         ));
-        
+
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
         }
-        
 
         // Is Posing
         // =============================
@@ -310,10 +310,10 @@ class OpeningBalanceController extends AbstractActionController
 
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-            $postingDate = $request->getPost('movementType');
-
+            $postingDate = $request->getPost('postingDate');
             $warehouse_id = (int) $request->getPost('target_wh_id');
             $gl_account_id = (int) $request->getPost('gl_account_id');
+            $currency_id = (int) $request->getPost('currency_id');
 
             $isActive = (int) $request->getPost('isActive');
             $remarks = $request->getPost('remarks');
@@ -358,6 +358,17 @@ class OpeningBalanceController extends AbstractActionController
                 $errors[] = $nmtPlugin->translate('Warehouse can\'t be empty. Please select a Wahrhouse!');
             }
 
+            $currency = null;
+            if ($currency_id > 0) {
+                $currency = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($currency_id);
+            }
+
+            if ($currency != null) {
+                $entity->setCurrency($currency);
+            } else {
+                $errors[] = $nmtPlugin->translate('Currency can\'t be empty. Please select a Currency!');
+            }
+
             $entity->setRemarks($remarks);
 
             if (count($errors) > 0) {
@@ -365,7 +376,8 @@ class OpeningBalanceController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'gl_list' => $gl_list
+                    'gl_list' => $gl_list,
+                    'currency_list' => $currency_list
                 ));
             }
 
@@ -407,6 +419,7 @@ class OpeningBalanceController extends AbstractActionController
 
         $entity = new NmtInventoryOpeningBalance();
         $entity->setIsActive(1);
+        $entity->setCurrency($default_cur);
 
         if ($default_wh !== null) {
             $entity->setWarehouse($default_wh);
@@ -416,7 +429,8 @@ class OpeningBalanceController extends AbstractActionController
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'gl_list' => $gl_list
+            'gl_list' => $gl_list,
+            'currency_list' => $currency_list
         ));
     }
 
@@ -474,48 +488,27 @@ class OpeningBalanceController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $gl_list = $nmtPlugin->glAccountList();
-   
+        $currency_list = $nmtPlugin->currencyList();
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
-        $default_wh = null;
-        $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
-            'isDefault' => 1
-        ));
-        
-        $default_cur = null;
-        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
-            $default_cur = $u->getCompany()->getDefaultCurrency();
-        }
-
+   
         // Is Posing
         // =============================
         if ($request->isPost()) {
 
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-
-            $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
             $id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
 
-            /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-            $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-            $mv = $res->getMovement($id, $token);
-
-            if ($mv == null) {
-                return $this->redirect()->toRoute('access_denied');
-            }
-
-            /**@var \Application\Entity\NmtInventoryMv $entity ;*/
-
-            $entity = null;
-            if ($mv[0] instanceof NmtInventoryMv) {
-                $entity = $mv[0];
-            }
+            /**@var \Application\Entity\NmtInventoryOpeningBalance $entity ;*/
+            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalance')->findOneBy(array(
+                "id" => $id,
+                "token" => $token
+            ));
 
             if ($entity == null) {
                 return $this->redirect()->toRoute('access_denied');
@@ -523,9 +516,11 @@ class OpeningBalanceController extends AbstractActionController
 
             // ========================
 
-            $movementDate = $request->getPost('movementDate');
-
+            $postingDate = $request->getPost('postingDate');
             $warehouse_id = (int) $request->getPost('target_wh_id');
+            $gl_account_id = (int) $request->getPost('gl_account_id');
+            $currency_id = (int) $request->getPost('currency_id');
+
             $isActive = (int) $request->getPost('isActive');
             $remarks = $request->getPost('remarks');
 
@@ -535,47 +530,46 @@ class OpeningBalanceController extends AbstractActionController
 
             $entity->setIsActive($isActive);
 
-            $movementType = $entity->getMovementType();
-
-            if ($movementType == null) {
-                $errors[] = 'Goods Issue Type is not valid!';
-            }
-
-            // check if posting period is close
-            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-
             $validator = new Date();
-
-            if (! $validator->isValid($movementDate)) {
-                $errors[] = $nmtPlugin->translate('Transaction Date is not correct or empty!');
-            } else {
-
-                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                $postingPeriod = $p->getPostingPeriod(new \DateTime($movementDate));
-
-                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                    $errors[] = sprintf('Posting period for [%s] not created!', $movementDate);
+            if ($postingDate !== null) {
+                if (! $validator->isValid($postingDate)) {
+                    $errors[] = $nmtPlugin->translate('Posting Date is not correct or empty!');
                 } else {
-                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
-                    } else {
-                        $entity->setPostingDate(new \DateTime($movementDate));
-                        $entity->setMovementDate(new \DateTime($movementDate));
-                        $entity->setPostingPeriod($postingPeriod);
-                    }
+                    $entity->setPostingDate(new \DateTime($postingDate));
                 }
             }
 
             $warehouse = null;
             if ($warehouse_id > 0) {
-                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+                $warehouse = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
             }
 
-            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+            if ($warehouse !== null) {
                 $entity->setWarehouse($warehouse);
             } else {
-                $errors[] = 'Warehouse can\'t be empty. Please select a Wahrhouse!';
+                $errors[] = $nmtPlugin->translate('Warehouse can\'t be empty. Please select a Wahrhouse!');
+            }
+
+            $gl_account = null;
+            if ($gl_account_id > 0) {
+                $gl_account = $this->doctrineEM->getRepository('\Application\Entity\FinAccount')->find($gl_account_id);
+            }
+
+            if ($gl_account !== null) {
+                $entity->setGlAccount($gl_account);
+            } else {
+                $errors[] = $nmtPlugin->translate('GL can\'t be empty. Please select a account!');
+            }
+
+            $currency = null;
+            if ($currency_id > 0) {
+                $currency = $this->doctrineEM->getRepository('\Application\Entity\NmtApplicationCurrency')->find($currency_id);
+            }
+
+            if ($currency != null) {
+                $entity->setCurrency($currency);
+            } else {
+                $errors[] = $nmtPlugin->translate('Currency can\'t be empty. Please select a Currency!');
             }
 
             $entity->setRemarks($remarks);
@@ -585,7 +579,8 @@ class OpeningBalanceController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'gl_list' => $gl_list
+                    'gl_list' => $gl_list,
+                    'currency_list' => $currency_list
                 ));
             }
 
@@ -594,7 +589,7 @@ class OpeningBalanceController extends AbstractActionController
             // ++++++++++++++++++++++++++++++
 
             try {
-                $this->giService->post($entity, $u);
+                $this->obService->doPosting($entity, $u, true);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -604,14 +599,15 @@ class OpeningBalanceController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'gl_list' => $gl_list
+                    'gl_list' => $gl_list,
+                    'currency_list' => $currency_list
                 ));
             }
 
-            $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
+            $m = sprintf("[OK] Openning Balance: %s posted!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
 
-            $redirectUrl = "/inventory/item-transaction/list";
+            $redirectUrl = "/inventory/opening-balance/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
 
@@ -644,7 +640,8 @@ class OpeningBalanceController extends AbstractActionController
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'gl_list' => $gl_list
+            'gl_list' => $gl_list,
+            'currency_list' => $currency_list
         ));
     }
 
@@ -1026,14 +1023,41 @@ class OpeningBalanceController extends AbstractActionController
         return $this;
     }
 
+    /**
+     * 
+     *  @return \Inventory\Service\ItemSearchService
+     */
     public function getItemSearchService()
     {
         return $this->itemSearchService;
     }
 
+    /**
+     * 
+     *  @param ItemSearchService $itemSearchService
+     *  @return \Inventory\Controller\OpeningBalanceController
+     */
     public function setItemSearchService(ItemSearchService $itemSearchService)
     {
         $this->itemSearchService = $itemSearchService;
         return $this;
     }
+    
+    /**
+     *
+     *  @return \Inventory\Service\OpeningBalanceService
+     */
+    public function getObService()
+    {
+        return $this->obService;
+    }
+    
+    /**
+     * @param mixed $obService
+     */
+    public function setObService(\Inventory\Service\OpeningBalanceService $obService)
+    {
+        $this->obService = $obService;
+    }
+    
 }

@@ -64,12 +64,7 @@ if($entity->getDocStatus() !== \Application\Model\Constants::DOC_STATUS_POSTED) 
 	
 	<?php endif; endif;?>
 	
-	   <a title="<?php echo $this->translate("Download Excel File");?>" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/po-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-								<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
-
-<a title="<?php echo $this->translate("Full Screen");?>" class="btn btn-default btn-sm" href="javascript:;" onclick = "showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i class="fa fa-window-maximize" aria-hidden="true"></i>
-</a>	
+	 
 								      	
 </div>
 				
@@ -182,14 +177,58 @@ if($entity->getDocStatus() !== \Application\Model\Constants::DOC_STATUS_POSTED) 
 				<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
 			</legend>
 			<div id="rows" class="collapse in">
-					<span><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?> // </strong></span	>
-			
-					<span class="" style="padding:3px;margin-bottom:2px; font-size: 10pt; color: gray">
+					<div style="font-size: 9pt">
+
+									<div class="dropdown">
+										<button
+											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+											title="" class="btn btn-default dropdown-toggle btn-sm"
+											type="button" id="dropdownMenu1" data-toggle="dropdown"
+											aria-haspopup="true" aria-expanded="true">
+											<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;<span
+												class="caret"></span>
+										</button>
+										<a
+											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+											title="<?php echo $this->translate("Refresh");?>"
+											class="btn btn-default btn-sm" href="javascript:;"
+											onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
+											aria-hidden="true"></i>&nbsp;
+										</a> <a <?php echo $this->translate("Full Screen");?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
+											onclick="showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i
+											class="fa fa-window-maximize" aria-hidden="true"></i></a>
+
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?> // </strong></span>
+
+								<span class=""
+									style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
 						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
                         &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>
                         &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
                         &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
 					</span>
+					
+					
+										<ul style="font-size: 9.5pt;" class="dropdown-menu"
+											aria-labelledby="dropdownMenu1">
+											<li><a target="_blank" class=""
+												href="<?php echo $this->baseUrl ?>/procure/po-row/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+													<i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+													&nbsp;PDF
+											</a></li>
+											<li><a class=""
+												href="<?php echo $this->baseUrl ?>/procure/po-row/download?format=xlsx&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+													<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+													&nbsp;Excel (*.xlxs)
+											</a></li>
+											<li><a class=""
+												href="<?php echo $this->baseUrl ?>/procure/po-row/download?format=ods&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+													<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+													&nbsp;Open Office (*.ods)
+											</a></li>
+										</ul>
+									</div>
+</div>
 					<div id="pr_row_gird" style="font-size: 8pt;"></div>
 			</fieldset>
 			</form>
@@ -659,6 +698,9 @@ $( "#vendor_name_1" ).autocomplete({
             editRow(rowIndx, $grid);
         }
     });        
+    function refreshGird(){
+    	$( "#pr_row_gird" ).pqGrid( "refreshDataAndView" )
+    }
 
 </script>
 

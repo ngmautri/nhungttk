@@ -70,12 +70,16 @@ class OpeningBalanceService extends AbstractService
                 continue;
             }
 
+            if ($r->getItem()->getIsStocked() == 0) {
+                $r->setIsActive(0);
+                continue;
+            }
+
             $n ++;
             $r->setDocStatus($entity->getDocStatus());
             $r->setIsPosted(1);
-            
+
             $this->doctrineEM->persist($r);
-            
 
             // Set all current FIFO Layer is closed.
             /*
@@ -85,7 +89,7 @@ class OpeningBalanceService extends AbstractService
              */
 
             $criteria = array(
-                 'item' => $r->getItem()
+                'item' => $r->getItem()
             );
             $layers = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryFifoLayer')->findBy($criteria);
             if (count($layers > 0)) {
@@ -99,17 +103,18 @@ class OpeningBalanceService extends AbstractService
             }
 
             // Create new FIFO.
-            
+
             /**
              *
              * @todo: Create FIFO Layer
              */
             $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
-            
+
             $fifoLayer->setIsClosed(0);
+            $fifoLayer->setIsOpenBalance(1);
             $fifoLayer->setItem($r->getItem());
             $fifoLayer->setQuantity($r->getQuantity());
-            
+
             // will be changed uppon inventory transaction.
             $fifoLayer->setOnhandQuantity($r->getQuantity());
             $fifoLayer->setDocUnitPrice($r->getUnitPrice());
@@ -119,15 +124,31 @@ class OpeningBalanceService extends AbstractService
             $fifoLayer->setSourceClass(get_class($r));
             $fifoLayer->setSourceId($r->getID());
             $fifoLayer->setSourceToken($r->getToken());
-            
+
             $fifoLayer->setToken(Rand::getString(22, \Application\Model\Constants::CHAR_LIST, true));
             $fifoLayer->setCreatedBy($u);
             $fifoLayer->setCreatedOn($r->getCreatedOn());
+            $fifoLayer->setRemarks("Opening Balance");
             $this->doctrineEM->persist($fifoLayer);
 
             // Create Journal Entry.
+            
+            // Create JE Row - DEBIT
+            $je_row = new \Application\Entity\FinJeRow();
+       
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
+            $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice() * $r->getExchangeRate());
+   
+            $je_row->setSysNumber();
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
 
-            }
+            $je_row->setJeDescription("Opening Balance");
+
+            $this->doctrineEM->persist($je_row);
+        }
 
         if ($n == 0) {
             throw new \Exception("Opening Balace is empty. No Posting will be made!");

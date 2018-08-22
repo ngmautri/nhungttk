@@ -360,7 +360,7 @@ class OpeningBalanceController extends AbstractActionController
 
             $currency = null;
             if ($currency_id > 0) {
-                $currency = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($currency_id);
+                $currency = $this->doctrineEM->getRepository('\Application\Entity\NmtApplicationCurrency')->find($currency_id);
             }
 
             if ($currency != null) {

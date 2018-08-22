@@ -34,6 +34,9 @@ class OpeningBalanceServiceFactory implements FactoryInterface
         $eventManager = $container->get('EventManager');
         $eventManager->attachAggregate($grListener);
 
+        $sv = $container->get('Finance\Service\JEService');
+        $service->setJeService($sv);
+        
         $service->setEventManager($eventManager);
 		
 		return $service;

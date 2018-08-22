@@ -163,6 +163,13 @@ if (count($errors) > 0) {
 												class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
 
 									</div>
+									
+										<div class="col-sm-3">					
+	
+					<a style="color: white;" class="btn btn-primary btn-sm"
+											href="<?php echo $this->baseUrl ?>/inventory/opening-balance/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><?php echo $this->translate("Review & Post");?>&nbsp;<i
+											class="fa fa-chevron-right" aria-hidden="true"></i> </a>
+									</div>
 								</div>
 
 							</div>

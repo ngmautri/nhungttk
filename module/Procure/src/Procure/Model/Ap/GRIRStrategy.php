@@ -87,6 +87,33 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
         if ($r->getItem() !== null) {
 
             /**
+             *
+             * @todo create serial number
+             *       if item with Serial
+             *       or Fixed Asset
+             */
+            if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
+
+                for ($i = 0; $i < $r->getQuantity(); $i ++) {
+
+                    // create new serial number
+                    $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
+
+                    $sn_entity->setItem($r->getItem());
+                    $sn_entity->setApRow($r->getInvoiceRow());
+                    $sn_entity->getGrRow($r->getGrRow());
+                    $sn_entity->setInventoryTrx($r);
+                    $sn_entity->setIsActive(1);
+                    $sn_entity->setSysNumber($this->contextService->getControllerPlugin()
+                        ->getDocNumber($sn_entity));
+                    $sn_entity->setCreatedBy($u);
+                    $sn_entity->setCreatedOn($createdOn);
+                    $sn_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                    $this->contextService->getDoctrineEM()->persist($sn_entity);
+                }
+            }
+
+            /**
              * create stock good receipt.
              * only for item controlled inventory
              * ===================
@@ -115,16 +142,18 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 $stock_gr_entity->setIsActive(1);
                 $stock_gr_entity->setTrxDate($entity->getGrDate());
 
-                $stock_gr_entity->setDocCurrency($r->getInvoice()->getDocCurrency());
-                $stock_gr_entity->setLocalCurrency($r->getInvoice()->getLocalCurrency());                
+                $stock_gr_entity->setDocCurrency($r->getInvoice()
+                    ->getDocCurrency());
+                $stock_gr_entity->setLocalCurrency($r->getInvoice()
+                    ->getLocalCurrency());
                 $stock_gr_entity->setExchangeRate($r->getInvoice()
                     ->getExchangeRate());
 
                 $stock_gr_entity->setVendorInvoice($entity);
                 $stock_gr_entity->setInvoiceRow($r);
-                
+
                 $stock_gr_entity->setItem($r->getItem());
-                
+
                 $stock_gr_entity->setPrRow($r->getPrRow());
                 $stock_gr_entity->setPoRow($r->getPoRow());
                 $stock_gr_entity->setGrRow($gr_entity);
@@ -148,7 +177,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
                 $stock_gr_entity->setTrxDate($entity->getGrDate());
                 $stock_gr_entity->setCurrency($entity->getCurrency());
-            
+
                 $stock_gr_entity->setTaxRate($r->getTaxRate());
 
                 $stock_gr_entity->setRemarks('AP Row#' . $r->getRowIdentifer());

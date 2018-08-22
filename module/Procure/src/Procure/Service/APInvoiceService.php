@@ -89,6 +89,7 @@ class APInvoiceService extends AbstractService
             $r->setRowNumber($n);
             $this->doctrineEM->persist($r);
 
+
             $tTransaction = $r->getTransactionType();
             $rowPostingStrategy = \Procure\Model\Ap\APRowPostingFactory::getPostingStrategy($tTransaction);
 

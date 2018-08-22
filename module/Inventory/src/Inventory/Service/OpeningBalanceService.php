@@ -130,30 +130,14 @@ class OpeningBalanceService extends AbstractService
             $fifoLayer->setCreatedOn($r->getCreatedOn());
             $fifoLayer->setRemarks("Opening Balance");
             $this->doctrineEM->persist($fifoLayer);
-
-            // Create Journal Entry.
-            
-            // Create JE Row - DEBIT
-            $je_row = new \Application\Entity\FinJeRow();
-       
-            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-            $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
-            $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice() * $r->getExchangeRate());
-   
-            $je_row->setSysNumber();
-            $je_row->setCreatedBy($u);
-            $je_row->setCreatedOn($entity->getCreatedOn());
-
-            $je_row->setJeDescription("Opening Balance");
-
-            $this->doctrineEM->persist($je_row);
         }
 
         if ($n == 0) {
             throw new \Exception("Opening Balace is empty. No Posting will be made!");
         }
-
+        
+        $this->jeService->postInventoryOB($entity, $rows, $u);
+                
         if ($isFlush == true) {
             $this->doctrineEM->flush();
         }

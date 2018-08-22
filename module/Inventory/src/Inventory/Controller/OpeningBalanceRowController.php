@@ -25,10 +25,11 @@ class OpeningBalanceRowController extends AbstractActionController
 {
 
     protected $doctrineEM;
+
     protected $itemSearchService;
+
     protected $obService;
-    
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -267,6 +268,9 @@ class OpeningBalanceRowController extends AbstractActionController
             $entity->setDocStatus($target->getDocStatus());
             $entity->setCreatedBy($u);
             $entity->setCreatedOn(new \DateTime());
+            
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
 
@@ -367,6 +371,18 @@ class OpeningBalanceRowController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
+        $this->layout("Inventory/layout-fullscreen");
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+   
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        // Is Posing
+        // =============================
 
         if ($request->isPost()) {
 
@@ -381,11 +397,11 @@ class OpeningBalanceRowController extends AbstractActionController
                 'token' => $token
             );
 
-            /** @var \Application\Entity\NmtInventorySerial $entity ; */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findOneBy($criteria);
+            /** @var \Application\Entity\NmtInventoryOpeningBalanceRow $entity ; */
+            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalanceRow')->findOneBy($criteria);
 
-            if (! $entity instanceof \Application\Entity\NmtInventorySerial) {
-                $errors[] = 'Entity not found or emty!';
+            if (! $entity instanceof \Application\Entity\NmtInventoryOpeningBalanceRow) {
+                $errors[] = 'Inventory Open Balance Object not found or emty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
@@ -393,171 +409,139 @@ class OpeningBalanceRowController extends AbstractActionController
                     'entity' => null,
                     'n' => $nTry
                 ));
+            }
 
-                // might need redirect
+            $oldEntity = clone ($entity);
+          
+            $item_id = (int) $request->getPost('item_id');
+            $isActive = (int) $request->getPost('isActive');
+            $quantity = $request->getPost('quantity');
+            $unitPrice = $request->getPost('unitPrice');
+            
+            $remarks = $request->getPost('remarks');
+            
+            if ($isActive != 1) {
+                $isActive = 0;
+            }
+            
+            $entity->setIsActive($isActive);
+            
+            /**@var \Application\Entity\NmtInventoryItem $item ;*/
+            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+            
+            if ($item == null) {
+                $errors[] = $nmtPlugin->translate('No Item is selected');
             } else {
-
-                $oldEntity = clone ($entity);
-
-                $serialNumber = $request->getPost('serialNumber');
-                $location = $request->getPost('location');
-                $category = $request->getPost('category');
-                $mfgName = $request->getPost('mfgName');
-                $mfgDate = $request->getPost('mfgDate');
-                $mfgSerialNumber = $request->getPost('mfgSerialNumber');
-                $lotNumber = $request->getPost('lotNumber');
-                $mfgWarrantyStart = $request->getPost('mfgWarrantyStart');
-                $mfgWarrantyEnd = $request->getPost('mfgWarrantyEnd');
-                $isActive = (int) $request->getPost('isActive');
-                $remarks = $request->getPost('remarks');
-
-                if ($isActive !== 1) {
-                    $isActive = 0;
-                }
-
-                $entity->setIsActive($isActive);
-
-                $entity->setSerialNumber($serialNumber);
-                $entity->setLocation($location);
-                $entity->setCategory($category);
-
-                $entity->setMfgName($mfgName);
-                $entity->setMfgSerialNumber($mfgSerialNumber);
-                $entity->setLotNumber($lotNumber);
-                $entity->setRemarks($remarks);
-
-                if ($serialNumber == "") {
-                    $errors[] = 'Pls give serial number!';
+                if ($item->getIsStocked() != 1) {
+                    $errors[] = $nmtPlugin->translate('Item is not kept in stock');
                 } else {
-
-                    if ($serialNumber !== $oldEntity->getSerialNumber()) {
-                        $criteria = array(
-                            'serialNumber' => $serialNumber
-                        );
-
-                        /** @var \Application\Entity\NmtInventorySerial $entity_ck ; */
-                        $entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findOneBy($criteria);
-                        if ($entity_ck == null) {
-                            $entity->setSerialNumber($serialNumber);
-                        } else {
-                            $errors[] = $serialNumber . ' exists already!';
-                        }
-                    }
+                    $entity->setItem($item);
                 }
-
-                $validator = new Date();
-
-                if (! $mfgDate == null) {
-                    if (! $validator->isValid($mfgDate)) {
-                        $errors[] = 'Manufacturing Date is not correct!';
-                    } else {
-                        $entity->setMfgWarrantyStart(new \DateTime($mfgDate));
-                    }
-                }
-
-                if (! $mfgWarrantyStart == null) {
-                    if (! $validator->isValid($mfgWarrantyStart)) {
-                        $errors[] = 'Warranty Start Date is not correct!';
-                    } else {
-                        $entity->setMfgDate(new \DateTime($mfgWarrantyStart));
-                    }
-                }
-
-                $n_validated = 0;
-                if (! $mfgWarrantyStart == null) {
-                    if (! $validator->isValid($mfgWarrantyStart)) {
-                        $errors[] = 'Warranty Start Date is not correct!';
+            }
+            
+            $n_validated = 0;
+            if ($quantity == null) {
+                $errors[] = 'Please  enter quantity!';
+            } else {
+                
+                if (! is_numeric($quantity)) {
+                    $errors[] = $nmtPlugin->translate('Quantity must be a number!');
+                } else {
+                    if ($quantity <= 0) {
+                        $errors[] = $nmtPlugin->translate('Quantity must be greater than 0!');
                     } else {
                         $n_validated ++;
-                        $entity->setMfgDate(new \DateTime($mfgWarrantyStart));
+                        $entity->setQuantity($quantity);
                     }
                 }
-
-                if (! $mfgWarrantyEnd == null) {
-                    if (! $validator->isValid($mfgWarrantyEnd)) {
-                        $errors[] = 'Warranty End Date is not correct!';
+            }
+            
+            if ($unitPrice == null) {
+                $errors[] = 'Please  enter unit!';
+            } else {
+                
+                if (! is_numeric($unitPrice)) {
+                    $errors[] = $nmtPlugin->translate('Unit Price must be a number!');
+                } else {
+                    if ($unitPrice <= 0) {
+                        $errors[] = $nmtPlugin->translate('Unit Price  must be greater than 0!');
                     } else {
                         $n_validated ++;
-                        $entity->setMfgWarrantyEnd(new \DateTime($mfgWarrantyEnd));
+                        $entity->setUnitPrice($unitPrice);
                     }
                 }
+            }
+            
+            if ($n_validated == 2) {
+                $entity->setNetAmount($entity->getQuantity() * $entity->getUnitPrice());
+            }
+            
+            $entity->setRemarks($remarks);
+            
+            
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
-                if ($n_validated == 2) {
-                    if ($mfgWarrantyEnd <= $mfgWarrantyStart) {
-                        $errors[] = 'Warranty End Date is not correct!';
-                    }
-                }
+            if (count($changeArray) == 0) {
+                $nTry ++;
+                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+            }
 
-                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-                $nmtPlugin = $this->Nmtplugin();
-                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+            if ($nTry >= 3) {
+                $errors[] = sprintf('Do you really want to edit (%s)?', $entity->getSerialNumber());
+            }
 
-                if (count($changeArray) == 0) {
-                    $nTry ++;
-                    $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-                }
-
-                if ($nTry >= 3) {
-                    $errors[] = sprintf('Do you really want to edit (%s)?', $entity->getSerialNumber());
-                }
-
-                if ($nTry == 5) {
-                    $m = sprintf('You might be not ready to edit (%s). Please try later!', $entity->getSerialNumber());
-                    $this->flashMessenger()->addMessage($m);
-                    return $this->redirect()->toUrl($redirectUrl);
-                }
-
-                if (count($errors) > 0) {
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'entity' => $entity,
-                        'n' => $nTry
-                    ));
-                }
-
-                // NO ERROR
-                // ++++++++++++++++++++++++++++++
-
-                $changeOn = new \DateTime();
-
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    "email" => $this->identity()
-                ));
-
-                $entity->setLastchangeBy($u);
-                $entity->setLastchangeOn($changeOn);
-
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-
-                $m = sprintf('S/N %s - #%s updated. Change No %s. OK!', $entity->getSerialNumber(), $entity->getId(), count($changeArray));
-
-                // Trigger Change Log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
-                    'priority' => 7,
-                    'message' => $m,
-                    'objectId' => $entity->getId(),
-                    'objectToken' => $entity->getToken(),
-                    'changeArray' => $changeArray,
-                    'changeBy' => $u,
-                    'changeOn' => $changeOn,
-                    'revisionNumber' => 1,
-                    'changeDate' => $changeOn,
-                    'changeValidFrom' => $changeOn
-                ));
-
-                // Trigger Activity Log . AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                    'priority' => \Zend\Log\Logger::INFO,
-                    'message' => $m,
-                    'createdBy' => $u,
-                    'createdOn' => $changeOn
-                ));
-
+            if ($nTry == 5) {
+                $m = sprintf('You might be not ready to edit (%s). Please try later!', $entity->getSerialNumber());
                 $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
+
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'n' => $nTry
+                ));
+            }
+
+            // NO ERROR
+            // ++++++++++++++++++++++++++++++
+
+            $changeOn = new \DateTime();
+
+            //$entity->setLastchangeBy($u);
+            //$entity->setLastchangeOn($changeOn);
+
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+
+            $m = sprintf('Open Balanc row %s updated. Change No %s. OK!', $entity->getId(), count($changeArray));
+
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => 1,
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+
+            // Trigger Activity Log . AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+
+            $this->flashMessenger()->addMessage($m);
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
@@ -577,8 +561,8 @@ class OpeningBalanceRowController extends AbstractActionController
             'token' => $token
         );
 
-        /** @var \Application\Entity\NmtInventorySerial $entity ; */
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventorySerial')->findOneBy($criteria);
+        /** @var \Application\Entity\NmtInventoryOpeningBalanceRow $entity ; */
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryOpeningBalanceRow')->findOneBy($criteria);
         return new ViewModel(array(
             'errors' => null,
             'entity' => $entity,

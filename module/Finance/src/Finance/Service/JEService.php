@@ -321,4 +321,90 @@ class JEService extends AbstractService
         }
     }
    
+    
+    /**
+     * 
+     *  @param \Application\Entity\NmtInventoryOpeningBalance $entity
+     *  @param array $rows
+     *  @param \Application\Entity\MlaUsers $u
+     *  @param boolean $isFlush
+     *  @throws \Exception
+     */
+    public function postInventoryOB($entity, $rows, $u,$isFlush = false)
+    {
+        if (! $entity instanceof \Application\Entity\NmtInventoryOpeningBalance) {
+            throw new \Exception("Invalid Argument. Inventory Opening Balance Object is expected!");
+        }
+        
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+         
+        if (count($rows) == 0) {
+            throw new \Exception("Inventory Opening Balance is empty. No Posting will be made!");
+        }
+        
+        /**
+         * Debit: Inventory, Expenses
+         * Credit: Payable to supplier.
+         */
+        
+        // Create JE
+        
+        $je = new \Application\Entity\FinJe();
+        $je->setCurrency($entity->getCurrency());
+        $je->setLocalCurrency($entity->getLocalCurrency());
+        $je->setExchangeRate(1);
+        
+        $je->setPostingDate($entity->getPostingDate());
+        $je->setDocumentDate($entity->getPostingDate());
+        $je->setPostingPeriod($entity->getPostingPeriod());
+        
+        $je->getDocType("OB");
+        $je->setCreatedBy($u);
+        $je->setCreatedOn($entity->getCreatedOn());
+        $je->setSysNumber($this->getControllerPlugin()->getDocNumber($je));
+        
+        $je->setSourceClass(get_class($entity));
+        $je->setSourceId($entity->getId());
+        $je->setSourceToken($entity->getToken());
+        
+        $this->doctrineEM->persist($je);
+        
+        $n = 0;
+       
+        foreach ($rows as $r) {
+            $n ++;
+            /** @var \Application\Entity\NmtProcureGrRow $r ; */
+            
+            // No need to create JE for ZERO value row.
+            
+            if ($r->getUnitPrice() > 0) {
+                
+                // Create JE Row - DEBIT
+                $je_row = new \Application\Entity\FinJeRow();
+                $je_row->setJe($je);
+                
+                $je_row->setGlAccount($r->getGlAccount());
+                $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+                $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+                
+                $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
+                $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate());
+                
+                $je_row->setJeDescription("Openning Balanace");
+                $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+                
+                $je_row->setCreatedBy($u);
+                $je_row->setCreatedOn($entity->getCreatedOn());
+                $this->doctrineEM->persist($je_row);
+            }
+        }
+        
+        if ($isFlush == True) {
+            $this->doctrineEM->flush();
+        }
+    }
+    
+    
 }

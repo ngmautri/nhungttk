@@ -90,6 +90,31 @@ class GrService extends AbstractService
             $r->setLastchangeOn($changeOn);
 
             if ($r->getItem() !== null) {
+                
+                /**
+                 *
+                 * @todo create serial number
+                 *       if item with Serial
+                 *       or Fixed Asset
+                 */
+                if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
+                    
+                    for ($i = 0; $i < $r->getQuantity(); $i ++) {
+                        
+                        // create new serial number
+                        $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
+                        
+                        $sn_entity->setItem($r->getItem());
+                        $sn_entity->setGrRow($r);
+                        $sn_entity->setIsActive(1);
+                        $sn_entity->setSysNumber($this->controllerPlugin->getDocNumber($sn_entity));
+                        $sn_entity->setCreatedBy($u);
+                        $sn_entity->setCreatedOn($changeOn);
+                        $sn_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                        $this->doctrineEM->persist($sn_entity);
+                    }
+                }
+                
 
                 if ($r->getItem()->getIsStocked() == 1) {
                     $criteria = array(
@@ -153,7 +178,6 @@ class GrService extends AbstractService
              * @todo: Do Accounting Posting
              */
             $this->jeService->postGR($entity, $gr_rows, $u, $this->controllerPlugin);
-
             $this->doctrineEM->flush();
 
             try {

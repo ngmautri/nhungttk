@@ -148,34 +148,7 @@ class GRfromPurchasing extends AbstractGRStrategy
 
             // created FIFO is needed
             if ($r->getItem() != null) {
-
-                /**
-                 *
-                 * @todo create serial number
-                 *       if item with Serial
-                 *       or Fixed Asset
-                 */
-                if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
-
-                    for ($i = 0; $i < $r->getQuantity(); $i ++) {
-
-                        // create new serial number
-                        $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
-
-                        $sn_entity->setItem($r->getItem());
-                        $sn_entity->setApRow($r->getInvoiceRow());
-                        $sn_entity->getGrRow($r->getGrRow());
-                        $sn_entity->setInventoryTrx($r);
-                        $sn_entity->setIsActive(1);
-                        $sn_entity->setSysNumber($this->contextService->getControllerPlugin()
-                            ->getDocNumber($sn_entity));
-                        $sn_entity->setCreatedBy($u);
-                        $sn_entity->setCreatedOn($createdOn);
-                        $sn_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-                        $this->contextService->getDoctrineEM()->persist($sn_entity);
-                    }
-                }
-
+              
                 if ($r->getItem()->getIsStocked() == 1) {
 
                     /**

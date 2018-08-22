@@ -65,19 +65,19 @@ abstract class AbstractService implements EventManagerAwareInterface
         return $this->eventManager;
     }
 
-    /**
-     * 
-     *  @return \Finance\Service\JEService
-     */
+   /**
+    * 
+    *  @return \Finance\Service\JEService
+    */
     public function getJeService()
     {
         return $this->jeService;
     }
 
-    /**
-     *
-     * @param mixed $jeService
-     */
+   /**
+    * 
+    *  @param \Finance\Service\JEService $jeService
+    */
     public function setJeService(\Finance\Service\JEService $jeService)
     {
         $this->jeService = $jeService;

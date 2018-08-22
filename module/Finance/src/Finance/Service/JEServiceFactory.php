@@ -24,6 +24,9 @@ class JEServiceFactory implements FactoryInterface {
 		
 		$service = new JEService();
 		
+		$sv = $container->get('ControllerPluginManager');
+		$service->setControllerPlugin($sv->get('NmtPlugin'));
+		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$service->setDoctrineEM($sv);
 		

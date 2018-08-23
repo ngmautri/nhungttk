@@ -89,7 +89,6 @@ class APInvoiceService extends AbstractService
             $r->setRowNumber($n);
             $this->doctrineEM->persist($r);
 
-
             $tTransaction = $r->getTransactionType();
             $rowPostingStrategy = \Procure\Model\Ap\APRowPostingFactory::getPostingStrategy($tTransaction);
 
@@ -194,8 +193,35 @@ class APInvoiceService extends AbstractService
             /** @var \Application\Entity\NmtProcurePoRow $l ; */
             $r = $l[0];
 
+            $gl_account = null;
+            $cost_center = null;
+            
+            if ($r->getItem() !== null) {
+
+                $criteria = array(
+                    'isActive' => 1,
+                    'id' => $r->getItem()->getItemGroup()
+                );
+                /** @var \Application\Entity\NmtInventoryItemGroup $item_group ; */
+                $item_group = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
+
+                if ($item_group != null) {
+
+                    if ($r->getItem()->getIsStocked() == 1) {
+                        $gl_account = $item_group->getInventoryAccount();                        
+                    }else{
+                        $gl_account = $item_group->getExpenseAccount();    
+                        $cost_center = $item_group->getCostCenter();
+                    }
+                }
+            }
+
             $n ++;
             $row_tmp = new FinVendorInvoiceRow();
+            
+            $row_tmp->setGlAccount($gl_account);
+            $row_tmp->setCostCenter($cost_center);
+            
             $row_tmp->setDocStatus($entity->getDocStatus());
 
             // Goods and Invoice receipt
@@ -290,7 +316,36 @@ class APInvoiceService extends AbstractService
             $r = $l[0];
 
             $n ++;
+            
+            $gl_account = null;
+            $cost_center = null;
+            
+            if ($r->getItem() !== null) {
+                
+                $criteria = array(
+                    'isActive' => 1,
+                    'id' => $r->getItem()->getItemGroup()
+                );
+                /** @var \Application\Entity\NmtInventoryItemGroup $item_group ; */
+                $item_group = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
+                
+                if ($item_group != null) {
+                    
+                    if ($r->getItem()->getIsStocked() == 1) {
+                        $gl_account = $item_group->getInventoryAccount();
+                    }else{
+                        $gl_account = $item_group->getExpenseAccount();
+                        $cost_center = $item_group->getCostCenter();
+                    }
+                }
+            }
+            
+            $n ++;
             $row_tmp = new FinVendorInvoiceRow();
+            
+            $row_tmp->setGlAccount($gl_account);
+            $row_tmp->setCostCenter($cost_center);
+    
             $row_tmp->setDocStatus($entity->getDocStatus());
             // $row_tmp->setTransactionType($entity->getTransactionStatus());
 

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemGroup
  *
- * @ORM\Table(name="nmt_inventory_item_group", indexes={@ORM\Index(name="nmt_inventory_item_group_FK1_idx", columns={"inventory_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK5_idx", columns={"revenue_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK3_idx", columns={"cogs_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK4_idx", columns={"allocation_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK6_idx", columns={"expense_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK2_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_inventory_item_group", indexes={@ORM\Index(name="nmt_inventory_item_group_FK1_idx", columns={"inventory_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK5_idx", columns={"revenue_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK3_idx", columns={"cogs_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK4_idx", columns={"allocation_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK6_idx", columns={"expense_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_group_FK7_idx", columns={"cost_center_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemGroup
@@ -115,6 +115,16 @@ class NmtInventoryItemGroup
      * })
      */
     private $expenseAccount;
+
+    /**
+     * @var \Application\Entity\FinCostCenter
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinCostCenter")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="cost_center_id", referencedColumnName="id")
+     * })
+     */
+    private $costCenter;
 
 
 
@@ -390,5 +400,29 @@ class NmtInventoryItemGroup
     public function getExpenseAccount()
     {
         return $this->expenseAccount;
+    }
+
+    /**
+     * Set costCenter
+     *
+     * @param \Application\Entity\FinCostCenter $costCenter
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setCostCenter(\Application\Entity\FinCostCenter $costCenter = null)
+    {
+        $this->costCenter = $costCenter;
+
+        return $this;
+    }
+
+    /**
+     * Get costCenter
+     *
+     * @return \Application\Entity\FinCostCenter
+     */
+    public function getCostCenter()
+    {
+        return $this->costCenter;
     }
 }

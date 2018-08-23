@@ -69,14 +69,8 @@ if (count($errors) > 0) {
 						<a class="btn btn-primary btn-sm" style="color: white"
 							onclick="confirmPost();" href="javascript:;"><i
 							class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
-						<a class="btn btn-default btn-sm" href="javascript:;"
-							onclick="refreshGird();"><i class="fa fa-refresh"
-							aria-hidden="true"></i>&nbsp;&nbsp;Refresh</a> 
-						<a class="btn btn-default btn-sm"
-							href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-							<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
-						</a>
-
+						
+						
 					</div>
 
 					<form id="Invoice_Posting_Form" class="form-horizontal"
@@ -276,6 +270,32 @@ if (count($errors) > 0) {
 								<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
 							</legend>
 							<div id="rows" class="collapse in">
+							
+							
+							<div style="font-size: 9pt">
+
+									<div class="dropdown">
+										<button
+											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+											title="" class="btn btn-default dropdown-toggle btn-sm"
+											type="button" id="dropdownMenu1" data-toggle="dropdown"
+											aria-haspopup="true" aria-expanded="true">
+											<i class="fa fa-download" aria-hidden="true"></i>&nbsp;&nbsp;<span
+												class="caret"></span>
+										</button>
+										<a
+											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+											title="<?php echo $this->translate("Refresh");?>"
+											class="btn btn-default btn-sm" href="javascript:;"
+											onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
+											aria-hidden="true"></i>&nbsp;
+										</a> <a <?php echo $this->translate("Full Screen");?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
+											onclick="showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i
+											class="fa fa-window-maximize" aria-hidden="true"></i></a>
+
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?> // </strong></span>
+
+					
 								<span class=""
 									style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
 						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
@@ -283,6 +303,24 @@ if (count($errors) > 0) {
                         &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
                         &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
 					</span>
+							
+					
+										<ul style="font-size: 9.5pt;" class="dropdown-menu"
+											aria-labelledby="dropdownMenu1">
+											<li><a class="btn btn-default btn-sm"
+							href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+							<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
+						</a>
+</li>
+										</ul>
+									</div>
+							
+							
+							
+							
+							
+								
+								
 								<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
 						
 						</fieldset>

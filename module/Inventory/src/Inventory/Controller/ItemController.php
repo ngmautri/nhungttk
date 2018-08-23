@@ -106,6 +106,11 @@ EOT;
     public function showAction()
     {
         $request = $this->getRequest();
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $item_group_list = $nmtPlugin->itemGroupList();
+        
 
         $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
@@ -142,6 +147,7 @@ EOT;
                 'category' => null,
                 'pictures' => $pictures,
                 'redirectUrl' => $redirectUrl,
+                'item_group_list'=>$item_group_list,
                 'total_picture' => $item['total_picture'],
                 'total_attachment' => $item['total_attachment'],
                 'total_pr_row' => $item['total_pr_row'],
@@ -162,6 +168,11 @@ EOT;
     {
         $request = $this->getRequest();
         $redirectUrl = null;
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $item_group_list = $nmtPlugin->itemGroupList();
+        
 
         // accepted only ajax request
         if (! $request->isXmlHttpRequest()) {
@@ -208,6 +219,7 @@ EOT;
                 'pictures' => $pictures,
                 'redirectUrl' => $redirectUrl,
                 'total_picture' => $item['total_picture'],
+                'item_group_list'=>$item_group_list,
                 'total_attachment' => $item['total_attachment'],
                 'total_pr_row' => $item['total_pr_row'],
                 'total_ap_row' => $item['total_ap_row'],

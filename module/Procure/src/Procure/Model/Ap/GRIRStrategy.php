@@ -100,9 +100,9 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                     $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
 
                     $sn_entity->setItem($r->getItem());
-                    $sn_entity->setApRow($r->getInvoiceRow());
+                    $sn_entity->setApRow($r);
                     $sn_entity->getGrRow($r->getGrRow());
-                    $sn_entity->setInventoryTrx($r);
+                    $sn_entity->setInventoryTrx();
                     $sn_entity->setIsActive(1);
                     $sn_entity->setSysNumber($this->contextService->getControllerPlugin()
                         ->getDocNumber($sn_entity));

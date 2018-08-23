@@ -311,7 +311,7 @@ if (count ( $errors ) > 0) {
         <label class="control-label col-sm-2" for="inputTag">Tax Rate:</label>
           <div class="col-sm-3">
         		<input tabindex="8" class="form-control input-sm" type="text" 
-        		id="tax_rate" name="taxRate" value="<?php echo (!$entity == null)? $entity->getTaxRate():"";?>">
+        		id="tax_rate" name="taxRate" value="<?php echo (!$entity == null)? $entity->getTaxRate():"0";?>">
           </div>
           <label class="control-label col-sm-2" for="inputTag">Tax Amount:</label>
           <div class="col-sm-3">

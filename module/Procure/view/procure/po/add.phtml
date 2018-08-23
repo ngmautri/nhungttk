@@ -177,6 +177,12 @@ if (count ( $errors ) > 0) {
 
 <script>
 
+
+$('#unit_price').bind('change', function() {
+	$('#exw_unit_price').val($('#unit_price').val());
+});
+
+
 $('#invoiceDate').bind('change', function() {
 	$('#postingDate').val($('#invoiceDate').val());
 	$('#grDate').val($('#invoiceDate').val());

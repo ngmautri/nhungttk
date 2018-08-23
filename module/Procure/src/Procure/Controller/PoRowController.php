@@ -291,6 +291,8 @@ class PoRowController extends AbstractActionController
         $entity->setIsActive(1);
         $entity->setConversionFactor(1);
         $entity->setUnit("each");
+        $entity->setTaxRate(0);
+        
 
         $viewModel = new ViewModel(array(
             'redirectUrl' => $redirectUrl,
@@ -530,7 +532,7 @@ class PoRowController extends AbstractActionController
 
                 $this->doctrineEM->flush();
 
-                $redirectUrl = "/procure/po/add1?token=" . $entity->getPo()->getToken() . "&entity_id=" . $entity->getPo()->getId();
+                $redirectUrl = "/procure/po/review?token=" . $entity->getPo()->getToken() . "&entity_id=" . $entity->getPo()->getId();
                 $this->flashMessenger()->addMessage('Row ' . $entity->getRowIdentifer() . ' is updated successfully!');
                 // $this->flashMessenger()->addMessage($redirectUrl);
                 return $this->redirect()->toUrl($redirectUrl);

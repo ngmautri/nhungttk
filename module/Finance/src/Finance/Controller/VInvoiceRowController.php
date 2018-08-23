@@ -38,7 +38,6 @@ class VInvoiceRowController extends AbstractActionController
         $currency_list = $nmtPlugin->currencyList();
         $gl_list = $nmtPlugin->glAccountList();
         $cost_center_list = $nmtPlugin->costCenterList();
-        
 
         $request = $this->getRequest();
 
@@ -400,7 +399,7 @@ class VInvoiceRowController extends AbstractActionController
     public function editAction()
     {
         $this->layout("Finance/layout-fullscreen");
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
@@ -439,199 +438,196 @@ class VInvoiceRowController extends AbstractActionController
                     'gl_list' => $gl_list,
                     'n' => $nTry
                 ));
+            }
 
-                // might need redirect
+            $oldEntity = clone ($entity);
+
+            $isActive = (int) $request->getPost('isActive');
+            $item_id = $request->getPost('item_id');
+            $pr_row_id = $request->getPost('pr_row_id');
+            $gl_account_id = $request->getPost('gl_account_id');
+            $cost_center_id = $request->getPost('cost_center_id');
+
+            $remarks = $request->getPost('remarks');
+
+            if ($isActive != 1) {
+                $isActive = 0;
+            }
+
+            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+            $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
+
+            $entity->setRemarks($remarks);
+            $entity->setIsActive($isActive);
+            $quantity = $request->getPost('quantity');
+            $unitPrice = $request->getPost('unitPrice');
+            $taxRate = $request->getPost('taxRate');
+
+            $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
+            if ($gl == null) {
+                $errors[] = $nmtPlugin->translate('G/L account can\'t be empty!');
+            } else {
+                $entity->setGlAccount($gl);
+            }
+
+            $entity->setCostCenter($costCenter);
+
+            // PR and be empty
+            if ($pr_row == null) {
+                // $errors[] = 'Item can\'t be empty!';
+            } else {
+                $entity->setPrRow($pr_row);
+            }
+
+            // Item cant be empty
+            if ($item == null) {
+                $errors[] = $nmtPlugin->translate('Item can\'t be empty. Please select item!');
+            } else {
+                $entity->setItem($item);
+            }
+
+            $n_validated = 0;
+            if ($quantity == null) {
+                $errors[] = $nmtPlugin->translate('Please  enter quantity!');
             } else {
 
-                $oldEntity = clone ($entity);
-
-                $isActive = (int) $request->getPost('isActive');
-                $item_id = $request->getPost('item_id');
-                $pr_row_id = $request->getPost('pr_row_id');
-                $gl_account_id = $request->getPost('gl_account_id');
-                $cost_center_id = $request->getPost('cost_center_id');
-
-                $remarks = $request->getPost('remarks');
-
-                if ($isActive != 1) {
-                    $isActive = 0;
-                }
-
-                $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-                $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-                $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
-
-                $entity->setRemarks($remarks);
-                $entity->setIsActive($isActive);
-                $quantity = $request->getPost('quantity');
-                $unitPrice = $request->getPost('unitPrice');
-                $taxRate = $request->getPost('taxRate');
-
-                $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
-                if ($gl == null) {
-                    $errors[] = $nmtPlugin->translate('G/L account can\'t be empty!');
+                if (! is_numeric($quantity)) {
+                    $errors[] = $nmtPlugin->translate('Quantity must be a number.');
                 } else {
-                    $entity->setGlAccount($gl);
-                }
-
-                $entity->setCostCenter($costCenter);
-
-                // PR and be empty
-                if ($pr_row == null) {
-                    // $errors[] = 'Item can\'t be empty!';
-                } else {
-                    $entity->setPrRow($pr_row);
-                }
-
-                // Item cant be empty
-                if ($item == null) {
-                    $errors[] = $nmtPlugin->translate('Item can\'t be empty. Please select item!');
-                } else {
-                    $entity->setItem($item);
-                }
-
-                $n_validated = 0;
-                if ($quantity == null) {
-                    $errors[] = $nmtPlugin->translate('Please  enter quantity!');
-                } else {
-
-                    if (! is_numeric($quantity)) {
-                        $errors[] = $nmtPlugin->translate('Quantity must be a number.');
-                    } else {
-                        if ($quantity <= 0) {
-                            $errors[] = $nmtPlugin->translate('Quantity must be greater than 0!');
-                        }
-                        $entity->setQuantity($quantity);
-                        $n_validated ++;
+                    if ($quantity <= 0) {
+                        $errors[] = $nmtPlugin->translate('Quantity must be greater than 0!');
                     }
+                    $entity->setQuantity($quantity);
+                    $n_validated ++;
                 }
+            }
 
-                if ($unitPrice !== null) {
-                    if (! is_numeric($unitPrice)) {
-                        $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
-                    } else {
-                        if ($unitPrice <= 0) {
-                            $errors[] = $nmtPlugin->translate('Price must be greate than 0!');
-                        }
-                        $entity->setUnitPrice($unitPrice);
-                        $n_validated ++;
+            if ($unitPrice !== null) {
+                if (! is_numeric($unitPrice)) {
+                    $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
+                } else {
+                    if ($unitPrice <= 0) {
+                        $errors[] = $nmtPlugin->translate('Price must be greate than 0!');
                     }
+                    $entity->setUnitPrice($unitPrice);
+                    $n_validated ++;
                 }
+            }
 
-                if ($n_validated == 2) {
-                    $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
-                    $entity->setNetAmount($netAmount);
-                }
+            if ($n_validated == 2) {
+                $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
+                $entity->setNetAmount($netAmount);
+            }
 
-                if ($taxRate !== null) {
-                    if (! is_numeric($taxRate)) {
-                        $errors[] = '$taxRate is not valid. It must be a number.';
-                    } else {
-                        if ($taxRate < 0) {
-                            $errors[] = '$taxRate must be greate than 0!';
-                        }
-                        $entity->setTaxRate($taxRate);
-                        $n_validated ++;
+            if ($taxRate !== null) {
+                if (! is_numeric($taxRate)) {
+                    $errors[] = '$taxRate is not valid. It must be a number.';
+                } else {
+                    if ($taxRate < 0) {
+                        $errors[] = '$taxRate must be greate than 0!';
                     }
+                    $entity->setTaxRate($taxRate);
+                    $n_validated ++;
                 }
+            }
 
-                if ($n_validated == 3) {
-                    $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                    $grossAmount = $entity->getNetAmount() + $taxAmount;
-                    $entity->setTaxAmount($taxAmount);
-                    $entity->setGrossAmount($grossAmount);
-                }
+            if ($n_validated == 3) {
+                $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
+                $grossAmount = $entity->getNetAmount() + $taxAmount;
+                $entity->setTaxAmount($taxAmount);
+                $entity->setGrossAmount($grossAmount);
+            }
 
-                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
-                if (count($changeArray) == 0) {
-                    $nTry ++;
-                    $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-                }
+            if (count($changeArray) == 0) {
+                $nTry ++;
+                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+            }
 
-                if ($nTry >= 3) {
-                    $errors[] = sprintf('Do you really want to edit "AP Row. %s"?', $entity->getRowIdentifer());
-                }
+            if ($nTry >= 3) {
+                $errors[] = sprintf('Do you really want to edit "AP Row. %s"?', $entity->getRowIdentifer());
+            }
 
-                if ($nTry == 5) {
-                    $m = sprintf('You might be not ready to edit AP Row (%s). Please try later!', $entity->getRowIdentifer());
-                    $this->flashMessenger()->addMessage($m);
-                    return $this->redirect()->toUrl($redirectUrl);
-                }
-
-                if (count($errors) > 0) {
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'entity' => $entity,
-                        'target' => $entity->getInvoice(),
-                        'currency_list' => $currency_list,
-                        'cost_center_list' => $cost_center_list,
-                        'gl_list' => $gl_list,
-
-                        'n' => $nTry
-                    ));
-                }
-
-                // NO ERROR
-                // ++++++++++++++++++++++++
-
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    "email" => $this->identity()
-                ));
-
-                $changeOn = new \DateTime();
-
-                $entity->setRevisionNo($entity->getRevisionNo() + 1);
-                $entity->setLastchangeBy($u);
-                $entity->setLastchangeOn($changeOn);
-
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-
-                $m = sprintf('[OK] A/P Invoice Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
-
-                // Trigger Change Log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
-                    'priority' => 7,
-                    'message' => $m,
-                    'objectId' => $entity->getId(),
-                    'objectToken' => $entity->getToken(),
-                    'changeArray' => $changeArray,
-                    'changeBy' => $u,
-                    'changeOn' => $changeOn,
-                    'revisionNumber' => $entity->getRevisionNo(),
-                    'changeDate' => $changeOn,
-                    'changeValidFrom' => $changeOn
-                ));
-
-                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-                    'priority' => \Zend\Log\Logger::INFO,
-                    'message' => $m,
-                    'createdBy' => $u,
-                    'createdOn' => $changeOn,
-                    'entity_id' => $entity->getId(),
-                    'entity_class' => get_class($entity),
-                    'entity_token' => $entity->getToken()
-                ));
-
+            if ($nTry == 5) {
+                $m = sprintf('You might be not ready to edit AP Row (%s). Please try later!', $entity->getRowIdentifer());
                 $this->flashMessenger()->addMessage($m);
-                $this->doctrineEM->flush();
-
-                /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
-                $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
-
-                $m = $res->updateDependencyAPRow($entity);
-
-                // $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getInvoice()->getToken() . "&entity_id=" . $entity->getInvoice()->getId();
                 return $this->redirect()->toUrl($redirectUrl);
             }
+
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $entity->getInvoice(),
+                    'currency_list' => $currency_list,
+                    'cost_center_list' => $cost_center_list,
+                    'gl_list' => $gl_list,
+
+                    'n' => $nTry
+                ));
+            }
+
+            // NO ERROR
+            // ++++++++++++++++++++++++
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+
+            $changeOn = new \DateTime();
+
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+
+            $m = sprintf('[OK] A/P Invoice Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
+
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+
+            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn,
+                'entity_id' => $entity->getId(),
+                'entity_class' => get_class($entity),
+                'entity_token' => $entity->getToken()
+            ));
+
+            $this->flashMessenger()->addMessage($m);
+            $this->doctrineEM->flush();
+
+            /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+
+            $m = $res->updateDependencyAPRow($entity);
+
+            // $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getInvoice()->getToken() . "&entity_id=" . $entity->getInvoice()->getId();
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO Post
         // ====================================
-        
+
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()
@@ -673,8 +669,10 @@ class VInvoiceRowController extends AbstractActionController
         }
     }
 
-    /**
-     */
+   /**
+    * 
+    *  @return \Zend\Http\Response
+    */
     public function alterAction()
     {
         $action = $this->params()->fromQuery('action');
@@ -846,8 +844,7 @@ class VInvoiceRowController extends AbstractActionController
                     } else {
                         $a_json_row["gl_account"] = "N/A";
                     }
-                    
-                    
+
                     if ($a->getCostCenter() !== null) {
                         $a_json_row["cost_center"] = $a->getCostCenter()->getCostCenterName();
                     } else {

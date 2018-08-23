@@ -47,12 +47,17 @@ if (count($errors) > 0) {
 }
 ?>
 
-<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
+		<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_DRAFT): ?>
 		<div style="position: relative; float: right;">
 						<a class="btn btn-primary btn-sm" style="color: white"
 							onclick="confirmPost();" href="javascript:;"><i
 							class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
 					</div>
+		<?php endif;?>
+		
+		<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_POSTED): ?>
+		<div style="position: relative; float: right;"><span style="color: black;font-size: 10pt" class="label label-info"><?php echo $this->translate('Posted');?></span>
+		</div>
 		<?php endif;?>
 		
 

@@ -1,0 +1,132 @@
+<?php
+$nid = \Application\Model\Constants::INVENTORY_HASH_ID;
+?>
+<hr>
+
+<a class="" href="/inventory/setting/index"><?php echo $this->translate('Setting');?></a>
+
+
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Item Group</a></li>
+	</ul>
+	<div id="general">
+
+		<a class="btn btn-default btn-sm"
+			href="<?php echo $this->baseUrl ?>/inventory/item-group/add"><small><i
+				class="glyphicon glyphicon-plus"> </i></small>&nbsp;New Item Group</a>
+
+
+
+		<hr>
+<?php
+
+if ($total_records <= 0) {
+
+    echo 'No record found!';
+} else {
+
+    if (! is_null($paginator)) {
+        echo 'Record ' . $paginator->minInPage . ' to ' . $paginator->maxInPage . ' | ' . $total_records . ' records found!';
+    } else {
+        echo $total_records . ' records found!';
+    }
+
+    ?>
+
+<table style="font-size: 9pt;" class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+					<td><b><?php echo $this->translate("Group Name");?></b></td>
+					<td><b><?php echo $this->translate("Revenue Account");?></b></td>
+					<td><b><?php echo $this->translate("Inventory Account");?></b></td>
+					<td><b><?php echo $this->translate("Expense Account");?></b></td>
+					<td><b><?php echo $this->translate("COGS Account");?></b></td>
+					<td><b><?php echo $this->translate("Created On");?></b></td>
+					<td><b><?php echo $this->translate("Description");?></b></td>
+					<td><b><?php echo $this->translate("Action");?></b></td>
+				</tr>
+			</thead>
+
+			<tbody>
+ 
+	 <?php
+
+    $count = 0;
+    foreach ($list as $a) :
+
+        /**@var \Application\Entity\NmtInventoryItemGroup $a ; */
+        $count ++;
+        ?>
+	 <tr>
+					<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
+					<td><?php echo $a->getGroupName(); ?></td>
+					<td><?php if($a->getRevenueAccount()!==null): echo $a->getRevenueAccount()->getAccountNumber(); endif; ?></td>
+					<td><?php if($a->getInventoryAccount()!==null): echo $a->getInventoryAccount()->getAccountNumber(); endif; ?></td>
+					<td><?php if($a->getExpenseAccount()!==null): echo $a->getExpenseAccount()->getAccountNumber(); endif; ?></td>
+					<td><?php if($a->getCogsAccount()!==null): echo $a->getCogsAccount()->getAccountNumber(); endif; ?></td>
+					<td><?php if($a->getCreatedOn()!==null): echo date_format($a->getCreatedOn(),"d-m-Y"); endif; ?></td>
+					<td><?php echo $a->getDescription();?></td>
+					<td>
+<a href="<?php echo $this->baseUrl ?>/inventory/item-group/edit?nid=<?php echo $nid;?>&token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $this->translate('Edit');?></a></td>
+
+					</td>
+				</tr>
+<?php endforeach; ?>
+
+ </tbody>
+		</table>
+	</div>
+</div>
+
+
+<?php
+
+    // ===============================
+    if (! is_null($paginator)) :
+
+        // change it only
+        $base = $this->baseUrl . '/inventory/item-group/list?is_active=' . $is_active . '&sort_by=' . $sort_by . '&sort=' . $sort;
+        $_connector_symbol = '&';
+
+        $last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+        $first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+
+        $p1 = ($paginator->page) - 1;
+        $p2 = ($paginator->page) + 1;
+
+        $prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+        $next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+
+        echo '<ul class="pagination pagination-sm">';
+
+        if ($paginator->page != 1 and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $first . '"> |< </a></li>';
+            echo '<li><a href="' . $prev . '"> < </a></li>';
+        }
+
+        for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
+endif;
+
+}
+// ===============================
+?>
+
+
+

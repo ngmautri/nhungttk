@@ -48,8 +48,8 @@
 				class="glyphicon glyphicon-picture"></span>&nbsp;(<?php echo $total_picture;?>)&nbsp;</a></li>
 		<li><a
 			href="<?php echo $this->baseUrl ?>/inventory/item-purchase/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Purchasing</a></li>
-		<li><a
-			href="<?php echo $this->baseUrl ?>/inventory/item-transaction/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Stock</a></li>
+	<li><a
+			href="<?php echo $this->baseUrl ?>/inventory/stock/summary?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Stock</a></li>
 		
 		<?php if(!$entity!==null):?>		
 		<?php if($entity->getMonitoredBy()==\Application\Model\Constants::ITEM_WITH_SERIAL_NO):?>
@@ -399,5 +399,13 @@ $( "#tabs1" ).tabs({
 	    },
 	   
 });
+
+$( "#tabs3" ).tabs({
+	beforeLoad:function(e,ui){
+		$( ui.panel ).html('<p>Loading...</p>');       
+	    },
+	   
+});
 $( "#tabs1" ).tabs( "option", "active", <?php echo $tab_idx; ?> );
+$( "#tabs3" ).tabs( "option", "active", 0 );
 </script>

@@ -189,13 +189,16 @@ return array(
             'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
             'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
             'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory',
+           
             'Inventory\Controller\OpeningBalance' => 'Inventory\Controller\OpeningBalanceControllerFactory',
             'Inventory\Controller\OpeningBalanceRow' => 'Inventory\Controller\OpeningBalanceRowControllerFactory',
             
+            'Inventory\Controller\Stock' => 'Inventory\Controller\StockControllerFactory',
+             
             'Inventory\Controller\Setting' => 'Inventory\Controller\SettingControllerFactory',
             
             'Inventory\Controller\ItemGroup' => 'Inventory\Controller\ItemGroupControllerFactory',
-           'Inventory\Controller\ItemAccounting' => 'Inventory\Controller\ItemAccountingControllerFactory',
+            'Inventory\Controller\ItemAccounting' => 'Inventory\Controller\ItemAccountingControllerFactory',
             
             
         )

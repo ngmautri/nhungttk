@@ -289,9 +289,14 @@ if (count($errors) > 0) {
 											class="btn btn-default btn-sm" href="javascript:;"
 											onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
 											aria-hidden="true"></i>&nbsp;
-										</a> <a <?php echo $this->translate("Full Screen");?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
+										</a> 
+										<a <?php echo $this->translate("Full Screen");?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
 											onclick="showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i
 											class="fa fa-window-maximize" aria-hidden="true"></i></a>
+											
+											<a title="<?php echo $this->translate("Journal entry preview");?>" style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
+											onclick="showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i
+											class="fa fa-eye" aria-hidden="true"></i></a>
 
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?> // </strong></span>
 

@@ -11,11 +11,11 @@
         ?>
       					
       					<hr>
-		<span style="color: gray; margin-left: 5pt"><?php echo $this->translate('Summary:'); ?></span>
+		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php echo $this->translate('Summary:'); ?></span>
 
 		<div class="alert alert-info" role="alert"
-			style="padding: 2px; margin: 5pt; font-size: 9.5pt">
-			<ul style="font-size: 9pt; margin: 0">
+			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.5pt">
+			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
 				<li><?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?></li>
 				<li>-----</li>
 
@@ -49,135 +49,20 @@
 				<div id="general" style="font-size: 9pt">
 					<!-- Tab1 -->
     	
-    	<?php
-    if (count($errors) > 0) {
-        echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
-
-        echo '<ul>';
-        foreach ($errors as $error) :
-            echo '<li>' . $error . '</li>';
-        endforeach
-        ;
-        echo '</ul>';
-        echo '</div>';
-    }
-    ?>
-    	
-    	
-    	<h4>
-						<strong>Purchase Order</strong>
-					</h4>
-
-					<form id="Create_Inv_Form" class="form-horizontal" action=""
-						method="post" enctype="multipart/form-data">
-						<input type="hidden" name="redirectUrl"
-							value="<?php echo $redirectUrl ?>" />
-						<fieldset>
-							<legend style="font-size: 9pt; color: gray;">
-								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a style="font-size: 9pt; color: gray;" href="#invoice_header"
-									class="" data-toggle="collapse">HEADER (<?php echo (!$target == null)? $target->getSysNumber():"";?> <?php echo $gross_amount;?>)</a>
-							</legend>
-
-							<div id="invoice_header" class="collapse">
-
-								<div class="form-group margin-bottom required">
-									<label class="control-label col-sm-2 ">Vendor:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											id="vendor_name_1" placeholder="Enter term to search vendor"
-											name="vendor_name"
-											value="<?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getVendorName();endif;endif;?>">
-
-										<input type="hidden" id="vendor_id" placeholder=""
-											name="vendor_id"
-											value="<?php if (!$target == null): if (!$target->getVendor() == null):echo $target->getVendor()->getId();endif;endif;?>">
-									</div>
-									<div class="col-sm-3">
-
-										<input
-											<?php if(!$target== null): echo ($target->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-											type="checkbox" name="isActive" value="1">&nbsp;Is
-										Active&nbsp;&nbsp;&nbsp;&nbsp;
-
-									</div>
-									<div class="col-sm-3">
-
-										<a target="blank" style="font-size: 9pt;"
-											href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
-											class="glyphicon glyphicon-new-window"></i></small>
-									</div>
-								</div>
-
-								<div class="form-group margin-bottom required">
-									<label class="control-label col-sm-2">Contract /PO:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="contractNo" name="contractNo"
-											value="<?php echo (!$target == null)? $target->getContractNo():"";?>">
-									</div>
-									<label class="control-label col-sm-2">Contract /PO Date:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
-											placeholder="" id="contractDate" name="contractDate"
-											value="<?php if(!$target == null): if ($target->getContractDate() !== null): echo date_format($target->getContractDate(),"Y-m-d"); endif; endif;?>">
-									</div>
-								</div>
-
-								<div class="form-group margin-bottom required">
-
-									<label class="control-label col-sm-2">Currency:</label>
-									<div class="col-sm-3">
-										<select name="currency_id" class="form-control">
-											<option value="">Select Currency</option>
-       	    							<?php
-                if ($currency_list !== null) :
-                    foreach ($currency_list as $curr) :
-                        if ($target !== null) :
-                            if ($target->getCurrency() !== null) :
-                                if ($target->getCurrency()->getCurrency() == $curr->getCurrency()) :
-                                    echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-                                else :
-                                    echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-                                endif;
-                            else :
-                                echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-                            endif;
-                        else :
-                            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
-                        endif;
-                    endforeach
-                    ;
-       	    							endif;
-
-                ?>
-       					</select>
-									</div>
-								</div>
-
-
-								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2">Description</label>
-									<div class="col-sm-8">
-										<input class="form-control input-sm" type="text"
-											placeholder="" name="remarks"
-											value="<?php echo (!$target == null)? $target->getRemarks():"";?>">
-									</div>
-								</div>
-								<br>
-								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2" for="inputTag"></label>
-									<div class="col-sm-3">
-										<a class="btn btn-default"
-											href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
-												class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
-									</div>
-								</div>
-							</div>
-						</fieldset>
-
-					</form>
-
+ 	<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+    
 					<form id="New_Invoice_Row" class="form-horizontal"
 						action="<?php echo $this->baseUrl ?>/procure/po-row/add"
 						method="post" enctype="multipart/form-data">
@@ -188,30 +73,19 @@
 						<input type="hidden" id="po_token" name="po_token"
 							value="<?php if (!$target == null): echo $target->getToken();endif;?>" />
 
-
-						<fieldset>
-							<legend style="font-size: 9pt; color: gray;">
-								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a style="font-size: 9pt; color: gray;" href="#new_row" class=""
-									data-toggle="collapse">NEW ROW:</a>
-							</legend>
-							<div id="new_row" class="collapse in">
-								<div class="form-group margin-bottom">
-									<label class="control-label col-sm-2"></label>
-									<div class="col-sm-3">
-										<input
-											<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-											type="checkbox" name="isActive" value="1">&nbsp;Is
-										Active&nbsp;&nbsp;&nbsp;&nbsp;
-									</div>
-								</div>
-
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2">Row Number: </label>
 									<div class="col-sm-1">
 										<input tabindex="0" class="form-control input-sm" type="text"
 											id="rowNumber" name="rowNumber"
 											value="<?php if($entity->getRowNumber()==null): echo ($max_row_number+1); else: echo $entity->getRowNumber(); endif;?>">
+									</div>
+									
+									<div class="col-sm-2">
+										<input
+											<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Is
+										Active&nbsp;&nbsp;&nbsp;&nbsp;
 									</div>
 								</div>
 
@@ -222,23 +96,32 @@
 											id="pr_item_name" placeholder="Select PR item"
 											name="pr_item_name" value=""> <input type="hidden"
 											id="pr_row_id" placeholder="" name="pr_row_id" value="">
+								
 
 										<div id="pr_row_url" style="display: none;"></div>
-
-										<div id="pr_row_detail" style="display: none;">
-											&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
-												onclick="showSelectedPrRow();">Detail </a> <br>&nbsp;
-										</div>
+			
 									</div>
+									
+									<div class="col-sm-1">
+										
+									<span title="<?php echo $this->translate("Line Detail");?>" id="pr_row_detail" style="display: none;">
+											&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
+												onclick="showSelectedPrRow();"><i style="color: navy"
+								class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
+										</span>
+										</div>
 
-									<div class="col-sm-3">
+									<div class="col-sm-2">
+										
 										<a tabindex="100" style="color: #0080ff;" href="javascript:;"
 											onclick="showJqueryDialog('Select PR Row','1000',$(window).height()-100, '/procure/pr-search/do1?target_id=pr_row_id&target_name=pr_item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
 											class="glyphicon glyphicon-folder-open"></i>
 										</a>
 									</div>
 
-									<div class="col-sm-3">
+									<div class="col-sm-2">
+										
+								
 										<a tabindex="101" target="_blank" style="font-size: 9pt;"
 											href="/procure/pr-row/all">PR Item List&nbsp;&nbsp;</a><small><i
 											class="glyphicon glyphicon-new-window"></i></small>
@@ -260,14 +143,20 @@
 
 										<div id="item_url" style="display: none;"></div>
 
-										<div id="item_detail" style="display: none;">
-											&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
-												onclick="showSelectedItem();">Detail </a> <br>&nbsp;
-										</div>
+										
 									</div>
-									<div class="col-sm-3">
-										<a style="color: #0080ff;" href="javascript:;"
-											onclick="showJqueryDialog('Select Item','1000',$(window).height()-100, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+									
+									
+									<div class="col-sm-1" style="margin: 0px">
+									<span title="<?php echo $this->translate("Item Detail");?>" id="item_detail" style="display: none;">
+											&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
+												onclick="showSelectedItem();"><i style="color: navy"
+								class="fa fa-info-circle fa-lg" aria-hidden="true"></i> </a> <br>
+										</span>
+									</div>
+									<div class="col-sm-2" style="margin: 0px">
+											<a style="color: #0080ff;" href="javascript:;"
+											onclick="showJqueryDialog('Select Item','1350',$(window).height()-50, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
 											class="glyphicon glyphicon-folder-open"></i>
 										</a>
 
@@ -326,8 +215,7 @@
 										<strong><?php if (!$target == null): echo $target->getCurrency()->getCurrency(); endif;?></strong>
 									</div>
 
-									<label class="control-label col-sm-1" for="inputTag">Exw Price
-										(info):</label>
+									<label class="control-label col-sm-1" for="inputTag">Exw Price (info):</label>
 									<div class="col-sm-3">
 										<input tabindex="7" class="form-control input-sm" type="text"
 											id="exw_unit_price" name="exwUnitPrice"
@@ -397,8 +285,7 @@
 									</div>
 								</div>
 
-								<hr>
-								<div class="form-group margin-bottom">
+								<div class="form-group margin-bottom" style="margin-top:10pt">
 									<label class="control-label col-sm-2" for="inputTag"></label>
 									<div class="col-sm-3">
 										<a tabindex="10" class="btn btn-default btn-sm"
@@ -414,16 +301,13 @@
     	 	  			<?php if($total_row>0):?>
     					<a tabindex="12" style="color: white;"
 											class="btn btn-primary btn-sm"
-											href="<?php echo $this->baseUrl ?>/procure/po/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><?php echo $this->translate("Review PO");?>&nbsp;<i
+											href="<?php echo $this->baseUrl ?>/procure/po/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><?php echo $this->translate("Review & Post");?>&nbsp;<i
 											class="fa fa-chevron-right" aria-hidden="true"></i></a>
     					<?php endif;?>				
     		
       	    </div>
 								</div>
-
-							</div>
-						</fieldset>
-					</form>
+			</form>
 
 
 				</div>

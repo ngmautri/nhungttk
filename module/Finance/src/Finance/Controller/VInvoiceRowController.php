@@ -306,7 +306,8 @@ class VInvoiceRowController extends AbstractActionController
         $entity->setIsActive(1);
         $entity->setConversionFactor(1);
         $entity->setUnit("each");
-
+        $entity->setTaxRate(0);
+        
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,

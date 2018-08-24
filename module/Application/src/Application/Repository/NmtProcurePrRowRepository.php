@@ -15,7 +15,6 @@ class NmtProcurePrRowRepository extends EntityRepository
 
     /** @var \Application\Entity\NmtProcurePrRow $e*/
     // @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
-    
     private $sql = "
 SELECT
 	nmt_procure_pr_row.*,
@@ -359,7 +358,7 @@ ON nmt_application_currency_last_purchasing.id = nmt_inventory_item_purchasing.c
 WHERE 1
 ";
 
-    private $sql3="
+    private $sql3 = "
 SELECT
     IFNULL(nmt_inventory_trx.total_received,0) AS total_received,
     
@@ -466,7 +465,7 @@ ON nmt_application_currency_last_purchasing.id = nmt_inventory_item_purchasing.c
 WHERE 1
  
 ";
-    
+
     /**
      *
      * @param string $pr_id
@@ -477,9 +476,9 @@ WHERE 1
     public function getPR($pr_id, $token)
     {
         $sql = $this->sql_get_pr;
-        
+
         $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token='" . $token . "' GROUP BY nmt_procure_pr.id";
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
@@ -487,25 +486,25 @@ WHERE 1
             $rsm->addScalarResult("total_row", "total_row");
             $rsm->addScalarResult("max_row_number", "max_row_number");
             $query = $this->_em->createNativeQuery($sql, $rsm);
-            
+
             $result = $query->getSingleResult();
             return $result;
         } catch (NoResultException $e) {
             return null;
         }
     }
-    
+
     /**
      *
-     *  @param int $item_id
-     *  @param string $item_token
-     *  @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
+     * @param int $item_id
+     * @param string $item_token
+     * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
      *
      */
-    public function getPrNew($item_id=null, $item_token=null)
+    public function getPrNew($item_id = null, $item_token = null)
     {
         // PR ROW
-        $join1_tmp="
+        $join1_tmp = "
 JOIN
 (
 SELECT 
@@ -521,13 +520,12 @@ LEFT JOIN nmt_procure_pr_row
 WHERE nmt_procure_pr.id = %s and nmt_procure_pr.token='%s'
 )
 AS nmt_procure_pr_row
-ON nmt_procure_pr.id=nmt_procure_pr_row.pr_id ";      
-        
-        
-        $join1 = sprintf($join1_tmp,$item_id,$item_token);
-        
-        //Attachment
-        $join2_tmp="
+ON nmt_procure_pr.id=nmt_procure_pr_row.pr_id ";
+
+        $join1 = sprintf($join1_tmp, $item_id, $item_token);
+
+        // Attachment
+        $join2_tmp = "
 JOIN
 (
 SELECT 
@@ -541,10 +539,10 @@ WHERE nmt_procure_pr.id = %s and nmt_procure_pr.token='%s'
 )
 AS nmt_application_attachment
 ON nmt_procure_pr.id=nmt_application_attachment.pr_id ";
-        
-        $join2 = sprintf($join2_tmp,$item_id,$item_token);
-        
-         $sql = "
+
+        $join2 = sprintf($join2_tmp, $item_id, $item_token);
+
+        $sql = "
 SELECT
 	nmt_procure_pr.*,
 	nmt_application_attachment.total_attachment,
@@ -553,10 +551,10 @@ SELECT
 	nmt_procure_pr_row.total_row,
 	nmt_procure_pr_row.max_row_number
 FROM nmt_procure_pr ";
-        
-        $sql =  $sql.$join1.$join2;
-        
-        //echo $sql;
+
+        $sql = $sql . $join1 . $join2;
+
+        // echo $sql;
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePr', 'nmt_procure_pr');
@@ -565,7 +563,7 @@ FROM nmt_procure_pr ";
             $rsm->addScalarResult("max_row_number", "max_row_number");
             $rsm->addScalarResult("total_attachment", "total_attachment");
             $rsm->addScalarResult("total_picture", "total_picture");
-      
+
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getSingleResult();
             return $result;
@@ -589,13 +587,13 @@ SELECT
 	nmt_procure_pr_row.*
 FROM nmt_procure_pr_row
 ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
-        
+
         if ($offset > 0) {
             $sql_tmp = $sql_tmp . " OFFSET " . $offset;
         }
-        
+
         $sql = sprintf($sql_tmp, $limit);
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
@@ -606,8 +604,6 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
             return null;
         }
     }
-    
-   
 
     /**
      *
@@ -618,17 +614,17 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     public function getAllPrRow($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql;
-        
+
         if ($is_active == 1) {
             $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
         }
-        
+
         if ($pr_year > 0) {
             $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
         }
-        
+
         if ($balance == 0) {
             $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) <= 0";
         }
@@ -638,7 +634,7 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
         if ($balance == - 1) {
             $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
         }
-        
+
         if ($sort_by == "itemName") {
             $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
         } elseif ($sort_by == "prNumber") {
@@ -652,16 +648,16 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
         } elseif ($sort_by == "balance") {
             $sql = $sql . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
         }
-        
+
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }
-        
+
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
         $sql = $sql . ";";
-        
+
         $stmt = $this->_em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -676,17 +672,17 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     public function getAllPrRow1($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql2;
-        
+
         if ($is_active == 1) {
             $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
         }
-        
+
         if ($pr_year > 0) {
             $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
         }
-        
+
         if ($balance == 0) {
             $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) <= 0";
         }
@@ -696,59 +692,59 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
         if ($balance == - 1) {
             $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
         }
-        
+
         switch ($sort_by) {
             case "itemName":
                 $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
                 break;
-            
+
             case "prNumber":
                 $sql = $sql . " ORDER BY nmt_procure_pr.pr_number " . $sort;
                 break;
-            
+
             case "vendorName":
                 $sql = $sql . " ORDER BY IFNULL(nmt_bp_vendor_last.vendor_name,nmt_bp_vendor_last_purchasing.vendor_name) " . $sort;
                 break;
-            
+
             case "currency":
                 $sql = $sql . " ORDER BY IFNULL(nmt_application_currency_last.currency,nmt_application_currency_last_purchasing.currency) " . $sort;
                 break;
-            
+
             case "unitPrice":
                 $sql = $sql . " ORDER BY IFNULL(nmt_inventory_trx_last.vendor_unit_price,nmt_inventory_item_purchasing.vendor_unit_price) " . $sort;
                 break;
-            
+
             case "balance":
                 $sql = $sql . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
                 break;
         }
-        
+
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }
-        
+
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
         $sql = $sql . ";";
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-            
+
             $rsm->addScalarResult("total_received", "total_received");
             $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
             $rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
-            
+
             $rsm->addScalarResult("po_quantity_final", "po_quantity_final");
             $rsm->addScalarResult("po_quantity_draft", "po_quantity_draft");
             $rsm->addScalarResult("ap_quantity_final", "ap_quantity_final");
             $rsm->addScalarResult("ap_quantity_draft", "ap_quantity_draft");
-            
+
             $rsm->addScalarResult("last_vendor_name", "last_vendor_name");
             $rsm->addScalarResult("last_vendor_unit_price", "last_vendor_unit_price");
             $rsm->addScalarResult("last_currency", "last_currency");
-            
+
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;
@@ -765,25 +761,25 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
      * @return mixed
      */
     public function getTotalPrRow1($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
-    
+
     {
         $sql = "SELECT count(*) as total_row FROM nmt_procure_pr_row Where 1 ";
-        
+
         $sql = $this->sql2;
-        
+
         if ($is_active == 1) {
             $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
         }
-        
+
         if ($pr_year > 0) {
             $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
         }
-        
+
         // IMPORTANT
         $sql = $sql . " GROUP BY nmt_procure_pr_row.id";
-        
+
         if ($balance == 0) {
             $sql = $sql . " HAVING (nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END)) <= 0";
         }
@@ -793,7 +789,7 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
         if ($balance == - 1) {
             $sql = $sql . " HAVING (nmt_procure_pr_row.quantity - SUM(CASE WHEN nmt_inventory_trx.flow='IN' THEN  nmt_inventory_trx.quantity ELSE 0 END)) < 0";
         }
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryItem', 'nmt_inventory_item');
@@ -815,9 +811,9 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     public function getPrRow($pr_id, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql;
-        
+
         $sql = $sql . " AND nmt_procure_pr_row.is_active=1 AND nmt_procure_pr_row.pr_id =" . $pr_id;
-        
+
         if ($balance == 0) {
             $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) <= 0";
         }
@@ -827,7 +823,7 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
         if ($balance == - 1) {
             $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
         }
-        
+
         switch ($sort_by) {
             case "itemName":
                 $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
@@ -845,17 +841,17 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
                 $sql = $sql . " ORDER BY nmt_procure_pr_row.row_number " . $sort;
                 break;
         }
-        
+
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }
-        
+
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
-        
+
         $sql = $sql . ";";
-        
+
         $stmt = $this->_em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -869,41 +865,36 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
      */
     public function getPrRow1($pr_id, $pr_token, $is_active = 1, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
-          $sql= sprintf( $this->sql3,
-            $pr_id,
-            $pr_id,
-            $pr_id);
-        
-        
+        $sql = sprintf($this->sql3, $pr_id, $pr_id, $pr_id);
+
         if ($is_active == 1) {
             $sql = $sql . " AND nmt_procure_pr_row.is_active = 1 ";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND nmt_procure_pr_row.is_active = 0)";
         }
-        
-        $sql = $sql . sprintf(" AND nmt_procure_pr.id =%s AND nmt_procure_pr.token ='%s'",
-            $pr_id,$pr_token);
-        
+
+        $sql = $sql . sprintf(" AND nmt_procure_pr.id =%s AND nmt_procure_pr.token ='%s'", $pr_id, $pr_token);
+
         $sql = $sql . ";";
-        //echo $$sql;
-        
+        // echo $$sql;
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
-            
+
             $rsm->addScalarResult("total_received", "total_received");
             $rsm->addScalarResult("confirmed_free_balance", "confirmed_free_balance");
-            
+
             $rsm->addScalarResult("confirmed_balance", "confirmed_balance");
             $rsm->addScalarResult("po_quantity_final", "po_quantity_final");
             $rsm->addScalarResult("po_quantity_draft", "po_quantity_draft");
             $rsm->addScalarResult("ap_quantity_final", "ap_quantity_final");
             $rsm->addScalarResult("ap_quantity_draft", "ap_quantity_draft");
-            
+
             $rsm->addScalarResult("last_vendor_name", "last_vendor_name");
             $rsm->addScalarResult("last_vendor_unit_price", "last_vendor_unit_price");
             $rsm->addScalarResult("last_currency", "last_currency");
-            
+
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
             return $result;
@@ -921,32 +912,32 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     public function getPrList($row_number = 1, $pr_year = 0, $is_active = null, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql1;
-        
+
         if ($pr_year > 0) {
             $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
         }
-        
+
         if ($row_number == 1) {
             $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0) > 0";
         } elseif ($row_number == 0) {
             $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0) = 0";
         }
-        
+
         if ($is_active == 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active=  1";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND nmt_procure_pr.is_active = 0";
         }
-        
+
         // Group
-        
+
         // fullfiled
         if ($balance == 0) {
             $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0)	<=ifnull(nmt_procure_pr_row.row_completed, 0)";
         } elseif ($balance == 1) {
             $sql = $sql . " AND ifnull(nmt_procure_pr_row.total_row, 0)	> ifnull(nmt_procure_pr_row.row_completed, 0)";
         }
-        
+
         if ($sort_by == "prNumber") {
             $sql = $sql . " ORDER BY nmt_procure_pr.pr_number " . $sort;
         } elseif ($sort_by == "createdOn") {
@@ -956,17 +947,17 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
         } elseif ($sort_by == "submittedOn") {
             $sql = $sql . " ORDER BY nmt_procure_pr.submitted_on " . $sort;
         }
-        
+
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }
-        
+
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
-        
+
         $sql = $sql . ";";
-        
+
         $stmt = $this->_em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -980,10 +971,10 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     public function getProjectItem($project_id)
     {
         $sql = $this->sql_project_item;
-        
+
         $sql = $sql . " AND nmt_procure_pr_row.project_id=" . $project_id;
         $sql = $sql . ";";
-        
+
         $stmt = $this->_em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -1001,17 +992,17 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     public function downloadAllPrRows($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql;
-        
+
         if ($is_active == 1) {
             $sql = $sql . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
         }
-        
+
         if ($pr_year > 0) {
             $sql = $sql . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
         }
-        
+
         if ($balance == 0) {
             $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) <= 0";
         }
@@ -1021,7 +1012,7 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
         if ($balance == - 1) {
             $sql = $sql . " AND (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) < 0";
         }
-        
+
         switch ($sort_by) {
             case "itemName":
                 $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
@@ -1042,16 +1033,16 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
                 $sql = $sql . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
                 break;
         }
-        
+
         if ($limit > 0) {
             $sql = $sql . " LIMIT " . $limit;
         }
-        
+
         if ($offset > 0) {
             $sql = $sql . " OFFSET " . $offset;
         }
         $sql = $sql . ";";
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
@@ -1085,9 +1076,9 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     public function downloadPrRows($pr_id, $token)
     {
         $sql = $this->sql;
-        
+
         $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token='" . $token . "'";
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
@@ -1108,7 +1099,7 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
             $rsm->addScalarResult("processing_quantity", "processing_quantity");
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
-            
+
             return $result;
         } catch (NoResultException $e) {
             return null;
@@ -1122,9 +1113,9 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     public function getPrRowV1($pr_id, $token)
     {
         $sql = $this->sql;
-        
+
         $sql = $sql . " AND nmt_procure_pr.id =" . $pr_id . " AND nmt_procure_pr.token='" . $token . "'";
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
@@ -1157,10 +1148,10 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
     public function getPrOfItem($item_id, $token)
     {
         $sql = $this->sql;
-        
+
         $sql = $sql . " AND nmt_inventory_item.id =" . $item_id . " AND nmt_inventory_item.token='" . $token . "'";
         $sql = $sql . " ORDER BY nmt_procure_pr.submitted_on DESC ";
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
@@ -1185,5 +1176,83 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
             return null;
         }
     }
+
+    //
+
+    /**
+     *
+     * @return array|NULL
+     */
+    public function getPrOfItem1($item_id, $token)
+    {
+        $sql = \Application\Repository\SQL\NmtProcurePrRowRepositorySQL::PR_ROW_SQL;
+        $sql_tmp = ' AND nmt_procure_pr_row.item_id=' . $item_id;
+
+        $sql = sprintf($sql, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp);
+        // echo $sql;
+
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $rsm->addScalarResult("pr_qty", "pr_qty");
+            
+            $rsm->addScalarResult("po_qty", "po_qty");
+            $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
+
+            $rsm->addScalarResult("gr_qty", "gr_qty");
+            $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
+            
+            $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
+            $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
+        
+            $rsm->addScalarResult("ap_qty", "ap_qty");
+            $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
+
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    /**
+     *
+     * @return array|NULL
+     */
+    public function getPrRow2($pr_id, $token)
+    {
+        $sql = \Application\Repository\SQL\NmtProcurePrRowRepositorySQL::PR_ROW_SQL;
+        $sql_tmp = ' AND nmt_procure_pr_row.pr_id=' . $pr_id;
+        
+        $sql = sprintf($sql, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp);
+        // echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+            $rsm->addScalarResult("pr_qty", "pr_qty");
+            
+            $rsm->addScalarResult("po_qty", "po_qty");
+            $rsm->addScalarResult("posted_po_qty", "posted_po_qty");
+            
+            $rsm->addScalarResult("gr_qty", "gr_qty");
+            $rsm->addScalarResult("posted_gr_qty", "posted_gr_qty");
+            
+            $rsm->addScalarResult("stock_gr_qty", "stock_gr_qty");
+            $rsm->addScalarResult("posted_stock_gr_qty", "posted_stock_gr_qty");
+            
+            $rsm->addScalarResult("ap_qty", "ap_qty");
+            $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    
 }
 

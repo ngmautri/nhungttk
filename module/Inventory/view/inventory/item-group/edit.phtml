@@ -27,7 +27,7 @@ if (count($errors) > 0) {
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 				
-					<input type="hidden" name="redirectUrl"
+				<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 				<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
 				<input type="hidden" name="token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
@@ -189,7 +189,40 @@ if (count($errors) > 0) {
 						</div>
 
 					</div>
+	<div class="form-group margin-bottom">
+			
+								<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
+							<div class="col-sm-3">
+								<select name="cost_center_id" class="form-control input-sm">
+									<option value=""><?php echo $this->translate("Select Cost Center");?></option>
+   	    							<?php
+            if ($cost_center_list !== null) :
+                foreach ($cost_center_list as $cc) :
 
+                    /**@var \Application\Entity\FinCostCenter $cc ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getCostCenter() !== null) :
+                            if ($entity->getCostCenter()->getId() == $cc->getId()) :
+                                echo '<option selected value="' . $cc->getId() . '">' . $cc->getCostCenterName() . '</option>';
+                            else :
+                                echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getCostCenterName() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>
+					
+					</div>
 					<div class="form-group margin-bottom">
 						<label class="control-label col-sm-2">Remarks:</label>
 						<div class="col-sm-8">

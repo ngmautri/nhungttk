@@ -1,0 +1,121 @@
+<?php if (count($rows)==0): ?>
+
+<h5>no thing found!</h5>
+
+<?php else: ?>
+
+<h4 style="color:graytext;"><?php echo $this->translate("Purchase Request");?>:</h4>
+
+
+<div style="color: gray;font-size: 9pt;" id="total_ordered"></div>
+<div style="color: gray;font-size: 9pt;" id="total_received"></div>
+
+<div style="font-size: 14pt; font-weight: trong" id="total_balance"></div>
+
+<table id = "mytable28" style="font-size: 9pt;" class="table table-bordered table-striped table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Pr No.</b></td>
+			<td><b>Pr No.</b></td>
+			<td><b>Pr Date</b></td>
+			<td><b>Unit</b></td>
+			<td><b>Ordered Q'ty</b></td>
+			<td><b><?php echo $this->translate("PO Qty");?></b></td>
+			<td><b><?php echo $this->translate("Posted PO Qty");?></b></td>
+			<td><b><?php echo $this->translate("GR Qty");?></b></td>
+			<td><b><?php echo $this->translate("Stock GR QTy");?></b></td>
+			<td><b><?php echo $this->translate("Balance Qty");?></b></td>
+			<td><b><?php echo $this->translate("Balance Qty");?></b></td>
+			<td><b><?php echo $this->translate("AP Qty");?></b></td>
+			<td><b><?php echo $this->translate("Posted AP Qty");?></b></td>
+			<td><b><?php echo $this->translate("GR Status");?></b></td>
+		
+			<td><b>Action</b></td>
+		</tr>
+		<tr style="font-weight: bold;">
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>[1]</td>
+			<td>[1.1]</td>
+			<td>[1.2]</td>
+			<td>[2]</td>
+			<td>[3]</td>
+			<td>[4] = [1]-[2]</td>
+			<td>[5] = [1]-[3]</td>
+			<td>[6]</td>
+			<td>[7]</td>
+			<td>[8]</td>
+			<td><b></b></td>
+		</tr>
+	</thead>
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	$total_ordered = 0;
+	$total_received = 0;
+	$total_balance = 0;
+	
+	foreach ( $rows as $r ) :
+		$count ++;
+		/**@var \Application\Entity\NmtProcurePrRow $a ;*/		
+		$a = $r[0];
+		$total_ordered =  $total_ordered + $a->getQuantity();
+		$total_received =  $total_received + $r['gr_qty'];
+		$total_balance =  $total_balance + $r['stock_gr_qty'];
+			
+		?>
+	 <tr>
+	 <td><?php echo $count;?></td>
+	 		<td><a href="/procure/pr/show?entity_id=<?php echo $a->getPr()->getId();?>&token=<?php echo $a->getPr()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getPr()->getPrAutoNumber());?></a></td>
+			<td><?php echo $this->escapeHtml($a->getPr()->getPrNumber());?></td>
+			<td><?php if(!$a->getPr()->getCreatedOn()==null): echo date_format ( $a->getPr()->getSubmittedOn(), "d/m/y");endif;?> </td>
+				<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
+		
+			<td><?php echo $a->getQuantity();?></td>
+			<td><?php echo $r['po_qty'];?></td>		
+			<td><?php echo $r['posted_po_qty'];?></td>		
+			<td><?php echo $r['gr_qty'];?></td>
+			<td><?php echo $r['stock_gr_qty'];?></td>	
+			<td><?php echo $a->getQuantity()-$r['gr_qty'];?></td>
+			<td><?php echo $a->getQuantity()-$r['stock_gr_qty'];?></td>	
+			<td><?php echo $r['ap_qty'];?></td>
+			<td><?php echo $r['posted_ap_qty'];?></td>
+			<td>
+			
+	<?php if($a->getQuantity()-$r['gr_qty'] <=0 or $a->getQuantity()-$r['stock_gr_qty']<=0):
+	   echo $this->translate("fullly received.");
+	endif;
+	?>		
+			
+			</td>
+			
+			<td>
+			</td>
+			
+		</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<script type="text/javascript">
+$('#total_ordered').text("<?php echo "Ordered Q'ty: " . $total_ordered; ?>");
+$('#total_received').text("<?php echo "Received Q'ty: ". $total_received; ?>");
+<?php if($total_balance>0): ?>
+$('#total_balance').html('<?php echo '<span class="label label-danger"> Balance Qty: ' . $total_balance .'<br></div>'; ?>');
+<?php else: ?>
+$('#total_balance').html("<?php echo "Balance Q'ty: " . $total_balance; ?>");
+<?php
+endif;
+?>
+
+</script>
+
+<?php endif; ?>
+	

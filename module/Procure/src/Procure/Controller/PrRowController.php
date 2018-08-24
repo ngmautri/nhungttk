@@ -1213,6 +1213,8 @@ class PrRowController extends AbstractActionController
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
 
         $list = $res->getPrRow1($target_id, $token, $is_active, $balance, $sort_by, $sort, 0, 0);
+        //$list = $res->getPrRow2($target_id, $token);
+        
         $total_records = 0;
 
         if (count($list) > 0) {
@@ -1315,6 +1317,157 @@ class PrRowController extends AbstractActionController
         $a_json_final['totalRecords'] = $total_records;
         // $a_json_final ['curPage'] = $pq_curPage;
 
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_final));
+        return $response;
+    }
+    
+    /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function gird2Action()
+    {
+        if (isset($_GET['sort_by'])) {
+            $sort_by = $_GET['sort_by'];
+        } else {
+            $sort_by = "itemName";
+        }
+        
+        if (isset($_GET['sort'])) {
+            $sort = $_GET['sort'];
+        } else {
+            $sort = "ASC";
+        }
+        
+        if (isset($_GET['balance'])) {
+            
+            $balance = $_GET['balance'];
+        } else {
+            $balance = 1;
+        }
+        
+        if (isset($_GET['is_active'])) {
+            $is_active = (int) $_GET['is_active'];
+        } else {
+            $is_active = 1;
+        }
+        
+        $target_id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+        
+        $a_json_final = array();
+        $a_json = array();
+        $a_json_row = array();
+        $escaper = new Escaper();
+        
+        /** @var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $list = $res->getPrRow2($target_id, $token);
+        
+        $total_records = 0;
+        
+        if (count($list) > 0) {
+            
+            $total_records = count($list);
+            
+            $count = 0;
+            foreach ($list as $a) {
+                
+                /**@var \Application\Entity\NmtProcurePrRow $pr_row_entity ;*/
+                $pr_row_entity = $a[0];
+                
+                $item_detail = "/inventory/item/show1?token=" . $pr_row_entity->getItem()->getToken() . "&checksum=" . $pr_row_entity->getItem()->getChecksum() . "&entity_id=" . $pr_row_entity->getItem()->getId();
+                if ($pr_row_entity->getItem()->getItemName() !== null) {
+                    $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
+                        ->getItemName()) . "','1250',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                } else {
+                    $onclick = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1250',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                }
+                
+                $count ++;
+                $a_json_row["row_number"] = $pr_row_entity->getRowNumber();
+                $a_json_row["row_identifer"] = $pr_row_entity->getRowIdentifer();
+                
+                $a_json_row["pr_number"] = $pr_row_entity->getPr()->getPrNumber() . '<a style="" target="blank"  title="' . $pr_row_entity->getPr()->getPrNumber() . '" href="/procure/pr/show?token=' . $pr_row_entity->getPr()->getToken() . '&entity_id=' . $pr_row_entity->getPr()->getId() . '&checksum=' . $pr_row_entity->getPr()->getChecksum() . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
+                
+                if ($pr_row_entity->getPr()->getSubmittedOn() !== null) {
+                    $a_json_row['pr_submitted_on'] = date_format($pr_row_entity->getPr()->getSubmittedOn(), 'd-m-y');
+                    // $a_json_row ['pr_submitted_on'] = $a ['submitted_on'];
+                } else {
+                    $a_json_row['pr_submitted_on'] = '';
+                }
+                
+                $a_json_row["row_id"] = $pr_row_entity->getId();
+                $a_json_row["row_token"] = $pr_row_entity->getToken();
+                $a_json_row["row_checksum"] = $pr_row_entity->getChecksum();
+                
+                $a_json_row["item_sku"] = '<span title="' . $pr_row_entity->getItem()->getItemSku() . '">' . substr($pr_row_entity->getItem()->getItemSku(), 0, 5) . '</span>';
+                
+                if (strlen($pr_row_entity->getItem()->getItemName()) < 35) {
+                    $a_json_row["item_name"] = $pr_row_entity->getItem()->getItemName() . '<a style="cursor:pointer; color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
+                } else {
+                    $a_json_row["item_name"] = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
+                }
+                
+                $a_json_row["quantity"] = $pr_row_entity->getQuantity();
+                $a_json_row["confirmed_balance"] = $a['confirmed_balance'];
+                
+                if (strlen($a['last_vendor_name']) < 10) {
+                    $a_json_row["vendor_name"] = $a['last_vendor_name'];
+                } else {
+                    $a_json_row["vendor_name"] = '<span title="' . $a['last_vendor_name'] . '">' . substr($a['last_vendor_name'], 0, 8) . '...</span>';
+                }
+                
+                if ($a['last_vendor_unit_price'] !== null) {
+                    $a_json_row["vendor_unit_price"] = number_format($a['last_vendor_unit_price'], 2);
+                } else {
+                    $a_json_row["vendor_unit_price"] = 0;
+                }
+                
+                $a_json_row["currency"] = $a['last_currency'];
+                
+                $received_detail = "/inventory/item-transaction/pr-row?pr_row_id=" . $pr_row_entity->getId();
+                
+                if ($pr_row_entity->getItem()->getItemName() !== null) {
+                    $onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
+                        ->getItemName()) . "','1350',$(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
+                } else {
+                    $onclick1 = "showJqueryDialog('Receiving of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1350', $(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
+                }
+                
+                if ($a['total_received'] > 0) {
+                    $a_json_row["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . $a['total_received'] . '</a>';
+                } else {
+                    $a_json_row["total_received"] = "";
+                }
+                $a_json_row["buying"] = $a['po_quantity_draft'] + $a['po_quantity_final'] + $a['ap_quantity_draft'];
+                
+                if ($pr_row_entity->getProject() !== null) {
+                    $a_json_row["project_id"] = $pr_row_entity->getProject()->getId();
+                } else {
+                    $a_json_row["project_id"] = "";
+                }
+                
+                if (strlen($pr_row_entity->getRemarks()) < 20) {
+                    $a_json_row["remarks"] = $pr_row_entity->getRemarks();
+                } else {
+                    $a_json_row["remarks"] = '<span title="' . $pr_row_entity->getRemarks() . '">' . substr($pr_row_entity->getRemarks(), 0, 15) . '...</span>';
+                }
+                $a_json_row["fa_remarks"] = $pr_row_entity->getFaRemarks();
+                $a_json_row["receipt_date"] = "";
+                $a_json_row["vendor"] = "";
+                $a_json_row["vendor_id"] = "";
+                
+                $a_json[] = $a_json_row;
+            }
+        }
+        
+        $a_json_final['data'] = $a_json;
+        $a_json_final['totalRecords'] = $total_records;
+        // $a_json_final ['curPage'] = $pq_curPage;
+        
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setContent(json_encode($a_json_final));
@@ -2185,9 +2338,9 @@ class PrRowController extends AbstractActionController
     {
         $request = $this->getRequest();
         // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
+       /*  if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
-        }
+        } */
         $this->layout("layout/user/ajax");
 
         $item_id = (int) $this->params()->fromQuery('item_id');
@@ -2195,11 +2348,15 @@ class PrRowController extends AbstractActionController
 
         /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
-        $rows = $res->getPrOfItem($item_id, $token);
+        $rows = $res->getPrOfItem1($item_id, $token);
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'rows' => $rows
         ));
+        
+        $viewModel->setTemplate("procure/pr-row/pr-of-item1");
+        return $viewModel;
+        
     }
 
     /**

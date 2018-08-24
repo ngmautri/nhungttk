@@ -685,13 +685,21 @@ class PoRowController extends AbstractActionController
                         }
                     }
 
-                    $a_json_row["confirmed_gr"] = $r['posted_gr_qty'];
                     $a_json_row["draft_gr"] = $r['draft_gr_qty'];
 
                     $url = sprintf("/procure/po-row/gr-of?token=%s&entity_id=%s", $a->getToken(), $a->getId());
                     $onclick1 = sprintf("showJqueryDialog('Goods Receipt ','1350',$(window).height()-50,'%s','j_loaded_data', true);", $url);
                     $received_detail = sprintf('<a title="click for goods receipt!" style="color: #337ab7;" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', $onclick1);
-                    $a_json_row["open_gr"] = $r['open_gr_qty'] . $received_detail;
+                    
+                    
+                    if($r['posted_gr_qty']>0){
+                    $a_json_row["confirmed_gr"] = $r['posted_gr_qty']. $received_detail;
+                    }else{
+                        $a_json_row["confirmed_gr"] = $r['posted_gr_qty'];
+                        
+                    }
+                    
+                    $a_json_row["open_gr"] = $r['open_gr_qty'] ;
 
                     $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->getItem()->getToken(), $a->getItem()->getChecksum(), $a->getItem()->getId());
 

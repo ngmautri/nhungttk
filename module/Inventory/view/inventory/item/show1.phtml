@@ -1,4 +1,4 @@
-<?php                /** @var \Application\Entity\NmtInventoryItem $entity ; */ ?>
+<?php /**@var \Application\Entity\NmtInventoryItem $entity ;*/?>
 
 <div style="position: relative; float: right;">
 	<img alt="" height=""
@@ -40,7 +40,7 @@
 </div>
 
 
-<div id="tabs1" style="font-size: 9.5pt">
+<div id="tabs1" style="font-size: 9pt">
 	<ul>
 		<li><a href="#general">Item</a></li>
 		<li><a title="<?php echo $this->translate("Picture");?>"
@@ -48,7 +48,7 @@
 				class="glyphicon glyphicon-picture"></span>&nbsp;(<?php echo $total_picture;?>)&nbsp;</a></li>
 		<li><a
 			href="<?php echo $this->baseUrl ?>/inventory/item-purchase/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Purchasing</a></li>
-	<li><a
+		<li><a
 			href="<?php echo $this->baseUrl ?>/inventory/stock/summary?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Stock</a></li>
 		
 		<?php if(!$entity!==null):?>		
@@ -69,8 +69,9 @@
 
 		<li><a title="<?php echo $this->translate("Purchase Request");?>"
 			href="<?php echo $this->baseUrl ?>/procure/pr-row/pr-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PR (<?php echo $total_pr_row;?>)</a></li>
-			  
-			  <li ><a title="<?php echo $this->translate("Quotation");?>" href="<?php echo $this->baseUrl ?>/procure/quote-row/qo-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">QO (<?php echo $total_qo_row;?>)</a></li>
+
+		<li><a title="<?php echo $this->translate("Quotation");?>"
+			href="<?php echo $this->baseUrl ?>/procure/quote-row/qo-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">QO (<?php echo $total_qo_row;?>)</a></li>
 
 		<li><a title="<?php echo $this->translate("Purchase Order");?>"
 			href="<?php echo $this->baseUrl ?>/procure/po-row/po-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PO (<?php echo $total_po_row;?>)</a></li>
@@ -82,22 +83,15 @@
 
 
 	</ul>
-		<div id="accounting" style="font-size: 9pt">
-			- G/L Account <br>
-			- Inventory UoM <br>
-			- Min Quantity <br>
-			- Max	 Quantity <br>
-			
-	
-	</div>
-	<div id="general" style="font-size: 9pt">
+	<div id="accounting" style="font-size: 9pt">
+		- G/L Account <br> - Inventory UoM <br> - Min Quantity <br> - Max
+		Quantity <br>
 
-		<div style="position: relative; float: right;">
-			<img style="cursor: pointer;" title="click for more detail!"
-				onclick="$('#tabs').tabs({ active: 1});" class="img-rounded"
-				width="150" height="150"
-				src="/inventory/item/get-picture?&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>" />
-		</div>
+
+	</div>
+
+
+	<div id="general">
 
 		<form id="create_item_form" class="form-horizontal"
 			action="<?php echo $this->baseUrl ?>/inventory/item/add"
@@ -105,46 +99,44 @@
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 
-
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2">Item ID</label>
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="itemSku"
-						value="<?php echo (!$entity == null)? $entity->getItemSku():"";?>">
-					<input class="form-control input-sm" type="text" placeholder=""
-						name="itemSku1"
+						value="<?php echo (!$entity == null)? $entity->getItemSku():"xx";?>">
+					<input class="form-control input-sm" type="text"
+						placeholder="optional sku" name="itemSku1"
 						value="<?php echo (!$entity == null)? $entity->getItemSku1():"";?>">
 
-					<input class="form-control input-sm" type="text" placeholder=""
-						name="itemSku2"
-						value="<?php echo (!$entity == null)? $entity->getItemSku2():"";?>">
-
 				</div>
-
-				<div class="col-sm-3">
+				<div class="col-sm-4">
 					<input
 						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 					<input
 						<?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isStocked" value="1">&nbsp;Stocked
-					&nbsp;&nbsp;<br> <input
-						<?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?>
-						type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset
 					&nbsp;&nbsp; <input
-						<?php if(!$entity == null): echo ($entity->getIsSparepart()=="1")?"checked":""; else: echo ""; endif;?>
-						type="checkbox" name="isSparepart" value="1">&nbsp;Spare
-					Part&nbsp;&nbsp; <br> <input
 						<?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isPurchased" value="1">&nbsp;Purchased
-					&nbsp;&nbsp; <input
+					&nbsp;&nbsp;<br> <input
 						<?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?>
 						type="checkbox" name="isSaleItem" value="1">&nbsp;For Sale
-					&nbsp;&nbsp;
+					&nbsp;&nbsp; <input
+						<?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?>
+						type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset <input
+						<?php if(!$entity == null): echo ($entity->getIsSparepart()=="1")?"checked":""; else: echo ""; endif;?>
+						type="checkbox" name="isSparePart" value="1">&nbsp;Spare Part
+
 				</div>
 
+				<div class="col-sm-3">
+					<img alt="" height=""
+						src="/inventory/item/barcode?barcode=22011979">
+				</div>
 			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt;">
 
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2">Item Name</label>
@@ -154,10 +146,6 @@
 						value="<?php echo (!$entity == null)? $entity->getItemName():"";?>">
 				</div>
 
-			</div>
-
-			<div class="form-group margin-bottom required">
-
 				<label class="control-label col-sm-2">Item Foreign Name</label>
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
@@ -165,7 +153,6 @@
 						value="<?php echo (!$entity == null)? $entity->getItemNameForeign():"";?>">
 				</div>
 			</div>
-
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2">Item Description</label>
 				<div class="col-sm-8">
@@ -174,14 +161,8 @@
 						value="<?php echo (!$entity == null)? $entity->getItemDescription():"";?>">
 				</div>
 			</div>
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2">Barcode</label>
-				<div class="col-sm-3">
-					<input class="form-control input-sm" type="text" placeholder=""
-						name="barcode"
-						value="<?php echo (!$entity == null)? $entity->getBarcode():"";?>">
 
-				</div>
+			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2">Keyworks</label>
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
@@ -190,6 +171,143 @@
 				</div>
 			</div>
 
+
+			<div class="form-group margin-bottom">
+
+				<label class="control-label col-sm-2">Inventory No.</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="assetLabel"
+						value="<?php echo (!$entity == null)? $entity->getAssetLabel():"";?>">
+				</div>
+
+				<label class="control-label col-sm-2">Barcode</label>
+				<div class="col-sm-3">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="barcode"
+						value="<?php echo (!$entity == null)? $entity->getBarcode():"";?>">
+
+				</div>
+
+			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt">
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Standard Unit");?></label>
+				<div class="col-sm-3">
+
+					<select name="uom_id" id="uom_id" class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select standard unit");?></option>
+   	    	<?php
+            if ($uom_list !== null) :
+                foreach ($uom_list as $uom) :
+
+                    /**@var \Application\Entity\NmtApplicationUom $uom ; */
+                    $selected = '';
+                    if ($entity !== null) :
+                        if ($entity->getStandardUom() !== null) :
+                            if ($entity->getStandardUom()->getId() == $uom->getId()) :
+                                $selected = 'selected';
+                            endif;
+                         endif;
+                    endif;
+                    echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
+                endforeach;
+   	    	endif;
+
+            ?>
+   					</select>
+
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Purchase Unit");?>:</label>
+				<div class="col-sm-3">
+
+					<select name="purchase_uom_id" id="purchase_uom_id"
+						class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select purchase unit");?></option>
+   	    							<?php
+   	    							if ($uom_list !== null) :
+   	    							foreach ($uom_list as $uom) :
+   	    							
+   	    							/**@var \Application\Entity\NmtApplicationUom $uom ; */
+   	    							$selected = '';
+   	    							if ($entity !== null) :
+   	    							if ($entity->getPurchaseUom() !== null) :
+   	    							if ($entity->getPurchaseUom()->getId() == $uom->getId()) :
+   	    							$selected = 'selected';
+   	    							endif;
+   	    							endif;
+   	    							endif;
+   	    							echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
+   	    							endforeach;
+   	    							endif;
+
+            ?>
+   					</select>
+
+				</div>
+
+
+				<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
+				<div class="col-sm-1">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="purchaseUomConvertFactor"
+						id="purchase_uom_convert_factor_id"
+						value="<?php echo (!$entity == null)? $entity->getPurchaseUomConvertFactor():"";?>">
+				</div>
+
+				<div class="col-sm-3">
+					<span style="color: graytext;" id="purchase_uom_convert_text"></span>
+				</div>
+			</div>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Sales Unit");?>:</label>
+				<div class="col-sm-3">
+
+					<select name="sales_uom_id" id="sales_uom_id"
+						class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select Sales Unit");?></option>
+   	    							<?php
+   	    							if ($uom_list !== null) :
+   	    							foreach ($uom_list as $uom) :
+   	    							
+   	    							/**@var \Application\Entity\NmtApplicationUom $uom ; */
+   	    							$selected = '';
+   	    							if ($entity !== null) :
+   	    							if ($entity->getSalesUom() !== null) :
+   	    							if ($entity->getSalesUom()->getId() == $uom->getId()) :
+   	    							$selected = 'selected';
+   	    							endif;
+   	    							endif;
+   	    							endif;
+   	    							echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
+   	    							endforeach;
+   	    							endif;
+
+            ?>
+   					</select>
+
+				</div>
+
+
+				<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
+				<div class="col-sm-1">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="salesUomConvertFactor"
+						id="sales_uom_convert_factor_id"
+						value="<?php echo (!$entity == null)? $entity->getSalesUomConvertFactor():"";?>">
+
+
+				</div>
+				<div class="col-sm-3">
+					<span style="color: graytext;" id="sales_uom_convert_text"></span>
+				</div>
+			</div>
+
+			<hr style="margin: 5pt 1pt 5pt 1pt;">
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2">Item Type</label>
 				<div class="col-sm-3">
@@ -205,46 +323,6 @@
 							value="SOFTWARE">Software</option>
 					</select>
 				</div>
-
-				<label class="control-label col-sm-2">Measurement</label>
-				<div class="col-sm-3">
-					<input disabled class="form-control input-sm" type="text"
-						id="standard_uom_name" placeholder="Please select standard unit"
-						name="item_uom_name"
-						value="<?php if($entity !== null):if($entity->getStandardUom()!==null):echo $entity->getStandardUom()->getUomCode() . " - ". $entity->getStandardUom()->getUomName();endif;endif;?>">
-					<input type="hidden" class="form-control input-sm"
-						id="standard_uom_id" name="standard_uom_id"
-						value="<?php if($entity !== null):if($entity->getStandardUom()!==null):echo $entity->getStandardUom()->getId();endif;endif;?>">
-				</div>
-				<!-- 		
-<a style="color: #0080ff;" href="javascript:;"
-	onclick="showBootstrapDialog('Select Unit of Measurement','/application/uom/list1','loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
-</a>
- -->
-
-				<a style="color: #0080ff;" href="javascript:;"
-					onclick="showJqueryDialog('Select Unit of Measurement','450','500', '/application/uom/list1','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-					class="glyphicon glyphicon-folder-open"></i>
-				</a>
-
-			</div>
-
-			<div class="form-group margin-bottom required">
-				<label class="control-label col-sm-2">Monitored by:</label>
-				<div class="col-sm-3">
-					<select class="form-control input-sm" name="monitoredBy">
-						<option value="">NONE</option>
-						<option
-							<?php if(!$entity == null): echo ($entity->getMonitoredBy()=="SN")?"selected":""; endif;?>
-							value="SN">Serial Number</option>
-						<option
-							<?php if(!$entity == null): echo ($entity->getMonitoredBy()=="B")?"selected":""; endif;?>
-							value="B">Batch Number</option>
-					</select>
-				</div>
-			</div>
-			
-			<div class="form-group margin-bottom required">
 
 				<label class="control-label col-sm-2"><?php echo $this->translate("Item Group");?>:</label>
 				<div class="col-sm-3">
@@ -276,7 +354,22 @@
             ?>
    					</select>
 				</div>
+			</div>
+
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Monitored by:</label>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="monitoredBy">
+						<option value="">NONE</option>
+						<option
+							<?php if(!$entity == null): echo ($entity->getMonitoredBy()=="SN")?"selected":""; endif;?>
+							value="SN">Serial Number</option>
+						<option
+							<?php if(!$entity == null): echo ($entity->getMonitoredBy()=="B")?"selected":""; endif;?>
+							value="B">Batch Number</option>
+					</select>
 				</div>
+			</div>
 
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2">Item Category</label>
@@ -327,6 +420,7 @@
 						value="<?php echo (!$entity == null)? $entity->getLocation():"";?>">
 				</div>
 			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt">
 
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2">Manufacturer</label>
@@ -370,7 +464,7 @@
 					<input name="localAvailabiliy"
 						<?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()=="1")?"checked":""; else: echo ""; endif;?>
 						type="checkbox" value="1">&nbsp;Local Availability
-					<div style="color: gray; padding-top: 10pt; font-size: 8pt"><?php if(!$entity == null): echo ($entity->getCreatedOn() !== null)?'Created date: ' . date_format($entity->getCreatedOn(),"Y/m/d H:i:s"):""; endif;?></div>
+		<div style="color: gray; padding-top: 10pt; font-size: 8pt"><?php if(!$entity == null): echo ($entity->getCreatedOn() !== null)?'Created date: ' . date_format($entity->getCreatedOn(),"Y/m/d H:i:s"):""; endif;?></div>
 					<div style="color: gray; padding-top: 2pt; font-size: 8pt"><?php if(!$entity == null): echo  ($entity->getLastChangeOn() !== null)?'Revision# '. $entity->getRevisionNo(). ' - Last Change: ' . date_format($entity->getLastChangeOn(),"Y/m/d H:i:s"):""; endif;?></div>
 
 				</div>
@@ -378,11 +472,10 @@
 				<label class="control-label col-sm-2">Remarks</label>
 				<div class="col-sm-3">
 					<textarea class="form-control input-sm" type="text" rows="5"
-						placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarksText():"";?></textarea>
+						placeholder="" name="remarksText" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarksText():"";?></textarea>
 				</div>
-
-
 			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt">
 
 		</form>
 	</div>
@@ -393,19 +486,25 @@
 
 <script type="text/javascript">
 $("#create_item_form :input").attr("disabled", "disabled");
-$( "#tabs1" ).tabs({
-	beforeLoad:function(e,ui){
-		$( ui.panel ).html('<p>Loading...</p>');       
-	    },
-	   
-});
 
-$( "#tabs3" ).tabs({
-	beforeLoad:function(e,ui){
-		$( ui.panel ).html('<p>Loading...</p>');       
-	    },
-	   
-});
-$( "#tabs1" ).tabs( "option", "active", <?php echo $tab_idx; ?> );
-$( "#tabs3" ).tabs( "option", "active", 0 );
+	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+   	$('#sales_uom_convert_text').text($( "#sales_uom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+
+   	$( "#tabs1" ).tabs({
+   		beforeLoad:function(e,ui){
+   			$( ui.panel ).html('<p>Loading...</p>');       
+   		    },
+   		   
+   	});
+
+   	$( "#tabs3" ).tabs({
+   		beforeLoad:function(e,ui){
+   			$( ui.panel ).html('<p>Loading...</p>');       
+   		    },
+   		   
+   	});
+   	$( "#tabs1" ).tabs( "option", "active", <?php echo $tab_idx; ?> );
+   	$( "#tabs3" ).tabs( "option", "active", 0 );
 </script>
+
+

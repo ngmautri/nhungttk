@@ -33,8 +33,6 @@ use Zend\Mail\Transport\Smtp as SmtpTransport;
 class ItemController extends AbstractActionController
 {
 
-    const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
-
     protected $doctrineEM;
 
     protected $itemSearchService;
@@ -106,11 +104,11 @@ EOT;
     public function showAction()
     {
         $request = $this->getRequest();
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $item_group_list = $nmtPlugin->itemGroupList();
-        
+        $uom_list = $nmtPlugin->uomList();
 
         $redirectUrl = null;
         if ($request->getHeader('Referer') == null) {
@@ -147,7 +145,9 @@ EOT;
                 'category' => null,
                 'pictures' => $pictures,
                 'redirectUrl' => $redirectUrl,
-                'item_group_list'=>$item_group_list,
+                'item_group_list' => $item_group_list,
+                'uom_list' => $uom_list,
+
                 'total_picture' => $item['total_picture'],
                 'total_attachment' => $item['total_attachment'],
                 'total_pr_row' => $item['total_pr_row'],
@@ -168,11 +168,11 @@ EOT;
     {
         $request = $this->getRequest();
         $redirectUrl = null;
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $item_group_list = $nmtPlugin->itemGroupList();
-        
+        $uom_list = $nmtPlugin->uomList();
 
         // accepted only ajax request
         if (! $request->isXmlHttpRequest()) {
@@ -219,7 +219,9 @@ EOT;
                 'pictures' => $pictures,
                 'redirectUrl' => $redirectUrl,
                 'total_picture' => $item['total_picture'],
-                'item_group_list'=>$item_group_list,
+                'item_group_list' => $item_group_list,
+                'uom_list' => $uom_list,
+
                 'total_attachment' => $item['total_attachment'],
                 'total_pr_row' => $item['total_pr_row'],
                 'total_ap_row' => $item['total_ap_row'],
@@ -234,6 +236,47 @@ EOT;
 
     /**
      *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function getItemAction()
+    {
+        $id = $this->params()->fromQuery('id');
+
+        /**@var \Application\Entity\NmtInventoryItem $item ;*/        
+        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy(array(
+            "id" => $id
+        ));
+
+        $a_json_row = array();
+
+        if ($item != null) {
+            $a_json_row["id"] = $item->getId();
+            $a_json_row["token"] = $item->getToken();
+            $uom_code = '';
+            if($item->getStandardUom()!=null){
+                $uom_code = $item->getStandardUom()->getUomCode();
+            }
+                
+            $a_json_row["uom_code"] = $uom_code;
+            
+            $purchase_uom_code = '';
+            if($item->getPurchaseUom()!=null){
+                $purchase_uom_code = $item->getPurchaseUom()->getUomCode();
+            }
+            
+            $a_json_row["purchase_uom_code"] = $purchase_uom_code;
+            
+            $a_json_row["purchase_uom_convert_factor"] = $item->getPurchaseUomConvertFactor();            
+         }
+        // var_dump($a_json);
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_row));
+        return $response;
+    }
+
+    /**
+     *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function addAction()
@@ -244,6 +287,7 @@ EOT;
         $nmtPlugin = $this->Nmtplugin();
         $item_group_list = $nmtPlugin->itemGroupList();
         $gl_list = $nmtPlugin->glAccountList();
+        $uom_list = $nmtPlugin->uomList();
 
         // Is Posing
         // =============================
@@ -271,7 +315,13 @@ EOT;
 
             $item_category_id = $request->getPost('item_category_id');
             $department_id = $request->getPost('department_id');
-            $standard_uom_id = $request->getPost('standard_uom_id');
+
+            $uom_id = (int) $request->getPost('uom_id');
+            $purchase_uom_id = (int) $request->getPost('purchase_uom_id');
+            $sales_uom_id = (int) $request->getPost('sales_uom_id');
+
+            $purchaseUomConvertFactor = $request->getPost('purchaseUomConvertFactor');
+            $salesUomConvertFactor = $request->getPost('salesUomConvertFactor');
 
             $leadTime = $request->getPost('leadTime');
             $assetLabel = $request->getPost('assetLabel');
@@ -283,7 +333,7 @@ EOT;
             $isSparepart = (int) $request->getPost('isSparepart');
             $isStocked = (int) $request->getPost('isStocked');
             $item_group_id = (int) $request->getPost('item_group_id');
-            
+
             $manufacturer = $request->getPost('manufacturer');
             $manufacturerCatalog = $request->getPost('manufacturerCatalog');
             $manufacturerCode = $request->getPost('manufacturerCode');
@@ -368,21 +418,72 @@ EOT;
             // $entity->setOrigin($origin);
             // $entity->setSerialNumber($serialNumber);
 
-            if ($standard_uom_id === '' or $standard_uom_id === null) {
+            if ($uom_id == 0 or $uom_id == null) {
                 $errors[] = 'Please give standard measurement!';
             } else {
-                $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $standard_uom_id);
+                $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $uom_id);
+
                 if ($uom !== null) {
                     $entity->setStandardUom($uom);
+                } else {
+                    $errors[] = 'Please give standard measurement!';
                 }
             }
-            
+
+            $n_validated = 0;
+            if ($purchase_uom_id != 0 or $purchase_uom_id != null) {
+
+                $purchase_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $purchase_uom_id);
+
+                if ($purchase_uom !== null) {
+                    $entity->setPurchaseUom($purchase_uom);
+                    $n_validated ++;
+                }
+            }
+
+            if ($purchaseUomConvertFactor != null) {
+
+                if (! is_numeric($purchaseUomConvertFactor)) {
+                    $errors[] = $nmtPlugin->translate('Please give conversion factor');
+                } else {
+
+                    if ($purchaseUomConvertFactor <= 0) {
+                        $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
+                    } else {
+                        $entity->setPurchaseUomConvertFactor($purchaseUomConvertFactor);
+                    }
+                }
+            }
+
+            $n_validated = 0;
+            if ($sales_uom_id != 0 or $sales_uom_id != null) {
+
+                $sales_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $sales_uom_id);
+
+                if ($sales_uom !== null) {
+                    $entity->setSalesUom($sales_uom);
+                    $n_validated ++;
+                }
+            }
+
+            if ($salesUomConvertFactor != null) {
+                if (! is_numeric($salesUomConvertFactor)) {
+                    $errors[] = $nmtPlugin->translate('Please give conversion factor');
+                } else {
+
+                    if ($salesUomConvertFactor <= 0) {
+                        $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
+                    } else {
+                        $entity->setSalesUomConvertFactor($salesUomConvertFactor);
+                    }
+                }
+            }
+
             $item_group = null;
             if ($item_group_id > 0) {
                 $item_group = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->find($item_group_id);
                 $entity->setItemGroup($item_group);
             }
-            
 
             $department = null;
             if ($department_id > 0) {
@@ -414,7 +515,8 @@ EOT;
                     'entity' => $entity,
                     'department' => $department,
                     'category' => $category,
-                    'item_group_list' => $item_group_list
+                    'item_group_list' => $item_group_list,
+                    'uom_list' => $uom_list
                 ));
             }
 
@@ -435,7 +537,7 @@ EOT;
 
                 $entity->setCreatedOn(new \DateTime());
                 $entity->setCreatedBy($u);
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                 $this->doctrineEM->persist($entity);
                 $this->doctrineEM->flush();
                 $new_id = $entity->getId();
@@ -500,7 +602,8 @@ EOT;
                     'entity' => $entity,
                     'department' => $department,
                     'category' => $category,
-                    'item_group_list' => $item_group_list
+                    'item_group_list' => $item_group_list,
+                    'uom_list' => $uom_list
                 ));
             }
         }
@@ -522,7 +625,8 @@ EOT;
             'entity' => null,
             'department' => null,
             'category' => null,
-            'item_group_list' => $item_group_list
+            'item_group_list' => $item_group_list,
+            'uom_list' => $uom_list
         ));
     }
 
@@ -532,13 +636,12 @@ EOT;
      */
     public function editAction()
     {
-        
         $request = $this->getRequest();
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $item_group_list = $nmtPlugin->itemGroupList();
         $gl_list = $nmtPlugin->glAccountList();
-        
+        $uom_list = $nmtPlugin->uomList();
 
         if ($request->isPost()) {
 
@@ -566,8 +669,8 @@ EOT;
                     'department' => null,
                     'category' => null,
                     'n' => $nTry,
-                    'item_group_list' => $item_group_list
-                    
+                    'item_group_list' => $item_group_list,
+                    'uom_list' => $uom_list
                 ));
 
                 // might need redirect
@@ -594,7 +697,13 @@ EOT;
 
                 $item_category_id = $request->getPost('item_category_id');
                 $department_id = $request->getPost('department_id');
-                $standard_uom_id = $request->getPost('standard_uom_id');
+
+                $uom_id = (int) $request->getPost('uom_id');
+                $purchase_uom_id = (int) $request->getPost('purchase_uom_id');
+                $sales_uom_id = (int) $request->getPost('sales_uom_id');
+
+                $purchaseUomConvertFactor = $request->getPost('purchaseUomConvertFactor');
+                $salesUomConvertFactor = $request->getPost('salesUomConvertFactor');
 
                 $leadTime = $request->getPost('leadTime');
 
@@ -690,21 +799,72 @@ EOT;
                 // $entity->setOrigin($origin);
                 // $entity->setSerialNumber($serialNumber);
 
-                if ($standard_uom_id === '' or $standard_uom_id === null) {
+                if ($uom_id == 0 or $uom_id == null) {
                     $errors[] = 'Please give standard measurement!';
                 } else {
-                    $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $standard_uom_id);
+                    $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $uom_id);
+
                     if ($uom !== null) {
                         $entity->setStandardUom($uom);
+                    } else {
+                        $errors[] = 'Please give standard measurement!';
                     }
                 }
-                
+
+                $n_validated = 0;
+                if ($purchase_uom_id != 0 or $purchase_uom_id != null) {
+
+                    $purchase_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $purchase_uom_id);
+
+                    if ($purchase_uom !== null) {
+                        $entity->setPurchaseUom($purchase_uom);
+                        $n_validated ++;
+                    }
+                }
+
+                if ($purchaseUomConvertFactor != null) {
+
+                    if (! is_numeric($purchaseUomConvertFactor)) {
+                        $errors[] = $nmtPlugin->translate('Please give conversion factor');
+                    } else {
+
+                        if ($purchaseUomConvertFactor <= 0) {
+                            $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
+                        } else {
+                            $entity->setPurchaseUomConvertFactor($purchaseUomConvertFactor);
+                        }
+                    }
+                }
+
+                $n_validated = 0;
+                if ($sales_uom_id != 0 or $sales_uom_id != null) {
+
+                    $sales_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $sales_uom_id);
+
+                    if ($sales_uom !== null) {
+                        $entity->setSalesUom($sales_uom);
+                        $n_validated ++;
+                    }
+                }
+
+                if ($salesUomConvertFactor != null) {
+                    if (! is_numeric($salesUomConvertFactor)) {
+                        $errors[] = $nmtPlugin->translate('Please give conversion factor');
+                    } else {
+
+                        if ($salesUomConvertFactor <= 0) {
+                            $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
+                        } else {
+                            $entity->setSalesUomConvertFactor($salesUomConvertFactor);
+                        }
+                    }
+                }
+
                 $item_group = null;
                 if ($item_group_id > 0) {
                     $item_group = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->find($item_group_id);
                     $entity->setItemGroup($item_group);
                 }
-                
 
                 $department = null;
                 if ($department_id > 0) {
@@ -756,8 +916,8 @@ EOT;
                         'department' => $department,
                         'category' => $category,
                         'n' => $nTry,
-                        'item_group_list' => $item_group_list
-                        
+                        'item_group_list' => $item_group_list,
+                        'uom_list' => $uom_list
                     ));
                 }
 
@@ -847,8 +1007,8 @@ EOT;
                         'department' => $department,
                         'category' => $category,
                         'n' => $nTry,
-                        'item_group_list' => $item_group_list
-                        
+                        'item_group_list' => $item_group_list,
+                        'uom_list' => $uom_list
                     ));
                 }
             }
@@ -885,7 +1045,8 @@ EOT;
                 'category' => null,
                 'department' => null,
                 'n' => 0,
-                'item_group_list' => $item_group_list
+                'item_group_list' => $item_group_list,
+                'uom_list' => $uom_list
             ));
         }
         return $this->redirect()->toRoute('access_denied');
@@ -1341,7 +1502,7 @@ EOT;
 
                 if (count($ck) == 0) {
                     try {
-                        $name_part1 = Rand::getString(6, self::CHAR_LIST, true) . "_" . Rand::getString(10, self::CHAR_LIST, true);
+                        $name_part1 = Rand::getString(6, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true);
                         $name = md5($id . $checksum . uniqid(microtime())) . '_' . $name_part1 . '.' . $ext;
 
                         $folder_relative = $name[0] . $name[1] . DIRECTORY_SEPARATOR . $name[2] . $name[3] . DIRECTORY_SEPARATOR . $name[4] . $name[5];
@@ -1383,7 +1544,7 @@ EOT;
                             "email" => $this->identity()
                         ));
 
-                        $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                        $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
                         $entity->setCreatedBy($u);
                         $entity->setCreatedOn(new \DateTime());
 
@@ -1544,7 +1705,7 @@ EOT;
         if (count($list) > 0) {
             foreach ($list as $entity) {
                 $entity->setChecksum(md5(uniqid("item_" . $entity->getId()) . microtime()));
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             }
         }
 
@@ -1698,7 +1859,7 @@ EOT;
                  *
                  * @todo ONLY TOKEN
                  */
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             }
         }
 

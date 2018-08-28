@@ -14,8 +14,8 @@
         ?>
   					
   		<div class="alert alert-info" role="alert"
-			style="padding: 1px; font-size: 9pt;  margin: 5px 5px 1px 5pt">
-			<ul style="font-size: 9pt;padding-left: 15px;">
+			style="padding: 1px; font-size: 9pt; margin: 5px 5px 1px 5pt">
+			<ul style="font-size: 9pt; padding-left: 15px;">
 				<li><?php if(!$target == null): echo $target->getPrName();endif;?></li>
 				<li>#<?php if(!$target == null): echo $target->getPrAutoNumber();endif;?></li>
 				<li>-------------------</li>
@@ -60,300 +60,325 @@ if (count($errors) > 0) {
 }
 ?>
 
-			<form id="pr_header_form" class="form-horizontal"
-			action="" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" />
+			<form id="pr_header_form" class="form-horizontal" action=""
+						method="post" enctype="multipart/form-data">
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" />
 
-			<fieldset>
-				<legend style="font-size: 9.5pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-								<a style="font-size: 9pt; color: gray;" href="#pr_header" class="" data-toggle="collapse">PR HEADER: <?php echo (!$target == null)? "(". $target->getPrAutoNumber() .")" :"";?></a>
-	
-				</legend>
-				<div id="pr_header" class="collapse">
+						<fieldset>
+							<legend style="font-size: 9.5pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a style="font-size: 9pt; color: gray;" href="#pr_header"
+									class="" data-toggle="collapse">PR HEADER: <?php echo (!$target == null)? "(". $target->getPrAutoNumber() .")" :"";?></a>
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">PR Number:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								name="prNumber"
-								value="<?php echo (!$target == null)? $target->getPrNumber():"";?>">
-						</div>
+							</legend>
+							<div id="pr_header" class="collapse">
 
-						<label class="control-label col-sm-1" for="inputTag"></label>
-						<div class="col-sm-4">
-							<input
-								<?php if(!$target == null): echo ($target->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-							<input
-								<?php if(!$target == null): echo ($target->getIsDraft()== "1")?"checked":""; else: echo "checked"; endif;?>
-								type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">PR Number:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" name="prNumber"
+											value="<?php echo (!$target == null)? $target->getPrNumber():"";?>">
+									</div>
 
-						</div>
+									<label class="control-label col-sm-1" for="inputTag"></label>
+									<div class="col-sm-4">
+										<input
+											<?php if(!$target == null): echo ($target->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+										<input
+											<?php if(!$target == null): echo ($target->getIsDraft()== "1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
 
-					</div>
+									</div>
 
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">PR Name:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="prName" name="prName"
-								value="<?php echo (!$target == null)? $target->getPrName():"";?>">
-						</div>
+								</div>
 
-						<label class="control-label col-sm-2">Keywords:</label>
-						<div class="col-sm-3">
-							<input class="form-control input-sm" type="text" placeholder=""
-								id="keywords" name="keywords"
-								value="<?php echo (!$target == null)? $target->getKeywords():"";?>">
-						</div>
-					</div>
-					
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">PR Name:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="prName" name="prName"
+											value="<?php echo (!$target == null)? $target->getPrName():"";?>">
+									</div>
+
+									<label class="control-label col-sm-2">Keywords:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="keywords" name="keywords"
+											value="<?php echo (!$target == null)? $target->getKeywords():"";?>">
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Date:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="submittedOn" name="submittedOn"
+											value="<?php if(!$target == null): if ($target->getSubmittedOn() !== null): echo date_format($target->getSubmittedOn(),"Y-m-d"); endif; endif;?>"
+											placeholder=" please select" />
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Department</label>
+									<div class="col-sm-3">
+										<input disabled class="form-control input-sm" type="text"
+											id="department_name" placeholder="Please select!"
+											name="deparment_name"
+											value="<?php if (!$target== null):if($target->getDepartment()!==null):echo $target->getDepartment()->getNodeName(); endif;endif;?>">
+
+										<input type="hidden" class="form-control input-sm"
+											id="department_name_selected" placeholder="Please select!"
+											name="department_id"
+											value="<?php if (!$target== null):if($target->getDepartment()!==null):echo $target->getDepartment()->getNodeId(); endif;endif;?>">
+									</div>
+
+									<a style="color: #0080ff;" href="javascript:;"
+										onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i
+										class="glyphicon glyphicon-folder-open"></i>
+									</a>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Remarks:</label>
+									<div class="col-sm-8">
+										<input class="form-control input-sm" type="text"
+											placeholder="" name="itemDescription"
+											value="<?php echo (!$target == null)? $target->getRemarks():"";?>">
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2" for="inputTag"></label>
+									<div class="col-sm-3">
+										<a class="btn btn-default btn-sm"
+											href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
+												class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+
+									</div>
+								</div>
+
+							</div>
+						</fieldset>
+
+					</form>
+
+
+
+					<!-- TO UPDATE ACTION -->
+					<form id="pr_row_form" class="form-horizontal"
+						action="/procure/pr-row/add" method="post"
+						enctype="multipart/form-data">
+						<input type="hidden" name="target_id"
+							value="<?php echo (!$target == null)? $target->getId():"";?>" />
+						<input type="hidden" name="token"
+							value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" />
+
+
+						<fieldset>
+							<legend style="font-size: 9pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a style="font-size: 9pt; color: gray;" href="#transaction"
+									class="" data-toggle="collapse">PR ROW:</a>
+							</legend>
+							<div id="transaction" class="collapse in">
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Row Number: </label>
+									<div class="col-sm-1">
+										<input tabindex="0" class="form-control input-sm" type="text"
+											id="rowNumber" name="rowNumber"
+											value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_row_number + 1;else:echo $entity->getRowNumber();endif;else:echo $max_row_number + 1;endif;?>">
+									</div>
+								</div>
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Item: </label>
+									<div class="col-sm-3">
+										<input tabindex="1" class="form-control input-sm" type="text"
+											id="item_name" placeholder="Enter keyword to search item..."
+											name="item_name"
+											value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
+
+
+										<input type="hidden" id="item_id" placeholder=""
+											name="item_id"
+											value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
+
+										<div id="item_url" style="display: none;"></div>
+									</div>
+
+
+									<div class="col-sm-1" style="margin: 0px">
+										<span title="<?php echo $this->translate("Item Detail");?>"
+											id="item_detail" style="display: none;"> &nbsp;&nbsp;<a
+											style="color: #0080ff;" href="javascript:;"
+											onclick="showSelectedItem();"><i style="color: navy"
+												class="fa fa-info-circle fa-lg" aria-hidden="true"></i> </a>
+											<br>
+										</span>
+									</div>
+
+									<div class="col-sm-2">
+										<a style="color: #0080ff;" href="javascript:;"
+											onclick="showJqueryDialog('Select Item','1300',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+											class="glyphicon glyphicon-folder-open"></i>
+										</a>
+
+									</div>
+									<div class="col-sm-2">
+										<a target="_blank" style="font-size: 9pt;"
+											href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i
+											class="glyphicon glyphicon-new-window"></i></small>
+									</div>
+
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Item Name");?>:</label>
+									<div class="col-sm-3">
+										<input tabindex="2" class="form-control input-sm" type="text"
+											placeholder="" name="rowName" id="rowName"
+											value="<?php echo (!$entity== null)? $entity->getRowName():"";?>">
+			</div>
+									<div class="col-sm-3">
+										<input
+											<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2">Quantity:</label>
+									<div class="col-sm-3">
+										<input tabindex="3" class="form-control input-sm" type="text"
+											placeholder="" name="quantity" id="quantity"
+											value="<?php echo (!$entity== null)? $entity->getQuantity():"";?>">
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2">Unit:</label>
+									<div class="col-sm-3">
+										<input tabindex="4" class="form-control input-sm" type="text"
+											placeholder="" name="rowUnit" id="rowUnit"
+											value="<?php echo (!$entity== null)? $entity->getRowUnit():"";?>">
+										<div style="color: graytext; padding-bottom: 5px;" id="standard_uom_id"></div>
+									</div>
+
+									<label class="control-label col-sm-2">Conversion Factor:</label>
+									<div class="col-sm-3">
+										<input tabindex="5" class="form-control input-sm" type="text"
+											placeholder="" name="conversionFactor" id="conversionFactor"
+											value="<?php echo (!$entity== null)? $entity->getConversionFactor():"1";?>">
+											<div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_text"></div>
+							
+									</div>
+
+								</div>
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2">Expected Delivery:</label>
+									<div class="col-sm-3">
+										<input tabindex="6" class="form-control input-sm" type="text"
+											name="edt"
+											value="<?php if(!$entity == null): echo ($entity->getEdt() !== null)? date_format($entity->getEdt(),"Y-m-d"):""; endif;?>"
+											placeholder=" please select" id="edt" />
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Remarks:</label>
+									<div class="col-sm-8">
+										<input tabindex="7" class="form-control input-sm" type="text"
+											placeholder="" name="itemDescription"
+											value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+									</div>
+								</div>
+
+							</div>
+						</fieldset>
+
+
+
+
+
+						<fieldset>
+							<legend style="font-size: 9pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a style="font-size: 9pt; color: gray;" href="#reference"
+									class="" data-toggle="collapse">REFERENCE:</a>
+							</legend>
+
+							<div id="reference" class="collapse">
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">For Project: </label>
+									<div class="col-sm-3">
+										<input disabled class="form-control input-sm" type="text"
+											id="project_name" placeholder="Select Project if any"
+											name="project_name"
+											value="<?php if (!$entity== null): if($entity->getProject()!==null): echo $entity->getProject()->getProjectName(); endif;endif;?>">
+
+
+										<input type="hidden" id="project_id" placeholder=""
+											name="project_id"
+											value="<?php if (!$entity== null): if($entity->getProject()!==null): echo $entity->getProject()->getID(); endif;endif;?>">
+									</div>
+
+									<div class="col-sm-3">
+										<a style="color: #0080ff;" href="javascript:;"
+											onclick="showJqueryDialog('Select Project','960',$(window).height()-100, '/pm/project-search/do1?target_id=project_id&target_name=project_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+											class="glyphicon glyphicon-folder-open"></i>
+										</a>
+
+
+									</div>
+									<div class="col-sm-3">
+										<a target="blank" style="font-size: 9pt;"
+											href="/pm/project/list">Project List&nbsp;&nbsp;</a><small><i
+											class="glyphicon glyphicon-new-window"></i></small>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+						<br>
 						<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2" >Date:</label>
-		<div class="col-sm-3">
-<input class="form-control input-sm" type="text"  placeholder="" id = "submittedOn" name="submittedOn" 
-value="<?php if(!$target == null): if ($target->getSubmittedOn() !== null): echo date_format($target->getSubmittedOn(),"Y-m-d"); endif; endif;?>" placeholder =" please select"/>
+							<label class="control-label col-sm-2" for="inputTag"></label>
+							<div class="col-sm-3">
+
+								<a tabindex="7" class="btn btn-default btn-sm" style=""
+									href="javascript:;" onClick="submitForm('pr_row_form');"> <small><i
+										class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;Add
+								</a> <a tabindex="8" class="btn btn-default btn-sm"
+									href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
+										class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+							</div>
+
+							<div class="col-sm-3">
+
+								<a style="color: white;" tabindex=""
+									class="btn btn-primary btn-sm"
+									href="<?php echo $this->baseUrl ?>/procure/pr/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><?php echo $this->translate("Review & Submit");?>&nbsp;<i
+									class="fa fa-arrow-right" aria-hidden="true"></i></a>
+							</div
+						
+						</div>
+				
+				</div>
+
+
+				</form>
+
+			</div>
+
+			<!-- end tab -->
 		</div>
 	</div>
-
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2">Department</label>
-						<div class="col-sm-3">
-							<input disabled class="form-control input-sm" type="text"
-								id="department_name" placeholder="Please select!"
-								name="deparment_name"
-								value="<?php if (!$target== null):if($target->getDepartment()!==null):echo $target->getDepartment()->getNodeName(); endif;endif;?>">
-
-							<input type="hidden" class="form-control input-sm"
-								id="department_name_selected" placeholder="Please select!"
-								name="department_id"
-								value="<?php if (!$target== null):if($target->getDepartment()!==null):echo $target->getDepartment()->getNodeId(); endif;endif;?>">
-						</div>
-
-						<a style="color: #0080ff;" href="javascript:;"
-							onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i
-							class="glyphicon glyphicon-folder-open"></i>
-						</a>
-					</div>
-
-					<div class="form-group margin-bottom">
-                		<label class="control-label col-sm-2" >Remarks:</label>
-                		<div class="col-sm-8">
-                			<input class="form-control input-sm" type="text"  placeholder=""
-                				name="itemDescription" value="<?php echo (!$target == null)? $target->getRemarks():"";?>">
-                		</div>
-					</div>
-
-					<div class="form-group margin-bottom">
-						<label class="control-label col-sm-2" for="inputTag"></label>
-						<div class="col-sm-3">
-							<a class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/pr/edit?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
-									class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
-
-						</div>
-					</div>
-
-				</div>
-			</fieldset>
-			
-		</form>
-	
-		
-
-		<!-- TO UPDATE ACTION -->
-		<form id="pr_row_form" class="form-horizontal"
-			action="/procure/pr-row/add" method="post"
-			enctype="multipart/form-data">
-			<input type="hidden" name="target_id"
-				value="<?php echo (!$target == null)? $target->getId():"";?>" /> <input
-				type="hidden" name="token"
-				value="<?php echo (!$target== null)? $target->getToken():"";?>" /> <input
-				type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
-				
-				
-				<fieldset>
-				<legend style="font-size: 9pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a style="font-size: 9pt; color: gray;" href="#transaction" class="" data-toggle="collapse">PR ROW:</a>
-				</legend>
-				<div id="transaction" class="collapse in">
-				
-				<div class="form-group margin-bottom">
-		<label class="control-label col-sm-2">Row Number: </label>
-		<div class="col-sm-1">
-			<input tabindex="0" class="form-control input-sm" type="text" id="rowNumber" name="rowNumber" 
-value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_row_number + 1;else:echo $entity->getRowNumber();endif;else:echo $max_row_number + 1;endif;?>">
-		</div>
-	</div>
-					<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2">Item: </label>
-				<div class="col-sm-3">
-					<input tabindex= "1" class="form-control input-sm" type="text" id="item_name"
-						placeholder="Enter keyword to search item..." name="item_name"
-						value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
-
-
-					<input type="hidden" id="item_id" placeholder="" name="item_id"
-						value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getID(); endif;endif;?>">
-				
-				<div id="item_url" style="display: none;"></div>		
-				
-				<div id="item_detail" style="display: none;">		
-				&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
-					onclick="showSelectedItem();">Detail
-				</a>
-				<br>&nbsp;
-				</div>
-				</div>
-				
-				
-				
-				<div class="col-sm-3">
-				<a style="color: #0080ff;" href="javascript:;"
-					onclick="showJqueryDialog('Select Item','1300',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-					class="glyphicon glyphicon-folder-open"></i>
-				</a>
-							
-				</div>
-				<div class="col-sm-3">
-					<a target="_blank" style="font-size: 9pt;" href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i class="glyphicon glyphicon-new-window"></i></small>
-				</div>
-
-			</div>
-
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2">Item Name:</label>
-				<div class="col-sm-3">
-					<input tabindex= "2" class="form-control input-sm" type="text" placeholder=""
-						name="rowName" id="rowName"
-					value="<?php echo (!$entity== null)? $entity->getRowName():"";?>">
-				
-				</div>
-				 <div class="col-sm-3">
-					<input  	<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="isActive" value="1" >&nbsp;Active&nbsp;&nbsp;
-				</div>
-			</div>
-
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Quantity:</label>
-						<div class="col-sm-3">
-							<input tabindex= "3" class="form-control input-sm" type="text" placeholder=""
-								name="quantity" id="quantity"
-								value="<?php echo (!$entity== null)? $entity->getQuantity():"";?>">
-						</div>
-					</div>
-
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Unit:</label>
-						<div class="col-sm-3">
-							<input  tabindex= "4" class="form-control input-sm" type="text" placeholder=""
-								name="rowUnit" id="rowUnit"
-								value="<?php echo (!$entity== null)? $entity->getRowUnit():"";?>">
-						</div>
-
-						<label class="control-label col-sm-2">Conversion Factor:</label>
-						<div class="col-sm-3">
-							<input tabindex= "5" class="form-control input-sm" type="text" placeholder=""
-								name="conversionFactor" id="conversionFactor"
-								value="<?php echo (!$entity== null)? $entity->getConversionFactor():"1";?>">
-						</div>
-
-					</div>
-
-					<div class="form-group margin-bottom required">
-						<label class="control-label col-sm-2">Expected Delivery:</label>
-						<div class="col-sm-3">
-							<input tabindex= "6" class="form-control input-sm" type="text" name="edt"
-								value="<?php if(!$entity == null): echo ($entity->getEdt() !== null)? date_format($entity->getEdt(),"Y-m-d"):""; endif;?>"
-								placeholder=" please select" id="edt" />
-						</div>
-					</div>
-					
-					<div class="form-group margin-bottom">
-                		<label class="control-label col-sm-2" >Remarks:</label>
-                		<div class="col-sm-8">
-                			<input tabindex= "7" class="form-control input-sm" type="text"  placeholder=""
-                				name="itemDescription" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
-                		</div>
-                	</div>
-
-				</div>
-			</fieldset>
-				
-				
-
-			
-
-			<fieldset>
-				<legend style="font-size: 9pt; color: gray;">
-					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a style="font-size: 9pt; color: gray;" href="#reference" class="" data-toggle="collapse">REFERENCE:</a>
-				</legend>
-
-				<div id="reference" class="collapse">
-				<div class="form-group margin-bottom">
-					<label class="control-label col-sm-2">For Project: </label>
-					<div class="col-sm-3">
-						<input disabled class="form-control input-sm" type="text" id="project_name"
-							placeholder="Select Project if any" name="project_name"
-							value="<?php if (!$entity== null): if($entity->getProject()!==null): echo $entity->getProject()->getProjectName(); endif;endif;?>">
-
-
-						<input type="hidden" id="project_id" placeholder=""
-							name="project_id"
-							value="<?php if (!$entity== null): if($entity->getProject()!==null): echo $entity->getProject()->getID(); endif;endif;?>">
-					</div>
-					
-					<div class="col-sm-3">
-					<a style="color: #0080ff;" href="javascript:;"
-						onclick="showJqueryDialog('Select Project','960',$(window).height()-100, '/pm/project-search/do1?target_id=project_id&target_name=project_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-						class="glyphicon glyphicon-folder-open"></i>
-					</a>
-
-							
-					</div>
-    				<div class="col-sm-3">
-    					<a target="blank" style="font-size: 9pt;" href="/pm/project/list">Project List&nbsp;&nbsp;</a><small><i class="glyphicon glyphicon-new-window"></i></small>
-    				</div>
-				</div>
-				</div>
-			</fieldset>
-			<br>
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2" for="inputTag"></label>
-				<div class="col-sm-3">
-
-					<a tabindex="7" class="btn btn-default btn-sm" style="" href="javascript:;"
-						onClick="submitForm('pr_row_form');"> <small><i
-							class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;Add
-					</a>
-					<a tabindex="8" class="btn btn-default btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
-									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
-				</div>
-					
-					<div class="col-sm-3">
-					
-					<a style="color: white;" tabindex="" class="btn btn-primary btn-sm"
-								href="<?php echo $this->baseUrl ?>/procure/pr/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><?php echo $this->translate("Review & Submit");?>&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></a>
-				</div
-				</div>
-			</div>
-
-
-		</form>
-
-				</div>
-
-				<!-- end tab -->
-			</div>
-		</div>
-	</div>
-	<!-- /#page-content-wrapper -->
+</div>
+<!-- /#page-content-wrapper -->
 
 </div>
 <!-- /#wrapper -->
@@ -378,6 +403,17 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
 
    		$('#item_detail').show();
    		$("#quantity").focus();
+
+		var url = '/inventory/item/get-item?id='+ui.item.id;
+   		$('rowUnit').text("Loading...");
+		$.get(url, {   	}, function(data, status) {
+        		//alert(data.purchase_uom_code);
+        		$('#rowUnit').val(data.purchase_uom_code);
+        		$('#standard_uom_id').text(data.uom_code);
+        		$('#conversionFactor').val(data.purchase_uom_convert_factor);                
+                $('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
+       	   
+       	});
    	  
      }
     
@@ -402,6 +438,14 @@ value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_ro
 		var url= $('#item_url').text(); 
     	showJqueryDialog('Item Detail','1350',$(window).height()-40, url,'j_loaded_data', true);
 	}
+
+    $('#conversionFactor').change(function() {
+ 		$('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
+ 	});
+
+    $('#rowUnit').change(function() {
+ 		$('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
+ 	});
     
 </script>
 

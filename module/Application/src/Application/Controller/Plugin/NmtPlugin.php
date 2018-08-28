@@ -72,6 +72,24 @@ class NmtPlugin extends AbstractPlugin
         return $list;
     }
     
+    /**
+     * Return List of Currency
+     *
+     * @return array
+     */
+    public function uomList()
+    {
+        $criteria = array(
+            //'isActive' => 1
+        );
+        $sort_criteria = array(
+            'uomCode' => 'ASC'
+        );
+        
+        $list = $this->doctrineEM->getRepository('\Application\Entity\NmtApplicationUom')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
+    
     
     /**
      * Return List of GL Account

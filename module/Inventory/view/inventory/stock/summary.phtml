@@ -43,7 +43,9 @@ else :
 					<td><b><?php echo $this->translate("Posted Qty");?></b></td>
 					<td><b><?php echo $this->translate("On-hand Qty");?></b></td>
 					<td><b><?php echo $this->translate("Unit Price");?></b></td>
-					<td><b><?php echo $this->translate("Stock Value");?></b></td>
+					<td><b><?php echo $this->translate("Stock Value");?><br>(doc cur.)</b></td>
+				
+					<td><b><?php echo $this->translate("Stock Value");?></b><br>(local cur.)</td>
 					<td><b><?php echo $this->translate("Remark");?></b></td>
 					<td><b><?php echo $this->translate("Action");?></b></td>
 		
@@ -67,9 +69,9 @@ else :
 			
 					<td>	<?php echo $a->getQuantity();?></td>
 					<td>	<?php echo $a->getOnhandQuantity();?></td>
-					<td>	<?php echo $a->getDocUnitPrice();?></td>
-					<td>	<?php echo $a->getOnhandQuantity()*$a->getDocUnitPrice()*$a->getExchangeRate();?></td>
-
+					<td>	<?php if($a->getDocUnitPrice()!== null ): echo number_format($a->getDocUnitPrice(),2);endif;?></td>
+					<td>	<?php if($a->getOnhandQuantity()*$a->getDocUnitPrice()!== null ): echo number_format($a->getOnhandQuantity()*$a->getDocUnitPrice(),2);endif;?></td>
+					<td>	<?php if($a->getOnhandQuantity()*$a->getDocUnitPrice()*$a->getExchangeRate()!== null ): echo number_format($a->getOnhandQuantity()*$a->getDocUnitPrice()*$a->getExchangeRate(),2);endif;?></td>
 					<td>
 			<?php echo $a->getRemarks();?>
 			</td>

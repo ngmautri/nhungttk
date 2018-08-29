@@ -92,6 +92,14 @@
 
 
 	<div id="general">
+	
+	<div style="position: relative; float: right;">
+			<img style="cursor: pointer;" title="click for more detail!"
+				onclick="$('#tabs').tabs({ active: 1});" class="img-rounded"
+				width="150" height="150"
+				src="/inventory/item/get-picture?&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>" />
+		</div>
+	
 
 		<form id="create_item_form" class="form-horizontal"
 			action="<?php echo $this->baseUrl ?>/inventory/item/add"
@@ -131,10 +139,6 @@
 
 				</div>
 
-				<div class="col-sm-3">
-					<img alt="" height=""
-						src="/inventory/item/barcode?barcode=22011979">
-				</div>
 			</div>
 			<hr style="margin: 5pt 1pt 5pt 1pt;">
 
@@ -219,6 +223,52 @@
 
 				</div>
 			</div>
+			
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Inventory Unit");?>:</label>
+				<div class="col-sm-3">
+
+					<select name="stock_uom_id" id="stock_uom_id"
+						class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select inventory unit");?></option>
+   	    							<?php
+            if ($uom_list !== null) :
+                foreach ($uom_list as $uom) :
+
+                    /**@var \Application\Entity\NmtApplicationUom $uom ; */
+                    $selected = '';
+                    if ($entity !== null) :
+                        if ($entity->getStockUom() !== null) :
+                        if ($entity->getStockUom()->getId() == $uom->getId()) :
+                                $selected = 'selected';
+   	    							endif;
+   	    							endif;
+   	    							endif;
+
+
+
+                    echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+   					</div>
+   					
+   						<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
+				<div class="col-sm-1">
+					<input class="form-control input-sm" type="text" placeholder=""
+						name="stockUomConvertFactor"
+						id="stock_uom_convert_factor_id"
+						value="<?php echo (!$entity == null)? $entity->getStockUomConvertFactor():"";?>">
+				</div>
+				
+				<div class="col-sm-3">
+					<span style="color: graytext;" id="stock_uom_convert_text"></span>
+				</div>
+
+				</div>
 
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2"><?php echo $this->translate("Purchase Unit");?>:</label>
@@ -489,6 +539,7 @@ $("#create_item_form :input").attr("disabled", "disabled");
 
 	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
    	$('#sales_uom_convert_text').text($( "#sales_uom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+	$('#stock_uom_convert_text').text($( "#stock_uom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
 
    	$( "#tabs1" ).tabs({
    		beforeLoad:function(e,ui){

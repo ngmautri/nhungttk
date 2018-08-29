@@ -405,7 +405,9 @@ if (count($errors) > 0) {
    		$("#quantity").focus();
 
 		var url = '/inventory/item/get-item?id='+ui.item.id;
-   		$('rowUnit').text("Loading...");
+   		$('#rowUnit').val("Loading...");
+   		$('#purchase_uom_convert_text').text("Loading...");
+   		
 		$.get(url, {   	}, function(data, status) {
         		//alert(data.purchase_uom_code);
         		$('#rowUnit').val(data.purchase_uom_code);

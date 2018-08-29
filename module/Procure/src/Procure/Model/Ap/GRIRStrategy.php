@@ -185,6 +185,11 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 $stock_gr_entity->setCreatedBy($u);
                 $stock_gr_entity->setCreatedOn($createdOn);
                 $stock_gr_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                
+                /**
+                 * @todo: calculate convert factor to inventory unit, and caculate new unit price.
+                 *  
+                 */
                 $procureSV->getDoctrineEM()->persist($stock_gr_entity);
             }
         }

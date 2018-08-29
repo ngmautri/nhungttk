@@ -22,6 +22,8 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 			<td><b>Pr Date</b></td>
 			<td><b>Unit</b></td>
 			<td><b>Quantity <br> Q'ty</b></td>
+			<td><b>Unit</b></td>
+			<td><b>Convert Factor</b></td>	
 			<td><b>U/P<br>Doc.</b></td>
 			<td><b>Total<br>Doc.</b></td>
 			<td><b>Doc.<br>Curr</b></td>
@@ -70,6 +72,10 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
 		
 			<td><?php echo $a->getQuantity();?></td>
+		
+			<td><?php echo $a->getUnit();?></td>
+			<td><?php echo $a->getConversionFactor();?></td>
+	
 			<td><?php echo number_format($a->getUnitPrice(),$a->getInvoice()->getCurrency()->getDecimalPlaces());?></td>
 			<td><?php echo number_format($a->getUnitPrice()*$a->getQuantity(),$a->getInvoice()->getCurrency()->getDecimalPlaces());?></td>
 			<td><?php echo $a->getInvoice()->getCurrency()->getCurrency();?></td>

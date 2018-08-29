@@ -317,9 +317,12 @@ EOT;
             $department_id = $request->getPost('department_id');
 
             $uom_id = (int) $request->getPost('uom_id');
+            $stock_uom_id = (int) $request->getPost('stock_uom_id');
+            
             $purchase_uom_id = (int) $request->getPost('purchase_uom_id');
             $sales_uom_id = (int) $request->getPost('sales_uom_id');
 
+            $stockUomConvertFactor = $request->getPost('stockUomConvertFactor');
             $purchaseUomConvertFactor = $request->getPost('purchaseUomConvertFactor');
             $salesUomConvertFactor = $request->getPost('salesUomConvertFactor');
 
@@ -418,15 +421,54 @@ EOT;
             // $entity->setOrigin($origin);
             // $entity->setSerialNumber($serialNumber);
 
-            if ($uom_id == 0 or $uom_id == null) {
+            if ($stock_uom_id == 0 or $uom_id == null) {
                 $errors[] = 'Please give standard measurement!';
             } else {
-                $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $uom_id);
+                $stock_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $stock_uom_id);
 
-                if ($uom !== null) {
-                    $entity->setStandardUom($uom);
+                if ($stock_uom !== null) {
+                    $entity->setStockUom($stock_uom);
                 } else {
                     $errors[] = 'Please give standard measurement!';
+                }
+            }
+            
+            if ($stockUomConvertFactor != null) {
+                
+                if (! is_numeric($stockUomConvertFactor)) {
+                    $errors[] = $nmtPlugin->translate('Please give conversion factor');
+                } else {
+                    
+                    if ($stockUomConvertFactor <= 0) {
+                        $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
+                    } else {
+                        $entity->setStockUomConvertFactor($stockUomConvertFactor);
+                    }
+                }
+            }
+            
+            $n_validated = 0;
+            if ($purchase_uom_id != 0 or $purchase_uom_id != null) {
+                
+                $purchase_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $purchase_uom_id);
+                
+                if ($purchase_uom !== null) {
+                    $entity->setPurchaseUom($purchase_uom);
+                    $n_validated ++;
+                }
+            }
+            
+            if ($purchaseUomConvertFactor != null) {
+                
+                if (! is_numeric($purchaseUomConvertFactor)) {
+                    $errors[] = $nmtPlugin->translate('Please give conversion factor');
+                } else {
+                    
+                    if ($purchaseUomConvertFactor <= 0) {
+                        $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
+                    } else {
+                        $entity->setPurchaseUomConvertFactor($purchaseUomConvertFactor);
+                    }
                 }
             }
 
@@ -699,12 +741,15 @@ EOT;
                 $department_id = $request->getPost('department_id');
 
                 $uom_id = (int) $request->getPost('uom_id');
+                $stock_uom_id = (int) $request->getPost('stock_uom_id');
+                
                 $purchase_uom_id = (int) $request->getPost('purchase_uom_id');
                 $sales_uom_id = (int) $request->getPost('sales_uom_id');
-
+                
+                $stockUomConvertFactor = $request->getPost('stockUomConvertFactor');
                 $purchaseUomConvertFactor = $request->getPost('purchaseUomConvertFactor');
                 $salesUomConvertFactor = $request->getPost('salesUomConvertFactor');
-
+                
                 $leadTime = $request->getPost('leadTime');
 
                 $isActive = (int) $request->getPost('isActive');
@@ -808,6 +853,32 @@ EOT;
                         $entity->setStandardUom($uom);
                     } else {
                         $errors[] = 'Please give standard measurement!';
+                    }
+                }
+                
+                if ($stock_uom_id == 0 or $uom_id == null) {
+                    $errors[] = 'Please give standard measurement!';
+                } else {
+                    $stock_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $stock_uom_id);
+                    
+                    if ($stock_uom !== null) {
+                        $entity->setStockUom($stock_uom);
+                    } else {
+                        $errors[] = 'Please give standard measurement!';
+                    }
+                }
+                
+                if ($stockUomConvertFactor != null) {
+                    
+                    if (! is_numeric($stockUomConvertFactor)) {
+                        $errors[] = $nmtPlugin->translate('Please give conversion factor');
+                    } else {
+                        
+                        if ($stockUomConvertFactor <= 0) {
+                            $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
+                        } else {
+                            $entity->setStockUomConvertFactor($stockUomConvertFactor);
+                        }
                     }
                 }
 

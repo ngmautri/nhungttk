@@ -257,15 +257,19 @@ if (count($errors) > 0) {
 							<label class="control-label col-sm-2" for="inputTag">Unit:</label>
 							<div class="col-sm-3">
 								<input tabindex="4" class="form-control input-sm" type="text"
-									name="unit"
+									name="unit" id="rowUnit"
 									value="<?php echo (!$entity == null)? $entity->getUnit():"each";?>">
+									
+								<div style="color: graytext; padding-bottom: 5px; margin: 0 0 0 20pt;font-size: 8.5pt" id="pr_row_uom"></div>
+						
 							</div>
-							<label class="control-label col-sm-2" for="inputTag">Converstion
-								Factor:</label>
+							<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Convert Factor");?>:</label>
 							<div class="col-sm-3">
 								<input tabindex="5" class="form-control input-sm" type="text"
 									name="conversionFactor"
 									value="<?php echo (!$entity == null)? $entity->getConversionFactor():"1";?>">
+								<div style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt;font-size: 8.5pt" id="">Converstion to order unit (see PR).</div>
+				
 							</div>
 
 						</div>
@@ -391,7 +395,10 @@ if (count($errors) > 0) {
 
             $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
             $('#pr_row_url').text('/procure/pr-row/show1?entity_id='+ui.item.pr_row_id+'&token='+ui.item.token);
-         	 
+
+            $('#rowUnit').val(ui.item.row_unit);
+            $('#pr_row_uom').text(ui.item.row_unit +' = ' + ui.item.row_conversion_factor);
+             	 
             
              //alert(ui.item.item_id);
             $('#global-notice').show();
@@ -493,5 +500,20 @@ if (count($errors) > 0) {
 		var url= $('#pr_row_url').text();
 	   	showJqueryDialog('PR Row Detail','1350',$(window).height()-40, url,'j_loaded_data', true);
 	}
+
+	<?php 
+	if($entity!=null):
+	if($entity->getItem()!=null):
+	?>
+
+	  $("#item_id" ).val(<?php echo +$entity->getItem()->getId();?>);      	  
+      $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id=<?php echo +$entity->getItem()->getId();?>&token=<?php echo +$entity->getItem()->getToken();?>');
+	  $('#item_detail').show();
+	    
+
+	<?php
+	endif;
+	endif;
+	?>
 
  </script>

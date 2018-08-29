@@ -154,6 +154,7 @@ class GRfromPurchasing extends AbstractGRStrategy
                     /**
                      *
                      * @todo: Create FIFO Layer
+                     * @todo: recalculate price for inventory unit.
                      */
                     $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
 

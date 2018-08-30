@@ -420,16 +420,28 @@ EOT;
 
             // $entity->setOrigin($origin);
             // $entity->setSerialNumber($serialNumber);
-
-            if ($stock_uom_id == 0 or $uom_id == null) {
+            
+            if ($uom_id == 0 or $uom_id == null) {
                 $errors[] = 'Please give standard measurement!';
             } else {
+                $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $uom_id);
+                
+                if ($uom !== null) {
+                    $entity->setStandardUom($uom);
+                } else {
+                    $errors[] = 'Please give standard measurement!';
+                }
+            }
+            
+            if ($stock_uom_id == 0 or $uom_id == null) {
+                $errors[] = 'Please give stock measurement!';
+            } else {
                 $stock_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $stock_uom_id);
-
+                
                 if ($stock_uom !== null) {
                     $entity->setStockUom($stock_uom);
                 } else {
-                    $errors[] = 'Please give standard measurement!';
+                    $errors[] = 'Please give stock measurement!';
                 }
             }
             
@@ -864,7 +876,7 @@ EOT;
                     if ($stock_uom !== null) {
                         $entity->setStockUom($stock_uom);
                     } else {
-                        $errors[] = 'Please give standard measurement!';
+                        $errors[] = 'Please give stock measurement!';
                     }
                 }
                 

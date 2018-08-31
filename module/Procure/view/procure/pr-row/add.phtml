@@ -180,7 +180,7 @@ if (count($errors) > 0) {
 
 
 						<fieldset>
-							<legend style="font-size: 9pt; color: gray;">
+							<legend style="font-size: 9pt; color: gray; margin: 5pt 1pt 5pt 1pt;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 								<a style="font-size: 9pt; color: gray;" href="#transaction"
 									class="" data-toggle="collapse">PR ROW:</a>
@@ -193,6 +193,12 @@ if (count($errors) > 0) {
 										<input tabindex="0" class="form-control input-sm" type="text"
 											id="rowNumber" name="rowNumber"
 											value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_row_number + 1;else:echo $entity->getRowNumber();endif;else:echo $max_row_number + 1;endif;?>">
+									</div>
+									
+									<div class="col-sm-1">
+										<input
+											<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 									</div>
 								</div>
 								<div class="form-group margin-bottom">
@@ -244,13 +250,9 @@ if (count($errors) > 0) {
 											placeholder="" name="rowName" id="rowName"
 											value="<?php echo (!$entity== null)? $entity->getRowName():"";?>">
 			</div>
-									<div class="col-sm-3">
-										<input
-											<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-											type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
-									</div>
+									
 								</div>
-
+								<hr style="margin: 5pt 1pt 5pt 1pt;">
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2">Quantity:</label>
 									<div class="col-sm-3">
@@ -269,7 +271,7 @@ if (count($errors) > 0) {
 										<div style="color: graytext; padding-bottom: 5px;" id="standard_uom_id"></div>
 									</div>
 
-									<label class="control-label col-sm-2">Conversion Factor:</label>
+									<label class="control-label col-sm-2"><?php echo $this->translate("Convert Factor");?>:</label>
 									<div class="col-sm-3">
 										<input tabindex="5" class="form-control input-sm" type="text"
 											placeholder="" name="conversionFactor" id="conversionFactor"
@@ -279,7 +281,8 @@ if (count($errors) > 0) {
 									</div>
 
 								</div>
-
+								<hr style="margin: 5pt 1pt 5pt 1pt;">
+				
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2">Expected Delivery:</label>
 									<div class="col-sm-3">
@@ -307,13 +310,13 @@ if (count($errors) > 0) {
 
 
 						<fieldset>
-							<legend style="font-size: 9pt; color: gray;">
+							<legend style="font-size: 9pt; color: gray; margin: 5pt 1pt 5pt 1pt;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 								<a style="font-size: 9pt; color: gray;" href="#reference"
 									class="" data-toggle="collapse">REFERENCE:</a>
 							</legend>
 
-							<div id="reference" class="collapse">
+							<div id="reference" class="collapse in">
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2">For Project: </label>
 									<div class="col-sm-3">
@@ -344,7 +347,7 @@ if (count($errors) > 0) {
 								</div>
 							</div>
 						</fieldset>
-						<br>
+						<hr style="margin: 5pt 1pt 5pt 1pt;">
 						<div class="form-group margin-bottom">
 							<label class="control-label col-sm-2" for="inputTag"></label>
 							<div class="col-sm-3">
@@ -441,13 +444,19 @@ if (count($errors) > 0) {
     	showJqueryDialog('Item Detail','1350',$(window).height()-40, url,'j_loaded_data', true);
 	}
 
-    $('#conversionFactor').change(function() {
- 		$('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
+    $('#quantity').change(function() {
+ 		$('#purchase_uom_convert_text').text($('#quantity').val() + ' ' + $( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val()*$('#quantity').val() + " " + $( "#standard_uom_id" ).text());
  	});
+ 	
+    $('#conversionFactor').change(function() {
+		$('#purchase_uom_convert_text').text($('#quantity').val() + ' ' + $( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val()*$('#quantity').val() + " " + $( "#standard_uom_id" ).text());
+    	  	});
 
     $('#rowUnit').change(function() {
- 		$('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
+		$('#purchase_uom_convert_text').text($('#quantity').val() + ' ' + $( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val()*$('#quantity').val() + " " + $( "#standard_uom_id" ).text());
  	});
+
+ 	
     
 </script>
 

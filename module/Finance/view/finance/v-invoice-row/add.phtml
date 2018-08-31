@@ -507,7 +507,7 @@ if (count($errors) > 0) {
 	?>
 
 	  $("#item_id" ).val(<?php echo +$entity->getItem()->getId();?>);      	  
-      $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id=<?php echo +$entity->getItem()->getId();?>&token=<?php echo +$entity->getItem()->getToken();?>');
+      $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id=<?php echo +$entity->getItem()->getId();?>&token=<?php echo $entity->getItem()->getToken();?>');
 	  $('#item_detail').show();
 	    
 

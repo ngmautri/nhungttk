@@ -112,9 +112,14 @@ class PrRowController extends AbstractActionController
      */
     public function addAction()
     {
+        $request = $this->getRequest();
         $this->layout("Procure/layout-fullscreen");
 
-        $request = $this->getRequest();
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        // Is Posting .................
+        // ============================
 
         if ($request->isPost()) {
 
@@ -150,155 +155,176 @@ class PrRowController extends AbstractActionController
                     'total_row' => (int) $pr[1],
                     'max_row_number' => (int) $pr[2]
                 ));
+            }
 
-                // might need redirect
-            } else {
+            $errors = array();
 
-                $errors = array();
-                $redirectUrl = $request->getPost('redirectUrl');
+            $redirectUrl = $request->getPost('redirectUrl');
 
-                $edt = $request->getPost('edt');
-                $isActive = (int) $request->getPost('isActive');
+            $edt = $request->getPost('edt');
+            $isActive = (int) $request->getPost('isActive');
 
-                $rowNumber = (int) $request->getPost('rowNumber');
+            $rowNumber = (int) $request->getPost('rowNumber');
 
-                $priority = $request->getPost('priority');
-                $quantity = $request->getPost('quantity');
+            $priority = $request->getPost('priority');
+            $quantity = $request->getPost('quantity');
 
-                $remarks = $request->getPost('remarks');
-                $rowCode = $request->getPost('rowCode');
-                $rowName = $request->getPost('rowName');
-                $rowUnit = $request->getPost('rowUnit');
-                $conversionFactor = $request->getPost('conversionFactor');
+            $remarks = $request->getPost('remarks');
+            $rowCode = $request->getPost('rowCode');
+            $rowName = $request->getPost('rowName');
+            $rowUnit = $request->getPost('rowUnit');
 
-                $item_id = $request->getPost('item_id');
-                $project_id = $request->getPost('project_id');
+            // understood converstion factor to standard unit.
+            $conversionFactor = $request->getPost('conversionFactor');
 
-                if ($isActive != 1) {
-                    $isActive = 0;
+            $item_id = $request->getPost('item_id');
+            $project_id = $request->getPost('project_id');
+
+            if ($isActive != 1) {
+                $isActive = 0;
+            }
+
+            $entity = new NmtProcurePrRow();
+
+            if ($item_id > 0) {
+                $item = $this->doctrineEM->find('Application\Entity\NmtInventoryItem', $item_id);
+                $entity->setItem($item);
+            }
+
+            if ($project_id > 0) {
+                $project = $this->doctrineEM->find('Application\Entity\NmtPmProject', $project_id);
+                if ($project !== null) {
+                    $entity->setProject($project);
                 }
+            }
 
-                $entity = new NmtProcurePrRow();
+            $n = $pr['total_row'] + 1;
+            $rowIdentifer = $target->getPrAutoNumber() . "-$n";
 
-                if ($item_id > 0) {
-                    $item = $this->doctrineEM->find('Application\Entity\NmtInventoryItem', $item_id);
-                    $entity->setItem($item);
-                }
+            $entity->setRowNumber($rowNumber);
+            $entity->setPr($target);
+            $entity->setIsActive($isActive);
+            $entity->setPriority($priority);
+            $entity->setRemarks($remarks);
+            $entity->setRowCode($rowCode);
+            $entity->setRowName($rowName);
+            $entity->setRowUnit($rowUnit);
+            $entity->setConversionFactor($conversionFactor);
+            $entity->setRowIdentifer($rowIdentifer);
 
-                if ($project_id > 0) {
-                    $project = $this->doctrineEM->find('Application\Entity\NmtPmProject', $project_id);
-                    if ($project !== null) {
-                        $entity->setProject($project);
+            $validator = new Date();
+
+            // Empty is OK
+            if ($edt !== null) {
+                if ($edt !== "") {
+
+                    if (! $validator->isValid($edt)) {
+                        $errors[] = 'Date is not correct or empty!';
+                    } else {
+                        $entity->setEdt(new \DateTime($edt));
                     }
                 }
+            }
 
-                $n = $pr['total_row'] + 1;
-                $rowIdentifer = $target->getPrAutoNumber() . "-$n";
+            $n_validated = 0;
+            if ($quantity == null) {
+                $errors[] = 'Please  enter order quantity!';
+            } else {
 
-                $entity->setRowNumber($rowNumber);
-                $entity->setPr($target);
-                $entity->setIsActive($isActive);
-                $entity->setPriority($priority);
-                $entity->setRemarks($remarks);
-                $entity->setRowCode($rowCode);
-                $entity->setRowName($rowName);
-                $entity->setRowUnit($rowUnit);
-                $entity->setConversionFactor($conversionFactor);
-                $entity->setRowIdentifer($rowIdentifer);
-
-                if ($quantity == null) {
-                    $errors[] = 'Please  enter order quantity!';
+                if (! is_numeric($quantity)) {
+                    $errors[] = $nmtPlugin->translate("'quantity must be a number.'");
+                    ;
                 } else {
-
-                    if (! is_numeric($quantity)) {
-                        $errors[] = 'quantity must be a number.';
+                    if ($quantity <= 0) {
+                        $errors[] = 'quantity must be greater than 0!';
                     } else {
-                        if ($quantity <= 0) {
-                            $errors[] = 'quantity must be greater than 0!';
-                        }
+                        $n_validated ++;
                         $entity->setQuantity($quantity);
                     }
                 }
+            }
 
-                $validator = new Date();
+            if ($conversionFactor == null) {
+                // $errors [] = 'Please enter order quantity!';
+            } else {
 
-                // Empty is OK
-                if ($edt !== null) {
-                    if ($edt !== "") {
-
-                        if (! $validator->isValid($edt)) {
-                            $errors[] = 'Date is not correct or empty!';
-                        } else {
-                            $entity->setEdt(new \DateTime($edt));
-                        }
-                    }
-                }
-
-                if ($conversionFactor == null) {
-                    // $errors [] = 'Please enter order quantity!';
+                if (! is_numeric($conversionFactor)) {
+                    $errors[] = 'quantity must be a number.';
                 } else {
-
-                    if (! is_numeric($conversionFactor)) {
-                        $errors[] = 'quantity must be a number.';
+                    if ($conversionFactor <= 0) {
+                        $errors[] = 'quantity must be greater than 0!';
                     } else {
-                        if ($conversionFactor <= 0) {
-                            $errors[] = 'quantity must be greater than 0!';
-                        }
+                        $n_validated ++;
                         $entity->setConversionFactor($conversionFactor);
                     }
                 }
-
-                if (count($errors) > 0) {
-                    return new ViewModel(array(
-
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'entity' => $entity,
-                        'target' => $target,
-                        'total_row' => $pr['total_row'],
-                        'max_row_number' => $pr['max_row_number'],
-                        'active_row' => $pr['active_row']
-                    ));
-                }
-
-                // NO ERROR
-                // +++++++++++++++++++++++++++++++
-
-                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-                $entity->setChecksum(md5(uniqid("pr_row_" . microtime())));
-
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    "email" => $this->identity()
-                ));
-
-                $createdOn = new \DateTime();
-
-                $entity->setCreatedBy($u);
-                $entity->setCreatedOn($createdOn);
-
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-
-                $m = sprintf('[OK] Row #%s for PR#%s created.', $entity->getRowIdentifer(), $target->getId());
-
-                // Trigger: procure.activity.log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
-                    'priority' => \Zend\Log\Logger::INFO,
-                    'message' => $m,
-                    'createdBy' => $u,
-                    'createdOn' => $createdOn
-                ));
-
-                $index_update_status = $this->prSearchService->updateIndex(1, $entity, FALSE);
-
-                $redirectUrl = "/procure/pr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getID() . "&checksum=" . $target->getChecksum();
-                $this->flashMessenger()->addMessage($m);
-
-                return $this->redirect()->toUrl($redirectUrl);
             }
+
+            if ($n_validated == 2) {
+                if ($entity->getItem() !== null) {
+
+                    $inventoryCF = $entity->getItem()->getStockUomConvertFactor();
+                    if ($inventoryCF == null) {
+                        $inventoryCF = 1;
+                    }
+
+                    $entity->setConveredStandardQuantiy($entity->getConversionFactor() * $entity->getQuantity());
+                    $entity->setConveredStockQuantity($entity->getQuantity() * $entity->getConversionFactor() / $inventoryCF);
+                }
+            }
+
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $target,
+                    'total_row' => $pr['total_row'],
+                    'max_row_number' => $pr['max_row_number'],
+                    'active_row' => $pr['active_row']
+                ));
+            }
+
+            // No ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $entity->setChecksum(md5(uniqid("pr_row_" . microtime())));
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+
+            $createdOn = new \DateTime();
+
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn($createdOn);
+
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+
+            $m = sprintf('[OK] Row #%s for PR#%s created.', $entity->getRowIdentifer(), $target->getId());
+
+            // Trigger: procure.activity.log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $createdOn
+            ));
+
+            $index_update_status = $this->prSearchService->updateIndex(1, $entity, FALSE);
+
+            $redirectUrl = "/procure/pr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getID() . "&checksum=" . $target->getChecksum();
+            $this->flashMessenger()->addMessage($m);
+
+            return $this->redirect()->toUrl($redirectUrl);
         }
         // NO POST
-        // ++++++++++++++++++++++++++++
+        // Initiate ......................
+        // ================================
 
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') != null) {
@@ -708,9 +734,9 @@ class PrRowController extends AbstractActionController
                     $downloadStrategy = new \Procure\Model\Pr\OdsStrategy();
                     break;
             }
-            
+
             $downloadStrategy->doDownload($target, $rows);
-            
+
             /*
              * return new ViewModel(array(
              * 'list' => $rows,
@@ -1213,8 +1239,8 @@ class PrRowController extends AbstractActionController
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
 
         $list = $res->getPrRow1($target_id, $token, $is_active, $balance, $sort_by, $sort, 0, 0);
-        //$list = $res->getPrRow2($target_id, $token);
-        
+        // $list = $res->getPrRow2($target_id, $token);
+
         $total_records = 0;
 
         if (count($list) > 0) {
@@ -1322,7 +1348,7 @@ class PrRowController extends AbstractActionController
         $response->setContent(json_encode($a_json_final));
         return $response;
     }
-    
+
     /**
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -1334,50 +1360,50 @@ class PrRowController extends AbstractActionController
         } else {
             $sort_by = "itemName";
         }
-        
+
         if (isset($_GET['sort'])) {
             $sort = $_GET['sort'];
         } else {
             $sort = "ASC";
         }
-        
+
         if (isset($_GET['balance'])) {
-            
+
             $balance = $_GET['balance'];
         } else {
             $balance = 1;
         }
-        
+
         if (isset($_GET['is_active'])) {
             $is_active = (int) $_GET['is_active'];
         } else {
             $is_active = 1;
         }
-        
+
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
-        
+
         $a_json_final = array();
         $a_json = array();
         $a_json_row = array();
         $escaper = new Escaper();
-        
+
         /** @var \Application\Repository\NmtProcurePrRowRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
         $list = $res->getPrRow2($target_id, $token);
-        
+
         $total_records = 0;
-        
+
         if (count($list) > 0) {
-            
+
             $total_records = count($list);
-            
+
             $count = 0;
             foreach ($list as $a) {
-                
+
                 /**@var \Application\Entity\NmtProcurePrRow $pr_row_entity ;*/
                 $pr_row_entity = $a[0];
-                
+
                 $item_detail = "/inventory/item/show1?token=" . $pr_row_entity->getItem()->getToken() . "&checksum=" . $pr_row_entity->getItem()->getChecksum() . "&entity_id=" . $pr_row_entity->getItem()->getId();
                 if ($pr_row_entity->getItem()->getItemName() !== null) {
                     $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
@@ -1385,71 +1411,71 @@ class PrRowController extends AbstractActionController
                 } else {
                     $onclick = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1250',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                 }
-                
+
                 $count ++;
                 $a_json_row["row_number"] = $pr_row_entity->getRowNumber();
                 $a_json_row["row_identifer"] = $pr_row_entity->getRowIdentifer();
-                
+
                 $a_json_row["pr_number"] = $pr_row_entity->getPr()->getPrNumber() . '<a style="" target="blank"  title="' . $pr_row_entity->getPr()->getPrNumber() . '" href="/procure/pr/show?token=' . $pr_row_entity->getPr()->getToken() . '&entity_id=' . $pr_row_entity->getPr()->getId() . '&checksum=' . $pr_row_entity->getPr()->getChecksum() . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</span></a>';
-                
+
                 if ($pr_row_entity->getPr()->getSubmittedOn() !== null) {
                     $a_json_row['pr_submitted_on'] = date_format($pr_row_entity->getPr()->getSubmittedOn(), 'd-m-y');
                     // $a_json_row ['pr_submitted_on'] = $a ['submitted_on'];
                 } else {
                     $a_json_row['pr_submitted_on'] = '';
                 }
-                
+
                 $a_json_row["row_id"] = $pr_row_entity->getId();
                 $a_json_row["row_token"] = $pr_row_entity->getToken();
                 $a_json_row["row_checksum"] = $pr_row_entity->getChecksum();
-                
+
                 $a_json_row["item_sku"] = '<span title="' . $pr_row_entity->getItem()->getItemSku() . '">' . substr($pr_row_entity->getItem()->getItemSku(), 0, 5) . '</span>';
-                
+
                 if (strlen($pr_row_entity->getItem()->getItemName()) < 35) {
                     $a_json_row["item_name"] = $pr_row_entity->getItem()->getItemName() . '<a style="cursor:pointer; color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                 } else {
                     $a_json_row["item_name"] = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                 }
-                
+
                 $a_json_row["quantity"] = $pr_row_entity->getQuantity();
                 $a_json_row["confirmed_balance"] = $a['confirmed_balance'];
-                
+
                 if (strlen($a['last_vendor_name']) < 10) {
                     $a_json_row["vendor_name"] = $a['last_vendor_name'];
                 } else {
                     $a_json_row["vendor_name"] = '<span title="' . $a['last_vendor_name'] . '">' . substr($a['last_vendor_name'], 0, 8) . '...</span>';
                 }
-                
+
                 if ($a['last_vendor_unit_price'] !== null) {
                     $a_json_row["vendor_unit_price"] = number_format($a['last_vendor_unit_price'], 2);
                 } else {
                     $a_json_row["vendor_unit_price"] = 0;
                 }
-                
+
                 $a_json_row["currency"] = $a['last_currency'];
-                
+
                 $received_detail = "/inventory/item-transaction/pr-row?pr_row_id=" . $pr_row_entity->getId();
-                
+
                 if ($pr_row_entity->getItem()->getItemName() !== null) {
                     $onclick1 = "showJqueryDialog('Receiving of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
                         ->getItemName()) . "','1350',$(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
                 } else {
                     $onclick1 = "showJqueryDialog('Receiving of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1350', $(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
                 }
-                
+
                 if ($a['total_received'] > 0) {
                     $a_json_row["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . $a['total_received'] . '</a>';
                 } else {
                     $a_json_row["total_received"] = "";
                 }
                 $a_json_row["buying"] = $a['po_quantity_draft'] + $a['po_quantity_final'] + $a['ap_quantity_draft'];
-                
+
                 if ($pr_row_entity->getProject() !== null) {
                     $a_json_row["project_id"] = $pr_row_entity->getProject()->getId();
                 } else {
                     $a_json_row["project_id"] = "";
                 }
-                
+
                 if (strlen($pr_row_entity->getRemarks()) < 20) {
                     $a_json_row["remarks"] = $pr_row_entity->getRemarks();
                 } else {
@@ -1459,15 +1485,15 @@ class PrRowController extends AbstractActionController
                 $a_json_row["receipt_date"] = "";
                 $a_json_row["vendor"] = "";
                 $a_json_row["vendor_id"] = "";
-                
+
                 $a_json[] = $a_json_row;
             }
         }
-        
+
         $a_json_final['data'] = $a_json;
         $a_json_final['totalRecords'] = $total_records;
         // $a_json_final ['curPage'] = $pq_curPage;
-        
+
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setContent(json_encode($a_json_final));
@@ -2100,6 +2126,12 @@ class PrRowController extends AbstractActionController
         $request = $this->getRequest();
         $this->layout("Procure/layout-fullscreen");
 
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        // Is Posting .................
+        // ============================
+
         if ($request->isPost()) {
 
             $errors = array();
@@ -2126,173 +2158,200 @@ class PrRowController extends AbstractActionController
                     'target' => null,
                     'entity' => null
                 ));
+            }
 
-                // might need redirect
+            $oldEntity = clone ($entity);
+
+            $edt = $request->getPost('edt');
+            $isActive = $request->getPost('isActive');
+            $priority = $request->getPost('priority');
+            $quantity = $request->getPost('quantity');
+
+            $errors = array();
+
+            $redirectUrl = $request->getPost('redirectUrl');
+
+            $edt = $request->getPost('edt');
+            $isActive = (int) $request->getPost('isActive');
+
+            $rowNumber = (int) $request->getPost('rowNumber');
+
+            $priority = $request->getPost('priority');
+            $quantity = $request->getPost('quantity');
+
+            $remarks = $request->getPost('remarks');
+            $rowCode = $request->getPost('rowCode');
+            $rowName = $request->getPost('rowName');
+            $rowUnit = $request->getPost('rowUnit');
+
+            // understood converstion factor to standard unit.
+            $conversionFactor = $request->getPost('conversionFactor');
+
+            $item_id = $request->getPost('item_id');
+            $project_id = $request->getPost('project_id');
+
+            if ($isActive != 1) {
+                $isActive = 0;
+            }
+
+            if ($item_id > 0) {
+                $item = $this->doctrineEM->find('Application\Entity\NmtInventoryItem', $item_id);
+                $entity->setItem($item);
+            }
+
+            if ($project_id > 0) {
+                $project = $this->doctrineEM->find('Application\Entity\NmtPmProject', $project_id);
+                if ($project !== null) {
+                    $entity->setProject($project);
+                }
+            }
+     
+            $entity->setRowNumber($rowNumber);
+            $entity->setIsActive($isActive);
+            $entity->setPriority($priority);
+            $entity->setRemarks($remarks);
+            $entity->setRowCode($rowCode);
+            $entity->setRowName($rowName);
+            $entity->setRowUnit($rowUnit);
+            $entity->setConversionFactor($conversionFactor);
+    
+            $validator = new Date();
+
+            // Empty is OK
+            if ($edt !== null) {
+                if ($edt !== "") {
+
+                    if (! $validator->isValid($edt)) {
+                        $errors[] = 'Date is not correct or empty!';
+                    } else {
+                        $entity->setEdt(new \DateTime($edt));
+                    }
+                }
+            }
+
+            $n_validated = 0;
+            if ($quantity == null) {
+                $errors[] = 'Please  enter order quantity!';
             } else {
 
-                $oldEntity = clone ($entity);
-
-                $edt = $request->getPost('edt');
-                $isActive = $request->getPost('isActive');
-                $priority = $request->getPost('priority');
-                $quantity = $request->getPost('quantity');
-
-                $remarks = $request->getPost('remarks');
-                $rowCode = $request->getPost('rowCode');
-                $rowName = $request->getPost('rowName');
-                $rowUnit = $request->getPost('rowUnit');
-                $conversionFactor = $request->getPost('conversionFactor');
-
-                $item_id = $request->getPost('item_id');
-                $project_id = $request->getPost('project_id');
-
-                if ($isActive != 1) {
-                    $isActive = 0;
-                }
-
-                // $entity = new NmtProcurePrRow ();
-
-                if ($item_id > 0) {
-                    $item = $this->doctrineEM->find('Application\Entity\NmtInventoryItem', $item_id);
-                    $entity->setItem($item);
-                }
-
-                if ($project_id > 0) {
-                    $project = $this->doctrineEM->find('Application\Entity\NmtPmProject', $project_id);
-                    if ($project !== null) {
-                        $entity->setProject($project);
-                    }
-                }
-
-                // $entity->setPr ( $target );
-                $entity->setIsActive($isActive);
-                $entity->setPriority($priority);
-                $entity->setRemarks($remarks);
-                $entity->setRowCode($rowCode);
-                $entity->setRowName($rowName);
-                $entity->setRowUnit($rowUnit);
-                $entity->setConversionFactor($conversionFactor);
-
-                if ($quantity == null) {
-                    $errors[] = 'Please  enter order quantity!';
+                if (! is_numeric($quantity)) {
+                    $errors[] = $nmtPlugin->translate("'quantity must be a number.'");
+                    ;
                 } else {
-
-                    if (! is_numeric($quantity)) {
-                        $errors[] = 'quantity must be a number.';
+                    if ($quantity <= 0) {
+                        $errors[] = 'quantity must be greater than 0!';
                     } else {
-                        if ($quantity <= 0) {
-                            $errors[] = 'quantity must be greater than 0!';
-                        } else {
-                            $entity->setQuantity($quantity);
-                        }
+                        $n_validated ++;
+                        $entity->setQuantity($quantity);
                     }
                 }
+            }
 
-                $validator = new Date();
+            if ($conversionFactor == null) {
+                // $errors [] = 'Please enter order quantity!';
+            } else {
 
-                // Empty is OK
-                if ($edt !== null) {
-                    if ($edt !== "") {
-
-                        if (! $validator->isValid($edt)) {
-                            $errors[] = 'Date is not correct or empty!';
-                        } else {
-                            $entity->setEdt(new \DateTime($edt));
-                        }
-                    }
-                }
-
-                if ($conversionFactor == null) {
-                    // $errors [] = 'Please enter order quantity!';
+                if (! is_numeric($conversionFactor)) {
+                    $errors[] = 'quantity must be a number.';
                 } else {
-
-                    if (! is_numeric($conversionFactor)) {
-                        $errors[] = 'Conversion Factor must be a number.';
+                    if ($conversionFactor <= 0) {
+                        $errors[] = 'quantity must be greater than 0!';
                     } else {
-                        if ($conversionFactor <= 0) {
-                            $errors[] = 'Conversion Factor must be greater than 0!';
-                        } else {
-                            $entity->setConversionFactor($conversionFactor);
-                        }
+                        $n_validated ++;
+                        $entity->setConversionFactor($conversionFactor);
                     }
                 }
+            }
 
-                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-                $nmtPlugin = $this->Nmtplugin();
-                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+            if ($n_validated == 2) {
+                if ($entity->getItem() !== null) {
 
-                if (count($changeArray) == 0) {
-                    $nTry ++;
-                    $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+                    $inventoryCF = $entity->getItem()->getStockUomConvertFactor();
+                    if ($inventoryCF == null) {
+                        $inventoryCF = 1;
+                    }
+
+                    $entity->setConveredStandardQuantiy($entity->getConversionFactor() * $entity->getQuantity());
+                    $entity->setConveredStockQuantity($entity->getQuantity() * $entity->getConversionFactor() / $inventoryCF);
                 }
+            }
 
-                if ($nTry >= 3) {
-                    $errors[] = sprintf('Do you really want to edit "%s"?', $entity->getPr()->getPrName() . '=>' . $entity->getRowIdentifer());
-                }
+            /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+            $nmtPlugin = $this->Nmtplugin();
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
-                if ($nTry == 5) {
-                    $m = sprintf('You might be not ready to edit "%s". Please try later!', $entity->getPr()->getPrName() . '=>' . $entity->getRowIdentifer());
-                    $this->flashMessenger()->addMessage($m);
-                    return $this->redirect()->toUrl($redirectUrl);
-                }
+            if (count($changeArray) == 0) {
+                $nTry ++;
+                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+            }
 
-                if (count($errors) > 0) {
-                    return new ViewModel(array(
+            if ($nTry >= 3) {
+                $errors[] = sprintf('Do you really want to edit "%s"?', $entity->getPr()->getPrName() . '=>' . $entity->getRowIdentifer());
+            }
 
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'entity' => $entity,
-                        'target' => $entity->getPr(),
-                        'n' => $nTry
-                    ));
-                }
-
-                // NO ERROR
-                // =====================
-
-                $changeOn = new \DateTime();
-
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    "email" => $this->identity()
-                ));
-
-                $entity->setRevisionNo($entity->getRevisionNo() + 1);
-
-                $m = sprintf('"PR Row #%s; %s" updated. Change No.:%s. OK!', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
-
-                $entity->setLastchangeBy($u);
-                $entity->setLastchangeOn($changeOn);
-
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-
-                // trigger log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('procure.change.log', __CLASS__, array(
-                    'priority' => 7,
-                    'message' => $m,
-                    'objectId' => $entity->getId(),
-                    'objectToken' => $entity->getToken(),
-                    'changeArray' => $changeArray,
-                    'changeBy' => $u,
-                    'changeOn' => $changeOn,
-                    'revisionNumber' => $entity->getRevisionNo(),
-                    'changeDate' => $changeOn,
-                    'changeValidFrom' => $changeOn
-                ));
-
-                // Trigger: procure.activity.log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
-                    'priority' => \Zend\Log\Logger::INFO,
-                    'message' => $m,
-                    'createdBy' => $u,
-                    'createdOn' => $changeOn
-                ));
-
-                $index_update_status = $this->prSearchService->updateIndex(0, $entity, fasle);
-
-                $this->flashMessenger()->addMessage($index_update_status);
+            if ($nTry == 5) {
+                $m = sprintf('You might be not ready to edit "%s". Please try later!', $entity->getPr()->getPrName() . '=>' . $entity->getRowIdentifer());
+                $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
+
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $entity->getPr(),
+                    'n' => $nTry
+                ));
+            }
+
+            // No ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            $changeOn = new \DateTime();
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+
+            $m = sprintf('"PR Row #%s; %s" updated. Change No.:%s. OK!', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
+
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+
+            // trigger log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.change.log', __CLASS__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+
+            // Trigger: procure.activity.log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+
+            $index_update_status = $this->prSearchService->updateIndex(0, $entity, fasle);
+
+            $this->flashMessenger()->addMessage($index_update_status);
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO Post
@@ -2338,9 +2397,11 @@ class PrRowController extends AbstractActionController
     {
         $request = $this->getRequest();
         // accepted only ajax request
-       /*  if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
-        } */
+        /*
+         * if (! $request->isXmlHttpRequest()) {
+         * return $this->redirect()->toRoute('access_denied');
+         * }
+         */
         $this->layout("layout/user/ajax");
 
         $item_id = (int) $this->params()->fromQuery('item_id');
@@ -2353,10 +2414,9 @@ class PrRowController extends AbstractActionController
         $viewModel = new ViewModel(array(
             'rows' => $rows
         ));
-        
+
         $viewModel->setTemplate("procure/pr-row/pr-of-item1");
         return $viewModel;
-        
     }
 
     /**
@@ -2378,7 +2438,9 @@ class PrRowController extends AbstractActionController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getCacheService()
@@ -2387,11 +2449,11 @@ class PrRowController extends AbstractActionController
     }
 
     /**
+     *
      * @param mixed $cacheService
      */
     public function setCacheService(StorageInterface $cacheService)
     {
         $this->cacheService = $cacheService;
     }
-
 }

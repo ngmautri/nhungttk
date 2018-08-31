@@ -134,7 +134,7 @@ class APInvoiceService extends AbstractService
 
             $m = sprintf('[ERROR] %s', $e->getMessage());
             $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
+                'priority' => \Zend\Log\Logger::ERR,
                 'message' => $m,
                 'createdBy' => $u,
                 'createdOn' => $changeOn

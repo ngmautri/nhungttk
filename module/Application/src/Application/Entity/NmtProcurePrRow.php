@@ -191,6 +191,20 @@ class NmtProcurePrRow
     private $transactionStatus;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="convered_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $converedStockQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="convered_standard_quantiy", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $converedStandardQuantiy;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -826,6 +840,54 @@ class NmtProcurePrRow
     public function getTransactionStatus()
     {
         return $this->transactionStatus;
+    }
+
+    /**
+     * Set converedStockQuantity
+     *
+     * @param string $converedStockQuantity
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setConveredStockQuantity($converedStockQuantity)
+    {
+        $this->converedStockQuantity = $converedStockQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get converedStockQuantity
+     *
+     * @return string
+     */
+    public function getConveredStockQuantity()
+    {
+        return $this->converedStockQuantity;
+    }
+
+    /**
+     * Set converedStandardQuantiy
+     *
+     * @param string $converedStandardQuantiy
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setConveredStandardQuantiy($converedStandardQuantiy)
+    {
+        $this->converedStandardQuantiy = $converedStandardQuantiy;
+
+        return $this;
+    }
+
+    /**
+     * Get converedStandardQuantiy
+     *
+     * @return string
+     */
+    public function getConveredStandardQuantiy()
+    {
+        return $this->converedStandardQuantiy;
     }
 
     /**

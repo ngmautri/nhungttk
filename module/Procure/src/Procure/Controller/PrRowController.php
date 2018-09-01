@@ -32,6 +32,78 @@ class PrRowController extends AbstractActionController
 
     /**
      *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function getRowAction()
+    {
+        $id = $this->params()->fromQuery('id');
+
+        /**@var \Application\Entity\NmtProcurePrRow $row ;*/
+        $row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy(array(
+            "id" => $id
+        ));
+
+        $a_json_row = array();
+
+        if ($row != null) {
+
+            $a_json_row["id"] = $row->getId();
+            $a_json_row["token"] = $row->getToken();
+            $a_json_row["pr_qty"] = $row->getQuantity();
+
+            $standard_cf = $row->getConversionFactor();
+            if ($standard_cf == null) {
+                $standard_cf = 1;
+            }
+
+            $a_json_row["pr_convert_factor"] = number_format($standard_cf, 2);
+
+            $standard_qty = $row->getConveredStandardQuantiy();
+
+            if ($standard_qty == null) {
+                $standard_qty = $row->getQuantity();
+            }
+            $a_json_row["pr_converted_standard_qty"] = number_format($standard_qty, 2);
+
+            $a_json_row["pr_converted_stock_quantity"] = $row->getConveredStockQuantity();
+
+            $pr_uom = $row->getRowUnit();
+
+            $a_json_row["pr_uom"] = $pr_uom;
+
+            /**@var \Application\Entity\NmtInventoryItem $item ;*/
+
+            $item = $row->getItem();
+            if ($item != null) {
+                $a_json_row["item_id"] = $item->getId();
+                $a_json_row["item_token"] = $item->getToken();
+                $a_json_row["item_stock_convert_factor"] = $item->getStockUomConvertFactor();
+
+                $item_stock_uom = '';
+                if ($item->getStockUom() != null) {
+                    $item_stock_uom = $item->getStockUom()->getUomCode();
+                }
+
+                $a_json_row["item_stock_uom"] = $item_stock_uom;
+
+                $item_standard_uom = '';
+                if ($item->getStandardUom() != null) {
+                    $item_standard_uom = $item->getStandardUom()->getUomCode();
+                }
+
+                $a_json_row["item_standard_uom"] = $item_standard_uom;
+            }
+        }
+
+        // var_dump($a_json);
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_row));
+        return $response;
+    }
+
+    /**
+     *
      * @return \Procure\Service\PrSearchService
      */
     public function getPrSearchService()
@@ -2205,7 +2277,7 @@ class PrRowController extends AbstractActionController
                     $entity->setProject($project);
                 }
             }
-     
+
             $entity->setRowNumber($rowNumber);
             $entity->setIsActive($isActive);
             $entity->setPriority($priority);
@@ -2214,7 +2286,7 @@ class PrRowController extends AbstractActionController
             $entity->setRowName($rowName);
             $entity->setRowUnit($rowUnit);
             $entity->setConversionFactor($conversionFactor);
-    
+
             $validator = new Date();
 
             // Empty is OK

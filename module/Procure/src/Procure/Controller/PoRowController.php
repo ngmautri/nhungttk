@@ -128,6 +128,7 @@ class PoRowController extends AbstractActionController
                     // $errors[] = 'Item can\'t be empty!';
                 } else {
                     $entity->setPrRow($pr_row);
+                    
                 }
 
                 if ($item == null) {
@@ -138,8 +139,7 @@ class PoRowController extends AbstractActionController
 
                 $entity->setVendorItemCode($vendorItemCode);
                 $entity->setUnit($unit);
-                $entity->setConversionFactor($conversionFactor);
-                $entity->setConverstionText($converstionText);
+                 $entity->setConverstionText($converstionText);
 
                 $n_validated = 0;
 
@@ -204,6 +204,26 @@ class PoRowController extends AbstractActionController
                     $grossAmount = $entity->getNetAmount() + $taxAmount;
                     $entity->setTaxAmount($taxAmount);
                     $entity->setGrossAmount($grossAmount);
+                }
+                
+                if ($conversionFactor == null) {
+                    // $errors [] = 'Please enter order quantity!';
+                } else {
+                    
+                    if (! is_numeric($conversionFactor)) {
+                        $errors[] = 'conversion factor must be a number.';
+                    } else {
+                        if ($conversionFactor <= 0) {
+                            $errors[] = 'converstion factor must be greater than 0!';
+                        } else {
+                            $entity->setConversionFactor($conversionFactor);
+                            
+                            //calculate standard quantity
+                            $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+                            $entity->setConvertedStandardQuantity($convertedStandardQuantity);
+                            $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+                        }
+                    }
                 }
 
                 // $entity->setTraceStock($traceStock);

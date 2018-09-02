@@ -183,7 +183,7 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="4" class="form-control input-sm" type="text"
 									id="quantity" name="quantity"
-									value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
+									value="<?php echo (!$entity == null)? $entity->getDocQuantity():"";?>">
 							</div>
 							<div class="col-sm-3">
 								<div style="color: graytext; padding-bottom: 5px;"
@@ -196,7 +196,7 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="5" class="form-control input-sm" type="text"
 									name="unit" id="rowUnit"
-									value="<?php echo (!$entity == null)? $entity->getUnit():"each";?>">
+									value="<?php echo (!$entity == null)? $entity->getDocUnit():"each";?>">
 							</div>
 							<label class="control-label col-sm-2" for="inputTag">Converstion
 								Factor:</label>
@@ -223,7 +223,7 @@ if (count($errors) > 0) {
 							<div class="col-sm-3">
 								<input tabindex="7" class="form-control input-sm" type="text"
 									id="unit_price" name="unitPrice"
-									value="<?php echo (!$entity == null)? $entity->getUnitPrice():"";?>">
+									value="<?php echo (!$entity == null)? $entity->getDocUnitPrice():"";?>">
 							</div>
 							<div class="col-sm-1" style="margin-left: 0px">
 								<strong><?php if (!$target == null): echo $target->getCurrency()->getCurrency(); endif;?></strong>

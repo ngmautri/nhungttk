@@ -195,7 +195,7 @@ class APInvoiceService extends AbstractService
 
             $gl_account = null;
             $cost_center = null;
-            
+
             if ($r->getItem() !== null) {
 
                 $criteria = array(
@@ -208,9 +208,9 @@ class APInvoiceService extends AbstractService
                 if ($item_group != null) {
 
                     if ($r->getItem()->getIsStocked() == 1) {
-                        $gl_account = $item_group->getInventoryAccount();                        
-                    }else{
-                        $gl_account = $item_group->getExpenseAccount();    
+                        $gl_account = $item_group->getInventoryAccount();
+                    } else {
+                        $gl_account = $item_group->getExpenseAccount();
                         $cost_center = $item_group->getCostCenter();
                     }
                 }
@@ -218,10 +218,10 @@ class APInvoiceService extends AbstractService
 
             $n ++;
             $row_tmp = new FinVendorInvoiceRow();
-            
+
             $row_tmp->setGlAccount($gl_account);
             $row_tmp->setCostCenter($cost_center);
-            
+
             $row_tmp->setDocStatus($entity->getDocStatus());
 
             // Goods and Invoice receipt
@@ -238,44 +238,41 @@ class APInvoiceService extends AbstractService
             $row_tmp->setPoRow($r);
             $row_tmp->setPrRow($r->getPrRow());
             $row_tmp->setItem($r->getItem());
+
+            // converted to purchase qty
             $row_tmp->setQuantity($l['open_ap_qty']);
+            $row_tmp->setUnitPrice($r->getUnitPrice());
 
             $row_tmp->setUnit($r->getUnit());
-            $row_tmp->setUnitPrice($r->getUnitPrice());
+
             $row_tmp->setTaxRate($r->getTaxRate());
             $row_tmp->setConversionFactor($r->getConversionFactor());
-            
-            //new
-            $convertedPurchaseQuantity=$r->getQuantity();
-            
-            if($r->getConvertedPurchaseQuantity()!=null){
-                $convertedPurchaseQuantity =  $r->getConvertedPurchaseQuantity();
+
+            $row_tmp->setDocUnitPrice($r->getDocUnitPrice());
+            $row_tmp->setDocUnit($r->getDocUnit());
+
+            $item = $r->getItem();
+            $pr_row = $r->getPrRow();
+
+            $convertedStandardQuantity = $row_tmp->getQuantity();
+            $convertedStandardUnitPrice = $row_tmp->getUnitPrice();
+
+            // converted to purchase qty
+            $standardCF = 1;
+
+            if ($pr_row != null) {
+                $standardCF = $standardCF * $pr_row->getConversionFactor();
             }
-            
-            //new
-            $convertedStandardQuantity=$r->getQuantity();
-            
-            if($r->getConvertedStandardQuantity()!=null){
-                $convertedStandardQuantity =  $r->getConvertedStandardQuantity();
+
+            if ($item != null) {
+                $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
+                $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
             }
-            
-            //new
-            $convertedStandardUnitPrice= $r->getUnitPrice()/$convertedStandardQuantity;
-            
-            $convertedStockQuantity=$r->getQuantity();
-            
-            if($r->getConvertedStockQuantity()!=null){
-                $convertedStockQuantity =  $r->getConvertedStockQuantity();
-            }
-            
-            $convertedStockUnitPrice=$r->getUnitPrice()/$convertedStockQuantity;
-            
-            $row_tmp->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+
+            // calculate standard quantity
             $row_tmp->setConvertedStandardQuantity($convertedStandardQuantity);
-            $row_tmp->setConvertedStockQuantity($convertedStockQuantity);
             $row_tmp->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
-            $row_tmp->setConvertedStockUnitPrice($convertedStockUnitPrice);
-          
+
             $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
             $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
             $grossAmount = $netAmount + $taxAmount;
@@ -348,36 +345,36 @@ class APInvoiceService extends AbstractService
             $r = $l[0];
 
             $n ++;
-            
+
             $gl_account = null;
             $cost_center = null;
-            
+
             if ($r->getItem() !== null) {
-                
+
                 $criteria = array(
                     'isActive' => 1,
                     'id' => $r->getItem()->getItemGroup()
                 );
                 /** @var \Application\Entity\NmtInventoryItemGroup $item_group ; */
                 $item_group = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
-                
+
                 if ($item_group != null) {
-                    
+
                     if ($r->getItem()->getIsStocked() == 1) {
                         $gl_account = $item_group->getInventoryAccount();
-                    }else{
+                    } else {
                         $gl_account = $item_group->getExpenseAccount();
                         $cost_center = $item_group->getCostCenter();
                     }
                 }
             }
-            
+
             $n ++;
             $row_tmp = new FinVendorInvoiceRow();
-            
+
             $row_tmp->setGlAccount($gl_account);
             $row_tmp->setCostCenter($cost_center);
-    
+
             $row_tmp->setDocStatus($entity->getDocStatus());
             // $row_tmp->setTransactionType($entity->getTransactionStatus());
 

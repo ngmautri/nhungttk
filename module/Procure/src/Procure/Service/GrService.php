@@ -149,9 +149,32 @@ class GrService extends AbstractService
                     $stock_gr_entity->setItem($r->getItem());
                     $stock_gr_entity->setPrRow($r->getPrRow());
                     $stock_gr_entity->setPoRow($r->getPoRow());
-                    $stock_gr_entity->setQuantity($r->getQuantity());
+                  
                     $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
                     $stock_gr_entity->setVendorItemUnit($r->getUnit());
+                    
+                    
+                    $qty=$r->getQuantity();
+                    if ($r->getConvertedStandardQuantity() != null) {
+                        $qty = $r->getConvertedStandardQuantity();
+                    }
+                    
+                    $unitPrice=$r->getUnitPrice();
+                    if ($r->getConvertedStandardUnitPrice() != null) {
+                        $unitPrice = $r->getConvertedStandardUnitPrice();
+                    }
+                    
+                    $stock_gr_entity->setQuantity($qty);
+                    $stock_gr_entity->setVendorUnitPrice($unitPrice);
+                    
+                    $convertedPurchaseQuantity = $r->getQuantity();
+                    if ($r->getConvertedPurchaseQuantity() != null) {
+                        $convertedPurchaseQuantity = $r->getConvertedPurchaseQuantity();
+                    }
+                    
+                    $stock_gr_entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);                   
+                    
+                    
                     $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
                     $stock_gr_entity->setTrxDate($entity->getGrDate());
                     $stock_gr_entity->setCurrency($entity->getCurrency());
@@ -277,6 +300,38 @@ class GrService extends AbstractService
             $row_tmp->setUnit($r->getUnit());
             $row_tmp->setUnitPrice($r->getUnitPrice());
             $row_tmp->setTaxRate($r->getTaxRate());
+            
+            //new
+            $convertedPurchaseQuantity=$r->getQuantity();
+            
+            if($r->getConvertedPurchaseQuantity()!=null){
+                $convertedPurchaseQuantity =  $r->getConvertedPurchaseQuantity();
+            }
+            
+            //new
+            $convertedStandardQuantity=$r->getQuantity();
+            
+            if($r->getConvertedStandardQuantity()!=null){
+                $convertedStandardQuantity =  $r->getConvertedStandardQuantity();
+            }
+            
+            //new
+            $convertedStandardUnitPrice= $r->getUnitPrice()/$convertedStandardQuantity;
+            
+            $convertedStockQuantity=$r->getQuantity();
+            
+            if($r->getConvertedStockQuantity()!=null){
+                $convertedStockQuantity =  $r->getConvertedStockQuantity();
+            }
+            
+            $convertedStockUnitPrice=$r->getUnitPrice()/$convertedStockQuantity;
+            
+            $row_tmp->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+            $row_tmp->setConvertedStandardQuantity($convertedStandardQuantity);
+            $row_tmp->setConvertedStockQuantity($convertedStockQuantity);
+            $row_tmp->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+            $row_tmp->setConvertedStockUnitPrice($convertedStockUnitPrice);
+                        
 
             $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
             $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;

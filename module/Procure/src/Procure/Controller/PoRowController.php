@@ -86,208 +86,220 @@ class PoRowController extends AbstractActionController
 
                 $viewModel->setTemplate("procure/po-row/add-row");
                 return $viewModel;
+            }
 
-                // might need redirect
+            $item_id = (int) $request->getPost('item_id');
+            $pr_row_id = (int) $request->getPost('pr_row_id');
+            $isActive = (int) $request->getPost('isActive');
+
+            $rowNumber = $request->getPost('rowNumber');
+
+            $vendorItemCode = $request->getPost('vendorItemCode');
+            $unit = $request->getPost('unit');
+            $conversionFactor = $request->getPost('conversionFactor');
+            $converstionText = $request->getPost('converstionText');
+
+            $quantity = $request->getPost('quantity');
+            $unitPrice = $request->getPost('unitPrice');
+            $exwUnitPrice = $request->getPost('exwUnitPrice');
+
+            $taxRate = $request->getPost('taxRate');
+
+            $remarks = $request->getPost('remarks');
+
+            if ($isActive !== 1) {
+                $isActive = 0;
+            }
+
+            // Inventory Transaction:
+
+            $entity = new NmtProcurePoRow();
+
+            $entity->setIsActive($isActive);
+
+            $entity->setPo($target);
+            $entity->setRowNumber($rowNumber);
+
+            /**@var \Application\Entity\NmtProcurePrRow $pr_row ;*/
+            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+
+            /**@var \Application\Entity\NmtInventoryItem $item ;*/
+            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+
+            if ($pr_row == null) {
+                // $errors[] = 'Item can\'t be empty!';
+            } else {
+                $entity->setPrRow($pr_row);
+            }
+
+            if ($item == null) {
+                $errors[] = $nmtPlugin->translate('Item can\'t be empty!');
+            } else {
+                $entity->setItem($item);
+            }
+
+            $entity->setVendorItemCode($vendorItemCode);
+            $entity->setUnit($unit);
+            $entity->setDocUnit($unit);
+            $entity->setConverstionText($converstionText);
+
+            $n_validated = 0;
+
+            if (! is_numeric($quantity)) {
+                $errors[] = $nmtPlugin->translate('Quantity must be a number.');
+            } else {
+                if ($quantity <= 0) {
+                    $errors[] = $nmtPlugin->translate('Quantity must be > 0!');
+                } else {
+                    // $entity->setQuantity($quantity);
+                    $entity->setDocQuantity($quantity);
+                    $n_validated ++;
+                }
+            }
+
+            if (! is_numeric($unitPrice)) {
+                $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
+            } else {
+                if ($unitPrice < 0) {
+                    $errors[] = $nmtPlugin->translate('Price must be >   0!');
+                } else {
+                    // $entity->setUnitPrice($unitPrice);
+                    $entity->setDocUnitPrice($unitPrice);
+                    $n_validated ++;
+                }
+            }
+
+            if ($exwUnitPrice != null) {
+                if (! is_numeric($exwUnitPrice)) {
+                    $errors[] = $nmtPlugin->translate('Exw Price is not valid. It must be a number.');
+                } else {
+                    if ($exwUnitPrice <= 0) {
+                        $errors[] = $nmtPlugin->translate('Exw Price must be >=0!');
+                    } else {
+                        $entity->setExwUnitPrice($exwUnitPrice);
+                        if ($entity->getQuantity() > 0) {
+                            $entity->setTotalExwPrice($entity->getExwUnitPrice() * $entity->getDocQuantity());
+                        }
+                    }
+                }
+            }
+
+            if ($n_validated == 2) {
+                $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
+                $entity->setNetAmount($netAmount);
+                $entity->setGrossAmount($netAmount);
+            }
+
+            if ($taxRate !== null) {
+                if (! is_numeric($taxRate)) {
+                    $errors[] = $nmtPlugin->translate('TaxRate is not valid. It must be a number.');
+                } else {
+                    if ($taxRate < 0) {
+                        $errors[] = $nmtPlugin->translate('TaxRate must be >0');
+                    } else {
+                        $entity->setTaxRate($taxRate);
+                        $n_validated ++;
+                    }
+                }
+            }
+
+            if ($n_validated == 3) {
+                $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
+                $grossAmount = $entity->getNetAmount() + $taxAmount;
+                $entity->setTaxAmount($taxAmount);
+                $entity->setGrossAmount($grossAmount);
+            }
+
+            if ($conversionFactor == null) {
+                // $errors [] = 'Please enter order quantity!';
+                $conversionFactor = 1;
             } else {
 
-                $item_id = (int) $request->getPost('item_id');
-                $pr_row_id = (int) $request->getPost('pr_row_id');
-                $isActive = (int) $request->getPost('isActive');
-
-                $rowNumber = $request->getPost('rowNumber');
-
-                $vendorItemCode = $request->getPost('vendorItemCode');
-                $unit = $request->getPost('unit');
-                $conversionFactor = $request->getPost('conversionFactor');
-                $converstionText = $request->getPost('converstionText');
-
-                $quantity = $request->getPost('quantity');
-                $unitPrice = $request->getPost('unitPrice');
-                $exwUnitPrice = $request->getPost('exwUnitPrice');
-
-                $taxRate = $request->getPost('taxRate');
-
-                $remarks = $request->getPost('remarks');
-
-                if ($isActive !== 1) {
-                    $isActive = 0;
-                }
-
-                // Inventory Transaction:
-
-                $entity = new NmtProcurePoRow();
-
-                $entity->setIsActive($isActive);
-
-                $entity->setPo($target);
-                $entity->setRowNumber($rowNumber);
-
-                /**@var \Application\Entity\NmtProcurePrRow $pr_row ;*/
-                $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-
-                /**@var \Application\Entity\NmtInventoryItem $item ;*/
-                $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-
-                if ($pr_row == null) {
-                    // $errors[] = 'Item can\'t be empty!';
+                if (! is_numeric($conversionFactor)) {
+                    $errors[] = 'conversion factor must be a number.';
                 } else {
-                    $entity->setPrRow($pr_row);
-                }
-
-                if ($item == null) {
-                    $errors[] = $nmtPlugin->translate('Item can\'t be empty!');
-                } else {
-                    $entity->setItem($item);
-                }
-
-                $entity->setVendorItemCode($vendorItemCode);
-                $entity->setUnit($unit);
-                $entity->setConverstionText($converstionText);
-
-                $n_validated = 0;
-
-                if (! is_numeric($quantity)) {
-                    $errors[] = $nmtPlugin->translate('Quantity must be a number.');
-                } else {
-                    if ($quantity <= 0) {
-                        $errors[] = $nmtPlugin->translate('Quantity must be > 0!');
+                    if ($conversionFactor <= 0) {
+                        $errors[] = 'converstion factor must be greater than 0!';
                     } else {
-                        $entity->setQuantity($quantity);
+                        $entity->setConversionFactor($conversionFactor);
                         $n_validated ++;
                     }
                 }
+            }
 
-                if (! is_numeric($unitPrice)) {
-                    $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
-                } else {
-                    if ($unitPrice < 0) {
-                        $errors[] = $nmtPlugin->translate('Price must be >   0!');
-                    } else {
-                        $entity->setUnitPrice($unitPrice);
-                        $n_validated ++;
-                    }
+            if ($n_validated == 4) {
+                $convertedPurchaseQuantity = $entity->getDocQuantity();
+                $convertedPurchaseUnitPrice = $entity->getDocUnitPrice();
+
+                $standardCF = $conversionFactor;
+
+                if ($pr_row != null) {
+                    $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
+                    $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
+                    $standardCF = $standardCF * $pr_row->getConversionFactor();
                 }
 
-                if ($exwUnitPrice != null) {
-                    if (! is_numeric($exwUnitPrice)) {
-                        $errors[] = $nmtPlugin->translate('Exw Price is not valid. It must be a number.');
-                    } else {
-                        if ($exwUnitPrice <= 0) {
-                            $errors[] = $nmtPlugin->translate('Exw Price must be >=0!');
-                        } else {
-                            $entity->setExwUnitPrice($exwUnitPrice);
-                            if ($entity->getQuantity() > 0) {
-                                $entity->setTotalExwPrice($entity->getExwUnitPrice() * $entity->getQuantity());
-                            }
-                        }
-                    }
+                $entity->setQuantity($convertedPurchaseQuantity);
+                $entity->setUnitPrice($convertedPurchaseUnitPrice);
+                $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
+
+                $convertedStandardQuantity = $entity->getDocQuantity();
+                $convertedStandardUnitPrice = $entity->getDocUnitPrice();
+
+                if ($item != null) {
+                    $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
+                    $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
                 }
 
-                if ($n_validated == 2) {
-                    $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
-                    $entity->setNetAmount($netAmount);
-                    $entity->setGrossAmount($netAmount);
-                }
+                // calculate standard quantity
+                $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+                $entity->setConvertedStandardQuantity($convertedStandardQuantity);
+                $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+            }
 
-                if ($taxRate !== null) {
-                    if (! is_numeric($taxRate)) {
-                        $errors[] = $nmtPlugin->translate('TaxRate is not valid. It must be a number.');
-                    } else {
-                        if ($taxRate < 0) {
-                            $errors[] = $nmtPlugin->translate('TaxRate must be >0');
-                        } else {
-                            $entity->setTaxRate($taxRate);
-                            $n_validated ++;
-                        }
-                    }
-                }
+            // $entity->setTraceStock($traceStock);
+            $entity->setRemarks($remarks);
 
-                if ($n_validated == 3) {
-                    $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                    $grossAmount = $entity->getNetAmount() + $taxAmount;
-                    $entity->setTaxAmount($taxAmount);
-                    $entity->setGrossAmount($grossAmount);
-                }
-
-                if ($conversionFactor == null) {
-                    // $errors [] = 'Please enter order quantity!';
-                } else {
-
-                    if (! is_numeric($conversionFactor)) {
-                        $errors[] = 'conversion factor must be a number.';
-                    } else {
-                        if ($conversionFactor <= 0) {
-                            $errors[] = 'converstion factor must be greater than 0!';
-                        } else {
-                            $entity->setConversionFactor($conversionFactor);
-                            $n_validated ++;
-                        }
-                    }
-                }
-
-                if ($n_validated == 4) {
-                    $convertedPurchaseQuantity = $entity->getQuantity();
-
-                    if ($pr_row != null) {
-                        $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
-                    }
-
-                    $convertedStandardQuantity = $entity->getQuantity();
-
-                    if ($item != null) {
-                        $convertedStandardQuantity = $convertedPurchaseQuantity * $pr_row->getConversionFactor();
-                    }
-
-                    // calculate standard quantity
-                    $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
-                    $entity->setConvertedStandardQuantity($convertedStandardQuantity);
-                    $entity->setConvertedStandardUnitPrice($entity->getUnitPrice() / $convertedStandardQuantity);
-                }
-
-                // $entity->setTraceStock($traceStock);
-                $entity->setRemarks($remarks);
-
-                if (count($errors) > 0) {
-                    $viewModel = new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'entity' => $entity,
-                        'target' => $target,
-                        'currency_list' => $currency_list,
-                        'total_row' => $po['total_row'],
-                        'max_row_number' => $po['total_row'],
-                        'net_amount' => $po['net_amount'],
-                        'tax_amount' => $po['tax_amount'],
-                        'gross_amount' => $po['gross_amount']
-                    ));
-
-                    $viewModel->setTemplate("procure/po-row/add-row");
-                    return $viewModel;
-                }
-                ;
-
-                // No ERROR
-                // Saving into Database..........
-                // ++++++++++++++++++++++++++++++
-
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    'email' => $this->identity()
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $target,
+                    'currency_list' => $currency_list,
+                    'total_row' => $po['total_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
                 ));
 
-                $entity->setCurrentState($target->getCurrentState());
-                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
-                $entity->setCreatedBy($u);
-                $entity->setCreatedOn(new \DateTime());
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-
-                $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-                $m = sprintf("[OK] Contract /PO Line: %s created!", $entity->getId());
-                $this->flashMessenger()->addMessage($m);
-
-                return $this->redirect()->toUrl($redirectUrl);
+                $viewModel->setTemplate("procure/po-row/add-row");
+                return $viewModel;
             }
+            ;
+
+            // No ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                'email' => $this->identity()
+            ));
+
+            $entity->setCurrentState($target->getCurrentState());
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn(new \DateTime());
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+
+            $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
+            $m = sprintf("[OK] Contract /PO Line: %s created!", $entity->getId());
+            $this->flashMessenger()->addMessage($m);
+
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
@@ -349,6 +361,8 @@ class PoRowController extends AbstractActionController
     }
 
     /**
+     *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
     public function showAction()
     {
@@ -541,6 +555,7 @@ class PoRowController extends AbstractActionController
 
             $entity->setVendorItemCode($vendorItemCode);
             $entity->setUnit($unit);
+            $entity->setDocUnit($unit);
             $entity->setConverstionText($converstionText);
 
             $n_validated = 0;
@@ -551,7 +566,8 @@ class PoRowController extends AbstractActionController
                 if ($quantity <= 0) {
                     $errors[] = $nmtPlugin->translate('Quantity must be > 0!');
                 } else {
-                    $entity->setQuantity($quantity);
+                    // $entity->setQuantity($quantity);
+                    $entity->setDocQuantity($quantity);
                     $n_validated ++;
                 }
             }
@@ -562,7 +578,8 @@ class PoRowController extends AbstractActionController
                 if ($unitPrice < 0) {
                     $errors[] = $nmtPlugin->translate('Price must be >   0!');
                 } else {
-                    $entity->setUnitPrice($unitPrice);
+                    // $entity->setUnitPrice($unitPrice);
+                    $entity->setDocUnitPrice($unitPrice);
                     $n_validated ++;
                 }
             }
@@ -576,14 +593,14 @@ class PoRowController extends AbstractActionController
                     } else {
                         $entity->setExwUnitPrice($exwUnitPrice);
                         if ($entity->getQuantity() > 0) {
-                            $entity->setTotalExwPrice($entity->getExwUnitPrice() * $entity->getQuantity());
+                            $entity->setTotalExwPrice($entity->getExwUnitPrice() * $entity->getDocQuantity());
                         }
                     }
                 }
             }
 
             if ($n_validated == 2) {
-                $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
+                $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
                 $entity->setNetAmount($netAmount);
                 $entity->setGrossAmount($netAmount);
             }
@@ -610,6 +627,7 @@ class PoRowController extends AbstractActionController
 
             if ($conversionFactor == null) {
                 // $errors [] = 'Please enter order quantity!';
+                $conversionFactor = 1;
             } else {
 
                 if (! is_numeric($conversionFactor)) {
@@ -625,22 +643,33 @@ class PoRowController extends AbstractActionController
             }
 
             if ($n_validated == 4) {
-                $convertedPurchaseQuantity = $entity->getQuantity();
+                $convertedPurchaseQuantity = $entity->getDocQuantity();
+                $convertedPurchaseUnitPrice = $entity->getDocUnitPrice();
+
+                $standardCF = $conversionFactor;
 
                 if ($pr_row != null) {
                     $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
+                    $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
+                    $standardCF = $standardCF * $pr_row->getConversionFactor();
                 }
 
-                $convertedStandardQuantity = $entity->getQuantity();
+                $entity->setQuantity($convertedPurchaseQuantity);
+                $entity->setUnitPrice($convertedPurchaseUnitPrice);
+                $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
+
+                $convertedStandardQuantity = $entity->getDocQuantity();
+                $convertedStandardUnitPrice = $entity->getDocUnitPrice();
 
                 if ($item != null) {
-                    $convertedStandardQuantity = $convertedPurchaseQuantity * $pr_row->getConversionFactor();
+                    $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
+                    $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
                 }
 
                 // calculate standard quantity
                 $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
                 $entity->setConvertedStandardQuantity($convertedStandardQuantity);
-                $entity->setConvertedStandardUnitPrice($entity->getUnitPrice() / $convertedStandardQuantity);
+                $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
             }
 
             // $entity->setTraceStock($traceStock);
@@ -689,16 +718,16 @@ class PoRowController extends AbstractActionController
             ));
 
             $changeOn = new \DateTime();
-            
+
             $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            //$entity->setLastchangeBy($u);
+            // $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);
-            
+
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-            
+
             $m = sprintf('[OK] PO Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
-            
+
             // Trigger Change Log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
                 'priority' => 7,
@@ -712,7 +741,7 @@ class PoRowController extends AbstractActionController
                 'changeDate' => $changeOn,
                 'changeValidFrom' => $changeOn
             ));
-            
+
             // Trigger: finance.activity.log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
                 'priority' => \Zend\Log\Logger::INFO,
@@ -723,11 +752,11 @@ class PoRowController extends AbstractActionController
                 'entity_class' => get_class($entity),
                 'entity_token' => $entity->getToken()
             ));
-            
+
             $this->flashMessenger()->addMessage($m);
-            
+
             $redirectUrl = "/procure/po/review?token=" . $entity->getPo()->getToken() . "&entity_id=" . $entity->getPo()->getId();
-             return $this->redirect()->toUrl($redirectUrl);
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST

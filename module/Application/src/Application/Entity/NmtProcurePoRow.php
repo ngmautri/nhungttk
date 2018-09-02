@@ -316,6 +316,20 @@ class NmtProcurePoRow
     private $docUnit;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $docUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_purchase_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $convertedPurchaseUnitPrice;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1413,6 +1427,54 @@ class NmtProcurePoRow
     public function getDocUnit()
     {
         return $this->docUnit;
+    }
+
+    /**
+     * Set docUnitPrice
+     *
+     * @param string $docUnitPrice
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setDocUnitPrice($docUnitPrice)
+    {
+        $this->docUnitPrice = $docUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get docUnitPrice
+     *
+     * @return string
+     */
+    public function getDocUnitPrice()
+    {
+        return $this->docUnitPrice;
+    }
+
+    /**
+     * Set convertedPurchaseUnitPrice
+     *
+     * @param string $convertedPurchaseUnitPrice
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice)
+    {
+        $this->convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedPurchaseUnitPrice
+     *
+     * @return string
+     */
+    public function getConvertedPurchaseUnitPrice()
+    {
+        return $this->convertedPurchaseUnitPrice;
     }
 
     /**

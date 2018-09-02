@@ -243,19 +243,23 @@ class APInvoiceService extends AbstractService
             $row_tmp->setUnit($r->getUnit());
             $row_tmp->setUnitPrice($r->getUnitPrice());
             $row_tmp->setTaxRate($r->getTaxRate());
+            $row_tmp->setConversionFactor($r->getConversionFactor());
             
+            //new
             $convertedPurchaseQuantity=$r->getQuantity();
             
             if($r->getConvertedPurchaseQuantity()!=null){
                 $convertedPurchaseQuantity =  $r->getConvertedPurchaseQuantity();
             }
             
+            //new
             $convertedStandardQuantity=$r->getQuantity();
             
             if($r->getConvertedStandardQuantity()!=null){
                 $convertedStandardQuantity =  $r->getConvertedStandardQuantity();
             }
             
+            //new
             $convertedStandardUnitPrice= $r->getUnitPrice()/$convertedStandardQuantity;
             
             $convertedStockQuantity=$r->getQuantity();

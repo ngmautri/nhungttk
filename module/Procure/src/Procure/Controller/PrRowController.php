@@ -299,6 +299,7 @@ class PrRowController extends AbstractActionController
             }
 
             $n_validated = 0;
+
             if ($quantity == null) {
                 $errors[] = 'Please  enter order quantity!';
             } else {
@@ -312,12 +313,14 @@ class PrRowController extends AbstractActionController
                     } else {
                         $n_validated ++;
                         $entity->setQuantity($quantity);
+                        $entity->setDocQuantity($quantity);
                     }
                 }
             }
 
             if ($conversionFactor == null) {
                 // $errors [] = 'Please enter order quantity!';
+                $conversionFactor = 1;
             } else {
 
                 if (! is_numeric($conversionFactor)) {
@@ -333,7 +336,7 @@ class PrRowController extends AbstractActionController
             }
 
             if ($n_validated == 2) {
-                if ($entity->getItem() !== null) {
+                if ($entity->getItem() != null) {
 
                     $inventoryCF = $entity->getItem()->getStockUomConvertFactor();
                     if ($inventoryCF == null) {
@@ -424,20 +427,19 @@ class PrRowController extends AbstractActionController
             $target = $pr[0];
         }
 
-        if ($target instanceof \Application\Entity\NmtProcurePr) {
-
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'target' => $target,
-                'entity' => null,
-                'total_row' => $pr['total_row'],
-                'max_row_number' => $pr['max_row_number'],
-                'active_row' => $pr['active_row']
-            ));
-        } else {
+        if ($target == null) {
             return $this->redirect()->toRoute('access_denied');
         }
+
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'target' => $target,
+            'entity' => null,
+            'total_row' => $pr['total_row'],
+            'max_row_number' => $pr['max_row_number'],
+            'active_row' => $pr['active_row']
+        ));
     }
 
     /**
@@ -2228,8 +2230,27 @@ class PrRowController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
-                    'entity' => null
+                    'entity' => null,
+                    'total_row' => null,
+                    'max_row_number' => null
                 ));
+            }
+
+            /**@var \Application\Entity\NmtProcurePr $target ;*/
+            $target = $entity->getPr();
+
+            if ($target == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+            $target_id = $target->getID();
+            $token = $target->getToken();
+
+            /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+            $pr = $res->getPR($target_id, $token);
+
+            if ($pr == null) {
+                return $this->redirect()->toRoute('access_denied');
             }
 
             $oldEntity = clone ($entity);
@@ -2315,6 +2336,7 @@ class PrRowController extends AbstractActionController
                     } else {
                         $n_validated ++;
                         $entity->setQuantity($quantity);
+                        $entity->setDocQuantity($quantity);
                     }
                 }
             }
@@ -2374,7 +2396,9 @@ class PrRowController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $entity->getPr(),
-                    'n' => $nTry
+                    'n' => $nTry,
+                    'total_row' => (int) $pr['total_row'],
+                    'max_row_number' => (int) $pr['max_row_number']
                 ));
             }
 
@@ -2420,7 +2444,7 @@ class PrRowController extends AbstractActionController
                 'createdOn' => $changeOn
             ));
 
-            $index_update_status = $this->prSearchService->updateIndex(0, $entity, fasle);
+            $index_update_status = $this->prSearchService->updateIndex(0, $entity, FALSE);
 
             $this->flashMessenger()->addMessage($index_update_status);
             return $this->redirect()->toUrl($redirectUrl);
@@ -2430,6 +2454,7 @@ class PrRowController extends AbstractActionController
         // ++++++++++++++++++++++
 
         $redirectUrl = null;
+
         if ($this->getRequest()->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
@@ -2437,28 +2462,44 @@ class PrRowController extends AbstractActionController
         }
 
         $id = (int) $this->params()->fromQuery('entity_id');
-        $checksum = $this->params()->fromQuery('checksum');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $id,
-            'checksum' => $checksum,
             'token' => $token
         );
 
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findOneBy($criteria);
 
-        if ($entity !== null) {
-
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'target' => $entity->getPr(),
-                'entity' => $entity,
-                'n' => 0
-            ));
-        } else {
+        if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
+
+        /**@var \Application\Entity\NmtProcurePr $target ;*/
+        $target = $entity->getPr();
+
+        if ($target == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $target_id = $target->getID();
+        $token = $target->getToken();
+
+        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $pr = $res->getPR($target_id, $token);
+
+        if ($pr == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'target' => $entity->getPr(),
+            'entity' => $entity,
+            'n' => 0,
+            'total_row' => (int) $pr['total_row'],
+            'max_row_number' => (int) $pr['max_row_number']
+        ));
     }
 
     /**

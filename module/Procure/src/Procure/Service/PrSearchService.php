@@ -283,7 +283,7 @@ class PrSearchService extends AbstractService
                     $doc->addField(Field::Text('asset_label_lastnumber', substr($s, $p, $l - $p) * 1));
                 }
                 $index->addDocument($doc);
-                if (optimized === true) {
+                if ($optimized === true) {
                     $index->optimize();
                 }
                 return $row->getId() . " index ID " . $ck_hit->id . " has been updated /added";

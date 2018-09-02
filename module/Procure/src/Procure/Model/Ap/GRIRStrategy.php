@@ -68,24 +68,44 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
 
         $gr_entity->setIsDraft($r->getIsDraft());
         $gr_entity->setIsPosted($r->getIsPosted());
-        $gr_entity->setDocStatus($r->getDocStatus());
-
-        $qty = $r->getQuantity();
-        $unitPrice = $r->getUnitPrice();
-
-        if ($r->getConvertedStandardQuantity() != null) {
-            $unitPrice = $r->getConvertedStandardQuantity();
-        }
-
-        if ($r->getConvertedStandardUnitPrice() != null) {
-            $unitPrice = $r->getConvertedStandardUnitPrice();
-        }
-
-        $gr_entity->setQuantity($qty);
-
+        $gr_entity->setDocStatus($r->getDocStatus());      
+       
+        $gr_entity->setQuantity($r->getQuantity());
         $gr_entity->setUnit($r->getUnit());
-        $gr_entity->setUnitPrice($unitPrice);
-
+        $gr_entity->setUnitPrice($r->getUnitPrice());
+        
+        $convertedPurchaseQuantity = $r->getQuantity();
+        if ($r->getConvertedPurchaseQuantity() != null) {
+            $convertedPurchaseQuantity = $r->getConvertedPurchaseQuantity();
+        }
+        
+        $convertedStandardQuantity = $r->getQuantity();
+        if ($r->getConvertedStandardQuantity() != null) {
+            $convertedStandardQuantity = $r->getConvertedStandardQuantity();
+        }
+        
+        $convertedStockQuantity = $r->getQuantity();
+        if ($r->getConvertedStockQuantity() != null) {
+            $convertedStockQuantity = $r->getConvertedStockQuantity();
+        }
+        
+        $convertedStandardUnitPrice = $r->getUnitPrice();
+        if ($r->getConvertedStandardUnitPrice() != null) {
+            $convertedStandardUnitPrice = $r->getConvertedStandardUnitPrice();
+        }
+        
+        $convertedStockUnitPrice = $r->getUnitPrice();
+        if ($r->getConvertedStockUnitPrice() != null) {
+            $convertedStockUnitPrice = $r->getConvertedStockUnitPrice();
+        }
+        
+        $gr_entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+        $gr_entity->setConvertedStandardQuantity($convertedStandardQuantity);
+        $gr_entity->setConvertedStockQuantity($convertedStockQuantity);
+        
+        $gr_entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+        $gr_entity->setConvertedStockUnitPrice($convertedStockUnitPrice);
+        
         $gr_entity->setNetAmount($r->getNetAmount());
         $gr_entity->setTaxRate($r->getTaxRate());
         $gr_entity->setTaxAmount($r->getTaxAmount());
@@ -183,11 +203,29 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
 
                 $stock_gr_entity->setVendor($entity->getVendor());
                 $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
-
+                
+                $stock_gr_entity->setDocQuantity($r->getQuantity());
+                $stock_gr_entity->setDocUnitPrice($r->getUnitPrice());
+                $stock_gr_entity->setDocUnit($r->getUnit());
+                 
+                $qty=$r->getQuantity();
+                if ($r->getConvertedStandardQuantity() != null) {
+                     $qty = $r->getConvertedStandardQuantity();
+                }
+            
+                $unitPrice=$r->getUnitPrice();
+                if ($r->getConvertedStandardUnitPrice() != null) {
+                    $unitPrice = $r->getConvertedStandardUnitPrice();
+                }
+                
+                $stock_gr_entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+          
                 $stock_gr_entity->setQuantity($qty);
-                $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
-                $stock_gr_entity->setVendorItemUnit($r->getUnit());
                 $stock_gr_entity->setVendorUnitPrice($unitPrice);
+                
+                $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
+                $stock_gr_entity->setVendorItemUnit($r->getUnit());                 
+                
                 $stock_gr_entity->setTrxDate($entity->getGrDate());
                 $stock_gr_entity->setCurrency($entity->getCurrency());
 

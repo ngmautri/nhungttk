@@ -65,9 +65,7 @@ if (count($errors) > 0) {
 				type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 				<input type="hidden" name="n" value="<?php echo $n;?>" />
 				
-
-
-						<fieldset>
+			<fieldset>
 							<legend style="font-size: 9pt; color: gray; margin: 5pt 1pt 5pt 1pt;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 								<a style="font-size: 9pt; color: gray;" href="#transaction"
@@ -78,7 +76,7 @@ if (count($errors) > 0) {
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2">Row Number: </label>
 									<div class="col-sm-1">
-										<input disabled tabindex="0" class="form-control input-sm" type="text"
+										<input tabindex="0" class="form-control input-sm" type="text"
 											id="rowNumber" name="rowNumber"
 											value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_row_number + 1;else:echo $entity->getRowNumber();endif;else:echo $max_row_number + 1;endif;?>">
 									</div>
@@ -185,6 +183,12 @@ if (count($errors) > 0) {
 											<span style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_text"></span>
 							
 									</div>
+									
+											<div class="col-sm-3">
+								<span
+									style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt"
+									id="">Converstion to item unit (see Item).</span>
+						</div>
 
 								</div>
 								<hr style="margin: 5pt 1pt 5pt 1pt;">

@@ -7,9 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePrRow
  *
- * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"}), @ORM\Index(name="nmt_procure_pr_row_FK5_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_procure_pr_row_IDX2", columns={"current_state"})})
+ * @ORM\Table(name="nmt_procure_pr_row", indexes={@ORM\Index(name="nmt_procure_pr_row_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_pr_row_FK2_idx", columns={"pr_id"}), @ORM\Index(name="nmt_procure_pr_row_FK4_idx", columns={"project_id"}), @ORM\Index(name="nmt_procure_pr_row_FK5_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_pr_row_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_pr_row_IDX1", columns={"is_active"}), @ORM\Index(name="nmt_procure_pr_row_IDX2", columns={"current_state"}), @ORM\Index(name="nmt_procure_pr_row_FK6_idx", columns={"doc_uom"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePrRowRepository")
  */
 class NmtProcurePrRow
 {
@@ -193,16 +192,30 @@ class NmtProcurePrRow
     /**
      * @var string
      *
-     * @ORM\Column(name="convered_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
      */
-    private $converedStockQuantity;
+    private $convertedStockQuantity;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="convered_standard_quantiy", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_standard_quantiy", type="decimal", precision=14, scale=4, nullable=true)
      */
-    private $converedStandardQuantiy;
+    private $convertedStandardQuantiy;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $docQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_unit", type="string", length=45, nullable=true)
+     */
+    private $docUnit;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -253,6 +266,16 @@ class NmtProcurePrRow
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationUom
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doc_uom", referencedColumnName="id")
+     * })
+     */
+    private $docUom;
 
 
 
@@ -843,51 +866,99 @@ class NmtProcurePrRow
     }
 
     /**
-     * Set converedStockQuantity
+     * Set convertedStockQuantity
      *
-     * @param string $converedStockQuantity
+     * @param string $convertedStockQuantity
      *
      * @return NmtProcurePrRow
      */
-    public function setConveredStockQuantity($converedStockQuantity)
+    public function setConvertedStockQuantity($convertedStockQuantity)
     {
-        $this->converedStockQuantity = $converedStockQuantity;
+        $this->convertedStockQuantity = $convertedStockQuantity;
 
         return $this;
     }
 
     /**
-     * Get converedStockQuantity
+     * Get convertedStockQuantity
      *
      * @return string
      */
-    public function getConveredStockQuantity()
+    public function getConvertedStockQuantity()
     {
-        return $this->converedStockQuantity;
+        return $this->convertedStockQuantity;
     }
 
     /**
-     * Set converedStandardQuantiy
+     * Set convertedStandardQuantiy
      *
-     * @param string $converedStandardQuantiy
+     * @param string $convertedStandardQuantiy
      *
      * @return NmtProcurePrRow
      */
-    public function setConveredStandardQuantiy($converedStandardQuantiy)
+    public function setConvertedStandardQuantiy($convertedStandardQuantiy)
     {
-        $this->converedStandardQuantiy = $converedStandardQuantiy;
+        $this->convertedStandardQuantiy = $convertedStandardQuantiy;
 
         return $this;
     }
 
     /**
-     * Get converedStandardQuantiy
+     * Get convertedStandardQuantiy
      *
      * @return string
      */
-    public function getConveredStandardQuantiy()
+    public function getConvertedStandardQuantiy()
     {
-        return $this->converedStandardQuantiy;
+        return $this->convertedStandardQuantiy;
+    }
+
+    /**
+     * Set docQuantity
+     *
+     * @param float $docQuantity
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setDocQuantity($docQuantity)
+    {
+        $this->docQuantity = $docQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get docQuantity
+     *
+     * @return float
+     */
+    public function getDocQuantity()
+    {
+        return $this->docQuantity;
+    }
+
+    /**
+     * Set docUnit
+     *
+     * @param string $docUnit
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setDocUnit($docUnit)
+    {
+        $this->docUnit = $docUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get docUnit
+     *
+     * @return string
+     */
+    public function getDocUnit()
+    {
+        return $this->docUnit;
     }
 
     /**
@@ -1008,5 +1079,29 @@ class NmtProcurePrRow
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set docUom
+     *
+     * @param \Application\Entity\NmtApplicationUom $docUom
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setDocUom(\Application\Entity\NmtApplicationUom $docUom = null)
+    {
+        $this->docUom = $docUom;
+
+        return $this;
+    }
+
+    /**
+     * Get docUom
+     *
+     * @return \Application\Entity\NmtApplicationUom
+     */
+    public function getDocUom()
+    {
+        return $this->docUom;
     }
 }

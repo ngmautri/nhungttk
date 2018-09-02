@@ -323,6 +323,41 @@ class NmtInventoryTrx
     private $exchangeRate;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_standard_quantity", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedStandardQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_standard_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedStandardUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedStockQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_stock_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedStockUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_purchase_quantity", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedPurchaseQuantity;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1604,6 +1639,126 @@ class NmtInventoryTrx
     public function getExchangeRate()
     {
         return $this->exchangeRate;
+    }
+
+    /**
+     * Set convertedStandardQuantity
+     *
+     * @param string $convertedStandardQuantity
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setConvertedStandardQuantity($convertedStandardQuantity)
+    {
+        $this->convertedStandardQuantity = $convertedStandardQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStandardQuantity
+     *
+     * @return string
+     */
+    public function getConvertedStandardQuantity()
+    {
+        return $this->convertedStandardQuantity;
+    }
+
+    /**
+     * Set convertedStandardUnitPrice
+     *
+     * @param string $convertedStandardUnitPrice
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setConvertedStandardUnitPrice($convertedStandardUnitPrice)
+    {
+        $this->convertedStandardUnitPrice = $convertedStandardUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStandardUnitPrice
+     *
+     * @return string
+     */
+    public function getConvertedStandardUnitPrice()
+    {
+        return $this->convertedStandardUnitPrice;
+    }
+
+    /**
+     * Set convertedStockQuantity
+     *
+     * @param string $convertedStockQuantity
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setConvertedStockQuantity($convertedStockQuantity)
+    {
+        $this->convertedStockQuantity = $convertedStockQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStockQuantity
+     *
+     * @return string
+     */
+    public function getConvertedStockQuantity()
+    {
+        return $this->convertedStockQuantity;
+    }
+
+    /**
+     * Set convertedStockUnitPrice
+     *
+     * @param string $convertedStockUnitPrice
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setConvertedStockUnitPrice($convertedStockUnitPrice)
+    {
+        $this->convertedStockUnitPrice = $convertedStockUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStockUnitPrice
+     *
+     * @return string
+     */
+    public function getConvertedStockUnitPrice()
+    {
+        return $this->convertedStockUnitPrice;
+    }
+
+    /**
+     * Set convertedPurchaseQuantity
+     *
+     * @param string $convertedPurchaseQuantity
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setConvertedPurchaseQuantity($convertedPurchaseQuantity)
+    {
+        $this->convertedPurchaseQuantity = $convertedPurchaseQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedPurchaseQuantity
+     *
+     * @return string
+     */
+    public function getConvertedPurchaseQuantity()
+    {
+        return $this->convertedPurchaseQuantity;
     }
 
     /**

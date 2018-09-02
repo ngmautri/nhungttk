@@ -70,9 +70,22 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
         $gr_entity->setIsPosted($r->getIsPosted());
         $gr_entity->setDocStatus($r->getDocStatus());
 
-        $gr_entity->setQuantity($r->getQuantity());
+        $qty = $r->getQuantity();
+        $unitPrice = $r->getUnitPrice();
+
+        if ($r->getConvertedStandardQuantity() != null) {
+            $unitPrice = $r->getConvertedStandardQuantity();
+        }
+
+        if ($r->getConvertedStandardUnitPrice() != null) {
+            $unitPrice = $r->getConvertedStandardUnitPrice();
+        }
+
+        $gr_entity->setQuantity($qty);
+
         $gr_entity->setUnit($r->getUnit());
-        $gr_entity->setUnitPrice($r->getUnitPrice());
+        $gr_entity->setUnitPrice($unitPrice);
+
         $gr_entity->setNetAmount($r->getNetAmount());
         $gr_entity->setTaxRate($r->getTaxRate());
         $gr_entity->setTaxAmount($r->getTaxAmount());
@@ -171,10 +184,10 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 $stock_gr_entity->setVendor($entity->getVendor());
                 $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
 
-                $stock_gr_entity->setQuantity($r->getQuantity());
+                $stock_gr_entity->setQuantity($qty);
                 $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
                 $stock_gr_entity->setVendorItemUnit($r->getUnit());
-                $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
+                $stock_gr_entity->setVendorUnitPrice($unitPrice);
                 $stock_gr_entity->setTrxDate($entity->getGrDate());
                 $stock_gr_entity->setCurrency($entity->getCurrency());
 
@@ -185,10 +198,11 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 $stock_gr_entity->setCreatedBy($u);
                 $stock_gr_entity->setCreatedOn($createdOn);
                 $stock_gr_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-                
+
                 /**
+                 *
                  * @todo: calculate convert factor to inventory unit, and caculate new unit price.
-                 *  
+                 *
                  */
                 $procureSV->getDoctrineEM()->persist($stock_gr_entity);
             }

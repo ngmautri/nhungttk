@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * FinVendorInvoiceRow
  *
- * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK7_idx", columns={"po_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_IDX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_IDX2", columns={"is_active"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx1", columns={"gr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK10_idx", columns={"GL_account_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK11_idx", columns={"cost_center_id"})})
+ * @ORM\Table(name="fin_vendor_invoice_row", indexes={@ORM\Index(name="fin_vendor_invoice_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK6_idx", columns={"lastchange_by"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK7_idx", columns={"po_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_IDX1", columns={"current_state"}), @ORM\Index(name="fin_vendor_invoice_row_IDX2", columns={"is_active"}), @ORM\Index(name="fin_vendor_invoice_row_FK8_idx1", columns={"gr_row_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK10_idx", columns={"GL_account_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK11_idx", columns={"cost_center_id"}), @ORM\Index(name="fin_vendor_invoice_row_FK12_idx", columns={"doc_uom"})})
  * @ORM\Entity
  */
 class FinVendorInvoiceRow
@@ -316,6 +316,20 @@ class FinVendorInvoiceRow
     private $convertedStandardUnitPrice;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $docQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_unit", type="string", length=45, nullable=true)
+     */
+    private $docUnit;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -344,6 +358,16 @@ class FinVendorInvoiceRow
      * })
      */
     private $costCenter;
+
+    /**
+     * @var \Application\Entity\NmtApplicationUom
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doc_uom", referencedColumnName="id")
+     * })
+     */
+    private $docUom;
 
     /**
      * @var \Application\Entity\NmtProcurePrRow
@@ -1436,6 +1460,54 @@ class FinVendorInvoiceRow
     }
 
     /**
+     * Set docQuantity
+     *
+     * @param float $docQuantity
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setDocQuantity($docQuantity)
+    {
+        $this->docQuantity = $docQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get docQuantity
+     *
+     * @return float
+     */
+    public function getDocQuantity()
+    {
+        return $this->docQuantity;
+    }
+
+    /**
+     * Set docUnit
+     *
+     * @param string $docUnit
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setDocUnit($docUnit)
+    {
+        $this->docUnit = $docUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get docUnit
+     *
+     * @return string
+     */
+    public function getDocUnit()
+    {
+        return $this->docUnit;
+    }
+
+    /**
      * Set invoice
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
@@ -1505,6 +1577,30 @@ class FinVendorInvoiceRow
     public function getCostCenter()
     {
         return $this->costCenter;
+    }
+
+    /**
+     * Set docUom
+     *
+     * @param \Application\Entity\NmtApplicationUom $docUom
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setDocUom(\Application\Entity\NmtApplicationUom $docUom = null)
+    {
+        $this->docUom = $docUom;
+
+        return $this;
+    }
+
+    /**
+     * Get docUom
+     *
+     * @return \Application\Entity\NmtApplicationUom
+     */
+    public function getDocUom()
+    {
+        return $this->docUom;
     }
 
     /**

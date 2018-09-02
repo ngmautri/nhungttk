@@ -14,7 +14,7 @@ if ($total_records <= 0) {
 	
 	?>
 
-<table style="font-size: 10pt;" class="table table-bordered table-hover">
+<table id="mytable26" style="font-size: 9.5pt;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
@@ -66,7 +66,7 @@ if ($total_records <= 0) {
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/hr/contract-log/list1?object_token='. $objectToken.'&object_id='.$objectId .'&class_name='.$this->escapeHtml($className);
+	$base = $this->baseUrl . '/procure/change-log/list1?object_token='. $objectToken.'&object_id='.$objectId .'&class_name='.$this->escapeHtml($className);
 		$_connector_symbol = '&';
 		
 		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;

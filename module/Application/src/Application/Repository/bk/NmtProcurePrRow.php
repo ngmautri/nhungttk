@@ -193,16 +193,16 @@ class NmtProcurePrRow
     /**
      * @var string
      *
-     * @ORM\Column(name="convered_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=14, scale=4, nullable=true)
      */
-    private $converedStockQuantity;
+    private $convertedStockQuantity;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="convered_standard_quantiy", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="converted_standard_quantiy", type="decimal", precision=14, scale=4, nullable=true)
      */
-    private $converedStandardQuantiy;
+    private $convertedStandardQuantiy;
 
     /**
      * @var \Application\Entity\MlaUsers
@@ -843,51 +843,51 @@ class NmtProcurePrRow
     }
 
     /**
-     * Set converedStockQuantity
+     * Set convertedStockQuantity
      *
-     * @param string $converedStockQuantity
+     * @param string $convertedStockQuantity
      *
      * @return NmtProcurePrRow
      */
-    public function setConveredStockQuantity($converedStockQuantity)
+    public function setConvertedStockQuantity($convertedStockQuantity)
     {
-        $this->converedStockQuantity = $converedStockQuantity;
+        $this->convertedStockQuantity = $convertedStockQuantity;
 
         return $this;
     }
 
     /**
-     * Get converedStockQuantity
+     * Get convertedStockQuantity
      *
      * @return string
      */
-    public function getConveredStockQuantity()
+    public function getConvertedStockQuantity()
     {
-        return $this->converedStockQuantity;
+        return $this->convertedStockQuantity;
     }
 
     /**
-     * Set converedStandardQuantiy
+     * Set convertedStandardQuantiy
      *
-     * @param string $converedStandardQuantiy
+     * @param string $convertedStandardQuantiy
      *
      * @return NmtProcurePrRow
      */
-    public function setConveredStandardQuantiy($converedStandardQuantiy)
+    public function setConvertedStandardQuantiy($convertedStandardQuantiy)
     {
-        $this->converedStandardQuantiy = $converedStandardQuantiy;
+        $this->convertedStandardQuantiy = $convertedStandardQuantiy;
 
         return $this;
     }
 
     /**
-     * Get converedStandardQuantiy
+     * Get convertedStandardQuantiy
      *
      * @return string
      */
-    public function getConveredStandardQuantiy()
+    public function getConvertedStandardQuantiy()
     {
-        return $this->converedStandardQuantiy;
+        return $this->convertedStandardQuantiy;
     }
 
     /**

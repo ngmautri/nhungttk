@@ -243,7 +243,35 @@ class APInvoiceService extends AbstractService
             $row_tmp->setUnit($r->getUnit());
             $row_tmp->setUnitPrice($r->getUnitPrice());
             $row_tmp->setTaxRate($r->getTaxRate());
-
+            
+            $convertedPurchaseQuantity=$r->getQuantity();
+            
+            if($r->getConvertedPurchaseQuantity()!=null){
+                $convertedPurchaseQuantity =  $r->getConvertedPurchaseQuantity();
+            }
+            
+            $convertedStandardQuantity=$r->getQuantity();
+            
+            if($r->getConvertedStandardQuantity()!=null){
+                $convertedStandardQuantity =  $r->getConvertedStandardQuantity();
+            }
+            
+            $convertedStandardUnitPrice= $r->getUnitPrice()/$convertedStandardQuantity;
+            
+            $convertedStockQuantity=$r->getQuantity();
+            
+            if($r->getConvertedStockQuantity()!=null){
+                $convertedStockQuantity =  $r->getConvertedStockQuantity();
+            }
+            
+            $convertedStockUnitPrice=$r->getUnitPrice()/$convertedStockQuantity;
+            
+            $row_tmp->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+            $row_tmp->setConvertedStandardQuantity($convertedStandardQuantity);
+            $row_tmp->setConvertedStockQuantity($convertedStockQuantity);
+            $row_tmp->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+            $row_tmp->setConvertedStockUnitPrice($convertedStockUnitPrice);
+          
             $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
             $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
             $grossAmount = $netAmount + $taxAmount;

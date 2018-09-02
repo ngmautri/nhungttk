@@ -175,11 +175,14 @@ if (count($errors) > 0) {
 									</div>
 
 									<label class="control-label col-sm-2"><?php echo $this->translate("Convert Factor");?>:</label>
-									<div class="col-sm-3">
+									<div class="col-sm-1">
 										<input tabindex="5" class="form-control input-sm" type="text"
 											placeholder="" name="conversionFactor" id="conversionFactor"
 											value="<?php echo (!$entity== null)? $entity->getConversionFactor():"1";?>">
-											<div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_text"></div>
+									</div>
+									
+									<div class="col-sm-3">
+											<span style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_text"></span>
 							
 									</div>
 
@@ -257,7 +260,8 @@ if (count($errors) > 0) {
 
 								<a tabindex="7" class="btn btn-default btn-sm" style=""
 									href="javascript:;" onClick="submitForm('pr_row_form');"> <small><i
-										class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;Add
+										class="glyphicon glyphicon-floppy-disk"> </i></small>&nbsp;<?php echo $this->translate("Save");?>
+
 								</a> <a tabindex="8" class="btn btn-default btn-sm"
 									href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><small><i
 										class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureGrRow
  *
- * @ORM\Table(name="nmt_procure_gr_row", indexes={@ORM\Index(name="nmt_procure_gr_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_gr_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_gr_row_IDX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_gr_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_gr_row_FK9_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK10_idx", columns={"gr_id"}), @ORM\Index(name="nmt_procure_gr_row_IDX2", columns={"token"}), @ORM\Index(name="nmt_procure_gr_row_FK11_idx", columns={"ap_invoice_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK12_idx", columns={"GL_account_id"}), @ORM\Index(name="nmt_procure_gr_row_FK13_idx", columns={"cost_center_id"})})
+ * @ORM\Table(name="nmt_procure_gr_row", indexes={@ORM\Index(name="nmt_procure_gr_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_gr_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_gr_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_gr_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_gr_row_IDX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_gr_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_gr_row_FK9_idx", columns={"po_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK10_idx", columns={"gr_id"}), @ORM\Index(name="nmt_procure_gr_row_IDX2", columns={"token"}), @ORM\Index(name="nmt_procure_gr_row_FK11_idx", columns={"ap_invoice_row_id"}), @ORM\Index(name="nmt_procure_gr_row_FK12_idx", columns={"GL_account_id"}), @ORM\Index(name="nmt_procure_gr_row_FK13_idx", columns={"cost_center_id"}), @ORM\Index(name="nmt_procure_gr_row_FK14_idx", columns={"doc_uom"})})
  * @ORM\Entity
  */
 class NmtProcureGrRow
@@ -274,6 +274,62 @@ class NmtProcureGrRow
     private $totalExwPrice;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_purchase_quantity", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedPurchaseQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_standard_quantity", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedStandardQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_standard_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $convertedStandardUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_stock_quantity", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedStockQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="converted_stock_unit_price", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $convertedStockUnitPrice;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $docQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $docUnitPrice;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_unit", type="string", length=45, nullable=true)
+     */
+    private $docUnit;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -322,6 +378,16 @@ class NmtProcureGrRow
      * })
      */
     private $costCenter;
+
+    /**
+     * @var \Application\Entity\NmtApplicationUom
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doc_uom", referencedColumnName="id")
+     * })
+     */
+    private $docUom;
 
     /**
      * @var \Application\Entity\NmtProcurePrRow
@@ -1260,6 +1326,198 @@ class NmtProcureGrRow
     }
 
     /**
+     * Set convertedPurchaseQuantity
+     *
+     * @param string $convertedPurchaseQuantity
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setConvertedPurchaseQuantity($convertedPurchaseQuantity)
+    {
+        $this->convertedPurchaseQuantity = $convertedPurchaseQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedPurchaseQuantity
+     *
+     * @return string
+     */
+    public function getConvertedPurchaseQuantity()
+    {
+        return $this->convertedPurchaseQuantity;
+    }
+
+    /**
+     * Set convertedStandardQuantity
+     *
+     * @param string $convertedStandardQuantity
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setConvertedStandardQuantity($convertedStandardQuantity)
+    {
+        $this->convertedStandardQuantity = $convertedStandardQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStandardQuantity
+     *
+     * @return string
+     */
+    public function getConvertedStandardQuantity()
+    {
+        return $this->convertedStandardQuantity;
+    }
+
+    /**
+     * Set convertedStandardUnitPrice
+     *
+     * @param string $convertedStandardUnitPrice
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setConvertedStandardUnitPrice($convertedStandardUnitPrice)
+    {
+        $this->convertedStandardUnitPrice = $convertedStandardUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStandardUnitPrice
+     *
+     * @return string
+     */
+    public function getConvertedStandardUnitPrice()
+    {
+        return $this->convertedStandardUnitPrice;
+    }
+
+    /**
+     * Set convertedStockQuantity
+     *
+     * @param string $convertedStockQuantity
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setConvertedStockQuantity($convertedStockQuantity)
+    {
+        $this->convertedStockQuantity = $convertedStockQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStockQuantity
+     *
+     * @return string
+     */
+    public function getConvertedStockQuantity()
+    {
+        return $this->convertedStockQuantity;
+    }
+
+    /**
+     * Set convertedStockUnitPrice
+     *
+     * @param string $convertedStockUnitPrice
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setConvertedStockUnitPrice($convertedStockUnitPrice)
+    {
+        $this->convertedStockUnitPrice = $convertedStockUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get convertedStockUnitPrice
+     *
+     * @return string
+     */
+    public function getConvertedStockUnitPrice()
+    {
+        return $this->convertedStockUnitPrice;
+    }
+
+    /**
+     * Set docQuantity
+     *
+     * @param float $docQuantity
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setDocQuantity($docQuantity)
+    {
+        $this->docQuantity = $docQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get docQuantity
+     *
+     * @return float
+     */
+    public function getDocQuantity()
+    {
+        return $this->docQuantity;
+    }
+
+    /**
+     * Set docUnitPrice
+     *
+     * @param string $docUnitPrice
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setDocUnitPrice($docUnitPrice)
+    {
+        $this->docUnitPrice = $docUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get docUnitPrice
+     *
+     * @return string
+     */
+    public function getDocUnitPrice()
+    {
+        return $this->docUnitPrice;
+    }
+
+    /**
+     * Set docUnit
+     *
+     * @param string $docUnit
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setDocUnit($docUnit)
+    {
+        $this->docUnit = $docUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get docUnit
+     *
+     * @return string
+     */
+    public function getDocUnit()
+    {
+        return $this->docUnit;
+    }
+
+    /**
      * Set invoice
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
@@ -1377,6 +1635,30 @@ class NmtProcureGrRow
     public function getCostCenter()
     {
         return $this->costCenter;
+    }
+
+    /**
+     * Set docUom
+     *
+     * @param \Application\Entity\NmtApplicationUom $docUom
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setDocUom(\Application\Entity\NmtApplicationUom $docUom = null)
+    {
+        $this->docUom = $docUom;
+
+        return $this;
+    }
+
+    /**
+     * Get docUom
+     *
+     * @return \Application\Entity\NmtApplicationUom
+     */
+    public function getDocUom()
+    {
+        return $this->docUom;
     }
 
     /**

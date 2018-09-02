@@ -58,14 +58,14 @@ class PrRowController extends AbstractActionController
 
             $a_json_row["pr_convert_factor"] = number_format($standard_cf, 2);
 
-            $standard_qty = $row->getConveredStandardQuantiy();
+            $standard_qty = $row->getConvertedStandardQuantiy();
 
             if ($standard_qty == null) {
                 $standard_qty = $row->getQuantity();
             }
             $a_json_row["pr_converted_standard_qty"] = number_format($standard_qty, 2);
 
-            $a_json_row["pr_converted_stock_quantity"] = $row->getConveredStockQuantity();
+            $a_json_row["pr_converted_stock_quantity"] = $row->getConvertedStockQuantity();
 
             $pr_uom = $row->getRowUnit();
 
@@ -340,8 +340,8 @@ class PrRowController extends AbstractActionController
                         $inventoryCF = 1;
                     }
 
-                    $entity->setConveredStandardQuantiy($entity->getConversionFactor() * $entity->getQuantity());
-                    $entity->setConveredStockQuantity($entity->getQuantity() * $entity->getConversionFactor() / $inventoryCF);
+                    $entity->setConvertedStandardQuantiy($entity->getConversionFactor() * $entity->getQuantity());
+                    $entity->setConvertedStockQuantity($entity->getQuantity() * $entity->getConversionFactor() / $inventoryCF);
                 }
             }
 
@@ -2343,8 +2343,8 @@ class PrRowController extends AbstractActionController
                         $inventoryCF = 1;
                     }
 
-                    $entity->setConveredStandardQuantiy($entity->getConversionFactor() * $entity->getQuantity());
-                    $entity->setConveredStockQuantity($entity->getQuantity() * $entity->getConversionFactor() / $inventoryCF);
+                    $entity->setConvertedStandardQuantiy($entity->getConversionFactor() * $entity->getQuantity());
+                    $entity->setConvertedStockQuantity($entity->getQuantity() * $entity->getConversionFactor() / $inventoryCF);
                 }
             }
 

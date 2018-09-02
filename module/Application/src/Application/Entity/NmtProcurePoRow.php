@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePoRow
  *
- * @ORM\Table(name="nmt_procure_po_row", indexes={@ORM\Index(name="nmt_procure_po_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_po_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_po_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_po_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_po_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_po_row_FK7_idx", columns={"po_id"})})
+ * @ORM\Table(name="nmt_procure_po_row", indexes={@ORM\Index(name="nmt_procure_po_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_po_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_po_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_po_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_po_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_po_row_FK7_idx", columns={"po_id"}), @ORM\Index(name="nmt_procure_po_row_FK9_idx", columns={"doc_uom"})})
  * @ORM\Entity
  */
 class NmtProcurePoRow
@@ -302,6 +302,20 @@ class NmtProcurePoRow
     private $convertedStockUnitPrice;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $docQuantity;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_unit", type="string", length=45, nullable=true)
+     */
+    private $docUnit;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -370,6 +384,16 @@ class NmtProcurePoRow
      * })
      */
     private $item;
+
+    /**
+     * @var \Application\Entity\NmtApplicationUom
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationUom")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doc_uom", referencedColumnName="id")
+     * })
+     */
+    private $docUom;
 
 
 
@@ -1344,6 +1368,54 @@ class NmtProcurePoRow
     }
 
     /**
+     * Set docQuantity
+     *
+     * @param float $docQuantity
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setDocQuantity($docQuantity)
+    {
+        $this->docQuantity = $docQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get docQuantity
+     *
+     * @return float
+     */
+    public function getDocQuantity()
+    {
+        return $this->docQuantity;
+    }
+
+    /**
+     * Set docUnit
+     *
+     * @param string $docUnit
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setDocUnit($docUnit)
+    {
+        $this->docUnit = $docUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get docUnit
+     *
+     * @return string
+     */
+    public function getDocUnit()
+    {
+        return $this->docUnit;
+    }
+
+    /**
      * Set invoice
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
@@ -1509,5 +1581,29 @@ class NmtProcurePoRow
     public function getItem()
     {
         return $this->item;
+    }
+
+    /**
+     * Set docUom
+     *
+     * @param \Application\Entity\NmtApplicationUom $docUom
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setDocUom(\Application\Entity\NmtApplicationUom $docUom = null)
+    {
+        $this->docUom = $docUom;
+
+        return $this;
+    }
+
+    /**
+     * Get docUom
+     *
+     * @return \Application\Entity\NmtApplicationUom
+     */
+    public function getDocUom()
+    {
+        return $this->docUom;
     }
 }

@@ -107,7 +107,7 @@ class PoRowController extends AbstractActionController
 
             $remarks = $request->getPost('remarks');
 
-            if ($isActive !== 1) {
+            if ($isActive != 1) {
                 $isActive = 0;
             }
 
@@ -493,7 +493,7 @@ class PoRowController extends AbstractActionController
 
             $remarks = $request->getPost('remarks');
 
-            if ($isActive !== 1) {
+            if ($isActive != 1) {
                 $isActive = 0;
             }
 
@@ -525,8 +525,6 @@ class PoRowController extends AbstractActionController
             $entity->setDocUnit($unit);
             $entity->setConverstionText($converstionText);
 
-            $n_validated = 0;
-
             if (! is_numeric($quantity)) {
                 $errors[] = $nmtPlugin->translate('Quantity must be a number.');
             } else {
@@ -535,7 +533,6 @@ class PoRowController extends AbstractActionController
                 } else {
                     // $entity->setQuantity($quantity);
                     $entity->setDocQuantity($quantity);
-                    $n_validated ++;
                 }
             }
 
@@ -547,7 +544,6 @@ class PoRowController extends AbstractActionController
                 } else {
                     // $entity->setUnitPrice($unitPrice);
                     $entity->setDocUnitPrice($unitPrice);
-                    $n_validated ++;
                 }
             }
 
@@ -566,12 +562,6 @@ class PoRowController extends AbstractActionController
                 }
             }
 
-            if ($n_validated == 2) {
-                $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
-                $entity->setNetAmount($netAmount);
-                $entity->setGrossAmount($netAmount);
-            }
-
             if ($taxRate !== null) {
                 if (! is_numeric($taxRate)) {
                     $errors[] = $nmtPlugin->translate('TaxRate is not valid. It must be a number.');
@@ -580,18 +570,10 @@ class PoRowController extends AbstractActionController
                         $errors[] = $nmtPlugin->translate('TaxRate must be >0');
                     } else {
                         $entity->setTaxRate($taxRate);
-                        $n_validated ++;
                     }
                 }
             }
-
-            if ($n_validated == 3) {
-                $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                $grossAmount = $entity->getNetAmount() + $taxAmount;
-                $entity->setTaxAmount($taxAmount);
-                $entity->setGrossAmount($grossAmount);
-            }
-
+            
             if ($conversionFactor == null) {
                 // $errors [] = 'Please enter order quantity!';
                 $conversionFactor = 1;
@@ -604,42 +586,10 @@ class PoRowController extends AbstractActionController
                         $errors[] = 'converstion factor must be greater than 0!';
                     } else {
                         $entity->setConversionFactor($conversionFactor);
-                        $n_validated ++;
                     }
                 }
             }
 
-            if ($n_validated == 4) {
-                $convertedPurchaseQuantity = $entity->getDocQuantity();
-                $convertedPurchaseUnitPrice = $entity->getDocUnitPrice();
-
-                $standardCF = $conversionFactor;
-
-                if ($pr_row != null) {
-                    $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
-                    $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-                    $standardCF = $standardCF * $pr_row->getConversionFactor();
-                }
-
-                $entity->setQuantity($convertedPurchaseQuantity);
-                $entity->setUnitPrice($convertedPurchaseUnitPrice);
-                $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
-
-                $convertedStandardQuantity = $entity->getDocQuantity();
-                $convertedStandardUnitPrice = $entity->getDocUnitPrice();
-
-                if ($item != null) {
-                    $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
-                    $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
-                }
-
-                // calculate standard quantity
-                $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
-                $entity->setConvertedStandardQuantity($convertedStandardQuantity);
-                $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
-            }
-
-            // $entity->setTraceStock($traceStock);
             $entity->setRemarks($remarks);
 
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
@@ -681,17 +631,32 @@ class PoRowController extends AbstractActionController
             // ++++++++++++++++++++++++++++++
 
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
+                'email' => $this->identity()
             ));
-
             $changeOn = new \DateTime();
 
-            $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            // $entity->setLastchangeBy($u);
-            $entity->setLastchangeOn($changeOn);
+            try {
+                $this->poService->saveRow($target, $entity, $u, FALSE);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
 
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
+            if (count($errors) > 0) {
+
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => $target,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'total_row' => $po['total_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount'],
+                    'n' => $nTry
+                ));
+            }
 
             $m = sprintf('[OK] PO Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
 

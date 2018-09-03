@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePoRow
  *
- * @ORM\Table(name="nmt_procure_po_row", indexes={@ORM\Index(name="nmt_procure_po_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_po_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_po_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_po_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_po_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_po_row_FK7_idx", columns={"po_id"}), @ORM\Index(name="nmt_procure_po_row_FK9_idx", columns={"doc_uom"})})
+ * @ORM\Table(name="nmt_procure_po_row", indexes={@ORM\Index(name="nmt_procure_po_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_po_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_po_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_po_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_po_row_FK7_idx", columns={"po_id"}), @ORM\Index(name="nmt_procure_po_row_FK9_idx", columns={"doc_uom"}), @ORM\Index(name="nmt_procure_po_row_FK10_idx", columns={"lastchange_by"})})
  * @ORM\Entity
  */
 class NmtProcurePoRow
@@ -340,6 +340,16 @@ class NmtProcurePoRow
     private $invoice;
 
     /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="lastchange_by", referencedColumnName="id")
+     * })
+     */
+    private $lastchangeBy;
+
+    /**
      * @var \Application\Entity\NmtProcurePrRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtProcurePrRow")
@@ -368,16 +378,6 @@ class NmtProcurePoRow
      * })
      */
     private $warehouse;
-
-    /**
-     * @var \Application\Entity\MlaUsers
-     *
-     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="lastchanged_by", referencedColumnName="id")
-     * })
-     */
-    private $lastchangedBy;
 
     /**
      * @var \Application\Entity\NmtProcurePo
@@ -1502,6 +1502,30 @@ class NmtProcurePoRow
     }
 
     /**
+     * Set lastchangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastchangeBy
+     *
+     * @return NmtProcurePoRow
+     */
+    public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
+    {
+        $this->lastchangeBy = $lastchangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastchangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastchangeBy()
+    {
+        return $this->lastchangeBy;
+    }
+
+    /**
      * Set prRow
      *
      * @param \Application\Entity\NmtProcurePrRow $prRow
@@ -1571,30 +1595,6 @@ class NmtProcurePoRow
     public function getWarehouse()
     {
         return $this->warehouse;
-    }
-
-    /**
-     * Set lastchangedBy
-     *
-     * @param \Application\Entity\MlaUsers $lastchangedBy
-     *
-     * @return NmtProcurePoRow
-     */
-    public function setLastchangedBy(\Application\Entity\MlaUsers $lastchangedBy = null)
-    {
-        $this->lastchangedBy = $lastchangedBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastchangedBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getLastchangedBy()
-    {
-        return $this->lastchangedBy;
     }
 
     /**

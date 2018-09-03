@@ -2040,8 +2040,8 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
     }
 
     /**
-     *
-     * @return mixed
+     * 
+     *  @return \Procure\Service\APInvoiceService
      */
     public function getApService()
     {
@@ -2049,8 +2049,8 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
     }
 
     /**
-     *
-     * @param mixed $apService
+     * 
+     *  @param \Procure\Service\APInvoiceService $apService
      */
     public function setApService(\Procure\Service\APInvoiceService $apService)
     {

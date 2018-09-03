@@ -1,4 +1,4 @@
-<?php
+``<?php
 namespace Finance\Controller;
 
 use Zend\Escaper\Escaper;
@@ -24,6 +24,8 @@ class VInvoiceRowController extends AbstractActionController
 {
 
     protected $doctrineEM;
+
+    protected $apService;
 
     /**
      *
@@ -95,12 +97,10 @@ class VInvoiceRowController extends AbstractActionController
                 $vendorItemCode = $request->getPost('vendorItemCode');
                 $unit = $request->getPost('unit');
                 $conversionFactor = $request->getPost('conversionFactor');
-                $converstionText = $request->getPost('converstionText');
 
                 $quantity = $request->getPost('quantity');
                 $unitPrice = $request->getPost('unitPrice');
                 $taxRate = $request->getPost('taxRate');
-                $traceStock = $request->getPost('traceStock');
 
                 $remarks = $request->getPost('remarks');
 
@@ -114,9 +114,10 @@ class VInvoiceRowController extends AbstractActionController
                 $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
                 $entity->setIsActive($isActive);
                 $entity->setDocStatus($target->getDocStatus());
-
                 $entity->setInvoice($target);
                 $entity->setRowNumber($rowNumber);
+                $entity->setVendorItemCode($vendorItemCode);
+                $entity->setUnit($unit);
 
                 $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
                 $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
@@ -124,7 +125,7 @@ class VInvoiceRowController extends AbstractActionController
                 $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
 
                 if ($gl == null) {
-                    $errors[] = 'G/L account can\'t be empty!';
+                    $errors[] = $nmtPlugin->translate('G/L account can\'t be empty!. Pls select G/L');
                 } else {
                     $entity->setGlAccount($gl);
                 }
@@ -132,82 +133,58 @@ class VInvoiceRowController extends AbstractActionController
                 $entity->setCostCenter($costCenter);
 
                 // PR and be empty
-                if ($pr_row == null) {
-                    // $errors[] = 'Item can\'t be empty!';
-                } else {
-                    $entity->setPrRow($pr_row);
-                }
+                $entity->setPrRow($pr_row);
 
                 // Item cant be empty
                 if ($item == null) {
-                    $errors[] = 'Item can\'t be empty!';
+                    $errors[] = $nmtPlugin->translate('Item can\'t be empty!');
                 } else {
                     $entity->setItem($item);
                 }
 
-                $entity->setVendorItemCode($vendorItemCode);
-                $entity->setUnit($unit);
-                $entity->setConversionFactor($conversionFactor);
-                $entity->setConverstionText($converstionText);
-
-                $n_validated = 0;
-
-                if ($quantity == null) {
-                    $errors[] = 'Please  enter quantity!';
+                if (! is_numeric($quantity)) {
+                    $errors[] = $nmtPlugin->translate('Quantity must be a number.');
                 } else {
-
-                    if (! is_numeric($quantity)) {
-                        $errors[] = 'Quantity must be a number.';
+                    if ($quantity <= 0) {
+                        $errors[] = $nmtPlugin->translate('Quantity must be greater than 0!');
                     } else {
-                        if ($quantity <= 0) {
-                            $errors[] = 'Quantity must be greater than 0!';
-                        }
-                        $entity->setQuantity($quantity);
-                        $n_validated ++;
+                        $entity->setDocQuantity($quantity);
                     }
                 }
 
-                if ($unitPrice !== null) {
-                    if (! is_numeric($unitPrice)) {
-                        $errors[] = 'Price is not valid. It must be a number.';
+                if ($conversionFactor == null) {
+                    $conversionFactor = 1;
+                }
+
+                if (! is_numeric($conversionFactor)) {
+                    $errors[] = $nmtPlugin->translate('conversion factor must be a number.');
+                } else {
+                    if ($conversionFactor <= 0) {
+                        $errors[] = $nmtPlugin->translate('converstion factor must be greater than 0!');
                     } else {
-                        if ($unitPrice <= 0) {
-                            $errors[] = 'Price must be greate than 0!';
-                        }
-                        $entity->setUnitPrice($unitPrice);
-                        $n_validated ++;
+                        $entity->setConversionFactor($conversionFactor);
                     }
                 }
 
-                if ($n_validated == 2) {
-                    $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
-                    $entity->setNetAmount($netAmount);
+                if (! is_numeric($unitPrice)) {
+                    $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
+                } else {
+                    if ($unitPrice < 0) {
+                        $errors[] = $nmtPlugin->translate('Price must be greate than or equal 0!');
+                    } else {
+                        $entity->setDocUnitPrice($unitPrice);
+                    }
                 }
 
-                if ($taxRate !== null) {
-                    if (! is_numeric($taxRate)) {
-                        $errors[] = 'taxRate is not valid. It must be a number.';
+                if (! is_numeric($taxRate)) {
+                    $errors[] = $nmtPlugin->translate('taxRate is not valid. It must be a number.');
+                } else {
+                    if ($taxRate < 0) {
+                        $errors[] = $nmtPlugin->translate('taxRate must be greate than 0!');
                     } else {
-                        if ($taxRate < 0) {
-                            $errors[] = 'taxRate must be greate than 0!';
-                        }
                         $entity->setTaxRate($taxRate);
-                        $n_validated ++;
                     }
                 }
-
-                if ($n_validated == 3) {
-                    $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                    $grossAmount = $entity->getNetAmount() + $taxAmount;
-                    $entity->setTaxAmount($taxAmount);
-                    $entity->setGrossAmount($grossAmount);
-                }
-
-                /*
-                 * $n = $invoice['total_row'] + 1;
-                 * $rowIdentifer = $target->getSysNumber() . "-$n";
-                 * $entity->setRowIdentifer($rowIdentifer);
-                 */
 
                 $entity->setRemarks($remarks);
 
@@ -229,7 +206,7 @@ class VInvoiceRowController extends AbstractActionController
                         'gross_amount' => $invoice['gross_amount']
                     ));
                 }
-                ;
+
                 // NO ERROR
                 // Saving into Database..........
                 // ++++++++++++++++++++++++++++++
@@ -239,13 +216,30 @@ class VInvoiceRowController extends AbstractActionController
                 ));
                 $createdOn = new \DateTime();
 
-                $entity->setCurrentState($target->getCurrentState());
-                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                try {
+                    $this->apService->saveRow($target, $entity, $u, TRUE);
+                } catch (\Exception $e) {
+                    $errors[] = $e->getMessage();
+                }
 
-                $entity->setCreatedBy($u);
-                $entity->setCreatedOn($createdOn);
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
+                if (count($errors) > 0) {
+
+                    return new ViewModel(array(
+                        'redirectUrl' => $redirectUrl,
+                        'errors' => $errors,
+                        'target' => $target,
+                        'entity' => $entity,
+                        'currency_list' => $currency_list,
+                        'cost_center_list' => $cost_center_list,
+                        'gl_list' => $gl_list,
+                        'active_row' => $invoice['active_row'],
+                        'total_row' => $invoice['total_row'],
+                        'max_row_number' => $invoice['max_row_number'],
+                        'net_amount' => $invoice['net_amount'],
+                        'tax_amount' => $invoice['tax_amount'],
+                        'gross_amount' => $invoice['gross_amount']
+                    ));
+                }
 
                 $m = sprintf('[OK] A/P Invoice Row #%s - %s created.', $entity->getId(), $entity->getRowIdentifer());
                 $this->flashMessenger()->addMessage($m);
@@ -307,7 +301,7 @@ class VInvoiceRowController extends AbstractActionController
         $entity->setConversionFactor(1);
         $entity->setUnit("each");
         $entity->setTaxRate(0);
-        
+
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
@@ -443,31 +437,47 @@ class VInvoiceRowController extends AbstractActionController
 
             $oldEntity = clone ($entity);
 
-            $isActive = (int) $request->getPost('isActive');
             $item_id = $request->getPost('item_id');
             $pr_row_id = $request->getPost('pr_row_id');
             $gl_account_id = $request->getPost('gl_account_id');
             $cost_center_id = $request->getPost('cost_center_id');
 
-            $remarks = $request->getPost('remarks');
+            $isActive = (int) $request->getPost('isActive');
 
-            if ($isActive != 1) {
-                $isActive = 0;
-            }
+            $rowNumber = $request->getPost('rowNumber');
 
-            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-            $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
+            $vendorItemCode = $request->getPost('vendorItemCode');
+            $unit = $request->getPost('unit');
+            $conversionFactor = $request->getPost('conversionFactor');
 
-            $entity->setRemarks($remarks);
-            $entity->setIsActive($isActive);
             $quantity = $request->getPost('quantity');
             $unitPrice = $request->getPost('unitPrice');
             $taxRate = $request->getPost('taxRate');
 
+            $remarks = $request->getPost('remarks');
+
+            if ($isActive !== 1) {
+                $isActive = 0;
+            }
+
+            $entity = new FinVendorInvoiceRow();
+
+            // Good Receipt = Invoice Receipt.
+            $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
+            $entity->setIsActive($isActive);
+            $entity->setDocStatus($target->getDocStatus());
+            $entity->setInvoice($target);
+            $entity->setRowNumber($rowNumber);
+            $entity->setVendorItemCode($vendorItemCode);
+            $entity->setUnit($unit);
+
+            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
             $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
+            $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
+
             if ($gl == null) {
-                $errors[] = $nmtPlugin->translate('G/L account can\'t be empty!');
+                $errors[] = $nmtPlugin->translate('G/L account can\'t be empty!. Pls select G/L');
             } else {
                 $entity->setGlAccount($gl);
             }
@@ -475,70 +485,60 @@ class VInvoiceRowController extends AbstractActionController
             $entity->setCostCenter($costCenter);
 
             // PR and be empty
-            if ($pr_row == null) {
-                // $errors[] = 'Item can\'t be empty!';
-            } else {
-                $entity->setPrRow($pr_row);
-            }
+            $entity->setPrRow($pr_row);
 
             // Item cant be empty
             if ($item == null) {
-                $errors[] = $nmtPlugin->translate('Item can\'t be empty. Please select item!');
+                $errors[] = $nmtPlugin->translate('Item can\'t be empty!');
             } else {
                 $entity->setItem($item);
             }
 
-            $n_validated = 0;
-            if ($quantity == null) {
-                $errors[] = $nmtPlugin->translate('Please  enter quantity!');
+            if (! is_numeric($quantity)) {
+                $errors[] = $nmtPlugin->translate('Quantity must be a number.');
             } else {
-
-                if (! is_numeric($quantity)) {
-                    $errors[] = $nmtPlugin->translate('Quantity must be a number.');
+                if ($quantity <= 0) {
+                    $errors[] = $nmtPlugin->translate('Quantity must be greater than 0!');
                 } else {
-                    if ($quantity <= 0) {
-                        $errors[] = $nmtPlugin->translate('Quantity must be greater than 0!');
-                    }
-                    $entity->setQuantity($quantity);
-                    $n_validated ++;
+                    $entity->setDocQuantity($quantity);
                 }
             }
 
-            if ($unitPrice !== null) {
-                if (! is_numeric($unitPrice)) {
-                    $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
+            if ($conversionFactor == null) {
+                $conversionFactor = 1;
+            }
+
+            if (! is_numeric($conversionFactor)) {
+                $errors[] = $nmtPlugin->translate('conversion factor must be a number.');
+            } else {
+                if ($conversionFactor <= 0) {
+                    $errors[] = $nmtPlugin->translate('converstion factor must be greater than 0!');
                 } else {
-                    if ($unitPrice <= 0) {
-                        $errors[] = $nmtPlugin->translate('Price must be greate than 0!');
-                    }
-                    $entity->setUnitPrice($unitPrice);
-                    $n_validated ++;
+                    $entity->setConversionFactor($conversionFactor);
                 }
             }
 
-            if ($n_validated == 2) {
-                $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
-                $entity->setNetAmount($netAmount);
+            if (! is_numeric($unitPrice)) {
+                $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
+            } else {
+                if ($unitPrice < 0) {
+                    $errors[] = $nmtPlugin->translate('Price must be greate than or equal 0!');
+                } else {
+                    $entity->setDocUnitPrice($unitPrice);
+                }
             }
 
-            if ($taxRate !== null) {
-                if (! is_numeric($taxRate)) {
-                    $errors[] = '$taxRate is not valid. It must be a number.';
+            if (! is_numeric($taxRate)) {
+                $errors[] = $nmtPlugin->translate('taxRate is not valid. It must be a number.');
+            } else {
+                if ($taxRate < 0) {
+                    $errors[] = $nmtPlugin->translate('taxRate must be greate than 0!');
                 } else {
-                    if ($taxRate < 0) {
-                        $errors[] = '$taxRate must be greate than 0!';
-                    }
                     $entity->setTaxRate($taxRate);
-                    $n_validated ++;
                 }
             }
 
-            if ($n_validated == 3) {
-                $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                $grossAmount = $entity->getNetAmount() + $taxAmount;
-                $entity->setTaxAmount($taxAmount);
-                $entity->setGrossAmount($grossAmount);
-            }
+            $entity->setRemarks($remarks);
 
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
@@ -580,12 +580,25 @@ class VInvoiceRowController extends AbstractActionController
 
             $changeOn = new \DateTime();
 
-            $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            $entity->setLastchangeBy($u);
-            $entity->setLastchangeOn($changeOn);
+            try {
+                $this->apService->saveRow($target, $entity, $u, FALSE);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
 
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $entity->getInvoice(),
+                    'currency_list' => $currency_list,
+                    'cost_center_list' => $cost_center_list,
+                    'gl_list' => $gl_list,
+
+                    'n' => $nTry
+                ));
+            }
 
             $m = sprintf('[OK] A/P Invoice Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
 
@@ -670,10 +683,10 @@ class VInvoiceRowController extends AbstractActionController
         }
     }
 
-   /**
-    * 
-    *  @return \Zend\Http\Response
-    */
+    /**
+     *
+     * @return \Zend\Http\Response
+     */
     public function alterAction()
     {
         $action = $this->params()->fromQuery('action');
@@ -1488,5 +1501,23 @@ class VInvoiceRowController extends AbstractActionController
     {
         $this->doctrineEM = $doctrineEM;
         return $this;
+    }
+
+    /**
+     *
+     * @return \Procure\Service\APInvoiceService
+     */
+    public function getApService()
+    {
+        return $this->apService;
+    }
+
+    /**
+     *
+     * @param \Procure\Service\APInvoiceService $apService
+     */
+    public function setApService(\Procure\Service\APInvoiceService $apService)
+    {
+        $this->apService = $apService;
     }
 }

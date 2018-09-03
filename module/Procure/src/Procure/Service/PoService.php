@@ -1,7 +1,6 @@
 <?php
 namespace Procure\Service;
 
-use Application\Entity\NmtInventoryTrx;
 use Application\Service\AbstractService;
 use Zend\Math\Rand;
 
@@ -13,6 +12,95 @@ use Zend\Math\Rand;
  */
 class PoService extends AbstractService
 {
+
+    /**
+     *
+     * @param \Application\Entity\NmtProcurePoRow $entity
+     * @return NULL[]|string[]
+     */
+    protected function validateRow($entity)
+    {
+
+        // do validating
+        $errors = array();
+
+        if (! $entity instanceof \Application\Entity\NmtProcurePoRow) {
+            $errors[] = $this->controllerPlugin->translate('PO row is empty.');
+        }
+
+        if ($entity->getItem() == null) {
+            $errors[] = $this->controllerPlugin->translate('Item can\'t be empty!');
+        }
+
+        if (! is_numeric($entity->getDocQuantity())) {
+            $errors[] = $this->controllerPlugin->translate('Quantity must be a number.');
+        } else {
+            if ($entity->getDocQuantity() <= 0) {
+                $errors[] = $this->controllerPlugin->translate('Quantity must be > 0!');
+            }
+        }
+
+        if (! is_numeric($entity->getDocUnitPrice())) {
+            $errors[] = $this->controllerPlugin->translate('Price is not valid. It must be a number.');
+        } else {
+            if ($entity->getDocUnitPrice() < 0) {
+                $errors[] = $this->controllerPlugin->translate('Price must be >   0!');
+            }
+        }
+
+        if ($entity->getExwUnitPrice() != null) {
+            if (! is_numeric($entity->getExwUnitPrice())) {
+                $errors[] = $this->controllerPlugin->translate('Exw Price is not valid. It must be a number.');
+            } else {
+                if ($entity->getExwUnitPrice() <= 0) {
+                    $errors[] = $this->controllerPlugin->translate('Exw Price must be >=0!');
+                }
+            }
+        }
+
+        if (! is_numeric($entity->getTaxRate())) {
+            $errors[] = $this->controllerPlugin->translate('TaxRate is not valid. It must be a number.');
+        } else {
+            if ($entity->getTaxRate() < 0) {
+                $errors[] = $this->controllerPlugin->translate('TaxRate must be >0');
+            }
+        }
+
+        if ($entity->getConversionFactor() == null) {
+            $entity->setConversionFactor(1);
+        }
+
+        if (! is_numeric($entity->getConversionFactor())) {
+            $errors[] = $this->controllerPlugin->translate('conversion factor must be a number.');
+        } else {
+            if ($entity->getConversionFactor() <= 0) {
+                $errors[] = $this->controllerPlugin->translate('converstion factor must be greater than 0!');
+            }
+        }
+
+        /*
+         * $errors = $this->validateRow($entity);
+         * if (count($errors) > 0) {
+         *
+         * $m = '';
+         * foreach ($errors as $e) {
+         * $m.= $e . '<br>';
+         * }
+         *
+         * $m1 = sprintf('[ERROR] %s', $m);
+         * $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+         * 'priority' => \Zend\Log\Logger::ERR,
+         * 'message' => $m1,
+         * 'createdBy' => $u,
+         * 'createdOn' => new \DateTime()
+         * ));
+         *
+         * throw new \Exception($m);
+         * }
+         */
+
+        return $errors;
+    }
 
     /**
      *
@@ -35,12 +123,14 @@ class PoService extends AbstractService
             throw new \Exception("Invalid Argument. PO Line Object not found!");
         }
 
+        // validated.
+
         $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
         $entity->setNetAmount($netAmount);
-        $entity->setGrossAmount($netAmount);
 
         $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
         $grossAmount = $entity->getNetAmount() + $taxAmount;
+
         $entity->setTaxAmount($taxAmount);
         $entity->setGrossAmount($grossAmount);
 
@@ -58,9 +148,10 @@ class PoService extends AbstractService
             $standardCF = $standardCF * $pr_row->getConversionFactor();
         }
 
+        // quantity /unit price is converted purchase quantity to clear PR
+
         $entity->setQuantity($convertedPurchaseQuantity);
         $entity->setUnitPrice($convertedPurchaseUnitPrice);
-        $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
 
         $convertedStandardQuantity = $entity->getDocQuantity();
         $convertedStandardUnitPrice = $entity->getDocUnitPrice();
@@ -73,6 +164,8 @@ class PoService extends AbstractService
 
         // calculate standard quantity
         $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+        $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
+
         $entity->setConvertedStandardQuantity($convertedStandardQuantity);
         $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
 
@@ -84,7 +177,7 @@ class PoService extends AbstractService
         } else {
             $changeOn = new \DateTime();
             $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            // $entity->setLastchangeBy($u);
+            $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);
         }
 
@@ -184,8 +277,6 @@ class PoService extends AbstractService
      * @param \Application\Entity\MlaUsers $u
      *
      */
-    public function copyToGR($entity, $u, $isFlush = false){
-        
-    }
-   
+    public function copyToGR($entity, $u, $isFlush = false)
+    {}
 }

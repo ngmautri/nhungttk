@@ -15,6 +15,90 @@ use Zend\Math\Rand;
  */
 class APInvoiceService extends AbstractService
 {
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $target
+     * @param \Application\Entity\FinVendorInvoiceRow $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isNew
+     */
+    public function saveRow($target, $entity, $u, $isNew = FALSE)
+    {
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+        
+        if (! $target instanceof \Application\Entity\FinVendorInvoice) {
+            throw new \Exception("Invalid Argument. AP Object not found!");
+        }
+        
+        if (! $entity instanceof \Application\Entity\FinVendorInvoiceRow) {
+            throw new \Exception("Invalid Argument. AP Line Object not found!");
+        }
+        
+        // validated.
+        
+        $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
+        $entity->setNetAmount($netAmount);
+        
+        $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
+        $grossAmount = $entity->getNetAmount() + $taxAmount;
+        
+        $entity->setTaxAmount($taxAmount);
+        $entity->setGrossAmount($grossAmount);
+        
+        $convertedPurchaseQuantity = $entity->getDocQuantity();
+        $convertedPurchaseUnitPrice = $entity->getDocUnitPrice();
+        
+        $conversionFactor = $entity->getConversionFactor();
+        $standardCF = $entity->getConversionFactor();
+        
+        $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
+        $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
+        
+        
+        $pr_row = $entity->getPrRow();
+        
+        if ($pr_row != null) {
+            $standardCF = $standardCF * $pr_row->getConversionFactor();
+        }
+        
+        // quantity /unit price is converted purchase quantity to clear PR
+        
+        $entity->setQuantity($convertedPurchaseQuantity);
+        $entity->setUnitPrice($convertedPurchaseUnitPrice);
+        
+        $convertedStandardQuantity = $entity->getDocQuantity();
+        $convertedStandardUnitPrice = $entity->getDocUnitPrice();
+        
+        $item = $entity->getItem();
+        if ($item != null) {
+            $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
+            $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
+        }
+        
+        // calculate standard quantity
+        $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+        $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
+        
+        $entity->setConvertedStandardQuantity($convertedStandardQuantity);
+        $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);               
+        
+        
+        if ($isNew == TRUE) {
+            $entity->setCurrentState($target->getCurrentState());
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn(new \DateTime());
+        } else {
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn(new \DateTime());
+        }
+        
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+    }
 
     /**
      *

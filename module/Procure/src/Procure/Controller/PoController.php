@@ -1034,18 +1034,18 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         return $this;
     }
 
-    /**
-     *
-     * @return mixed
-     */
+   /**
+    * 
+    *  @return \Procure\Service\PoService
+    */
     public function getPoService()
     {
         return $this->poService;
     }
 
     /**
-     *
-     * @param mixed $poService
+     * 
+     *  @param \Procure\Service\PoService $poService
      */
     public function setPoService(\Procure\Service\PoService $poService)
     {

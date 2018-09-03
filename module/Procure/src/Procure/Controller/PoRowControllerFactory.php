@@ -32,6 +32,8 @@ class PoRowControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('Procure\Service\PrSearchService' );
 		$controller->setPrSearchService($sv ); */
 		
+		$sv =  $sm->get ('Procure\Service\PoService' );
+		$controller->setPoService($sv);
 		
 		return $controller;
 	}

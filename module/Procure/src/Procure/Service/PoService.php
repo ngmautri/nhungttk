@@ -16,6 +16,84 @@ class PoService extends AbstractService
 
     /**
      *
+     * @param \Application\Entity\NmtProcurePo $target
+     * @param \Application\Entity\NmtProcurePoRow $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isNew
+     */
+    public function saveRow($target, $entity, $u, $isNew = FALSE)
+    {
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+
+        if (! $target instanceof \Application\Entity\NmtProcurePo) {
+            throw new \Exception("Invalid Argument. PO Object not found!");
+        }
+
+        if (! $entity instanceof \Application\Entity\NmtProcurePoRow) {
+            throw new \Exception("Invalid Argument. PO Line Object not found!");
+        }
+
+        $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
+        $entity->setNetAmount($netAmount);
+        $entity->setGrossAmount($netAmount);
+
+        $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
+        $grossAmount = $entity->getNetAmount() + $taxAmount;
+        $entity->setTaxAmount($taxAmount);
+        $entity->setGrossAmount($grossAmount);
+
+        $convertedPurchaseQuantity = $entity->getDocQuantity();
+        $convertedPurchaseUnitPrice = $entity->getDocUnitPrice();
+
+        $conversionFactor = $entity->getConversionFactor();
+        $standardCF = $entity->getConversionFactor();
+
+        $pr_row = $entity->getPrRow();
+
+        if ($pr_row != null) {
+            $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
+            $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
+            $standardCF = $standardCF * $pr_row->getConversionFactor();
+        }
+
+        $entity->setQuantity($convertedPurchaseQuantity);
+        $entity->setUnitPrice($convertedPurchaseUnitPrice);
+        $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
+
+        $convertedStandardQuantity = $entity->getDocQuantity();
+        $convertedStandardUnitPrice = $entity->getDocUnitPrice();
+
+        $item = $entity->getItem();
+        if ($item != null) {
+            $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
+            $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
+        }
+
+        // calculate standard quantity
+        $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+        $entity->setConvertedStandardQuantity($convertedStandardQuantity);
+        $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+
+        if ($isNew == TRUE) {
+            $entity->setCurrentState($target->getCurrentState());
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn(new \DateTime());
+        } else {
+            $changeOn = new \DateTime();
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            // $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+        }
+
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+    }
+
+    /**
+     *
      * @param \Application\Entity\NmtProcurePo $entity
      * @param \Application\Entity\MlaUsers $u
      *
@@ -91,18 +169,15 @@ class PoService extends AbstractService
         }
     }
 
-    
     /**
      *
      * @param \Application\Entity\NmtProcurePo $entity
      * @param \Application\Entity\MlaUsers $u
      *
      */
-    public function updateStatus($entity, $u, $isFlush = false){
-        
-    }
-    
-    
+    public function updateStatus($entity, $u, $isFlush = false)
+    {}
+
     /**
      *
      * @param \Application\Entity\NmtProcurePo $entity

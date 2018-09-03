@@ -93,7 +93,7 @@ class APInvoiceService extends AbstractService
             $rowPostingStrategy = \Procure\Model\Ap\APRowPostingFactory::getPostingStrategy($tTransaction);
 
             if (! $rowPostingStrategy instanceof AbstractAPRowPostingStrategy) {
-                throw new \Exception("Posting strategy is not identified for this this transaction!");
+                throw new \Exception("Posting strategy is not identified for this transaction!");
             }
 
             $rowPostingStrategy->setContextService($this);

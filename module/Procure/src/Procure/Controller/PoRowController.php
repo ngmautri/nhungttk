@@ -21,9 +21,9 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 class PoRowController extends AbstractActionController
 {
 
-    const CHAR_LIST = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-
     protected $doctrineEM;
+
+    protected $poService;
 
     /*
      * Defaul Action
@@ -111,7 +111,7 @@ class PoRowController extends AbstractActionController
                 $isActive = 0;
             }
 
-            // Inventory Transaction:
+            // Inventory Transaction and validating.
 
             $entity = new NmtProcurePoRow();
 
@@ -143,8 +143,6 @@ class PoRowController extends AbstractActionController
             $entity->setDocUnit($unit);
             $entity->setConverstionText($converstionText);
 
-            $n_validated = 0;
-
             if (! is_numeric($quantity)) {
                 $errors[] = $nmtPlugin->translate('Quantity must be a number.');
             } else {
@@ -153,7 +151,6 @@ class PoRowController extends AbstractActionController
                 } else {
                     // $entity->setQuantity($quantity);
                     $entity->setDocQuantity($quantity);
-                    $n_validated ++;
                 }
             }
 
@@ -165,7 +162,6 @@ class PoRowController extends AbstractActionController
                 } else {
                     // $entity->setUnitPrice($unitPrice);
                     $entity->setDocUnitPrice($unitPrice);
-                    $n_validated ++;
                 }
             }
 
@@ -184,12 +180,6 @@ class PoRowController extends AbstractActionController
                 }
             }
 
-            if ($n_validated == 2) {
-                $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
-                $entity->setNetAmount($netAmount);
-                $entity->setGrossAmount($netAmount);
-            }
-
             if ($taxRate !== null) {
                 if (! is_numeric($taxRate)) {
                     $errors[] = $nmtPlugin->translate('TaxRate is not valid. It must be a number.');
@@ -198,18 +188,9 @@ class PoRowController extends AbstractActionController
                         $errors[] = $nmtPlugin->translate('TaxRate must be >0');
                     } else {
                         $entity->setTaxRate($taxRate);
-                        $n_validated ++;
                     }
                 }
             }
-
-            if ($n_validated == 3) {
-                $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                $grossAmount = $entity->getNetAmount() + $taxAmount;
-                $entity->setTaxAmount($taxAmount);
-                $entity->setGrossAmount($grossAmount);
-            }
-
             if ($conversionFactor == null) {
                 // $errors [] = 'Please enter order quantity!';
                 $conversionFactor = 1;
@@ -222,42 +203,10 @@ class PoRowController extends AbstractActionController
                         $errors[] = 'converstion factor must be greater than 0!';
                     } else {
                         $entity->setConversionFactor($conversionFactor);
-                        $n_validated ++;
                     }
                 }
             }
 
-            if ($n_validated == 4) {
-                $convertedPurchaseQuantity = $entity->getDocQuantity();
-                $convertedPurchaseUnitPrice = $entity->getDocUnitPrice();
-
-                $standardCF = $conversionFactor;
-
-                if ($pr_row != null) {
-                    $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
-                    $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-                    $standardCF = $standardCF * $pr_row->getConversionFactor();
-                }
-
-                $entity->setQuantity($convertedPurchaseQuantity);
-                $entity->setUnitPrice($convertedPurchaseUnitPrice);
-                $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
-
-                $convertedStandardQuantity = $entity->getDocQuantity();
-                $convertedStandardUnitPrice = $entity->getDocUnitPrice();
-
-                if ($item != null) {
-                    $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
-                    $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
-                }
-
-                // calculate standard quantity
-                $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
-                $entity->setConvertedStandardQuantity($convertedStandardQuantity);
-                $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
-            }
-
-            // $entity->setTraceStock($traceStock);
             $entity->setRemarks($remarks);
 
             if (count($errors) > 0) {
@@ -287,13 +236,31 @@ class PoRowController extends AbstractActionController
                 'email' => $this->identity()
             ));
 
-            $entity->setCurrentState($target->getCurrentState());
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            try {
+                $this->poService->saveRow($target, $entity, $u, TRUE);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
 
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn(new \DateTime());
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
+            // second check.
+
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $target,
+                    'currency_list' => $currency_list,
+                    'total_row' => $po['total_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
+                ));
+
+                $viewModel->setTemplate("procure/po-row/add-row");
+                return $viewModel;
+            }
 
             $redirectUrl = "/procure/po-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
             $m = sprintf("[OK] Contract /PO Line: %s created!", $entity->getId());
@@ -1333,5 +1300,23 @@ class PoRowController extends AbstractActionController
     {
         $this->doctrineEM = $doctrineEM;
         return $this;
+    }
+    
+    /**
+     *
+     *  @return \Procure\Service\PoService
+     */
+    public function getPoService()
+    {
+        return $this->poService;
+    }
+    
+    /**
+     *
+     *  @param \Procure\Service\PoService $poService
+     */
+    public function setPoService(\Procure\Service\PoService $poService)
+    {
+        $this->poService = $poService;
     }
 }

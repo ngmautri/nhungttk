@@ -180,7 +180,8 @@ if (count($errors) > 0) {
 
 
 						<fieldset>
-							<legend style="font-size: 9pt; color: gray; margin: 5pt 1pt 5pt 1pt;">
+							<legend
+								style="font-size: 9pt; color: gray; margin: 5pt 1pt 5pt 1pt;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 								<a style="font-size: 9pt; color: gray;" href="#transaction"
 									class="" data-toggle="collapse">PR ROW:</a>
@@ -194,7 +195,7 @@ if (count($errors) > 0) {
 											id="rowNumber" name="rowNumber"
 											value="<?php if (!$entity== null):if($entity->getRowNumber()==null):echo $max_row_number + 1;else:echo $entity->getRowNumber();endif;else:echo $max_row_number + 1;endif;?>">
 									</div>
-									
+
 									<div class="col-sm-1">
 										<input
 											<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
@@ -228,14 +229,14 @@ if (count($errors) > 0) {
 										</span>
 									</div>
 
-									<div class="col-sm-2">
+									<div class="col-sm-1">
 										<a style="color: #0080ff;" href="javascript:;"
 											onclick="showJqueryDialog('Select Item','1300',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
 											class="glyphicon glyphicon-folder-open"></i>
 										</a>
 
 									</div>
-									<div class="col-sm-2">
+									<div class="col-sm-1">
 										<a target="_blank" style="font-size: 9pt;"
 											href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i
 											class="glyphicon glyphicon-new-window"></i></small>
@@ -249,8 +250,8 @@ if (count($errors) > 0) {
 										<input tabindex="2" class="form-control input-sm" type="text"
 											placeholder="" name="rowName" id="rowName"
 											value="<?php echo (!$entity== null)? $entity->getRowName():"";?>">
-			</div>
-									
+									</div>
+
 								</div>
 								<hr style="margin: 5pt 1pt 5pt 1pt;">
 								<div class="form-group margin-bottom required">
@@ -268,25 +269,29 @@ if (count($errors) > 0) {
 										<input tabindex="4" class="form-control input-sm" type="text"
 											placeholder="" name="rowUnit" id="rowUnit"
 											value="<?php echo (!$entity== null)? $entity->getRowUnit():"";?>">
-										<div style="color: graytext; padding-bottom: 5px;" id="standard_uom_id"></div>
+										<div style="color: graytext; padding-bottom: 5px;"
+											id="standard_uom_id"></div>
 									</div>
 
 									<label class="control-label col-sm-2"><?php echo $this->translate("Convert Factor");?>:</label>
-									<div class="col-sm-3">
+									<div class="col-sm-1">
 										<input tabindex="5" class="form-control input-sm" type="text"
 											placeholder="" name="conversionFactor" id="conversionFactor"
 											value="<?php echo (!$entity== null)? $entity->getConversionFactor():"1";?>">
-											<div style="color: graytext; padding-bottom: 5px;" id="purchase_uom_convert_text"></div>
-									<div class="col-sm-3">
-								<span
-									style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt"
-									id="">Converstion to order unit (see PR).</span>
-						</div>
+										<div style="color: graytext; padding-bottom: 5px;"
+											id="purchase_uom_convert_text"></div>
 									</div>
-
+									<div class="col-sm-3">
+										<span
+											style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt"
+											id=""><?php echo $this->translate("Converstion to item standard unit (see Item)");?>
+									</span>
+									</div>
 								</div>
+
+
 								<hr style="margin: 5pt 1pt 5pt 1pt;">
-				
+
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2">Expected Delivery:</label>
 									<div class="col-sm-3">
@@ -314,7 +319,8 @@ if (count($errors) > 0) {
 
 
 						<fieldset>
-							<legend style="font-size: 9pt; color: gray; margin: 5pt 1pt 5pt 1pt;">
+							<legend
+								style="font-size: 9pt; color: gray; margin: 5pt 1pt 5pt 1pt;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 								<a style="font-size: 9pt; color: gray;" href="#reference"
 									class="" data-toggle="collapse">REFERENCE:</a>

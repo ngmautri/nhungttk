@@ -1502,8 +1502,8 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
     }
 
     /**
-     *
-     * @return mixed
+     * 
+     *  @return \Procure\Service\GrService
      */
     public function getGrService()
     {
@@ -1511,8 +1511,8 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
     }
 
     /**
-     *
-     * @param mixed $grService
+     * 
+     *  @param \Procure\Service\GrService $grService
      */
     public function setGrService(\Procure\Service\GrService $grService)
     {

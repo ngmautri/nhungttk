@@ -15,6 +15,113 @@ use Zend\Math\Rand;
  */
 class APInvoiceService extends AbstractService
 {
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $target
+     * @param \Application\Entity\FinVendorInvoiceRow $entity
+     * @param array $data
+     */
+    public function validateRow($target, $entity, $data)
+    {
+        $errors = array();
+
+        $item_id = $data['item_id'];
+        $pr_row_id = $data['pr_row_id'];
+        $gl_account_id = $data['gl_account_id'];
+        $cost_center_id = $data['cost_center_id'];
+        $isActive = (int) $data['isActive'];
+        $rowNumber = $data['rowNumber'];
+        $vendorItemCode = $data['vendorItemCode'];
+        $unit = $data['unit'];
+        $conversionFactor = $data['conversionFactor'];
+        $quantity = $data['quantity'];
+        $unitPrice = $data['unitPrice'];
+        $taxRate = $data['taxRate'];
+        $remarks = $data['remarks'];
+
+        if ($isActive != 1) {
+            $isActive = 0;
+        }
+
+        $entity->setIsActive($isActive);
+        $entity->setDocStatus($target->getDocStatus());
+        $entity->setRowNumber($rowNumber);
+        $entity->setVendorItemCode($vendorItemCode);
+        $entity->setUnit($unit);
+
+        $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+        $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
+        $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
+
+        if ($gl == null) {
+            $errors[] = $this->controllerPlugin->translate('G/L account can\'t be empty!. Pls select G/L');
+        } else {
+            $entity->setGlAccount($gl);
+        }
+
+        $entity->setCostCenter($costCenter);
+
+        // PR and be empty
+        $entity->setPrRow($pr_row);
+
+        // Item cant be empty
+        if ($item == null) {
+            $errors[] = $this->controllerPlugin->translate('Item can\'t be empty. Please select item.');
+        } else {
+            $entity->setItem($item);
+        }
+
+        if (! is_numeric($quantity)) {
+            $errors[] = $this->controllerPlugin->translate('Quantity must be a number.');
+        } else {
+            if ($quantity <= 0) {
+                $errors[] = $this->controllerPlugin->translate('Quantity must be greater than 0!');
+            } else {
+                $entity->setDocQuantity($quantity);
+            }
+        }
+
+        if ($conversionFactor == null) {
+            $conversionFactor = 1;
+        }
+
+        if (! is_numeric($conversionFactor)) {
+            $errors[] = $this->controllerPlugin->translate('conversion factor must be a number.');
+        } else {
+            if ($conversionFactor <= 0) {
+                $errors[] = $this->controllerPlugin->translate('converstion factor must be greater than 0!');
+            } else {
+                $entity->setConversionFactor($conversionFactor);
+            }
+        }
+
+        if (! is_numeric($unitPrice)) {
+            $errors[] = $this->controllerPlugin->translate('Price is not valid. It must be a number.');
+        } else {
+            if ($unitPrice < 0) {
+                $errors[] = $this->controllerPlugin->translate('Price must be greate than or equal 0!');
+            } else {
+                $entity->setDocUnitPrice($unitPrice);
+            }
+        }
+
+        if (! is_numeric($taxRate)) {
+            $errors[] = $this->controllerPlugin->translate('taxRate is not valid. It must be a number.');
+        } else {
+            if ($taxRate < 0) {
+                $errors[] = $this->controllerPlugin->translate('taxRate must be greate than 0!');
+            } else {
+                $entity->setTaxRate($taxRate);
+            }
+        }
+
+        $entity->setRemarks($remarks);
+
+        return $errors;
+    }
+
     /**
      *
      * @param \Application\Entity\FinVendorInvoice $target
@@ -27,64 +134,62 @@ class APInvoiceService extends AbstractService
         if ($u == null) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
-        
+
         if (! $target instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument. AP Object not found!");
         }
-        
+
         if (! $entity instanceof \Application\Entity\FinVendorInvoiceRow) {
             throw new \Exception("Invalid Argument. AP Line Object not found!");
         }
-        
+
         // validated.
-        
+
         $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
         $entity->setNetAmount($netAmount);
-        
+
         $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
         $grossAmount = $entity->getNetAmount() + $taxAmount;
-        
+
         $entity->setTaxAmount($taxAmount);
         $entity->setGrossAmount($grossAmount);
-        
+
         $convertedPurchaseQuantity = $entity->getDocQuantity();
         $convertedPurchaseUnitPrice = $entity->getDocUnitPrice();
-        
+
         $conversionFactor = $entity->getConversionFactor();
         $standardCF = $entity->getConversionFactor();
-        
+
         $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
         $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-        
-        
+
         $pr_row = $entity->getPrRow();
-        
+
         if ($pr_row != null) {
             $standardCF = $standardCF * $pr_row->getConversionFactor();
         }
-        
+
         // quantity /unit price is converted purchase quantity to clear PR
-        
+
         $entity->setQuantity($convertedPurchaseQuantity);
         $entity->setUnitPrice($convertedPurchaseUnitPrice);
-        
+
         $convertedStandardQuantity = $entity->getDocQuantity();
         $convertedStandardUnitPrice = $entity->getDocUnitPrice();
-        
+
         $item = $entity->getItem();
         if ($item != null) {
             $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
             $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
         }
-        
+
         // calculate standard quantity
         $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
         $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
-        
+
         $entity->setConvertedStandardQuantity($convertedStandardQuantity);
-        $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);               
-        
-        
+        $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+
         if ($isNew == TRUE) {
             $entity->setCurrentState($target->getCurrentState());
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
@@ -95,7 +200,7 @@ class APInvoiceService extends AbstractService
             $entity->setLastchangeBy($u);
             $entity->setLastchangeOn(new \DateTime());
         }
-        
+
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
     }
@@ -280,7 +385,7 @@ class APInvoiceService extends AbstractService
             $gl_account = null;
             $cost_center = null;
 
-            if ($r->getItem() !== null) {
+            if ($r->getItem() != null) {
 
                 $criteria = array(
                     'isActive' => 1,

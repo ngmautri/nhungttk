@@ -113,7 +113,6 @@
 	    $( "#menu" ).menu();
 	  });
 
-
   $( function() {
 	    $( document ).tooltip({
 	      items: "img, [item-pic], [title]",
@@ -134,7 +133,16 @@
 	        }
 	      }
 	    });
-	  } );
+	    
+	    $(document).keydown(function(event) { 
+	    	  if (event.keyCode == 27) {
+		    	//alert('1'); 
+	    		$("#jquery_dialog").dialog("close");
+	    	  }
+	    	});   
+
+	    } 
+); 
 
  
 

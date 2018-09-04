@@ -10,7 +10,7 @@ use Zend\Math\Rand;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoService extends AbstractService
+class PrService extends AbstractService
 {
 
     /**

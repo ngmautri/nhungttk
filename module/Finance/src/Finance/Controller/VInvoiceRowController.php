@@ -1,4 +1,4 @@
-``<?php
+<?php
 namespace Finance\Controller;
 
 use Zend\Escaper\Escaper;
@@ -82,184 +82,90 @@ class VInvoiceRowController extends AbstractActionController
                     'tax_amount' => 0,
                     'gross_amount' => 0
                 ));
-                // might need redirect
-            } else {
-
-                $item_id = $request->getPost('item_id');
-                $pr_row_id = $request->getPost('pr_row_id');
-                $gl_account_id = $request->getPost('gl_account_id');
-                $cost_center_id = $request->getPost('cost_center_id');
-
-                $isActive = (int) $request->getPost('isActive');
-
-                $rowNumber = $request->getPost('rowNumber');
-
-                $vendorItemCode = $request->getPost('vendorItemCode');
-                $unit = $request->getPost('unit');
-                $conversionFactor = $request->getPost('conversionFactor');
-
-                $quantity = $request->getPost('quantity');
-                $unitPrice = $request->getPost('unitPrice');
-                $taxRate = $request->getPost('taxRate');
-
-                $remarks = $request->getPost('remarks');
-
-                if ($isActive !== 1) {
-                    $isActive = 0;
-                }
-
-                $entity = new FinVendorInvoiceRow();
-
-                // Good Receipt = Invoice Receipt.
-                $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
-                $entity->setIsActive($isActive);
-                $entity->setDocStatus($target->getDocStatus());
-                $entity->setInvoice($target);
-                $entity->setRowNumber($rowNumber);
-                $entity->setVendorItemCode($vendorItemCode);
-                $entity->setUnit($unit);
-
-                $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-                $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-                $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
-                $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
-
-                if ($gl == null) {
-                    $errors[] = $nmtPlugin->translate('G/L account can\'t be empty!. Pls select G/L');
-                } else {
-                    $entity->setGlAccount($gl);
-                }
-
-                $entity->setCostCenter($costCenter);
-
-                // PR and be empty
-                $entity->setPrRow($pr_row);
-
-                // Item cant be empty
-                if ($item == null) {
-                    $errors[] = $nmtPlugin->translate('Item can\'t be empty!');
-                } else {
-                    $entity->setItem($item);
-                }
-
-                if (! is_numeric($quantity)) {
-                    $errors[] = $nmtPlugin->translate('Quantity must be a number.');
-                } else {
-                    if ($quantity <= 0) {
-                        $errors[] = $nmtPlugin->translate('Quantity must be greater than 0!');
-                    } else {
-                        $entity->setDocQuantity($quantity);
-                    }
-                }
-
-                if ($conversionFactor == null) {
-                    $conversionFactor = 1;
-                }
-
-                if (! is_numeric($conversionFactor)) {
-                    $errors[] = $nmtPlugin->translate('conversion factor must be a number.');
-                } else {
-                    if ($conversionFactor <= 0) {
-                        $errors[] = $nmtPlugin->translate('converstion factor must be greater than 0!');
-                    } else {
-                        $entity->setConversionFactor($conversionFactor);
-                    }
-                }
-
-                if (! is_numeric($unitPrice)) {
-                    $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
-                } else {
-                    if ($unitPrice < 0) {
-                        $errors[] = $nmtPlugin->translate('Price must be greate than or equal 0!');
-                    } else {
-                        $entity->setDocUnitPrice($unitPrice);
-                    }
-                }
-
-                if (! is_numeric($taxRate)) {
-                    $errors[] = $nmtPlugin->translate('taxRate is not valid. It must be a number.');
-                } else {
-                    if ($taxRate < 0) {
-                        $errors[] = $nmtPlugin->translate('taxRate must be greate than 0!');
-                    } else {
-                        $entity->setTaxRate($taxRate);
-                    }
-                }
-
-                $entity->setRemarks($remarks);
-
-                if (count($errors) > 0) {
-
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'target' => $target,
-                        'entity' => $entity,
-                        'currency_list' => $currency_list,
-                        'cost_center_list' => $cost_center_list,
-                        'gl_list' => $gl_list,
-                        'active_row' => $invoice['active_row'],
-                        'total_row' => $invoice['total_row'],
-                        'max_row_number' => $invoice['max_row_number'],
-                        'net_amount' => $invoice['net_amount'],
-                        'tax_amount' => $invoice['tax_amount'],
-                        'gross_amount' => $invoice['gross_amount']
-                    ));
-                }
-
-                // NO ERROR
-                // Saving into Database..........
-                // ++++++++++++++++++++++++++++++
-
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    "email" => $this->identity()
-                ));
-                $createdOn = new \DateTime();
-
-                try {
-                    $this->apService->saveRow($target, $entity, $u, TRUE);
-                } catch (\Exception $e) {
-                    $errors[] = $e->getMessage();
-                }
-
-                if (count($errors) > 0) {
-
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'target' => $target,
-                        'entity' => $entity,
-                        'currency_list' => $currency_list,
-                        'cost_center_list' => $cost_center_list,
-                        'gl_list' => $gl_list,
-                        'active_row' => $invoice['active_row'],
-                        'total_row' => $invoice['total_row'],
-                        'max_row_number' => $invoice['max_row_number'],
-                        'net_amount' => $invoice['net_amount'],
-                        'tax_amount' => $invoice['tax_amount'],
-                        'gross_amount' => $invoice['gross_amount']
-                    ));
-                }
-
-                $m = sprintf('[OK] A/P Invoice Row #%s - %s created.', $entity->getId(), $entity->getRowIdentifer());
-                $this->flashMessenger()->addMessage($m);
-
-                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-                    'priority' => \Zend\Log\Logger::INFO,
-                    'message' => $m,
-                    'createdBy' => $u,
-                    'createdOn' => $createdOn,
-                    'entity_id' => $entity->getId(),
-                    'entity_class' => get_class($entity),
-                    'entity_token' => $entity->getToken()
-                ));
-
-                // LOGGING
-
-                $redirectUrl = "/finance/v-invoice-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-                return $this->redirect()->toUrl($redirectUrl);
             }
+            
+            $entity = new FinVendorInvoiceRow();
+            
+            // Good Receipt = Invoice Receipt.
+            $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
+            $entity->setInvoice($target);
+            
+            
+            $data = $this->params()->fromPost();
+            $errors = $this->apService->validateRow($target,$entity, $data);
+           
+
+            if (count($errors) > 0) {
+
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => $target,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'cost_center_list' => $cost_center_list,
+                    'gl_list' => $gl_list,
+                    'active_row' => $invoice['active_row'],
+                    'total_row' => $invoice['total_row'],
+                    'max_row_number' => $invoice['max_row_number'],
+                    'net_amount' => $invoice['net_amount'],
+                    'tax_amount' => $invoice['tax_amount'],
+                    'gross_amount' => $invoice['gross_amount']
+                ));
+            }
+
+            // NO ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+            $createdOn = new \DateTime();
+
+            try {
+                $this->apService->saveRow($target, $entity, $u, TRUE);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+
+            if (count($errors) > 0) {
+
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => $target,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'cost_center_list' => $cost_center_list,
+                    'gl_list' => $gl_list,
+                    'active_row' => $invoice['active_row'],
+                    'total_row' => $invoice['total_row'],
+                    'max_row_number' => $invoice['max_row_number'],
+                    'net_amount' => $invoice['net_amount'],
+                    'tax_amount' => $invoice['tax_amount'],
+                    'gross_amount' => $invoice['gross_amount']
+                ));
+            }
+
+            $m = sprintf('[OK] A/P Invoice Row #%s - %s created.', $entity->getId(), $entity->getRowIdentifer());
+            $this->flashMessenger()->addMessage($m);
+
+            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $createdOn,
+                'entity_id' => $entity->getId(),
+                'entity_class' => get_class($entity),
+                'entity_token' => $entity->getToken()
+            ));
+
+            // LOGGING
+
+            $redirectUrl = "/finance/v-invoice-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
@@ -436,109 +342,9 @@ class VInvoiceRowController extends AbstractActionController
             }
 
             $oldEntity = clone ($entity);
-
-            $item_id = $request->getPost('item_id');
-            $pr_row_id = $request->getPost('pr_row_id');
-            $gl_account_id = $request->getPost('gl_account_id');
-            $cost_center_id = $request->getPost('cost_center_id');
-
-            $isActive = (int) $request->getPost('isActive');
-
-            $rowNumber = $request->getPost('rowNumber');
-
-            $vendorItemCode = $request->getPost('vendorItemCode');
-            $unit = $request->getPost('unit');
-            $conversionFactor = $request->getPost('conversionFactor');
-
-            $quantity = $request->getPost('quantity');
-            $unitPrice = $request->getPost('unitPrice');
-            $taxRate = $request->getPost('taxRate');
-
-            $remarks = $request->getPost('remarks');
-
-            if ($isActive !== 1) {
-                $isActive = 0;
-            }
-
-            $entity = new FinVendorInvoiceRow();
-
-            // Good Receipt = Invoice Receipt.
-            $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
-            $entity->setIsActive($isActive);
-            $entity->setDocStatus($target->getDocStatus());
-            $entity->setInvoice($target);
-            $entity->setRowNumber($rowNumber);
-            $entity->setVendorItemCode($vendorItemCode);
-            $entity->setUnit($unit);
-
-            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-            $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
-            $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
-
-            if ($gl == null) {
-                $errors[] = $nmtPlugin->translate('G/L account can\'t be empty!. Pls select G/L');
-            } else {
-                $entity->setGlAccount($gl);
-            }
-
-            $entity->setCostCenter($costCenter);
-
-            // PR and be empty
-            $entity->setPrRow($pr_row);
-
-            // Item cant be empty
-            if ($item == null) {
-                $errors[] = $nmtPlugin->translate('Item can\'t be empty!');
-            } else {
-                $entity->setItem($item);
-            }
-
-            if (! is_numeric($quantity)) {
-                $errors[] = $nmtPlugin->translate('Quantity must be a number.');
-            } else {
-                if ($quantity <= 0) {
-                    $errors[] = $nmtPlugin->translate('Quantity must be greater than 0!');
-                } else {
-                    $entity->setDocQuantity($quantity);
-                }
-            }
-
-            if ($conversionFactor == null) {
-                $conversionFactor = 1;
-            }
-
-            if (! is_numeric($conversionFactor)) {
-                $errors[] = $nmtPlugin->translate('conversion factor must be a number.');
-            } else {
-                if ($conversionFactor <= 0) {
-                    $errors[] = $nmtPlugin->translate('converstion factor must be greater than 0!');
-                } else {
-                    $entity->setConversionFactor($conversionFactor);
-                }
-            }
-
-            if (! is_numeric($unitPrice)) {
-                $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
-            } else {
-                if ($unitPrice < 0) {
-                    $errors[] = $nmtPlugin->translate('Price must be greate than or equal 0!');
-                } else {
-                    $entity->setDocUnitPrice($unitPrice);
-                }
-            }
-
-            if (! is_numeric($taxRate)) {
-                $errors[] = $nmtPlugin->translate('taxRate is not valid. It must be a number.');
-            } else {
-                if ($taxRate < 0) {
-                    $errors[] = $nmtPlugin->translate('taxRate must be greate than 0!');
-                } else {
-                    $entity->setTaxRate($taxRate);
-                }
-            }
-
-            $entity->setRemarks($remarks);
+            
+            $data = $this->params()->fromPost();
+            $errors = $this->apService->validateRow($target,$entity, $data);
 
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 

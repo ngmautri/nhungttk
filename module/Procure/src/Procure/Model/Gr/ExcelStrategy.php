@@ -1,6 +1,6 @@
 <?php
 namespace Procure\Model\Po;
-use Application\Entity\NmtProcurePo;
+use Application\Entity\NmtProcurePr;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 /**

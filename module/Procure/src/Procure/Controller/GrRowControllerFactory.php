@@ -28,6 +28,10 @@ class GrRowControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('doctrine.entitymanager.orm_default' );
 		$controller->setDoctrineEM($sv );
 		
+		$sv = $sm->get('Procure\Service\GrService' );
+		$controller->setGrService($sv);
+		
+		
 			return $controller;
 	}
 }

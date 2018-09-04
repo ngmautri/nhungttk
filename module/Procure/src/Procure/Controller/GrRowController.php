@@ -1,262 +1,263 @@
 <?php
-namespace Procure\Controller;
+namespace procure\controller;
 
-use Zend\Escaper\Escaper;
-use Zend\Math\Rand;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Date;
-use Zend\View\Model\ViewModel;
-use Doctrine\ORM\EntityManager;
-use MLA\Paginator;
-use Application\Entity\NmtProcureGr;
-use Application\Entity\NmtProcureGrRow;
-use Application\Entity\NmtProcurePo;
-use Application\Entity\NmtProcurePoRow;
-use Application\Entity\NmtInventoryTrx;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use zend\escaper\escaper;
+use zend\math\rand;
+use zend\mvc\controller\abstractactioncontroller;
+use zend\validator\date;
+use zend\view\model\viewmodel;
+use doctrine\orm\entitymanager;
+use mla\paginator;
+use application\entity\nmtprocuregr;
+use application\entity\nmtprocuregrrow;
+use application\entity\nmtprocurepo;
+use application\entity\nmtprocureporow;
+use application\entity\nmtinventorytrx;
+use phpoffice\phpspreadsheet\spreadsheet;
 
 /**
- * Good Receipt PO or PR or AP
+ * good receipt po or pr or ap
  *
- * @author Nguyen Mau Tri - ngmautri@gmail.com
+ * @author nguyen mau tri - ngmautri@gmail.com
  *        
  */
-class GrRowController extends AbstractActionController
+class grrowcontroller extends abstractactioncontroller
 {
 
-    protected $doctrineEM;
+    protected $doctrineem;
+
+    protected $grservice;
 
     /**
      *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     * @return \zend\http\response|\zend\view\model\viewmodel
      */
-    public function girdTmpAction()
+    public function girdtmpaction()
     {
-        $request = $this->getRequest();
+        $request = $this->getrequest();
 
-        if ($request->getHeader('Referer') == null) {
-            // return $this->redirect()->toRoute('access_denied');
+        if ($request->getheader('referer') == null) {
+            // return $this->redirect()->toroute('access_denied');
         }
 
-        // $pq_curPage = $_GET ["pq_curpage"];
-        // $pq_rPP = $_GET ["pq_rpp"];
+        // $pq_curpage = $_get ["pq_curpage"];
+        // $pq_rpp = $_get ["pq_rpp"];
 
-        $target_id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
+        $target_id = (int) $this->params()->fromquery('target_id');
+        $token = $this->params()->fromquery('token');
         $criteria = array(
             'id' => $target_id,
             'token' => $token
         );
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGr')->findOneBy($criteria);
+        $target = $this->doctrineem->getrepository('application\entity\nmtprocuregr')->findoneby($criteria);
 
         $a_json_final = array();
         $a_json = array();
         $a_json_row = array();
-        $escaper = new Escaper();
+        $escaper = new escaper();
 
-        if ($target instanceof \Application\Entity\NmtProcureGr) {
+        if ($target instanceof \application\entity\nmtprocuregr) {
 
-            $query = 'SELECT e FROM Application\Entity\NmtProcureGrRow e
-            WHERE e.gr=?1 AND e.isActive =?2 AND e.isDraft =?3 ORDER BY e.rowNumber';
+            $query = 'select e from application\entity\nmtprocuregrrow e
+            where e.gr=?1 and e.isactive =?2 and e.isdraft =?3 order by e.rownumber';
 
-            $list = $this->doctrineEM->createQuery($query)
-                ->setParameters(array(
+            $list = $this->doctrineem->createquery($query)
+                ->setparameters(array(
                 "1" => $target,
                 "2" => 1,
                 "3" => 1
             ))
-                ->getResult();
+                ->getresult();
 
             $total_records = 0;
             if (count($list) > 0) {
-                $escaper = new Escaper();
+                $escaper = new escaper();
 
                 $total_records = count($list);
                 foreach ($list as $a) {
 
-                    /** @var \Application\Entity\NmtProcureGrRow $a ;*/
+                    /** @var \application\entity\nmtprocuregrrow $a ;*/
 
-                    $a_json_row["row_id"] = $a->getId();
-                    $a_json_row["row_token"] = $a->getToken();
-                    $a_json_row["row_number"] = $a->getRowNumber();
-                    $a_json_row["row_unit"] = $a->getUnit();
-                    $a_json_row["row_quantity"] = $a->getQuantity();
+                    $a_json_row["row_id"] = $a->getid();
+                    $a_json_row["row_token"] = $a->gettoken();
+                    $a_json_row["row_number"] = $a->getrownumber();
+                    $a_json_row["row_unit"] = $a->getunit();
+                    $a_json_row["row_quantity"] = $a->getquantity();
 
-                    if ($a->getUnitPrice() != null) {
-                        $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), 2);
+                    if ($a->getunitprice() != null) {
+                        $a_json_row["row_unit_price"] = number_format($a->getunitprice(), 2);
                     } else {
                         $a_json_row["row_unit_price"] = 0;
                     }
 
-                    if ($a->getNetAmount() != null) {
-                        $a_json_row["row_net"] = number_format($a->getNetAmount(), 2);
+                    if ($a->getnetamount() != null) {
+                        $a_json_row["row_net"] = number_format($a->getnetamount(), 2);
                     } else {
                         $a_json_row["row_net"] = 0;
                     }
 
-                    if ($a->getTaxRate() != null) {
-                        $a_json_row["row_tax_rate"] = $a->getTaxRate();
+                    if ($a->gettaxrate() != null) {
+                        $a_json_row["row_tax_rate"] = $a->gettaxrate();
                     } else {
                         $a_json_row["row_tax_rate"] = 0;
                     }
 
-                    if ($a->getGrossAmount() != null) {
-                        $a_json_row["row_gross"] = number_format($a->getGrossAmount(), 2);
+                    if ($a->getgrossamount() != null) {
+                        $a_json_row["row_gross"] = number_format($a->getgrossamount(), 2);
                     } else {
                         $a_json_row["row_gross"] = 0;
                     }
 
                     $a_json_row["pr_number"] = "";
-                    if ($a->getPrRow() != null) {
-                        if ($a->getPrRow()->getPr() != null) {
+                    if ($a->getprrow() != null) {
+                        if ($a->getprrow()->getpr() != null) {
 
-                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
-                                ->getPr()
-                                ->getToken() . '&entity_id=' . $a->getPrRow()
-                                ->getPr()
-                                ->getId() . '&checkum=' . $a->getPrRow()
-                                ->getPr()
-                                ->getChecksum() . '"> ... </a>';
+                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getprrow()
+                                ->getpr()
+                                ->gettoken() . '&entity_id=' . $a->getprrow()
+                                ->getpr()
+                                ->getid() . '&checkum=' . $a->getprrow()
+                                ->getpr()
+                                ->getchecksum() . '"> ... </a>';
 
-                            $a_json_row["pr_number"] = $a->getPrRow()
-                                ->getPr()
-                                ->getPrNumber() . $link;
+                            $a_json_row["pr_number"] = $a->getprrow()
+                                ->getpr()
+                                ->getprnumber() . $link;
                         }
                     }
 
-                    $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
-                    if ($a->getItem()->getItemName() !== null) {
-                        $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
-                            ->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                    $item_detail = "/inventory/item/show1?token=" . $a->getitem()->gettoken() . "&checksum=" . $a->getitem()->getchecksum() . "&entity_id=" . $a->getitem()->getid();
+                    if ($a->getitem()->getitemname() !== null) {
+                        $onclick = "showjquerydialog('detail of item: " . $escaper->escapejs($a->getitem()
+                            ->getitemname()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
+                        $onclick = "showjquerydialog('detail of item: " . ($a->getitem()->getitemname()) . "','1200',$(window).height()-100,'" . $item_detail . "','j_loaded_data', true);";
                     }
 
-                    if (strlen($a->getItem()->getItemName()) < 35) {
-                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
+                    if (strlen($a->getitem()->getitemname()) < 35) {
+                        $a_json_row["item_name"] = $a->getitem()->getitemname() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getitem()->getid() . '" item_name="' . $a->getitem()->getitemname() . '" title="' . $a->getitem()->getitemname() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
                     } else {
-                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                        $a_json_row["item_name"] = substr($a->getitem()->getitemname(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getitem()->getid() . '" item_name="' . $a->getitem()->getitemname() . '" title="' . $a->getitem()->getitemname() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
                     }
 
-                    // $a_json_row["item_name"] = $a->getItem()->getItemName();
+                    // $a_json_row["item_name"] = $a->getitem()->getitemname();
 
-                    $a_json_row["item_sku"] = $a->getItem()->getItemSku();
-                    $a_json_row["item_token"] = $a->getItem()->getToken();
-                    $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
-                    $a_json_row["fa_remarks"] = $a->getFaRemarks();
-                    $a_json_row["remarks"] = $a->getRemarks();
+                    $a_json_row["item_sku"] = $a->getitem()->getitemsku();
+                    $a_json_row["item_token"] = $a->getitem()->gettoken();
+                    $a_json_row["item_checksum"] = $a->getitem()->getchecksum();
+                    $a_json_row["fa_remarks"] = $a->getfaremarks();
+                    $a_json_row["remarks"] = $a->getremarks();
 
                     $a_json[] = $a_json_row;
                 }
             }
 
             $a_json_final['data'] = $a_json;
-            $a_json_final['totalRecords'] = $total_records;
-            // $a_json_final ['curPage'] = $pq_curPage;
+            $a_json_final['totalrecords'] = $total_records;
+            // $a_json_final ['curpage'] = $pq_curpage;
         }
 
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($a_json_final));
+        $response = $this->getresponse();
+        $response->getheaders()->addheaderline('content-type', 'application/json');
+        $response->setcontent(json_encode($a_json_final));
         return $response;
     }
 
     /**
      *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     * @return \zend\http\response|\zend\view\model\viewmodel
      */
-    public function updateRowTmpAction()
+    public function updaterowtmpaction()
     {
         $a_json_final = array();
-        $escaper = new Escaper();
+        $escaper = new escaper();
 
         /*
-         * $pq_curPage = $_GET ["pq_curpage"];
-         * $pq_rPP = $_GET ["pq_rpp"];
+         * $pq_curpage = $_get ["pq_curpage"];
+         * $pq_rpp = $_get ["pq_rpp"];
          */
-        $sent_list = json_decode($_POST['sent_list'], true);
+        $sent_list = json_decode($_post['sent_list'], true);
         // echo json_encode($sent_list);
 
-        $to_update = $sent_list['updateList'];
+        $to_update = $sent_list['updatelist'];
         foreach ($to_update as $a) {
             $criteria = array(
                 'id' => $a['row_id'],
                 'token' => $a['row_token']
             );
 
-            /** @var \Application\Entity\FinVendorInvoiceRowTmp $entity */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRowTmp')->findOneBy($criteria);
+            /** @var \application\entity\finvendorinvoicerowtmp $entity */
+            $entity = $this->doctrineem->getrepository('application\entity\finvendorinvoicerowtmp')->findoneby($criteria);
 
             if ($entity != null) {
-                $entity->setFaRemarks($a['fa_remarks']);
-                $entity->setRowNumber($a['row_number']);
-                $entity->setQuantity($a['row_quantity']);
-                $entity->setUnitPrice($a['row_unit_price']);
-                $entity->setTaxRate($a['row_tax_rate']);
+                $entity->setfaremarks($a['fa_remarks']);
+                $entity->setrownumber($a['row_number']);
+                $entity->setquantity($a['row_quantity']);
+                $entity->setunitprice($a['row_unit_price']);
+                $entity->settaxrate($a['row_tax_rate']);
 
-                $entity->setNetAmount($a['row_quantity'] * $entity->getUnitPrice());
-                $entity->setTaxAmount($entity->getNetAmount() * $entity->getTaxRate() / 100);
-                $entity->setGrossAmount($entity->getNetAmount() + $entity->getTaxAmount());
+                $entity->setnetamount($a['row_quantity'] * $entity->getunitprice());
+                $entity->settaxamount($entity->getnetamount() * $entity->gettaxrate() / 100);
+                $entity->setgrossamount($entity->getnetamount() + $entity->gettaxamount());
 
-                // $a_json_final['updateList']=$a['row_id'] . 'has been updated';
-                $this->doctrineEM->persist($entity);
+                // $a_json_final['updatelist']=$a['row_id'] . 'has been updated';
+                $this->doctrineem->persist($entity);
             }
         }
-        $this->doctrineEM->flush();
+        $this->doctrineem->flush();
 
-        // $a_json_final["updateList"]= json_encode($sent_list["updateList"]);
+        // $a_json_final["updatelist"]= json_encode($sent_list["updatelist"]);
 
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($sent_list));
+        $response = $this->getresponse();
+        $response->getheaders()->addheaderline('content-type', 'application/json');
+        $response->setcontent(json_encode($sent_list));
         return $response;
     }
 
     /**
      *
-     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     * @return \zend\view\model\viewmodel|\zend\http\response
      */
-    public function addAction()
+    public function addaction()
     {
-        $this->layout("Procure/layout-fullscreen");
+        $this->layout("procure/layout-fullscreen");
 
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
-        $gl_list = $nmtPlugin->glAccountList();
-        $cost_center_list = $nmtPlugin->costCenterList();
-        
+        /**@var \application\controller\plugin\nmtplugin $nmtplugin ;*/
+        $nmtplugin = $this->nmtplugin();
+        $currency_list = $nmtplugin->currencylist();
+        $gl_list = $nmtplugin->glaccountlist();
+        $cost_center_list = $nmtplugin->costcenterlist();
 
-        $request = $this->getRequest();
+        $request = $this->getrequest();
 
-        // Is Posting .................
+        // is posting .................
         // ============================
-        if ($request->isPost()) {
+        if ($request->ispost()) {
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-            $gr_id = $request->getPost('gr_id');
-            $gr_token = $request->getPost('gr_token');
+            $redirecturl = $request->getpost('redirecturl');
+            $gr_id = $request->getpost('gr_id');
+            $gr_token = $request->getpost('gr_token');
 
-            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-            $gr = $res->getGr($gr_id, $gr_token);
+            /**@var \application\repository\nmtprocureporepository $res ;*/
+            $res = $this->doctrineem->getrepository('application\entity\nmtprocurepo');
+            $gr = $res->getgr($gr_id, $gr_token);
 
             if ($gr == null) {
-                return $this->redirect()->toRoute('access_denied');
+                return $this->redirect()->toroute('access_denied');
             }
 
             $target = null;
-            if ($gr[0] instanceof NmtProcureGr) {
+            if ($gr[0] instanceof nmtprocuregr) {
 
-                /**@var \Application\Entity\NmtProcurePo $target ;*/
+                /**@var \application\entity\nmtprocurepo $target ;*/
                 $target = $gr[0];
             }
 
             if ($target == null) {
 
-                $errors[] = 'GR object can\'t be empty. Or token key is not valid!';
-                $viewModel = new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
+                $errors[] = 'gr object can\'t be empty. or token key is not valid!';
+                $viewmodel = new viewmodel(array(
+                    'redirecturl' => $redirecturl,
                     'errors' => $errors,
                     'target' => null,
                     'entity' => null,
@@ -268,658 +269,504 @@ class GrRowController extends AbstractActionController
                     'active_row' => 0
                 ));
 
-                $viewModel->setTemplate("procure/gr-row/add-row");
-                return $viewModel;
+                $viewmodel->settemplate("procure/gr-row/add-row");
+                return $viewmodel;
             }
 
-            $item_id = $request->getPost('item_id');
-            $gl_account_id = $request->getPost('gl_account_id');
+            $entity = new nmtprocuregrrow();
+            $entity->setgr($target);
 
-            $pr_row_id = $request->getPost('pr_row_id');
-            $isActive = (int) $request->getPost('isActive');
+            // goods receipt, invoice not receipt
+            $entity->settransactiontype(\application\model\constants::procure_transaction_type_grni);
+            $entity->settransactionstatus(\application\model\constants::procure_transaction_status_pending);
 
-            $rowNumber = $request->getPost('rowNumber');
-
-            $vendorItemCode = $request->getPost('vendorItemCode');
-            $unit = $request->getPost('unit');
-            $conversionFactor = $request->getPost('conversionFactor');
-            $converstionText = $request->getPost('converstionText');
-
-            $quantity = $request->getPost('quantity');
-            $unitPrice = $request->getPost('unitPrice');
-            $taxRate = $request->getPost('taxRate');
-
-            $remarks = $request->getPost('remarks');
-
-            if ($isActive !== 1) {
-                $isActive = 0;
+            try {
+                $data = $this->params()->frompost();
+                $errors = $this->grservice->validaterow($target, $entity, $data);
+            } catch (\exception $e) {
+                $errors[] = $e->getmessage();
             }
-
-            // Inventory Transaction:
-
-            $entity = new NmtProcureGrRow();
-            $entity->setIsActive($isActive);
-
-            $entity->setGr($target);
-            $entity->setRowNumber($rowNumber);
-
-            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-            $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
-
-            if ($pr_row == null) {
-                // $errors[] = 'Item can\'t be empty!';
-            } else {
-                $entity->setPrRow($pr_row);
-            }
-
-            if ($gl == null) {
-                $errors[] = 'G/L account can\'t be empty!';
-            } else {
-                $entity->setGlAccount($gl);
-            }
-
-            if ($item == null) {
-                $errors[] = 'Item can\'t be empty!';
-            } else {
-                $entity->setItem($item);
-            }
-
-            $entity->setVendorItemCode($vendorItemCode);
-            $entity->setUnit($unit);
-            $entity->setConversionFactor($conversionFactor);
-            $entity->setConverstionText($converstionText);
-
-            $n_validated = 0;
-            if ($quantity == null) {
-                $errors[] = 'Please  enter quantity!';
-            } else {
-
-                if (! is_numeric($quantity)) {
-                    $errors[] = 'Quantity must be a number.';
-                } else {
-                    if ($quantity <= 0) {
-                        $errors[] = 'Quantity must be greater than 0!';
-                    }
-                    $entity->setQuantity($quantity);
-                    $n_validated ++;
-                }
-            }
-
-            if ($unitPrice !== null) {
-                if (! is_numeric($unitPrice)) {
-                    $errors[] = 'Price is not valid. It must be a number.';
-                } else {
-                    if ($unitPrice < 0) {
-
-                        // accept ZERO PRICE
-                        $errors[] = 'Price must be greate or equal 0!';
-                    }
-                    $entity->setUnitPrice($unitPrice);
-                    $n_validated ++;
-                }
-            }
-
-            if ($n_validated == 2) {
-                $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
-                $entity->setNetAmount($netAmount);
-            }
-
-            if ($taxRate !== null) {
-                if (! is_numeric($taxRate)) {
-                    $errors[] = '$taxRate is not valid. It must be a number.';
-                } else {
-                    if ($taxRate < 0) {
-                        $errors[] = '$taxRate must be greate than 0!';
-                    }
-                    $entity->setTaxRate($taxRate);
-                    $n_validated ++;
-                }
-            }
-
-            if ($n_validated == 3) {
-                $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                $grossAmount = $entity->getNetAmount() + $taxAmount;
-                $entity->setTaxAmount($taxAmount);
-                $entity->setGrossAmount($grossAmount);
-            }
-
-            // $entity->setTraceStock($traceStock);
-            $entity->setRemarks($remarks);
 
             if (count($errors) > 0) {
 
-                $viewModel = new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
+                $viewmodel = new viewmodel(array(
+                    'redirecturl' => $redirecturl,
                     'errors' => $errors,
                     'target' => $target,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'gl_list' => $gl_list,
                     'cost_center_list' => $cost_center_list,
-                    
+
                     'total_row' => $gr['total_row'],
                     'max_row_number' => $gr['max_row_number'],
                     'active_row' => $gr['active_row']
                 ));
 
-                $viewModel->setTemplate("procure/gr-row/add-row");
-                return $viewModel;
+                $viewmodel->settemplate("procure/gr-row/add-row");
+                return $viewmodel;
             }
             ;
 
-            // NO ERROR
-            // Saving into Database..........
+            // no error
+            // saving into database..........
             // ++++++++++++++++++++++++++++++
 
-            // Goods receipt, Invoice Not receipt
-            $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
-            $entity->setTransactionStatus(\Application\Model\Constants::PROCURE_TRANSACTION_STATUS_PENDING);
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            $u = $this->doctrineem->getrepository('application\entity\mlausers')->findoneby(array(
                 'email' => $this->identity()
             ));
 
-            $entity->setCurrentState($target->getCurrentState());
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            try {
+                $data = $this->params()->frompost();
+                $errors = $this->grservice->saverow($target, $entity, $u, true);
+            } catch (\exception $e) {
+                $errors[] = $e->getmessage();
+            }
 
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn(new \DateTime());
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
+            if (count($errors) > 0) {
 
-            $redirectUrl = "/procure/gr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
-            $m = sprintf("[OK] GR Line: %s created!", $entity->getId());
-            $this->flashMessenger()->addMessage($m);
+                $viewmodel = new viewmodel(array(
+                    'redirecturl' => $redirecturl,
+                    'errors' => $errors,
+                    'target' => $target,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'gl_list' => $gl_list,
+                    'cost_center_list' => $cost_center_list,
 
-            return $this->redirect()->toUrl($redirectUrl);
+                    'total_row' => $gr['total_row'],
+                    'max_row_number' => $gr['max_row_number'],
+                    'active_row' => $gr['active_row']
+                ));
+
+                $viewmodel->settemplate("procure/gr-row/add-row");
+                return $viewmodel;
+            }
+            ;
+
+            $redirecturl = "/procure/gr-row/add?token=" . $target->gettoken() . "&target_id=" . $target->getid();
+            $m = sprintf("[ok] gr line: %s created!", $entity->getid());
+            $this->flashmessenger()->addmessage($m);
+
+            return $this->redirect()->tourl($redirecturl);
         }
 
-        // NO POST
-        // Initiate.....................
+        // no post
+        // initiate.....................
         // ==============================
 
-        $redirectUrl = Null;
+        $redirecturl = null;
 
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+        if ($request->getheader('referer') == null) {
+            return $this->redirect()->toroute('access_denied');
         }
 
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+        $redirecturl = $this->getrequest()
+            ->getheader('referer')
+            ->geturi();
 
-        $id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
+        $id = (int) $this->params()->fromquery('target_id');
+        $token = $this->params()->fromquery('token');
 
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $gr = $res->getGr($id, $token);
+        /**@var \application\repository\nmtprocureporepository $res ;*/
+        $res = $this->doctrineem->getrepository('application\entity\nmtprocurepo');
+        $gr = $res->getgr($id, $token);
 
         if ($gr == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toroute('access_denied');
         }
 
         $target = null;
-        if ($gr[0] instanceof NmtProcureGr) {
+        if ($gr[0] instanceof nmtprocuregr) {
             $target = $gr[0];
         }
 
         if ($target == null) {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toroute('access_denied');
         }
 
-        $entity = new NmtProcureGrRow();
+        $entity = new nmtprocuregrrow();
 
         // set null
-        $entity->setIsActive(1);
-        $entity->setConversionFactor(1);
-        $entity->setUnit("each");
+        $entity->setisactive(1);
+        $entity->setconversionfactor(1);
+        $entity->setunit("each");
 
-        $viewModel = new ViewModel(array(
-            'redirectUrl' => $redirectUrl,
+        $viewmodel = new viewmodel(array(
+            'redirecturl' => $redirecturl,
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list,
             'gl_list' => $gl_list,
-            'cost_center_list' => $cost_center_list,            
+            'cost_center_list' => $cost_center_list,
             'total_row' => $gr['total_row'],
             'max_row_number' => $gr['max_row_number'],
             'active_row' => $gr['active_row']
         ));
 
-        $viewModel->setTemplate("procure/gr-row/add-row");
-        return $viewModel;
+        $viewmodel->settemplate("procure/gr-row/add-row");
+        return $viewmodel;
     }
 
     /**
      *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     * @return \zend\http\response|\zend\view\model\viewmodel
      */
-    public function showAction()
+    public function showaction()
     {
-        $request = $this->getRequest();
+        $request = $this->getrequest();
 
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+        if ($request->getheader('referer') == null) {
+            return $this->redirect()->toroute('access_denied');
         }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+        $redirecturl = $this->getrequest()
+            ->getheader('referer')
+            ->geturi();
 
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
+        $id = (int) $this->params()->fromquery('entity_id');
+        $token = $this->params()->fromquery('token');
         $criteria = array(
             'id' => $id,
             'token' => $token
         );
 
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
+        $entity = $this->doctrineem->getrepository('application\entity\nmtfinpostingperiod')->findoneby($criteria);
         if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
+            return new viewmodel(array(
+                'redirecturl' => $redirecturl,
                 'entity' => $entity,
                 'errors' => null
             ));
         } else {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toroute('access_denied');
         }
     }
 
     /**
      *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     * @return \zend\http\response|\zend\view\model\viewmodel
      */
-    public function processAction()
+    public function processaction()
     {
-        $request = $this->getRequest();
+        $request = $this->getrequest();
 
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+        if ($request->getheader('referer') == null) {
+            return $this->redirect()->toroute('access_denied');
         }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+        $redirecturl = $this->getrequest()
+            ->getheader('referer')
+            ->geturi();
 
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
+        $id = (int) $this->params()->fromquery('entity_id');
+        $token = $this->params()->fromquery('token');
         $criteria = array(
             'id' => $id,
             'token' => $token
         );
 
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
+        $entity = $this->doctrineem->getrepository('application\entity\nmtfinpostingperiod')->findoneby($criteria);
         if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
+            return new viewmodel(array(
+                'redirecturl' => $redirecturl,
                 'entity' => $entity,
                 'errors' => null
             ));
         } else {
-            return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toroute('access_denied');
         }
     }
 
     /**
      *
-     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     * @return \zend\view\model\viewmodel|\zend\http\response
      */
-    public function editAction()
+    public function editaction()
     {
-        $this->layout("Procure/layout-fullscreen");
-        $request = $this->getRequest();
+        $this->layout("procure/layout-fullscreen");
+        $request = $this->getrequest();
 
-        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-        $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
-        $gl_list = $nmtPlugin->glAccountList();
-        $cost_center_list = $nmtPlugin->costCenterList();
-        
+        /**@var \application\controller\plugin\nmtplugin $nmtplugin ;*/
+        $nmtplugin = $this->nmtplugin();
+        $currency_list = $nmtplugin->currencylist();
+        $gl_list = $nmtplugin->glaccountlist();
+        $cost_center_list = $nmtplugin->costcenterlist();
 
-        // Is Posting .................
+        // is posting .................
         // ============================
 
-        if ($request->isPost()) {
+        if ($request->ispost()) {
 
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
+            $redirecturl = $request->getpost('redirecturl');
 
-            $entity_id = (int) $request->getPost('entity_id');
-            $token = $request->getPost('token');
+            $entity_id = (int) $request->getpost('entity_id');
+            $token = $request->getpost('token');
+            $ntry = $request->getpost('n');
 
             $criteria = array(
                 'id' => $entity_id,
                 'token' => $token
             );
 
-            /** @var \Application\Entity\NmtProcureGrRow $entity ; */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
+            /** @var \application\entity\nmtprocuregrrow $entity ; */
+            $entity = $this->doctrineem->getrepository('application\entity\nmtprocuregrrow')->findoneby($criteria);
 
             if ($entity == null) {
-                $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
-                $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
+                $errors[] = 'entity object can\'t be empty. or token key is not valid!';
+                $this->flashmessenger()->addmessage('something wrong!');
+                return new viewmodel(array(
+                    'redirecturl' => $redirecturl,
                     'errors' => $errors,
                     'entity' => null,
                     'target' => null,
                     'currency_list' => $currency_list,
                     'gl_list' => $gl_list,
                     'cost_center_list' => $cost_center_list,
+                    'n' => $ntry
                 ));
             }
 
-            // Continue
-
-            $item_id = $request->getPost('item_id');
-            $gl_account_id = $request->getPost('gl_account_id');
-            $cost_center_id = $request->getPost('cost_center_id');
-            
-
-            $pr_row_id = $request->getPost('pr_row_id');
-            $isActive = (int) $request->getPost('isActive');
-
-            $vendorItemCode = $request->getPost('vendorItemCode');
-            $unit = $request->getPost('unit');
-            $conversionFactor = $request->getPost('conversionFactor');
-            $converstionText = $request->getPost('converstionText');
-
-            $quantity = $request->getPost('quantity');
-            $unitPrice = $request->getPost('unitPrice');
-            $taxRate = $request->getPost('taxRate');
-            $entity->setIsActive($isActive);
-
-            $remarks = $request->getPost('remarks');
-
-            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-            $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
-            $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
-            
-
-            if ($pr_row == null) {
-                // $errors[] = 'Item can\'t be empty!';
-            } else {
-                $entity->setPrRow($pr_row);
-            }
-
-            if ($gl == null) {
-                $errors[] = $nmtPlugin->translate('G/L account can\'t be empty!');
-            } else {
-                $entity->setGlAccount($gl);
+            $oldentity = clone ($entity);
+           
+            try {
+                $data = $this->params()->frompost();
+                $errors = $this->grservice->validaterow($target, $entity, $data);
+            } catch (\exception $e) {
+                $errors[] = $e->getmessage();
             }
             
-            $entity->setCostCenter($costCenter);
+            $changearray = $nmtplugin->objectsareidentical($oldentity, $entity);
             
-
-            if ($item == null) {
-                $errors[] = $nmtPlugin->translate('Item can\'t be empty!');
-            } else {
-                $entity->setItem($item);
+            if (count($changearray) == 0) {
+                $ntry ++;
+                $errors[] = sprintf('nothing changed! n = %s', $ntry);
             }
-
-            $entity->setVendorItemCode($vendorItemCode);
-            $entity->setUnit($unit);
-            $entity->setConversionFactor($conversionFactor);
-            $entity->setConverstionText($converstionText);
-
-            $n_validated = 0;
-
-            if ($quantity == null) {
-                $errors[] = $nmtPlugin->translate('Please  enter quantity!');
-            } else {
-
-                if (! is_numeric($quantity)) {
-                    $errors[] = $nmtPlugin->translate('Quantity must be a number.');
-                } else {
-                    if ($quantity <= 0) {
-                        $errors[] = $nmtPlugin->translate('Quantity must be greater than 0!');
-                    } else {
-                        $entity->setQuantity($quantity);
-                        $n_validated ++;
-                    }
-                }
+            
+            if ($ntry >= 3) {
+                $errors[] = sprintf('do you really want to edit "ap row. %s"?', $entity->getrowidentifer());
             }
-
-            if (! is_numeric($unitPrice)) {
-                $errors[] = $nmtPlugin->translate('Price is not valid. It must be a number.');
-            } else {
-                if ($unitPrice < 0) {
-
-                    // accept ZERO PRICE
-                    $errors[] = $nmtPlugin->translate('Price must be greate or equal 0!');
-                } else {
-                    $entity->setUnitPrice($unitPrice);
-                    $n_validated ++;
-                }
+            
+            if ($ntry == 5) {
+                $m = sprintf('you might be not ready to edit ap row (%s). please try later!', $entity->getrowidentifer());
+                $this->flashmessenger()->addmessage($m);
+                return $this->redirect()->tourl($redirecturl);
             }
-
-            if ($n_validated == 2) {
-                $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
-                $entity->setNetAmount($netAmount);
-            }
-
-            if ($taxRate !== null) {
-                if (! is_numeric($taxRate)) {
-                    $errors[] = $nmtPlugin->translate('taxRate is not valid. It must be a number.');
-                } else {
-                    if ($taxRate < 0) {
-                        $errors[] = $nmtPlugin->translate('taxRate must be greate than 0!');
-                    } else {
-                        $entity->setTaxRate($taxRate);
-                        $n_validated ++;
-                    }
-                }
-            }
-
-            if ($n_validated == 3) {
-                $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-                $grossAmount = $entity->getNetAmount() + $taxAmount;
-                $entity->setTaxAmount($taxAmount);
-                $entity->setGrossAmount($grossAmount);
-            }
-
-            $entity->setRemarks($remarks);
 
             if (count($errors) > 0) {
 
-                $viewModel = new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
+                $viewmodel = new viewmodel(array(
+                    'redirecturl' => $redirecturl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'target' => $entity->getGr(),
+                    'target' => $entity->getgr(),
                     'currency_list' => $currency_list,
                     'gl_list' => $gl_list,
                     'cost_center_list' => $cost_center_list,
-                    
+                    'n' => $ntry
                 ));
 
-                   return $viewModel;
+                return $viewmodel;
             }
-            ;
+            
 
-            // NO ERROR
-            // Saving into Database..........
+            // no error
+            // saving into database..........
             // ++++++++++++++++++++++++++++++
-      
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+
+            $u = $this->doctrineem->getrepository('application\entity\mlausers')->findoneby(array(
                 'email' => $this->identity()
             ));
 
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            try {
+                $data = $this->params()->frompost();
+                $errors = $this->grservice->saverow($target, $entity, $u);
+            } catch (\exception $e) {
+                $errors[] = $e->getmessage();
+            }
 
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn(new \DateTime());
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
+            if (count($errors) > 0) {
 
-            $redirectUrl =sprintf('/procure/gr/review?token=%s&entity_id=%s',$entity->getGr()->getToken(),$entity->getGr()->getId());
-             $m = sprintf("[OK] GR Line: %s created!", $entity->getId());
-            $this->flashMessenger()->addMessage($m);
+                $viewmodel = new viewmodel(array(
+                    'redirecturl' => $redirecturl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $entity->getgr(),
+                    'currency_list' => $currency_list,
+                    'gl_list' => $gl_list,
+                    'cost_center_list' => $cost_center_list,
+                    'n' => $ntry
+                ));
 
-            return $this->redirect()->toUrl($redirectUrl);
+                return $viewmodel;
+            }
+
+            $redirecturl = sprintf('/procure/gr/review?token=%s&entity_id=%s', $entity->getgr()->gettoken(), $entity->getgr()->getid());
+            $m = sprintf("[ok] gr line: %s created!", $entity->getid());
+            $this->flashmessenger()->addmessage($m);
+
+            return $this->redirect()->tourl($redirecturl);
         }
 
-        // NO POST
-        // Initiate.....................
+        // no post
+        // initiate.....................
         // ==============================
-        $redirectUrl = null;
-        if ($this->getRequest()->getHeader('Referer') !== null) {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
+        $redirecturl = null;
+        if ($this->getrequest()->getheader('referer') !== null) {
+            $redirecturl = $this->getrequest()
+                ->getheader('referer')
+                ->geturi();
         }
 
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
+        $id = (int) $this->params()->fromquery('entity_id');
+        $token = $this->params()->fromquery('token');
         $criteria = array(
             'id' => $id,
             'token' => $token
         );
 
-        /** @var \Application\Entity\NmtProcureGrRow $entity ; */
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
+        /** @var \application\entity\nmtprocuregrrow $entity ; */
+        $entity = $this->doctrineem->getrepository('application\entity\nmtprocuregrrow')->findoneby($criteria);
 
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'entity' => $entity,
-                'target' => $entity->getGr(),
-                'currency_list' => $currency_list,
-                'gl_list' => $gl_list,
-                'cost_center_list' => $cost_center_list,
-                
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
+        if ($entity == null) {
+            return $this->redirect()->toroute('access_denied');
         }
+
+        return new viewmodel(array(
+            'redirecturl' => $redirecturl,
+            'errors' => null,
+            'entity' => $entity,
+            'target' => $entity->getgr(),
+            'currency_list' => $currency_list,
+            'gl_list' => $gl_list,
+            'cost_center_list' => $cost_center_list,
+            'n' => 0
+        ));
     }
 
     /**
      *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     * @return \zend\http\response|\zend\view\model\viewmodel
      */
-    public function girdAction()
+    public function girdaction()
     {
-        $request = $this->getRequest();
+        $request = $this->getrequest();
 
-        if ($request->getHeader('Referer') == null) {
-            // return $this->redirect()->toRoute('access_denied');
+        if ($request->getheader('referer') == null) {
+            // return $this->redirect()->toroute('access_denied');
         }
 
-        // $pq_curPage = $_GET ["pq_curpage"];
-        // $pq_rPP = $_GET ["pq_rpp"];
+        // $pq_curpage = $_get ["pq_curpage"];
+        // $pq_rpp = $_get ["pq_rpp"];
 
-        $target_id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
+        $target_id = (int) $this->params()->fromquery('target_id');
+        $token = $this->params()->fromquery('token');
         $criteria = array(
             'id' => $target_id,
             'token' => $token
         );
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGr')->findOneBy($criteria);
+        $target = $this->doctrineem->getrepository('application\entity\nmtprocuregr')->findoneby($criteria);
 
         $a_json_final = array();
         $a_json = array();
         $a_json_row = array();
-        $escaper = new Escaper();
+        $escaper = new escaper();
 
-        if ($target instanceof \Application\Entity\NmtProcureGr) {
+        if ($target instanceof \application\entity\nmtprocuregr) {
 
-            $query = 'SELECT e FROM Application\Entity\NmtProcureGrRow e
-            WHERE e.gr=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
+            $query = 'select e from application\entity\nmtprocuregrrow e
+            where e.gr=?1 and e.isactive =?2 order by e.rownumber';
 
-            $list = $this->doctrineEM->createQuery($query)
-                ->setParameters(array(
+            $list = $this->doctrineem->createquery($query)
+                ->setparameters(array(
                 "1" => $target,
                 "2" => 1
             ))
-                ->getResult();
+                ->getresult();
 
             $total_records = 0;
             if (count($list) > 0) {
-                $escaper = new Escaper();
+                $escaper = new escaper();
 
                 $total_records = count($list);
                 foreach ($list as $a) {
 
-                    /** @var \Application\Entity\NmtProcureGrRow $a ;*/
+                    /** @var \application\entity\nmtprocuregrrow $a ;*/
 
-                    $a_json_row["row_id"] = $a->getId();
-                    $a_json_row["row_token"] = $a->getToken();
-                    $a_json_row["row_number"] = $a->getRowNumber();
-                    $a_json_row["row_unit"] = $a->getUnit();
-                    $a_json_row["row_quantity"] = $a->getQuantity();
+                    $a_json_row["row_id"] = $a->getid();
+                    $a_json_row["row_token"] = $a->gettoken();
+                    $a_json_row["row_number"] = $a->getrownumber();
+                    $a_json_row["row_unit"] = $a->getunit();
+                    $a_json_row["row_quantity"] = $a->getquantity();
 
-                    if ($a->getUnitPrice() != null) {
-                        $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), 2);
+                    if ($a->getunitprice() != null) {
+                        $a_json_row["row_unit_price"] = number_format($a->getunitprice(), 2);
                     } else {
                         $a_json_row["row_unit_price"] = 0;
                     }
 
-                    if ($a->getNetAmount() != null) {
-                        $a_json_row["row_net"] = number_format($a->getNetAmount(), 2);
+                    if ($a->getnetamount() != null) {
+                        $a_json_row["row_net"] = number_format($a->getnetamount(), 2);
                     } else {
                         $a_json_row["row_net"] = 0;
                     }
 
-                    if ($a->getTaxRate() != null) {
-                        $a_json_row["row_tax_rate"] = $a->getTaxRate();
+                    if ($a->gettaxrate() != null) {
+                        $a_json_row["row_tax_rate"] = $a->gettaxrate();
                     } else {
                         $a_json_row["row_tax_rate"] = 0;
                     }
 
-                    if ($a->getGrossAmount() != null) {
-                        $a_json_row["row_gross"] = number_format($a->getGrossAmount(), 2);
+                    if ($a->getgrossamount() != null) {
+                        $a_json_row["row_gross"] = number_format($a->getgrossamount(), 2);
                     } else {
                         $a_json_row["row_gross"] = 0;
                     }
 
                     $a_json_row["pr_number"] = "";
-                    if ($a->getPrRow() != null) {
-                        if ($a->getPrRow()->getPr() != null) {
+                    if ($a->getprrow() != null) {
+                        if ($a->getprrow()->getpr() != null) {
 
-                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getPrRow()
-                                ->getPr()
-                                ->getToken() . '&entity_id=' . $a->getPrRow()
-                                ->getPr()
-                                ->getId() . '&checkum=' . $a->getPrRow()
-                                ->getPr()
-                                ->getChecksum() . '"> ... </a>';
+                            $link = '<a target="_blank" href="/procure/pr/show?token=' . $a->getprrow()
+                                ->getpr()
+                                ->gettoken() . '&entity_id=' . $a->getprrow()
+                                ->getpr()
+                                ->getid() . '&checkum=' . $a->getprrow()
+                                ->getpr()
+                                ->getchecksum() . '"> ... </a>';
 
-                            $a_json_row["pr_number"] = $a->getPrRow()
-                                ->getPr()
-                                ->getPrNumber() . $link;
+                            $a_json_row["pr_number"] = $a->getprrow()
+                                ->getpr()
+                                ->getprnumber() . $link;
                         }
                     }
 
-                    $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
-                    if ($a->getItem()->getItemName() !== null) {
-                        $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
-                            ->getItemName()) . "','1310',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                    $item_detail = "/inventory/item/show1?token=" . $a->getitem()->gettoken() . "&checksum=" . $a->getitem()->getchecksum() . "&entity_id=" . $a->getitem()->getid();
+                    if ($a->getitem()->getitemname() !== null) {
+                        $onclick = "showjquerydialog('detail of item: " . $escaper->escapejs($a->getitem()
+                            ->getitemname()) . "','1310',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1310',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                        $onclick = "showjquerydialog('detail of item: " . ($a->getitem()->getitemname()) . "','1310',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     }
 
-                    if (strlen($a->getItem()->getItemName()) < 35) {
-                        $a_json_row["item_name"] = $a->getItem()->getItemName() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
+                    if (strlen($a->getitem()->getitemname()) < 35) {
+                        $a_json_row["item_name"] = $a->getitem()->getitemname() . '<a style="cursor:pointer;color:blue"  item-pic="" id="' . $a->getitem()->getid() . '" item_name="' . $a->getitem()->getitemname() . '" title="' . $a->getitem()->getitemname() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;....&nbsp;&nbsp;</a>';
                     } else {
-                        $a_json_row["item_name"] = substr($a->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getItem()->getId() . '" item_name="' . $a->getItem()->getItemName() . '" title="' . $a->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
+                        $a_json_row["item_name"] = substr($a->getitem()->getitemname(), 0, 30) . '<a style="cursor:pointer;;color:blue"  item-pic="" id="' . $a->getitem()->getid() . '" item_name="' . $a->getitem()->getitemname() . '" title="' . $a->getitem()->getitemname() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;...&nbsp;&nbsp;</a>';
                     }
 
-                    // $a_json_row["item_name"] = $a->getItem()->getItemName();
+                    // $a_json_row["item_name"] = $a->getitem()->getitemname();
 
-                    $a_json_row["item_sku"] = $a->getItem()->getItemSku();
-                    $a_json_row["item_token"] = $a->getItem()->getToken();
-                    $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
-                    $a_json_row["fa_remarks"] = $a->getFaRemarks();
-                    $a_json_row["remarks"] = $a->getRemarks();
+                    $a_json_row["item_sku"] = $a->getitem()->getitemsku();
+                    $a_json_row["item_token"] = $a->getitem()->gettoken();
+                    $a_json_row["item_checksum"] = $a->getitem()->getchecksum();
+                    $a_json_row["fa_remarks"] = $a->getfaremarks();
+                    $a_json_row["remarks"] = $a->getremarks();
 
-                    if ($a->getGlAccount() !== null) {
-                        $a_json_row["gl_account"] = $a->getGlAccount()->getAccountNumber();
+                    if ($a->getglaccount() !== null) {
+                        $a_json_row["gl_account"] = $a->getglaccount()->getaccountnumber();
                     } else {
-                        $a_json_row["gl_account"] = "N/A";
+                        $a_json_row["gl_account"] = "n/a";
                     }
 
                     $a_json[] = $a_json_row;
@@ -927,333 +774,351 @@ class GrRowController extends AbstractActionController
             }
 
             $a_json_final['data'] = $a_json;
-            $a_json_final['totalRecords'] = $total_records;
-            // $a_json_final ['curPage'] = $pq_curPage;
+            $a_json_final['totalrecords'] = $total_records;
+            // $a_json_final ['curpage'] = $pq_curpage;
         }
 
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($a_json_final));
+        $response = $this->getresponse();
+        $response->getheaders()->addheaderline('content-type', 'application/json');
+        $response->setcontent(json_encode($a_json_final));
         return $response;
     }
 
     /**
      */
-    public function downloadAction()
+    public function downloadaction()
     {
-        $request = $this->getRequest();
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
+        $request = $this->getrequest();
+        if ($request->getheader('referer') == null) {
+            return $this->redirect()->toroute('access_denied');
         }
 
-        $target_id = (int) $this->params()->fromQuery('target_id');
-        $token = $this->params()->fromQuery('token');
+        $target_id = (int) $this->params()->fromquery('target_id');
+        $token = $this->params()->fromquery('token');
 
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $rows = $res->downLoadVendorPo($target_id, $token);
+        /**@var \application\repository\nmtprocureporepository $res ;*/
+        $res = $this->doctrineem->getrepository('application\entity\nmtprocurepo');
+        $rows = $res->downloadvendorpo($target_id, $token);
 
         if ($rows !== null) {
 
             $target = null;
             if (count($rows) > 0) {
                 $pr_row_1 = $rows[0];
-                if ($pr_row_1 instanceof NmtProcurePoRow) {
-                    $target = $pr_row_1->getPo();
+                if ($pr_row_1 instanceof nmtprocureporow) {
+                    $target = $pr_row_1->getpo();
                 }
 
-                // Create new PHPExcel object
-                $objPHPExcel = new Spreadsheet();
+                // create new phpexcel object
+                $objphpexcel = new spreadsheet();
 
-                // Set document properties
-                $objPHPExcel->getProperties()
-                    ->setCreator("Nguyen Mau Tri")
-                    ->setLastModifiedBy("Nguyen Mau Tri")
-                    ->setTitle("Office 2007 XLSX Test Document")
-                    ->setSubject("Office 2007 XLSX Test Document")
-                    ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
-                    ->setKeywords("office 2007 openxml php")
-                    ->setCategory("Test result file");
+                // set document properties
+                $objphpexcel->getproperties()
+                    ->setcreator("nguyen mau tri")
+                    ->setlastmodifiedby("nguyen mau tri")
+                    ->settitle("office 2007 xlsx test document")
+                    ->setsubject("office 2007 xlsx test document")
+                    ->setdescription("test document for office 2007 xlsx, generated using php classes.")
+                    ->setkeywords("office 2007 openxml php")
+                    ->setcategory("test result file");
 
-                // Add some data
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B1', $target->getInvoiceNo());
+                // add some data
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('b1', $target->getinvoiceno());
 
-                // Add some data
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C1', $target->getInvoiceDate());
+                // add some data
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('c1', $target->getinvoicedate());
 
                 $header = 3;
                 $i = 0;
 
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1', "Contract/PO:" . $target->getSysNumber());
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('a1', "contract/po:" . $target->getsysnumber());
 
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $header, "FA Remarks");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $header, "#");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $header, "SKU");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $header, "Item");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $header, "Unit");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $header, "Quantity");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $header, "Unit Price");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $header, "Net Amount");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $header, "Tax Rate");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $header, "Tax Amount");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $header, "Gross Amount");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $header, "PR Number");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $header, "PR Date");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $header, "Requested Q/ty");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $header, "Requested Name");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $header, "RowNo.");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $header, "Remarks");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $header, "Ref.No.");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $header, "Item.No.");
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $header, "Po.Item Name");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('a' . $header, "fa remarks");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('b' . $header, "#");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('c' . $header, "sku");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('d' . $header, "item");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('e' . $header, "unit");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('f' . $header, "quantity");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('g' . $header, "unit price");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('h' . $header, "net amount");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('i' . $header, "tax rate");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('j' . $header, "tax amount");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('k' . $header, "gross amount");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('l' . $header, "pr number");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('m' . $header, "pr date");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('n' . $header, "requested q/ty");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('o' . $header, "requested name");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('p' . $header, "rowno.");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('q' . $header, "remarks");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('r' . $header, "ref.no.");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('s' . $header, "item.no.");
+                $objphpexcel->setactivesheetindex(0)->setcellvalue('t' . $header, "po.item name");
 
                 foreach ($rows as $r) {
 
-                    /**@var \Application\Entity\NmtProcurePoRow $a ;*/
+                    /**@var \application\entity\nmtprocureporow $a ;*/
                     $a = $r;
 
                     $i ++;
                     $l = $header + $i;
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $l, $a->getFaRemarks());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $l, $i);
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('a' . $l, $a->getfaremarks());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('b' . $l, $i);
 
-                    if ($a->getItem() !== null) {
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, $a->getItem()
-                            ->getItemSku());
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, $a->getItem()
-                            ->getItemName());
+                    if ($a->getitem() !== null) {
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('c' . $l, $a->getitem()
+                            ->getitemsku());
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('d' . $l, $a->getitem()
+                            ->getitemname());
                     } else {
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $l, "NA");
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $l, "NA");
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('c' . $l, "na");
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('d' . $l, "na");
                     }
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $l, $a->getUnit());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $l, $a->getQuantity());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $l, $a->getUnitPrice());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, $a->getNetAmount());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, $a->getTaxRate());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $l, $a->getTaxAmount());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $l, $a->getGrossAmount());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('e' . $l, $a->getunit());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('f' . $l, $a->getquantity());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('g' . $l, $a->getunitprice());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('h' . $l, $a->getnetamount());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('i' . $l, $a->gettaxrate());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('j' . $l, $a->gettaxamount());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('k' . $l, $a->getgrossamount());
 
-                    if ($a->getPrRow() !== null) {
+                    if ($a->getprrow() !== null) {
 
-                        if ($a->getPrRow()->getPr() !== null) {
-                            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $l, $a->getPrRow()
-                                ->getPr()
-                                ->getPrNumber());
-                            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $l, $a->getPrRow()
-                                ->getPr()
-                                ->getSubmittedOn());
+                        if ($a->getprrow()->getpr() !== null) {
+                            $objphpexcel->setactivesheetindex(0)->setcellvalue('l' . $l, $a->getprrow()
+                                ->getpr()
+                                ->getprnumber());
+                            $objphpexcel->setactivesheetindex(0)->setcellvalue('m' . $l, $a->getprrow()
+                                ->getpr()
+                                ->getsubmittedon());
                         }
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $l, $a->getPrRow()
-                            ->getQuantity());
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $l, $a->getPrRow()
-                            ->getRowName());
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('n' . $l, $a->getprrow()
+                            ->getquantity());
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('o' . $l, $a->getprrow()
+                            ->getrowname());
                     } else {
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $l, "NA");
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $l, "NA");
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $l, 0);
-                        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $l, "");
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('l' . $l, "na");
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('m' . $l, "na");
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('n' . $l, 0);
+                        $objphpexcel->setactivesheetindex(0)->setcellvalue('o' . $l, "");
                     }
 
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowNumber());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRowIdentifer());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()
-                        ->getSysNumber());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $l, $a->getVendorItemCode());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('p' . $l, $a->getrownumber());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('q' . $l, $a->getremarks());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('r' . $l, $a->getrowidentifer());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('s' . $l, $a->getitem()
+                        ->getsysnumber());
+                    $objphpexcel->setactivesheetindex(0)->setcellvalue('t' . $l, $a->getvendoritemcode());
                 }
 
-                // Rename worksheet
-                $objPHPExcel->getActiveSheet()->setTitle("Contract-PO");
+                // rename worksheet
+                $objphpexcel->getactivesheet()->settitle("contract-po");
 
-                $objPHPExcel->getActiveSheet()->setAutoFilter("A" . $header . ":T" . $header);
+                $objphpexcel->getactivesheet()->setautofilter("a" . $header . ":t" . $header);
 
-                // Set active sheet index to the first sheet, so Excel opens this as the first sheet
-                $objPHPExcel->setActiveSheetIndex(0);
+                // set active sheet index to the first sheet, so excel opens this as the first sheet
+                $objphpexcel->setactivesheetindex(0);
 
-                // Redirect output to a client’s web browser (Excel2007)
-                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                header('Content-Disposition: attachment;filename="invoice' . $target->getId() . '.xlsx"');
-                header('Cache-Control: max-age=0');
-                // If you're serving to IE 9, then the following may be needed
-                header('Cache-Control: max-age=1');
+                // redirect output to a client’s web browser (excel2007)
+                header('content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('content-disposition: attachment;filename="invoice' . $target->getid() . '.xlsx"');
+                header('cache-control: max-age=0');
+                // if you're serving to ie 9, then the following may be needed
+                header('cache-control: max-age=1');
 
-                // If you're serving to IE over SSL, then the following may be needed
-                header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-                header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-                header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-                header('Pragma: public'); // HTTP/1.0
+                // if you're serving to ie over ssl, then the following may be needed
+                header('expires: mon, 26 jul 1997 05:00:00 gmt'); // date in the past
+                header('last-modified: ' . gmdate('d, d m y h:i:s') . ' gmt'); // always modified
+                header('cache-control: cache, must-revalidate'); // http/1.1
+                header('pragma: public'); // http/1.0
 
-                $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($objPHPExcel, 'Xlsx');
-                $objWriter->save('php://output');
+                $objwriter = \phpoffice\phpspreadsheet\iofactory::createwriter($objphpexcel, 'xlsx');
+                $objwriter->save('php://output');
                 exit();
             }
         }
-        return $this->redirect()->toRoute('access_denied');
+        return $this->redirect()->toroute('access_denied');
     }
 
     /**
      *
-     * @return \Zend\View\Helper\ViewModel
+     * @return \zend\view\helper\viewmodel
      */
-    public function listAction()
+    public function listaction()
     {
-        $request = $this->getRequest();
+        $request = $this->getrequest();
 
         // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
+        if (! $request->isxmlhttprequest()) {
+            return $this->redirect()->toroute('access_denied');
         }
         ;
 
         $this->layout("layout/user/ajax");
 
-        $invoice_id = (int) $this->params()->fromQuery('target_id');
-        $invoice_token = $this->params()->fromQuery('token');
+        $invoice_id = (int) $this->params()->fromquery('target_id');
+        $invoice_token = $this->params()->fromquery('token');
 
         $criteria = array(
             'id' => $invoice_id,
             'token' => $invoice_token
         );
 
-        /** @var \Application\Entity\FinVendorInvoice $target ;*/
-        $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+        /** @var \application\entity\finvendorinvoice $target ;*/
+        $target = $this->doctrineem->getrepository('application\entity\finvendorinvoice')->findoneby($criteria);
 
         if ($target !== null) {
 
             $criteria = array(
                 'invoice' => $invoice_id,
-                'isActive' => 1
+                'isactive' => 1
             );
 
-            $query = 'SELECT e FROM Application\Entity\FinVendorInvoiceRow e
-            WHERE e.invoice=?1 AND e.isActive =?2';
+            $query = 'select e from application\entity\finvendorinvoicerow e
+            where e.invoice=?1 and e.isactive =?2';
 
-            $list = $this->doctrineEM->createQuery($query)
-                ->setParameters(array(
+            $list = $this->doctrineem->createquery($query)
+                ->setparameters(array(
                 "1" => $target,
                 "2" => 1
             ))
-                ->getResult();
-            return new ViewModel(array(
+                ->getresult();
+            return new viewmodel(array(
                 'list' => $list,
                 'total_records' => count($list),
                 'paginator' => null
             ));
         }
 
-        return $this->redirect()->toRoute('access_denied');
+        return $this->redirect()->toroute('access_denied');
     }
 
     /**
      *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     * @return \zend\http\response|\zend\view\model\viewmodel
      */
-    public function poOfItemAction()
+    public function poofitemaction()
     {
-        $request = $this->getRequest();
+        $request = $this->getrequest();
         // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
+        if (! $request->isxmlhttprequest()) {
+            return $this->redirect()->toroute('access_denied');
         }
         $this->layout("layout/user/ajax");
 
-        $item_id = (int) $this->params()->fromQuery('item_id');
-        $token = $this->params()->fromQuery('token');
+        $item_id = (int) $this->params()->fromquery('item_id');
+        $token = $this->params()->fromquery('token');
 
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $rows = $res->getPoOfItem($item_id, $token);
-        return new ViewModel(array(
+        /**@var \application\repository\nmtprocureporepository $res ;*/
+        $res = $this->doctrineem->getrepository('application\entity\nmtprocurepo');
+        $rows = $res->getpoofitem($item_id, $token);
+        return new viewmodel(array(
             'rows' => $rows
         ));
     }
 
     /**
      *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     * @return \zend\http\response|\zend\view\model\viewmodel
      */
-    public function updateRowAction()
+    public function updaterowaction()
     {
         $a_json_final = array();
-        $escaper = new Escaper();
+        $escaper = new escaper();
 
         /*
-         * $pq_curPage = $_GET ["pq_curpage"];
-         * $pq_rPP = $_GET ["pq_rpp"];
+         * $pq_curpage = $_get ["pq_curpage"];
+         * $pq_rpp = $_get ["pq_rpp"];
          */
-        $sent_list = json_decode($_POST['sent_list'], true);
+        $sent_list = json_decode($_post['sent_list'], true);
         // echo json_encode($sent_list);
 
-        $to_update = $sent_list['updateList'];
+        $to_update = $sent_list['updatelist'];
         foreach ($to_update as $a) {
             $criteria = array(
                 'id' => $a['row_id'],
                 'token' => $a['row_token']
             );
 
-            /** @var \Application\Entity\NmtProcureGrRow $entity */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findOneBy($criteria);
+            /** @var \application\entity\nmtprocuregrrow $entity */
+            $entity = $this->doctrineem->getrepository('application\entity\nmtprocuregrrow')->findoneby($criteria);
 
             if ($entity != null) {
-                $entity->setQuantity($a['row_quantity']);
-                $entity->setFaRemarks($a['fa_remarks']);
-                $entity->setRowNumber($a['row_number']);
-                // $a_json_final['updateList']=$a['row_id'] . 'has been updated';
-                $this->doctrineEM->persist($entity);
+                $entity->setquantity($a['row_quantity']);
+                $entity->setfaremarks($a['fa_remarks']);
+                $entity->setrownumber($a['row_number']);
+                // $a_json_final['updatelist']=$a['row_id'] . 'has been updated';
+                $this->doctrineem->persist($entity);
             }
         }
-        $this->doctrineEM->flush();
+        $this->doctrineem->flush();
 
-        // $a_json_final["updateList"]= json_encode($sent_list["updateList"]);
+        // $a_json_final["updatelist"]= json_encode($sent_list["updatelist"]);
 
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(json_encode($sent_list));
+        $response = $this->getresponse();
+        $response->getheaders()->addheaderline('content-type', 'application/json');
+        $response->setcontent(json_encode($sent_list));
         return $response;
     }
 
     /**
      *
-     * @return \Zend\View\Model\ViewModel
+     * @return \zend\view\model\viewmodel
      */
-    public function updateTokenAction()
+    public function updatetokenaction()
     {
         $criteria = array();
         $sort_criteria = array();
 
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findBy($criteria, $sort_criteria);
+        $list = $this->doctrineem->getrepository('application\entity\nmtfinpostingperiod')->findby($criteria, $sort_criteria);
 
         if (count($list) > 0) {
             foreach ($list as $entity) {
-                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                $entity->settoken(rand::getstring(10, \application\model\constants::char_list, true) . "_" . rand::getstring(21, \application\model\constants::char_list, true));
             }
         }
 
-        $this->doctrineEM->flush();
+        $this->doctrineem->flush();
 
-        return new ViewModel(array(
+        return new viewmodel(array(
             'list' => $list
         ));
     }
 
     /**
      *
-     * @return \Doctrine\ORM\EntityManager
+     * @return \doctrine\orm\entitymanager
      */
-    public function getDoctrineEM()
+    public function getdoctrineem()
     {
-        return $this->doctrineEM;
+        return $this->doctrineem;
     }
 
     /**
      *
-     * @param EntityManager $doctrineEM
-     * @return \PM\Controller\IndexController
+     * @param entitymanager $doctrineem
+     * @return \pm\controller\indexcontroller
      */
-    public function setDoctrineEM(EntityManager $doctrineEM)
+    public function setdoctrineem(entitymanager $doctrineem)
     {
-        $this->doctrineEM = $doctrineEM;
+        $this->doctrineem = $doctrineem;
         return $this;
+    }
+    
+    /**
+     *
+     *  @return \procure\service\grservice
+     */
+    public function getgrservice()
+    {
+        return $this->grservice;
+    }
+    
+    /**
+     *
+     *  @param \procure\service\grservice $grservice
+     */
+    public function setgrservice(\procure\service\grservice $grservice)
+    {
+        $this->grservice = $grservice;
     }
 }

@@ -117,7 +117,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
         $gr_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
         $procureSV->getDoctrineEM()->persist($gr_entity);
 
-        if ($r->getItem() !== null) {
+        if ($r->getItem() != null) {
 
             /**
              *
@@ -127,7 +127,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
              */
             if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
 
-                for ($i = 0; $i < $r->getQuantity(); $i ++) {
+                for ($i = 0; $i < $r->getConvertedStandardQuantity(); $i ++) {
 
                     // create new serial number
                     $sn_entity = new \Application\Entity\NmtInventoryItemSerial();

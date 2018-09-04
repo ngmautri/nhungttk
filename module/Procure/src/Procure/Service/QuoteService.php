@@ -14,7 +14,7 @@ use Inventory\Model\GR\GRStrategyFactory;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GrService extends AbstractService
+class QuoteService extends AbstractService
 {
 
     /**

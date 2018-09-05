@@ -427,7 +427,9 @@ class APInvoiceService extends AbstractService
             $row_tmp->setPoRow($r);
             $row_tmp->setPrRow($r->getPrRow());
             $row_tmp->setItem($r->getItem());
-
+            
+            $row_tmp->setConversionFactor(1);
+            
             // converted to purchase qty
             $row_tmp->setQuantity($l['open_ap_qty']);
             $row_tmp->setUnitPrice($r->getUnitPrice());

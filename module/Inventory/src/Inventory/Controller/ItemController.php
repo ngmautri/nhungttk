@@ -252,21 +252,28 @@ EOT;
         if ($item != null) {
             $a_json_row["id"] = $item->getId();
             $a_json_row["token"] = $item->getToken();
+            
             $uom_code = '';
+            $purchase_uom_code = '';
+            
             if($item->getStandardUom()!=null){
                 $uom_code = $item->getStandardUom()->getUomCode();
+                $purchase_uom_code = $uom_code;
             }
                 
             $a_json_row["uom_code"] = $uom_code;
             
-            $purchase_uom_code = '';
-            if($item->getPurchaseUom()!=null){
+             if($item->getPurchaseUom()!=null){
                 $purchase_uom_code = $item->getPurchaseUom()->getUomCode();
             }
             
             $a_json_row["purchase_uom_code"] = $purchase_uom_code;
             
-            $a_json_row["purchase_uom_convert_factor"] = $item->getPurchaseUomConvertFactor();            
+            $purchaseCF = 1;
+            if($item->getPurchaseUomConvertFactor()!=null){
+                $purchaseCF = $item->getPurchaseUomConvertFactor();
+            }
+            $a_json_row["purchase_uom_convert_factor"] = $purchaseCF;            
          }
         // var_dump($a_json);
         $response = $this->getResponse();

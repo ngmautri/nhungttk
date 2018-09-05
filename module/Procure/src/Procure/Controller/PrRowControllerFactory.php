@@ -31,6 +31,10 @@ class PrRowControllerFactory implements FactoryInterface {
 		//Vendor Search Service
 		$sv =  $sm->get ('Procure\Service\PrSearchService' );
 		$controller->setPrSearchService($sv );
+	
+		//Vendor Search Service
+		$sv =  $sm->get ('Procure\Service\PrService' );
+		$controller->setPrService($sv );
 		
 		$sv =  $sm->get('FileSystemCache');
 		$controller->setCacheService($sv);

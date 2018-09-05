@@ -3,9 +3,10 @@ namespace Procure\Service;
 
 use Application\Service\AbstractService;
 use Zend\Math\Rand;
+use Zend\Validator\Date;
 
 /**
- * PO Service.
+ * PR Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -15,8 +16,8 @@ class PrService extends AbstractService
 
     /**
      *
-     * @param \Application\Entity\NmtProcurePo $target
-     * @param \Application\Entity\NmtProcurePoRow $entity
+     * @param \Application\Entity\NmtProcurePr $target
+     * @param \Application\Entity\NmtProcurePrRow $entity
      * @return NULL[]|string[]
      */
     public function validateRow($target, $entity, $data)
@@ -25,137 +26,107 @@ class PrService extends AbstractService
         // do validating
         $errors = array();
 
-        if (! $target instanceof \Application\Entity\NmtProcurePo) {
-            throw new \Exception("Invalid Argument. PO Object not found!");
+        if (! $target instanceof \Application\Entity\NmtProcurePr) {
+            throw new \Exception("Invalid Argument. PR Object not found!");
         }
 
-        if (! $entity instanceof \Application\Entity\NmtProcurePoRow) {
-            throw new \Exception("Invalid Argument. PO Line Object not found!");
+        if (! $entity instanceof \Application\Entity\NmtProcurePrRow) {
+            throw new \Exception("Invalid Argument. PR Line Object not found!");
         }
 
-        $item_id = (int) $data['item_id'];
-        $pr_row_id = (int) $data['pr_row_id'];
+        $edt = $data['edt'];
         $isActive = (int) $data['isActive'];
+        $rowNumber = (int) $data['rowNumber'];
+        $priority = $data['priority'];
+        $quantity = $data['quantity'];
+        $remarks = $data['remarks'];
+        $rowCode = $data['rowCode'];
+        $rowName = $data['rowName'];
+        $rowUnit = $data['rowUnit'];
 
-        $rowNumber = $data['rowNumber'];
-
-        $vendorItemCode = $data['vendorItemCode'];
-        $unit = $data['unit'];
+        // converstion factor to standard unit.
         $conversionFactor = $data['conversionFactor'];
 
-        $quantity = $data['quantity'];
-        $unitPrice = $data['unitPrice'];
-        $exwUnitPrice = $data['exwUnitPrice'];
-
-        $taxRate = $data['taxRate'];
-
-        $remarks = $data['remarks'];
+        $item_id = $data['item_id'];
+        $project_id = $data['project_id'];
 
         if ($isActive != 1) {
             $isActive = 0;
         }
 
-        $entity->setIsActive($isActive);
-
-        $entity->setPo($target);
-        $entity->setRowNumber($rowNumber);
-
-        // Inventory Transaction and validating.
-
-        /**@var \Application\Entity\NmtProcurePrRow $pr_row ;*/
-        $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-
-        /**@var \Application\Entity\NmtInventoryItem $item ;*/
-        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-
-        if ($pr_row == null) {
-            // $errors[] = 'Item can\'t be empty!';
-        } else {
-            $entity->setPrRow($pr_row);
-        }
-
-        if ($item == null) {
-            $errors[] = $this->controllerPlugin->translate('Item is not found. Please select item!');
-        } else {
+        if ($item_id > 0) {
+            $item = $this->doctrineEM->find('Application\Entity\NmtInventoryItem', $item_id);
             $entity->setItem($item);
         }
 
-        $entity->setVendorItemCode($vendorItemCode);
-        $entity->setUnit($unit);
-        $entity->setDocUnit($unit);
-
-        if (! is_numeric($quantity)) {
-            $errors[] = $this->controllerPlugin->translate('Quantity must be a number.');
-        } else {
-            if ($quantity <= 0) {
-                $errors[] = $this->controllerPlugin->translate('Quantity must be > 0!');
-            } else {
-                // $entity->setQuantity($quantity);
-                $entity->setDocQuantity($quantity);
+        if ($project_id > 0) {
+            $project = $this->doctrineEM->find('Application\Entity\NmtPmProject', $project_id);
+            if ($project != null) {
+                $entity->setProject($project);
             }
         }
 
-        if (! is_numeric($unitPrice)) {
-            $errors[] = $this->controllerPlugin->translate('Price is not valid. It must be a number.');
-        } else {
-            if ($unitPrice < 0) {
-                $errors[] = $this->controllerPlugin->translate('Price must be >   0!');
-            } else {
-                // $entity->setUnitPrice($unitPrice);
-                $entity->setDocUnitPrice($unitPrice);
-            }
-        }
+        $entity->setRowNumber($rowNumber);
+        $entity->setIsActive($isActive);
+        $entity->setPriority($priority);
+        $entity->setRemarks($remarks);
+        $entity->setRowCode($rowCode);
+        $entity->setRowName($rowName);
+        $entity->setRowUnit($rowUnit);
+        $entity->setConversionFactor($conversionFactor);
 
-        if ($exwUnitPrice != null) {
-            if (! is_numeric($exwUnitPrice)) {
-                $errors[] = $this->controllerPlugin->translate('Exw Price is not valid. It must be a number.');
-            } else {
-                if ($exwUnitPrice <= 0) {
-                    $errors[] = $this->controllerPlugin->translate('Exw Price must be >=0!');
+        $validator = new Date();
+
+        // Empty is OK
+        if ($edt !== null) {
+            if ($edt !== "") {
+
+                if (! $validator->isValid($edt)) {
+                    $errors[] = $this->controllerPlugin->translate('Date is not correct or empty!');
                 } else {
-                    $entity->setExwUnitPrice($exwUnitPrice);
-                    if ($entity->getQuantity() > 0) {
-                        $entity->setTotalExwPrice($entity->getExwUnitPrice() * $entity->getDocQuantity());
-                    }
+                    $entity->setEdt(new \DateTime($edt));
                 }
             }
         }
 
-        if ($taxRate != null) {
-            if (! is_numeric($taxRate)) {
-                $errors[] = $this->controllerPlugin->translate('TaxRate is not valid. It must be a number.');
+        if ($quantity == null) {
+            $errors[] = $this->controllerPlugin->translate('Please  enter order quantity!');
+        } else {
+
+            if (! is_numeric($quantity)) {
+                $errors[] = $this->controllerPlugin->translate("Quantity must be a number.");
             } else {
-                if ($taxRate < 0) {
-                    $errors[] = $this->controllerPlugin->translate('TaxRate must be >0');
+                if ($quantity <= 0) {
+                    $errors[] = $this->controllerPlugin->translate('Quantity must be greater than 0!');
                 } else {
-                    $entity->setTaxRate($taxRate);
+                    $entity->setQuantity($quantity);
+                    $entity->setDocQuantity($quantity);
                 }
             }
         }
+
         if ($conversionFactor == null) {
             $conversionFactor = 1;
         } else {
 
             if (! is_numeric($conversionFactor)) {
-                $errors[] = $this->controllerPlugin->translate('conversion factor must be a number.');
+                $errors[] = 'quantity must be a number.';
             } else {
                 if ($conversionFactor <= 0) {
-                    $errors[] = $this->controllerPlugin->translate('converstion factor must be greater than 0!');
+                    $errors[] = 'quantity must be greater than 0!';
                 } else {
                     $entity->setConversionFactor($conversionFactor);
                 }
             }
         }
 
-        $entity->setRemarks($remarks);
-
         return $errors;
     }
 
     /**
      *
-     * @param \Application\Entity\NmtProcurePo $target
-     * @param \Application\Entity\NmtProcurePoRow $entity
+     * @param \Application\Entity\NmtProcurePr $target
+     * @param \Application\Entity\NmtProcurePrRow $entity
      * @param \Application\Entity\MlaUsers $u
      * @param boolean $isNew
      */
@@ -165,70 +136,37 @@ class PrService extends AbstractService
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
 
-        if (! $target instanceof \Application\Entity\NmtProcurePo) {
-            throw new \Exception("Invalid Argument. PO Object not found!");
+        if (! $target instanceof \Application\Entity\NmtProcurePr) {
+            throw new \Exception("Invalid Argument. PR Object not found!");
         }
 
-        if (! $entity instanceof \Application\Entity\NmtProcurePoRow) {
-            throw new \Exception("Invalid Argument. PO Line Object not found!");
+        if (! $entity instanceof \Application\Entity\NmtProcurePrRow) {
+            throw new \Exception("Invalid Argument. PR Line Object not found!");
         }
 
         // validated.
 
-        $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
-        $entity->setNetAmount($netAmount);
+        if ($entity->getItem() != null) {
 
-        $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-        $grossAmount = $entity->getNetAmount() + $taxAmount;
+            $inventoryCF = $entity->getItem()->getStockUomConvertFactor();
+            if ($inventoryCF == null) {
+                $inventoryCF = 1;
+            }
 
-        $entity->setTaxAmount($taxAmount);
-        $entity->setGrossAmount($grossAmount);
-
-        $convertedPurchaseQuantity = $entity->getDocQuantity();
-        $convertedPurchaseUnitPrice = $entity->getDocUnitPrice();
-
-        $conversionFactor = $entity->getConversionFactor();
-        $standardCF = $entity->getConversionFactor();
-
-        $pr_row = $entity->getPrRow();
-
-        if ($pr_row != null) {
-            $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
-            $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-            $standardCF = $standardCF * $pr_row->getConversionFactor();
+            $entity->setConvertedStandardQuantiy($entity->getConversionFactor() * $entity->getQuantity());
+            $entity->setConvertedStockQuantity($entity->getQuantity() * $entity->getConversionFactor() / $inventoryCF);
         }
-
-        // quantity /unit price is converted purchase quantity to clear PR
-
-        $entity->setQuantity($convertedPurchaseQuantity);
-        $entity->setUnitPrice($convertedPurchaseUnitPrice);
-
-        $convertedStandardQuantity = $entity->getDocQuantity();
-        $convertedStandardUnitPrice = $entity->getDocUnitPrice();
-
-        $item = $entity->getItem();
-        if ($item != null) {
-            $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
-            $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
-        }
-
-        // calculate standard quantity
-        $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
-        $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
-
-        $entity->setConvertedStandardQuantity($convertedStandardQuantity);
-        $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
 
         if ($isNew == TRUE) {
             $entity->setCurrentState($target->getCurrentState());
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $entity->setChecksum(md5(uniqid("pr_row_" . microtime())));
             $entity->setCreatedBy($u);
             $entity->setCreatedOn(new \DateTime());
         } else {
-            $changeOn = new \DateTime();
             $entity->setRevisionNo($entity->getRevisionNo() + 1);
             $entity->setLastchangeBy($u);
-            $entity->setLastchangeOn($changeOn);
+            $entity->setLastchangeOn(new \DateTime());
         }
 
         $this->doctrineEM->persist($entity);

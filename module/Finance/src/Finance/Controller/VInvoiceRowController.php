@@ -341,6 +341,7 @@ class VInvoiceRowController extends AbstractActionController
                 ));
             }
 
+            $target = $entity->getInvoice();
             $oldEntity = clone ($entity);
             
             $data = $this->params()->fromPost();

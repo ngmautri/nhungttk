@@ -425,30 +425,32 @@ class APInvoiceService extends AbstractService
 
             $row_tmp->setCurrentState("DRAFT");
             $row_tmp->setPoRow($r);
-            $row_tmp->setPrRow($r->getPrRow());
-            $row_tmp->setItem($r->getItem());
             
-            $row_tmp->setConversionFactor(1);
-            
+           
             // converted to purchase qty
             $row_tmp->setQuantity($l['open_ap_qty']);
             $row_tmp->setUnitPrice($r->getUnitPrice());
-
+            
+            $row_tmp->setDocQuantity($l['open_ap_qty']);
+            $row_tmp->setDocUnitPrice($r->getUnitPrice());
+       
+            $row_tmp->setConversionFactor(1);
+            $row_tmp->setConvertedPurchaseQuantity($r->getQuantity());
+            
             $row_tmp->setUnit($r->getUnit());
-
-            $row_tmp->setTaxRate($r->getTaxRate());
-            $row_tmp->setConversionFactor($r->getConversionFactor());
-
-            $row_tmp->setDocUnitPrice($r->getDocUnitPrice());
             $row_tmp->setDocUnit($r->getDocUnit());
 
+            $row_tmp->setTaxRate($r->getTaxRate());
+            
             $item = $r->getItem();
             $pr_row = $r->getPrRow();
-
+            $row_tmp->setPrRow($pr_row);
+            $row_tmp->setItem($item);            
+            
             $convertedStandardQuantity = $row_tmp->getQuantity();
             $convertedStandardUnitPrice = $row_tmp->getUnitPrice();
 
-            // converted to purchase qty
+            // converted to standard qty
             $standardCF = 1;
 
             if ($pr_row != null) {
@@ -458,12 +460,13 @@ class APInvoiceService extends AbstractService
             if ($item != null) {
                 $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
                 $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
+                
+                // calculate standard quantity
+                $row_tmp->setConvertedStandardQuantity($convertedStandardQuantity);
+                $row_tmp->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+                
             }
-
-            // calculate standard quantity
-            $row_tmp->setConvertedStandardQuantity($convertedStandardQuantity);
-            $row_tmp->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
-
+    
             $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
             $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
             $grossAmount = $netAmount + $taxAmount;

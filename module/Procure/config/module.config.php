@@ -197,10 +197,11 @@ return array(
             'procure_navi' => 'Procure\Service\ProcureNavigationFactory', // <-- add this
             
             'Procure\Service\GrListener' => 'Procure\Service\GrListenereFactory',
-            'Procure\Service\GrService' => 'Procure\Service\PRServiceFactory',
+            'Procure\Service\PrService' => 'Procure\Service\PrServiceFactory',
             'Procure\Service\QuoteService' => 'Procure\Service\QuoteServiceFactory',
             'Procure\Service\PoService' => 'Procure\Service\PoServiceFactory',            
             'Procure\Service\GrService' => 'Procure\Service\GrServiceFactory',
+            
             'Procure\Service\APInvoiceService' => 'Procure\Service\APInvoiceServiceFactory',
             'Procure\Service\ReturnService' => 'Procure\Service\ReturnServiceFactory',            
             'Procure\Service\PrSearchService' => 'Procure\Service\PrSearchServiceFactory',

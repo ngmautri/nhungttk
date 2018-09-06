@@ -236,7 +236,7 @@ if (count($errors) > 0) {
 										</a>
 
 									</div>
-									<div class="col-sm-1">
+									<div class="col-sm-2">
 										<a target="_blank" style="font-size: 9pt;"
 											href="/inventory/item/list">Item List&nbsp;&nbsp;</a><small><i
 											class="glyphicon glyphicon-new-window"></i></small>
@@ -274,23 +274,24 @@ if (count($errors) > 0) {
 									</div>
 
 									<label class="control-label col-sm-2"><?php echo $this->translate("Convert Factor");?>:</label>
-									<div class="col-sm-1">
+									<div class="col-sm-2">
 										<input tabindex="5" class="form-control input-sm" type="text"
 											placeholder="" name="conversionFactor" id="conversionFactor"
 											value="<?php echo (!$entity== null)? $entity->getConversionFactor():"1";?>">
-										<div style="color: graytext; padding-bottom: 5px;"
-											id="purchase_uom_convert_text"></div>
+
 									</div>
 									<div class="col-sm-3">
-										<span
-											style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt"
-											id=""><?php echo $this->translate("Converstion to item standard unit (see Item)");?>
-									</span>
+										<div
+											style="color: graytext; padding-bottom: 2px; margin: 0; font-size: 9pt"
+											id=""><?php echo $this->translate("Converstion to item standard unit (see Item)");?>:</div>
+										<div style="color: graytext; padding-bottom: 2px;"
+											id="purchase_uom_convert_text"></div>
+
 									</div>
 								</div>
 
 
-								<hr style="margin: 5pt 1pt 5pt 1pt;">
+								<hr style="margin: 1pt 1pt 5pt 1pt;">
 
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2">Expected Delivery:</label>
@@ -376,8 +377,7 @@ if (count($errors) > 0) {
 									class="btn btn-primary btn-sm"
 									href="<?php echo $this->baseUrl ?>/procure/pr/review?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>&checksum=<?php echo (!$target == null)? $target->getChecksum():"";?>"><?php echo $this->translate("Review & Submit");?>&nbsp;<i
 									class="fa fa-arrow-right" aria-hidden="true"></i></a>
-							</div
-						
+							</div>
 						</div>
 				
 				</div>

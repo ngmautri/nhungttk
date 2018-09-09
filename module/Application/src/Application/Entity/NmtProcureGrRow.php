@@ -43,9 +43,9 @@ class NmtProcureGrRow
     private $rowIdentifer;
 
     /**
-     * @var integer
+     * @var float
      *
-     * @ORM\Column(name="quantity", type="integer", nullable=false)
+     * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=false)
      */
     private $quantity;
 
@@ -78,9 +78,9 @@ class NmtProcureGrRow
     private $itemUnit;
 
     /**
-     * @var string
+     * @var float
      *
-     * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=true)
+     * @ORM\Column(name="conversion_factor", type="float", precision=10, scale=4, nullable=true)
      */
     private $conversionFactor;
 
@@ -543,7 +543,7 @@ class NmtProcureGrRow
     /**
      * Set quantity
      *
-     * @param integer $quantity
+     * @param float $quantity
      *
      * @return NmtProcureGrRow
      */
@@ -557,7 +557,7 @@ class NmtProcureGrRow
     /**
      * Get quantity
      *
-     * @return integer
+     * @return float
      */
     public function getQuantity()
     {
@@ -663,7 +663,7 @@ class NmtProcureGrRow
     /**
      * Set conversionFactor
      *
-     * @param string $conversionFactor
+     * @param float $conversionFactor
      *
      * @return NmtProcureGrRow
      */
@@ -677,7 +677,7 @@ class NmtProcureGrRow
     /**
      * Get conversionFactor
      *
-     * @return string
+     * @return float
      */
     public function getConversionFactor()
     {

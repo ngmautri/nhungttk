@@ -57,9 +57,9 @@ class NmtInventoryTrx
     private $flow;
 
     /**
-     * @var integer
+     * @var float
      *
-     * @ORM\Column(name="quantity", type="integer", nullable=false)
+     * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=false)
      */
     private $quantity;
 
@@ -260,9 +260,9 @@ class NmtInventoryTrx
     private $isPosted;
 
     /**
-     * @var integer
+     * @var float
      *
-     * @ORM\Column(name="actual_quantity", type="integer", nullable=true)
+     * @ORM\Column(name="actual_quantity", type="float", precision=10, scale=4, nullable=true)
      */
     private $actualQuantity;
 
@@ -360,7 +360,7 @@ class NmtInventoryTrx
     /**
      * @var float
      *
-     * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=0, nullable=true)
+     * @ORM\Column(name="doc_quantity", type="float", precision=10, scale=4, nullable=true)
      */
     private $docQuantity;
 
@@ -763,7 +763,7 @@ class NmtInventoryTrx
     /**
      * Set quantity
      *
-     * @param integer $quantity
+     * @param float $quantity
      *
      * @return NmtInventoryTrx
      */
@@ -777,7 +777,7 @@ class NmtInventoryTrx
     /**
      * Get quantity
      *
-     * @return integer
+     * @return float
      */
     public function getQuantity()
     {
@@ -1459,7 +1459,7 @@ class NmtInventoryTrx
     /**
      * Set actualQuantity
      *
-     * @param integer $actualQuantity
+     * @param float $actualQuantity
      *
      * @return NmtInventoryTrx
      */
@@ -1473,7 +1473,7 @@ class NmtInventoryTrx
     /**
      * Get actualQuantity
      *
-     * @return integer
+     * @return float
      */
     public function getActualQuantity()
     {

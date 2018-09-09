@@ -33,10 +33,11 @@ class APInvoiceService extends AbstractService
         $isActive = (int) $data['isActive'];
         $rowNumber = $data['rowNumber'];
         $vendorItemCode = $data['vendorItemCode'];
-        $unit = $data['unit'];
+        
+        $unit = $data['docUnit'];
         $conversionFactor = $data['conversionFactor'];
-        $quantity = $data['quantity'];
-        $unitPrice = $data['unitPrice'];
+        $quantity = $data['docQuantity'];
+        $unitPrice = $data['docUnitPrice'];
         $taxRate = $data['taxRate'];
         $remarks = $data['remarks'];
 
@@ -48,7 +49,7 @@ class APInvoiceService extends AbstractService
         $entity->setDocStatus($target->getDocStatus());
         $entity->setRowNumber($rowNumber);
         $entity->setVendorItemCode($vendorItemCode);
-        $entity->setUnit($unit);
+        $entity->setDocUnit($unit);
 
         $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
         $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
@@ -160,24 +161,32 @@ class APInvoiceService extends AbstractService
         $conversionFactor = $entity->getConversionFactor();
         $standardCF = $entity->getConversionFactor();
 
+        // converted to purchase quantity
         $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
         $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
+        
+        //to check the unit price.
 
         $pr_row = $entity->getPrRow();
+        $pr_unit = null;
 
         if ($pr_row != null) {
             $standardCF = $standardCF * $pr_row->getConversionFactor();
+            $pr_unit = $pr_row->getRowUnit();
+            
         }
 
-        // quantity /unit price is converted purchase quantity to clear PR
+        // quantity /unit: price is converted purchase quantity to clear PR
 
         $entity->setQuantity($convertedPurchaseQuantity);
         $entity->setUnitPrice($convertedPurchaseUnitPrice);
+        $entity->setUnit($pr_unit);
 
         $convertedStandardQuantity = $entity->getDocQuantity();
         $convertedStandardUnitPrice = $entity->getDocUnitPrice();
 
         $item = $entity->getItem();
+        
         if ($item != null) {
             $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
             $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
@@ -430,14 +439,14 @@ class APInvoiceService extends AbstractService
             // converted to purchase qty
             $row_tmp->setQuantity($l['open_ap_qty']);
             $row_tmp->setUnitPrice($r->getUnitPrice());
+            $row_tmp->setUnit($r->getUnit());
             
-            $row_tmp->setDocQuantity($l['open_ap_qty']);
-            $row_tmp->setDocUnitPrice($r->getUnitPrice());
-       
-            $row_tmp->setConversionFactor(1);
             $row_tmp->setConvertedPurchaseQuantity($r->getQuantity());
             
-            $row_tmp->setUnit($r->getUnit());
+            $row_tmp->setConversionFactor($r->getConversionFactor());
+                        
+            $row_tmp->setDocQuantity($row_tmp->getQuantity()/$row_tmp->getConversionFactor());
+            $row_tmp->setDocUnitPrice($row_tmp->getUnitPrice()*$row_tmp->getConversionFactor());
             $row_tmp->setDocUnit($r->getDocUnit());
 
             $row_tmp->setTaxRate($r->getTaxRate());

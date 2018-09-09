@@ -266,7 +266,7 @@ class PrRowController extends AbstractActionController
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
-        
+
             try {
                 $this->prService->saveRow($target, $entity, $u, TRUE);
             } catch (\Exception $e) {
@@ -287,7 +287,7 @@ class PrRowController extends AbstractActionController
             }
 
             $createdOn = new \DateTime();
-            
+
             $m = sprintf('[OK] Row #%s for PR#%s created.', $entity->getRowIdentifer(), $target->getId());
 
             // Trigger: procure.activity.log. AbtractController is EventManagerAware.
@@ -1298,13 +1298,41 @@ class PrRowController extends AbstractActionController
                 } else {
                     $onclick1 = "showJqueryDialog('Receiving of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1350', $(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
                 }
+                
+                $a_json_row["row_unit"] = $pr_row_entity->getRowUnit();
+                
 
                 if ($a['total_received'] > 0) {
-                    $a_json_row["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . $a['total_received'] . '</a>';
+                    $a_json_row["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . number_format($a['total_received'],2). '</a>';
                 } else {
                     $a_json_row["total_received"] = "";
                 }
                 $a_json_row["buying"] = $a['po_quantity_draft'] + $a['po_quantity_final'] + $a['ap_quantity_draft'];
+
+                $standard_qty = $pr_row_entity->getQuantity();
+
+                if ($pr_row_entity->getConvertedStandardQuantiy() !== null) {
+                    $standard_qty = $pr_row_entity->getConvertedStandardQuantiy();
+                }
+                
+                if($standard_qty!==null){
+                    $standard_qty = number_format($standard_qty,2);
+                }
+
+                $a_json_row["standard_qty"] = $standard_qty;
+
+                $standard_unit = $pr_row_entity->getRowUnit();
+                
+                if($pr_row_entity->getItem()!==null){
+                    if ($pr_row_entity->getItem()->getStandardUom() !== null) {
+                        $standard_unit = $pr_row_entity->getItem()
+                            ->getStandardUom()
+                            ->getUomCode();
+                    }
+                }
+                
+     
+                $a_json_row["standard_unit"] = $standard_unit;
 
                 if ($pr_row_entity->getProject() !== null) {
                     $a_json_row["project_id"] = $pr_row_entity->getProject()->getId();
@@ -2120,14 +2148,14 @@ class PrRowController extends AbstractActionController
         // ============================
 
         if ($request->isPost()) {
-            
+
             $errors = array();
             $data = $request->getPost();
-            
+
             $redirectUrl = $data['redirectUrl'];
             $entity_id = $data['entity_id'];
             $token = $data['token'];
-            $nTry =$data['n'];
+            $nTry = $data['n'];
 
             $criteria = array(
                 'id' => $entity_id,
@@ -2169,7 +2197,7 @@ class PrRowController extends AbstractActionController
             }
 
             $oldEntity = clone ($entity);
-              
+
             try {
                 $errors = $this->prService->validateRow($target, $entity, $data);
             } catch (\Exception $e) {
@@ -2217,7 +2245,7 @@ class PrRowController extends AbstractActionController
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
-             
+
             try {
                 $this->prService->saveRow($target, $entity, $u, FALSE);
             } catch (\Exception $e) {

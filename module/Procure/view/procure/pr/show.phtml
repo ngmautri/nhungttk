@@ -474,21 +474,26 @@
          },},
          
        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
-        { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
-        { title: "Identifer", dataType: "string", dataIndx: "row_identifer",width: 85,align: 'left',editable: false},	
-        { title: "#", dataType: "integer", dataIndx: "row_number", width:5,editable: true },
-   		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
-        { title: "Item", dataType: "string", dataIndx: "item_name", width:250,editable: false },
-        { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: false},
-        { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
-        { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
-        { title: "buying", dataType: "integer", dataIndx: "buying", width: 70,align: 'right',editable: false},
-        { title: "Project", dataType: "string", dataIndx: "project_id", width: 70, align: 'right',editable: false},
-        { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 90, align: 'left',editable: false},
-        { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 82, align: 'right',editable: false},
-        { title: "Curr", dataType: "string", dataIndx: "currency", width:3, align: 'center',editable: false},
+       { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
+       { title: "Identifer", dataType: "string", dataIndx: "row_identifer",width: 85,align: 'left',editable: false},	
+       { title: "#", dataType: "integer", dataIndx: "row_number", width:5,editable: true },
+  		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
+       { title: "Item", dataType: "string", dataIndx: "item_name", width:250,editable: false },
+       { title: "Unit", dataType: "integer", dataIndx: "row_unit", width: 70,align: 'right',editable: false},
+       
+       { title: "Quantity", dataType: "integer", dataIndx: "quantity", width: 70,align: 'right',editable: true},
+       { title: "Received", dataType: "string", dataIndx: "total_received", width:70, align: 'right',editable: false},
+       { title: "Balance", dataType: "integer", dataIndx: "confirmed_balance", width: 70,align: 'right',editable: false},
+       { title: "buying", dataType: "integer", dataIndx: "buying", width: 70,align: 'right',editable: false},
+       { title: "Standard Qty", dataType: "integer", dataIndx: "standard_qty", width: 70,align: 'right',editable: false},
+       { title: "Standard Unit", dataType: "integer", dataIndx: "standard_unit", width: 70,align: 'right',editable: false},
              
-        { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
+       { title: "Project", dataType: "string", dataIndx: "project_id", width: 70, align: 'right',editable: false},
+       { title: "Vendor", dataType: "string", dataIndx: "vendor_name", width: 90, align: 'left',editable: false},
+       { title: "Price", dataType: "float", dataIndx: "vendor_unit_price", width: 82, align: 'right',editable: false},
+       { title: "Curr", dataType: "string", dataIndx: "currency", width:3, align: 'center',editable: false},
+            
+       { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         
         { title: "", editable: false, minWidth: 200, sortable: false,
             render: function (ui) {

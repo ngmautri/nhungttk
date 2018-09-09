@@ -29,9 +29,9 @@ class NmtInventoryFifoLayerConsume
     private $token;
 
     /**
-     * @var string
+     * @var float
      *
-     * @ORM\Column(name="quantity", type="decimal", precision=14, scale=4, nullable=true)
+     * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=true)
      */
     private $quantity;
 
@@ -193,7 +193,7 @@ class NmtInventoryFifoLayerConsume
     /**
      * Set quantity
      *
-     * @param string $quantity
+     * @param float $quantity
      *
      * @return NmtInventoryFifoLayerConsume
      */
@@ -207,7 +207,7 @@ class NmtInventoryFifoLayerConsume
     /**
      * Get quantity
      *
-     * @return string
+     * @return float
      */
     public function getQuantity()
     {

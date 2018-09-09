@@ -21,6 +21,8 @@
 			<td><b>Pr Date</b></td>
 			<td><b>Unit</b></td>
 			<td><b>Ordered Q'ty</b></td>
+			<td><b>Ordered Q'ty1</b></td>
+		
 			<td><b><?php echo $this->translate("PO Qty");?></b></td>
 			<td><b><?php echo $this->translate("Posted PO Qty");?></b></td>
 			<td><b><?php echo $this->translate("GR Qty");?></b></td>
@@ -78,6 +80,8 @@
 				<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
 		
 			<td><?php echo $a->getQuantity();?></td>
+			<td><?php if(!$a->getConvertedStandardQuantiy()==null):echo $a->getConvertedStandardQuantiy();else: echo $a->getQuantity(); endif;?></td>
+	
 			<td><?php echo $r['po_qty'];?></td>		
 			<td><?php echo $r['posted_po_qty'];?></td>		
 			<td><?php echo $r['gr_qty'];?></td>

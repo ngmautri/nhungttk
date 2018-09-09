@@ -36,9 +36,9 @@ class NmtProcurePoRow
     private $token;
 
     /**
-     * @var integer
+     * @var float
      *
-     * @ORM\Column(name="quantity", type="integer", nullable=false)
+     * @ORM\Column(name="quantity", type="float", precision=10, scale=4, nullable=false)
      */
     private $quantity;
 
@@ -71,9 +71,9 @@ class NmtProcurePoRow
     private $itemUnit;
 
     /**
-     * @var string
+     * @var float
      *
-     * @ORM\Column(name="conversion_factor", type="decimal", precision=10, scale=4, nullable=true)
+     * @ORM\Column(name="conversion_factor", type="float", precision=10, scale=4, nullable=true)
      */
     private $conversionFactor;
 
@@ -472,7 +472,7 @@ class NmtProcurePoRow
     /**
      * Set quantity
      *
-     * @param integer $quantity
+     * @param float $quantity
      *
      * @return NmtProcurePoRow
      */
@@ -486,7 +486,7 @@ class NmtProcurePoRow
     /**
      * Get quantity
      *
-     * @return integer
+     * @return float
      */
     public function getQuantity()
     {
@@ -592,7 +592,7 @@ class NmtProcurePoRow
     /**
      * Set conversionFactor
      *
-     * @param string $conversionFactor
+     * @param float $conversionFactor
      *
      * @return NmtProcurePoRow
      */
@@ -606,7 +606,7 @@ class NmtProcurePoRow
     /**
      * Get conversionFactor
      *
-     * @return string
+     * @return float
      */
     public function getConversionFactor()
     {

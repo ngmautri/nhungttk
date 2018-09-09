@@ -683,6 +683,33 @@ class PoRowController extends AbstractActionController
 
                     $a_json_row["exw_unit_price"] = $a->getExwUnitPrice();
                     $a_json_row["total_exw_price"] = $a->getTotalExwPrice();
+                    
+                    
+                    $standard_qty = $a->getQuantity();
+                    
+                    if ($a->getConvertedStandardQuantity() != null) {
+                        $standard_qty = $a->getConvertedStandardQuantity();
+                    }
+                    
+                    if($standard_qty!=null){
+                        $standard_qty = number_format($standard_qty,2);
+                    }
+                    $a_json_row["standard_qty"] = $standard_qty;
+                    
+                    $standard_unit = $a->getUnit();
+                    
+                    if($a->getItem()!==null){
+                        if ($a->getItem()->getStandardUom() !== null) {
+                            $standard_unit = $a->getItem()
+                            ->getStandardUom()
+                            ->getUomCode();
+                        }
+                    }
+                    
+                    
+                    $a_json_row["standard_unit"] = $standard_unit;
+                    
+                    
 
                     $a_json[] = $a_json_row;
                 }

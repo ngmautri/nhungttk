@@ -671,6 +671,10 @@ class VInvoiceRowController extends AbstractActionController
                     } else {
                         $a_json_row["cost_center"] = "";
                     }
+                    
+                    $a_json_row["doc_qty"] = $a->getDocQuantity();
+                    $a_json_row["doc_unit_price"] = $a->getDocUnitPrice();
+                    
 
                     $a_json[] = $a_json_row;
                 }

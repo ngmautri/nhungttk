@@ -57,7 +57,7 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 			<?php endif; ?>
 			
 			<?php if($a->getPoRow()!==null):?>			
-			<td><a href="/procure/po/add1?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPoRow()->getPo()->getId();?>&token=<?php echo $a->getPoRow()->getPo()->getToken();?>" target="_blank"><?php echo $a->getPoRow()->getPo()->getSysNumber();?></a></td>
+			<td><a href="/procure/po/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPoRow()->getPo()->getId();?>&token=<?php echo $a->getPoRow()->getPo()->getToken();?>" target="_blank"><?php echo $a->getPoRow()->getPo()->getSysNumber();?></a></td>
 			<?php else:?>
 			<td>N/A</td>
 			<?php endif; ?>

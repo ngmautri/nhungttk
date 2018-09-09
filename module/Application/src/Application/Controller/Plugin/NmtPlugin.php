@@ -166,7 +166,7 @@ class NmtPlugin extends AbstractPlugin
             if ($v1 == null && $v2 == null) {
                 continue;
             }
-            
+              
             if ($v1 == null) {
                 // +++++ $v1 == null && $v2 != null +++++++
                 

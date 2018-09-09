@@ -49,10 +49,11 @@ class PoRowController extends AbstractActionController
         // ============================
         if ($request->isPost()) {
             $errors = array();
+            $data = $this->params()->fromPost();
 
-            $redirectUrl = $request->getPost('redirectUrl');
-            $po_id = $request->getPost('po_id');
-            $po_token = $request->getPost('po_token');
+            $redirectUrl = $data['redirectUrl'];
+            $po_id = (int) $data['po_id'];
+            $po_token = $data['po_token'];
 
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
@@ -93,7 +94,6 @@ class PoRowController extends AbstractActionController
             $entity->setPo($target);
 
             try {
-                $data = $this->params()->fromPost();
                 $errors = $this->poService->validateRow($target, $entity, $data);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
@@ -305,11 +305,13 @@ class PoRowController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
 
-            $entity_id = (int) $request->getPost('entity_id');
-            $token = $request->getPost('token');
-            $nTry = $request->getPost('n');
+            $data = $this->params()->fromPost();
+
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = (int) $data['entity_id'];
+            $token = $data['token'];
+            $nTry = $data['n'];
 
             $criteria = array(
                 'id' => $entity_id,
@@ -364,14 +366,14 @@ class PoRowController extends AbstractActionController
 
             $oldEntity = clone ($entity);
 
-            
             try {
-                $data = $this->params()->fromPost();
                 $errors = $this->poService->validateRow($target, $entity, $data);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
-           
+
+            
+            /** @todo: problem when both attribut is 0 */
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
             if (count($changeArray) == 0) {
@@ -649,7 +651,7 @@ class PoRowController extends AbstractActionController
                     $received_detail = sprintf('<a title="click for goods receipt!" style="color: #337ab7;" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', $onclick1);
 
                     if ($r['posted_gr_qty'] > 0) {
-                        $a_json_row["confirmed_gr"] = $r['posted_gr_qty'] . $received_detail;
+                        $a_json_row["confirmed_gr"] = number_format($r['posted_gr_qty'],2) . $received_detail;
                     } else {
                         $a_json_row["confirmed_gr"] = $r['posted_gr_qty'];
                     }
@@ -678,37 +680,43 @@ class PoRowController extends AbstractActionController
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
                     $a_json_row["fa_remarks"] = $a->getFaRemarks();
                     $a_json_row["remarks"] = $a->getRemarks();
-                    $a_json_row["billed_qty"] = $r['posted_ap_qty'];
-                    $a_json_row["billed_amount"] = $r['billed_amount'];
-
+                      
+                    if($r['billed_amount']>0){
+                    $a_json_row["billed_amount"] = number_format($r['billed_amount'],2);
+                    }else{
+                        $a_json_row["billed_amount"] = $r['billed_amount'];
+                        
+                    }
+                    
+            
                     $a_json_row["exw_unit_price"] = $a->getExwUnitPrice();
                     $a_json_row["total_exw_price"] = $a->getTotalExwPrice();
-                    
-                    
+
                     $standard_qty = $a->getQuantity();
-                    
+
                     if ($a->getConvertedStandardQuantity() != null) {
                         $standard_qty = $a->getConvertedStandardQuantity();
                     }
-                    
-                    if($standard_qty!=null){
-                        $standard_qty = number_format($standard_qty,2);
+
+                    if ($standard_qty != null) {
+                        $standard_qty = number_format($standard_qty, 2);
                     }
                     $a_json_row["standard_qty"] = $standard_qty;
-                    
+
                     $standard_unit = $a->getUnit();
-                    
-                    if($a->getItem()!==null){
+
+                    if ($a->getItem() !== null) {
                         if ($a->getItem()->getStandardUom() !== null) {
                             $standard_unit = $a->getItem()
-                            ->getStandardUom()
-                            ->getUomCode();
+                                ->getStandardUom()
+                                ->getUomCode();
                         }
                     }
-                    
-                    
+
                     $a_json_row["standard_unit"] = $standard_unit;
                     
+                    $a_json_row["doc_qty"] = $a->getDocQuantity();
+                    $a_json_row["doc_unit_price"] = $a->getDocUnitPrice();
                     
 
                     $a_json[] = $a_json_row;

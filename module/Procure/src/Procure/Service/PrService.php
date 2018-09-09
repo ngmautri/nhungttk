@@ -39,11 +39,11 @@ class PrService extends AbstractService
         $rowNumber = (int) $data['rowNumber'];
         $priority = $data['priority'];
         $quantity = $data['quantity'];
-        $remarks = $data['remarks'];
         $rowCode = $data['rowCode'];
         $rowName = $data['rowName'];
         $rowUnit = $data['rowUnit'];
-
+        $remarks = $data['remarks'];
+        
         // converstion factor to standard unit.
         $conversionFactor = $data['conversionFactor'];
 
@@ -75,20 +75,7 @@ class PrService extends AbstractService
         $entity->setRowUnit($rowUnit);
         $entity->setConversionFactor($conversionFactor);
 
-        $validator = new Date();
-
-        // Empty is OK
-        if ($edt !== null) {
-            if ($edt !== "") {
-
-                if (! $validator->isValid($edt)) {
-                    $errors[] = $this->controllerPlugin->translate('Date is not correct or empty!');
-                } else {
-                    $entity->setEdt(new \DateTime($edt));
-                }
-            }
-        }
-
+    
         if ($quantity == null) {
             $errors[] = $this->controllerPlugin->translate('Please  enter order quantity!');
         } else {
@@ -110,12 +97,26 @@ class PrService extends AbstractService
         } else {
 
             if (! is_numeric($conversionFactor)) {
-                $errors[] = 'quantity must be a number.';
+                $errors[] = $this->controllerPlugin->translate('Conversion factor must be a number.');
             } else {
                 if ($conversionFactor <= 0) {
-                    $errors[] = 'quantity must be greater than 0!';
+                    $errors[] =  $this->controllerPlugin->translate('Conversion factor must be greater than 0!');
                 } else {
                     $entity->setConversionFactor($conversionFactor);
+                }
+            }
+        }
+        
+        $validator = new Date();
+        
+        // Empty is OK
+        if ($edt !== null) {
+            if ($edt !== "") {
+                
+                if (! $validator->isValid($edt)) {
+                    $errors[] = $this->controllerPlugin->translate('Date is not valid!');
+                } else {
+                    $entity->setEdt(new \DateTime($edt));
                 }
             }
         }

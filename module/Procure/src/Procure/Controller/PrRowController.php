@@ -2247,7 +2247,7 @@ class PrRowController extends AbstractActionController
             ));
 
             try {
-                $this->prService->saveRow($target, $entity, $u, FALSE);
+                $this->prService->saveRow($target, $entity, $u);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }

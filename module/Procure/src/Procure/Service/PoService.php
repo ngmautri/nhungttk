@@ -56,8 +56,6 @@ class PoService extends AbstractService
         }
 
         $entity->setIsActive($isActive);
-
-        $entity->setPo($target);
         $entity->setRowNumber($rowNumber);
 
         // Inventory Transaction and validating.
@@ -121,29 +119,31 @@ class PoService extends AbstractService
             }
         }
 
-        if ($taxRate != null) {
-            if (! is_numeric($taxRate)) {
-                $errors[] = $this->controllerPlugin->translate('TaxRate is not valid. It must be a number.');
+        if ($taxRate == null) {
+            $taxRate = 0;
+        }
+
+        if (! is_numeric($taxRate)) {
+            $errors[] = $this->controllerPlugin->translate('TaxRate is not valid. It must be a number.');
+        } else {
+            if ($taxRate < 0) {
+                $errors[] = $this->controllerPlugin->translate('TaxRate must be > 0');
             } else {
-                if ($taxRate < 0) {
-                    $errors[] = $this->controllerPlugin->translate('TaxRate must be >0');
-                } else {
-                    $entity->setTaxRate($taxRate);
-                }
+                $entity->setTaxRate($taxRate);
             }
         }
+
         if ($conversionFactor == null) {
             $conversionFactor = 1;
-        } else {
+        }
 
-            if (! is_numeric($conversionFactor)) {
-                $errors[] = $this->controllerPlugin->translate('conversion factor must be a number.');
+        if (! is_numeric($conversionFactor)) {
+            $errors[] = $this->controllerPlugin->translate('conversion factor must be a number.');
+        } else {
+            if ($conversionFactor <= 0) {
+                $errors[] = $this->controllerPlugin->translate('converstion factor must be greater than 0!');
             } else {
-                if ($conversionFactor <= 0) {
-                    $errors[] = $this->controllerPlugin->translate('converstion factor must be greater than 0!');
-                } else {
-                    $entity->setConversionFactor($conversionFactor);
-                }
+                $entity->setConversionFactor($conversionFactor);
             }
         }
 

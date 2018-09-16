@@ -219,4 +219,7 @@ class GIforRepairMachine extends AbstractGIStrategy
      */
     public function reverse($entity, $u, $reversalDate)
     {}
+    public function validateRow($trx)
+    {}
+
 }

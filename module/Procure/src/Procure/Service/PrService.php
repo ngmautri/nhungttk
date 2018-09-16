@@ -13,6 +13,35 @@ use Zend\Validator\Date;
  */
 class PrService extends AbstractService
 {
+    
+    /**
+     *
+     * @param \Application\Entity\NmtProcurePr $target
+     * @return NULL[]|string[]
+     */
+    public function priceMatching($entity)
+    {
+        $criteria = array(
+            'isActive' => 1,
+            'pr' => $entity
+        );
+        $rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->findBy($criteria);
+        
+        if (count($rows) == 0) {
+            throw new \Exception("PR is empty. No Posting will be made!");
+        }
+        
+        foreach($rows as $r){
+            
+            /** @var \Application\Entity\NmtProcurePrRow $r ;*/
+            $item = $r->getItem();
+            if($item !=null){
+                
+            }
+        }
+        
+    
+    }
 
     /**
      *

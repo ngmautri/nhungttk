@@ -10,6 +10,15 @@ abstract class AbstractGIStrategy
 {
 
     protected $contextService;
+    
+    
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryTrx $entity
+     */
+    abstract public function validateRow($entity);
+       
+    
 
     /**
      *

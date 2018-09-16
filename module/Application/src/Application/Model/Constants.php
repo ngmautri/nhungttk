@@ -189,6 +189,13 @@ class Constants
     const PROCURE_TRANSACTION_STATUS_CLEARED = 'cleared';
     const PROCURE_TRANSACTION_STATUS_CLOSED = 'closed';
     
+    const FORM_ACTION_ADD ='ADD';
+    const FORM_ACTION_EDIT ='EDIT';
+    const FORM_ACTION_SHOW ='SHOW';
+    const FORM_ACTION_DELETE ='DELETE';
+    
+    
+    
     
 }
 

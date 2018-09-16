@@ -28,8 +28,6 @@ use Zend\Http\Client as HttpClient;
 class PrController extends AbstractActionController
 {
 
-    const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ__";
-
     const QR_CODE_PATH = "/data/procure/qr_code/pr/";
 
     protected $doctrineEM;
@@ -155,7 +153,7 @@ class PrController extends AbstractActionController
         if (count($list) > 0) {
             foreach ($list as $entity) {
                 $entity->setChecksum(md5(uniqid("project_" . $entity->getId()) . microtime()));
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             }
         }
 
@@ -180,6 +178,21 @@ class PrController extends AbstractActionController
             'total_records' => $total_records,
             'paginator' => $paginator
         ));
+    }
+    
+    /**
+     * 
+     *  @return \Zend\View\Model\ViewModel
+     */
+    public function priceMatchingAction()
+    {
+        
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator
+        ));
+        
     }
 
     /**
@@ -276,7 +289,7 @@ class PrController extends AbstractActionController
             // NO ERROR
             // ++++++++++++++++++++++++++
 
-            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
@@ -338,7 +351,7 @@ class PrController extends AbstractActionController
             // create QR_CODE
             $redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
 
-            // $name_part1 = Rand::getString ( 6, self::CHAR_LIST, true ) . "_" . Rand::getString ( 10, self::CHAR_LIST, true );
+            // $name_part1 = Rand::getString ( 6, \Application\Model\Constants::CHAR_LIST, true ) . "_" . Rand::getString ( 10, \Application\Model\Constants::CHAR_LIST, true );
             $qr_code_name = $entity->getChecksum() . '_' . $entity->getToken() . '_' . $entity->getId() . '.png';
             $folder_relative = $qr_code_name[0] . $qr_code_name[1] . DIRECTORY_SEPARATOR . $qr_code_name[2] . $qr_code_name[3] . DIRECTORY_SEPARATOR . $qr_code_name[4] . $qr_code_name[5] . DIRECTORY_SEPARATOR . $qr_code_name[6] . $qr_code_name[7];
 

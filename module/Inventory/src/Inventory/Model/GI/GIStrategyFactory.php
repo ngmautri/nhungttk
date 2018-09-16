@@ -15,7 +15,9 @@ class GIStrategyFactory
         switch ($tTransaction) {
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX:
                 return new GIforRepairMachine();
-            default:
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_COST_CENTER:
+                return new GIforCostCenter();
+              default:
                 throw new \Exception("Unknown Movement Type!");
         }
     }

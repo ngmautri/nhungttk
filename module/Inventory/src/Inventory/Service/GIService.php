@@ -92,6 +92,11 @@ class GIService extends AbstractService
             $quantity = $data['quantity'];
         }
 
+        $convert_factor = 1;
+        if (isset($data['convert_factor'])) {
+            $convert_factor = $data['convert_factor'];
+        }
+
         $issue_for_id = null;
         if (isset($data['issue_for_id'])) {
             $issue_for_id = $data['issue_for_id'];
@@ -108,7 +113,7 @@ class GIService extends AbstractService
         }
 
         $cost_center_id = null;
-        if (isset($data['itemcost_center_idid'])) {
+        if (isset($data['cost_center_id'])) {
             $cost_center_id = (int) $data['cost_center_id'];
         }
 
@@ -151,6 +156,16 @@ class GIService extends AbstractService
             }
         }
 
+        if (! is_numeric($convert_factor)) {
+            $errors[] = $this->controllerPlugin->translate('Convert factor must be a number!');
+        } else {
+            if ($quantity <= 0) {
+                $errors[] = $this->controllerPlugin->translate('Convert factor must be greater than 0!');
+            } else {
+                $entity->setConversionFactor($convert_factor);
+            }
+        }
+
         if ($issue_for_id > 0) {
             $for_item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($issue_for_id);
             $entity->setIssueFor($for_item);
@@ -164,14 +179,15 @@ class GIService extends AbstractService
         if ($cost_center_id > 0) {
             $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
             $entity->setCostCenter($costCenter);
+        }else{
+            $entity->setCostCenter(null);            
         }
 
-        // $entity->setTraceStock($traceStock);
         $entity->setRemarks($remarks);
 
         // GI Strategy.
-        $check_result=null;
-        
+        $check_result = null;
+
         $giStrategy = GIStrategyFactory::getGIStrategy($target->getMovementType());
         if (! $giStrategy instanceof \Inventory\Model\GI\AbstractGIStrategy) {
             $errors[] = $this->controllerPlugin->translate("Invalid Argument! No strategy found.");
@@ -179,9 +195,9 @@ class GIService extends AbstractService
             $giStrategy->setContextService($this);
             $check_result = $giStrategy->validateRow($entity);
         }
-        
-        if(count($check_result)>0){
-            $errors=array_merge($errors,$check_result);
+
+        if (count($check_result) > 0) {
+            $errors = array_merge($errors, $check_result);
         }
 
         // check on-hand quantity.
@@ -208,10 +224,10 @@ class GIService extends AbstractService
         if (! $u instanceof \Application\Entity\MlaUsers) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
-        
-        /// validated.
 
-         if ($isNew == TRUE) {
+        // / validated.
+
+        if ($isNew == TRUE) {
             $trx->setTrxDate($target->getMovementDate());
             $trx->setDocCurrency($target->getCurrency());
             $trx->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
@@ -224,6 +240,7 @@ class GIService extends AbstractService
         }
 
         $this->getDoctrineEM()->persist($trx);
+        
     }
 
     /**
@@ -332,6 +349,5 @@ class GIService extends AbstractService
         // do posting now
         $postingStrategy->setContextService($this);
         $postingStrategy->doPosting($entity, $u);
-        
     }
 }

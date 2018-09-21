@@ -1,8 +1,11 @@
 <?php
 echo "GI102";
 
-/**@var \Application\Entity\NmtInventoryMv $target ;
- @var \Application\Entity\NmtInventoryTrx $entity ; */
+/**
+ *
+ * @var \Application\Entity\NmtInventoryMv $target ;
+ * @var \Application\Entity\NmtInventoryTrx $entity ;
+ */
 $form_action = '';
 $form_title = '';
 switch ($action) {
@@ -56,24 +59,29 @@ echo (! $target == null) ? $target->getSysNumber() : "";
 						href="<?php echo $this->baseUrl ?>/procure/gr-row/list?token=<?php echo (!$target == null)? $target->getToken():"";?>&target_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
 								class="glyphicon glyphicon-list"> </i></i></small>&nbsp;Current
 							Rows</a></li>
+							
+								<li><a title="<?php echo $this->translate("Change Logs");?>"
+			href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+							
 				</ul>
 
 				<div id="general" style="font-size: 9pt">
 					<!-- Tab1 -->
 					
 						<?php
-if (count($errors) > 0) {
-    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+    if (count($errors) > 0) {
+        echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
 
-    echo '<ul>';
-    foreach ($errors as $error) :
-        echo '<li>' . $error . '</li>';
-    endforeach
-    ;
-    echo '</ul>';
-    echo '</div>';
-}
-?>
+        echo '<ul>';
+        foreach ($errors as $error) :
+            echo '<li>' . $error . '</li>';
+        endforeach
+        ;
+        echo '</ul>';
+        echo '</div>';
+    }
+    ?>
 
 					<!-- for all case: -->
 					<form id="New_Invoice_Row" class="form-horizontal"
@@ -158,27 +166,44 @@ if (count($errors) > 0) {
 										value="<?php echo (!$entity == null)? $entity->getQuantity():"";?>">
 								</div>
 							</div>
-
-
 							<div class="form-group margin-bottom required">
-								<label class="control-label col-sm-2">Issue for: </label>
+								<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
+
+
 								<div class="col-sm-3">
-									<input disabled class="form-control input-sm" type="text"
-										id="issue_for_name" placeholder="Select Item if any"
-										name="issue_for_name"
-										value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getItemName(); endif;endif;?>">
-									<input type="hidden" id="issue_for_id" placeholder=""
-										name="issue_for_id"
-										value="<?php if(!$entity== null): if($entity->getIssueFor()!==null):echo $entity->getIssueFor()->getId(); endif;endif;?>">
+									<select name="cost_center_id" class="form-control input-sm">
+										<option value=""><?php echo $this->translate("Select Cost Center");?></option>
+   	    							<?php
+            if ($cost_center_list !== null) :
+                foreach ($cost_center_list as $cc) :
+
+                    /**@var \Application\Entity\FinCostCenter $cc ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getCostCenter() !== null) :
+                            if ($entity->getCostCenter()->getId() == $cc->getId()) :
+                                echo '<option selected value="' . $cc->getId() . '">' . $cc->getCostCenterName() . '</option>';
+                            else :
+                                echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getCostCenterName() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
 								</div>
 
 
-								<a style="color: #0080ff;" href="javascript:;"
-									onclick="showJqueryDialog('Select Item','950','500', '/inventory/item-search/do1?target_id=issue_for_id&target_name=issue_for_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
-									class="glyphicon glyphicon-folder-open"></i>
-								</a>
-
 							</div>
+
+
 							<div class="form-group margin-bottom">
 								<label class="control-label col-sm-2">Remark:</label>
 								<div class="col-sm-8">

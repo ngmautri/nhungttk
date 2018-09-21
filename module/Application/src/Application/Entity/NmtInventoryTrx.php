@@ -232,9 +232,9 @@ class NmtInventoryTrx
     private $sysNumber;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="change_on", type="string", length=45, nullable=true)
+     * @ORM\Column(name="change_on", type="datetime", nullable=true)
      */
     private $changeOn;
 
@@ -1363,7 +1363,7 @@ class NmtInventoryTrx
     /**
      * Set changeOn
      *
-     * @param string $changeOn
+     * @param \DateTime $changeOn
      *
      * @return NmtInventoryTrx
      */
@@ -1377,7 +1377,7 @@ class NmtInventoryTrx
     /**
      * Get changeOn
      *
-     * @return string
+     * @return \DateTime
      */
     public function getChangeOn()
     {

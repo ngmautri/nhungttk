@@ -8,9 +8,7 @@ namespace Inventory\Model\GI;
  */
 class GIforCostCenter extends AbstractGIStrategy
 {
-    public function doPosting($entity, $u)
-    {}
-
+  
     /**
      * @param \Application\Entity\NmtInventoryTrx $entity
 
@@ -29,16 +27,21 @@ class GIforCostCenter extends AbstractGIStrategy
         
         // Required Cost center;
         if ($entity->getCostCenter() == null) {
-            $errors[]=$this->getContextService()->getControllerPlugin()->translate("Please give cost center!");
+            $errors[]=$this->getContextService()->getControllerPlugin()->translate("Please give cost center! nmt");
         }
             
         return $errors;
     }
+    public function doPosting($entity, $u)
+    {}
 
     public function check($trx, $item, $u)
     {}
 
     public function reverse($entity, $u, $reversalDate)
     {}
+
+
+ 
   
 }

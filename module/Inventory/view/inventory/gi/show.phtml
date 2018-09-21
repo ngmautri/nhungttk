@@ -545,7 +545,7 @@ $( "#vendor_name_1" ).autocomplete({
             rowData = $grid.pqGrid("getRowData", { rowIndx: rowIndx }),
             recIndx = $grid.pqGrid("option", "dataModel.recIndx");
     
-            redirectUrl="/procure/gr-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
+            redirectUrl="/inventory/gi-row/edit?token="+rowData['row_token']+"&entity_id="+rowData['row_id'];
           	//alert(redirectUrl);
 			window.location.href = redirectUrl;
           	//window.open(redirectUrl,'_blank');

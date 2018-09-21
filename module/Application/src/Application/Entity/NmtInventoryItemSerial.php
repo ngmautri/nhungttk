@@ -197,6 +197,13 @@ class NmtInventoryItemSerial
     private $mfgDescription;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="capacity", type="integer", nullable=true)
+     */
+    private $capacity;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -876,6 +883,30 @@ class NmtInventoryItemSerial
     public function getMfgDescription()
     {
         return $this->mfgDescription;
+    }
+
+    /**
+     * Set capacity
+     *
+     * @param integer $capacity
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setCapacity($capacity)
+    {
+        $this->capacity = $capacity;
+
+        return $this;
+    }
+
+    /**
+     * Get capacity
+     *
+     * @return integer
+     */
+    public function getCapacity()
+    {
+        return $this->capacity;
     }
 
     /**

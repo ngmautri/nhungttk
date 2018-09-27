@@ -74,9 +74,9 @@ if ($total_records <= 0) {
 			</td>
 
 
-					<td><?php echo $this->escapeHtml($a->getInventoryTrx()->getFlow());?></td>
-					<td><?php  if($a->getInventoryTrx()->getVendorUnitPrice()!==null): echo number_format($a->getInventoryTrx()->getVendorUnitPrice(),2); endif;?></td>
-					<td><?php  if($a->getInventoryTrx()->getCurrency()!==null): echo $a->getInventoryTrx()->getCurrency()->getCurrency(); endif;?></td>
+					<td><?php if($a->getInventoryTrx()!==null):echo $this->escapeHtml($a->getInventoryTrx()->getFlow());endif;?></td>
+					<td><?php  if($a->getInventoryTrx()!==null):if($a->getInventoryTrx()->getVendorUnitPrice()!==null): echo number_format($a->getInventoryTrx()->getVendorUnitPrice(),2); endif;endif;?></td>
+					<td><?php  if($a->getInventoryTrx()!==null):if($a->getInventoryTrx()->getCurrency()!==null): echo $a->getInventoryTrx()->getCurrency()->getCurrency(); endif;endif;?></td>
 
 					<td>
 			<?php echo $a->getMfgName();?>

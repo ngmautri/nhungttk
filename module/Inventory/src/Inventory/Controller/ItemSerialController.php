@@ -18,10 +18,10 @@ use Zend\View\Model\ViewModel;
 class ItemSerialController extends AbstractActionController
 {
 
-    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-
+  
     protected $doctrineEM;
     protected $itemSearchService;
+    protected $itemSerialService;    
 
     /**
      *
@@ -141,7 +141,7 @@ class ItemSerialController extends AbstractActionController
             
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($createdOn);
-            $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
@@ -302,8 +302,16 @@ class ItemSerialController extends AbstractActionController
      */
     public function editAction()
     {
+        
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $country_list = $nmtPlugin->countryList();
+        
         $request = $this->getRequest();
         
+        // Is Posing
+        // =============================
         
         // Is Posing
         // =============================
@@ -330,6 +338,7 @@ class ItemSerialController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
+                    'country_list'=>$country_list,
                     'n' => $nTry
                 
                 ));
@@ -342,10 +351,15 @@ class ItemSerialController extends AbstractActionController
                 $serialNumber = $request->getPost('serialNumber');
                 $location = $request->getPost('location');
                 $category = $request->getPost('category');
+                
+                $origin_country_id = $request->getPost('origin_country_id');
+                
+                
                 $mfgName = $request->getPost('mfgName');
                 $mfgDate = $request->getPost('mfgDate');
                 $mfgSerialNumber = $request->getPost('mfgSerialNumber');
                 $mfgModel = $request->getPost('mfgModel');
+                $capacity = $request->getPost('capacity');
                 
                 $lotNumber = $request->getPost('lotNumber');
                 $mfgWarrantyStart = $request->getPost('mfgWarrantyStart');
@@ -362,6 +376,7 @@ class ItemSerialController extends AbstractActionController
                 $entity->setSerialNumber($serialNumber);
                 $entity->setLocation($location);
                 $entity->setCategory($category);
+                $entity->setCapacity($capacity);
                 
                 $entity->setMfgName($mfgName);
                 $entity->setMfgModel($mfgModel);
@@ -387,6 +402,15 @@ class ItemSerialController extends AbstractActionController
                             $errors[] = $serialNumber . ' exists already!';
                         }
                     }
+                }
+                
+                $criteria = array(
+                    'id' => $origin_country_id
+                );
+                $country = $this->doctrineEM->getRepository('\Application\Entity\NmtApplicationCountry')->findOneBy($criteria);
+                
+                if($country!==null){
+                    $entity->setOriginCountry($country);
                 }
                 
                 $validator = new Date();
@@ -456,6 +480,8 @@ class ItemSerialController extends AbstractActionController
                         'redirectUrl' => $redirectUrl,
                         'errors' => $errors,
                         'entity' => $entity,
+                        'country_list'=>$country_list,
+                        
                         'n' => $nTry
                     
                     ));
@@ -530,6 +556,7 @@ class ItemSerialController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'redirectUrl' => $redirectUrl,
+            'country_list'=>$country_list,
             'n' => 0
         ));
     }
@@ -664,7 +691,7 @@ class ItemSerialController extends AbstractActionController
         if (count($list) > 0) {
             foreach ($list as $entity) {
                 $entity->setChecksum(md5(uniqid("item_" . $entity->getId()) . microtime()));
-                $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             }
         }
         
@@ -681,28 +708,62 @@ class ItemSerialController extends AbstractActionController
     }
 
     /**
-     *
-     * @return \Doctrine\ORM\EntityManager
+     * 
+     *  @return \Doctrine\ORM\EntityManager
      */
     public function getDoctrineEM()
     {
         return $this->doctrineEM;
     }
 
+    /**
+     * 
+     *  @param EntityManager $doctrineEM
+     *  @return \Inventory\Controller\ItemSerialController
+     */
     public function setDoctrineEM(EntityManager $doctrineEM)
     {
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
 
+    
+    /**
+     * 
+     *  @return \Inventory\Service\ItemSearchService
+     */
     public function getItemSearchService()
     {
         return $this->itemSearchService;
     }
 
+    /**
+     * 
+     *  @param ItemSearchService $itemSearchService
+     *  @return \Inventory\Controller\ItemSerialController
+     */
     public function setItemSearchService(ItemSearchService $itemSearchService)
     {
         $this->itemSearchService = $itemSearchService;
         return $this;
     }
+    
+    /**
+     * 
+     *  @return \Inventory\Service\ItemSerialService
+     */
+    public function getItemSerialService()
+    {
+        return $this->itemSerialService;
+    }
+
+    /**
+     * 
+     *  @param \Inventory\Service\ItemSerialService $itemSerialService
+     */
+    public function setItemSerialService(\Inventory\Service\ItemSerialService $itemSerialService)
+    {
+        $this->itemSerialService = $itemSerialService;
+    }
+
 }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemSerial
  *
- * @ORM\Table(name="nmt_inventory_item_serial", indexes={@ORM\Index(name="nmt_inventory_item_serial_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK4_idx", columns={"serial_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK5_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK6_idx", columns={"ap_row_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK7_idx", columns={"gr_row_id"})})
+ * @ORM\Table(name="nmt_inventory_item_serial", indexes={@ORM\Index(name="nmt_inventory_item_serial_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK2_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_inventory_item_serial_FK3_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK4_idx", columns={"serial_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK5_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK6_idx", columns={"ap_row_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK7_idx", columns={"gr_row_id"}), @ORM\Index(name="nmt_inventory_item_serial_FK8_idx", columns={"origin_country"})})
  * @ORM\Entity
  */
 class NmtInventoryItemSerial
@@ -204,6 +204,20 @@ class NmtInventoryItemSerial
     private $capacity;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="erp_asset_number", type="string", length=45, nullable=true)
+     */
+    private $erpAssetNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="erp_asset_number1", type="string", length=45, nullable=true)
+     */
+    private $erpAssetNumber1;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -272,6 +286,16 @@ class NmtInventoryItemSerial
      * })
      */
     private $grRow;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCountry
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="origin_country", referencedColumnName="id")
+     * })
+     */
+    private $originCountry;
 
 
 
@@ -910,6 +934,54 @@ class NmtInventoryItemSerial
     }
 
     /**
+     * Set erpAssetNumber
+     *
+     * @param string $erpAssetNumber
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setErpAssetNumber($erpAssetNumber)
+    {
+        $this->erpAssetNumber = $erpAssetNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get erpAssetNumber
+     *
+     * @return string
+     */
+    public function getErpAssetNumber()
+    {
+        return $this->erpAssetNumber;
+    }
+
+    /**
+     * Set erpAssetNumber1
+     *
+     * @param string $erpAssetNumber1
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setErpAssetNumber1($erpAssetNumber1)
+    {
+        $this->erpAssetNumber1 = $erpAssetNumber1;
+
+        return $this;
+    }
+
+    /**
+     * Get erpAssetNumber1
+     *
+     * @return string
+     */
+    public function getErpAssetNumber1()
+    {
+        return $this->erpAssetNumber1;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -1075,5 +1147,29 @@ class NmtInventoryItemSerial
     public function getGrRow()
     {
         return $this->grRow;
+    }
+
+    /**
+     * Set originCountry
+     *
+     * @param \Application\Entity\NmtApplicationCountry $originCountry
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setOriginCountry(\Application\Entity\NmtApplicationCountry $originCountry = null)
+    {
+        $this->originCountry = $originCountry;
+
+        return $this;
+    }
+
+    /**
+     * Get originCountry
+     *
+     * @return \Application\Entity\NmtApplicationCountry
+     */
+    public function getOriginCountry()
+    {
+        return $this->originCountry;
     }
 }

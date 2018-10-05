@@ -1,8 +1,6 @@
-<?php /**@var \Application\Entity\NmtProcurePo $a ; */ ?>
+<?php /**@var \Application\Entity\NmtProcurePoRow $a ; */ ?>
 
-<div id="tabs1" style="font-size: 9.5pt">
-
-<div id="general">
+<did id="activity_log">
 
 <div>
 	<small><span class="glyphicon glyphicon-filter"></span></small>&nbsp;<a
@@ -128,11 +126,8 @@ else:
 	<thead>
 		<tr>
 			<td><b>#</b></td>
-			<td><b>Vendor</b></td>
-			<td><b>Curr</b></td>
-			<td><b>Gross <br>amount</b></td>
 			<td><?php echo $this->translate("Status");?></td>
-			<td><?php echo $this->translate("Status");?></td>
+		<td><?php echo $this->translate("Status");?></td>
 	
 			<td><b>Action</b></td>
 		</tr>
@@ -147,20 +142,18 @@ else:
 		$count ++;
 	
 		
-     /**@var \Application\Entity\FinVendorInvoice $a ; */ 
+     /**@var \Application\Entity\NmtProcurePoRow $a ; */ 
 		$a = $l[0];
 		?>
 		
 	<tr>
 			<td>
 <a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/po/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?></a>
-			
 			</td>
-			<td><?php echo $a->getVendor()->getVendorName()?></td>
-			<td><?php echo $a->getCurrency()->getCurrency()?></td>
-			<td><?php if($l['gross_amount']!=null): echo number_format($l['gross_amount'],2);endif;?></td>
-			<td><?php echo $a->getDocStatus();?></td>
-		<td><?php echo $a->getTransactionStatus();?></td>
+			<td><?php echo $l['item_name'];?></td>
+				<td><?php echo $a->getUnitPrice();?></td>
+	
+			<td><?php echo $a->getTransactionStatus();?></td>
 		
 			<td>
 <a href="<?php echo $this->baseUrl ?>/procure/po/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>">
@@ -179,4 +172,66 @@ else:
 </div>
 <?php endif; ?>
 
+<?php
+	
+	// ===============================
+	if (! is_null ( $paginator )) :
+		
+		// change it only
+	$base = $this->baseUrl . sprintf('/procure/po-row/row-of-vendor?token=%s&target_id=%s',$vendor_token, $vendor_id);
+		$_connector_symbol = '&';
+		
+		$first = $base . $_connector_symbol . 'page=1&perPage=' . $paginator->resultsPerPage;
+		$last = $base . $_connector_symbol . 'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
+		
+		$first_js = "doPaginator('".$first . "','activity_log')";
+		$last_js = "doPaginator('". $last . "','activity_log')";
+		
+		
+		
+		$p1 = ($paginator->page) - 1;
+		$p2 = ($paginator->page) + 1;
+		
+		$prev = $base . $_connector_symbol . 'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
+		$next = $base . $_connector_symbol . 'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
+		$next_js = "doPaginator('". $next . "','activity_log')";
+		$prev_js = "doPaginator('". $prev . "','activity_log')";
+		
+		echo '<ul class="pagination pagination-sm">';
+		
+		if ($paginator->page != 1 and $paginator->totalPages > 10) {
+			//echo '<li><a href="' . $first . '"> |< </a></li>';
+			//echo '<li><a href="' . $prev . '"> < </a></li>';
+			
+		    echo '<li><a href="javascript:;" onclick="' . $first_js . '"> |< </a></li>';
+		    echo '<li><a href="javascript:;" onclick="' . $prev_js . '"> < </a></li>';
+		    
+		}
+		
+		for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
+			
+			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+			$url_js = "doPaginator('". $url . "','activity_log')";
+		    
+		    
+			if ($i == $paginator->page) {
+				echo '<li><a class="active" href="#">' . $i . '</a></li>';
+			} else {
+				//echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+			    echo '<li><a href="javascript:;" onclick="' . $url_js . '">'.$i.'</a></li>';
+				
+			}
+		}
+		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+			//echo '<li><a href="' . $next . '"> > </a></li>';
+		    echo '<li><a href="javascript:;" onclick="' . $next_js . '"> > </a></li>';
+		    echo '<li><a href="javascript:;" onclick="' . $last_js . '"> >| </a></li>';
+		    
+		}
+		echo '</ul>';
+endif;
 
+// ===============================
+?>
+
+</did>

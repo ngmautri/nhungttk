@@ -82,14 +82,14 @@ if (count($errors) > 0) {
 							value="<?php if (!$target == null): echo $target->getId();endif;?>" />
 						<input type="hidden" id="invoice_token" name="invoice_token"
 							value="<?php if (!$target == null): echo $target->getToken();endif;?>" />
-							<div class="form-group margin-bottom">
+						<div class="form-group margin-bottom">
 							<label class="control-label col-sm-2">Row Number: </label>
 							<div class="col-sm-1">
 								<input tabindex="0" class="form-control input-sm" type="text"
 									id="rowNumber" name="rowNumber"
 									value="<?php if($entity->getRowNumber()==null): echo ($max_row_number+1); else: echo $entity->getRowNumber(); endif;?>">
 							</div>
-							
+
 							<label class="control-label col-sm-2"></label>
 							<div class="col-sm-3">
 								<input
@@ -112,17 +112,18 @@ if (count($errors) > 0) {
 
 								<div id="pr_row_url" style="display: none;"></div>
 
-								
+
 							</div>
-							
+
 							<div class="col-sm-1">
-										
-									<span title="<?php echo $this->translate("Line Detail");?>" id="pr_row_detail" style="display: none;">
-											&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
-												onclick="showSelectedPrRow();"><i style="color: navy"
-								class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
-										</span>
-										</div>
+
+								<span title="<?php echo $this->translate("Line Detail");?>"
+									id="pr_row_detail" style="display: none;"> &nbsp;&nbsp;<a
+									style="color: #0080ff;" href="javascript:;"
+									onclick="showSelectedPrRow();"><i style="color: navy"
+										class="fa fa-info-circle fa-lg" aria-hidden="true"></i></a>
+								</span>
+							</div>
 
 							<div class="col-sm-2">
 								<a tabindex="100" style="color: #0080ff;" href="javascript:;"
@@ -152,17 +153,18 @@ if (count($errors) > 0) {
 
 								<div id="item_url" style="display: none;"></div>
 
-							
+
 							</div>
-							
+
 							<div class="col-sm-1" style="margin: 0px">
-									<span title="<?php echo $this->translate("Item Detail");?>" id="item_detail" style="display: none;">
-											&nbsp;&nbsp;<a style="color: #0080ff;" href="javascript:;"
-												onclick="showSelectedItem();"><i style="color: navy"
-								class="fa fa-info-circle fa-lg" aria-hidden="true"></i> </a> <br>
-										</span>
-									</div>
-									
+								<span title="<?php echo $this->translate("Item Detail");?>"
+									id="item_detail" style="display: none;"> &nbsp;&nbsp;<a
+									style="color: #0080ff;" href="javascript:;"
+									onclick="showSelectedItem();"><i style="color: navy"
+										class="fa fa-info-circle fa-lg" aria-hidden="true"></i> </a> <br>
+								</span>
+							</div>
+
 							<div class="col-sm-2">
 								<a style="color: #0080ff;" href="javascript:;"
 									onclick="showJqueryDialog('Select Item','1000',$(window).height()-100, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
@@ -188,99 +190,37 @@ if (count($errors) > 0) {
 
 
 						<div class="form-group margin-bottom required">
-
-							<label class="control-label col-sm-2"><?php echo $this->translate("GL Account");?>:</label>
+							<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
 							<div class="col-sm-3">
-								<select name="gl_account_id" class="form-control input-sm">
-									<option value=""><?php echo $this->translate("Select GL Account");?></option>
-   	    							<?php
-            if ($gl_list !== null) :
-                foreach ($gl_list as $gl) :
-
-                    /**@var \Application\Entity\FinAccount $gl ; */
-
-                    if ($entity !== null) :
-                        if ($entity->getGlAccount() !== null) :
-                            if ($entity->getGlAccount()->getId() == $gl->getId()) :
-                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
-                            else :
-                                echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
-                            endif;
-                        else :
-                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
-                        endif;
-                    else :
-                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
-                    endif;
-                endforeach
-                ;
-   	    							endif;
-
-            ?>
-   					</select>
+								<input tabindex="4" class="form-control input-sm" type="text"
+									id="quantity" name="docQuantity"
+									value="<?php echo (!$entity == null)? $entity->getDocQuantity():"";?>">
 							</div>
-
-							<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
-							<div class="col-sm-3">
-								<select name="cost_center_id" class="form-control input-sm">
-									<option value=""><?php echo $this->translate("Select Cost Center");?></option>
-   	    							<?php
-            if ($cost_center_list !== null) :
-                foreach ($cost_center_list as $cc) :
-
-                    /**@var \Application\Entity\FinCostCenter $cc ; */
-
-                    if ($entity !== null) :
-                        if ($entity->getCostCenter() !== null) :
-                            if ($entity->getCostCenter()->getId() == $cc->getId()) :
-                                echo '<option selected value="' . $cc->getId() . '">' . $cc->getCostCenterName() . '</option>';
-                            else :
-                                echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
-                            endif;
-                        else :
-                            echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
-                        endif;
-                    else :
-                        echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getCostCenterName() . '</option>';
-                    endif;
-                endforeach
-                ;
-   	    							endif;
-
-            ?>
-   					</select>
-							</div>
-
 						</div>
 
 						<div class="form-group margin-bottom required">
 							<label class="control-label col-sm-2" for="inputTag">Unit:</label>
 							<div class="col-sm-3">
-								<input tabindex="4" class="form-control input-sm" type="text"
+								<input tabindex="5" class="form-control input-sm" type="text"
 									name="docUnit" id="rowUnit"
 									value="<?php echo (!$entity == null)? $entity->getDocUnit():"each";?>">
-									
-								<div style="color: graytext; padding-bottom: 5px; margin: 0 0 0 20pt;font-size: 8.5pt" id="pr_row_uom"></div>
-						
+
+								<div
+									style="color: graytext; padding-bottom: 5px; margin: 0 0 0 20pt; font-size: 8.5pt"
+									id="pr_row_uom"></div>
+
 							</div>
 							<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Convert Factor");?>:</label>
 							<div class="col-sm-3">
-								<input tabindex="5" class="form-control input-sm" type="text"
+								<input tabindex="6" class="form-control input-sm" type="text"
 									name="conversionFactor"
 									value="<?php echo (!$entity == null)? $entity->getConversionFactor():"1";?>">
-								<div style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt;font-size: 8.5pt" id="">Converstion to order unit (see PR).</div>
-				
+								<div
+									style="color: graytext; padding-bottom: 5px; margin: 0 0 0 10pt; font-size: 8.5pt"
+									id="">Converstion to order unit (see PR).</div>
+
 							</div>
 
-						</div>
-
-						<div class="form-group margin-bottom required">
-							<label class="control-label col-sm-2" for="inputTag">Quantity:</label>
-							<div class="col-sm-3">
-								<input tabindex="6" class="form-control input-sm" type="text"
-									id="quantity" name="docQuantity"
-									value="<?php echo (!$entity == null)? $entity->getDocQuantity():"";?>">
-							</div>
 						</div>
 
 						<div class="form-group margin-bottom required">
@@ -335,16 +275,85 @@ if (count($errors) > 0) {
          	        		<?php if (!$target == null): echo $target->getCurrency()->getCurrency(); endif;?>
           </div>
 						</div>
+
+						<div class="form-group margin-bottom required">
+
+							<label class="control-label col-sm-2"><?php echo $this->translate("GL Account");?>:</label>
+							<div class="col-sm-3">
+								<select tabindex="9" name="gl_account_id"
+									class="form-control input-sm">
+									<option value=""><?php echo $this->translate("Select GL Account");?></option>
+   	    							<?php
+            if ($gl_list !== null) :
+                foreach ($gl_list as $gl) :
+
+                    /**@var \Application\Entity\FinAccount $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getGlAccount() !== null) :
+                            if ($entity->getGlAccount()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
+                            else :
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>
+
+							<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
+							<div class="col-sm-3">
+								<select tabindex="10" name="cost_center_id"
+									class="form-control input-sm">
+									<option value=""><?php echo $this->translate("Select Cost Center");?></option>
+   	    							<?php
+            if ($cost_center_list !== null) :
+                foreach ($cost_center_list as $cc) :
+
+                    /**@var \Application\Entity\FinCostCenter $cc ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getCostCenter() !== null) :
+                            if ($entity->getCostCenter()->getId() == $cc->getId()) :
+                                echo '<option selected value="' . $cc->getId() . '">' . $cc->getCostCenterName() . '</option>';
+                            else :
+                                echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $cc->getId() . '">' . $cc->getCostCenterName() . ' - ' . $cc->getCostCenterName() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>
+
+						</div>
+
 						<div class="form-group margin-bottom">
 							<label class="control-label col-sm-2">Remark:</label>
 							<div class="col-sm-8">
-								<input tabindex="9" class="form-control input-sm" type="text"
+								<input tabindex="11" class="form-control input-sm" type="text"
 									placeholder="" name="remarks"
 									value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
 							</div>
 						</div>
 
-						
+
 						<div class="form-group margin-bottom" style="margin-top: 5pt">
 							<label class="control-label col-sm-2" for="inputTag"></label>
 							<div class="col-sm-3">
@@ -501,10 +510,10 @@ if (count($errors) > 0) {
 	   	showJqueryDialog('PR Row Detail','1350',$(window).height()-40, url,'j_loaded_data', true);
 	}
 
-	<?php 
-	if($entity!=null):
-	if($entity->getItem()!=null):
-	?>
+	<?php
+if ($entity != null) :
+    if ($entity->getItem() != null) :
+        ?>
 
 	  $("#item_id" ).val(<?php echo +$entity->getItem()->getId();?>);      	  
       $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id=<?php echo +$entity->getItem()->getId();?>&token=<?php echo $entity->getItem()->getToken();?>');
@@ -514,6 +523,8 @@ if (count($errors) > 0) {
 	<?php
 	endif;
 	endif;
-	?>
+
+
+?>
 
  </script>

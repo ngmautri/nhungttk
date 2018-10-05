@@ -943,6 +943,85 @@ class PoRowController extends AbstractActionController
 
         return $this->redirect()->toRoute('access_denied');
     }
+    
+    /**
+     *
+     * @return \Zend\View\Helper\ViewModel
+     */
+    public function rowOfVendorAction()
+    {
+        $request = $this->getRequest();
+        
+        // accepted only ajax request
+        
+        if (! $request->isXmlHttpRequest()) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $this->layout("layout/user/ajax");
+        
+        $vendor_id = (int) $this->params()->fromQuery('target_id');
+        $vendor_token = $this->params()->fromQuery('token');
+        
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $currentState = $this->params()->fromQuery('currentState');
+        
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 15;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+        
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+        
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        
+        if ($is_active == null) {
+            $is_active = 1;
+        }
+        
+        if ($sort_by == null) :
+        $sort_by = "itemName";
+        endif;
+        
+        if ($sort == null) :
+        $sort = "ASC";
+        endif;
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo');
+        $list = $res->getPoRowOfVendor($vendor_id,$vendor_token,$sort_by, $sort);
+        $total_records = count($list);
+        $paginator = null;
+        
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getPoRowOfVendor($vendor_id, $vendor_token,$sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+        }
+        
+        return new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'is_active' => $is_active,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'per_pape' => $resultsPerPage,
+            'currentState' => $currentState,
+            'vendor_id'=>$vendor_id,
+            'vendor_token'=>$vendor_token,
+            
+        ));
+    }
 
     /**
      *

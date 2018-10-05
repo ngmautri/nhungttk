@@ -151,7 +151,7 @@ WHERE 1
         if ($is_active == 1) {
             $sql = $sql . " AND nmt_procure_po.is_active=  1";
         } elseif ($is_active == - 1) {
-            $sql = $sql . " AND v.is_active = 0";
+            $sql = $sql . " AND nmt_procure_po.is_active = 0";
         }
 
         if ($current_state != null) {
@@ -259,6 +259,92 @@ WHERE 1
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getResult();
 
+            return $result;
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    /**
+     * 
+     * @param number $vendor_id
+     * @param string $token
+     * @param static $sort_by
+     * @param string $order_by
+     * @param string $sort
+     * @param number $limit
+     * @param number $offset
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     */
+    public function getPoRowOfVendor($vendor_id=null, $vendor_token=null, $sort_by=null, $order='DESC', $limit=0, $offset=0)
+    {
+        $sql = "
+SELECT
+	nmt_procure_po_row.*,
+    nmt_inventory_item.item_name,
+    nmt_procure_po.vendor_id,
+    nmt_procure_po.vendor_name,
+    nmt_procure_po.currency_id,
+    nmt_procure_po.contract_no,
+    nmt_procure_po.contract_date
+	
+FROM nmt_procure_po_row
+            
+LEFT JOIN nmt_procure_po
+ON nmt_procure_po.id = nmt_procure_po_row.po_id
+            
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = nmt_procure_po_row.item_id
+WHERE 1            
+";
+        
+        // $sql = $sql . " AND nmt_inventory_item.id =" . $item_id;
+        
+        $sql = $sql . sprintf(" AND nmt_procure_po.vendor_id=%s", $vendor_id);
+    
+        switch ($sort_by) {
+            case "createdOn":
+                $sql = $sql . " ORDER BY nmt_procure_po_row.created_on " . $order;
+                break;
+            case "transactionStatus":
+                $sql = $sql . " ORDER BY nmt_procure_po_row.transaction_status " . $order;
+                break;                
+            case "itemName":
+                $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $order;
+                break;
+            case "poNumber":
+                $sql = $sql . " ORDER BY nmt_procure_po.contract_no " . $order;
+                break;
+            case "poDate":
+                $sql = $sql . " ORDER BY nmt_procure_po.contract_date " . $order;
+                break;
+            case "rowQuantity":
+                $sql = $sql . " ORDER BY nmt_procure_po_row.doc_quantity " . $order;
+                break;
+            case "rowUnitPrice":
+                $sql = $sql . " ORDER BY nmt_procure_po_row.doc_unit_price " . $order;
+                break;
+           }
+        
+        if ($limit > 0) {
+            $sql = $sql . " LIMIT " . $limit;
+        }
+        
+        if ($offset > 0) {
+            $sql = $sql . " OFFSET " . $offset;
+        }
+        $sql = $sql . ";";
+        
+        //echo $sql;
+        
+        try {
+            $rsm = new ResultSetMappingBuilder($this->_em);
+            $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePoRow', 'procure_po_row');
+            $rsm->addScalarResult("item_name", "item_name");
+            
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $result = $query->getResult();
+            
             return $result;
         } catch (NoResultException $e) {
             return null;

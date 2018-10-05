@@ -6,7 +6,7 @@ namespace Application\Repository\SQL;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class NmtProcurePrRowRepositorySQL
+class NmtProcurePoRepositorySQL
 {
     
         const PR_ROW_SQL = "

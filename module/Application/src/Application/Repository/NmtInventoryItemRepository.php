@@ -464,7 +464,7 @@ order by nmt_inventory_item.created_on desc LIMIT %s";
             $sql1 = $sql1 . " WHERE 1";
 
             if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
-                $sql1 = $sql1 . " AND nmt_inventory_item.item_type =" . $item_type;
+                $sql1 = $sql1 . sprintf(" AND nmt_inventory_item.item_type ='%s'", $item_type);
             }
 
             if ($is_active == 1) {
@@ -495,7 +495,7 @@ order by nmt_inventory_item.created_on desc LIMIT %s";
             $sql = $sql . " WHERE 1";
 
             if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
-                $sql = $sql . " AND nmt_inventory_item.item_type =" . $item_type;
+                $sql = $sql . sprintf(" AND nmt_inventory_item.item_type ='%s'", $item_type);
             }
 
             if ($is_active == 1) {
@@ -533,7 +533,7 @@ order by nmt_inventory_item.created_on desc LIMIT %s";
         $sql = "SELECT count(*) as total_row FROM nmt_inventory_item Where 1 ";
 
         if ($item_type == "ITEM" || $item_type == "SERVICE" || $item_type == "SOFTWARE") {
-            $sql = $sql . " AND nmt_inventory_item.item_type =" . $item_type;
+            $sql = $sql . sprintf(" AND nmt_inventory_item.item_type ='%s'", $item_type);
         }
 
         if ($is_active == 1) {
@@ -799,6 +799,5 @@ WHERE 1
             return null;
         }
     }
-   
 }
 

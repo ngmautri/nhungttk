@@ -82,7 +82,7 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 			<td><?php echo number_format($a->getUnitPrice()*$a->getInvoice()->getExchangeRate(),0);?></td>
 			<td><?php echo number_format($a->getUnitPrice()*$a->getInvoice()->getExchangeRate()*$a->getQuantity(),0);?></td>
 		
-			<td><?php echo $a->getCurrentState();?></td>
+			<td><?php echo $a->getDocStatus();?></td>
 			<td>
 			</td>
 			

@@ -7,6 +7,7 @@
  */
 $form_action = '';
 $form_title = '';
+
 switch ($action) {
     
     case \Application\Model\Constants::FORM_ACTION_ADD:
@@ -20,8 +21,6 @@ switch ($action) {
         break;
 }
 
-$current_step = "STEP2";
-
 
 ?>
 
@@ -29,9 +28,9 @@ $current_step = "STEP2";
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
-					<?php
-    $current_step = "STEP2";
-    include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
+	<?php
+        $current_step = "STEP2";
+        include (ROOT . '/module/Inventory/view/inventory/gi-create-wizard.php');
     ?>
 
 
@@ -103,10 +102,10 @@ $current_step = "STEP2";
 						<input type="hidden" id="token" name="token"
 							value="<?php if (!$entity == null): echo $entity->getToken();endif;?>" />
 
-			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
-			<input type="hidden" name="n" value="<?php echo $n;?>" />
-			<?php endif;?>
-			
+            			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+            			<input type="hidden" name="n" value="<?php echo $n;?>" />
+            			<?php endif;?>
+            			
 			<!-- for all case: -->
 
 						<div id="new_row" class="collapse in">

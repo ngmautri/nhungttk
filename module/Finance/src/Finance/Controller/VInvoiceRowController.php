@@ -48,8 +48,8 @@ class VInvoiceRowController extends AbstractActionController
         if ($request->isPost()) {
             $errors = array();
             $redirectUrl = $request->getPost('redirectUrl');
-            $invoice_id = $request->getPost('invoice_id');
-            $invoice_token = $request->getPost('invoice_token');
+            $invoice_id = $request->getPost('target_id');
+            $invoice_token = $request->getPost('target_token');
 
             /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
@@ -83,21 +83,20 @@ class VInvoiceRowController extends AbstractActionController
                     'gross_amount' => 0
                 ));
             }
-            
+
             $entity = new FinVendorInvoiceRow();
-            
+
             // Good Receipt = Invoice Receipt.
             $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
             $entity->setInvoice($target);
-            
-            
+
             $data = $this->params()->fromPost();
-            $errors = $this->apService->validateRow($target,$entity, $data);
-           
+            $errors = $this->apService->validateRow($target, $entity, $data);
 
             if (count($errors) > 0) {
 
                 return new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => $target,
@@ -132,6 +131,7 @@ class VInvoiceRowController extends AbstractActionController
             if (count($errors) > 0) {
 
                 return new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => $target,
@@ -209,6 +209,7 @@ class VInvoiceRowController extends AbstractActionController
         $entity->setTaxRate(0);
 
         return new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
@@ -329,23 +330,39 @@ class VInvoiceRowController extends AbstractActionController
 
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
                     'target' => null,
                     'currency_list' => $currency_list,
-                    'cost_center_list' => $cost_center_list,
                     'gl_list' => $gl_list,
+                    'cost_center_list' => $cost_center_list,
+                    'active_row' => null,
+                    'total_row' => null,
+                    'max_row_number' => null,
+                    'net_amount' => null,
+                    'tax_amount' => null,
+                    'gross_amount' => null,
                     'n' => $nTry
                 ));
+
+                $viewModel->setTemplate("finance/v-invoice-row/add");
+                return $viewModel;
             }
+
+            /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+            $invoice = $res->getVendorInvoice($entity->getInvoice()
+                ->getId(), $entity->getInvoice()
+                ->getToken());
 
             $target = $entity->getInvoice();
             $oldEntity = clone ($entity);
-            
+
             $data = $this->params()->fromPost();
-            $errors = $this->apService->validateRow($target,$entity, $data);
+            $errors = $this->apService->validateRow($target, $entity, $data);
 
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
@@ -365,17 +382,26 @@ class VInvoiceRowController extends AbstractActionController
             }
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'target' => $entity->getInvoice(),
+                    'target' => $target,
                     'currency_list' => $currency_list,
-                    'cost_center_list' => $cost_center_list,
                     'gl_list' => $gl_list,
-
+                    'cost_center_list' => $cost_center_list,
+                    'active_row' => $invoice['active_row'],
+                    'total_row' => $invoice['total_row'],
+                    'max_row_number' => $invoice['total_row'],
+                    'net_amount' => $invoice['net_amount'],
+                    'tax_amount' => $invoice['tax_amount'],
+                    'gross_amount' => $invoice['gross_amount'],
                     'n' => $nTry
                 ));
+
+                $viewModel->setTemplate("finance/v-invoice-row/add");
+                return $viewModel;
             }
 
             // NO ERROR
@@ -394,17 +420,26 @@ class VInvoiceRowController extends AbstractActionController
             }
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
+                    'errors' => null,
                     'entity' => $entity,
-                    'target' => $entity->getInvoice(),
+                    'target' => $target,
                     'currency_list' => $currency_list,
-                    'cost_center_list' => $cost_center_list,
                     'gl_list' => $gl_list,
-
+                    'cost_center_list' => $cost_center_list,
+                    'active_row' => $invoice['active_row'],
+                    'total_row' => $invoice['total_row'],
+                    'max_row_number' => $invoice['total_row'],
+                    'net_amount' => $invoice['net_amount'],
+                    'tax_amount' => $invoice['tax_amount'],
+                    'gross_amount' => $invoice['gross_amount'],
                     'n' => $nTry
                 ));
+
+                $viewModel->setTemplate("finance/v-invoice-row/add");
+                return $viewModel;
             }
 
             $m = sprintf('[OK] A/P Invoice Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
@@ -474,17 +509,32 @@ class VInvoiceRowController extends AbstractActionController
                 return $this->redirect()->toUrl($redirectUrl);
             }
 
-            return new ViewModel(array(
+            /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+            $invoice = $res->getVendorInvoice($entity->getInvoice()
+                ->getId(), $entity->getInvoice()
+                ->getToken());
+
+            $viewModel = new ViewModel(array(
+                'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
                 'entity' => $entity,
                 'target' => $entity->getInvoice(),
                 'currency_list' => $currency_list,
-                'cost_center_list' => $cost_center_list,
                 'gl_list' => $gl_list,
-
+                'cost_center_list' => $cost_center_list,
+                'active_row' => $invoice['active_row'],
+                'total_row' => $invoice['total_row'],
+                'max_row_number' => $invoice['total_row'],
+                'net_amount' => $invoice['net_amount'],
+                'tax_amount' => $invoice['tax_amount'],
+                'gross_amount' => $invoice['gross_amount'],
                 'n' => 0
             ));
+
+            $viewModel->setTemplate("finance/v-invoice-row/add");
+            return $viewModel;
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
@@ -671,10 +721,9 @@ class VInvoiceRowController extends AbstractActionController
                     } else {
                         $a_json_row["cost_center"] = "";
                     }
-                    
+
                     $a_json_row["doc_qty"] = $a->getDocQuantity();
                     $a_json_row["doc_unit_price"] = $a->getDocUnitPrice();
-                    
 
                     $a_json[] = $a_json_row;
                 }

@@ -1,0 +1,105 @@
+
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general">Search Result</a></li>
+	</ul>
+	<div id="general">
+
+
+                    <form class="form-inline" action="<?php echo $this->baseUrl ?>/procure/po-search/do"	method="get" enctype="multipart/form-data">
+  <div class="form-group" style="padding-left: 8px;">
+    	<input placeholder ="<?php echo $this->translate("enter search term ...")?>" class="form-control" size="25" type="text" name = "q">
+ 
+ 
+  </div>
+  
+  <div class="form-group">
+     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small></button>
+  </div>
+  
+</form>
+
+
+<hr>
+
+
+<?php
+echo '<span>';
+echo $message;
+echo '</span>';
+
+if (! $hits == null) :
+    
+    ?>
+<table style="font-size: 9.5pt;"
+			class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<td><b>#</b></td>
+				<td><b>Doc ID</b></td>
+					<td><b>#</b></td>
+		
+					<td><b>Vendor ID</b></td>
+			<td><b>Po#</b></td>
+					<td><b>po</b></td>
+						<td><b>Item ID</b></td>
+			<td><b>Item SKU</b></td>
+					<td><b>Item</b></td>
+				     <td><b>Row Name</b></td>
+				
+					<td><b>Code</b></td>
+					<td><b>quantity</b></td>
+					<td><b>po<br>Unit
+					</b></td>
+					<td><b>Conversion<br>Factor
+					</b></td>
+					<td><b>Action</b></td>
+				</tr>
+			</thead>
+			<tbody>
+
+	 <?php
+    
+    $count = 0;
+    foreach ($hits as $hit) :
+        $count ++;
+        ?>
+	 <tr>
+
+					<td> <?php echo $count;?></td>
+						<td><span id=""><?php echo $this->escapeHtml($hit->id);?></span></td>
+								<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>
+
+						<td><span id=""><?php echo $this->escapeHtml($hit->vendor_id);?></span></td>
+						<td><span id=""><?php echo $this->escapeHtml($hit->po_row_id);?></span></td>
+			
+					<td><a style="color:navy;" href="<?php echo $this->baseUrl ?>/procure/po/show?token=<?php echo $hit->po_token;?>&entity_id=<?php echo $hit->po_id;?>">
+					<?php echo $this->escapeHtml($hit->po_number);?></a></td>
+					<td><span id="">
+						<a style="color:navy;" target="_blank"
+						href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->item_token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->item_checksum;?>"><?php echo $this->escapeHtml($hit->item_sys_number);?></a>
+
+					</span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->item_sku_key);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->row_name);?></span></td>
+				
+					<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->row_quantity);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->row_unit);?></span></td>
+					<td><span id=""><?php echo $this->escapeHtml($hit->row_conversion_factor);?></span></td>
+					<td><a
+						href="<?php echo $this->baseUrl ?>/poocure/po-row/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->po_row_id;?>">Show</a>
+						<a
+						href="<?php echo $this->baseUrl ?>/poocure/po-row/edit?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->po_row_id;?>">Edit</a>
+						<a
+						href="<?php echo $this->baseUrl ?>/inventory/item-transaction/gr?token=<?php echo $hit->token;?>&po_row_id=<?php echo $hit->po_row_id;?>">Receive</a>
+					</td>
+				</tr>
+<?php endforeach; ?>
+</tbody>
+		</table>
+<?php endif; ?>
+</div>
+</div>

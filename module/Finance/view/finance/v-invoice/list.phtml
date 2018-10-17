@@ -187,7 +187,7 @@ else:
 			<td><?php if($l['gross_amount']!==null): echo number_format($l['gross_amount'],2); endif;?></td>
 			<td><?php echo $a->getCurrentState()?></td>
 			<td>
-<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/copy-from-po1?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+<a href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
 			</td>
 	<?php endforeach; ?>
  </tbody>

@@ -453,7 +453,8 @@ class ItemSearchService extends AbstractService
         try {
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             
-            $final_query = new Boolean();
+            
+              $final_query = new Boolean();
             
             if (strpos($q, '*') != false) {
                 $pattern = new Term($q);

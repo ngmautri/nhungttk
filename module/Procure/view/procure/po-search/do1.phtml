@@ -1,0 +1,79 @@
+<form class="form-inline" action="" method="get"
+	enctype="multipart/form-data">
+	<div class="form-group">
+		<input class="form-control" size="25" type="text"
+			id="search_term_<?php echo $context;?>" name="q">
+	</div>
+	<div class="form-group">
+		<button type="submit" class="btn btn-default"
+			onclick="searchEntity('/procure/pr-search/do1?target_id=<?php echo $target_id;?>&target_name=<?php echo $target_name;?>','<?php echo $context;?>');">
+			<small><i class="glyphicon glyphicon-search"> </i></small> Search
+		</button>
+	</div>
+
+</form>
+
+<div>
+	<ul class="nav nav-pills">
+		<li><a style="color: #0080ff;" href="/inventory/item/add"> <i
+				class="glyphicon glyphicon-plus"> </i>&nbsp;CREATE NEW ITEM
+		</a></li>
+	</ul>
+</div>
+
+<?php
+echo '<span style = "font-size: 10pt;">';
+echo $message;
+echo '</span>';
+
+if (! $hits == null) :
+    
+    ?>
+<table style="font-size: 9.5pt;" class="table table-hover table-bordered">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+			<td><b>Select</b></td>
+
+			<td><b>PR</b></td>
+			<td><b>Item</b></td>
+			<td><b>Code</b></td>
+			<td><b>quantity</b></td>
+			<td><b>Action</b></td>
+		</tr>
+	</thead>
+	<tbody>
+
+
+
+	 <?php
+    
+    $count = 0;
+    foreach ($hits as $hit) :
+        $count ++;
+        // echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
+        
+        ?>
+	 <tr>
+
+			<td> <?php echo $count;?></td>
+			<td><a href="javascript:;"
+				onclick="selectId('<?php echo $this->escapeHtml($hit->pr_row_id);?>','<?php echo $target_id;?>','<?php echo $this->escapeJs($hit->item_name);?>','<?php echo $target_name;?>');"><small><i
+						class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
+			</a></td>
+
+			<td><span id=""><?php echo $this->escapeHtml($hit->pr_number);?></span></td>
+			<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
+			<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
+			<td><span id=""><?php echo $this->escapeHtml($hit->row_quantity);?></span></td>
+			<!--  <td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>-->
+			<td><a
+				href="<?php echo $this->baseUrl ?>/procure/pr-row/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->pr_row_id;?>&checksum=<?php echo $hit->checksum;?>">Show</a>
+			</td>
+		</tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+
+
+<?php endif; ?>

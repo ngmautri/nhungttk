@@ -19,9 +19,9 @@ use Application\Entity\NmtProcurePrRow;
 use Application\Service\AbstractService;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
 class PoSearchService extends AbstractService
 {
@@ -36,62 +36,76 @@ class PoSearchService extends AbstractService
      */
     public function createIndex()
     {
-        
+
         // take long time
         set_time_limit(1500);
         try {
-            $index = Lucene::create(getcwd() . self::ITEM_INDEX);            
+            $index = Lucene::create(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
-            
-            $query = 'SELECT e, i, pr FROM Application\Entity\NmtProcurePrRow e JOIN e.item i JOIN e.pr pr Where 1=?1';
+
+            $query = 'SELECT e, i, po FROM Application\Entity\NmtProcurePoRow e JOIN e.item i JOIN e.po po Where 1=?1';
             $records = $this->doctrineEM->createQuery($query)
                 ->setParameters(array(
                 "1" => 1
             ))
                 ->getResult();
-            
+
             // $records = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findAll ();
-            
+
             if (count($records) > 0) {
-                
+
                 $log = array();
                 foreach ($records as $row) {
-                    
+
                     try {
                         $doc = new Document();
-                        
-                        /** @var \Application\Entity\NmtProcurePrRow $row ; */
-                        $doc->addField(Field::UnIndexed('pr_row_id', $row->getId()));
+
+                        /** @var \Application\Entity\NmtProcurePoRow $row ; */
+
+                        $doc->addField(Field::UnIndexed('po_row_id', $row->getId()));
                         $doc->addField(Field::UnIndexed('token', $row->getToken()));
+
                         $doc->addField(Field::Keyword('row_token_keyword', $row->getToken() . "__" . $row->getId()));
                         $doc->addField(Field::Keyword('row_identifer_keyword', $row->getRowIdentifer()));
-                        
-                        $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
+
                         $doc->addField(Field::UnIndexed('row_quantity', $row->getQuantity()));
                         $doc->addField(Field::UnIndexed('row_conversion_factor', $row->getConversionFactor()));
-                        // $doc->addField ( Field::UnIndexed ( 'row_edt', $row->getEdt() ) );
-                        $doc->addField(Field::UnIndexed('row_unit', $row->getRowUnit()));
-                        $doc->addField(Field::text('row_remark', $row->getRemarks()));
-                        $doc->addField(Field::text('row_name', $row->getRowName()));
-                        
-                        
-                        if ($row->getPr() !== null) {
-                            $doc->addField(Field::UnIndexed('pr_id', $row->getPr()
+
+                        $doc->addField(Field::UnIndexed('row_unit', $row->getUnit()));
+                        $doc->addField(Field::text('row_remarks', $row->getRemarks()));
+                        $doc->addField(Field::text('row_name', $row->getVendorItemCode()));
+
+                        if ($row->getPo() !== null) {
+                            $doc->addField(Field::UnIndexed('po_id', $row->getPo()
                                 ->getId()));
-                            $doc->addField(Field::UnIndexed('pr_token', $row->getPr()
+                            $doc->addField(Field::UnIndexed('po_token', $row->getPo()
                                 ->getToken()));
-                            $doc->addField(Field::UnIndexed('pr_checksum', $row->getPr()
-                                ->getChecksum()));
-                            $doc->addField(Field::text('pr_number', $row->getPr()
-                                ->getPrNumber()));
-                            $doc->addField(Field::text('pr', $row->getPr()
-                                ->getPrNumber()));
-                            
-                            $doc->addField(Field::Keyword('pr_auto_number', $row->getPr()
-                                ->getPrAutoNumber()));
-                            
+
+                            $doc->addField(Field::text('po_number', $row->getPo()
+                                ->getContractNo()));
+
+                            $doc->addField(Field::Keyword('po_sys_number', $row->getPo()
+                                ->getSysNumber()));
+
+                            if ($row->getPo()->getVendor() != null) {
+                                $doc->addField(Field::Keyword('vendor_id_keyword', 'vendor_id_keyword='.$row->getPo()
+                                    ->getVendor()
+                                    ->getId()));
+                                $doc->addField(Field::UnIndexed('vendor_id', $row->getPo()
+                                    ->getVendor()
+                                    ->getId()));
+                   
+                                $doc->addField(Field::UnIndexed('vendor_name', $row->getPo()
+                                    ->getVendor()
+                                    ->getVendorName()));
+                                
+                            } else {
+                                $doc->addField(Field::Keyword('vendor_id_keyword',"vendor_id_keyword="));
+                                $doc->addField(Field::UnIndexed('vendor_name', ""));
+                                $doc->addField(Field::UnIndexed('vendor_id', ""));
+                            }
                         }
-                        
+
                         if ($row->getItem() !== null) {
                             $doc->addField(Field::UnIndexed('item_id', $row->getItem()
                                 ->getId()));
@@ -99,7 +113,7 @@ class PoSearchService extends AbstractService
                                 ->getToken()));
                             $doc->addField(Field::UnIndexed('item_checksum', $row->getItem()
                                 ->getChecksum()));
-                            
+
                             $doc->addField(Field::Keyword('manufacturer_model_key', $row->getItem()
                                 ->getManufacturerModel()));
                             $doc->addField(Field::Keyword('manufacturer_serial_key', $row->getItem()
@@ -112,9 +126,9 @@ class PoSearchService extends AbstractService
                                 ->getAssetLabel()));
                             $doc->addField(Field::Keyword('item_sku_key', $row->getItem()
                                 ->getItemSku()));
-                            $doc->addField ( Field::Keyword ( 'item_sys_number', $row->getItem ()->getSysNumber() ) );
-                            
-                            
+                            $doc->addField(Field::Keyword('item_sys_number', $row->getItem()
+                                ->getSysNumber()));
+
                             $doc->addField(Field::text('item_name', $row->getItem()
                                 ->getItemName()));
                             $doc->addField(Field::text('manufacturer', $row->getItem()
@@ -129,14 +143,14 @@ class PoSearchService extends AbstractService
                                 ->getKeywords()));
                             $doc->addField(Field::text('asset_label', $row->getItem()
                                 ->getAssetLabel()));
-                            
+
                             $s = $row->getItem()->getAssetLabel();
                             $l = strlen($s);
                             $l > 3 ? $p = strpos($s, "-", 3) + 1 : $p = 0;
-                            
+
                             $doc->addField(Field::Text('asset_label_lastnumber', substr($s, $p, $l - $p) * 1));
                         }
-                        
+
                         $index->addDocument($doc);
                         $log[] = "Doc added";
                     } catch (Exception $e) {
@@ -144,83 +158,83 @@ class PoSearchService extends AbstractService
                     }
                 }
                 $index->optimize();
-                //$log[] = 'Item resource indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
+                // $log[] = 'Item resource indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
                 $log1 = 'PR indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
-                
+
                 return $log1;
             } else {
-                //$log[] = 'Nothing for indexing!';
+                // $log[] = 'Nothing for indexing!';
                 $log1 = 'Nothing for indexing!';
-                
+
                 return $log;
             }
         } catch (Exception $e) {
-            //$log[] = 'Nothing for indexing!';
-            $log1 = 'Nothing for indexing!';
-            
+            // $log[] = 'Nothing for indexing!';
+
+            $log1 = $e->getMessage();
+
             return $log1;
         }
     }
 
     /**
-     * 
-     *  @param number $is_new
-     *  @param object $row
-     *  @param boolean $optimized
-     *  @return string|array
+     *
+     * @param number $is_new
+     * @param object $row
+     * @param boolean $optimized
+     * @return string|array
      *
      */
     public function updateIndex($is_new = 0, $row, $optimized)
     {
-        
+
         // take long time
         set_time_limit(1500);
         try {
-            
+
             /** @var \Application\Entity\NmtProcurePrRow $row;*/
             if ($row instanceof NmtProcurePrRow) {
                 $index = Lucene::open(getcwd() . self::ITEM_INDEX);
                 Analyzer::setDefault(new CaseInsensitive());
-                
-                if($is_new!==1){
+
+                if ($is_new !== 1) {
                     $ck_query = 'row_token_keyword:' . $row->getToken() . '__' . $row->getId();
                     $ck_hits = $index->find($ck_query);
-                    
+
                     if (count($ck_hits) == 1) {
                         $ck_hit = $ck_hits[0];
                         $index->delete($ck_hit->id);
                     }
                 }
-                
+
                 $query = 'SELECT e, i, pr FROM Application\Entity\NmtProcurePrRow e JOIN e.item i JOIN e.pr pr Where 1=?1 AND e.id = ?2';
-                
+
                 $records = $this->doctrineEM->createQuery($query)
                     ->setParameters(array(
                     "1" => 1,
                     "2" => $row->getId()
                 ))
                     ->getResult();
-                
+
                 // alway found.
                 $row = $records[0];
-                
+
                 $doc = new Document();
                 $doc->addField(Field::UnIndexed('pr_row_id', $row->getId()));
                 $doc->addField(Field::UnIndexed('token', $row->getToken()));
                 $doc->addField(Field::Keyword('row_token_keyword', $row->getToken() . "__" . $row->getId()));
                 $doc->addField(Field::Keyword('row_identifer_keyword', $row->getRowIdentifer()));
-                
-                
+
                 $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
                 $doc->addField(Field::UnIndexed('row_quantity', $row->getQuantity()));
                 $doc->addField(Field::text('row_name', $row->getRowName()));
-                
+
                 $doc->addField(Field::UnIndexed('row_conversion_factor', $row->getConversionFactor()));
                 // $doc->addField ( Field::UnIndexed ( 'row_edt', $row->getEdt() ) );
                 $doc->addField(Field::UnIndexed('row_unit', $row->getRowUnit()));
-                
+
                 $doc->addField(Field::text('row_remark', $row->getRemarks()));
-                
+
                 if ($row->getPr() !== null) {
                     $doc->addField(Field::UnIndexed('pr_id', $row->getPr()
                         ->getId()));
@@ -232,11 +246,11 @@ class PoSearchService extends AbstractService
                         ->getPrNumber()));
                     $doc->addField(Field::text('pr', $row->getPr()
                         ->getPrNumber()));
-                    
+
                     $doc->addField(Field::Keyword('pr_auto_number', $row->getPr()
                         ->getPrAutoNumber()));
                 }
-                
+
                 if ($row->getItem() !== null) {
                     $doc->addField(Field::UnIndexed('item_id', $row->getItem()
                         ->getId()));
@@ -244,7 +258,7 @@ class PoSearchService extends AbstractService
                         ->getToken()));
                     $doc->addField(Field::UnIndexed('item_checksum', $row->getItem()
                         ->getChecksum()));
-                    
+
                     $doc->addField(Field::Keyword('manufacturer_model_key', $row->getItem()
                         ->getManufacturerModel()));
                     $doc->addField(Field::Keyword('manufacturer_serial_key', $row->getItem()
@@ -257,10 +271,10 @@ class PoSearchService extends AbstractService
                         ->getAssetLabel()));
                     $doc->addField(Field::Keyword('item_sku_key', $row->getItem()
                         ->getItemSku()));
-                    
-                    $doc->addField ( Field::Keyword ( 'item_sys_number', $row->getItem()->getSysNumber() ) );
-                    
-                    
+
+                    $doc->addField(Field::Keyword('item_sys_number', $row->getItem()
+                        ->getSysNumber()));
+
                     $doc->addField(Field::text('item_name', $row->getItem()
                         ->getItemName()));
                     $doc->addField(Field::text('manufacturer', $row->getItem()
@@ -275,11 +289,11 @@ class PoSearchService extends AbstractService
                         ->getKeywords()));
                     $doc->addField(Field::text('asset_label', $row->getItem()
                         ->getAssetLabel()));
-                    
+
                     $s = $row->getItem()->getAssetLabel();
                     $l = strlen($s);
                     $l > 3 ? $p = strpos($s, "-", 3) + 1 : $p = 0;
-                    
+
                     $doc->addField(Field::Text('asset_label_lastnumber', substr($s, $p, $l - $p) * 1));
                 }
                 $index->addDocument($doc);
@@ -295,72 +309,71 @@ class PoSearchService extends AbstractService
         }
     }
 
-   
     public function addDocument($item, $optimized)
     {
-        
+
         // take long time
         set_time_limit(1500);
         try {
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
-            
+
             $row = new NmtInventoryItem();
-            
+
             if ($item instanceof NmtInventoryItem) {
                 $doc = new Document();
-                
+
                 $row = $item;
                 $doc->addField(Field::UnIndexed('item_id', $row->getId()));
                 $doc->addField(Field::UnIndexed('token', $row->getToken()));
                 $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
                 $doc->addField(Field::Keyword('tokenchecksum', $row->getChecksum()));
-                
+
                 $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
-                
+
                 $doc->addField(Field::Keyword('manufacturer_key', $row->getManufacturer()));
                 $doc->addField(Field::Keyword('manufacturer_model_key', $row->getManufacturerModel()));
                 $doc->addField(Field::Keyword('manufacturer_serial_key', $row->getManufacturerSerial()));
                 $doc->addField(Field::Keyword('manufacturer_code_key', $row->getManufacturerCode()));
                 $doc->addField(Field::Keyword('origin_key', $row->getOrigin()));
-                
+
                 $doc->addField(Field::Keyword('is_fixed_asset', $row->getIsFixedAsset()));
                 $doc->addField(Field::Keyword('is_sparepart', $row->getIsSparepart()));
                 $doc->addField(Field::Keyword('is_active', $row->getIsActive()));
                 $doc->addField(Field::Keyword('is_stocked', $row->getIsStocked()));
-                
+
                 $doc->addField(Field::Keyword('uom', $row->getUom()));
                 $doc->addField(Field::Keyword('sp_label_key', $row->getSparepartLabel()));
                 $doc->addField(Field::Keyword('asset_label_key', $row->getAssetLabel()));
-                
+
                 $doc->addField(Field::text('item_sku', $row->getItemSku()), 'UTF-8');
                 $doc->addField(Field::text('item_name', $row->getItemName()));
                 // $doc->addField ( Field::text ( 'item_name1', $row->getItemNameForeign () ) );
                 $doc->addField(Field::text('item_description', $row->getItemDescription()));
                 $doc->addField(Field::text('keywords', $row->getKeywords()));
-                
+
                 $doc->addField(Field::text('manufacturer', $row->getManufacturer()));
                 $doc->addField(Field::text('manufacturer_model', $row->getManufacturerModel()));
                 $doc->addField(Field::text('manufacturer_serial', $row->getManufacturerSerial()));
                 $doc->addField(Field::text('manufacturer_code', $row->getManufacturerCode()));
                 $doc->addField(Field::text('origin', $row->getOrigin()));
                 $doc->addField(Field::text('remarks', $row->getRemarks()));
-                
+
                 $doc->addField(Field::text('sp_label', $row->getSparepartLabel()));
                 $doc->addField(Field::text('asset_label', $row->getAssetLabel()));
-                
+
                 $s = $row->getAssetLabel();
                 $l = strlen($s);
                 $l > 3 ? $p = strpos($s, "-", 3) + 1 : $p = 0;
-                
+
                 $doc->addField(Field::Text('asset_label_lastnumber', substr($s, $p, $l - $p) * 1));
-                
+
                 $index->addDocument($doc);
-                
+
                 if (optimized === true) {
                     $index->optimize();
                 }
-                
+
                 return 'Document has been added successfully !<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
             } else {
                 return 'Input is invalid';
@@ -370,10 +383,9 @@ class PoSearchService extends AbstractService
         }
     }
 
-  
     public function optimizeIndex()
     {
-        
+
         // take long time
         set_time_limit(1500);
         try {
@@ -385,36 +397,43 @@ class PoSearchService extends AbstractService
         }
     }
 
-    
-    public function search($q)
+    /**
+     *
+     * @param string $q
+     * @param number $vendor_id
+     * @return string[]|array[]|\ZendSearch\Lucene\Search\QueryHit[]|string[]|NULL[]
+     */
+    public function search($q, $vendor_id = null)
     {
         try {
-            
+
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
-            
+             
             $final_query = new Boolean();
-            
+
             $q = strtolower($q);
-            
+
             $terms = explode(" ", $q);
             
+             
+
             if (count($terms) > 1) {
-                
+
                 foreach ($terms as $t) {
-                    
+
                     if (strpos($t, '*') != false) {
                         $pattern = new Term($t);
                         $query = new Wildcard($pattern);
                         $final_query->addSubquery($query, true);
                     } else {
-                        
+
                         $subquery = new MultiTerm();
                         $subquery->addTerm(new Term($t));
                         $final_query->addSubquery($subquery, true);
                     }
                 }
             } else {
-                
+
                 if (strpos($q, '*') != false) {
                     $pattern = new Term($q);
                     $query = new Wildcard($pattern);
@@ -426,10 +445,19 @@ class PoSearchService extends AbstractService
                 }
             }
             
+            if ($vendor_id !=null) {
+        /*         $subquery = new MultiTerm();
+                $subquery->addTerm(new Term($vendor_id, 'vendor_id'));
+        */      
+                $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term('vendor_id_keyword='.$vendor_id, 'vendor_id_keyword'));
+                $final_query->addSubquery($subquery, true);
+            }
+            
+            //var_dump ( $final_query );
+            //echo $final_query->__toString();
             
             $hits = $index->find($final_query);
-            
-            
+
             /*
              * echo count ( $hits ) . " result(s) found for query: <b>" . $q . "</b>";
              *
@@ -446,12 +474,12 @@ class PoSearchService extends AbstractService
              *
              * }
              */
-            
+
             $result = [
                 "message" => count($hits) . " result(s) found for query: <b>" . $q . "</b>",
                 "hits" => $hits
             ];
-            
+
             return $result;
         } catch (\Exception $e) {
             $result = [
@@ -462,110 +490,6 @@ class PoSearchService extends AbstractService
         }
     }
 
-   
-    public function searchAssetItem($q)
-    {
-        try {
-            $index = Lucene::open(getcwd() . self::ITEM_INDEX);
-            
-            $final_query = new Boolean();
-            
-            if (strpos($q, '*') != false) {
-                $pattern = new Term($q);
-                $query = new Wildcard($pattern);
-                $final_query->addSubquery($query, true);
-            } else {
-                $subquery = new MultiTerm();
-                $subquery->addTerm(new Term($q));
-                $final_query->addSubquery($subquery, true);
-            }
-            
-            $subquery1 = new MultiTerm();
-            $subquery1->addTerm(new Term('1', 'is_fixed_asset'));
-            
-            $final_query->addSubquery($subquery1, true);
-            
-            // var_dump ( $final_query );
-            $hits = $index->find($final_query);
-            
-            $result = [
-                "message" => count($hits) . " result(s) found for query: <b>" . $q . "</b>",
-                "hits" => $hits
-            ];
-            
-            return $result;
-        } catch (\Exception $e) {
-            $result = [
-                "message" => 'Query: <b>' . $q . '</b> sent , but exception catched: <b>' . $e->getMessage() . "</b>\n",
-                "hits" => null
-            ];
-            return $result;
-        }
-    }
-
-   
-    public function searchSPItem($q)
-    {
-        try {
-            $index = Lucene::open(getcwd() . self::ITEM_INDEX);
-            
-            $final_query = new Boolean();
-            
-            if (strpos($q, '*') != false) {
-                $pattern = new Term($q);
-                $query = new Wildcard($pattern);
-                $final_query->addSubquery($query, true);
-            } else {
-                $subquery = new MultiTerm();
-                $subquery->addTerm(new Term($q));
-                $final_query->addSubquery($subquery, true);
-            }
-            
-            $subquery1 = new MultiTerm();
-            $subquery1->addTerm(new Term('1', 'is_sparepart'));
-            
-            $final_query->addSubquery($subquery1, true);
-            
-            // var_dump ( $final_query );
-            $hits = $index->find($final_query);
-            
-            $result = [
-                "message" => count($hits) . " result(s) found for query: <b>" . $q . "</b>",
-                "hits" => $hits
-            ];
-            
-            return $result;
-        } catch (\Exception $e) {
-            $result = [
-                "message" => 'Query: <b>' . $q . '</b> sent , but exception catched: <b>' . $e->getMessage() . "</b>\n",
-                "hits" => null
-            ];
-            return $result;
-        }
-    }
-
-    // Analyzer::setDefault ( new CaseInsensitive () );
-    // $analyzer = Analyzer::getDefault ( new CaseInsensitive () );
-    
-    /*
-     * foreach ($hits as $h){
-     *
-     * echo $query->htmlFragmentHighlightMatches($h->item_sku);
-     * $token = $analyzer->tokenize($h->item_sku);
-     * echo "TOKEN" . count($token);
-     * foreach ($token as $t){
-     * var_dump("T::" . $t->getTermText());
-     * }
-     * };
-     */
-    
-    /*
-     * foreach ($hits as $h){
-     * var_dump($h->getDocument());
-     * break;
-     * }
-     */
-    
     /**
      *
      * @return \Doctrine\ORM\EntityManager

@@ -28,6 +28,8 @@ class APInvoiceService extends AbstractService
 
         $item_id = $data['item_id'];
         $pr_row_id = $data['pr_row_id'];
+        $po_row_id = $data['po_row_id'];
+        
         $gl_account_id = $data['gl_account_id'];
         $cost_center_id = $data['cost_center_id'];
         $isActive = (int) $data['isActive'];
@@ -51,7 +53,12 @@ class APInvoiceService extends AbstractService
         $entity->setVendorItemCode($vendorItemCode);
         $entity->setDocUnit($unit);
 
+        /** @var \Application\Entity\NmtProcurePrRow $pr_row ; */
         $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+        
+        /** @var \Application\Entity\NmtProcurePoRow $po_row ; */
+        $po_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($po_row_id);
+        
         $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
         $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
         $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
@@ -66,7 +73,12 @@ class APInvoiceService extends AbstractService
 
         // PR and be empty
         $entity->setPrRow($pr_row);
-
+        $entity->setPoRow($po_row);
+        
+        if($po_row!==null){
+            $entity->setPrRow($po_row->getPrRow());
+        }
+        
         // Item cant be empty
         if ($item == null) {
             $errors[] = $this->controllerPlugin->translate('Item can\'t be empty. Please select item.');

@@ -8,10 +8,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
+ * @author Nguyen Mau Tri
  *
  */
-class PrSearchServiceFactory implements FactoryInterface {
+class PoSearchServiceFactory implements FactoryInterface {
 	
 	/**
 	 * 

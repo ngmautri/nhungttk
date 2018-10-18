@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class QouteServiceFactory implements FactoryInterface {
+class QuoteServiceFactory implements FactoryInterface {
 	
 	/**
 	 * 

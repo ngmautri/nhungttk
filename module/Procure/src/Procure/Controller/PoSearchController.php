@@ -65,6 +65,8 @@ class PoSearchController extends AbstractActionController
                     $a_json_row["item_name"] = $a->item_name;
                     $a_json_row["item_sku_key"] = $a->item_sku_key;
                     $a_json_row["manufacturer_code"] = $a->manufacturer_code;
+                    $a_json_row["manufacturer_code_key"] = $a->manufacturer_code_key;
+                    
                     $a_json_row["row_quantity"] = $a->row_quantity;
                     $a_json_row["row_unit"] = $a->row_unit;
                     $a_json_row["row_name"] = $a->row_name;

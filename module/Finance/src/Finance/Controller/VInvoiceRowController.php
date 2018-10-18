@@ -313,6 +313,8 @@ class VInvoiceRowController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
+            $data = $this->params()->fromPost();
+            
             $redirectUrl = $request->getPost('redirectUrl');
             $entity_id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
@@ -361,8 +363,7 @@ class VInvoiceRowController extends AbstractActionController
             $target = $entity->getInvoice();
             $oldEntity = clone ($entity);
 
-            $data = $this->params()->fromPost();
-            $errors = $this->apService->validateRow($target, $entity, $data);
+           $errors = $this->apService->validateRow($target, $entity, $data);
 
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
@@ -423,7 +424,7 @@ class VInvoiceRowController extends AbstractActionController
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
-                    'errors' => null,
+                    'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
                     'currency_list' => $currency_list,

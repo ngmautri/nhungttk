@@ -55,19 +55,159 @@ class VInvoiceController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
+            $redirectUrl = $request->getPost('redirectUrl');
 
-            $data = $this->params()->fromPost();
-            $redirectUrl = $data['redirectUrl'];
+            $contractDate = $request->getPost('contractDate');
+            $contractNo = $request->getPost('contractNo');
+            $currentState = $request->getPost('currentState');
+
+            $vendor_id = (int) $request->getPost('vendor_id');
+            $currency_id = (int) $request->getPost('currency_id');
+            $exchangeRate = (double) $request->getPost('exchangeRate');
+
+            $warehouse_id = (int) $request->getPost('target_wh_id');
+
+            $postingDate = $request->getPost('postingDate');
+            $grDate = $request->getPost('grDate');
+            $invoiceDate = $request->getPost('invoiceDate');
+            $invoiceNo = $request->getPost('invoiceNo');
+
+            $sapDoc = $request->getPost('sapDoc');
+            $isActive = (int) $request->getPost('isActive');
+            $remarks = $request->getPost('remarks');
 
             $entity = new FinVendorInvoice();
-            $entity->setLocalCurrency($default_cur);
+            if ($isActive !== 1) {
+                $isActive = 0;
+            }
+
+            if ($sapDoc == "") {
+                $sapDoc = "N/A";
+            }
+            $entity->setSapDoc($sapDoc);
+
             $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+            $entity->setIsActive($isActive);
+            $entity->setCurrentState($currentState);
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
-            $errors = $this->apService->validateHeader($entity, $data);
+
+            // will check later.
+            $entity->setInvoiceNo($invoiceNo);
+
+            $vendor = null;
+            if ($vendor_id > 0) {
+                /** @var \Application\Entity\NmtBpVendor $vendor ; */
+                $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
+            }
+
+            if ($vendor instanceof \Application\Entity\NmtBpVendor) {
+                $entity->setVendor($vendor);
+                $entity->setVendorName($vendor->getVendorName());
+            } else {
+                $errors[] = $nmtPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
+            }
+
+            /**
+             * Check default currency
+             */
+            if (! $default_cur instanceof \Application\Entity\NmtApplicationCurrency) {
+                $errors[] = $nmtPlugin->translate('Company currency can\'t be defined!');
+            }
+            $entity->setLocalCurrency($default_cur);
+            
+
+            $currency = null;
+            if ($currency_id > 0) {
+                /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
+                $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+            }
+
+       
+            // check if posting period is close
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+            if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
+                $entity->setCurrency($currency);
+                $entity->setCurrencyIso3($currency->getCurrency());
+
+                if ($currency == $default_cur) {
+                    $entity->setExchangeRate(1);
+                } else {
+
+                    if ($exchangeRate !== null) {
+                        if (! is_numeric($exchangeRate)) {
+                            $errors[] = $nmtPlugin->translate('Foreign exchange rate is not valid. It must be a number.');
+                        } else {
+                            if ($exchangeRate < 0) {
+                                $errors[] = $nmtPlugin->translate('Foreign exchange rate must be greater than 0!');
+                            } else {
+                                $entity->setExchangeRate($exchangeRate);
+                            }
+                        }
+                    } else {
+                        // get default exchange rate.
+                        /** @var \Application\Entity\FinFx $lastest_fx */
+
+                        $lastest_fx = $p->getLatestFX($currency_id, $default_cur->getId());
+                        if ($lastest_fx !== null) {
+                            $entity->setExchangeRate($lastest_fx->getFxRate());
+                        } else {
+                            $errors[] = sprintf('FX rate for %s not definded yet!', $currency->getCurrency());
+                        }
+                    }
+                }
+            } else {
+                $errors[] = $nmtPlugin->translate('Currency can\'t be empty. Please select a Currency!');
+            }
+
+            $validator = new Date();
+
+            // check one more time while posting
+            if (! $invoiceDate == null) {
+                if (! $validator->isValid($invoiceDate)) {
+                    $errors[] = $nmtPlugin->translate('Invoice Date is not valid');
+                } else {
+                    $entity->setInvoiceDate(new \DateTime($invoiceDate));
+                }
+            }
+
+            // check one more time while posting
+            if (! $postingDate == null) {
+                if (! $validator->isValid($postingDate)) {
+                    $errors[] = $nmtPlugin->translate('Posting Date is not valid!');
+                } else {
+                    // no check, of period is closed.
+                    $entity->setPostingDate(new \DateTime($postingDate));
+                }
+            }
+
+            // check one more time
+            if (! $grDate == null) {
+                if (! $validator->isValid($grDate)) {
+                    $errors[] = $nmtPlugin->translate('Good receipt Date is not valid!');
+                } else {
+                    // No check, if period is closed.
+                    $entity->setGrDate(new \DateTime($grDate));
+                }
+            }
+
+            $warehouse = null;
+            if ($warehouse_id > 0) {
+                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+            }
+
+            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+                $entity->setWarehouse($warehouse);
+            } else {
+                // check when posting
+                // $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
+            }
+
+            $entity->setRemarks($remarks);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -82,31 +222,19 @@ class VInvoiceController extends AbstractActionController
             // Saving into Database..........
             // ++++++++++++++++++++++++++++++
 
-            try {
-                $this->apService->saveHeader($entity, $u, TRUE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
+            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
 
-            // double check
+            $createdOn = new \DateTime();
 
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'currency_list' => $currency_list
-                ));
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn($createdOn);
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
-                return $viewModel;
-            }
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
 
             $m = sprintf('[OK] A/P Invoice #%s created', $entity->getId());
             $this->flashMessenger()->addMessage($m);
-
-            $createdOn = new \DateTime();
 
             // Trigger: finance.activity.log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
@@ -155,7 +283,6 @@ class VInvoiceController extends AbstractActionController
         $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
 
         $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
@@ -253,12 +380,12 @@ class VInvoiceController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
-
+            
             $data = $this->params()->fromPost();
-
-            $redirectUrl = $data['redirectUrl'];
-            $id = (int) $data['entity_id'];
-            $token = $data['token'];
+            
+            $redirectUrl = $request->getPost('redirectUrl');
+            $id = (int) $request->getPost('entity_id');
+            $token = $request->getPost('token');
 
             $invoice = $res->getVendorInvoice($id, $token);
 
@@ -282,8 +409,159 @@ class VInvoiceController extends AbstractActionController
                 return $this->redirect()->toUrl($redirectUrl);
             }
 
-            // check for posting
-            $errors = $this->apService->validateHeader($entity, $data, TRUE);
+            $contractDate = $request->getPost('contractDate');
+            $contractNo = $request->getPost('contractNo');
+            $currentState = $request->getPost('currentState');
+
+            $vendor_id = (int) $request->getPost('vendor_id');
+            $currency_id = (int) $request->getPost('currency_id');
+            $exchangeRate = (double) $request->getPost('exchangeRate');
+            $warehouse_id = (int) $request->getPost('target_wh_id');
+            $postingDate = $request->getPost('postingDate');
+            $grDate = $request->getPost('grDate');
+            $invoiceDate = $request->getPost('invoiceDate');
+            $invoiceNo = $request->getPost('invoiceNo');
+            $sapDoc = $request->getPost('sapDoc');
+            $isActive = (int) $request->getPost('isActive');
+            $remarks = $request->getPost('remarks');
+
+            if ($isActive != 1) {
+                $isActive = 0;
+            }
+            $entity->setIsActive($isActive);
+
+            if ($sapDoc == "") {
+                $sapDoc = "N/A";
+            }
+            $entity->setSapDoc($sapDoc);
+
+            $vendor = null;
+            if ($vendor_id > 0) {
+                /** @var \Application\Entity\NmtBpVendor $vendor ; */
+                $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
+            }
+
+            if ($vendor instanceof \Application\Entity\NmtBpVendor) {
+                $entity->setVendor($vendor);
+                $entity->setVendorName($vendor->getVendorName());
+            } else {
+                $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
+            }
+
+            /**
+             * Check default currency
+             */
+            if (! $default_cur instanceof \Application\Entity\NmtApplicationCurrency) {
+                $errors[] = 'Company currency can\'t be defined!';
+            }
+
+            $currency = null;
+            if ($currency_id > 0) {
+                /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
+                $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+            }
+
+            // check if posting period is close
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+            if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
+                $entity->setCurrency($currency);
+                $entity->setCurrencyIso3($currency->getCurrency());
+
+                if ($currency == $default_cur) {
+                    $entity->setExchangeRate(1);
+                } else {
+
+                    if ($exchangeRate != 0) {
+                        if (! is_numeric($exchangeRate)) {
+                            $errors[] = $nmtPlugin->translate('FX rate is not valid. It must be a number.');
+                        } else {
+                            if ($exchangeRate <= 0) {
+                                $errors[] = 'FX rate must be greate than 0!';
+                            }
+                            $entity->setExchangeRate($exchangeRate);
+                        }
+                    } else {
+                        // get default exchange rate.
+                        /** @var \Application\Entity\FinFx $lastest_fx */
+                        $lastest_fx = $p->getLatestFX($currency_id, $default_cur->getId());
+                        if ($lastest_fx instanceof \Application\Entity\FinFx) {
+                            $entity->setExchangeRate($lastest_fx->getFxRate());
+                        } else {
+                            $errors[] = sprintf('FX rate for %s not definded yet!', $currency->getCurrency());
+                        }
+                    }
+                }
+            } else {
+                $errors[] = $nmtPlugin->translate('Currency can\'t be empty. Please select a Currency!');
+            }
+
+            $validator = new Date();
+
+            if ($invoiceNo == null) {
+                $errors[] = $nmtPlugin->translate('Please enter Invoice Number!');
+            } else {
+                $entity->setInvoiceNo($invoiceNo);
+            }
+
+            if (! $validator->isValid($invoiceDate)) {
+                $errors[] = $nmtPlugin->translate('Invoice Date is not correct or empty!');
+            } else {
+                $entity->setInvoiceDate(new \DateTime($invoiceDate));
+            }
+
+            if (! $validator->isValid($postingDate)) {
+                $errors[] = $nmtPlugin->translate('Posting Date is not correct or empty!');
+            } else {
+
+                $entity->setPostingDate(new \DateTime($postingDate));
+
+                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
+
+                $entity->setPostingPeriod($postingPeriod);
+
+                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                    $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
+                } else {
+                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                    }
+                }
+            }
+
+            if (! $validator->isValid($grDate)) {
+                $errors[] = $nmtPlugin->translate('Good receipt Date is not correct or empty!');
+            } else {
+
+                // check if posting period is close
+                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
+
+                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
+                    $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
+                } else {
+                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                        $errors[] = sprintf('Period [%s] is closed for Good receipt!', $postingPeriod->getPeriodName());
+                    } else {
+                        $entity->setGrDate(new \DateTime($grDate));
+                    }
+                }
+            }
+
+            $warehouse = null;
+            if ($warehouse_id > 0) {
+                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+            }
+
+            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+                $entity->setWarehouse($warehouse);
+            } else {
+                $errors[] = $nmtPlugin->translate('Warehouse can\'t be empty. Please select a warehouse!');
+            }
+
+            $entity->setRemarks($remarks);
 
             if (count($errors) > 0) {
                 return new ViewModel(array(
@@ -377,39 +655,40 @@ class VInvoiceController extends AbstractActionController
             $entity = $invoice[0];
         }
 
-        if ($entity == null) {
+        if ($entity instanceof FinVendorInvoice) {
+
+            if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
+                $m = sprintf('AP Invoice #%s - %s already posted!', $entity->getId(), $entity->getSysNumber());
+                $this->flashMessenger()->addMessage($m);
+                $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+                return $this->redirect()->toUrl($redirectUrl);
+            }
+
+            if ($invoice['active_row'] == 0) {
+                $m = sprintf('[INFO] AP Invoice #%s has no lines.', $entity->getSysNumber());
+                $m1 = $nmtPlugin->translate('Document is incomplete!');
+                $this->flashMessenger()->addMessage($m1);
+                $redirectUrl = "/finance/v-invoice-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
+                return $this->redirect()->toUrl($redirectUrl);
+            }
+
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'entity' => $entity,
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'total_row' => $invoice['total_row'],
+                'active_row' => $invoice['active_row'],
+                'max_row_number' => $invoice['total_row'],
+                'total_picture' => $invoice['total_picture'],
+                'total_attachment' => $invoice['total_attachment'],
+                'net_amount' => $invoice['net_amount'],
+                'tax_amount' => $invoice['tax_amount'],
+                'gross_amount' => $invoice['gross_amount']
+            ));
+        } else {
             return $this->redirect()->toRoute('access_denied');
         }
-
-        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
-            $m = sprintf('AP Invoice #%s - %s already posted!', $entity->getId(), $entity->getSysNumber());
-            $this->flashMessenger()->addMessage($m);
-            $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
-            return $this->redirect()->toUrl($redirectUrl);
-        }
-
-        if ($invoice['active_row'] == 0) {
-            $m = sprintf('[INFO] AP Invoice #%s has no lines.', $entity->getSysNumber());
-            $m1 = $nmtPlugin->translate('Document is incomplete!');
-            $this->flashMessenger()->addMessage($m1);
-            $redirectUrl = "/finance/v-invoice-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
-            return $this->redirect()->toUrl($redirectUrl);
-        }
-
-        return new ViewModel(array(
-            'redirectUrl' => $redirectUrl,
-            'entity' => $entity,
-            'errors' => null,
-            'currency_list' => $currency_list,
-            'total_row' => $invoice['total_row'],
-            'active_row' => $invoice['active_row'],
-            'max_row_number' => $invoice['total_row'],
-            'total_picture' => $invoice['total_picture'],
-            'total_attachment' => $invoice['total_attachment'],
-            'net_amount' => $invoice['net_amount'],
-            'tax_amount' => $invoice['tax_amount'],
-            'gross_amount' => $invoice['gross_amount']
-        ));
     }
 
     /**
@@ -766,7 +1045,7 @@ class VInvoiceController extends AbstractActionController
 
             $vendor_id = (int) $request->getPost('vendor_id');
             $currency_id = (int) $request->getPost('currency_id');
-
+      
             $postingDate = $request->getPost('postingDate');
             // $grDate = $request->getPost('grDate');
             $invoiceDate = $request->getPost('invoiceDate');
@@ -908,7 +1187,7 @@ class VInvoiceController extends AbstractActionController
                     'currency_list' => $currency_list
                 ));
             }
-
+            
             $m = sprintf("[OK] AP #%s created from P/O #%s", $entity->getSysNumber(), $target->getSysNumber());
             $this->flashMessenger()->addMessage($m);
 
@@ -1231,7 +1510,6 @@ class VInvoiceController extends AbstractActionController
      */
     public function editAction()
     {
-        $this->layout("Finance/layout-fullscreen");
         $request = $this->getRequest();
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
@@ -1241,12 +1519,11 @@ class VInvoiceController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
-            $data = $this->params()->fromPost();
+            $redirectUrl = $request->getPost('redirectUrl');
 
-            $redirectUrl = $data['redirectUrl'];
-            $entity_id = $data['entity_id'];
-            $token = $data['token'];
-            $nTry = $data['n'];
+            $entity_id = $request->getPost('entity_id');
+            $token = $request->getPost('token');
+            $nTry = $request->getPost('n');
 
             $criteria = array(
                 'id' => $entity_id,
@@ -1256,140 +1533,239 @@ class VInvoiceController extends AbstractActionController
             /**@var \Application\Entity\FinVendorInvoice $entity*/
             $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
 
-            if ($entity == null) {
+            if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
 
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 return new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
                     'currency_list' => $currency_list,
                     'n' => $nTry
                 ));
-            }
 
-            // ======= OK =======//
+                // might need redirect
+            } else {
+                $oldEntity = clone ($entity);
 
-            if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
-                $errors[] = sprintf('Invoice was posted! Only remark text can be changed');
+                $redirectUrl = $request->getPost('redirectUrl');
 
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'n' => $nTry
+                $contractDate = $request->getPost('contractDate');
+                $contractNo = $request->getPost('contractNo');
+                $currentState = $request->getPost('currentState');
+
+                $vendor_id = (int) $request->getPost('vendor_id');
+                $currency_id = (int) $request->getPost('currency_id');
+                $warehouse_id = (int) $request->getPost('target_wh_id');
+
+                $postingDate = $request->getPost('postingDate');
+                $grDate = $request->getPost('grDate');
+                $invoiceDate = $request->getPost('invoiceDate');
+                $invoiceNo = $request->getPost('invoiceNo');
+                $sapDoc = $request->getPost('sapDoc');
+                $isActive = (int) $request->getPost('isActive');
+                $remarks = $request->getPost('remarks');
+
+                if ($isActive !== 1) {
+                    $isActive = 0;
+                }
+
+                if ($sapDoc == "") {
+                    $sapDoc = "N/A";
+                }
+
+                $entity->setIsActive($isActive);
+
+                $entity->setCurrentState($currentState);
+
+                $vendor = null;
+                if ($vendor_id > 0) {
+                    $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
+                }
+
+                if ($vendor !== null) {
+                    $entity->setVendor($vendor);
+                } else {
+                    $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
+                }
+
+                $currency = null;
+                if ($currency_id > 0) {
+                    $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+                }
+
+                if ($currency !== null) {
+                    $entity->setCurrency($currency);
+                } else {
+                    $errors[] = 'Currency can\'t be empty. Please select a vendor!';
+                }
+
+                $validator = new Date();
+
+                if ($invoiceNo == null) {
+                    $errors[] = 'Please enter Invoice Number!';
+                } else {
+                    $entity->setInvoiceNo($invoiceNo);
+                }
+
+                $entity->setSapDoc($sapDoc);
+
+                if ($invoiceDate !== null) {
+
+                    if (! $validator->isValid($invoiceDate)) {
+                        $errors[] = 'Invoice Date is not correct or empty!';
+                    } else {
+                        $entity->setInvoiceDate(new \DateTime($invoiceDate));
+                    }
+                }
+
+                if ($postingDate !== null) {
+                    if (! $validator->isValid($postingDate)) {
+                        $errors[] = 'Posting Date is not correct or empty!';
+                    } else {
+
+                        $entity->setPostingDate(new \DateTime($postingDate));
+                    }
+                }
+
+                if ($grDate !== null) {
+                    if (! $validator->isValid($grDate)) {
+                        $errors[] = 'Good receipt Date is not correct or empty!';
+                    } else {
+                        $entity->setGrDate(new \DateTime($grDate));
+                    }
+                }
+
+                $warehouse = null;
+                if ($warehouse_id > 0) {
+                    $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+                }
+
+                if ($warehouse !== null) {
+                    $entity->setWarehouse($warehouse);
+                } else {
+                    $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
+                }
+
+                $entity->setRemarks($remarks);
+
+                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+                $nmtPlugin = $this->Nmtplugin();
+                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+
+                if (count($changeArray) == 0) {
+                    $nTry ++;
+                    $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+                }
+
+                if ($nTry >= 3) {
+                    $errors[] = sprintf('Do you really want to edit "AP Inv. %s (%s)"?', $entity->getInvoiceNo(), $entity->getSysNumber());
+                }
+
+                if ($nTry == 5) {
+                    $m = sprintf('You might be not ready to edit "AP Inv. %s (%s)". Please try later!', $entity->getInvoiceNo(), $entity->getSysNumber());
+                    $this->flashMessenger()->addMessage($m);
+                    return $this->redirect()->toUrl($redirectUrl);
+                }
+
+                if (count($errors) > 0) {
+                    return new ViewModel(array(
+                        'redirectUrl' => $redirectUrl,
+                        'errors' => $errors,
+                        'entity' => $entity,
+                        'currency_list' => $currency_list,
+                        'n' => $nTry
+                    ));
+                }
+
+                // NO ERROR
+                // ===================
+
+                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                    "email" => $this->identity()
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
-                return $viewModel;
-            }
+                $changeOn = new \DateTime();
 
-            $oldEntity = clone ($entity);
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
 
-            // validate and update entity
-            $errors = $this->apService->validateHeader($entity, $data);
+                $this->doctrineEM->persist($entity);
+                $this->doctrineEM->flush();
 
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+                $m = sprintf('[OK] AP Invoice #%s - %s updated. Change No.: %s.', $entity->getId(), $entity->getSysNumber(), count($changeArray));
 
-            if (count($changeArray) == 0) {
-                $nTry ++;
-                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-            }
+                // Trigger Change Log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
 
-            if ($nTry >= 3) {
-                $errors[] = sprintf('Do you really want to edit "AP Inv. %s (%s)"?', $entity->getInvoiceNo(), $entity->getSysNumber());
-            }
+                // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+                $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'message' => $m,
+                    'createdBy' => $u,
+                    'createdOn' => $changeOn,
+                    'entity_id' => $entity->getId(),
+                    'entity_class' => get_class($entity),
+                    'entity_token' => $entity->getToken()
+                ));
 
-            if ($nTry == 5) {
-                $m = sprintf('You might be not ready to edit "AP Inv. %s (%s)". Please try later!', $entity->getInvoiceNo(), $entity->getSysNumber());
                 $this->flashMessenger()->addMessage($m);
+
+                /**
+                 * === Update current state of row invoice row ===
+                 */
+
+                $query = $this->doctrineEM->createQuery('
+UPDATE Application\Entity\FinVendorInvoiceRow r SET r.currentState = :new_state WHERE r.invoice =:invoice_id
+                    ')->setParameters(array(
+                    'new_state' => $entity->getCurrentState(),
+                    'invoice_id' => $entity->getId()
+                ));
+                $query->getResult();
+
+                /**
+                 * === Update current state of stock row.
+                 * ===
+                 */
+
+                $criteria = array(
+                    'isActive' => 1,
+                    'invoice' => $entity->getId()
+                );
+                $sort_criteria = array();
+                $invoice_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria, $sort_criteria);
+                if (count($invoice_rows) > 0) {
+                    foreach ($invoice_rows as $r) {
+                        $query = $this->doctrineEM->createQuery('
+UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.isActive=:is_active WHERE t.invoiceRow =:invoice_row_id
+                    ')->setParameters(array(
+                            'new_state' => $r->getCurrentState(),
+                            'is_active' => 1,
+                            'invoice_row_id' => $r->getId()
+                        ));
+                        $query->getResult();
+                    }
+                }
+
+                $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
                 return $this->redirect()->toUrl($redirectUrl);
             }
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'n' => $nTry
-                ));
-
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
-                return $viewModel;
-            }
-
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
-
-            $changeOn = new \DateTime();
-
-            try {
-                $this->apService->saveHeader($entity, $u, FALSE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            // double check
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'n' => $nTry
-                ));
-
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
-                return $viewModel;
-            }
-
-            $m = sprintf('[OK] AP Invoice #%s - %s updated. Change No.: %s.', $entity->getId(), $entity->getSysNumber(), count($changeArray));
-
-            // Trigger Change Log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
-                'priority' => 7,
-                'message' => $m,
-                'objectId' => $entity->getId(),
-                'objectToken' => $entity->getToken(),
-                'changeArray' => $changeArray,
-                'changeBy' => $u,
-                'changeOn' => $changeOn,
-                'revisionNumber' => $entity->getRevisionNo(),
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-
-            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $changeOn,
-                'entity_id' => $entity->getId(),
-                'entity_class' => get_class($entity),
-                'entity_token' => $entity->getToken()
-            ));
-
-            $this->flashMessenger()->addMessage($m);
-            $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
-            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
-        // initiating..........
         // ====================
 
         $redirectUrl = null;
@@ -1409,21 +1785,17 @@ class VInvoiceController extends AbstractActionController
         /**@var \Application\Entity\FinVendorInvoice $entity*/
         $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
 
-        if ($entity == null) {
+        if ($entity instanceof \Application\Entity\FinVendorInvoice) {
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'errors' => null,
+                'entity' => $entity,
+                'currency_list' => $currency_list,
+                'n' => 0
+            ));
+        } else {
             return $this->redirect()->toRoute('access_denied');
         }
-
-        $viewModel = new ViewModel(array(
-            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-            'redirectUrl' => $redirectUrl,
-            'errors' => null,
-            'entity' => $entity,
-            'currency_list' => $currency_list,
-            'n' => 0
-        ));
-
-        $viewModel->setTemplate("finance/v-invoice/add_ap");
-        return $viewModel;
     }
 
     /**
@@ -1672,8 +2044,8 @@ class VInvoiceController extends AbstractActionController
     }
 
     /**
-     *
-     * @return \Procure\Service\APInvoiceService
+     * 
+     *  @return \Procure\Service\APInvoiceService
      */
     public function getApService()
     {
@@ -1681,8 +2053,8 @@ class VInvoiceController extends AbstractActionController
     }
 
     /**
-     *
-     * @param \Procure\Service\APInvoiceService $apService
+     * 
+     *  @param \Procure\Service\APInvoiceService $apService
      */
     public function setApService(\Procure\Service\APInvoiceService $apService)
     {

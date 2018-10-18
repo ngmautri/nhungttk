@@ -9,7 +9,7 @@ use Inventory\Model\GR\AbstractGRStrategy;
 use Inventory\Model\GR\GRStrategyFactory;
 
 /**
- * Good Receipt Service.
+ * Quotation Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        

@@ -118,8 +118,7 @@ if (count($errors) > 0) {
 
 							<label class="control-label col-sm-2"></label>
 							<div class="col-sm-3">
-								<input
-									<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								<input <?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
 									type="checkbox" name="isActive" value="1">&nbsp;Is
 								Active&nbsp;&nbsp;&nbsp;&nbsp;
 							</div>
@@ -531,7 +530,7 @@ if (count($errors) > 0) {
             .autocomplete( "instance" )._renderItem = function( ul, item ) {
             return $( "<li>" )
         .append( "<div style='padding-bottom: 15px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>"  + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + 
-                      "</span><br><span style='padding-top: 7px;color:gray;font-size: 9pt;'>"+ item.vendor_name +'<br>' + item.po_number + " | " + item.row_identifer_keyword +"<span></div>" )
+                      "</span><br><span style='padding-top: 7px;color:gray;font-size: 9pt;'>"+ item.vendor_name +'<br>' + item.po_number + " | " + item.row_identifer_keyword  + " | " + item.manufacturer_code_key +"<span></div>" )
       
      //         .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
               .appendTo( ul );

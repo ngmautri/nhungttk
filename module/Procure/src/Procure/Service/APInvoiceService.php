@@ -7,6 +7,7 @@ use Procure\Model\Ap\AbstractAPRowPostingStrategy;
 use Application\Entity\FinVendorInvoiceRow;
 use Application\Service\AbstractService;
 use Zend\Math\Rand;
+use Zend\Validator\Date;
 
 /**
  *
@@ -15,6 +16,418 @@ use Zend\Math\Rand;
  */
 class APInvoiceService extends AbstractService
 {
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkVendor(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting)
+    {
+        $errors = array();
+        if (! isset($data['vendor_id'])) {
+            $errors[] = $this->controllerPlugin->translate('Vendor Id is not set!');
+            return $errors;
+        }
+
+        $vendor_id = (int) $data['vendor_id'];
+
+        /** @var \Application\Entity\NmtBpVendor $vendor ; */
+        $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
+
+        if ($vendor !== null) {
+            $entity->setVendor($vendor);
+            $entity->setVendorName($vendor->getVendorName());
+        } else {
+            $errors[] = $this->controllerPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
+        }
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkCurrency(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['currency_id'])) {
+            $errors[] = $this->controllerPlugin->translate('Currency Id input is not set!');
+        }
+
+        if (! isset($data['exchangeRate'])) {
+            $errors[] = $this->controllerPlugin->translate('Exchange rate input is not set!');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ==========OK=========== //
+
+        $currency_id = (int) $data['currency_id'];
+        $exchangeRate = (double) $data['exchangeRate'];
+
+        // ** @var \Application\Entity\NmtApplicationCurrency $currency ; */
+        $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+
+        // check if posting period is closed
+        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+        if ($currency !== null) {
+            $entity->setCurrency($currency);
+            $entity->setCurrencyIso3($currency->getCurrency());
+
+            if ($currency == $entity->getLocalCurrency()) {
+                $entity->setExchangeRate(1);
+            } else {
+
+                // if user give exchange rate.
+                if ($exchangeRate !=0 and $exchangeRate!=1) {
+                    if (! is_numeric($exchangeRate)) {
+                        $errors[] = $this->controllerPlugin->translate('Foreign exchange rate is not valid. It must be a number.');
+                    } else {
+                        if ($exchangeRate < 0) {
+                            $errors[] = $this->controllerPlugin->translate('Foreign exchange rate must be greater than 0!');
+                        } else {
+                                $entity->setExchangeRate($exchangeRate);
+                        }
+                    }
+                } else {
+                    // get default exchange rate.
+                    /** @var \Application\Entity\FinFx $lastest_fx */
+
+                    $lastest_fx = $p->getLatestFX($currency_id, $entity->getLocalCurrency()
+                        ->getId());
+                    if ($lastest_fx !== null) {
+                        $entity->setExchangeRate($lastest_fx->getFxRate());
+                    } else {
+                        $errors[] = sprintf('FX rate for %s not definded yet!', $currency->getCurrency());
+                    }
+                }
+            }
+        } else {
+            $errors[] = $this->controllerPlugin->translate('Currency can\'t be empty. Please select a Currency!');
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkInvoiceNo(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['invoiceNo'])) {
+            $errors[] = $this->controllerPlugin->translate('Invoice No input is not set!');
+            return $errors;
+        }
+
+        $invoiceNo = $data['invoiceNo'];
+
+        // check invoice number
+        if ($invoiceNo == null and $isPosting == TRUE) {
+            $errors[] = $this->controllerPlugin->translate('Please enter Invoice Number!');
+        } else {
+            $entity->setInvoiceNo($invoiceNo);
+        }
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkInvoiceDate(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['invoiceDate'])) {
+            $errors[] = $this->controllerPlugin->translate('Invoice Date input is not set!');
+        }
+
+        if (! isset($data['postingDate'])) {
+            $errors[] = $this->controllerPlugin->translate('Posting date input is not set!');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ==========OK=========== //
+
+        $invoiceDate = $data['invoiceDate'];
+        $postingDate = $data['postingDate'];
+
+        $validator = new Date();
+
+        if (! $invoiceDate == null) {
+            if (! $validator->isValid($invoiceDate)) {
+                $errors[] = $this->controllerPlugin->translate('Invoice Date is not correct or empty!');
+            } else {
+                $entity->setInvoiceDate(new \DateTime($invoiceDate));
+            }
+        }
+        if (! $postingDate == null) {
+            if (! $validator->isValid($postingDate)) {
+                $errors[] = $this->controllerPlugin->translate('Posting Date is not correct or empty!');
+            } else {
+                $entity->setPostingDate(new \DateTime($postingDate));
+            }
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ==========OK=========== //
+
+        // check if closed period when posting
+        if ($isPosting == TRUE) {
+
+            if ($entity->getInvoiceDate() == null) {
+                $errors[] = $this->controllerPlugin->translate('Invoice Date is not correct or empty!');
+            }
+
+            if ($entity->getPostingDate() == null) {
+                $errors[] = $this->controllerPlugin->translate('Posting Date is not correct or empty!');
+            } else {
+
+                /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+                $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+                $postingPeriod = $p->getPostingPeriod($entity->getPostingDate());
+
+                if ($postingPeriod == null) {
+                    $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
+                } else {
+                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
+                    } else {
+                        $entity->setPostingPeriod($postingPeriod);
+                    }
+                }
+            }
+        }
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkGrDate(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['grDate'])) {
+            $errors[] = $this->controllerPlugin->translate('Good Receipt input is not set!');
+            return $errors;
+        }
+
+        // ==========OK=========== //
+        $grDate = $data['grDate'];
+
+        $validator = new Date();
+
+        if (! $grDate == null) {
+            if (! $validator->isValid($grDate)) {
+                $errors[] = $this->controllerPlugin->translate('Good receipt Date is not correct or empty!');
+                return $errors;
+            } else {
+                $entity->setGrDate(new \DateTime($grDate));
+            }
+        }
+
+        // ==========OK=========== //
+
+        // striclty check when posting.
+        if ($isPosting == TRUE) {
+
+            if ($entity->getGrDate() == null) {
+                $errors[] = $this->controllerPlugin->translate('Good receipt Date is not correct or empty!');
+                return $errors;
+            }
+
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+            // check if posting period is closed
+            /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+            $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
+
+            if ($postingPeriod == null) {
+                $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
+            } else {
+                if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                    $errors[] = sprintf('Period [%s] is closed for Good receipt!', $postingPeriod->getPeriodName());
+                } else {
+                    $entity->setGrDate(new \DateTime($grDate));
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkWarehouse(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['target_wh_id'])) {
+            $errors[] = $this->controllerPlugin->translate('Ware House ID input is not set!');
+            return $errors;
+        }
+        // ==========OK=========== //
+
+        $warehouse_id = (int) $data['target_wh_id'];
+        $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+        $entity->setWarehouse($warehouse);
+
+        if ($isPosting == TRUE and $entity->getWarehouse() == null) {
+            $errors[] = $this->controllerPlugin->translate('Warehouse can\'t be empty. Please select a warehouse!');
+        }
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    public function validateHeader(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting = false)
+    {
+        $errors = array();
+
+        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
+            $errors[] = $this->controllerPlugin->translate('AP invoice is not found!');
+        } else {
+            if ($entity->getLocalCurrency() == null) {
+                $errors[] = $this->controllerPlugin->translate('Local currency is not found!');
+            }
+        }
+
+        if ($data == null) {
+            $errors[] = $this->controllerPlugin->translate('No input given');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== OK ====== //
+
+        $sapDoc = $data['sapDoc'];
+        $isActive = (int) $data['isActive'];
+        $remarks = $data['remarks'];
+
+        if ($isActive != 1) {
+            $isActive = 0;
+        }
+        $entity->setIsActive($isActive);
+
+        if ($sapDoc == "") {
+            $sapDoc = "N/A";
+        }
+        $entity->setSapDoc($sapDoc);
+        $entity->setRemarks($remarks);
+
+        // check vendor. ok
+        $ck = $this->checkVendor($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        // check currency and exchange rate
+        $ck = $this->checkCurrency($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        // check invoice number
+        $ck = $this->checkInvoiceNo($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        // check invoice date
+        $ck = $this->checkInvoiceDate($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        // check invoice date
+        $ck = $this->checkGrDate($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        // check invoice date
+        $ck = $this->checkWarehouse($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isNew
+     */
+    public function saveHeader($entity, $u, $isNew = FALSE)
+    {
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+
+        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
+            throw new \Exception("Invalid Argument. AP Object not found!");
+        }
+
+        // validated.
+
+        $changeOn = new \DateTime();
+
+        if ($isNew == TRUE) {
+
+            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn($changeOn);
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+        } else {
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+        }
+
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+    }
 
     /**
      *
@@ -29,13 +442,13 @@ class APInvoiceService extends AbstractService
         $item_id = $data['item_id'];
         $pr_row_id = $data['pr_row_id'];
         $po_row_id = $data['po_row_id'];
-        
+
         $gl_account_id = $data['gl_account_id'];
         $cost_center_id = $data['cost_center_id'];
         $isActive = (int) $data['isActive'];
         $rowNumber = $data['rowNumber'];
         $vendorItemCode = $data['vendorItemCode'];
-        
+
         $unit = $data['docUnit'];
         $conversionFactor = $data['conversionFactor'];
         $quantity = $data['docQuantity'];
@@ -55,10 +468,10 @@ class APInvoiceService extends AbstractService
 
         /** @var \Application\Entity\NmtProcurePrRow $pr_row ; */
         $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-        
+
         /** @var \Application\Entity\NmtProcurePoRow $po_row ; */
         $po_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($po_row_id);
-        
+
         $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
         $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
         $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
@@ -74,11 +487,11 @@ class APInvoiceService extends AbstractService
         // PR and be empty
         $entity->setPrRow($pr_row);
         $entity->setPoRow($po_row);
-        
-        if($po_row!==null){
+
+        if ($po_row !== null) {
             $entity->setPrRow($po_row->getPrRow());
         }
-        
+
         // Item cant be empty
         if ($item == null) {
             $errors[] = $this->controllerPlugin->translate('Item can\'t be empty. Please select item.');
@@ -176,8 +589,8 @@ class APInvoiceService extends AbstractService
         // converted to purchase quantity
         $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
         $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-        
-        //to check the unit price.
+
+        // to check the unit price.
 
         $pr_row = $entity->getPrRow();
         $pr_unit = null;
@@ -185,7 +598,6 @@ class APInvoiceService extends AbstractService
         if ($pr_row != null) {
             $standardCF = $standardCF * $pr_row->getConversionFactor();
             $pr_unit = $pr_row->getRowUnit();
-            
         }
 
         // quantity /unit: price is converted purchase quantity to clear PR
@@ -198,7 +610,7 @@ class APInvoiceService extends AbstractService
         $convertedStandardUnitPrice = $entity->getDocUnitPrice();
 
         $item = $entity->getItem();
-        
+
         if ($item != null) {
             $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
             $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
@@ -446,28 +858,27 @@ class APInvoiceService extends AbstractService
 
             $row_tmp->setCurrentState("DRAFT");
             $row_tmp->setPoRow($r);
-            
-           
+
             // converted to purchase qty
             $row_tmp->setQuantity($l['open_ap_qty']);
             $row_tmp->setUnitPrice($r->getUnitPrice());
             $row_tmp->setUnit($r->getUnit());
-            
+
             $row_tmp->setConvertedPurchaseQuantity($r->getQuantity());
-            
+
             $row_tmp->setConversionFactor($r->getConversionFactor());
-                        
-            $row_tmp->setDocQuantity($row_tmp->getQuantity()/$row_tmp->getConversionFactor());
-            $row_tmp->setDocUnitPrice($row_tmp->getUnitPrice()*$row_tmp->getConversionFactor());
+
+            $row_tmp->setDocQuantity($row_tmp->getQuantity() / $row_tmp->getConversionFactor());
+            $row_tmp->setDocUnitPrice($row_tmp->getUnitPrice() * $row_tmp->getConversionFactor());
             $row_tmp->setDocUnit($r->getDocUnit());
 
             $row_tmp->setTaxRate($r->getTaxRate());
-            
+
             $item = $r->getItem();
             $pr_row = $r->getPrRow();
             $row_tmp->setPrRow($pr_row);
-            $row_tmp->setItem($item);            
-            
+            $row_tmp->setItem($item);
+
             $convertedStandardQuantity = $row_tmp->getQuantity();
             $convertedStandardUnitPrice = $row_tmp->getUnitPrice();
 
@@ -481,13 +892,12 @@ class APInvoiceService extends AbstractService
             if ($item != null) {
                 $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
                 $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
-                
+
                 // calculate standard quantity
                 $row_tmp->setConvertedStandardQuantity($convertedStandardQuantity);
                 $row_tmp->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
-                
             }
-    
+
             $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
             $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
             $grossAmount = $netAmount + $taxAmount;

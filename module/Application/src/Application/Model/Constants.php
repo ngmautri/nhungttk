@@ -99,7 +99,10 @@ class Constants
     const DOC_STATUS_POSTED = 'posted';
 
     const DOC_STATUS_ARCHIVED = 'archived';
-
+    
+    const DOC_STATUS_REVERSED = 'reversed';
+    
+    
     // =====================
     const TRANSACTION_STATUS_OPEN = 'open';
 

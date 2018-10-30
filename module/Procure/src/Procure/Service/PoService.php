@@ -306,6 +306,9 @@ class PoService extends AbstractService
             $r->setRowNumber($n);
             $r->setLastchangeOn($changeOn);
         }
+        
+        $poSearchService = new \Procure\Service\PoSearchService();
+        $poSearchService->indexingPoRows($po_rows);
 
         if ($isFlush == true) {
             $this->doctrineEM->flush();

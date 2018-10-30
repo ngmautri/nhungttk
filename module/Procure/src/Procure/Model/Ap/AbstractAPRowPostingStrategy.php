@@ -15,17 +15,18 @@ abstract class AbstractAPRowPostingStrategy
     /**
      *
      * @param \Application\Entity\FinVendorInvoice $entity
-     *            ;
+     *
      * @param \Application\Entity\FinVendorInvoiceRow $r
-     *            ;
+     *
      * @param \Application\Entity\MlaUsers $u
-     *            ;
+     *
+     * @param boolean $isPosting
      */
-    abstract public function doPosting($entity, $r, $u = null);
+    abstract public function doPosting($entity, $r, $u = null, $isPosting = 1);
 
     /**
-     * 
-     *  @return \Application\Service\AbstractService
+     *
+     * @return \Application\Service\AbstractService
      */
     public function getContextService()
     {

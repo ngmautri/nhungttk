@@ -21,6 +21,8 @@ class PoController extends AbstractActionController
 
     protected $poService;
 
+    protected $poSearchService;
+
     /**
      *
      * {@inheritdoc}
@@ -321,6 +323,8 @@ class PoController extends AbstractActionController
                         'gross_amount' => $po['gross_amount']
                     ));
                 }
+
+                // UPDATE Search Index
 
                 // LOGGING
                 $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
@@ -1034,21 +1038,39 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         return $this;
     }
 
-   /**
-    * 
-    *  @return \Procure\Service\PoService
-    */
+    /**
+     *
+     * @return \Procure\Service\PoService
+     */
     public function getPoService()
     {
         return $this->poService;
     }
 
     /**
-     * 
-     *  @param \Procure\Service\PoService $poService
+     *
+     * @param \Procure\Service\PoService $poService
      */
     public function setPoService(\Procure\Service\PoService $poService)
     {
         $this->poService = $poService;
+    }
+
+    /**
+     *
+     * @return \Procure\Service\PoService
+     */
+    public function getPoSearchService()
+    {
+        return $this->poSearchService;
+    }
+    
+    /**
+     *
+     * @param \Procure\Service\PoService $poSearchService
+     */
+    public function setPoSearchService(\Procure\Service\PoSearchService $poSearchService)
+    {
+        $this->poSearchService = $poSearchService;
     }
 }

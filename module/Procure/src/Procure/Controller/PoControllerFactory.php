@@ -31,6 +31,8 @@ class PoControllerFactory implements FactoryInterface {
 		$sv =  $sm->get ('Procure\Service\PoService' );
 		$controller->setPoService($sv);
 		
+		$sv =  $sm->get ('Procure\Service\PoSearchService' );
+		$controller->setPoSearchService($sv );
 		
 		return $controller;
 	}

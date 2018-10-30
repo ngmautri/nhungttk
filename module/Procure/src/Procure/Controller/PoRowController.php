@@ -24,6 +24,9 @@ class PoRowController extends AbstractActionController
     protected $doctrineEM;
 
     protected $poService;
+    
+    protected $poSearchService;
+    
 
     /*
      * Defaul Action
@@ -1177,5 +1180,24 @@ class PoRowController extends AbstractActionController
     public function setPoService(\Procure\Service\PoService $poService)
     {
         $this->poService = $poService;
+    }
+    
+    
+    /**
+     *
+     * @return \Procure\Service\PoService
+     */
+    public function getPoSearchService()
+    {
+        return $this->poSearchService;
+    }
+    
+    /**
+     *
+     * @param \Procure\Service\PoService $poSearchService
+     */
+    public function setPoSearchService(\Procure\Service\PoSearchService $poSearchService)
+    {
+        $this->poSearchService = $poSearchService;
     }
 }

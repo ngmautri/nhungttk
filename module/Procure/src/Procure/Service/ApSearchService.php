@@ -1,32 +1,28 @@
 <?php
 namespace Procure\Service;
 
+use Application\Service\AbstractService;
 use Doctrine\ORM\EntityManager;
-use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Document;
-use ZendSearch\Lucene\Document\Field;
-use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
-// use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive; // Not worked
+use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
+use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
+use ZendSearch\Lucene\Document\Field;
 use ZendSearch\Lucene\Index\Term;
+use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Search\Query\Wildcard;
-use Application\Entity\NmtInventoryItem;
-use ZendSearch\Lucene\Search\Query\Boolean;
-use ZendSearch\Lucene\Search\QueryParser;
 use Exception;
-use Application\Entity\NmtProcurePrRow;
-use Application\Service\AbstractService;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PoSearchService extends AbstractService
+class ApSearchService extends AbstractService
 {
 
-    const ITEM_INDEX = "/data/procure/indexes/po";
+    const ITEM_INDEX = "/data/procure/indexes/ap";
 
     protected $doctrineEM;
 
@@ -43,14 +39,12 @@ class PoSearchService extends AbstractService
             $index = Lucene::create(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
 
-            $query = 'SELECT e, i, po FROM Application\Entity\NmtProcurePoRow e JOIN e.item i JOIN e.po po Where 1=?1';
+            $query = 'SELECT e, i, inv FROM \Application\Entity\FinVendorInvoiceRow e JOIN e.item i JOIN e.invoice inv Where 1=?1';
             $records = $this->doctrineEM->createQuery($query)
                 ->setParameters(array(
                 "1" => 1
             ))
                 ->getResult();
-
-            // $records = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->findAll ();
 
             if (count($records) > 0) {
 
@@ -58,7 +52,7 @@ class PoSearchService extends AbstractService
                     $this->_addDocument($index, $row);
                 }
                 $index->optimize();
-                $log1 = 'PO indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
+                $log1 = 'PR indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
                 return $log1;
             } else {
                 $log1 = 'Nothing for indexing!';
@@ -76,10 +70,10 @@ class PoSearchService extends AbstractService
      * @param boolean $optimized
      * @return string
      */
-    public function indexingPoRows($po_rows, $optimized = TRUE)
+    public function indexingAPRows($ap_rows, $optimized = TRUE)
     {
-        if (count($po_rows) == 0) {
-            return 'No po rows found';
+        if (count($ap_rows) == 0) {
+            return 'No AP rows found';
         }
 
         // take long time
@@ -89,10 +83,10 @@ class PoSearchService extends AbstractService
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
 
-            foreach ($po_rows as $row) {
+            foreach ($ap_rows as $row) {
 
-                /** @var \Application\Entity\NmtProcurePoRow $row ; */
-                if (! $row instanceof \Application\Entity\NmtProcurePoRow) {
+                /** @var \Application\Entity\FinVendorInvoiceRow $row ; */
+                if (! $row instanceof \Application\Entity\FinVendorInvoiceRow) {
                     continue;
                 }
                 $this->_addDocument($index, $row);
@@ -111,62 +105,75 @@ class PoSearchService extends AbstractService
     /**
      *
      * @param \ZendSearch\Lucene\SearchIndexInterface $index
-     * @param \Application\Entity\NmtProcurePoRow $row
+     * @param \Application\Entity\FinVendorInvoiceRow $row
      */
-    private function _addDocument(\ZendSearch\Lucene\SearchIndexInterface $index, \Application\Entity\NmtProcurePoRow $row)
+    private function _addDocument(\ZendSearch\Lucene\SearchIndexInterface $index, \Application\Entity\FinVendorInvoiceRow $row)
     {
-        if ($index == null || ! $row instanceof \Application\Entity\NmtProcurePoRow) {
+        if ($index == null || ! $row instanceof \Application\Entity\FinVendorInvoiceRow) {
             return;
         }
 
-        if ($row->getPo() == null) {
+        if ($row->getInvoice() == null) {
             return;
         }
 
         $doc = new Document();
 
-        $doc->addField(Field::UnIndexed('po_row_id', $row->getId()));
-        $doc->addField(Field::UnIndexed('token', $row->getToken()));
+        $doc->addField(Field::UnIndexed('ap_row_id', $row->getId()));
+        $doc->addField(Field::UnIndexed('ap_row_token', $row->getToken()));
 
         $doc->addField(Field::Keyword('row_token_keyword', $row->getToken() . "__" . $row->getId()));
         $doc->addField(Field::Keyword('row_identifer_keyword', $row->getRowIdentifer()));
 
         $doc->addField(Field::UnIndexed('row_quantity', $row->getQuantity()));
         $doc->addField(Field::UnIndexed('row_conversion_factor', $row->getConversionFactor()));
-
         $doc->addField(Field::UnIndexed('row_unit', $row->getUnit()));
         $doc->addField(Field::text('row_remarks', $row->getRemarks()));
         $doc->addField(Field::text('row_name', $row->getVendorItemCode()));
 
-        $doc->addField(Field::UnIndexed('po_id', $row->getPo()
+        $doc->addField(Field::UnIndexed('ap_id', $row->getInvoice()
             ->getId()));
-        $doc->addField(Field::UnIndexed('po_token', $row->getPo()
+        $doc->addField(Field::UnIndexed('ap_token', $row->getInvoice()
             ->getToken()));
 
-        $doc->addField(Field::text('po_number', $row->getPo()
-            ->getContractNo()));
+        $doc->addField(Field::text('ap_number', $row->getInvoice()
+            ->getInvoiceNo()));
 
-        $doc->addField(Field::Keyword('po_sys_number', $row->getPo()
+        $doc->addField(Field::Keyword('ap_sys_number', $row->getInvoice()
             ->getSysNumber()));
 
-        $doc->addField(Field::Keyword('po_doc_status', $row->getPo()
+        $doc->addField(Field::Keyword('ap_doc_status', $row->getInvoice()
             ->getDocStatus()));
 
-        if ($row->getPo()->getVendor() != null) {
-            $doc->addField(Field::Keyword('vendor_id_keyword', 'vendor_id_keyword=' . $row->getPo()
+        if ($row->getInvoice()->getVendor() != null) {
+            $doc->addField(Field::Keyword('vendor_id_keyword', 'vendor_id_keyword=' . $row->getInvoice()
                 ->getVendor()
                 ->getId()));
-            $doc->addField(Field::UnIndexed('vendor_id', $row->getPo()
+            $doc->addField(Field::UnIndexed('vendor_id', $row->getInvoice()
                 ->getVendor()
                 ->getId()));
 
-            $doc->addField(Field::text('vendor_name', $row->getPo()
+            $doc->addField(Field::text('vendor_name', $row->getInvoice()
                 ->getVendor()
                 ->getVendorName()));
         } else {
             $doc->addField(Field::Keyword('vendor_id_keyword', "vendor_id_keyword="));
             $doc->addField(Field::UnIndexed('vendor_name', ""));
             $doc->addField(Field::UnIndexed('vendor_id', ""));
+        }
+
+        if ($row->getPoRow() !== null) {
+
+            if ($row->getPoRow()->getPo() !== null) {
+
+                /** @var \Application\Entity\NmtProcurePo $po ; */
+
+                $po = $row->getPoRow()->getPo();
+                $doc->addField(Field::UnIndexed('po_id', $po->getId()));
+                $doc->addField(Field::UnIndexed('po_token', $po->getToken()));
+                $doc->addField(Field::text('po_number', $po->getContractNo()));
+                $doc->addField(Field::Keyword('po_sys_number', $po->getSysNumber()));
+            }
         }
 
         if ($row->getItem() !== null) {
@@ -290,7 +297,7 @@ class PoSearchService extends AbstractService
                 $final_query->addSubquery($subquery, true);
             }
 
-            $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term(\Application\Model\Constants::DOC_STATUS_POSTED, 'po_doc_status'));
+            $subquery = new \ZendSearch\Lucene\Search\Query\Term(new Term(\Application\Model\Constants::DOC_STATUS_POSTED, 'ap_doc_status'));
             $final_query->addSubquery($subquery, true);
 
             // var_dump ( $final_query );

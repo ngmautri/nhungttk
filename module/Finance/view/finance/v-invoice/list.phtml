@@ -7,6 +7,20 @@
 	</ul>
 <div id="general">
 
+                    <form class="form-inline" action="<?php echo $this->baseUrl ?>/procure/ap-search/do"	method="get" enctype="multipart/form-data">
+  <div class="form-group" style="padding-left: 8px;">
+    	<input placeholder ="<?php echo $this->translate("enter search term ...")?>" class="form-control" size="25" type="text" name = "q">
+ 
+ 
+  </div>
+  
+  <div class="form-group">
+     <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small></button>
+  </div>
+  
+</form>
+<hr>
+
 <a class="btn btn-default btn-sm" href="<?php echo $this->baseUrl ?>/finance/v-invoice/add"><small><i class="glyphicon glyphicon-plus"> </i></small>&nbsp;New A/P Invoice</a>
 <hr>
 

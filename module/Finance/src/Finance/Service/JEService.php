@@ -23,10 +23,12 @@ class JEService extends AbstractService
      * @param \Application\Entity\MlaUsers $u
      *
      * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
+     * 
+     * @param boolean $isPosting
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function postAP($entity, $rows, $u, $nmtPlugin, $isFlush = false)
+    public function postAP($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting=1)
     {
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument! Invoice is expected");
@@ -120,12 +122,10 @@ class JEService extends AbstractService
 
                     case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR:
                         $je_row->setGlAccount($r->getGlAccount());
-
                         break;
 
                     case \Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI:
                         $je_row->setGlAccount($clearing_gl);
-
                         break;
                 }
 

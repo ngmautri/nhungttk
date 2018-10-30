@@ -20,7 +20,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
      * {@inheritdoc}
      * @see \Procure\Model\Ap\AbstractAPRowPostingStrategy::doPosting()
      */
-    public function doPosting($entity, $r, $u = null)
+    public function doPosting($entity, $r, $u = null, $isPosting=1)
     {
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument! Invoice is not found.");

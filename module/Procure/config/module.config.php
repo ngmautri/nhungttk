@@ -204,10 +204,12 @@ return array(
             
             'Procure\Service\APInvoiceService' => 'Procure\Service\APInvoiceServiceFactory',
             'Procure\Service\ReturnService' => 'Procure\Service\ReturnServiceFactory',            
+            
             'Procure\Service\PrSearchService' => 'Procure\Service\PrSearchServiceFactory',
             'Procure\Service\PoSearchService' => 'Procure\Service\PoSearchServiceFactory',
             'Procure\Service\GrSearchService' => 'Procure\Service\GrSearchServiceFactory',
             'Procure\Service\QuoteSearchService' => 'Procure\Service\QuoteSearchServiceFactory',
+            'Procure\Service\ApSearchService' => 'Procure\Service\ApSearchServiceFactory',
             
         )
     ),
@@ -241,6 +243,8 @@ return array(
             'Procure\Controller\GrRow' => 'Procure\Controller\GrRowControllerFactory',
             'Procure\Controller\GrAttachment' => 'Procure\Controller\GrAttachmentControllerFactory',
             'Procure\Controller\GrSearch' => 'Procure\Controller\GrSearchControllerFactory',
+            
+            'Procure\Controller\ApSearch' => 'Procure\Controller\ApSearchControllerFactory',
             
             'Procure\Controller\Return' => 'Procure\Controller\ReturnControllerFactory',
             'Procure\Controller\ReturnRow' => 'Procure\Controller\ReturnRowControllerFactory',

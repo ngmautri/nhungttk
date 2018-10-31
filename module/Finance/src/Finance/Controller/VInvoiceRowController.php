@@ -68,6 +68,7 @@ class VInvoiceRowController extends AbstractActionController
 
                 $errors[] = 'Invoice object can\'t be empty. Or token key is not valid!';
                 return new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,

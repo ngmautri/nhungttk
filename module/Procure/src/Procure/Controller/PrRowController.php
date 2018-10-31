@@ -202,7 +202,7 @@ class PrRowController extends AbstractActionController
 
             $redirectUrl = $data['redirectUrl'];
             $target_id = $data['target_id'];
-            $token = $data['token'];
+            $token = $data['target_token'];
 
             /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
@@ -224,6 +224,7 @@ class PrRowController extends AbstractActionController
                 $errors[] = 'Target object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 return new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
@@ -248,7 +249,7 @@ class PrRowController extends AbstractActionController
 
             if (count($errors) > 0) {
                 return new ViewModel(array(
-
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -275,7 +276,8 @@ class PrRowController extends AbstractActionController
 
             if (count($errors) > 0) {
                 return new ViewModel(array(
-
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -345,6 +347,8 @@ class PrRowController extends AbstractActionController
         $entity->setIsActive(1);
 
         return new ViewModel(array(
+           
+            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'target' => $target,
@@ -2169,7 +2173,9 @@ class PrRowController extends AbstractActionController
 
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
+                $viewModel =  new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
@@ -2177,6 +2183,9 @@ class PrRowController extends AbstractActionController
                     'total_row' => null,
                     'max_row_number' => null
                 ));
+                
+                $viewModel->setTemplate("procure/pr-row/add");
+                return $viewModel;
             }
 
             /**@var \Application\Entity\NmtProcurePr $target ;*/
@@ -2224,8 +2233,9 @@ class PrRowController extends AbstractActionController
             }
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
-
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -2234,6 +2244,10 @@ class PrRowController extends AbstractActionController
                     'total_row' => (int) $pr['total_row'],
                     'max_row_number' => (int) $pr['max_row_number']
                 ));
+                
+                $viewModel->setTemplate("procure/pr-row/add");
+                return $viewModel;
+                
             }
 
             // No ERROR
@@ -2323,7 +2337,9 @@ class PrRowController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
 
-        return new ViewModel(array(
+        $viewModel =  new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+            
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'target' => $entity->getPr(),
@@ -2332,6 +2348,10 @@ class PrRowController extends AbstractActionController
             'total_row' => (int) $pr['total_row'],
             'max_row_number' => (int) $pr['max_row_number']
         ));
+        
+        $viewModel->setTemplate("procure/pr-row/add");
+        return $viewModel;
+        
     }
 
     /**

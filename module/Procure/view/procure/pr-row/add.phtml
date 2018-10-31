@@ -2,7 +2,23 @@
 /**@var \Application\Entity\NmtProcurePr $target ;
  * @var \Application\Entity\NmtProcurePrRow $entity ;
  */
+$form_action = '';
+$form_title = '';
+
+switch ($action) {
+
+    case \Application\Model\Constants::FORM_ACTION_ADD:
+        $form_action = '/procure/pr-row/add';
+        $form_title = $this->translate("Add PR Row:");
+
+        break;
+    case \Application\Model\Constants::FORM_ACTION_EDIT:
+        $form_action = '/procure/pr-row/edit';
+        $form_title = $this->translate("Edit PR Row:");
+        break;
+}
 ?>
+
 
 <div id="wrapper" class="toggled">
 
@@ -40,7 +56,7 @@
 
 			<div id="tabs" style="font-size: 10pt">
 				<ul>
-					<li><a href="#general"><?php echo $this->translate("New Purchase Request");?>:</a></li>
+					<li><a href="#general"><?php echo $form_title;?>:</a></li>
 				</ul>
 
 				<div id="general" style="font-size: 9pt">
@@ -145,7 +161,7 @@ if (count($errors) > 0) {
 									<label class="control-label col-sm-2">Remarks:</label>
 									<div class="col-sm-8">
 										<input class="form-control input-sm" type="text"
-											placeholder="" name="itemDescription"
+											placeholder="" name="prRemarks"
 											value="<?php echo (!$target == null)? $target->getRemarks():"";?>">
 									</div>
 								</div>
@@ -165,19 +181,27 @@ if (count($errors) > 0) {
 
 					</form>
 
-
-
-					<!-- TO UPDATE ACTION -->
 					<form id="pr_row_form" class="form-horizontal"
-						action="/procure/pr-row/add" method="post"
+						action="<?php echo $form_action;?>" method="post"
 						enctype="multipart/form-data">
-						<input type="hidden" name="target_id"
-							value="<?php echo (!$target == null)? $target->getId():"";?>" />
-						<input type="hidden" name="token"
-							value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+						
 						<input type="hidden" name="redirectUrl"
-							value="<?php echo $redirectUrl ?>" />
+							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							id="target_id" name="target_id"
+							value="<?php if (!$target == null): echo $target->getId();endif;?>" />
+						<input type="hidden" id="target_token" name="target_token"
+							value="<?php if (!$target == null): echo $target->getToken();endif;?>" />
 
+						<input type="hidden" id="entity_id" name="entity_id"
+							value="<?php if (!$entity == null): echo $entity->getId();endif;?>" />
+						<input type="hidden" id="token" name="token"
+							value="<?php if (!$entity == null): echo $entity->getToken();endif;?>" />
+
+
+						<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+            				<input type="hidden" name="n" value="<?php echo $n;?>" />
+            			<?php endif;?>
+            	
 
 						<fieldset>
 							<legend
@@ -307,7 +331,7 @@ if (count($errors) > 0) {
 									<label class="control-label col-sm-2">Remarks:</label>
 									<div class="col-sm-8">
 										<input tabindex="7" class="form-control input-sm" type="text"
-											placeholder="" name="itemDescription"
+											placeholder="" name="remarks"
 											value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
 									</div>
 								</div>

@@ -184,7 +184,7 @@ if (count($errors) > 0) {
 					<form id="pr_row_form" class="form-horizontal"
 						action="<?php echo $form_action;?>" method="post"
 						enctype="multipart/form-data">
-						
+
 						<input type="hidden" name="redirectUrl"
 							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 							id="target_id" name="target_id"
@@ -422,6 +422,20 @@ if (count($errors) > 0) {
 
 <script type="text/javascript">
 
+        <?php
+	    if ($entity != null) :
+	        if ($entity->getItem() != null) :
+	            ?>
+
+	    		  $("#item_id" ).val(<?php echo +$entity->getItem()->getId();?>);      	  
+	    	      $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id=<?php echo +$entity->getItem()->getId();?>&token=<?php echo $entity->getItem()->getToken();?>');
+	    	  	  $('#standard_uom_id').text('<?php echo $entity->getItem()->getStandardUom()->getUomCode(); ?>');
+	            $('#item_detail').show();
+	     		<?php
+	    	endif;
+	    endif;
+	    ?>
+
 	$("#pr_header_form :input").attr("disabled", "disabled");
 
 	$( "input[id='edt']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
@@ -471,6 +485,8 @@ if (count($errors) > 0) {
     
 
     $("#item_name").focus();
+	$('#purchase_uom_convert_text').text($('#quantity').val() + ' ' + $( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val()*$('#quantity').val() + " " + $( "#standard_uom_id" ).text());
+	 
 
 
     function showSelectedItem(){
@@ -490,6 +506,7 @@ if (count($errors) > 0) {
 		$('#purchase_uom_convert_text').text($('#quantity').val() + ' ' + $( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val()*$('#quantity').val() + " " + $( "#standard_uom_id" ).text());
  	});
 
+   
  	
     
 </script>

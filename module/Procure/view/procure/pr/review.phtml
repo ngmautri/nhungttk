@@ -446,6 +446,7 @@ function doPosting() {
 			resizable:true,
 			//draggable:true,
 			sortable: true,
+			freezeCols:1,
 			hoverMode: 'cell',
 		   	pageModel: { type: "remote", rPP: 50, strRpp: "{0}" },
 		  	editModel: {
@@ -571,6 +572,14 @@ function doPosting() {
          },},
          
        { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
+       { title: "", editable: false, minWidth: 65, sortable: false,
+           render: function (ui) {
+               //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
+        		return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button>";
+	           
+	           }
+       },
+      
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150,editable: true},
         { title: "Identifer", dataType: "string", dataIndx: "row_identifer",width: 85,align: 'left',editable: false},	
         { title: "#", dataType: "integer", dataIndx: "row_number", width:5,editable: true },
@@ -592,11 +601,7 @@ function doPosting() {
              
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},
         
-        { title: "", editable: false, minWidth: 100, sortable: false,
-            render: function (ui) {
-                return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button>";
-	           }
-        },
+        
    ];
 
     obj.dataModel = {	

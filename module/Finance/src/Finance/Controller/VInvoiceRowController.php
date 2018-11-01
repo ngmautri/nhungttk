@@ -46,7 +46,10 @@ class VInvoiceRowController extends AbstractActionController
         // Is Posing
         // =============================
         if ($request->isPost()) {
+            
             $errors = array();
+            
+            $data = $this->params()->fromPost();
             $redirectUrl = $request->getPost('redirectUrl');
             $invoice_id = $request->getPost('target_id');
             $invoice_token = $request->getPost('target_token');
@@ -90,8 +93,6 @@ class VInvoiceRowController extends AbstractActionController
             // Good Receipt = Invoice Receipt.
             $entity->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
             $entity->setInvoice($target);
-
-            $data = $this->params()->fromPost();
             $errors = $this->apService->validateRow($target, $entity, $data);
 
             if (count($errors) > 0) {

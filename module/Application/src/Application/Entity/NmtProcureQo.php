@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureQo
  *
- * @ORM\Table(name="nmt_procure_qo", indexes={@ORM\Index(name="nmt_procure_qo_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_qo_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_qo_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_qo_FK7_idx", columns={"token"}), @ORM\Index(name="nmt_procure_qo_FK7_idx1", columns={"company_id"})})
+ * @ORM\Table(name="nmt_procure_qo", indexes={@ORM\Index(name="nmt_procure_qo_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_qo_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_qo_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_qo_FK7_idx", columns={"token"}), @ORM\Index(name="nmt_procure_qo_FK7_idx1", columns={"company_id"}), @ORM\Index(name="nmt_procure_qo_FK8_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_procure_qo_FK9_idx", columns={"doc_currency_id"})})
  * @ORM\Entity
  */
 class NmtProcureQo
@@ -293,6 +293,26 @@ class NmtProcureQo
      * })
      */
     private $company;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="local_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $localCurrency;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCurrency
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="doc_currency_id", referencedColumnName="id")
+     * })
+     */
+    private $docCurrency;
 
 
 
@@ -1168,5 +1188,53 @@ class NmtProcureQo
     public function getCompany()
     {
         return $this->company;
+    }
+
+    /**
+     * Set localCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $localCurrency
+     *
+     * @return NmtProcureQo
+     */
+    public function setLocalCurrency(\Application\Entity\NmtApplicationCurrency $localCurrency = null)
+    {
+        $this->localCurrency = $localCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get localCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getLocalCurrency()
+    {
+        return $this->localCurrency;
+    }
+
+    /**
+     * Set docCurrency
+     *
+     * @param \Application\Entity\NmtApplicationCurrency $docCurrency
+     *
+     * @return NmtProcureQo
+     */
+    public function setDocCurrency(\Application\Entity\NmtApplicationCurrency $docCurrency = null)
+    {
+        $this->docCurrency = $docCurrency;
+
+        return $this;
+    }
+
+    /**
+     * Get docCurrency
+     *
+     * @return \Application\Entity\NmtApplicationCurrency
+     */
+    public function getDocCurrency()
+    {
+        return $this->docCurrency;
     }
 }

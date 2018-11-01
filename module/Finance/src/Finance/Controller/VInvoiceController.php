@@ -1238,6 +1238,8 @@ class VInvoiceController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
 
+        // Is Posing
+        // =============================
         if ($request->isPost()) {
 
             $errors = array();

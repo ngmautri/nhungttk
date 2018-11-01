@@ -22,7 +22,7 @@ class QoServiceFactory implements FactoryInterface {
 		
 		$container = $serviceLocator;
 		
-		$service = new QuoteService();
+		$service = new QoService();
 	
 		$sv =  $container->get('ControllerPluginManager');
 		$service->setControllerPlugin($sv->get('NmtPlugin'));

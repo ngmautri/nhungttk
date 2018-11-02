@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureQoRow
  *
- * @ORM\Table(name="nmt_procure_qo_row", indexes={@ORM\Index(name="nmt_procure_qo_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_qo_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_qo_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_row_FK6_idx", columns={"lastchanged_by"}), @ORM\Index(name="nmt_procure_qo_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_qo_row_FK7_idx", columns={"qo_id"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx1", columns={"doc_uom"})})
+ * @ORM\Table(name="nmt_procure_qo_row", indexes={@ORM\Index(name="nmt_procure_qo_row_FK1_idx", columns={"invoice_id"}), @ORM\Index(name="nmt_procure_qo_row_FK3_idx", columns={"pr_row_id"}), @ORM\Index(name="nmt_procure_qo_row_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_row_FK5_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_row_FK6_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_procure_qo_row_INX1", columns={"current_state"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx", columns={"item_id"}), @ORM\Index(name="nmt_procure_qo_row_FK7_idx", columns={"qo_id"}), @ORM\Index(name="nmt_procure_qo_row_FK8_idx1", columns={"doc_uom"})})
  * @ORM\Entity
  */
 class NmtProcureQoRow
@@ -260,6 +260,20 @@ class NmtProcureQoRow
     private $docUom;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_posted", type="boolean", nullable=true)
+     */
+    private $isPosted;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_draft", type="boolean", nullable=true)
+     */
+    private $isDraft;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -304,10 +318,10 @@ class NmtProcureQoRow
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="lastchanged_by", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
      * })
      */
-    private $lastchangedBy;
+    private $lastChangeBy;
 
     /**
      * @var \Application\Entity\NmtProcureQo
@@ -1158,6 +1172,54 @@ class NmtProcureQoRow
     }
 
     /**
+     * Set isPosted
+     *
+     * @param boolean $isPosted
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPosted
+     *
+     * @return boolean
+     */
+    public function getIsPosted()
+    {
+        return $this->isPosted;
+    }
+
+    /**
+     * Set isDraft
+     *
+     * @param boolean $isDraft
+     *
+     * @return NmtProcureQoRow
+     */
+    public function setIsDraft($isDraft)
+    {
+        $this->isDraft = $isDraft;
+
+        return $this;
+    }
+
+    /**
+     * Get isDraft
+     *
+     * @return boolean
+     */
+    public function getIsDraft()
+    {
+        return $this->isDraft;
+    }
+
+    /**
      * Set invoice
      *
      * @param \Application\Entity\FinVendorInvoice $invoice
@@ -1254,27 +1316,27 @@ class NmtProcureQoRow
     }
 
     /**
-     * Set lastchangedBy
+     * Set lastChangeBy
      *
-     * @param \Application\Entity\MlaUsers $lastchangedBy
+     * @param \Application\Entity\MlaUsers $lastChangeBy
      *
      * @return NmtProcureQoRow
      */
-    public function setLastchangedBy(\Application\Entity\MlaUsers $lastchangedBy = null)
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
     {
-        $this->lastchangedBy = $lastchangedBy;
+        $this->lastChangeBy = $lastChangeBy;
 
         return $this;
     }
 
     /**
-     * Get lastchangedBy
+     * Get lastChangeBy
      *
      * @return \Application\Entity\MlaUsers
      */
-    public function getLastchangedBy()
+    public function getLastChangeBy()
     {
-        return $this->lastchangedBy;
+        return $this->lastChangeBy;
     }
 
     /**

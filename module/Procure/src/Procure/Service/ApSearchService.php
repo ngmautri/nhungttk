@@ -13,6 +13,7 @@ use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Search\Query\Wildcard;
 use Exception;
+use Zend\Form\Annotation\FormAnnotationsListener;
 
 /**
  *
@@ -70,7 +71,7 @@ class ApSearchService extends AbstractService
      * @param boolean $optimized
      * @return string
      */
-    public function indexingAPRows($ap_rows, $optimized = TRUE)
+    public function indexingAPRows($ap_rows, $optimized = FALSE)
     {
         if (count($ap_rows) == 0) {
             return 'No AP rows found';
@@ -142,6 +143,9 @@ class ApSearchService extends AbstractService
         $doc->addField(Field::Keyword('ap_sys_number', $row->getInvoice()
             ->getSysNumber()));
 
+        $doc->addField(Field::Keyword('ap_sap_ref', $row->getInvoice()
+            ->getSapDoc()));
+        
         $doc->addField(Field::Keyword('ap_doc_status', $row->getInvoice()
             ->getDocStatus()));
 

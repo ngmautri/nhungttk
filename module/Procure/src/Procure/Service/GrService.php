@@ -40,6 +40,7 @@ class GrService extends AbstractService
         $item_id = (int) $data['item_id'];
         $gl_account_id = (int) $data['gl_account_id'];
         $pr_row_id = $data['pr_row_id'];
+        $po_row_id = $data['po_row_id'];        
         $isActive = (int) $data['isActive'];
         $rowNumber = $data['rowNumber'];
 
@@ -58,24 +59,37 @@ class GrService extends AbstractService
         }
 
         $entity->setIsActive($isActive);
-
-        $entity->setGr($target);
         $entity->setRowNumber($rowNumber);
 
+        /** @var \Application\Entity\NmtProcurePrRow $po_row ; */
         $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+        
+        /** @var \Application\Entity\NmtProcurePoRow $po_row ; */
+        $po_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($po_row_id);
+        
+        /** @var \Application\Entity\NmtInventoryItem $item ; */
         $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+        
+        /** @var \Application\Entity\FinAccount $gl ; */
         $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
-
-        if ($pr_row != null) {
-            $entity->setPrRow($pr_row);
-        }
 
         if ($gl == null) {
             $errors[] = 'G/L account can\'t be empty!';
         } else {
             $entity->setGlAccount($gl);
         }
-
+          
+        if ($pr_row != null) {
+            $entity->setPrRow($pr_row);
+        }
+        
+        
+        if ($po_row != null) {
+            $entity->setPoRow($po_row);
+            $entity->setPrRow($po_row->getPrRow());
+            $entity->setItem($po_row->getItem());
+        }
+        
         if ($item == null) {
             $errors[] = 'Item can\'t be empty!';
         } else {

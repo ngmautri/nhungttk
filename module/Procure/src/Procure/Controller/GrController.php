@@ -1,9 +1,7 @@
 <?php
 namespace Procure\Controller;
 
-use Application\Entity\NmtInventoryTrx;
 use Application\Entity\NmtProcureGr;
-use Application\Entity\NmtProcureGrRow;
 use Application\Entity\NmtProcurePo;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;

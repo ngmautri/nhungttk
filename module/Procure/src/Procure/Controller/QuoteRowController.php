@@ -249,57 +249,24 @@ class QuoteRowController extends AbstractActionController
 
     /**
      *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function processAction()
-    {
-        $request = $this->getRequest();
-
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-        $criteria = array(
-            'id' => $id,
-            'token' => $token
-        );
-
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
-    }
-
-    /**
-     *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
      */
     public function editAction()
     {
+        $request = $this->getRequest();
+        $this->layout("Procure/layout-fullscreen");
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
 
-        $request = $this->getRequest();
-        $this->layout("Procure/layout-fullscreen");
-        
-
+        // Is Posing
+        // =============================
         if ($request->isPost()) {
 
             $errors = array();
             $data = $this->params()->fromPost();
-            
+
             $redirectUrl = $request->getPost('redirectUrl');
             $entity_id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
@@ -312,33 +279,49 @@ class QuoteRowController extends AbstractActionController
 
             /** @var \Application\Entity\NmtProcureQoRow $entity ; */
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQoRow')->findOneBy($criteria);
-            
+
             if (! $entity instanceof \Application\Entity\NmtProcureQoRow) {
 
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => null,
                     'target' => null,
+                    'entity' => null,
                     'currency_list' => $currency_list,
-                    'n' => $nTry
+                    'total_row' => null,
+                    'max_row_number' => null,
+                    'net_amount' => null,
+                    'tax_amount' => null,
+                    'gross_amount' => null,
+                    'n' => 0
                 ));
-                
+
                 $viewModel->setTemplate("procure/quote-row/add");
                 return $viewModel;
-                
+            }
+            
+            $target=$entity->getQo();
+            
+            if ($target == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+            
+            
+            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+            $po = $res->getQoute($target->getId(), $target->getToken());
+            
+            if ($po == null) {
+                return $this->redirect()->toRoute('access_denied');
             }
 
             $oldEntity = clone ($entity);
-
-            $target = $entity->getQo();
             
             $errors = $this->qoService->validateRow($target, $entity, $data);
-            
+
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
             if (count($changeArray) == 0) {
@@ -362,15 +345,19 @@ class QuoteRowController extends AbstractActionController
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'target' => $entity->getQo(),
+                    'target' => $target,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
-                    'n' => $nTry
+                    'total_row' => $po['total_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount'],
+                    'n' =>$nTry
                 ));
-                
+
                 $viewModel->setTemplate("procure/quote-row/add");
                 return $viewModel;
-                
             }
 
             // NO ERROR
@@ -380,15 +367,36 @@ class QuoteRowController extends AbstractActionController
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
+            
             $changeOn = new \DateTime();
-
-            $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            $entity->setLastchangedBy($u);
-            $entity->setLastchangeOn($changeOn);
-
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
-
+            
+            try {
+                $this->qoService->saveRow($target, $entity, $u, FALSE);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+            
+            if (count($errors) > 0) {
+                
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'target' => $target,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'total_row' => $po['total_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount'],
+                    'n' =>$nTry
+                ));
+                
+                $viewModel->setTemplate("procure/quote-row/add");
+                return $viewModel;
+            }
+           
             $m = sprintf('[OK] Quotation Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
 
             // Trigger Change Log. AbtractController is EventManagerAware.
@@ -416,7 +424,6 @@ class QuoteRowController extends AbstractActionController
                 'entity_token' => $entity->getToken()
             ));
 
-            $this->doctrineEM->flush();
             $this->flashMessenger()->addMessage($m);
 
             $redirectUrl = "/procure/quote/add1?token=" . $entity->getQo()->getToken() . "&entity_id=" . $entity->getQo()->getId();
@@ -444,18 +451,51 @@ class QuoteRowController extends AbstractActionController
         /** @var \Application\Entity\NmtProcureQoRow $entity ; */
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQoRow')->findOneBy($criteria);
 
-        if ($entity instanceof \Application\Entity\NmtProcureQoRow) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'entity' => $entity,
-                'target' => $entity->getQo(),
-                'currency_list' => $currency_list,
-                'n' => 0
-            ));
-        } else {
+        if (! $entity instanceof \Application\Entity\NmtProcureQoRow) {
             return $this->redirect()->toRoute('access_denied');
         }
+        
+        $target=$entity->getQo();
+        
+        if ($target == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        
+        if ($target->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
+            $m = sprintf('[Info] Quotation Row #%s - %s  already posted!', $entity->getId(), $entity->getRowIdentifer());
+            $this->flashMessenger()->addMessage($m);
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+        
+        
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $po = $res->getQoute($target->getId(), $target->getToken());
+        
+        if ($po == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'target' => $target,
+            'entity' => $entity,
+            'currency_list' => $currency_list,
+            'total_row' => $po['total_row'],
+            'max_row_number' => $po['total_row'],
+            'net_amount' => $po['net_amount'],
+            'tax_amount' => $po['tax_amount'],
+            'gross_amount' => $po['gross_amount'],
+            'n' => 0
+        ));
+
+        $viewModel->setTemplate("procure/quote-row/add");
+        return $viewModel;
     }
 
     /**

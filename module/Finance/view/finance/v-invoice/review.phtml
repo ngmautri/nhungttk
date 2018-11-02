@@ -77,7 +77,9 @@ if (count($errors) > 0) {
 						action="/finance/v-invoice/review" method="post"
 						enctype="multipart/form-data">
 						<input type="hidden" name="redirectUrl"
-							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							value="<?php echo $redirectUrl ?>" /> 
+							
+							<input type="hidden"
 							name="entity_id"
 							value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
 						<input type="hidden" name="token"
@@ -749,7 +751,7 @@ obj.colModel = [
      },},
      
    { title: "Vendor_id", dataType: "integer", dataIndx: "vendor_id", width: 7	,editable: true,hidden: true }, */
-   { title: "", editable: false, minWidth: 62, sortable: false,
+   { title: "", editable: false, minWidth: 60, sortable: false,
        render: function (ui) {
            //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
     		return '<button type="button" class="edit_btn">Edit</button>';

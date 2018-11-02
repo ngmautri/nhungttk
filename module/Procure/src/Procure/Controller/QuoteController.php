@@ -19,8 +19,6 @@ use Application\Entity\NmtProcureQo;
 class QuoteController extends AbstractActionController
 {
 
-    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-
     protected $doctrineEM;
 
     protected $qoService;
@@ -145,7 +143,7 @@ class QuoteController extends AbstractActionController
     public function reviewAction()
     {
         $request = $this->getRequest();
-        $this->layout("Procure/layout-fullscreen");
+        // $this->layout("Procure/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
@@ -176,46 +174,59 @@ class QuoteController extends AbstractActionController
             $id = (int) $data['entity_id'];
             $token = $data['token'];
 
-            $invoice = $res->getVendorInvoice($id, $token);
+            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+            $po = $res->getQoute($id, $token);
 
-            $entity = null;
-            if ($invoice[0] instanceof FinVendorInvoice) {
-                $entity = $invoice[0];
+            if ($po == null) {
+                return $this->redirect()->toRoute('access_denied');
             }
 
-            if (! $entity instanceof FinVendorInvoice) {
+            /**@var \Application\Entity\NmtProcureQo $entity ;*/
+
+            $entity = null;
+            if ($po[0] instanceof NmtProcureQo) {
+                $entity = $po[0];
+            }
+
+            if ($entity == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
 
             // ========================
 
-            if ($invoice['active_row'] == 0) {
-                $m = sprintf('[INFO] AP Invoice #%s has no lines.', $entity->getSysNumber());
+            if ($po['total_row'] == 0) {
+                $m = sprintf('[INFO] Quotation #%s has no lines.', $entity->getId());
                 $m1 = $nmtPlugin->translate('Document is incomplete!');
                 $this->flashMessenger()->addMessage($m1);
 
-                $redirectUrl = "/finance/v-invoice/review?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+                $redirectUrl = "/procure/quote/review?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
                 return $this->redirect()->toUrl($redirectUrl);
             }
-
+            
+            if ($entity->getLocalCurrency() == null) {
+                $entity->setLocalCurrency($default_cur);
+            }
+           
             // check for posting
-            $errors = $this->apService->validateHeader($entity, $data, TRUE);
+            $errors = $this->qoService->validateHeader($entity, $data, TRUE);
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
                     'redirectUrl' => $redirectUrl,
                     'entity' => $entity,
                     'errors' => $errors,
                     'currency_list' => $currency_list,
-                    'total_row' => $invoice['total_row'],
-                    'active_row' => $invoice['active_row'],
-                    'max_row_number' => $invoice['total_row'],
-                    'total_picture' => $invoice['total_picture'],
-                    'total_attachment' => $invoice['total_attachment'],
-                    'net_amount' => $invoice['net_amount'],
-                    'tax_amount' => $invoice['tax_amount'],
-                    'gross_amount' => $invoice['gross_amount']
+                    'total_row' => $po['total_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
                 ));
+
+                $viewModel->setTemplate("procure/quote/show");
+                return $viewModel;
             }
 
             // No ERROR
@@ -226,33 +237,37 @@ class QuoteController extends AbstractActionController
             $oldEntity = clone ($entity);
 
             try {
-                $this->apService->post($entity, $u, true);
+                $this->qoService->post($entity, $u, true);
             } catch (\Exception $e) {
 
                 $errors[] = $e->getMessage();
-                return new ViewModel(array(
+            }
+
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
                     'redirectUrl' => $redirectUrl,
                     'entity' => $entity,
                     'errors' => $errors,
                     'currency_list' => $currency_list,
-                    'total_row' => $invoice['total_row'],
-                    'active_row' => $invoice['active_row'],
-                    'max_row_number' => $invoice['total_row'],
-                    'total_picture' => $invoice['total_picture'],
-                    'total_attachment' => $invoice['total_attachment'],
-                    'net_amount' => $invoice['net_amount'],
-                    'tax_amount' => $invoice['tax_amount'],
-                    'gross_amount' => $invoice['gross_amount']
+                    'total_row' => $po['total_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
                 ));
+
+                $viewModel->setTemplate("procure/quote/show");
+                return $viewModel;
             }
 
             // LOGGING
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
-            $m = sprintf('[OK] AP Invoice %s - posted.', $entity->getSysNumber());
+            $m = sprintf('[OK] Quotation %s - posted.', $entity->getSysNumber());
 
             // Trigger Change Log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
+            $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
                 'priority' => 7,
                 'message' => $m,
                 'objectId' => $entity->getId(),
@@ -267,17 +282,16 @@ class QuoteController extends AbstractActionController
 
             $this->flashMessenger()->addMessage($m);
             // $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
-            $redirectUrl = "/finance/v-invoice/list";
+            $redirectUrl = "/procure/quote/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
         // Initiate.....................
         // ==============================
-        if ($request->getHeader('Referer') == null) {
-            $redirectUrl = null;
-            return $this->redirect()->toRoute('access_denied');
-        } else {
+
+        $redirectUrl = null;
+        if ($this->getRequest()->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
                 ->getUri();
@@ -286,11 +300,17 @@ class QuoteController extends AbstractActionController
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
 
-        $invoice = $res->getVendorInvoice($id, $token);
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $po = $res->getQoute($id, $token);
+
+        if ($po == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
 
         $entity = null;
-        if ($invoice[0] instanceof FinVendorInvoice) {
-            $entity = $invoice[0];
+        if ($po[0] instanceof NmtProcureQo) {
+            $entity = $po[0];
         }
 
         if ($entity == null) {
@@ -298,42 +318,45 @@ class QuoteController extends AbstractActionController
         }
 
         if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
-            $m = sprintf('AP Invoice #%s - %s already posted!', $entity->getId(), $entity->getSysNumber());
+            $m = sprintf('[INFO] Quotaion #%s - %s already posted!', $entity->getId(), $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
-            $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            $redirectUrl = "/procure/quote/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
 
-        if ($invoice['active_row'] == 0) {
-            $m = sprintf('[INFO] AP Invoice #%s has no lines.', $entity->getSysNumber());
+        if ($po['total_row'] == 0) {
+            $m = sprintf('[INFO] Quotaion #%s has no lines.', $entity->getSysNumber());
             $m1 = $nmtPlugin->translate('Document is incomplete!');
             $this->flashMessenger()->addMessage($m1);
-            $redirectUrl = "/finance/v-invoice-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
+            $redirectUrl = "/procure/quote/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
             'redirectUrl' => $redirectUrl,
-            'entity' => $entity,
             'errors' => null,
+            'entity' => $entity,
             'currency_list' => $currency_list,
-            'total_row' => $invoice['total_row'],
-            'active_row' => $invoice['active_row'],
-            'max_row_number' => $invoice['total_row'],
-            'total_picture' => $invoice['total_picture'],
-            'total_attachment' => $invoice['total_attachment'],
-            'net_amount' => $invoice['net_amount'],
-            'tax_amount' => $invoice['tax_amount'],
-            'gross_amount' => $invoice['gross_amount']
+            'total_row' => $po['total_row'],
+            'max_row_number' => $po['total_row'],
+            'net_amount' => $po['net_amount'],
+            'tax_amount' => $po['tax_amount'],
+            'gross_amount' => $po['gross_amount'],
+            'n' => 0
         ));
+
+        $viewModel->setTemplate("procure/quote/show");
+        return $viewModel;
     }
 
     /**
      *
-     * @deprecated
+     * show
+     *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
      */
-    public function add1Action()
+    public function showAction()
     {
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
@@ -363,6 +386,7 @@ class QuoteController extends AbstractActionController
 
         if ($entity instanceof \Application\Entity\NmtProcureQo) {
             return new ViewModel(array(
+                'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
                 'errors' => null,
@@ -378,75 +402,7 @@ class QuoteController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-
-    /**
-     *
-     * @deprecated
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function add2Action()
-    {
-        $request = $this->getRequest();
-
-        // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $this->layout("layout/user/ajax");
-
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
-
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
-
-        $request = $this->getRequest();
-
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $po = $res->getPo($id, $token);
-
-        if ($po == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $entity = null;
-        if ($po[0] instanceof NmtProcureQo) {
-            $entity = $po[0];
-        }
-
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => $po['total_row'],
-                'active_row' => $po['active_row'],
-                'max_row_number' => $po['total_row'],
-                'net_amount' => $po['net_amount'],
-                'tax_amount' => $po['tax_amount'],
-                'gross_amount' => $po['gross_amount']
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
-    }
-
+  
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -464,7 +420,7 @@ class QuoteController extends AbstractActionController
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
+
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();

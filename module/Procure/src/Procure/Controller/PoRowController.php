@@ -584,24 +584,6 @@ class PoRowController extends AbstractActionController
 
         if ($target instanceof \Application\Entity\NmtProcurePo) {
 
-            /*
-             * $criteria = array(
-             * 'invoice' => $target_id,
-             * 'isActive' => 1
-             * );
-             *
-             * $query = 'SELECT e FROM Application\Entity\NmtProcurePoRow e
-             * WHERE e.po=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
-             *
-             * $list = $this->doctrineEM->createQuery($query)
-             * ->setParameters(array(
-             * "1" => $target,
-             * "2" => 1
-             *
-             * ))
-             * ->getResult();
-             */
-
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
             $list = $res->getPOStatus($target_id, $token);
@@ -1117,6 +1099,7 @@ class PoRowController extends AbstractActionController
         // echo json_encode($sent_list);
 
         $to_update = $sent_list['updateList'];
+        
         foreach ($to_update as $a) {
             $criteria = array(
                 'id' => $a['row_id'],

@@ -46,7 +46,16 @@ class QoService extends AbstractService
 
         // ====== OK ====== //
         
-        $entity->setIsActive(1);
+        $remarks = $data['remarks'];
+        $isActive = (int) $data['isActive'];
+        
+        if ($isActive !== 1) {
+            $isActive = 0;
+        }
+        
+        $entity->setIsActive($isActive);
+        $entity->setRemarks($remarks);
+        
         
         // check vendor. ok
         $ck = $this->checkVendor($entity, $data, $isPosting);
@@ -162,7 +171,6 @@ class QoService extends AbstractService
         $entity->setUnit($unit);
         $entity->setConversionFactor($conversionFactor);
 
-        $n_validated = 0;
         if ($quantity == null) {
             $errors[] = 'Please  enter quantity!';
         } else {
@@ -174,8 +182,7 @@ class QoService extends AbstractService
                     $errors[] = 'Quantity must be greater than 0!';
                 } else {
                     $entity->setQuantity($quantity);
-                    $n_validated ++;
-                }
+                 }
             }
         }
 
@@ -190,14 +197,8 @@ class QoService extends AbstractService
                     $errors[] = 'Price must be greate than 0!';
                 } else {
                     $entity->setUnitPrice($unitPrice);
-                    $n_validated ++;
-                }
+                 }
             }
-        }
-
-        if ($n_validated == 2) {
-            $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
-            $entity->setNetAmount($netAmount);
         }
 
         if ($taxRate != null) {
@@ -208,21 +209,60 @@ class QoService extends AbstractService
                     $errors[] = 'Tax Rate must be greate than 0!';
                 } else {
                     $entity->setTaxRate($taxRate);
-                    $n_validated ++;
-                }
+                 }
             }
         }
 
-        if ($n_validated == 3) {
-            $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
-            $grossAmount = $entity->getNetAmount() + $taxAmount;
-            $entity->setTaxAmount($taxAmount);
-            $entity->setGrossAmount($grossAmount);
-        }
-
-        // $entity->setTraceStock($traceStock);
         $entity->setRemarks($remarks);
 
+        return $errors;
+    }
+    
+    /**
+     * 
+     * @param \Application\Entity\NmtProcureQoRow $entity
+     * @param array $data
+     */
+    public function validateRowAjax($entity, $data)
+    {
+        $errors = array();
+    
+        $quantity = $data['row_quantity'];
+        $unitPrice = $data['row_unit_price'];
+        $faRemarks = $data['fa_remarks'];
+        
+        $entity->setFaRemarks($faRemarks);
+    
+        if ($quantity == null) {
+            $errors[] = 'Please  enter quantity!';
+        } else {
+            
+            if (! is_numeric($quantity)) {
+                $errors[] = 'Quantity must be a number.';
+            } else {
+                if ($quantity <= 0) {
+                    $errors[] = 'Quantity must be greater than 0!';
+                } else {
+                    $entity->setQuantity($quantity);
+                }
+            }
+        }
+        
+        if ($unitPrice == null) {
+            $errors[] = 'Price is not given. It must be a number.';
+        } else {
+            
+            if (! is_numeric($unitPrice)) {
+                $errors[] = 'Price is not valid. It must be a number.';
+            } else {
+                if ($unitPrice <= 0) {
+                    $errors[] = 'Price must be greate than 0!';
+                } else {
+                    $entity->setUnitPrice($unitPrice);
+                }
+            }
+        }
+        
         return $errors;
     }
 
@@ -248,6 +288,16 @@ class QoService extends AbstractService
         }
 
         // validated.
+        
+        $netAmount = $entity->getQuantity() * $entity->getUnitPrice();
+        $entity->setNetAmount($netAmount);
+        
+        $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
+        $grossAmount = $entity->getNetAmount() + $taxAmount;
+        $entity->setTaxAmount($taxAmount);
+        $entity->setGrossAmount($grossAmount);
+        
+        
 
         if ($isNew == TRUE) {
             $entity->setCurrentState($target->getCurrentState());
@@ -497,7 +547,7 @@ class QoService extends AbstractService
             if (! $validator->isValid($refDate)) {
                 $errors[] = $this->controllerPlugin->translate('Quotation Date is not correct or empty!');
             } else {
-                $entity->setInvoiceDate(new \DateTime($refDate));
+                $entity->setContractDate(new \DateTime($refDate));
             }
         }
 

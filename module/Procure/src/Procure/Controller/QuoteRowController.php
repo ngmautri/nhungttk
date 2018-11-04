@@ -177,7 +177,7 @@ class QuoteRowController extends AbstractActionController
         $po = $res->getQoute($id, $token);
 
         if ($po == null) {
-             return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('access_denied');
         }
 
         $target = null;
@@ -500,9 +500,6 @@ class QuoteRowController extends AbstractActionController
     {
         $request = $this->getRequest();
 
-        // $pq_curPage = $_GET ["pq_curpage"];
-        // $pq_rPP = $_GET ["pq_rpp"];
-
         $target_id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
@@ -519,11 +516,6 @@ class QuoteRowController extends AbstractActionController
         $escaper = new Escaper();
 
         if ($target instanceof \Application\Entity\NmtProcureQo) {
-
-            $criteria = array(
-                'invoice' => $target_id,
-                'isActive' => 1
-            );
 
             $query = 'SELECT e FROM Application\Entity\NmtProcureQoRow e
             WHERE e.qo=?1 AND e.isActive =?2 ORDER BY e.rowNumber';
@@ -872,6 +864,10 @@ class QuoteRowController extends AbstractActionController
         $a_json_final = array();
         $escaper = new Escaper();
 
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
         /*
          * $pq_curPage = $_GET ["pq_curpage"];
          * $pq_rPP = $_GET ["pq_rpp"];
@@ -881,24 +877,48 @@ class QuoteRowController extends AbstractActionController
 
         $to_update = $sent_list['updateList'];
         foreach ($to_update as $a) {
+
             $criteria = array(
                 'id' => $a['row_id'],
                 'token' => $a['row_token']
             );
 
-            /** @var \Application\Entity\NmtProcurePoRow $entity */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findOneBy($criteria);
+            /** @var \Application\Entity\NmtProcureQoRow $entity */
+            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQoRow')->findOneBy($criteria);
 
-            if ($entity != null) {
-                $entity->setFaRemarks($a['fa_remarks']);
-                $entity->setRowNumber($a['row_number']);
-                // $a_json_final['updateList']=$a['row_id'] . 'has been updated';
+            if ($entity !== null) {
+
+                $errors = $this->qoService->validateRowAjax($entity, $a);
+                if (count($errors) > 0) {
+                    $response = $this->getResponse();
+                    $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+
+                    $a_json_final['status'] = \Application\Model\Constants::AJAX_FAILED;
+                    $a_json_final['message'] = $errors;
+                    $response->setContent(json_encode($a_json_final));
+                    return $response;
+                }
+                
+                try {
+                    $this->qoService->saveRow($entity->getQo(), $entity, $u);
+                } catch (\Exception $e) {
+                    $errors = $e->getMessage();
+                }
+
+                if (count($errors) > 0) {
+                    $response = $this->getResponse();
+                    $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+
+                    $a_json_final['status'] = \Application\Model\Constants::AJAX_FAILED;
+                    $a_json_final['message'] = $errors;
+                    $response->setContent(json_encode($a_json_final));
+                    return $response;
+                }
+
                 $this->doctrineEM->persist($entity);
             }
         }
         $this->doctrineEM->flush();
-
-        // $a_json_final["updateList"]= json_encode($sent_list["updateList"]);
 
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');

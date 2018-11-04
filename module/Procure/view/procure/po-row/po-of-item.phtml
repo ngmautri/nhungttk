@@ -18,6 +18,10 @@
 			<td><b>Q'ty</b></td>
 			<td><b>UP Price</b></td>
 			<td><b>Total</b></td>
+			<td><b>EX</b></td>
+			
+			<td><b>local UP</b></td>
+			<td><b>Local Total</b></td>
 		
 			<td><b>Currency</b></td>
 			<td><b>Status</b></td>
@@ -50,7 +54,11 @@
 			<td><?php echo $a->getQuantity();?></td>
 			<td><?php echo number_format($a->getUnitPrice(),2);?></td>
 			<td><?php echo number_format($a->getUnitPrice()*$a->getQuantity(),2);?></td>		
-			<td><?php echo $a->getPo()->getCurrency()->getCurrency();?></td>			
+			<td><?php echo $a->getPo()->getCurrency()->getCurrency();?></td>
+					<td><?php echo $a->getPo()->getExchangeRate();?></td>			
+			<td><?php echo $a->getPo()->getExchangeRate()*$a->getUnitPrice();?></td>			
+			<td><?php echo $a->getPo()->getExchangeRate()*$a->getUnitPrice()*$a->getQuantity();?></td>
+				
 			<td><?php echo $a->getCurrentState();?></td>
 			<td>
 			</td>

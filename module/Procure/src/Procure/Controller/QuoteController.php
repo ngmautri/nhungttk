@@ -464,10 +464,7 @@ class QuoteController extends AbstractActionController
 
             $oldEntity = clone ($entity);
 
-            if ($entity->getLocalCurrency() == null) {
-                $entity->setLocalCurrency($default_cur);
-            }
-
+       
             // validate and update entity
             $errors = $this->qoService->validateHeader($entity, $data);
 

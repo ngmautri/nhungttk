@@ -55,8 +55,8 @@ class PoRowController extends AbstractActionController
             $data = $this->params()->fromPost();
 
             $redirectUrl = $data['redirectUrl'];
-            $po_id = (int) $data['po_id'];
-            $po_token = $data['po_token'];
+            $po_id = (int) $data['target_id'];
+            $po_token = $data['target_token'];
 
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
@@ -77,6 +77,8 @@ class PoRowController extends AbstractActionController
 
                 $errors[] = 'Contract /PO object can\'t be empty. Or token key is not valid!';
                 $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
@@ -104,6 +106,8 @@ class PoRowController extends AbstractActionController
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -139,6 +143,8 @@ class PoRowController extends AbstractActionController
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -204,6 +210,8 @@ class PoRowController extends AbstractActionController
         $entity->setTaxRate(0);
 
         $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+            
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
@@ -313,7 +321,7 @@ class PoRowController extends AbstractActionController
 
             $redirectUrl = $data['redirectUrl'];
             $entity_id = (int) $data['entity_id'];
-            $token = $data['token'];
+            $token = $data['entity_token'];
             $nTry = $data['n'];
 
             $criteria = array(
@@ -328,11 +336,14 @@ class PoRowController extends AbstractActionController
 
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
+                     
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => null,
-                    'target' => null,
+                    'entity' => $entity,
+                    'target' => $target,
                     'currency_list' => $currency_list,
                     'total_row' => null,
                     'max_row_number' => null,
@@ -341,30 +352,27 @@ class PoRowController extends AbstractActionController
                     'gross_amount' => null,
                     'n' => $nTry
                 ));
+                
+                $viewModel->setTemplate("procure/po-row/add-row");
+                return $viewModel;
+                
             }
 
             // entity found
-
-            $id = $entity->getPo()->getId();
-            $token = $entity->getPo()->getToken();
-
+            $target=$entity->getPo();
+            
+            if ($target == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+    
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-            $po = $res->getPo($id, $token);
+            $po = $res->getPo($target->getId(), $target->getToken());
 
             if ($po == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
-
-            $target = null;
-            if ($po[0] instanceof NmtProcurePo) {
-                $target = $po[0];
-            }
-
-            if ($target == null) {
-                return $this->redirect()->toRoute('access_denied');
-            }
-
+           
             // target ok
 
             $oldEntity = clone ($entity);
@@ -396,11 +404,13 @@ class PoRowController extends AbstractActionController
 
             if (count($errors) > 0) {
 
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'target' => $target,
                     'entity' => $entity,
+                    'target' => $target,
                     'currency_list' => $currency_list,
                     'total_row' => $po['total_row'],
                     'max_row_number' => $po['total_row'],
@@ -409,6 +419,9 @@ class PoRowController extends AbstractActionController
                     'gross_amount' => $po['gross_amount'],
                     'n' => $nTry
                 ));
+                
+                $viewModel->setTemplate("procure/po-row/add-row");
+                return $viewModel;
             }
 
             // NO ERROR
@@ -428,11 +441,13 @@ class PoRowController extends AbstractActionController
 
             if (count($errors) > 0) {
 
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'target' => $target,
                     'entity' => $entity,
+                    'target' => $target,
                     'currency_list' => $currency_list,
                     'total_row' => $po['total_row'],
                     'max_row_number' => $po['total_row'],
@@ -441,6 +456,9 @@ class PoRowController extends AbstractActionController
                     'gross_amount' => $po['gross_amount'],
                     'n' => $nTry
                 ));
+                
+                $viewModel->setTemplate("procure/po-row/add-row");
+                return $viewModel;
             }
 
             $m = sprintf('[OK] PO Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
@@ -472,7 +490,7 @@ class PoRowController extends AbstractActionController
 
             $this->flashMessenger()->addMessage($m);
 
-            $redirectUrl = "/procure/po/review?token=" . $entity->getPo()->getToken() . "&entity_id=" . $entity->getPo()->getId();
+            $redirectUrl = "/procure/po/review?token=" . $target->getToken() . "&entity_id=" . $target->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
 
@@ -498,28 +516,25 @@ class PoRowController extends AbstractActionController
         if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-
-        $id = $entity->getPo()->getId();
-        $token = $entity->getPo()->getToken();
-
+        
+        $target = $entity->getPo();
+        
+        if ($target == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $po = $res->getPo($id, $token);
+        $po = $res->getPo($target->getId(), $target->getToken());
 
         if ($po == null) {
             return $this->redirect()->toRoute('access_denied');
         }
 
-        $target = null;
-        if ($po[0] instanceof NmtProcurePo) {
-            $target = $po[0];
-        }
-
-        if ($target == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        return new ViewModel(array(
+     
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+            
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
@@ -532,6 +547,9 @@ class PoRowController extends AbstractActionController
             'gross_amount' => $po['gross_amount'],
             'n' => 0
         ));
+        
+        $viewModel->setTemplate("procure/po-row/add-row");
+        return $viewModel;
     }
 
     /**
@@ -1083,6 +1101,11 @@ class PoRowController extends AbstractActionController
      */
     public function updateRowAction()
     {
+        
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+        
         $a_json_final = array();
         $escaper = new Escaper();
 
@@ -1104,10 +1127,21 @@ class PoRowController extends AbstractActionController
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findOneBy($criteria);
 
             if ($entity != null) {
-                $entity->setFaRemarks($a['fa_remarks']);
-                $entity->setRowNumber($a['row_number']);
-                // $a_json_final['updateList']=$a['row_id'] . 'has been updated';
+             
+                $errors = $this->poService->validateRow1($entity, $a);
+                if(count($errors)>0){
+                    $response = $this->getResponse();
+                    $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+                    
+                    $a_json_final['status'] = \Application\Model\Constants::AJAX_FAILED;
+                    $a_json_final['message'] = $errors;
+                    $response->setContent(json_encode($a_json_final));
+                    return $response;
+                }
+                
+                $this->poService->saveRow($entity->getPo(), $entity, $u);
                 $this->doctrineEM->persist($entity);
+                
             }
         }
         $this->doctrineEM->flush();

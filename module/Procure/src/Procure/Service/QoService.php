@@ -45,7 +45,9 @@ class QoService extends AbstractService
         }
 
         // ====== OK ====== //
-
+        
+        $entity->setIsActive(1);
+        
         // check vendor. ok
         $ck = $this->checkVendor($entity, $data, $isPosting);
         if (count($ck) > 0) {

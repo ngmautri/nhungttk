@@ -483,6 +483,160 @@ class APInvoiceService extends AbstractService
         $apSearchService->indexingAPRows($ap_rows);
         
     }
+    
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param \Application\Entity\NmtProcureQo $target
+     * @param \Application\Entity\MlaUsers $u
+     *
+     */
+    public function copyFromQO($entity, $target, $u, $isFlush = false)
+    {
+        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
+            throw new \Exception("Invalid Argument! Invoice is not found.");
+        }
+        
+        if (! $target instanceof \Application\Entity\NmtProcureQo) {
+            throw new \Exception("Invalid Argument! QO Object is not found.");
+        }
+        
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+        
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        
+        $po_rows = $res->getPOStatus($target->getId(), $target->getToken());
+        
+        if ($po_rows == null) {
+            throw new \Exception("PO Object is empty. Nothing is copied");
+        }
+        
+        $entity->setPo($target);
+        $n = 0;
+        
+        foreach ($po_rows as $l) {
+            
+            // if all received, ignore it.
+            if ($l['open_ap_qty'] == 0) {
+                continue;
+            }
+            
+            /** @var \Application\Entity\NmtProcurePoRow $l ; */
+            $r = $l[0];
+            
+            $gl_account = null;
+            $cost_center = null;
+            
+            if ($r->getItem() != null) {
+                
+                $criteria = array(
+                    'isActive' => 1,
+                    'id' => $r->getItem()->getItemGroup()
+                );
+                /** @var \Application\Entity\NmtInventoryItemGroup $item_group ; */
+                $item_group = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
+                
+                if ($item_group != null) {
+                    
+                    if ($r->getItem()->getIsStocked() == 1) {
+                        $gl_account = $item_group->getInventoryAccount();
+                    } else {
+                        $gl_account = $item_group->getExpenseAccount();
+                        $cost_center = $item_group->getCostCenter();
+                    }
+                }
+            }
+            
+            $n ++;
+            $row_tmp = new FinVendorInvoiceRow();
+            
+            $row_tmp->setGlAccount($gl_account);
+            $row_tmp->setCostCenter($cost_center);
+            
+            $row_tmp->setDocStatus($entity->getDocStatus());
+            
+            // Goods and Invoice receipt
+            $row_tmp->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
+            
+            $row_tmp->setInvoice($entity);
+            $row_tmp->setIsDraft(1);
+            $row_tmp->setIsActive(1);
+            $row_tmp->setIsPosted(0);
+            
+            $row_tmp->setRowNumber($n);
+            
+            $row_tmp->setCurrentState("DRAFT");
+            $row_tmp->setPoRow($r);
+            
+            // converted to purchase qty
+            $row_tmp->setQuantity($l['open_ap_qty']);
+            $row_tmp->setUnitPrice($r->getUnitPrice());
+            $row_tmp->setUnit($r->getUnit());
+            
+            $row_tmp->setConvertedPurchaseQuantity($r->getQuantity());
+            
+            $row_tmp->setConversionFactor($r->getConversionFactor());
+            
+            $row_tmp->setDocQuantity($row_tmp->getQuantity() / $row_tmp->getConversionFactor());
+            $row_tmp->setDocUnitPrice($row_tmp->getUnitPrice() * $row_tmp->getConversionFactor());
+            $row_tmp->setDocUnit($r->getDocUnit());
+            
+            $row_tmp->setTaxRate($r->getTaxRate());
+            
+            $item = $r->getItem();
+            $pr_row = $r->getPrRow();
+            $row_tmp->setPrRow($pr_row);
+            $row_tmp->setItem($item);
+            
+            $convertedStandardQuantity = $row_tmp->getQuantity();
+            $convertedStandardUnitPrice = $row_tmp->getUnitPrice();
+            
+            // converted to standard qty
+            $standardCF = 1;
+            
+            if ($pr_row != null) {
+                $standardCF = $standardCF * $pr_row->getConversionFactor();
+            }
+            
+            if ($item != null) {
+                $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
+                $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
+                
+                // calculate standard quantity
+                $row_tmp->setConvertedStandardQuantity($convertedStandardQuantity);
+                $row_tmp->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
+            }
+            
+            $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
+            $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
+            $grossAmount = $netAmount + $taxAmount;
+            
+            $row_tmp->setNetAmount($netAmount);
+            $row_tmp->setTaxAmount($taxAmount);
+            $row_tmp->setGrossAmount($grossAmount);
+            
+            $row_tmp->setCreatedBy($u);
+            $row_tmp->setCreatedOn(new \DateTime());
+            $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $row_tmp->setRemarks("Ref: PO#" . $r->getRowIdentifer());
+            
+            $row_tmp->setExwUnitPrice($r->getExwUnitPrice());
+            $row_tmp->setDiscountRate($r->getDiscountRate());
+            
+            $this->doctrineEM->persist($row_tmp);
+        }
+        
+        if ($n == 0) {
+            throw new \Exception("P/O is billed fully!");
+        }
+        
+        if ($isFlush == true) {
+            $this->doctrineEM->flush();
+        }
+    }
 
     /**
      *
@@ -637,6 +791,8 @@ class APInvoiceService extends AbstractService
             $this->doctrineEM->flush();
         }
     }
+    
+    
 
     /**
      *

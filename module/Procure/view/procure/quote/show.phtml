@@ -73,6 +73,13 @@ if (count($errors) > 0) {
 
 			<div style="position: relative; float: right;">
 			
+				<?php if($entity->getDocStatus()==\Application\Model\Constants::DOC_STATUS_POSTED):?>
+		
+			  <a class="btn btn-default btn-sm"
+					href="<?php echo $this->baseUrl ?>/procure/po/copy-from-qo?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
+					class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Create PO</a>
+				<?php endif;?>	
+			
 				<?php if($action==\Application\Model\Constants::FORM_ACTION_REVIEW):?>
 		
 						<a class="btn btn-primary btn-sm" style="color: white"
@@ -87,6 +94,7 @@ if (count($errors) > 0) {
 					href="<?php echo $this->baseUrl ?>/procure/quote/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
 					class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</a>
 
+			
 				<a class="btn btn-default btn-sm"
 					href="<?php echo $this->baseUrl ?>/procure/quote/review?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
 					class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;<?php echo $this->translate("Review");?></a>
@@ -515,6 +523,8 @@ $( "#vendor_name_1" ).autocomplete({
 			resizable:true,
 			//draggable:true,
 			sortable: true,
+			freezeCols:1,
+				
 <?php
 switch ($action) {
 
@@ -656,10 +666,10 @@ switch ($action) {
 
    	    <?php if($entity->getDocStatus()!==\Application\Model\Constants::DOC_STATUS_POSTED && $action==\Application\Model\Constants::FORM_ACTION_REVIEW):?>
 	
-       { title: "", editable: false, minWidth: 60, sortable: false,
+       { title: "", editable: false, minWidth: 55, sortable: false,
            render: function (ui) {
                //return "<button type='button' class='edit_btn' ><small><i style='font-style: normal;' class=''>Edit&nbsp;</i></small></button><button type='button' class='receive_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span><button type='button' class='receive_inline_btn'><span class='glyphicon glyphicon-plus'>&nbsp;</span></button>";
-           	return "<button type='button' class='edit_btn'>EDIT</button>";
+           	return '<button type="button" class="edit_btn">Edit</button>';
 	           }
        },
        <?php endif?>

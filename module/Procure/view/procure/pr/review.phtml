@@ -466,9 +466,7 @@ function doPosting() {
                                 
    		     redirectUrl="/procure/pr-row/add?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>";
               window.location.href= redirectUrl;
-                                 
-                                //debugger;
-                            }
+                               }
                             }
                         ]
                         }
@@ -538,12 +536,12 @@ function doPosting() {
                           //$(".saving", $grid).show();
 
 						  	
-                          //$("#global-notice").text("Updating...").show();
-                          //alert(updateList[0].item_name  +  updateList[0].row_id);
+                          $("#global-notice").text("Updating...").show();
+                          alert(updateList[0].item_name  +  updateList[0].row_id);
                       },
                       success: function (changes) {
                           //commit the changes.
-                          //alert(changes.updateList);
+                          alert(changes.updateList);
                            $("#global-notice").text("[OK] Row updated...").show();
             		      //alert('it is ok');                
                           /* grid.commit({ type: 'add', rows: changes.addList });

@@ -8,6 +8,7 @@ use Zend\View\Model\ViewModel;
 use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
 use Application\Entity\NmtProcurePo;
+use Application\Entity\NmtProcureQo;
 
 /**
  *
@@ -30,6 +31,162 @@ class PoController extends AbstractActionController
      */
     public function indexAction()
     {}
+
+    /**
+     * Make P/O from QO
+     * case GR-IR
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function copyFromQoAction()
+    {
+        $this->layout("Procure/layout-fullscreen");
+        $request = $this->getRequest();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+
+        // Is Posting .................
+        // ============================
+        if ($request->isPost()) {
+
+            $errors = array();
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
+
+            $id = (int) $data['target_id'];
+            $token = $data['target_token'];
+
+            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+            $po = $res->getQoute($id, $token);
+
+            /**@var \Application\Entity\NmtProcureQo $target ;*/
+            $target = null;
+
+            if ($po != null) {
+                if ($po[0] instanceof NmtProcureQo) {
+                    $target = $po[0];
+                }
+            }
+
+            if ($target == null) {
+                $errors[] = 'Quotation can\'t be empty!';
+                $this->flashMessenger()->addMessage('Something wrong!');
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => null,
+                    'target' => null,
+                    'currency_list' => $currency_list
+                ));
+            }
+
+            $entity = new NmtProcurePo();
+            $entity->setLocalCurrency($default_cur);
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            $errors = $this->poService->validateHeader($entity, $data);
+
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $target,
+                    'currency_list' => $currency_list
+                ));
+            }
+
+            // NO ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            try {
+                $this->poService->saveHeader($entity, $u, TRUE);
+                $this->poService->copyFromQO($entity, $target, $u, true);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+
+            if (count($errors) > 0) {
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => $target,
+                    'currency_list' => $currency_list
+                ));
+            }
+
+            $m = sprintf("[OK] PP #%s created from QO #%s", $entity->getSysNumber(), $target->getSysNumber());
+            $this->flashMessenger()->addMessage($m);
+
+            $redirectUrl = "/procure/po/review?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        // NO POST
+        // Initiate.....................
+        // ==============================
+
+        $redirectUrl = null;
+        if ($request->getHeader('Referer') != null) {
+
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
+        }
+
+        $id = (int) $this->params()->fromQuery('target_id');
+        $token = $this->params()->fromQuery('token');
+
+        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+        $qo = $res->getQoute($id, $token);
+
+        if ($qo == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        /**@var \Application\Entity\NmtProcurePo $target ;*/
+
+        $target = null;
+        if ($qo[0] instanceof NmtProcureQo) {
+            $target = $qo[0];
+        }
+
+        if ($target == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $entity = new NmtProcurePo();
+        $entity->setVendor($target->getVendor());
+        $entity->setCurrency($target->getCurrency());
+        $entity->setExchangeRate($target->getExchangeRate());
+        $entity->setContractDate(new \Datetime());
+
+        $entity->setIsActive(1);
+        $entity->setRemarks("Ref." . $target->getSysNumber());
+
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'entity' => $entity,
+            'target' => $target,
+            'currency_list' => $currency_list
+        ));
+    }
 
     /**
      *
@@ -60,70 +217,42 @@ class PoController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-
-            $contractDate = $request->getPost('contractDate');
-            $contractNo = $request->getPost('contractNo');
-            $currentState = $request->getPost('currentState');
-
-            $vendor_id = (int) $request->getPost('vendor_id');
-            $currency_id = (int) $request->getPost('currency_id');
-            $isActive = (int) $request->getPost('isActive');
-            $remarks = $request->getPost('remarks');
-
-            if ($isActive !== 1) {
-                $isActive = 0;
-            }
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
 
             $entity = new NmtProcurePo();
-
-            $entity->setIsActive($isActive);
-            $entity->setCurrentState($currentState);
-
-            $vendor = null;
-            if ($vendor_id > 0) {
-                /** @var \Application\Entity\NmtBpVendor $vendor ; */
-                $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
-            }
-
-            if ($vendor !== null) {
-                $entity->setVendor($vendor);
-                $entity->setVendorName($vendor->getVendorName());
-            } else {
-                $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
-            }
-
-            $currency = null;
-            if ($currency_id > 0) {
-                /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
-                $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
-            }
-
-            if ($currency !== null) {
-                $entity->setCurrency($currency);
-                $entity->setCurrencyIso3($currency->getCurrency());
-            } else {
-                $errors[] = 'Currency can\'t be empty. Please select a currency!';
-            }
-
-            $validator = new Date();
-
-            if ($contractNo == "") {
-                $errors[] = 'Contract is not correct or empty!';
-            } else {
-                $entity->setContractNo($contractNo);
-            }
-
-            if (! $validator->isValid($contractDate)) {
-                $errors[] = 'Contract Date is not correct or empty!';
-            } else {
-                $entity->setContractDate(new \DateTime($contractDate));
-            }
-
-            $entity->setRemarks($remarks);
+            $entity->setLocalCurrency($default_cur);
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            $errors = $this->poService->validateHeader($entity, $data);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list
+                ));
+
+                $viewModel->setTemplate("procure/po/add");
+                return $viewModel;
+            }
+
+            // No ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            try {
+                $this->poService->saveHeader($entity, $u, TRUE);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -134,18 +263,6 @@ class PoController extends AbstractActionController
                 return $viewModel;
             }
 
-            // No ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn(new \DateTime());
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
-            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
-
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
             $m = sprintf("[OK] PO #%s created!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
 
@@ -177,7 +294,7 @@ class PoController extends AbstractActionController
             'currency_list' => $currency_list
         ));
 
-        $viewModel->setTemplate("procure/po/add_po");
+        $viewModel->setTemplate("procure/po/add");
         return $viewModel;
     }
 
@@ -208,9 +325,11 @@ class PoController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-            $id = (int) $request->getPost('entity_id');
-            $token = $request->getPost('token');
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
+
+            $id = (int) $data['entity_id'];
+            $token = $data['token'];
 
             $po = $res->getPo($id, $token);
 
@@ -218,138 +337,88 @@ class PoController extends AbstractActionController
                 return $this->redirect()->toRoute('access_denied');
             }
 
-            if ($po[0] instanceof \Application\Entity\NmtProcurePo) {
+            /**@var \Application\Entity\NmtProcurePo $entity ;*/
+            $entity = null;
+            if ($po[0] instanceof NmtProcurePo) {
 
-                /**@var \Application\Entity\NmtProcurePo $entity ;*/
                 $entity = $po[0];
-                $oldEntity = clone ($entity);
+            }
 
-                // $exchangeRate = (double) $request->getPost('exchangeRate');
-                $contractDate = $request->getPost('contractDate');
-                $contractNo = $request->getPost('contractNo');
-                $vendor_id = (int) $request->getPost('vendor_id');
-                $currency_id = (int) $request->getPost('currency_id');
+            if ($entity == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
 
-                $isActive = (int) $request->getPost('isActive');
-                $remarks = $request->getPost('remarks');
+            $oldEntity = clone ($entity);
+            $errors = $this->poService->validateHeader($entity, $data, TRUE);
 
-                if ($isActive != 1) {
-                    $isActive = 0;
-                }
-
-                $entity->setIsActive($isActive);
-
-                $vendor = null;
-                if ($vendor_id > 0) {
-                    /** @var \Application\Entity\NmtBpVendor $vendor ; */
-                    $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
-                }
-
-                if ($vendor instanceof \Application\Entity\NmtBpVendor) {
-                    $entity->setVendor($vendor);
-                    $entity->setVendorName($vendor->getVendorName());
-                } else {
-                    $errors[] = $nmtPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
-                }
-
-                $currency = null;
-                if ($currency_id > 0) {
-                    /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
-                    $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
-                }
-
-                if ($currency !== null) {
-                    $entity->setCurrency($currency);
-                } else {
-                    $errors[] = $nmtPlugin->translate('Currency is undefined. Please select currency!');
-                }
-
-                $validator = new Date();
-
-                if ($contractNo == "") {
-                    $errors[] = $nmtPlugin->translate('Contract is not correct or empty!');
-                } else {
-                    $entity->setContractNo($contractNo);
-                }
-
-                if (! $validator->isValid($contractDate)) {
-                    $errors[] = $nmtPlugin->translate('Contract Date is not correct or empty!');
-                } else {
-
-                    if (new \DateTime($contractDate) > new \DateTime()) {
-                        $errors[] = $nmtPlugin->translate('Contract Date is future date');
-                    } else {
-                        $entity->setContractDate(new \DateTime($contractDate));
-                    }
-                }
-
-                $entity->setRemarks($remarks);
-
-                if (count($errors) > 0) {
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'entity' => $entity,
-                        'errors' => $errors,
-                        'currency_list' => $currency_list,
-                        'total_row' => $po['total_row'],
-                        'active_row' => $po['active_row'],
-                        'max_row_number' => $po['total_row'],
-                        'net_amount' => $po['net_amount'],
-                        'tax_amount' => $po['tax_amount'],
-                        'gross_amount' => $po['gross_amount']
-                    ));
-                }
-
-                // No ERROR
-                // Saving into Database..........
-                // ++++++++++++++++++++++++++++++
-
-                $changeOn = new \DateTime();
-                $oldEntity = clone ($entity);
-                try {
-                    $this->poService->doPosting($entity, $u, $nmtPlugin, true);
-                } catch (\Exception $e) {
-                    $errors[] = $e->getMessage();
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'entity' => $entity,
-                        'errors' => $errors,
-                        'currency_list' => $currency_list,
-                        'total_row' => $po['total_row'],
-                        'active_row' => $po['active_row'],
-                        'max_row_number' => $po['total_row'],
-                        'net_amount' => $po['net_amount'],
-                        'tax_amount' => $po['tax_amount'],
-                        'gross_amount' => $po['gross_amount']
-                    ));
-                }
-
-                // UPDATE Search Index
-
-                // LOGGING
-                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-
-                $m = sprintf('[OK] PO #%s posted.', $entity->getSysNumber());
-
-                // Trigger Change Log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
-                    'priority' => 7,
-                    'message' => $m,
-                    'objectId' => $entity->getId(),
-                    'objectToken' => $entity->getToken(),
-                    'changeArray' => $changeArray,
-                    'changeBy' => $u,
-                    'changeOn' => $changeOn,
-                    'revisionNumber' => $entity->getRevisionNo(),
-                    'changeDate' => $changeOn,
-                    'changeValidFrom' => $changeOn
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+                    'redirectUrl' => $redirectUrl,
+                    'entity' => $entity,
+                    'errors' => $errors,
+                    'currency_list' => $currency_list,
+                    'total_row' => $po['total_row'],
+                    'active_row' => $po['active_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
                 ));
 
-                $this->flashMessenger()->addMessage($m);
-                // $redirectUrl = "/finance/gr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
-                $redirectUrl = "/procure/po/list";
-                return $this->redirect()->toUrl($redirectUrl);
+                $viewModel->setTemplate("procure/po/review");
+                return $viewModel;
             }
+
+            // No ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            $changeOn = new \DateTime();
+            $oldEntity = clone ($entity);
+            try {
+                $this->poService->doPosting($entity, $u, true);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+                    'redirectUrl' => $redirectUrl,
+                    'entity' => $entity,
+                    'errors' => $errors,
+                    'currency_list' => $currency_list,
+                    'total_row' => $po['total_row'],
+                    'active_row' => $po['active_row'],
+                    'max_row_number' => $po['total_row'],
+                    'net_amount' => $po['net_amount'],
+                    'tax_amount' => $po['tax_amount'],
+                    'gross_amount' => $po['gross_amount']
+                ));
+
+                $viewModel->setTemplate("procure/po/review");
+                return $viewModel;
+            }
+
+            // LOGGING
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+            $m = sprintf('[OK] PO #%s posted.', $entity->getSysNumber());
+
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+
+            $this->flashMessenger()->addMessage($m);
+            $redirectUrl = "/procure/po/list";
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
@@ -376,22 +445,27 @@ class PoController extends AbstractActionController
             $entity = $po[0];
         }
 
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => $po['total_row'],
-                'active_row' => $po['active_row'],
-                'max_row_number' => $po['total_row'],
-                'net_amount' => $po['net_amount'],
-                'tax_amount' => $po['tax_amount'],
-                'gross_amount' => $po['gross_amount']
-            ));
-        } else {
+        if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
+
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_REVIEW,
+
+            'redirectUrl' => $redirectUrl,
+            'entity' => $entity,
+            'errors' => null,
+            'currency_list' => $currency_list,
+            'total_row' => $po['total_row'],
+            'active_row' => $po['active_row'],
+            'max_row_number' => $po['total_row'],
+            'net_amount' => $po['net_amount'],
+            'tax_amount' => $po['tax_amount'],
+            'gross_amount' => $po['gross_amount']
+        ));
+
+        $viewModel->setTemplate("procure/po/review");
+        return $viewModel;
     }
 
     /**
@@ -400,25 +474,23 @@ class PoController extends AbstractActionController
      */
     public function showAction()
     {
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
-
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
-
+        $this->layout("Procure/layout-fullscreen");
         $request = $this->getRequest();
-
+        
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-
-        $id = (int) $this->params()->fromQuery('entity_id');
+    
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
+         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
 
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
@@ -434,147 +506,25 @@ class PoController extends AbstractActionController
             $entity = $po[0];
         }
 
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => $po['total_row'],
-                'active_row' => $po['active_row'],
-                'max_row_number' => $po['total_row'],
-                'net_amount' => $po['net_amount'],
-                'tax_amount' => $po['tax_amount'],
-                'gross_amount' => $po['gross_amount']
-            ));
-        } else {
+        if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-    }
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
+            'redirectUrl' => null,
+            'entity' => $entity,
+            'errors' => null,
+            'currency_list' => $currency_list,
+            'total_row' => $po['total_row'],
+            'active_row' => $po['active_row'],
+            'max_row_number' => $po['total_row'],
+            'net_amount' => $po['net_amount'],
+            'tax_amount' => $po['tax_amount'],
+            'gross_amount' => $po['gross_amount']
+        ));
 
-    /**
-     *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function add1Action()
-    {
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
-
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
-
-        $request = $this->getRequest();
-
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $po = $res->getPo($id, $token);
-
-        if ($po == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $entity = null;
-        if ($po[0] instanceof NmtProcurePo) {
-            $entity = $po[0];
-        }
-
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => $po['total_row'],
-                'active_row' => $po['active_row'],
-                'max_row_number' => $po['total_row'],
-                'net_amount' => $po['net_amount'],
-                'tax_amount' => $po['tax_amount'],
-                'gross_amount' => $po['gross_amount']
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
-    }
-
-    /**
-     *
-     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
-     */
-    public function add2Action()
-    {
-        $request = $this->getRequest();
-
-        // accepted only ajax request
-        if (! $request->isXmlHttpRequest()) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $this->layout("layout/user/ajax");
-
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
-
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
-
-        $request = $this->getRequest();
-
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-        $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
-
-        $id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $po = $res->getPo($id, $token);
-
-        if ($po == null) {
-            return $this->redirect()->toRoute('access_denied');
-        }
-
-        $entity = null;
-        if ($po[0] instanceof NmtProcurePo) {
-            $entity = $po[0];
-        }
-
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => $po['total_row'],
-                'active_row' => $po['active_row'],
-                'max_row_number' => $po['total_row'],
-                'net_amount' => $po['net_amount'],
-                'tax_amount' => $po['tax_amount'],
-                'gross_amount' => $po['gross_amount']
-            ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
+        $viewModel->setTemplate("procure/po/review");
+        return $viewModel;
     }
 
     /**
@@ -643,23 +593,27 @@ class PoController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
+        $this->layout("Procure/layout-fullscreen");
 
-        $criteria = array(
-            'isActive' => 1
-        );
-        $sort_criteria = array(
-            'currency' => 'ASC'
-        );
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
 
-        $currency_list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->findBy($criteria, $sort_criteria);
-
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+  
+        // Is Posting .................
+        // ============================
         if ($request->isPost()) {
-
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-
-            $entity_id = $request->getPost('entity_id');
-            $token = $request->getPost('token');
+            $data = $this->params()->fromPost();
+            
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = (int) $data['entity_id'];
+            $token = $data['entity_token'];
+            $nTry = $data['n'];
 
             $criteria = array(
                 'id' => $entity_id,
@@ -673,138 +627,132 @@ class PoController extends AbstractActionController
 
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'n' => $nTry
                 ));
 
-                // might need redirect
-            } else {
+                $viewModel->setTemplate("procure/po/add");
+                return $viewModel;
+            }
 
-                $errors = array();
-                $redirectUrl = $request->getPost('redirectUrl');
-
-                $contractDate = $request->getPost('contractDate');
-                $contractNo = $request->getPost('contractNo');
-                $currentState = $request->getPost('currentState');
-
-                $vendor_id = (int) $request->getPost('vendor_id');
-                $currency_id = (int) $request->getPost('currency_id');
-
-                $isActive = (int) $request->getPost('isActive');
-                $remarks = $request->getPost('remarks');
-
-                if ($isActive !== 1) {
-                    $isActive = 0;
-                }
-
-                $entity->setIsActive($isActive);
-
-                $entity->setCurrentState($currentState);
-
-                $vendor = null;
-                if ($vendor_id > 0) {
-                    $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
-                }
-
-                if ($vendor !== null) {
-                    $entity->setVendor($vendor);
-                } else {
-                    $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
-                }
-
-                $currency = null;
-                if ($currency_id > 0) {
-                    $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
-                }
-
-                if ($currency !== null) {
-                    $entity->setCurrency($currency);
-                } else {
-                    $errors[] = 'Currency can\'t be empty. Please select a vendor!';
-                }
-
-                $validator = new Date();
-
-                if ($contractNo == "") {
-                    $errors[] = 'Contract is not correct or empty!';
-                } else {
-                    $entity->setContractNo($contractNo);
-                }
-
-                if (! $validator->isValid($contractDate)) {
-                    $errors[] = 'Contract Date is not correct or empty!';
-                } else {
-                    $entity->setContractDate(new \DateTime($contractDate));
-                }
-
-                $entity->setRemarks($remarks);
-
-                if (count($errors) > 0) {
-                    return new ViewModel(array(
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'entity' => $entity,
-                        'currency_list' => $currency_list
-                    ));
-                }
-
-                // NO ERROR =====
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    "email" => $this->identity()
-                ));
-
-                $entity->setLastchangeBy($u);
-                $entity->setLastchangeOn(new \DateTime());
-
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-
-                $this->flashMessenger()->addMessage('Document ' . $entity->getSysNumber() . ' is updated successfully!');
-
-                /**
-                 *
-                 * @todo
-                 */
-                // update current state of po row
-                $query = $this->doctrineEM->createQuery('
-UPDATE Application\Entity\NmtProcurePoRow r SET r.currentState = :new_state WHERE r.po =:po_id
-                    ')->setParameters(array(
-                    'new_state' => $entity->getCurrentState(),
-                    'po_id' => $entity->getId()
-                ));
-                $query->getResult();
-
-                $criteria = array(
-                    'isActive' => 1,
-                    'po' => $entity->getId()
-                );
-                $sort_criteria = array();
-
-                $po_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findBy($criteria, $sort_criteria);
-
-                // update current state of stock row.
-                if (count($po_rows) > 0) {
-                    foreach ($po_rows as $r) {
-                        $query = $this->doctrineEM->createQuery('
-UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.isActive=:is_active WHERE t.invoiceRow =:invoice_row_id
-                    ')->setParameters(array(
-                            'new_state' => $r->getCurrentState(),
-                            'is_active' => 1,
-                            'invoice_row_id' => $r->getId()
-                        ));
-                        $query->getResult();
-                    }
-                }
-
-                $redirectUrl = "/procure/po/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            // entity found
+            $oldEntity = clone ($entity);
+            
+            
+            $isPosted = FALSE;
+            if($entity->getDocStatus()==\Application\Model\Constants::DOC_STATUS_POSTED){
+                $isPosted = TRUE;
+                $redirectUrl = "/procure/po/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+            }else{
+                $redirectUrl = "/procure/po/review?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+                
+            }
+            $errors = $this->poService->validateHeader($entity, $data,FALSE,$isPosted);
+            
+            /** @todo: problem when both attribut is 0 */
+            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
+            
+            if (count($changeArray) == 0) {
+                $nTry ++;
+                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+            }
+            
+            if ($nTry >= 3) {
+                $errors[] = sprintf('Do you really want to edit "AP Row. %s"?', $entity->getRowIdentifer());
+            }
+            
+            if ($nTry == 5) {
+                $m = sprintf('You might be not ready to edit AP Row (%s). Please try later!', $entity->getRowIdentifer());
+                $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
+
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'n' => $nTry
+                ));
+                
+                $viewModel->setTemplate("procure/po/add");
+                return $viewModel;
+                
+            }
+
+            // NO ERROR
+            // Saving into Database..........
+            // ++++++++++++++++++++++++++++++
+
+            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+                "email" => $this->identity()
+            ));
+            $changeOn = new \DateTime();
+            
+
+            try {
+                $this->poService->saveHeader($entity, $u);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'currency_list' => $currency_list,
+                    'n' => $nTry
+                ));
+
+                $viewModel->setTemplate("procure/po/add");
+                return $viewModel;
+            }
+            
+            $m = sprintf('[OK] PO #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getSysNumber(), count($changeArray));
+            
+            // Trigger Change Log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+            
+            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn,
+                'entity_id' => $entity->getId(),
+                'entity_class' => get_class($entity),
+                'entity_token' => $entity->getToken()
+            ));
+            
+            $this->flashMessenger()->addMessage($m);
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
-        // NO POST ====================
+        // NO POST
+        // Initiate ......................
+        // ================================
+
         $redirectUrl = null;
         if ($this->getRequest()->getHeader('Referer') !== null) {
             $redirectUrl = $this->getRequest()
@@ -822,16 +770,22 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         /**@var \Application\Entity\NmtProcurePo $entity*/
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo')->findOneBy($criteria);
 
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'entity' => $entity,
-                'currency_list' => $currency_list
-            ));
-        } else {
+        if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
+
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'entity' => $entity,
+            'currency_list' => $currency_list,
+            'n' => 0
+        ));
+
+        $viewModel->setTemplate("procure/po/add");
+        return $viewModel;
     }
 
     /**
@@ -1064,7 +1018,7 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
     {
         return $this->poSearchService;
     }
-    
+
     /**
      *
      * @param \Procure\Service\PoService $poSearchService

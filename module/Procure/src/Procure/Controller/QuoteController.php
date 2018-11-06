@@ -203,11 +203,11 @@ class QuoteController extends AbstractActionController
                 $redirectUrl = "/procure/quote/review?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
                 return $this->redirect()->toUrl($redirectUrl);
             }
-            
+
             if ($entity->getLocalCurrency() == null) {
                 $entity->setLocalCurrency($default_cur);
             }
-           
+
             // check for posting
             $errors = $this->qoService->validateHeader($entity, $data, TRUE);
 
@@ -352,6 +352,46 @@ class QuoteController extends AbstractActionController
 
     /**
      *
+     * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
+     */
+    public function downloadAction()
+    {
+        $request = $this->getRequest();
+        if ($request->getHeader('Referer') == null) {
+            //return $this->redirect()->toRoute('access_denied');
+        }
+
+        $format = $this->params()->fromQuery('format');
+        $entity_id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+
+        $criteria = array(
+            'id' => $entity_id,
+            'token' => $token
+        );
+
+        /**@var \Application\Entity\NmtProcureQo $entity*/
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQo')->findOneBy($criteria);
+
+        if ($entity == null) {
+           // return $this->redirect()->toRoute('access_denied');
+        }
+
+        switch ($format) {
+            case "xlsx":
+                $downloadStrategy = new \Procure\Model\Qo\ExcelStrategy();
+                break;
+            case "ods":
+                $downloadStrategy = new \Procure\Model\Qo\OdsStrategy();
+                break;
+        }
+
+        $downloadStrategy->setDoctrineEM($this->doctrineEM);
+        $downloadStrategy->doDownload($entity);
+    }
+
+    /**
+     *
      * show
      *
      * @return \Zend\Http\Response|\Zend\View\Model\ViewModel
@@ -402,7 +442,7 @@ class QuoteController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
     }
-  
+
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -464,7 +504,6 @@ class QuoteController extends AbstractActionController
 
             $oldEntity = clone ($entity);
 
-       
             // validate and update entity
             $errors = $this->qoService->validateHeader($entity, $data);
 

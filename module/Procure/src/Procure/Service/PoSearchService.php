@@ -76,7 +76,7 @@ class PoSearchService extends AbstractService
      * @param boolean $optimized
      * @return string
      */
-    public function indexingPoRows($po_rows, $optimized = TRUE)
+    public function indexingPoRows($po_rows, $optimized = FALSE)
     {
         if (count($po_rows) == 0) {
             return 'No po rows found';

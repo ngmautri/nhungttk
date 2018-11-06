@@ -281,17 +281,17 @@ if (count($errors) > 0) {
 											<ul style="font-size: 9.5pt;" class="dropdown-menu"
 												aria-labelledby="dropdownMenu1">
 												<li><a target="_blank" class=""
-													href="<?php echo $this->baseUrl ?>/procure/po-row/print-pdf?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+													href="<?php echo $this->baseUrl ?>/procure/quote/download?format=pdf&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 														<i class="fa fa-file-pdf-o" aria-hidden="true"></i>
 														&nbsp;PDF
 												</a></li>
 												<li><a class=""
-													href="<?php echo $this->baseUrl ?>/procure/po-row/download?format=xlsx&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+													href="<?php echo $this->baseUrl ?>/procure/quote/download?format=xlsx&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 														<i class="fa fa-file-excel-o" aria-hidden="true"></i>
 														&nbsp;Excel (*.xlxs)
 												</a></li>
 												<li><a class=""
-													href="<?php echo $this->baseUrl ?>/procure/po-row/download?format=ods&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+													href="<?php echo $this->baseUrl ?>/procure/quote/download?format=ods&token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 														<i class="fa fa-file-excel-o" aria-hidden="true"></i>
 														&nbsp;Open Office (*.ods)
 												</a></li>
@@ -631,7 +631,7 @@ switch ($action) {
         { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
         { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},        
         { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: true},
-        { title: "Unit Price", dataType: "integer", dataIndx: "row_unit_price", width:90, align: 'right',editable: true},
+        { title: "Unit Price", dataType: "decimal", dataIndx: "row_unit_price", width:90, align: 'right',editable: true},
         { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},
         { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
         { title: "Gross", dataType: "decimal", dataIndx: "row_gross", width: 90,align: 'right',editable: false},

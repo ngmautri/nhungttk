@@ -259,7 +259,7 @@ class PoController extends AbstractActionController
                     'currency_list' => $currency_list
                 ));
 
-                $viewModel->setTemplate("procure/po/add_po");
+                $viewModel->setTemplate("procure/po/add");
                 return $viewModel;
             }
 
@@ -288,12 +288,14 @@ class PoController extends AbstractActionController
         $entity->setCurrency($default_cur);
 
         $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+            
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'currency_list' => $currency_list
         ));
-
+        
         $viewModel->setTemplate("procure/po/add");
         return $viewModel;
     }

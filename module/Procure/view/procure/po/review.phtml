@@ -7,7 +7,7 @@ $form_title = '';
 switch ($action) {
 
     case \Application\Model\Constants::FORM_ACTION_REVIEW:
-        $form_action = '/procure/po/Review';
+        $form_action = '/procure/po/review';
         $form_title = $this->translate("Review PO");
 
         break;
@@ -118,7 +118,7 @@ if (count($errors) > 0) {
 ?>
 	
  			<form id="Posting_Form" class="form-horizontal"
-							action="<?php echo $form_title;?>" method="post"
+							action="<?php echo $action;?>" method="post"
 							enctype="multipart/form-data">
 							<input type="hidden" name="redirectUrl"
 								value="<?php echo $redirectUrl ?>" /> <input type="hidden"

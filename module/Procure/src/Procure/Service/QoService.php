@@ -237,7 +237,7 @@ class QoService extends AbstractService
             $errors[] = 'Please  enter quantity!';
         } else {
             
-            if (! is_numeric($quantity)) {
+            if (!is_numeric($quantity)) {
                 $errors[] = 'Quantity must be a number.';
             } else {
                 if ($quantity <= 0) {
@@ -252,8 +252,9 @@ class QoService extends AbstractService
             $errors[] = 'Price is not given. It must be a number.';
         } else {
             
-            if (! is_numeric($unitPrice)) {
-                $errors[] = 'Price is not valid. It must be a number.';
+            $unitPrice = str_replace(",", "",$unitPrice);
+            if (!is_numeric($unitPrice)) {
+                $errors[] = $unitPrice . ' // Price is not valid. It must be a number.';
             } else {
                 if ($unitPrice <= 0) {
                     $errors[] = 'Price must be greate than 0!';
@@ -648,5 +649,11 @@ class QoService extends AbstractService
             $errors[] = $this->controllerPlugin->translate('Warehouse can\'t be empty. Please select a warehouse!');
         }
         return $errors;
+    }
+    
+    function is_decimal ($price){
+        $value= trim($price); // trim space keys
+        str_replace(",", "",$value);
+        return $value;
     }
 }

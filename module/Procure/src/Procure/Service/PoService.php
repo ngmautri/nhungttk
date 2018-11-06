@@ -327,9 +327,11 @@ class PoService extends AbstractService
                 $entity->setDocQuantity($quantity);
             }
         }
-
+        
+        $unitPrice = str_replace(",", "",$unitPrice);
+       
         if (! is_numeric($unitPrice)) {
-            $errors[] = $this->controllerPlugin->translate('Price is not valid. It must be a number.');
+            $errors[] = $this->controllerPlugin->translate($unitPrice . ' // Price is not valid. It must be a number.');
         } else {
             if ($unitPrice < 0) {
                 $errors[] = $this->controllerPlugin->translate('Price must be >   0!');

@@ -1109,5 +1109,23 @@ WHERE 1
             return null;
         }
     }
+    
+    
+    /**
+     *
+     * @param int $item_id
+     * @param string $token
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     */
+    public function getItemPrice($item_id, $token)
+    {
+        $sql = \Application\Repository\SQL\NmtProcurePoRepositorySQL::ITEM_PRICE_SQL;
+        $sql = sprintf($sql, $item_id, $item_id);
+        
+        try {
+           } catch (NoResultException $e) {
+            return null;
+        }
+    }
 }
 

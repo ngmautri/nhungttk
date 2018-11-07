@@ -98,6 +98,74 @@ WHERE 1 %s
 ORDER By nmt_procure_pr_row.created_on DESC
 ";
 
+        const ITEM_PRICE_SQL = '
+SELECT
+	"QO" AS doc_type ,
+    
+    nmt_inventory_item.id AS item_id,
+    nmt_inventory_item.item_name AS item_name,
+    nmt_inventory_item.item_sku,
+    nmt_inventory_item.item_sku1,
+    nmt_inventory_item.item_sku,
+    
+    nmt_procure_qo.id AS source_id,
+	nmt_procure_qo.vendor_id,
+    nmt_procure_qo.vendor_name,
+    nmt_procure_qo.currency_id,
+    nmt_procure_qo.doc_currency_id,
+    nmt_procure_qo.exchange_rate,
+    
+    nmt_procure_qo_row.quantity,
+    nmt_procure_qo_row.conversion_factor,
+    nmt_procure_qo_row.unit AS doc_unit,
+    nmt_procure_qo_row.unit_price,
+    nmt_procure_qo_row.unit_price*nmt_procure_qo.exchange_rate AS lc_unit_price,
+       nmt_procure_qo_row.unit_price*nmt_procure_qo.exchange_rate* nmt_procure_qo_row.quantity AS lc_total_price
+
+FROM nmt_procure_qo_row
+            
+LEFT JOIN nmt_procure_qo
+ON nmt_procure_qo.id = nmt_procure_qo_row.qo_id
+            
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = nmt_procure_qo_row.item_id
+WHERE 1 AND nmt_procure_qo_row.item_id=%s
+
+UNION
+
+SELECT
+	"AP" AS doc_type ,
+    nmt_inventory_item.id AS item_id,
+    nmt_inventory_item.item_name AS item_name,
+    nmt_inventory_item.item_sku,
+    nmt_inventory_item.item_sku1,
+    nmt_inventory_item.item_sku,
+    
+    
+    fin_vendor_invoice.id AS source_id,
+	fin_vendor_invoice.vendor_id,
+    fin_vendor_invoice.vendor_name,
+    fin_vendor_invoice.doc_currency_id,
+    fin_vendor_invoice.currency_id,
+    fin_vendor_invoice.exchange_rate,   
+
+    fin_vendor_invoice_row.quantity,
+    fin_vendor_invoice_row.conversion_factor,
+    fin_vendor_invoice_row.unit AS doc_unit,
+    fin_vendor_invoice_row.unit_price,
+    fin_vendor_invoice_row.unit_price*fin_vendor_invoice.exchange_rate AS lc_unit_price,
+    fin_vendor_invoice_row.unit_price*fin_vendor_invoice.exchange_rate*fin_vendor_invoice_row.quantity AS lc_total_price
+
+FROM fin_vendor_invoice_row
+            
+LEFT JOIN fin_vendor_invoice
+ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+            
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = fin_vendor_invoice_row.item_id
+WHERE 1 AND fin_vendor_invoice_row.item_id=%s
+
+';
 
 }
 

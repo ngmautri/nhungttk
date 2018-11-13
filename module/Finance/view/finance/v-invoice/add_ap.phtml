@@ -9,11 +9,14 @@ switch ($action) {
     case \Application\Model\Constants::FORM_ACTION_ADD:
         $form_action = '/finance/v-invoice/add';
         $form_title = $this->translate("Add new AP invoice");
-
-        break;
+       break;
     case \Application\Model\Constants::FORM_ACTION_EDIT:
         $form_action = '/finance/v-invoice/edit';
         $form_title = $this->translate("Edit AP invoice");
+        break;
+    case \Application\Model\Constants::FORM_ACTION_AP_FROM_PO:
+        $form_action = '/finance/v-invoice/copy-from-po';
+        $form_title = $this->translate("Create AP from PO");
         break;
 }
 

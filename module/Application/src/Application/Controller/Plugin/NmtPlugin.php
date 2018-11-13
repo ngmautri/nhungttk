@@ -41,6 +41,23 @@ class NmtPlugin extends AbstractPlugin
      *
      * @return array
      */
+    public function warehouseList()
+    {
+        $criteria = array(
+          );
+        $sort_criteria = array(
+            'whName' => 'ASC'
+        );
+        
+        $wh_list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findBy($criteria, $sort_criteria);
+        return $wh_list;
+    }
+    
+    /**
+     * Return List of Currency
+     *
+     * @return array
+     */
     public function costCenterList()
     {
         $criteria = array(

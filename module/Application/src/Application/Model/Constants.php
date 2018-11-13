@@ -197,6 +197,10 @@ class Constants
     const FORM_ACTION_SHOW ='SHOW';
     const FORM_ACTION_DELETE ='DELETE';
     const FORM_ACTION_REVIEW ='REVIEW';
+    const FORM_ACTION_AP_FROM_PO ='AP-PO';
+    const FORM_ACTION_AP_FROM_GR ='AP-GR';
+    
+    
     
     const AJAX_OK ='1';
     const AJAX_FAILED ='-1';

@@ -1774,6 +1774,8 @@ EOT;
 
             // Draw the barcode in a new image,
             Barcode::factory('code39', 'image', $barcodeOptions, $rendererOptions)->render();
+              
+            
         } else {
             return;
         }

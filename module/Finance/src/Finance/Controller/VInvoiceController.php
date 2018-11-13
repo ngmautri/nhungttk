@@ -234,7 +234,8 @@ class VInvoiceController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
-
+        $wh_list = $nmtPlugin->warehouseList();
+        
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
@@ -282,6 +283,20 @@ class VInvoiceController extends AbstractActionController
                 return $this->redirect()->toUrl($redirectUrl);
             }
 
+            if ($entity->getLocalCurrency() == null) {
+                $entity->setLocalCurrency($default_cur);
+            }
+
+            if ($entity->getWarehouse() == null) {
+                $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
+                    'isDefault' => 1
+                ));
+
+                if ($default_wh !== null) {
+                    $entity->setWarehouse($default_wh);
+                }
+            }
+
             // check for posting
             $errors = $this->apService->validateHeader($entity, $data, TRUE);
 
@@ -291,6 +306,8 @@ class VInvoiceController extends AbstractActionController
                     'entity' => $entity,
                     'errors' => $errors,
                     'currency_list' => $currency_list,
+                    'wh_list' => $wh_list,
+                    
                     'total_row' => $invoice['total_row'],
                     'active_row' => $invoice['active_row'],
                     'max_row_number' => $invoice['total_row'],
@@ -319,6 +336,8 @@ class VInvoiceController extends AbstractActionController
                     'entity' => $entity,
                     'errors' => $errors,
                     'currency_list' => $currency_list,
+                    'wh_list' => $wh_list,
+                    
                     'total_row' => $invoice['total_row'],
                     'active_row' => $invoice['active_row'],
                     'max_row_number' => $invoice['total_row'],
@@ -401,6 +420,8 @@ class VInvoiceController extends AbstractActionController
             'entity' => $entity,
             'errors' => null,
             'currency_list' => $currency_list,
+            'wh_list' => $wh_list,
+            
             'total_row' => $invoice['total_row'],
             'active_row' => $invoice['active_row'],
             'max_row_number' => $invoice['total_row'],
@@ -427,12 +448,24 @@ class VInvoiceController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
 
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+
         // Is Posting .................
         // ============================
         if ($request->isPost()) {
 
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
+
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
 
             $id = (int) $request->getPost('target_id');
             $token = $request->getPost('target_token');
@@ -453,196 +486,65 @@ class VInvoiceController extends AbstractActionController
             if (! $target instanceof \Application\Entity\NmtProcurePo) {
                 $errors[] = 'Contract /PO can\'t be empty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => null,
-                    'target' => null,
-                    'currency_list' => $currency_list
-                ));
-            }
 
-            $validator = new Date();
+                if (count($errors) > 0) {
+                    $viewModel = new ViewModel(array(
+                        'action' => \Application\Model\Constants::FORM_ACTION_AP_FROM_PO,
+                        'redirectUrl' => $redirectUrl,
+                        'errors' => null,
+                        'entity' => null,
+                        'target' => null,
+                        'currency_list' => $currency_list
+                    ));
 
-            $contractDate = $request->getPost('contractDate');
-            $contractNo = $request->getPost('contractNo');
-            $currentState = $request->getPost('currentState');
-
-            $vendor_id = (int) $request->getPost('vendor_id');
-            $currency_id = (int) $request->getPost('currency_id');
-            $warehouse_id = (int) $request->getPost('target_wh_id');
-
-            $postingDate = $request->getPost('postingDate');
-            $grDate = $request->getPost('grDate');
-            $invoiceDate = $request->getPost('invoiceDate');
-            $invoiceNo = $request->getPost('invoiceNo');
-            $sapDoc = $request->getPost('sapDoc');
-            $isActive = (int) $request->getPost('isActive');
-            $remarks = $request->getPost('remarks');
-
-            if ($isActive !== 1) {
-                $isActive = 0;
-            }
-
-            if ($sapDoc == "") {
-                $sapDoc = "N/A";
+                    $viewModel->setTemplate("finance/v-invoice/add_ap");
+                    return $viewModel;
+                }
             }
 
             $entity = new FinVendorInvoice();
-
+            $entity->setLocalCurrency($default_cur);
+            $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
-            $entity->setIsActive($isActive);
-            $entity->setPo($target);
-            $entity->setCurrentState($currentState);
-
-            if (! $contractDate == null) {
-                if (! $validator->isValid($contractDate)) {
-                    $errors[] = 'Contract Date is not correct or empty!';
-                } else {
-                    $entity->setContractDate(new \DateTime($contractDate));
-                }
-            }
-            $entity->setContractNo($contractNo);
-
-            $vendor = null;
-            if ($vendor_id > 0) {
-                /** @var \Application\Entity\NmtBpVendor $vendor ; */
-                $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
-            }
-
-            if ($vendor instanceof \Application\Entity\NmtBpVendor) {
-                $entity->setVendor($vendor);
-                $entity->setVendorName($vendor->getVendorName());
-            } else {
-                $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
-            }
-
-            $currency = null;
-            if ($currency_id > 0) {
-                /** @var \Application\Entity\NmtApplicationCurrency  $currency ; */
-                $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
-            }
-
-            if ($currency instanceof \Application\Entity\NmtApplicationCurrency) {
-                $entity->setCurrency($currency);
-                $entity->setCurrencyIso3($currency->getCurrency());
-            } else {
-                $errors[] = 'Currency can\'t be empty. Please select a currency!';
-            }
-
-            // check later
-            $entity->setInvoiceNo($invoiceNo);
-
-            $entity->setSapDoc($sapDoc);
-
-            if (! $invoiceDate == null) {
-                if (! $validator->isValid($invoiceDate)) {
-                    $errors[] = 'Invoice Date is not correct or empty!';
-                } else {
-                    $entity->setInvoiceDate(new \DateTime($invoiceDate));
-                }
-            }
-
-            // check if posting period is close
-            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-
-            // check one more time
-            if (! $postingDate == null) {
-                if (! $validator->isValid($postingDate)) {
-                    $errors[] = 'Posting Date is not correct or empty!';
-                } else {
-
-                    $entity->setPostingDate(new \DateTime($postingDate));
-
-                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                    $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
-
-                    if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                        $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
-                    } else {
-                        if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                            $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
-                        }
-                    }
-                }
-            }
-
-            // check one more time
-            if (! $grDate == null) {
-                if (! $validator->isValid($grDate)) {
-                    $errors[] = 'Good receipt Date is not correct or empty!';
-                } else {
-
-                    // check if posting period is close
-                    /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                    $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
-
-                    if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                        $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
-                    } else {
-                        if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                            $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
-                        } else {
-                            $entity->setGrDate(new \DateTime($grDate));
-                        }
-                    }
-                }
-            }
-
-            $warehouse = null;
-            if ($warehouse_id > 0) {
-                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
-            }
-
-            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
-                $entity->setWarehouse($warehouse);
-            } else {
-                // check later
-                // $errors[] = 'Warehouse can\'t be empty. Please select a vendor!';
-            }
-
-            $entity->setRemarks($remarks);
+            $errors = $this->apService->validateHeader($entity, $data);
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_AP_FROM_PO,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
                     'currency_list' => $currency_list
                 ));
+
+                $viewModel->setTemplate("finance/v-invoice/add_ap");
+                return $viewModel;
             }
 
             // NO ERROR
             // Saving into Database..........
             // ++++++++++++++++++++++++++++++
 
-            // $entity->setSysNumber($nmtPlugin->getDocNumber($entity));
-            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
-
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn(new \DateTime());
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            $this->doctrineEM->persist($entity);
             try {
+                $this->apService->saveHeader($entity, $u, TRUE);
                 $this->apService->copyFromPO($entity, $target, $u, true);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_AP_FROM_PO,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
                     'currency_list' => $currency_list
                 ));
+
+                $viewModel->setTemplate("finance/v-invoice/add_ap");
+                return $viewModel;
             }
 
             $m = sprintf("[OK] AP #%s created from P/O #%s", $entity->getSysNumber(), $target->getSysNumber());
@@ -689,6 +591,12 @@ class VInvoiceController extends AbstractActionController
         $entity = new FinVendorInvoice();
         $entity->setContractNo($target->getContractNo());
         $entity->setContractDate($target->getContractDate());
+        $entity->setVendor($target->getVendor());
+        $entity->setCurrency($target->getCurrency());
+        $entity->setExchangeRate($target->getExchangeRate());
+
+        $entity->setLocalCurrency($target->getLocalCurrency());
+        $entity->setDocCurrency($target->getDocCurrency());
 
         $entity->setIsActive(1);
 
@@ -700,13 +608,17 @@ class VInvoiceController extends AbstractActionController
             $entity->setWarehouse($default_wh);
         }
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_AP_FROM_PO,
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list
         ));
+
+        $viewModel->setTemplate("finance/v-invoice/add_ap");
+        return $viewModel;
     }
 
     /**

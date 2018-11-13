@@ -243,12 +243,43 @@ if (count($errors) > 0) {
 									<label class="control-label col-sm-2" for="inputTag">Target
 										Warehouse:</label>
 									<div class="col-sm-3">
+								<!-- 
 										<input class="form-control input-sm" readonly type="text"
 											id="target_wh_name" placeholder="Please select!"
 											name="target_wh"
 											value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
-										<input type="hidden" id="target_wh_id" name="target_wh_id"
+										
+										<input type="hidden" id="target_wh_id" name="target_wh_id-1"
 											value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+								 -->	
+									
+									<select name="target_wh_id" class="form-control input-sm">
+											<option value=""><?php echo $this->translate("Select Warehouse");?>
+											</option>
+   	    							<?php
+            if ($wh_list !== null) :
+            foreach ($wh_list as $curr) :
+                    if ($entity !== null) :
+                        if ($entity->getWarehouse() !== null) :
+                        if ($entity->getWarehouse()->getId() == $curr->getId()) :
+                                echo '<option selected value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                            else :
+                            echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                            endif;
+                        else :
+                        echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                        endif;
+                    else :
+                    echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+									
+									
 									</div>
 								</div>
 

@@ -1,20 +1,58 @@
 <?php
-
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 namespace HR\Controller;
 
+use Zend\Barcode\Barcode;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class IndexController extends AbstractActionController {
-	
-	public function indexAction() {
-		return new ViewModel ();
-	}
+/**
+ *
+ * @author Nguyen Mau Tri
+ *        
+ */
+class IndexController extends AbstractActionController
+{   
+    
+    const BACKUP_FOLDER = "/data/hr/employee-code";
+    
+
+    /**
+     */
+    public function barcodeAction()
+    {
+        // take long time
+        set_time_limit(1500);
+        
+        for ($i =1; $i <4000; $i++){
+            
+            $maxLen = 4;
+            $currentLen = strlen($i);
+            
+             
+            $tmp = "";
+            for ($j = 0; $j < $maxLen - $currentLen; $j ++) {
+                
+                $tmp = $tmp . "0";
+            }
+            
+            $code = $tmp . $i;                                                                                                                                                                                                                                      
+             
+             $barcodeConf = array(
+                'text' => $code
+            );
+
+            $renderConf = array(
+                'imageType' => 'png'
+            );
+            
+            $file = Barcode::draw('code39', 'image', $barcodeConf, $renderConf);
+            
+            $fileName = ROOT . self::BACKUP_FOLDER . '/' . $code. '.png';
+             
+            $store_image = imagepng($file, $fileName);
+         
+        }
+        
+        
+    }
 }

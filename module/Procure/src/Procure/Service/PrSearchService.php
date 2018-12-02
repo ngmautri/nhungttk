@@ -51,12 +51,11 @@ class PrSearchService extends AbstractService
         $doc->addField(Field::Keyword('row_token_keyword', $row->getToken() . "__" . $row->getId()));
         $doc->addField(Field::Keyword('row_identifer_keyword', $row->getRowIdentifer()));
         $doc->addField(Field::Keyword('row_is_active_keyword', $row->getIsActive()));
-        
-        
+
         $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
         $doc->addField(Field::UnIndexed('row_quantity', $row->getQuantity()));
         $doc->addField(Field::UnIndexed('row_conversion_factor', $row->getConversionFactor()));
-       
+
         // $doc->addField ( Field::UnIndexed ( 'row_edt', $row->getEdt() ) );
         $doc->addField(Field::UnIndexed('row_unit', $row->getRowUnit()));
         $doc->addField(Field::text('row_remark', $row->getRemarks()));
@@ -117,6 +116,35 @@ class PrSearchService extends AbstractService
             $doc->addField(Field::text('asset_label', $row->getItem()
                 ->getAssetLabel()));
 
+            
+            // add item group and account
+            if ($row->getItem()->getItemGroup() !== null) {
+                
+                $inventory_account_id =null;
+                if( $row->getItem()->getItemGroup()->getInventoryAccount()!==null){
+                    $inventory_account_id = $row->getItem()->getItemGroup()->getInventoryAccount()->getId();
+                }
+                
+                $cogs_account_id =null;
+                if( $row->getItem()->getItemGroup()->getCogsAccount()!==null){
+                    $cogs_account_id = $row->getItem()->getItemGroup()->getCogsAccount()->getId();
+                }
+                
+                $item_cost_center_id =null;
+                if( $row->getItem()->getItemGroup()->getCostCenter()!==null){
+                    $item_cost_center_id = $row->getItem()->getItemGroup()->getCostCenter()->getId();
+                }
+                 
+                $doc->addField(Field::UnIndexed('inventory_account_id', $inventory_account_id));
+                $doc->addField(Field::UnIndexed('cogs_account_id', $cogs_account_id));
+                $doc->addField(Field::UnIndexed('cost_center_id', $item_cost_center_id));
+            }else{
+                $doc->addField(Field::UnIndexed('inventory_account_id', null));
+                $doc->addField(Field::UnIndexed('cogs_account_id', null));
+                $doc->addField(Field::UnIndexed('cost_center_id', null));
+                
+            }
+
             $s = $row->getItem()->getAssetLabel();
             $l = strlen($s);
             $l > 3 ? $p = strpos($s, "-", 3) + 1 : $p = 0;
@@ -170,12 +198,12 @@ class PrSearchService extends AbstractService
         }
     }
 
-   /**
-    * 
-    * @param number $is_new
-    * @param \Application\Entity\NmtProcurePrRow $row
-    * @param boolean $optimized
-    */
+    /**
+     *
+     * @param number $is_new
+     * @param \Application\Entity\NmtProcurePrRow $row
+     * @param boolean $optimized
+     */
     public function updateIndex($is_new = 0, \Application\Entity\NmtProcurePrRow $row, $optimized)
     {
         if (! $row instanceof NmtProcurePrRow) {
@@ -185,7 +213,7 @@ class PrSearchService extends AbstractService
         // take long time
         set_time_limit(1500);
         try {
-        
+
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
 
@@ -199,17 +227,19 @@ class PrSearchService extends AbstractService
                 }
             }
 
-          /*   $query = 'SELECT e, i, pr FROM Application\Entity\NmtProcurePrRow e JOIN e.item i JOIN e.pr pr Where 1=?1 AND e.id = ?2';
-
-            $records = $this->doctrineEM->createQuery($query)
-                ->setParameters(array(
-                "1" => 1,
-                "2" => $row->getId()
-            ))
-                ->getResult(); */
+            /*
+             * $query = 'SELECT e, i, pr FROM Application\Entity\NmtProcurePrRow e JOIN e.item i JOIN e.pr pr Where 1=?1 AND e.id = ?2';
+             *
+             * $records = $this->doctrineEM->createQuery($query)
+             * ->setParameters(array(
+             * "1" => 1,
+             * "2" => $row->getId()
+             * ))
+             * ->getResult();
+             */
 
             // alway found.
-            //$row = $records[0];
+            // $row = $records[0];
 
             $this->_addDocument($index, $row);
 
@@ -223,7 +253,7 @@ class PrSearchService extends AbstractService
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function optimizeIndex()
@@ -320,7 +350,7 @@ class PrSearchService extends AbstractService
     }
 
     /**
-     * 
+     *
      * @param string $q
      * @return string[]|array[]|\ZendSearch\Lucene\Search\QueryHit[]|string[]|NULL[]
      */
@@ -365,7 +395,7 @@ class PrSearchService extends AbstractService
     }
 
     /**
-     * 
+     *
      * @param string $q
      * @return string[]|array[]|\ZendSearch\Lucene\Search\QueryHit[]|string[]|NULL[]
      */

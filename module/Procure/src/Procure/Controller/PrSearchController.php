@@ -55,11 +55,16 @@ class PrSearchController extends AbstractActionController
                     $a_json_row["token"] = $a->token;
                     $a_json_row["checksum"] = $a->checksum;
                     
+                    
                     $a_json_row["item_id"] = $a->item_id;
                     $a_json_row["item_token"] = $a->item_token;
-                    $a_json_row["item_checksum"] = $a->item_checksum;
-                    
+                    $a_json_row["item_checksum"] = $a->item_checksum;                    
                     $a_json_row["item_name"] = $a->item_name;
+                    $a_json_row["inventory_account_id"] = $a->inventory_account_id;
+                    $a_json_row["cogs_account_id"] = $a->cogs_account_id;
+                    $a_json_row["cost_center_id"] = $a->cost_center_id;
+                    
+                    
                     $a_json_row["item_sku_key"] = $a->item_sku_key;
                     $a_json_row["manufacturer_code"] = $a->manufacturer_code;
                     $a_json_row["row_quantity"] = $a->row_quantity;

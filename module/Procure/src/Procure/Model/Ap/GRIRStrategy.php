@@ -125,7 +125,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
              *       if item with Serial
              *       or Fixed Asset
              */
-            if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
+            if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO || $r->getItem()->getIsFixedAsset() == 1) {
 
                 for ($i = 0; $i < $r->getConvertedStandardQuantity(); $i ++) {
 

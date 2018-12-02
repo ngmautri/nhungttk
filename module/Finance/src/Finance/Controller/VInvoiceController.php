@@ -483,7 +483,7 @@ class VInvoiceController extends AbstractActionController
                 }
             }
 
-            if (! $target instanceof \Application\Entity\NmtProcurePo) {
+            if ($target == null) {
                 $errors[] = 'Contract /PO can\'t be empty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
 

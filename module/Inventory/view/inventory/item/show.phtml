@@ -53,7 +53,7 @@
 			href="<?php echo $this->baseUrl ?>/inventory/stock/summary?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Stock</a></li>
 		
 		<?php if(!$entity!==null):?>		
-		<?php if($entity->getMonitoredBy()==\Application\Model\Constants::ITEM_WITH_SERIAL_NO):?>
+		<?php if($entity->getMonitoredBy()==\Application\Model\Constants::ITEM_WITH_SERIAL_NO OR $entity->getIsFixedAsset()==1):?>
 			<li><a
 			href="<?php echo $this->baseUrl ?>/inventory/item-serial/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Serial</a></li>
 			

@@ -48,8 +48,7 @@ class ItemSearchController extends AbstractActionController {
 					$a_json_row ["checksum"] = $a->checksum;
 					$a_json_row ["value"] = $a->item_name;
 					$a_json_row ["item_sku"] = $a->item_sku ;
-					$a_json_row ["item_serial"] = $a->manufacturer_code ;
-					
+					$a_json_row ["item_serial"] = $a->manufacturer_code ;					
 					$a_json_row ["item_serial"] = $a->manufacturer_code ;
 					
 					$a_json[]=$a_json_row;
@@ -133,9 +132,11 @@ class ItemSearchController extends AbstractActionController {
 	}
 	
 	/**
+	 * 
+	 * @return \Zend\View\Model\ViewModel
 	 */
 	public function createIndexAction() {
-		$result = $this->vendorSearchService->createVendorIndex ();
+		$result = $this->itemSearchService->createIndex();
 		return new ViewModel ( array (
 				'result' => $result 
 		) );

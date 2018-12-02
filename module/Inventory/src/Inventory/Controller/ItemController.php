@@ -97,6 +97,7 @@ EOT;
         ));
     }
 
+     
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -639,9 +640,10 @@ EOT;
 
                 // update search index.
                 // $this->itemSearchService->addDocument ( $new_item, true );
-                $this->itemSearchService->updateIndex(1, $new_item, false);
+                $indexing_log = $this->itemSearchService->updateItemIndex(1, $new_item, false);
 
-                $m = sprintf('[OK] (%s) #%s %s created.', $itemName, $new_item->getId(), $new_item->getSysNumber());
+                $m = sprintf('[OK] (%s) #%s %s created.<br> %s', $itemName, $new_item->getId(), $new_item->getSysNumber(),$indexing_log);
+                
 
                 // Trigger. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(

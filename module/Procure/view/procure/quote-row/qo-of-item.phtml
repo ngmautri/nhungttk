@@ -44,7 +44,7 @@
 		?>
 	 <tr>
 	 <td><?php echo $count;?></td>
-	 		<td><a href="/procure/quote/add1?entity_id=<?php echo $a->getQo()->getId();?>&token=<?php echo $a->getQo()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getQo()->getSysNumber());?></a></td>
+	 		<td><a href="/procure/quote/show?entity_id=<?php echo $a->getQo()->getId();?>&token=<?php echo $a->getQo()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getQo()->getSysNumber());?></a></td>
 			<td><?php if(!$a->getQo()==null): if($a->getQo()->getVendor()!==null): echo $a->getQo()->getVendor()->getVendorName();endif;endif;?> </td>
 			
 			<td><?php if(!$a->getQo()->getContractDate()==null): echo date_format ( $a->getQo()->getContractDate(), "d/m/y");endif;?> </td>

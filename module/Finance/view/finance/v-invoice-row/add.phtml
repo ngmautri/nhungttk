@@ -346,7 +346,7 @@ if (count($errors) > 0) {
 
 							<label class="control-label col-sm-2"><?php echo $this->translate("GL Account");?>:</label>
 							<div class="col-sm-3">
-								<select tabindex="9" name="gl_account_id"
+								<select tabindex="9" name="gl_account_id" id="gl_account_id"
 									class="form-control input-sm">
 									<option value=""><?php echo $this->translate("Select GL Account");?></option>
    	    							<?php
@@ -383,7 +383,7 @@ if (count($errors) > 0) {
 						<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2" for="inputTag"><?php echo $this->translate("Cost Center");?>:</label>
 							<div class="col-sm-3">
-								<select tabindex="10" name="cost_center_id"
+								<select tabindex="10" name="cost_center_id" id="cost_center_id"
 									class="form-control input-sm">
 									<option value=""><?php echo $this->translate("Select Cost Center");?></option>
    	    							<?php
@@ -472,6 +472,10 @@ if (count($errors) > 0) {
         source: "/procure/pr-search/auto-complete",
         minLength: 2,
         select: function( event, ui ) {
+
+      	   	$( "#gl_account_id" ).val("");
+      	   	$( "#cost_center_id").val("");
+             
             $( "#pr_row_id" ).val(ui.item.pr_row_id);
             $( "#quantity" ).val(ui.item.row_quantity);
             $( "#item_id" ).val(ui.item.item_id);
@@ -492,6 +496,20 @@ if (count($errors) > 0) {
          	$('#pr_row_detail').show();
             
          	$( "#quantity" ).focus();
+
+         	// update GL account and cost center
+         	if(ui.item.inventory_account_id !==null){
+             	// update GL account and cost center
+         	   	$( "#gl_account_id" ).val(ui.item.inventory_account_id);
+          	}
+
+         // update GL account and cost center
+         	if(ui.item.cost_center_id !==null){
+             	// update GL account and cost center
+         	   	$( "#cost_center_id").val(ui.item.cost_center_id);
+          	}		
+
+         	
         }
         })
         .autocomplete( "instance" )._renderItem = function( ul, item ) {

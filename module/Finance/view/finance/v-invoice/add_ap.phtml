@@ -1,6 +1,7 @@
 <?php
+/** @var \Application\Entity\FinVendorInvoice $entity ;*/
+/** @var \Application\Entity\NmtProcurePo $target ;*/
 
-/**@var \Application\Entity\FinVendorInvoice $entity ;*/
 $form_action = '';
 $form_title = '';
 
@@ -85,6 +86,12 @@ if (count($errors) > 0) {
 						<input type="hidden" name="n" value="<?php echo $n;?>" />
 				<?php endif;?>
 
+				<?php if($action == \Application\Model\Constants::FORM_ACTION_AP_FROM_PO):?>
+     					<input type="hidden" name="target_id"
+							value="<?php echo (!$target== null)? $target->getId():"";?>" /> <input
+							type="hidden" name="target_token"
+							value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+				<?php endif;?>
 
 						<fieldset>
 							<legend style="font-size: 9.5pt; color: gray;">

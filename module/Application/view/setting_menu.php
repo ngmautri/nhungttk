@@ -12,6 +12,10 @@
 	
 	<li class="divider"></li>	
 	<li><a href="<?php echo $this->baseUrl ?>/application/search-index/update-all"><small><i class="fa fa-refresh" aria-hidden="true"></i></small>&nbsp;&nbsp;<?php echo $this->translate("Update Search Index")?></a></li>
+	<li class="divider"></li>	
+
+	<li><a href="<?php echo $this->baseUrl ?>/inventory/item-search/create-index"><small><i class="fa fa-refresh" aria-hidden="true"></i></small>&nbsp;&nbsp;<?php echo $this->translate("Update Item Index")?></a></li>
+	
 	<li><a href="<?php echo $this->baseUrl ?>/procure/po-search/create-index"><small><i class="fa fa-refresh" aria-hidden="true"></i></small>&nbsp;&nbsp;<?php echo $this->translate("Update PO Index")?></a></li>
 	<li><a href="<?php echo $this->baseUrl ?>/procure/ap-search/create-index"><small><i class="fa fa-refresh" aria-hidden="true"></i></small>&nbsp;&nbsp;<?php echo $this->translate("Update A/P Index")?></a></li>
 

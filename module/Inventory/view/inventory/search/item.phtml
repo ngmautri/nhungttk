@@ -37,6 +37,7 @@ if (! $hits == null) :
 			<td><b>Name</b></td>
 			<td><b>SKU</b></td>
 			<td><b>SKU1</b></td>
+			<td><b>SKU1</b></td>
 			<td><b>Manufacturer Code</b></td>
 			<td><b>Manufacturer Serial</b></td>
 			<td><b>Manufacturer Model</b></td>
@@ -69,7 +70,7 @@ if (! $hits == null) :
 				</span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
 				<td><span id=""><?php if (isset($hit->item_sku1)): echo $this->escapeHtml($hit->item_sku1);endif; ?></span></td>
-		
+				<td><span id=""><?php echo $this->escapeHtml($hit->serial_number_key);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_serial);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_model);?></span></td>
@@ -77,6 +78,8 @@ if (! $hits == null) :
 			<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>
 	<td>
 	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($hit->item_id);?>" item_name="<?php echo $this->escapeHtml($hit->item_name);?>" target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Show</a>
+	<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo $hit->token;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Upload picture</a>
+
 	<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo $hit->token;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Upload picture</a>
 	<a href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Edit</a>
 	<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload?token=<?php echo $hit->token;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Attach</a>

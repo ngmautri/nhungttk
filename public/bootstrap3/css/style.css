@@ -3,10 +3,6 @@ body {
 	padding-bottom: 40px;
 }
 
-
-
-
-
 .zf-green {
 	color: #68b604;
 }
@@ -125,14 +121,30 @@ ul.pagination li a.active {
 	border: 1px solid #4CAF50;
 }
 
-ul.pagination li a:hover:not (.active ) {
-	background-color: #ddd;
+ul
+.pagination
+ 
+li
+ 
+a
+:hover
+:not
+ 
+(
+.active
+ 
+)
+{
+background-color
+:
+ 
+#ddd
+;
+
+
 }
-
 <!--
-jquery UI -->
-
-.dialogClass a:hover {
+jquery UI -->.dialogClass a:hover {
 	background-color: #0080c0;
 	color: #ffffff;
 }
@@ -162,7 +174,6 @@ select.ui-datepicker-month, select.ui-datepicker-year {
 	color: #000000;
 	font-size: 8px;
 }
-
 
 /* #global-notice{position:absolute; background: #FFFFCC; top:55px; left: 40%;
 border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:bold; font-size:10pt 
@@ -397,45 +408,60 @@ border:1px #999999 solid; z-index:99999; padding: 5px 5px 5px 5px; font-weight:b
 }
 
 .margin-bottom {
-    margin-bottom:2px;
+	margin-bottom: 2px;
 }
 
-
-.nav-tabs{
+.nav-tabs {
+	
 }
-.tab-content{
-      padding-top:10px
-}
-.nav-tabs > li > a{
-  border: medium none;
-}
-.nav-tabs > li > a:hover{
-  }
-  
-  .nav > li.active > a{
-   font-weight:bold;
-  }
-  
-  #mytable26 >tbody>tr>td{
-  height:26px;
-  padding:4px;
-  border-top: 0px;
-} 
 
+.tab-content {
+	padding-top: 10px
+}
 
-  #mytable28 >tbody>tr>td{
-  height:29px;
-  padding:4px;
-  border-top: 0px;
-} 
+.nav-tabs>li>a {
+	border: medium none;
+}
+
+.nav-tabs>li>a:hover {
+	
+}
+
+.nav>li.active>a {
+	font-weight: bold;
+}
+
+#mytable26>tbody>tr>td {
+	height: 26px;
+	padding: 4px;
+	border-top: 0px;
+}
+
+#mytable28>tbody>tr>td {
+	height: 29px;
+	padding: 4px;
+	border-top: 0px;
+}
 
 .navbar {
-    margin-bottom: 0px !important;
+	margin-bottom: 0px !important;
 }
-
 
 .nav-pills>li>a {
-	 margin-left:9px;
-	 padding:5px;
-	 font-size: 12px;
+	margin-left: 9px;
+	padding: 5px;
+	font-size: 12px;
 }
+
+ 
+   /* Change default height */
+.pq-grid td.pq-grid-cell {
+	padding: 6pt 2pt 5pt 2pt;
+}
+
+.pq-grid td.pq-grid-cell .ui-button .ui-button-text{
+	padding: 3px 10px 3px 10px;
+	margin: 0px;
+	font-size: 9pt;
+}
+ 

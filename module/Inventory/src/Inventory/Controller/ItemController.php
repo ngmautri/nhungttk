@@ -1060,9 +1060,12 @@ EOT;
                     }
 
                     // update index
-                    $this->itemSearchService->updateIndex(0, $new_item, false);
-
-                    $m = sprintf('[OK] (%s) #%s %s updated. Change no.:%s.', $itemName, $new_item->getId(), $new_item->getSysNumber(), count($changeArray));
+                    //$this->itemSearchService->updateIndex(0, $new_item, false);
+                    
+                    $indexing_log = $this->itemSearchService->updateItemIndex(0, $entity, false);
+                    //$m = sprintf('[OK] (%s) #%s %s created.<br/> %s', $itemName, $new_item->getId(), $new_item->getSysNumber(),$indexing_log);
+                   
+                    $m = sprintf('[OK] (%s) #%s %s updated. Change no.:%s.<br/> %s', $itemName, $new_item->getId(), $new_item->getSysNumber(), count($changeArray),$indexing_log);
 
                     // Trigger Change Log. AbtractController is EventManagerAware.
                     $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(

@@ -135,6 +135,8 @@ class PoSearchService extends AbstractService
         $doc->addField(Field::UnIndexed('row_conversion_factor', $row->getConversionFactor()));
 
         $doc->addField(Field::UnIndexed('row_unit', $row->getUnit()));
+        $doc->addField(Field::UnIndexed('row_unit_price', $row->getUnitPrice()));
+        
         $doc->addField(Field::text('row_remarks', $row->getRemarks()));
         $doc->addField(Field::text('row_name', $row->getVendorItemCode()));
 
@@ -206,12 +208,43 @@ class PoSearchService extends AbstractService
                 ->getKeywords()));
             $doc->addField(Field::text('asset_label', $row->getItem()
                 ->getAssetLabel()));
+            
+            // add item group and account
+            if ($row->getItem()->getItemGroup() !== null) {
+                
+                $inventory_account_id =null;
+                if( $row->getItem()->getItemGroup()->getInventoryAccount()!==null){
+                    $inventory_account_id = $row->getItem()->getItemGroup()->getInventoryAccount()->getId();
+                }
+                
+                $cogs_account_id =null;
+                if( $row->getItem()->getItemGroup()->getCogsAccount()!==null){
+                    $cogs_account_id = $row->getItem()->getItemGroup()->getCogsAccount()->getId();
+                }
+                
+                $item_cost_center_id =null;
+                if( $row->getItem()->getItemGroup()->getCostCenter()!==null){
+                    $item_cost_center_id = $row->getItem()->getItemGroup()->getCostCenter()->getId();
+                }
+                
+                $doc->addField(Field::UnIndexed('inventory_account_id', $inventory_account_id));
+                $doc->addField(Field::UnIndexed('cogs_account_id', $cogs_account_id));
+                $doc->addField(Field::UnIndexed('cost_center_id', $item_cost_center_id));
+            }else{
+                $doc->addField(Field::UnIndexed('inventory_account_id', null));
+                $doc->addField(Field::UnIndexed('cogs_account_id', null));
+                $doc->addField(Field::UnIndexed('cost_center_id', null));
+                
+            }
 
             $s = $row->getItem()->getAssetLabel();
             $l = strlen($s);
             $l > 3 ? $p = strpos($s, "-", 3) + 1 : $p = 0;
 
             $doc->addField(Field::Text('asset_label_lastnumber', substr($s, $p, $l - $p) * 1));
+            
+          
+            
         }
 
         $index->addDocument($doc);
@@ -256,6 +289,13 @@ class PoSearchService extends AbstractService
             if (count($terms) > 1) {
 
                 foreach ($terms as $t) {
+                    
+                    $t = preg_replace('/\s+/', '', $t);
+                    
+                    if(strlen($t) == 0 ){
+                        continue;
+                    }
+                    
 
                     if (strpos($t, '*') != false) {
                         $pattern = new Term($t);

@@ -83,7 +83,7 @@ class ItemSearchService extends AbstractService
         $doc->addField(Field::text('manufacturer_serial', $row['manufacturer_serial']));
         $doc->addField(Field::text('manufacturer_code', $row['manufacturer_code']));
         $doc->addField(Field::text('origin', $row['origin']));
-        $doc->addField(Field::text('remarks', $row['remarks']));
+        $doc->addField(Field::text('remarks', $row['remarks_text']));
 
         $doc->addField(Field::text('sp_label', $row['sparepart_label']));
         $doc->addField(Field::text('asset_label', $row['asset_label']));
@@ -288,7 +288,7 @@ class ItemSearchService extends AbstractService
                 $index = Lucene::open(getcwd() . self::ITEM_INDEX);
                 Analyzer::setDefault(new CaseInsensitive());
                 
-                if ($is_new !== 1) {
+                if ($is_new ==0) {
                     $ck_query = 'item_token_keyword:' . $item->getToken() . '__' . $item->getId();
                     $ck_hits = $index->find($ck_query);
                     
@@ -316,7 +316,7 @@ class ItemSearchService extends AbstractService
                 if ($optimized === true) {
                     $index->optimize();
                 }
-                return sprintf("[0k] Search index updated!");
+                return sprintf("[0k] Search index updated! %s",count($ck_hits));
             } else {
                 return sprintf("[FAILED] Input invalid");
             }
@@ -552,8 +552,7 @@ class ItemSearchService extends AbstractService
                     
                     if(strlen($t) == 0 ){
                         continue;
-                    }
-                        
+                    }                        
                     
                     if (strpos($t, '*') != false) {
                         $pattern = new Term($t);

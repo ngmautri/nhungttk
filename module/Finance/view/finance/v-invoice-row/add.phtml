@@ -293,7 +293,7 @@ if (count($errors) > 0) {
 							<label class="control-label col-sm-2" for="inputTag">Unit Price:</label>
 							<div class="col-sm-3">
 								<input tabindex="7" class="form-control input-sm" type="text"
-									id="unit_price" name="docUnitPrice"
+									id="docUnitPrice" name="docUnitPrice"
 									value="<?php echo (!$entity == null)? $entity->getDocUnitPrice():"";?>">
 
 							</div>
@@ -527,10 +527,21 @@ if (count($errors) > 0) {
             source: "/procure/po-search/auto-complete?vendor_id=<?php echo $target->getVendor()->getId();?>",
             minLength: 2,
             select: function( event, ui ) {
+
+        	   	$( "#gl_account_id" ).val("");
+          	   	$( "#cost_center_id").val("");
+          	 	$( "#docUnitPrice").val("");
+                
+         
+                
                 $( "#po_row_id" ).val(ui.item.po_row_id);
                 $( "#quantity" ).val(ui.item.row_quantity);
+                $( "#docUnitPrice" ).val(ui.item.row_unit_price);
+                
                 $( "#item_id" ).val(ui.item.item_id);
                 $( "#item_name" ).val(ui.item.item_name);
+
+                
 
                 $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.item_id+'&token='+ui.item.item_token);
                 $('#po_row_url').text('/procure/po-row/show1?entity_id='+ui.item.po_row_id+'&token='+ui.item.token);
@@ -547,6 +558,19 @@ if (count($errors) > 0) {
              	$('#pr_row_detail').show();
                 
              	$( "#quantity" ).focus();
+
+
+             	// update GL account and cost center
+             	if(ui.item.inventory_account_id !==null){
+                 	// update GL account and cost center
+             	   	$( "#gl_account_id" ).val(ui.item.inventory_account_id);
+              	}
+
+             // update GL account and cost center
+             	if(ui.item.cost_center_id !==null){
+                 	// update GL account and cost center
+             	   	$( "#cost_center_id").val(ui.item.cost_center_id);
+              	}		
             }
             })
             .autocomplete( "instance" )._renderItem = function( ul, item ) {

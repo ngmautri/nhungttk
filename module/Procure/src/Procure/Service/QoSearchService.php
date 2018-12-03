@@ -263,6 +263,13 @@ class QoSearchService extends AbstractService
             if (count($terms) > 1) {
 
                 foreach ($terms as $t) {
+                    
+                    $t = preg_replace('/\s+/', '', $t);
+                    
+                    if(strlen($t) == 0 ){
+                        continue;
+                    }
+                    
 
                     if (strpos($t, '*') != false) {
                         $pattern = new Term($t);

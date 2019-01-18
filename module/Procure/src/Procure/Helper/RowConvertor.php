@@ -36,7 +36,7 @@ class RowConvertor
         $row->setIsPosted(0);
         $row->setIsActive(1);
         $row->setIsDraft(1);
-        
+        $row->setRowNumber($s->getRowNumber());
         $row->setPrRow($s->getPrRow());
         $row->setItem($s->getItem());
    

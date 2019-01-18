@@ -613,13 +613,13 @@ if (count($errors) > 0) {
        };
 
     $('#quantity').bind('change', function() {
-       	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+       	$('#net_amount').val($('#docUnitPrice').val() * $('#quantity').val());
        	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);
 
     });
 
-    $('#unit_price').bind('change', function() {
-    	$('#net_amount').val($('#unit_price').val() * $('#quantity').val());
+    $('#docUnitPrice').bind('change', function() {
+    	$('#net_amount').val($('#docUnitPrice').val() * $('#quantity').val());
     	$('#gross_amount').val($('#net_amount').val()*1 + $('#tax_amount').val()*1);	
     });
 
@@ -655,12 +655,12 @@ if (count($errors) > 0) {
 
     function showSelectedItem(){
 		var url= $('#item_url').text(); 
-	   	showJqueryDialog('Item Detail','1350',$(window).height()-40, url,'j_loaded_data', true);
+	   	showJqueryDialog('Item Detail','1550',$(window).height()-40, url,'j_loaded_data', true);
 	}
 
     function showSelectedPrRow(){
 		var url= $('#pr_row_url').text();
-	   	showJqueryDialog('PR Row Detail','1350',$(window).height()-40, url,'j_loaded_data', true);
+	   	showJqueryDialog('PR Row Detail','1550',$(window).height()-40, url,'j_loaded_data', true);
 	}
 
 	<?php

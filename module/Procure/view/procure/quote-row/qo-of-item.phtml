@@ -13,13 +13,13 @@
 			<td><b>QO No.</b></td>
 			<td><b>Vendor</b></td>
 			<td><b>QO Date</b></td>
+			<td><b><?php echo $this->translate("Item Name");?></b></td>
 			<td><b>Unit</b></td>
 			<td><b>Q'ty</b></td>
 			<td><b>UP Price</b></td>
 			<td><b>Total</b></td>
 			<td><b>Currency</b></td>
 			<td><b>EX</b></td>
-			
 			<td><b>local UP</b></td>
 			<td><b>Local Total</b></td>
 		
@@ -48,15 +48,15 @@
 			<td><?php if(!$a->getQo()==null): if($a->getQo()->getVendor()!==null): echo $a->getQo()->getVendor()->getVendorName();endif;endif;?> </td>
 			
 			<td><?php if(!$a->getQo()->getContractDate()==null): echo date_format ( $a->getQo()->getContractDate(), "d/m/y");endif;?> </td>
+		    <td><?php echo $a->getVendorItemCode();?></td>
 			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
-		
 			<td><?php echo $a->getQuantity();?></td>
 			<td><?php echo number_format($a->getUnitPrice(),2);?></td>
 			<td><?php echo number_format($a->getUnitPrice()*$a->getQuantity(),2);?></td>		
 			<td><?php echo $a->getQo()->getCurrency()->getCurrency();?></td>			
-			<td><?php echo $a->getQo()->getExchangeRate();?></td>			
-			<td><?php echo $a->getQo()->getExchangeRate()*$a->getUnitPrice();?></td>			
-			<td><?php echo $a->getQo()->getExchangeRate()*$a->getUnitPrice()*$a->getQuantity();?></td>
+			<td><?php echo number_format($a->getQo()->getExchangeRate(),2);?></td>			
+			<td><?php echo number_format($a->getQo()->getExchangeRate()*$a->getUnitPrice(),2);?></td>			
+			<td><?php echo number_format($a->getQo()->getExchangeRate()*$a->getUnitPrice()*$a->getQuantity(),2);?></td>
 		<td>
 			</td>
 			<td>

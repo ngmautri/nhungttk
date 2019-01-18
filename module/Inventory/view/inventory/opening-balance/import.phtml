@@ -51,7 +51,7 @@ if (count($errors) > 0) {
 
 <!-- TO UPDATE ACTION -->
 					<form id="attachment_upload_form" class="form-horizontal"
-						action="/inventory/opening-balance?import" method="post"
+						action="/inventory/opening-balance/import" method="post"
 						enctype="multipart/form-data">
 						<input type="hidden" name="target_id"
 							value="<?php echo (!$target == null)? $target->getId():"";?>" />

@@ -83,7 +83,7 @@ if (! $hits == null) :
 					<td><span id=""><?php echo $this->escapeHtml($hit->ap_row_id);?></span></td>
 
 					<td><a style="color: navy;"
-						href="<?php echo $this->baseUrl ?>/procure/ap/show?token=<?php echo $hit->ap_token;?>&entity_id=<?php echo $hit->ap_id;?>">
+						href="<?php echo $this->baseUrl ?>/finance/v-invoice/show?token=<?php echo $hit->ap_token;?>&entity_id=<?php echo $hit->ap_id;?>">
 					<?php echo $this->escapeHtml($hit->ap_number);?></a></td>
 					<td><span id=""> <a style="color: navy;" target="_blank"
 							href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->item_token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->item_checksum;?>"><?php echo $this->escapeHtml($hit->item_sys_number);?></a>

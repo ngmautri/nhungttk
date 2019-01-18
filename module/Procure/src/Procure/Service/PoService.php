@@ -531,7 +531,7 @@ class PoService extends AbstractService
         $rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQoRow')->findBy($criteria);
 
         if (count($rows) == 0) {
-            throw new \Exception("Quotation is empty. No thing will be copied!");
+            throw new \Exception($qo. " // Quotation is empty. No thing will be copied!");
         }
 
         $convertor = new RowConvertor();
@@ -551,7 +551,7 @@ class PoService extends AbstractService
 
             if ($po_row !== null) {
                 $n ++;
-                $po_row->setRowNumber($n);
+                //$po_row->setRowNumber($n);
                 $this->doctrineEM->persist($po_row);
             }
         }

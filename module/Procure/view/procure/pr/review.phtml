@@ -537,11 +537,11 @@ function doPosting() {
 
 						  	
                           $("#global-notice").text("Updating...").show();
-                          alert(updateList[0].item_name  +  updateList[0].row_id);
+                          //alert(updateList[0].item_name  +  updateList[0].row_id);
                       },
                       success: function (changes) {
                           //commit the changes.
-                          alert(changes.updateList);
+                          //alert(changes.updateList);
                            $("#global-notice").text("[OK] Row updated...").show();
             		      //alert('it is ok');                
                           /* grid.commit({ type: 'add', rows: changes.addList });

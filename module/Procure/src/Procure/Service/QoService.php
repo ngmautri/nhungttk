@@ -142,6 +142,9 @@ class QoService extends AbstractService
         $quantity = $data['quantity'];
         $unitPrice = $data['unitPrice'];
         $taxRate = $data['taxRate'];
+        $rowNumber = $data['rowNumber'];
+        
+        
         // $traceStock = $data['traceStock'];
 
         $remarks = $data['remarks'];
@@ -212,6 +215,18 @@ class QoService extends AbstractService
                  }
             }
         }
+        
+        if ($rowNumber != null) {
+            if (! is_numeric($taxRate)) {
+                $errors[] = 'Row Number is not valid. It must be a number.';
+            } else {
+                if ($taxRate < 0) {
+                    $errors[] = 'Row Number must be greate than 0!';
+                } else {
+                    $entity->setRowNumber($rowNumber);
+                }
+            }
+        }
 
         $entity->setRemarks($remarks);
 
@@ -227,9 +242,12 @@ class QoService extends AbstractService
     {
         $errors = array();
     
+        // see quote/show/phtml
         $quantity = $data['row_quantity'];
         $unitPrice = $data['row_unit_price'];
         $faRemarks = $data['fa_remarks'];
+        $rowNumber = $data['row_number'];
+        
         
         $entity->setFaRemarks($faRemarks);
     
@@ -260,6 +278,18 @@ class QoService extends AbstractService
                     $errors[] = 'Price must be greate than 0!';
                 } else {
                     $entity->setUnitPrice($unitPrice);
+                }
+            }
+        }
+        
+        if ($rowNumber != null) {
+            if (! is_numeric($rowNumber)) {
+                $errors[] = 'Row Number is not valid. It must be a number.';
+            } else {
+                if ($rowNumber < 0) {
+                    $errors[] = 'Row Number must be greate than 0!';
+                } else {
+                    $entity->setRowNumber($rowNumber);
                 }
             }
         }

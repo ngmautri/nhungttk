@@ -19,6 +19,9 @@
 			<td><b>Pr No.</b></td>
 			<td><b>Pr No.</b></td>
 			<td><b>Pr Date</b></td>
+			<td><b>Ref</b></td>
+			<td><b>Item</b></td>
+		
 			<td><b>Unit</b></td>
 			<td><b>Ordered Q'ty</b></td>
 			<td><b>Ordered Q'ty1</b></td>
@@ -77,8 +80,10 @@
 	 		<td><a href="/procure/pr/show?entity_id=<?php echo $a->getPr()->getId();?>&token=<?php echo $a->getPr()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getPr()->getPrAutoNumber());?></a></td>
 			<td><?php echo $this->escapeHtml($a->getPr()->getPrNumber());?></td>
 			<td><?php if(!$a->getPr()->getCreatedOn()==null): echo date_format ( $a->getPr()->getSubmittedOn(), "d/m/y");endif;?> </td>
-				<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
+			<td><?php echo $a->getRowIdentifer();?></td>
 		
+			<td><?php echo $a->getRowName();?></td>
+			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
 			<td><?php echo $a->getQuantity();?></td>
 			<td><?php if(!$a->getConvertedStandardQuantiy()==null):echo $a->getConvertedStandardQuantiy();else: echo $a->getQuantity(); endif;?></td>
 	

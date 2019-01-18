@@ -47,7 +47,7 @@ class ItemSearchService extends AbstractService
         
         
         $doc->addField(Field::Keyword('item_sku_key', $row['item_sku']));
-        $doc->addField(Field::Keyword('item_sku1_key', $row['item_sku']));
+        $doc->addField(Field::Keyword('item_sku1_key', $row['item_sku1']));
         $doc->addField(Field::Keyword('item_sku2_key', $row['item_sku2']));
 
         $doc->addField(Field::Keyword('item_sys_number', $row['sys_number']));

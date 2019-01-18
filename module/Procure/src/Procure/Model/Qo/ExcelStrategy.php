@@ -90,7 +90,8 @@ class ExcelStrategy extends DownloadStrategyAbstract
 
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $header, "Buying");
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $header, "Item.No.");
-
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $header, "Row.No.");
+        
         foreach ($rows as $r) {
 
             /**@var \Application\Entity\NmtProcureQoRow $a ;*/
@@ -114,12 +115,14 @@ class ExcelStrategy extends DownloadStrategyAbstract
                 ->getItemSku());
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $l, $a->getItem()
                 ->getSysNumber());
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $l, $a->getRowNumber());
+            
         }
 
         // Rename worksheet
         $objPHPExcel->getActiveSheet()->setTitle($entity->getSysNumber());
 
-        $objPHPExcel->getActiveSheet()->setAutoFilter("A3:H3");
+        $objPHPExcel->getActiveSheet()->setAutoFilter("A3:I3");
 
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $objPHPExcel->setActiveSheetIndex(0);

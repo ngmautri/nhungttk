@@ -410,7 +410,7 @@ LEFT JOIN
 AS nmt_procure_gr_row
 ON nmt_procure_gr_row.po_row_id = nmt_procure_po_row.id
 
-WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1";
+WHERE nmt_procure_po_row.po_id=%s AND nmt_procure_po_row.is_active=1 order by row_number";
 
         /**
          *

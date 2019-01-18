@@ -26,7 +26,9 @@ class OpeningBalanceController extends AbstractActionController
     protected $doctrineEM;
 
     protected $itemSearchService;
+
     protected $obService;
+
     /**
      * php.ini
      * memory_limit=512M
@@ -75,8 +77,6 @@ class OpeningBalanceController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
-                    'entity' => null,
-                    'gl_list' => $gl_list
                 ));
 
                 // $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
@@ -90,6 +90,11 @@ class OpeningBalanceController extends AbstractActionController
                 $file_type = $_FILES['uploaded_file']['type'];
 
                 $file_ext = strtolower(end(explode('.', $file_name)));
+                
+                // continue:
+                
+                echo ($file_name);
+                
 
                 // attachement required?
                 if ($file_tmp == "" or $file_tmp === null) {
@@ -97,12 +102,13 @@ class OpeningBalanceController extends AbstractActionController
                     $errors[] = 'Attachment can\'t be empty!';
                     $this->flashMessenger()->addMessage('Something wrong!');
                     return new ViewModel(array(
-                        'errors' => $errors
+                        'errors' => $errors,
+                        'target' => $target,
+                        
                     ));
                 }
 
-                // continue:
-
+            
                 $ext = '';
                 if (preg_match('/(jpg|jpeg)$/', $file_type)) {
                     $ext = 'jpg';
@@ -143,7 +149,9 @@ class OpeningBalanceController extends AbstractActionController
                 if (count($errors) > 0) {
                     $this->flashMessenger()->addMessage('Something wrong!');
                     return new ViewModel(array(
-                        'errors' => $errors
+                        'errors' => $errors,
+                        'target' => $target,
+                        
                     ));
                 }
                 ;
@@ -163,73 +171,94 @@ class OpeningBalanceController extends AbstractActionController
 
                 $objPHPExcel = IOFactory::load("$folder/$file_name");
 
-                foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
-                    // echo $worksheet->getTitle();
+                try {
 
-                    // $worksheetTitle = $worksheet->getTitle();
+                    foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+                        // echo $worksheet->getTitle();
 
-                    $highestRow = $worksheet->getHighestRow(); // e.g. 10
-                    $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
-                    $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
-                    $nrColumns = ord($highestColumn) - 64;
+                        // $worksheetTitle = $worksheet->getTitle();
 
-                    // echo $worksheetTitle;
-                    // echo $highestRow;
-                    // echo $highestColumn;
+                        $highestRow = $worksheet->getHighestRow(); // e.g. 10
+                        $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+                        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+                        $nrColumns = ord($highestColumn) - 64;
 
-                    $createdOn = new \DateTime();
+                        // echo $worksheetTitle;
+                        // echo $highestRow;
+                        // echo $highestColumn;
 
-                    for ($row = 2; $row <= $highestRow; ++ $row) {
+                        $createdOn = new \DateTime();
 
-                        $entity = new NmtInventoryOpeningBalanceRow();
+                        for ($row = 2; $row <= $highestRow; ++ $row) {
 
-                        // new A=1
-                        for ($col = 1; $col < $highestColumnIndex; ++ $col) {
+                            $entity = new NmtInventoryOpeningBalanceRow();
 
-                            $cell = $worksheet->getCellByColumnAndRow($col, $row);
-                            $val = $cell->getValue();
-                            // echo $val . ';';
+                            // new A=1
+                            for ($col = 1; $col < $highestColumnIndex; ++ $col) {
 
-                            $entity->setEmployeeId(1);
-                            $entity->setCreatedBy($u);
-                            $entity->setCreatedOn(new \Datetime());
+                                $cell = $worksheet->getCellByColumnAndRow($col, $row);
+                                $val = $cell->getValue();
+                                // echo $val . ';';
 
-                            switch ($col) {
-                                case 1:
-                                    // item id
-                                    $entity->setItem($val);
-                                    break;
-                                case 2:
-                                    $entity->setQuantiy($val);
-                                    break;
-                                case 3:
-                                    $entity->setUnitPrice($val);
-                                    break;
-                                case 4:
-                                    $entity->setGrossAmount($val);
-                                    break;
-                                case 5:
-                                    $entity->setNetAmount($val);
-                                    break;
+                                $entity->setOpeningBalance($target);
+                                $entity->setCreatedBy($u);
+                                $entity->setCreatedOn(new \Datetime());
+                                $entity->setIsActive(1);
+                                $entity->setToken(md5(microtime()));
+                                $entity->setGlAccount($target->getGlAccount());
+                                
+
+                                switch ($col) {
+                                    case 1:
+                                        // item id                                        
+                                        
+                                        /**@var \Application\Entity\NmtInventoryOpeningBalance $target ;*/
+                                        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy(array(
+                                        "id" => $val,
+                                         ));
+                                        
+                                        $entity->setItem($item);
+                                        break;
+                                    case 2:
+                                        $entity->setQuantity($val);
+                                        break;
+                                    case 3:
+                                        $entity->setUnitPrice($val);
+                                        break;
+                                    case 4:
+                                        $entity->setNetAmount($val);
+                                        break;
+                                    case 5:
+                                        $entity->setGrossAmount($val);
+                                        break;
+                                }
                             }
+                     
+                            $this->doctrineEM->persist($entity);
+
+                            if ($row % 100 == 0 or $row == $highestRow) {
+                                $this->doctrineEM->flush();
+                            }
+
+                            // echo "<br>";
                         }
-
-                        $entity->setCreatedBy($u);
-                        $entity->setCreatedOn($createdOn);
-
-                        $this->doctrineEM->persist($entity);
-
-                        if ($row % 100 == 0 or $row == $highestRow) {
-                            $this->doctrineEM->flush();
-                        }
-
-                        // echo "<br>";
                     }
-                }
 
-                $m = sprintf("[OK] %s uploaded !", $file_name);
-                $this->flashMessenger()->addMessage($m);
-                // return $this->redirect()->toUrl($redirectUrl);
+                    $m = sprintf("[OK] %s uploaded !", $file_name);
+                    $this->flashMessenger()->addMessage($m);
+                    return $this->redirect()->toUrl($redirectUrl);
+                } catch (\Exception $e) {
+                    echo $e->getMessage();
+                }
+                
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                     'target' => $target,
+                    'gl_list' => $gl_list
+                ));
+                
+                return $viewModel;
             }
         }
 
@@ -271,8 +300,7 @@ class OpeningBalanceController extends AbstractActionController
             'gl_list' => $gl_list
         ));
 
-        // $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
-        return $viewModel;
+          return $viewModel;
     }
 
     /**
@@ -494,7 +522,7 @@ class OpeningBalanceController extends AbstractActionController
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-   
+
         // Is Posing
         // =============================
         if ($request->isPost()) {
@@ -1024,8 +1052,8 @@ class OpeningBalanceController extends AbstractActionController
     }
 
     /**
-     * 
-     *  @return \Inventory\Service\ItemSearchService
+     *
+     * @return \Inventory\Service\ItemSearchService
      */
     public function getItemSearchService()
     {
@@ -1033,9 +1061,9 @@ class OpeningBalanceController extends AbstractActionController
     }
 
     /**
-     * 
-     *  @param ItemSearchService $itemSearchService
-     *  @return \Inventory\Controller\OpeningBalanceController
+     *
+     * @param ItemSearchService $itemSearchService
+     * @return \Inventory\Controller\OpeningBalanceController
      */
     public function setItemSearchService(ItemSearchService $itemSearchService)
     {

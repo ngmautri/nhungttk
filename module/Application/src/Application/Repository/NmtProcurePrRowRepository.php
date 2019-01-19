@@ -872,8 +872,26 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
         } elseif ($is_active == - 1) {
             $sql = $sql . " AND nmt_procure_pr_row.is_active = 0)";
         }
-
+        
         $sql = $sql . sprintf(" AND nmt_procure_pr.id =%s AND nmt_procure_pr.token ='%s'", $pr_id, $pr_token);
+        
+        switch ($sort_by) {
+            case "itemName":
+                $sql = $sql . " ORDER BY nmt_inventory_item.item_name " . $sort;
+                break;
+            case "createdOn":
+                $sql = $sql . " ORDER BY nmt_procure_pr_row.created_on " . $sort;
+                break;
+            case "balance":
+                $sql = $sql . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.total_received,0)) " . $sort;
+                break;
+            case "prSubmitted":
+                $sql = $sql . " ORDER BY nmt_procure_pr.submitted_on" . $sort;
+                break;
+            case "rowNumber":
+                $sql = $sql . " ORDER BY nmt_procure_pr_row.row_number " . $sort;
+                break;
+        }
 
         $sql = $sql . ";";
         // echo $$sql;

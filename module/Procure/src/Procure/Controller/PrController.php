@@ -446,13 +446,13 @@ class PrController extends AbstractActionController
 
         // $this->layout("Procure/layout-fluid-1");
         
-        echo \Application\Model\Constants::v4();
+        //echo \Application\Model\Constants::v4();
         
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $balance = $this->params()->fromQuery('balance');
         $pr_year = $this->params()->fromQuery('pr_year');
-
+          
         $is_active = (int) $this->params()->fromQuery('is_active');
 
         $status = $this->getEvent()
@@ -545,7 +545,8 @@ class PrController extends AbstractActionController
             'is_active' => $is_active,
             'status' => $status,
             'pr_year' => $pr_year,
-            'row_number' => $row_number
+            'row_number' => $row_number,
+            //'uid'=>\Application\Model\Constants::v4(),
         ));
     }
 

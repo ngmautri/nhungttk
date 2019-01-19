@@ -1093,6 +1093,7 @@ class PrRowController extends AbstractActionController
                 'pr' => $target_id
                 // 'isActive' => 1,
             );
+             
 
             // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->get ( $criteria );
             /** @var \Application\Repository\NmtProcurePrRowRepository $res ;*/
@@ -1196,7 +1197,7 @@ class PrRowController extends AbstractActionController
         if (isset($_GET['sort_by'])) {
             $sort_by = $_GET['sort_by'];
         } else {
-            $sort_by = "itemName";
+            $sort_by = "rowNumber";
         }
 
         if (isset($_GET['sort'])) {
@@ -1377,7 +1378,7 @@ class PrRowController extends AbstractActionController
         if (isset($_GET['sort_by'])) {
             $sort_by = $_GET['sort_by'];
         } else {
-            $sort_by = "itemName";
+            $sort_by = "rowNumber";
         }
 
         if (isset($_GET['sort'])) {

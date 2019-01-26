@@ -249,6 +249,8 @@ return array(
             'Procure\Controller\Return' => 'Procure\Controller\ReturnControllerFactory',
             'Procure\Controller\ReturnRow' => 'Procure\Controller\ReturnRowControllerFactory',
             'Procure\Controller\ReturnAttachment' => 'Procure\Controller\ReturnAttachmentControllerFactory',
+     
+            'Procure\Controller\PriceComparison' => 'Procure\Controller\PriceComparisonControllerFactory',
             
         )
     

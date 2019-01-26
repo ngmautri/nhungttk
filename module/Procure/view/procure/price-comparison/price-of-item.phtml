@@ -1,0 +1,53 @@
+<?php if (count($rows)==0): ?>
+
+<h5>no thing found!</h5>
+
+<?php else: ?>
+
+<h4 style="color:graytext;"><?php echo $this->translate("Purchase Order");?>:</h4>
+
+
+<table style="font-size: 9pt;" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<td><b>#</b></td>
+		    <td><b><?php echo $this->translate("Doc Type");?></b></td>
+	
+		    <td><b><?php echo $this->translate("Vendor");?></b></td>
+		    <td><b><?php echo $this->translate("Unit Price");?></b></td>
+		    <td><b><?php echo $this->translate("FX");?></b></td>
+	    <td><b><?php echo $this->translate("Local Unit Price");?></b></td>
+
+		</tr>
+	</thead>
+	<tbody>
+ 
+	 <?php
+	
+	$count = 0;
+	//$total_ordered = 0;
+	//$total_received = 0;
+	//$total_balance = 0;
+	foreach ( $rows as $r ) :
+		$count ++;
+			
+		?>
+	 <tr>
+		 <td><?php echo $count;?></td>
+	     <td><?php echo $r['doc_type'];?> </td>
+         <td><?php echo $r['vendor_name'];?> </td>
+	     <td><?php echo $r['unit_price'];?> </td>
+	      <td><?php echo $r['exchange_rate'];?> </td>
+	      <td><?php echo $r['lc_unit_price'];?> </td>
+		
+	</tr>
+<?php endforeach; ?>
+
+ </tbody>
+</table>
+
+<script type="text/javascript">
+</script>
+
+<?php endif; ?>
+	

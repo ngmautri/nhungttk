@@ -134,6 +134,40 @@ WHERE 1 AND nmt_procure_qo_row.item_id=%s
 UNION
 
 SELECT
+	"PO" AS doc_type ,
+    
+    nmt_inventory_item.id AS item_id,
+    nmt_inventory_item.item_name AS item_name,
+    nmt_inventory_item.item_sku,
+    nmt_inventory_item.item_sku1,
+    nmt_inventory_item.item_sku,
+    
+    nmt_procure_po.id AS source_id,
+	nmt_procure_po.vendor_id,
+    nmt_procure_po.vendor_name,
+    nmt_procure_po.currency_id,
+    nmt_procure_po.doc_currency_id,
+    nmt_procure_po.exchange_rate,
+    
+    nmt_procure_po_row.quantity,
+    nmt_procure_po_row.conversion_factor,
+    nmt_procure_po_row.unit AS doc_unit,
+    nmt_procure_po_row.unit_price,
+    nmt_procure_po_row.unit_price*nmt_procure_po.exchange_rate AS lc_unit_price,
+	nmt_procure_po_row.unit_price*nmt_procure_po.exchange_rate* nmt_procure_po_row.quantity AS lc_total_price
+
+FROM nmt_procure_po_row
+            
+LEFT JOIN nmt_procure_po
+ON nmt_procure_po.id = nmt_procure_po_row.po_id
+            
+LEFT JOIN nmt_inventory_item
+ON nmt_inventory_item.id = nmt_procure_po_row.item_id
+WHERE 1 AND nmt_procure_po_row.item_id=%s
+
+UNION
+
+SELECT
 	"AP" AS doc_type ,
     nmt_inventory_item.id AS item_id,
     nmt_inventory_item.item_name AS item_name,
@@ -164,7 +198,6 @@ ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
 LEFT JOIN nmt_inventory_item
 ON nmt_inventory_item.id = fin_vendor_invoice_row.item_id
 WHERE 1 AND fin_vendor_invoice_row.item_id=%s
-
 ';
 
 }

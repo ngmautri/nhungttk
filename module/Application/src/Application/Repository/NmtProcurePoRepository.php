@@ -75,7 +75,7 @@ WHERE 1
         }
     }
 
-    public function getPoList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getPoList($is_active = 1, $current_state = null,$docStatus = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql;
 
@@ -88,10 +88,18 @@ WHERE 1
         if ($current_state != null) {
             $sql = $sql . " AND nmt_procure_po.current_state = '" . $current_state . "'";
         }
+        
+        if ($docStatus != null) {
+            $sql = $sql . " AND nmt_procure_po.doc_status = '" . $docStatus . "'";
+        }
 
         $sql = $sql . " GROUP BY nmt_procure_po.id";
 
         switch ($sort_by) {
+            case "sysNumber":
+                $sql = $sql . " ORDER BY nmt_procure_po.sys_number " . $sort;
+                break;
+                
             case "poDate":
                 $sql = $sql . " ORDER BY nmt_procure_po.contract_date " . $sort;
                 break;
@@ -230,6 +238,12 @@ WHERE 1
         }
     }
 
+    /**
+     * 
+     * @param int $item_id
+     * @param string $token
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     */
     public function getPoOfItem($item_id, $token)
     {
         $sql = "
@@ -1128,6 +1142,26 @@ WHERE 1
         
         try {
            } catch (NoResultException $e) {
+            return null;
+        }
+    }
+    
+    
+    /**
+     *
+     * @param int $item_id
+     * @param string $token
+     * @return array|mixed|\Doctrine\DBAL\Driver\Statement|NULL|NULL
+     */
+    public function getPriceOfItem($item_id, $token)
+    {
+        $sql = sprintf(\Application\Repository\SQL\NmtProcurePoRepositorySQL::ITEM_PRICE_SQL,$item_id,$item_id,$item_id);
+      
+         try {
+             $stmt = $this->_em->getConnection()->prepare($sql);
+             $stmt->execute();
+             return $stmt->fetchAll();
+        } catch (NoResultException $e) {
             return null;
         }
     }

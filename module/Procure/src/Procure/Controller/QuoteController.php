@@ -639,7 +639,8 @@ class QuoteController extends AbstractActionController
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $currentState = $this->params()->fromQuery('currentState');
-
+        $docStatus = $this->params()->fromQuery('docStatus');
+        
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
@@ -659,25 +660,45 @@ class QuoteController extends AbstractActionController
         if ($is_active == null) {
             $is_active = 1;
         }
+        
+        if ($docStatus == null) {
+            $docStatus = 'posted';
+            
+            if ($sort_by == null) :
+                $sort_by = "sysNumber";
+            endif;
+        }
+        
+        
+        if ($docStatus == "draft") {
+            
+            if ($sort_by == null) :
+                $sort_by = "createdOn";
+            endif;
+            
+            if ($sort == null) :
+                 $sort = "DESC";
+            endif;
+        }
 
         if ($sort_by == null) :
             $sort_by = "createdOn";
         endif;
 
         if ($sort == null) :
-            $sort = "ASC";
+            $sort = "DESC";
         endif;
 
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $list = $res->getQOList($is_active, $currentState, null, $sort_by, $sort, 0, 0);
+        $list = $res->getQOList($is_active, $currentState, $docStatus, null, $sort_by, $sort, 0, 0);
         $total_records = count($list);
         $paginator = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getQOList($is_active, $currentState, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getQOList($is_active, $currentState, $docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
 
         return new ViewModel(array(
@@ -688,7 +709,8 @@ class QuoteController extends AbstractActionController
             'sort_by' => $sort_by,
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
-            'currentState' => $currentState
+            'currentState' => $currentState,
+            'docStatus' => $docStatus
         ));
     }
 

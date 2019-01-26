@@ -387,7 +387,11 @@ if (count($errors) > 0) {
 
 
     	$("#Create_Inv_Form :input").attr("disabled", "disabled");
-    	
+
+        $( "#pr_item_name" ).focus();   
+        
+
+    	// select pr item
         $( "#pr_item_name" ).autocomplete({
             source: "/procure/pr-search/auto-complete",
             minLength: 2,
@@ -430,14 +434,19 @@ if (count($errors) > 0) {
               .appendTo( ul );
             };	
     
-            $( "#pr_item_name" ).focus();   
     
+
+        // if select item, then delete all pr item    
         $( "#item_name" ).autocomplete({
             source: "/inventory/item-search/auto-complete",
             minLength: 2,
             select: function( event, ui ) {
-          	  $( "#item_id" ).val(ui.item.id);
-    
+
+              // set pr row empty	
+              $( "#pr_row_id" ).val("");
+              $( "#pr_item_name" ).val("");              
+              $( "#item_id" ).val(ui.item.id);
+                  
               $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.id+'&token='+ui.item.token);
               
             

@@ -178,7 +178,7 @@ WHERE 1";
      * @param number $offset
      * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
      */
-    public function getVendorInvoiceList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getVendorInvoiceList($is_active = 1, $current_state = null, $docStatus=null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = $this->sql;
         
@@ -190,6 +190,10 @@ WHERE 1";
         
         if ($current_state != null) {
             $sql = $sql . " AND fin_vendor_invoice.current_state = '" . $current_state . "'";
+        }
+        
+        if ($docStatus != null) {
+            $sql = $sql . " AND fin_vendor_invoice.doc_status = '" . $docStatus . "'";
         }
         
         $sql = $sql . " GROUP BY fin_vendor_invoice.id";

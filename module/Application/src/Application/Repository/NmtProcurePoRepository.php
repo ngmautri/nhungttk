@@ -972,7 +972,7 @@ WHERE 1
     /**
      * GR List
      */
-    public function getQOList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getQOList($is_active = 1, $current_state = null, $docStatus =null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
         $sql = "SELECT
    nmt_procure_qo.*,
@@ -991,6 +991,10 @@ WHERE 1
 
         if ($current_state != null) {
             $sql = $sql . " AND nmt_procure_qo.current_state = '" . $current_state . "'";
+        }
+        
+        if ($docStatus != null) {
+            $sql = $sql . " AND nmt_procure_qo.doc_status = '" . $docStatus . "'";
         }
 
         $sql = $sql . " GROUP BY nmt_procure_qo_row.qo_id";

@@ -1387,11 +1387,13 @@ class VInvoiceController extends AbstractActionController
      */
     public function listAction()
     {
+      
         $is_active = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $currentState = $this->params()->fromQuery('currentState');
-
+        $docStatus = $this->params()->fromQuery('docStatus');
+        
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
@@ -1411,10 +1413,23 @@ class VInvoiceController extends AbstractActionController
         if ($is_active == null) {
             $is_active = 1;
         }
-
-        if ($sort_by == null) :
-            $sort_by = "sysNumber";
+        
+        if ($docStatus == null) :
+            $docStatus = "posted";
+        
+            if ($sort_by == null) :
+                $sort_by = "sysNumber";
+            endif;
         endif;
+     
+        if ($docStatus == 'draft') :
+                
+            if ($sort_by == null) :
+                 $sort_by = "createdOn";
+            endif;
+        endif;
+        
+        
 
         if ($sort == null) :
             $sort = "DESC";
@@ -1430,14 +1445,14 @@ class VInvoiceController extends AbstractActionController
 
         /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
-        $list = $res->getVendorInvoiceList($is_active, $currentState, null, $sort_by, $sort, 0, 0);
+        $list = $res->getVendorInvoiceList($is_active, $currentState, $docStatus, null, $sort_by, $sort, 0, 0);
         $total_records = count($list);
         $paginator = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getVendorInvoiceList($is_active, $currentState, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getVendorInvoiceList($is_active, $currentState,$docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
 
         return new ViewModel(array(
@@ -1448,7 +1463,8 @@ class VInvoiceController extends AbstractActionController
             'sort_by' => $sort_by,
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
-            'currentState' => $currentState
+            'currentState' => $currentState,
+            'docStatus' => $docStatus
         ));
     }
 

@@ -52,7 +52,7 @@ class PoService extends AbstractService
         $contractDate = $data['contractDate'];
         $contractNo = $data['contractNo'];
         $vendor_id = (int) $data['vendor_id'];
-         $isActive = (int) $data['isActive'];
+        $isActive = (int) $data['isActive'];
 
         if ($isActive !== 1) {
             $isActive = 0;
@@ -192,24 +192,31 @@ class PoService extends AbstractService
         $entity->setRowNumber($rowNumber);
 
         // Inventory Transaction and validating.
-
-        /**@var \Application\Entity\NmtProcurePrRow $pr_row ;*/
-        $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-
-        /**@var \Application\Entity\NmtInventoryItem $item ;*/
-        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-
-        if ($pr_row == null) {
-            // $errors[] = 'Item can\'t be empty!';
-        } else {
-            $entity->setPrRow($pr_row);
+        
+        $entity->setPrRow(null);
+        
+        if ($pr_row_id > 0) {
+            /**@var \Application\Entity\NmtProcurePrRow $pr_row ;*/
+            $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
+            if ($pr_row == null) {
+                // $errors[] = 'Item can\'t be empty!';
+            } else {
+                $entity->setPrRow($pr_row);
+            }
         }
 
+        if ($item_id > 0) {
+
+            /**@var \Application\Entity\NmtInventoryItem $item ;*/
+            $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+        }
+        
         if ($item == null) {
             $errors[] = $this->controllerPlugin->translate('Item is not found. Please select item!');
         } else {
             $entity->setItem($item);
         }
+        
 
         $entity->setVendorItemCode($vendorItemCode);
         $entity->setUnit($unit);
@@ -280,8 +287,9 @@ class PoService extends AbstractService
             }
         }
 
+        //$entity->setRemarks($remarks . 'pr_id:' . $pr_row_id);
         $entity->setRemarks($remarks);
-
+        
         return $errors;
     }
 
@@ -327,9 +335,9 @@ class PoService extends AbstractService
                 $entity->setDocQuantity($quantity);
             }
         }
-        
-        $unitPrice = str_replace(",", "",$unitPrice);
-       
+
+        $unitPrice = str_replace(",", "", $unitPrice);
+
         if (! is_numeric($unitPrice)) {
             $errors[] = $this->controllerPlugin->translate($unitPrice . ' // Price is not valid. It must be a number.');
         } else {
@@ -531,7 +539,7 @@ class PoService extends AbstractService
         $rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureQoRow')->findBy($criteria);
 
         if (count($rows) == 0) {
-            throw new \Exception($qo. " // Quotation is empty. No thing will be copied!");
+            throw new \Exception($qo . " // Quotation is empty. No thing will be copied!");
         }
 
         $convertor = new RowConvertor();
@@ -551,7 +559,7 @@ class PoService extends AbstractService
 
             if ($po_row !== null) {
                 $n ++;
-                //$po_row->setRowNumber($n);
+                // $po_row->setRowNumber($n);
                 $this->doctrineEM->persist($po_row);
             }
         }

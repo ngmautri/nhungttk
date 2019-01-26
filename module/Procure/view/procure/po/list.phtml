@@ -50,6 +50,19 @@
 					</select>
 				</div>
 			</div>
+			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag">Doc Status:</label>
+				<div class="col-sm-3">
+					<select name="docStatus"  class="form-control input-sm">
+						<option value="">All</option>
+						<option <?php echo $docStatus=='draft'? "selected='selected'":"";?>
+							value="draft">Draft</option>
+						<option <?php echo $docStatus=='posted'? "selected='selected'":"";?>
+							value="posted">Posted</option>
+					</select>
+				</div>
+			</div>
 		
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2" for="inputTag">Active Items</label>
@@ -70,6 +83,10 @@
 				<div class="col-sm-3">
 					<select class="form-control input-sm" name="sort_by">
 						<option value="">None</option>
+						<option
+							<?php echo $sort_by=='sysNumber'? "selected='selected'":"";?>
+							value="sysNumber">PO #</option>
+					
 						<option
 							<?php echo $sort_by=='invoiceDate'? "selected='selected'":"";?>
 							value="poDate">PO Date</option>
@@ -226,7 +243,7 @@ else:
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/procure/po/list?is_active='. $is_active.'&currentState='. $currentState.
+	$base = $this->baseUrl . '/procure/po/list?is_active='. $is_active.'&currentState='. $currentState.'&docStatus='. $docStatus.
 	'&sort_by='. $sort_by.'&sort='. $sort;
 		$_connector_symbol = '&';
 		

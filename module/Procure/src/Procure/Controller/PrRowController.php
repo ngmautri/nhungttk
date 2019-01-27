@@ -1252,6 +1252,14 @@ class PrRowController extends AbstractActionController
                 } else {
                     $onclick = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1250',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                 }
+                
+                $item_detail1 = "/inventory/item/show1?tab_idx=1&token=" . $pr_row_entity->getItem()->getToken() . "&checksum=" . $pr_row_entity->getItem()->getChecksum() . "&entity_id=" . $pr_row_entity->getItem()->getId();
+                if ($pr_row_entity->getItem()->getItemName() !== null) {
+                    $onclick2 = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
+                        ->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail1 . "','j_loaded_data', true);";
+                } else {
+                    $onclick2 = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail1 . "','j_loaded_data', true);";
+                }
 
                 $count ++;
                 $a_json_row["row_number"] = $pr_row_entity->getRowNumber();
@@ -1278,6 +1286,8 @@ class PrRowController extends AbstractActionController
                     $a_json_row["item_name"] = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                 }
 
+                $a_json_row["price_comparison"] = '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="Price Comparision' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick2 . '" ><span title="Price Comparison">P</span></a>';
+                
                 $a_json_row["quantity"] = $pr_row_entity->getQuantity();
                 $a_json_row["confirmed_balance"] = $a['confirmed_balance'];
 

@@ -44,6 +44,10 @@
 <div id="tabs" style="font-size: 9pt">
 	<ul>
 		<li><a href="#general">Item</a></li>
+		  <li><a title="<?php echo $this->translate("Price Comparison");?>"
+		href="<?php echo $this->baseUrl ?>/procure/price-comparison/price-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+			<i class="fa fa-bar-chart" aria-hidden="true"></i></a></li>
+		
 		<li><a title="<?php echo $this->translate("Picture");?>"
 			href="<?php echo $this->baseUrl ?>/inventory/item-picture/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><span
 				class="glyphicon glyphicon-picture"></span>&nbsp;(<?php echo $total_picture;?>)&nbsp;</a></li>
@@ -68,10 +72,7 @@
 		<li><a
 			href="<?php echo $this->baseUrl ?>/inventory/item-assignment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">Assignment</a></li>
 
-	  <li><a title="<?php echo $this->translate("Price Comparison");?>"
-		href="<?php echo $this->baseUrl ?>/procure/price-comparison/price-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-			<i class="fa fa-bar-chart" aria-hidden="true"></i></a></li>
-
+	
 		<li><a title="<?php echo $this->translate("Purchase Request");?>"
 			href="<?php echo $this->baseUrl ?>/procure/pr-row/pr-of-item?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>">PR (<?php echo $total_pr_row;?>)</a></li>
 

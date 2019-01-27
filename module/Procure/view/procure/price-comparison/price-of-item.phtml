@@ -12,9 +12,14 @@
 		<tr>
 			<td><b>#</b></td>
 		    <td><b><?php echo $this->translate("Doc Type");?></b></td>
+		    <td><b><?php echo $this->translate("Doc Date");?></b></td>
+		
+		    <td><b><?php echo $this->translate("Ref.");?></b></td>
 	
 		    <td><b><?php echo $this->translate("Vendor");?></b></td>
 		    <td><b><?php echo $this->translate("Unit Price");?></b></td>
+		    <td><b><?php echo $this->translate("Currency");?></b></td>
+	
 		    <td><b><?php echo $this->translate("FX");?></b></td>
 	    <td><b><?php echo $this->translate("Local Unit Price");?></b></td>
 
@@ -35,11 +40,16 @@
 	 <tr>
 		 <td><?php echo $count;?></td>
 	     <td><?php echo $r['doc_type'];?> </td>
+         <td><?php echo $r['source_created_on'];?> </td>
+   
+         <td><?php echo $r['row_identifer'];?> </td>
+
          <td><?php echo $r['vendor_name'];?> </td>
-	     <td><?php echo $r['unit_price'];?> </td>
-	      <td><?php echo $r['exchange_rate'];?> </td>
-	      <td><?php echo $r['lc_unit_price'];?> </td>
-		
+	     <td><?php if (is_numeric($r['unit_price'])): echo number_format($r['unit_price'],2);endif;?> </td>
+	     <td><?php echo $r['currency'];?> </td>
+	     <td><?php if (is_numeric($r['exchange_rate'])): echo number_format($r['exchange_rate'],2);endif;?> </td>
+	     <td><?php if (is_numeric($r['lc_unit_price'])): echo number_format($r['lc_unit_price'],2);endif;?> </td>
+			
 	</tr>
 <?php endforeach; ?>
 

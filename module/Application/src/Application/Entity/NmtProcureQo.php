@@ -59,7 +59,7 @@ class NmtProcureQo
     /**
      * @var string
      *
-     * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=2, nullable=true)
+     * @ORM\Column(name="exchange_rate", type="decimal", precision=8, scale=4, nullable=true)
      */
     private $exchangeRate;
 

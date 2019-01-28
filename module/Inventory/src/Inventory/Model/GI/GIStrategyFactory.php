@@ -15,6 +15,11 @@ class GIStrategyFactory
         switch ($tTransaction) {
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX:
                 return new GIforRepairMachine();
+            
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE:
+                return new GIforRepairMachineWithoutExchange();
+                
+                
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_COST_CENTER:
                 return new GIforCostCenter();
               default:

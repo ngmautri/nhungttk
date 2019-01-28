@@ -1286,7 +1286,7 @@ class PrRowController extends AbstractActionController
                     $a_json_row["item_name"] = substr($pr_row_entity->getItem()->getItemName(), 0, 30) . '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                 }
 
-                $a_json_row["price_comparison"] = '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="Price Comparision' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick2 . '" ><span title="Price Comparison">P</span></a>';
+                $a_json_row["price_comparison"] = '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="Price Comparision' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick2 . '" ><span title="Price Comparison">&nbsp;&nbsp;(p)&nbsp;</span></a>';
                 
                 $a_json_row["quantity"] = $pr_row_entity->getQuantity();
                 $a_json_row["confirmed_balance"] = $a['confirmed_balance'];

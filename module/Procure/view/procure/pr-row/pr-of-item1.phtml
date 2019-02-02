@@ -87,16 +87,17 @@
 			<td><?php echo $a->getQuantity();?></td>
 			<td><?php if(!$a->getConvertedStandardQuantiy()==null):echo $a->getConvertedStandardQuantiy();else: echo $a->getQuantity(); endif;?></td>
 	
-			<td><?php echo $r['po_qty'];?></td>		
-			<td><?php echo $r['posted_po_qty'];?></td>		
-			<td><?php echo $r['gr_qty'];?></td>
-			<td><?php echo $r['stock_gr_qty'];?></td>	
-			<td><?php echo $a->getQuantity()-$r['gr_qty'];?></td>
-			<td><?php echo $a->getQuantity()-$r['stock_gr_qty'];?></td>	
-			<td><?php echo $r['ap_qty'];?></td>
-			<td><?php echo $r['posted_ap_qty'];?></td>
-			<td>
+			<td><?php if (is_numeric($r['po_qty'])):echo number_format($r['po_qty'],2); endif;?></td>		
 			
+			<td><?php if (is_numeric($r['posted_po_qty'])):echo number_format($r['posted_po_qty'],2); endif;?></td>		
+			<td><?php if (is_numeric($r['gr_qty'])):echo number_format($r['gr_qty'],2); endif;?></td>		
+			<td><?php if (is_numeric($r['stock_gr_qty'])):echo number_format($r['stock_gr_qty'],2); endif;?></td>		
+			<td><?php if (is_numeric($r['gr_qty'])):echo number_format($a->getQuantity()-$r['gr_qty'],2); endif;?></td>		
+			<td><?php if (is_numeric($r['stock_gr_qty'])):echo number_format($a->getQuantity()-$r['stock_gr_qty'],2); endif;?></td>		
+		
+			<td><?php if (is_numeric($r['ap_qty'])):echo number_format($r['ap_qty'],2); endif;?></td>		
+			<td><?php if (is_numeric($r['posted_ap_qty'])):echo number_format($r['posted_ap_qty'],2); endif;?></td>		
+		<td>			
 	<?php if($a->getQuantity()-$r['gr_qty'] <=0 or $a->getQuantity()-$r['stock_gr_qty']<=0):
 	   echo $this->translate("fullly received");
 	endif;

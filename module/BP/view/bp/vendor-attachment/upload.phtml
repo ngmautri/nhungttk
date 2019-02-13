@@ -114,8 +114,8 @@ value="<?php if (!$entity== null): if($entity->getVendor()!==null): echo $entity
 $('#attachments').bind('change', function() {
 	var file_size;
 	file_size = this.files[0].size
-	if (file_size > 2097152){
-		//alert('This file size is too large : ' + file_size + "MB. Please select new file");
+	if (file_size > 10485760){
+				//alert('This file size is too large : ' + file_size + "MB. Please select new file");
 		
 		$('#b_loaded_data').text('This file size is too large : ' + file_size + "MB. Please select new file");
 		$('#modal1').modal();

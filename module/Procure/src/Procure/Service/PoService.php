@@ -78,6 +78,8 @@ class PoService extends AbstractService
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
         }
+        
+       
 
         if ($contractNo == "") {
             $errors[] = 'Contract is not correct or empty!';
@@ -92,11 +94,18 @@ class PoService extends AbstractService
         } else {
             $entity->setContractDate(new \DateTime($contractDate));
         }
+        
+        // check currency and exchange rate
+        $ck = $this->checkIncoterm($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
 
         $entity->setRemarks($remarks);
 
         return $errors;
     }
+    
 
     /**
      *
@@ -661,6 +670,42 @@ class PoService extends AbstractService
             $errors[] = $this->controllerPlugin->translate('Currency can\'t be empty. Please select a Currency!');
         }
         
+        return $errors;
+    }
+    
+    /**
+     *
+     * @param \Application\Entity\NmtProcurePo $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkIncoterm(\Application\Entity\NmtProcurePo $entity, $data, $isPosting)
+    {
+        $errors = array();
+        if (! isset($data['incoterm_id'])) {
+            $errors[] = $this->controllerPlugin->translate('Incoterm id is not set!');
+            return $errors;
+        }
+        
+        $incoterm_id = (int) $data['incoterm_id'];
+        $incoterm_place = $data['incotermPlace'];
+        
+        /** @var \Application\Entity\NmtApplicationIncoterms $vendor ; */
+        $incoterm = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->find($incoterm_id);
+        
+        if ($incoterm !== null) {
+            $entity->setIncoterm2($incoterm);
+            
+             if ($incoterm_place == null) {
+                $errors[] = $this->controllerPlugin->translate('Please give incoterm place!');
+            } else {
+                $entity->setIncotermPlace($incoterm_place);
+            }
+            
+            
+        } else {
+            //$errors[] = $this->controllerPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
+        }
         return $errors;
     }
     

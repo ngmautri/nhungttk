@@ -89,7 +89,8 @@ class PoController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'target' => null,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list
                 ));
             }
 
@@ -104,7 +105,8 @@ class PoController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list
                 ));
             }
 
@@ -125,7 +127,8 @@ class PoController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list
                 ));
             }
 
@@ -184,7 +187,8 @@ class PoController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
-            'currency_list' => $currency_list
+            'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list
         ));
     }
 
@@ -201,6 +205,7 @@ class PoController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -232,7 +237,8 @@ class PoController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list
                 ));
 
                 $viewModel->setTemplate("procure/po/add");
@@ -256,7 +262,8 @@ class PoController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list
                 ));
 
                 $viewModel->setTemplate("procure/po/add");
@@ -289,13 +296,14 @@ class PoController extends AbstractActionController
 
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-            
+
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'currency_list' => $currency_list
+            'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list,
         ));
-        
+
         $viewModel->setTemplate("procure/po/add");
         return $viewModel;
     }
@@ -313,6 +321,7 @@ class PoController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -360,6 +369,8 @@ class PoController extends AbstractActionController
                     'entity' => $entity,
                     'errors' => $errors,
                     'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+
                     'total_row' => $po['total_row'],
                     'active_row' => $po['active_row'],
                     'max_row_number' => $po['total_row'],
@@ -388,6 +399,8 @@ class PoController extends AbstractActionController
                     'entity' => $entity,
                     'errors' => $errors,
                     'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+
                     'total_row' => $po['total_row'],
                     'active_row' => $po['active_row'],
                     'max_row_number' => $po['total_row'],
@@ -458,6 +471,8 @@ class PoController extends AbstractActionController
             'entity' => $entity,
             'errors' => null,
             'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list,
+
             'total_row' => $po['total_row'],
             'active_row' => $po['active_row'],
             'max_row_number' => $po['total_row'],
@@ -478,21 +493,22 @@ class PoController extends AbstractActionController
     {
         $this->layout("Procure/layout-fullscreen");
         $request = $this->getRequest();
-        
+
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-    
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
-        
+        $incoterm_list = $nmtPlugin->incotermList();
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
-         $id = (int) $this->params()->fromQuery('entity_id');
+
+        $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
 
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
@@ -517,6 +533,8 @@ class PoController extends AbstractActionController
             'entity' => $entity,
             'errors' => null,
             'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list,
+
             'total_row' => $po['total_row'],
             'active_row' => $po['active_row'],
             'max_row_number' => $po['total_row'],
@@ -600,18 +618,19 @@ class PoController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-  
+
         // Is Posting .................
         // ============================
         if ($request->isPost()) {
             $errors = array();
             $data = $this->params()->fromPost();
-            
+
             $redirectUrl = $data['redirectUrl'];
             $entity_id = (int) $data['entity_id'];
             $token = $data['entity_token'];
@@ -635,6 +654,8 @@ class PoController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     'n' => $nTry
                 ));
 
@@ -644,30 +665,31 @@ class PoController extends AbstractActionController
 
             // entity found
             $oldEntity = clone ($entity);
-            
-            
+
             $isPosted = FALSE;
-            if($entity->getDocStatus()==\Application\Model\Constants::DOC_STATUS_POSTED){
+            if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
                 $isPosted = TRUE;
                 $redirectUrl = "/procure/po/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
-            }else{
+            } else {
                 $redirectUrl = "/procure/po/review?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
-                
             }
-            $errors = $this->poService->validateHeader($entity, $data,FALSE,$isPosted);
-            
-            /** @todo: problem when both attribut is 0 */
+            $errors = $this->poService->validateHeader($entity, $data, FALSE, $isPosted);
+
+            /**
+             *
+             * @todo: problem when both attribut is 0
+             */
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-            
+
             if (count($changeArray) == 0) {
                 $nTry ++;
                 $errors[] = sprintf('Nothing changed! n = %s', $nTry);
             }
-            
+
             if ($nTry >= 3) {
                 $errors[] = sprintf('Do you really want to edit "AP Row. %s"?', $entity->getRowIdentifer());
             }
-            
+
             if ($nTry == 5) {
                 $m = sprintf('You might be not ready to edit AP Row (%s). Please try later!', $entity->getRowIdentifer());
                 $this->flashMessenger()->addMessage($m);
@@ -681,12 +703,13 @@ class PoController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     'n' => $nTry
                 ));
-                
+
                 $viewModel->setTemplate("procure/po/add");
                 return $viewModel;
-                
             }
 
             // NO ERROR
@@ -697,7 +720,6 @@ class PoController extends AbstractActionController
                 "email" => $this->identity()
             ));
             $changeOn = new \DateTime();
-            
 
             try {
                 $this->poService->saveHeader($entity, $u);
@@ -713,15 +735,17 @@ class PoController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     'n' => $nTry
                 ));
 
                 $viewModel->setTemplate("procure/po/add");
                 return $viewModel;
             }
-            
+
             $m = sprintf('[OK] PO #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getSysNumber(), count($changeArray));
-            
+
             // Trigger Change Log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
                 'priority' => 7,
@@ -735,7 +759,7 @@ class PoController extends AbstractActionController
                 'changeDate' => $changeOn,
                 'changeValidFrom' => $changeOn
             ));
-            
+
             // Trigger: finance.activity.log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
                 'priority' => \Zend\Log\Logger::INFO,
@@ -746,7 +770,7 @@ class PoController extends AbstractActionController
                 'entity_class' => get_class($entity),
                 'entity_token' => $entity->getToken()
             ));
-            
+
             $this->flashMessenger()->addMessage($m);
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -783,6 +807,8 @@ class PoController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list,
+            
             'n' => 0
         ));
 
@@ -801,7 +827,7 @@ class PoController extends AbstractActionController
         $sort = $this->params()->fromQuery('sort');
         $currentState = $this->params()->fromQuery('currentState');
         $docStatus = $this->params()->fromQuery('docStatus');
-        
+
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
@@ -821,14 +847,15 @@ class PoController extends AbstractActionController
         if ($is_active == null) {
             $is_active = 1;
         }
-        
+
         if ($docStatus == null) :
             $docStatus = "posted";
-        
+
             if ($sort_by == null) :
                 $sort_by = "sysNumber";
             endif;            
         endif;
+
 
         if ($sort_by == null) :
             $sort_by = "createdOn";
@@ -848,14 +875,14 @@ class PoController extends AbstractActionController
 
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $list = $res->getPoList($is_active, $currentState,$docStatus,null, $sort_by, $sort, 0, 0);
+        $list = $res->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, 0, 0);
         $total_records = count($list);
         $paginator = null;
 
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getPoList($is_active, $currentState,$docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getPoList($is_active, $currentState, $docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
 
         return new ViewModel(array(
@@ -867,8 +894,7 @@ class PoController extends AbstractActionController
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
             'currentState' => $currentState,
-            'docStatus' => $docStatus,
-            
+            'docStatus' => $docStatus
         ));
     }
 

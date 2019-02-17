@@ -1,10 +1,6 @@
 <?php
 namespace Procure\Service;
 
-use Inventory\Model\GR\AbstractGRStrategy;
-use Inventory\Model\GR\GRStrategyFactory;
-use Procure\Model\Ap\AbstractAPRowPostingStrategy;
-use Application\Entity\FinVendorInvoiceRow;
 use Application\Service\AbstractService;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
@@ -59,6 +55,11 @@ class QoService extends AbstractService
         
         // check vendor. ok
         $ck = $this->checkVendor($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+        
+        $ck = $this->checkIncoterm($entity, $data, $isPosting);
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
         }
@@ -451,6 +452,44 @@ class QoService extends AbstractService
         }
         return $errors;
     }
+    
+    /**
+     *
+     * @param \Application\Entity\NmtProcureQo $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkIncoterm(\Application\Entity\NmtProcureQo $entity, $data, $isPosting)
+    {
+        $errors = array();
+        if (! isset($data['incoterm_id'])) {
+            $errors[] = $this->controllerPlugin->translate('Incoterm id is not set!');
+            return $errors;
+        }
+        
+        $incoterm_id = (int) $data['incoterm_id'];
+        $incoterm_place = $data['incotermPlace'];
+        
+        /** @var \Application\Entity\NmtApplicationIncoterms $vendor ; */
+        $incoterm = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->find($incoterm_id);
+        
+        if ($incoterm !== null) {
+            $entity->setIncoterm2($incoterm);
+           
+               // check invoice number
+            if ($incoterm_place == null) {
+                $errors[] = $this->controllerPlugin->translate('Please give incoterm place!');
+            } else {
+                $entity->setIncotermPlace($incoterm_place);
+            }
+             
+            
+        } else {
+            //$errors[] = $this->controllerPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
+        }
+        return $errors;
+    }
+    
 
     /**
      *

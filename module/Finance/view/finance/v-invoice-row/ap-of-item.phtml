@@ -48,7 +48,7 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 		$a = $r[0];
 		
 		?>
-	 <tr>
+	 <tr style="color:graytext;">
 	 <td><?php echo $count;?></td>
 			<?php if($a->getPrRow()!==null):?>			
 			<td><a href="/procure/pr/show?nid=<?php echo $nid;?>&entity_id=<?php echo $a->getPrRow()->getPr()->getId();?>&token=<?php echo $a->getPrRow()->getPr()->getToken();?>" target="_blank"><?php echo $a->getPrRow()->getPr()->getPrNumber();?></a></td>

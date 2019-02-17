@@ -17,6 +17,23 @@ class NmtPlugin extends AbstractPlugin
     protected $translator;
     protected $dbConfig;
     protected $stmpOutlook;
+    
+    /**
+     * Return List of Currency
+     *
+     * @return array
+     */
+    public function incotermList()
+    {
+        $criteria = array(
+         );
+        $sort_criteria = array(
+            'incoterm' => 'ASC'
+        );
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
 
     /**
      * Return List of Currency

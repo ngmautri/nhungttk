@@ -94,6 +94,14 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
+            
+            array(
+                'label' => 'Incoterms',
+                'route' => 'application/default',
+                'controller' => 'incoterm',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
             array(
                 'label' => 'Posting Period',
                 'route' => 'finance/default',
@@ -245,6 +253,9 @@ return array(
             'Application\Service\ItemCategoryService' => 'Application\Service\ItemCategoryServiceFactory',
             'Application\Service\AppSearchService' => 'Application\Service\AppSearchServiceFactory',
             'Application\Service\AttachmentService' => 'Application\Service\AttachmentServiceFactory',
+            
+            'Application\Service\IncotermService' => 'Application\Service\IncotermServiceFactory',
+            
         )
     ),
     'translator' => array(
@@ -300,6 +311,8 @@ return array(
             'Application\Controller\QrCode' => 'Application\Controller\QrCodeControllerFactory',
             'Application\Controller\Locale' => 'Application\Controller\LocaleControllerFactory',
             'Application\Controller\Cache' => 'Application\Controller\CacheControllerFactory',
+    
+            'Application\Controller\Incoterm' => 'Application\Controller\IncotermControllerFactory',
             
         )
     ),

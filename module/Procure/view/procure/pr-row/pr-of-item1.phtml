@@ -85,7 +85,14 @@
 			<td><?php echo $a->getRowName();?></td>
 			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
 			<td><?php echo $a->getQuantity();?></td>
-			<td><?php if(!$a->getConvertedStandardQuantiy()==null):echo $a->getConvertedStandardQuantiy();else: echo $a->getQuantity(); endif;?></td>
+			<td><?php if(!$a->getConvertedStandardQuantiy()==null): 
+			if (is_numeric($a->getConvertedStandardQuantiy())):echo number_format($a->getConvertedStandardQuantiy(),2); endif;
+			else:
+			
+			if (is_numeric($a->getQuantity())):echo number_format($a->getQuantity(),2); endif;
+			
+			endif;?>
+			</td>
 	
 			<td><?php if (is_numeric($r['po_qty'])):echo number_format($r['po_qty'],2); endif;?></td>		
 			

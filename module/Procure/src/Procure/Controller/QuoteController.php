@@ -36,7 +36,8 @@ class QuoteController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
-
+        $incoterm_list = $nmtPlugin->incotermList();
+        
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
@@ -66,7 +67,10 @@ class QuoteController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+                    
+                    
                 ));
             }
 
@@ -86,7 +90,9 @@ class QuoteController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                 ));
             }
 
@@ -132,7 +138,9 @@ class QuoteController extends AbstractActionController
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'currency_list' => $currency_list
+            'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list,
+            
         ));
     }
 
@@ -148,6 +156,8 @@ class QuoteController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
+        
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -222,7 +232,9 @@ class QuoteController extends AbstractActionController
                     'max_row_number' => $po['total_row'],
                     'net_amount' => $po['net_amount'],
                     'tax_amount' => $po['tax_amount'],
-                    'gross_amount' => $po['gross_amount']
+                    'gross_amount' => $po['gross_amount'],
+                    'incoterm_list' => $incoterm_list,
+                    
                 ));
 
                 $viewModel->setTemplate("procure/quote/show");
@@ -254,7 +266,9 @@ class QuoteController extends AbstractActionController
                     'max_row_number' => $po['total_row'],
                     'net_amount' => $po['net_amount'],
                     'tax_amount' => $po['tax_amount'],
-                    'gross_amount' => $po['gross_amount']
+                    'gross_amount' => $po['gross_amount'],
+                    'incoterm_list' => $incoterm_list,
+                    
                 ));
 
                 $viewModel->setTemplate("procure/quote/show");
@@ -338,6 +352,8 @@ class QuoteController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list,
+            
             'total_row' => $po['total_row'],
             'max_row_number' => $po['total_row'],
             'net_amount' => $po['net_amount'],
@@ -401,6 +417,8 @@ class QuoteController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
+        
 
         $request = $this->getRequest();
 
@@ -431,6 +449,8 @@ class QuoteController extends AbstractActionController
                 'entity' => $entity,
                 'errors' => null,
                 'currency_list' => $currency_list,
+                'incoterm_list' => $incoterm_list,
+                
                 'total_row' => $po['total_row'],
                 'active_row' => $po['active_row'],
                 'max_row_number' => $po['total_row'],
@@ -455,6 +475,8 @@ class QuoteController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
+        
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -498,6 +520,8 @@ class QuoteController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     'n' => $nTry
                 ));
             }
@@ -532,6 +556,8 @@ class QuoteController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     'n' => $nTry
                 ));
 
@@ -559,6 +585,8 @@ class QuoteController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     'n' => $nTry
                 ));
 
@@ -622,6 +650,8 @@ class QuoteController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'currency_list' => $currency_list,
+            'incoterm_list' => $incoterm_list,
+            
             'n' => 0
         ));
 

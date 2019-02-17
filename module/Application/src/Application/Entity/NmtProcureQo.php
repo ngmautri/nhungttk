@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcureQo
  *
- * @ORM\Table(name="nmt_procure_qo", indexes={@ORM\Index(name="nmt_procure_qo_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_qo_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_qo_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_qo_FK7_idx", columns={"token"}), @ORM\Index(name="nmt_procure_qo_FK7_idx1", columns={"company_id"}), @ORM\Index(name="nmt_procure_qo_FK8_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_procure_qo_FK9_idx", columns={"doc_currency_id"})})
+ * @ORM\Table(name="nmt_procure_qo", indexes={@ORM\Index(name="nmt_procure_qo_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_qo_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_qo_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_qo_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_qo_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_qo_FK7_idx", columns={"token"}), @ORM\Index(name="nmt_procure_qo_FK7_idx1", columns={"company_id"}), @ORM\Index(name="nmt_procure_qo_FK8_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_procure_qo_FK9_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_procure_qo_FK10_idx", columns={"incoterm_id"})})
  * @ORM\Entity
  */
 class NmtProcureQo
@@ -178,14 +178,14 @@ class NmtProcureQo
     /**
      * @var string
      *
-     * @ORM\Column(name="incoterm", type="string", length=45, nullable=true)
+     * @ORM\Column(name="incoterm", type="string", length=3, nullable=true)
      */
     private $incoterm;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="incoterm_place", type="string", length=100, nullable=true)
+     * @ORM\Column(name="incoterm_place", type="string", length=50, nullable=true)
      */
     private $incotermPlace;
 
@@ -233,6 +233,16 @@ class NmtProcureQo
      * })
      */
     private $vendor;
+
+    /**
+     * @var \Application\Entity\NmtApplicationIncoterms
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationIncoterms")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="incoterm_id", referencedColumnName="id")
+     * })
+     */
+    private $incoterm2;
 
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
@@ -1044,6 +1054,30 @@ class NmtProcureQo
     public function getVendor()
     {
         return $this->vendor;
+    }
+
+    /**
+     * Set incoterm2
+     *
+     * @param \Application\Entity\NmtApplicationIncoterms $incoterm2
+     *
+     * @return NmtProcureQo
+     */
+    public function setIncoterm2(\Application\Entity\NmtApplicationIncoterms $incoterm2 = null)
+    {
+        $this->incoterm2 = $incoterm2;
+
+        return $this;
+    }
+
+    /**
+     * Get incoterm2
+     *
+     * @return \Application\Entity\NmtApplicationIncoterms
+     */
+    public function getIncoterm2()
+    {
+        return $this->incoterm2;
     }
 
     /**

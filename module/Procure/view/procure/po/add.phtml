@@ -191,44 +191,53 @@ if (count($errors) > 0) {
 
 
 		
-									<div class="form-group margin-bottom required">
-
-									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
-									<div class="col-sm-3">
-										<select name="incoterm_id" class="form-control input-sm">
-											<option value="">Select Incoterm</option>
-   	    							<?php
-            if ($incoterm_list !== null) :
-            foreach ($incoterm_list as $l) :
-                    if ($entity !== null) :
-                    if ($entity->getIncoterm2() !== null) :
-                        if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
-                        echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+    									<div class="form-group margin-bottom required">
+    
+    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
+    									<div class="col-sm-3">
+    										<select name="incoterm_id" class="form-control input-sm">
+    											<option value="">Select Incoterm</option>
+       	    							<?php
+                if ($incoterm_list !== null) :
+                foreach ($incoterm_list as $l) :
+                        if ($entity !== null) :
+                        if ($entity->getIncoterm2() !== null) :
+                            if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
+                            echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                                else :
+                                echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                                endif;
                             else :
-                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
                             endif;
                         else :
-                        echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                        echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
                         endif;
-                    else :
-                    echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
-                    endif;
-                endforeach
-                ;
-   	    							endif;
+                    endforeach
+                    ;
+       	    							endif;
+    
+                ?>
+       					</select>
+    									</div>
+    									
+    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
+    									<div class="col-sm-3">
+    										<input class="form-control input-sm" type="text"
+    											placeholder="" id="incotermPlace" name="incotermPlace"
+    											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
+    									</div>
+    									
+    								</div>
 
-            ?>
-   					</select>
-									</div>
-									
-									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
-									<div class="col-sm-3">
+						<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
+									<div class="col-sm-5">
 										<input class="form-control input-sm" type="text"
-											placeholder="" id="incotermPlace" name="incotermPlace"
-											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
+											placeholder="" id="paymentTerm" name="paymentTerm"
+											value="<?php echo (!$entity == null)? $entity->getPaymentTerm():"";?>">
 									</div>
-									
-								</div>
+									</div>
 
 
 								<div class="form-group margin-bottom">

@@ -1,0 +1,155 @@
+<?php
+/**
+ * @var \Application\Entity\NmtApplicationPmtMethod $entity ;
+ * 
+ */
+$form_action = '';
+$form_title = '';
+
+switch ($action) {
+
+    case \Application\Model\Constants::FORM_ACTION_ADD:
+        $form_action = '/application/pmt-method/add';
+        $form_title = $this->translate("Add Payment Method:");
+
+        break;
+    case \Application\Model\Constants::FORM_ACTION_EDIT:
+        $form_action = '/application/pmt-method/edit';
+        $form_title = $this->translate("Edit Payment Method:");
+        break;
+}
+?>
+
+
+
+
+<div id="tabs" style="font-size: 10pt">
+	<ul>
+		<li><a href="#general"><?php echo $form_title;?></a></li>
+					
+		<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+        <?php endif;?>			
+				</ul>
+
+	<div id="general" style="font-size: 9pt">
+		<!-- Tab1 -->
+    	
+ 	<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+    
+					<form id="New_Invoice_Row" class="form-horizontal"
+			action="<?php echo $form_action;?>" method="post"
+			enctype="multipart/form-data">
+
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				id="entity_id" name="entity_id"
+				value="<?php if (!$entity == null): echo $entity->getId();endif;?>" />
+					
+							
+            			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+            				<input type="hidden" name="n" value="<?php echo $n;?>" />
+            			<?php endif;?>
+            			
+            			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Payment Method Code");?>: </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="methodCode" placeholder="" name="methodCode"
+						value="<?php if (!$entity== null): if($entity->getMethodCode()!==null): echo $entity->getMethodCode();endif;endif;?>">
+				</div>
+			</div>
+			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Payment Method Name");?>: </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="methodName" placeholder="" name="methodName"
+						value="<?php if (!$entity== null): if($entity->getMethodName()!==null): echo $entity->getMethodName();endif;endif;?>">
+				</div>
+				</div>
+			
+		<div class="form-group margin-bottom required">
+
+							<label class="control-label col-sm-2"><?php echo $this->translate("GL Account");?>:</label>
+							<div class="col-sm-3">
+								<select tabindex="9" name="gl_account_id" id="gl_account_id"
+									class="form-control input-sm">
+									<option value=""><?php echo $this->translate("Select GL Account");?></option>
+   	    							<?php
+            if ($gl_list !== null) :
+                foreach ($gl_list as $gl) :
+
+                    /**@var \Application\Entity\FinAccount $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getGlAccount() !== null) :
+                            if ($entity->getGlAccount()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
+                            else :
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>
+
+							
+
+						</div>
+	
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Description");?>: </label>
+				<div class="col-sm-8">
+					<textarea class="form-control input-sm" type="text" rows="6"
+						placeholder="" name="description" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getDescription():"";?></textarea>
+
+				</div>
+			</div>
+
+			<hr style="margin: 5pt 1pt 5pt 1pt;">
+
+			<div class="form-group margin-bottom" style="margin-top: 10pt">
+				<label class="control-label col-sm-2" for="inputTag"></label>
+				<div class="col-sm-3">
+					<a tabindex="11" class="btn btn-default btn-sm"
+						onclick="submitForm('New_Invoice_Row');" href="javascript:;"><small><i
+							class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;<?php echo $this->translate("Save");?></a>
+					<a tabindex="12" class="btn btn-default btn-sm"
+						href="/application/pmt-method/list"><small><i
+							class="glyphicon glyphicon-remove"></i></small>&nbsp;<?php echo $this->translate("Cancel");?></a>
+
+				</div>
+
+
+			</div>
+		</form>
+
+
+	</div>
+
+	<!-- end tab -->
+</div>
+

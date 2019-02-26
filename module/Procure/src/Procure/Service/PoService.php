@@ -53,6 +53,8 @@ class PoService extends AbstractService
         $contractNo = $data['contractNo'];
         $vendor_id = (int) $data['vendor_id'];
         $isActive = (int) $data['isActive'];
+        $paymentTerm = $data['paymentTerm'];
+        
 
         if ($isActive !== 1) {
             $isActive = 0;
@@ -99,6 +101,13 @@ class PoService extends AbstractService
         $ck = $this->checkIncoterm($entity, $data, $isPosting);
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
+        }
+        
+        
+        if ($paymentTerm == null) {
+            $errors[] = $this->controllerPlugin->translate('Please given payment term');
+        } else {
+            $entity->setPaymentTerm($paymentTerm);
         }
 
         $entity->setRemarks($remarks);

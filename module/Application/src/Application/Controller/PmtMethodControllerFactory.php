@@ -18,12 +18,16 @@ class PmtMethodControllerFactory implements FactoryInterface {
 	 * @see \Zend\ServiceManager\FactoryInterface::createService()
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
-		$container = $serviceLocator->getServiceLocator ();
+	    
+	    $sm = $serviceLocator->getServiceLocator();
+	    
 			
 		$controller = new PmtMethodController();
-		$sv =  $container->get('doctrine.entitymanager.orm_default');
+		$sv =  $sm->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
 		
+		$sv =  $sm->get ('Application\Service\PmtMethodService' );
+		$controller->setPmtMethodService($sv );
 		
 		return $controller;
 	}

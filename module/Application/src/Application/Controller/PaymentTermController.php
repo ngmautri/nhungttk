@@ -5,16 +5,16 @@ use Application\Entity\NmtApplicationIncoterms;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Entity\NmtApplicationPmtMethod;
 
 /**
- * Payment Method
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PmtMethodController extends AbstractActionController
+class PaymentTermController extends AbstractActionController
 {
+
+    protected $paymentTermService;
 
     /**
      *
@@ -22,7 +22,7 @@ class PmtMethodController extends AbstractActionController
      */
     public function listAction()
     {
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtMethod')->findAll();
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->findAll();
         $total_records = count($list);
         // $jsTree = $this->tree;
         return new ViewModel(array(
@@ -42,7 +42,6 @@ class PmtMethodController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $gl_list = $nmtPlugin->glAccountList();
 
         $request = $this->getRequest();
 
@@ -51,13 +50,14 @@ class PmtMethodController extends AbstractActionController
         if ($request->isPost()) {
             $errors = array();
             $data = $this->params()->fromPost();
-
+            
             $redirectUrl = $data['redirectUrl'];
+            
 
-            $entity = new NmtApplicationPmtMethod();
-
+            $entity = new NmtApplicationIncoterms();
+            
             try {
-                $errors = $this->pmtMethodService->validateHeader($entity, $data);
+                $errors = $this->incotermService->validateHeader($entity, $data);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -65,14 +65,13 @@ class PmtMethodController extends AbstractActionController
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    'gl_list' => $gl_list,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                ));
+                    ));
 
-                $viewModel->setTemplate("application/pmt-method/crud");
+                $viewModel->setTemplate("application/incoterm/crud");
                 return $viewModel;
             }
             ;
@@ -86,7 +85,7 @@ class PmtMethodController extends AbstractActionController
             ));
 
             try {
-                $this->pmtMethodService->saveHeader($entity, $u, TRUE);
+                $this->incotermService->saveHeader($entity, $u, TRUE);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -99,15 +98,15 @@ class PmtMethodController extends AbstractActionController
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => $entity
-                ));
+                    'entity' => $entity,
+                     ));
 
-                $viewModel->setTemplate("application/pmt-method/crud");
+                $viewModel->setTemplate("application/incoterm/crud");
                 return $viewModel;
             }
 
-            $redirectUrl = "/application/pmt-method/list";
-            $m = sprintf("[OK] Payment Method: %s created!", $entity->getId());
+            $redirectUrl = "/application/incoterm/list";
+            $m = sprintf("[OK] Incoterm: %s created!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
 
             return $this->redirect()->toUrl($redirectUrl);
@@ -126,16 +125,16 @@ class PmtMethodController extends AbstractActionController
                 ->getUri();
         }
 
-        $entity = new NmtApplicationPmtMethod();
+        $entity = new NmtApplicationIncoterms();
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-            'gl_list' => $gl_list,
+
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity
         ));
 
-        $viewModel->setTemplate("application/pmt-method/crud");
+        $viewModel->setTemplate("application/incoterm/crud");
         return $viewModel;
     }
 
@@ -179,12 +178,10 @@ class PmtMethodController extends AbstractActionController
      */
     public function editAction()
     {
-
+     
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $gl_list = $nmtPlugin->glAccountList();
-        
-
+    
         $request = $this->getRequest();
 
         // Is Posing
@@ -200,11 +197,11 @@ class PmtMethodController extends AbstractActionController
             $nTry = $data['n'];
 
             $criteria = array(
-                'id' => $entity_id
+                'id' => $entity_id,
             );
 
-            /** @var \Application\Entity\NmtApplicationPmtMethod $entity ; */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtMethod')->findOneBy($criteria);
+            /** @var \Application\Entity\NmtApplicationIncoterms $entity ; */
+            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->findOneBy($criteria);
 
             if ($entity == null) {
 
@@ -214,23 +211,21 @@ class PmtMethodController extends AbstractActionController
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'redirectUrl' => $redirectUrl,
-                    'gl_list' => $gl_list,
-                    
                     'errors' => $errors,
                     'entity' => $entity,
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("application/pmt-method/crud");
+                $viewModel->setTemplate("application/incoterm/crud");
                 return $viewModel;
             }
 
             // entity found
-
+    
             $oldEntity = clone ($entity);
 
             try {
-                $errors = $this->pmtMethodService->validateHeader($entity, $data);
+                $errors = $this->incotermService->validateHeader($entity, $data);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -260,15 +255,14 @@ class PmtMethodController extends AbstractActionController
 
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'gl_list' => $gl_list,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("application/pmt-method/crud");
+                $viewModel->setTemplate("application/incoterm/crud");
                 return $viewModel;
             }
 
@@ -282,7 +276,7 @@ class PmtMethodController extends AbstractActionController
             $changeOn = new \DateTime();
 
             try {
-                $this->pmtMethodService->saveHeader($entity, $u, FALSE);
+                $this->incotermService->saveHeader($entity, $u, FALSE);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -291,24 +285,23 @@ class PmtMethodController extends AbstractActionController
 
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'gl_list' => $gl_list,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("application/pmt-method/crud");
+                $viewModel->setTemplate("application/incoterm/crud");
                 return $viewModel;
             }
 
-            $m = sprintf('[OK] Incoterm #%s updated. Change No.=%s.', $entity->getId(), count($changeArray));
+            $m = sprintf('[OK] Incoterm #%s updated. Change No.=%s.', $entity->getId(),count($changeArray));
 
             // Trigger Change Log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('application.change.log', __METHOD__, array(
                 'priority' => 7,
-                'message' => $m,
+                'message' => $m,                                                                            
                 'objectId' => $entity->getId(),
                 'objectToken' => null,
                 'changeArray' => $changeArray,
@@ -328,11 +321,11 @@ class PmtMethodController extends AbstractActionController
                 'entity_id' => $entity->getId(),
                 'entity_class' => get_class($entity),
                 'entity_token' => null
-            ));
+            ));                                                                      
 
             $this->flashMessenger()->addMessage($m);
 
-            $redirectUrl = "/application/pmt-method/list";
+            $redirectUrl = "/application/incoterm/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
 
@@ -340,34 +333,32 @@ class PmtMethodController extends AbstractActionController
         // Initiate ......................
         // ================================
         $redirectUrl = null;
-        /*
-         * if ($this->getRequest()->getHeader('Referer') !== null) {
-         * $redirectUrl = $this->getRequest()
-         * ->getHeader('Referer')
-         * ->getUri();
-         * }
-         */
+       /*  if ($this->getRequest()->getHeader('Referer') !== null) {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
+        } */
 
         $id = (int) $this->params()->fromQuery('entity_id');
-        $criteria = array(
-            'id' => $id
+         $criteria = array(
+            'id' => $id,
         );
 
-        /** @var \Application\Entity\NmtApplicationPmtMethod $entity ; */
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtMethod')->findOneBy($criteria);
+        /** @var \Application\Entity\NmtApplicationIncoterms $entity ; */
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->findOneBy($criteria);
         if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-            'gl_list' => $gl_list,
+
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'n' => 0
         ));
 
-        $viewModel->setTemplate("application/pmt-method/crud");
+        $viewModel->setTemplate("application/incoterm/crud");
         return $viewModel;
     }
 
@@ -391,25 +382,21 @@ class PmtMethodController extends AbstractActionController
         return $this;
     }
 
-    protected $pmtMethodService;
-
     /**
      *
-     * @return \Application\Service\PmtMethodService
+     * @return \Application\Service\IncotermService
      */
-    public function getPmtMethodService()
+    public function getPaymentTermService()
     {
-        return $this->pmtMethodService;
+        return $this->paymentTermService;
     }
 
     /**
      *
-     * @param \Application\Service\PmtMethodService $pmtMethodService
+     * @param \Application\Service\IncotermService $incotermService
      */
-    public function setPmtMethodService(\Application\Service\PmtMethodService $pmtMethodService)
+    public function setPaymentTermService(\Application\Service\PaymentTermService $paymentTermService)
     {
-        $this->pmtMethodService = $pmtMethodService;
+        $this->paymentTermService = $paymentTermService;
     }
-    
-
 }

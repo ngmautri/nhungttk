@@ -43,6 +43,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
             'isActive' => 1,
             'apInvoiceRow' => $entity
         );
+        
         $gr_entity_ck = $procureSV->getDoctrineEM()
             ->getRepository('Application\Entity\NmtProcureGrRow')
             ->findOneBy($criteria);

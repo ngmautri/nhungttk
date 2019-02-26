@@ -102,6 +102,22 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-triangle-right'
             ),
+            
+            array(
+                'label' => 'Payment Terms',
+                'route' => 'application/default',
+                'controller' => 'payment-term',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
+            array(
+                'label' => 'Payment Method',
+                'route' => 'application/default',
+                'controller' => 'pmt-method',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-triangle-right'
+            ),
+            
             array(
                 'label' => 'Posting Period',
                 'route' => 'finance/default',
@@ -255,6 +271,8 @@ return array(
             'Application\Service\AttachmentService' => 'Application\Service\AttachmentServiceFactory',
             
             'Application\Service\IncotermService' => 'Application\Service\IncotermServiceFactory',
+            'Application\Service\PaymentTermService' => 'Application\Service\PaymentTermServiceFactory',
+            'Application\Service\PmtMethodService' => 'Application\Service\PmtMethodServiceFactory',
             
         )
     ),
@@ -313,6 +331,7 @@ return array(
             'Application\Controller\Cache' => 'Application\Controller\CacheControllerFactory',
     
             'Application\Controller\Incoterm' => 'Application\Controller\IncotermControllerFactory',
+            'Application\Controller\PaymentTerm' => 'Application\Controller\PaymentTermControllerFactory',
             
         )
     ),

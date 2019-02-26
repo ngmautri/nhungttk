@@ -308,6 +308,15 @@ if (count($errors) > 0) {
 									</div>
 									
 								</div>
+								
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
+									<div class="col-sm-5">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="paymentTerm" name="paymentTerm"
+											value="<?php echo (!$entity == null)? $entity->getPaymentTerm():"";?>">
+									</div>
+									</div>
 
 									<div class="form-group margin-bottom">
 										<label class="control-label col-sm-2">Description</label>

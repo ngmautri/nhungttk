@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationPmtMethod
  *
- * @ORM\Table(name="nmt_application_pmt_method", indexes={@ORM\Index(name="nmt_application_pmt_method_idx1", columns={"created_by"})})
+ * @ORM\Table(name="nmt_application_pmt_method", indexes={@ORM\Index(name="nmt_application_pmt_method_idx1", columns={"created_by"}), @ORM\Index(name="nmt_application_pmt_method_FK2_idx", columns={"gl_account"}), @ORM\Index(name="nmt_application_pmt_method_FK3_idx", columns={"lastchange_by"})})
  * @ORM\Entity
  */
 class NmtApplicationPmtMethod
@@ -57,6 +57,20 @@ class NmtApplicationPmtMethod
     private $createdOn;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="lastchange_on", type="datetime", nullable=true)
+     */
+    private $lastchangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -65,6 +79,26 @@ class NmtApplicationPmtMethod
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\FinAccount
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="gl_account", referencedColumnName="id")
+     * })
+     */
+    private $glAccount;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="lastchange_by", referencedColumnName="id")
+     * })
+     */
+    private $lastchangeBy;
 
 
 
@@ -199,6 +233,54 @@ class NmtApplicationPmtMethod
     }
 
     /**
+     * Set lastchangeOn
+     *
+     * @param \DateTime $lastchangeOn
+     *
+     * @return NmtApplicationPmtMethod
+     */
+    public function setLastchangeOn($lastchangeOn)
+    {
+        $this->lastchangeOn = $lastchangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastchangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastchangeOn()
+    {
+        return $this->lastchangeOn;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtApplicationPmtMethod
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -220,5 +302,53 @@ class NmtApplicationPmtMethod
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set glAccount
+     *
+     * @param \Application\Entity\FinAccount $glAccount
+     *
+     * @return NmtApplicationPmtMethod
+     */
+    public function setGlAccount(\Application\Entity\FinAccount $glAccount = null)
+    {
+        $this->glAccount = $glAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get glAccount
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getGlAccount()
+    {
+        return $this->glAccount;
+    }
+
+    /**
+     * Set lastchangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastchangeBy
+     *
+     * @return NmtApplicationPmtMethod
+     */
+    public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
+    {
+        $this->lastchangeBy = $lastchangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastchangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastchangeBy()
+    {
+        return $this->lastchangeBy;
     }
 }

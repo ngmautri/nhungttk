@@ -428,9 +428,7 @@ class APInvoiceService extends AbstractService
             $rowPostingStrategy->setContextService($this);
             $rowPostingStrategy->doPosting($entity, $r, $u);
         }
-        
-        
-
+    
         /**
          *
          * @todo: Do Accounting Posting

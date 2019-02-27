@@ -67,6 +67,11 @@ switch ($action) {
 			<div id="tabs" style="font-size: 10pt">
 				<ul>
 					<li><a href="#general"><?php echo $form_title;?></a></li>
+					
+				<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+            		<li ><a title="<?php echo $this->translate("Change Logs");?>" href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+				<?php endif;?>
+            			
 				</ul>
 
 				<div id="general" style="font-size: 9pt">
@@ -358,7 +363,7 @@ if (count($errors) > 0) {
                     if ($entity !== null) :
                         if ($entity->getGlAccount() !== null) :
                             if ($entity->getGlAccount()->getId() == $gl->getId()) :
-                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . '</option>';
+                            echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
                             else :
                                 echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
                             endif;

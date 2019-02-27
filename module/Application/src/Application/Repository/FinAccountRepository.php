@@ -37,8 +37,8 @@ class FinAccountRepository extends EntityRepository
             case "createdOn":
                 $sql = $sql . " ORDER BY fin_account.created_on " . $sort;
                 break;
-            case "vendorName":
-                //$sql = $sql . " ORDER BY fin_vendor_invoice.vendor_name " . $sort;
+            case "accountNumber":
+                $sql = $sql . " ORDER BY fin_account.account_number " . $sort;
                 break;
             case "currencyCode":
                 //$sql = $sql . " ORDER BY fin_vendor_invoice.currency_iso3 " . $sort;

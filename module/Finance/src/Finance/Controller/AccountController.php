@@ -518,11 +518,11 @@ UPDATE Application\Entity\NmtInventoryTrx t SET t.currentState = :new_state, t.i
         }
 
         if ($sort_by == null) :
-            $sort_by = "createdOn";
+            $sort_by = "accountNumber";
         endif;
 
         if ($sort == null) :
-            $sort = "DESC";
+            $sort = "ASC";
         endif;
 
         /**@var \Application\Repository\FinAccountRepository $res ;*/

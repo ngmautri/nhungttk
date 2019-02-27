@@ -1,5 +1,5 @@
-<?php /**@var \Application\Entity\NmtProcureQo $target ;*/ ?>
-<?php $attachment_url =  $this->baseUrl . '/procure/quote-attachment' ;?>
+<?php /**@var \Application\Entity\NmtProcureRow $target ;*/ ?>
+<?php $attachment_url =  $this->baseUrl . '/procure/pr-row-attachment' ;?>
 
 <a class="btn btn-default" href="<?php echo $attachment_url ?>/upload-pictures?token=<?php echo (!$target== null)? $target->getToken():"";?>&target_id=<?php echo (!$target== null)? $target->getID():"";?>"><small><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;</small>&nbsp;Upload picture</a>
    

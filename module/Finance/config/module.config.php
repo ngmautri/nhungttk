@@ -84,6 +84,7 @@ return array(
             'finance_navi' => 'Finance\Service\FinanceNavigationFactory', // <-- add this
             'Finance\Service\APInvoiceService' => 'Finance\Service\APInvoiceServiceFactory',
             'Finance\Service\JEService' => 'Finance\Service\JEServiceFactory',
+            'Finance\Service\AccountService' => 'Finance\Service\AccountServiceFactory',
             
         )
     ),

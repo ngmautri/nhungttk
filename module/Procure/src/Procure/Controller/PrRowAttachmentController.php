@@ -22,7 +22,7 @@ class PrRowAttachmentController extends AbstractActionController
      *
      * @todo : TO UPDATE
      */
-    const ATTACHMENT_FOLDER = "/data/procure/attachment/pr-row";
+    const ATTACHMENT_FOLDER = "/data/procure/attachment/pr";
 
     const PDFBOX_FOLDER = "/vendor/pdfbox/";
 
@@ -554,12 +554,21 @@ class PrRowAttachmentController extends AbstractActionController
              *
              * @todo : Update Target
              */
+            
             $criteria = array(
-                'qo' => $target_id,
+                'targetId' => $target_id,
+                'targetClass' => get_class($target),
                 'isActive' => 1,
                 'markedForDeletion' => 0,
                 'isPicture' => 1
             );
+            
+            /* $criteria = array(
+                'prRowId' => $target_id,
+                'isActive' => 1,
+                'markedForDeletion' => 0,
+                'isPicture' => 1
+            ); */
             
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findBy($criteria);
             $total_records = count($list);

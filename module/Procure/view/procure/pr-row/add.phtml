@@ -9,12 +9,12 @@ switch ($action) {
 
     case \Application\Model\Constants::FORM_ACTION_ADD:
         $form_action = '/procure/pr-row/add';
-        $form_title = $this->translate("Add PR Row:");
+        $form_title = $this->translate("Add PR Row");
 
         break;
     case \Application\Model\Constants::FORM_ACTION_EDIT:
         $form_action = '/procure/pr-row/edit';
-        $form_title = $this->translate("Edit PR Row:");
+        $form_title = $this->translate("Edit PR Row");
         break;
 }
 ?>
@@ -57,6 +57,21 @@ switch ($action) {
 			<div id="tabs" style="font-size: 10pt">
 				<ul>
 					<li><a href="#general"><?php echo $form_title;?>:</a></li>
+					
+					<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+					
+	<li><a
+			href="/procure/pr-row-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
+				class="glyphicon glyphicon-picture"></span>&nbsp;</a></li>
+		<li><a
+			href="/procure/pr-row-attachment/list1?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>">
+				<small><span class="glyphicon glyphicon-paperclip"></span></small>&nbsp;</a></li>
+					
+					
+  					<li ><a title="<?php echo $this->translate("Change Logs");?>" href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+          			<?php endif;?>
+            	
+					
 				</ul>
 
 				<div id="general" style="font-size: 9pt">

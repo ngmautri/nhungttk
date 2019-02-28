@@ -17,41 +17,10 @@ use Zend\Math\Rand;
  */
 class PrRowAttachmentController extends AbstractActionController
 {
-
-    /**
-     *
-     * @todo : TO UPDATE
-     */
-    const ATTACHMENT_FOLDER = "/data/procure/attachment/pr";
-
-    const PDFBOX_FOLDER = "/vendor/pdfbox/";
-
-    const PDF_PASSWORD = "mla2017";
-
-    const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-
     protected $doctrineEM;
+    protected $attachmentService;
 
-    protected $prRowAttachmentService;
-
-    /**
-     *
-     * @return \Procure\Service\Upload\PrRowUploadService
-     */
-    public function getPrRowAttachmentService()
-    {
-        return $this->prRowAttachmentService;
-    }
-
-    /**
-     *
-     * @param \Procure\Service\Upload\PrRowUploadService $prRowAttachmentService
-     */
-    public function setPrRowAttachmentService(\Procure\Service\Upload\PrRowUploadService $prRowAttachmentService)
-    {
-        $this->prRowAttachmentService = $prRowAttachmentService;
-    }
-
+   
     /**
      *
      * @return \Zend\View\Model\ViewModel
@@ -116,13 +85,14 @@ class PrRowAttachmentController extends AbstractActionController
             $errors = array();
             $data = $request->getPost();
 
-            $redirectUrl = $request->getPost('redirectUrl');
-            $entity_id = (int) $request->getPost('entity_id');
-            $token = $request->getPost('token');
-
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = (int) $data['entity_id'];
+            $entity_token =$data['entity_token'];
+            $nTry = $data['n'];
+            
             $criteria = array(
                 'id' => $entity_id,
-                'token' => $token
+                'token' => $entity_token
             );
 
             /**
@@ -134,13 +104,58 @@ class PrRowAttachmentController extends AbstractActionController
             if (! $entity instanceof \Application\Entity\NmtApplicationAttachment) {
 
                 $errors[] = 'Entity object can\'t be empty!';
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
-                    'entity' => null
+                    'entity' => null,
+                    'n' => $nTry
+                    
                 ));
+                
+                $viewModel->setTemplate("procure/pr-row-attachment/upload");
+                return $viewModel;
+                
             }
+            
+            $result = $this->getAttachmentService()->editHeader($entity, $data, $nTry, $u);
+            
+            $errors = $result['errors'];
+            $nTry = $result['nTry'];
+            
+            if ($nTry >= 3) {
+                $errors[] = sprintf('Do you really want to edit "Attachment. %s"?', $entity->getId());
+            }
+            
+            if ($nTry == 5) {
+                $m = sprintf('You might be not ready to edit Attachment (%s). Please try later!', $entity->getId());
+                $this->flashMessenger()->addMessage($m);
+                return $this->redirect()->toUrl($redirectUrl);
+            }
+            
+            
+            if (count($errors) > 0) {
+                
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,                    
+                    'redirectUrl' => $redirectUrl,
+                    'target' => null,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'n' => $nTry
+                ));
+                
+                $viewModel->setTemplate("procure/pr-row-attachment/upload");
+                return $viewModel;
+            }
+            
+            $m = sprintf('[OK] Attachment #%s updated. Change No.=%s.', $entity->getId(),'');
+            $this->flashMessenger()->addMessage($m);
+            
+            return $this->redirect()->toUrl($redirectUrl);            
+            
         }
 
         // NO POST
@@ -167,19 +182,19 @@ class PrRowAttachmentController extends AbstractActionController
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
 
         if ($entity instanceof \Application\Entity\NmtApplicationAttachment) {
-
-            /**
-             *
-             * @todo : Update Target
-             */
-            $target = $entity->getPr()->getP;
-
-            return new ViewModel(array(
+              
+            $viewModel = new ViewModel(array(
+                'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
-                'target' => $target,
-                'entity' => $entity
+                'target' => null,
+                'entity' => $entity,
+                'n' => 0
             ));
+            
+            $viewModel->setTemplate("procure/pr-row-attachment/upload");
+            return $viewModel;
+            
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
@@ -229,7 +244,7 @@ class PrRowAttachmentController extends AbstractActionController
             $criteria = array(
                 'targetId' => $target_id,
                 'targetClass' => get_class($target),
-                'isActive' => 1,
+                //'isActive' => 1,
                 'markedForDeletion' => 0
             );
 
@@ -257,7 +272,6 @@ class PrRowAttachmentController extends AbstractActionController
         $request = $this->getRequest();
 
         // accepted only ajax request
-
         if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
@@ -325,40 +339,24 @@ class PrRowAttachmentController extends AbstractActionController
      */
     public function pictureAction()
     {
-        $id = (int) $this->params()->fromQuery('id');
-        $checksum = $this->params()->fromQuery('checksum');
-        $token = $this->params()->fromQuery('token');
+        $entity_id = (int) $this->params()->fromQuery('id');
+        $entity_checksum = $this->params()->fromQuery('checksum');
+        $entity_token = $this->params()->fromQuery('token');
 
-        if ($token == '') {
-            $token = null;
+        if ($entity_token == '') {
+            $entity_token = null;
         }
 
-        $criteria = array(
-            'id' => $id,
-            'checksum' => $checksum,
-            'token' => $token,
-            'markedForDeletion' => 0,
-            'isPicture' => 1
-        );
+        $result = $this->getAttachmentService()->getPicture($entity_id, $entity_checksum, $entity_token);
 
-        $pic = new \Application\Entity\NmtApplicationAttachment();
-        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
-        if ($pic !== null) {
-            $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . $pic->getFileName();
-
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+        if ($result !== null) {
 
             $response = $this->getResponse();
-
-            $response->setContent($imageContent);
+            $response->setContent($result['imageContent']);
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', $pic->getFiletype());
+                ->addHeaderLine('Content-Type', $result['fileType']);
+
             return $response;
         } else {
             return;
@@ -371,41 +369,24 @@ class PrRowAttachmentController extends AbstractActionController
      */
     public function thumbnail200Action()
     {
-        $id = (int) $this->params()->fromQuery('id');
-        $checksum = $this->params()->fromQuery('checksum');
-        $token = $this->params()->fromQuery('token');
+        $entity_id = (int) $this->params()->fromQuery('id');
+        $entity_checksum = $this->params()->fromQuery('checksum');
+        $entity_token = $this->params()->fromQuery('token');
 
-        if ($token == '') {
-            $token = null;
+        if ($entity_token == '') {
+            $entity_token = null;
         }
 
-        $criteria = array(
-            'id' => $id,
-            'checksum' => $checksum,
-            'token' => $token,
-            'markedForDeletion' => 0,
-            'isPicture' => 1
-        );
+        $result = $this->getAttachmentService()->getThumbnail200($entity_id, $entity_checksum, $entity_token);
 
-        $pic = new \Application\Entity\NmtApplicationAttachment();
-        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
-
-        if ($pic !== null) {
-            $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
-
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+        if ($result !== null) {
 
             $response = $this->getResponse();
-
-            $response->setContent($imageContent);
+            $response->setContent($result['imageContent']);
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', $pic->getFiletype());
+                ->addHeaderLine('Content-Type', $result['fileType']);
+
             return $response;
         } else {
             return;
@@ -418,40 +399,24 @@ class PrRowAttachmentController extends AbstractActionController
      */
     public function thumbnail450Action()
     {
-        $id = (int) $this->params()->fromQuery('id');
-        $checksum = $this->params()->fromQuery('checksum');
-        $token = $this->params()->fromQuery('token');
+        $entity_id = (int) $this->params()->fromQuery('id');
+        $entity_checksum = $this->params()->fromQuery('checksum');
+        $entity_token = $this->params()->fromQuery('token');
 
-        if ($token == '') {
-            $token = null;
+        if ($entity_token == '') {
+            $entity_token = null;
         }
 
-        $criteria = array(
-            'id' => $id,
-            'checksum' => $checksum,
-            'token' => $token,
-            'markedForDeletion' => 0,
-            'isPicture' => 1
-        );
+        $result = $this->getAttachmentService()->getThumbnail450($entity_id, $entity_checksum, $entity_token);
 
-        $pic = new \Application\Entity\NmtApplicationAttachment();
-        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
-        if ($pic !== null) {
-
-            $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
+        if ($result !== null) {
 
             $response = $this->getResponse();
-
-            $response->setContent($imageContent);
+            $response->setContent($result['imageContent']);
             $response->getHeaders()
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', $pic->getFiletype());
+                ->addHeaderLine('Content-Type', $result['fileType']);
+
             return $response;
         } else {
             return;
@@ -495,12 +460,16 @@ class PrRowAttachmentController extends AbstractActionController
 
                 $errors[] = 'Target object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
                     'entity' => null
                 ));
+
+                $viewModel->setTemplate("procure/pr-row-attachment/upload");
+                return $viewModel;
             }
 
             $attachments = null;
@@ -508,16 +477,21 @@ class PrRowAttachmentController extends AbstractActionController
                 $attachments = $_FILES['attachments'];
             }
 
-            $errors = $this->getPrRowAttachmentService()->doUploading(null, $target_id, $target_token, $data, $attachments, $u, TRUE);
+            $errors = $this->getAttachmentService()->doUploading(null, $target_id, $target_token, $data, $attachments, $u, TRUE);
 
             if (count($errors) > 0) {
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => $target,
-                    'entity' => $this->getPrRowAttachmentService()->getAttachmentEntity()
+                    'entity' => $this->getAttachmentService()->getAttachmentEntity()
                 ));
+
+                $viewModel->setTemplate("procure/pr-row-attachment/upload");
+                return $viewModel;
             }
 
             $m = sprintf('[OK] Attachment for PR line #%s added.', $target->getRowIdentifer());
@@ -564,12 +538,16 @@ class PrRowAttachmentController extends AbstractActionController
 
         if ($target instanceof \Application\Entity\NmtProcurePrRow) {
 
-            return new ViewModel(array(
+            $viewModel = new ViewModel(array(
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                 'redirectUrl' => $redirectUrl,
                 'errors' => null,
                 'target' => $target,
                 'entity' => null
             ));
+
+            $viewModel->setTemplate("procure/pr-row-attachment/upload");
+            return $viewModel;
         }
     }
 
@@ -582,17 +560,16 @@ class PrRowAttachmentController extends AbstractActionController
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-            
+
             $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
                 "email" => $this->identity()
             ));
-            
 
             $errors = array();
             $postArray = $_POST;
             $target_id = $postArray['target_id'];
             $token = $postArray['token'];
-      
+
             $criteria = array(
                 'id' => $target_id,
                 'token' => $token
@@ -612,19 +589,18 @@ class PrRowAttachmentController extends AbstractActionController
                     'target' => null,
                     'entity' => null
                 ));
-            }           
-            $data = $this->prRowAttachmentService->doUploadPictures($postArray, $u);
-            
-            if(isset($data['message'])){
-                foreach ($data['message'] as $m){
+            }
+            $data = $this->getAttachmentService()->doUploadPictures($postArray, $u);
+
+            if (isset($data['message'])) {
+                foreach ($data['message'] as $m) {
                     $this->flashMessenger()->addMessage($m);
                 }
             }
-   
-            $this->flashMessenger()->addMessage('Success: ' . $data['success'] .'/'.$data['total_uploaded']);
-            $this->flashMessenger()->addMessage('Failed: ' . $data['failed'].'/'.$data['total_uploaded']);
-            
-            
+
+            $this->flashMessenger()->addMessage('Success: ' . $data['success'] . '/' . $data['total_uploaded']);
+            $this->flashMessenger()->addMessage('Failed: ' . $data['failed'] . '/' . $data['total_uploaded']);
+
             $response = $this->getResponse();
             $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
             $response->setContent(json_encode($data));
@@ -772,4 +748,23 @@ class PrRowAttachmentController extends AbstractActionController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
+    
+    /**
+     *
+     * @return \Procure\Service\Upload\PrRowUploadService
+     */
+    public function getAttachmentService()
+    {
+        return $this->attachmentService;
+    }
+    
+    /**
+     *
+     * @param \Procure\Service\Upload\PrRowUploadService $attachmentService
+     */
+    public function setAttachmentService(\Procure\Service\Upload\PrRowUploadService $attachmentService)
+    {
+        $this->attachmentService = $attachmentService;
+    }
+    
 }

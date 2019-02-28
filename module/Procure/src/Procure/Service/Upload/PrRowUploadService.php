@@ -12,6 +12,23 @@ use Application\Service\Upload\AbstractUploadService;
  */
 class PrRowUploadService extends AbstractUploadService
 {
+    
+    
+    public function __construct()
+    {
+        $this->uploadPath = "/data/procure/attachment/pr";
+    }
+    
+    /**
+     *
+     * {@inheritDoc}
+     * @see \Application\Service\Upload\AbstractUploadService::setUploadPath()
+     */
+    public function setUploadPath()
+    {
+        $this->uploadPath = "/data/procure/attachment/pr";
+    }
+        
     /**
      * 
      * {@inheritDoc}
@@ -51,27 +68,37 @@ class PrRowUploadService extends AbstractUploadService
      * {@inheritDoc}
      * @see \Application\Service\Upload\AbstractUploadService::doLogging()
      */
-    public function doLogging($priority, $m,$u,$createdOn)
+    public function doLogging($priority, $m, $u, $createdOn)
     {
         // Trigger Activity Log . AbtractController is EventManagerAware.
         $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
             'priority' => $priority,
-            'message' => $m,
+            'message' => $m . ' for PR Line',
             'createdBy' => $u,
             'createdOn' => $createdOn
         ));
     }
-
+    
     /**
      * 
      * {@inheritDoc}
-     * @see \Application\Service\Upload\AbstractUploadService::setUploadPath()
+     * @see \Application\Service\Upload\AbstractUploadService::doLoggingForChange()
      */
-    public function setUploadPath()
+    public function doLoggingForChange($priority, $m, $objectId, $objectToken, $changeArray, $u, $createdOn)
     {
-        $this->uploadPath = "/data/procure/attachment/pr";
+        $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+            'priority' => $priority,
+            'message' => $m,
+            'objectId' => $objectId,
+            'objectToken' => $objectToken,
+            'changeArray' => $changeArray,
+            'changeBy' => $u,
+            'changeOn' => $createdOn,
+            'revisionNumber' => null,
+            'changeDate' => $createdOn,
+            'changeValidFrom' => $createdOn
+        ));
+        
     }
-
-
 
 }

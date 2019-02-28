@@ -54,13 +54,15 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
     abstract function setUploadPath();
 
     /**
-     * 
+     *
      * @param string $m
      * @param \Application\Entity\MlaUsers $u
      * @param \DateTime $createdOn
      */
-    abstract function doLogging($priority, $m,$u,$createdOn);
+    abstract function doLogging($priority, $m, $u, $createdOn);
 
+    abstract function doLoggingForChange($priority, $m, $objectId, $objectToken, $changeArray, $u, $createdOn);
+    
     /**
      *
      * @param \Application\Entity\NmtApplicationAttachment $entity
@@ -236,8 +238,8 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
             }
 
             // Set Global
-            if ($file_size > 2097152) {
-                $errors[] = $this->controllerPlugin->translate('File size must be 2 MB');
+            if ($file_size > 10485760) {
+                $errors[] = $this->controllerPlugin->translate('File size must be 10 MB');
             }
 
             $checksum = md5_file($file_tmp);
@@ -265,6 +267,87 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
 
             return $errors;
         }
+    }
+
+    /**
+     * Upload one file with POST
+     *
+     * @param \Application\Entity\NmtApplicationAttachment $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isNew
+     */
+    public function editHeader($entity, $header_data, $nTry, $u)
+    {
+        $result = array();
+        $errors = array();
+
+        if ($u == null) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument! User can't be indentided for this transaction.");
+        }
+        
+        if ($entity == null) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument! Entity not found.");
+        }
+        
+        $createdOn = new \DateTime();
+        
+        $oldEntity = clone ($entity);        
+
+        // validate header.
+        $ck1 = $this->validateHeader($entity, $header_data);
+
+        if (count($ck1) > 0) {
+            $errors = array_merge($errors, $ck1);
+        }
+
+        if (count($errors) > 0) {
+            $result['status'] = 'FAILED';
+            $result['nTry'] = $nTry;
+            $result['errors'] = $errors;
+            
+            $m = sprintf('[FAILED] No update for attachment #%s', $entity->getId());
+            $this->doLogging(\Zend\Log\Logger::WARN, $m, $u, $createdOn);
+            
+            return $result;
+        }        
+        
+        $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+        
+        if (count($changeArray) == 0) {
+            $nTry ++;
+            $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+        }
+
+        if (count($errors) > 0) {
+            $result['status'] = 'FAILED';
+            $result['errors'] = $errors;
+            $result['nTry'] = $nTry;
+            $m = sprintf('[FAILED] No update for attachment #%s', $entity->getId());
+            $this->doLogging(\Zend\Log\Logger::WARN, $m, $u, $createdOn);
+            return $result;
+        }
+        
+     
+        $entity->setLastChangeBy($u);
+        $entity->setLastChangeOn($createdOn);
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+        
+        $result['status'] = 'OK';
+        $result['errors'] = $errors;
+        $result['nTry'] = $nTry;
+        
+        $m = sprintf('[OK] Attachment #%s updated', $entity->getId());
+        $this->doLogging(\Zend\Log\Logger::INFO, $m, $u, $createdOn);
+     
+        
+        $m = sprintf('[OK] Attachment #%s updated', $entity->getId());
+        
+        $objectId=$entity->getId();
+        $objectToken = $entity->getToken();
+        $this->doLoggingForChange(\Zend\Log\Logger::INFO, $m, $objectId, $objectToken, $changeArray, $u, $createdOn);
+        
+        return $result;
     }
 
     /**
@@ -304,6 +387,7 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
         // validate header.
         $ck1 = $this->validateHeader($entity, $header_data);
 
+        
         if (count($ck1) > 0) {
             $errors = array_merge($errors, $ck1);
         }
@@ -316,7 +400,11 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
             $errors = array_merge($errors, $ck2);
         }
 
+        $createdOn = new \DateTime();
+        
         if (count($errors) > 0) {
+            $m = sprintf('[Failed] Attachment not uploaded!');
+            $this->doLogging(\Zend\Log\Logger::INFO, $m, $u, $createdOn);
             return $errors;
         }
 
@@ -350,8 +438,7 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
         $entity->setFolderRelative($folder_relative . DIRECTORY_SEPARATOR);
         $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
-        $createdOn = new \DateTime();
-
+     
         if ($isNew == TRUE) {
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($createdOn);
@@ -366,8 +453,17 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
                 'pictures_dir' => $folder
             ));
         }
+
+        $m = sprintf('[OK] Attachment #%s uploaded', $entity->getId());
+        $this->doLogging(\Zend\Log\Logger::INFO, $m, $u, $createdOn);
     }
 
+    /**
+     *
+     * @param array $postArray
+     * @param \Application\Entity\MlaUsers $u
+     * @return number[]|string[][]
+     */
     public function doUploadPictures($postArray, $u)
     {
         $pictures = $postArray['pictures'];
@@ -421,9 +517,9 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
                 'targetClass' => $entity->getTargetClass()
             );
             $ck = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findby($criteria);
-            
+
             $createdOn = new \DateTime();
-            
+
             if (count($ck) == 0) {
                 $name_part1 = Rand::getString(6, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true);
                 $name = md5($target_id . $checksum . uniqid(microtime())) . '_' . $name_part1 . '.' . $ext;
@@ -447,6 +543,7 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
                     $documentSubject = "Picture for " . $target_id;
                 }
 
+                $entity->setFileExtension($ext);
                 $entity->setDocumentSubject($documentSubject);
                 $entity->setIsPicture(1);
                 $entity->setIsActive(1);
@@ -502,17 +599,16 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
 
                 $m = sprintf('[OK] uploaded.', $entity->getId(), $entity->getTargetId(), "");
                 $this->doLogging(\Zend\Log\Logger::INFO, $m, $u, $createdOn);
-                
             } else {
-                
+
                 $m = sprintf('[FAILED].', $entity->getId(), $entity->getTargetId(), "");
                 $this->doLogging(\Zend\Log\Logger::WARN, $m, $u, $createdOn);
-                
+
                 $result[] = $original_filename . ' exits already. Please select other file!';
                 $failed ++;
             }
         }
-        
+
         // $data['filetype'] = $filetype;
         $data = array();
         $data['message'] = $result;
@@ -520,6 +616,133 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
         $data['success'] = $success;
         $data['failed'] = $failed;
         return $data;
+    }
+
+    /**
+     *
+     * @param int $entity_id
+     * @param string $entity_checksum
+     * @param string $entity_token
+     * @return string|NULL
+     */
+    public function getThumbnail450($entity_id, $entity_checksum, $entity_token)
+    {
+        $result = array();
+
+        $criteria = array(
+            'id' => $entity_id,
+            'checksum' => $entity_checksum,
+            'token' => $entity_token,
+            'markedForDeletion' => 0,
+            'isPicture' => 1
+        );
+
+        $pic = new \Application\Entity\NmtApplicationAttachment();
+
+        /**@var \Application\Entity\NmtApplicationAttachment $pic*/
+        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
+        if ($pic !== null) {
+
+            $pic_folder = getcwd() . $pic->getAttachmentFolder() . "thumbnail_450_" . $pic->getFileName();
+            /**
+             * Important! for UBUNTU
+             */
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+
+            $imageContent = file_get_contents($pic_folder);
+
+            $result['imageContent'] = $imageContent;
+            $result['fileType'] = $pic->getFiletype();
+
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param int $entity_id
+     * @param string $entity_checksum
+     * @param string $entity_token
+     * @return string|NULL
+     */
+    public function getPicture($entity_id, $entity_checksum, $entity_token)
+    {
+        $result = array();
+
+        $criteria = array(
+            'id' => $entity_id,
+            'checksum' => $entity_checksum,
+            'token' => $entity_token,
+            'markedForDeletion' => 0,
+            'isPicture' => 1
+        );
+
+        $pic = new \Application\Entity\NmtApplicationAttachment();
+
+        /**@var \Application\Entity\NmtApplicationAttachment $pic*/
+        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
+        if ($pic !== null) {
+
+            $pic_folder = getcwd() . $pic->getAttachmentFolder() . $pic->getFileName();
+            /**
+             * Important! for UBUNTU
+             */
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+
+            $imageContent = file_get_contents($pic_folder);
+
+            $result['imageContent'] = $imageContent;
+            $result['fileType'] = $pic->getFiletype();
+
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param int $entity_id
+     * @param string $entity_checksum
+     * @param string $entity_token
+     * @return string|NULL
+     */
+    public function getThumbnail200($entity_id, $entity_checksum, $entity_token)
+    {
+        $result = array();
+
+        $criteria = array(
+            'id' => $entity_id,
+            'checksum' => $entity_checksum,
+            'token' => $entity_token,
+            'markedForDeletion' => 0,
+            'isPicture' => 1
+        );
+
+        $pic = new \Application\Entity\NmtApplicationAttachment();
+
+        /**@var \Application\Entity\NmtApplicationAttachment $pic*/
+        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationAttachment')->findOneBy($criteria);
+        if ($pic !== null) {
+
+            $pic_folder = getcwd() . $pic->getAttachmentFolder() . "thumbnail_200_" . $pic->getFileName();
+            /**
+             * Important! for UBUNTU
+             */
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+
+            $imageContent = file_get_contents($pic_folder);
+
+            $result['imageContent'] = $imageContent;
+            $result['fileType'] = $pic->getFiletype();
+            $result['pic_folder'] = $pic_folder;
+
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -609,8 +832,9 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
     {
         return $this->targetEntity;
     }
-    
+
     /**
+     *
      * @param mixed $targetEntity
      */
     public function setTargetEntity($targetEntity)

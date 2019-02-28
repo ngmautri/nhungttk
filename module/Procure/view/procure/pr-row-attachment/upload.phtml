@@ -1,12 +1,35 @@
-<?php /**@var \Application\Entity\NmtProcurePrRow $target ;*/ ?>
-<?php $attachment_url =  $this->baseUrl . '/procure/pr-row-attachment' ;?>
+<?php
+/**
+ * @var \Application\Entity\NmtProcurePrRow $target ;
+ * @var \Application\Entity\NmtApplicationAttachment $entity ;
+ */
+$form_action = '';
+$form_title = '';
+
+$attachment_url =  $this->baseUrl . '/procure/pr-row-attachment' ;
+
+
+switch ($action) {
+
+    case \Application\Model\Constants::FORM_ACTION_ADD:
+        $form_action = '/procure/pr-row-attachment/upload';
+        $form_title = $this->translate("Upload");
+
+        break;
+    case \Application\Model\Constants::FORM_ACTION_EDIT:
+        $form_action = '/procure/pr-row-attachment/edit';
+        $form_title = $this->translate("Edit Header");
+        break;
+}
+?>
 
 <h4>
 	 <?php 
 	 /**@todo: UPDATE TARGET */
- 	echo (!$target== null)? 'PR Line: ' . $target->getId():"";
-    if($target->getItem()!=null): echo '<br>'.$target->getItem()->getItemName();endif;
- 	
+	 if (!$target== null):
+ 	  echo  'PR Line: ' . $target->getId();
+        if($target->getItem()!=null): echo '<br>'.$target->getItem()->getItemName();endif;
+     endif; 	
  	;?>
  	
 </h4>
@@ -28,7 +51,15 @@ if (count ( $errors ) > 0) {
 
 <div id="tabs" style="font-size: 9.5pt"> 
   <ul>
-  <li ><a href="#general">Attachment upload</a></li>
+  <li ><a href="#general"><?php echo $form_title;?>:</a></li>
+
+				<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+
+  		<li ><a title="<?php echo $this->translate("Change Logs");?>" href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+          			<?php endif;?>
+
+
+
    </ul>
 
 <div id="general" style="font-size: 9pt; padding-top: 0px"> 
@@ -40,18 +71,26 @@ if (count ( $errors ) > 0) {
 <hr>
 
 <!-- TO UPDATE ACTION -->
-<form id="attachment_upload_form" class="form-horizontal" action="<?php echo $attachment_url; ?>/upload" method="post" enctype="multipart/form-data">
+<form id="attachment_upload_form" class="form-horizontal" action="<?php echo $form_action; ?>" method="post" enctype="multipart/form-data">
 <input type="hidden" name="target_id" value="<?php echo (!$target == null)? $target->getId():"";?>" />
 <input type="hidden" name="token" value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+
+<input type="hidden" name="entity_token" value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+<input type="hidden" name="entity_id" value="<?php echo (!$entity== null)? $entity->getId():"";?>" />
+
+
 <input type="hidden" name="redirectUrl" value="<?php echo $redirectUrl ?>" />
 
+ 			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+           				<input type="hidden" name="n" value="<?php echo $n;?>" />
+        	<?php endif;?>
+        
 
 	<div class="form-group margin-bottom required">
 		<label class="control-label col-sm-2 " >Document Subject:</label>
 		<div class="col-sm-3">
 			<input class="form-control input-sm" type="text"  placeholder=""
 				name="documentSubject" id="documentSubject" value="<?php echo (!$entity== null)? $entity->getDocumentSubject():"";?>">
-	
 		</div>
 		<label class="control-label col-sm-1" for="inputTag"></label>
 		<div class="col-sm-4">
@@ -62,7 +101,16 @@ if (count ( $errors ) > 0) {
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag">Attachment:</label>
 		<div class="col-sm-3">
+							<?php if($action == \Application\Model\Constants::FORM_ACTION_ADD):?>
+  
 			<input style=";" type="file" id= "attachments" name="attachments" />
+			        			<?php endif;?>
+	
+						<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+  	   <i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;<a href="<?php echo $attachment_url ?>/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><?php echo (!$entity == null)? $entity->getFilenameOriginal():"";?></a>
+	        			<?php endif;?>
+			
+			
 		</div>		
 	</div>
 	
@@ -90,16 +138,33 @@ if (count ( $errors ) > 0) {
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" for="inputTag"></label>
 		<div class="col-sm-3">
+
+         			<?php if($action == \Application\Model\Constants::FORM_ACTION_ADD):?>
+            			
 	
  <a class="btn btn-default" style="" href="javascript:;"
 	onClick="doUploadAttachment('attachment_upload_form','attachments','<?php echo $attachment_url; ?>/upload-pictures','<?php echo $target!==null ? $target->getId():""?>','<?php echo $redirectUrl ?>','','<?php echo $target!==null ? $target->getToken():""?>');">
 	<small><i class="fa fa-upload" aria-hidden="true"></i>&nbsp; Upload
 </a>
 					<a tabindex="11" class="btn btn-default"
-								href="<?php echo $this->baseUrl ?>/procure/pr/show?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+								href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
 									class="glyphicon glyphicon-ok"></i></small>&nbsp;Cancel</a>
    		</div>
 	</div> 
+
+           			<?php endif;?>
+
+         			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+         			
+  			<a tabindex="11" class="btn btn-default btn-sm"
+						onclick="submitForm('attachment_upload_form');" href="javascript:;"><small><i
+							class="glyphicon glyphicon-floppy-disk"></i></small>&nbsp;<?php echo $this->translate("Save");?></a>
+						<a tabindex="11" class="btn btn-default"
+								href="<?php echo $this->baseUrl ?>/procure/pr-row/edit?token=<?php echo (!$target == null)? $target->getToken():"";?>&entity_id=<?php echo (!$target == null)? $target->getId():"";?>"><small><i
+									class="glyphicon glyphicon-ok"></i></small>&nbsp;Cancel</a>
+        			
+          			<?php endif;?>
+           			
 		
 	
 </form>
@@ -110,7 +175,7 @@ if (count ( $errors ) > 0) {
 $('#attachments').bind('change', function() {
 	var file_size;
 	file_size = this.files[0].size
-	if (file_size > 2097152){
+	if (file_size > 10485760){
 		//alert('This file size is too large : ' + file_size + "MB. Please select new file");
 		
 		$('#b_loaded_data').text('This file size is too large : ' + file_size + "MB. Please select new file");

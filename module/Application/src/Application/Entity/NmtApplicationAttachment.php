@@ -225,6 +225,13 @@ class NmtApplicationAttachment
     private $targetToken;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="file_extension", type="string", length=5, nullable=true)
+     */
+    private $fileExtension;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1050,6 +1057,30 @@ class NmtApplicationAttachment
     public function getTargetToken()
     {
         return $this->targetToken;
+    }
+
+    /**
+     * Set fileExtension
+     *
+     * @param string $fileExtension
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setFileExtension($fileExtension)
+    {
+        $this->fileExtension = $fileExtension;
+
+        return $this;
+    }
+
+    /**
+     * Get fileExtension
+     *
+     * @return string
+     */
+    public function getFileExtension()
+    {
+        return $this->fileExtension;
     }
 
     /**

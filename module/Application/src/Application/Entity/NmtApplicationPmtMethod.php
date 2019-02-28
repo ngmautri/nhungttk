@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationPmtMethod
  *
- * @ORM\Table(name="nmt_application_pmt_method", indexes={@ORM\Index(name="nmt_application_pmt_method_idx1", columns={"created_by"}), @ORM\Index(name="nmt_application_pmt_method_FK2_idx", columns={"gl_account"}), @ORM\Index(name="nmt_application_pmt_method_FK3_idx", columns={"lastchange_by"})})
+ * @ORM\Table(name="nmt_application_pmt_method", indexes={@ORM\Index(name="nmt_application_pmt_method_idx1", columns={"created_by"}), @ORM\Index(name="nmt_application_pmt_method_FK2_idx", columns={"gl_account"}), @ORM\Index(name="nmt_application_pmt_method_FK3_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_application_pmt_method_FK4_idx", columns={"gl_account1"})})
  * @ORM\Entity
  */
 class NmtApplicationPmtMethod
@@ -99,6 +99,16 @@ class NmtApplicationPmtMethod
      * })
      */
     private $lastchangeBy;
+
+    /**
+     * @var \Application\Entity\FinAccount
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\FinAccount")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="gl_account1", referencedColumnName="id")
+     * })
+     */
+    private $glAccount1;
 
 
 
@@ -350,5 +360,29 @@ class NmtApplicationPmtMethod
     public function getLastchangeBy()
     {
         return $this->lastchangeBy;
+    }
+
+    /**
+     * Set glAccount1
+     *
+     * @param \Application\Entity\FinAccount $glAccount1
+     *
+     * @return NmtApplicationPmtMethod
+     */
+    public function setGlAccount1(\Application\Entity\FinAccount $glAccount1 = null)
+    {
+        $this->glAccount1 = $glAccount1;
+
+        return $this;
+    }
+
+    /**
+     * Get glAccount1
+     *
+     * @return \Application\Entity\FinAccount
+     */
+    public function getGlAccount1()
+    {
+        return $this->glAccount1;
     }
 }

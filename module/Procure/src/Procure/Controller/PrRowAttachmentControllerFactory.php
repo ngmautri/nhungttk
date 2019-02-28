@@ -25,6 +25,9 @@ class PrRowAttachmentControllerFactory implements FactoryInterface{
 		$controller= new PrRowAttachmentController();
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
+	
+		$sv =  $container->get('Procure\Service\Upload\PrRowUploadService');
+		$controller->setPrRowAttachmentService($sv);
 		
 		return $controller;
 	}	

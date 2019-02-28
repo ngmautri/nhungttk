@@ -211,6 +211,7 @@ return array(
             'Procure\Service\GrSearchService' => 'Procure\Service\GrSearchServiceFactory',
             'Procure\Service\ApSearchService' => 'Procure\Service\ApSearchServiceFactory',
             
+            'Procure\Service\Upload\PrRowUploadService' => 'Procure\Service\Upload\PrRowUploadServiceFactory',
         )
     ),
     

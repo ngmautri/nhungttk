@@ -28,6 +28,9 @@ class WarehouseControllerFactory implements FactoryInterface {
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
 		
+		$sv =  $container->get('\Inventory\Service\WarehouseService');
+		$controller->setWarehouseService($sv);
+	   
 		return $controller;
 	}
 }

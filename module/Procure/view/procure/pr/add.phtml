@@ -110,7 +110,42 @@ name="department_id" value="<?php if (!$entity== null):if($entity->getDepartment
 <a style="color: #0080ff;" href="javascript:;"
 	onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i class="glyphicon glyphicon-folder-open"></i>
 </a>
-    </div>	
+    </div>
+    
+    <div class="form-group margin-bottom required">
+
+							<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
+							<div class="col-sm-3">
+								<select tabindex="9" name="wh_id" id="wh_id"
+									class="form-control input-sm">
+									<option value=""><?php echo $this->translate("Select Warehouse");?></option>
+   	    							<?php
+   	    	 if ($wh_list !== null) :
+   	    	 foreach ($wh_list as $gl) :
+
+                    /**@var \Application\Entity\NmtInventoryWarehouse $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getWarehouse() !== null) :
+                        if ($entity->getWarehouse()->getId() == $gl->getId()) :
+                            echo '<option selected value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            endif;
+                        else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                        endif;
+                    else :
+                    echo '<option value="' . $gl->getId() . '">' . $gl->getWhName()  . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>	
+							</div>
 	
 	<div class="form-group margin-bottom">
 		<label class="control-label col-sm-2" >Remarks:</label>

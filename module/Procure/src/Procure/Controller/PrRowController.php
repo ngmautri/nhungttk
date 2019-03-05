@@ -191,6 +191,8 @@ class PrRowController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
+        $wh_list = $nmtPlugin->warehouseList();
+        
 
         // Is Posting .................
         // ============================
@@ -230,7 +232,9 @@ class PrRowController extends AbstractActionController
                     'target' => null,
                     'entity' => null,
                     'total_row' => (int) $pr[1],
-                    'max_row_number' => (int) $pr[2]
+                    'max_row_number' => (int) $pr[2],
+                    'wh_list'=> $wh_list,
+                    
                 ));
             }
 
@@ -256,7 +260,9 @@ class PrRowController extends AbstractActionController
                     'target' => $target,
                     'total_row' => $pr['total_row'],
                     'max_row_number' => $pr['max_row_number'],
-                    'active_row' => $pr['active_row']
+                    'active_row' => $pr['active_row'],
+                    'wh_list'=> $wh_list,
+                    
                 ));
             }
 
@@ -284,7 +290,9 @@ class PrRowController extends AbstractActionController
                     'target' => $target,
                     'total_row' => $pr['total_row'],
                     'max_row_number' => $pr['max_row_number'],
-                    'active_row' => $pr['active_row']
+                    'active_row' => $pr['active_row'],
+                    'wh_list'=> $wh_list,
+                    
                 ));
             }
 
@@ -345,6 +353,7 @@ class PrRowController extends AbstractActionController
         $currentDate = new \Datetime();
         $entity->setEdt($currentDate->modify('+10 days'));
         $entity->setIsActive(1);
+        $entity->setWarehouse($target->getWarehouse());
 
         return new ViewModel(array(
            
@@ -355,7 +364,9 @@ class PrRowController extends AbstractActionController
             'entity' => $entity,
             'total_row' => $pr['total_row'],
             'max_row_number' => $pr['max_row_number'],
-            'active_row' => $pr['active_row']
+            'active_row' => $pr['active_row'],
+            'wh_list'=> $wh_list,
+            
         ));
     }
 

@@ -631,8 +631,8 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
 
         $criteria = array(
             'id' => $entity_id,
-            'checksum' => $entity_checksum,
-            'token' => $entity_token,
+            //'checksum' => $entity_checksum,
+            //'token' => $entity_token,
             'markedForDeletion' => 0,
             'isPicture' => 1
         );
@@ -673,10 +673,10 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
 
         $criteria = array(
             'id' => $entity_id,
-            'checksum' => $entity_checksum,
-            'token' => $entity_token,
-            'markedForDeletion' => 0,
-            'isPicture' => 1
+            //'checksum' => $entity_checksum,
+            //'token' => $entity_token,
+            //'markedForDeletion' => 0,
+            //'isPicture' => 1
         );
 
         $pic = new \Application\Entity\NmtApplicationAttachment();
@@ -715,10 +715,10 @@ abstract class AbstractUploadService implements EventManagerAwareInterface
 
         $criteria = array(
             'id' => $entity_id,
-            'checksum' => $entity_checksum,
-            'token' => $entity_token,
-            'markedForDeletion' => 0,
-            'isPicture' => 1
+            //'checksum' => $entity_checksum,
+            //'token' => $entity_token,
+            //'markedForDeletion' => 0,
+            //'isPicture' => 1
         );
 
         $pic = new \Application\Entity\NmtApplicationAttachment();

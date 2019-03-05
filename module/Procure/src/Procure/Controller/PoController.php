@@ -600,7 +600,7 @@ class PoController extends AbstractActionController
         $m = sprintf("[OK] PO #%s updated!", $id);
         $this->flashMessenger()->addMessage($m);
 
-        $redirectUrl = sprintf("/procure/po/add1?token=%s&entity_id=%s", $token, $id);
+        $redirectUrl = sprintf("/procure/po/show?token=%s&entity_id=%s", $token, $id);
         return $this->redirect()->toUrl($redirectUrl);
 
         return new ViewModel(array(

@@ -11,7 +11,12 @@ namespace Procure\Model\Ap;
 class GRNIStrategy extends AbstractAPRowPostingStrategy
 {
 
-    public function doPosting($entity, $r, $u = null)
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Procure\Model\Ap\AbstractAPRowPostingStrategy::doPosting()
+     */
+    public function doPosting($entity, $r, $u = null, $isPosting=1)
     {
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument! Invoice is not found.");

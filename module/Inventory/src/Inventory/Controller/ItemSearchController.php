@@ -49,8 +49,11 @@ class ItemSearchController extends AbstractActionController {
 					$a_json_row ["value"] = $a->item_name;
 					$a_json_row ["item_sku"] = $a->item_sku ;
 					$a_json_row ["item_serial"] = $a->manufacturer_code ;					
-					$a_json_row ["item_serial"] = $a->manufacturer_code ;
 					
+					/* $a_json_row["inventory_account_id"] = $a->inventory_account_id;
+					$a_json_row["cogs_account_id"] = $a->cogs_account_id;
+					$a_json_row["cost_center_id"] = $a->cost_center_id;
+					 */
 					$a_json[]=$a_json_row;
 					$n++;
 				}

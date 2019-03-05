@@ -445,6 +445,7 @@ class APInvoiceService extends AbstractService
 
             $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
 
+            // if have inventory item.
             if (count($inventory_trx_rows) > 0) {
 
                 $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);

@@ -70,7 +70,7 @@ class VInvoiceRowController extends AbstractActionController
             if (! $target instanceof \Application\Entity\FinVendorInvoice) {
 
                 $errors[] = 'Invoice object can\'t be empty. Or token key is not valid!';
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -86,6 +86,10 @@ class VInvoiceRowController extends AbstractActionController
                     'tax_amount' => 0,
                     'gross_amount' => 0
                 ));
+                
+                $viewModel->setTemplate("finance/v-invoice-row/crud");
+                return $viewModel;
+                
             }
 
             $entity = new FinVendorInvoiceRow();
@@ -97,7 +101,7 @@ class VInvoiceRowController extends AbstractActionController
 
             if (count($errors) > 0) {
 
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -113,6 +117,10 @@ class VInvoiceRowController extends AbstractActionController
                     'tax_amount' => $invoice['tax_amount'],
                     'gross_amount' => $invoice['gross_amount']
                 ));
+                
+                $viewModel->setTemplate("finance/v-invoice-row/crud");
+                return $viewModel;
+                
             }
 
             // NO ERROR
@@ -132,7 +140,7 @@ class VInvoiceRowController extends AbstractActionController
 
             if (count($errors) > 0) {
 
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -148,6 +156,10 @@ class VInvoiceRowController extends AbstractActionController
                     'tax_amount' => $invoice['tax_amount'],
                     'gross_amount' => $invoice['gross_amount']
                 ));
+                
+                $viewModel->setTemplate("finance/v-invoice-row/crud");
+                return $viewModel;
+                
             }
 
             $m = sprintf('[OK] A/P Invoice Row #%s - %s created.', $entity->getId(), $entity->getRowIdentifer());
@@ -210,7 +222,7 @@ class VInvoiceRowController extends AbstractActionController
         $entity->setUnit("each");
         $entity->setTaxRate(0);
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
             'errors' => null,
@@ -226,6 +238,10 @@ class VInvoiceRowController extends AbstractActionController
             'tax_amount' => $invoice['tax_amount'],
             'gross_amount' => $invoice['gross_amount']
         ));
+        
+        $viewModel->setTemplate("finance/v-invoice-row/crud");
+        return $viewModel;
+        
     }
 
     /**
@@ -352,7 +368,7 @@ class VInvoiceRowController extends AbstractActionController
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice-row/add");
+                $viewModel->setTemplate("finance/v-invoice-row/crud");
                 return $viewModel;
             }
 
@@ -403,7 +419,7 @@ class VInvoiceRowController extends AbstractActionController
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice-row/add");
+                $viewModel->setTemplate("finance/v-invoice-row/crud");
                 return $viewModel;
             }
 
@@ -441,7 +457,7 @@ class VInvoiceRowController extends AbstractActionController
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice-row/add");
+                $viewModel->setTemplate("finance/v-invoice-row/crud");
                 return $viewModel;
             }
 
@@ -536,7 +552,7 @@ class VInvoiceRowController extends AbstractActionController
                 'n' => 0
             ));
 
-            $viewModel->setTemplate("finance/v-invoice-row/add");
+            $viewModel->setTemplate("finance/v-invoice-row/crud");
             return $viewModel;
         } else {
             return $this->redirect()->toRoute('access_denied');

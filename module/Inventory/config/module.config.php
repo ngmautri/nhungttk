@@ -155,6 +155,7 @@ return array(
             'Inventory\Service\GIService' => 'Inventory\Service\GIServiceFactory',
             'Inventory\Service\OpeningBalanceService' => 'Inventory\Service\OpeningBalanceServiceFactory',
             'Inventory\Service\ItemSerialService' => 'Inventory\Service\ItemSerialServiceFactory',
+            'Inventory\Service\WarehouseService' => 'Inventory\Service\WarehouseServiceFactory',
             
         )
     ),

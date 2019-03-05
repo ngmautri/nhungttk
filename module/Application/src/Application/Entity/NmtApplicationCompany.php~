@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationCompany
  *
- * @ORM\Table(name="nmt_application_company", indexes={@ORM\Index(name="nmt_application_company_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_company_FK1_idx", columns={"default_currency_id"}), @ORM\Index(name="nmt_application_company_FK4_idx", columns={"default_address_id"}), @ORM\Index(name="nmt_application_company_IDX1", columns={"token"})})
+ * @ORM\Table(name="nmt_application_company", indexes={@ORM\Index(name="nmt_application_company_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_company_FK1_idx", columns={"default_currency_id"}), @ORM\Index(name="nmt_application_company_FK4_idx", columns={"default_address_id"}), @ORM\Index(name="nmt_application_company_IDX1", columns={"token"}), @ORM\Index(name="nmt_application_company_FK3_idx", columns={"country_id"}), @ORM\Index(name="nmt_application_company_FK5_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_application_company_FK6_idx", columns={"default_warehouse"})})
  * @ORM\Entity
  */
 class NmtApplicationCompany
@@ -52,9 +52,9 @@ class NmtApplicationCompany
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
-    private $createdOn = 'CURRENT_TIMESTAMP';
+    private $createdOn;
 
     /**
      * @var boolean
@@ -69,6 +69,20 @@ class NmtApplicationCompany
      * @ORM\Column(name="token", type="string", length=45, nullable=true)
      */
     private $token;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
 
     /**
      * @var \Application\Entity\NmtApplicationCurrency
@@ -91,6 +105,16 @@ class NmtApplicationCompany
     private $createdBy;
 
     /**
+     * @var \Application\Entity\NmtApplicationCountry
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCountry")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="country_id", referencedColumnName="id")
+     * })
+     */
+    private $country;
+
+    /**
      * @var \Application\Entity\NmtApplicationCompanyAddress
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompanyAddress")
@@ -99,6 +123,26 @@ class NmtApplicationCompany
      * })
      */
     private $defaultAddress;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="default_warehouse", referencedColumnName="id")
+     * })
+     */
+    private $defaultWarehouse;
 
 
 }

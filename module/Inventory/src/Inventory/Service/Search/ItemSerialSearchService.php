@@ -1,17 +1,20 @@
 <?php
 namespace Inventory\Service;
 
-use Application\Entity\NmtInventoryItem;
-use Application\Service\AbstractService;
-use ZendSearch\Lucene\Document;
+
 use ZendSearch\Lucene\Lucene;
-use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
-use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
+use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Document\Field;
+use ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive;
+// use ZendSearch\Lucene\Analysis\Analyzer\Common\Utf8Num\CaseInsensitive; // Not worked
+use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
 use ZendSearch\Lucene\Index\Term;
-use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Search\Query\Wildcard;
+use Application\Entity\NmtInventoryItem;
+use Application\Service\AbstractService;
+use ZendSearch\Lucene\Search\Query\Boolean;
+use ZendSearch\Lucene\Search\QueryParser;
 use Exception;
 
 /**
@@ -19,160 +22,12 @@ use Exception;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSearchService extends AbstractService
+class ItemSerialSearchService extends AbstractService
 {
 
-    const ITEM_INDEX = "/data/inventory/indexes/item";
+    const ITEM_INDEX = "/data/inventory/indexes/item-serial";
 
-    /**
-     *
-     * @param \ZendSearch\Lucene\SearchIndexInterface $index
-     * @param array $row
-     */
-    private function _addDocument(\ZendSearch\Lucene\SearchIndexInterface $index, $row)
-    {
-        if ($index == null || $row == null) {
-            return;
-        }
-
-        $doc = new Document();
-        
-        $doc->addField(Field::UnIndexed('item_id', $row['id']));
-        $doc->addField(Field::UnIndexed('token', $row['token']));
-        $doc->addField(Field::UnIndexed('checksum', $row['checksum']));
-        
-        $doc->addField(Field::Keyword('item_token_keyword', $row['token'] . "__" . $row['id']));
-
-        $doc->addField(Field::Keyword('item_token_serial_keyword', $row['token'] . "__" . $row['id']. "__" . $row['serial_id']));
-        
-        
-        $doc->addField(Field::Keyword('item_sku_key', $row['item_sku']));
-        $doc->addField(Field::Keyword('item_sku1_key', $row['item_sku1']));
-        $doc->addField(Field::Keyword('item_sku2_key', $row['item_sku2']));
-
-        $doc->addField(Field::Keyword('item_sys_number', $row['sys_number']));
-
-        $doc->addField(Field::Keyword('manufacturer_key', $row['manufacturer']));
-        $doc->addField(Field::Keyword('manufacturer_model_key', $row['manufacturer_model']));
-        $doc->addField(Field::Keyword('manufacturer_serial_key', $row['manufacturer_serial']));
-        $doc->addField(Field::Keyword('manufacturer_code_key', $row['manufacturer_code']));
-        $doc->addField(Field::Keyword('origin_key', $row['origin']));
-
-        $doc->addField(Field::Keyword('is_fixed_asset', $row['is_fixed_asset']));
-        $doc->addField(Field::Keyword('is_sparepart', $row['is_sparepart']));
-        $doc->addField(Field::Keyword('is_active', $row['is_active']));
-        $doc->addField(Field::Keyword('is_stocked', $row['is_stocked']));
-
-        $doc->addField(Field::Keyword('uom', $row['uom']));
-        $doc->addField(Field::Keyword('sp_label_key', $row['sparepart_label']));
-        $doc->addField(Field::Keyword('asset_label_key', $row['asset_label']));
-
-        // echo $row->getId () ."::".$row->getItemName () . '::: ' . mb_detect_encoding($row->getItemName ()) . '<br>'; // false
-
-        $doc->addField(Field::text('item_sku', $row['item_sku'], 'UTF-8'));
-        $doc->addField(Field::text('item_sku1', $row['item_sku1'], 'UTF-8'));
-        $doc->addField(Field::text('item_sku2', $row['item_sku2'], 'UTF-8'));
-
-        $doc->addField(Field::text('item_name', $row['item_name']));
-        // $doc->addField ( Field::text ( 'item_name1', $row->getItemNameForeign () ) );
-        $doc->addField(Field::text('item_description', $row['item_description']));
-        $doc->addField(Field::text('keywords', $row['keywords']));
-
-        $doc->addField(Field::text('manufacturer', $row['manufacturer']));
-        $doc->addField(Field::text('manufacturer_model', $row['manufacturer_model']));
-        $doc->addField(Field::text('manufacturer_serial', $row['manufacturer_serial']));
-        $doc->addField(Field::text('manufacturer_code', $row['manufacturer_code']));
-        $doc->addField(Field::text('origin', $row['origin']));
-        $doc->addField(Field::text('remarks', $row['remarks_text']));
-
-        $doc->addField(Field::text('sp_label', $row['sparepart_label']));
-        $doc->addField(Field::text('asset_label', $row['asset_label']));
-
-        $doc->addField(Field::UnIndexed('serial_id', $row['serial_id']));
-
-        $doc->addField(Field::Keyword('serial_number_key', $row['serial_no']));
-        $doc->addField(Field::Keyword('serial_number_1_key', $row['serial_no1']));
-        $doc->addField(Field::Keyword('serial_number_2_key', $row['serial_no2']));
-
-        $doc->addField(Field::text('serial_number', $row['serial_no']));
-        $doc->addField(Field::text('serial_number_1', $row['serial_no1']));
-        $doc->addField(Field::text('serial_number_2', $row['serial_no2']));
-
-        $doc->addField(Field::text('mfg_name', $row['mfg_name']));
-        $doc->addField(Field::text('mfg_description', $row['mfg_description']));        
-        $doc->addField(Field::text('serial_remarks', $row['serial_remarks']));
-
-        
-        $doc->addField(Field::Keyword('mfg_serial_number_key', $row['mfg_serial_number']));
-        $doc->addField(Field::text('mfg_serial_number', $row['mfg_serial_number']));
-        
-        
-        $doc->addField(Field::Keyword('mfg_model_key', $row['mfg_model']));
-        $doc->addField(Field::Keyword('mfg_model1_key', $row['mfg_model1']));
-        $doc->addField(Field::Keyword('mfg_model2_key', $row['mfg_model2']));
-
-        $doc->addField(Field::text('mfg_model', $row['mfg_model']));
-        $doc->addField(Field::text('mfg_model1', $row['mfg_model1']));
-        $doc->addField(Field::text('mfg_model2', $row['mfg_model2']));
-
-        $s = $row['serial_no'];
-        $l = strlen($s);
-        $l > 3 ? $p = strpos($s, "-", 3) + 1 : $p = 0;
-
-        $doc->addField(Field::Text('serial_number_lastnumber', substr($s, $p, $l - $p) * 1));
-
-        $s = $row['asset_label'];
-        $l = strlen($s);
-        $l > 3 ? $p = strpos($s, "-", 3) + 1 : $p = 0;
-
-        $doc->addField(Field::Text('asset_label_lastnumber', substr($s, $p, $l - $p) * 1));
-        
-        // add item group and account
-       
-
-        $index->addDocument($doc);
-     
-        // =================================
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function createIndex()
-    {
-        // take long time
-        set_time_limit(2000);
-        try {
-            $index = Lucene::create(getcwd() . self::ITEM_INDEX);
-            //Analyzer::setDefault(new CaseInsensitive());
-            Analyzer::setDefault(new \ZendSearch\Lucene\Analysis\Analyzer\Common\TextNum\CaseInsensitive());
-            
-            
-            /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-            $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-
-            $records = $res->getAllItemWithSerial();
-
-            if (count($records) > 0) {
-
-                foreach ($records as $row) {
-                    $this->_addDocument($index, $row);
-                }
-                $index->optimize();
-                $log1 = 'Item indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
-
-                return $log1;
-            } else {
-                $log1 = 'Nothing for indexing!';
-                return $log1;
-            }
-        } catch (Exception $e) {
-            $log1 = 'Nothing for indexing! something wrong';
-            return $log1;
-        }
-    }
-
+  
     /**
      *
      * @return string[]|NULL[]
@@ -182,22 +37,24 @@ class ItemSearchService extends AbstractService
 
         // take long time
         set_time_limit(1500);
+
         try {
             $index = Lucene::create(getcwd() . self::ITEM_INDEX);
-
             Analyzer::setDefault(new CaseInsensitive());
 
-            $records = $this->getDoctrineEM()
-                ->getRepository('Application\Entity\NmtInventoryItem')
-                ->findAll();
+            /**@var \Application\Repository\NmtInventoryItemRepository $rep ;*/
+            $rep = $this->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryItem');
+            $list = $rep->getAllItemWithSerial1();
 
-            if (count($records) > 0) {
+            if (count($list) > 0) {
 
-                $log = array();
-                foreach ($records as $row) {
-                    /** @var \Application\Entity\NmtInventoryItem row ; */
+                foreach ($list as $r) {
 
+                    /**@var \Application\Entity\NmtInventoryItem $row ;*/
+                    $row = $r[0];
+                    $m = 'Indexing start ...';
                     try {
+
                         $doc = new Document();
                         $doc->addField(Field::UnIndexed('item_id', $row->getId()));
                         $doc->addField(Field::UnIndexed('token', $row->getToken()));
@@ -252,79 +109,30 @@ class ItemSearchService extends AbstractService
 
                         $doc->addField(Field::Text('asset_label_lastnumber', substr($s, $p, $l - $p) * 1));
 
+                        // Adding serial part
+                        $doc->addField(Field::text('item_sn', $r['sn']));
+                        
+
                         $index->addDocument($doc);
-                        $log[] = "Doc added";
+                        $m = sprintf('[OK] item #%s   indexed!', $row->getSysNumber());
                     } catch (Exception $e) {
-                        $log[] = $e->getMessage();
+                        $m = sprintf('[FAILED] item #%s not indexed. Reason: %s', $row->getSysNumber(), $e->getMessage());
                     }
+
+                    $this->getEventManager()->trigger('inventory.item-indexing.log', __CLASS__, array(
+                        'message' => $m
+                    ));
                 }
                 $index->optimize();
-                $log[] = 'Item resource indexes is created successfully!<br> Index Size:' . $index->count() . '<br>Documents: ' . $index->numDocs();
-                return $log;
+                $return_m = sprintf('[0K] Index for Items with Serial is created!<br>Index Size: %s <br>Documents: &s', $index->count(), $index->numDocs());
+                return $return_m;
             } else {
-                $log[] = 'Nothing for indexing!';
-                return $log;
+                $return_m = 'Nothing for indexing!';
+                return $return_m;
             }
         } catch (Exception $e) {
-            $log[] = 'Nothing for indexing!';
-            return $log;
-        }
-    }
-    
-    /**
-     *
-     * @param number $is_new
-     * @param object $item
-     * @param bool $optimized
-     * @return string
-     */
-    public function updateItemIndex($is_new = 0, $item, $optimized)
-    {
-        
-        // take long time
-        set_time_limit(1500);
-        try {
-            
-            /** @var \Application\Entity\Application\Entity\NmtInventoryItem $row;*/
-            
-            if ($item instanceof NmtInventoryItem) {
-                $index = Lucene::open(getcwd() . self::ITEM_INDEX);
-                Analyzer::setDefault(new CaseInsensitive());
-                
-                if ($is_new ==0) {
-                    $ck_query = 'item_token_keyword:' . $item->getToken() . '__' . $item->getId();
-                    $ck_hits = $index->find($ck_query);
-                    
-                    if (count($ck_hits) >0 ) {                        
-                        foreach($ck_hits as $hit){
-                            $index->delete($hit->id);
-                        }
-                     }
-                }
-                
-                /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-                $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-                
-                $records = $res->getAllItemWithSerial($item->getId());
-                
-                if (count($records) > 0) {
-                    
-                    foreach ($records as $row) {
-                        $this->_addDocument($index, $row);
-                    }
-                } else {
-                    return sprintf("[INFO] nothing for indexing");
-                }
-                
-                if ($optimized === true) {
-                    $index->optimize();
-                }
-                return sprintf("[0k] Search index updated! %s",count($ck_hits));
-            } else {
-                return sprintf("[FAILED] Input invalid");
-            }
-        } catch (Exception $e) {
-            return $e->getMessage();
+            $return_m = sprintf('Nothing for indexing! %s', $e->getMessage());
+            return $return_m;
         }
     }
 
@@ -539,8 +347,7 @@ class ItemSearchService extends AbstractService
     {
         try {
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
-            Analyzer::setDefault(new CaseInsensitive());
-            
+
             $final_query = new Boolean();
 
             $q = strtolower($q);
@@ -550,13 +357,7 @@ class ItemSearchService extends AbstractService
             if (count($terms) > 1) {
 
                 foreach ($terms as $t) {
-                    
-                    $t = preg_replace('/\s+/', '', $t);
-                    
-                    if(strlen($t) == 0 ){
-                        continue;
-                    }                        
-                    
+
                     if (strpos($t, '*') != false) {
                         $pattern = new Term($t);
                         $query = new Wildcard($pattern);
@@ -614,11 +415,7 @@ class ItemSearchService extends AbstractService
         try {
 
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
-            Analyzer::setDefault(new CaseInsensitive());
-            
-            
-            
-            
+
             if (strpos($q, '*') != false) {
                 $pattern = new Term($q);
                 $query = new Wildcard($pattern);
@@ -669,8 +466,7 @@ class ItemSearchService extends AbstractService
     {
         try {
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
-            Analyzer::setDefault(new CaseInsensitive());
-            
+
             $final_query = new Boolean();
 
             if (strpos($q, '*') != false) {
@@ -715,8 +511,7 @@ class ItemSearchService extends AbstractService
     {
         try {
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
-            Analyzer::setDefault(new CaseInsensitive());
-            
+
             $final_query = new Boolean();
 
             if (strpos($q, '*') != false) {
@@ -773,4 +568,6 @@ class ItemSearchService extends AbstractService
      * break;
      * }
      */
+
+  
 }

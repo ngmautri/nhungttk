@@ -38,7 +38,7 @@ class NmtInventoryChangeLog
     /**
      * @var string
      *
-     * @ORM\Column(name="object_token", type="string", length=45, nullable=false)
+     * @ORM\Column(name="object_token", type="string", length=45, nullable=true)
      */
     private $objectToken;
 

@@ -16,6 +16,74 @@ use Inventory\Model\GR\GRStrategyFactory;
  */
 class GrService extends AbstractService
 {
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    public function validateHeader(\Application\Entity\NmtProcureGr $entity, $data, $isPosting = false)
+    {
+        $errors = array();
+        
+        if (! $entity instanceof \Application\Entity\NmtProcureGr) {
+            $errors[] = $this->controllerPlugin->translate('Procure Good receipt is not found!');
+        } else {
+            if ($entity->getLocalCurrency() == null) {
+                $errors[] = $this->controllerPlugin->translate('Local currency is not found!');
+            }
+        }
+        
+        if ($data == null) {
+            $errors[] = $this->controllerPlugin->translate('No input given');
+        }
+        
+        if (count($errors) > 0) {
+            return $errors;
+        }
+        
+        // ====== OK ====== //
+        
+        
+    }
+    
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isNew
+     */
+    public function saveHeader(\Application\Entity\NmtProcureGr $entity, $u, $isNew = FALSE)
+    {
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+        
+        if (! $entity instanceof \Application\Entity\NmtProcureGr) {
+            throw new \Exception("Invalid Argument. Procure Good Receipt Object not found!");
+        }
+        
+        // validated.
+        
+        $changeOn = new \DateTime();
+        
+        if ($isNew == TRUE) {
+            
+            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn($changeOn);
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+        } else {
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+        }
+        
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+    }
+    
+    
 
     /**
      *
@@ -441,7 +509,7 @@ class GrService extends AbstractService
                 $inventoryPostingStrategy->setContextService($this);
                 $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(), $entity->getWarehouse());
             } catch (\Exception $e) {
-                // left bank.
+                // left bank.       
 
                 $m = sprintf('[ERROR] %s', $e->getMessage());
                 $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(

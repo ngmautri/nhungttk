@@ -204,9 +204,16 @@ class PrController extends AbstractActionController
     {
         $this->layout("Procure/layout-fullscreen");
         $request = $this->getRequest();
-
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
+        $wh_list = $nmtPlugin->warehouseList();
 
         // Is Posting .................
         // ============================
@@ -282,7 +289,8 @@ class PrController extends AbstractActionController
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => $entity
+                    'entity' => $entity,
+                    'wh_list'=> $wh_list,
                 ));
             }
 
@@ -291,10 +299,7 @@ class PrController extends AbstractActionController
 
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
-            $createdOn = new \DateTime();
+               $createdOn = new \DateTime();
 
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($createdOn);
@@ -383,10 +388,15 @@ class PrController extends AbstractActionController
             ->getHeader('Referer')
             ->getUri();
 
-        return new ViewModel(array(
+            $entity = new NmtProcurePr();
+            $entity->setIsActive(1);
+            $entity->setIsDraft(1);
+            $entity->setWarehouse($u->getCompany()->getDefaultWarehouse());
+            return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
-            'entity' => null
+             'entity' => $entity,
+            'wh_list'=> $wh_list,
         ));
     }
 

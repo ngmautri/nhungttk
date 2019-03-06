@@ -91,11 +91,18 @@ class APInvoiceService extends AbstractService
             $errors = array_merge($errors, $ck);
         }
 
-        // check invoice date
+        // check warehouse 
         $ck = $this->checkWarehouse($entity, $data, $isPosting);
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
         }
+        
+        // check currency and exchange rate
+        $ck = $this->checkIncoterm($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+        
 
         return $errors;
     }
@@ -160,8 +167,10 @@ class APInvoiceService extends AbstractService
         $conversionFactor = $data['conversionFactor'];
         $quantity = $data['docQuantity'];
         $unitPrice = $data['docUnitPrice'];
-        $taxRate = $data['taxRate'];
         $remarks = $data['remarks'];
+        $taxRate = $data['taxRate'];
+        
+        $target_wh_id = $data['target_wh_id'];
 
         if ($isActive != 1) {
             $isActive = 0;
@@ -179,15 +188,16 @@ class APInvoiceService extends AbstractService
         /** @var \Application\Entity\NmtProcurePoRow $po_row ; */
         $po_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($po_row_id);
 
+        /** @var \Application\Entity\NmtInventoryItem $item ; */
+        
         $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+    
+        
+        /** @var \Application\Entity\NmtInventoryWarehouse $warehouse ; */
+        $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($target_wh_id);
+        
         $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
         $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
-
-        if ($gl == null) {
-            $errors[] = $this->controllerPlugin->translate('G/L account can\'t be empty!. Pls select G/L');
-        } else {
-            $entity->setGlAccount($gl);
-        }
 
         $entity->setCostCenter($costCenter);
 
@@ -204,6 +214,15 @@ class APInvoiceService extends AbstractService
             $errors[] = $this->controllerPlugin->translate('Item can\'t be empty. Please select item.');
         } else {
             $entity->setItem($item);
+            
+            if($item->getIsStocked()==1){
+                
+                if($warehouse==null){
+                $errors[] = $this->controllerPlugin->translate('Warehouse is needed to inventory item!');
+                }else{
+                    $entity->setWarehouse($warehouse);
+                }
+            }
         }
 
         if (! is_numeric($quantity)) {
@@ -249,6 +268,14 @@ class APInvoiceService extends AbstractService
                 $entity->setTaxRate($taxRate);
             }
         }
+        
+        
+        if ($gl == null) {
+            $errors[] = $this->controllerPlugin->translate('G/L account can\'t be empty!. Pls select G/L');
+        } else {
+            $entity->setGlAccount($gl);
+        }
+        
 
         $entity->setRemarks($remarks);
 
@@ -1212,6 +1239,42 @@ class APInvoiceService extends AbstractService
         
         if ($isPosting == TRUE and $entity->getWarehouse() == null) {
             $errors[] = $this->controllerPlugin->translate('Warehouse can\'t be empty. Please select a warehouse!');
+        }
+        return $errors;
+    }
+    
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkIncoterm(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting)
+    {
+        $errors = array();
+        if (! isset($data['incoterm_id'])) {
+            $errors[] = $this->controllerPlugin->translate('Incoterm id is not set!');
+            return $errors;
+        }
+        
+        $incoterm_id = (int) $data['incoterm_id'];
+        $incoterm_place = $data['incotermPlace'];
+        
+        /** @var \Application\Entity\NmtApplicationIncoterms $vendor ; */
+        $incoterm = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->find($incoterm_id);
+        
+        if ($incoterm !== null) {
+            $entity->setIncoterm2($incoterm);
+            
+            if ($incoterm_place == null) {
+                $errors[] = $this->controllerPlugin->translate('Please give incoterm place!');
+            } else {
+                $entity->setIncotermPlace($incoterm_place);
+            }
+            
+            
+        } else {
+            //$errors[] = $this->controllerPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
         }
         return $errors;
     }

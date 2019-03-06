@@ -21,7 +21,7 @@ class WarehouseService extends AbstractService
      * @param array $data
      * @param boolean $isPosting
      */
-    public function validateWareHouse(\Application\Entity\NmtInventoryWarehouse $entity, $data, $isNew = false)
+    public function validateWareHouse(\Application\Entity\NmtInventoryWarehouse $entity, $data, $isNew = TRUE)
     {
         $errors = array();
 

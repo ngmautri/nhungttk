@@ -418,6 +418,41 @@ if (count($errors) > 0) {
    					</select>
 								</div>
 						</div>
+						
+						 <div class="form-group margin-bottom required">
+
+							<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
+							<div class="col-sm-3">
+								<select tabindex="9" name="target_wh_id" id="target_wh_id"
+									class="form-control input-sm">
+									<option value=""><?php echo $this->translate("...");?></option>
+   	    							<?php
+   	    	 if ($wh_list !== null) :
+   	    	 foreach ($wh_list as $gl) :
+
+                    /**@var \Application\Entity\NmtInventoryWarehouse $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getWarehouse() !== null) :
+                        if ($entity->getWarehouse()->getId() == $gl->getId()) :
+                            echo '<option selected value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            endif;
+                        else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                        endif;
+                    else :
+                    echo '<option value="' . $gl->getId() . '">' . $gl->getWhName()  . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>	
+							</div>
 
 						<div class="form-group margin-bottom">
 							<label class="control-label col-sm-2">Remark:</label>

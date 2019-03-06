@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryFifoLayer
  *
- * @ORM\Table(name="nmt_inventory_fifo_layer", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK2_idx", columns={"doc_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK3_idx", columns={"local_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_inventory_fifo_layer", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK2_idx", columns={"doc_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK3_idx", columns={"local_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK6_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtInventoryFifoLayer
@@ -155,6 +155,20 @@ class NmtInventoryFifoLayer
     private $remarks;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -193,6 +207,26 @@ class NmtInventoryFifoLayer
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
+     * })
+     */
+    private $warehouse;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
 
 
 
@@ -663,6 +697,54 @@ class NmtInventoryFifoLayer
     }
 
     /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
      * Set item
      *
      * @param \Application\Entity\NmtInventoryItem $item
@@ -756,5 +838,53 @@ class NmtInventoryFifoLayer
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set warehouse
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
+    {
+        $this->warehouse = $warehouse;
+
+        return $this;
+    }
+
+    /**
+     * Get warehouse
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getWarehouse()
+    {
+        return $this->warehouse;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

@@ -40,6 +40,8 @@ class VInvoiceRowController extends AbstractActionController
         $currency_list = $nmtPlugin->currencyList();
         $gl_list = $nmtPlugin->glAccountList();
         $cost_center_list = $nmtPlugin->costCenterList();
+        $wh_list = $nmtPlugin->warehouseList();
+        
 
         $request = $this->getRequest();
 
@@ -84,7 +86,9 @@ class VInvoiceRowController extends AbstractActionController
                     'max_row_number' => 0,
                     'net_amount' => 0,
                     'tax_amount' => 0,
-                    'gross_amount' => 0
+                    'gross_amount' => 0,
+                    'wh_list'=> $wh_list,
+                    
                 ));
                 
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
@@ -115,7 +119,9 @@ class VInvoiceRowController extends AbstractActionController
                     'max_row_number' => $invoice['max_row_number'],
                     'net_amount' => $invoice['net_amount'],
                     'tax_amount' => $invoice['tax_amount'],
-                    'gross_amount' => $invoice['gross_amount']
+                    'gross_amount' => $invoice['gross_amount'],
+                    'wh_list'=> $wh_list,
+                    
                 ));
                 
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
@@ -154,7 +160,9 @@ class VInvoiceRowController extends AbstractActionController
                     'max_row_number' => $invoice['max_row_number'],
                     'net_amount' => $invoice['net_amount'],
                     'tax_amount' => $invoice['tax_amount'],
-                    'gross_amount' => $invoice['gross_amount']
+                    'gross_amount' => $invoice['gross_amount'],
+                    'wh_list'=> $wh_list,
+                    
                 ));
                 
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
@@ -221,7 +229,7 @@ class VInvoiceRowController extends AbstractActionController
         $entity->setConversionFactor(1);
         $entity->setUnit("each");
         $entity->setTaxRate(0);
-
+        $entity->setWarehouse($target->getWarehouse());
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
@@ -236,7 +244,9 @@ class VInvoiceRowController extends AbstractActionController
             'max_row_number' => $invoice['total_row'],
             'net_amount' => $invoice['net_amount'],
             'tax_amount' => $invoice['tax_amount'],
-            'gross_amount' => $invoice['gross_amount']
+            'gross_amount' => $invoice['gross_amount'],
+            'wh_list'=> $wh_list,
+            
         ));
         
         $viewModel->setTemplate("finance/v-invoice-row/crud");
@@ -325,6 +335,8 @@ class VInvoiceRowController extends AbstractActionController
         $currency_list = $nmtPlugin->currencyList();
         $gl_list = $nmtPlugin->glAccountList();
         $cost_center_list = $nmtPlugin->costCenterList();
+        $wh_list = $nmtPlugin->warehouseList();
+        
 
         $request = $this->getRequest();
 
@@ -365,7 +377,8 @@ class VInvoiceRowController extends AbstractActionController
                     'net_amount' => null,
                     'tax_amount' => null,
                     'gross_amount' => null,
-                    'n' => $nTry
+                    'n' => $nTry,
+                    'wh_list'=> $wh_list,
                 ));
 
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
@@ -416,7 +429,9 @@ class VInvoiceRowController extends AbstractActionController
                     'net_amount' => $invoice['net_amount'],
                     'tax_amount' => $invoice['tax_amount'],
                     'gross_amount' => $invoice['gross_amount'],
-                    'n' => $nTry
+                    'n' => $nTry,
+                    'wh_list'=> $wh_list,
+                    
                 ));
 
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
@@ -454,7 +469,8 @@ class VInvoiceRowController extends AbstractActionController
                     'net_amount' => $invoice['net_amount'],
                     'tax_amount' => $invoice['tax_amount'],
                     'gross_amount' => $invoice['gross_amount'],
-                    'n' => $nTry
+                    'n' => $nTry,
+                    'wh_list'=> $wh_list,
                 ));
 
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
@@ -549,7 +565,8 @@ class VInvoiceRowController extends AbstractActionController
                 'net_amount' => $invoice['net_amount'],
                 'tax_amount' => $invoice['tax_amount'],
                 'gross_amount' => $invoice['gross_amount'],
-                'n' => 0
+                'n' => 0,
+                'wh_list'=> $wh_list,
             ));
 
             $viewModel->setTemplate("finance/v-invoice-row/crud");

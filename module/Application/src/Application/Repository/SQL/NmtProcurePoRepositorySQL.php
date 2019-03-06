@@ -140,12 +140,18 @@ SELECT
     nmt_procure_qo_row.unit AS doc_unit,
     nmt_procure_qo_row.unit_price,
     nmt_procure_qo_row.unit_price*nmt_procure_qo.exchange_rate AS lc_unit_price,
-       nmt_procure_qo_row.unit_price*nmt_procure_qo.exchange_rate* nmt_procure_qo_row.quantity AS lc_total_price
+    nmt_procure_qo_row.unit_price*nmt_procure_qo.exchange_rate* nmt_procure_qo_row.quantity AS lc_total_price,
+    nmt_application_incoterms.incoterm,
+    nmt_procure_qo.incoterm_place
+
 
 FROM nmt_procure_qo_row
             
 LEFT JOIN nmt_procure_qo
 ON nmt_procure_qo.id = nmt_procure_qo_row.qo_id
+
+LEFT JOIN nmt_application_incoterms
+ON nmt_application_incoterms.id = nmt_procure_qo.incoterm_id
 
 
 LEFT JOIN nmt_application_currency
@@ -193,12 +199,19 @@ SELECT
     nmt_procure_po_row.unit AS doc_unit,
     nmt_procure_po_row.unit_price,
     nmt_procure_po_row.unit_price*nmt_procure_po.exchange_rate AS lc_unit_price,
-	nmt_procure_po_row.unit_price*nmt_procure_po.exchange_rate* nmt_procure_po_row.quantity AS lc_total_price
+	nmt_procure_po_row.unit_price*nmt_procure_po.exchange_rate* nmt_procure_po_row.quantity AS lc_total_price,
+    nmt_application_incoterms.incoterm,
+    nmt_procure_po.incoterm_place
+
 
 FROM nmt_procure_po_row
             
 LEFT JOIN nmt_procure_po
 ON nmt_procure_po.id = nmt_procure_po_row.po_id
+
+LEFT JOIN nmt_application_incoterms
+ON nmt_application_incoterms.id = nmt_procure_po.incoterm_id
+
 
 LEFT JOIN nmt_application_currency
 ON nmt_application_currency.id = nmt_procure_po.currency_id
@@ -227,7 +240,7 @@ SELECT
     
     
     fin_vendor_invoice.id AS source_id, 
-       fin_vendor_invoice.vendor_name,
+    fin_vendor_invoice.vendor_name,
 
 	fin_vendor_invoice.currency_id,
 	nmt_application_currency.currency,
@@ -241,18 +254,25 @@ SELECT
     fin_vendor_invoice.exchange_rate,
 	fin_vendor_invoice.is_active AS source_is_active,
     fin_vendor_invoice.created_on AS source_created_on,  
-
+    
     fin_vendor_invoice_row.quantity,
     fin_vendor_invoice_row.conversion_factor,
     fin_vendor_invoice_row.unit AS doc_unit,
     fin_vendor_invoice_row.unit_price,
     fin_vendor_invoice_row.unit_price*fin_vendor_invoice.exchange_rate AS lc_unit_price,
-    fin_vendor_invoice_row.unit_price*fin_vendor_invoice.exchange_rate*fin_vendor_invoice_row.quantity AS lc_total_price
+    fin_vendor_invoice_row.unit_price*fin_vendor_invoice.exchange_rate*fin_vendor_invoice_row.quantity AS lc_total_price,
+    nmt_application_incoterms.incoterm,
+    fin_vendor_invoice.incoterm_place
+
 
 FROM fin_vendor_invoice_row
             
 LEFT JOIN fin_vendor_invoice
 ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
+
+LEFT JOIN nmt_application_incoterms
+ON nmt_application_incoterms.id = fin_vendor_invoice.incoterm_id
+
 
 LEFT JOIN nmt_application_currency
 ON nmt_application_currency.id = fin_vendor_invoice.currency_id

@@ -39,6 +39,9 @@ class VInvoiceController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
+        $wh_list = $nmtPlugin->warehouseList();
+        
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -71,7 +74,9 @@ class VInvoiceController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list
+                    'currency_list' => $currency_list,
+                    'wh_list'=> $wh_list,
+                    'incoterm_list' => $incoterm_list
                 ));
 
                 $viewModel->setTemplate("finance/v-invoice/add_ap");
@@ -96,8 +101,10 @@ class VInvoiceController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list
-                ));
+                    'currency_list' => $currency_list,
+                    'wh_list'=> $wh_list,
+                    'incoterm_list' => $incoterm_list,
+                  ));
 
                 $viewModel->setTemplate("finance/v-invoice/add_ap");
                 return $viewModel;
@@ -159,7 +166,9 @@ class VInvoiceController extends AbstractActionController
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'currency_list' => $currency_list
+            'currency_list' => $currency_list,
+            'wh_list'=> $wh_list,
+            'incoterm_list' => $incoterm_list
         ));
 
         $viewModel->setTemplate("finance/v-invoice/add_ap");

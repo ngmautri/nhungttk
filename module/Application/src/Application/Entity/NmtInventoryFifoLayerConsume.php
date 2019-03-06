@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryFifoLayerConsume
  *
- * @ORM\Table(name="nmt_inventory_fifo_layer_consume", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_consume_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK2_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK3_idx", columns={"layer_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK4_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK5_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK6_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK7_idx", columns={"posting_period_id"})})
+ * @ORM\Table(name="nmt_inventory_fifo_layer_consume", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_consume_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK2_idx", columns={"inventory_trx_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK3_idx", columns={"layer_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK4_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK5_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK6_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK7_idx", columns={"posting_period_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_consume_FK8_idx", columns={"last_change_by"})})
  * @ORM\Entity
  */
 class NmtInventoryFifoLayerConsume
@@ -85,6 +85,20 @@ class NmtInventoryFifoLayerConsume
     private $isActive;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="revision_no", type="integer", nullable=true)
+     */
+    private $revisionNo;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -153,6 +167,16 @@ class NmtInventoryFifoLayerConsume
      * })
      */
     private $postingPeriod;
+
+    /**
+     * @var \Application\Entity\MlaUsers
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="last_change_by", referencedColumnName="id")
+     * })
+     */
+    private $lastChangeBy;
 
 
 
@@ -383,6 +407,54 @@ class NmtInventoryFifoLayerConsume
     }
 
     /**
+     * Set lastChangeOn
+     *
+     * @param \DateTime $lastChangeOn
+     *
+     * @return NmtInventoryFifoLayerConsume
+     */
+    public function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeOn
+     *
+     * @return \DateTime
+     */
+    public function getLastChangeOn()
+    {
+        return $this->lastChangeOn;
+    }
+
+    /**
+     * Set revisionNo
+     *
+     * @param integer $revisionNo
+     *
+     * @return NmtInventoryFifoLayerConsume
+     */
+    public function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+
+        return $this;
+    }
+
+    /**
+     * Get revisionNo
+     *
+     * @return integer
+     */
+    public function getRevisionNo()
+    {
+        return $this->revisionNo;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -548,5 +620,29 @@ class NmtInventoryFifoLayerConsume
     public function getPostingPeriod()
     {
         return $this->postingPeriod;
+    }
+
+    /**
+     * Set lastChangeBy
+     *
+     * @param \Application\Entity\MlaUsers $lastChangeBy
+     *
+     * @return NmtInventoryFifoLayerConsume
+     */
+    public function setLastChangeBy(\Application\Entity\MlaUsers $lastChangeBy = null)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return \Application\Entity\MlaUsers
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
     }
 }

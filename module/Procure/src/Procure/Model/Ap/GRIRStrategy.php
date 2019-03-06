@@ -172,7 +172,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 } else {
                     $stock_gr_entity = new \Application\Entity\NmtInventoryTrx();
                 }
-
+        
                 $stock_gr_entity->setIsActive(1);
                 $stock_gr_entity->setTrxDate($entity->getGrDate());
 
@@ -233,7 +233,10 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 $stock_gr_entity->setTaxRate($r->getTaxRate());
 
                 $stock_gr_entity->setRemarks('AP Row#' . $r->getRowIdentifer());
-                $stock_gr_entity->setWh($entity->getWarehouse());
+                
+                //updated: get WH from Row.
+                $stock_gr_entity->setWh($r->getWarehouse());
+                
                 $stock_gr_entity->setCreatedBy($u);
                 $stock_gr_entity->setCreatedOn($createdOn);
                 $stock_gr_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));

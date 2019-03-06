@@ -161,6 +161,9 @@ class GRfromPurchasing extends AbstractGRStrategy
                     $fifoLayer->setIsClosed(0);
                     $fifoLayer->setItem($r->getItem());
                     $fifoLayer->setQuantity($r->getQuantity());
+                    
+                    // set WH
+                    $fifoLayer->setWarehouse($r->getWh());                    
 
                     // will be changed uppon inventory transaction.
                     $fifoLayer->setOnhandQuantity($r->getQuantity());

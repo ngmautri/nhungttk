@@ -243,17 +243,43 @@ if (count($errors) > 0) {
 											value="<?php if(!$entity == null): if ($entity->getGrDate() !== null): echo date_format($entity->getGrDate(),"Y-m-d"); endif; endif;?>"
 											placeholder=" please select" />
 									</div>
-									<label class="control-label col-sm-2" for="inputTag">Target
-										Warehouse:</label>
-									<div class="col-sm-3">
-										<input class="form-control input-sm" readonly type="text"
-											id="target_wh_name" placeholder="Please select!"
-											name="target_wh"
-											value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
-										<input type="hidden" id="target_wh_id" name="target_wh_id"
-											value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
-									</div>
+									
 								</div>
+								
+										 <div class="form-group margin-bottom required">
+
+							<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
+							<div class="col-sm-3">
+								<select tabindex="9" name="target_wh_id" id="target_wh_id"
+									class="form-control input-sm">
+									<option value=""><?php echo $this->translate("...");?></option>
+   	    							<?php
+   	    	 if ($wh_list !== null) :
+   	    	 foreach ($wh_list as $gl) :
+
+                    /**@var \Application\Entity\NmtInventoryWarehouse $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getWarehouse() !== null) :
+                        if ($entity->getWarehouse()->getId() == $gl->getId()) :
+                            echo '<option selected value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            endif;
+                        else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                        endif;
+                    else :
+                    echo '<option value="' . $gl->getId() . '">' . $gl->getWhName()  . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>	
+							</div>
 								
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2">Contract /PO:</label>
@@ -269,6 +295,55 @@ if (count($errors) > 0) {
 											value="<?php if(!$entity == null): if ($entity->getContractDate() !== null): echo date_format($entity->getContractDate(),"Y-m-d"); endif; endif;?>">
 									</div>
 								</div>
+								
+								
+								<div class="form-group margin-bottom required">
+    
+    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
+    									<div class="col-sm-3">
+    										<select name="incoterm_id" class="form-control input-sm">
+    											<option value="">Select...</option>
+       	    							<?php
+                if ($incoterm_list !== null) :
+                foreach ($incoterm_list as $l) :
+                        if ($entity !== null) :
+                        if ($entity->getIncoterm2() !== null) :
+                            if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
+                            echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                                else :
+                                echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                                endif;
+                            else :
+                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                            endif;
+                        else :
+                        echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                        endif;
+                    endforeach
+                    ;
+       	    							endif;
+    
+                ?>
+       					</select>
+    									</div>
+    									
+    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
+    									<div class="col-sm-3">
+    										<input class="form-control input-sm" type="text"
+    											placeholder="" id="incotermPlace" name="incotermPlace"
+    											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
+    									</div>
+    									
+    								</div>
+
+						<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
+									<div class="col-sm-5">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="paymentTerm" name="paymentTerm"
+											value="<?php echo (!$entity == null)? $entity->getPaymentTerm():"";?>">
+									</div>
+									</div>
 
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2">Description</label>

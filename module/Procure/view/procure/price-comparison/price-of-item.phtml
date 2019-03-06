@@ -21,7 +21,9 @@
 		    <td><b><?php echo $this->translate("Currency");?></b></td>
 	
 		    <td><b><?php echo $this->translate("FX");?></b></td>
-	    <td><b><?php echo $this->translate("Local Unit Price");?></b></td>
+	       <td><b><?php echo $this->translate("Local Unit Price");?></b></td>
+ 			<td><b><?php echo $this->translate("Incoterm");?></b></td>
+	       <td><b><?php echo $this->translate("Incoterm Place");?></b></td>
 
 		</tr>
 	</thead>
@@ -49,6 +51,8 @@
 	     <td><?php echo $r['currency'];?> </td>
 	     <td><?php if (is_numeric($r['exchange_rate'])): echo number_format($r['exchange_rate'],2);endif;?> </td>
 	     <td><?php if (is_numeric($r['lc_unit_price'])): echo number_format($r['lc_unit_price'],2);endif;?> </td>
+	    <td><?php echo $r['incoterm'];?> </td>
+		  <td><?php echo $r['incoterm_place'];?> </td>
 			
 	</tr>
 <?php endforeach; ?>

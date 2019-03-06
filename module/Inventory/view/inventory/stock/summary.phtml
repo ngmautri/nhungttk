@@ -5,7 +5,8 @@
 </ul>
 
 
-<div id="tabs3" style="font-size: 9.5pt;color: graytext ; margin: 2pt 2pt 0pt 2pt">
+<div id="tabs3"
+	style="font-size: 9.5pt; color: graytext; margin: 2pt 2pt 0pt 2pt">
 	<ul>
 		<li><a href="#onhand">On-Hand</a></li>
 		<li><a
@@ -39,16 +40,17 @@ else :
 				<tr>
 					<td><b>#</b></td>
 					<td><b><?php echo $this->translate("Warehouse");?></b></td>
-					<td><b><?php echo $this->translate("Posting Date");?></b></td>			
+					<td><b><?php echo $this->translate("Posting Date");?></b></td>
 					<td><b><?php echo $this->translate("Posted Qty");?></b></td>
 					<td><b><?php echo $this->translate("On-hand Qty");?></b></td>
 					<td><b><?php echo $this->translate("Unit Price");?></b></td>
 					<td><b><?php echo $this->translate("Stock Value");?><br>(doc cur.)</b></td>
-				
-					<td><b><?php echo $this->translate("Stock Value");?></b><br>(local cur.)</td>
+
+					<td><b><?php echo $this->translate("Stock Value");?></b><br>(local
+						cur.)</td>
 					<td><b><?php echo $this->translate("Remark");?></b></td>
 					<td><b><?php echo $this->translate("Action");?></b></td>
-		
+
 				</tr>
 			</thead>
 
@@ -64,9 +66,9 @@ else :
         ?>
 	 <tr>
 					<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-					<td>@todo</td>
+					<td><?php if($a->getWarehouse()!==null): echo $a->getWarehouse()->getWhName(); endif?></td>
 					<td>	<?php echo date_format($a->getPostingDate(),"m-d-Y");?></td>
-			
+
 					<td>	<?php echo $a->getQuantity();?></td>
 					<td>	<?php echo $a->getOnhandQuantity();?></td>
 					<td>	<?php if($a->getDocUnitPrice()!== null ): echo number_format($a->getDocUnitPrice(),2);endif;?></td>
@@ -75,9 +77,7 @@ else :
 					<td>
 			<?php echo $a->getRemarks();?>
 			</td>
-			<td>
-			see Good Issue
-			</td>
+					<td>see Good Issue</td>
 				</tr>
 <?php endforeach; ?>
 

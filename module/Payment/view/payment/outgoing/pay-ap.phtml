@@ -253,11 +253,14 @@ if (count($errors) > 0) {
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Amount");?>:</label>
 									<div class="col-sm-3">
-										<input class="form-control input-sm" type="text"
+										<input  class="form-control input-sm" type="text"
 											placeholder="" id="docAmount" name="docAmount"
 											value="<?php echo (!$entity == null)? $entity->getDocAmount():"";?>">
 									</div>
-
+                					<div class="col-sm-3">
+                         	        		<?php echo $ap['gross_amount']?>
+                          			</div>
+                			
 
 								</div>
 
@@ -407,9 +410,6 @@ if (count($errors) > 0) {
 		//window.location = url;
 		$('#isDraft').val(0);
 		$('#confirm_modal_sm').modal('hide');
-
-		//alert($('#isDraft').val());
-		
 		submitForm('Create_Inv_Form');
 	}
 		

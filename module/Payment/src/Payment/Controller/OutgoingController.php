@@ -126,9 +126,7 @@ class OutgoingController extends AbstractActionController
                 
                 case \Payment\Model\Constants::OUTGOING_AP:
                     $errors = $this->apPaymentService->reverse($entity, $u, $reversalDate, $reversalReason);
-                    $m = count($errors);
-                    $this->flashMessenger()->addMessage($m);
-                    
+                      
                      
                     break;
                 case \Payment\Model\Constants::OUTGOING_PO:
@@ -138,6 +136,10 @@ class OutgoingController extends AbstractActionController
             }
             
             if(count($errors)>0){
+                
+                $m = $nmtPlugin->translate("Reversal failed!");
+                $this->flashMessenger()->addMessage($m);
+                
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
                     'redirectUrl' => $redirectUrl,
@@ -150,6 +152,9 @@ class OutgoingController extends AbstractActionController
                 $viewModel->setTemplate("payment/outgoing/reverse");
                 return $viewModel;
             }
+            
+            $m = sprintf("Outgoing payment #%s reversed", $entity->getSysNumber());
+            $this->flashMessenger()->addMessage($m);
             
             $redirectUrl = "/payment/outgoing/list";
             return $this->redirect()->toUrl($redirectUrl);
@@ -542,7 +547,18 @@ class OutgoingController extends AbstractActionController
             );
 
             /**@var \Application\Entity\FinVendorInvoice $target*/
-            $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+            //$target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+            
+            
+            /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+            $ap = $res->getVendorInvoice($target_id, $target_token);
+            
+            if ($ap == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+            
+            $target=$ap[0];
 
             if ($target == null) {
 
@@ -555,7 +571,8 @@ class OutgoingController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'target' => null,
-                    'nmtPlugin' => $nmtPlugin
+                    'nmtPlugin' => $nmtPlugin,
+                    'ap' => $ap,
                 ));
 
                 $viewModel->setTemplate("payment/outgoing/pay-ap");
@@ -573,7 +590,7 @@ class OutgoingController extends AbstractActionController
                 if ($isDraft == 1) {
                     $ck = $this->apPaymentService->saveHeader($entity, $data, $u, TRUE);
                 } else {
-                    $ck = $this->apPaymentService->post($entity, $data, $u, TRUE);
+                    $ck = $this->apPaymentService->post($entity, $data, $u, TRUE, TRUE);
                 }
 
                 if (count($ck) > 0) {
@@ -592,7 +609,9 @@ class OutgoingController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
-                    'nmtPlugin' => $nmtPlugin
+                    'nmtPlugin' => $nmtPlugin,
+                    'ap' => $ap,
+                    
                 ));
 
                 $viewModel->setTemplate("payment/outgoing/pay-ap");
@@ -638,17 +657,27 @@ class OutgoingController extends AbstractActionController
             'token' => $token
         );
 
-        /**@var \Application\Entity\FinVendorInvoice $target*/
-        $target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+        
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $ap = $res->getVendorInvoice($id, $token);
+        
+        
+        //$target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+        
+        
 
-        if ($target == null) {
+        if ($ap == null) {
             return $this->redirect()->toRoute('access_denied');
         }
+        
+        /**@var \Application\Entity\FinVendorInvoice $target*/
+        $target = $ap[0];
 
         $entity = new \Application\Entity\PmtOutgoing();
         $entity->setIsActive(1);
         $entity->setVendor($target->getVendor());
-        $entity->setDocAmount(1000);
+        $entity->setDocAmount($ap['gross_amount']-$ap['total_doc_amount_paid']);
         $entity->setApInvoice($target);
 
         $entity->setDocCurrency($target->getCurrency());
@@ -662,8 +691,9 @@ class OutgoingController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
-            'nmtPlugin' => $nmtPlugin
-        ));
+            'nmtPlugin' => $nmtPlugin,
+            'ap' => $ap,            
+         ));
 
         $viewModel->setTemplate("payment/outgoing/pay-ap");
         return $viewModel;
@@ -707,7 +737,7 @@ class OutgoingController extends AbstractActionController
 
             /**@var \Application\Entity\PmtOutgoing $entity*/
             $entity = $this->doctrineEM->getRepository('Application\Entity\PmtOutgoing')->findOneBy($criteria);
-
+        
             if ($entity == null) {
 
                 $errors[] = 'Entity PmtOutgoing not found!';
@@ -720,16 +750,27 @@ class OutgoingController extends AbstractActionController
                     'entity' => null,
                     'target' => null,
                     'nmtPlugin' => $nmtPlugin,
+                    'ap' =>null,
                     'n' => $nTry
                 ));
 
                 $viewModel->setTemplate("payment/outgoing/pay-ap");
                 return $viewModel;
             }
+            
+            /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+            $ap = $res->getVendorInvoice( $entity->getApInvoice()->getId(), $entity->getApInvoice()->getToken());
+            $target = $ap[0];
+            
 
             if ($isDraft == 1) {
                 $ck = $this->apPaymentService->saveHeader($entity, $data, $u, FALSE);
+                $m = sprintf('[OK] A/P Payment #%s saved', $entity->getId());
+                
             } else {
+                $m = sprintf('[OK] A/P Payment #%s posted', $entity->getId());
+                
                 $ck = $this->apPaymentService->post($entity, $data, $u, FALSE, TRUE);
             }
 
@@ -747,6 +788,7 @@ class OutgoingController extends AbstractActionController
                     'entity' => $entity,
                     'target' => $entity->getApInvoice(),
                     'nmtPlugin' => $nmtPlugin,
+                    'ap' => $ap,
                     'n' => $nTry
                 ));
 
@@ -754,7 +796,6 @@ class OutgoingController extends AbstractActionController
                 return $viewModel;
             }
 
-            $m = sprintf('[OK] A/P Payment #%s created', $entity->getId());
             $this->flashMessenger()->addMessage($m);
 
             $createdOn = new \DateTime();
@@ -793,11 +834,18 @@ class OutgoingController extends AbstractActionController
 
         /**@var \Application\Entity\PmtOutgoing $entity*/
         $entity = $this->doctrineEM->getRepository('Application\Entity\PmtOutgoing')->findOneBy($criteria);
-        $target = $entity->getApInvoice();
-
+        //$target = $entity->getApInvoice();
+        
+        
         if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
+        
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $ap = $res->getVendorInvoice( $entity->getApInvoice()->getId(), $entity->getApInvoice()->getToken());
+        $target = $ap[0];
+        
 
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
@@ -806,6 +854,8 @@ class OutgoingController extends AbstractActionController
             'entity' => $entity,
             'target' => $target,
             'nmtPlugin' => $nmtPlugin,
+            'ap' => $ap,
+            
             'n' => 0
         ));
 

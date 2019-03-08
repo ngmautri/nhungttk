@@ -173,6 +173,9 @@ else:
 			<td><b>Rows</b></td>
 			<td><b>Curr</b></td>
 			<td><b>Gross <br>amount</b></td>
+			<td><b>Paid <br>amount</b></td>
+			<td><b>Open <br>amount</b></td>
+		
 			<td><b>Current State</b></td>
 			<td><b>Action</b></td>
 		</tr>
@@ -213,6 +216,9 @@ else:
 			<td><?php echo $l['active_row'];?></td>
 			<td><?php echo $a->getCurrency()->getCurrency()?></td>
 			<td><?php if($l['gross_amount']!==null): echo number_format($l['gross_amount'],2); endif;?></td>
+			<td><?php if($l['total_doc_amount_paid']!==null): echo number_format($l['total_doc_amount_paid'],2); endif;?></td>
+			<td><?php if($l['total_doc_amount_paid']!==null AND $l['gross_amount']!==null): echo number_format($l['gross_amount']-$l['total_doc_amount_paid'],2); endif;?></td>
+		
 			<td><?php echo $a->getCurrentState()?></td>
 			<td>
 <a href="<?php echo $this->baseUrl ?>/finance/v-invoice/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>

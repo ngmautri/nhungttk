@@ -171,9 +171,9 @@ class APPaymentService extends AbstractService
         // OK to save draft
 
         try {
-            
+
             $entity->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-            
+
             $changeOn = new \DateTime();
 
             if ($isNew == TRUE) {
@@ -206,7 +206,7 @@ class APPaymentService extends AbstractService
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function post($entity, array $data, $u, $isNew = True, $isFlush = false)
+    public function post($entity, array $data, $u, $isNew = TRUE, $isFlush = false)
     {
         $errors = array();
 
@@ -234,22 +234,23 @@ class APPaymentService extends AbstractService
 
         // OK to post
         // +++++++++++++++++++
-
-        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-        $changeOn = new \DateTime();
-
+        
         // Assign doc number
         if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED or $entity->getSysNumber() == null) {
             $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
         }
+        
+
+        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+        $entity->setIsActive(1);
 
         $entity->setLocalAmount($entity->getDocAmount() * $entity->getExchangeRate());
         $entity->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-        
+
         $changeOn = new \DateTime();
 
         if ($isNew == TRUE) {
-            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+    
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($changeOn);
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
@@ -312,7 +313,7 @@ class APPaymentService extends AbstractService
         // OK to post
         // +++++++++++++++++++
 
-        /** @var \Application\Entity\PmtOutgoing $newEntity */        
+        /** @var \Application\Entity\PmtOutgoing $newEntity */
         $newEntity = clone ($entity);
         $newEntity->setPostingDate(null);
         $newEntity->setRemarks($reversalReason);
@@ -334,12 +335,12 @@ class APPaymentService extends AbstractService
 
         // OK to reverse
         // +++++++++++++++++++
-        
-        $newEntity->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);        
+
+        $newEntity->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
         $newEntity->setDocType(\Payment\Model\Constants::OUTGOING_AP_REVERSAL);
         $newEntity->setIsReversed(1);
         $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-    
+
         // Assign doc number
         $newEntity->setSysNumber($this->controllerPlugin->getDocNumber($newEntity));
         $newEntity->setLocalAmount($newEntity->getDocAmount() * $newEntity->getExchangeRate());
@@ -351,19 +352,23 @@ class APPaymentService extends AbstractService
         $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
         $this->doctrineEM->persist($newEntity);
-        
+
         $entity->setIsReversed(1);
+        $entity->setReversalDate($newEntity->getPostingDate());
+
         $this->doctrineEM->persist($entity);
-        
+
         $this->doctrineEM->flush();
-        
+
+        $entity->setReversalDoc($newEntity->getId());
+
         /**
          *
          * @todo: Do Accounting Posting
          */
         $this->jeService->reverseAPPayment($entity, $u, $this->controllerPlugin);
         $this->doctrineEM->flush();
-        
+
         $m = sprintf('[OK] AP Payment %s reversed', $entity->getSysNumber());
         $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
             'priority' => \Zend\Log\Logger::INFO,
@@ -371,7 +376,7 @@ class APPaymentService extends AbstractService
             'createdBy' => $u,
             'createdOn' => $changeOn
         ));
-        
+
         return $errors;
     }
 

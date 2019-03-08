@@ -37,7 +37,8 @@ if ($total_records <= 0) {
 			<td><b>Incoterm</b></td>
 			<td><b>Incoterm1</b></td>
 			<td><b>Incoterm1</b></td>
-		<td><b>Incoterm1</b></td>
+	 	   <td><b>Incoterm1</b></td>
+	       <td><b>Incoterm1</b></td>
 	
 			<td><b>Date</b></td>
 			<td><b>Action</b></td>
@@ -63,6 +64,7 @@ if ($total_records <= 0) {
 			<td><?php echo $this->escapeHtml($a->getDocAmount());?></td>
 			<td><?php echo $this->escapeHtml($a->getIsReversed());?></td>
 		    <td><?php echo $this->escapeHtml($a->getPostingKey());?></td>
+		   <td><?php echo $this->escapeHtml($a->getDocStatus());?></td>
 		
 			<td><?php if($a->getCreatedOn()!==null): echo date_format ( $a->getCreatedOn(), "d/m/Y  h:m"); endif;?> </td>
 

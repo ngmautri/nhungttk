@@ -23,6 +23,13 @@ return array(
             ),
             
             array(
+                'label' => 'Outgoing payment List',
+                'route' => 'payment/default',
+                'controller' => 'outgoing',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
+            array(
                 'label' => 'Bank',
                 'route' => 'payment/default',
                 'controller' => 'bank',

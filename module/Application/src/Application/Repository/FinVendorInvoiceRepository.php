@@ -20,6 +20,11 @@ class FinVendorInvoiceRepository extends EntityRepository
     private $sql = "
 SELECT
 	fin_vendor_invoice.*,
+    pmt_outgoing.total_doc_amount as total_doc_amount_paid, 
+    pmt_outgoing.total_local_amount as total_local_amount_paid,
+    pmt_outgoing.doc_currency_id as doc_currency_paid,
+    pmt_outgoing.exchange_rate as exchange_rate_paid,
+    
 	COUNT(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.id) ELSE NULL END) AS active_row,
     ifnull(MAX(CASE WHEN fin_vendor_invoice_row.is_active =1 THEN (fin_vendor_invoice_row.row_number) ELSE null END),0) AS max_row_number,
 	COUNT(fin_vendor_invoice_row.id) AS total_row,
@@ -36,7 +41,7 @@ LEFT JOIN fin_vendor_invoice_row
 ON fin_vendor_invoice.id = fin_vendor_invoice_row.invoice_id
 
 LEFT JOIN
-(
+(	
 SELECT
 	fin_vendor_invoice.id as v_invoice_id,
 	COUNT(nmt_application_attachment.id) AS total_attachment,
@@ -48,6 +53,36 @@ SELECT
 )
 AS nmt_application_attachment
 ON fin_vendor_invoice.id = nmt_application_attachment.v_invoice_id
+
+LEFT JOIN
+(
+	SELECT
+		SUM(CASE WHEN (pmt_outgoing.posting_key = 'D' AND pmt_outgoing.is_active = 1) THEN (pmt_outgoing.doc_amount) ELSE 0 END) AS debit_doc_amount,
+		SUM(CASE WHEN (pmt_outgoing.posting_key = 'C' and pmt_outgoing.is_active = 1) THEN (pmt_outgoing.doc_amount) ELSE 0 END) AS credit_doc_amount,
+
+		SUM(CASE WHEN (pmt_outgoing.posting_key = 'D' AND pmt_outgoing.is_active = 1) THEN (pmt_outgoing.doc_amount) ELSE 0 END) -
+		SUM(CASE WHEN (pmt_outgoing.posting_key = 'C' and pmt_outgoing.is_active = 1) THEN (pmt_outgoing.doc_amount) ELSE 0 END) AS total_doc_amount,
+        
+		SUM(CASE WHEN (pmt_outgoing.posting_key = 'D' AND pmt_outgoing.is_active = 1) THEN (pmt_outgoing.local_amount) ELSE 0 END) AS debit_local_amount,
+		SUM(CASE WHEN (pmt_outgoing.posting_key = 'C' and pmt_outgoing.is_active = 1) THEN (pmt_outgoing.local_amount) ELSE 0 END) AS credit_local_amount,
+
+		SUM(CASE WHEN (pmt_outgoing.posting_key = 'D' AND pmt_outgoing.is_active = 1) THEN (pmt_outgoing.local_amount) ELSE 0 END) -
+		SUM(CASE WHEN (pmt_outgoing.posting_key = 'C' and pmt_outgoing.is_active = 1) THEN (pmt_outgoing.local_amount) ELSE 0 END) AS total_local_amount,
+		pmt_outgoing.doc_currency_id,
+		pmt_outgoing.exchange_rate,
+		
+		fin_vendor_invoice.id as ap_id
+		
+	FROM fin_vendor_invoice
+
+
+	left join pmt_outgoing
+	on pmt_outgoing.ap_invoice_id = fin_vendor_invoice.id
+
+	GROUP BY fin_vendor_invoice.id
+)
+AS pmt_outgoing
+ON fin_vendor_invoice.id = pmt_outgoing.ap_id
 
 where 1
 
@@ -95,6 +130,12 @@ WHERE 1";
             $rsm->addScalarResult("total_attachment", "total_attachment");
             $rsm->addScalarResult("total_picture", "total_picture");
             
+            $rsm->addScalarResult("total_doc_amount_paid", "total_doc_amount_paid");
+            $rsm->addScalarResult("total_local_amount_paid", "total_local_amount_paid");
+            $rsm->addScalarResult("doc_currency_paid", "doc_currency_paid");
+            $rsm->addScalarResult("exchange_rate_paid", "exchange_rate_paid");
+            
+            
             $query = $this->_em->createNativeQuery($sql, $rsm);
             
             $result = $query->getSingleResult();
@@ -125,6 +166,11 @@ WHERE 1";
             $rsm->addScalarResult("net_amount", "net_amount");
             $rsm->addScalarResult("tax_amount", "tax_amount");
             $rsm->addScalarResult("gross_amount", "gross_amount");
+            $rsm->addScalarResult("total_doc_amount_paid", "total_doc_amount_paid");
+            $rsm->addScalarResult("total_local_amount_paid", "total_local_amount_paid");
+            $rsm->addScalarResult("doc_currency_paid", "doc_currency_paid");
+            $rsm->addScalarResult("exchange_rate_paid", "exchange_rate_paid");
+                        
             $query = $this->_em->createNativeQuery($sql, $rsm);
             $result = $query->getSingleResult();
             return $result;
@@ -237,6 +283,10 @@ WHERE 1";
             $rsm->addScalarResult("net_amount", "net_amount");
             $rsm->addScalarResult("tax_amount", "tax_amount");
             $rsm->addScalarResult("gross_amount", "gross_amount");
+            $rsm->addScalarResult("total_doc_amount_paid", "total_doc_amount_paid");
+            $rsm->addScalarResult("total_local_amount_paid", "total_local_amount_paid");
+            $rsm->addScalarResult("doc_currency_paid", "doc_currency_paid");
+            $rsm->addScalarResult("exchange_rate_paid", "exchange_rate_paid");
             
             $query = $this->_em->createNativeQuery($sql, $rsm);
             

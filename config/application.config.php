@@ -24,6 +24,7 @@ return array(
         'Production', // Production Module
         'Procurement',
         'Calendar', // Calendar
+        'Payment', // Calendar        
         'Finance',
         'Procure',
         'Inventory',

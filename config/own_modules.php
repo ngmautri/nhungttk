@@ -9,7 +9,9 @@ return [
 		'PM', // Project manager
         'Production', // Project manager
         'Calendar', // Calendar    
-		'Procure',
+        'Payment', // Calendar
+    
+        'Procure',
         'Finance',
 		'Inventory',
 		'Workflow',

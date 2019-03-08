@@ -147,13 +147,23 @@ if (count($errors) > 0) {
 					<?php endif;?>
 					
 					<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED):?>
-				<a
+					
+							<a
+									title="<?php echo $this->translate("Pay P/O");?>"
+									class="btn btn-default btn-sm"
+									href="<?php echo $this->baseUrl ?>/payment/outgoing/pay-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+									<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Pay
+								</a>
+					
+							<a
 									title="<?php echo $this->translate("Create Good Receipt from this P/O");?>"
 									class="btn btn-default btn-sm"
 									href="<?php echo $this->baseUrl ?>/procure/gr/copy-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&source_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 									<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Goods
 									Receipt
-								</a> <a
+								</a> 
+								
+								<a
 									title="<?php echo $this->translate("Create A/P Invoice from this P/O");?>"
 									class="btn btn-default btn-sm"
 									href="<?php echo $this->baseUrl ?>/finance/v-invoice/copy-from-po?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">

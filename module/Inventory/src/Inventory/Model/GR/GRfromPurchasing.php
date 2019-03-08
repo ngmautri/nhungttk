@@ -150,7 +150,8 @@ class GRfromPurchasing extends AbstractGRStrategy
             if ($r->getItem() != null) {
               
                 if ($r->getItem()->getIsStocked() == 1) {
-
+                    
+                    
                     /**
                      *
                      * @todo: Create FIFO Layer

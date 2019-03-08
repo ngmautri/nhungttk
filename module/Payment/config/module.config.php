@@ -9,23 +9,23 @@ return array(
             array(
                 'label' => 'Incoming Payment',
                 'route' => 'payment/default',
-                'controller' => 'maintenance',
+                'controller' => 'incoming',
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
             ),
 
             array(
                 'label' => 'Outgoing payment',
-                'route' => 'production/default',
-                'controller' => 'maintenance',
+                'route' => 'payment/default',
+                'controller' => 'outgoing',
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
             ),
             
             array(
                 'label' => 'Bank',
-                'route' => 'production/default',
-                'controller' => 'maintenance',
+                'route' => 'payment/default',
+                'controller' => 'bank',
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
             )
@@ -64,12 +64,18 @@ return array(
 
     'service_manager' => array(
         'factories' => array(
-            'payment_navi' => 'Payment\Service\PaymentNavigationFactory' // <-- add this
+            'payment_navi' => 'Payment\Service\PaymentNavigationFactory', // <-- add this
+        
+            'Payment\Service\APPaymentService' => 'Payment\Service\APPaymentServiceFactory',
+            'Payment\Service\POPaymentService' => 'Payment\Service\POPaymentServiceFactory',
+            
         )
     ),
     'controllers' => array(
         'factories' => array(
-            'Payment\Controller\Index' => 'Payment\Controller\IndexControllerFactory'
+            'Payment\Controller\Index' => 'Payment\Controller\IndexControllerFactory',
+            'Payment\Controller\Outgoing' => 'Payment\Controller\OutgoingControllerFactory',
+            
         )
     ),
     'view_manager' => array(

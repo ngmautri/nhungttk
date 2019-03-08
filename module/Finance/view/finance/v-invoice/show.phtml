@@ -51,6 +51,14 @@ if (count($errors) > 0) {
 		
 		<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_POSTED): ?>
 		<div style="position: relative; float: right;">
+		
+		<a
+									title="<?php echo $this->translate("Pay AP");?>"
+									class="btn btn-default btn-sm"
+									href="<?php echo $this->baseUrl ?>/payment/outgoing/pay-ap?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+									<i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Pay
+								</a>
+		
 			<a class="btn btn-default btn-sm"
 				href="<?php echo $this->baseUrl ?>/finance/v-invoice/review?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><i
 				class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;Journal Entry</a>
@@ -643,9 +651,9 @@ $( "#vendor_name_1" ).autocomplete({
         
         { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: false},
         { title: "Unit Price", dataType: "integer", dataIndx: "row_unit_price", width:90, align: 'right',editable: false},
-        { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},
-        { title: "Tax", dataType: "integet", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
-        { title: "Gross", dataType: "decimal", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
+        { title: "Net", dataType: "integer", dataIndx: "row_net", width:90, align: 'right',editable: false},
+        { title: "Tax", dataType: "integer", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
+        { title: "Gross", dataType: "integer", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
  		{ title: "PR", dataType: "string", dataIndx: "pr_number", width:120,editable: false },
  		      
         { title: "Remarks", dataType: "string", dataIndx: "remarks", align: 'left',minWidth: 150,editable: false},

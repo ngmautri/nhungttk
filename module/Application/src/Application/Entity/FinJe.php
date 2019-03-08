@@ -162,6 +162,27 @@ class FinJe
     private $sourceToken;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
+     */
+    private $isReversed;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
+     */
+    private $reversalDate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="reversed_doc", type="integer", nullable=true)
+     */
+    private $reversedDoc;
+
+    /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -721,6 +742,78 @@ class FinJe
     public function getSourceToken()
     {
         return $this->sourceToken;
+    }
+
+    /**
+     * Set isReversed
+     *
+     * @param boolean $isReversed
+     *
+     * @return FinJe
+     */
+    public function setIsReversed($isReversed)
+    {
+        $this->isReversed = $isReversed;
+
+        return $this;
+    }
+
+    /**
+     * Get isReversed
+     *
+     * @return boolean
+     */
+    public function getIsReversed()
+    {
+        return $this->isReversed;
+    }
+
+    /**
+     * Set reversalDate
+     *
+     * @param \DateTime $reversalDate
+     *
+     * @return FinJe
+     */
+    public function setReversalDate($reversalDate)
+    {
+        $this->reversalDate = $reversalDate;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalDate
+     *
+     * @return \DateTime
+     */
+    public function getReversalDate()
+    {
+        return $this->reversalDate;
+    }
+
+    /**
+     * Set reversedDoc
+     *
+     * @param integer $reversedDoc
+     *
+     * @return FinJe
+     */
+    public function setReversedDoc($reversedDoc)
+    {
+        $this->reversedDoc = $reversedDoc;
+
+        return $this;
+    }
+
+    /**
+     * Get reversedDoc
+     *
+     * @return integer
+     */
+    public function getReversedDoc()
+    {
+        return $this->reversedDoc;
     }
 
     /**

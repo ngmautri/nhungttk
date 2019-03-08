@@ -23,12 +23,12 @@ class JEService extends AbstractService
      * @param \Application\Entity\MlaUsers $u
      *
      * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
-     * 
+     *
      * @param boolean $isPosting
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function postAP($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting=1)
+    public function postAP($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting = 1)
     {
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument! Invoice is expected");
@@ -109,13 +109,13 @@ class JEService extends AbstractService
                 $je_row->setApRow($r);
                 $je_row->setGrRow($r->getGrRow());
                 $je_row->setAp($r->getInvoice());
-                
-                $t='';
-                if($r->getGrRow()!==null){
-                    $t.= ' // '. $r->getGrRow()->getRowIdentifer();
+
+                $t = '';
+                if ($r->getGrRow() !== null) {
+                    $t .= ' // ' . $r->getGrRow()->getRowIdentifer();
                 }
                 $je_row->setJeDescription("AP." . $r->getRowIdentifer() . $t);
-                
+
                 $transactionType = $r->getTransactionType();
 
                 switch ($transactionType) {
@@ -188,6 +188,218 @@ class JEService extends AbstractService
             $this->doctrineEM->persist($vendor_bl_row);
         }
 
+        if ($isFlush == true) {
+            $this->doctrineEM->flush();
+        }
+    }
+
+    /**
+     *
+     * @param \Application\Entity\PmtOutgoing $entity
+     *
+     * @param \Application\Entity\MlaUsers $u
+     *
+     * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
+     *
+     * @param boolean $isPosting
+     *
+     */
+    public function postAPPayment($entity, $u, $nmtPlugin, $isFlush = false, $isPosting = 1)
+    {
+        if (! $entity instanceof \Application\Entity\PmtOutgoing) {
+            throw new \Exception("Invalid Argument! Invoice is expected");
+        }
+
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+
+        /**
+         * Debit: Payable to supplier.
+         * Credit: Payment Method GL Account
+         */
+
+        // Create JE
+
+        $je = new \Application\Entity\FinJe();
+        $je->setCurrency($entity->getDocCurrency());
+        $je->setLocalCurrency($entity->getLocalCurrency());
+        $je->setExchangeRate($entity->getExchangeRate());
+
+        $je->setPostingDate($entity->getPostingDate());
+        $je->setDocumentDate($entity->getPostingDate());
+        $je->setPostingPeriod($entity->getPostingPeriod());
+
+        $je->getDocType("JE");
+        $je->setCreatedBy($u);
+        $je->setCreatedOn($entity->getCreatedOn());
+        $je->setSysNumber($nmtPlugin->getDocNumber($je));
+
+        $je->setSourceClass(get_class($entity));
+        $je->setSourceId($entity->getId());
+        $je->setSourceToken($entity->getToken());
+
+        $this->doctrineEM->persist($je);
+    
+        $total_debit = 0;
+        $total_local_debit = 0;
+
+        // Vendor GL
+        $vendor_gl = $entity->getVendor()->getGlAccount();
+
+        // Create JE Row - DEBIT
+        $je_row = new \Application\Entity\FinJeRow();
+        $je_row->setJe($je);
+
+        $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+        $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+        $je_row->setGlAccount($vendor_gl);
+
+        $je_row->setDocAmount($entity->getDocAmount());
+        $je_row->setLocalAmount($entity->getDocAmount() * $je->getExchangeRate());
+
+        $total_debit = $total_debit + $entity->getDocAmount();
+        $total_local_debit = $total_local_debit + $entity->getDocAmount() * $je->getExchangeRate();
+
+        $je_row->setSysNumber($je->getSysNumber() . "-1");
+        $je_row->setCreatedBy($u);
+        $je_row->setCreatedOn($entity->getCreatedOn());
+
+        $je_row->setAp($entity->getApInvoice());
+        $je_row->setJeDescription($entity->getRemarks());
+        $this->doctrineEM->persist($je_row);
+
+        if ($total_debit > 0) {
+
+            // Create JE Row - Credit
+            $je_row = new \Application\Entity\FinJeRow();
+
+            $je_row->setJe($je);
+
+            $je_row->setGlAccount($entity->getPmtMethod()
+                ->getGlAccount());
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+
+            $je_row->setDocAmount($total_debit);
+            $je_row->setLocalAmount($total_local_debit);
+
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
+            $je_row->setSysNumber($je->getSysNumber() . "-2");
+            $this->doctrineEM->persist($je_row);
+        }
+
+        if ($isFlush == true) {
+            $this->doctrineEM->flush();
+        }
+    }
+    
+    /**
+     *
+     * @param \Application\Entity\PmtOutgoing $entity
+     *
+     * @param \Application\Entity\MlaUsers $u
+     *
+     * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
+     *
+     * @param boolean $isPosting
+     *
+     */
+    public function reverseAPPayment($entity, $u, $nmtPlugin, $isFlush = false, $isPosting = 1)
+    {
+        if (! $entity instanceof \Application\Entity\PmtOutgoing) {
+            throw new \Exception("Invalid Argument! Invoice is expected");
+        }
+        
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+        
+        /**
+         * Debit: Payable to supplier.
+         * Credit: Payment Method GL Account
+         */
+        
+        // Create JE
+        
+        $je = new \Application\Entity\FinJe();
+      
+        $je->setCurrency($entity->getDocCurrency());
+        $je->setLocalCurrency($entity->getLocalCurrency());
+        $je->setExchangeRate($entity->getExchangeRate());
+        
+        $je->setPostingDate($entity->getPostingDate());
+        $je->setDocumentDate($entity->getPostingDate());
+        $je->setPostingPeriod($entity->getPostingPeriod());
+        
+        
+        $je->getDocType("JE-1");
+        $je->setIsReversed(1);
+        
+        
+        $je->setCreatedBy($u);
+        $je->setCreatedOn($entity->getCreatedOn());
+        $je->setSysNumber($nmtPlugin->getDocNumber($je));
+        
+        $je->setSourceClass(get_class($entity));
+        $je->setSourceId($entity->getId());
+        $je->setSourceToken($entity->getToken());
+        $je->setJeRemarks("reversal");
+        
+        $this->doctrineEM->persist($je);
+        
+        $total_credit = 0;
+        $total_local_credit = 0;
+        
+        // Vendor GL
+        $vendor_gl = $entity->getVendor()->getGlAccount();
+        
+        // Create JE Row - CREDIT
+        $je_row = new \Application\Entity\FinJeRow();
+        $je_row->setJe($je);
+        
+        $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+        $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+        $je_row->setGlAccount($vendor_gl);
+        
+        $je_row->setDocAmount($entity->getDocAmount());
+        $je_row->setLocalAmount($entity->getDocAmount() * $je->getExchangeRate());
+        
+        $total_credit = $total_credit + $entity->getDocAmount();
+        $total_local_credit = $total_local_credit + $entity->getDocAmount() * $je->getExchangeRate();
+        
+        $je_row->setSysNumber($je->getSysNumber() . "-1");
+        $je_row->setCreatedBy($u);
+        $je_row->setCreatedOn($entity->getCreatedOn());
+        
+        $je_row->setAp($entity->getApInvoice());
+        $je_row->setJeDescription('[Reversal] '.$entity->getRemarks());
+        $this->doctrineEM->persist($je_row);
+        
+        if ($total_credit > 0) {
+            
+            // Create JE Row - DEBIT
+            $je_row = new \Application\Entity\FinJeRow();
+            
+            $je_row->setJe($je);
+            
+            $je_row->setGlAccount($entity->getPmtMethod()
+                ->getGlAccount());
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            
+            $je_row->setDocAmount($total_credit);
+            $je_row->setLocalAmount($total_local_credit);
+            
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
+            $je_row->setSysNumber($je->getSysNumber() . "-2");
+            $je_row->setJeDescription('[Reversal] '.$entity->getRemarks());
+            
+            $this->doctrineEM->persist($je_row);
+        }
+        
         if ($isFlush == true) {
             $this->doctrineEM->flush();
         }
@@ -282,8 +494,7 @@ class JEService extends AbstractService
                 $je_row->setJeDescription("Goods Receipt ref." . $r->getRowIdentifer());
                 $je_row->setGrRow($r);
                 $je_row->setGr($entity);
-                
-                
+
                 $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
 
                 $je_row->setCreatedBy($u);
@@ -298,7 +509,6 @@ class JEService extends AbstractService
                 $je_row1->setGlAccount($clearing_gl);
                 $je_row1->setGrRow($r);
                 $je_row1->setGr($entity);
-                
 
                 $je_row1->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
                 $je_row1->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
@@ -313,98 +523,95 @@ class JEService extends AbstractService
             }
         }
 
-        if ($total_credit > 0) {
+        if ($total_credit > 0) {}
+
+        if ($isFlush == True) {
+            $this->doctrineEM->flush();
+        }
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryOpeningBalance $entity
+     * @param array $rows
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isFlush
+     * @throws \Exception
+     */
+    public function postInventoryOB($entity, $rows, $u, $isFlush = false)
+    {
+        if (! $entity instanceof \Application\Entity\NmtInventoryOpeningBalance) {
+            throw new \Exception("Invalid Argument. Inventory Opening Balance Object is expected!");
+        }
+
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+
+        if (count($rows) == 0) {
+            throw new \Exception("Inventory Opening Balance is empty. No Posting will be made!");
+        }
+
+        /**
+         * Debit: Inventory, Expenses
+         * Credit: Payable to supplier.
+         */
+
+        // Create JE
+
+        $je = new \Application\Entity\FinJe();
+        $je->setCurrency($entity->getCurrency());
+        $je->setLocalCurrency($entity->getLocalCurrency());
+        $je->setExchangeRate(1);
+
+        $je->setPostingDate($entity->getPostingDate());
+        $je->setDocumentDate($entity->getPostingDate());
+        $je->setPostingPeriod($entity->getPostingPeriod());
+
+        $je->getDocType("OB");
+        $je->setCreatedBy($u);
+        $je->setCreatedOn($entity->getCreatedOn());
+        $je->setSysNumber($this->getControllerPlugin()
+            ->getDocNumber($je));
+
+        $je->setSourceClass(get_class($entity));
+        $je->setSourceId($entity->getId());
+        $je->setSourceToken($entity->getToken());
+
+        $this->doctrineEM->persist($je);
+
+        $n = 0;
+
+        foreach ($rows as $r) {
+            $n ++;
+            /** @var \Application\Entity\NmtProcureGrRow $r ; */
+
+            // No need to create JE for ZERO value row.
+
+            if ($r->getUnitPrice() > 0) {
+
+                // Create JE Row - DEBIT
+                $je_row = new \Application\Entity\FinJeRow();
+                $je_row->setJe($je);
+
+                $je_row->setGlAccount($r->getGlAccount());
+                $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+                $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+
+                $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
+                $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate());
+
+                $je_row->setJeDescription("Openning Balanace");
+                $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+
+                $je_row->setCreatedBy($u);
+                $je_row->setCreatedOn($entity->getCreatedOn());
+                $this->doctrineEM->persist($je_row);
+            }
         }
 
         if ($isFlush == True) {
             $this->doctrineEM->flush();
         }
     }
-   
-    
-    /**
-     * 
-     *  @param \Application\Entity\NmtInventoryOpeningBalance $entity
-     *  @param array $rows
-     *  @param \Application\Entity\MlaUsers $u
-     *  @param boolean $isFlush
-     *  @throws \Exception
-     */
-    public function postInventoryOB($entity, $rows, $u,$isFlush = false)
-    {
-        if (! $entity instanceof \Application\Entity\NmtInventoryOpeningBalance) {
-            throw new \Exception("Invalid Argument. Inventory Opening Balance Object is expected!");
-        }
-        
-        if ($u == null) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
-        }
-         
-        if (count($rows) == 0) {
-            throw new \Exception("Inventory Opening Balance is empty. No Posting will be made!");
-        }
-        
-        /**
-         * Debit: Inventory, Expenses
-         * Credit: Payable to supplier.
-         */
-        
-        // Create JE
-        
-        $je = new \Application\Entity\FinJe();
-        $je->setCurrency($entity->getCurrency());
-        $je->setLocalCurrency($entity->getLocalCurrency());
-        $je->setExchangeRate(1);
-        
-        $je->setPostingDate($entity->getPostingDate());
-        $je->setDocumentDate($entity->getPostingDate());
-        $je->setPostingPeriod($entity->getPostingPeriod());
-        
-        $je->getDocType("OB");
-        $je->setCreatedBy($u);
-        $je->setCreatedOn($entity->getCreatedOn());
-        $je->setSysNumber($this->getControllerPlugin()->getDocNumber($je));
-        
-        $je->setSourceClass(get_class($entity));
-        $je->setSourceId($entity->getId());
-        $je->setSourceToken($entity->getToken());
-        
-        $this->doctrineEM->persist($je);
-        
-        $n = 0;
-       
-        foreach ($rows as $r) {
-            $n ++;
-            /** @var \Application\Entity\NmtProcureGrRow $r ; */
-            
-            // No need to create JE for ZERO value row.
-            
-            if ($r->getUnitPrice() > 0) {
-                
-                // Create JE Row - DEBIT
-                $je_row = new \Application\Entity\FinJeRow();
-                $je_row->setJe($je);
-                
-                $je_row->setGlAccount($r->getGlAccount());
-                $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-                $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-                
-                $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
-                $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate());
-                
-                $je_row->setJeDescription("Openning Balanace");
-                $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
-                
-                $je_row->setCreatedBy($u);
-                $je_row->setCreatedOn($entity->getCreatedOn());
-                $this->doctrineEM->persist($je_row);
-            }
-        }
-        
-        if ($isFlush == True) {
-            $this->doctrineEM->flush();
-        }
-    }
-    
-    
 }

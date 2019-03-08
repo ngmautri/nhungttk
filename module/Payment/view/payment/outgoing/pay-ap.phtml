@@ -1,0 +1,447 @@
+<?php
+/** @var \Application\Entity\PmtOutgoing $entity ;*/
+/** @var \Application\Entity\FinVendorInvoice $target ;*/
+
+/** @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+$form_action = '';
+$form_title = '';
+
+switch ($action) {
+
+    case \Application\Model\Constants::FORM_ACTION_ADD:
+        $form_action = '/payment/outgoing/pay-ap';
+        $form_title = $this->translate("Add Outgoing Payment");
+        break;
+    case \Application\Model\Constants::FORM_ACTION_EDIT:
+        $form_action = '/payment/outgoing/edit-pay-ap';
+        $form_title = $this->translate("Edit Outgoing Payment");
+        break;
+}
+
+?>
+
+
+<div id="wrapper" class="toggled">
+
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+					<?php
+    $current_step = "STEP1";
+    include (ROOT . '/module/Payment/view/payment/outgoing-pmt-wizard.php');
+    ?>
+
+
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
+				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+					Menu <span></a>
+
+
+			<div id="tabs" style="font-size: 10pt">
+				<ul>
+					<li><a href="#general"><?php echo $form_title;?></a></li>
+				</ul>
+
+				<div id="general" style="font-size: 9pt">
+					<!-- Tab1 -->
+	
+	
+	<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+	
+	
+	<form id="Create_Inv_Form" class="form-horizontal"
+						action="<?php echo $form_action;?>" method="post"
+						enctype="multipart/form-data">
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							name="target_id"
+							value="<?php echo (!$target== null)? $target->getId():"";?>" /> <input
+							type="hidden" name="target_token"
+							value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+							
+						<input type="hidden" id="isDraft" name="isDraft" value="1" />
+							 
+							
+				<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+     					<input type="hidden" name="entity_id"
+							value="<?php echo (!$entity== null)? $entity->getId():"";?>" /> <input
+							type="hidden" name="entity_token"
+							value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+						<input type="hidden" name="n" value="<?php echo $n;?>" />
+				<?php endif;?>
+			
+						<fieldset>
+							<legend style="font-size: 9.5pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+							</legend>
+							<div id="invoice_header" class="collapse in">
+
+
+
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate('Document Number')?>:</label>
+									<div class="col-sm-3">
+										<input disabled="disabled" class="form-control input-sm"
+											type="text" placeholder="" id="sysNumber" name="sysNumber"
+											value="<?php echo (!$entity == null)? $entity->getSysNumber():"";?>">
+									</div>
+									<div class="col-sm-3">
+										<input
+											<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Is
+										Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+									</div>
+
+								</div>
+
+
+
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2 required"><?php echo $this->translate("Document Date");?> :</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text" id="docDate"
+											name="docDate"
+											value="<?php if(!$entity == null): if ($entity->getDocDate() !== null): echo date_format($entity->getDocDate(),"Y-m-d"); endif; endif;?>"
+											placeholder=" please select" />
+									</div>
+
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Posting Date");?> :</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											id="postingDate" name="postingDate"
+											value="<?php if(!$entity == null): if ($entity->getPostingDate() !== null): echo date_format($entity->getPostingDate(),"Y-m-d"); endif; endif;?>"
+											placeholder=" please select" />
+									</div>
+								</div>
+
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Method");?>:</label>
+									<div class="col-sm-3">
+										<select tabindex="9" name="pmt_method_id" id="pmt_method_id"
+											class="form-control input-sm">
+											<option value=""><?php echo $this->translate("Select Payment Method");?></option>
+   	    							<?php
+
+            $pmt_method_list = $nmtPlugin->getPmtMethodList();
+            if ($pmt_method_list !== null) :
+                foreach ($pmt_method_list as $gl) :
+
+                    /**@var \Application\Entity\NmtApplicationPmtMethod $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getPmtMethod() !== null) :
+                            if ($entity->getPmtMethod()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getMethodCode() . '</option>';
+                            else :
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getMethodCode() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getMethodCode() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getMethodCode() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+									</div>
+								</div>
+
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("GL Account");?>:</label>
+									<div class="col-sm-3">
+										<select tabindex="9" name="gl_account_id" id="gl_account_id"
+											class="form-control input-sm">
+											<option value=""><?php echo $this->translate("Select GL Account");?></option>
+   	    							<?php
+
+            $gl_list = $nmtPlugin->glAccountList();
+
+            if ($gl_list !== null) :
+                foreach ($gl_list as $gl) :
+
+                    /**@var \Application\Entity\FinAccount $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getPmtMethod() !== null) :
+                            if ($entity->getPmtMethod()->getGlAccount() !== null) :
+
+                                if ($entity->getPmtMethod()
+                                    ->getGlAccount()
+                                    ->getId() == $gl->getId()) :
+                                    echo '<option selected value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                                else :
+                                    echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                                endif;
+                            else :
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getAccountNumber() . ' - ' . $gl->getDescription() . '</option>';
+                        endif;
+                    endif;
+
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+									</div>
+
+
+
+								</div>
+
+								<hr style="margin: 5pt 1pt 5pt 1pt;">
+
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2 "><?php echo $this->translate("Vendor");?> :</label>
+									<div class="col-sm-3">
+										<input readonly="readonly" class="form-control input-sm"
+											type="text" id="vendor_name_1"
+											placeholder="Enter term to search vendor" name="vendor_name"
+											value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?>">
+
+										<input type="hidden" id="vendor_id" placeholder=""
+											name="vendor_id"
+											value="<?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getId();endif;endif;?>">
+									</div>
+									<div class="col-sm-3">
+
+										<a target="blank" style="font-size: 9pt;"
+											href="/bp/vendor/list">Vendor List&nbsp;&nbsp;</a><small><i
+											class="glyphicon glyphicon-new-window"></i></small>
+									</div>
+								</div>
+
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Amount");?>:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="docAmount" name="docAmount"
+											value="<?php echo (!$entity == null)? $entity->getDocAmount():"";?>">
+									</div>
+
+
+								</div>
+
+
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2">Currency:</label>
+									<div class="col-sm-3">
+										<select name="currency_id" class="form-control input-sm">
+											<option value="">Select Currency</option>
+   	    							<?php
+
+            $currency_list = $nmtPlugin->currencyList();
+
+            if ($currency_list !== null) :
+                foreach ($currency_list as $curr) :
+                    if ($entity !== null) :
+                        if ($entity->getDocCurrency() !== null) :
+                            if ($entity->getDocCurrency()->getCurrency() == $curr->getCurrency()) :
+                                echo '<option selected value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            else :
+                                echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $curr->getId() . '">' . $curr->getCurrency() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+									</div>
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Exchange Rate");?> :</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="exchangeRate" name="exchangeRate"
+											value="<?php echo (!$entity == null)? $entity->getExchangeRate():"";?>">
+									</div>
+								</div>
+
+
+								<div class="form-group margin-bottom required">
+									<label class="control-label col-sm-2"><?php echo $this->translate("SAP Document No");?>:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="sapDoc" name="sapDoc"
+											value="<?php echo (!$entity == null)? $entity->getSapDoc():"";?>">
+									</div>
+
+
+								</div>
+
+
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Description</label>
+									<div class="col-sm-8">
+										<input class="form-control input-sm" type="text"
+											placeholder="" name="remarks"
+											value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+									</div>
+								</div>
+
+
+							</div>
+
+							<hr>
+							<div class="form-group margin-bottom">
+								<label class="control-label col-sm-2" for="inputTag"></label>
+								<div class="col-sm-3">
+
+
+									<a class="btn btn-default btn-sm" style="color: black;"
+										onclick="submitForm('Create_Inv_Form');" href="javascript:;"><i
+										class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Save Draft');?></a>
+
+									<a tabindex="11" class="btn btn-default btn-sm"
+										href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
+											class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+								</div>
+
+								<div class="col-sm-3">
+
+
+									<a class="btn btn-primary btn-sm" style="color: white"
+										onclick="confirmPost();" href="javascript:;"><i
+										class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
+								</div>
+
+							</div>
+						</fieldset>
+					</form>
+
+
+					<!-- end tab -->
+				</div>
+			</div>
+		</div>
+		<!-- /#page-content-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+	<!-- Modal -->
+	<div class="modal" id="confirm_modal_sm" role="dialog">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body" id="b_modal_sm_body">
+					<h5><?php echo $this->translate('Outgoing payment will be posted!');?></h5>
+
+					<div class="alert alert-warning">
+						<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
+					<!-- Journal Entry will be created. <br>- Warehouse Journal will be
+					created.
+					 -->
+					</div>
+					<p><?php echo $this->translate('Do you want to continue?');?></p>
+				</div>
+				<div class="modal-footer">
+					<button onclick="doPosting();" type="button"
+						class="btn btn-primary btn-sm">YES</button>
+					<button type="button" class="btn btn-default btn-sm"
+						data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+
+	function confirmPost() {
+	 	$('#confirm_modal_sm').modal();
+	}
+
+	function doPosting() {
+		//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"
+		//window.location = url;
+		$('#isDraft').val(0);
+		$('#confirm_modal_sm').modal('hide');
+
+		//alert($('#isDraft').val());
+		
+		submitForm('Create_Inv_Form');
+	}
+		
+
+$('#docDate').bind('change', function() {
+	$('#postingDate').val($('#docDate').val());
+});
+
+$( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='docDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><b>" + item.value + "</b><br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+
+$( "#vendor_name_1" ).focus();
+  
+</script>

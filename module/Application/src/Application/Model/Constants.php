@@ -199,6 +199,9 @@ class Constants
     const FORM_ACTION_REVIEW ='REVIEW';
     const FORM_ACTION_AP_FROM_PO ='AP-PO';
     const FORM_ACTION_AP_FROM_GR ='AP-GR';
+    const FORM_ACTION_PO_FROM_QO ='QO-PO';
+    
+    
     
     
     

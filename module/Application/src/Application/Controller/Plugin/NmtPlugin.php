@@ -23,6 +23,23 @@ class NmtPlugin extends AbstractPlugin
      *
      * @return array
      */
+    public function getPmtMethodList()
+    {
+        $criteria = array(
+        );
+        $sort_criteria = array(
+        );
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtMethod')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
+    
+    
+    /**
+     * Return List of Currency
+     *
+     * @return array
+     */
     public function incotermList()
     {
         $criteria = array(

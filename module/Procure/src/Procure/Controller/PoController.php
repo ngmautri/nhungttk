@@ -87,6 +87,8 @@ class PoController extends AbstractActionController
                 $errors[] = 'Quotation can\'t be empty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
                 return new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
@@ -102,7 +104,9 @@ class PoController extends AbstractActionController
             $errors = $this->poService->validateHeader($entity, $data);
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel =  new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -110,6 +114,10 @@ class PoController extends AbstractActionController
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list
                 ));
+                
+                $viewModel->setTemplate("procure/po/crud");
+                return $viewModel;
+                
             }
 
             // NO ERROR
@@ -124,7 +132,7 @@ class PoController extends AbstractActionController
             }
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -132,6 +140,10 @@ class PoController extends AbstractActionController
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list
                 ));
+                
+                $viewModel->setTemplate("procure/po/crud");
+                return $viewModel;
+                
             }
 
             $m = sprintf("[OK] PP #%s created from QO #%s", $entity->getSysNumber(), $target->getSysNumber());
@@ -180,11 +192,16 @@ class PoController extends AbstractActionController
         $entity->setCurrency($target->getCurrency());
         $entity->setExchangeRate($target->getExchangeRate());
         $entity->setContractDate(new \Datetime());
+        $entity->setIncoterm2($target->getIncoterm2());
+        $entity->setIncotermPlace($target->getIncotermPlace());
+        
 
         $entity->setIsActive(1);
         $entity->setRemarks("Ref." . $target->getSysNumber());
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
+            
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
@@ -192,6 +209,10 @@ class PoController extends AbstractActionController
             'currency_list' => $currency_list,
             'incoterm_list' => $incoterm_list
         ));
+        
+        $viewModel->setTemplate("procure/po/crud");
+        return $viewModel;
+        
     }
 
     /**

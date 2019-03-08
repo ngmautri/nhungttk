@@ -158,6 +158,12 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
              * @todo: only for item with stock control.
              */
             if ($r->getItem()->getIsStocked() == 1) {
+                
+                // legacy
+                if($r->getWarehouse()==null){
+                    $r->setWarehouse($r->getInvoice()->getWarehouse());
+                }
+                
 
                 $criteria = array(
                     'isActive' => 1,
@@ -236,6 +242,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 
                 //updated: get WH from Row.
                 $stock_gr_entity->setWh($r->getWarehouse());
+                
                 
                 $stock_gr_entity->setCreatedBy($u);
                 $stock_gr_entity->setCreatedOn($createdOn);

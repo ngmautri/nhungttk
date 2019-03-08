@@ -76,10 +76,10 @@ class VInvoiceController extends AbstractActionController
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'wh_list'=> $wh_list,
-                    'incoterm_list' => $incoterm_list
+                    'incoterm_list' => $incoterm_list,
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
+                $viewModel->setTemplate("finance/v-invoice/crud");
                 return $viewModel;
             }
 
@@ -106,7 +106,7 @@ class VInvoiceController extends AbstractActionController
                     'incoterm_list' => $incoterm_list,
                   ));
 
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
+                $viewModel->setTemplate("finance/v-invoice/crud");
                 return $viewModel;
             }
 
@@ -171,7 +171,7 @@ class VInvoiceController extends AbstractActionController
             'incoterm_list' => $incoterm_list
         ));
 
-        $viewModel->setTemplate("finance/v-invoice/add_ap");
+        $viewModel->setTemplate("finance/v-invoice/crud");
         return $viewModel;
     }
 
@@ -244,6 +244,8 @@ class VInvoiceController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
         $wh_list = $nmtPlugin->warehouseList();
+        $incoterm_list = $nmtPlugin->incotermList();
+        
         
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -316,6 +318,8 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'currency_list' => $currency_list,
                     'wh_list' => $wh_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     
                     'total_row' => $invoice['total_row'],
                     'active_row' => $invoice['active_row'],
@@ -346,6 +350,8 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'currency_list' => $currency_list,
                     'wh_list' => $wh_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     
                     'total_row' => $invoice['total_row'],
                     'active_row' => $invoice['active_row'],
@@ -430,6 +436,8 @@ class VInvoiceController extends AbstractActionController
             'errors' => null,
             'currency_list' => $currency_list,
             'wh_list' => $wh_list,
+            'incoterm_list' => $incoterm_list,
+            
             
             'total_row' => $invoice['total_row'],
             'active_row' => $invoice['active_row'],
@@ -1158,6 +1166,10 @@ class VInvoiceController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $currency_list = $nmtPlugin->currencyList();
+        $incoterm_list = $nmtPlugin->incotermList();
+        $wh_list = $nmtPlugin->warehouseList();
+        
+        
 
         // Is Posing
         // =============================
@@ -1189,6 +1201,9 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'currency_list' => $currency_list,
+                    'wh_list'=> $wh_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     'n' => $nTry
                 ));
             }
@@ -1204,10 +1219,13 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
+                    'wh_list'=> $wh_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
+                $viewModel->setTemplate("finance/v-invoice/crud");
                 return $viewModel;
             }
 
@@ -1272,6 +1290,9 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
+                    'wh_list'=> $wh_list,
+                    'incoterm_list' => $incoterm_list,
+                    
                     'n' => $nTry
                 ));
 
@@ -1342,6 +1363,8 @@ class VInvoiceController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'currency_list' => $currency_list,
+            'wh_list'=> $wh_list,
+            'incoterm_list' => $incoterm_list,
             'n' => 0
         ));
 

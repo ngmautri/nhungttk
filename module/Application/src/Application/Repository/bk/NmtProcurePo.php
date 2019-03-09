@@ -7,9 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtProcurePo
  *
- * @ORM\Table(name="nmt_procure_po", indexes={@ORM\Index(name="nmt_procure_po_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_po_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_po_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_po_FK7_idx", columns={"token"}), @ORM\Index(name="nmt_procure_po_FK7_idx1", columns={"local_currency_id"}), @ORM\Index(name="nmt_procure_po_FK8_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_procure_po_FK9_idx", columns={"incoterm_id"})})
+ * @ORM\Table(name="nmt_procure_po", indexes={@ORM\Index(name="nmt_procure_po_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_po_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_po_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_po_FK7_idx", columns={"token"}), @ORM\Index(name="nmt_procure_po_FK7_idx1", columns={"local_currency_id"}), @ORM\Index(name="nmt_procure_po_FK8_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_procure_po_FK9_idx", columns={"incoterm_id"}), @ORM\Index(name="nmt_procure_po_FK10_idx", columns={"pmt_term_id"})})
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePoRepository")
+ *  @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePoRepository")
  */
 class NmtProcurePo
 {
@@ -241,6 +241,16 @@ class NmtProcurePo
      * })
      */
     private $vendor;
+
+    /**
+     * @var \Application\Entity\NmtApplicationPmtTerm
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationPmtTerm")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="pmt_term_id", referencedColumnName="id")
+     * })
+     */
+    private $pmtTerm;
 
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
@@ -1076,6 +1086,30 @@ class NmtProcurePo
     public function getVendor()
     {
         return $this->vendor;
+    }
+
+    /**
+     * Set pmtTerm
+     *
+     * @param \Application\Entity\NmtApplicationPmtTerm $pmtTerm
+     *
+     * @return NmtProcurePo
+     */
+    public function setPmtTerm(\Application\Entity\NmtApplicationPmtTerm $pmtTerm = null)
+    {
+        $this->pmtTerm = $pmtTerm;
+
+        return $this;
+    }
+
+    /**
+     * Get pmtTerm
+     *
+     * @return \Application\Entity\NmtApplicationPmtTerm
+     */
+    public function getPmtTerm()
+    {
+        return $this->pmtTerm;
     }
 
     /**

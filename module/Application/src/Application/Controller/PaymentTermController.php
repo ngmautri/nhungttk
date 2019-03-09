@@ -1,7 +1,7 @@
 <?php
 namespace Application\Controller;
 
-use Application\Entity\NmtApplicationIncoterms;
+use Application\Entity\NmtApplicationPmtTerm;
 use Doctrine\ORM\EntityManager;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -22,7 +22,7 @@ class PaymentTermController extends AbstractActionController
      */
     public function listAction()
     {
-        $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->findAll();
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtTerm')->findAll();
         $total_records = count($list);
         // $jsTree = $this->tree;
         return new ViewModel(array(
@@ -44,20 +44,24 @@ class PaymentTermController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
 
         $request = $this->getRequest();
+        
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
 
         // Is Posting .................
         // ============================
         if ($request->isPost()) {
             $errors = array();
             $data = $this->params()->fromPost();
-            
             $redirectUrl = $data['redirectUrl'];
-            
 
-            $entity = new NmtApplicationIncoterms();
-            
+            $entity = new NmtApplicationPmtTerm();
+
             try {
-                $errors = $this->incotermService->validateHeader($entity, $data);
+                $errors = $this->paymentTermService->saveHeader($entity, $data, $u, TRUE);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -68,45 +72,16 @@ class PaymentTermController extends AbstractActionController
 
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
-                    'entity' => $entity,
-                    ));
+                    'entity' => $entity
+                ));
 
-                $viewModel->setTemplate("application/incoterm/crud");
+                $viewModel->setTemplate("application/payment-term/crud");
                 return $viewModel;
             }
             ;
 
-            // No ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                'email' => $this->identity()
-            ));
-
-            try {
-                $this->incotermService->saveHeader($entity, $u, TRUE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            // second check.
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                     ));
-
-                $viewModel->setTemplate("application/incoterm/crud");
-                return $viewModel;
-            }
-
-            $redirectUrl = "/application/incoterm/list";
-            $m = sprintf("[OK] Incoterm: %s created!", $entity->getId());
+            $redirectUrl = "/application/payment-term/list";
+            $m = sprintf("[OK] Payment Term #%s created!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
 
             return $this->redirect()->toUrl($redirectUrl);
@@ -125,7 +100,7 @@ class PaymentTermController extends AbstractActionController
                 ->getUri();
         }
 
-        $entity = new NmtApplicationIncoterms();
+        $entity = new NmtApplicationPmtTerm();
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
 
@@ -134,7 +109,7 @@ class PaymentTermController extends AbstractActionController
             'entity' => $entity
         ));
 
-        $viewModel->setTemplate("application/incoterm/crud");
+        $viewModel->setTemplate("application/payment-term/crud");
         return $viewModel;
     }
 
@@ -178,11 +153,17 @@ class PaymentTermController extends AbstractActionController
      */
     public function editAction()
     {
-     
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-    
+
         $request = $this->getRequest();
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
 
         // Is Posing
         // =============================
@@ -194,18 +175,18 @@ class PaymentTermController extends AbstractActionController
 
             $redirectUrl = $data['redirectUrl'];
             $entity_id = (int) $data['entity_id'];
-            $nTry = $data['n'];
+            $nTry = $data['n'] + 1;
 
             $criteria = array(
-                'id' => $entity_id,
+                'id' => $entity_id
             );
 
-            /** @var \Application\Entity\NmtApplicationIncoterms $entity ; */
-            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->findOneBy($criteria);
+            /** @var \Application\Entity\NmtApplicationPmtTerm $entity ; */
+            $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtTerm')->findOneBy($criteria);
 
             if ($entity == null) {
 
-                $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
+                $errors[] = 'Entity Payment Term not found.';
                 $this->flashMessenger()->addMessage('Something wrong!');
 
                 $viewModel = new ViewModel(array(
@@ -216,67 +197,12 @@ class PaymentTermController extends AbstractActionController
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("application/incoterm/crud");
+                $viewModel->setTemplate("application/payment-term/crud");
                 return $viewModel;
             }
 
-            // entity found
-    
-            $oldEntity = clone ($entity);
-
             try {
-                $errors = $this->incotermService->validateHeader($entity, $data);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            /**
-             *
-             * @todo: problem when both attribut is 0
-             */
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-
-            if (count($changeArray) == 0) {
-                $nTry ++;
-                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-            }
-
-            if ($nTry >= 3) {
-                $errors[] = sprintf('Do you really want to edit "Incoterm. %s"?', $entity->getId());
-            }
-
-            if ($nTry == 5) {
-                $m = sprintf('You might be not ready to edit Incoterm (%s). Please try later!', $entity->getId());
-                $this->flashMessenger()->addMessage($m);
-                return $this->redirect()->toUrl($redirectUrl);
-            }
-
-            if (count($errors) > 0) {
-
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'n' => $nTry
-                ));
-
-                $viewModel->setTemplate("application/incoterm/crud");
-                return $viewModel;
-            }
-
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                'email' => $this->identity()
-            ));
-            $changeOn = new \DateTime();
-
-            try {
-                $this->incotermService->saveHeader($entity, $u, FALSE);
+                $errors = $this->paymentTermService->saveHeader($entity, $data, $u, FALSE);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -292,40 +218,15 @@ class PaymentTermController extends AbstractActionController
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("application/incoterm/crud");
+                $viewModel->setTemplate("application/payment-term/crud");
                 return $viewModel;
             }
 
-            $m = sprintf('[OK] Incoterm #%s updated. Change No.=%s.', $entity->getId(),count($changeArray));
-
-            // Trigger Change Log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('application.change.log', __METHOD__, array(
-                'priority' => 7,
-                'message' => $m,                                                                            
-                'objectId' => $entity->getId(),
-                'objectToken' => null,
-                'changeArray' => $changeArray,
-                'changeBy' => $u,
-                'changeOn' => $changeOn,
-                'revisionNumber' => $entity->getRevisionNo(),
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-
-            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('application.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $changeOn,
-                'entity_id' => $entity->getId(),
-                'entity_class' => get_class($entity),
-                'entity_token' => null
-            ));                                                                      
+            $m = sprintf('[OK] Payment Term #%s updated.', $entity->getId());
 
             $this->flashMessenger()->addMessage($m);
 
-            $redirectUrl = "/application/incoterm/list";
+            $redirectUrl = "/application/payment-term/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
 
@@ -333,19 +234,21 @@ class PaymentTermController extends AbstractActionController
         // Initiate ......................
         // ================================
         $redirectUrl = null;
-       /*  if ($this->getRequest()->getHeader('Referer') !== null) {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
-        } */
+        /*
+         * if ($this->getRequest()->getHeader('Referer') !== null) {
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         * }
+         */
 
         $id = (int) $this->params()->fromQuery('entity_id');
-         $criteria = array(
-            'id' => $id,
+        $criteria = array(
+            'id' => $id
         );
 
-        /** @var \Application\Entity\NmtApplicationIncoterms $entity ; */
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationIncoterms')->findOneBy($criteria);
+        /** @var \Application\Entity\NmtApplicationPmtTerm $entity ; */
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtTerm')->findOneBy($criteria);
         if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
@@ -358,7 +261,7 @@ class PaymentTermController extends AbstractActionController
             'n' => 0
         ));
 
-        $viewModel->setTemplate("application/incoterm/crud");
+        $viewModel->setTemplate("application/payment-term/crud");
         return $viewModel;
     }
 

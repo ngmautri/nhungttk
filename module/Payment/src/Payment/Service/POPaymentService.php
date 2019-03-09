@@ -32,7 +32,7 @@ class POPaymentService extends AbstractService
                 $errors[] = $this->controllerPlugin->translate('Local currency is not found!');
             }
 
-            $entity->setDocType(\Payment\Model\Constants::OUTGOING_AP);
+            $entity->setDocType(\Payment\Model\Constants::OUTGOING_PO);
         }
 
         if ($data == null) {
@@ -193,7 +193,7 @@ class POPaymentService extends AbstractService
                 $entity->setLastchangeBy($u);
                 $entity->setLastchangeOn($changeOn);
 
-                $m = sprintf('[OK] Payment #%s for AP %s updated.', $entity->getId(), $entity->getApInvoice()->getId());
+                $m = sprintf('[OK] Payment #%s for PO %s updated.', $entity->getId(), $entity->getPo()->getId());
                 $this->getEventManager()->trigger('payment.change.log', __METHOD__, array(
                     'priority' => 7,
                     'message' => $m,
@@ -209,7 +209,7 @@ class POPaymentService extends AbstractService
             }
             
             if ($isNew == TRUE) {
-                $m = sprintf('[OK] Payment #%s for AP %s  created.', $entity->getSysNumber(),$entity->getApInvoice()->getId());
+                $m = sprintf('[OK] Payment #%s for PO %s  created.', $entity->getId(),$entity->getPo()->getSysNumber());
             }
             
             $this->doctrineEM->persist($entity);
@@ -298,8 +298,10 @@ class POPaymentService extends AbstractService
             $entity->setRevisionNo($entity->getRevisionNo() + 1);
             $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);
+            
+            
 
-            $m = sprintf('[OK] Payment #%s for AP %s updated and posted.', $entity->getId(), $entity->getApInvoice()->getId());
+            $m = sprintf('[OK] Payment #%s for PO %s updated and posted.', $entity->getId(), $entity->getPo()->getSysNumber());
             // Trigger Change Log. AbtractController is EventManagerAware.
 
             $this->getEventManager()->trigger('payment.change.log', __METHOD__, array(
@@ -320,7 +322,7 @@ class POPaymentService extends AbstractService
         $this->doctrineEM->flush();
 
         if ($isNew == TRUE) {
-            $m = sprintf('[OK] Payment #%s for AP %s  posted.', $entity->getSysNumber(),$entity->getApInvoice()->getId());
+            $m = sprintf('[OK] Payment #%s for AP %s  posted.', $entity->getSysNumber(),$entity->getPo()->getSysNumber());
         }
         
          $this->getEventManager()->trigger('payment.activity.log', __METHOD__, array(
@@ -334,7 +336,7 @@ class POPaymentService extends AbstractService
          *
          * @todo: Do Accounting Posting
          */
-        $this->jeService->postAPPayment($entity, $u, $this->controllerPlugin);
+        $this->jeService->postPOPayment($entity, $u, $this->controllerPlugin);
         $this->doctrineEM->flush();
 
         return null;
@@ -395,9 +397,13 @@ class POPaymentService extends AbstractService
 
         // OK to reverse
         // +++++++++++++++++++
+        
+        
 
         $newEntity->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
-        $newEntity->setDocType(\Payment\Model\Constants::OUTGOING_AP_REVERSAL);
+        
+        // pay-po-1 or pay-ap-1
+        $newEntity->setDocType($newEntity->getDocType().'-1');
         $newEntity->setIsReversed(1);
         $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
 
@@ -426,7 +432,7 @@ class POPaymentService extends AbstractService
          *
          * @todo: Do Accounting Posting
          */
-        $this->jeService->reverseAPPayment($entity, $u, $this->controllerPlugin);
+        $this->jeService->reversePOPayment($entity, $u, $this->controllerPlugin);
         $this->doctrineEM->flush();
 
         $m = sprintf('[OK] Payment %s reversed.', $entity->getSysNumber());

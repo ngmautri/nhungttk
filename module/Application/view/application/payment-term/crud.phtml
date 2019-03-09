@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \Application\Entity\NmtApplicationIncoterms $entity ;
+ * @var \Application\Entity\NmtApplicationPmtTerm $entity ;
  * 
  */
 $form_action = '';
@@ -9,13 +9,13 @@ $form_title = '';
 switch ($action) {
 
     case \Application\Model\Constants::FORM_ACTION_ADD:
-        $form_action = '/application/incoterm/add';
-        $form_title = $this->translate("Add Incoterm:");
+        $form_action = '/application/payment-term/add';
+        $form_title = $this->translate("Add Payment Term");
 
         break;
     case \Application\Model\Constants::FORM_ACTION_EDIT:
-        $form_action = '/application/incoterm/edit';
-        $form_title = $this->translate("Edit Incoterm:");
+        $form_action = '/application/payment-term/edit';
+        $form_title = $this->translate("Edit Payment Term");
         break;
 }
 ?>
@@ -64,40 +64,45 @@ if (count($errors) > 0) {
             			
             			
 			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2">Incoterm: </label>
+				<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term Code");?> : </label>
 				<div class="col-sm-3">
 					<input tabindex="1" class="form-control input-sm" type="text"
-						id="incoterm" placeholder="" name="incoterm"
-						value="<?php if (!$entity== null): if($entity->getIncoterm()!==null): echo $entity->getIncoterm();endif;endif;?>">
+						id="pmtTermCode" placeholder="" name="pmtTermCode"
+						value="<?php if (!$entity== null): if($entity->getPmtTermCode()!==null): echo $entity->getPmtTermCode();endif;endif;?>">
 				</div>
-			</div>
-			
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2">Incoterm1: </label>
+
 				<div class="col-sm-3">
-					<input tabindex="1" class="form-control input-sm" type="text"
-						id="incoterm1" placeholder="" name="incoterm1"
-						value="<?php if (!$entity== null): if($entity->getIncoterm1()!==null): echo $entity->getIncoterm1();endif;endif;?>">
-				</div>
-				
-				<div class="col-sm-3">
-										<input
-											<?php if(!$entity== null): echo ($entity->getLocationRequired()=="1")?"checked":""; else: echo "checked"; endif;?>
-											type="checkbox" name="locationRequired" value="1"><?php echo $this->translate("Location required");?> &nbsp;&nbsp;&nbsp;
+					<input
+						<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isActive" value="1"><?php echo $this->translate("Active");?> &nbsp;&nbsp;&nbsp;
 
 									</div>
 			</div>
-			
-			<div class="form-group margin-bottom">
-									
-								</div>
-			
 
 			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2">Incoterm Description: </label>
+				<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term Name");?> : </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="pmtTermName" placeholder="" name="pmtTermName"
+						value="<?php if (!$entity== null): if($entity->getPmtTermName()!==null): echo $entity->getPmtTermName();endif;endif;?>">
+				</div>
+
+				<div class="col-sm-3">
+					<input
+						<?php if(!$entity== null): echo ($entity->getIsPrepayment()=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isPrepayment" value="1"><?php echo $this->translate("Prepayment");?> &nbsp;&nbsp;&nbsp;
+
+									</div>
+			</div>
+
+			<div class="form-group margin-bottom"></div>
+
+
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Remarks");?>: </label>
 				<div class="col-sm-8">
 					<textarea class="form-control input-sm" type="text" rows="6"
-						placeholder="" name="incotermDescription" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getIncotermDescription():"";?></textarea>
+						placeholder="" name="description" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getDescription():"";?></textarea>
 
 				</div>
 			</div>

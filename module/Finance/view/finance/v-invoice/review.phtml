@@ -1,6 +1,9 @@
-<?php /**@var \Application\Entity\FinVendorInvoice $entity ;*/?>
+<?php
 
+/**@var \Application\Entity\FinVendorInvoice $entity ;*/
 
+/** @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+?>
 <div id="wrapper" class="toggled">
 
 	<!-- Sidebar -->
@@ -69,17 +72,15 @@ if (count($errors) > 0) {
 						<a class="btn btn-primary btn-sm" style="color: white"
 							onclick="confirmPost();" href="javascript:;"><i
 							class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
-						
-						
+
+
 					</div>
 
 					<form id="Invoice_Posting_Form" class="form-horizontal"
 						action="/finance/v-invoice/review" method="post"
 						enctype="multipart/form-data">
 						<input type="hidden" name="redirectUrl"
-							value="<?php echo $redirectUrl ?>" /> 
-							
-							<input type="hidden"
+							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 							name="entity_id"
 							value="<?php echo (!$entity == null)? $entity->getId():"";?>" />
 						<input type="hidden" name="token"
@@ -243,7 +244,7 @@ if (count($errors) > 0) {
 									<label class="control-label col-sm-2" for="inputTag">Target
 										Warehouse:</label>
 									<div class="col-sm-3">
-								<!-- 
+										<!-- 
 										<input class="form-control input-sm" readonly type="text"
 											id="target_wh_name" placeholder="Please select!"
 											name="target_wh"
@@ -251,26 +252,26 @@ if (count($errors) > 0) {
 										
 										<input type="hidden" id="target_wh_id" name="target_wh_id-1"
 											value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
-								 -->	
-									
-									<select name="target_wh_id" class="form-control input-sm">
+								 -->
+
+										<select name="target_wh_id" class="form-control input-sm">
 											<option value=""><?php echo $this->translate("Select Warehouse");?>
 											</option>
    	    							<?php
             if ($wh_list !== null) :
-            foreach ($wh_list as $curr) :
+                foreach ($wh_list as $curr) :
                     if ($entity !== null) :
                         if ($entity->getWarehouse() !== null) :
-                        if ($entity->getWarehouse()->getId() == $curr->getId()) :
+                            if ($entity->getWarehouse()->getId() == $curr->getId()) :
                                 echo '<option selected value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
                             else :
-                            echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                                echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
                             endif;
                         else :
-                        echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                            echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
                         endif;
                     else :
-                    echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                        echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
                     endif;
                 endforeach
                 ;
@@ -278,59 +279,101 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
-									
-									
+
+
 									</div>
 								</div>
-								
+
 								<div class="form-group margin-bottom required">
-    
-    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
-    									<div class="col-sm-3">
-    										<select name="incoterm_id" class="form-control input-sm">
-    											<option value="">Select...</option>
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
+									<div class="col-sm-3">
+										<select name="incoterm_id" class="form-control input-sm">
+											<option value="">Select...</option>
        	    							<?php
                 if ($incoterm_list !== null) :
-                foreach ($incoterm_list as $l) :
+                    foreach ($incoterm_list as $l) :
                         if ($entity !== null) :
-                        if ($entity->getIncoterm2() !== null) :
-                            if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
-                            echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                            if ($entity->getIncoterm2() !== null) :
+                                if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
+                                    echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                                 else :
-                                echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                                    echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                                 endif;
                             else :
-                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                                echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                             endif;
                         else :
-                        echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                         endif;
                     endforeach
                     ;
        	    							endif;
-    
+
                 ?>
        					</select>
-    									</div>
-    									
-    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
-    									<div class="col-sm-3">
-    										<input class="form-control input-sm" type="text"
-    											placeholder="" id="incotermPlace" name="incotermPlace"
-    											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
-    									</div>
-    									
-    								</div>
+									</div>
 
-						<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="incotermPlace" name="incotermPlace"
+											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
+									</div>
+
+								</div>
+
+
+								<div class="form-group margin-bottom required">
+
 									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
-									<div class="col-sm-4">
+									<div class="col-sm-3">
+										<select name="payment_term_id" class="form-control input-sm">
+											<option value=""><?php echo $this->translate("---");?></option>
+       	    							<?php
+                $pmtTerm_list = $nmtPlugin->getPaymentTerms();
+
+                if ($pmtTerm_list !== null) :
+                    foreach ($pmtTerm_list as $l) :
+                        if ($entity !== null) :
+                            if ($entity->getPmtTerm() !== null) :
+                                if ($entity->getPmtTerm()->getId() == $l->getId()) :
+                                    echo '<option selected value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                                else :
+                                    echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                                endif;
+                            else :
+                                echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                        endif;
+                    endforeach
+                    ;
+       	    							endif;
+
+                ?>
+       					</select>
+									</div>
+									<div class="col-sm-3">
+
+										<a target="blank" style="font-size: 9pt; color:graytext;"
+											href="/application/payment-term/list"><?php echo $this->translate("Payment Term List");?>&nbsp;</a><small><i
+											class="glyphicon glyphicon-new-window"></i></small>
+									</div>
+
+								</div>
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term Detail");?>:</label>
+									<div class="col-sm-5">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="paymentTerm" name="paymentTerm"
 											value="<?php echo (!$entity == null)? $entity->getPaymentTerm():"";?>">
 									</div>
-									</div>
-								
+
+
+								</div>
+
 
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2">Description</label>
@@ -352,9 +395,9 @@ if (count($errors) > 0) {
 								<a href="#rows" class="" data-toggle="collapse">ROWS:</a>
 							</legend>
 							<div id="rows" class="collapse in">
-							
-							
-							<div style="font-size: 9pt">
+
+
+								<div style="font-size: 9pt">
 
 									<div class="dropdown">
 										<button
@@ -371,44 +414,45 @@ if (count($errors) > 0) {
 											class="btn btn-default btn-sm" href="javascript:;"
 											onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
 											aria-hidden="true"></i>&nbsp;
-										</a> 
-										<a <?php echo $this->translate("Full Screen");?> style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
+										</a> <a <?php echo $this->translate("Full Screen");?>
+											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+											class="btn btn-default btn-sm" href="javascript:;"
 											onclick="showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i
-											class="fa fa-window-maximize" aria-hidden="true"></i></a>
-											
-											<a title="<?php echo $this->translate("Journal entry preview");?>" style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;" class="btn btn-default btn-sm" href="javascript:;"
+											class="fa fa-window-maximize" aria-hidden="true"></i></a> <a
+											title="<?php echo $this->translate("Journal entry preview");?>"
+											style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+											class="btn btn-default btn-sm" href="javascript:;"
 											onclick="showJqueryDialog('Contract /PO: <?php echo $entity->getSysNumber().' - '. $entity->getContractNo() ; ?>','1850',$(window).height()-50,'/procure/po/add2?token=<?php echo $entity->getToken() ?>&entity_id=<?php echo $entity->getId() ?>','j_loaded_data',true);"><i
 											class="fa fa-eye" aria-hidden="true"></i></a>
 
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?> // </strong></span>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><strong>PO#: <?php echo (!$entity == null)? $entity->getSysNumber():"";?> // </strong></span>
 
-					
-								<span class=""
-									style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
+
+										<span class=""
+											style="padding: 3px; margin-bottom: 2px; font-size: 10pt; color: gray">
 						Net amount: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?>
                         &nbsp;|&nbsp;Tax amount: <?php echo number_format($tax_amount,2);?>
                         &nbsp;|&nbsp;Gross amount: <?php echo "<b>".number_format($gross_amount,2) . "</b> " .$entity->getCurrency()->getCurrency();?>
                         &nbsp;|&nbsp;Total rows:<?php echo ($active_row);?>
 					</span>
-							
-					
+
+
 										<ul style="font-size: 9.5pt;" class="dropdown-menu"
 											aria-labelledby="dropdownMenu1">
 											<li><a class="btn btn-default btn-sm"
-							href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
-							<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
-						</a>
-</li>
+												href="<?php echo $this->baseUrl ?>/finance/v-invoice-row/download?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+													<i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel
+											</a></li>
 										</ul>
 									</div>
-							
-							
-							
-							
-							
-								
-								
-								<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
+
+
+
+
+
+
+
+									<div id="pr_row_gird" style="margin: 1px; font-size: 9pt;"></div>
 						
 						</fieldset>
 					</form>

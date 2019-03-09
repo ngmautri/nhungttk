@@ -27,6 +27,139 @@ class VInvoiceController extends AbstractActionController
     protected $apService;
 
     /**
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function reverseAction()
+    {
+        $request = $this->getRequest();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $currency_list = $nmtPlugin->currencyList();
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        // Is Posing
+        // =============================
+        if ($request->isPost()) {
+
+            $errors = array();
+
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = $data['entity_id'];
+            $entity_token = $data['entity_token'];
+
+            $reversalDate = $data['reversalDate'];
+            $reversalReason = $data['reversalReason'];
+
+            $id = (int) $this->params()->fromQuery('entity_id');
+            $token = $this->params()->fromQuery('token');
+
+            /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+            $invoice = $res->getVendorInvoice($entity_id, $entity_token);
+
+            if ($invoice == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+
+            $entity = null;
+            if ($invoice[0] instanceof FinVendorInvoice) {
+                $entity = $invoice[0];
+            }
+
+            if ($entity == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+
+            $viewModel = new ViewModel(array(
+                'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
+                'redirectUrl' => $redirectUrl,
+                'errors' => null,
+                'entity' => $entity,
+                'target' => null,
+                'nmtPlugin' => $nmtPlugin
+            ));
+
+            $errors = $this->apService->reverseAP($entity, $u, $reversalDate, $reversalReason);
+
+            if (count($errors) > 0) {
+
+                $m = $nmtPlugin->translate("Reversal failed!");
+                $this->flashMessenger()->addMessage($m);
+
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'target' => null,
+                    'nmtPlugin' => $nmtPlugin
+                ));
+
+                $viewModel->setTemplate("payment/outgoing/reverse");
+                return $viewModel;
+            }
+
+            $m = sprintf("AP #%s reversed", $entity->getSysNumber());
+            $this->flashMessenger()->addMessage($m);
+
+            $redirectUrl = "/finance/v-invoice/list";
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        // NO POST
+        // Initiate ......................
+        // ================================
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $invoice = $res->getVendorInvoice($id, $token);
+
+        if ($invoice == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
+        $entity = null;
+        if ($invoice[0] instanceof FinVendorInvoice) {
+            $entity = $invoice[0];
+        }
+
+        if ($entity instanceof FinVendorInvoice) {
+            return new ViewModel(array(
+                'redirectUrl' => $redirectUrl,
+                'entity' => $entity,
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'total_row' => $invoice['total_row'],
+                'active_row' => $invoice['active_row'],
+                'max_row_number' => $invoice['total_row'],
+                'total_picture' => $invoice['total_picture'],
+                'total_attachment' => $invoice['total_attachment'],
+                'net_amount' => $invoice['net_amount'],
+                'tax_amount' => $invoice['tax_amount'],
+                'gross_amount' => $invoice['gross_amount']
+            ));
+        } else {
+            return $this->redirect()->toRoute('access_denied');
+        }
+    }
+
+    /**
      * Adding new vendor invoce
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -41,7 +174,6 @@ class VInvoiceController extends AbstractActionController
         $currency_list = $nmtPlugin->currencyList();
         $incoterm_list = $nmtPlugin->incotermList();
         $wh_list = $nmtPlugin->warehouseList();
-        
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -66,7 +198,8 @@ class VInvoiceController extends AbstractActionController
             $entity->setLocalCurrency($default_cur);
             $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
-            $errors = $this->apService->validateHeader($entity, $data);
+
+            $errors = $this->apService->saveHeader($entity, $data, $u, TRUE);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
@@ -75,36 +208,10 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
-                    'wh_list'=> $wh_list,
+                    'wh_list' => $wh_list,
                     'incoterm_list' => $incoterm_list,
+                    'nmtPlugin' => $nmtPlugin
                 ));
-
-                $viewModel->setTemplate("finance/v-invoice/crud");
-                return $viewModel;
-            }
-
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            try {
-                $this->apService->saveHeader($entity, $u, TRUE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            // double check
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'wh_list'=> $wh_list,
-                    'incoterm_list' => $incoterm_list,
-                  ));
 
                 $viewModel->setTemplate("finance/v-invoice/crud");
                 return $viewModel;
@@ -113,22 +220,7 @@ class VInvoiceController extends AbstractActionController
             $m = sprintf('[OK] A/P Invoice #%s created', $entity->getId());
             $this->flashMessenger()->addMessage($m);
 
-            $createdOn = new \DateTime();
-
-            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $createdOn,
-                'entity_id' => $entity->getId(),
-                'entity_class' => get_class($entity),
-                'entity_token' => $entity->getToken()
-            ));
-
-            // $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             $redirectUrl = "/finance/v-invoice-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
-
             return $this->redirect()->toUrl($redirectUrl);
         }
 
@@ -167,8 +259,9 @@ class VInvoiceController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'currency_list' => $currency_list,
-            'wh_list'=> $wh_list,
-            'incoterm_list' => $incoterm_list
+            'wh_list' => $wh_list,
+            'incoterm_list' => $incoterm_list,
+            'nmtPlugin' => $nmtPlugin
         ));
 
         $viewModel->setTemplate("finance/v-invoice/crud");
@@ -245,8 +338,7 @@ class VInvoiceController extends AbstractActionController
         $currency_list = $nmtPlugin->currencyList();
         $wh_list = $nmtPlugin->warehouseList();
         $incoterm_list = $nmtPlugin->incotermList();
-        
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
@@ -285,31 +377,11 @@ class VInvoiceController extends AbstractActionController
 
             // ========================
 
-            if ($invoice['active_row'] == 0) {
-                $m = sprintf('[INFO] AP Invoice #%s has no lines.', $entity->getSysNumber());
-                $m1 = $nmtPlugin->translate('Document is incomplete!');
-                $this->flashMessenger()->addMessage($m1);
-
-                $redirectUrl = "/finance/v-invoice/review?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
-                return $this->redirect()->toUrl($redirectUrl);
-            }
-
             if ($entity->getLocalCurrency() == null) {
                 $entity->setLocalCurrency($default_cur);
             }
 
-            if ($entity->getWarehouse() == null) {
-                $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
-                    'isDefault' => 1
-                ));
-
-                if ($default_wh !== null) {
-                    $entity->setWarehouse($default_wh);
-                }
-            }
-
-            // check for posting
-            $errors = $this->apService->validateHeader($entity, $data, TRUE);
+            $errors = $this->apService->post($entity, $data, $u);
 
             if (count($errors) > 0) {
                 return new ViewModel(array(
@@ -319,8 +391,8 @@ class VInvoiceController extends AbstractActionController
                     'currency_list' => $currency_list,
                     'wh_list' => $wh_list,
                     'incoterm_list' => $incoterm_list,
-                    
-                    
+                    'nmtPlugin' => $nmtPlugin,
+
                     'total_row' => $invoice['total_row'],
                     'active_row' => $invoice['active_row'],
                     'max_row_number' => $invoice['total_row'],
@@ -332,59 +404,9 @@ class VInvoiceController extends AbstractActionController
                 ));
             }
 
-            // No ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $changeOn = new \DateTime();
-            $oldEntity = clone ($entity);
-
-            try {
-                $this->apService->post($entity, $u, true);
-            } catch (\Exception $e) {
-
-                $errors[] = $e->getMessage();
-                return new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'entity' => $entity,
-                    'errors' => $errors,
-                    'currency_list' => $currency_list,
-                    'wh_list' => $wh_list,
-                    'incoterm_list' => $incoterm_list,
-                    
-                    
-                    'total_row' => $invoice['total_row'],
-                    'active_row' => $invoice['active_row'],
-                    'max_row_number' => $invoice['total_row'],
-                    'total_picture' => $invoice['total_picture'],
-                    'total_attachment' => $invoice['total_attachment'],
-                    'net_amount' => $invoice['net_amount'],
-                    'tax_amount' => $invoice['tax_amount'],
-                    'gross_amount' => $invoice['gross_amount']
-                ));
-            }
-
-            // LOGGING
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-
-            $m = sprintf('[OK] AP Invoice %s - posted.', $entity->getSysNumber());
-
-            // Trigger Change Log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
-                'priority' => 7,
-                'message' => $m,
-                'objectId' => $entity->getId(),
-                'objectToken' => $entity->getToken(),
-                'changeArray' => $changeArray,
-                'changeBy' => $u,
-                'changeOn' => $changeOn,
-                'revisionNumber' => $entity->getRevisionNo(),
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-
+            $m = sprintf("[OK] AP invoice %s posted.", $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
-            // $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
+
             $redirectUrl = "/finance/v-invoice/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -437,8 +459,8 @@ class VInvoiceController extends AbstractActionController
             'currency_list' => $currency_list,
             'wh_list' => $wh_list,
             'incoterm_list' => $incoterm_list,
-            
-            
+            'nmtPlugin' => $nmtPlugin,
+
             'total_row' => $invoice['total_row'],
             'active_row' => $invoice['active_row'],
             'max_row_number' => $invoice['total_row'],
@@ -1168,8 +1190,11 @@ class VInvoiceController extends AbstractActionController
         $currency_list = $nmtPlugin->currencyList();
         $incoterm_list = $nmtPlugin->incotermList();
         $wh_list = $nmtPlugin->warehouseList();
-        
-        
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
 
         // Is Posing
         // =============================
@@ -1181,7 +1206,7 @@ class VInvoiceController extends AbstractActionController
             $redirectUrl = $data['redirectUrl'];
             $entity_id = $data['entity_id'];
             $token = $data['token'];
-            $nTry = $data['n'];
+            $nTry = (int) $data['n'] + 1;
 
             $criteria = array(
                 'id' => $entity_id,
@@ -1201,44 +1226,20 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'currency_list' => $currency_list,
-                    'wh_list'=> $wh_list,
+                    'wh_list' => $wh_list,
                     'incoterm_list' => $incoterm_list,
-                    
+                    'nmtPlugin' => $nmtPlugin,
                     'n' => $nTry
                 ));
             }
 
             // ======= OK =======//
 
-            if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
-                $errors[] = sprintf('Invoice was posted! Only remark text can be changed');
-
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'wh_list'=> $wh_list,
-                    'incoterm_list' => $incoterm_list,
-                    
-                    'n' => $nTry
-                ));
-
-                $viewModel->setTemplate("finance/v-invoice/crud");
-                return $viewModel;
-            }
-
-            $oldEntity = clone ($entity);
-
             // validate and update entity
-            $errors = $this->apService->validateHeader($entity, $data);
+            $ck = $this->apService->saveHeader($entity, $data, $u, FALSE);
 
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-
-            if (count($changeArray) == 0) {
-                $nTry ++;
-                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
+            if (count($ck) > 0) {
+                $errors = array_merge($errors, $ck);
             }
 
             if ($nTry >= 3) {
@@ -1258,74 +1259,15 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
+                    'nmtPlugin' => $nmtPlugin,
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
+                $viewModel->setTemplate("finance/v-invoice/crud");
                 return $viewModel;
             }
 
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
-
-            $changeOn = new \DateTime();
-
-            try {
-                $this->apService->saveHeader($entity, $u, FALSE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            // double check
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'wh_list'=> $wh_list,
-                    'incoterm_list' => $incoterm_list,
-                    
-                    'n' => $nTry
-                ));
-
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
-                return $viewModel;
-            }
-
-            $m = sprintf('[OK] AP Invoice #%s - %s updated. Change No.: %s.', $entity->getId(), $entity->getSysNumber(), count($changeArray));
-
-            // Trigger Change Log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
-                'priority' => 7,
-                'message' => $m,
-                'objectId' => $entity->getId(),
-                'objectToken' => $entity->getToken(),
-                'changeArray' => $changeArray,
-                'changeBy' => $u,
-                'changeOn' => $changeOn,
-                'revisionNumber' => $entity->getRevisionNo(),
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-
-            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $changeOn,
-                'entity_id' => $entity->getId(),
-                'entity_class' => get_class($entity),
-                'entity_token' => $entity->getToken()
-            ));
+            $m = sprintf('[OK] AP Invoice #%s - %s updated.', $entity->getId(), $entity->getSysNumber());
 
             $this->flashMessenger()->addMessage($m);
             $redirectUrl = "/finance/v-invoice/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
@@ -1363,12 +1305,13 @@ class VInvoiceController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'currency_list' => $currency_list,
-            'wh_list'=> $wh_list,
+            'wh_list' => $wh_list,
             'incoterm_list' => $incoterm_list,
+            'nmtPlugin' => $nmtPlugin,
             'n' => 0
         ));
 
-        $viewModel->setTemplate("finance/v-invoice/add_ap");
+        $viewModel->setTemplate("finance/v-invoice/crud");
         return $viewModel;
     }
 
@@ -1419,13 +1362,12 @@ class VInvoiceController extends AbstractActionController
      */
     public function listAction()
     {
-      
         $is_active = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $currentState = $this->params()->fromQuery('currentState');
         $docStatus = $this->params()->fromQuery('docStatus');
-        
+
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
@@ -1445,23 +1387,23 @@ class VInvoiceController extends AbstractActionController
         if ($is_active == null) {
             $is_active = 1;
         }
-        
+
         if ($docStatus == null) :
             $docStatus = "posted";
-        
+
             if ($sort_by == null) :
                 $sort_by = "sysNumber";
             endif;
         endif;
-     
+
+
         if ($docStatus == 'draft') :
-                
+
             if ($sort_by == null) :
-                 $sort_by = "createdOn";
+                $sort_by = "createdOn";
             endif;
         endif;
-        
-        
+
 
         if ($sort == null) :
             $sort = "DESC";
@@ -1484,7 +1426,7 @@ class VInvoiceController extends AbstractActionController
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getVendorInvoiceList($is_active, $currentState,$docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getVendorInvoiceList($is_active, $currentState, $docStatus, null, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
 
         return new ViewModel(array(

@@ -218,6 +218,34 @@ class NmtInventoryItemSerial
     private $erpAssetNumber1;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
+     */
+    private $isReversed;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
+     */
+    private $reversalDate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
+     */
+    private $reversalDoc;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
+     */
+    private $reversalReason;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -979,6 +1007,102 @@ class NmtInventoryItemSerial
     public function getErpAssetNumber1()
     {
         return $this->erpAssetNumber1;
+    }
+
+    /**
+     * Set isReversed
+     *
+     * @param boolean $isReversed
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setIsReversed($isReversed)
+    {
+        $this->isReversed = $isReversed;
+
+        return $this;
+    }
+
+    /**
+     * Get isReversed
+     *
+     * @return boolean
+     */
+    public function getIsReversed()
+    {
+        return $this->isReversed;
+    }
+
+    /**
+     * Set reversalDate
+     *
+     * @param \DateTime $reversalDate
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setReversalDate($reversalDate)
+    {
+        $this->reversalDate = $reversalDate;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalDate
+     *
+     * @return \DateTime
+     */
+    public function getReversalDate()
+    {
+        return $this->reversalDate;
+    }
+
+    /**
+     * Set reversalDoc
+     *
+     * @param integer $reversalDoc
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setReversalDoc($reversalDoc)
+    {
+        $this->reversalDoc = $reversalDoc;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalDoc
+     *
+     * @return integer
+     */
+    public function getReversalDoc()
+    {
+        return $this->reversalDoc;
+    }
+
+    /**
+     * Set reversalReason
+     *
+     * @param string $reversalReason
+     *
+     * @return NmtInventoryItemSerial
+     */
+    public function setReversalReason($reversalReason)
+    {
+        $this->reversalReason = $reversalReason;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalReason
+     *
+     * @return string
+     */
+    public function getReversalReason()
+    {
+        return $this->reversalReason;
     }
 
     /**

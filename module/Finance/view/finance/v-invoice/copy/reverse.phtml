@@ -1,36 +1,11 @@
 <?php
 /** @var \Application\Entity\PmtOutgoing $entity ;*/
 /** @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-
 $form_action = '';
-$form_title = 'Outgoing Payment';
-$doc_status='';
+$form_title = 'Reversal';
 
 if ($entity !== null) {
-
-    $doc_type = $entity->getDocType();
-    $doc_status = $entity->getDocStatus();
-    $reverse_action = sprintf('/payment/outgoing/reverse?entity_id=%s&entity_token=%s',$entity->getId(), $entity->getToken());
-     
-    switch ($doc_type) {
-
-        case \Payment\Model\Constants::OUTGOING_AP:
-            
-            /** @var \Application\Entity\FinVendorInvoice $target ;*/
-            $target = $entity->getApInvoice();
-            
-            $form_action = sprintf('/payment/outgoing/edit-pay-ap?entity_id=%s&entity_token=%s',$entity->getId(), $entity->getToken());
-            $form_title = $this->translate("Add Outgoing Payment");
-            
-             break;
-        case \Payment\Model\Constants::OUTGOING_PO:
-            $form_action = sprintf('/payment/outgoing/edit-pay-po?entity_id=%s&entity_token=%s',$entity->getId(), $entity->getToken());
-            $form_title = $this->translate("Edit Outgoing Payment");
-            
-            /** @var \Application\Entity\NmtProcurePo $target ;*/
-            $target = $entity->getPo();            
-            break;
-    }
+    $form_action = '/payment/outgoing/reverse';
 }
 
 ?>
@@ -40,10 +15,6 @@ if ($entity !== null) {
 <div id="tabs" style="font-size: 10pt">
 	<ul>
 		<li><a href="#general"><?php echo $form_title;?></a></li>
-						<li><a title="<?php echo $this->translate("Change Logs");?>"
-			href="<?php echo $this->baseUrl ?>/payment/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
-				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
-		
 	</ul>
 
 	<div id="general" style="font-size: 9pt">
@@ -63,30 +34,89 @@ if (count($errors) > 0) {
     echo '</div>';
 }
 ?>
-	
-	
-	<form id="Create_Inv_Form" class="form-horizontal"
+
+<form id="REVERSAL_FORM" class="form-horizontal"
 			action="<?php echo $form_action;?>" method="post"
 			enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				name="entity_id"
+				value="<?php echo (!$entity== null)? $entity->getId():"";?>" /> <input
+				type="hidden" name="entity_token"
+				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" />
+
+			<fieldset>
+				<legend style="font-size: 9.5pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#reserval_header" class="" data-toggle="collapse"><?php echo $this->translate("Reserval Document");?>:</a>
+				</legend>
+				<div id="reserval_header" class="collapse in">
+
+					<div class="form-group margin-bottom required">
+
+						<label class="control-label col-sm-2 required"><?php echo $this->translate("Reversal Date");?> :</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text"
+								id="reversalDate" name="reversalDate" value=""
+								placeholder=" please select" />
+						</div>
+					</div>
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2">Description</label>
+						<div class="col-sm-8">
+							<input class="form-control input-sm" type="text" placeholder=""
+								name="reversalReason"
+								value="<?php echo (!$entity == null)? '[Reversal] ' . $entity->getRemarks():"";?>">
+						</div>
+					</div>
+
+
+					<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2" for="inputTag"></label>
+						<div class="col-sm-3">
+
+							<a class="btn btn-primary btn-sm" style="color: white"
+								onclick="confirmPost();" href="javascript:;"><i
+								class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Post');?></a>
+
+							<a tabindex="11" class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
+									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+						</div>
+
+						<div class="col-sm-3"></div>
+
+					</div>
+
+
+				</div>
+			</fieldset>
+		</form>
+		<hr style="margin: 5pt 1pt 5pt 1pt;">
+
+		<form style="color: graytext;" id="Create_Inv_Form"
+			class="form-horizontal" action="<?php echo $form_action;?>"
+			method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 				name="target_id"
 				value="<?php echo (!$target== null)? $target->getId():"";?>" /> <input
 				type="hidden" name="target_token"
 				value="<?php echo (!$target== null)? $target->getToken():"";?>" /> <input
-				type="hidden" name="isDraft" value="1" />
-							 
-							
-				<input type="hidden" name="entity_id"
+				type="hidden" name="isDraft" value="1" /> <input type="hidden"
+				name="entity_id"
 				value="<?php echo (!$entity== null)? $entity->getId():"";?>" /> <input
 				type="hidden" name="entity_token"
 				value="<?php echo (!$entity== null)? $entity->getToken():"";?>" /> <input
 				type="hidden" name="n" value="0" />
-			
-						<fieldset>
+
+			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+					<a href="#invoice_header" class="" data-toggle="collapse">Document
+						to reverse:</a>
 				</legend>
 				<div id="invoice_header" class="collapse in">
 
@@ -323,27 +353,6 @@ if (count($errors) > 0) {
 
 				</div>
 
-				<hr>
-				<div class="form-group margin-bottom">
-					<label class="control-label col-sm-2" for="inputTag"></label>
-					<div class="col-sm-3">
-				
-						<?php if($doc_status !== \Application\Model\Constants::DOC_STATUS_POSTED):?>
-						<a class="btn btn-default btn-sm" style="color: black;" href="<?php echo $form_action; ?>"><i
-							class="fa fa-floppy-o" aria-hidden="true"></i> &nbsp;<?php echo $this->translate('Edit');?></a>
-						<?php endif;?>
-						
-						<?php if($doc_status == \Application\Model\Constants::DOC_STATUS_POSTED):?>
-						<a class="btn btn-default btn-sm" style="color: black;" href="<?php echo $reverse_action; ?>"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Reverse');?></a>
-						<?php endif;?>
-						
-						<a tabindex="11" class="btn btn-default btn-sm"
-							href="<?php echo $this->baseUrl ?>/payment/outgoing/list"><small><i
-								class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
-
-					</div>
-
-				</div>
 			</fieldset>
 		</form>
 
@@ -361,7 +370,7 @@ if (count($errors) > 0) {
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body" id="b_modal_sm_body">
-				<h5><?php echo $this->translate('Outgoing payment will be posted!');?></h5>
+				<h5><?php echo $this->translate('Outgoing payment will be reversed!');?></h5>
 
 				<div class="alert alert-warning">
 					<strong>[Info]</strong> <?php echo $this->translate('Document can\'t be changed anymore when posted!');?>
@@ -394,7 +403,7 @@ $("#Create_Inv_Form :input").attr("disabled", "disabled");
 		//window.location = url;
 		$('#isDraft').val(1);
 		$('#confirm_modal_sm').modal('hide');
-		submitForm('Create_Inv_Form');
+		submitForm('REVERSAL_FORM');
 	}
 		
 
@@ -404,6 +413,7 @@ $('#docDate').bind('change', function() {
 
 $( "input[id='postingDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 $( "input[id='docDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='reversalDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 
 $( "#vendor_name_1" ).autocomplete({

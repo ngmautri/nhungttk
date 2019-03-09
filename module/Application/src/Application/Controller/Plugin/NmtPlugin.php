@@ -23,6 +23,24 @@ class NmtPlugin extends AbstractPlugin
      *
      * @return array
      */
+    public function getPaymentTerms()
+    {
+        $criteria = array(
+            'isActive' =>1,
+        );
+        
+        $sort_criteria = array(
+        );
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtTerm')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
+    
+    /**
+     * Return List of Currency
+     *
+     * @return array
+     */
     public function getPmtMethodList()
     {
         $criteria = array(

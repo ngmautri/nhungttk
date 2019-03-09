@@ -31,7 +31,9 @@ class Constants
 
     // ========================================
     const INVENTORY_GR_FROM_PURCHASING = 'GR100';
-
+    const INVENTORY_GR_FROM_PURCHASING_REVERSAL = 'GR100-1';
+    
+    
     // ========================================
     const WH_TRANSACTION_IN = 'IN';
 

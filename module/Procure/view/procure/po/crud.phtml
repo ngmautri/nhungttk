@@ -1,6 +1,6 @@
 <?php
 /**@var \Application\Entity\NmtProcurePo $entity ;*/
-
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
 $form_action = '';
 $form_title = '';
 
@@ -15,10 +15,10 @@ switch ($action) {
         $form_action = '/procure/po/edit';
         $form_title = $this->translate("Edit PO");
         break;
-        
+
     case \Application\Model\Constants::FORM_ACTION_PO_FROM_QO:
         /**@var \Application\Entity\NmtProcureQo $target */
-        
+
         $form_action = '/procure/po/copy-from-qo';
         $form_title = $this->translate("Create PO from QO");
         break;
@@ -93,10 +93,14 @@ if (count($errors) > 0) {
             				<input type="hidden" name="n" value="<?php echo $n;?>" />
             			<?php endif;?>
             			
-           			<?php if($action == \Application\Model\Constants::FORM_ACTION_PO_FROM_QO):
-           			?>
-             			<input type="hidden" name="target_id" value="<?php echo (!$target== null)? $target->getId():"";?>" />
-						<input type="hidden" name="target_token" value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+           			<?php
+
+            if ($action == \Application\Model\Constants::FORM_ACTION_PO_FROM_QO) :
+                ?>
+             			<input type="hidden" name="target_id"
+							value="<?php echo (!$target== null)? $target->getId():"";?>" /> <input
+							type="hidden" name="target_token"
+							value="<?php echo (!$target== null)? $target->getToken():"";?>" />
           			<?php endif;?>
             			
             			
@@ -205,54 +209,89 @@ if (count($errors) > 0) {
 								</div>
 
 
-		
-    									<div class="form-group margin-bottom required">
-    
-    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
-    									<div class="col-sm-3">
-    										<select name="incoterm_id" class="form-control input-sm">
-    											<option value="">Select Incoterm</option>
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm");?>:</label>
+									<div class="col-sm-3">
+										<select name="incoterm_id" class="form-control input-sm">
+											<option value="">---</option>
        	    							<?php
                 if ($incoterm_list !== null) :
-                foreach ($incoterm_list as $l) :
+                    foreach ($incoterm_list as $l) :
                         if ($entity !== null) :
-                        if ($entity->getIncoterm2() !== null) :
-                            if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
-                            echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                            if ($entity->getIncoterm2() !== null) :
+                                if ($entity->getIncoterm2()->getIncoterm() == $l->getIncoterm()) :
+                                    echo '<option selected value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                                 else :
-                                echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                                    echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                                 endif;
                             else :
-                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' .  $l->getIncoterm1(). '</option>';
+                                echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                             endif;
                         else :
-                        echo '<option value="' . $l->getId() . '">' . $l->getIncoterm()  . '-' .  $l->getIncoterm1(). '</option>';
+                            echo '<option value="' . $l->getId() . '">' . $l->getIncoterm() . '-' . $l->getIncoterm1() . '</option>';
                         endif;
                     endforeach
                     ;
        	    							endif;
-    
+
                 ?>
        					</select>
-    									</div>
-    									
-    									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
-    									<div class="col-sm-3">
-    										<input class="form-control input-sm" type="text"
-    											placeholder="" id="incotermPlace" name="incotermPlace"
-    											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
-    									</div>
-    									
-    								</div>
+									</div>
 
-						<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Incoterm Place");?>:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="incotermPlace" name="incotermPlace"
+											value="<?php echo (!$entity == null)? $entity->getIncotermPlace():"";?>">
+									</div>
+
+								</div>
+
+
+								<div class="form-group margin-bottom required">
+
 									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term");?>:</label>
+									<div class="col-sm-3">
+										<select name="incoterm_id" class="form-control input-sm">
+											<option value=""><?php echo $this->translate("---");?></option>
+       	    							<?php
+                $pmtTerm_list = $nmtPlugin->getPaymentTerms();
+
+                if ($pmtTerm_list !== null) :
+                    foreach ($pmtTerm_list as $l) :
+                        if ($entity !== null) :
+                            if ($entity->getPmtTerm() !== null) :
+                                if ($entity->getPmtTerm()->getPmtTermCode() == $l->getId()) :
+                                    echo '<option selected value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                                else :
+                                    echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                                endif;
+                            else :
+                                echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $l->getId() . '">' . $l->getPmtTermCode() . '</option>';
+                        endif;
+                    endforeach
+                    ;
+       	    							endif;
+
+                ?>
+       					</select>
+									</div>
+
+
+								</div>
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Term Detail");?>:</label>
 									<div class="col-sm-5">
 										<input class="form-control input-sm" type="text"
 											placeholder="" id="paymentTerm" name="paymentTerm"
 											value="<?php echo (!$entity == null)? $entity->getPaymentTerm():"";?>">
 									</div>
-									</div>
+								</div>
 
 
 								<div class="form-group margin-bottom">

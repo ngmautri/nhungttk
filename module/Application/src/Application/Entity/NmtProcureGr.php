@@ -239,6 +239,34 @@ class NmtProcureGr
     private $isPosted;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
+     */
+    private $isReversed;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
+     */
+    private $reversalDate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
+     */
+    private $reversalDoc;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
+     */
+    private $reversalReason;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1082,6 +1110,102 @@ class NmtProcureGr
     public function getIsPosted()
     {
         return $this->isPosted;
+    }
+
+    /**
+     * Set isReversed
+     *
+     * @param boolean $isReversed
+     *
+     * @return NmtProcureGr
+     */
+    public function setIsReversed($isReversed)
+    {
+        $this->isReversed = $isReversed;
+
+        return $this;
+    }
+
+    /**
+     * Get isReversed
+     *
+     * @return boolean
+     */
+    public function getIsReversed()
+    {
+        return $this->isReversed;
+    }
+
+    /**
+     * Set reversalDate
+     *
+     * @param \DateTime $reversalDate
+     *
+     * @return NmtProcureGr
+     */
+    public function setReversalDate($reversalDate)
+    {
+        $this->reversalDate = $reversalDate;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalDate
+     *
+     * @return \DateTime
+     */
+    public function getReversalDate()
+    {
+        return $this->reversalDate;
+    }
+
+    /**
+     * Set reversalDoc
+     *
+     * @param integer $reversalDoc
+     *
+     * @return NmtProcureGr
+     */
+    public function setReversalDoc($reversalDoc)
+    {
+        $this->reversalDoc = $reversalDoc;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalDoc
+     *
+     * @return integer
+     */
+    public function getReversalDoc()
+    {
+        return $this->reversalDoc;
+    }
+
+    /**
+     * Set reversalReason
+     *
+     * @param string $reversalReason
+     *
+     * @return NmtProcureGr
+     */
+    public function setReversalReason($reversalReason)
+    {
+        $this->reversalReason = $reversalReason;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalReason
+     *
+     * @return string
+     */
+    public function getReversalReason()
+    {
+        return $this->reversalReason;
     }
 
     /**

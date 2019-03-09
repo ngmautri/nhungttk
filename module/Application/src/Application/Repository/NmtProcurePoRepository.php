@@ -49,12 +49,16 @@ ON nmt_procure_po.id = nmt_procure_po_row.po_id
 WHERE 1
 ";
 
-    public function getPo($po_id, $token, $filter_by = null, $sort_by = null, $sort = null)
+    public function getPo($po_id, $token = null, $filter_by = null, $sort_by = null, $sort = null)
     {
         $sql = $this->sql;
 
-        $sql = $sql . " AND nmt_procure_po.id =" . $po_id . " AND nmt_procure_po.token='" . $token . "' GROUP BY nmt_procure_po.id";
-
+        if($token!==null){
+            $sql = $sql . " AND nmt_procure_po.id =" . $po_id . " AND nmt_procure_po.token='" . $token . "' GROUP BY nmt_procure_po.id";
+        }else{
+            $sql = $sql . " AND nmt_procure_po.id =" . $po_id . " GROUP BY nmt_procure_po.id";
+            
+        }
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePo', 'nmt_procure_po');
@@ -92,9 +96,9 @@ WHERE 1
         if ($docStatus != null) {
             $sql = $sql . " AND nmt_procure_po.doc_status = '" . $docStatus . "'";
         }
-
-        $sql = $sql . "     ";
-
+        
+        $sql = $sql . " GROUP BY nmt_procure_po.id";
+        
         switch ($sort_by) {
             case "sysNumber":
                 $sql = $sql . " ORDER BY nmt_procure_po.sys_number " . $sort;

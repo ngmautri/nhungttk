@@ -1,11 +1,11 @@
 <?php
 namespace Procure\Service;
 
+use Application\Entity\FinVendorInvoiceRow;
+use Application\Service\AbstractService;
 use Inventory\Model\GR\AbstractGRStrategy;
 use Inventory\Model\GR\GRStrategyFactory;
 use Procure\Model\Ap\AbstractAPRowPostingStrategy;
-use Application\Entity\FinVendorInvoiceRow;
-use Application\Service\AbstractService;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 
@@ -22,9 +22,10 @@ class APInvoiceService extends AbstractService
      *
      * @param \Application\Entity\FinVendorInvoice $entity
      * @param array $data
+     * @param boolean $isNew
      * @param boolean $isPosting
      */
-    public function validateHeader(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting = false)
+    public function validateHeader(\Application\Entity\FinVendorInvoice $entity, $data, $isNew = false, $isPosting = false)
     {
         $errors = array();
 
@@ -45,6 +46,14 @@ class APInvoiceService extends AbstractService
         }
 
         // ====== OK ====== //
+
+        $remarks = $data['remarks'];
+        $entity->setRemarks($remarks);
+
+        // only update remark posible, when posted.
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
+            return null;
+        }
 
         $sapDoc = $data['sapDoc'];
         $isActive = (int) $data['isActive'];
@@ -102,6 +111,12 @@ class APInvoiceService extends AbstractService
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
         }
+        
+        // checkPaymentTerm
+        $ck = $this->checkPaymentTerm($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
 
         return $errors;
     }
@@ -109,37 +124,100 @@ class APInvoiceService extends AbstractService
     /**
      *
      * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
      * @param \Application\Entity\MlaUsers $u
      * @param boolean $isNew
      */
-    public function saveHeader($entity, $u, $isNew = FALSE)
+    public function saveHeader($entity, $data, $u, $isNew = FALSE)
     {
-        if ($u == null) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        $errors = array();
+
+        if (! $u instanceof \Application\Entity\MlaUsers ) {
+            $m = $this->controllerPlugin->translate("Invalid Argument! User can't be indentided for this transaction.");
+            $errors [] = $m;
+            
         }
 
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
-            throw new \Exception("Invalid Argument. AP Object not found!");
+            $m = $this->controllerPlugin->translate("Invalid Argument. AP Object not found!");
+            $errors [] = $m;
+        }
+        
+        if (count($errors) > 0) {
+            return $errors;
+        }
+  
+        // ====== VALIDATED ====== //
+
+        $oldEntity = clone ($entity);
+
+        $ck = $this->validateHeader($entity, $data, $isNew);
+
+        if (count($ck) > 0) {
+            return $ck;
         }
 
-        // validated.
+        // ====== VALIDATED ====== //
 
-        $changeOn = new \DateTime();
+        try {
 
-        if ($isNew == TRUE) {
+            $changeOn = new \DateTime();
+            $changeArray = array();
 
-            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn($changeOn);
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-        } else {
-            $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            $entity->setLastchangeBy($u);
-            $entity->setLastchangeOn($changeOn);
+            if ($isNew == TRUE) {
+
+                $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+                $entity->setCreatedBy($u);
+                $entity->setCreatedOn($changeOn);
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            } else {
+
+                $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+                if (count($changeArray) == 0) {
+                    $errors[] = sprintf('Nothing changed.');
+                    return $errors;
+                }
+
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
+            }
+
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+
+            // LOGGING
+            if ($isNew == TRUE) {
+                $m = sprintf('[OK] AP #%s created.', $entity->getId());
+            } else {
+
+                $m = sprintf('[OK] AP #%s updated.', $entity->getId());
+
+                $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+            }
+
+            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
         }
 
-        $this->doctrineEM->persist($entity);
-        $this->doctrineEM->flush();
+        return $errors;
     }
 
     /**
@@ -371,13 +449,16 @@ class APInvoiceService extends AbstractService
     /**
      *
      * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
      * @param \Application\Entity\MlaUsers $u,
      * @param bool $isFlush,
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function post($entity, $u, $isFlush = false, $isPosting = 1)
+    public function post($entity, $data, $u, $isFlush = false, $isPosting = TRUE)
     {
+        $errors = array();
+
         if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
             throw new \Exception("Invalid Argument! Invoice can't not found.");
         }
@@ -396,71 +477,94 @@ class APInvoiceService extends AbstractService
             throw new \Exception("Invoice is empty. No Posting will be made!");
         }
 
-        // OK to post
-        // +++++++++++++++++++
+        // ====== VALIDATED ====== //
 
-        $changeOn = new \DateTime();
+        $oldEntity = clone($entity);
+        
+        $isPosting = TRUE;
+        $isNew = FALSE;
+        $ck = $this->validateHeader($entity, $data, $isNew, $isPosting);
 
-        // Assign doc number
-        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
-            $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
+        if (count($ck) > 0) {
+            return $ck;
         }
 
-        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-        $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
-        $entity->setRevisionNo($entity->getRevisionNo() + 1);
-        $entity->setLastchangeBy($u);
-        $entity->setLastchangeOn($changeOn);
-        $this->doctrineEM->persist($entity);
-
-        $n = 0;
-        foreach ($ap_rows as $r) {
-
-            /** @var \Application\Entity\FinVendorInvoiceRow $r ; */
-
-            // ignore row with Zero quantity
-            if ($r->getQuantity() == 0) {
-                $r->setIsActive(0);
-                continue;
-            }
-
-            $netAmount = $r->getQuantity() * $r->getUnitPrice();
-            $taxAmount = $netAmount * $r->getTaxRate() / 100;
-            $grossAmount = $netAmount + $taxAmount;
-
-            // UPDATE status
-            $n ++;
-            $r->setIsPosted(1);
-            $r->setIsDraft(0);
-
-            $r->setNetAmount($netAmount);
-            $r->setTaxAmount($taxAmount);
-            $r->setGrossAmount($grossAmount);
-            $r->setDocStatus($entity->getDocStatus());
-            $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
-            $r->setRowNumber($n);
-            $this->doctrineEM->persist($r);
-
-            $tTransaction = $r->getTransactionType();
-            $rowPostingStrategy = \Procure\Model\Ap\APRowPostingFactory::getPostingStrategy($tTransaction);
-
-            if (! $rowPostingStrategy instanceof AbstractAPRowPostingStrategy) {
-                throw new \Exception("Posting strategy is not identified for this transaction!");
-            }
-
-            $rowPostingStrategy->setContextService($this);
-            $rowPostingStrategy->doPosting($entity, $r, $u);
-        }
-
-        /**
-         *
-         * @todo: Do Accounting Posting
-         */
-        $this->jeService->postAP($entity, $ap_rows, $u, $this->controllerPlugin);
-        $this->doctrineEM->flush();
+        // ====== VALIDATED ====== //
 
         try {
 
+            $changeOn = new \DateTime();
+            
+            /** UPDATE HEADER*/
+            /** ======================*/
+            
+
+            // Assign doc number
+            if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+                $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
+            }
+
+            $entity->setIsActive(1);
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+            $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+            $this->doctrineEM->persist($entity);
+
+            
+            /** POSTING ROW*/
+            /** ======================*/
+            
+            $n = 0;
+            foreach ($ap_rows as $r) {
+
+                /** @var \Application\Entity\FinVendorInvoiceRow $r ; */
+
+                // ignore row with Zero quantity
+                if ($r->getQuantity() == 0) {
+                    $r->setIsActive(0);
+                    continue;
+                }
+
+                $netAmount = $r->getQuantity() * $r->getUnitPrice();
+                $taxAmount = $netAmount * $r->getTaxRate() / 100;
+                $grossAmount = $netAmount + $taxAmount;
+
+                // UPDATE status
+                $n ++;
+                $r->setIsPosted(1);
+                $r->setIsDraft(0);
+
+                $r->setNetAmount($netAmount);
+                $r->setTaxAmount($taxAmount);
+                $r->setGrossAmount($grossAmount);
+                $r->setDocStatus($entity->getDocStatus());
+                $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
+                $r->setRowNumber($n);
+                $this->doctrineEM->persist($r);
+
+                $tTransaction = $r->getTransactionType();
+                $rowPostingStrategy = \Procure\Model\Ap\APRowPostingFactory::getPostingStrategy($tTransaction);
+
+                if (! $rowPostingStrategy instanceof AbstractAPRowPostingStrategy) {
+                    throw new \Exception("Posting strategy is not identified for this transaction!");
+                }
+
+                $rowPostingStrategy->setContextService($this);
+                $rowPostingStrategy->doPosting($entity, $r, $u);
+            }
+
+            /** POSTING JOURNAL ENTRY*/
+            /** ======================*/
+            $this->jeService->postAP($entity, $ap_rows, $u, $this->controllerPlugin);
+            
+            // need to flush
+            $this->doctrineEM->flush();
+
+            
+            /** POSTING WH GOODs RECEIPT*/ 
+            /** ======================*/
             $criteria = array(
                 'isActive' => 1,
                 'vendorInvoice' => $entity
@@ -481,28 +585,242 @@ class APInvoiceService extends AbstractService
                 $inventoryPostingStrategy->setContextService($this);
                 $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(), $entity->getWarehouse());
             }
-        } catch (\Exception $e) {
-            // left bank.
 
-            $m = sprintf('[ERROR] %s', $e->getMessage());
-            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::ERR,
+            /** UPDATING SEARCH INDEX */
+            /** ======================*/
+            $apSearchService = new \Procure\Service\APSearchService();
+            $apSearchService->indexingAPRows($ap_rows);
+            
+            /** LOGGING */
+            /** ======================*/
+            $m = sprintf('[OK] AP Invoice %s posted', $entity->getSysNumber());
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'createdBy' => $u,
                 'createdOn' => $changeOn
             ));
+            
+            
+            $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+            if (count($changeArray) == 0) {
+                
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
+            }
+             $this->getEventManager()->trigger('finance.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+              
+            // need to flush
+            $this->doctrineEM->flush();
+            
+            
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
         }
 
-        $m = sprintf('[OK] AP Invoice %s posted', $entity->getSysNumber());
-        $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
-            'priority' => \Zend\Log\Logger::INFO,
-            'message' => $m,
-            'createdBy' => $u,
-            'createdOn' => $changeOn
-        ));
-
-        $apSearchService = new \Procure\Service\APSearchService();
-        $apSearchService->indexingAPRows($ap_rows);
+        return $errors;
+    }
+    
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param \Application\Entity\MlaUsers $u,
+     * @param bool $isFlush,
+     *
+     */
+    public function reverseAP($entity, $u, $reversalDate, $reversalReason)
+    {
+        $errors = array();
+        
+        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
+             $errors[] = $this->controllerPlugin->translate('Invalid Argument! Invoice not found)');
+        }else{
+            
+            // only when posted.
+            if ($entity->getDocStatus()!== \Application\Model\Constants::DOC_STATUS_POSTED) {
+                $errors[] = $this->controllerPlugin->translate('Invoice not posted yet. Reserval imposible.');
+            }
+        }
+        
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            $errors[] = $this->controllerPlugin->translate('Invalid Argument! User not found)');
+        }
+        
+        $criteria = array(
+            'isActive' => 1,
+            'invoice' => $entity
+        );
+        $ap_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria);
+        
+        if (count($ap_rows) == 0) {
+            $errors[] = $this->controllerPlugin->translate('Invoice is empty. Reserval imposible.');
+        }
+        
+        if (count($errors) > 0) {
+            return $errors;
+        }
+        
+        // ====== VALIDATED ====== //
+        
+        
+        /** @var \Application\Entity\FinVendorInvoice $newEntity ; */
+        $oldEntity = clone($entity);
+        
+        
+        $data = array();
+        $data['postingDate'] = $reversalDate;
+        $data['invoiceDate'] = $reversalDate;
+        
+        /**
+         * Check Reversal Date.
+         */
+        $ck = $this->checkInvoiceDate($oldEntity, $data, TRUE);
+        
+        if (count($ck) > 0) {
+            return $errors;
+        }
+        
+        // ====== VALIDATED ====== //
+        
+        try {
+            
+            $changeOn = new \DateTime();
+            
+            /** UPDATE OLD HEADER*/
+            /** ======================*/
+            
+                
+            $entity->setIsReversed(1);
+            $entity->setReversalReason($reversalReason);
+            $entity->setReversalDate(new \DateTime($reversalDate));
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+            $this->doctrineEM->persist($entity);
+            
+            /** POSTING ROW*/
+            /** ======================*/
+            
+            $n = 0;
+            foreach ($ap_rows as $r) {
+           
+                // ignore row with Zero quantity
+                if ($r->getQuantity() == 0) {
+                    $r->setIsActive(0);
+                    continue;
+                }
+                
+                $n++;
+                
+                $old_r = clone($r);
+                
+                // update new row.
+                
+                //important!
+                $r->setRemarks($entity->getRemarks());
+                $r->setIsReversed(1);
+                $r->setReversalReason($reversalReason);
+                $r->setReversalDate(new \DateTime($reversalDate));
+                $this->doctrineEM->persist($r);
+                
+                /**
+                 * @todo: Reverse Row - done
+                 */
+                $tTransaction = $r->getTransactionType();
+                $rowPostingStrategy = \Procure\Model\Ap\APRowPostingFactory::getReversalStrategy($tTransaction);
+                
+                if (! $rowPostingStrategy instanceof AbstractAPRowPostingStrategy) {
+                    throw new \Exception("Reversal strategy is not found for this transaction!");
+                }
+                
+                $rowPostingStrategy->setContextService($this);
+                $rowPostingStrategy->doPosting($entity, $r, $u);
+                
+              }
+            
+            /** POSTING JOURNAL ENTRY*/
+            /** ======================*/
+            
+            /**
+             * @todo: Reverval JE 
+             */
+            $this->jeService->reverseAP($entity, $ap_rows, $u, $this->controllerPlugin);
+            
+            // need to flush
+            $this->doctrineEM->flush();
+            
+            
+            /** REVERSAL WH GOODs RECEIPT*/
+            /** ======================*/
+            /**
+             * @todo: Reverval Good Receipt WH.
+             */
+            $criteria = array(
+                'isActive' => 1,
+                'vendorInvoice' => $entity
+            );
+            
+            $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
+            
+            // if have inventory item.
+            if (count($inventory_trx_rows) > 0) {
+                
+                $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
+                
+                if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+                    throw new \Exception("Posting strategy is not identified for this inventory movement type!");
+                }
+                
+                // do posting now
+                $inventoryPostingStrategy->setContextService($this);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getReversalDate(), $entity->getWarehouse());
+            }
+            
+            /** UPDATING SEARCH INDEX */
+            /** ======================*/
+            
+            
+            /**
+             * 
+             * @todo
+             */
+            $apSearchService = new \Procure\Service\APSearchService();
+            $apSearchService->indexingAPRows($ap_rows);
+            
+            /** LOGGING */
+            /** ======================*/
+            $m = sprintf('[OK] AP Invoice %s reversed.', $entity->getSysNumber());
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+            
+            
+            // need to flush
+            $this->doctrineEM->flush();
+                  
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+        
+        return $errors;
+        
+        
     }
 
     /**
@@ -1264,6 +1582,32 @@ class APInvoiceService extends AbstractService
                 }
             } else {
                 // $errors[] = $this->controllerPlugin->translate('Vendor can\'t be empty. Please select a vendor!');
+            }
+        }
+        return $errors;
+    }
+    
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkPaymentTerm(\Application\Entity\FinVendorInvoice $entity, $data, $isPosting)
+    {
+        $errors = array();
+        if (isset($data['payment_term_id'])) {
+            // $errors[] = $this->controllerPlugin->translate('Incoterm id is not set!');
+            
+            $payment_term_id = (int) $data['payment_term_id'];
+            
+            /** @var \Application\Entity\NmtApplicationPmtTerm $payment_term ; */
+            $payment_term = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtTerm')->find($payment_term_id);
+            
+            if ($payment_term !== null) {
+                $entity->setPmtTerm($payment_term);
+             } else {
+                $errors[] = $this->controllerPlugin->translate('Payment Term is not set.');
             }
         }
         return $errors;

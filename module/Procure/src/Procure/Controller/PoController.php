@@ -94,7 +94,8 @@ class PoController extends AbstractActionController
                     'entity' => null,
                     'target' => null,
                     'currency_list' => $currency_list,
-                    'incoterm_list' => $incoterm_list
+                    'incoterm_list' => $incoterm_list,
+                    'nmtPlugin' => $nmtPlugin,
                 ));
             }
 
@@ -112,7 +113,9 @@ class PoController extends AbstractActionController
                     'entity' => $entity,
                     'target' => $target,
                     'currency_list' => $currency_list,
-                    'incoterm_list' => $incoterm_list
+                    'incoterm_list' => $incoterm_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
                 ));
                 
                 $viewModel->setTemplate("procure/po/crud");
@@ -138,7 +141,9 @@ class PoController extends AbstractActionController
                     'entity' => $entity,
                     'target' => $target,
                     'currency_list' => $currency_list,
-                    'incoterm_list' => $incoterm_list
+                    'incoterm_list' => $incoterm_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
                 ));
                 
                 $viewModel->setTemplate("procure/po/crud");
@@ -207,7 +212,9 @@ class PoController extends AbstractActionController
             'entity' => $entity,
             'target' => $target,
             'currency_list' => $currency_list,
-            'incoterm_list' => $incoterm_list
+            'incoterm_list' => $incoterm_list,
+            'nmtPlugin' => $nmtPlugin,
+            
         ));
         
         $viewModel->setTemplate("procure/po/crud");
@@ -261,7 +268,9 @@ class PoController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
-                    'incoterm_list' => $incoterm_list
+                    'incoterm_list' => $incoterm_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
                 ));
 
                 $viewModel->setTemplate("procure/po/add");
@@ -286,10 +295,11 @@ class PoController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'currency_list' => $currency_list,
-                    'incoterm_list' => $incoterm_list
+                    'incoterm_list' => $incoterm_list,
+                    'nmtPlugin' => $nmtPlugin,
                 ));
 
-                $viewModel->setTemplate("procure/po/add");
+                $viewModel->setTemplate("procure/po/crud");
                 return $viewModel;
             }
 
@@ -325,9 +335,10 @@ class PoController extends AbstractActionController
             'entity' => $entity,
             'currency_list' => $currency_list,
             'incoterm_list' => $incoterm_list,
+            'nmtPlugin' => $nmtPlugin,
         ));
 
-        $viewModel->setTemplate("procure/po/add");
+        $viewModel->setTemplate("procure/po/crud");
         return $viewModel;
     }
 
@@ -678,11 +689,13 @@ class PoController extends AbstractActionController
                     'entity' => null,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
                     
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("procure/po/add");
+                $viewModel->setTemplate("procure/po/crud");
                 return $viewModel;
             }
 
@@ -727,11 +740,13 @@ class PoController extends AbstractActionController
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
                     
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("procure/po/add");
+                $viewModel->setTemplate("procure/po/crud");
                 return $viewModel;
             }
 
@@ -759,11 +774,13 @@ class PoController extends AbstractActionController
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
                     
                     'n' => $nTry
                 ));
 
-                $viewModel->setTemplate("procure/po/add");
+                $viewModel->setTemplate("procure/po/crud");
                 return $viewModel;
             }
 
@@ -831,11 +848,13 @@ class PoController extends AbstractActionController
             'entity' => $entity,
             'currency_list' => $currency_list,
             'incoterm_list' => $incoterm_list,
+            'nmtPlugin' => $nmtPlugin,
+            
             
             'n' => 0
         ));
 
-        $viewModel->setTemplate("procure/po/add");
+        $viewModel->setTemplate("procure/po/crud");
         return $viewModel;
     }
 

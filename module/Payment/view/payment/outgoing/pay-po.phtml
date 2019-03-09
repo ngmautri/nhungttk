@@ -273,7 +273,7 @@ if (count($errors) > 0) {
 											value="<?php echo (!$entity == null)? $entity->getDocAmount():"";?>">
 									</div>
 									<div class="col-sm-3" style="color: graytext;">
-                         	        		[Invoice amount: <?php if($ap['gross_amount']!==null): echo number_format($ap['gross_amount'],2); endif;?>] [paid: <?php if($ap['total_doc_amount_paid']!==null): echo number_format($ap['total_doc_amount_paid'],2); endif;?>] 
+                         	        		[PO amount: <?php if($entity_array['gross_amount']!==null): echo number_format($entity_array['gross_amount'],2); endif;?>] [Invoiced: <?php if($entity_array['billed_amount']!==null): echo number_format($entity_array['billed_amount'],2); endif;?>] 
                           			</div>
 
 

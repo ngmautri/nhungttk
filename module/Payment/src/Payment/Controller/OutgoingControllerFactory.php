@@ -30,6 +30,8 @@ class OutgoingControllerFactory implements FactoryInterface
 		$sv = $sm->get('Payment\Service\APPaymentService' );
 		$controller->setApPaymentService($sv);
 		
+		$sv = $sm->get('Payment\Service\POPaymentService' );
+		$controller->setPoPaymentService($sv);
 		
 		
 		return $controller;

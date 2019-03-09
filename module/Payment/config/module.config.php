@@ -35,7 +35,15 @@ return array(
                 'controller' => 'bank',
                 'action' => 'add',
                 'icon' => 'glyphicon glyphicon-plus'
-            )
+            ),
+            
+            array(
+                'label' => 'Log',
+                'route' => 'payment/default',
+                'controller' => 'activity-log',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
         )
     ),
     'router' => array(
@@ -81,6 +89,10 @@ return array(
     'controllers' => array(
         'factories' => array(
             'Payment\Controller\Index' => 'Payment\Controller\IndexControllerFactory',
+            'Payment\Controller\ActivityLog' => 'Payment\Controller\ActivityLogControllerFactory',
+            'Payment\Controller\ChangeLog' => 'Payment\Controller\ChangeLogControllerFactory',
+            
+            
             'Payment\Controller\Outgoing' => 'Payment\Controller\OutgoingControllerFactory',
             
         )

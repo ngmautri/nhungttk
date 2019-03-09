@@ -93,7 +93,7 @@ WHERE 1
             $sql = $sql . " AND nmt_procure_po.doc_status = '" . $docStatus . "'";
         }
 
-        $sql = $sql . " GROUP BY nmt_procure_po.id";
+        $sql = $sql . "     ";
 
         switch ($sort_by) {
             case "sysNumber":

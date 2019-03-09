@@ -1,16 +1,12 @@
 <?php
 namespace Payment\Service;
 
-use Inventory\Model\GR\AbstractGRStrategy;
-use Inventory\Model\GR\GRStrategyFactory;
-use Procure\Model\Ap\AbstractAPRowPostingStrategy;
-use Application\Entity\FinVendorInvoiceRow;
 use Application\Service\AbstractService;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 
 /**
- * AP Invoice Service.
+ * AP Payment Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -162,6 +158,8 @@ class APPaymentService extends AbstractService
             throw new \Exception("Invalid Argument. Outgoing Payment Object not found!");
         }
 
+        $oldEntity = clone ($entity);
+
         $ck = $this->validateHeader($entity, $data, FALSE);
 
         if (count($ck) > 0) {
@@ -182,19 +180,53 @@ class APPaymentService extends AbstractService
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn($changeOn);
                 $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+      
             } else {
+
+                $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+                if (count($changeArray) == 0) {
+                    $errors[] = sprintf('Nothing changed!');
+                    return $errors;
+                }
+
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
                 $entity->setLastchangeBy($u);
                 $entity->setLastchangeOn($changeOn);
-            }
 
+                $m = sprintf('[OK] Payment #%s for AP %s updated.', $entity->getId(), $entity->getApInvoice()->getId());
+                $this->getEventManager()->trigger('payment.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+            }
+            
+            if ($isNew == TRUE) {
+                $m = sprintf('[OK] Payment #%s for AP %s  created.', $entity->getSysNumber(),$entity->getApInvoice()->getId());
+            }
+            
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-        } catch (\Exception $e) {
+            
+            $this->getEventManager()->trigger('payment.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+
+          } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }
 
-        return null;
+        return $errors;
     }
 
     /**
@@ -226,6 +258,7 @@ class APPaymentService extends AbstractService
             return $errors;
         }
 
+        $oldEntity = clone ($entity);
         $errors = $this->validateHeader($entity, $data, TRUE);
 
         if (count($errors) > 0) {
@@ -234,12 +267,11 @@ class APPaymentService extends AbstractService
 
         // OK to post
         // +++++++++++++++++++
-        
+
         // Assign doc number
         if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED or $entity->getSysNumber() == null) {
             $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
         }
-        
 
         $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
         $entity->setIsActive(1);
@@ -250,18 +282,53 @@ class APPaymentService extends AbstractService
         $changeOn = new \DateTime();
 
         if ($isNew == TRUE) {
-    
+
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($changeOn);
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+             
         } else {
+
+            $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+            if (count($changeArray) == 0) {
+                $errors[] = sprintf('Nothing changed!');
+                return $errors;
+            }
+
             $entity->setRevisionNo($entity->getRevisionNo() + 1);
             $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);
+
+            $m = sprintf('[OK] Payment #%s for AP %s updated and posted.', $entity->getId(), $entity->getApInvoice()->getId());
+            // Trigger Change Log. AbtractController is EventManagerAware.
+
+            $this->getEventManager()->trigger('payment.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
         }
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
+
+        if ($isNew == TRUE) {
+            $m = sprintf('[OK] Payment #%s for AP %s  posted.', $entity->getSysNumber(),$entity->getApInvoice()->getId());
+        }
+        
+         $this->getEventManager()->trigger('payment.activity.log', __METHOD__, array(
+            'priority' => \Zend\Log\Logger::INFO,
+            'message' => $m,
+            'createdBy' => $u,
+            'createdOn' => $changeOn
+        ));
 
         /**
          *
@@ -269,14 +336,6 @@ class APPaymentService extends AbstractService
          */
         $this->jeService->postAPPayment($entity, $u, $this->controllerPlugin);
         $this->doctrineEM->flush();
-
-        $m = sprintf('[OK] AP Payment %s posted', $entity->getSysNumber());
-        $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-            'priority' => \Zend\Log\Logger::INFO,
-            'message' => $m,
-            'createdBy' => $u,
-            'createdOn' => $changeOn
-        ));
 
         return null;
     }
@@ -315,6 +374,7 @@ class APPaymentService extends AbstractService
 
         /** @var \Application\Entity\PmtOutgoing $newEntity */
         $newEntity = clone ($entity);
+
         $newEntity->setPostingDate(null);
         $newEntity->setRemarks($reversalReason);
 
@@ -369,8 +429,8 @@ class APPaymentService extends AbstractService
         $this->jeService->reverseAPPayment($entity, $u, $this->controllerPlugin);
         $this->doctrineEM->flush();
 
-        $m = sprintf('[OK] AP Payment %s reversed', $entity->getSysNumber());
-        $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+        $m = sprintf('[OK] Payment %s reversed.', $entity->getSysNumber());
+        $this->getEventManager()->trigger('payment.activity.log', __METHOD__, array(
             'priority' => \Zend\Log\Logger::INFO,
             'message' => $m,
             'createdBy' => $u,

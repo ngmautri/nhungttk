@@ -40,6 +40,10 @@ if ($entity !== null) {
 <div id="tabs" style="font-size: 10pt">
 	<ul>
 		<li><a href="#general"><?php echo $form_title;?></a></li>
+						<li><a title="<?php echo $this->translate("Change Logs");?>"
+			href="<?php echo $this->baseUrl ?>/payment/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+		
 	</ul>
 
 	<div id="general" style="font-size: 9pt">

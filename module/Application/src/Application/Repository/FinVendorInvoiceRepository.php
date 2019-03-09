@@ -112,11 +112,15 @@ WHERE 1";
      * @param string $sort
      * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL|NULL
      */
-    public function getVendorInvoice($invoice_id, $token, $filter_by = null, $sort_by = null, $sort = null)
+    public function getVendorInvoice($invoice_id, $token = null, $filter_by = null, $sort_by = null, $sort = null)
     {
         $sql = $this->sql;
         
-        $sql = $sql . " AND fin_vendor_invoice.id =" . $invoice_id . " AND fin_vendor_invoice.token='" . $token . "' GROUP BY fin_vendor_invoice.id";
+        if($token!== Null){
+            $sql = $sql . " AND fin_vendor_invoice.id =" . $invoice_id . " AND fin_vendor_invoice.token='" . $token . "' GROUP BY fin_vendor_invoice.id";
+        }else{
+            $sql = $sql . " AND fin_vendor_invoice.id =" . $invoice_id . " GROUP BY fin_vendor_invoice.id";
+        }
         
         try {
             $rsm = new ResultSetMappingBuilder($this->_em);

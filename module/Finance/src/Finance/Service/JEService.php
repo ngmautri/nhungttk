@@ -238,6 +238,8 @@ class JEService extends AbstractService
         $je->setSourceClass(get_class($entity));
         $je->setSourceId($entity->getId());
         $je->setSourceToken($entity->getToken());
+        $je->setJeRemarks($entity->getRemarks());
+        
 
         $this->doctrineEM->persist($je);
     
@@ -287,12 +289,24 @@ class JEService extends AbstractService
             $je_row->setCreatedBy($u);
             $je_row->setCreatedOn($entity->getCreatedOn());
             $je_row->setSysNumber($je->getSysNumber() . "-2");
+            $je_row->setJeDescription($entity->getRemarks());
+            
             $this->doctrineEM->persist($je_row);
         }
 
         if ($isFlush == true) {
             $this->doctrineEM->flush();
         }
+        
+        $m = sprintf('[OK] Journal Entry #%s posted. Ref.%s', $je->getSysNumber(), $entity->getSysNumber());
+        
+        $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+            'priority' => \Zend\Log\Logger::INFO,
+            'message' => $m,
+            'createdBy' => $u,
+            'createdOn' => $entity->getCreatedOn()
+        ));
+        
     }
     
     /**
@@ -403,6 +417,15 @@ class JEService extends AbstractService
         if ($isFlush == true) {
             $this->doctrineEM->flush();
         }
+        
+        $m = sprintf('[OK] Journal Entry #%s posted [Reserval]. Ref.%s', $je->getSysNumber(), $entity->getSysNumber());
+        
+        $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+            'priority' => \Zend\Log\Logger::INFO,
+            'message' => $m,
+            'createdBy' => $u,
+            'createdOn' => $entity->getCreatedOn()
+        ));
     }
 
     /**

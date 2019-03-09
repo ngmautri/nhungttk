@@ -174,6 +174,7 @@ else:
 			<td><b>Curr</b></td>
 			<td><b>Gross <br>amount</b></td>
 			<td><b>Billed <br>amount</b></td>
+			<td><b><?php echo $this->translate("Paid amount");?> </b></td>
 			<td><b>Current State</b></td>
 			<td><b>Action</b></td>
 		</tr>
@@ -229,6 +230,7 @@ else:
 		  	   endif;
 		  	endif;?>
 		  	</td>
+		  	<td></td>
 			<td><?php echo $a->getCurrentState()?></td>
 			<td>
 <a href="<?php echo $this->baseUrl ?>/procure/po/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>

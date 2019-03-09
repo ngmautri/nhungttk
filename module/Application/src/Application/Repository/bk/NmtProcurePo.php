@@ -226,6 +226,13 @@ class NmtProcurePo
     private $docType;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="payment_status", type="string", length=10, nullable=true)
+     */
+    private $paymentStatus;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1021,6 +1028,30 @@ class NmtProcurePo
     public function getDocType()
     {
         return $this->docType;
+    }
+
+    /**
+     * Set paymentStatus
+     *
+     * @param string $paymentStatus
+     *
+     * @return NmtProcurePo
+     */
+    public function setPaymentStatus($paymentStatus)
+    {
+        $this->paymentStatus = $paymentStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get paymentStatus
+     *
+     * @return string
+     */
+    public function getPaymentStatus()
+    {
+        return $this->paymentStatus;
     }
 
     /**

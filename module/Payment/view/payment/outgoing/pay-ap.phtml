@@ -48,6 +48,14 @@ switch ($action) {
 			<div id="tabs" style="font-size: 10pt">
 				<ul>
 					<li><a href="#general"><?php echo $form_title;?></a></li>
+					
+							<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+     	
+						<li><a title="<?php echo $this->translate("Change Logs");?>"
+			href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+						<?php endif;?>
+			
 				</ul>
 
 				<div id="general" style="font-size: 9pt">
@@ -78,7 +86,7 @@ if (count($errors) > 0) {
 							value="<?php echo (!$target== null)? $target->getId():"";?>" /> <input
 							type="hidden" name="target_token"
 							value="<?php echo (!$target== null)? $target->getToken():"";?>" />
-							
+
 						<input type="hidden" id="isDraft" name="isDraft" value="1" />
 							 
 							
@@ -176,6 +184,13 @@ if (count($errors) > 0) {
             ?>
    					</select>
 									</div>
+
+									<div class="col-sm-3">
+
+										<a target="blank" style="font-size: 9pt;"
+											href="/application/pmt-method/list"><?php echo $this->translate("Payment methods");?>&nbsp;</a><small><i
+											class="glyphicon glyphicon-new-window"></i></small>
+									</div>
 								</div>
 
 
@@ -253,14 +268,14 @@ if (count($errors) > 0) {
 								<div class="form-group margin-bottom required">
 									<label class="control-label col-sm-2"><?php echo $this->translate("Payment Amount");?>:</label>
 									<div class="col-sm-3">
-										<input  class="form-control input-sm" type="text"
+										<input class="form-control input-sm" type="text"
 											placeholder="" id="docAmount" name="docAmount"
 											value="<?php echo (!$entity == null)? $entity->getDocAmount():"";?>">
 									</div>
-                					<div class="col-sm-3">
-                         	        		<?php echo $ap['gross_amount']?>
+									<div class="col-sm-3" style="color: graytext;">
+                         	        		[Invoice amount: <?php if($ap['gross_amount']!==null): echo number_format($ap['gross_amount'],2); endif;?>] [paid: <?php if($ap['total_doc_amount_paid']!==null): echo number_format($ap['total_doc_amount_paid'],2); endif;?>] 
                           			</div>
-                			
+
 
 								</div>
 

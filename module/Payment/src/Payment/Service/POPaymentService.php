@@ -1,13 +1,12 @@
 <?php
 namespace Payment\Service;
 
-use Application\Entity\FinVendorInvoiceRow;
 use Application\Service\AbstractService;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 
 /**
- * PO PaymentService.
+ * PO Payment Service.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -21,17 +20,19 @@ class POPaymentService extends AbstractService
      * @param array $data
      * @param boolean $isPosting
      */
-    public function validateHeader(\Application\Entity\PmtOutgoing $entity, $data, $isPosting = false)
+    public function validateHeader(\Application\Entity\PmtOutgoing $entity, $data, $isPosting = TRUE)
     {
         $errors = array();
 
         if (! $entity instanceof \Application\Entity\PmtOutgoing) {
             $errors[] = $this->controllerPlugin->translate('Payment  is not found!');
-        }else{
-            
+        } else {
+
             if ($entity->getLocalCurrency() == null) {
                 $errors[] = $this->controllerPlugin->translate('Local currency is not found!');
             }
+
+            $entity->setDocType(\Payment\Model\Constants::OUTGOING_AP);
         }
 
         if ($data == null) {
@@ -140,73 +141,194 @@ class POPaymentService extends AbstractService
     /**
      *
      * @param \Application\Entity\PmtOutgoing $entity
+     * @param array $data
      * @param \Application\Entity\MlaUsers $u
      * @param boolean $isNew
+     * @throws \Exception
      */
-    public function saveHeader($entity, $u, $isNew = FALSE)
+    public function saveHeader($entity, array $data, $u, $isNew = FALSE)
     {
+        $errors = array();
+
         if ($u == null) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
 
-        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
+        if (! $entity instanceof \Application\Entity\PmtOutgoing) {
             throw new \Exception("Invalid Argument. Outgoing Payment Object not found!");
         }
 
-        // validated.
+        $oldEntity = clone ($entity);
 
-        $changeOn = new \DateTime();
+        $ck = $this->validateHeader($entity, $data, FALSE);
 
-        if ($isNew == TRUE) {
-
-            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn($changeOn);
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-        } else {
-            $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            $entity->setLastchangeBy($u);
-            $entity->setLastchangeOn($changeOn);
+        if (count($ck) > 0) {
+            return $ck;
         }
 
-        $this->doctrineEM->persist($entity);
-        $this->doctrineEM->flush();
+        // OK to save draft
+
+        try {
+
+            $entity->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+
+            $changeOn = new \DateTime();
+
+            if ($isNew == TRUE) {
+
+                $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+                $entity->setCreatedBy($u);
+                $entity->setCreatedOn($changeOn);
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+      
+            } else {
+
+                $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+                if (count($changeArray) == 0) {
+                    $errors[] = sprintf('Nothing changed!');
+                    return $errors;
+                }
+
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
+
+                $m = sprintf('[OK] Payment #%s for AP %s updated.', $entity->getId(), $entity->getApInvoice()->getId());
+                $this->getEventManager()->trigger('payment.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+            }
+            
+            if ($isNew == TRUE) {
+                $m = sprintf('[OK] Payment #%s for AP %s  created.', $entity->getSysNumber(),$entity->getApInvoice()->getId());
+            }
+            
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+            
+            $this->getEventManager()->trigger('payment.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+
+          } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return $errors;
     }
 
     /**
      *
      * @param \Application\Entity\PmtOutgoing $entity
+     * @param array $data
      * @param \Application\Entity\MlaUsers $u,
      * @param bool $isFlush,
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public function post($entity, $u, $isFlush = false, $isPosting = True)
+    public function post($entity, array $data, $u, $isNew = TRUE, $isFlush = false)
     {
+        $errors = array();
+
+        if ($u == null) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument! User can't be indentided for this transaction.");
+        }
+
         if (! $entity instanceof \Application\Entity\PmtOutgoing) {
-            throw new \Exception("Invalid Argument! Payment Object can't not found.");
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument. Outgoing Payment Object not found!");
+        } else {
+            if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
+                $errors[] = $this->controllerPlugin->translate("Outgoing Payment already posted");
+            }
         }
 
-        if (! $u instanceof \Application\Entity\MlaUsers) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        if (count($errors) > 0) {
+            return $errors;
         }
 
-              // OK to post
+        $oldEntity = clone ($entity);
+        $errors = $this->validateHeader($entity, $data, TRUE);
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // OK to post
         // +++++++++++++++++++
+
+        // Assign doc number
+        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED or $entity->getSysNumber() == null) {
+            $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
+        }
+
+        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+        $entity->setIsActive(1);
+
+        $entity->setLocalAmount($entity->getDocAmount() * $entity->getExchangeRate());
+        $entity->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
 
         $changeOn = new \DateTime();
 
-        // Assign doc number
-        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED OR $entity->getSysNumber() ==null) {
-            $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
+        if ($isNew == TRUE) {
+
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn($changeOn);
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+             
+        } else {
+
+            $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+            if (count($changeArray) == 0) {
+                $errors[] = sprintf('Nothing changed!');
+                return $errors;
+            }
+
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+
+            $m = sprintf('[OK] Payment #%s for AP %s updated and posted.', $entity->getId(), $entity->getApInvoice()->getId());
+            // Trigger Change Log. AbtractController is EventManagerAware.
+
+            $this->getEventManager()->trigger('payment.change.log', __METHOD__, array(
+                'priority' => 7,
+                'message' => $m,
+                'objectId' => $entity->getId(),
+                'objectToken' => $entity->getToken(),
+                'changeArray' => $changeArray,
+                'changeBy' => $u,
+                'changeOn' => $changeOn,
+                'revisionNumber' => $entity->getRevisionNo(),
+                'changeDate' => $changeOn,
+                'changeValidFrom' => $changeOn
+            ));
+        }
+
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+
+        if ($isNew == TRUE) {
+            $m = sprintf('[OK] Payment #%s for AP %s  posted.', $entity->getSysNumber(),$entity->getApInvoice()->getId());
         }
         
-        $entity->setLocalAmount($entity->getDocAmount()*$entity->getExchangeRate());
-
-        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-         $entity->setCreatedBy($u);
-        $entity->setCreatedOn($changeOn);
-        $this->doctrineEM->persist($entity);
+         $this->getEventManager()->trigger('payment.activity.log', __METHOD__, array(
+            'priority' => \Zend\Log\Logger::INFO,
+            'message' => $m,
+            'createdBy' => $u,
+            'createdOn' => $changeOn
+        ));
 
         /**
          *
@@ -215,451 +337,107 @@ class POPaymentService extends AbstractService
         $this->jeService->postAPPayment($entity, $u, $this->controllerPlugin);
         $this->doctrineEM->flush();
 
-        $m = sprintf('[OK] AP Payment %s posted', $entity->getSysNumber());
-        $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+        return null;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\PmtOutgoing $entity
+     * @param array $data
+     * @param \Application\Entity\MlaUsers $u,
+     * @param bool $isFlush,
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function reverse($entity, $u, $reversalDate, $reversalReason)
+    {
+        $errors = array();
+
+        if ($u == null) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument! User can't be indentided for this transaction.");
+        }
+
+        if (! $entity instanceof \Application\Entity\PmtOutgoing) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument. Outgoing Payment Object not found!");
+        } else {
+            if ($entity->getIsReversed() == 1) {
+                $errors[] = $this->controllerPlugin->translate("Outgoing Payment already reversed.");
+            }
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // OK to post
+        // +++++++++++++++++++
+
+        /** @var \Application\Entity\PmtOutgoing $newEntity */
+        $newEntity = clone ($entity);
+
+        $newEntity->setPostingDate(null);
+        $newEntity->setRemarks($reversalReason);
+
+        $data = array();
+        $data['postingDate'] = $reversalDate;
+
+        /**
+         * Check Posting Date.
+         */
+        $ck = $this->checkPostingDate($newEntity, $data, TRUE);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // OK to reverse
+        // +++++++++++++++++++
+
+        $newEntity->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+        $newEntity->setDocType(\Payment\Model\Constants::OUTGOING_AP_REVERSAL);
+        $newEntity->setIsReversed(1);
+        $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+
+        // Assign doc number
+        $newEntity->setSysNumber($this->controllerPlugin->getDocNumber($newEntity));
+        $newEntity->setLocalAmount($newEntity->getDocAmount() * $newEntity->getExchangeRate());
+
+        $changeOn = new \DateTime();
+
+        $newEntity->setCreatedBy($u);
+        $newEntity->setCreatedOn($changeOn);
+        $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+
+        $this->doctrineEM->persist($newEntity);
+
+        $entity->setIsReversed(1);
+        $entity->setReversalDate($newEntity->getPostingDate());
+
+        $this->doctrineEM->persist($entity);
+
+        $this->doctrineEM->flush();
+
+        $entity->setReversalDoc($newEntity->getId());
+
+        /**
+         *
+         * @todo: Do Accounting Posting
+         */
+        $this->jeService->reverseAPPayment($entity, $u, $this->controllerPlugin);
+        $this->doctrineEM->flush();
+
+        $m = sprintf('[OK] Payment %s reversed.', $entity->getSysNumber());
+        $this->getEventManager()->trigger('payment.activity.log', __METHOD__, array(
             'priority' => \Zend\Log\Logger::INFO,
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $changeOn
         ));
 
-    }
-
-    /**
-     *
-     * @param \Application\Entity\FinVendorInvoice $entity
-     * @param \Application\Entity\NmtProcureQo $target
-     * @param \Application\Entity\MlaUsers $u
-     *
-     */
-    public function copyFromQO($entity, $target, $u, $isFlush = false)
-    {
-        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
-            throw new \Exception("Invalid Argument! Invoice is not found.");
-        }
-
-        if (! $target instanceof \Application\Entity\NmtProcureQo) {
-            throw new \Exception("Invalid Argument! QO Object is not found.");
-        }
-
-        if (! $u instanceof \Application\Entity\MlaUsers) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
-        }
-
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-
-        $po_rows = $res->getPOStatus($target->getId(), $target->getToken());
-
-        if ($po_rows == null) {
-            throw new \Exception("PO Object is empty. Nothing is copied");
-        }
-
-        $entity->setPo($target);
-        $n = 0;
-
-        foreach ($po_rows as $l) {
-
-            // if all received, ignore it.
-            if ($l['open_ap_qty'] == 0) {
-                continue;
-            }
-
-            /** @var \Application\Entity\NmtProcurePoRow $l ; */
-            $r = $l[0];
-
-            $gl_account = null;
-            $cost_center = null;
-
-            if ($r->getItem() != null) {
-
-                $criteria = array(
-                    'isActive' => 1,
-                    'id' => $r->getItem()->getItemGroup()
-                );
-                /** @var \Application\Entity\NmtInventoryItemGroup $item_group ; */
-                $item_group = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
-
-                if ($item_group != null) {
-
-                    if ($r->getItem()->getIsStocked() == 1) {
-                        $gl_account = $item_group->getInventoryAccount();
-                    } else {
-                        $gl_account = $item_group->getExpenseAccount();
-                        $cost_center = $item_group->getCostCenter();
-                    }
-                }
-            }
-
-            $n ++;
-            $row_tmp = new FinVendorInvoiceRow();
-
-            $row_tmp->setGlAccount($gl_account);
-            $row_tmp->setCostCenter($cost_center);
-
-            $row_tmp->setDocStatus($entity->getDocStatus());
-
-            // Goods and Invoice receipt
-            $row_tmp->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
-
-            $row_tmp->setInvoice($entity);
-            $row_tmp->setIsDraft(1);
-            $row_tmp->setIsActive(1);
-            $row_tmp->setIsPosted(0);
-
-            $row_tmp->setRowNumber($n);
-
-            $row_tmp->setCurrentState("DRAFT");
-            $row_tmp->setPoRow($r);
-
-            // converted to purchase qty
-            $row_tmp->setQuantity($l['open_ap_qty']);
-            $row_tmp->setUnitPrice($r->getUnitPrice());
-            $row_tmp->setUnit($r->getUnit());
-
-            $row_tmp->setConvertedPurchaseQuantity($r->getQuantity());
-
-            $row_tmp->setConversionFactor($r->getConversionFactor());
-
-            $row_tmp->setDocQuantity($row_tmp->getQuantity() / $row_tmp->getConversionFactor());
-            $row_tmp->setDocUnitPrice($row_tmp->getUnitPrice() * $row_tmp->getConversionFactor());
-            $row_tmp->setDocUnit($r->getDocUnit());
-
-            $row_tmp->setTaxRate($r->getTaxRate());
-
-            $item = $r->getItem();
-            $pr_row = $r->getPrRow();
-            $row_tmp->setPrRow($pr_row);
-            $row_tmp->setItem($item);
-
-            $convertedStandardQuantity = $row_tmp->getQuantity();
-            $convertedStandardUnitPrice = $row_tmp->getUnitPrice();
-
-            // converted to standard qty
-            $standardCF = 1;
-
-            if ($pr_row != null) {
-                $standardCF = $standardCF * $pr_row->getConversionFactor();
-            }
-
-            if ($item != null) {
-                $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
-                $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
-
-                // calculate standard quantity
-                $row_tmp->setConvertedStandardQuantity($convertedStandardQuantity);
-                $row_tmp->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
-            }
-
-            $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
-            $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
-            $grossAmount = $netAmount + $taxAmount;
-
-            $row_tmp->setNetAmount($netAmount);
-            $row_tmp->setTaxAmount($taxAmount);
-            $row_tmp->setGrossAmount($grossAmount);
-
-            $row_tmp->setCreatedBy($u);
-            $row_tmp->setCreatedOn(new \DateTime());
-            $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            $row_tmp->setRemarks("Ref: PO#" . $r->getRowIdentifer());
-
-            $row_tmp->setExwUnitPrice($r->getExwUnitPrice());
-            $row_tmp->setDiscountRate($r->getDiscountRate());
-
-            $this->doctrineEM->persist($row_tmp);
-        }
-
-        if ($n == 0) {
-            throw new \Exception("P/O is billed fully!");
-        }
-
-        if ($isFlush == true) {
-            $this->doctrineEM->flush();
-        }
-    }
-
-    /**
-     *
-     * @param \Application\Entity\FinVendorInvoice $entity
-     * @param \Application\Entity\NmtProcurePo $target
-     * @param \Application\Entity\MlaUsers $u
-     *
-     */
-    public function copyFromPO($entity, $target, $u, $isFlush = false)
-    {
-        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
-            throw new \Exception("Invalid Argument! Invoice is not found.");
-        }
-
-        if (! $target instanceof \Application\Entity\NmtProcurePo) {
-            throw new \Exception("Invalid Argument! PO Object is not found.");
-        }
-
-        if (! $u instanceof \Application\Entity\MlaUsers) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
-        }
-
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-
-        $po_rows = $res->getPOStatus($target->getId(), $target->getToken());
-
-        if ($po_rows == null) {
-            throw new \Exception("PO Object is empty. Nothing is copied");
-        }
-
-        $entity->setPo($target);
-        $n = 0;
-
-        foreach ($po_rows as $l) {
-
-            // if all received, ignore it.
-            if ($l['open_ap_qty'] == 0) {
-                continue;
-            }
-
-            /** @var \Application\Entity\NmtProcurePoRow $l ; */
-            $r = $l[0];
-
-            $gl_account = null;
-            $cost_center = null;
-
-            if ($r->getItem() != null) {
-
-                $criteria = array(
-                    'isActive' => 1,
-                    'id' => $r->getItem()->getItemGroup()
-                );
-                /** @var \Application\Entity\NmtInventoryItemGroup $item_group ; */
-                $item_group = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
-
-                if ($item_group != null) {
-
-                    if ($r->getItem()->getIsStocked() == 1) {
-                        $gl_account = $item_group->getInventoryAccount();
-                    } else {
-                        $gl_account = $item_group->getExpenseAccount();
-                        $cost_center = $item_group->getCostCenter();
-                    }
-                }
-            }
-
-            $n ++;
-            $row_tmp = new FinVendorInvoiceRow();
-
-            $row_tmp->setGlAccount($gl_account);
-            $row_tmp->setCostCenter($cost_center);
-
-            $row_tmp->setDocStatus($entity->getDocStatus());
-
-            // Goods and Invoice receipt
-            $row_tmp->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRIR);
-
-            $row_tmp->setInvoice($entity);
-            $row_tmp->setIsDraft(1);
-            $row_tmp->setIsActive(1);
-            $row_tmp->setIsPosted(0);
-
-            $row_tmp->setRowNumber($n);
-
-            $row_tmp->setCurrentState("DRAFT");
-            $row_tmp->setPoRow($r);
-
-            // converted to purchase qty
-            $row_tmp->setQuantity($l['open_ap_qty']);
-            $row_tmp->setUnitPrice($r->getUnitPrice());
-            $row_tmp->setUnit($r->getUnit());
-
-            $row_tmp->setConvertedPurchaseQuantity($r->getQuantity());
-
-            $row_tmp->setConversionFactor($r->getConversionFactor());
-
-            $row_tmp->setDocQuantity($row_tmp->getQuantity() / $row_tmp->getConversionFactor());
-            $row_tmp->setDocUnitPrice($row_tmp->getUnitPrice() * $row_tmp->getConversionFactor());
-            $row_tmp->setDocUnit($r->getDocUnit());
-
-            $row_tmp->setTaxRate($r->getTaxRate());
-
-            $item = $r->getItem();
-            $pr_row = $r->getPrRow();
-            $row_tmp->setPrRow($pr_row);
-            $row_tmp->setItem($item);
-
-            $convertedStandardQuantity = $row_tmp->getQuantity();
-            $convertedStandardUnitPrice = $row_tmp->getUnitPrice();
-
-            // converted to standard qty
-            $standardCF = 1;
-
-            if ($pr_row != null) {
-                $standardCF = $standardCF * $pr_row->getConversionFactor();
-            }
-
-            if ($item != null) {
-                $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
-                $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
-
-                // calculate standard quantity
-                $row_tmp->setConvertedStandardQuantity($convertedStandardQuantity);
-                $row_tmp->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
-            }
-
-            $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
-            $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
-            $grossAmount = $netAmount + $taxAmount;
-
-            $row_tmp->setNetAmount($netAmount);
-            $row_tmp->setTaxAmount($taxAmount);
-            $row_tmp->setGrossAmount($grossAmount);
-
-            $row_tmp->setCreatedBy($u);
-            $row_tmp->setCreatedOn(new \DateTime());
-            $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            $row_tmp->setRemarks("Ref: PO#" . $r->getRowIdentifer());
-
-            $row_tmp->setExwUnitPrice($r->getExwUnitPrice());
-            $row_tmp->setDiscountRate($r->getDiscountRate());
-
-            $this->doctrineEM->persist($row_tmp);
-        }
-
-        if ($n == 0) {
-            throw new \Exception("P/O is billed fully!");
-        }
-
-        if ($isFlush == true) {
-            $this->doctrineEM->flush();
-        }
-    }
-
-    /**
-     *
-     * @param \Application\Entity\FinVendorInvoice $entity
-     * @param \Application\Entity\NmtProcureGr $target
-     * @param \Application\Entity\MlaUsers $u
-     *
-     */
-    public function copyFromGR($entity, $target, $u, $isFlush = false)
-    {
-        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
-            throw new \Exception("Invalid Argument! Invoice is not found.");
-        }
-
-        if (! $target instanceof \Application\Entity\NmtProcureGr) {
-            throw new \Exception("Invalid Argument! GR Object is not found.");
-        }
-
-        if (! $u instanceof \Application\Entity\MlaUsers) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
-        }
-
-        /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $gr_rows = $res->getGRStatus($target->getId(), $target->getToken());
-
-        if ($gr_rows == null) {
-            throw new \Exception("GR Object is empty. Nothing is copied");
-        }
-
-        $entity->setWarehouse($target->getWarehouse());
-        $entity->setGrDate($target->getGrDate());
-
-        $n = 0;
-        foreach ($gr_rows as $l) {
-
-            // if all received, ignore it.
-            if ($l['open_ap_qty'] == 0) {
-                continue;
-            }
-
-            /** @var \Application\Entity\NmtProcureGrRow $l ; */
-            $r = $l[0];
-
-            $n ++;
-
-            $gl_account = null;
-            $cost_center = null;
-
-            if ($r->getItem() !== null) {
-
-                $criteria = array(
-                    'isActive' => 1,
-                    'id' => $r->getItem()->getItemGroup()
-                );
-                /** @var \Application\Entity\NmtInventoryItemGroup $item_group ; */
-                $item_group = $this->doctrineEM->getRepository('\Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
-
-                if ($item_group != null) {
-
-                    if ($r->getItem()->getIsStocked() == 1) {
-                        $gl_account = $item_group->getInventoryAccount();
-                    } else {
-                        $gl_account = $item_group->getExpenseAccount();
-                        $cost_center = $item_group->getCostCenter();
-                    }
-                }
-            }
-
-            $n ++;
-            $row_tmp = new FinVendorInvoiceRow();
-
-            $row_tmp->setGlAccount($gl_account);
-            $row_tmp->setCostCenter($cost_center);
-
-            $row_tmp->setDocStatus($entity->getDocStatus());
-            // $row_tmp->setTransactionType($entity->getTransactionStatus());
-
-            // Goods receipt, Invoice Not receipt
-            $row_tmp->setTransactionType(\Application\Model\Constants::PROCURE_TRANSACTION_TYPE_GRNI);
-
-            /**
-             *
-             * @todo Change entity
-             */
-            $row_tmp->setInvoice($entity);
-            $row_tmp->setIsDraft(1);
-            $row_tmp->setIsActive(1);
-            $row_tmp->setIsPosted(0);
-
-            $row_tmp->setCurrentState("DRAFT");
-            $row_tmp->setGrRow($r);
-            $row_tmp->setPrRow($r->getPrRow());
-            $row_tmp->setPoRow($r->getPoRow());
-
-            $row_tmp->setItem($r->getItem());
-            $row_tmp->setQuantity($l['open_ap_qty']);
-
-            $row_tmp->setUnit($r->getUnit());
-            $row_tmp->setUnitPrice($r->getUnitPrice());
-            $row_tmp->setTaxRate($r->getTaxRate());
-
-            $netAmount = $row_tmp->getQuantity() * $row_tmp->getUnitPrice();
-            $taxAmount = $netAmount * $row_tmp->getTaxRate() / 100;
-            $grossAmount = $netAmount + $taxAmount;
-
-            $row_tmp->setNetAmount($netAmount);
-            $row_tmp->setTaxAmount($taxAmount);
-            $row_tmp->setGrossAmount($grossAmount);
-
-            $row_tmp->setCreatedBy($u);
-            $row_tmp->setCreatedOn(new \DateTime());
-            $row_tmp->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            $row_tmp->setRemarks("Ref: GR #" . $r->getRowIdentifer());
-
-            $row_tmp->setGlAccount($r->getGlAccount());
-            $row_tmp->setCostCenter($r->getCostCenter());
-
-            $this->doctrineEM->persist($row_tmp);
-        }
-
-        if ($n == 0) {
-            throw new \Exception("GR is received fully!");
-        }
-
-        if ($isFlush == true) {
-            $this->doctrineEM->flush();
-        }
+        return $errors;
     }
 
     /**
@@ -725,7 +503,7 @@ class POPaymentService extends AbstractService
 
         if ($currency !== null) {
             $entity->setDocCurrency($currency);
-            
+
             if ($currency == $entity->getLocalCurrency()) {
                 $entity->setExchangeRate(1);
             } else {
@@ -888,9 +666,8 @@ class POPaymentService extends AbstractService
     private function checkPostingDate(\Application\Entity\PmtOutgoing $entity, $data, $isPosting)
     {
         $errors = array();
-
         if (! isset($data['postingDate'])) {
-            $errors[] = $this->controllerPlugin->translate('Posting Date input is not set!');
+            $errors[] = $this->controllerPlugin->translate('Posting date input is not set!');
             return $errors;
         }
 
@@ -923,7 +700,7 @@ class POPaymentService extends AbstractService
 
             // check if posting period is closed
             /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-            $postingPeriod = $p->getPostingPeriod(new \DateTime($postingDate));
+            $postingPeriod = $p->getPostingPeriod($entity->getPostingDate());
 
             if ($postingPeriod == null) {
                 $errors[] = sprintf('Posting period for [%s] not created!', $postingDate);
@@ -931,7 +708,6 @@ class POPaymentService extends AbstractService
                 if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
                     $errors[] = sprintf('Period [%s] is closed for accounting posting!', $postingPeriod->getPeriodName());
                 } else {
-                    $entity->setPostingDate(new \DateTime($postingDate));
                     $entity->setPostingPeriod($postingPeriod);
                 }
             }

@@ -338,65 +338,97 @@ class OutgoingController extends AbstractActionController
     {
         $request = $this->getRequest();
         $this->layout("Finance/layout-fullscreen");
-
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-
+        
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-
+        
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
         }
-
+        
         // Is Posing
         // =============================
         if ($request->isPost()) {
-
+            
             $errors = array();
-
+            
             $data = $this->params()->fromPost();
             $redirectUrl = $data['redirectUrl'];
             $target_id = $data['target_id'];
             $target_token = $data['target_token'];
-
-            $criteria = array(
-                'id' => $target_id,
-                'token' => $target_token
-            );
-
-            /**@var \Application\Entity\NmtProcurePo $target*/
-            $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo')->findOneBy($criteria);
-
+            $isDraft = (int) $data['isDraft'];
+            
+            /*  $criteria = array(
+             'id' => $target_id,
+             'token' => $target_token
+             ); */
+            
+            /**@var \Application\Entity\FinVendorInvoice $target*/
+            //$target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+            
+            
+            /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+            $ap = $res->getVendorInvoice($target_id);
+            
+            if ($ap == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+            
+            $target=$ap[0];
+            
             if ($target == null) {
-
-                $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
+                
+                $errors[] = 'Target object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-
+                
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
                     'target' => null,
-                    'nmtPlugin' => $nmtPlugin
+                    'nmtPlugin' => $nmtPlugin,
+                    'ap' => $ap,
                 ));
-
-                $viewModel->setTemplate("payment/outgoing/pay-po");
+                
+                $viewModel->setTemplate("payment/outgoing/pay-ap");
                 return $viewModel;
             }
-
+            
             $entity = new \Application\Entity\PmtOutgoing();
             $entity->setApInvoice($target);
             $entity->setTargetId($target->getId());
-
+            
             $entity->setLocalCurrency($default_cur);
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
-            $errors = $this->poPaymentService->validateHeader($entity, $data, TRUE);
-
+            
+            try {
+                if ($isDraft == 1) {
+                    $ck = $this->apPaymentService->saveHeader($entity, $data, $u, TRUE);
+                    $m = sprintf('[OK] Payment #%s for AP #%s created', $entity->getId(), $target->getId());
+                    
+                } else {
+                    $ck = $this->apPaymentService->post($entity, $data, $u, TRUE, TRUE);
+                    $m = sprintf('[OK] Payment #%s for AP #%s posted', $entity->getSysNumber(), $target->getId());
+                    
+                }
+                
+                if (count($ck) > 0) {
+                    $errors = array_merge($errors, $ck);
+                }
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+            
+            // double check
+            
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
@@ -404,105 +436,79 @@ class OutgoingController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
-                    'nmtPlugin' => $nmtPlugin
+                    'nmtPlugin' => $nmtPlugin,
+                    'ap' => $ap,
+                    
                 ));
-
-                $viewModel->setTemplate("payment/outgoing/pay-po");
+                
+                $viewModel->setTemplate("payment/outgoing/pay-ap");
                 return $viewModel;
             }
-
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            try {
-                $this->poPaymentService->post($entity, $u, TRUE, TRUE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            // double check
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'nmtPlugin' => $nmtPlugin
-                ));
-
-                $viewModel->setTemplate("payment/outgoing/pay-po");
-                return $viewModel;
-            }
-
-            $m = sprintf('[OK] Payment for PO #%s created', $entity->getId());
+            
             $this->flashMessenger()->addMessage($m);
-
-            $createdOn = new \DateTime();
-
-            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $createdOn,
-                'entity_id' => $entity->getId(),
-                'entity_class' => get_class($entity),
-                'entity_token' => $entity->getToken()
-            ));
-
+            
             // $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             // $redirectUrl = "/payment/outgoing/list?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
             $redirectUrl = "/payment/outgoing/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
-
+        
         // NO POST
         // Initiate ......................
         // ================================
         $redirectUrl = null;
         if ($request->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
+            ->getHeader('Referer')
+            ->getUri();
         }
-
+        
         $id = (int) $this->params()->fromQuery('target_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $id,
             'token' => $token
         );
-
-        /**@var \Application\Entity\NmtProcurePo $target*/
-        $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo')->findOneBy($criteria);
-
-        if ($target == null) {
+        
+        
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $ap = $res->getVendorInvoice($id, $token);
+        
+        
+        //$target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
+        
+        
+        
+        if ($ap == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-
+        
+        /**@var \Application\Entity\FinVendorInvoice $target*/
+        $target = $ap[0];
+        
         $entity = new \Application\Entity\PmtOutgoing();
         $entity->setIsActive(1);
         $entity->setVendor($target->getVendor());
-        $entity->setDocAmount(1000);
-        $entity->setTargetId($target->getId());
-
+        $entity->setDocAmount($ap['gross_amount']-$ap['total_doc_amount_paid']);
+        $entity->setApInvoice($target);
+        
         $entity->setDocCurrency($target->getCurrency());
-        $entity->setRemarks(sprintf("Pay %s PO #%s", $target->getVendorName(), $target->getContractNo()));
-
+        $entity->setRemarks(sprintf("Pay %s Invoice #%s, %s", $target->getVendorName(), $target->getInvoiceNo(), $target->getSapDoc()));
+        
         $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
-
+        
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'ap' => $ap,
         ));
-
-        $viewModel->setTemplate("payment/outgoing/pay-po");
+        
+        $viewModel->setTemplate("payment/outgoing/pay-ap");
         return $viewModel;
     }
 
@@ -541,10 +547,10 @@ class OutgoingController extends AbstractActionController
             $target_token = $data['target_token'];
             $isDraft = (int) $data['isDraft'];
             
-            $criteria = array(
+           /*  $criteria = array(
                 'id' => $target_id,
                 'token' => $target_token
-            );
+            ); */
 
             /**@var \Application\Entity\FinVendorInvoice $target*/
             //$target = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findOneBy($criteria);
@@ -552,7 +558,7 @@ class OutgoingController extends AbstractActionController
             
             /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
-            $ap = $res->getVendorInvoice($target_id, $target_token);
+            $ap = $res->getVendorInvoice($target_id);
             
             if ($ap == null) {
                 return $this->redirect()->toRoute('access_denied');
@@ -589,8 +595,12 @@ class OutgoingController extends AbstractActionController
             try {
                 if ($isDraft == 1) {
                     $ck = $this->apPaymentService->saveHeader($entity, $data, $u, TRUE);
+                    $m = sprintf('[OK] Payment #%s for AP #%s created', $entity->getId(), $target->getId());
+                    
                 } else {
                     $ck = $this->apPaymentService->post($entity, $data, $u, TRUE, TRUE);
+                    $m = sprintf('[OK] Payment #%s for AP #%s posted', $entity->getSysNumber(), $target->getId());
+                    
                 }
 
                 if (count($ck) > 0) {
@@ -618,22 +628,8 @@ class OutgoingController extends AbstractActionController
                 return $viewModel;
             }
 
-            $m = sprintf('[OK] A/P Invoice #%s created', $entity->getId());
             $this->flashMessenger()->addMessage($m);
-
-            $createdOn = new \DateTime();
-
-            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $createdOn,
-                'entity_id' => $entity->getId(),
-                'entity_class' => get_class($entity),
-                'entity_token' => $entity->getToken()
-            ));
-
+         
             // $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getToken() . "&entity_id=" . $entity->getId();
             // $redirectUrl = "/payment/outgoing/list?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
             $redirectUrl = "/payment/outgoing/list";
@@ -728,7 +724,7 @@ class OutgoingController extends AbstractActionController
             $entity_id = $data['entity_id'];
             $entity_token = $data['entity_token'];
             $isDraft = (int) $data['isDraft'];
-            $nTry = $data['n'];
+            $nTry = $data['n'] + 1;
 
             $criteria = array(
                 'id' => $entity_id,
@@ -758,6 +754,7 @@ class OutgoingController extends AbstractActionController
                 return $viewModel;
             }
             
+             
             /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
             $ap = $res->getVendorInvoice( $entity->getApInvoice()->getId(), $entity->getApInvoice()->getToken());
@@ -766,16 +763,26 @@ class OutgoingController extends AbstractActionController
 
             if ($isDraft == 1) {
                 $ck = $this->apPaymentService->saveHeader($entity, $data, $u, FALSE);
-                $m = sprintf('[OK] A/P Payment #%s saved', $entity->getId());
+                $m = sprintf('[OK] Payment #%s for AP %s updated', $entity->getId(),$entity->getApInvoice()->getId());
                 
             } else {
-                $m = sprintf('[OK] A/P Payment #%s posted', $entity->getId());
-                
                 $ck = $this->apPaymentService->post($entity, $data, $u, FALSE, TRUE);
+                $m = sprintf('[OK] Payment #%s for AP %s updated and posted', $entity->getSysNumber(),$entity->getApInvoice()->getId());
             }
 
             if (count($ck) > 0) {
                 $errors = array_merge($errors, $ck);
+            }
+            
+            
+            if ($nTry >= 3) {
+                $errors[] = sprintf('Do you really want to edit "AP Payment. %s (%s)"?', $entity->getId(), $entity->getSysNumber());
+            }
+            
+            if ($nTry == 5) {
+                $m1 = sprintf('You might be not ready to edit "AP Payment %s (%s)". Please try later!', $entity->getId(), $entity->getSysNumber());
+                $this->flashMessenger()->addMessage($m1);
+                return $this->redirect()->toUrl($redirectUrl);
             }
 
             // double check
@@ -797,20 +804,7 @@ class OutgoingController extends AbstractActionController
             }
 
             $this->flashMessenger()->addMessage($m);
-
-            $createdOn = new \DateTime();
-
-            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $createdOn,
-                'entity_id' => $entity->getId(),
-                'entity_class' => get_class($entity),
-                'entity_token' => $entity->getToken()
-            ));
-
+       
             $redirectUrl = "/payment/outgoing/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -869,7 +863,14 @@ class OutgoingController extends AbstractActionController
      */
     public function listAction()
     {
-        $list = $this->doctrineEM->getRepository('\Application\Entity\PmtOutgoing')->findAll();
+         
+        $criteria = array(
+        );
+        $sort_criteria = array(
+            'createdOn'=>'DESC'
+        );
+        
+        $list = $this->doctrineEM->getRepository('\Application\Entity\PmtOutgoing')->findBy($criteria,$sort_criteria);
         $total_records = count($list);
         // $jsTree = $this->tree;
         return new ViewModel(array(

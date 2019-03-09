@@ -268,6 +268,13 @@ class FinVendorInvoice
     private $reversalReason;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="payment_status", type="string", length=10, nullable=true)
+     */
+    private $paymentStatus;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1257,6 +1264,30 @@ class FinVendorInvoice
     public function getReversalReason()
     {
         return $this->reversalReason;
+    }
+
+    /**
+     * Set paymentStatus
+     *
+     * @param string $paymentStatus
+     *
+     * @return FinVendorInvoice
+     */
+    public function setPaymentStatus($paymentStatus)
+    {
+        $this->paymentStatus = $paymentStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get paymentStatus
+     *
+     * @return string
+     */
+    public function getPaymentStatus()
+    {
+        return $this->paymentStatus;
     }
 
     /**

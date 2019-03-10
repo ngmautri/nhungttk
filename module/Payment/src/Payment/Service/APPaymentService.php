@@ -11,7 +11,7 @@ use Zend\Validator\Date;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class APPaymentService extends AbstractService
+class APPaymentService extends AbstractService implements PaymentInterface
 {
 
     /**
@@ -157,6 +157,13 @@ class APPaymentService extends AbstractService
         if (! $entity instanceof \Application\Entity\PmtOutgoing) {
             throw new \Exception("Invalid Argument. Outgoing Payment Object not found!");
         }
+        
+        if($entity->getApInvoice()!==null){
+            if($entity->getApInvoice()->getIsReversed()==1){
+                throw new \Exception("Payment is not posible, because AP invoice reversed already.");
+            }
+        }
+        
 
         $oldEntity = clone ($entity);
 
@@ -315,6 +322,9 @@ class APPaymentService extends AbstractService
                 'changeValidFrom' => $changeOn
             ));
         }
+        
+        // 1 mean not.
+        $entity->getApInvoice()->setIsReversable(1);
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();

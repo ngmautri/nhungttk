@@ -120,6 +120,13 @@ class NmtInventoryOpeningBalanceRow
     private $exchangeRate;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
+     */
+    private $docType;
+
+    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -515,6 +522,30 @@ class NmtInventoryOpeningBalanceRow
     public function getExchangeRate()
     {
         return $this->exchangeRate;
+    }
+
+    /**
+     * Set docType
+     *
+     * @param string $docType
+     *
+     * @return NmtInventoryOpeningBalanceRow
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+
+        return $this;
+    }
+
+    /**
+     * Get docType
+     *
+     * @return string
+     */
+    public function getDocType()
+    {
+        return $this->docType;
     }
 
     /**

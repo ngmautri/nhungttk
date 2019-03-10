@@ -169,6 +169,13 @@ class NmtInventoryItemBatch
     private $reversalReason;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
+     */
+    private $isReversable;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -732,6 +739,30 @@ class NmtInventoryItemBatch
     public function getReversalReason()
     {
         return $this->reversalReason;
+    }
+
+    /**
+     * Set isReversable
+     *
+     * @param boolean $isReversable
+     *
+     * @return NmtInventoryItemBatch
+     */
+    public function setIsReversable($isReversable)
+    {
+        $this->isReversable = $isReversable;
+
+        return $this;
+    }
+
+    /**
+     * Get isReversable
+     *
+     * @return boolean
+     */
+    public function getIsReversable()
+    {
+        return $this->isReversable;
     }
 
     /**

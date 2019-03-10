@@ -104,6 +104,9 @@ class QoService extends AbstractService
         // validated.
 
         $changeOn = new \DateTime();
+        
+        $entity->setDocType(\Application\Model\Constants::PROCURE_DOC_TYPE_QUOTE);
+        
 
         if ($isNew == TRUE) {
             $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);

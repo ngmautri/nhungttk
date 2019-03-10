@@ -78,12 +78,18 @@ class VInvoiceController extends AbstractActionController
             }
 
             $viewModel = new ViewModel(array(
-                'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
                 'redirectUrl' => $redirectUrl,
-                'errors' => null,
                 'entity' => $entity,
-                'target' => null,
-                'nmtPlugin' => $nmtPlugin
+                'errors' => null,
+                'currency_list' => $currency_list,
+                'total_row' => null,
+                'active_row' => null,
+                'max_row_number' => null,
+                'total_picture' => null,
+                'total_attachment' => null,
+                'net_amount' => null,
+                'tax_amount' => null,
+                'gross_amount' => null
             ));
 
             $errors = $this->apService->reverseAP($entity, $u, $reversalDate, $reversalReason);
@@ -94,15 +100,21 @@ class VInvoiceController extends AbstractActionController
                 $this->flashMessenger()->addMessage($m);
 
                 $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
                     'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
                     'entity' => $entity,
-                    'target' => null,
-                    'nmtPlugin' => $nmtPlugin
+                    'errors' => $errors,
+                    'currency_list' => $currency_list,
+                    'total_row' => $invoice['total_row'],
+                    'active_row' => $invoice['active_row'],
+                    'max_row_number' => $invoice['total_row'],
+                    'total_picture' => $invoice['total_picture'],
+                    'total_attachment' => $invoice['total_attachment'],
+                    'net_amount' => $invoice['net_amount'],
+                    'tax_amount' => $invoice['tax_amount'],
+                    'gross_amount' => $invoice['gross_amount']
                 ));
 
-                $viewModel->setTemplate("payment/outgoing/reverse");
+                $viewModel->setTemplate("finance/v-invoice/reverse");
                 return $viewModel;
             }
 
@@ -137,26 +149,29 @@ class VInvoiceController extends AbstractActionController
         $entity = null;
         if ($invoice[0] instanceof FinVendorInvoice) {
             $entity = $invoice[0];
-        }
-
-        if ($entity instanceof FinVendorInvoice) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => $invoice['total_row'],
-                'active_row' => $invoice['active_row'],
-                'max_row_number' => $invoice['total_row'],
-                'total_picture' => $invoice['total_picture'],
-                'total_attachment' => $invoice['total_attachment'],
-                'net_amount' => $invoice['net_amount'],
-                'tax_amount' => $invoice['tax_amount'],
-                'gross_amount' => $invoice['gross_amount']
-            ));
         } else {
             return $this->redirect()->toRoute('access_denied');
         }
+
+        $errors = array();
+        if ($entity->getIsReversable() == 11) {
+            $errors[] = 'Invoice is not reservable, becasue sequence document is created.';
+        }
+
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'entity' => $entity,
+            'errors' => $errors,
+            'currency_list' => $currency_list,
+            'total_row' => $invoice['total_row'],
+            'active_row' => $invoice['active_row'],
+            'max_row_number' => $invoice['total_row'],
+            'total_picture' => $invoice['total_picture'],
+            'total_attachment' => $invoice['total_attachment'],
+            'net_amount' => $invoice['net_amount'],
+            'tax_amount' => $invoice['tax_amount'],
+            'gross_amount' => $invoice['gross_amount']
+        ));
     }
 
     /**

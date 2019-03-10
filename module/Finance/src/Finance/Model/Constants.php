@@ -33,6 +33,8 @@ class Constants
     //=============================================
     const JE_TYPE_OPEN_BALANCE = "OB";
     
+    const JE_DOC_TYPE_OPEN_BALANCE = "OB";
+    
     
     
 }

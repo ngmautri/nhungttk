@@ -31,7 +31,7 @@ if (count($errors) > 0) {
 <div id="tabs" style="font-size: 9.5pt">
 	<ul>
 		<li><a href="#general" ><small><i class="fa fa-calculator"
-					aria-hidden="true"></i></small>&nbsp;A/P Invoice</a></li>
+					aria-hidden="true"></i></small><?php echo $this->translate("AP Reserval ");?></a></li>
 		<li><a
 			href="/finance/v-invoice-attachment/get-pictures?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getID():"";?>"><small></small><span
 				class="glyphicon glyphicon-picture"></span></span>&nbsp;Picture (<?php echo $total_picture;?>)</a></li>
@@ -60,7 +60,7 @@ if (count($errors) > 0) {
 			<fieldset>
 				<legend style="font-size: 9.5pt; color: gray;">
 					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
-					<a href="#reserval_header" class="" data-toggle="collapse"><?php echo $this->translate("Reserval Document");?>:</a>
+					<a href="#reserval_header" class="" data-toggle="collapse"><?php echo $this->translate("Reserval Header");?>:</a>
 				</legend>
 				<div id="reserval_header" class="collapse in">
 
@@ -589,7 +589,7 @@ $( "#vendor_name_1" ).autocomplete({
 
     //var container_height = $('#main_container').height();
     //alert(container_height);
-	var obj = { width: "auto", height: $(window).height()-250, showTitle : false,
+	var obj = { width: "auto", height: $(window).height()-550, showTitle : false,
 			resizable:true,
 			//draggable:true,
 			sortable: true,

@@ -218,9 +218,9 @@ class NmtProcureQo
     private $transactionStatus;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="doc_type", type="smallint", nullable=true)
+     * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
      */
     private $docType;
 
@@ -1011,7 +1011,7 @@ class NmtProcureQo
     /**
      * Set docType
      *
-     * @param integer $docType
+     * @param string $docType
      *
      * @return NmtProcureQo
      */
@@ -1025,7 +1025,7 @@ class NmtProcureQo
     /**
      * Get docType
      *
-     * @return integer
+     * @return string
      */
     public function getDocType()
     {

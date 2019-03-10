@@ -128,6 +128,8 @@ class GRfromPurchasing extends AbstractGRStrategy
         $mv = new \Application\Entity\NmtInventoryMv();
         $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
         $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+        $mv->setDocStatus(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+        
         $mv->setIsPosted(1);
         $mv->setIsDraft(0);
         $mv->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
@@ -144,6 +146,8 @@ class GRfromPurchasing extends AbstractGRStrategy
             $n ++;
             $r->setMovement($mv);
             $r->setDocStatus($mv->getDocStatus());
+            $r->setDocType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+            
             $this->contextService->getDoctrineEM()->persist($r);
 
             // created FIFO is needed

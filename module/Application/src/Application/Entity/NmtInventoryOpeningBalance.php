@@ -106,6 +106,13 @@ class NmtInventoryOpeningBalance
     private $isPosted;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
+     */
+    private $docType;
+
+    /**
      * @var \Application\Entity\NmtFinPostingPeriod
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtFinPostingPeriod")
@@ -463,6 +470,30 @@ class NmtInventoryOpeningBalance
     public function getIsPosted()
     {
         return $this->isPosted;
+    }
+
+    /**
+     * Set docType
+     *
+     * @param string $docType
+     *
+     * @return NmtInventoryOpeningBalance
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+
+        return $this;
+    }
+
+    /**
+     * Get docType
+     *
+     * @return string
+     */
+    public function getDocType()
+    {
+        return $this->docType;
     }
 
     /**

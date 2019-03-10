@@ -372,6 +372,13 @@ class NmtProcureGrRow
     private $flow;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
+     */
+    private $docType;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1701,6 +1708,30 @@ class NmtProcureGrRow
     public function getFlow()
     {
         return $this->flow;
+    }
+
+    /**
+     * Set docType
+     *
+     * @param string $docType
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+
+        return $this;
+    }
+
+    /**
+     * Get docType
+     *
+     * @return string
+     */
+    public function getDocType()
+    {
+        return $this->docType;
     }
 
     /**

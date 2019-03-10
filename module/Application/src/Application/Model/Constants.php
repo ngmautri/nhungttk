@@ -149,22 +149,30 @@ class Constants
     const ITEM_TYPE_SOFTWARE = 'SOFTWARE';
 
     // =====================
+    // ACCOUNT PAYABLE
+    const PROCURE_DOC_TYPE_PR = 'AP-100';
+    const PROCURE_DOC_TYPE_REVERSAL = 'AP-100-1';
     
-    const PROCURE_DOC_TYPE_PR = 100;
+    const PROCURE_DOC_TYPE_QUOTE = 'AP-110';
+    const PROCURE_DOC_TYPE_QUOTE_REVERSAL = 'AP-110-1';
+    
+    const PROCURE_DOC_TYPE_PO = 'AP-120';
+    const PROCURE_DOC_TYPE_PO_REVERSAL = 'AP-120-1';
 
-    const PROCURE_DOC_TYPE_QUOTE = 110;
+    const PROCURE_DOC_TYPE_GR = 'AP-130';
+    const PROCURE_DOC_TYPE_GR_REVERSAL = 'AP-130-1';
+    
+    const PROCURE_DOC_TYPE_RETURN = 'AP-135';
+    const PROCURE_DOC_TYPE_RETURN_REVERSAL = 'AP-135-1';
+    
+    const PROCURE_DOC_TYPE_INVOICE = 'AP-140';
+    const PROCURE_DOC_TYPE_INVOICE_REVERSAL = 'AP-140-1';
 
-    const PROCURE_DOC_TYPE_PO = 120;
-
-    const PROCURE_DOC_TYPE_GR = 130;
-
-    const PROCURE_DOC_TYPE_RETURN = 135;
-
-    const PROCURE_DOC_TYPE_AP = 140;
-
-    const PROCURE_DOC_TYPE_CREDIT_MEMO = 150;
-
-    const PROCURE_DOC_TYPE_AP_ACCRUAL = 160;
+    const PROCURE_DOC_TYPE_CREDIT_MEMO = 'AP-150';
+    const PROCURE_DOC_TYPE_CREDIT_MEMO_REVERSAL = 'AP-150-1';
+    
+    const PROCURE_DOC_TYPE_AP_ACCRUAL = 'AP-160';
+    const PROCURE_DOC_TYPE_AP_ACCRUAL_REVERSAL = 'AP-160-1';
     
     // =====================
     
@@ -200,10 +208,6 @@ class Constants
     const FORM_ACTION_AP_FROM_PO ='AP-PO';
     const FORM_ACTION_AP_FROM_GR ='AP-GR';
     const FORM_ACTION_PO_FROM_QO ='QO-PO';
-    
-    
-    
-    
     
     const AJAX_OK ='1';
     const AJAX_FAILED ='-1';

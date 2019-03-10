@@ -281,6 +281,20 @@ class NmtInventoryMv
     private $reversalReason;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
+     */
+    private $isReversable;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
+     */
+    private $docType;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1238,6 +1252,54 @@ class NmtInventoryMv
     public function getReversalReason()
     {
         return $this->reversalReason;
+    }
+
+    /**
+     * Set isReversable
+     *
+     * @param boolean $isReversable
+     *
+     * @return NmtInventoryMv
+     */
+    public function setIsReversable($isReversable)
+    {
+        $this->isReversable = $isReversable;
+
+        return $this;
+    }
+
+    /**
+     * Get isReversable
+     *
+     * @return boolean
+     */
+    public function getIsReversable()
+    {
+        return $this->isReversable;
+    }
+
+    /**
+     * Set docType
+     *
+     * @param string $docType
+     *
+     * @return NmtInventoryMv
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+
+        return $this;
+    }
+
+    /**
+     * Get docType
+     *
+     * @return string
+     */
+    public function getDocType()
+    {
+        return $this->docType;
     }
 
     /**

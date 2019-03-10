@@ -267,6 +267,13 @@ class NmtProcureGr
     private $reversalReason;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
+     */
+    private $docType;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1206,6 +1213,30 @@ class NmtProcureGr
     public function getReversalReason()
     {
         return $this->reversalReason;
+    }
+
+    /**
+     * Set docType
+     *
+     * @param string $docType
+     *
+     * @return NmtProcureGr
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+
+        return $this;
+    }
+
+    /**
+     * Get docType
+     *
+     * @return string
+     */
+    public function getDocType()
+    {
+        return $this->docType;
     }
 
     /**

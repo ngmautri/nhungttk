@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="nmt_procure_po", indexes={@ORM\Index(name="nmt_procure_po_FK1_idx", columns={"vendor_id"}), @ORM\Index(name="nmt_procure_po_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_procure_po_FK3_idx", columns={"created_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_procure_po_FK5_idx1", columns={"currency_id"}), @ORM\Index(name="nmt_procure_po_FK6_idx", columns={"payment_method"}), @ORM\Index(name="nmt_procure_po_FK7_idx", columns={"token"}), @ORM\Index(name="nmt_procure_po_FK7_idx1", columns={"local_currency_id"}), @ORM\Index(name="nmt_procure_po_FK8_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_procure_po_FK9_idx", columns={"incoterm_id"}), @ORM\Index(name="nmt_procure_po_FK10_idx", columns={"pmt_term_id"})})
  * @ORM\Entity
- *  @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePoRepository")
+ * @ORM\Entity(repositoryClass="Application\Repository\NmtProcurePoRepository")
  */
 class NmtProcurePo
 {
@@ -219,9 +219,9 @@ class NmtProcurePo
     private $transactionStatus;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="doc_type", type="smallint", nullable=true)
+     * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
      */
     private $docType;
 
@@ -1019,7 +1019,7 @@ class NmtProcurePo
     /**
      * Set docType
      *
-     * @param integer $docType
+     * @param string $docType
      *
      * @return NmtProcurePo
      */
@@ -1033,7 +1033,7 @@ class NmtProcurePo
     /**
      * Get docType
      *
-     * @return integer
+     * @return string
      */
     public function getDocType()
     {

@@ -165,7 +165,6 @@ class APInvoiceService extends AbstractService
             $changeArray = array();
 
             if ($isNew == TRUE) {
-
                 $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn($changeOn);
@@ -497,8 +496,8 @@ class APInvoiceService extends AbstractService
             
             /** UPDATE HEADER*/
             /** ======================*/
-            
-
+            $entity->setDocType(\Application\Model\Constants::PROCURE_DOC_TYPE_INVOICE);
+           
             // Assign doc number
             if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
                 $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
@@ -653,6 +652,18 @@ class APInvoiceService extends AbstractService
             if ($entity->getDocStatus()!== \Application\Model\Constants::DOC_STATUS_POSTED) {
                 $errors[] = $this->controllerPlugin->translate('Invoice not posted yet. Reserval imposible.');
             }
+            
+            // only when not reversed..
+            if ($entity->getIsReversed()== 1) {
+                $errors[] = $this->controllerPlugin->translate('Invoice reversed already.');
+            }
+            
+            // check if subsequce document.
+            // only when not reversed..
+            // 1 mean not.
+            if ($entity->getIsReversable() == 1) {
+                $errors[] = $this->controllerPlugin->translate('Invoice is not reservable, becasue sequence document is created.');
+            }
         }
         
         if (! $u instanceof \Application\Entity\MlaUsers) {
@@ -677,8 +688,9 @@ class APInvoiceService extends AbstractService
         
         
         /** @var \Application\Entity\FinVendorInvoice $newEntity ; */
-        $oldEntity = clone($entity);
-        
+        $newEntity = clone($entity);
+        $newEntity->setInvoiceDate(null);
+        $newEntity->setPostingDate(null);
         
         $data = array();
         $data['postingDate'] = $reversalDate;
@@ -687,11 +699,16 @@ class APInvoiceService extends AbstractService
         /**
          * Check Reversal Date.
          */
-        $ck = $this->checkInvoiceDate($oldEntity, $data, TRUE);
+        $ck = $this->checkInvoiceDate($newEntity, $data, TRUE);
         
-        if (count($ck) > 0) {
+         if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+        
+        if (count($errors) > 0) {
             return $errors;
         }
+        
         
         // ====== VALIDATED ====== //
         
@@ -702,7 +719,8 @@ class APInvoiceService extends AbstractService
             /** UPDATE OLD HEADER*/
             /** ======================*/
             
-                
+            
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
             $entity->setIsReversed(1);
             $entity->setReversalReason($reversalReason);
             $entity->setReversalDate(new \DateTime($reversalDate));
@@ -710,6 +728,17 @@ class APInvoiceService extends AbstractService
             $entity->setLastchangeBy($u);
             $entity->setLastchangeOn($changeOn);
             $this->doctrineEM->persist($entity);
+            
+            
+            $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
+            $newEntity->setDocType(\Application\Model\Constants::PROCURE_DOC_TYPE_INVOICE_REVERSAL);
+            $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
+            $entity->setRemarks($reversalReason);
+            
+            $this->doctrineEM->persist($newEntity);
+            
+            
             
             /** POSTING ROW*/
             /** ======================*/
@@ -725,7 +754,11 @@ class APInvoiceService extends AbstractService
                 
                 $n++;
                 
+                /** @var \Application\Entity\FinVendorInvoiceRow $old_r ; */
                 $old_r = clone($r);
+                $old_r->setInvoice($newEntity);
+                $this->doctrineEM->persist($old_r);
+                
                 
                 // update new row.
                 

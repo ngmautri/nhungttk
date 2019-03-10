@@ -493,6 +493,8 @@ class PoService extends AbstractService
         if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
             $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
         }
+        $entity->setDocType(\Application\Model\Constants::PROCURE_DOC_TYPE_PO);
+        
 
         // set posted
         $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);

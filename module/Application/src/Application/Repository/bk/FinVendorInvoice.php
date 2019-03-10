@@ -275,6 +275,20 @@ class FinVendorInvoice
     private $paymentStatus;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
+     */
+    private $isReversable;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="doc_type", type="string", length=10, nullable=true)
+     */
+    private $docType;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1298,6 +1312,54 @@ class FinVendorInvoice
     public function getPaymentStatus()
     {
         return $this->paymentStatus;
+    }
+
+    /**
+     * Set isReversable
+     *
+     * @param boolean $isReversable
+     *
+     * @return FinVendorInvoice
+     */
+    public function setIsReversable($isReversable)
+    {
+        $this->isReversable = $isReversable;
+
+        return $this;
+    }
+
+    /**
+     * Get isReversable
+     *
+     * @return boolean
+     */
+    public function getIsReversable()
+    {
+        return $this->isReversable;
+    }
+
+    /**
+     * Set docType
+     *
+     * @param string $docType
+     *
+     * @return FinVendorInvoice
+     */
+    public function setDocType($docType)
+    {
+        $this->docType = $docType;
+
+        return $this;
+    }
+
+    /**
+     * Get docType
+     *
+     * @return string
+     */
+    public function getDocType()
+    {
+        return $this->docType;
     }
 
     /**

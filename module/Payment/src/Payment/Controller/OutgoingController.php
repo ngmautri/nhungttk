@@ -669,7 +669,12 @@ class OutgoingController extends AbstractActionController
         
         /**@var \Application\Entity\FinVendorInvoice $target*/
         $target = $ap[0];
-
+        $errors = array();
+        
+        if($target->getIsReversed()==1){
+            $errors[]="Payment is not posible, because AP invoice reversed already.";
+        }
+        
         $entity = new \Application\Entity\PmtOutgoing();
         $entity->setIsActive(1);
         $entity->setVendor($target->getVendor());
@@ -684,7 +689,7 @@ class OutgoingController extends AbstractActionController
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
-            'errors' => null,
+            'errors' => $errors,
             'entity' => $entity,
             'target' => $target,
             'nmtPlugin' => $nmtPlugin,

@@ -169,6 +169,41 @@ class NmtInventoryFifoLayer
     private $revisionNo;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_reversed", type="boolean", nullable=true)
+     */
+    private $isReversed;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="reversal_date", type="datetime", nullable=true)
+     */
+    private $reversalDate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="reversal_doc", type="integer", nullable=true)
+     */
+    private $reversalDoc;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reversal_reason", type="string", length=100, nullable=true)
+     */
+    private $reversalReason;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_reversable", type="boolean", nullable=true)
+     */
+    private $isReversable;
+
+    /**
      * @var \Application\Entity\NmtInventoryItem
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryItem")
@@ -742,6 +777,126 @@ class NmtInventoryFifoLayer
     public function getRevisionNo()
     {
         return $this->revisionNo;
+    }
+
+    /**
+     * Set isReversed
+     *
+     * @param boolean $isReversed
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setIsReversed($isReversed)
+    {
+        $this->isReversed = $isReversed;
+
+        return $this;
+    }
+
+    /**
+     * Get isReversed
+     *
+     * @return boolean
+     */
+    public function getIsReversed()
+    {
+        return $this->isReversed;
+    }
+
+    /**
+     * Set reversalDate
+     *
+     * @param \DateTime $reversalDate
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setReversalDate($reversalDate)
+    {
+        $this->reversalDate = $reversalDate;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalDate
+     *
+     * @return \DateTime
+     */
+    public function getReversalDate()
+    {
+        return $this->reversalDate;
+    }
+
+    /**
+     * Set reversalDoc
+     *
+     * @param integer $reversalDoc
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setReversalDoc($reversalDoc)
+    {
+        $this->reversalDoc = $reversalDoc;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalDoc
+     *
+     * @return integer
+     */
+    public function getReversalDoc()
+    {
+        return $this->reversalDoc;
+    }
+
+    /**
+     * Set reversalReason
+     *
+     * @param string $reversalReason
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setReversalReason($reversalReason)
+    {
+        $this->reversalReason = $reversalReason;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalReason
+     *
+     * @return string
+     */
+    public function getReversalReason()
+    {
+        return $this->reversalReason;
+    }
+
+    /**
+     * Set isReversable
+     *
+     * @param boolean $isReversable
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setIsReversable($isReversable)
+    {
+        $this->isReversable = $isReversable;
+
+        return $this;
+    }
+
+    /**
+     * Get isReversable
+     *
+     * @return boolean
+     */
+    public function getIsReversable()
+    {
+        return $this->isReversable;
     }
 
     /**

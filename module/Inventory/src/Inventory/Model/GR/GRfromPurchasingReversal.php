@@ -123,8 +123,11 @@ class GRfromPurchasingReversal extends AbstractGRStrategy
         $createdOn = new \DateTime();
 
         $mv = new \Application\Entity\NmtInventoryMv();
+         
         $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_OUT);
         $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
+        $mv->setDocStatus(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
+        
         $mv->setIsPosted(1);
         $mv->setIsDraft(0);
         $mv->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
@@ -147,17 +150,20 @@ class GRfromPurchasingReversal extends AbstractGRStrategy
 
             $n ++;
 
-            /** @var \Application\Entity\NmtInventoryTrx $stock_gr_entity_new ; */
-            $stock_gr_entity_new = clone ($stock_gr_entity);
-
             $stock_gr_entity->setIsReversed(1);
             $stock_gr_entity->setReversalDate($movementDate);
-            // $stock_gr_entity->setReversalReason($r->getReversalReason());
+            //$stock_gr_entity->setReversalReason($r->getReversalReason());
             //$stock_gr_entity->setLastchangedBy($u);
             //$stock_gr_entity->setLastchangeOn($createdOn);
             $this->contextService->getDoctrineEM()->persist($stock_gr_entity);
 
+            
+            
             // reversal
+            /** @var \Application\Entity\NmtInventoryTrx $stock_gr_entity_new ; */
+            $stock_gr_entity_new = clone ($stock_gr_entity);
+            
+            $stock_gr_entity->setDocType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
             $stock_gr_entity_new->setMovement($mv);
             $stock_gr_entity_new->setDocStatus($mv->getDocStatus());
 
@@ -185,11 +191,9 @@ class GRfromPurchasingReversal extends AbstractGRStrategy
             if($fifoLayer!==null)
             {
                 $fifoLayer->setIsClosed(1);
-                
-            }
-            $fifoLayer->setIsClosed(1);
-            //$fifoLayer->setIsReversed(1);
-            //$fifoLayer->setReversalDate($movementDate);
+                $fifoLayer->setIsReversed(1);
+                $fifoLayer->setReversalDate($movementDate);
+             }
             
             
             /**

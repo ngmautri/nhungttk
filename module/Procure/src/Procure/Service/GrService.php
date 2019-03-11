@@ -7,6 +7,7 @@ use Application\Entity\NmtProcureGrRow;
 use Application\Service\AbstractService;
 use Inventory\Model\GR\AbstractGRStrategy;
 use Inventory\Model\GR\GRStrategyFactory;
+use Zend\Validator\Date;
 
 /**
  * Good Receipt Service.
@@ -16,16 +17,18 @@ use Inventory\Model\GR\GRStrategyFactory;
  */
 class GrService extends AbstractService
 {
+
     /**
      *
      * @param \Application\Entity\NmtProcureGr $entity
      * @param array $data
+     * @param boolean $isNew
      * @param boolean $isPosting
      */
-    public function validateHeader(\Application\Entity\NmtProcureGr $entity, $data, $isPosting = false)
+    public function validateHeader(\Application\Entity\NmtProcureGr $entity, $data, $isNew = false, $isPosting = false)
     {
         $errors = array();
-        
+
         if (! $entity instanceof \Application\Entity\NmtProcureGr) {
             $errors[] = $this->controllerPlugin->translate('Procure Good receipt is not found!');
         } else {
@@ -33,57 +36,166 @@ class GrService extends AbstractService
                 $errors[] = $this->controllerPlugin->translate('Local currency is not found!');
             }
         }
-        
+
         if ($data == null) {
             $errors[] = $this->controllerPlugin->translate('No input given');
         }
-        
+
         if (count($errors) > 0) {
             return $errors;
         }
-        
+
         // ====== OK ====== //
-        
-        
+
+        $remarks = $data['remarks'];
+        $entity->setRemarks($remarks);
+
+        // only update remark posible, when posted.
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED or $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
+            return null;
+        }
+
+        $isActive = (int) $data['isActive'];
+        $remarks = $data['remarks'];
+
+        if ($isActive != 1) {
+            $isActive = 0;
+        }
+        $entity->setIsActive($isActive);
+
+        // check vendor. ok
+        $ck = $this->checkVendor($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        // check PO Date
+        $ck = $this->checkPODate($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        // check currency and exchange rate
+        $ck = $this->checkCurrency($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        // check good receipt date
+        $ck = $this->checkGrDate($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        // check warehouse
+        $ck = $this->checkWarehouse($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        return $errors;
     }
-    
+
     /**
      *
      * @param \Application\Entity\NmtProcureGr $entity
+     * @param array $data
      * @param \Application\Entity\MlaUsers $u
      * @param boolean $isNew
      */
-    public function saveHeader(\Application\Entity\NmtProcureGr $entity, $u, $isNew = FALSE)
+    public function saveHeader(\Application\Entity\NmtProcureGr $entity, $data, $u, $isNew = FALSE)
     {
-        if ($u == null) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        $errors = array();
+
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument! User is not indentided for this transaction");
         }
-        
+
         if (! $entity instanceof \Application\Entity\NmtProcureGr) {
-            throw new \Exception("Invalid Argument. Procure Good Receipt Object not found!");
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument. Good receipt object is not found!");
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED ====== //
+
+        if ($isNew == FALSE){
+            $oldEntity = clone ($entity);
         }
         
-        // validated.
-        
-        $changeOn = new \DateTime();
-        
-        if ($isNew == TRUE) {
+        $ck = $this->validateHeader($entity, $data, $isNew, false);
+
+        if (count($ck) > 0) {
+            return $ck;
+        }
+
+        // $errors[] = $this->controllerPlugin->translate("Always errors for testing" . count($ck) );
+        // return $errors;
+
+        // ====== VALIDATED ====== //
+
+        try {
+
+            $changeOn = new \DateTime();
+            $changeArray = array();
             
-            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn($changeOn);
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-        } else {
-            $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            $entity->setLastchangeBy($u);
-            $entity->setLastchangeOn($changeOn);
+            
+            if ($isNew == TRUE) {
+
+                $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+                $entity->setCreatedBy($u);
+                $entity->setCreatedOn($changeOn);
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            } else {
+
+                $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+                if (count($changeArray) == 0) {
+                    $errors[] = sprintf('Nothing changed.');
+                    return $errors;
+                }
+
+                $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
+            }
+
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+
+            // LOGGING
+            if ($isNew == TRUE) {
+                $m = sprintf('[OK] GR #%s created.', $entity->getId());
+            } else {
+
+                $m = sprintf('[OK] GR #%s updated.', $entity->getId());
+
+                $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+            }
+
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
         }
-        
-        $this->doctrineEM->persist($entity);
-        $this->doctrineEM->flush();
+        return $errors;
     }
-    
-    
 
     /**
      *
@@ -100,15 +212,15 @@ class GrService extends AbstractService
         if (! $target instanceof \Application\Entity\NmtProcureGr) {
             throw new \Exception("Invalid Argument. GR Object not found!");
         }
-        
+
         if (! $entity instanceof \Application\Entity\NmtProcureGrRow) {
             throw new \Exception("Invalid Argument.GR Line Object not found!");
         }
-        
+
         $item_id = (int) $data['item_id'];
         $gl_account_id = (int) $data['gl_account_id'];
         $pr_row_id = $data['pr_row_id'];
-        $po_row_id = $data['po_row_id'];        
+        $po_row_id = $data['po_row_id'];
         $isActive = (int) $data['isActive'];
         $rowNumber = $data['rowNumber'];
 
@@ -131,13 +243,13 @@ class GrService extends AbstractService
 
         /** @var \Application\Entity\NmtProcurePrRow $po_row ; */
         $pr_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow')->find($pr_row_id);
-        
+
         /** @var \Application\Entity\NmtProcurePoRow $po_row ; */
         $po_row = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->find($po_row_id);
-        
+
         /** @var \Application\Entity\NmtInventoryItem $item ; */
         $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-        
+
         /** @var \Application\Entity\FinAccount $gl ; */
         $gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($gl_account_id);
 
@@ -146,18 +258,17 @@ class GrService extends AbstractService
         } else {
             $entity->setGlAccount($gl);
         }
-          
+
         if ($pr_row != null) {
             $entity->setPrRow($pr_row);
         }
-        
-        
+
         if ($po_row != null) {
             $entity->setPoRow($po_row);
             $entity->setPrRow($po_row->getPrRow());
             $entity->setItem($po_row->getItem());
         }
-        
+
         if ($item == null) {
             $errors[] = 'Item can\'t be empty!';
         } else {
@@ -166,7 +277,6 @@ class GrService extends AbstractService
 
         $entity->setVendorItemCode($vendorItemCode);
         $entity->setUnit($unit);
-        
 
         if ($quantity == null) {
             $errors[] = $this->controllerPlugin->translate('Please  enter quantity!');
@@ -207,11 +317,11 @@ class GrService extends AbstractService
                 }
             }
         }
-        
+
         if ($conversionFactor == null) {
             $conversionFactor = 1;
         }
-        
+
         if (! is_numeric($conversionFactor)) {
             $errors[] = $this->controllerPlugin->translate('conversion factor must be a number.');
         } else {
@@ -250,54 +360,52 @@ class GrService extends AbstractService
         }
 
         // validated.
-        
+
         $netAmount = $entity->getDocQuantity() * $entity->getDocUnitPrice();
-        $entity->setNetAmount($netAmount);        
+        $entity->setNetAmount($netAmount);
 
         $taxAmount = $entity->getNetAmount() * $entity->getTaxRate() / 100;
         $grossAmount = $entity->getNetAmount() + $taxAmount;
-        
+
         $entity->setTaxAmount($taxAmount);
         $entity->setGrossAmount($grossAmount);
-        
+
         $convertedPurchaseQuantity = $entity->getDocQuantity();
         $convertedPurchaseUnitPrice = $entity->getDocUnitPrice();
-        
+
         // converstion factor to purchase quantity
         $conversionFactor = $entity->getConversionFactor();
         $standardCF = $entity->getConversionFactor();
-        
+
         $convertedPurchaseQuantity = $convertedPurchaseQuantity * $conversionFactor;
         $convertedPurchaseUnitPrice = $convertedPurchaseUnitPrice / $conversionFactor;
-        
+
         $pr_row = $entity->getPrRow();
-        
+
         if ($pr_row != null) {
             $standardCF = $standardCF * $pr_row->getConversionFactor();
         }
-        
+
         // quantity /unit price is converted purchase quantity to clear PR
-        
+
         $entity->setQuantity($convertedPurchaseQuantity);
         $entity->setUnitPrice($convertedPurchaseUnitPrice);
-        
+
         $convertedStandardQuantity = $entity->getDocQuantity();
         $convertedStandardUnitPrice = $entity->getDocUnitPrice();
-        
+
         $item = $entity->getItem();
         if ($item != null) {
             $convertedStandardQuantity = $convertedStandardQuantity * $standardCF;
             $convertedStandardUnitPrice = $convertedStandardUnitPrice / $standardCF;
         }
-        
+
         // calculate standard quantity
         $entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
         $entity->setConvertedPurchaseUnitPrice($convertedPurchaseUnitPrice);
-        
+
         $entity->setConvertedStandardQuantity($convertedStandardQuantity);
         $entity->setConvertedStandardUnitPrice($convertedStandardUnitPrice);
-        
-        
 
         if ($isNew == TRUE) {
             $entity->setCurrentState($target->getCurrentState());
@@ -321,7 +429,7 @@ class GrService extends AbstractService
      * @param \Application\Entity\MlaUsers $u
      *
      */
-    public function doPosting($entity, $u, $isFlush = false)
+    public function doPosting($entity, array $data, $u, $isFlush = false)
     {
         if ($u == null) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
@@ -377,8 +485,6 @@ class GrService extends AbstractService
                 continute;
             }
 
-            $n ++;
-
             // UPDATE row status
             $r->setIsPosted(1);
             $r->setIsDraft(0);
@@ -414,6 +520,10 @@ class GrService extends AbstractService
                 }
 
                 if ($r->getItem()->getIsStocked() == 1) {
+
+                    // count inventory item
+                    $n ++;
+
                     $criteria = array(
                         'isActive' => 1,
                         'grRow' => $r
@@ -509,7 +619,7 @@ class GrService extends AbstractService
                 $inventoryPostingStrategy->setContextService($this);
                 $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(), $entity->getWarehouse());
             } catch (\Exception $e) {
-                // left bank.       
+                // left bank.
 
                 $m = sprintf('[ERROR] %s', $e->getMessage());
                 $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
@@ -528,6 +638,234 @@ class GrService extends AbstractService
                 'createdOn' => $changeOn
             ));
         }
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     * @param array $data
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isFlush
+     * @return array
+     */
+    public function postGR($entity, array $data, $u, $isFlush = false)
+    {
+        $errors = array();
+
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument! User is not indentided for this transaction");
+        }
+
+        if (! $entity instanceof \Application\Entity\NmtProcureGr) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument. Good receipt object is not found!");
+        }
+
+        $criteria = array(
+            'isActive' => 1,
+            'gr' => $entity
+        );
+        $gr_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
+
+        if (count($gr_rows) == 0) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument. Good receipt is empty");
+        }
+
+        $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+
+        if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+            $errors[] = $this->controllerPlugin->translate("Posting strategy is not identified for this inventory movement type!");
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED ====== //
+
+        $ck = $this->validateHeader($entity, $data, FALSE, TRUE);
+
+        if (count($ck) > 0) {
+            return $ck;
+        }
+
+        // $errors[] = $this->controllerPlugin->translate("Always errors for testing" . count($ck) );
+        // return $errors;
+
+        // ====== VALIDATED ====== //
+
+        try {
+
+            $changeOn = new \DateTime();
+
+            // Assign doc number
+            if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+                $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
+            }
+
+            // set posted
+            $entity->setDocType(\Application\Model\Constants::PROCURE_DOC_TYPE_GR);
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+            $this->doctrineEM->persist($entity);
+
+            $n = 0;
+            $inventory_trx_rows = array();
+
+            foreach ($gr_rows as $r) {
+
+                /** @var \Application\Entity\NmtProcureGrRow $r ; */
+
+                /**
+                 * Double check only.
+                 * Receipt of ZERO quantity not allowed
+                 */
+                if ($r->getQuantity() == 0) {
+                    continute;
+                }
+
+                // UPDATE row status
+                $r->setIsPosted(1);
+                $r->setIsDraft(0);
+                $r->setDocStatus($entity->getDocStatus());
+                $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
+                $r->setRowNumber($n);
+                $r->setLastchangeOn($changeOn);
+
+                if ($r->getItem() !== null) {
+
+                    /**
+                     *
+                     * @todo create serial number if item with Serial or Fixed Asset
+                     */
+                    if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO or $r->getItem()->getIsFixedAsset() == 1) {
+
+                        for ($i = 0; $i < $r->getQuantity(); $i ++) {
+
+                            // create new serial number
+                            $sn_entity = new \Application\Entity\NmtInventoryItemSerial();
+
+                            $sn_entity->setItem($r->getItem());
+                            $sn_entity->setGrRow($r);
+                            $sn_entity->setIsActive(1);
+                            $sn_entity->setSysNumber($this->controllerPlugin->getDocNumber($sn_entity));
+                            $sn_entity->setCreatedBy($u);
+                            $sn_entity->setCreatedOn($changeOn);
+                            $sn_entity->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                            $this->doctrineEM->persist($sn_entity);
+                        }
+                    }
+
+                    if ($r->getItem()->getIsStocked() == 1) {
+
+                        // count inventory item.
+                        $n ++;
+
+                        $criteria = array(
+                            'isActive' => 1,
+                            'grRow' => $r
+                        );
+                        $stock_gr_entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findOneBy($criteria);
+
+                        $stock_gr_entity = null;
+
+                        if ($stock_gr_entity_ck instanceof \Application\Entity\NmtInventoryTrx) {
+                            $stock_gr_entity = $stock_gr_entity_ck;
+                        } else {
+                            $stock_gr_entity = new NmtInventoryTrx();
+                        }
+
+                        $stock_gr_entity->setGr($entity);
+                        $stock_gr_entity->setGrRow($r);
+                        $stock_gr_entity->setExchangeRate($r->getGr()
+                            ->getExchangeRate());
+                        $stock_gr_entity->setSourceClass(get_class($r));
+                        $stock_gr_entity->setSourceId($r->getId());
+
+                        $stock_gr_entity->setTransactionType($r->getTransactionType());
+                        $stock_gr_entity->setCurrentState($entity->getCurrentState());
+                        $stock_gr_entity->setDocStatus($r->getDocStatus());
+                        $stock_gr_entity->setIsActive($r->getIsActive());
+
+                        $stock_gr_entity->setVendor($entity->getVendor());
+                        $stock_gr_entity->setDocType($entity->getDocType());
+                        $stock_gr_entity->setFlow(\Application\Model\Constants::WH_TRANSACTION_IN);
+
+                        $stock_gr_entity->setItem($r->getItem());
+                        $stock_gr_entity->setPrRow($r->getPrRow());
+                        $stock_gr_entity->setPoRow($r->getPoRow());
+
+                        $stock_gr_entity->setVendorItemCode($r->getVendorItemCode());
+                        $stock_gr_entity->setVendorItemUnit($r->getUnit());
+
+                        $qty = $r->getQuantity();
+                        if ($r->getConvertedStandardQuantity() != null) {
+                            $qty = $r->getConvertedStandardQuantity();
+                        }
+
+                        $unitPrice = $r->getUnitPrice();
+                        if ($r->getConvertedStandardUnitPrice() != null) {
+                            $unitPrice = $r->getConvertedStandardUnitPrice();
+                        }
+
+                        $stock_gr_entity->setQuantity($qty);
+                        $stock_gr_entity->setVendorUnitPrice($unitPrice);
+
+                        $convertedPurchaseQuantity = $r->getQuantity();
+                        if ($r->getConvertedPurchaseQuantity() != null) {
+                            $convertedPurchaseQuantity = $r->getConvertedPurchaseQuantity();
+                        }
+
+                        $stock_gr_entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
+
+                        $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
+                        $stock_gr_entity->setTrxDate($entity->getGrDate());
+                        $stock_gr_entity->setCurrency($entity->getCurrency());
+                        $stock_gr_entity->setRemarks('PO-GR.' . $r->getRowIdentifer());
+                        $stock_gr_entity->setWh($entity->getWarehouse());
+                        $stock_gr_entity->setCreatedBy($u);
+                        $stock_gr_entity->setCreatedOn(new \DateTime());
+                        $stock_gr_entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                        $stock_gr_entity->setChecksum(Rand::getString(32, \Application\Model\Constants::CHAR_LIST, true));
+
+                        $stock_gr_entity->setTaxRate($r->getTaxRate());
+                        $this->doctrineEM->persist($stock_gr_entity);
+
+                        $inventory_trx_rows[] = $stock_gr_entity;
+                    }
+                }
+            }
+
+            /**
+             *
+             * @todo: Do Accounting Posting
+             */
+            $this->jeService->postGR($entity, $gr_rows, $u, $this->controllerPlugin);
+            $this->doctrineEM->flush();
+
+            // Inventory items found.
+            if ($n > 0) {
+
+                // Post WH Goods receipt.
+                $inventoryPostingStrategy->setContextService($this);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(), $entity->getWarehouse());
+            }
+
+            // LOGGING
+            $m = sprintf('[OK] Goods Receipt %s posted', $entity->getSysNumber());
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return $errors;
     }
 
     /**
@@ -663,4 +1001,225 @@ class GrService extends AbstractService
      */
     public function selectFromPO($entity, $target, $u, $isFlush = false)
     {}
+
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkVendor(\Application\Entity\NmtProcureGr $entity, $data, $isPosting)
+    {
+        $errors = array();
+        if (! isset($data['vendor_id'])) {
+            $errors[] = $this->controllerPlugin->translate('Vendor Id is not set!');
+            return $errors;
+        }
+
+        $vendor_id = (int) $data['vendor_id'];
+
+        /** @var \Application\Entity\NmtBpVendor $vendor ; */
+        $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
+
+        if ($vendor !== null) {
+            $entity->setVendor($vendor);
+            $entity->setVendorName($vendor->getVendorName());
+        } else {
+            $errors[] = $this->controllerPlugin->translate('Vendor not found!');
+        }
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkCurrency(\Application\Entity\NmtProcureGr $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['currency_id'])) {
+            $errors[] = $this->controllerPlugin->translate('Currency Id input is not set!');
+        }
+
+        if (! isset($data['exchangeRate'])) {
+            $errors[] = $this->controllerPlugin->translate('Exchange rate input is not set!');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ==========OK=========== //
+
+        $currency_id = (int) $data['currency_id'];
+        $exchangeRate = (double) $data['exchangeRate'];
+
+        // ** @var \Application\Entity\NmtApplicationCurrency $currency ; */
+        $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+
+        // check if posting period is closed
+        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+        if ($currency !== null) {
+            $entity->setCurrency($currency);
+            $entity->setCurrencyIso3($currency->getCurrency());
+
+            if ($currency == $entity->getLocalCurrency()) {
+                $entity->setExchangeRate(1);
+            } else {
+
+                // if user give exchange rate.
+                if ($exchangeRate != 0 and $exchangeRate != 1) {
+                    if (! is_numeric($exchangeRate)) {
+                        $errors[] = $this->controllerPlugin->translate('Foreign exchange rate is not valid. It must be a number.');
+                    } else {
+                        if ($exchangeRate < 0) {
+                            $errors[] = $this->controllerPlugin->translate('Foreign exchange rate must be greater than 0!');
+                        } else {
+                            $entity->setExchangeRate($exchangeRate);
+                        }
+                    }
+                } else {
+                    // get default exchange rate.
+                    /** @var \Application\Entity\FinFx $lastest_fx */
+
+                    $lastest_fx = $p->getLatestFX($currency_id, $entity->getLocalCurrency()
+                        ->getId());
+                    if ($lastest_fx !== null) {
+                        $entity->setExchangeRate($lastest_fx->getFxRate());
+                    } else {
+                        $errors[] = sprintf('FX rate for %s not definded yet!', $currency->getCurrency());
+                    }
+                }
+            }
+        } else {
+            $errors[] = $this->controllerPlugin->translate('Currency not set.');
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkGrDate(\Application\Entity\NmtProcureGr $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['grDate'])) {
+            $errors[] = $this->controllerPlugin->translate('Good Receipt input is not set!');
+            return $errors;
+        }
+
+        // ==========OK=========== //
+        $grDate = $data['grDate'];
+
+        $validator = new Date();
+
+        if (! $grDate == null) {
+            if (! $validator->isValid($grDate)) {
+                $errors[] = $this->controllerPlugin->translate('Good receipt Date is not correct or empty!');
+                return $errors;
+            } else {
+                $entity->setGrDate(new \DateTime($grDate));
+            }
+        }
+
+        // ==========OK=========== //
+
+        // striclty check when posting.
+        if ($isPosting == TRUE) {
+
+            if ($entity->getGrDate() == null) {
+                $errors[] = $this->controllerPlugin->translate('Good receipt Date is not correct or empty!');
+                return $errors;
+            }
+
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+            // check if posting period is closed
+            /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+            $postingPeriod = $p->getPostingPeriod(new \DateTime($grDate));
+
+            if ($postingPeriod == null) {
+                $errors[] = sprintf('Posting period for [%s] not created!', $grDate);
+            } else {
+                if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                    $errors[] = sprintf('Period [%s] is closed for Good receipt!', $postingPeriod->getPeriodName());
+                } else {
+                    $entity->setGrDate(new \DateTime($grDate));
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkWarehouse(\Application\Entity\NmtProcureGr $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['target_wh_id'])) {
+            $errors[] = $this->controllerPlugin->translate('Warehouse ID is not set!');
+            return $errors;
+        }
+        // ==========OK=========== //
+
+        $warehouse_id = (int) $data['target_wh_id'];
+        $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
+        $entity->setWarehouse($warehouse);
+
+        if ($isPosting == TRUE and $entity->getWarehouse() == null) {
+            $errors[] = $this->controllerPlugin->translate('Warehouse not found!');
+        }
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkPODate(\Application\Entity\NmtProcureGr $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['contractDate'])) {
+            $errors[] = $this->controllerPlugin->translate('PO Date input is not set!');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ==========OK=========== //
+
+        $poDate = $data['contractDate'];
+
+        $validator = new Date();
+
+        if (! $poDate == null) {
+            if (! $validator->isValid($poDate)) {
+                $errors[] = $this->controllerPlugin->translate('PO Date is not correct or empty!');
+            } else {
+                $entity->setContractDate(new \DateTime($poDate));
+            }
+        }
+        return $errors;
+    }
 }

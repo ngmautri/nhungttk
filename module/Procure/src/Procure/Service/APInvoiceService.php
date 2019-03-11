@@ -68,8 +68,7 @@ class APInvoiceService extends AbstractService
             $sapDoc = "N/A";
         }
         $entity->setSapDoc($sapDoc);
-        $entity->setRemarks($remarks);
-
+     
         // check vendor. ok
         $ck = $this->checkVendor($entity, $data, $isPosting);
         if (count($ck) > 0) {
@@ -149,8 +148,11 @@ class APInvoiceService extends AbstractService
   
         // ====== VALIDATED ====== //
 
-        $oldEntity = clone ($entity);
-
+        
+        if ($isNew == FALSE){
+            $oldEntity = clone ($entity);
+        }
+        
         $ck = $this->validateHeader($entity, $data, $isNew);
 
         if (count($ck) > 0) {

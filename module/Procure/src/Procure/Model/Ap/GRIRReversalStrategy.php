@@ -41,36 +41,29 @@ class GRIRReversalStrategy extends AbstractAPRowPostingStrategy
         /**
          *
          * @todo: Reverse GR Procure
+         * =========================
          */
         $criteria = array(
-            'isActive' => 1,
-            'apInvoiceRow' => $entity
+            'targetObject' => get_class($entity),
+            'targetObjectId' => $entity->getId(),
         );
 
         /** @var \Application\Entity\NmtProcureGrRow $gr_entity ; */
         $gr_entity = $procureSV->getDoctrineEM()
             ->getRepository('Application\Entity\NmtProcureGrRow')
             ->findOneBy($criteria);
+        
+         if ($gr_entity !== null) {
+        
+            $gr_entity->setIsActive(0);
+            $gr_entity->setIsReversed(1);
+            $gr_entity->setReversalDate($r->getReversalDate());
+            $gr_entity->setReversalReason($r->getReversalReason());
 
-        if ($gr_entity == null) {
-            // something wrong
-            return;
+            $gr_entity->setLastchangedBy($u);
+            $gr_entity->setLastchangeOn($createdOn);
+            $procureSV->getDoctrineEM()->persist($gr_entity);
         }
-
-        /**
-         *
-         * @todo: Reverse Procurement GR
-         */
-        // PROCURE GOOD Receipt to clear PR, PO.
-        $gr_entity->setIsActive(0);
-        $gr_entity->setIsReversed(1);
-        $gr_entity->setReversalDate($r->getReversalDate());
-        $gr_entity->setReversalReason($r->getReversalReason());
-
-        $gr_entity->setLastchangedBy($u);
-        $gr_entity->setLastchangeOn($createdOn);
-        $procureSV->getDoctrineEM()->persist($gr_entity);
-
         /**
          *
          * @todo: Reverse Serial Item
@@ -80,7 +73,6 @@ class GRIRReversalStrategy extends AbstractAPRowPostingStrategy
             $criteria = array(
                 'isActive' => 1,
                 'apRow' => $r,
-                'item' => $r->getIem
             );
 
             $serial_list = $procureSV->getDoctrineEM()
@@ -95,19 +87,17 @@ class GRIRReversalStrategy extends AbstractAPRowPostingStrategy
                     $s->setIsReversed(1);
                     $s->setReversalDate($r->getReversalDate());
                     $s->setReversalReason($r->getReversalReason());
-                    $s->setLastchangedBy($u);
+                    $s->setLastChangeBy($u);
                     $s->setLastchangeOn($createdOn);
-                    $s->$procureSV->getDoctrineEM()->persist($s);
+                    $procureSV->getDoctrineEM()->persist($s);
                 }
             }
 
-            /**
-             *
-             * @todo: Reversal Good Receipt WH
-             * no need. it will be done in GRFromPurchaningReversal.
-             */
-
-          
+        /**
+         *
+         * @todo: Reversal Good Receipt WH
+         * no need. it will be done in GRFromPurchaningReversal.
+         */
         }
     }
 }

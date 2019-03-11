@@ -1,4 +1,9 @@
-<?php /**@var \Application\Entity\NmtProcureGr $entity ;*/?>
+<?php
+/** @var \Application\Entity\NmtProcureGr $entity ;
+ *  @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ */
+?>
+
 
 <div id="wrapper" class="toggled">
 
@@ -188,6 +193,9 @@ if (count($errors) > 0) {
 										<select name="currency_id" class="form-control input-sm">
 											<option value="">Select Currency</option>
    	    							<?php
+
+   	    $currency_list = $nmtPlugin->currencyList();
+
             if ($currency_list !== null) :
                 foreach ($currency_list as $curr) :
                     if ($entity !== null) :
@@ -234,13 +242,48 @@ if (count($errors) > 0) {
 									<label class="control-label col-sm-2" for="inputTag">Target
 										Warehouse:</label>
 									<div class="col-sm-3">
+										<!-- 
 										<input class="form-control input-sm" readonly type="text"
 											id="target_wh_name" placeholder="Please select!"
 											name="target_wh"
 											value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getWhName();endif;endif;?>">
-										<input type="hidden" id="target_wh_id" name="target_wh_id"
+										
+										<input type="hidden" id="target_wh_id" name="target_wh_id-1"
 											value="<?php if (!$entity == null): if (!$entity->getWarehouse() == null):echo $entity->getWarehouse()->getId();endif;endif;?>" />
+								 -->
+
+										<select name="target_wh_id" class="form-control input-sm">
+											<option value=""><?php echo $this->translate("---");?>
+											</option>
+   	    							<?php
+   	    							
+   	    							$wh_list = $nmtPlugin->warehouseList();
+   	    							
+            if ($wh_list !== null) :
+                foreach ($wh_list as $curr) :
+                    if ($entity !== null) :
+                        if ($entity->getWarehouse() !== null) :
+                            if ($entity->getWarehouse()->getId() == $curr->getId()) :
+                                echo '<option selected value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                            else :
+                                echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $curr->getId() . '">' . $curr->getWhName() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+
+
 									</div>
+
 								</div>
 
 								<div class="form-group margin-bottom">

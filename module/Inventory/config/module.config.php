@@ -59,6 +59,14 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
+            
+            array(
+                'label' => 'Item Variant',
+                'route' => 'Inventory/default',
+                'controller' => 'item-variant',
+                'action' => 'list',
+                'icon' => 'glyphicon glyphicon-list'
+            ),
     
             array(
                 'label' => 'Log',
@@ -156,6 +164,7 @@ return array(
             'Inventory\Service\OpeningBalanceService' => 'Inventory\Service\OpeningBalanceServiceFactory',
             'Inventory\Service\ItemSerialService' => 'Inventory\Service\ItemSerialServiceFactory',
             'Inventory\Service\WarehouseService' => 'Inventory\Service\WarehouseServiceFactory',
+            'Inventory\Service\ItemVariantService' => 'Inventory\Service\ItemVariantServiceFactory',
             
         )
     ),
@@ -201,6 +210,7 @@ return array(
             
             'Inventory\Controller\ItemGroup' => 'Inventory\Controller\ItemGroupControllerFactory',
             'Inventory\Controller\ItemAccounting' => 'Inventory\Controller\ItemAccountingControllerFactory',
+            'Inventory\Controller\ItemVariant' => 'Inventory\Controller\ItemVariantControllerFactory',
             
             
         )

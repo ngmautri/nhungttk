@@ -833,7 +833,7 @@ class JEService extends AbstractService
         }
 
         if ($u == null) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+            throw new \Exception("Invalid Argument! User is not indentided for this transaction.");
         }
 
         if ($nmtPlugin == null) {
@@ -882,13 +882,15 @@ class JEService extends AbstractService
         $clearing_gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
 
         foreach ($rows as $r) {
-            $n ++;
-            /** @var \Application\Entity\NmtProcureGrRow $r ; */
+            
+             /** @var \Application\Entity\NmtProcureGrRow $r ; */
 
             // No need to create JE for ZERO value row.
 
             if ($r->getUnitPrice() > 0) {
-
+                
+                $n ++;
+               
                 // Create JE Row - DEBIT
                 $je_row = new \Application\Entity\FinJeRow();
                 $je_row->setJe($je);
@@ -911,8 +913,8 @@ class JEService extends AbstractService
                 $je_row->setCreatedBy($u);
                 $je_row->setCreatedOn($entity->getCreatedOn());
                 $this->doctrineEM->persist($je_row);
-
-                $n ++;
+                
+                
                 // Create JE Row - DEBIT
                 // Create JE Row - Credit - AP account
                 $je_row1 = new \Application\Entity\FinJeRow();

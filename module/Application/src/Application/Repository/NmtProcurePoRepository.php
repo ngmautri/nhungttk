@@ -919,7 +919,7 @@ WHERE nmt_inventory_trx.is_active=1 AND nmt_inventory_trx.invoice_row_id IN (%s)
     /**
      * GR List
      */
-    public function getGrList($is_active = 1, $current_state = null, $filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getGrList($is_active = 1, $current_state = null, $docStatus=null,$filter_by = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
     {
 $sql = "SELECT
    nmt_procure_gr.*,
@@ -940,9 +940,12 @@ WHERE 1
             $sql = $sql . " AND nmt_procure_gr.current_state = '" . $current_state . "'";
         }
         
+        if ($docStatus != null) {
+            $sql = $sql . " AND nmt_procure_gr.doc_status = '" . $docStatus . "'";
+        }
       
 
-        $sql = $sql . " GROUP BY nmt_procure_gr_row.gr_id";
+        $sql = $sql . " GROUP BY nmt_procure_gr.id";
         
         switch ($sort_by) {
             case "createdOn":
@@ -950,6 +953,10 @@ WHERE 1
                 break;
             case "sysNumber":
                 $sql = $sql . " ORDER BY nmt_procure_gr.sys_number " . $sort;
+                break;
+     
+            case "docStatus":
+                $sql = $sql . " ORDER BY nmt_procure_gr.doc_status " . $sort;
                 break;
                 
             case "currencyCode":

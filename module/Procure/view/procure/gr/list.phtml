@@ -19,7 +19,7 @@
 		style="border: 1px; padding: 3px; font-size: 9pt; background: url(/images/bg1.png); background-repeat: repeat-x; background-color: #FFFFFF;">
 
 		<form class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/procure/po/list" method="get"
+			action="<?php echo $this->baseUrl ?>/procure/gr/list" method="get"
 			enctype="multipart/form-data">
 
 			<div class="form-group margin-bottom">
@@ -46,6 +46,22 @@
 						<option <?php echo $is_active=='-1'? "selected='selected'":"";?>
 							value="-1">Inactive</option>
 					</select>
+				</div>
+			</div>
+			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2" for="inputTag">Doc Status:</label>
+				<div class="col-sm-3">
+					<select name="docStatus"  class="form-control input-sm">
+						<option value="">All</option>
+						<option <?php echo $docStatus=='posted'? "selected='selected'":"";?>
+							value="posted">posted</option>
+						<option <?php echo $docStatus=='draft'? "selected='selected'":"";?>
+							value="draft">draft</option>
+					<option <?php echo $docStatus=='reversed'? "selected='selected'":"";?>
+							value="reversed">reversed</option>
+			
+						</select>
 				</div>
 			</div>
 			
@@ -177,6 +193,10 @@ else:
 			</td>
 			<td><?php echo $a->getCurrentState()?></td>
 			<td></td>
+						<td>
+<a href="<?php echo $this->baseUrl ?>/procure/gr/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a>
+			</td>
+			
 	<?php endforeach; ?>
  </tbody>
 </table>
@@ -187,7 +207,7 @@ else:
 	if (! is_null ( $paginator )) :
 		
 		// change it only
-	$base = $this->baseUrl . '/procure/gr/list?is_active='. $is_active.'&currentState='. $currentState.
+	$base = $this->baseUrl . '/procure/gr/list?is_active='. $is_active.'&currentState='. $currentState.'&docStatus='. $docStatus.
 	'&sort_by='. $sort_by.'&sort='. $sort;
 		$_connector_symbol = '&';
 		

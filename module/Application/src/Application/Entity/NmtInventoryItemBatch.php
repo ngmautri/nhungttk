@@ -176,6 +176,20 @@ class NmtInventoryItemBatch
     private $isReversable;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_change_on", type="datetime", nullable=true)
+     */
+    private $lastChangeOn;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_change_by", type="integer", nullable=true)
+     */
+    private $lastChangeBy;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -766,6 +780,30 @@ class NmtInventoryItemBatch
     }
 
     /**
+     * Set lastChangeBy
+     *
+     * @param integer $lastChangeBy
+     *
+     * @return NmtInventoryItemBatch
+     */
+    public function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+
+        return $this;
+    }
+
+    /**
+     * Get lastChangeBy
+     *
+     * @return integer
+     */
+    public function getLastChangeBy()
+    {
+        return $this->lastChangeBy;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -787,30 +825,6 @@ class NmtInventoryItemBatch
     public function getCreatedBy()
     {
         return $this->createdBy;
-    }
-
-    /**
-     * Set lastchangeBy
-     *
-     * @param \Application\Entity\MlaUsers $lastchangeBy
-     *
-     * @return NmtInventoryItemBatch
-     */
-    public function setLastchangeBy(\Application\Entity\MlaUsers $lastchangeBy = null)
-    {
-        $this->lastchangeBy = $lastchangeBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lastchangeBy
-     *
-     * @return \Application\Entity\MlaUsers
-     */
-    public function getLastchangeBy()
-    {
-        return $this->lastchangeBy;
     }
 
     /**

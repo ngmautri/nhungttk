@@ -1,0 +1,150 @@
+<?php /**@var \Application\Entity\NmtInventorySerial $entity ;*/?>
+
+<?php
+if (count ( $errors ) > 0) {
+	echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+	
+	echo '<ul>';
+	foreach ( $errors as $error ) :
+		echo '<li>' . $error . '</li>';
+	endforeach
+	;
+	echo '</ul>';
+	echo '</div>';
+}
+?>
+
+<div id="tabs" style="font-size: 9.5pt">
+	<ul>
+		<li><a href="#general"><small><i class="glyphicon glyphicon-plus"></i></small>&nbsp;Serial Number</a></li>
+	</ul>
+
+	<div id="general" style="font-size: 9pt">
+
+		<form id="Create_Inv_Form" class="form-horizontal"
+			action="/inventory/serial-number/add" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="redirectUrl"
+				value="<?php echo $redirectUrl ?>" />
+			<fieldset>
+				<legend style="font-size: 9.5pt; color: gray;">
+					<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+					<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+				</legend>
+				<div id="invoice_header" class="collapse in">
+				
+				<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Serial number:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="invoiceNo" name="serialNumber" 
+								value="<?php echo (!$entity == null)? $entity->getSerialNumber():"";?>">
+						</div>
+					
+   						<div class="col-sm-3">
+							<input
+								<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+								type="checkbox" name="isActive" value="1">&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
+
+						</div>
+   					
+   				</div>
+   				<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Location:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="location" name="location"
+													value="<?php echo (!$entity == null)? $entity->getLocation():"";?>">
+		
+						</div>
+					
+   				</div>
+   				<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Category:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="category" name="category"
+													value="<?php echo (!$entity == null)? $entity->getCategory():"";?>">
+		
+						</div>
+					
+   				</div>
+   				<hr>
+   				
+   				<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Manufactuer (Mfg):</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="mfgName" name="mfgName" 
+								value="<?php echo (!$entity == null)? $entity->getMfgName():"";?>">
+						</div>
+					</div>
+   				<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Mfg Serial number:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="mfgSerialNumber" name="mfgSerialNumber" 
+								value="<?php echo (!$entity == null)? $entity->getMfgSerialNumber():"";?>">
+						</div>
+						<label class="control-label col-sm-2">Lot Number:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="lotNumber" name="lotNumber" 
+								value="<?php echo (!$entity == null)? $entity->getLotNumber():"";?>">
+						</div>
+					</div>
+					
+					<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Mfg Date:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="mfgDate" name="mfgDate" value="<?php if(!$entity == null): if ($entity->getMfgDate() !== null): echo date_format($entity->getMfgDate(),"Y-m-d"); endif; endif;?>">
+												</div>
+					</div>
+					
+				<div class="form-group margin-bottom required">
+						<label class="control-label col-sm-2">Mfg Warranty Start:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="mfgWarrantyStart" name="mfgWarrantyStart" value="<?php if(!$entity == null): if ($entity->getMfgWarrantyStart() !== null): echo date_format($entity->getMfgWarrantyStart(),"Y-m-d"); endif; endif;?>">
+							</div>
+						<label class="control-label col-sm-2">Mfg Warranty Start:</label>
+						<div class="col-sm-3">
+							<input class="form-control input-sm" type="text" placeholder=""
+								id="mfgWarrantyEnd" name="mfgWarrantyEnd" value="<?php if(!$entity == null): if ($entity->getMfgWarrantyEnd() !== null): echo date_format($entity->getMfgWarrantyEnd(),"Y-m-d"); endif; endif;?>">
+						</div>
+					</div>
+					
+						<div class="form-group margin-bottom">
+					<label class="control-label col-sm-2" >Remarks:</label>
+            		<div class="col-sm-8">
+            			<input class="form-control input-sm" type="text"  placeholder=""
+            				name="remarks" value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
+            		</div>
+				</div>
+   							<hr>
+				<div class="form-group margin-bottom">
+						<label class="control-label col-sm-2" for="inputTag"></label>
+						<div class="col-sm-3">
+	   	<button onclick="submitForm('Create_Inv_Form');" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-floppy-disk"> </i> Save</button>
+							<a tabindex="11" class="btn btn-default btn-sm"
+								href="<?php echo $this->baseUrl ?>/finance/v-invoice/list"><small><i
+									class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+	
+						</div>
+					</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+
+
+<script>
+
+$( "input[id='mfgDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='mfgWarrantyStart']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+$( "input[id='mfgWarrantyEnd']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+  
+</script>
+
+	

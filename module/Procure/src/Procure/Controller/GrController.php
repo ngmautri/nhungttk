@@ -48,48 +48,44 @@ class GrController extends AbstractActionController
 
             $data = $this->params()->fromPost();
             $redirectUrl = $data['redirectUrl'];
-            $entity_id = $data['entity_id'];
+            $entity_id = (int) $data['entity_id'];
             $entity_token = $data['entity_token'];
 
             $reversalDate = $data['reversalDate'];
             $reversalReason = $data['reversalReason'];
 
-            $id = (int) $this->params()->fromQuery('entity_id');
-            $token = $this->params()->fromQuery('token');
+            /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
+            $entity_array = $res->getGr($entity_id, $entity_token);
 
-            /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
-            $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
-            $invoice = $res->getVendorInvoice($entity_id, $entity_token);
-
-            if ($invoice == null) {
+            if ($entity_array == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
 
             $entity = null;
-            if ($invoice[0] instanceof FinVendorInvoice) {
-                $entity = $invoice[0];
+            if ($entity_array[0] instanceof NmtProcureGr) {
+                $entity = $entity_array[0];
             }
 
             if ($entity == null) {
-                return $this->redirect()->toRoute('access_denied');
+                $m = $nmtPlugin->translate("Reversal failed!");
+                $this->flashMessenger()->addMessage($m);
+                
+                $errors[] = "not found!";
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'entity' => $entity,
+                    'errors' => $errors,
+                    'currency_list' => $currency_list,
+                    'total_row' => $entity_array['total_row'],
+                    'active_row' => $entity_array['active_row'],
+                    'max_row_number' => $entity_array['total_row'],
+                    'nmtPlugin' => $nmtPlugin,
+                ));
             }
+            
 
-            $viewModel = new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => null,
-                'active_row' => null,
-                'max_row_number' => null,
-                'total_picture' => null,
-                'total_attachment' => null,
-                'net_amount' => null,
-                'tax_amount' => null,
-                'gross_amount' => null
-            ));
-
-            $errors = $this->apService->reverseAP($entity, $u, $reversalDate, $reversalReason);
+            $errors = $this->grService->reverse($entity, $u, $reversalDate, $reversalReason);
 
             if (count($errors) > 0) {
 
@@ -101,24 +97,20 @@ class GrController extends AbstractActionController
                     'entity' => $entity,
                     'errors' => $errors,
                     'currency_list' => $currency_list,
-                    'total_row' => $invoice['total_row'],
-                    'active_row' => $invoice['active_row'],
-                    'max_row_number' => $invoice['total_row'],
-                    'total_picture' => $invoice['total_picture'],
-                    'total_attachment' => $invoice['total_attachment'],
-                    'net_amount' => $invoice['net_amount'],
-                    'tax_amount' => $invoice['tax_amount'],
-                    'gross_amount' => $invoice['gross_amount']
+                    'total_row' => $entity_array['total_row'],
+                    'active_row' => $entity_array['active_row'],
+                    'max_row_number' => $entity_array['total_row'],
+                    'nmtPlugin' => $nmtPlugin,
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice/reverse");
+                $viewModel->setTemplate("procure/gr/reverse");
                 return $viewModel;
             }
 
-            $m = sprintf("AP #%s reversed", $entity->getSysNumber());
+            $m = sprintf("GR #%s reversed", $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
 
-            $redirectUrl = "/finance/v-invoice/list";
+            $redirectUrl = "/procure/gr/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
 
@@ -138,38 +130,31 @@ class GrController extends AbstractActionController
 
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
-        $gr = $res->getGr($id, $token);
+        $entity_array = $res->getGr($id, $token);
 
-        if ($gr == null) {
+        if ($entity_array == null) {
             return $this->redirect()->toRoute('access_denied');
         }
 
         $entity = null;
-        if ($gr[0] instanceof NmtProcureGr) {
-            $entity = $gr[0];
+        if ($entity_array[0] instanceof NmtProcureGr) {
+            $entity = $entity_array[0];
         }
 
-        $redirectUrl = null;
-        if ($request->getHeader('Referer') != null) {
-
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
-        }
-
-        if (! $entity == null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'total_row' => $gr['total_row'],
-                'active_row' => $gr['active_row'],
-                'max_row_number' => $gr['total_row']
-            ));
-        } else {
+        if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
+
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'entity' => $entity,
+            'errors' => null,
+            'currency_list' => $currency_list,
+            'total_row' => $entity_array['total_row'],
+            'active_row' => $entity_array['active_row'],
+            'max_row_number' => $entity_array['total_row'],
+            'nmtPlugin' => $nmtPlugin,
+        ));
     }
 
     /**
@@ -946,23 +931,22 @@ class GrController extends AbstractActionController
     {
         $request = $this->getRequest();
         $this->layout("Procure/layout-fullscreen");
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
-         
+
         if ($request->isPost()) {
 
             $errors = array();
-            
+
             $data = $this->params()->fromPost();
             $redirectUrl = $data['redirectUrl'];
-            
+
             $entity_id = $data['entity_id'];
             $token = $data['token'];
 
@@ -985,21 +969,21 @@ class GrController extends AbstractActionController
                     'entity' => null,
                     'nmtPlugin' => $nmtPlugin
                 ));
-                
+
                 $viewModel->setTemplate("procure/gr/crud");
                 return $viewModel;
             }
-            
+
             // ====== VALIDATED ====== //
-            
+
             $default_cur = null;
             if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
                 $default_cur = $u->getCompany()->getDefaultCurrency();
             }
-            
+
             $entity->setLocalCurrency($default_cur);
             $errors = $this->grService->saveHeader($entity, $data, $u, false);
-            
+
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
@@ -1008,21 +992,17 @@ class GrController extends AbstractActionController
                     'entity' => $entity,
                     'nmtPlugin' => $nmtPlugin
                 ));
-                
+
                 $viewModel->setTemplate("procure/gr/crud");
                 return $viewModel;
             }
-            
+
             $m = sprintf("[OK] Good Receipts: %s update!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
-            
+
             $redirectUrl = "/procure/gr/list";
             return $this->redirect()->toUrl($redirectUrl);
-            
         }
-        
-        
-        
 
         // NO POST ====================
         $redirectUrl = null;
@@ -1049,7 +1029,7 @@ class GrController extends AbstractActionController
             'entity' => $entity,
             'nmtPlugin' => $nmtPlugin
         ));
-        
+
         $viewModel->setTemplate("procure/gr/crud");
         return $viewModel;
     }

@@ -359,6 +359,135 @@ class JEService extends AbstractService
 
     /**
      *
+     * @param \Application\Entity\NmtProcureGr $entity
+     *
+     * @param \Application\Entity\MlaUsers $u
+     *
+     * @param \Application\Controller\Plugin\NmtPlugin $nmtPlugin
+     *
+     * @param boolean $isPosting
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function reverseGR($entity, $rows, $u, $nmtPlugin, $isFlush = false, $isPosting = 1)
+    {
+        if (! $entity instanceof \Application\Entity\NmtProcureGr) {
+            throw new \Exception("Invalid Argument! GRPO is expected");
+        }
+
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            throw new \Exception("Invalid Argument! User can is not indentided for this transaction.");
+        }
+
+        if (count($rows) == 0) {
+            throw new \Exception("Good Receipt is empty. No Posting will be made!");
+        }
+
+        /**
+         * Debit : Payable to supplier.
+         * Credit : Inventory, Expenses
+         */
+
+        // Create JE
+
+        $je = new \Application\Entity\FinJe();
+        $je->setCurrency($entity->getCurrency());
+        $je->setLocalCurrency($entity->getLocalCurrency());
+        $je->setExchangeRate($entity->getExchangeRate());
+
+        $je->setPostingDate($entity->getGrDate());
+        $je->setDocumentDate($entity->getGrDate());
+        $je->setPostingPeriod($entity->getPostingPeriod());
+
+        $je->getDocType("JE");
+        $je->setCreatedBy($u);
+        $je->setCreatedOn($entity->getCreatedOn());
+        $je->setSysNumber($nmtPlugin->getDocNumber($je));
+
+        $je->setSourceClass(get_class($entity));
+        $je->setSourceId($entity->getId());
+        $je->setSourceToken($entity->getToken());
+
+        $this->doctrineEM->persist($je);
+
+        $n = 0;
+        $total_credit = 0;
+        $total_local_credit = 0;
+
+        foreach ($rows as $r) {
+            $n ++;
+            /** @var \Application\Entity\NmtProcureGrRow $r ; */
+
+            // ignore row with Zero quantity
+            if ($r->getQuantity() == 0) {
+                $r->setIsActive(0);
+                continue;
+            }
+
+            if ($r->getUnitPrice() > 0) {
+                // Create JE Row - DEBIT
+                $je_row = new \Application\Entity\FinJeRow();
+                $je_row->setJe($je);
+
+                $je_row->setCostCenter($r->getCostCenter());
+                $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+                $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+                $je_row->setDocAmount($r->getQuantity() * $r->getUnitPrice());
+                $je_row->setLocalAmount($r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate());
+                $total_credit = $total_credit + $r->getQuantity() * $r->getUnitPrice();
+                $total_local_credit = $total_local_credit + $r->getQuantity() * $r->getUnitPrice() * $je->getExchangeRate();
+                $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+                $je_row->setCreatedBy($u);
+                $je_row->setCreatedOn($entity->getCreatedOn());
+
+                $je_row->setGrRow($r);
+                $je_row->setGr($r->getGr());
+
+                $t = '';
+                if ($r !== null) {
+                    $t .= ' // ' . $r->getRowIdentifer();
+                }
+                $je_row->setJeDescription("[Reversal] GR." . $r->getRowIdentifer() . $t);
+                $je_row->setGlAccount($r->getGlAccount());
+            }
+
+            $this->doctrineEM->persist($je_row);
+        }
+
+        if ($total_credit > 0) {
+
+            // Create JE Row - Credit
+            $je_row = new \Application\Entity\FinJeRow();
+
+            $je_row->setJe($je);
+
+            $criteria = array(
+                'id' => 5
+            );
+            $gl_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
+
+            $je_row->setGlAccount($gl_account);
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+
+            $je_row->setDocAmount($total_credit);
+            $je_row->setLocalAmount($total_local_credit);
+
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
+
+            $n = $n + 1;
+            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+            $this->doctrineEM->persist($je_row);
+        }
+
+        if ($isFlush == true) {
+            $this->doctrineEM->flush();
+        }
+    }
+
+    /**
+     *
      * @param \Application\Entity\PmtOutgoing $entity
      *
      * @param \Application\Entity\MlaUsers $u
@@ -882,15 +1011,15 @@ class JEService extends AbstractService
         $clearing_gl = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->findOneBy($criteria);
 
         foreach ($rows as $r) {
-            
-             /** @var \Application\Entity\NmtProcureGrRow $r ; */
+
+            /** @var \Application\Entity\NmtProcureGrRow $r ; */
 
             // No need to create JE for ZERO value row.
 
             if ($r->getUnitPrice() > 0) {
-                
+
                 $n ++;
-               
+
                 // Create JE Row - DEBIT
                 $je_row = new \Application\Entity\FinJeRow();
                 $je_row->setJe($je);
@@ -913,8 +1042,7 @@ class JEService extends AbstractService
                 $je_row->setCreatedBy($u);
                 $je_row->setCreatedOn($entity->getCreatedOn());
                 $this->doctrineEM->persist($je_row);
-                
-                
+
                 // Create JE Row - DEBIT
                 // Create JE Row - Credit - AP account
                 $je_row1 = new \Application\Entity\FinJeRow();

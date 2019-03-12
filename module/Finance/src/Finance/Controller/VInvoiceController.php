@@ -500,7 +500,6 @@ class VInvoiceController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -548,10 +547,10 @@ class VInvoiceController extends AbstractActionController
                         'errors' => null,
                         'entity' => null,
                         'target' => null,
-                        'currency_list' => $currency_list
+                        'nmtPlugin' => $nmtPlugin
                     ));
 
-                    $viewModel->setTemplate("finance/v-invoice/add_ap");
+                    $viewModel->setTemplate("finance/v-invoice/crud");
                     return $viewModel;
                 }
             }
@@ -560,7 +559,7 @@ class VInvoiceController extends AbstractActionController
             $entity->setLocalCurrency($default_cur);
             $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
-            $errors = $this->apService->validateHeader($entity, $data);
+            $errors = $this->apService->saveHeader($entity, $data, $u, TRUE);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
@@ -569,22 +568,17 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
-                    'currency_list' => $currency_list
+                    'nmtPlugin' => $nmtPlugin
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
+                $viewModel->setTemplate("finance/v-invoice/crud");
                 return $viewModel;
             }
 
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
             try {
-                $this->apService->saveHeader($entity, $u, TRUE);
-                $this->apService->copyFromPO($entity, $target, $u, true);
+                $this->apService->copyFromPO($entity, $target, $u, TRUE);
             } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
+                $errors = $e->getMessage();
             }
 
             if (count($errors) > 0) {
@@ -594,10 +588,10 @@ class VInvoiceController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
-                    'currency_list' => $currency_list
+                    'nmtPlugin' => $nmtPlugin
                 ));
 
-                $viewModel->setTemplate("finance/v-invoice/add_ap");
+                $viewModel->setTemplate("finance/v-invoice/crud");
                 return $viewModel;
             }
 
@@ -668,10 +662,10 @@ class VInvoiceController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
-            'currency_list' => $currency_list
+            'nmtPlugin' => $nmtPlugin
         ));
 
-        $viewModel->setTemplate("finance/v-invoice/add_ap");
+        $viewModel->setTemplate("finance/v-invoice/crud");
         return $viewModel;
     }
 

@@ -89,12 +89,19 @@
 			href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
 				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
 
+	<li><a title="<?php echo $this->translate("Item Attributes");?>"	href="#attribute"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;<?php echo $this->translate("Attributes");?> </a></li>
 
 	</ul>
 	<div id="accounting" style="font-size: 9pt">
 		- G/L Account <br> - Inventory UoM <br> - Min Quantity <br> - Max
 		Quantity <br>
 
+
+	</div>
+		<div id="attribute" style="font-size: 9pt">
+	Items can have serveral attributes such as size, color, material, etc.
+	Comming soon.
 
 	</div>
 

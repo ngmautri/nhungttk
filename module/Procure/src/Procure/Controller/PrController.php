@@ -179,20 +179,18 @@ class PrController extends AbstractActionController
             'paginator' => $paginator
         ));
     }
-    
+
     /**
-     * 
-     *  @return \Zend\View\Model\ViewModel
+     *
+     * @return \Zend\View\Model\ViewModel
      */
     public function priceMatchingAction()
     {
-        
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator
         ));
-        
     }
 
     /**
@@ -204,13 +202,12 @@ class PrController extends AbstractActionController
     {
         $this->layout("Procure/layout-fullscreen");
         $request = $this->getRequest();
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $wh_list = $nmtPlugin->warehouseList();
@@ -290,7 +287,8 @@ class PrController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'wh_list'=> $wh_list,
+                    'wh_list' => $wh_list,
+                    'nmtPlugin' => $nmtPlugin
                 ));
             }
 
@@ -299,7 +297,7 @@ class PrController extends AbstractActionController
 
             $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
-               $createdOn = new \DateTime();
+            $createdOn = new \DateTime();
 
             $entity->setCreatedBy($u);
             $entity->setCreatedOn($createdOn);
@@ -388,15 +386,17 @@ class PrController extends AbstractActionController
             ->getHeader('Referer')
             ->getUri();
 
-            $entity = new NmtProcurePr();
-            $entity->setIsActive(1);
-            $entity->setIsDraft(1);
-            $entity->setWarehouse($u->getCompany()->getDefaultWarehouse());
-            return new ViewModel(array(
+        $entity = new NmtProcurePr();
+        $entity->setIsActive(1);
+        $entity->setIsDraft(1);
+        $entity->setWarehouse($u->getCompany()
+            ->getDefaultWarehouse());
+        return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
-             'entity' => $entity,
-            'wh_list'=> $wh_list,
+            'entity' => $entity,
+            'wh_list' => $wh_list,
+            'nmtPlugin' => $nmtPlugin
         ));
     }
 
@@ -455,14 +455,13 @@ class PrController extends AbstractActionController
         // echo($plugin->getWF());
 
         // $this->layout("Procure/layout-fluid-1");
-        
-        //echo \Application\Model\Constants::v4();
-        
+
+        // echo \Application\Model\Constants::v4();
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $balance = $this->params()->fromQuery('balance');
         $pr_year = $this->params()->fromQuery('pr_year');
-          
+
         $is_active = (int) $this->params()->fromQuery('is_active');
 
         $status = $this->getEvent()
@@ -555,8 +554,8 @@ class PrController extends AbstractActionController
             'is_active' => $is_active,
             'status' => $status,
             'pr_year' => $pr_year,
-            'row_number' => $row_number,
-            //'uid'=>\Application\Model\Constants::v4(),
+            'row_number' => $row_number
+            // 'uid'=>\Application\Model\Constants::v4(),
         ));
     }
 

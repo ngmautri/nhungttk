@@ -139,6 +139,8 @@ else :
 				<tr>
 					<td><b>#</b></td>
 					<td><b><?php echo $this->translate("Ref.No.");?></b></td>
+					<td><b><?php echo $this->translate("Flow");?></b></td>
+				
 					<td><b><?php echo $this->translate("Doc Status");?></b></td>
 					<td><b><?php echo $this->translate("Trx Status");?></b></td>
 
@@ -171,7 +173,8 @@ else :
 				<?php echo ($paginator==null)? $count:$paginator->minInPage -1+ $count;?>
 			</td>
 					<td><?php echo $a->getSysNumber();?></td>
-
+					<td><?php echo $a->getMovementFlow();?></td>
+	
 					<td><?php echo $a->getDocStatus();?></td>
 					<td><?php echo $a->getTransactionStatus();?></td>
 

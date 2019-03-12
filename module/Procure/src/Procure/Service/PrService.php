@@ -13,6 +13,140 @@ use Zend\Validator\Date;
  */
 class PrService extends AbstractService
 {
+    /**
+     *
+     * @param \Application\Entity\NmtProcurePr $entity
+     * @param array $data
+     * @/param boolean $isPosting
+     */
+    public function validateHeader(\Application\Entity\NmtProcurePr $entity, $data, $isPosting = FALSE, $isPosted = FALSE)
+    {
+        $errors = array();
+        
+        if (! $entity instanceof \Application\Entity\NmtProcurePr) {
+            $errors[] = $this->controllerPlugin->translate('PR is not found!');
+        }
+        
+        if ($data == null) {
+            $errors[] = $this->controllerPlugin->translate('No input given');
+        }
+        
+        if (count($errors) > 0) {
+            return $errors;
+        }
+        
+        $remarks = $data['remarks'];
+        
+        // only remarks changeble, when posted.
+        if ($isPosted == TRUE) {
+            $entity->setRemarks($remarks);
+            return null;
+        }
+        
+        $contractDate = $data['contractDate'];
+        $contractNo = $data['contractNo'];
+        $vendor_id = (int) $data['vendor_id'];
+        $isActive = (int) $data['isActive'];
+        $paymentTerm = $data['paymentTerm'];
+        
+        
+        if ($isActive !== 1) {
+            $isActive = 0;
+        }
+        
+        $entity->setIsActive($isActive);
+        
+        $vendor = null;
+        if ($vendor_id > 0) {
+            /** @var \Application\Entity\NmtBpVendor $vendor ; */
+            $vendor = $this->doctrineEM->getRepository('Application\Entity\NmtBpVendor')->find($vendor_id);
+        }
+        
+        if ($vendor !== null) {
+            $entity->setVendor($vendor);
+            $entity->setVendorName($vendor->getVendorName());
+        } else {
+            $errors[] = 'Vendor can\'t be empty. Please select a vendor!';
+        }
+        
+        // check currency and exchange rate
+        $ck = $this->checkCurrency($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+        
+        
+        
+        if ($contractNo == "") {
+            $errors[] = 'Contract is not correct or empty!';
+        } else {
+            $entity->setContractNo($contractNo);
+        }
+        
+        $validator = new Date();
+        
+        if (! $validator->isValid($contractDate)) {
+            $errors[] = 'Contract Date is not correct or empty!';
+        } else {
+            $entity->setContractDate(new \DateTime($contractDate));
+        }
+        
+        // check currency and exchange rate
+        $ck = $this->checkIncoterm($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+        
+        
+        if ($paymentTerm == null) {
+            $errors[] = $this->controllerPlugin->translate('Please given payment term');
+        } else {
+            $entity->setPaymentTerm($paymentTerm);
+        }
+        
+        $entity->setRemarks($remarks);
+        
+        return $errors;
+    }
+    
+    
+    /**
+     *
+     * @param \Application\Entity\NmtProcurePr $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isNew
+     */
+    public function saveHeader($entity, $u, $isNew = FALSE)
+    {
+        if ($u == null) {
+            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        }
+        
+        if (! $entity instanceof \Application\Entity\NmtProcurePr) {
+            throw new \Exception("Invalid Argument. PR Object not found!");
+        }
+        
+        // validated.
+        
+        $changeOn = new \DateTime();
+        
+        if ($isNew == TRUE) {
+            
+            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+            $entity->setCreatedBy($u);
+            $entity->setCreatedOn($changeOn);
+            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+        } else {
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+        }
+        
+        $this->doctrineEM->persist($entity);
+        $this->doctrineEM->flush();
+    }
+    
+    
     
     /**
      *
@@ -211,73 +345,6 @@ class PrService extends AbstractService
      */
     public function doPosting($entity, $u, $isFlush = false)
     {
-        if ($u == null) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
-        }
-
-        if (! $entity instanceof \Application\Entity\NmtProcurePo) {
-            throw new \Exception("Invalid Argument. PO Object not found!");
-        }
-
-        $criteria = array(
-            'isActive' => 1,
-            'po' => $entity
-        );
-        $po_rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findBy($criteria);
-
-        if (count($po_rows) == 0) {
-            throw new \Exception("PO is empty. No Posting will be made!");
-        }
-
-        // OK to post
-        // ++++++++++++++++++++++++++++
-
-        /**
-         *
-         * @todo Update Entitiy!
-         */
-
-        $changeOn = new \DateTime();
-
-        // Assign doc number
-        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
-            $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
-        }
-
-        // set posted
-        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-        $entity->setRevisionNo($entity->getRevisionNo() + 1);
-        $entity->setLastchangeBy($u);
-        $entity->setLastchangeOn($changeOn);
-        $this->doctrineEM->persist($entity);
-
-        $n = 0;
-        foreach ($po_rows as $r) {
-
-            /** @var \Application\Entity\NmtProcurePoRow $r ; */
-
-            /**
-             * Double check only.
-             * Receipt of ZERO quantity not allowed
-             */
-            if ($r->getQuantity() == 0) {
-                continute;
-            }
-
-            $n ++;
-
-            // UPDATE row status
-            $r->setIsPosted(1);
-            $r->setIsDraft(0);
-            $r->setDocStatus($entity->getDocStatus());
-            $r->setRowIdentifer($entity->getSysNumber() . '-' . $n);
-            $r->setRowNumber($n);
-            $r->setLastchangeOn($changeOn);
-        }
-
-        if ($isFlush == true) {
-            $this->doctrineEM->flush();
-        }
     }
 
     /**

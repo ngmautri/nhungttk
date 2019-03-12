@@ -1,4 +1,24 @@
-<?php /**@var \Application\Entity\NmtProcureGr $entity ;*/?>
+<?php /**@var \Application\Entity\NmtProcureGr $entity ;*/
+
+if ($entity !== null) {
+    $form_action = '/procure/gr/reverse';
+}
+
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert" style="font-size: 10.5pt">';
+    
+    echo '<ul>';
+    foreach ($errors as $error) :
+    echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+
+
+
+?>
 
 
 <h4 style="color: graytext;">
@@ -263,6 +283,7 @@
 
 
 <script>
+$( "input[id='reversalDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
 function confirmPost() {
  	$('#confirm_modal_sm').modal();
@@ -271,7 +292,6 @@ function confirmPost() {
 function doPosting() {
 	//var url="<?php echo $this->baseUrl ?>/finance/v-invoice/post?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"
 	//window.location = url;
-	$('#isDraft').val(1);
 	$('#confirm_modal_sm').modal('hide');
 	submitForm('REVERSAL_FORM');
 }

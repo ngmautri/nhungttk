@@ -241,6 +241,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
                 $stock_gr_entity->setRemarks('AP Row#' . $r->getRowIdentifer());
                 
                 //updated: get WH from Row.
+               
                 $stock_gr_entity->setWh($r->getWarehouse());
                 
                 

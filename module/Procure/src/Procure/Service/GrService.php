@@ -121,10 +121,10 @@ class GrService extends AbstractService
 
         // ====== VALIDATED ====== //
 
-        if ($isNew == FALSE){
+        if ($isNew == FALSE) {
             $oldEntity = clone ($entity);
         }
-        
+
         $ck = $this->validateHeader($entity, $data, $isNew, false);
 
         if (count($ck) > 0) {
@@ -140,8 +140,7 @@ class GrService extends AbstractService
 
             $changeOn = new \DateTime();
             $changeArray = array();
-            
-            
+
             if ($isNew == TRUE) {
 
                 $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
@@ -871,6 +870,204 @@ class GrService extends AbstractService
     /**
      *
      * @param \Application\Entity\NmtProcureGr $entity
+     * @param array $data
+     * @param \Application\Entity\MlaUsers $u,
+     * @param bool $isFlush,
+     *
+     */
+    public function reverse($entity, $u, $reversalDate, $reversalReason)
+    {
+        $errors = array();
+
+        if (! $entity instanceof \Application\Entity\NmtProcureGr) {
+            $errors[] = $this->controllerPlugin->translate('Invalid Argument! Invoice not found)');
+        } else {
+
+            // only when posted.
+            if ($entity->getDocStatus() !== \Application\Model\Constants::DOC_STATUS_POSTED) {
+                $errors[] = $this->controllerPlugin->translate('GR not posted yet. Reserval imposible.');
+            }
+
+            // only when not reversed..
+            if ($entity->getIsReversed() == 1) {
+                $errors[] = $this->controllerPlugin->translate('GR reversed already.');
+            }
+
+            // check if subsequce document.
+            // only when not reversed..
+            // 1 mean not.
+           /*  if ($entity->getIsReversable() == 1) {
+                $errors[] = $this->controllerPlugin->translate('GR is not reservable, becasue sequence document is created.');
+            } */
+        }
+
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            $errors[] = $this->controllerPlugin->translate('Invalid Argument! User not found)');
+        }
+
+        $criteria = array(
+            'isActive' => 1,
+            'gr' => $entity
+        );
+        $rows = $this->doctrineEM->getRepository('Application\Entity\NmtProcureGrRow')->findBy($criteria);
+
+        if (count($rows) == 0) {
+            $errors[] = $this->controllerPlugin->translate('GR is empty. Reserval imposible.');
+        }
+        
+        $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
+        
+        if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+              $errors[] = $this->controllerPlugin->translate('Posting strategy is not identified for this inventory movement type');
+        }
+        
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED ====== //
+
+        /** @var \Application\Entity\NmtProcureGr $newEntity ; */
+        $newEntity = clone ($entity);
+        $newEntity->setInvoiceDate(null);
+        $newEntity->setPostingDate(null);
+
+        $data = array();
+        $data['grDate'] = $reversalDate;
+      
+        /**
+         * Check Reversal Date.
+         */
+        $ck = $this->checkGRDate($newEntity, $data, TRUE);
+
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED ====== //
+
+        try {
+
+            $changeOn = new \DateTime();
+
+            /**
+             * UPDATE OLD HEADER
+             */
+            // =======================
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
+            $entity->setIsReversed(1);
+            $entity->setReversalReason($reversalReason);
+            $entity->setReversalDate(new \DateTime($reversalDate));
+            $entity->setRevisionNo($entity->getRevisionNo() + 1);
+            $entity->setLastchangeBy($u);
+            $entity->setLastchangeOn($changeOn);
+            $this->doctrineEM->persist($entity);
+
+            $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
+            $newEntity->setDocType(\Application\Model\Constants::PROCURE_DOC_TYPE_INVOICE_REVERSAL);
+            $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
+            $entity->setRemarks($reversalReason);
+
+            $this->doctrineEM->persist($newEntity);
+
+            /**
+             * POSTING ROW
+             */
+            // ======================
+
+            $n = 0;
+            foreach ($rows as $r) {
+
+                // ignore row with Zero quantity
+                if ($r->getQuantity() == 0) {
+                    $r->setIsActive(0);
+                    continue;
+                }
+
+                $n ++;
+
+                /** @var \Application\Entity\NmtProcureGrRow $old_r ; */
+                $old_r = clone ($r);
+                $old_r->setGr($newEntity); // important!
+                $this->doctrineEM->persist($old_r);
+
+                /** @var \Application\Entity\NmtProcureGrRow $r ; */
+
+                // important!
+                $r->setRemarks($entity->getRemarks());
+                $r->setIsReversed(1);
+                $r->setReversalReason($reversalReason);
+                $r->setReversalDate(new \DateTime($reversalDate));
+                $this->doctrineEM->persist($r);
+             }
+
+            /**
+             * POSTING JOURNAL ENTRY
+             */
+
+            // ====================== */
+            $this->jeService->reverseGR($entity, $rows, $u, $this->controllerPlugin);
+
+            // need to flush
+            $this->doctrineEM->flush();
+
+            /**
+             *
+             * @todo: REVERSAL WH GOODs RECEIPT
+             */
+            // ================================
+            $criteria = array(
+                'isActive' => 1,
+                'gr' => $entity
+            );
+
+            $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
+
+            // if have inventory item.
+            if (count($inventory_trx_rows) > 0) {
+                // do posting now
+                $inventoryPostingStrategy->setContextService($this);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getReversalDate(), $entity->getWarehouse());
+            }
+
+            /**
+             * UPDATING SEARCH INDEX
+             */
+            // $apSearchService = new \Procure\Service\APSearchService();
+            // $apSearchService->indexingAPRows($ap_rows);
+
+            /**
+             * LOGGING
+             */
+            /**
+             * ======================
+             */
+            $m = sprintf('[OK] GRPO  %s reversed.', $entity->getSysNumber());
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+
+            // need to flush
+            $this->doctrineEM->flush();
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtProcureGr $entity
      * @param \Application\Entity\NmtProcurePo $target
      * @param \Application\Entity\MlaUsers $u
      *
@@ -1114,7 +1311,7 @@ class GrService extends AbstractService
         $errors = array();
 
         if (! isset($data['grDate'])) {
-            $errors[] = $this->controllerPlugin->translate('Good Receipt input is not set!');
+            $errors[] = $this->controllerPlugin->translate('Good Receipt Date input is not set!');
             return $errors;
         }
 

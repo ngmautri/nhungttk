@@ -512,7 +512,7 @@ class VInvoiceRowController extends AbstractActionController
 
             $m = $res->updateDependencyAPRow($entity);
 
-            // $redirectUrl = "/finance/v-invoice/add1?token=" . $entity->getInvoice()->getToken() . "&entity_id=" . $entity->getInvoice()->getId();
+            $redirectUrl = "/finance/v-invoice/review?token=" . $entity->getInvoice()->getToken() . "&entity_id=" . $entity->getInvoice()->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
 

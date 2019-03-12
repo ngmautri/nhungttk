@@ -180,6 +180,8 @@ if (count($errors) > 0) {
 										<select<?php echo $isReadOnly; ?><?php echo $isSelectDisable; ?>name="currency_id" class="form-control input-sm">
 											<option value="">Select Currency</option>
    	    							<?php
+   	    							$currency_list = $nmtPlugin->currencyList();
+   	    							
             if ($currency_list !== null) :
                 foreach ($currency_list as $curr) :
                     if ($entity !== null) :
@@ -269,6 +271,9 @@ if (count($errors) > 0) {
 									class="form-control input-sm">
 									<option value=""><?php echo $this->translate("...");?></option>
    	    							<?php
+   	    							
+   	    							$wh_list = $nmtPlugin->warehouseList();
+   	    							
    	    	 if ($wh_list !== null) :
    	    	 foreach ($wh_list as $gl) :
 
@@ -319,6 +324,9 @@ if (count($errors) > 0) {
     										<select<?php echo $isReadOnly; ?><?php echo $isSelectDisable; ?>name="incoterm_id" class="form-control input-sm">
     											<option value="">Select...</option>
        	    							<?php
+       	    							
+       	    							$incoterm_list = $nmtPlugin->incotermList();
+       	    							
                 if ($incoterm_list !== null) :
                 foreach ($incoterm_list as $l) :
                         if ($entity !== null) :

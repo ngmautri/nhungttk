@@ -792,11 +792,9 @@ class APInvoiceService extends AbstractService
             /**
              * @todo: Reverval JE 
              */
-            $this->jeService->reverseAP($entity, $ap_rows, $u, $this->controllerPlugin);
+            $this->jeService->reverseAP($entity, $ap_rows, $u, $this->controllerPlugin,0,1);
             
-            // need to flush
-            $this->doctrineEM->flush();
-            
+             
             
             /** REVERSAL WH GOODs RECEIPT*/
             /** ======================*/

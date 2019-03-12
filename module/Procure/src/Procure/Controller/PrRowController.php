@@ -192,7 +192,6 @@ class PrRowController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $wh_list = $nmtPlugin->warehouseList();
-        
 
         // Is Posting .................
         // ============================
@@ -225,7 +224,7 @@ class PrRowController extends AbstractActionController
 
                 $errors[] = 'Target object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -233,9 +232,11 @@ class PrRowController extends AbstractActionController
                     'entity' => null,
                     'total_row' => (int) $pr[1],
                     'max_row_number' => (int) $pr[2],
-                    'wh_list'=> $wh_list,
-                    
+                    'wh_list' => $wh_list
                 ));
+
+                $viewModel->setTemplate("procure/pr-row/crud");
+                return $viewModel;
             }
 
             $entity = new NmtProcurePrRow();
@@ -252,7 +253,7 @@ class PrRowController extends AbstractActionController
             }
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
@@ -261,9 +262,12 @@ class PrRowController extends AbstractActionController
                     'total_row' => $pr['total_row'],
                     'max_row_number' => $pr['max_row_number'],
                     'active_row' => $pr['active_row'],
-                    'wh_list'=> $wh_list,
-                    
+                    'wh_list' => $wh_list,
+                    'nmtPlugin' => $nmtPlugin
                 ));
+
+                $viewModel->setTemplate("procure/pr-row/crud");
+                return $viewModel;
             }
 
             // No ERROR
@@ -281,9 +285,9 @@ class PrRowController extends AbstractActionController
             }
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -291,9 +295,12 @@ class PrRowController extends AbstractActionController
                     'total_row' => $pr['total_row'],
                     'max_row_number' => $pr['max_row_number'],
                     'active_row' => $pr['active_row'],
-                    'wh_list'=> $wh_list,
-                    
+                    'wh_list' => $wh_list,
+                    'nmtPlugin' => $nmtPlugin
                 ));
+
+                $viewModel->setTemplate("procure/pr-row/crud");
+                return $viewModel;
             }
 
             $createdOn = new \DateTime();
@@ -355,8 +362,8 @@ class PrRowController extends AbstractActionController
         $entity->setIsActive(1);
         $entity->setWarehouse($target->getWarehouse());
 
-        return new ViewModel(array(
-           
+        $viewModel = new ViewModel(array(
+
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
             'errors' => null,
@@ -365,9 +372,12 @@ class PrRowController extends AbstractActionController
             'total_row' => $pr['total_row'],
             'max_row_number' => $pr['max_row_number'],
             'active_row' => $pr['active_row'],
-            'wh_list'=> $wh_list,
-            
+            'wh_list' => $wh_list,
+            'nmtPlugin' => $nmtPlugin
         ));
+
+        $viewModel->setTemplate("procure/pr-row/crud");
+        return $viewModel;
     }
 
     /**
@@ -1104,7 +1114,6 @@ class PrRowController extends AbstractActionController
                 'pr' => $target_id
                 // 'isActive' => 1,
             );
-             
 
             // $list = $this->doctrineEM->getRepository ( 'Application\Entity\NmtProcurePrRow' )->get ( $criteria );
             /** @var \Application\Repository\NmtProcurePrRowRepository $res ;*/
@@ -1263,7 +1272,7 @@ class PrRowController extends AbstractActionController
                 } else {
                     $onclick = "showJqueryDialog('Detail of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1250',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                 }
-                
+
                 $item_detail1 = "/inventory/item/show1?tab_idx=1&token=" . $pr_row_entity->getItem()->getToken() . "&checksum=" . $pr_row_entity->getItem()->getChecksum() . "&entity_id=" . $pr_row_entity->getItem()->getId();
                 if ($pr_row_entity->getItem()->getItemName() !== null) {
                     $onclick2 = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($pr_row_entity->getItem()
@@ -1298,7 +1307,7 @@ class PrRowController extends AbstractActionController
                 }
 
                 $a_json_row["price_comparison"] = '<a style="cursor:pointer;color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="Price Comparision' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick2 . '" ><span title="Price Comparison">&nbsp;&nbsp;(p)&nbsp;</span></a>';
-                
+
                 $a_json_row["quantity"] = $pr_row_entity->getQuantity();
                 $a_json_row["confirmed_balance"] = $a['confirmed_balance'];
 
@@ -1324,12 +1333,11 @@ class PrRowController extends AbstractActionController
                 } else {
                     $onclick1 = "showJqueryDialog('Receiving of Item: " . ($pr_row_entity->getItem()->getItemName()) . "','1550', $(window).height()-50,'" . $received_detail . "','j_loaded_data', true);";
                 }
-                
+
                 $a_json_row["row_unit"] = $pr_row_entity->getRowUnit();
-                
 
                 if ($a['total_received'] > 0) {
-                    $a_json_row["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . number_format($a['total_received'],2). '</a>';
+                    $a_json_row["total_received"] = '<a style="color: #337ab7;" href="javascript:;" onclick="' . $onclick1 . '" >' . number_format($a['total_received'], 2) . '</a>';
                 } else {
                     $a_json_row["total_received"] = "";
                 }
@@ -1340,24 +1348,23 @@ class PrRowController extends AbstractActionController
                 if ($pr_row_entity->getConvertedStandardQuantiy() !== null) {
                     $standard_qty = $pr_row_entity->getConvertedStandardQuantiy();
                 }
-                
-                if($standard_qty!==null){
-                    $standard_qty = number_format($standard_qty,2);
+
+                if ($standard_qty !== null) {
+                    $standard_qty = number_format($standard_qty, 2);
                 }
 
                 $a_json_row["standard_qty"] = $standard_qty;
 
                 $standard_unit = $pr_row_entity->getRowUnit();
-                
-                if($pr_row_entity->getItem()!==null){
+
+                if ($pr_row_entity->getItem() !== null) {
                     if ($pr_row_entity->getItem()->getStandardUom() !== null) {
                         $standard_unit = $pr_row_entity->getItem()
                             ->getStandardUom()
                             ->getUomCode();
                     }
                 }
-                
-     
+
                 $a_json_row["standard_unit"] = $standard_unit;
 
                 if ($pr_row_entity->getProject() !== null) {
@@ -2195,9 +2202,9 @@ class PrRowController extends AbstractActionController
 
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                $viewModel =  new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
@@ -2205,8 +2212,8 @@ class PrRowController extends AbstractActionController
                     'total_row' => null,
                     'max_row_number' => null
                 ));
-                
-                $viewModel->setTemplate("procure/pr-row/add");
+
+                $viewModel->setTemplate("procure/pr-row/crud");
                 return $viewModel;
             }
 
@@ -2257,7 +2264,7 @@ class PrRowController extends AbstractActionController
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -2266,10 +2273,9 @@ class PrRowController extends AbstractActionController
                     'total_row' => (int) $pr['total_row'],
                     'max_row_number' => (int) $pr['max_row_number']
                 ));
-                
-                $viewModel->setTemplate("procure/pr-row/add");
+
+                $viewModel->setTemplate("procure/pr-row/crud");
                 return $viewModel;
-                
             }
 
             // No ERROR
@@ -2359,9 +2365,9 @@ class PrRowController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
 
-        $viewModel =  new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-            
+
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'target' => $entity->getPr(),
@@ -2370,10 +2376,9 @@ class PrRowController extends AbstractActionController
             'total_row' => (int) $pr['total_row'],
             'max_row_number' => (int) $pr['max_row_number']
         ));
-        
-        $viewModel->setTemplate("procure/pr-row/add");
+
+        $viewModel->setTemplate("procure/pr-row/crud");
         return $viewModel;
-        
     }
 
     /**

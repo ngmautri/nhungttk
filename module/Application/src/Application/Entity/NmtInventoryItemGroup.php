@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryItemGroup
  *
- * @ORM\Table(name="nmt_inventory_item_group", indexes={@ORM\Index(name="nmt_inventory_item_group_FK1_idx", columns={"inventory_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK5_idx", columns={"revenue_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK3_idx", columns={"cogs_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK4_idx", columns={"allocation_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK6_idx", columns={"expense_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_group_FK7_idx", columns={"cost_center_id"})})
+ * @ORM\Table(name="nmt_inventory_item_group", indexes={@ORM\Index(name="nmt_inventory_item_group_FK1_idx", columns={"inventory_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK5_idx", columns={"revenue_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK3_idx", columns={"cogs_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK4_idx", columns={"allocation_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK6_idx", columns={"expense_account_id"}), @ORM\Index(name="nmt_inventory_item_group_FK2_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_item_group_FK7_idx", columns={"cost_center_id"}), @ORM\Index(name="nmt_inventory_item_group_FK8_idx", columns={"default_warehouse_id"})})
  * @ORM\Entity
  */
 class NmtInventoryItemGroup
@@ -125,6 +125,16 @@ class NmtInventoryItemGroup
      * })
      */
     private $costCenter;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="default_warehouse_id", referencedColumnName="id")
+     * })
+     */
+    private $defaultWarehouse;
 
 
 
@@ -424,5 +434,29 @@ class NmtInventoryItemGroup
     public function getCostCenter()
     {
         return $this->costCenter;
+    }
+
+    /**
+     * Set defaultWarehouse
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $defaultWarehouse
+     *
+     * @return NmtInventoryItemGroup
+     */
+    public function setDefaultWarehouse(\Application\Entity\NmtInventoryWarehouse $defaultWarehouse = null)
+    {
+        $this->defaultWarehouse = $defaultWarehouse;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultWarehouse
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getDefaultWarehouse()
+    {
+        return $this->defaultWarehouse;
     }
 }

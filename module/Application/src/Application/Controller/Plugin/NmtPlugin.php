@@ -98,7 +98,7 @@ class NmtPlugin extends AbstractPlugin
         $criteria = array(
           );
         $sort_criteria = array(
-            'whName' => 'ASC'
+            'whCode' => 'ASC'
         );
         
         $wh_list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findBy($criteria, $sort_criteria);

@@ -122,7 +122,8 @@ class ItemGroupController extends AbstractActionController
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'gl_list' => $gl_list,
-                    'cost_center_list' => $cost_center_list
+                    'cost_center_list' => $cost_center_list,
+                    'nmtPlugin' => $nmtPlugin,
                 ));
             }
 
@@ -175,7 +176,9 @@ class ItemGroupController extends AbstractActionController
             'entity' => $entity,
             'currency_list' => $currency_list,
             'gl_list' => $gl_list,
-            'cost_center_list' => $cost_center_list
+            'cost_center_list' => $cost_center_list,
+            'nmtPlugin' => $nmtPlugin,
+            
         ));
     }
 
@@ -336,7 +339,10 @@ class ItemGroupController extends AbstractActionController
                     'n' => $nTry,
                     'currency_list' => $currency_list,
                     'gl_list' => $gl_list,
-                    'cost_center_list' => $cost_center_list
+                    'cost_center_list' => $cost_center_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
+                    
                 ));
             }
 
@@ -349,6 +355,7 @@ class ItemGroupController extends AbstractActionController
             $expense_account_id = (int) $request->getPost('expense_account_id');
             $cogs_account_id = (int) $request->getPost('cogs_account_id');
             $cost_center_id = (int) $request->getPost('cost_center_id');
+            $cost_center_id = (int) $request->getPost('default_warehouse_id');
             
             $isActive = (int) $request->getPost('isActive');
 
@@ -426,7 +433,9 @@ class ItemGroupController extends AbstractActionController
                     'n' => $nTry,
                     'currency_list' => $currency_list,
                     'gl_list' => $gl_list,
-                    'cost_center_list' => $cost_center_list
+                    'cost_center_list' => $cost_center_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
                 ));
             }
 

@@ -165,6 +165,8 @@ return array(
             'Inventory\Service\ItemSerialService' => 'Inventory\Service\ItemSerialServiceFactory',
             'Inventory\Service\WarehouseService' => 'Inventory\Service\WarehouseServiceFactory',
             'Inventory\Service\ItemVariantService' => 'Inventory\Service\ItemVariantServiceFactory',
+            'Inventory\Service\ItemGroupService' => 'Inventory\Service\ItemGroupServiceFactory',
+            
             
         )
     ),

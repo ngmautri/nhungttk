@@ -1,15 +1,13 @@
 <?php
 namespace Inventory\Controller;
 
-use Application\Entity\NmtInventorySerial;
+use Application\Entity\NmtInventoryItemGroup;
 use Doctrine\ORM\EntityManager;
 use Inventory\Service\ItemSearchService;
 use MLA\Paginator;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Validator\Date;
 use Zend\View\Model\ViewModel;
-use Application\Entity\NmtInventoryItemGroup;
 
 /**
  *
@@ -19,9 +17,29 @@ use Application\Entity\NmtInventoryItemGroup;
 class ItemGroupController extends AbstractActionController
 {
 
+    protected $itemGroupService;
+
     protected $doctrineEM;
 
     protected $itemSearchService;
+
+    /**
+     *
+     * @return \Inventory\Service\ItemGroupService
+     */
+    public function getItemGroupService()
+    {
+        return $this->itemGroupService;
+    }
+
+    /**
+     *
+     * @param \Inventory\Service\ItemGroupService $itemGroupService
+     */
+    public function setItemGroupService(\Inventory\Service\ItemGroupService $itemGroupService)
+    {
+        $this->itemGroupService = $itemGroupService;
+    }
 
     /**
      *
@@ -31,11 +49,12 @@ class ItemGroupController extends AbstractActionController
     {
         $request = $this->getRequest();
 
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
-        $gl_list = $nmtPlugin->glAccountList();
-        $cost_center_list = $nmtPlugin->costCenterList();
 
         // Is Posing
         // =============================
@@ -43,115 +62,26 @@ class ItemGroupController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-
-            $groupName = $request->getPost('groupName');
-
-            $revenue_account_id = (int) $request->getPost('revenue_account_id');
-            $inventory_account_id = (int) $request->getPost('inventory_account_id');
-            $expense_account_id = (int) $request->getPost('expense_account_id');
-            $cogs_account_id = (int) $request->getPost('cogs_account_id');
-            $cost_center_id = (int) $request->getPost('cost_center_id');
-
-            $isActive = (int) $request->getPost('isActive');
-
-            $decription = $request->getPost('decription');
-
-            if ($isActive !== 1) {
-                $isActive = 0;
-            }
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
 
             $entity = new NmtInventoryItemGroup();
-
-            $entity->setIsActive($isActive);
-
-            $revenue_account = null;
-            if ($revenue_account_id > 0) {
-                $revenue_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($revenue_account_id);
-                $entity->setRevenueAccount($revenue_account);
-            }
-
-            $inventory_account = null;
-            if ($inventory_account_id > 0) {
-                $inventory_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($inventory_account_id);
-                $entity->setInventoryAccount($inventory_account);
-            }
-
-            $expense_account = null;
-            if ($expense_account_id > 0) {
-                $expense_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($expense_account_id);
-                $entity->setExpenseAccount($expense_account);
-            }
-
-            $cogs_account = null;
-            if ($cogs_account_id > 0) {
-                $cogs_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($cogs_account_id);
-                $entity->setCogsAccount($cogs_account);
-            }
-
-            $cost_center = null;
-            if ($cost_center_id > 0) {
-                $cost_center = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
-                $entity->setCostCenter($cost_center);
-            }
-
-            $entity->setDescription($decription);
-
-            if ($groupName == "") {
-                $errors[] = $nmtPlugin->translate('Please give group name!');
-            } else {
-
-                $criteria = array(
-                    'groupName' => $groupName,
-                    'isActive' => 1
-                );
-
-                /** @var \Application\Entity\NmtInventoryItemGroup $entity_ck ; */
-                $entity_ck = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
-                if ($entity_ck == null) {
-                    $entity->setGroupName($groupName);
-                } else {
-                    $errors[] = 'Record exists already!';
-                }
-            }
+            $errors = $this->itemGroupService->saveEntity($entity, $data, $u, TRUE);
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'gl_list' => $gl_list,
-                    'cost_center_list' => $cost_center_list,
-                    'nmtPlugin' => $nmtPlugin,
+                    'nmtPlugin' => $nmtPlugin
                 ));
+
+                $viewModel->setTemplate("inventory/item-group/crud");
+                return $viewModel;
             }
 
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
-            $createdOn = new \DateTime();
-
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn($createdOn);
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
-
             $m = sprintf('[OK] %s created.', $entity->getGroupName());
-
-            // Trigger: procure.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $createdOn
-            ));
 
             $this->flashMessenger()->addMessage($m);
             return $this->redirect()->toUrl($redirectUrl);
@@ -169,17 +99,19 @@ class ItemGroupController extends AbstractActionController
             ->getHeader('Referer')
             ->getUri();
 
-        $entity = null;
-        return new ViewModel(array(
+        $entity = new NmtInventoryItemGroup();
+        $entity->setIsActive(1);
+
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'currency_list' => $currency_list,
-            'gl_list' => $gl_list,
-            'cost_center_list' => $cost_center_list,
-            'nmtPlugin' => $nmtPlugin,
-            
+            'nmtPlugin' => $nmtPlugin
         ));
+
+        $viewModel->setTemplate("inventory/item-group/crud");
+        return $viewModel;
     }
 
     /**
@@ -305,179 +237,82 @@ class ItemGroupController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
-        $gl_list = $nmtPlugin->glAccountList();
-        $cost_center_list = $nmtPlugin->costCenterList();
-
+     
         // Is Posing
         // =============================
         if ($request->isPost()) {
 
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-            $entity_id = (int) $request->getPost('entity_id');
-            $token = $request->getPost('token');
-            $nTry = $request->getPost('n');
-
+            $data = $this->params()->fromPost();
+            
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = (int) $data['entity_id'];
+            $nTry = $data['n'];
+            
             $criteria = array(
-                'id' => $entity_id,
-                'token' => $token
+                'id' => $entity_id
             );
-
+            
             /** @var \Application\Entity\NmtInventoryItemGroup $entity ; */
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
-
+            
             if ($entity == null) {
                 $errors[] = 'Entity not found or emty!';
+                
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
                     'n' => $nTry,
-                    'currency_list' => $currency_list,
-                    'gl_list' => $gl_list,
-                    'cost_center_list' => $cost_center_list,
-                    'nmtPlugin' => $nmtPlugin,
-                    
-                    
+                    'nmtPlugin' => $nmtPlugin
                 ));
+
+                $viewModel->setTemplate("inventory/item-group/crud");
+                return $viewModel;
             }
 
-            $oldEntity = clone ($entity);
-
-            $groupName = $request->getPost('groupName');
-
-            $revenue_account_id = (int) $request->getPost('revenue_account_id');
-            $inventory_account_id = (int) $request->getPost('inventory_account_id');
-            $expense_account_id = (int) $request->getPost('expense_account_id');
-            $cogs_account_id = (int) $request->getPost('cogs_account_id');
-            $cost_center_id = (int) $request->getPost('cost_center_id');
-            $cost_center_id = (int) $request->getPost('default_warehouse_id');
-            
-            $isActive = (int) $request->getPost('isActive');
-
-            $description = $request->getPost('description');
-
-            if ($isActive !== 1) {
-                $isActive = 0;
-            }
-
-            $entity->setIsActive($isActive);
-
-            $revenue_account = null;
-            if ($revenue_account_id > 0) {
-                $revenue_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($revenue_account_id);
-                $entity->setRevenueAccount($revenue_account);
-            }
-
-            $inventory_account = null;
-            if ($inventory_account_id > 0) {
-                $inventory_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($inventory_account_id);
-                $entity->setInventoryAccount($inventory_account);
-            }
-
-            $expense_account = null;
-            if ($expense_account_id > 0) {
-                $expense_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($expense_account_id);
-                $entity->setExpenseAccount($expense_account);
-            }
-
-            $cogs_account = null;
-            if ($cogs_account_id > 0) {
-                $cogs_account = $this->doctrineEM->getRepository('Application\Entity\FinAccount')->find($cogs_account_id);
-                $entity->setCogsAccount($cogs_account);
-            }
-
-            $cost_center = null;
-            if ($cost_center_id > 0) {
-                $cost_center = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
-                $entity->setCostCenter($cost_center);
-            }
-
-            $entity->setDescription($description);
-
-            if ($groupName == "") {
-                $errors[] = $nmtPlugin->translate('Please give group name!');
-            } else {
-
-                $entity->setGroupName($groupName);
-            }
-
-            /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-            $nmtPlugin = $this->Nmtplugin();
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-
-            if (count($changeArray) == 0) {
-                $nTry ++;
-                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-            }
-
+            $nTry++;
+       
             if ($nTry >= 3) {
-                $errors[] = sprintf('Do you really want to edit (%s)?', $entity->getSerialNumber());
+                $errors[] = sprintf('Do you really want to edit (%s)?', $entity->getGroupName());
             }
 
             if ($nTry == 5) {
-                $m = sprintf('You might be not ready to edit (%s). Please try later!', $entity->getSerialNumber());
+                $m = sprintf('You might be not ready to edit (%s). Please try later!', $entity->getGroupName());
                 $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
+            
+            $errors = $this->itemGroupService->saveEntity($entity, $data, $u, FALSE);
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'n' => $nTry,
-                    'currency_list' => $currency_list,
-                    'gl_list' => $gl_list,
-                    'cost_center_list' => $cost_center_list,
-                    'nmtPlugin' => $nmtPlugin,
-                    
+                    'nmtPlugin' => $nmtPlugin
                 ));
+
+                $viewModel->setTemplate("inventory/item-group/crud");
+                return $viewModel;
             }
 
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $changeOn = new \DateTime();
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
-
-            // $entity->setLastchangeBy($u);
-            // $entity->setLastchangeOn($changeOn);
-
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
-
-            $m = sprintf('%s updated. Change No %s. OK!', $entity->getGroupName(), count($changeArray));
-
-            // Trigger Change Log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
-                'priority' => 7,
-                'message' => $m,
-                'objectId' => $entity->getId(),
-                'objectToken' => $entity->getToken(),
-                'changeArray' => $changeArray,
-                'changeBy' => $u,
-                'changeOn' => $changeOn,
-                'revisionNumber' => 1,
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-
-            // Trigger Activity Log . AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $changeOn
-            ));
+            
+            $m = sprintf('[OK] %s updated.', $entity->getGroupName());
 
             $this->flashMessenger()->addMessage($m);
             return $this->redirect()->toUrl($redirectUrl);
@@ -503,15 +338,18 @@ class ItemGroupController extends AbstractActionController
 
         /** @var \Application\Entity\NmtInventoryItemGroup $entity ; */
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->findOneBy($criteria);
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+
             'errors' => null,
             'entity' => $entity,
             'redirectUrl' => $redirectUrl,
             'n' => 0,
-            'currency_list' => $currency_list,
-            'gl_list' => $gl_list,
-            'cost_center_list' => $cost_center_list
+            'nmtPlugin' => $nmtPlugin
         ));
+
+        $viewModel->setTemplate("inventory/item-group/crud");
+        return $viewModel;
     }
 
     /**

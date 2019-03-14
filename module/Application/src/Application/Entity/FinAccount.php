@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="fin_account", indexes={@ORM\Index(name="fin_account_FK1_idx", columns={"company_id"}), @ORM\Index(name="fin_account_FK2_idx", columns={"created_by"}), @ORM\Index(name="fin_account_FK3_idx", columns={"last_change_by"}), @ORM\Index(name="fin_account_idx1", columns={"token"})})
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Application\Repository\FinAccountRepository")
  */
 class FinAccount
 {
@@ -52,7 +53,7 @@ class FinAccount
     /**
      * @var string
      *
-     * @ORM\Column(name="account_group", type="string", length=10, nullable=true)
+     * @ORM\Column(name="account_group", type="string", length=45, nullable=true)
      */
     private $accountGroup;
 
@@ -90,62 +91,6 @@ class FinAccount
      * @ORM\Column(name="revision_no", type="integer", nullable=true)
      */
     private $revisionNo;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="account_name", type="string", length=45, nullable=true)
-     */
-    private $accountName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="remarks", type="string", length=255, nullable=true)
-     */
-    private $remarks;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="reconcilation_for", type="string", length=10, nullable=true)
-     */
-    private $reconcilationFor;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="manual_posting_blocked", type="boolean", nullable=true)
-     */
-    private $manualPostingBlocked;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_control_account", type="boolean", nullable=true)
-     */
-    private $isControlAccount;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_clearing_account", type="boolean", nullable=true)
-     */
-    private $isClearingAccount;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="sap_account", type="string", length=45, nullable=true)
-     */
-    private $sapAccount;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="has_cost_center", type="boolean", nullable=true)
-     */
-    private $hasCostCenter;
 
     /**
      * @var \Application\Entity\NmtApplicationCompany
@@ -427,198 +372,6 @@ class FinAccount
     public function getRevisionNo()
     {
         return $this->revisionNo;
-    }
-
-    /**
-     * Set accountName
-     *
-     * @param string $accountName
-     *
-     * @return FinAccount
-     */
-    public function setAccountName($accountName)
-    {
-        $this->accountName = $accountName;
-
-        return $this;
-    }
-
-    /**
-     * Get accountName
-     *
-     * @return string
-     */
-    public function getAccountName()
-    {
-        return $this->accountName;
-    }
-
-    /**
-     * Set remarks
-     *
-     * @param string $remarks
-     *
-     * @return FinAccount
-     */
-    public function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-
-        return $this;
-    }
-
-    /**
-     * Get remarks
-     *
-     * @return string
-     */
-    public function getRemarks()
-    {
-        return $this->remarks;
-    }
-
-    /**
-     * Set reconcilationFor
-     *
-     * @param string $reconcilationFor
-     *
-     * @return FinAccount
-     */
-    public function setReconcilationFor($reconcilationFor)
-    {
-        $this->reconcilationFor = $reconcilationFor;
-
-        return $this;
-    }
-
-    /**
-     * Get reconcilationFor
-     *
-     * @return string
-     */
-    public function getReconcilationFor()
-    {
-        return $this->reconcilationFor;
-    }
-
-    /**
-     * Set manualPostingBlocked
-     *
-     * @param boolean $manualPostingBlocked
-     *
-     * @return FinAccount
-     */
-    public function setManualPostingBlocked($manualPostingBlocked)
-    {
-        $this->manualPostingBlocked = $manualPostingBlocked;
-
-        return $this;
-    }
-
-    /**
-     * Get manualPostingBlocked
-     *
-     * @return boolean
-     */
-    public function getManualPostingBlocked()
-    {
-        return $this->manualPostingBlocked;
-    }
-
-    /**
-     * Set isControlAccount
-     *
-     * @param boolean $isControlAccount
-     *
-     * @return FinAccount
-     */
-    public function setIsControlAccount($isControlAccount)
-    {
-        $this->isControlAccount = $isControlAccount;
-
-        return $this;
-    }
-
-    /**
-     * Get isControlAccount
-     *
-     * @return boolean
-     */
-    public function getIsControlAccount()
-    {
-        return $this->isControlAccount;
-    }
-
-    /**
-     * Set isClearingAccount
-     *
-     * @param boolean $isClearingAccount
-     *
-     * @return FinAccount
-     */
-    public function setIsClearingAccount($isClearingAccount)
-    {
-        $this->isClearingAccount = $isClearingAccount;
-
-        return $this;
-    }
-
-    /**
-     * Get isClearingAccount
-     *
-     * @return boolean
-     */
-    public function getIsClearingAccount()
-    {
-        return $this->isClearingAccount;
-    }
-
-    /**
-     * Set sapAccount
-     *
-     * @param string $sapAccount
-     *
-     * @return FinAccount
-     */
-    public function setSapAccount($sapAccount)
-    {
-        $this->sapAccount = $sapAccount;
-
-        return $this;
-    }
-
-    /**
-     * Get sapAccount
-     *
-     * @return string
-     */
-    public function getSapAccount()
-    {
-        return $this->sapAccount;
-    }
-
-    /**
-     * Set hasCostCenter
-     *
-     * @param boolean $hasCostCenter
-     *
-     * @return FinAccount
-     */
-    public function setHasCostCenter($hasCostCenter)
-    {
-        $this->hasCostCenter = $hasCostCenter;
-
-        return $this;
-    }
-
-    /**
-     * Get hasCostCenter
-     *
-     * @return boolean
-     */
-    public function getHasCostCenter()
-    {
-        return $this->hasCostCenter;
     }
 
     /**

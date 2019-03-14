@@ -31,6 +31,9 @@ class ItemGroupControllerFactory implements FactoryInterface{
 		
 		$sv =  $container->get('Inventory\Service\ItemSearchService');
 		$controller->setItemSearchService($sv);
+	
+		$sv =  $container->get('Inventory\Service\ItemGroupService');
+		$controller->setItemGroupService($sv);
 		
 		return $controller;
 	}	

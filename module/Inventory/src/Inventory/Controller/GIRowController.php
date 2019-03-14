@@ -24,6 +24,26 @@ class GIRowController extends AbstractActionController
 
     protected $giService;
 
+    protected $inventoryTransactionService;
+
+    /**
+     *
+     * @return \Inventory\Service\InventoryTransactionService
+     */
+    public function getInventoryTransactionService()
+    {
+        return $this->inventoryTransactionService;
+    }
+
+    /**
+     *
+     * @param \Inventory\Service\InventoryTransactionService $inventoryTransactionService
+     */
+    public function setInventoryTransactionService(\Inventory\Service\InventoryTransactionService $inventoryTransactionService)
+    {
+        $this->inventoryTransactionService = $inventoryTransactionService;
+    }
+
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -287,8 +307,8 @@ class GIRowController extends AbstractActionController
             $redirectUrl = $data['redirectUrl'];
             $entity_id = $data['entity_id'];
             $entity_token = $data['token'];
-            $nTry=$data['n'];
-            
+            $nTry = $data['n'];
+
             $criteria = array(
                 'id' => $entity_id,
                 'token' => $entity_token
@@ -311,29 +331,31 @@ class GIRowController extends AbstractActionController
                     'n' => 0
                 ));
             }
-            
-            $target =$entity->getMovement();
+
+            $target = $entity->getMovement();
             $oldEntity = clone ($entity);
-            
 
             try {
                 $errors = $this->giService->validateRow($target, $entity, $data);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
-            }   
-            
-            /** @todo: problem when both attribut is 0 */
+            }
+
+            /**
+             *
+             * @todo: problem when both attribut is 0
+             */
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-            
+
             if (count($changeArray) == 0) {
                 $nTry ++;
                 $errors[] = sprintf('Nothing changed! n = %s', $nTry);
             }
-            
+
             if ($nTry >= 3) {
                 $errors[] = sprintf('Do you really want to edit "Row. %s"?', $entity->getId());
             }
-            
+
             if ($nTry == 5) {
                 $m = sprintf('You might be not ready to edit AP Row (%s). Please try later!', $entity->getId);
                 $this->flashMessenger()->addMessage($m);
@@ -365,7 +387,7 @@ class GIRowController extends AbstractActionController
 
             $entity->setDocStatus($target->getDocStatus());
             try {
-                $this->giService->saveRow($target, $entity, $u,FALSE);
+                $this->giService->saveRow($target, $entity, $u, FALSE);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -390,9 +412,9 @@ class GIRowController extends AbstractActionController
                 return $viewModel;
             }
 
-            $changeOn = new \DateTime();            
+            $changeOn = new \DateTime();
             $m = sprintf('[OK] GI Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getId(), count($changeArray));
-            
+
             // Trigger Change Log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
                 'priority' => 7,
@@ -406,7 +428,7 @@ class GIRowController extends AbstractActionController
                 'changeDate' => $changeOn,
                 'changeValidFrom' => $changeOn
             ));
-            
+
             // Trigger: finance.activity.log. AbtractController is EventManagerAware.
             $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
                 'priority' => \Zend\Log\Logger::INFO,
@@ -417,7 +439,7 @@ class GIRowController extends AbstractActionController
                 'entity_class' => get_class($entity),
                 'entity_token' => $entity->getToken()
             ));
-            
+
             $this->flashMessenger()->addMessage($m);
             $redirectUrl = "/inventory/gi/review?token=" . $target->getToken() . "&entity_id=" . $target->getId();
 

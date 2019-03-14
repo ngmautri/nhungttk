@@ -1,24 +1,17 @@
 <?php
-namespace Inventory\Model\GI;
+namespace Inventory\Model\GR;
+
+use Inventory\Model\InventoryTransactionInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractGIStrategy
+abstract class AbstractTransactionStrategy implements InventoryTransactionInterface
 {
 
     protected $contextService;
-    
-    
-    /**
-     *
-     * @param \Application\Entity\NmtInventoryTrx $entity
-     */
-    abstract public function validateRow($entity);
-       
-    
 
     /**
      *
@@ -32,16 +25,27 @@ abstract class AbstractGIStrategy
      *
      * @param \Application\Entity\NmtInventoryMv $entity
      * @param \Application\Entity\MlaUsers $u
+     * @param bool $isFlush
      */
-    abstract public function doPosting($entity, $u);
+    abstract public function doPosting($entity, $u, $isFlush = false);
 
     /**
      *
      * @param \Application\Entity\NmtInventoryMv $entity
      * @param \Application\Entity\MlaUsers $u
      * @param \DateTime $reversalDate
+     * @param bool $isFlush
      */
-    abstract public function reverse($entity, $u, $reversalDate);
+    abstract public function reverse($entity, $u, $reversalDate, $isFlush = false);
+    
+    /**
+     * 
+     *  @param array $rows
+     *  @param \Application\Entity\MlaUsers $u
+     *  @param bool $isFlush
+     */
+    abstract public function createMovement($rows, $u, $isFlush = false, $movementDate=null, $wareHouse = null);
+    
 
    /**
     * 
@@ -52,10 +56,10 @@ abstract class AbstractGIStrategy
         return $this->contextService;
     }
 
-   /**
-    * 
-    *  @param \Application\Service\AbstractService $contextService
-    */
+    /**
+     * 
+     *  @param \Application\Service\AbstractService $contextService
+     */
     public function setContextService(\Application\Service\AbstractService $contextService)
     {
         $this->contextService = $contextService;

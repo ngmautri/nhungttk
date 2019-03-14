@@ -7,7 +7,7 @@ namespace Inventory\Model\GR;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRStrategyFactory
+class InventoryTransactionStrategyFactory
 {
     
     /**

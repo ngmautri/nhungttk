@@ -27,6 +27,26 @@ class GIController extends AbstractActionController
 
     protected $giService;
 
+    protected $inventoryTransactionService;
+
+    /**
+     *
+     * @return \Inventory\Service\InventoryTransactionService
+     */
+    public function getInventoryTransactionService()
+    {
+        return $this->inventoryTransactionService;
+    }
+
+    /**
+     *
+     * @param \Inventory\Service\InventoryTransactionService $inventoryTransactionService
+     */
+    public function setInventoryTransactionService(\Inventory\Service\InventoryTransactionService $inventoryTransactionService)
+    {
+        $this->inventoryTransactionService = $inventoryTransactionService;
+    }
+
     /**
      *
      * {@inheritdoc}
@@ -85,21 +105,20 @@ class GIController extends AbstractActionController
         }
 
         if (! $entity == null) {
-            
-            $movementTypeInfo='';
+
+            $movementTypeInfo = '';
             $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
-            if($giType!==null)                {
-                $movementTypeInfo =  $giType['type_description'];
+            if ($giType !== null) {
+                $movementTypeInfo = $giType['type_description'];
             }
-            
+
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
                 'entity' => $entity,
                 'errors' => null,
                 'currency_list' => $currency_list,
                 'issueType' => $issueType,
-                'movementTypeInfo' => $movementTypeInfo,
-                
+                'movementTypeInfo' => $movementTypeInfo
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
@@ -121,21 +140,20 @@ class GIController extends AbstractActionController
     {
         $request = $this->getRequest();
         $this->layout("Inventory/layout-fullscreen");
-        
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
-        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
+
+        $transactionType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
         
-        $localCurrency=null;
-        if($u->getCompany()!==null){
-            $localCurrency = $u->getCompany()->getDefaultCurrency();
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
         }
 
         // Is Posing
@@ -143,93 +161,33 @@ class GIController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-            $movementType = $request->getPost('movementType');
-
-            $movementDate = $request->getPost('movementDate');
-            $currentState = $request->getPost('currentState');
-
-            $warehouse_id = (int) $request->getPost('target_wh_id');
-            $isActive = (int) $request->getPost('isActive');
-            $remarks = $request->getPost('remarks');
-
-            if ($isActive != 1) {
-                $isActive = 0;
-            }
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
 
             $entity = new NmtInventoryMv();
-
-            $entity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_OUT);
-            $entity->setIsActive($isActive);
-            $entity->setCurrentState($currentState);
-            
-            if($localCurrency==null){
-                $errors[] = $nmtPlugin->translate("Local currency is not defined. Please check!");
-                
-            }else{
-                $entity->setCurrency($localCurrency);
-            }
-            
-
-            if ($movementType == null) {
-                $errors[] = $nmtPlugin->translate('Goods Issue Type is not valid!');
-            } else{
-                $entity->setMovementType($movementType);
-            }
-            $validator = new Date();
-
-            if ($movementDate !== null) {
-                if (! $validator->isValid($movementDate)) {
-                    $errors[] = $nmtPlugin->translate('Goods Issue Date is not correct or empty!');
-                } else {
-                    $entity->setMovementDate(new \DateTime($movementDate));
-                }
-            }
-
-            $warehouse = null;
-            if ($warehouse_id > 0) {
-                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
-            }
-
-            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
-                $entity->setWarehouse($warehouse);
-            } else {
-                $errors[] = $nmtPlugin->translate('Warehouse can\'t be empty. Please select a Wahrhouse!');
-            }
-
-            $entity->setRemarks($remarks);
+            $entity->setLocalCurrency($default_cur);
+            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, TRUE);
 
             if (count($errors) > 0) {
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    'form_action' => '/inventory/gi/add',
+                    'form_title' => $nmtPlugin->translate("Create Good Issue"),
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'issueType' => $issueType
+                    'nmtPlugin' => $nmtPlugin,
+                    'transactionType' => $transactionType
                 ));
+
+                $viewModel->setTemplate("inventory/item-transaction/crud");
+                return $viewModel;
             }
 
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
+            $m = sprintf('[OK] Inventory transaction %s created.', $entity->getId());
 
-            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
-            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
-            $entity->setIsDraft(1);
-            $entity->setIsPosted(0);
-
-            $createdOn = new \DateTime();
-            $entity->setCreatedBy($u);
-
-            $entity->setCreatedOn($createdOn);
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
-            $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
-
-            $redirectUrl = "/inventory/gi-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
 
@@ -238,33 +196,30 @@ class GIController extends AbstractActionController
         // ================================
 
         $redirectUrl = null;
-        /*
-         * if ($request->getHeader('Referer') !== null) {
-         * $redirectUrl = $this->getRequest()
-         * ->getHeader('Referer')
-         * ->getUri();
-         * }
-         */
+
+        if ($request->getHeader('Referer') !== null) {
+            $redirectUrl = $this->getRequest()
+                ->getHeader('Referer')
+                ->getUri();
+        }
 
         $entity = new NmtInventoryMv();
         $entity->setIsActive(1);
 
-        $default_wh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy(array(
-            'isDefault' => 1
-        ));
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+            'form_action' => '/inventory/gi/add',
+            'form_title' => $nmtPlugin->translate("Create Good Issue"),
 
-        if ($default_wh !== null) {
-            $entity->setWarehouse($default_wh);
-        }
-        
-     
-        return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'currency_list' => $currency_list,
-            'issueType' => $issueType
+            'nmtPlugin' => $nmtPlugin,
+            'transactionType' => $transactionType
         ));
+
+        $viewModel->setTemplate("inventory/item-transaction/crud");
+        return $viewModel;
     }
 
     /**
@@ -332,9 +287,9 @@ class GIController extends AbstractActionController
             }
 
             $entity->setIsActive($isActive);
-            
+
             $movementType = $entity->getMovementType();
-            
+
             if ($movementType == null) {
                 $errors[] = 'Goods Issue Type is not valid!';
             }
@@ -393,11 +348,11 @@ class GIController extends AbstractActionController
             // ++++++++++++++++++++++++++++++
 
             try {
-                 $this->giService->post($entity, $u);
+                $this->giService->post($entity, $u);
             } catch (\Exception $e) {
-                $errors[]=$e->getMessage();
+                $errors[] = $e->getMessage();
             }
-      
+
             if (count($errors) > 0) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
@@ -407,7 +362,7 @@ class GIController extends AbstractActionController
                     'issueType' => $issueType
                 ));
             }
-            
+
             $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
 

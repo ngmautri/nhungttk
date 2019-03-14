@@ -20,9 +20,11 @@ class InventoryTransactionService extends AbstractService
      * @param \Application\Entity\NmtInventoryMv $entity
      * @param array $data
      * @param boolean $isNew
+     * @param $isPosting $isNew
+     *      
      * @return array
      */
-    public function validateHeader(\Application\Entity\NmtInventoryMv $entity, $data, $isNew = TRUE)
+    public function validateHeader(\Application\Entity\NmtInventoryMv $entity, $data, $isNew = TRUE, $isPosting=false)
     {
         $errors = array();
 
@@ -44,12 +46,6 @@ class InventoryTransactionService extends AbstractService
             $movementType = $data['movementType'];
         } else {
             $errors[] = $this->controllerPlugin->translate('No input given movementType');
-        }
-
-        if (isset($data['movementDate'])) {
-            $movementDate = $data['movementDate'];
-        } else {
-            $errors[] = $this->controllerPlugin->translate('No input given movementDate');
         }
 
         if (isset($data['movementDate'])) {
@@ -89,9 +85,23 @@ class InventoryTransactionService extends AbstractService
         $entity->setIsActive($isActive);
 
         if ($movementType == null) {
-            $errors[] = $this->controllerPlugin->translate('Inventory Transaction Type is not valid!');
+            $errors[] = $this->controllerPlugin->translate('Inventory movement is not selected!');
         } else {
-            $entity->setMovementType($movementType);
+            
+            // validate movement Type.
+            $movementStrategy = \Inventory\Model\InventoryTransactionStrategyFactory::getMovementStrategy($movementType);
+
+            if (! $movementStrategy instanceof \Inventory\Model\AbstractTransactionStrategy) {
+                $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented yet!');
+            } else {
+
+                if ($movementStrategy->getFlow() == null) {
+                    $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented correctly!');
+                } else {
+                    $entity->setMovementType($movementType);
+                    $entity->setMovementFlow($movementStrategy->getFlow());
+                }
+            }
         }
 
         $validator = new Date();
@@ -160,16 +170,18 @@ class InventoryTransactionService extends AbstractService
             if ($isNew == TRUE) {
 
                 $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
+                $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+                
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn($changeOn);
                 $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             } else {
+                
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
-                $entity->setLastchangeBy($u);
+                //$entity->setLastchangeBy($u);
                 $entity->setLastchangeOn($changeOn);
             }
-
-            $this->doctrineEM->persist($entity);
+           $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
             
         } catch (\Exception $e) {

@@ -11,5 +11,6 @@ namespace Inventory\Model;
 interface InventoryTransactionInterface
 {
     public function getTransactionIdentifer();
+    public function getFlow();
 }
 

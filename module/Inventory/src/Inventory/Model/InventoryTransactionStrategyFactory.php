@@ -1,6 +1,5 @@
 <?php
-namespace Inventory\Model\GR;
-
+namespace Inventory\Model;
 
 /**
  *
@@ -9,41 +8,33 @@ namespace Inventory\Model\GR;
  */
 class InventoryTransactionStrategyFactory
 {
-    
+
     /**
-     * 
+     *
      * @param string $tTransaction
      * @throws \Exception
-     * @return \Inventory\Model\GR\GRfromPurchasing|\Inventory\Model\GR\GRfromPurchasingReversal
+     * @return \Inventory\Model\AbstractTransactionStrategy
      */
-    public static function getGRStrategy($tTransaction)
+    public static function getMovementStrategy($tTransaction)
     {
         switch ($tTransaction) {
             case \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING:
-                return new GRfromPurchasing();
-                
+                return new \Inventory\Model\GR\GRfromPurchasing();
+
             case \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL:
-                return new GRfromPurchasingReversal();
+                return new \Inventory\Model\GR\GRfromPurchasingReversal();
+
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX:
+                return new \Inventory\Model\GI\GIforRepairMachine();
+
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE:
+                return new \Inventory\Model\GI\GIforRepairMachineWithoutExchange();
+                
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_COST_CENTER:
+                return new \Inventory\Model\GI\GIforCostCenter();
                 
             default:
-                throw new \Exception("Unknown Movement Type!");
+                return null;
         }
     }
-    
-    /**
-     * 
-     * @param String $tTransaction
-     * @throws \Exception
-     * @return \Inventory\Model\GR\GRfromPurchasing
-     */
-    public static function getGRType($tTransaction)
-    {
-        switch ($tTransaction) {
-            case \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING:
-                return new GRfromPurchasing();
-            default:
-                throw new \Exception("Unknown Movement Type!");
-        }
-    }
-    
 }

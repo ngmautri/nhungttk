@@ -1,15 +1,24 @@
 <?php
-namespace Inventory\Model;
+namespace Inventory\Model\GI;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractTransactionStrategy implements InventoryTransactionInterface
+abstract class AbstractGIStrategy implements \Inventory\Model\InventoryTransactionInterface
 {
 
     protected $contextService;
+    
+    
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryTrx $entity
+     */
+    abstract public function validateRow($entity);
+       
+    
 
     /**
      *
@@ -23,40 +32,30 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
      *
      * @param \Application\Entity\NmtInventoryMv $entity
      * @param \Application\Entity\MlaUsers $u
-     * @param bool $isFlush
      */
-    abstract public function doPosting($entity, $u, $isFlush = false);
+    abstract public function doPosting($entity, $u);
 
     /**
      *
      * @param \Application\Entity\NmtInventoryMv $entity
      * @param \Application\Entity\MlaUsers $u
      * @param \DateTime $reversalDate
-     * @param bool $isFlush
      */
-    abstract public function reverse($entity, $u, $reversalDate, $isFlush = false);
+    abstract public function reverse($entity, $u, $reversalDate);
 
-    /**
-     *
-     * @param array $rows
-     * @param \Application\Entity\MlaUsers $u
-     * @param bool $isFlush
-     */
-    abstract public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null);
-
-    /**
-     *
-     * @return \Application\Service\AbstractService
-     */
+   /**
+    * 
+    *  @return \Application\Service\AbstractService
+    */
     public function getContextService()
     {
         return $this->contextService;
     }
 
-    /**
-     *
-     * @param \Application\Service\AbstractService $contextService
-     */
+   /**
+    * 
+    *  @param \Application\Service\AbstractService $contextService
+    */
     public function setContextService(\Application\Service\AbstractService $contextService)
     {
         $this->contextService = $contextService;

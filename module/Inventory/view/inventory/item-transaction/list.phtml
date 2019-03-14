@@ -140,14 +140,15 @@ else :
 					<td><b>#</b></td>
 					<td><b><?php echo $this->translate("Ref.No.");?></b></td>
 					<td><b><?php echo $this->translate("Flow");?></b></td>
-				
+					<td><b><?php echo $this->translate("Reversed");?></b></td>
+
 					<td><b><?php echo $this->translate("Doc Status");?></b></td>
 					<td><b><?php echo $this->translate("Trx Status");?></b></td>
 
 					<td><b><?php echo $this->translate("Receipt Date");?></b></td>
 					<td><b><?php echo $this->translate("Draft");?></b></td>
 					<td><b><?php echo $this->translate("Posted");?></b></td>
-
+					<td><b><?php echo $this->translate("Movement Type");?></b></b></td>
 					<td><b><?php echo $this->translate("Movement Type");?></b></b></td>
 					<td><b>Current State</b></td>
 					<td><b>Action</b></td>
@@ -174,7 +175,8 @@ else :
 			</td>
 					<td><?php echo $a->getSysNumber();?></td>
 					<td><?php echo $a->getMovementFlow();?></td>
-	
+					<td><?php echo $a->getIsReversed();?></td>
+
 					<td><?php echo $a->getDocStatus();?></td>
 					<td><?php echo $a->getTransactionStatus();?></td>
 
@@ -189,14 +191,23 @@ else :
 					<?php if($a->getMovementFlow()==\Inventory\Model\Constants::WH_TRANSACTION_OUT):?>
 						<a
 						href="<?php echo $this->baseUrl ?>/inventory/gi/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $this->translate("Show");?></a>
+						<a
+						href="<?php echo $this->baseUrl ?>/inventory/gi/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $this->translate("Edit");?></a>
+			
 					<?php endif;?>
 					
 					<?php if($a->getMovementFlow()==\Inventory\Model\Constants::WH_TRANSACTION_IN):?>
+						
 					<a
 						href="<?php echo $this->baseUrl ?>/inventory/gr/show?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $this->translate("Show");?></a>
-					<?php endif;?>	
+						<a
+						href="<?php echo $this->baseUrl ?>/inventory/gr/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $this->translate("Edit");?></a>
+		
+						<?php endif;?>	
 						
 					</td>
+					<td></td>
+				</tr>
 	<?php endforeach; ?>
  
 			

@@ -167,6 +167,8 @@ return array(
             'Inventory\Service\ItemVariantService' => 'Inventory\Service\ItemVariantServiceFactory',
             'Inventory\Service\ItemGroupService' => 'Inventory\Service\ItemGroupServiceFactory',
             
+            'Inventory\Service\InventoryTransactionService' => 'Inventory\Service\InventoryTransactionServiceFactory',
+            
             
         )
     ),

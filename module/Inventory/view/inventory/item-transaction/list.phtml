@@ -186,6 +186,8 @@ else :
 					<td><?php echo $a->getMovementType()?></td>
 
 					<td><?php echo $a->getDocStatus()?></td>
+					<td><?php echo $a->getCreatedBy()->getFirstname() . $a->getCreatedBy()->getLastname()?></td>
+					
 
 					<td>
 					<?php if($a->getMovementFlow()==\Inventory\Model\Constants::WH_TRANSACTION_OUT):?>

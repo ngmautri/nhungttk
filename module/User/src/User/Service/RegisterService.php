@@ -9,10 +9,11 @@ use User\Model\User;
 use User\Model\UserTable;
 use MLA\Service\AbstractService;
 
- /* 
- * @author nmt
- *
- */
+ /**
+  * @deprecated
+  * @author Nguyen Mau Tri
+  *
+  */
 class RegisterService extends AbstractService
 {	
 	

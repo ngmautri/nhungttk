@@ -217,4 +217,7 @@ if (count($errors) > 0) {
 
 $( "input[id='movementDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
 
+<?php if($isAllowed == false):?>
+$("#Create_Inv_Form :input").attr("disabled", "disabled");
+<?php endif;?>
 </script>

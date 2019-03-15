@@ -15,7 +15,7 @@ class AssetTypeTest extends PHPUnit_Framework_TestCase {
         echo count($list);
         
     } */
-	
+	/*
  	public function testAssetGroupTest() {
 		
  	    $q1 = new FIFO;

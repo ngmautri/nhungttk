@@ -6,8 +6,9 @@ namespace Application\Service;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-/*
- * @author nmt
+/**
+ * 
+ * @author Nguyen Mau Tri
  *
  */
 class AclServiceFactory implements FactoryInterface {

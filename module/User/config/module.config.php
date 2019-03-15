@@ -119,7 +119,9 @@ return array(
     
     'service_manager' => array(
         'factories' => array(
-            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory'
+            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+            'User\Service\UserService' => 'User\Service\UserServiceFactory'
+            
         )
     ),
    

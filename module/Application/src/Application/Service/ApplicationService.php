@@ -150,7 +150,6 @@ class ApplicationService {
 	/**
 	 *
 	 * @deprecated
-	 * @return unknown[][]|\Application\Service\string[][][][][]|unknown[][][][]
 	 */
 	public function getLoadedModules() {
 		$loadedModules = $this->moduleManager->getLoadedModules ();
@@ -268,28 +267,17 @@ class ApplicationService {
 		return $this;
 	}
 	
-	/**
-	 * 
-	 * @return unknown
-	 */
+	
 	public function getAppResources() {
 		return $this->appResources;
 	}
 	
-	/**
-	 * 
-	 * @param unknown $appResources
-	 * @return \Application\Service\ApplicationService
-	 */
 	public function setAppResources($appResources) {
 		$this->appResources = $appResources;
 		return $this;
 	}
 	
-	/**
-	 * 
-	 * @return unknown
-	 */
+	
 	public function getOwnModules() {
 		$config_file = dirname(dirname(dirname(dirname(dirname(dirname ( __FILE__ )))))).'/config/own_modules.php';
 		return include $config_file;

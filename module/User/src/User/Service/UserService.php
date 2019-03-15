@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Service;
+namespace User\Service;
 
 use Application\Service\AbstractService;
 use Zend\Math\Rand;
@@ -10,19 +10,19 @@ use Zend\Validator\Date;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class InventoryTransactionService extends AbstractService
+class UserService extends AbstractService
 {
 
     /**
      *
-     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param \Application\Entity\MlaUsers $entity
      * @param array $data
      * @param boolean $isNew
      * @param $isPosting $isNew
-     *
+     *      
      * @return array
      */
-    public function validateHeader(\Application\Entity\NmtInventoryMv $entity, $data, $isNew = TRUE, $isPosting = false)
+    public function validateEntity(\Application\Entity\MlaUsers $entity, $data, $isNew = TRUE, $isPosting=false)
     {
         $errors = array();
 
@@ -85,7 +85,7 @@ class InventoryTransactionService extends AbstractService
         if ($movementType == null) {
             $errors[] = $this->controllerPlugin->translate('Inventory movement is not selected!');
         } else {
-
+            
             // validate movement Type.
             $movementStrategy = \Inventory\Model\InventoryTransactionStrategyFactory::getMovementStrategy($movementType);
 
@@ -127,12 +127,12 @@ class InventoryTransactionService extends AbstractService
 
     /**
      *
-     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param \Application\Entity\MlaUsers $entity
      * @param array $data
      * @param \Application\Entity\MlaUsers $u,
      * @param boolean $isNew
      */
-    public function saveHeader($entity, $data, $u, $isNew = FALSE)
+    public function saveEntity($entity, $data, $u, $isNew = FALSE)
     {
         $errors = array();
 
@@ -145,19 +145,6 @@ class InventoryTransactionService extends AbstractService
         } else {
             if ($entity->getLocalCurrency() == null) {
                 $errors[] = $this->controllerPlugin->translate("Invalid Argument. Local currency is not defined!");
-            }
-        }
-
-        if ($isNew == false) {
-
-            $checkALC = $this->controllerPlugin->isParent($u, $entity->getCreatedBy());
-
-            if (isset($checkALC['result']) and isset($checkALC['message'])) {
-                if ($checkALC['result'] == 0) {
-                    $errors[] = $this->controllerPlugin->translate("No authority to perform this operation on this object!");
-                }
-            } else {
-                $errors[] = $this->controllerPlugin->translate("ACL checking failed");
             }
         }
 
@@ -182,21 +169,24 @@ class InventoryTransactionService extends AbstractService
 
                 $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
                 $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
-
+                
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn($changeOn);
                 $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             } else {
-
+                
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
-                // $entity->setLastchangeBy($u);
+                //$entity->setLastchangeBy($u);
                 $entity->setLastchangeOn($changeOn);
             }
-            $this->doctrineEM->persist($entity);
+           $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
+            
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }
         return $errors;
     }
+
+  
 }

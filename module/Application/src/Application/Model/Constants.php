@@ -7,10 +7,20 @@ namespace Application\Model;
  *        
  */
 class Constants
+
 {
+    //=============USER ===========
+    
+    const USER_ROLE_DEFAULT = 'member';
+    const USER_ROLE_SUPER_ADMINISTRATOR = 'super-administrator';
+    const USER_ROLE_ADMINISTRATOR = 'administrator';
+    
+    
+    //=============USER ===========
+    
+    
     const OS_LINUX = "Linux";
     const OS_WINNT = "WINNT";
-    
     const CHAR_LIST = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
     
     

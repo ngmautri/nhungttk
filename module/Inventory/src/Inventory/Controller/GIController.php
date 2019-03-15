@@ -133,136 +133,175 @@ class GIController extends AbstractActionController
     {
         $request = $this->getRequest();
         $this->layout("Inventory/layout-fullscreen");
-        
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        
+
         $transactionType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
         
-        
+        $isAllowed = true;
+
         // Is Posing
         // =============================
         if ($request->isPost()) {
-            
+
             $errors = array();
             $data = $this->params()->fromPost();
-            
+
             $redirectUrl = $data['redirectUrl'];
             $entity_id = (int) $data['entity_id'];
             $nTry = $data['n'];
-            
+
             $criteria = array(
                 'id' => $entity_id
             );
-            
+
             /** @var \Application\Entity\NmtInventoryMv $entity ; */
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findOneBy($criteria);
-            
+
             if ($entity == null) {
                 $errors[] = 'Entity not found or emty!';
-                
+
                 $this->flashMessenger()->addMessage('Something wrong!');
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'form_action' => '/inventory/gi/edit',
                     'form_title' => $nmtPlugin->translate("Edit Good Issue"),
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
                     'n' => $nTry,
                     'nmtPlugin' => $nmtPlugin,
-                    'transactionType' => $transactionType
+                    'transactionType' => $transactionType,
+                    'isAllowed' => $isAllowed,
                     
                 ));
-                
+
                 $viewModel->setTemplate("inventory/item-transaction/crud");
                 return $viewModel;
             }
             
-            $nTry++;
-            
-            if ($nTry >= 3) {
-                $errors[] = sprintf('Do you really want to edit (%s)?', $entity->getId());
+            $checkALC = $nmtPlugin->isParent($u, $entity->getCreatedBy());
+            if (isset($checkALC['result']) and isset($checkALC['message'])) {
+                if ($checkALC['result'] == 0) {
+                    $errors[] = $nmtPlugin->translate("No authority to perform this operation on this object! Only the owner or the administrator has the right to do it.");
+                    $isAllowed = false;
+                }
+            } else {
+                $errors[] = $nmtPlugin->translate("ACL checking failed");
             }
-            
-            if ($nTry == 5) {
-                $m = sprintf('You might be not ready to edit (%s). Please try later!', $entity->getId());
-                $this->flashMessenger()->addMessage($m);
-                return $this->redirect()->toUrl($redirectUrl);
-            }
-            
-            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, FALSE);
             
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'form_action' => '/inventory/gi/edit',
-                    'form_title' => $nmtPlugin->translate("Edit Good Issue"),                    
+                    'form_title' => $nmtPlugin->translate("Edit Good Issue"),
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'n' => $nTry,
                     'nmtPlugin' => $nmtPlugin,
-                    'transactionType' => $transactionType
-                    
+                    'transactionType' => $transactionType,
+                    'isAllowed' => $isAllowed,
                 ));
                 
                 $viewModel->setTemplate("inventory/item-transaction/crud");
                 return $viewModel;
             }
             
-            
+            $nTry ++;
+
+            if ($nTry >= 3) {
+                $errors[] = sprintf('Do you really want to edit (%s)?', $entity->getId());
+            }
+
+            if ($nTry == 5) {
+                $m = sprintf('You might be not ready to edit (%s). Please try later!', $entity->getId());
+                $this->flashMessenger()->addMessage($m);
+                return $this->redirect()->toUrl($redirectUrl);
+            }
+
+            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, FALSE);
+
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    'form_action' => '/inventory/gi/edit',
+                    'form_title' => $nmtPlugin->translate("Edit Good Issue"),
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'n' => $nTry,
+                    'nmtPlugin' => $nmtPlugin,
+                    'transactionType' => $transactionType,
+                    'isAllowed' => $isAllowed,                    
+                ));
+
+                $viewModel->setTemplate("inventory/item-transaction/crud");
+                return $viewModel;
+            }
+
             $m = sprintf('[OK] Inventory transaction %s updated.', $entity->getId());
-            
+
             $this->flashMessenger()->addMessage($m);
             return $this->redirect()->toUrl($redirectUrl);
         }
-        
+
         // NO POST
         // Initiate ......................
         // ================================
         $redirectUrl = null;
-        
+
         if ($this->getRequest()->getHeader('Referer') != null) {
             $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+                ->getHeader('Referer')
+                ->getUri();
         }
-        
+
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $id,
             'token' => $token
         );
-        
+
         /** @var \Application\Entity\NmtInventoryMv $entity ; */
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findOneBy($criteria);
-        
+
+        $checkALC = $nmtPlugin->isParent($u, $entity->getCreatedBy());
+
+        $errors = array();
+        if (isset($checkALC['result']) and isset($checkALC['message'])) {
+            if ($checkALC['result'] == 0) {
+                $errors[] = $nmtPlugin->translate("No authority to perform this operation on this object! Only the owner or the administrator has the right to do it.");
+                $isAllowed = false;
+            }
+        } else {
+            $errors[] = $nmtPlugin->translate("ACL checking failed");
+        }
+
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
             'form_action' => '/inventory/gi/edit',
             'form_title' => $nmtPlugin->translate("Edit Good Issue"),
-            
-            'errors' => null,
+
+            'errors' => $errors,
             'entity' => $entity,
             'redirectUrl' => $redirectUrl,
             'n' => 0,
             'nmtPlugin' => $nmtPlugin,
-            'transactionType' => $transactionType
-            
+            'transactionType' => $transactionType,
+            'isAllowed' => $isAllowed,
         ));
-        
+
         $viewModel->setTemplate("inventory/item-transaction/crud");
         return $viewModel;
-        
     }
 
     /**
@@ -283,7 +322,7 @@ class GIController extends AbstractActionController
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
+
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();

@@ -14,9 +14,9 @@ use Application\Entity\NmtApplicationAclRoleResource;
 use Application\Utility\CategoryRegistry;
 
 /**
+ * 
+ * @author Nguyen Mau Tri
  *
- * @author nmt
- *        
  */
 class AclService extends ZendAcl {
 	
@@ -99,12 +99,12 @@ class AclService extends ZendAcl {
 	
 	/**
 	 *
-	 * @param unknown $role        	
-	 * @param unknown $resource        	
-	 * @param unknown $permission        	
+	 * @param string $role        	
+	 * @param string $resource        	
+	 * @param string $permission        	
 	 * @return boolean
 	 */
-	public function isAccessAllowed($role, $resource, $permission) {
+	public function isAccessAllowed($role, $resource, $permission = null) {
 		if (! $this->hasResource ( $resource )) {
 			return false;
 		}
@@ -238,10 +238,10 @@ class AclService extends ZendAcl {
 	
 	/**
 	 *
-	 * @param unknown $index        	
-	 * @param unknown $data        	
-	 * @param unknown $parent_id        	
-	 * @param unknown $level        	
+	 * @param array $index        	
+	 * @param array $data        	
+	 * @param int $parent_id        	
+	 * @param int $level        	
 	 */
 	protected function acl_tree($index, $data, $parent_id, $level) {
 		if (isset ( $index [$parent_id] )) {
@@ -264,10 +264,10 @@ class AclService extends ZendAcl {
 	
 	/**
 	 *
-	 * @param unknown $index        	
-	 * @param unknown $data        	
-	 * @param unknown $parent_id        	
-	 * @param unknown $level        	
+	 * @param array $index        	
+	 * @param array $data        	
+	 * @param int $parent_id        	
+	 * @param int $level        	
 	 */
 	protected function acl_tree1($index, $data, $parent_id, $level) {
 		if (isset ( $index [$parent_id] )) {
@@ -300,11 +300,10 @@ class AclService extends ZendAcl {
 	
 	/**
 	 *
-	 * @author NMT
-	 * @param unknown $index        	
-	 * @param unknown $data        	
-	 * @param unknown $parent_id        	
-	 * @param unknown $level        	
+	 * @param array $index        	
+	 * @param array $data        	
+	 * @param int $parent_id        	
+	 * @param int $level        	
 	 */
 	protected function add_roles($index, $data, $parent_id, $level) {
 		if (isset ( $index [$parent_id] )) {
@@ -341,8 +340,8 @@ class AclService extends ZendAcl {
 	
 	/**
 	 *
-	 * @param unknown $role        	
-	 * @param unknown $parent        	
+	 * @param array $role        	
+	 * @param string $parent        	
 	 */
 	protected function addParentRole($role, $parent) {
 		$roles = parent::getRoleRegistry ()->getRoles ();
@@ -358,18 +357,12 @@ class AclService extends ZendAcl {
 		// var_dump($roles[$parent]['instance']);
 	}
 	
-	/**
-	 *
-	 * @return unknown
-	 */
+	
 	public function getRoleRegistry() {
 		return parent::getRoleRegistry ();
 	}
 	
-	/**
-	 *
-	 * @return unknown
-	 */
+	
 	public function getRoles() {
 		return parent::getRoleRegistry ()->getRoles ();
 	}
@@ -387,13 +380,20 @@ class AclService extends ZendAcl {
 	
 	// =====================================
 	
+	
 	/**
-	 *
-	 * @return unknown
+	 * 
+	 * @return \Doctrine\ORM\EntityManager
 	 */
 	public function getDoctrineEM() {
 		return $this->doctrineEM;
 	}
+	
+	/**
+	 * 
+	 * @param EntityManager $doctrineEM
+	 * @return \Application\Service\AclService
+	 */
 	public function setDoctrineEM(EntityManager $doctrineEM) {
 		$this->doctrineEM = $doctrineEM;
 		return $this;

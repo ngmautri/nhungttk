@@ -21,7 +21,7 @@ class GRfromPurchasing extends AbstractTransactionStrategy
      */
     public function getFlow()
     {
-        return \Application\Model\Constants::WH_TRANSACTION_IN;
+        return \Inventory\Model\Constants::WH_TRANSACTION_IN;
         
     }
     

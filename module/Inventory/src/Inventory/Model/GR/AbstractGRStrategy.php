@@ -4,7 +4,7 @@ namespace Inventory\Model\GR;
 use Inventory\Model\InventoryTransactionInterface;
 
 /**
- *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

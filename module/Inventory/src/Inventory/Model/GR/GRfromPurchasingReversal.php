@@ -13,38 +13,31 @@ use Inventory;
  */
 class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrategy
 {
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\InventoryTransactionInterface::getFlow()
      */
     public function getFlow()
     {
-        return \Application\Model\Constants::WH_TRANSACTION_OUT;
-        
+        return \Inventory\Model\Constants::WH_TRANSACTION_OUT;
     }
-    
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\InventoryTransactionInterface::getTransactionIdentifer()
      */
     public function getTransactionIdentifer()
     {
         return \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL;
     }
-    
 
     /**
      *
-     * @param \Application\Entity\NmtInventoryTrx $trx
-     * @param \Application\Entity\NmtInventoryItem $item
-     * @param \Application\Entity\MlaUsers $u
-     *
      * {@inheritdoc}
-     * @see \Inventory\Model\GI\AbstractGIStrategy::check()
+     * @see \Inventory\Model\AbstractTransactionStrategy::check()
      */
     public function check($trx, $item, $u)
     {
@@ -73,13 +66,11 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
         }
     }
 
-    /**
-     *
-     * @param \Application\Entity\NmtInventoryMv $entity
-     * @param \Application\Entity\MlaUsers $u
-     * {@inheritdoc}
-     * @see \Inventory\Model\GI\AbstractGIStrategy::doPosting()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Inventory\Model\AbstractTransactionStrategy::doPosting()
+    */
     public function doPosting($entity, $u, $isFlush = false)
     {
         $criteria = array(
@@ -104,25 +95,19 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
         $this->contextService->getDoctrineEM()->flush();
     }
 
-    /**
-     *
-     * @param \Application\Entity\NmtInventoryMv $entity
-     * @param \Application\Entity\MlaUsers $u
-     * @param \DateTime $reversalDate
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Model\GI\AbstractGIStrategy::reverse()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
+    */
     public function reverse($entity, $u, $reversalDate, $isFlush = false)
     {}
 
-    /**
-     *
-     * @param array $rows
-     * @param \Application\Entity\MlaUsers $u
-     * {@inheritdoc}
-     * @see \Inventory\Model\GR\AbstractGRStrategy::createMovement()
-     */
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Inventory\Model\AbstractTransactionStrategy::createMovement()
+    */
     public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null)
     {
         if (! $u instanceof \Application\Entity\MlaUsers) {
@@ -147,11 +132,11 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
         $createdOn = new \DateTime();
 
         $mv = new \Application\Entity\NmtInventoryMv();
-         
+
         $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_OUT);
         $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
         $mv->setDocStatus(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
-        
+
         $mv->setIsPosted(1);
         $mv->setIsDraft(0);
         $mv->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
@@ -176,17 +161,15 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
 
             $stock_gr_entity->setIsReversed(1);
             $stock_gr_entity->setReversalDate($movementDate);
-            //$stock_gr_entity->setReversalReason($r->getReversalReason());
-            //$stock_gr_entity->setLastchangedBy($u);
-            //$stock_gr_entity->setLastchangeOn($createdOn);
+            // $stock_gr_entity->setReversalReason($r->getReversalReason());
+            // $stock_gr_entity->setLastchangedBy($u);
+            // $stock_gr_entity->setLastchangeOn($createdOn);
             $this->contextService->getDoctrineEM()->persist($stock_gr_entity);
 
-            
-            
             // reversal
             /** @var \Application\Entity\NmtInventoryTrx $stock_gr_entity_new ; */
             $stock_gr_entity_new = clone ($stock_gr_entity);
-            
+
             $stock_gr_entity->setDocType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
             $stock_gr_entity_new->setMovement($mv);
             $stock_gr_entity_new->setDocStatus($mv->getDocStatus());
@@ -210,22 +193,20 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
              */
             $fifoLayer = $this->contextService->getDoctrineEM()
                 ->getRepository('Application\Entity\NmtInventoryFifoLayer')
-            ->findOneBy($criteria);
-            
-            if($fifoLayer!==null)
-            {
+                ->findOneBy($criteria);
+
+            if ($fifoLayer !== null) {
                 $fifoLayer->setIsClosed(1);
                 $fifoLayer->setIsReversed(1);
                 $fifoLayer->setReversalDate($movementDate);
-             }
-            
-            
-            /**
-             *
-             * @todo: Reversal FIFO Layer Consumption.
-             * @var \Application\Entity\NmtInventoryFifoLayerConsume $fifoLayer_consum ;
-             */
-         }
+            }
+
+        /**
+         *
+         * @todo: Reversal FIFO Layer Consumption.
+         * @var \Application\Entity\NmtInventoryFifoLayerConsume $fifoLayer_consum ;
+         */
+        }
 
         if ($n > 0) {
             $mv->setMovementDate($movementDate);

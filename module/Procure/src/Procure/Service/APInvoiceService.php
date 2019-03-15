@@ -3,11 +3,11 @@ namespace Procure\Service;
 
 use Application\Entity\FinVendorInvoiceRow;
 use Application\Service\AbstractService;
-use Inventory\Model\GR\AbstractGRStrategy;
-use Inventory\Model\GR\GRStrategyFactory;
 use Procure\Model\Ap\AbstractAPRowPostingStrategy;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
+use Inventory\Model\AbstractTransactionStrategy;
+use Inventory\Model\InventoryTransactionStrategyFactory;
 
 /**
  * AP Invoice Service.
@@ -576,9 +576,9 @@ class APInvoiceService extends AbstractService
             // if have inventory item.
             if (count($inventory_trx_rows) > 0) {
 
-                $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+                $inventoryPostingStrategy = InventoryTransactionStrategyFactory::getMovementStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
 
-                if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+                if (! $inventoryPostingStrategy instanceof AbstractTransactionStrategy) {
                     throw new \Exception("Posting strategy is not identified for this inventory movement type!");
                 }
 
@@ -811,9 +811,9 @@ class APInvoiceService extends AbstractService
             // if have inventory item.
             if (count($inventory_trx_rows) > 0) {
                 
-                $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
+                $inventoryPostingStrategy = InventoryTransactionStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
                 
-                if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+                if (! $inventoryPostingStrategy instanceof AbstractTransactionStrategy) {
                     throw new \Exception("Posting strategy is not identified for this inventory movement type!");
                 }
                 

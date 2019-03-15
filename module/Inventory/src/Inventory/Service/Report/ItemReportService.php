@@ -58,12 +58,7 @@ class WarehouseService extends AbstractService
         $wh_contract_person = $data['whContactPerson'];
         $remarks = $data['remarks'];
 
-        /*
-         * if ($whStatus != 1) {
-         * $whStatus = 0;
-         * }
-         */
-
+     
         if ($whCode === '' or $whCode === null) {
             $errors[] = $this->controllerPlugin->translate('Please give warehouse code');
         }

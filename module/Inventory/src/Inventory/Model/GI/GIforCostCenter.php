@@ -16,7 +16,7 @@ class GIforCostCenter extends \Inventory\Model\AbstractTransactionStrategy
      */
     public function getFlow()
     {
-        return \Application\Model\Constants::WH_TRANSACTION_OUT;
+        return \Inventory\Model\Constants::WH_TRANSACTION_OUT;
         
     }
     

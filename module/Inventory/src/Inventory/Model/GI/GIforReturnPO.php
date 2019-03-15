@@ -1,12 +1,14 @@
 <?php
 namespace Inventory\Model\GI;
 
+use Inventory\Model\AbstractTransactionStrategy;
+
 /**
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GIforReturnPO extends AbstractGIStrategy
+class GIforReturnPO extends AbstractTransactionStrategy
 {
     /**
      * 
@@ -29,6 +31,12 @@ class GIforReturnPO extends AbstractGIStrategy
 
     public function reverse($entity, $u, $reversalDate)
     {}
+    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null)
+    {}
+
+    public function getFlow()
+    {}
+
 
    
 

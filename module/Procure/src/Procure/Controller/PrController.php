@@ -1,8 +1,4 @@
-o<?php
-
-/**
- * Procurment Module
- */
+<?php
 namespace Procure\Controller;
 
 use Symfony\Component\Workflow\Exception\LogicException;

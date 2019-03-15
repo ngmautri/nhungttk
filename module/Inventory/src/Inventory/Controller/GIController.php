@@ -323,6 +323,8 @@ class GIController extends AbstractActionController
             "email" => $this->identity()
         ));
 
+        $isAllowed = true;
+        
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
@@ -350,7 +352,9 @@ class GIController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'nmtPlugin' => $nmtPlugin,
-                    'transactionType' => $transactionType
+                    'transactionType' => $transactionType,
+                    'isAllowed' => $isAllowed,
+                    
                 ));
 
                 $viewModel->setTemplate("inventory/item-transaction/crud");
@@ -387,7 +391,9 @@ class GIController extends AbstractActionController
             'errors' => null,
             'entity' => $entity,
             'nmtPlugin' => $nmtPlugin,
-            'transactionType' => $transactionType
+            'transactionType' => $transactionType,
+            'isAllowed' => $isAllowed,
+            
         ));
 
         $viewModel->setTemplate("inventory/item-transaction/crud");

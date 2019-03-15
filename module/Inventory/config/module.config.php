@@ -49,7 +49,7 @@ return array(
                 'label' => 'Item Transaction',
                 'route' => 'Inventory/default',
                 'controller' => 'item-transaction',
-                'action' => 'index',
+                'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
             array(

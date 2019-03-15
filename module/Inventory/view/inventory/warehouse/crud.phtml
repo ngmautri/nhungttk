@@ -1,6 +1,7 @@
 <?php
 /**
  * @var \Application\Entity\NmtInventoryWarehouse $entity ;
+ * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
  * 
  */
 $form_action = '';
@@ -28,7 +29,14 @@ switch ($action) {
 		<li><a href="#general"><?php echo $form_title;?></a></li>
 					
 		<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
-        <?php endif;?>			
+        <li><a title="<?php echo $this->translate("Change Logs");?>"
+			href="<?php echo $this->baseUrl ?>/inventory/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+				class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+
+        <?php endif;?>
+        
+	
+				
 				</ul>
 
 	<div id="general" style="font-size: 9pt">
@@ -83,7 +91,7 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input
 						<?php if(!$entity== null): echo ($entity->getWhStatus()=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="whStatus" value="1"><?php echo $this->translate("Location required");?> &nbsp;&nbsp;&nbsp;
+						type="checkbox" name="whStatus" value="1"><?php echo $this->translate("Status");?> &nbsp;&nbsp;&nbsp;
 
 									</div>
 			</div>
@@ -105,6 +113,8 @@ if (count($errors) > 0) {
 									class="form-control input-sm">
 									<option value=""><?php echo $this->translate("Select Country");?></option>
    	    							<?php
+   	    							$country_list = $nmtPlugin->countryList();
+   	    							
    	    	 if ($country_list !== null) :
    	    	 foreach ($country_list as $gl) :
 
@@ -134,8 +144,7 @@ if (count($errors) > 0) {
 							
 
 			</div>
-						
-						
+			
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2"><?php echo $this->translate("Contract Person");?>: </label>
 				<div class="col-sm-3">
@@ -144,14 +153,68 @@ if (count($errors) > 0) {
 						value="<?php if (!$entity== null): if($entity->getWhContactPerson()!==null): echo $entity->getWhContactPerson();endif;endif;?>">
 				</div>
 			</div>
-			
-			
-			<div class="form-group margin-bottom">
+						
+						<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2"><?php echo $this->translate("Contract Person Email");?>: </label>
 				<div class="col-sm-3">
 					<input tabindex="1" class="form-control input-sm" type="text"
 						id="whEmail" placeholder="" name="whEmail"
 						value="<?php if (!$entity== null): if($entity->getWhEmail()!==null): echo $entity->getWhEmail();endif;endif;?>">
+				</div>
+			</div>
+						
+			
+			
+			
+				
+			<div class="form-group margin-bottom required">
+
+							<label class="control-label col-sm-2"><?php echo $this->translate("Warehouse Controller");?>:</label>
+							<div class="col-sm-3">
+								<select tabindex="9" name="wh_controller_id" id="wh_controller_id"
+									class="form-control input-sm">
+									<option value=""><?php echo $this->translate("Select User");?></option>
+   	    							<?php
+   	    							
+   	    							$user_list = $nmtPlugin->getUserList();
+   	    							
+   	    							
+   	    	 if ($user_list !== null) :
+   	    	 foreach ($user_list as $gl) :
+
+                    /**@var \Application\Entity\MlaUsers $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getWhController() !== null) :
+                        if ($entity->getWhController()->getId() == $gl->getId()) :
+                        echo '<option selected value="' . $gl->getId() . '">' . $gl->getFirstname() . ' '. $gl->getLastname() . '</option>';
+                            else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getFirstname() . ' '. $gl->getLastname().'</option>';
+                            endif;
+                        else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getFirstname() . ' '. $gl->getLastname(). '</option>';
+                        endif;
+                    else :
+                    echo '<option value="' . $gl->getId() . '">' . $gl->getFirstname() . ' '. $gl->getLastname(). '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+							</div>
+
+							
+
+			</div>
+			
+			<div class="form-group margin-bottom">
+				<label class="control-label col-sm-2"><?php echo $this->translate("Contract Person Email");?>: </label>
+				<div class="col-sm-3">
+					<input tabindex="1" class="form-control input-sm" type="text"
+						id="whContactPerson" placeholder="" name="whContactPerson"
+						value="<?php if (!$entity== null): if($entity->getWhContactPerson()!==null): echo $entity->getWhContactPerson();endif;endif;?>">
 				</div>
 			</div>
 			

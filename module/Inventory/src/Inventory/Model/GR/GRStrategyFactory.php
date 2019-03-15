@@ -3,7 +3,7 @@ namespace Inventory\Model\GR;
 
 
 /**
- *
+ *@deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

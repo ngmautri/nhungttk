@@ -1,12 +1,14 @@
 <?php
 namespace Inventory\Model\GI;
 
+use Inventory\Model\AbstractTransactionStrategy;
+
 /**
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GIforRepair extends AbstractGIStrategy
+class GIforRepair extends AbstractTransactionStrategy
 {
     
     public function getTransactionIdentifer()
@@ -30,6 +32,12 @@ class GIforRepair extends AbstractGIStrategy
 
     public function getTransactionIdentifer()
     {}
+    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null)
+    {}
+
+    public function getFlow()
+    {}
+
 
 
 

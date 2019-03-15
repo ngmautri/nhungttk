@@ -1,12 +1,14 @@
 <?php
 namespace Inventory\Model\GI;
 
+use Inventory\Model\AbstractTransactionStrategy;
+
 /**
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class GIforRepair extends AbstractGIStrategy
+class GIforRepair extends AbstractTransactionStrategy
 {
     
     /**
@@ -16,7 +18,7 @@ class GIforRepair extends AbstractGIStrategy
      */
     public function getFlow()
     {
-        return \Application\Model\Constants::WH_TRANSACTION_OUT;
+        return \Inventory\Model\Constants::WH_TRANSACTION_OUT;        
         
     }
     
@@ -45,6 +47,9 @@ class GIforRepair extends AbstractGIStrategy
 
     public function reverse($entity, $u, $reversalDate)
     {}
+    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null)
+    {}
+
 
 
 

@@ -55,11 +55,7 @@ class WarehouseController extends AbstractActionController
             $entity = new NmtInventoryWarehouse();
             $entity->setCompany($u->getCompany());
 
-            try {
-                $errors = $this->warehouseService->validateWareHouse($entity, $data);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
+            $errors = $this->warehouseService->saveEntity($entity, $data, $u);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
@@ -68,43 +64,14 @@ class WarehouseController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'country_list' => $country_list
+                    'country_list' => $country_list,
+                    'nmtPlugin' => $nmtPlugin
                 ));
 
                 $viewModel->setTemplate("inventory/warehouse/crud");
                 return $viewModel;
             }
             ;
-
-            // No ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                'email' => $this->identity()
-            ));
-
-            try {
-                $this->warehouseService->saveWarehouse($entity, $u, TRUE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            // second check.
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'country_list' => $country_list
-                ));
-
-                $viewModel->setTemplate("inventory/warehouse/crud");
-                return $viewModel;
-            }
 
             $redirectUrl = "/inventory/warehouse/list";
             $m = sprintf("[OK] Warehouse: %s created!", $entity->getId());
@@ -119,7 +86,7 @@ class WarehouseController extends AbstractActionController
         $redirectUrl = Null;
 
         if ($request->getHeader('Referer') == null) {
-            // return $this->redirect()->toRoute('access_denied');
+            return $this->redirect()->toRoute('access_denied');
         } else {
             $redirectUrl = $this->getRequest()
                 ->getHeader('Referer')
@@ -136,7 +103,8 @@ class WarehouseController extends AbstractActionController
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'country_list' => $country_list
+            'country_list' => $country_list,
+            'nmtPlugin' => $nmtPlugin
         ));
 
         $viewModel->setTemplate("inventory/warehouse/crud");
@@ -149,6 +117,8 @@ class WarehouseController extends AbstractActionController
      */
     public function editAction()
     {
+        $request = $this->getRequest();
+        
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
@@ -156,10 +126,8 @@ class WarehouseController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $country_list = $nmtPlugin->countryList();
 
-        $request = $this->getRequest();
-
+     
         // Is Posing
         // =============================
 
@@ -181,7 +149,7 @@ class WarehouseController extends AbstractActionController
 
             if ($entity == null) {
 
-                $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
+                $errors[] = 'Entity not found';
                 $this->flashMessenger()->addMessage('Something wrong!');
 
                 $viewModel = new ViewModel(array(
@@ -189,35 +157,15 @@ class WarehouseController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'country_list' => $country_list,
-                    'n' => $nTry
+                    'n' => $nTry,
+                    'nmtPlugin' => $nmtPlugin
                 ));
 
                 $viewModel->setTemplate("inventory/warehouse/crud");
                 return $viewModel;
             }
 
-            // entity found
-
-            $oldEntity = clone ($entity);
-
-            try {
-                $errors = $this->warehouseService->validateWareHouse($entity, $data);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            /**
-             *
-             * @todo: problem when both attribut is 0
-             */
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-
-            if (count($changeArray) == 0) {
-                $nTry ++;
-                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-            }
-
+            $errors = $this->warehouseService->saveEntity($entity, $data,$u);
             if ($nTry >= 3) {
                 $errors[] = sprintf('Do you really want to edit "Warehouse. %s"?', $entity->getId());
             }
@@ -235,7 +183,7 @@ class WarehouseController extends AbstractActionController
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'country_list' => $country_list,
+                    'nmtPlugin' => $nmtPlugin,
                     'n' => $nTry
                 ));
 
@@ -243,62 +191,7 @@ class WarehouseController extends AbstractActionController
                 return $viewModel;
             }
 
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                'email' => $this->identity()
-            ));
-            $changeOn = new \DateTime();
-
-            try {
-                $this->warehouseService->saveWarehouse($entity, $u, FALSE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            if (count($errors) > 0) {
-
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'country_list' => $country_list,
-                    'n' => $nTry
-                ));
-
-                $viewModel->setTemplate("inventory/warehouse/crud");
-                return $viewModel;
-            }
-
-            $m = sprintf('[OK] Warehouse #%s updated. Change No.=%s.', $entity->getId(), count($changeArray));
-
-            // Trigger Change Log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
-                'priority' => 7,
-                'message' => $m,
-                'objectId' => $entity->getId(),
-                'objectToken' => $entity->getToken(),
-                'changeArray' => $changeArray,
-                'changeBy' => $u,
-                'changeOn' => $changeOn,
-                'revisionNumber' => $entity->getRevisionNo(),
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-
-            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $changeOn,
-                'entity_id' => $entity->getId(),
-                'entity_class' => get_class($entity),
-                'entity_token' => null
-            ));
+            $m = sprintf('[OK] Warehouse #%s updated');
 
             $this->flashMessenger()->addMessage($m);
 
@@ -332,48 +225,47 @@ class WarehouseController extends AbstractActionController
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'country_list' => $country_list,
-            'n' => 0
+             'n' => 0,
+            'nmtPlugin' => $nmtPlugin
         ));
 
         $viewModel->setTemplate("inventory/warehouse/crud");
         return $viewModel;
     }
-    
+
     /**
      *
      * @return \Zend\View\Model\ViewModel
      */
     public function setDefaultAction()
     {
-          
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        
+
         $id = (int) $this->params()->fromQuery('entity_id');
         $criteria = array(
             'id' => $id
         );
-        
+
         /** @var \Application\Entity\NmtInventoryWarehouse $entity ; */
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy($criteria);
         if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $this->warehouseService->setDefaultWarehouse($entity, $u);
-        
+
         $redirectUrl = "/inventory/warehouse/list";
         $m = sprintf("[OK] Warehouse: %s is set as default!", $entity->getId());
         $this->flashMessenger()->addMessage($m);
-        
+
         return $this->redirect()->toUrl($redirectUrl);
-        
     }
 
     /**

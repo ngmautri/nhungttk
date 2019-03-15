@@ -20,6 +20,23 @@ class NmtPlugin extends AbstractPlugin
     protected $dbConfig;
 
     protected $stmpOutlook;
+    
+    /**
+     * Return User List
+     *
+     * @return array
+     */
+    public function getUserList()
+    {
+        $criteria = array(
+            'block' => 0
+        );
+        
+        $sort_criteria = array();
+        
+        $list = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findBy($criteria, $sort_criteria);
+        return $list;
+    }
 
     /**
      * to check, if user1 is parent of user2
@@ -38,6 +55,12 @@ class NmtPlugin extends AbstractPlugin
             return $result;
         }
 
+        if( $user1 === $user2){
+            $result['result'] = 1;
+            $result['message'] = 'Owner operation';
+            return $result;
+        }
+        
         /**@var \Application\Repository\MlaUsersRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\MlaUsers');
         $isAdmin = $res->isAdministrator($user1);
@@ -73,7 +96,8 @@ class NmtPlugin extends AbstractPlugin
             $result['message'] = ' User not found';
             return $result;
         }
-
+        
+     
         $path_array = explode("/", $role2->getRole()->getPath());
         $role_level = array();
         $test = '';

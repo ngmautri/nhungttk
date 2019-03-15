@@ -22,7 +22,7 @@ class InventoryTransactionService extends AbstractService
      *
      * @return array
      */
-    public function validateHeader(\Application\Entity\NmtInventoryMv $entity, $data, $isNew = TRUE, $isPosting = false)
+    public function validateHeader(\Application\Entity\NmtInventoryMv $entity, $data, $u, $isNew = TRUE, $isPosting = false)
     {
         $errors = array();
 
@@ -115,7 +115,22 @@ class InventoryTransactionService extends AbstractService
         }
 
         if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
-            $entity->setWarehouse($warehouse);
+            // check authority
+
+            if ($warehouse->getWhController() !== null) {
+                $checkALC = $this->controllerPlugin->isParent($u, $warehouse->getWhController());
+
+                if (isset($checkALC['result']) and isset($checkALC['message'])) {
+                    if ($checkALC['result'] == 0) {
+                        $errors[] = $this->controllerPlugin->translate("No authority to perform this operation on this Warehouse: " . $warehouse->getWhName());
+                    }else{
+                        $entity->setWarehouse($warehouse);                        
+                    }
+                } else {
+                    $errors[] = $this->controllerPlugin->translate("ACL checking failed");
+                }
+            }
+
         } else {
             $errors[] = $this->controllerPlugin->translate('Warehouse is not selected');
         }
@@ -166,8 +181,14 @@ class InventoryTransactionService extends AbstractService
         }
 
         // ====== VALIDATED 1====== //
+        
+        
+        if ($isNew == FALSE){
+            $oldEntity = clone ($entity);
+        }
+        
 
-        $ck = $this->validateHeader($entity, $data, $isNew);
+        $ck = $this->validateHeader($entity, $data, $u, $isNew);
 
         if (count($ck) > 0) {
             return $ck;
@@ -177,6 +198,8 @@ class InventoryTransactionService extends AbstractService
         Try {
 
             $changeOn = new \DateTime();
+            $changeArray = array();
+            
 
             if ($isNew == TRUE) {
 
@@ -187,6 +210,12 @@ class InventoryTransactionService extends AbstractService
                 $entity->setCreatedOn($changeOn);
                 $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             } else {
+                
+                $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+                if (count($changeArray) == 0) {
+                    $errors[] = sprintf('Nothing changed.');
+                    return $errors;
+                }
 
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
                 // $entity->setLastchangeBy($u);
@@ -194,6 +223,36 @@ class InventoryTransactionService extends AbstractService
             }
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
+            
+            // LOGGING
+            if ($isNew == TRUE) {
+                $m = sprintf('[OK] WH Transaction #%s created.', $entity->getId());
+            } else {
+                
+                $m = sprintf('[OK] WH Transaction #%s updated.', $entity->getId());
+                
+                $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => $entity->getRevisionNo(),
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+            }
+            
+            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));            
+            
+            
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }

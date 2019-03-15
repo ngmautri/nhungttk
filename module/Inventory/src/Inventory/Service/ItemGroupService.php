@@ -37,7 +37,7 @@ class ItemGroupService extends AbstractService
             return $errors;
         }
 
-        // ====== OK ====== //
+        //====== VALIDATED 1 ====== //
 
         if (isset($data['groupName'])) {
             $groupName = $data['groupName'];

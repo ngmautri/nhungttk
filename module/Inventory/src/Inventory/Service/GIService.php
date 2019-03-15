@@ -3,8 +3,8 @@ namespace Inventory\Service;
 
 use Application\Service\AbstractService;
 use Inventory\Model\GI\GIStrategyFactory;
-use Inventory\Model\GI\AbstractGIStrategy;
 use Zend\Math\Rand;
+use Inventory\Model\AbstractTransactionStrategy;
 
 /**
  *
@@ -342,7 +342,7 @@ class GIService extends AbstractService
 
         $postingStrategy = GIStrategyFactory::getGIStrategy($entity->getMovementType());
 
-        if (! $postingStrategy instanceof AbstractGIStrategy) {
+        if (! $postingStrategy instanceof AbstractTransactionStrategy) {
             throw new \Exception("Posting Strategy can't not be identified for this inventory movement type!");
         }
 

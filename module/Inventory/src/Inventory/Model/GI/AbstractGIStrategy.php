@@ -2,7 +2,7 @@
 namespace Inventory\Model\GI;
 
 /**
- *
+ * @deprecated
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

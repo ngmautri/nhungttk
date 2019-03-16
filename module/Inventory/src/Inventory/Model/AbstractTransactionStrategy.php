@@ -11,13 +11,18 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
 
     protected $contextService;
 
+    abstract public function check($trx, $item, $u);
+    
+    
     /**
      *
-     * @param \Application\Entity\NmtInventoryTrx $trx
-     * @param \Application\Entity\NmtInventoryItem $item
+     * @param \Application\Entity\NmtInventoryTrx $entity
+     * @param array $data
      * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isNew
+     * @param boolean $isPosting
      */
-    abstract public function check($trx, $item, $u);
+    abstract public function validateRow($entity,$data,$u,$isNew, $isPosting);
 
     /**
      *

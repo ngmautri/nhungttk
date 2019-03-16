@@ -143,14 +143,14 @@ class GIController extends AbstractActionController
         $nmtPlugin = $this->Nmtplugin();
 
         $transactionType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
-        
+
         $isAllowed = true;
-        
+
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
         }
-      
+
         // Is Posing
         // =============================
         if ($request->isPost()) {
@@ -184,14 +184,13 @@ class GIController extends AbstractActionController
                     'n' => $nTry,
                     'nmtPlugin' => $nmtPlugin,
                     'transactionType' => $transactionType,
-                    'isAllowed' => $isAllowed,
-                    
+                    'isAllowed' => $isAllowed
                 ));
 
                 $viewModel->setTemplate("inventory/item-transaction/crud");
                 return $viewModel;
             }
-            
+
             $checkALC = $nmtPlugin->isParent($u, $entity->getCreatedBy());
             if (isset($checkALC['result']) and isset($checkALC['message'])) {
                 if ($checkALC['result'] == 0) {
@@ -201,7 +200,7 @@ class GIController extends AbstractActionController
             } else {
                 $errors[] = $nmtPlugin->translate("ACL checking failed");
             }
-            
+
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
@@ -213,13 +212,13 @@ class GIController extends AbstractActionController
                     'n' => $nTry,
                     'nmtPlugin' => $nmtPlugin,
                     'transactionType' => $transactionType,
-                    'isAllowed' => $isAllowed,
+                    'isAllowed' => $isAllowed
                 ));
-                
+
                 $viewModel->setTemplate("inventory/item-transaction/crud");
                 return $viewModel;
             }
-            
+
             $nTry ++;
 
             if ($nTry >= 3) {
@@ -231,11 +230,11 @@ class GIController extends AbstractActionController
                 $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
-           
+
             if ($entity->getLocalCurrency() == null) {
                 $entity->setLocalCurrency($default_cur);
             }
-            
+
             $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, FALSE);
 
             if (count($errors) > 0) {
@@ -249,7 +248,7 @@ class GIController extends AbstractActionController
                     'n' => $nTry,
                     'nmtPlugin' => $nmtPlugin,
                     'transactionType' => $transactionType,
-                    'isAllowed' => $isAllowed,                    
+                    'isAllowed' => $isAllowed
                 ));
 
                 $viewModel->setTemplate("inventory/item-transaction/crud");
@@ -294,12 +293,12 @@ class GIController extends AbstractActionController
         } else {
             $errors[] = $nmtPlugin->translate("ACL checking failed");
         }
-        
+
         // only update remark posible, when posted.
-        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED OR $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED or $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
             $errors[] = $nmtPlugin->translate(" can not change.");
-            
-            //$isAllowed = false;
+
+            // $isAllowed = false;
         }
 
         $viewModel = new ViewModel(array(
@@ -313,7 +312,7 @@ class GIController extends AbstractActionController
             'n' => 0,
             'nmtPlugin' => $nmtPlugin,
             'transactionType' => $transactionType,
-            'isAllowed' => $isAllowed,
+            'isAllowed' => $isAllowed
         ));
 
         $viewModel->setTemplate("inventory/item-transaction/crud");
@@ -340,7 +339,7 @@ class GIController extends AbstractActionController
         ));
 
         $isAllowed = true;
-        
+
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
@@ -369,8 +368,7 @@ class GIController extends AbstractActionController
                     'entity' => $entity,
                     'nmtPlugin' => $nmtPlugin,
                     'transactionType' => $transactionType,
-                    'isAllowed' => $isAllowed,
-                    
+                    'isAllowed' => $isAllowed
                 ));
 
                 $viewModel->setTemplate("inventory/item-transaction/crud");
@@ -408,8 +406,7 @@ class GIController extends AbstractActionController
             'entity' => $entity,
             'nmtPlugin' => $nmtPlugin,
             'transactionType' => $transactionType,
-            'isAllowed' => $isAllowed,
-            
+            'isAllowed' => $isAllowed
         ));
 
         $viewModel->setTemplate("inventory/item-transaction/crud");
@@ -429,7 +426,6 @@ class GIController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
         $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
 
         /**@var \Application\Entity\MlaUsers $u ;*/
@@ -442,118 +438,62 @@ class GIController extends AbstractActionController
         if ($request->isPost()) {
 
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
+            $data = $this->params()->fromPost();
 
-            $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-            $id = (int) $request->getPost('entity_id');
-            $token = $request->getPost('token');
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = (int) $data['entity_id'];
+            $entity_token = $data['entity_token'];
 
             /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
-            $mv = $res->getMovement($id, $token);
+            $entity_array = $res->getMovement($entity_id, $entity_token);
 
-            if ($mv == null) {
-                return $this->redirect()->toRoute('access_denied');
+            if ($entity_array == null) {
+                $errors[] = "Entity not found!";
+                return new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => null,
+                    'issueType' => $issueType,
+                    'movementTypeInfo' => null,
+                    'nmtPlugin' => $nmtPlugin
+                ));
             }
 
             /**@var \Application\Entity\NmtInventoryMv $entity ;*/
 
             $entity = null;
-            if ($mv[0] instanceof NmtInventoryMv) {
-                $entity = $mv[0];
+            if ($entity_array[0] instanceof NmtInventoryMv) {
+                $entity = $entity_array[0];
             }
 
             if ($entity == null) {
-                return $this->redirect()->toRoute('access_denied');
-            }
-
-            // ========================
-
-            $movementDate = $request->getPost('movementDate');
-
-            $warehouse_id = (int) $request->getPost('target_wh_id');
-            $isActive = (int) $request->getPost('isActive');
-            $remarks = $request->getPost('remarks');
-
-            if ($isActive != 1) {
-                $isActive = 0;
-            }
-
-            $entity->setIsActive($isActive);
-
-            $movementType = $entity->getMovementType();
-
-            if ($movementType == null) {
-                $errors[] = 'Goods Issue Type is not valid!';
-            }
-
-            // check if posting period is close
-            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
-            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
-
-            $validator = new Date();
-
-            if (! $validator->isValid($movementDate)) {
-                $errors[] = $nmtPlugin->translate('Transaction Date is not correct or empty!');
-            } else {
-
-                /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
-                $postingPeriod = $p->getPostingPeriod(new \DateTime($movementDate));
-
-                if (! $postingPeriod instanceof \Application\Entity\NmtFinPostingPeriod) {
-                    $errors[] = sprintf('Posting period for [%s] not created!', $movementDate);
-                } else {
-                    if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
-                        $errors[] = sprintf('Posting period [%s] is closed!', $postingPeriod->getPeriodName());
-                    } else {
-                        $entity->setPostingDate(new \DateTime($movementDate));
-                        $entity->setMovementDate(new \DateTime($movementDate));
-                        $entity->setPostingPeriod($postingPeriod);
-                    }
-                }
-            }
-
-            $warehouse = null;
-            if ($warehouse_id > 0) {
-                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($warehouse_id);
-            }
-
-            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
-                $entity->setWarehouse($warehouse);
-            } else {
-                $errors[] = 'Warehouse can\'t be empty. Please select a Wahrhouse!';
-            }
-
-            $entity->setRemarks($remarks);
-
-            if (count($errors) > 0) {
+                $errors[] = "Entity not found!";
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'issueType' => $issueType
+                    'issueType' => $issueType,
+                    'movementTypeInfo' => null,
+                    'nmtPlugin' => $nmtPlugin
                 ));
             }
 
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            try {
-                $this->giService->post($entity, $u);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
+            $movementTypeInfo = '';
+            $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
+            if ($giType !== null) {
+                $movementTypeInfo = $giType['type_description'];
             }
 
+            $errors = $this->inventoryTransactionService->post($entity, $data, $u, true, true, __METHOD__);
             if (count($errors) > 0) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'currency_list' => $currency_list,
-                    'issueType' => $issueType
+                    'issueType' => $issueType,
+                    'movementTypeInfo' => $movementTypeInfo,
+                    'nmtPlugin' => $nmtPlugin
                 ));
             }
 
@@ -597,12 +537,19 @@ class GIController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
 
+        $movementTypeInfo = '';
+        $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
+        if ($giType !== null) {
+            $movementTypeInfo = $giType['type_description'];
+        }
+
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'currency_list' => $currency_list,
-            'issueType' => $issueType
+            'issueType' => $issueType,
+            'movementTypeInfo' => $movementTypeInfo,
+            'nmtPlugin' => $nmtPlugin
         ));
     }
 

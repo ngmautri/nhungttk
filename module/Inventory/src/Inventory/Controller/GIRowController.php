@@ -10,6 +10,7 @@ use Zend\Escaper\Escaper;
 use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Entity\NmtInventoryTransfer;
 
 /**
  * Good Receipt PO or PR or AP
@@ -55,11 +56,8 @@ class GIRowController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
         $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
-        $gl_list = $nmtPlugin->glAccountList();
-        $cost_center_list = $nmtPlugin->costCenterList();
-
+     
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
@@ -95,85 +93,38 @@ class GIRowController extends AbstractActionController
                 $errors[] = 'Inventory Movement object can\'t be empty. Or token key is not valid!';
 
                 $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'target' => null,
                     'entity' => null,
-                    'currency_list' => $currency_list,
-                    'cost_center_list' => $cost_center_list,
-
-                    'gl_list' => $gl_list,
-                    'issueType' => $issueType,
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD
+                    'issueType' => $issueType,                    
+                    'nmtPlugin' => $nmtPlugin,
                 ));
 
                 $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
                 return $viewModel;
             }
-            // Inventory Transaction:
+
             $entity = new NmtInventoryTrx();
-            $entity->setMovement($target);
-            $entity->setFlow($target->getMovementFlow());
-            $entity->setWh($target->getWarehouse());
-
-            try {
-                $errors = $this->giService->validateRow($target, $entity, $data);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
+            $errors = $this->inventoryTransactionService->saveRow($target, $entity, $data, $u, true, False, __METHOD__);
 
             if (count($errors) > 0) {
 
                 $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
-                    'currency_list' => $currency_list,
-                    'cost_center_list' => $cost_center_list,
-
-                    'gl_list' => $gl_list,
-                    'issueType' => $issueType,
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD
+                                        'issueType' => $issueType,
+                    
+                    'nmtPlugin' => $nmtPlugin,
                 ));
 
                 $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
                 return $viewModel;
             }
-
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $entity->setDocStatus($target->getDocStatus());
-            try {
-                $this->giService->saveRow($target, $entity, $u, TRUE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            // second check
-            if (count($errors) > 0) {
-
-                $viewModel = new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'target' => $target,
-                    'currency_list' => $currency_list,
-                    'cost_center_list' => $cost_center_list,
-
-                    'gl_list' => $gl_list,
-                    'issueType' => $issueType,
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD
-                ));
-
-                $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
-                return $viewModel;
-            }
-
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
 
             $redirectUrl = "/inventory/gi-row/add?token=" . $target->getToken() . "&target_id=" . $target->getId();
             $m = sprintf("[OK] GR Line: %s created!", $entity->getId());
@@ -225,19 +176,16 @@ class GIRowController extends AbstractActionController
         // set null
         $entity->setIsActive(1);
         $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'target' => $target,
-            'currency_list' => $currency_list,
-            'cost_center_list' => $cost_center_list,
-
-            'gl_list' => $gl_list,
             'issueType' => $issueType,
-            'action' => \Application\Model\Constants::FORM_ACTION_ADD
+            'nmtPlugin' => $nmtPlugin,
         ));
 
-        $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
+        $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType()); // important
         return $viewModel;
     }
 
@@ -286,11 +234,8 @@ class GIRowController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $currency_list = $nmtPlugin->currencyList();
         $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
-        $gl_list = $nmtPlugin->glAccountList();
-        $cost_center_list = $nmtPlugin->costCenterList();
-
+     
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
@@ -326,31 +271,13 @@ class GIRowController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => null,
                     'target' => null,
-                    'currency_list' => $currency_list,
-                    'cost_center_list' => $cost_center_list,
+                    'nmtPlugin' => $nmtPlugin,
                     'n' => 0
                 ));
             }
-
             $target = $entity->getMovement();
-            $oldEntity = clone ($entity);
 
-            try {
-                $errors = $this->giService->validateRow($target, $entity, $data);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            /**
-             *
-             * @todo: problem when both attribut is 0
-             */
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-
-            if (count($changeArray) == 0) {
-                $nTry ++;
-                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-            }
+            $errors = $this->inventoryTransactionService->saveRow($entity->getMovement(), $entity, $data, $u, false, False, __METHOD__);
 
             if ($nTry >= 3) {
                 $errors[] = sprintf('Do you really want to edit "Row. %s"?', $entity->getId());
@@ -365,80 +292,22 @@ class GIRowController extends AbstractActionController
             if (count($errors) > 0) {
 
                 $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
-                    'currency_list' => $currency_list,
-                    'gl_list' => $gl_list,
                     'issueType' => $issueType,
-                    'cost_center_list' => $cost_center_list,
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'n' => 0
+                    'n' => 0,
+                    'nmtPlugin' => $nmtPlugin,
                 ));
 
                 $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
                 return $viewModel;
             }
 
-            // NO ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $entity->setDocStatus($target->getDocStatus());
-            try {
-                $this->giService->saveRow($target, $entity, $u, FALSE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            // second check
-            if (count($errors) > 0) {
-
-                $viewModel = new ViewModel(array(
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'target' => $target,
-                    'currency_list' => $currency_list,
-                    'gl_list' => $gl_list,
-                    'issueType' => $issueType,
-                    'cost_center_list' => $cost_center_list,
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'n' => 0
-                ));
-
-                $viewModel->setTemplate("inventory/gi-row/add" . $target->getMovementType());
-                return $viewModel;
-            }
-
-            $changeOn = new \DateTime();
-            $m = sprintf('[OK] GI Row #%s - %s  updated. Change No.=%s.', $entity->getId(), $entity->getId(), count($changeArray));
-
-            // Trigger Change Log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
-                'priority' => 7,
-                'message' => $m,
-                'objectId' => $entity->getId(),
-                'objectToken' => $entity->getToken(),
-                'changeArray' => $changeArray,
-                'changeBy' => $u,
-                'changeOn' => $changeOn,
-                'revisionNumber' => $entity->getRevisionNumber(),
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-
-            // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $changeOn,
-                'entity_id' => $entity->getId(),
-                'entity_class' => get_class($entity),
-                'entity_token' => $entity->getToken()
-            ));
+            $m = sprintf('[OK] WH transaction GI line #%s - %s  updated.', $entity->getId(), $entity->getId());
 
             $this->flashMessenger()->addMessage($m);
             $redirectUrl = "/inventory/gi/review?token=" . $target->getToken() . "&entity_id=" . $target->getId();
@@ -477,15 +346,14 @@ class GIRowController extends AbstractActionController
         }
 
         $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+            
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'target' => $entity->getMovement(),
-            'currency_list' => $currency_list,
-            'cost_center_list' => $cost_center_list,
-            'gl_list' => $gl_list,
             'issueType' => $issueType,
-            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+            'nmtPlugin' => $nmtPlugin,
             'n' => 0
         ));
 

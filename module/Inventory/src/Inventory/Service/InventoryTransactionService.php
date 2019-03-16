@@ -4,6 +4,8 @@ namespace Inventory\Service;
 use Application\Service\AbstractService;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
+use Inventory\Model\InventoryTransactionStrategyFactory;
+use Inventory\Model\AbstractTransactionStrategy;
 
 /**
  *
@@ -18,7 +20,7 @@ class InventoryTransactionService extends AbstractService
      * @param \Application\Entity\NmtInventoryMv $entity
      * @param array $data
      * @param boolean $isNew
-     * @param $isPosting $isNew
+     * @param boolean $isPosting
      *
      * @return array
      */
@@ -40,10 +42,13 @@ class InventoryTransactionService extends AbstractService
 
         // ====== Validated 1 ====== //
 
-        if (isset($data['movementType'])) {
-            $movementType = $data['movementType'];
-        } else {
-            $errors[] = $this->controllerPlugin->translate('No input given movementType');
+        if ($isPosting == false) {
+
+            if (isset($data['movementType'])) {
+                $movementType = $data['movementType'];
+            } else {
+                $errors[] = $this->controllerPlugin->translate('No input given movementType');
+            }
         }
 
         if (isset($data['movementDate'])) {
@@ -52,10 +57,13 @@ class InventoryTransactionService extends AbstractService
             $errors[] = $this->controllerPlugin->translate('No input given movementDate');
         }
 
-        if (isset($data['source_wh_id'])) {
-            $source_wh_id = $data['source_wh_id'];
-        } else {
-            $errors[] = $this->controllerPlugin->translate('No input given source_wh_id');
+        if ($isPosting == false) {
+
+            if (isset($data['source_wh_id'])) {
+                $source_wh_id = $data['source_wh_id'];
+            } else {
+                $errors[] = $this->controllerPlugin->translate('No input given source_wh_id');
+            }
         }
 
         if (isset($data['isActive'])) {
@@ -75,12 +83,11 @@ class InventoryTransactionService extends AbstractService
         }
 
         // ====== Validated 2 ====== //
-        
-        
+
         $entity->setRemarks($remarks);
-        
+
         // only update remark posible, when posted.
-        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED OR $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED or $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
             return null;
         }
 
@@ -90,59 +97,62 @@ class InventoryTransactionService extends AbstractService
 
         $entity->setIsActive($isActive);
 
-        if ($movementType == null) {
-            $errors[] = $this->controllerPlugin->translate('Inventory movement type is not selected!');
-        } else {
+        if ($isPosting == false) {
 
-            // validate movement Type.
-            $movementStrategy = \Inventory\Model\InventoryTransactionStrategyFactory::getMovementStrategy($movementType);
-
-            if (! $movementStrategy instanceof \Inventory\Model\AbstractTransactionStrategy) {
-                $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented yet!');
+            if ($movementType == null) {
+                $errors[] = $this->controllerPlugin->translate('Inventory movement type is not selected!');
             } else {
 
-                if ($movementStrategy->getFlow() == null) {
-                    $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented correctly!');
+                // validate movement Type.
+                $movementStrategy = \Inventory\Model\InventoryTransactionStrategyFactory::getMovementStrategy($movementType);
+
+                if (! $movementStrategy instanceof \Inventory\Model\AbstractTransactionStrategy) {
+                    $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented yet!');
                 } else {
-                    $entity->setMovementType($movementType);
-                    $entity->setMovementFlow($movementStrategy->getFlow());
-                }
-            }
-        }
 
-        $validator = new Date();
-        if (! $validator->isValid($movementDate)) {
-            $errors[] = $this->controllerPlugin->translate('Goods Issue Date is not correct or empty!');
-        } else {
-            $entity->setMovementDate(new \DateTime($movementDate));
-        }
-
-        $warehouse = null;
-        if ($source_wh_id > 0) {
-            $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($source_wh_id);
-        }
-
-        if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
-            // check authority
-
-            if ($warehouse->getWhController() !== null) {
-                $checkALC = $this->controllerPlugin->isParent($u, $warehouse->getWhController());
-
-                if (isset($checkALC['result']) and isset($checkALC['message'])) {
-                    if ($checkALC['result'] == 0) {
-                        $errors[] = $this->controllerPlugin->translate("No authority to perform this operation on this Warehouse: " . $warehouse->getWhName());
-                    }else{
-                        $entity->setWarehouse($warehouse);                        
+                    if ($movementStrategy->getFlow() == null) {
+                        $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented correctly!');
+                    } else {
+                        $entity->setMovementType($movementType);
+                        $entity->setMovementFlow($movementStrategy->getFlow());
                     }
-                } else {
-                    $errors[] = $this->controllerPlugin->translate("ACL checking failed");
                 }
             }
-
-        } else {
-            $errors[] = $this->controllerPlugin->translate('Warehouse is not selected');
         }
 
+        // check invoice date
+        $ck = $this->checkMovementDate($entity, $movementDate, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        if ($isPosting == false) {
+
+            $warehouse = null;
+            if ($source_wh_id > 0) {
+                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($source_wh_id);
+            }
+
+            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+                // check authority
+
+                if ($warehouse->getWhController() !== null) {
+                    $checkALC = $this->controllerPlugin->isParent($u, $warehouse->getWhController());
+
+                    if (isset($checkALC['result']) and isset($checkALC['message'])) {
+                        if ($checkALC['result'] == 0) {
+                            $errors[] = $this->controllerPlugin->translate("No authority to perform this operation on this Warehouse: " . $warehouse->getWhName());
+                        } else {
+                            $entity->setWarehouse($warehouse);
+                        }
+                    } else {
+                        $errors[] = $this->controllerPlugin->translate("ACL checking failed");
+                    }
+                }
+            } else {
+                $errors[] = $this->controllerPlugin->translate('Warehouse is not selected');
+            }
+        }
         $entity->setRemarks($remarks);
 
         return $errors;
@@ -190,14 +200,12 @@ class InventoryTransactionService extends AbstractService
         }
 
         // ====== VALIDATED 1====== //
-        
-        
-        if ($isNew == FALSE){
+
+        if ($isNew == FALSE) {
             $oldEntity = clone ($entity);
         }
-        
 
-        $ck = $this->validateHeader($entity, $data, $u, $isNew);
+        $ck = $this->validateHeader($entity, $data, $u, $isNew, FALSE);
 
         if (count($ck) > 0) {
             return $ck;
@@ -208,7 +216,6 @@ class InventoryTransactionService extends AbstractService
 
             $changeOn = new \DateTime();
             $changeArray = array();
-            
 
             if ($isNew == TRUE) {
 
@@ -219,7 +226,7 @@ class InventoryTransactionService extends AbstractService
                 $entity->setCreatedOn($changeOn);
                 $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             } else {
-                
+
                 $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
                 if (count($changeArray) == 0) {
                     $errors[] = sprintf('Nothing changed.');
@@ -232,14 +239,14 @@ class InventoryTransactionService extends AbstractService
             }
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-            
+
             // LOGGING
             if ($isNew == TRUE) {
                 $m = sprintf('[OK] WH Transaction #%s created.', $entity->getId());
             } else {
-                
+
                 $m = sprintf('[OK] WH Transaction #%s updated.', $entity->getId());
-                
+
                 $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
                     'priority' => 7,
                     'message' => $m,
@@ -253,18 +260,474 @@ class InventoryTransactionService extends AbstractService
                     'changeValidFrom' => $changeOn
                 ));
             }
-            
+
             $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'createdBy' => $u,
                 'createdOn' => $changeOn
-            ));            
-            
-            
+            ));
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $target
+     * @param \Application\Entity\NmtInventoryTrx $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param array $data
+     * @param boolean $isNew
+     * @param $isPosting $isNew
+     *
+     */
+    protected function validateRow($target, $entity, $u, $data, $isNew = false, $isPosting = false)
+    {
+        // do validating
+        $errors = array();
+
+        if (! $target instanceof \Application\Entity\NmtInventoryMv) {
+            $errors[] = $this->controllerPlugin->translate('WH movement is not found!');
+        } else {
+            if ($target->getLocalCurrency() == null) {
+                $errors[] = $this->controllerPlugin->translate('Local currency is not found!');
+            }
+        }
+
+        if (! $entity instanceof \Application\Entity\NmtInventoryTrx) {
+            $errors[] = $this->controllerPlugin->translate('WH movement is not found!');
+        }
+
+        if ($data == null) {
+            $errors[] = $this->controllerPlugin->translate('No input given');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 1 ====== //
+
+        // basic information.
+        if (isset($data['item_id'])) {
+            $item_id = $data['item_id'];
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given "item_id"');
+        }
+
+        if (isset($data['quantity'])) {
+            $quantity = $data['quantity'];
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given "quantity"');
+        }
+
+        /*
+         * $convert_factor = 1;
+         * if (isset($data['convert_factor'])) {
+         * $convert_factor = $data['convert_factor'];
+         * }else {
+         * $errors[] = $this->controllerPlugin->translate('No input given "convert_factor"');
+         * }
+         */
+
+        $isActive = 0;
+        if (isset($data['isActive'])) {
+            $isActive = (int) $data['isActive'];
+            if ($isActive != 1) {
+                $isActive = 0;
+            }
+            $entity->setIsActive($isActive);
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given "convert_factor"');
+        }
+
+        if (isset($data['remarks'])) {
+            $remarks = $data['remarks'];
+            $entity->setRemarks($remarks);
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 2 ====== //
+
+        /**@var \Application\Entity\NmtInventoryItem $item ;*/
+        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+
+        if ($item == null) {
+            $errors[] = $this->controllerPlugin->translate('No Item is selected');
+        } else {
+            if ($item->getIsStocked() != 1) {
+                $errors[] = $this->controllerPlugin->translate('Item is not kept in stock');
+            } else {
+                $entity->setItem($item);
+            }
+        }
+
+        if ($quantity == null) {
+            $errors[] = $this->controllerPlugin->translate('Please enter quantity!');
+        } else {
+
+            if (! is_numeric($quantity)) {
+                $errors[] = $this->controllerPlugin->translate('Quantity must be a number!');
+            } else {
+                if ($quantity <= 0) {
+                    $errors[] = $this->controllerPlugin->translate('Quantity must be greater than 0!');
+                } else {
+                    $entity->setQuantity($quantity);
+                }
+            }
+        }
+
+        /*
+         * if (! is_numeric($convert_factor)) {
+         * $errors[] = $this->controllerPlugin->translate('Convert factor must be a number!');
+         * } else {
+         * if ($quantity <= 0) {
+         * $errors[] = $this->controllerPlugin->translate('Convert factor must be greater than 0!');
+         * } else {
+         * $entity->setConversionFactor($convert_factor);
+         * }
+         * }
+         */
+
+        // Movement Strategy.
+        $check_result = null;
+
+        $mvStrategy = InventoryTransactionStrategyFactory::getMovementStrategy($target->getMovementType());
+        if (! $mvStrategy instanceof \Inventory\Model\AbstractTransactionStrategy) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument! No strategy found.");
+        } else {
+            $mvStrategy->setContextService($this);
+            $check_result = $mvStrategy->validateRow($entity, $data, $u, $isNew, $isPosting);
+        }
+
+        if (count($check_result) > 0) {
+            $errors = array_merge($errors, $check_result);
+        }
+
+        // check on-hand quantity.
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $target
+     * @param \Application\Entity\NmtInventoryTrx $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param array $data
+     * @param boolean $isNew
+     * @param boolean $isNew
+     * @param string $trigger
+     */
+    public function saveRow($target, $entity, $data, $u, $isNew = false, $isPosting = false, $trigger = null)
+    {
+        $errors = array();
+
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            $m = $this->controllerPlugin->translate("Invalid Argument! User is not identified for this transaction.");
+            $errors[] = $m;
+        }
+
+        if (! $target instanceof \Application\Entity\NmtInventoryMv) {
+            $m = $this->controllerPlugin->translate("Invalid Argument. Inventory Movement Object not found!");
+            $errors[] = $m;
+        }
+
+        if (! $entity instanceof \Application\Entity\NmtInventoryTrx) {
+            $m = $this->controllerPlugin->translate("Invalid Argument. Inventory Movement line not found!");
+            $errors[] = $m;
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 1 ====== //
+
+        if ($isNew == FALSE) {
+            $oldEntity = clone ($entity);
+        }
+
+        if ($isNew == TRUE) {
+            $entity->setMovement($target);
+            $entity->setTransactionType($target->getMovementType());
+            $entity->setFlow($target->getMovementFlow());
+            $entity->setLocalCurrency($target->getLocalCurrency());
+            $entity->setDocCurrency($target->getDocCurrency());
+            $entity->setDocType($target->getDocType());
+            $entity->setDocStatus($target->getDocStatus());
+            $entity->setWh($target->getWarehouse());
+        }
+
+        $ck = $this->validateRow($target, $entity, $u, $data, $isNew, false);
+
+        if (count($ck) > 0) {
+            return $ck;
+        }
+
+        // ====== VALIDATED 2 ====== //
+        try {
+
+            $changeOn = new \DateTime();
+            $changeArray = array();
+
+            if ($isNew == TRUE) {
+                $entity->setCreatedBy($u);
+                $entity->setCreatedOn($changeOn);
+                $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+            } else {
+
+                $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
+                if (count($changeArray) == 0) {
+                    $errors[] = sprintf('Nothing changed.');
+                    return $errors;
+                }
+
+                // $entity->setRevisionNo($entity->getRevisionNo() + 1);
+                $entity->setLastchangeBy($u);
+                $entity->setLastchangeOn($changeOn);
+            }
+
+            $this->doctrineEM->persist($entity);
+            $this->doctrineEM->flush();
+
+            // LOGGING
+            if ($isNew == TRUE) {
+                $m = sprintf('[OK] WH transaction line #%s created.', $entity->getId());
+            } else {
+
+                $m = sprintf('[OK] WH transaction line #%s updated.', $entity->getId());
+
+                $this->getEventManager()->trigger('inventory.change.log', $trigger, array(
+                    'priority' => 7,
+                    'message' => $m,
+                    'objectId' => $entity->getId(),
+                    'objectToken' => $entity->getToken(),
+                    'changeArray' => $changeArray,
+                    'changeBy' => $u,
+                    'changeOn' => $changeOn,
+                    'revisionNumber' => 1,
+                    'changeDate' => $changeOn,
+                    'changeValidFrom' => $changeOn
+                ));
+            }
+
+            $this->getEventManager()->trigger('inventory.activity.log', $trigger, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $u,
+                'createdOn' => $changeOn
+            ));
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param array $data
+     * @param \Application\Entity\MlaUsers $u,
+     * @param bool $isFlush,
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function post($entity, $data = null, $u, $isFlush = false, $isPosting = TRUE, $trigger = null)
+    {
+        $errors = array();
+
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            $m = $this->controllerPlugin->translate("Invalid Argument! User is not identified for this transaction.");
+            $errors[] = $m;
+        }
+
+        if (! $entity instanceof \Application\Entity\NmtInventoryMv) {
+            $m = $this->controllerPlugin->translate("Invalid Argument. WH transaction not found!");
+            $errors[] = $m;
+        }   
+        
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 1 ====== //
+        
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+            $entity->setCurrency($default_cur);
+        }
+        
+
+        $ck = $this->validateHeader($entity, $data, $u, false, true);
+
+        if (count($ck) > 0) {
+            return $ck;
+        }
+
+        // ====== VALIDATED 2 ====== //
+
+        try {
+            $postingStrategy = InventoryTransactionStrategyFactory::getMovementStrategy($entity->getMovementType());
+
+            if (! $postingStrategy instanceof AbstractTransactionStrategy) {
+                throw new \Exception("Posting Strategy can't not be identified for this inventory movement type!");
+            }
+
+            // do posting now
+            $postingStrategy->setContextService($this);
+            $postingStrategy->doPosting($entity, $u, true);
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param \Application\Entity\MlaUsers $u,
+     * @param bool $isFlush,
+     *
+     */
+    public function reverse($entity, $u, $reversalDate, $reversalReason, $trigger = null)
+    {
+        $errors = array();
+
+        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
+            $errors[] = $this->controllerPlugin->translate('Invalid Argument! Invoice not found)');
+        } else {
+
+            // only when posted.
+            if ($entity->getDocStatus() !== \Application\Model\Constants::DOC_STATUS_POSTED) {
+                $errors[] = $this->controllerPlugin->translate('Invoice not posted yet. Reserval imposible.');
+            }
+
+            // only when not reversed..
+            if ($entity->getIsReversed() == 1) {
+                $errors[] = $this->controllerPlugin->translate('Invoice reversed already.');
+            }
+
+            // check if subsequce document.
+            // only when not reversed..
+            // 1 mean not.
+            if ($entity->getIsReversable() == 1) {
+                $errors[] = $this->controllerPlugin->translate('Invoice is not reservable, becasue sequence document is created.');
+            }
+        }
+
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            $errors[] = $this->controllerPlugin->translate('Invalid Argument! User not found)');
+        }
+
+        $criteria = array(
+            'isActive' => 1,
+            'invoice' => $entity
+        );
+        $ap_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria);
+
+        if (count($ap_rows) == 0) {
+            $errors[] = $this->controllerPlugin->translate('Invoice is empty. Reserval imposible.');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 1 ====== //
+
+        /** @var \Application\Entity\FinVendorInvoice $newEntity ; */
+        $newEntity = clone ($entity);
+        $newEntity->setInvoiceDate(null);
+        $newEntity->setPostingDate(null);
+
+        $data = array();
+        $data['postingDate'] = $reversalDate;
+        $data['invoiceDate'] = $reversalDate;
+
+        /**
+         * Check Reversal Date.
+         */
+        $ck = $this->checkInvoiceDate($newEntity, $data, TRUE);
+
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 2 ====== //
+
+        try {} catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param string $data
+     * @param boolean $isPosting
+     */
+    private function checkMovementDate(\Application\Entity\NmtInventoryMv $entity, $movementDate, $isPosting)
+    {
+        $errors = array();
+
+        // ==========OK=========== //
+
+        $validator = new Date();
+
+        if (! $movementDate == null) {
+            if (! $validator->isValid($movementDate)) {
+                $errors[] = $this->controllerPlugin->translate('WH transaction date is not correct or empty!');
+                return $errors;
+            } else {
+                $entity->setMovementDate(new \DateTime($movementDate));
+            }
+        }
+
+        // ==========OK=========== //
+
+        // striclty check when posting.
+        if ($isPosting == TRUE) {
+
+            if ($entity->getMovementDate() == null) {
+                $errors[] = $this->controllerPlugin->translate('WH transaction date  is not correct or empty!');
+                return $errors;
+            }
+
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+            // check if posting period is closed
+            /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+            $postingPeriod = $p->getPostingPeriod(new \DateTime($movementDate));
+
+            if ($postingPeriod == null) {
+                $errors[] = sprintf('Posting period for [%s] not created!', $movementDate);
+            } else {
+                if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                    $errors[] = sprintf('Period [%s] is closed for Good receipt!', $postingPeriod->getPeriodName());
+                } else {
+                    $entity->setMovementDate(new \DateTime($movementDate));
+                }
+            }
+        }
+
         return $errors;
     }
 }

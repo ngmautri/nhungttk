@@ -1,11 +1,10 @@
 <?php
 namespace Inventory\Model\GI;
 
-
 use Inventory\Service\FIFOLayerService;
 
 /**
- * Machine ID is required.
+ * Machine ID is required, exchange part.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
@@ -15,28 +14,72 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
 
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
+     * @see \Inventory\Model\AbstractTransactionStrategy::validateRow()
+     */
+    public function validateRow($entity, $data, $u, $isNew, $isPosting)
+    {
+        $errors = array();
+
+        // addtional information.
+        if (isset($data['issue_for_id'])) {
+            $issue_for_id = $data['issue_for_id'];
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given "$issue_for_id"');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 2 ====== //
+        /**@var \Application\Entity\NmtInventoryItem $issue_for_item ;*/
+        $issue_for_item = $this->getContextService()->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryItem')->find($issue_for_id);
+        
+        $no_errors = 0;
+        if ($issue_for_item == null) {
+            $errors[] = $this->getContextService()->getControllerPlugin()->translate('Machine ID is required');
+        } else {
+            if ($issue_for_item == $entity->getItem()) {
+                $errors[] = $this->getContextService()->getControllerPlugin()->translate('Item is the same');
+                $no_errors++;
+            }
+
+            if ($issue_for_item->getIsFixedAsset()==0) {
+                $errors[] = $this->getContextService()->getControllerPlugin()->translate('Item is not a machine');
+                $no_errors++;
+            }
+            
+            if($no_errors==0){
+                $entity->setIssueFor($issue_for_item);
+            }
+        }
+       return $errors;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\InventoryTransactionInterface::getFlow()
      */
     public function getFlow()
     {
         return \Application\Model\Constants::WH_TRANSACTION_OUT;
-        
     }
 
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      * @see \Inventory\Model\InventoryTransactionInterface::getTransactionIdentifer()
      */
     public function getTransactionIdentifer()
     {
         return \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE;
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::check()
      */
     public function check($trx, $item, $u)
@@ -52,26 +95,13 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
         if (! $u instanceof \Application\Entity\MlaUsers) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
         }
+    }
 
-        // OK to post
-        // +++++++++++++++++++
-
-        // Required machine
-        if ($trx->getIssueFor() == null) {
-            throw new \Exception("Invalid Argument! Machine is not give.");
-        }
-
-        if ($trx->getIssueFor() === $item) {
-            throw new \Exception("Invalid Argument! It is not posible to use the same item. Please select other!");
-        }
-
-       }
-
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Inventory\Model\AbstractTransactionStrategy::doPosting()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Model\AbstractTransactionStrategy::doPosting()
+     */
     public function doPosting($entity, $u, $isFlush = false)
     {
         $criteria = array(
@@ -88,12 +118,16 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
             throw new \Exception("Movement is empty");
         }
 
+        
         $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
         $entity->setIsDraft(0);
         $entity->setIsPosted(1);
-        
         $this->contextService->getDoctrineEM()->persist($entity);
-
+        
+        /**
+         * 
+         * @todo: deduct fifo layer.
+         */
         $fifoLayerService = new FIFOLayerService();
         $fifoLayerService->setDoctrineEM($this->contextService->getDoctrineEM());
 
@@ -101,7 +135,7 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
         $total_credit = 0;
         $total_local_credit = 0;
 
-        // Create JE     
+        // Create JE
         $je = new \Application\Entity\FinJe();
         $je->setCurrency($entity->getCurrency());
         $je->setLocalCurrency($entity->getCurrency());
@@ -130,13 +164,20 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
                 continue;
             }
 
-            $r->setDocStatus($entity->getDocStatus());
-            $this->contextService->getDoctrineEM()->persist($r);
-
-            // update FIFO Layer
+            $r->setTrxDate($entity->getMovementDate());            
+            $r->setDocStatus($entity->getMovementType());
+            $r->setDocType($entity->getMovementType());
+            $r->setTransactionType($entity->getMovementType());
+       
+           /**
+            * 
+            * @todo: Calculate cost of goods.
+            */
             $cogs = $fifoLayerService->valuateTrx($r, $r->getItem(), $r->getQuantity(), $u);
             $r->setCogsLocal($cogs);
             
+            $this->contextService->getDoctrineEM()->persist($r);            
+
             // Exchanging Part.
             $item_ex = new \Application\Entity\NmtInventoryItemExchange();
             $item_ex->setItem($r->getItem());
@@ -215,37 +256,28 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
             $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
             $this->contextService->getDoctrineEM()->persist($je_row);
         }
-        
-        if($entity->getSysNumber()==\Application\Model\Constants::SYS_NUMBER_UNASSIGNED){
-            $entity->setSysNumber($this->contextService->getControllerPlugin()->getDocNumber($entity));
+
+        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+            $entity->setSysNumber($this->contextService->getControllerPlugin()
+                ->getDocNumber($entity));
         }
 
         $this->contextService->getDoctrineEM()->flush();
     }
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
-    */
-    public function reverse($entity, $u, $reversalDate,$isFlush = false)
-    {}
-    
     /**
-     * 
-     * @param string $trx
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
      */
-    public function validateRow($trx)
+    public function reverse($entity, $u, $reversalDate, $isFlush = false)
     {}
-    
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::createMovement()
      */
-    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null)
+    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger=null)
     {}
-
-
 }

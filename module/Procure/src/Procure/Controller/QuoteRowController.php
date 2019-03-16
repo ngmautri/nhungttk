@@ -138,7 +138,7 @@ class QuoteRowController extends AbstractActionController
             }
             ;
 
-            $m = sprintf("[OK] Quotation Row #%s created!", $entity->getRowIdentifer());
+            $m = sprintf("[OK] Quotation Row #%s created!", $entity->getId());
             $this->flashMessenger()->addMessage($m);
 
             // Trigger: finance.activity.log. AbtractController is EventManagerAware.

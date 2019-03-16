@@ -2,12 +2,12 @@
 namespace Procure\Service;
 
 use Application\Entity\NmtInventoryTrx;
-use Zend\Math\Rand;
 use Application\Entity\NmtProcureGrRow;
 use Application\Service\AbstractService;
-use Inventory\Model\GR\AbstractGRStrategy;
-use Inventory\Model\GR\GRStrategyFactory;
+use Zend\Math\Rand;
 use Zend\Validator\Date;
+use Inventory\Model\InventoryTransactionStrategyFactory;
+use Inventory\Model\AbstractTransactionStrategy;
 
 /**
  * Good Receipt Service.
@@ -51,7 +51,7 @@ class GrService extends AbstractService
         $entity->setRemarks($remarks);
 
         // only update remark posible, when posted.
-        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED or $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED OR $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
             return null;
         }
 
@@ -103,7 +103,7 @@ class GrService extends AbstractService
      * @param \Application\Entity\MlaUsers $u
      * @param boolean $isNew
      */
-    public function saveHeader(\Application\Entity\NmtProcureGr $entity, $data, $u, $isNew = FALSE)
+    public function saveHeader(\Application\Entity\NmtProcureGr $entity, $data, $u, $isNew = FALSE, $trigger=null)
     {
         $errors = array();
 
@@ -112,7 +112,7 @@ class GrService extends AbstractService
         }
 
         if (! $entity instanceof \Application\Entity\NmtProcureGr) {
-            $errors[] = $this->controllerPlugin->translate("Invalid Argument. Good receipt object is not found!");
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument. Procure Good receipt object is not found!");
         }
 
         if (count($errors) > 0) {
@@ -170,7 +170,7 @@ class GrService extends AbstractService
 
                 $m = sprintf('[OK] GR #%s updated.', $entity->getId());
 
-                $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
+                $this->getEventManager()->trigger('procure.change.log', $trigger, array(
                     'priority' => 7,
                     'message' => $m,
                     'objectId' => $entity->getId(),
@@ -184,7 +184,7 @@ class GrService extends AbstractService
                 ));
             }
 
-            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+            $this->getEventManager()->trigger('procure.activity.log', $trigger, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'createdBy' => $u,
@@ -608,9 +608,9 @@ class GrService extends AbstractService
             $this->doctrineEM->flush();
 
             try {
-                $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+                $inventoryPostingStrategy = InventoryTransactionStrategyFactory::getMovementStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
 
-                if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+                if (! $inventoryPostingStrategy instanceof AbstractTransactionStrategy) {
                     throw new \Exception("Posting strategy is not identified for this inventory movement type!");
                 }
 
@@ -647,7 +647,7 @@ class GrService extends AbstractService
      * @param boolean $isFlush
      * @return array
      */
-    public function postGR($entity, array $data, $u, $isFlush = false)
+    public function postGR($entity, array $data, $u, $isFlush = false, $trigger=null)
     {
         $errors = array();
 
@@ -669,9 +669,9 @@ class GrService extends AbstractService
             $errors[] = $this->controllerPlugin->translate("Invalid Argument. Good receipt is empty");
         }
 
-        $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+        $inventoryPostingStrategy = InventoryTransactionStrategyFactory::getMovementStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
 
-        if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+        if (! $inventoryPostingStrategy instanceof AbstractTransactionStrategy) {
             $errors[] = $this->controllerPlugin->translate("Posting strategy is not identified for this inventory movement type!");
         }
 
@@ -757,6 +757,9 @@ class GrService extends AbstractService
                         }
                     }
 
+                    /**
+                     * Inventory Item
+                     */
                     if ($r->getItem()->getIsStocked() == 1) {
 
                         // count inventory item.
@@ -776,7 +779,11 @@ class GrService extends AbstractService
                             $stock_gr_entity = new NmtInventoryTrx();
                         }
 
+                        
                         $stock_gr_entity->setGr($entity);
+                        $stock_gr_entity->setDocCurrency($entity->getDocCurrency());
+                        $stock_gr_entity->setLocalCurrency($entity->getLocalCurrency());
+                        
                         $stock_gr_entity->setGrRow($r);
                         $stock_gr_entity->setExchangeRate($r->getGr()
                             ->getExchangeRate());
@@ -841,20 +848,22 @@ class GrService extends AbstractService
              *
              * @todo: Do Accounting Posting
              */
-            $this->jeService->postGR($entity, $gr_rows, $u, $this->controllerPlugin);
-            $this->doctrineEM->flush();
-
+            $this->jeService->postGR($entity, $gr_rows, $u, $this->controllerPlugin,false, $trigger);
+         
             // Inventory items found.
             if ($n > 0) {
 
                 // Post WH Goods receipt.
                 $inventoryPostingStrategy->setContextService($this);
-                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(), $entity->getWarehouse());
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(), $entity->getWarehouse(),$trigger);
             }
-
+            
+            // now it is time to flush
+            $this->doctrineEM->flush();
+            
             // LOGGING
             $m = sprintf('[OK] Goods Receipt %s posted', $entity->getSysNumber());
-            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+            $this->getEventManager()->trigger('procure.activity.log', $trigger, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'createdBy' => $u,
@@ -875,7 +884,7 @@ class GrService extends AbstractService
      * @param bool $isFlush,
      *
      */
-    public function reverse($entity, $u, $reversalDate, $reversalReason)
+    public function reverse($entity, $u, $reversalDate, $reversalReason, $trigger=null)
     {
         $errors = array();
 
@@ -915,9 +924,9 @@ class GrService extends AbstractService
             $errors[] = $this->controllerPlugin->translate('GR is empty. Reserval imposible.');
         }
         
-        $inventoryPostingStrategy = GRStrategyFactory::getGRStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
+        $inventoryPostingStrategy = InventoryTransactionStrategyFactory::getMovementStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
         
-        if (! $inventoryPostingStrategy instanceof AbstractGRStrategy) {
+        if (! $inventoryPostingStrategy instanceof AbstractTransactionStrategy) {
               $errors[] = $this->controllerPlugin->translate('Posting strategy is not identified for this inventory movement type');
         }
         
@@ -1009,19 +1018,17 @@ class GrService extends AbstractService
 
             /**
              * POSTING JOURNAL ENTRY
+             * =============================
              */
 
-            // ====================== */
-            $this->jeService->reverseGR($entity, $rows, $u, $this->controllerPlugin);
+             $this->jeService->reverseGR($entity, $rows, $u, $this->controllerPlugin,false, true, $trigger);
 
-            // need to flush
-            $this->doctrineEM->flush();
-
+          
             /**
              *
              * @todo: REVERSAL WH GOODs RECEIPT
+             * ================================
              */
-            // ================================
             $criteria = array(
                 'isActive' => 1,
                 'gr' => $entity
@@ -1033,7 +1040,7 @@ class GrService extends AbstractService
             if (count($inventory_trx_rows) > 0) {
                 // do posting now
                 $inventoryPostingStrategy->setContextService($this);
-                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getReversalDate(), $entity->getWarehouse());
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getReversalDate(), $entity->getWarehouse(),$trigger);
             }
 
             /**
@@ -1042,22 +1049,24 @@ class GrService extends AbstractService
             // $apSearchService = new \Procure\Service\APSearchService();
             // $apSearchService->indexingAPRows($ap_rows);
 
+            // Time to flush.
+            $this->doctrineEM->flush();
+            
             /**
              * LOGGING
-             */
-            /**
              * ======================
              */
             $m = sprintf('[OK] GRPO  %s reversed.', $entity->getSysNumber());
-            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
+            $this->getEventManager()->trigger('procure.activity.log', $trigger, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'createdBy' => $u,
                 'createdOn' => $changeOn
             ));
 
-            // need to flush
+            // Time to flush.
             $this->doctrineEM->flush();
+            
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }
@@ -1263,6 +1272,7 @@ class GrService extends AbstractService
 
         if ($currency !== null) {
             $entity->setCurrency($currency);
+            $entity->setDocCurrency($currency);
             $entity->setCurrencyIso3($currency->getCurrency());
 
             if ($currency == $entity->getLocalCurrency()) {

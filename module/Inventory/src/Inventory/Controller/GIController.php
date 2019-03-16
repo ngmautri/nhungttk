@@ -145,7 +145,12 @@ class GIController extends AbstractActionController
         $transactionType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
         
         $isAllowed = true;
-
+        
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+      
         // Is Posing
         // =============================
         if ($request->isPost()) {
@@ -226,7 +231,11 @@ class GIController extends AbstractActionController
                 $this->flashMessenger()->addMessage($m);
                 return $this->redirect()->toUrl($redirectUrl);
             }
-
+           
+            if ($entity->getLocalCurrency() == null) {
+                $entity->setLocalCurrency($default_cur);
+            }
+            
             $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, FALSE);
 
             if (count($errors) > 0) {
@@ -284,6 +293,13 @@ class GIController extends AbstractActionController
             }
         } else {
             $errors[] = $nmtPlugin->translate("ACL checking failed");
+        }
+        
+        // only update remark posible, when posted.
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED OR $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
+            $errors[] = $nmtPlugin->translate(" can not change.");
+            
+            //$isAllowed = false;
         }
 
         $viewModel = new ViewModel(array(

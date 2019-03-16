@@ -1,0 +1,294 @@
+<?php
+/**@var \Application\Entity\NmtProcurePr $entity ;*/
+/**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+$form_action = '';
+$form_title = '';
+
+switch ($action) {
+
+    case \Application\Model\Constants::FORM_ACTION_ADD:
+        $form_action = '/procure/pr/add';
+        $form_title = $this->translate("Add PR");
+
+        break;
+    case \Application\Model\Constants::FORM_ACTION_EDIT:
+        $form_action = '/procure/pr/edit';
+        $form_title = $this->translate("Edit PR");
+        break;
+}
+
+?>
+
+
+<div id="wrapper" class="toggled">
+
+	<!-- Sidebar -->
+	<div id="sidebar-wrapper" style="font-size: 9.5pt;">
+					<?php
+    $current_step = "STEP1";
+    include (ROOT . '/module/Procure/view/procure/pr-create-wizard.php');
+    ?>
+
+
+	</div>
+	<!-- /#sidebar-wrapper -->
+
+	<!-- Page Content -->
+	<div id="page-content-wrapper"
+		style="font-size: 9.5pt; padding: 0px; margin: 0px;">
+		<div class="container-fluid" id="main_container"
+			style="font-size: 9.5pt; padding: 1px; margin: 0px;";>
+			<a style="font-size: 9pt; margin: 2px; padding: 3px;"
+				href="#menu-toggle" class="btn btn-primary btn-sm" id="menu-toggle"><span
+				title="Hide Menu"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+					Menu <span></a>
+
+
+			<div id="tabs" style="font-size: 10pt">
+				<ul>
+					<li><a href="#general"><?php echo $form_title;?>:</a></li>
+		<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+ 	 	<li><a
+						href="<?php echo $this->baseUrl ?>/procure/change-log/list1?object_token=<?php echo (!$entity == null)? $entity->getToken():"";?>&object_id=<?php echo (!$entity == null)? $entity->getId():"";?>&class_name=<?php echo (!$entity == null)? get_class($entity):"";?>"><span
+							class="glyphicon glyphicon-list"></span>&nbsp;Log</a></li>
+		<?php endif;?>			
+	
+				</ul>
+
+				<div id="general" style="font-size: 9pt">
+					<!-- Tab1 -->
+		
+	<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>
+	<form id="Creating_Form" class="form-horizontal"
+						action="<?php echo $form_action;?>" method="post"
+						enctype="multipart/form-data">
+						<input type="hidden" name="redirectUrl"
+							value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+							id="entity_id" name="entity_id"
+							value="<?php if (!$entity == null): echo $entity->getId();endif;?>" />
+						<input type="hidden" id="entity_token" name="entity_token"
+							value="<?php if (!$entity == null): echo $entity->getToken();endif;?>" />
+
+							
+            			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+            				<input type="hidden" name="n" value="<?php echo $n;?>" />
+            			<?php endif;?>
+            			
+           			<?php
+
+            if ($action == \Application\Model\Constants::FORM_ACTION_PO_FROM_QO) :
+                ?>
+             			<input type="hidden" name="target_id"
+							value="<?php echo (!$target== null)? $target->getId():"";?>" /> <input
+							type="hidden" name="target_token"
+							value="<?php echo (!$target== null)? $target->getToken():"";?>" />
+          			<?php endif;?>
+            			
+            			
+            			
+            			<fieldset>
+							<legend style="font-size: 9.5pt; color: gray;">
+								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
+								<a href="#invoice_header" class="" data-toggle="collapse">HEADER:</a>
+							</legend>
+							<div id="invoice_header" class="collapse in">
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">PR Number:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" name="prNumber"
+											value="<?php echo (!$entity == null)? $entity->getPrNumber():"";?>">
+									</div>
+
+									<label class="control-label col-sm-1" for="inputTag"></label>
+									<div class="col-sm-4">
+										<input
+											<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+										<input
+											<?php if(!$entity == null): echo ($entity->getIsDraft()=="1")?"checked":""; else: echo "checked"; endif;?>
+											type="checkbox" name="isDraft" value="1">&nbsp;Draft&nbsp;&nbsp;
+
+									</div>
+
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">PR Name:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="prName" name="prName"
+											value="<?php echo (!$entity == null)? $entity->getPrName():"";?>">
+									</div>
+
+									<label class="control-label col-sm-2">Keywords:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="keywords" name="keywords"
+											value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Date:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="submittedOn" name="submittedOn"
+											value="<?php if(!$entity == null): if ($entity->getSubmittedOn() !== null): echo date_format($entity->getSubmittedOn(),"Y-m-d"); endif; endif;?>"
+											placeholder=" please select" />
+									</div>
+								</div>
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Total Rows:</label>
+									<div class="col-sm-3">
+										<input class="form-control input-sm" type="text"
+											placeholder="" id="totalRowManual" name="totalRowManual"
+											value="<?php echo (!$entity == null)? $entity->getTotalRowManual():"";?>">
+									</div>
+
+								</div>
+
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Department</label>
+									<div class="col-sm-3">
+										<input disabled class="form-control input-sm" type="text"
+											id="department_name" placeholder="Please select!"
+											name="deparment_name"
+											value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeName(); endif;endif;?>">
+
+										<input type="hidden" class="form-control input-sm" type="text"
+											id="department_name_selected" placeholder="Please select!"
+											name="department_id"
+											value="<?php if (!$entity== null):if($entity->getDepartment()!==null):echo $entity->getDepartment()->getNodeId(); endif;endif;?>">
+									</div>
+
+									<a style="color: #0080ff;" href="javascript:;"
+										onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i
+										class="glyphicon glyphicon-folder-open"></i>
+									</a>
+								</div>
+
+								<div class="form-group margin-bottom required">
+
+									<label class="control-label col-sm-2"><?php echo $this->translate("Target Warehouse");?>:</label>
+									<div class="col-sm-3">
+										<select tabindex="9" name="target_wh_id" id="target_wh_id"
+											class="form-control input-sm">
+											<option value=""><?php echo $this->translate("Select Warehouse");?></option>
+   	    							<?php
+            $wh_list = $nmtPlugin->warehouseList();
+            
+            if ($wh_list !== null) :
+                foreach ($wh_list as $gl) :
+
+                    /**@var \Application\Entity\NmtInventoryWarehouse $gl ; */
+
+                    if ($entity !== null) :
+                        if ($entity->getWarehouse() !== null) :
+                            if ($entity->getWarehouse()->getId() == $gl->getId()) :
+                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            else :
+                                echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                            endif;
+                        else :
+                            echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                        endif;
+                    else :
+                        echo '<option value="' . $gl->getId() . '">' . $gl->getWhName() . '</option>';
+                    endif;
+                endforeach
+                ;
+   	    							endif;
+
+            ?>
+   					</select>
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Remarks:</label>
+									<div class="col-sm-3">
+										<textarea class="form-control input-sm" type="text" rows="4"
+											placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarks():"";?></textarea>
+									</div>
+								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2" for="inputTag"></label>
+									<div class="col-sm-3">
+										<button onclick="submitForm('Create_PR_Form');"
+											class="btn btn-default btn-sm">
+											<i class="glyphicon glyphicon-floppy-disk"> </i> Save
+										</button>
+										<a class="btn btn-default btn-sm"
+											href="<?php echo $redirectUrl; ?>"><small><i
+												class="glyphicon glyphicon-remove"></i></small>&nbsp;Cancel</a>
+
+									</div>
+								</div>
+						
+						</fieldset>
+					</form>
+
+				</div>
+
+				<!-- end tab -->
+			</div>
+		</div>
+	</div>
+	<!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<script>
+
+$( "input[id='contractDate']").datepicker({ firstDay: 1, dateFormat: 'yy-mm-dd',closeText: 'X',changeMonth: true, changeYear: true});
+
+
+$( "#vendor_name_1" ).autocomplete({
+    source: "/bp/vendor-search/auto-complete",
+    minLength: 3,
+    select: function( event, ui ) {
+  	  $( "#vendor_id" ).val(ui.item.id);
+      //alert	( "Selected: " + ui.item.value + " aka " + ui.item.id );
+  	  //alert($( "#vendor_id" ).val());
+
+  	 	$('#global-notice').show();
+  		$('#global-notice').html('"' + ui.item.value + '" selected');
+  		$('#global-notice').fadeOut(5000);
+  		//$("#jquery_dialog").dialog("close");
+    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+    return $( "<li>" )
+      .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><b>" + item.value + "</b><br><span style='color:gray;font-size: 9pt;'>" + item.vendor_country + "<span></div>" )
+      .appendTo( ul );
+    };
+
+$( "#vendor_name_1" ).focus();
+
+<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED):?>
+$("#Creating_Form :input").attr("disabled", "disabled");
+$("#remarks").attr("disabled", false);
+$("#entity_id").attr("disabled", false);
+$("#entity_token").attr("disabled", false);
+$("#submit").attr("disabled", false);
+ <?php endif;?>
+
+  
+</script>

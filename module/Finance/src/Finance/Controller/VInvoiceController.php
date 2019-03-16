@@ -92,7 +92,7 @@ class VInvoiceController extends AbstractActionController
                 'gross_amount' => null
             ));
 
-            $errors = $this->apService->reverseAP($entity, $u, $reversalDate, $reversalReason);
+            $errors = $this->apService->reverseAP($entity, $u, $reversalDate, $reversalReason,__METHOD__);
 
             if (count($errors) > 0) {
 
@@ -214,7 +214,7 @@ class VInvoiceController extends AbstractActionController
             $entity->setTransactionType(\Application\Model\Constants::TRANSACTION_TYPE_PURCHASED);
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
 
-            $errors = $this->apService->saveHeader($entity, $data, $u, TRUE);
+            $errors = $this->apService->saveHeader($entity, $data, $u, TRUE,__METHOD__);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
@@ -396,7 +396,7 @@ class VInvoiceController extends AbstractActionController
                 $entity->setLocalCurrency($default_cur);
             }
 
-            $errors = $this->apService->post($entity, $data, $u);
+            $errors = $this->apService->post($entity, $data, $u,true, true,__METHOD__);
 
             if (count($errors) > 0) {
                 return new ViewModel(array(
@@ -1245,7 +1245,7 @@ class VInvoiceController extends AbstractActionController
             // ======= OK =======//
 
             // validate and update entity
-            $ck = $this->apService->saveHeader($entity, $data, $u, FALSE);
+            $ck = $this->apService->saveHeader($entity, $data, $u, FALSE,__METHOD__);
 
             if (count($ck) > 0) {
                 $errors = array_merge($errors, $ck);

@@ -412,7 +412,10 @@ class LoggingListener implements ListenerAggregateInterface
         $entity->setCreatedOn($createdOn);
         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
         $this->doctrineEM->persist($entity);
-        $this->doctrineEM->flush();
+        
+        if($e->getParam('isFlush')==true or $e->getParam('isFlush')==null){
+            $this->doctrineEM->flush();
+        }
     }
 
     /**
@@ -674,9 +677,13 @@ class LoggingListener implements ListenerAggregateInterface
         $entity->setEntityToken($entityToken);
 
         $entity->setToken(Rand::getString(10, self::CHAR_LIST, true) . "_" . Rand::getString(21, self::CHAR_LIST, true));
-
         $this->doctrineEM->persist($entity);
-        $this->doctrineEM->flush();
+        
+        if($e->getParam('isFlush')==true or $e->getParam('isFlush')==null){
+            $this->doctrineEM->flush();
+        }
+        
+       
     }
 
     /**

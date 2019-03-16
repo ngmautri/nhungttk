@@ -13,28 +13,32 @@ use Inventory\Model\AbstractTransactionStrategy;
  */
 class GRfromPurchasing extends AbstractTransactionStrategy
 {
-    
+
     /**
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      * @see \Inventory\Model\InventoryTransactionInterface::getFlow()
      */
     public function getFlow()
     {
         return \Inventory\Model\Constants::WH_TRANSACTION_IN;
-        
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\InventoryTransactionInterface::getTransactionIdentifer()
      */
     public function getTransactionIdentifer()
     {
         return \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING;
     }
-  
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Model\AbstractTransactionStrategy::check()
+     */
     public function check($trx, $item, $u)
     {
         if (! $trx instanceof \Application\Entity\NmtInventoryTrx) {
@@ -62,7 +66,11 @@ class GRfromPurchasing extends AbstractTransactionStrategy
         }
     }
 
-    
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Model\AbstractTransactionStrategy::doPosting()
+     */
     public function doPosting($entity, $u, $isFlush = false)
     {
         $criteria = array(
@@ -87,12 +95,20 @@ class GRfromPurchasing extends AbstractTransactionStrategy
         $this->contextService->getDoctrineEM()->flush();
     }
 
-   
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
+     */
     public function reverse($entity, $u, $reversalDate, $isFlush = false)
     {}
 
-   
-    public function createMovement($rows, $u, $isFlush = false, $movementDate=null, $wareHouse = null)
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Model\AbstractTransactionStrategy::createMovement()
+     */
+    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger=null)
     {
         if (! $u instanceof \Application\Entity\MlaUsers) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
@@ -101,30 +117,35 @@ class GRfromPurchasing extends AbstractTransactionStrategy
         if (count($rows) == 0) {
             throw new \Exception("Invalid Argument! Nothing to create.");
         }
-        
-        if($movementDate!=null){
-            if (!$movementDate instanceof \DateTime) {
+
+        if ($movementDate != null) {
+            if (! $movementDate instanceof \DateTime) {
                 throw new \Exception('Movement Date is not correct or empty!');
             }
         }
-        if($wareHouse!=null){
-            if (!$wareHouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+        if ($wareHouse != null) {
+            if (! $wareHouse instanceof \Application\Entity\NmtInventoryWarehouse) {
                 throw new \Exception('Warehouse is not correct or empty!');
             }
-       }
-        
-       
-       
-       
+        }
+
         $createdOn = new \DateTime();
 
         $mv = new \Application\Entity\NmtInventoryMv();
+        
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+        $mv->setLocalCurrency($default_cur);
+        
         $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
         $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
-        $mv->setDocStatus(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
-        
+        $mv->setTrxType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+
         $mv->setIsPosted(1);
         $mv->setIsDraft(0);
+        $mv->setIsActive(1);
         $mv->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
         $this->contextService->getDoctrineEM()->persist($mv);
 
@@ -138,17 +159,17 @@ class GRfromPurchasing extends AbstractTransactionStrategy
 
             $n ++;
             $r->setMovement($mv);
+            
             $r->setDocStatus($mv->getDocStatus());
             $r->setDocType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
-            
+
             $this->contextService->getDoctrineEM()->persist($r);
 
-            // created FIFO is needed
+            // created FIFO if needed
             if ($r->getItem() != null) {
-              
+
                 if ($r->getItem()->getIsStocked() == 1) {
-                    
-                    
+
                     /**
                      *
                      * @todo: Create FIFO Layer
@@ -159,9 +180,9 @@ class GRfromPurchasing extends AbstractTransactionStrategy
                     $fifoLayer->setIsClosed(0);
                     $fifoLayer->setItem($r->getItem());
                     $fifoLayer->setQuantity($r->getQuantity());
-                    
+
                     // set WH
-                    $fifoLayer->setWarehouse($r->getWh());                    
+                    $fifoLayer->setWarehouse($r->getWh());
 
                     // will be changed uppon inventory transaction.
                     $fifoLayer->setOnhandQuantity($r->getQuantity());
@@ -186,7 +207,7 @@ class GRfromPurchasing extends AbstractTransactionStrategy
             }
         }
 
-        if ($n >0 ) {
+        if ($n > 0) {
             $mv->setMovementDate($movementDate);
             $mv->setWarehouse($wareHouse);
             $mv->setCreatedBy($u);
@@ -195,23 +216,23 @@ class GRfromPurchasing extends AbstractTransactionStrategy
             $mv->setSysNumber($this->contextService->getControllerPlugin()
                 ->getDocNumber($mv));
             $this->contextService->getDoctrineEM()->persist($mv);
-
-            if ($isFlush == true) {
-                $this->contextService->getDoctrineEM()->flush();
-            }
-
-            $m = sprintf('[OK] Warehouse Goods Receipt %s posted', $mv->getSysNumber());
-            $this->contextService->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $createdOn
-            ));
         }
+
+        if ($isFlush == TRUE) {
+            $this->contextService->getDoctrineEM()->flush();
+        }
+        
+        if ($trigger==null){
+            $trigger = __METHOD__;
+        }
+
+        $m = sprintf('[OK] Warehouse Goods Receipt %s posted', $mv->getSysNumber());
+        $this->contextService->getEventManager()->trigger('inventory.activity.log', $trigger, array(
+            'priority' => \Zend\Log\Logger::INFO,
+            'message' => $m,
+            'createdBy' => $u,
+            'createdOn' => $createdOn,
+            'isFlush' => $isFlush,
+        ));
     }
-    public function getFlow()
-    {}
-
-   
-
 }

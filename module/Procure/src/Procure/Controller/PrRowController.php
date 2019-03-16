@@ -188,11 +188,15 @@ class PrRowController extends AbstractActionController
     {
         $request = $this->getRequest();
         $this->layout("Procure/layout-fullscreen");
+        
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $wh_list = $nmtPlugin->warehouseList();
-
+     
         // Is Posting .................
         // ============================
 
@@ -207,17 +211,16 @@ class PrRowController extends AbstractActionController
 
             /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
-            $pr = $res->getPR($target_id, $token);
+            $entity_array = $res->getPR($target_id, $token);
 
-            if ($pr == null) {
+            if ($entity_array == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
 
             /**@var \Application\Entity\NmtProcurePr $target ;*/
             $target = null;
-            if ($pr[0] instanceof NmtProcurePr) {
-
-                $target = $pr[0];
+            if ($entity_array[0] instanceof NmtProcurePr) {
+                $target = $entity_array[0];
             }
 
             if ($target == null) {
@@ -230,9 +233,9 @@ class PrRowController extends AbstractActionController
                     'errors' => $errors,
                     'target' => null,
                     'entity' => null,
-                    'total_row' => (int) $pr[1],
-                    'max_row_number' => (int) $pr[2],
-                    'wh_list' => $wh_list
+                    'total_row' => (int) $entity_array[1],
+                    'max_row_number' => (int) $entity_array[2],
+                    'nmtPlugin' => $nmtPlugin
                 ));
 
                 $viewModel->setTemplate("procure/pr-row/crud");
@@ -240,18 +243,14 @@ class PrRowController extends AbstractActionController
             }
 
             $entity = new NmtProcurePrRow();
-
             $entity->setPr($target);
-            $n = $pr['total_row'] + 1;
+            
+            $n = $entity_array['total_row'] + 1;
             $rowIdentifer = $target->getPrAutoNumber() . "-$n";
             $entity->setRowIdentifer($rowIdentifer);
 
-            try {
-                $errors = $this->prService->validateRow($target, $entity, $data);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
+            $errors = $this->prService->saveRow($target, $entity, $data,$u, TRUE, __METHOD__);
+   
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
@@ -259,62 +258,20 @@ class PrRowController extends AbstractActionController
                     'errors' => $errors,
                     'entity' => $entity,
                     'target' => $target,
-                    'total_row' => $pr['total_row'],
-                    'max_row_number' => $pr['max_row_number'],
-                    'active_row' => $pr['active_row'],
-                    'wh_list' => $wh_list,
-                    'nmtPlugin' => $nmtPlugin
+                    'total_row' => $entity_array['total_row'],
+                    'max_row_number' => $entity_array['max_row_number'],
+                    'active_row' => $entity_array['active_row'],
+                     'nmtPlugin' => $nmtPlugin
                 ));
 
                 $viewModel->setTemplate("procure/pr-row/crud");
                 return $viewModel;
             }
 
-            // No ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
-
-            try {
-                $this->prService->saveRow($target, $entity, $u, TRUE);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            if (count($errors) > 0) {
-                $viewModel = new ViewModel(array(
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-
-                    'redirectUrl' => $redirectUrl,
-                    'errors' => $errors,
-                    'entity' => $entity,
-                    'target' => $target,
-                    'total_row' => $pr['total_row'],
-                    'max_row_number' => $pr['max_row_number'],
-                    'active_row' => $pr['active_row'],
-                    'wh_list' => $wh_list,
-                    'nmtPlugin' => $nmtPlugin
-                ));
-
-                $viewModel->setTemplate("procure/pr-row/crud");
-                return $viewModel;
-            }
-
-            $createdOn = new \DateTime();
-
+          
             $m = sprintf('[OK] Row #%s for PR#%s created.', $entity->getRowIdentifer(), $target->getId());
 
-            // Trigger: procure.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $createdOn
-            ));
-
+            // to update.
             $this->prSearchService->updateIndex(1, $entity, FALSE);
 
             $redirectUrl = "/procure/pr-row/add?token=" . $target->getToken() . "&target_id=" . $target->getID() . "&checksum=" . $target->getChecksum();
@@ -372,7 +329,6 @@ class PrRowController extends AbstractActionController
             'total_row' => $pr['total_row'],
             'max_row_number' => $pr['max_row_number'],
             'active_row' => $pr['active_row'],
-            'wh_list' => $wh_list,
             'nmtPlugin' => $nmtPlugin
         ));
 
@@ -2176,6 +2132,11 @@ class PrRowController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
+        
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+        
 
         // Is Posting .................
         // ============================
@@ -2210,7 +2171,9 @@ class PrRowController extends AbstractActionController
                     'target' => null,
                     'entity' => null,
                     'total_row' => null,
-                    'max_row_number' => null
+                    'max_row_number' => null,
+                    'nmtPlugin' => $nmtPlugin
+                    
                 ));
 
                 $viewModel->setTemplate("procure/pr-row/crud");
@@ -2234,23 +2197,8 @@ class PrRowController extends AbstractActionController
                 return $this->redirect()->toRoute('access_denied');
             }
 
-            $oldEntity = clone ($entity);
-
-            try {
-                $errors = $this->prService->validateRow($target, $entity, $data);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-            $nmtPlugin = $this->Nmtplugin();
-            $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-
-            if (count($changeArray) == 0) {
-                $nTry ++;
-                $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-            }
-
+            $errors = $this->prService->saveRow($target, $entity, $data, $u, FALSE, __METHOD__);
+            
             if ($nTry >= 3) {
                 $errors[] = sprintf('Do you really want to edit "%s"?', $entity->getPr()->getPrName() . '=>' . $entity->getRowIdentifer());
             }
@@ -2271,53 +2219,16 @@ class PrRowController extends AbstractActionController
                     'target' => $entity->getPr(),
                     'n' => $nTry,
                     'total_row' => (int) $pr['total_row'],
-                    'max_row_number' => (int) $pr['max_row_number']
+                    'max_row_number' => (int) $pr['max_row_number'],
+                    'nmtPlugin' => $nmtPlugin
                 ));
 
                 $viewModel->setTemplate("procure/pr-row/crud");
                 return $viewModel;
             }
 
-            // No ERROR
-            // Saving into Database..........
-            // ++++++++++++++++++++++++++++++
-
-            $changeOn = new \DateTime();
-
-            $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                "email" => $this->identity()
-            ));
-
-            try {
-                $this->prService->saveRow($target, $entity, $u);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            $m = sprintf('"PR Row #%s; %s" updated. Change No.:%s. OK!', $entity->getId(), $entity->getRowIdentifer(), count($changeArray));
-
-            // trigger log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('procure.change.log', __CLASS__, array(
-                'priority' => 7,
-                'message' => $m,
-                'objectId' => $entity->getId(),
-                'objectToken' => $entity->getToken(),
-                'changeArray' => $changeArray,
-                'changeBy' => $u,
-                'changeOn' => $changeOn,
-                'revisionNumber' => $entity->getRevisionNo(),
-                'changeDate' => $changeOn,
-                'changeValidFrom' => $changeOn
-            ));
-
-            // Trigger: procure.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $changeOn
-            ));
-
+            $m = sprintf('"PR Row #%s; %s" updated', $entity->getId(), $entity->getRowIdentifer());
+        
             $index_update_status = $this->prSearchService->updateIndex(0, $entity, FALSE);
 
             $this->flashMessenger()->addMessage($index_update_status);
@@ -2374,7 +2285,8 @@ class PrRowController extends AbstractActionController
             'entity' => $entity,
             'n' => 0,
             'total_row' => (int) $pr['total_row'],
-            'max_row_number' => (int) $pr['max_row_number']
+            'max_row_number' => (int) $pr['max_row_number'],
+            'nmtPlugin' => $nmtPlugin
         ));
 
         $viewModel->setTemplate("procure/pr-row/crud");

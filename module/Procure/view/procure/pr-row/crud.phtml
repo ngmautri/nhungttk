@@ -100,7 +100,7 @@ if (count($errors) > 0) {
 							value="<?php echo $redirectUrl ?>" />
 
 						<fieldset>
-							<legend style="font-size: 9.5pt; color: gray;">
+							<legend style="font-size: 9pt; color: gray;">
 								<small><span class="glyphicon glyphicon-triangle-right"></span></small>&nbsp;
 								<a style="font-size: 9pt; color: gray;" href="#pr_header"
 									class="" data-toggle="collapse">PR HEADER: <?php echo (!$target == null)? "(". $target->getPrAutoNumber() .")" :"";?></a>
@@ -244,10 +244,25 @@ if (count($errors) > 0) {
 											type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 									</div>
 								</div>
+
+								<div class="form-group margin-bottom">
+									<label class="control-label col-sm-2">Priority: </label>
+									<div class="col-sm-1">
+										<select tabindex="1" name="priority" id="priority"
+											class="form-control input-sm">
+											<option value="">--</option>
+											<option value="urgent"><?php echo $this->translate("Urgent");?></option>
+											<option value="normal"><?php echo $this->translate("Normal");?></option>
+
+										</select>
+									</div>
+
+								</div>
+
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2">Item: </label>
 									<div class="col-sm-3">
-										<input tabindex="1" class="form-control input-sm" type="text"
+										<input tabindex="2" class="form-control input-sm" type="text"
 											id="item_name" placeholder="Enter keyword to search item..."
 											name="item_name"
 											value="<?php if (!$entity== null): if($entity->getItem()!==null): echo $entity->getItem()->getItemName(); endif;endif;?>">
@@ -292,6 +307,12 @@ if (count($errors) > 0) {
 										<input tabindex="2" class="form-control input-sm" type="text"
 											placeholder="" name="rowName" id="rowName"
 											value="<?php echo (!$entity== null)? $entity->getRowName():"";?>">
+									</div>
+									<label class="control-label col-sm-2"><?php echo $this->translate("Item Code");?>:</label>
+									<div class="col-sm-3">
+										<input tabindex="2" class="form-control input-sm" type="text"
+											placeholder="" name="rowCode" id="rowCode"
+											value="<?php echo (!$entity== null)? $entity->getRowCode():"";?>">
 									</div>
 
 								</div>
@@ -503,7 +524,7 @@ if (count($errors) > 0) {
      select: function( event, ui ) {
    	  	$( "#item_id" ).val(ui.item.id);
    	  	
-  		$('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id='+ui.item.id+'&token='+ui.item.token+'&checksum='+ui.item.checksum);
+  		$('#item_url').text('/inventory/item/show1?tab_idx=9&entity_id='+ui.item.id+'&token='+ui.item.token+'&checksum='+ui.item.checksum);
   	 	$('#global-notice').show();
    		$('#global-notice').html('"' + ui.item.value + '" selected');
    		$('#global-notice').fadeOut(5000);

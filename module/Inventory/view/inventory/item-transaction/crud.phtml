@@ -118,11 +118,8 @@ if (count($errors) > 0) {
 								</div>
 
 								<div class="col-sm-3">
-									<input
-										<?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
-										type="checkbox" name="isActive" value="1">&nbsp;Is
-									Active&nbsp;&nbsp;&nbsp;&nbsp;
-
+<input <?php if(!$entity== null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+									type="checkbox" name="isActive" id="isActive" value="1"/>&nbsp;Is Active&nbsp;&nbsp;&nbsp;&nbsp;
 								</div>
 							</div>
 

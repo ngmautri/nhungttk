@@ -23,5 +23,7 @@
 <li class="divider"></li>
 	<li><a href="/inventory/setting/index"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Setup'); ?></a></li>
 
+	<li class="divider"></li>
+	<li><a href="/inventory/activity-log/list"><i class="fa fa-caret-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;<?php echo $this->translate("Log");?></a></li>
 
 </ul>

@@ -174,7 +174,7 @@ class VInvoiceRowController extends AbstractActionController
             $this->flashMessenger()->addMessage($m);
 
             // Trigger: finance.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('finance.activity.log', __METHOD__, array(
+            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'createdBy' => $u,

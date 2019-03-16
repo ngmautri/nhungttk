@@ -38,7 +38,10 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
 
         $procureSV = $this->getContextService();
 
-        // create procure GR, even no PR, PO.
+        /**
+         * create procure GR, even no PR, PO.
+         * =====================
+         */
         $criteria = array(
             'isActive' => 1,
             'apInvoiceRow' => $entity
@@ -54,7 +57,6 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
             $gr_entity = new \Application\Entity\NmtProcureGrRow();
         }
 
-        // PROCURE GOOD Receipt to clear PR, PO.
         $gr_entity->setIsActive(1);
         $gr_entity->setInvoice($entity);
         $gr_entity->setApInvoiceRow($r);
@@ -125,6 +127,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
              * @todo create serial number
              *       if item with Serial
              *       or Fixed Asset
+             * ==========================
              */
             if ($r->getItem()->getMonitoredBy() == \Application\Model\Constants::ITEM_WITH_SERIAL_NO || $r->getItem()->getIsFixedAsset() == 1) {
 
@@ -150,7 +153,7 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
             /**
              * create stock good receipt.
              * only for item controlled inventory
-             * ===================
+             * =========================
              */
 
             /**
@@ -240,10 +243,8 @@ class GRIRStrategy extends AbstractAPRowPostingStrategy
 
                 $stock_gr_entity->setRemarks('AP Row#' . $r->getRowIdentifer());
                 
-                //updated: get WH from Row.
-               
-                $stock_gr_entity->setWh($r->getWarehouse());
-                
+                //updated: get WH from Row.               
+                $stock_gr_entity->setWh($r->getWarehouse());                
                 
                 $stock_gr_entity->setCreatedBy($u);
                 $stock_gr_entity->setCreatedOn($createdOn);

@@ -59,9 +59,9 @@ class InventoryTransactionService extends AbstractService
         }
 
         if (isset($data['isActive'])) {
-            $isActive = $data['isActive'];
+            $isActive = (int) $data['isActive'];
         } else {
-            $errors[] = $this->controllerPlugin->translate('No input given isActive');
+            $errors[] = $this->controllerPlugin->translate('No input given isActive?');
         }
 
         if (isset($data['remarks'])) {
@@ -75,6 +75,14 @@ class InventoryTransactionService extends AbstractService
         }
 
         // ====== Validated 2 ====== //
+        
+        
+        $entity->setRemarks($remarks);
+        
+        // only update remark posible, when posted.
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED OR $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
+            return null;
+        }
 
         if ($isActive != 1) {
             $isActive = 0;
@@ -83,7 +91,7 @@ class InventoryTransactionService extends AbstractService
         $entity->setIsActive($isActive);
 
         if ($movementType == null) {
-            $errors[] = $this->controllerPlugin->translate('Inventory movement is not selected!');
+            $errors[] = $this->controllerPlugin->translate('Inventory movement type is not selected!');
         } else {
 
             // validate movement Type.
@@ -165,6 +173,7 @@ class InventoryTransactionService extends AbstractService
 
         if ($isNew == false) {
 
+            // only ower or its superviour can edit this.
             $checkALC = $this->controllerPlugin->isParent($u, $entity->getCreatedBy());
 
             if (isset($checkALC['result']) and isset($checkALC['message'])) {

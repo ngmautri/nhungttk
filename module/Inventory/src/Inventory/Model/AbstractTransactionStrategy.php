@@ -37,12 +37,15 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
     abstract public function reverse($entity, $u, $reversalDate, $isFlush = false);
 
     /**
-     *
+     * 
      * @param array $rows
      * @param \Application\Entity\MlaUsers $u
-     * @param bool $isFlush
+     * @param boolean $isFlush
+     * @param string $movementDate
+     * @param object $wareHouse
+     * @param string $trigger
      */
-    abstract public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null);
+    abstract public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger=null);
 
     /**
      *

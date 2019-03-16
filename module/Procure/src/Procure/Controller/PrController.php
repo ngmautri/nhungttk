@@ -30,6 +30,8 @@ class PrController extends AbstractActionController
 
     protected $pdfService;
 
+    protected $prService;
+
     /*
      * Defaul Action
      */
@@ -206,147 +208,36 @@ class PrController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        $wh_list = $nmtPlugin->warehouseList();
-
+    
         // Is Posting .................
         // ============================
 
         if ($request->isPost()) {
             $errors = array();
-            $redirectUrl = $request->getPost('redirectUrl');
-
-            $prNumber = $request->getPost('prNumber');
-            $prName = $request->getPost('prName');
-            $keywords = $request->getPost('keywords');
-            $submittedOn = $request->getPost('submittedOn');
-
-            $totalRowManual = (int) $request->getPost('$totalRowManual');
-
-            $remarks = $request->getPost('remarks');
-            $isDraft = $request->getPost('isDraft');
-            $isActive = $request->getPost('isActive');
-            $status = $request->getPost('status');
-            $remarks = $request->getPost('remarks');
-            $department_id = $request->getPost('department_id');
-
-            if ($isActive != 1) {
-                $isActive = 0;
-            }
-
-            if ($isDraft != 1) {
-                $isDraft = 0;
-            }
-
-            $prAutoNumber = 'later';
-
-            if ($prNumber == null) {
-                $errors[] = 'Please enter PR Number!';
-            }
-
-            if ($prName == null) {
-                $errors[] = 'Please enter PR Name!';
-            }
-
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
+            
             $entity = new NmtProcurePr();
-            $entity->setPrAutoNumber($prAutoNumber);
-            $entity->setPrNumber($prNumber);
-            $entity->setPrName($prName);
-            $entity->setKeywords($keywords);
-            $entity->setRemarks($remarks);
-            $entity->setIsActive($isActive);
-            $entity->setIsDraft($isDraft);
-            $entity->setStatus($status);
-            $entity->setTotalRowManual($totalRowManual);
-
-            $validator = new Date();
-
-            // Empty is OK
-            if ($submittedOn !== null) {
-                if ($submittedOn !== "") {
-
-                    if (! $validator->isValid($submittedOn)) {
-                        $errors[] = 'Date is not correct or empty!';
-                    } else {
-                        $entity->setSubmittedOn(new \DateTime($submittedOn));
-                    }
-                }
-            }
-
-            if ($department_id > 0) {
-                $department = $this->doctrineEM->find('Application\Entity\NmtApplicationDepartment', $department_id);
-                $entity->setDepartment($department);
-            }
-
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            $errors = $this->prService->saveHeader($entity, $data, $u, TRUE, __METHOD__);
+            
             if (count($errors) > 0) {
-                return new ViewModel(array(
-
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                    
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'wh_list' => $wh_list,
-                    'nmtPlugin' => $nmtPlugin
+                    'nmtPlugin' => $nmtPlugin,
+                    
                 ));
+                
+                $viewModel->setTemplate("procure/pr/crud");
+                return $viewModel;
             }
-
-            // NO ERROR
-            // ++++++++++++++++++++++++++
-
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
-            $createdOn = new \DateTime();
-
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn($createdOn);
-            $entity->setChecksum(md5(uniqid("pr_" . microtime())));
-
-            // generate document
-            // ==================
-            $criteria = array(
-                'isActive' => 1,
-                'subjectClass' => get_class($entity)
-            );
-
-            /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
-            $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
-            if ($docNumber != null) {
-                $maxLen = strlen($docNumber->getToNumber());
-                $currentLen = 1;
-                $currentDoc = $docNumber->getPrefix();
-                $current_no = $docNumber->getCurrentNumber();
-
-                if ($current_no == null) {
-                    $current_no = $docNumber->getFromNumber();
-                } else {
-                    $current_no ++;
-                    $currentLen = strlen($current_no);
-                }
-
-                $docNumber->setCurrentNumber($current_no);
-
-                $tmp = "";
-                for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
-
-                    $tmp = $tmp . "0";
-                }
-
-                $currentDoc = $currentDoc . $tmp . $current_no;
-                $entity->setPrAutoNumber($currentDoc);
-            }
-
-            $this->doctrineEM->persist($entity);
-            $this->doctrineEM->flush();
-
+      
             $m = sprintf('[OK] PR #%s - %s created', $entity->getId(), $entity->getPrAutoNumber());
-            $this->flashMessenger()->addMessage($m);
-
-            // Trigger: procure.activity.log. AbtractController is EventManagerAware.
-            $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $u,
-                'createdOn' => $createdOn
-            ));
-
+            
             // create QR_CODE
             $redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
 
@@ -364,8 +255,7 @@ class PrController extends AbstractActionController
             $qrCode->setSize(100);
             $qrCode->writeFile($folder . $qr_code_name);
 
-            // $redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
-            $redirectUrl = "/procure/pr-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
+             $redirectUrl = "/procure/pr-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
 
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -387,13 +277,17 @@ class PrController extends AbstractActionController
         $entity->setIsDraft(1);
         $entity->setWarehouse($u->getCompany()
             ->getDefaultWarehouse());
-        return new ViewModel(array(
+        $viewModel =  new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+            
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'wh_list' => $wh_list,
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
         ));
+        $viewModel->setTemplate("procure/pr/crud");
+        return $viewModel;
+        
     }
 
     /**
@@ -562,6 +456,10 @@ class PrController extends AbstractActionController
     public function showAction()
     {
         $request = $this->getRequest();
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        
 
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
@@ -624,7 +522,10 @@ class PrController extends AbstractActionController
                 'max_row_number' => $pr['max_row_number'],
                 'active_row' => $pr['active_row'],
                 'total_attachment' => $pr['total_attachment'],
-                'total_picture' => $pr['total_picture']
+                'total_picture' => $pr['total_picture'],
+                'nmtPlugin' => $nmtPlugin,
+                
+                
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
@@ -951,22 +852,34 @@ class PrController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
+        $this->layout("Procure/layout-fullscreen");
 
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        // Is Posting .................
+        // ============================
         if ($request->isPost()) {
 
             $errors = array();
+            $data = $this->params()->fromPost();
 
-            $redirectUrl = $request->getPost('redirectUrl');
-            $entity_id = $request->getPost('entity_id');
-            $token = $request->getPost('token');
-            $nTry = $request->getPost('n');
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = (int) $data['entity_id'];
+            $token = $data['entity_token'];
+            $nTry = $data['n'];
 
             $criteria = array(
                 'id' => $entity_id,
                 'token' => $token
             );
 
-            /**@var \Application\Entity\NmtProcurePr $entity ;*/
+            /**@var \Application\Entity\NmtProcurePr $entity*/
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
 
             if ($entity == null) {
@@ -975,142 +888,37 @@ class PrController extends AbstractActionController
                 $this->flashMessenger()->addMessage('Something went wrong!');
 
                 return new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'n' => $nTry
+                    'n' => $nTry,
+                    'nmtPlugin' => $nmtPlugin
                 ));
-            } else {
-
-                $oldEntity = clone ($entity);
-
-                $prNumber = $request->getPost('prNumber');
-                $prName = $request->getPost('prName');
-                $keywords = $request->getPost('keywords');
-                $remarks = $request->getPost('remarks');
-                $isDraft = $request->getPost('isDraft');
-                $isActive = $request->getPost('isActive');
-                $status = $request->getPost('status');
-                $remarks = $request->getPost('remarks');
-                $department_id = $request->getPost('department_id');
-                $submittedOn = $request->getPost('submittedOn');
-
-                $totalRowManual = (int) $request->getPost('totalRowManual');
-
-                if ($isActive != 1) {
-                    $isActive = 0;
-                }
-
-                if ($isDraft != 1) {
-                    $isDraft = 0;
-                }
-
-                if ($prNumber == null) {
-                    $errors[] = 'Please enter PR Number!';
-                }
-
-                if ($prName == null) {
-                    $errors[] = 'Please enter PR Name!';
-                }
-
-                $entity->setPrNumber($prNumber);
-                $entity->setPrName($prName);
-                $entity->setKeywords($keywords);
-                $entity->setRemarks($remarks);
-                $entity->setIsActive($isActive);
-                $entity->setIsDraft($isDraft);
-                $entity->setStatus($status);
-                $entity->setTotalRowManual($totalRowManual);
-                if ($department_id > 0) {
-                    $department = $this->doctrineEM->find('Application\Entity\NmtApplicationDepartment', $department_id);
-                    $entity->setDepartment($department);
-                }
-
-                $validator = new Date();
-
-                // Empty is OK
-                if ($submittedOn !== null) {
-                    if ($submittedOn !== "") {
-
-                        if (! $validator->isValid($submittedOn)) {
-                            $errors[] = 'Date is not correct or empty!';
-                        } else {
-                            $entity->setSubmittedOn(new \DateTime($submittedOn));
-                        }
-                    }
-                }
-
-                /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
-                $nmtPlugin = $this->Nmtplugin();
-                $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
-
-                if (count($changeArray) == 0) {
-                    $nTry ++;
-                    $errors[] = sprintf('Nothing changed! n = %s', $nTry);
-                }
-
-                if ($nTry >= 3) {
-                    $errors[] = sprintf('Do you really want to edit "%s (%s)"?', $entity->getPrName(), $entity->getPrAutoNumber());
-                }
-
-                if ($nTry == 5) {
-                    $m = sprintf('You might be not ready to edit "%s (%s)". Please try later!', $entity->getPrName(), $entity->getPrAutoNumber());
-                    $this->flashMessenger()->addMessage($m);
-                    return $this->redirect()->toUrl($redirectUrl);
-                }
-
-                if (count($errors) > 0) {
-                    return new ViewModel(array(
-
-                        'redirectUrl' => $redirectUrl,
-                        'errors' => $errors,
-                        'entity' => $entity,
-                        'n' => $nTry
-                    ));
-                }
-
-                // NO ERROR
-                // ========================
-                $changeOn = new \DateTime();
-
-                $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
-                    "email" => $this->identity()
-                ));
-
-                $entity->setRevisionNo($entity->getRevisionNo() + 1);
-                $entity->setLastchangeBy($u);
-                $entity->setLastchangeOn($changeOn);
-
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-
-                $m = sprintf('"PR #%s - %s" updated. Change No.:%s. OK!', $entity->getId(), $entity->getPrAutoNumber(), count($changeArray));
-
-                // Trigger Change Log. AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('procure.change.log', __METHOD__, array(
-                    'priority' => 7,
-                    'message' => $m,
-                    'objectId' => $entity->getId(),
-                    'objectToken' => $entity->getToken(),
-                    'changeArray' => $changeArray,
-                    'changeBy' => $u,
-                    'changeOn' => $changeOn,
-                    'revisionNumber' => $entity->getRevisionNo(),
-                    'changeDate' => $changeOn,
-                    'changeValidFrom' => $changeOn
-                ));
-
-                // Trigger Activity Log . AbtractController is EventManagerAware.
-                $this->getEventManager()->trigger('procure.activity.log', __METHOD__, array(
-                    'priority' => \Zend\Log\Logger::INFO,
-                    'message' => $m,
-                    'createdBy' => $u,
-                    'createdOn' => $changeOn
-                ));
-
-                $this->flashMessenger()->addMessage($m);
-                return $this->redirect()->toUrl($redirectUrl);
             }
+
+            $this->prService->saveHeader($entity, $data, $u, false, __METHOD__);
+
+            if (count($errors) > 0) {
+                $viewModel = new ViewModel(array(
+                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+
+                    'redirectUrl' => $redirectUrl,
+                    'errors' => $errors,
+                    'entity' => $entity,
+                    'n' => $nTry,
+                    'nmtPlugin' => $nmtPlugin
+                ));
+                
+                $viewModel->setTemplate("procure/pr/crud");
+                return $viewModel;
+            }
+
+            $m = sprintf('"PR #%s - %s" updated', $entity->getId(), $entity->getPrAutoNumber());
+
+            $this->flashMessenger()->addMessage($m);
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
@@ -1133,16 +941,22 @@ class PrController extends AbstractActionController
         );
 
         $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
-        if ($entity instanceof \Application\Entity\NmtProcurePr) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'n' => 0
-            ));
-        } else {
+        if (! $entity instanceof \Application\Entity\NmtProcurePr) {
             return $this->redirect()->toRoute('access_denied');
         }
+
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+
+            'redirectUrl' => $redirectUrl,
+            'entity' => $entity,
+            'errors' => null,
+            'n' => 0,
+            'nmtPlugin' => $nmtPlugin
+        ));
+
+        $viewModel->setTemplate("procure/pr/crud");
+        return $viewModel;
     }
 
     /**
@@ -1269,5 +1083,23 @@ class PrController extends AbstractActionController
     public function setPdfService(PdfService $pdfService)
     {
         $this->pdfService = $pdfService;
+    }
+
+    /**
+     *
+     * @return \Procure\Service\PrService
+     */
+    public function getPrService()
+    {
+        return $this->prService;
+    }
+
+    /**
+     *
+     * @param \Procure\Service\PrService $prService
+     */
+    public function setPrService(\Procure\Service\PrService $prService)
+    {
+        $this->prService = $prService;
     }
 }

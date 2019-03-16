@@ -18,12 +18,15 @@ class InventoryTransactionStrategyFactory
     public static function getMovementStrategy($tTransaction)
     {
         switch ($tTransaction) {
+            
+            // GOOD RECEIPT
             case \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING:
                 return new \Inventory\Model\GR\GRfromPurchasing();
 
             case \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL:
                 return new \Inventory\Model\GR\GRfromPurchasingReversal();
 
+            // GOOD ISSUE
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_REPAIR_MACHINE_WITH_EX:
                 return new \Inventory\Model\GI\GIforRepairMachine();
 

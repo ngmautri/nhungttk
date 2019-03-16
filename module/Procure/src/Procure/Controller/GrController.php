@@ -85,7 +85,7 @@ class GrController extends AbstractActionController
             }
             
 
-            $errors = $this->grService->reverse($entity, $u, $reversalDate, $reversalReason);
+            $errors = $this->grService->reverse($entity, $u, $reversalDate, $reversalReason,__METHOD__);
 
             if (count($errors) > 0) {
 
@@ -616,7 +616,7 @@ class GrController extends AbstractActionController
                 $entity->setLocalCurrency($default_cur);
             }
 
-            $errors = $this->grService->postGR($entity, $data, $u);
+            $errors = $this->grService->postGR($entity, $data, $u, true, __METHOD__);
 
             if (count($errors) > 0) {
 
@@ -733,7 +733,7 @@ class GrController extends AbstractActionController
 
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
 
-            $errors = $this->grService->saveHeader($entity, $data, $u, TRUE);
+            $errors = $this->grService->saveHeader($entity, $data, $u, TRUE,__METHOD__);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
@@ -982,7 +982,7 @@ class GrController extends AbstractActionController
             }
 
             $entity->setLocalCurrency($default_cur);
-            $errors = $this->grService->saveHeader($entity, $data, $u, false);
+            $errors = $this->grService->saveHeader($entity, $data, $u, false, __METHOD__);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(

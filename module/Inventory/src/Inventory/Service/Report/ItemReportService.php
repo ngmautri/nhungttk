@@ -1,10 +1,11 @@
 <?php
-namespace Inventory\Service;
+namespace Inventory\Service\Report;
 
 use Application\Service\AbstractService;
 use Zend\Math\Rand;
 use Zend\Validator\Date;
 use Zend\Validator\EmailAddress;
+use PDO;
 
 /**
  * Warehouse Service.
@@ -12,164 +13,78 @@ use Zend\Validator\EmailAddress;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseService extends AbstractService
+class ItemReportService extends AbstractService
 {
 
-    /**
-     *
-     * @param \Application\Entity\NmtInventoryWarehouse $entity
-     * @param array $data
-     * @param boolean $isPosting
-     */
-    public function validateWareHouse(\Application\Entity\NmtInventoryWarehouse $entity, $data, $isNew = TRUE)
-    {
-        $errors = array();
-
-        if (! $entity instanceof \Application\Entity\NmtInventoryWarehouse) {
-            $errors[] = $this->controllerPlugin->translate('WH object is not found!');
-        }
-
-        if ($data == null) {
-            $errors[] = $this->controllerPlugin->translate('No input given');
-        }
-
-        if (count($errors) > 0) {
-            return $errors;
-        }
-
-        // ====== OK ====== //
-
-        // $company_id = $data['company_id'];
-
-        if ($entity->getCompany() == null) {
-            $errors[] = $this->controllerPlugin->translate('Country in not indentified');
-        }
-
-        // $is_locked = $data['isLocked'];
-        // $is_default = $data['isDefault'];
-
-        $country_id = $data['country_id'];
-        $whCode = $data['whCode'];
-        $whName = $data['whName'];
-
-        // $whStatus = $data['whStatus'];
-        $wh_address = $data['whAddress'];
-        $whEmail = $data['whEmail'];
-        $wh_contract_person = $data['whContactPerson'];
-        $remarks = $data['remarks'];
-
-     
-        if ($whCode === '' or $whCode === null) {
-            $errors[] = $this->controllerPlugin->translate('Please give warehouse code');
-        }
-
-        if ($whName === '' or $whName === null) {
-            $errors[] = $this->controllerPlugin->translate('Please give warehouse name');
-        }
-
-        if ($whEmail != null) {
-            $validator = new EmailAddress();
-            if (! $validator->isValid($whEmail)) {
-                $errors[] = $this->controllerPlugin->translate('Email addresse is not correct!');
-            } else {
-                $entity->setWhEmail($whEmail);
-            }
-        }
-
-        if ($isNew == TRUE) {
-            $r = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findBy(array(
-                'whCode' => $whCode
-            ));
-
-            if (count($r) >= 1) {
-                $errors[] = $whCode . ' exists';
-            }
-        }
-
-        $entity->setWhCode($whCode);
-        $entity->setWhName($whName);
-        $entity->setWhAddress($wh_address);
-
-        $country = $this->doctrineEM->find('Application\Entity\NmtApplicationCountry', $country_id);
-
-        if ($country == null) {
-            $errors[] = $this->controllerPlugin->translate('Please give country!');
-        } else {
-            $entity->setWhCountry($country);
-        }
-
-        $entity->setWhContactPerson($wh_contract_person);
-
-        // $entity->setIsDefault( $is_default);
-        // $entity->setIsLocked( $is_locked);
-        $entity->setRemarks($remarks);
-
-        return $errors;
-    }
+    const WH_ITEM_ONHAND_SQL = "
+SELECT
+	nmt_inventory_trx.wh_id,
+	SUM(CASE WHEN (nmt_inventory_trx.flow = 'IN') THEN (nmt_inventory_trx.quantity) ELSE 0 END) AS total_gr,
+	SUM(CASE WHEN (nmt_inventory_trx.flow = 'OUT') THEN (nmt_inventory_trx.quantity) ELSE 0 END) AS total_gi,
+	(SUM(CASE WHEN (nmt_inventory_trx.flow = 'IN') THEN (nmt_inventory_trx.quantity) ELSE 0 END)-SUM(CASE WHEN (nmt_inventory_trx.flow = 'OUT') THEN (nmt_inventory_trx.quantity) ELSE 0 END)) AS current_balance
+FROM nmt_inventory_trx
+WHERE 1 and %s
+GROUP BY nmt_inventory_trx.item_id, nmt_inventory_trx.wh_id
+";
 
     /**
      *
-     * @param \Application\Entity\NmtInventoryWarehouse $entity
+     * @param \Application\Entity\NmtInventoryItem $item
      * @param \Application\Entity\MlaUsers $u
-     * @param boolean $isNew
+     * @param string $trigger
      */
-    public function saveWarehouse(\Application\Entity\NmtInventoryWarehouse $entity, $u, $isNew = FALSE)
+    public function getOnhandReportByItem($item, $u, $trigger = null)
     {
-        if ($u == null) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        if ($item == null or $u == null) {
+            return null;
         }
+        $sql1 = sprintf('item_id=%s AND nmt_inventory_trx.is_active =1', $item->getId());
+        $sql = sprintf(self::WH_ITEM_ONHAND_SQL, $sql1);
 
-        if (! $entity instanceof \Application\Entity\NmtInventoryWarehouse) {
-            throw new \Exception("Invalid Argument. Warehouse Object not found!");
-        }
-
-        // validated.
-
-        $changeOn = new \DateTime();
-
-        if ($isNew == TRUE) {
-
-            $entity->setSysNumber(\Application\Model\Constants::SYS_NUMBER_UNASSIGNED);
-            $entity->setCreatedBy($u);
-            $entity->setCreatedOn($changeOn);
-            $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-        } else {
-            $entity->setRevisionNo($entity->getRevisionNo() + 1);
-            $entity->setLastchangeBy($u);
-            $entity->setLastchangeOn($changeOn);
-        }
-
-        $this->doctrineEM->persist($entity);
-        $this->doctrineEM->flush();
+        $stmt = $this->getDoctrineEM()
+            ->getConnection()
+            ->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 
     /**
      *
-     * @param \Application\Entity\NmtInventoryWarehouse $entity
+     * @param \Application\Entity\NmtInventoryItem $item
+     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
+     *
      * @param \Application\Entity\MlaUsers $u
+     * @param string $trigger
      */
-    public function setDefaultWarehouse(\Application\Entity\NmtInventoryWarehouse $entity, $u)
+    public function getOnhandInWahrehouse($item, $warehouse, $u, $trigger = null)
     {
-        if ($u == null) {
-            throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
+        $sql = "
+SELECT
+     SUM(nmt_inventory_fifo_layer.onhand_quantity) AS current_onhand
+FROM nmt_inventory_fifo_layer
+WHERE 1 AND %s
+GROUP BY nmt_inventory_fifo_layer.item_id, nmt_inventory_fifo_layer.warehouse_id
+
+";
+
+        if ($item == null or $u == null) {
+            return null;
         }
 
-        if (! $entity instanceof \Application\Entity\NmtInventoryWarehouse) {
-            throw new \Exception("Invalid Argument. Warehouse Object not found!");
-        } else {
-            if ($entity->getCompany() !== null) {
+        $sql1 = sprintf("nmt_inventory_fifo_layer.item_id = %s AND nmt_inventory_fifo_layer.warehouse_id = %s AND nmt_inventory_fifo_layer.is_closed=0", $item->getId(), $warehouse->getId());
+        $sql = sprintf($sql, $sql1);
 
-                $sql = sprintf("Update nmt_inventory_warehouse set is_default=0 where 
-                nmt_inventory_warehouse.is_default=1 and nmt_inventory_warehouse.company_id=%s ", $entity->getCompany()->getId());
-                $stmt = $this->doctrineEM->getConnection()->prepare($sql);
-                $stmt->execute();
-              
-                $entity->setIsDefault(1);
-                $entity->getCompany()->setDefaultWarehouse($entity);
-                $this->doctrineEM->persist($entity);
-                $this->doctrineEM->flush();
-            }
+        $stmt = $this->getDoctrineEM()
+            ->getConnection()
+            ->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        if (count($results) == 1) {
+            return $results[0]['current_onhand'];
         }
-        return True;
+        return 0;
+    
     }
+ 
 }

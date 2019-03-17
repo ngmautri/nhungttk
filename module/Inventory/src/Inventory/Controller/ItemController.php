@@ -37,9 +37,29 @@ class ItemController extends AbstractActionController
 
     protected $itemSearchService;
 
+    protected $itemReportService;
+
     protected $smptService;
 
     protected $cacheService;
+
+    /**
+     *
+     * @return \Inventory\Service\Report\ItemReportService
+     */
+    public function getItemReportService()
+    {
+        return $this->itemReportService;
+    }
+
+    /**
+     *
+     * @param \Inventory\Service\Report\ItemReportService $itemReportService
+     */
+    public function setItemReportService(\Inventory\Service\Report\ItemReportService $itemReportService)
+    {
+        $this->itemReportService = $itemReportService;
+    }
 
     /*
      * Defaul Action
@@ -97,7 +117,6 @@ EOT;
         ));
     }
 
-     
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -174,6 +193,12 @@ EOT;
         $nmtPlugin = $this->Nmtplugin();
         $item_group_list = $nmtPlugin->itemGroupList();
         $uom_list = $nmtPlugin->uomList();
+        
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+        
+        
 
         // accepted only ajax request
         if (! $request->isXmlHttpRequest()) {
@@ -211,6 +236,8 @@ EOT;
         $pictures = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy(array(
             "item" => $entity_id
         ));
+        
+        $onhand_list = $this->itemReportService->getOnhandReportByItem($entity, $u, __METHOD__);
 
         if ($entity instanceof NmtInventoryItem) {
             return new ViewModel(array(
@@ -228,7 +255,8 @@ EOT;
                 'total_ap_row' => $item['total_ap_row'],
                 'total_po_row' => $item['total_po_row'],
                 'total_qo_row' => $item['total_qo_row'],
-                'tab_idx' => $tab_idx
+                'tab_idx' => $tab_idx,
+                'onhand_list' => $onhand_list,                
             ));
         }
 
@@ -243,7 +271,7 @@ EOT;
     {
         $id = $this->params()->fromQuery('id');
 
-        /**@var \Application\Entity\NmtInventoryItem $item ;*/        
+        /**@var \Application\Entity\NmtInventoryItem $item ;*/
         $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->findOneBy(array(
             "id" => $id
         ));
@@ -253,29 +281,29 @@ EOT;
         if ($item != null) {
             $a_json_row["id"] = $item->getId();
             $a_json_row["token"] = $item->getToken();
-            
+
             $uom_code = '';
             $purchase_uom_code = '';
-            
-            if($item->getStandardUom()!=null){
+
+            if ($item->getStandardUom() != null) {
                 $uom_code = $item->getStandardUom()->getUomCode();
                 $purchase_uom_code = $uom_code;
             }
-                
+
             $a_json_row["uom_code"] = $uom_code;
-            
-             if($item->getPurchaseUom()!=null){
+
+            if ($item->getPurchaseUom() != null) {
                 $purchase_uom_code = $item->getPurchaseUom()->getUomCode();
             }
-            
+
             $a_json_row["purchase_uom_code"] = $purchase_uom_code;
-            
+
             $purchaseCF = 1;
-            if($item->getPurchaseUomConvertFactor()!=null){
+            if ($item->getPurchaseUomConvertFactor() != null) {
                 $purchaseCF = $item->getPurchaseUomConvertFactor();
             }
-            $a_json_row["purchase_uom_convert_factor"] = $purchaseCF;            
-         }
+            $a_json_row["purchase_uom_convert_factor"] = $purchaseCF;
+        }
         // var_dump($a_json);
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
@@ -326,7 +354,7 @@ EOT;
 
             $uom_id = (int) $request->getPost('uom_id');
             $stock_uom_id = (int) $request->getPost('stock_uom_id');
-            
+
             $purchase_uom_id = (int) $request->getPost('purchase_uom_id');
             $sales_uom_id = (int) $request->getPost('sales_uom_id');
 
@@ -428,37 +456,37 @@ EOT;
 
             // $entity->setOrigin($origin);
             // $entity->setSerialNumber($serialNumber);
-            
+
             if ($uom_id == 0 or $uom_id == null) {
                 $errors[] = 'Please give standard measurement!';
             } else {
                 $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $uom_id);
-                
+
                 if ($uom !== null) {
                     $entity->setStandardUom($uom);
                 } else {
                     $errors[] = 'Please give standard measurement!';
                 }
             }
-            
+
             if ($stock_uom_id == 0 or $uom_id == null) {
                 $errors[] = 'Please give stock measurement!';
             } else {
                 $stock_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $stock_uom_id);
-                
+
                 if ($stock_uom !== null) {
                     $entity->setStockUom($stock_uom);
                 } else {
                     $errors[] = 'Please give stock measurement!';
                 }
             }
-            
+
             if ($stockUomConvertFactor != null) {
-                
+
                 if (! is_numeric($stockUomConvertFactor)) {
                     $errors[] = $nmtPlugin->translate('Please give conversion factor');
                 } else {
-                    
+
                     if ($stockUomConvertFactor <= 0) {
                         $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
                     } else {
@@ -466,24 +494,24 @@ EOT;
                     }
                 }
             }
-            
+
             $n_validated = 0;
             if ($purchase_uom_id != 0 or $purchase_uom_id != null) {
-                
+
                 $purchase_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $purchase_uom_id);
-                
+
                 if ($purchase_uom !== null) {
                     $entity->setPurchaseUom($purchase_uom);
                     $n_validated ++;
                 }
             }
-            
+
             if ($purchaseUomConvertFactor != null) {
-                
+
                 if (! is_numeric($purchaseUomConvertFactor)) {
                     $errors[] = $nmtPlugin->translate('Please give conversion factor');
                 } else {
-                    
+
                     if ($purchaseUomConvertFactor <= 0) {
                         $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
                     } else {
@@ -642,8 +670,7 @@ EOT;
                 // $this->itemSearchService->addDocument ( $new_item, true );
                 $indexing_log = $this->itemSearchService->updateItemIndex(1, $new_item, false);
 
-                $m = sprintf('[OK] (%s) #%s %s created.<br> %s', $itemName, $new_item->getId(), $new_item->getSysNumber(),$indexing_log);
-                
+                $m = sprintf('[OK] (%s) #%s %s created.<br> %s', $itemName, $new_item->getId(), $new_item->getSysNumber(), $indexing_log);
 
                 // Trigger. AbtractController is EventManagerAware.
                 $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
@@ -763,14 +790,14 @@ EOT;
 
                 $uom_id = (int) $request->getPost('uom_id');
                 $stock_uom_id = (int) $request->getPost('stock_uom_id');
-                
+
                 $purchase_uom_id = (int) $request->getPost('purchase_uom_id');
                 $sales_uom_id = (int) $request->getPost('sales_uom_id');
-                
+
                 $stockUomConvertFactor = $request->getPost('stockUomConvertFactor');
                 $purchaseUomConvertFactor = $request->getPost('purchaseUomConvertFactor');
                 $salesUomConvertFactor = $request->getPost('salesUomConvertFactor');
-                
+
                 $leadTime = $request->getPost('leadTime');
 
                 $isActive = (int) $request->getPost('isActive');
@@ -876,25 +903,25 @@ EOT;
                         $errors[] = 'Please give standard measurement!';
                     }
                 }
-                
+
                 if ($stock_uom_id == 0 or $uom_id == null) {
                     $errors[] = 'Please give standard measurement!';
                 } else {
                     $stock_uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $stock_uom_id);
-                    
+
                     if ($stock_uom !== null) {
                         $entity->setStockUom($stock_uom);
                     } else {
                         $errors[] = 'Please give stock measurement!';
                     }
                 }
-                
+
                 if ($stockUomConvertFactor != null) {
-                    
+
                     if (! is_numeric($stockUomConvertFactor)) {
                         $errors[] = $nmtPlugin->translate('Please give conversion factor');
                     } else {
-                        
+
                         if ($stockUomConvertFactor <= 0) {
                             $errors[] = $nmtPlugin->translate('Conversion Factor must be greater than 0!');
                         } else {
@@ -1060,12 +1087,12 @@ EOT;
                     }
 
                     // update index
-                    //$this->itemSearchService->updateIndex(0, $new_item, false);
-                    
+                    // $this->itemSearchService->updateIndex(0, $new_item, false);
+
                     $indexing_log = $this->itemSearchService->updateItemIndex(0, $entity, false);
-                    //$m = sprintf('[OK] (%s) #%s %s created.<br/> %s', $itemName, $new_item->getId(), $new_item->getSysNumber(),$indexing_log);
-                   
-                    $m = sprintf('[OK] (%s) #%s %s updated. Change no.:%s.<br/> %s', $itemName, $new_item->getId(), $new_item->getSysNumber(), count($changeArray),$indexing_log);
+                    // $m = sprintf('[OK] (%s) #%s %s created.<br/> %s', $itemName, $new_item->getId(), $new_item->getSysNumber(),$indexing_log);
+
+                    $m = sprintf('[OK] (%s) #%s %s updated. Change no.:%s.<br/> %s', $itemName, $new_item->getId(), $new_item->getSysNumber(), count($changeArray), $indexing_log);
 
                     // Trigger Change Log. AbtractController is EventManagerAware.
                     $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
@@ -1779,8 +1806,6 @@ EOT;
 
             // Draw the barcode in a new image,
             Barcode::factory('code39', 'image', $barcodeOptions, $rendererOptions)->render();
-              
-            
         } else {
             return;
         }

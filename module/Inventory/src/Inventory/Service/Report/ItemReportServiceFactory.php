@@ -1,6 +1,6 @@
 <?php
 
-namespace Inventory\Service;
+namespace Inventory\Service\Report;
 
 
 use Zend\ServiceManager\FactoryInterface;
@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-class WarehouseServiceFactory implements FactoryInterface {
+class ItemReportServiceFactory implements FactoryInterface {
 	
 	/**
 	 * 
@@ -22,7 +22,7 @@ class WarehouseServiceFactory implements FactoryInterface {
 		
 		$container = $serviceLocator;
 		
-		$service = new WarehouseService();
+		$service = new ItemReportService();
 		
 		$sv =  $container->get('ControllerPluginManager');
 		$service->setControllerPlugin($sv->get('NmtPlugin'));

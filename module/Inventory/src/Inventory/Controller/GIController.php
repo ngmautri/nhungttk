@@ -235,7 +235,7 @@ class GIController extends AbstractActionController
                 $entity->setLocalCurrency($default_cur);
             }
 
-            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, FALSE);
+            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, FALSE,__METHOD__);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
@@ -355,7 +355,7 @@ class GIController extends AbstractActionController
 
             $entity = new NmtInventoryMv();
             $entity->setLocalCurrency($default_cur);
-            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, TRUE);
+            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, TRUE,__METHOD__);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
@@ -376,7 +376,8 @@ class GIController extends AbstractActionController
             }
 
             $m = sprintf('[OK] Inventory transaction %s created.', $entity->getId());
-
+            
+            $redirectUrl =sprintf('/inventory/gi-row/add?token=%s&target_id=%s',$entity->getToken(),$entity->getId());
             $this->flashMessenger()->addMessage($m);
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -486,6 +487,7 @@ class GIController extends AbstractActionController
             }
 
             $errors = $this->inventoryTransactionService->post($entity, $data, $u, true, true, __METHOD__);
+            
             if (count($errors) > 0) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
@@ -497,7 +499,7 @@ class GIController extends AbstractActionController
                 ));
             }
 
-            $m = sprintf("[OK] Goods Movement: %s created!", $entity->getId());
+            $m = sprintf("[OK] Goods Movement: %s posted!", $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
 
             $redirectUrl = "/inventory/item-transaction/list";

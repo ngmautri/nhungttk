@@ -40,7 +40,7 @@ class GIforCostCenter extends \Inventory\Model\AbstractTransactionStrategy
             $errors[] = $this->getContextService()
                 ->getControllerPlugin()
                 ->translate('Cost Center is required');
-        }else{
+        } else {
             $entity->setCostCenter($cc);
         }
         return $errors;
@@ -66,39 +66,37 @@ class GIforCostCenter extends \Inventory\Model\AbstractTransactionStrategy
         return \Inventory\Model\Constants::INVENTORY_GI_FOR_COST_CENTER;
     }
 
-    
-        
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::doPosting()
      */
     public function doPosting($entity, $u, $isFlush = false)
-    {}
-    
+    {       
+        // no need to do any thing.
+    }
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::createMovement()
      */
     public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger = null)
     {}
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::check()
      */
     public function check($trx, $item, $u)
     {}
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
      */
     public function reverse($entity, $u, $reversalDate, $isFlush = false)
     {}
-
-
 }

@@ -13,6 +13,13 @@ use Inventory\Model\AbstractTransactionStrategy;
  */
 class GRfromPurchasing extends AbstractTransactionStrategy
 {
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Model\AbstractTransactionStrategy::validateRow()
+     */
+    public function validateRow($entity, $data, $u, $isNew, $isPosting)
+    {}
 
     /**
      *
@@ -235,4 +242,6 @@ class GRfromPurchasing extends AbstractTransactionStrategy
             'isFlush' => $isFlush,
         ));
     }
+   
+
 }

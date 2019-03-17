@@ -30,6 +30,8 @@ class Constants
     const INVENTORY_GI_FOR_DISPOSAL = 'GI999';
 
     // ========================================
+    const INVENTORY_GR_FROM_OPENNING_BALANCE = 'GR000';    
+    
     const INVENTORY_GR_FROM_PURCHASING = 'GR100';
 
     const INVENTORY_GR_FROM_PURCHASING_REVERSAL = 'GR100-1';

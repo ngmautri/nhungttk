@@ -42,40 +42,27 @@ class InventoryTransactionService extends AbstractService
 
         // ====== Validated 1 ====== //
 
-        if ($isPosting == false) {
-
-            if (isset($data['movementType'])) {
-                $movementType = $data['movementType'];
-            } else {
-                $errors[] = $this->controllerPlugin->translate('No input given movementType');
-            }
-        }
-
-        if (isset($data['movementDate'])) {
-            $movementDate = $data['movementDate'];
+        if (isset($data['remarks'])) {
+            $remarks = $data['remarks'];
+            $entity->setRemarks($remarks);
         } else {
-            $errors[] = $this->controllerPlugin->translate('No input given movementDate');
+            $errors[] = $this->controllerPlugin->translate('No input given remarks');
         }
 
-        if ($isPosting == false) {
-
-            if (isset($data['source_wh_id'])) {
-                $source_wh_id = $data['source_wh_id'];
-            } else {
-                $errors[] = $this->controllerPlugin->translate('No input given source_wh_id');
-            }
+        // only update remark posible, when posted.
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED or $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
+            return null;
         }
 
         if (isset($data['isActive'])) {
             $isActive = (int) $data['isActive'];
+            if ($isActive != 1) {
+                $isActive = 0;
+            }
+
+            $entity->setIsActive($isActive);
         } else {
             $errors[] = $this->controllerPlugin->translate('No input given isActive?');
-        }
-
-        if (isset($data['remarks'])) {
-            $remarks = $data['remarks'];
-        } else {
-            $errors[] = $this->controllerPlugin->translate('No input given remarks');
         }
 
         if (count($errors) > 0) {
@@ -84,76 +71,32 @@ class InventoryTransactionService extends AbstractService
 
         // ====== Validated 2 ====== //
 
-        $entity->setRemarks($remarks);
-
-        // only update remark posible, when posted.
-        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED or $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
-            return null;
-        }
-
-        if ($isActive != 1) {
-            $isActive = 0;
-        }
-
-        $entity->setIsActive($isActive);
-
-        if ($isPosting == false) {
-
-            if ($movementType == null) {
-                $errors[] = $this->controllerPlugin->translate('Inventory movement type is not selected!');
-            } else {
-
-                // validate movement Type.
-                $movementStrategy = \Inventory\Model\InventoryTransactionStrategyFactory::getMovementStrategy($movementType);
-
-                if (! $movementStrategy instanceof \Inventory\Model\AbstractTransactionStrategy) {
-                    $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented yet!');
-                } else {
-
-                    if ($movementStrategy->getFlow() == null) {
-                        $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented correctly!');
-                    } else {
-                        $entity->setMovementType($movementType);
-                        $entity->setMovementFlow($movementStrategy->getFlow());
-                    }
-                }
-            }
-        }
-
-        // check invoice date
-        $ck = $this->checkMovementDate($entity, $movementDate, $isPosting);
+        // check movement date
+        $ck = $this->checkMovementDate($entity, $data, $isPosting);
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
         }
 
-        if ($isPosting == false) {
+        // only allow to change transacion type and warehouse, when no line is created.
+        $criteria = array(
+            'isActive' => 1,
+            'movement' => $entity
+        );
+        $rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
 
-            $warehouse = null;
-            if ($source_wh_id > 0) {
-                $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($source_wh_id);
+        if (count($rows) == 0) {
+            // check movement type
+            $ck = $this->checkMovementType($entity, $data, $rows, $isPosting);
+            if (count($ck) > 0) {
+                $errors = array_merge($errors, $ck);
             }
 
-            if ($warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
-                // check authority
-
-                if ($warehouse->getWhController() !== null) {
-                    $checkALC = $this->controllerPlugin->isParent($u, $warehouse->getWhController());
-
-                    if (isset($checkALC['result']) and isset($checkALC['message'])) {
-                        if ($checkALC['result'] == 0) {
-                            $errors[] = $this->controllerPlugin->translate("No authority to perform this operation on this Warehouse: " . $warehouse->getWhName());
-                        } else {
-                            $entity->setWarehouse($warehouse);
-                        }
-                    } else {
-                        $errors[] = $this->controllerPlugin->translate("ACL checking failed");
-                    }
-                }
-            } else {
-                $errors[] = $this->controllerPlugin->translate('Warehouse is not selected');
+            // check warehouse
+            $ck = $this->checkWarehouse($entity, $data, $u, $isPosting);
+            if (count($ck) > 0) {
+                $errors = array_merge($errors, $ck);
             }
         }
-        $entity->setRemarks($remarks);
 
         return $errors;
     }
@@ -165,7 +108,7 @@ class InventoryTransactionService extends AbstractService
      * @param \Application\Entity\MlaUsers $u,
      * @param boolean $isNew
      */
-    public function saveHeader($entity, $data, $u, $isNew = FALSE)
+    public function saveHeader($entity, $data, $u, $isNew = FALSE, $trigger = null)
     {
         $errors = array();
 
@@ -247,7 +190,7 @@ class InventoryTransactionService extends AbstractService
 
                 $m = sprintf('[OK] WH Transaction #%s updated.', $entity->getId());
 
-                $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
+                $this->getEventManager()->trigger('inventory.change.log', $trigger, array(
                     'priority' => 7,
                     'message' => $m,
                     'objectId' => $entity->getId(),
@@ -261,7 +204,7 @@ class InventoryTransactionService extends AbstractService
                 ));
             }
 
-            $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
+            $this->getEventManager()->trigger('inventory.activity.log', $trigger, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'createdBy' => $u,
@@ -310,19 +253,6 @@ class InventoryTransactionService extends AbstractService
 
         // ====== VALIDATED 1 ====== //
 
-        // basic information.
-        if (isset($data['item_id'])) {
-            $item_id = $data['item_id'];
-        } else {
-            $errors[] = $this->controllerPlugin->translate('No input given "item_id"');
-        }
-
-        if (isset($data['quantity'])) {
-            $quantity = $data['quantity'];
-        } else {
-            $errors[] = $this->controllerPlugin->translate('No input given "quantity"');
-        }
-
         /*
          * $convert_factor = 1;
          * if (isset($data['convert_factor'])) {
@@ -354,32 +284,10 @@ class InventoryTransactionService extends AbstractService
 
         // ====== VALIDATED 2 ====== //
 
-        /**@var \Application\Entity\NmtInventoryItem $item ;*/
-        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
-
-        if ($item == null) {
-            $errors[] = $this->controllerPlugin->translate('No Item is selected');
-        } else {
-            if ($item->getIsStocked() != 1) {
-                $errors[] = $this->controllerPlugin->translate('Item is not kept in stock');
-            } else {
-                $entity->setItem($item);
-            }
-        }
-
-        if ($quantity == null) {
-            $errors[] = $this->controllerPlugin->translate('Please enter quantity!');
-        } else {
-
-            if (! is_numeric($quantity)) {
-                $errors[] = $this->controllerPlugin->translate('Quantity must be a number!');
-            } else {
-                if ($quantity <= 0) {
-                    $errors[] = $this->controllerPlugin->translate('Quantity must be greater than 0!');
-                } else {
-                    $entity->setQuantity($quantity);
-                }
-            }
+        // check movement date
+        $ck = $this->checkOnHandQuantity($entity, $data, $u, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
         }
 
         /*
@@ -551,21 +459,19 @@ class InventoryTransactionService extends AbstractService
         if (! $entity instanceof \Application\Entity\NmtInventoryMv) {
             $m = $this->controllerPlugin->translate("Invalid Argument. WH transaction not found!");
             $errors[] = $m;
-        }   
-        
+        }
 
         if (count($errors) > 0) {
             return $errors;
         }
 
         // ====== VALIDATED 1 ====== //
-        
+
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
             $entity->setCurrency($default_cur);
         }
-        
 
         $ck = $this->validateHeader($entity, $data, $u, false, true);
 
@@ -582,9 +488,13 @@ class InventoryTransactionService extends AbstractService
                 throw new \Exception("Posting Strategy can't not be identified for this inventory movement type!");
             }
 
-            // do posting now
+            // Do posting now
             $postingStrategy->setContextService($this);
-            $postingStrategy->doPosting($entity, $u, true);
+            
+            if($entity->getMovementFlow() == \Inventory\Model\Constants::WH_TRANSACTION_OUT){
+                $postingStrategy->runGIPosting($entity, $u, true);
+            }
+            
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }
@@ -683,11 +593,21 @@ class InventoryTransactionService extends AbstractService
      * @param string $data
      * @param boolean $isPosting
      */
-    private function checkMovementDate(\Application\Entity\NmtInventoryMv $entity, $movementDate, $isPosting)
+    private function checkMovementDate(\Application\Entity\NmtInventoryMv $entity, $data, $isPosting)
     {
         $errors = array();
 
-        // ==========OK=========== //
+        if (isset($data['movementDate'])) {
+            $movementDate = $data['movementDate'];
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given "movementDate"');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ==========Validated=========== //
 
         $validator = new Date();
 
@@ -728,6 +648,180 @@ class InventoryTransactionService extends AbstractService
             }
         }
 
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param string $data
+     * @param boolean $isPosting
+     */
+    private function checkMovementType(\Application\Entity\NmtInventoryMv $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        // ==========Validated 1=========== //
+
+        if (isset($data['movementType'])) {
+            $movementType = $data['movementType'];
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given movementType');
+            return $errors;
+        }
+
+        // ==========Validated 2=========== //
+
+        if ($movementType == null) {
+            $errors[] = $this->controllerPlugin->translate('Inventory movement type is not selected!');
+        } else {
+
+            // validate movement Type.
+            $movementStrategy = \Inventory\Model\InventoryTransactionStrategyFactory::getMovementStrategy($movementType);
+
+            if (! $movementStrategy instanceof \Inventory\Model\AbstractTransactionStrategy) {
+                $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented yet!');
+            } else {
+
+                if ($movementStrategy->getFlow() == null) {
+                    $errors[] = $this->controllerPlugin->translate('Inventory movement strategy is not implemented correctly!');
+                } else {
+                    $entity->setMovementType($movementType);
+                    $entity->setMovementFlow($movementStrategy->getFlow());
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryTrx $entity
+     * @param string $data
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isPosting
+     */
+    private function checkOnHandQuantity(\Application\Entity\NmtInventoryTrx $entity, $data, $u, $isPosting)
+    {
+        $errors = array();
+
+        // basic information.
+        if (isset($data['item_id'])) {
+            $item_id = $data['item_id'];
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given "item_id"');
+        }
+
+        if (isset($data['quantity'])) {
+            $quantity = $data['quantity'];
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given "quantity"');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 1 ====== //
+
+        /**@var \Application\Entity\NmtInventoryItem $item ;*/
+        $item = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem')->find($item_id);
+
+        if ($item == null) {
+            $errors[] = $this->controllerPlugin->translate('No Item is selected');
+        } else {
+            if ($item->getIsStocked() != 1) {
+                $errors[] = $this->controllerPlugin->translate('Item is not kept in stock');
+            } else {
+                $entity->setItem($item);
+            }
+        }
+
+        if ($quantity == null) {
+            $errors[] = $this->controllerPlugin->translate('Please enter quantity!');
+        } else {
+
+            if (! is_numeric($quantity)) {
+                $errors[] = $this->controllerPlugin->translate('Quantity must be a number!');
+            } else {
+                if ($quantity <= 0) {
+                    $errors[] = $this->controllerPlugin->translate('Quantity must be greater than 0!');
+                } else {
+                    $entity->setQuantity($quantity);
+                }
+            }
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 2 ====== //
+
+        // now checking onhand-quantity
+        $itemReportService = new \Inventory\Service\Report\ItemReportService();
+        $itemReportService->setDoctrineEM($this->getDoctrineEM());
+        $itemReportService->setControllerPlugin($this->getControllerPlugin());
+
+        $onhand = $itemReportService->getOnhandInWahrehouse($item, $entity->getWh(), $u);
+
+        if ($onhand < $quantity) {
+            $m = $this->controllerPlugin->translate('Goods Issue imposible. Issue Quantity > On-hand Quantity');
+            $m = sprintf($m . ' (%s>%s)', $quantity, $onhand);
+            $errors[] = $m;
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param string $data
+     * @param boolean $isPosting
+     */
+    private function checkWarehouse(\Application\Entity\NmtInventoryMv $entity, $data, $u, $isPosting)
+    {
+        $errors = array();
+
+        if (isset($data['source_wh_id'])) {
+            $source_wh_id = $data['source_wh_id'];
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given source_wh_id');
+            return $errors;
+        }
+
+        // ==========OK=========== //
+
+        $warehouse = null;
+        if ($source_wh_id > 0) {
+            $warehouse = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->find($source_wh_id);
+        }
+
+        if (! $warehouse instanceof \Application\Entity\NmtInventoryWarehouse) {
+            $errors[] = $this->controllerPlugin->translate('Warehouse is not selected');
+            return $errors;
+        }
+
+        if ($warehouse->getWhController() == null) {
+            $entity->setWarehouse($warehouse);
+            return null;
+        }
+
+        // if WH has controller.
+        $checkALC = $this->controllerPlugin->isParent($u, $warehouse->getWhController());
+
+        if (isset($checkALC['result']) and isset($checkALC['message'])) {
+            if ($checkALC['result'] == 0) {
+                $errors[] = $this->controllerPlugin->translate("No authority to perform this operation on this Warehouse: " . $warehouse->getWhName());
+            } else {
+                $entity->setWarehouse($warehouse);
+            }
+        } else {
+                $errors[] = $this->controllerPlugin->translate("ACL checking failed");
+            }
+        
         return $errors;
     }
 }

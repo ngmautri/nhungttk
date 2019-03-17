@@ -2,13 +2,12 @@
 
 namespace Inventory\Controller;
 
-use Inventory\Controller\ItemController;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * 
- * @author nmt
+ * @author Nguyen Mau Tri
  *
  */
 class ItemControllerFactory implements FactoryInterface{
@@ -36,6 +35,9 @@ class ItemControllerFactory implements FactoryInterface{
 	
 		$sv =  $container->get('Inventory\Service\ItemSearchService');
 		$controller->setItemSearchService($sv);
+	
+		$sv =  $container->get('Inventory\Service\Report\ItemReportService');
+		$controller->setItemReportService($sv);
 		
 		$sv =  $container->get('FileSystemCache');
 		$controller->setCacheService($sv);

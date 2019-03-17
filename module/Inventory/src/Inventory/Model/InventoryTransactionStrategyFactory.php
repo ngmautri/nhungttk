@@ -20,6 +20,10 @@ class InventoryTransactionStrategyFactory
         switch ($tTransaction) {
             
             // GOOD RECEIPT
+
+            case \Inventory\Model\Constants::INVENTORY_GR_FROM_OPENNING_BALANCE:
+                return new \Inventory\Model\GR\GRfromOpeningBalance();
+                
             case \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING:
                 return new \Inventory\Model\GR\GRfromPurchasing();
 

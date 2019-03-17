@@ -1,8 +1,6 @@
 <?php
 namespace Inventory\Model\GI;
 
-use Inventory\Service\FIFOLayerService;
-
 /**
  * Machine ID is required, exchange part.
  *
@@ -34,27 +32,36 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
 
         // ====== VALIDATED 2 ====== //
         /**@var \Application\Entity\NmtInventoryItem $issue_for_item ;*/
-        $issue_for_item = $this->getContextService()->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryItem')->find($issue_for_id);
-        
+        $issue_for_item = $this->getContextService()
+            ->getDoctrineEM()
+            ->getRepository('Application\Entity\NmtInventoryItem')
+            ->find($issue_for_id);
+
         $no_errors = 0;
         if ($issue_for_item == null) {
-            $errors[] = $this->getContextService()->getControllerPlugin()->translate('Machine ID is required');
+            $errors[] = $this->getContextService()
+                ->getControllerPlugin()
+                ->translate('Machine ID is required');
         } else {
             if ($issue_for_item == $entity->getItem()) {
-                $errors[] = $this->getContextService()->getControllerPlugin()->translate('Item is the same');
-                $no_errors++;
+                $errors[] = $this->getContextService()
+                    ->getControllerPlugin()
+                    ->translate('Item is the same');
+                $no_errors ++;
             }
 
-            if ($issue_for_item->getIsFixedAsset()==0) {
-                $errors[] = $this->getContextService()->getControllerPlugin()->translate('Item is not a machine');
-                $no_errors++;
+            if ($issue_for_item->getIsFixedAsset() == 0) {
+                $errors[] = $this->getContextService()
+                    ->getControllerPlugin()
+                    ->translate('Item is not a machine');
+                $no_errors ++;
             }
-            
-            if($no_errors==0){
+
+            if ($no_errors == 0) {
                 $entity->setIssueFor($issue_for_item);
             }
         }
-       return $errors;
+        return $errors;
     }
 
     /**
@@ -114,69 +121,12 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
             ->getRepository('Application\Entity\NmtInventoryTrx')
             ->findBy($criteria, $sort);
 
-        if (count($rows) == 0) {
-            throw new \Exception("Movement is empty");
-        }
-
-        
-        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-        $entity->setIsDraft(0);
-        $entity->setIsPosted(1);
-        $this->contextService->getDoctrineEM()->persist($entity);
-        
-        /**
-         * 
-         * @todo: deduct fifo layer.
-         */
-        $fifoLayerService = new FIFOLayerService();
-        $fifoLayerService->setDoctrineEM($this->contextService->getDoctrineEM());
-
-        $n = 0;
-        $total_credit = 0;
-        $total_local_credit = 0;
-
-        // Create JE
-        $je = new \Application\Entity\FinJe();
-        $je->setCurrency($entity->getCurrency());
-        $je->setLocalCurrency($entity->getCurrency());
-        $je->setExchangeRate($entity->getExchangeRate());
-
-        $je->setPostingDate($entity->getMovementDate());
-        $je->setDocumentDate($entity->getMovementDate());
-        $je->setPostingPeriod($entity->getPostingPeriod());
-
-        $je->getDocType("JE");
-        $je->setCreatedBy($u);
-        $je->setCreatedOn($entity->getCreatedOn());
-        $je->setSysNumber($this->contextService->getControllerPlugin()
-            ->getDocNumber($je));
-
-        $je->setSourceClass(get_class($entity));
-        $je->setSourceId($entity->getId());
-        $je->setSourceToken($entity->getToken());
-
-        $this->contextService->getDoctrineEM()->persist($je);
-
         foreach ($rows as $r) {
             /** @var \Application\Entity\NmtInventoryTrx $r */
 
             if ($r->getQuantity() == 0) {
                 continue;
             }
-
-            $r->setTrxDate($entity->getMovementDate());            
-            $r->setDocStatus($entity->getMovementType());
-            $r->setDocType($entity->getMovementType());
-            $r->setTransactionType($entity->getMovementType());
-       
-           /**
-            * 
-            * @todo: Calculate cost of goods.
-            */
-            $cogs = $fifoLayerService->valuateTrx($r, $r->getItem(), $r->getQuantity(), $u);
-            $r->setCogsLocal($cogs);
-            
-            $this->contextService->getDoctrineEM()->persist($r);            
 
             // Exchanging Part.
             $item_ex = new \Application\Entity\NmtInventoryItemExchange();
@@ -190,78 +140,7 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
             $item_ex->setTrx($r);
             $item_ex->setRemarks("Auto receipt old/defect part back into store!");
             $this->contextService->getDoctrineEM()->persist($item_ex);
-
-            // generate JE voucher.
-            // Create JE Row - DEBIT
-
-            $je_row = new \Application\Entity\FinJeRow();
-            $je_row->setJe($je);
-
-            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-
-            // Debit on Cost Account
-            $criteria = array(
-                'id' => 6
-            );
-            $gl_account = $this->contextService->getDoctrineEM()
-                ->getRepository('Application\Entity\FinAccount')
-                ->findOneBy($criteria);
-            $je_row->setGlAccount($gl_account);
-
-            $je_row->setDocAmount($cogs);
-            $je_row->setLocalAmount($cogs);
-
-            $total_credit = $total_credit + $cogs;
-            $total_local_credit = $total_credit;
-
-            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
-
-            $je_row->setCreatedBy($u);
-            $je_row->setCreatedOn($entity->getCreatedOn());
-
-            $this->contextService->getDoctrineEM()->persist($je_row);
         }
-
-        if ($total_credit > 0) {
-
-            // Create JE Row - Credit
-            $je_row = new \Application\Entity\FinJeRow();
-
-            $je_row->setJe($je);
-
-            /**
-             *
-             * @todo: Using Control G/L account of Vendor
-             */
-
-            // credit on inventory
-            $criteria = array(
-                'id' => 3
-            );
-            $gl_account = $this->contextService->getDoctrineEM()
-                ->getRepository('Application\Entity\FinAccount')
-                ->findOneBy($criteria);
-            $je_row->setGlAccount($gl_account);
-            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
-            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
-
-            $je_row->setDocAmount($total_credit);
-            $je_row->setLocalAmount($total_local_credit);
-
-            $je_row->setCreatedBy($u);
-            $je_row->setCreatedOn($entity->getCreatedOn());
-
-            $n = $n + 1;
-            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
-            $this->contextService->getDoctrineEM()->persist($je_row);
-        }
-
-        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
-            $entity->setSysNumber($this->contextService->getControllerPlugin()
-                ->getDocNumber($entity));
-        }
-
         $this->contextService->getDoctrineEM()->flush();
     }
 
@@ -278,6 +157,6 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
      * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::createMovement()
      */
-    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger=null)
+    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger = null)
     {}
 }

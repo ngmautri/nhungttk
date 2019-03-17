@@ -52,9 +52,21 @@
 	</div>
 
 </div>
-	
-
 </td>
+<td style="width:100pt;"><td>	
+<td>
+
+<?php 
+if(count($onhand_list)>0){
+    
+    foreach ( $onhand_list as $a ) :
+    echo 'Warehouse #' .$a['wh_id'] . ': ' . $a['current_balance'] . '<br/>';
+    endforeach;
+}
+    
+?>
+<td>
+
 <tr>
 
 </table>

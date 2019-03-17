@@ -3,7 +3,7 @@ namespace Inventory\Model\GR;
 
 use Zend\Math\Rand;
 use Zend\Validator\Date;
-use Inventory;
+use Inventory\Model\AbstractTransactionStrategy;
 
 /**
  * Machine ID is required.
@@ -11,9 +11,8 @@ use Inventory;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrategy
+class GRfromOpeningBalance extends AbstractTransactionStrategy
 {
-
     /**
      * 
      * {@inheritDoc}
@@ -21,6 +20,8 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
      */
     public function validateRow($entity, $data, $u, $isNew, $isPosting)
     {}
+    
+
     /**
      *
      * {@inheritdoc}
@@ -28,7 +29,7 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
      */
     public function getFlow()
     {
-        return \Inventory\Model\Constants::WH_TRANSACTION_OUT;
+        return \Inventory\Model\Constants::WH_TRANSACTION_IN;
     }
 
     /**
@@ -38,7 +39,7 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
      */
     public function getTransactionIdentifer()
     {
-        return \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL;
+        return \Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING;
     }
 
     /**
@@ -139,84 +140,79 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
         $createdOn = new \DateTime();
 
         $mv = new \Application\Entity\NmtInventoryMv();
-
         
-        $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_OUT);
-        $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
-        $mv->setTrxType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
-        $mv->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+        }
+        $mv->setLocalCurrency($default_cur);
+        
+        $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
+        $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
+        $mv->setTrxType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
 
         $mv->setIsPosted(1);
         $mv->setIsDraft(0);
         $mv->setIsActive(1);
-        $mv->setIsReversed(1);
-        
-        $mv->setRemarks('[Reversal]');
+        $mv->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
         $this->contextService->getDoctrineEM()->persist($mv);
 
         $n = 0;
+        foreach ($rows as $r) {
 
-        /**
-         *
-         * @todo: Reversal Good Receipt WH
-         */
-        foreach ($rows as $stock_gr_entity) {
-
-            /** @var \Application\Entity\NmtInventoryTrx $stock_gr_entity */
-
-            if (! $stock_gr_entity instanceof \Application\Entity\NmtInventoryTrx) {
+            /** @var \Application\Entity\NmtInventoryTrx $r */
+            if (! $r instanceof \Application\Entity\NmtInventoryTrx) {
                 continue;
             }
 
             $n ++;
+            $r->setMovement($mv);
+            
+            $r->setDocStatus($mv->getDocStatus());
+            $r->setDocType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
 
-            $stock_gr_entity->setIsReversed(1);
-            $stock_gr_entity->setReversalDate($movementDate);
-            // $stock_gr_entity->setReversalReason($r->getReversalReason());
-            // $stock_gr_entity->setLastchangedBy($u);
-            // $stock_gr_entity->setLastchangeOn($createdOn);
-            $this->contextService->getDoctrineEM()->persist($stock_gr_entity);
+            $this->contextService->getDoctrineEM()->persist($r);
 
-            // reversal
-            /** @var \Application\Entity\NmtInventoryTrx $stock_gr_entity_new ; */
-            $stock_gr_entity_new = clone ($stock_gr_entity);
+            // created FIFO if needed
+            if ($r->getItem() != null) {
 
-            $stock_gr_entity->setDocType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
-            $stock_gr_entity_new->setMovement($mv);
-            $stock_gr_entity_new->setDocStatus($mv->getDocStatus());
+                if ($r->getItem()->getIsStocked() == 1) {
 
-            $stock_gr_entity_new->setFlow(\Application\Model\Constants::WH_TRANSACTION_OUT);
-            $stock_gr_entity_new->setCreatedBy($u);
-            $stock_gr_entity_new->setCreatedOn($createdOn);
-            $stock_gr_entity_new->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                    /**
+                     *
+                     * @todo: Create FIFO Layer
+                     * @todo: recalculate price for inventory unit.
+                     */
+                    $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
 
-            $this->contextService->getDoctrineEM()->persist($stock_gr_entity_new);
+                    $fifoLayer->setIsClosed(0);
+                    $fifoLayer->setItem($r->getItem());
+                    $fifoLayer->setQuantity($r->getQuantity());
 
-            $criteria = array(
-                'sourceClass' => get_class($stock_gr_entity),
-                'sourceId' => $stock_gr_entity->getId()
-            );
+                    // set WH
+                    $fifoLayer->setWarehouse($r->getWh());
 
-            /**
-             *
-             * @todo: Reversal FIFO Layer
-             * @var \Application\Entity\NmtInventoryFifoLayer $fifoLayer ;
-             */
-            $fifoLayer = $this->contextService->getDoctrineEM()
-                ->getRepository('Application\Entity\NmtInventoryFifoLayer')
-                ->findOneBy($criteria);
+                    // will be changed uppon inventory transaction.
+                    $fifoLayer->setOnhandQuantity($r->getQuantity());
+                    $fifoLayer->setDocUnitPrice($r->getVendorUnitPrice());
+                    $fifoLayer->setLocalCurrency($r->getCurrency());
+                    $fifoLayer->setExchangeRate($r->getExchangeRate());
+                    $fifoLayer->setPostingDate($r->getTrxDate());
+                    $fifoLayer->setSourceClass(get_class($r));
+                    $fifoLayer->setSourceId($r->getID());
+                    $fifoLayer->setSourceToken($r->getToken());
 
-            if ($fifoLayer !== null) {
-                $fifoLayer->setIsClosed(1);
-                $fifoLayer->setIsReversed(1);
-                $fifoLayer->setReversalDate($movementDate);
+                    $fifoLayer->setToken(Rand::getString(22, \Application\Model\Constants::CHAR_LIST, true));
+                    $fifoLayer->setCreatedBy($u);
+                    $fifoLayer->setCreatedOn($r->getCreatedOn());
+                    $this->contextService->getDoctrineEM()->persist($fifoLayer);
+
+                /**
+                 *
+                 * @todo: Calculate Moving Average Price.
+                 */
+                }
             }
-
-        /**
-         *
-         * @todo: Reversal FIFO Layer Consumption.
-         * @var \Application\Entity\NmtInventoryFifoLayerConsume $fifoLayer_consum ;
-         */
         }
 
         if ($n > 0) {
@@ -229,15 +225,16 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
                 ->getDocNumber($mv));
             $this->contextService->getDoctrineEM()->persist($mv);
         }
-        
-        if ($isFlush == true) {
+
+        if ($isFlush == TRUE) {
             $this->contextService->getDoctrineEM()->flush();
         }
-
+        
         if ($trigger==null){
             $trigger = __METHOD__;
         }
-        $m = sprintf('[OK] Warehouse Goods Receipt %s reversed', $mv->getSysNumber());
+
+        $m = sprintf('[OK] Warehouse Goods Receipt %s posted', $mv->getSysNumber());
         $this->contextService->getEventManager()->trigger('inventory.activity.log', $trigger, array(
             'priority' => \Zend\Log\Logger::INFO,
             'message' => $m,
@@ -246,6 +243,5 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
             'isFlush' => $isFlush,
         ));
     }
-   
-
+  
 }

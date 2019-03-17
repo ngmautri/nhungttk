@@ -27,6 +27,26 @@ class GIRowController extends AbstractActionController
 
     protected $inventoryTransactionService;
 
+    protected $itemReportService;
+    
+    
+    /**
+     *
+     * @return \Inventory\Service\Report\ItemReportService
+     */
+    public function getItemReportService()
+    {
+        return $this->itemReportService;
+    }
+    
+    /**
+     *
+     * @param \Inventory\Service\Report\ItemReportService $itemReportService
+     */
+    public function setItemReportService(\Inventory\Service\Report\ItemReportService $itemReportService)
+    {
+        $this->itemReportService = $itemReportService;
+    }
     /**
      *
      * @return \Inventory\Service\InventoryTransactionService
@@ -417,9 +437,9 @@ class GIRowController extends AbstractActionController
                     $item_detail = "/inventory/item/show1?token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
-                            ->getItemName()) . "','1310',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                            ->getItemName()) . "','1450',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1310',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1450',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     }
 
                     if (strlen($a->getItem()->getItemName()) < 35) {

@@ -1,6 +1,8 @@
 <?php
 namespace Inventory\Model;
 
+use Inventory\Service\FIFOLayerService;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -11,9 +13,217 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
 
     protected $contextService;
 
+    /**
+     * Templete Method
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param bool $isFlush
+     */
+    public function runGIPosting($entity, $u, $isFlush = TRUE)
+    {
+        if (! $entity instanceof \Application\Entity\NmtInventoryMv) {
+            throw new \Exception("Movement is found");
+        }
+        $criteria = array(
+            'movement' => $entity
+        );
+
+        $sort = array();
+
+        $rows = $this->contextService->getDoctrineEM()
+            ->getRepository('Application\Entity\NmtInventoryTrx')
+            ->findBy($criteria, $sort);
+
+        if (count($rows) == 0) {
+            throw new \Exception("Movement is empty");
+        }
+
+        /**
+         * STEP 1: Calculate COGS and create consumption of FIFO Layer.
+         * =====================
+         */
+        $fifoLayerService = new FIFOLayerService();
+        $fifoLayerService->setDoctrineEM($this->contextService->getDoctrineEM());
+        $fifoLayerService->setControllerPlugin($this->contextService->getControllerPlugin());
+
+        foreach ($rows as $r) {
+
+            /** @var \Application\Entity\NmtInventoryTrx $r */
+            if ($r->getQuantity() == 0) {
+                continue;
+            }
+
+            // update transaction row
+            $r->setTrxDate($entity->getMovementDate());
+            $r->setDocStatus($entity->getMovementType());
+            $r->setDocType($entity->getMovementType());
+            $r->setTransactionType($entity->getMovementType());
+
+            // calculate COGS
+            $cogs = $fifoLayerService->calculateCOGS($r, $r->getItem(), $entity->getWarehouse(), $r->getQuantity(), $u);
+            $r->setCogsLocal($cogs);
+            $this->contextService->getDoctrineEM()->persist($r);
+        }
+
+        /**
+         * STEP 3: DO SPECIFIC TASK FOR EACH TYPE OF TRANSACTION, if need
+         * =====================
+         */
+        $this->doPosting($entity, $u, false);
+
+        /**
+         * STEP 4: CREATE JOURNAL ENTRY.
+         * Can be overwritten
+         * =====================
+         */
+        $this->createJournalEntryForGI($entity, $rows, $u, false);
+
+        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+            $entity->setSysNumber($this->contextService->getControllerPlugin()
+                ->getDocNumber($entity));
+        }
+
+        /*
+         * if ($isFlush == TRUE) {
+         * $this->contextService->getDoctrineEM()->flush();
+         * }
+         */
+
+        /**
+         * STEP 5: UPDATE HEADER
+         * =====================
+         */
+        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+        $entity->setIsDraft(0);
+        $entity->setIsPosted(1);
+        $this->contextService->getDoctrineEM()->persist($entity);
+
+        if ($isFlush == TRUE) {
+            $this->contextService->getDoctrineEM()->flush();
+        }
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param array $rows
+     * @param \Application\Entity\MlaUsers $u
+     * @param bool $isFlush
+     */
+    protected function createJournalEntryForGI($entity, $rows, $u, $isFlush)
+    {
+        $n = 0;
+        $total_credit = 0;
+        $total_local_credit = 0;
+
+        // Create JE
+        $je = new \Application\Entity\FinJe();
+        $je->setCurrency($entity->getCurrency());
+        $je->setLocalCurrency($entity->getCurrency());
+        $je->setExchangeRate($entity->getExchangeRate());
+
+        $je->setPostingDate($entity->getMovementDate());
+        $je->setDocumentDate($entity->getMovementDate());
+        $je->setPostingPeriod($entity->getPostingPeriod());
+
+        $je->getDocType("JE");
+        $je->setCreatedBy($u);
+        $je->setCreatedOn($entity->getCreatedOn());
+        $je->setSysNumber($this->contextService->getControllerPlugin()
+            ->getDocNumber($je));
+
+        $je->setSourceClass(get_class($entity));
+        $je->setSourceId($entity->getId());
+        $je->setSourceToken($entity->getToken());
+
+        $this->contextService->getDoctrineEM()->persist($je);
+
+        foreach ($rows as $r) {
+
+            /** @var \Application\Entity\NmtInventoryTrx $r */
+
+            if ($r->getQuantity() == 0) {
+                continue;
+            }
+
+            // generate JE voucher.
+            // Create JE Row - DEBIT
+
+            $je_row = new \Application\Entity\FinJeRow();
+            $je_row->setJe($je);
+
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+
+            // Debit on Cost Account
+            $criteria = array(
+                'id' => 6
+            );
+            $gl_account = $this->contextService->getDoctrineEM()
+                ->getRepository('Application\Entity\FinAccount')
+                ->findOneBy($criteria);
+            $je_row->setGlAccount($gl_account);
+
+            $je_row->setDocAmount($r->getCogsLocal());
+            $je_row->setLocalAmount($r->getCogsLocal());
+
+            $total_credit = $total_credit + $r->getCogsLocal();
+            $total_local_credit = $total_credit;
+
+            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
+
+            $this->contextService->getDoctrineEM()->persist($je_row);
+        }
+
+        if ($total_credit > 0) {
+
+            // Create JE Row - Credit
+            $je_row = new \Application\Entity\FinJeRow();
+
+            $je_row->setJe($je);
+
+            // credit on inventory
+            /**
+             *
+             * @todo: using account of item group or given.
+             */
+            $criteria = array(
+                'id' => 3
+            );
+            $gl_account = $this->contextService->getDoctrineEM()
+                ->getRepository('Application\Entity\FinAccount')
+                ->findOneBy($criteria);
+            $je_row->setGlAccount($gl_account);
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+
+            $je_row->setDocAmount($total_credit);
+            $je_row->setLocalAmount($total_local_credit);
+
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
+
+            $n = $n + 1;
+            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+            $this->contextService->getDoctrineEM()->persist($je_row);
+        }
+
+        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+            $entity->setSysNumber($this->contextService->getControllerPlugin()
+                ->getDocNumber($entity));
+        }
+
+        if ($isFlush == TRUE) {
+            $this->contextService->getDoctrineEM()->flush();
+        }
+    }
+
     abstract public function check($trx, $item, $u);
-    
-    
+
     /**
      *
      * @param \Application\Entity\NmtInventoryTrx $entity
@@ -22,7 +232,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
      * @param boolean $isNew
      * @param boolean $isPosting
      */
-    abstract public function validateRow($entity,$data,$u,$isNew, $isPosting);
+    abstract public function validateRow($entity, $data, $u, $isNew, $isPosting);
 
     /**
      *
@@ -42,7 +252,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
     abstract public function reverse($entity, $u, $reversalDate, $isFlush = false);
 
     /**
-     * 
+     *
      * @param array $rows
      * @param \Application\Entity\MlaUsers $u
      * @param boolean $isFlush
@@ -50,7 +260,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
      * @param object $wareHouse
      * @param string $trigger
      */
-    abstract public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger=null);
+    abstract public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger = null);
 
     /**
      *

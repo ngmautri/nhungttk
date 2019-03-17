@@ -168,6 +168,8 @@ return array(
             'Inventory\Service\ItemGroupService' => 'Inventory\Service\ItemGroupServiceFactory',
             
             'Inventory\Service\InventoryTransactionService' => 'Inventory\Service\InventoryTransactionServiceFactory',
+      
+            'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
             
             
         )

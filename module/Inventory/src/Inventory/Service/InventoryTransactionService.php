@@ -370,6 +370,7 @@ class InventoryTransactionService extends AbstractService
             $entity->setDocType($target->getDocType());
             $entity->setDocStatus($target->getDocStatus());
             $entity->setWh($target->getWarehouse());
+            $entity->setTrxDate($target->getMovementDate()); // important.
         }
 
         $ck = $this->validateRow($target, $entity, $u, $data, $isNew, false);
@@ -490,11 +491,10 @@ class InventoryTransactionService extends AbstractService
 
             // Do posting now
             $postingStrategy->setContextService($this);
-            
-            if($entity->getMovementFlow() == \Inventory\Model\Constants::WH_TRANSACTION_OUT){
+
+            if ($entity->getMovementFlow() == \Inventory\Model\Constants::WH_TRANSACTION_OUT) {
                 $postingStrategy->runGIPosting($entity, $u, true);
             }
-            
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }
@@ -504,7 +504,7 @@ class InventoryTransactionService extends AbstractService
 
     /**
      *
-     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param \Application\Entity\NmtInventoryMv $entity
      * @param array $data
      * @param \Application\Entity\MlaUsers $u,
      * @param bool $isFlush,
@@ -514,25 +514,25 @@ class InventoryTransactionService extends AbstractService
     {
         $errors = array();
 
-        if (! $entity instanceof \Application\Entity\FinVendorInvoice) {
-            $errors[] = $this->controllerPlugin->translate('Invalid Argument! Invoice not found)');
+        if (! $entity instanceof \Application\Entity\NmtInventoryMv) {
+            $errors[] = $this->controllerPlugin->translate('Invalid Argument! WH transaction not found)');
         } else {
 
             // only when posted.
             if ($entity->getDocStatus() !== \Application\Model\Constants::DOC_STATUS_POSTED) {
-                $errors[] = $this->controllerPlugin->translate('Invoice not posted yet. Reserval imposible.');
+                $errors[] = $this->controllerPlugin->translate('WH transaction not posted yet. Reserval imposible.');
             }
 
             // only when not reversed..
             if ($entity->getIsReversed() == 1) {
-                $errors[] = $this->controllerPlugin->translate('Invoice reversed already.');
+                $errors[] = $this->controllerPlugin->translate('WH transaction reversed already.');
             }
 
             // check if subsequce document.
             // only when not reversed..
             // 1 mean not.
             if ($entity->getIsReversable() == 1) {
-                $errors[] = $this->controllerPlugin->translate('Invoice is not reservable, becasue sequence document is created.');
+                $errors[] = $this->controllerPlugin->translate('WH transaction is not reservable, becasue sequence document is created.');
             }
         }
 
@@ -542,12 +542,12 @@ class InventoryTransactionService extends AbstractService
 
         $criteria = array(
             'isActive' => 1,
-            'invoice' => $entity
+            'movement' => $entity
         );
-        $ap_rows = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findBy($criteria);
+        $ap_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
 
         if (count($ap_rows) == 0) {
-            $errors[] = $this->controllerPlugin->translate('Invoice is empty. Reserval imposible.');
+            $errors[] = $this->controllerPlugin->translate('WH transaction is empty. Reserval imposible.');
         }
 
         if (count($errors) > 0) {
@@ -556,19 +556,17 @@ class InventoryTransactionService extends AbstractService
 
         // ====== VALIDATED 1 ====== //
 
-        /** @var \Application\Entity\FinVendorInvoice $newEntity ; */
+        /** @var \Application\Entity\NmtInventoryMv $newEntity ; */
         $newEntity = clone ($entity);
-        $newEntity->setInvoiceDate(null);
-        $newEntity->setPostingDate(null);
-
+        $newEntity->setMovementDate(null);
+        
         $data = array();
-        $data['postingDate'] = $reversalDate;
-        $data['invoiceDate'] = $reversalDate;
-
+        $data['movementDate'] = $reversalDate;
+  
         /**
          * Check Reversal Date.
          */
-        $ck = $this->checkInvoiceDate($newEntity, $data, TRUE);
+        $ck = $this->checkMovementDate($newEntity, $data, TRUE);
 
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
@@ -580,7 +578,20 @@ class InventoryTransactionService extends AbstractService
 
         // ====== VALIDATED 2 ====== //
 
-        try {} catch (\Exception $e) {
+        try {
+            $postingStrategy = InventoryTransactionStrategyFactory::getMovementStrategy($entity->getMovementType());
+            
+            if (! $postingStrategy instanceof AbstractTransactionStrategy) {
+                throw new \Exception("Posting Strategy can't not be identified for this inventory movement type!");
+            }
+            
+            // Do posting now
+            $postingStrategy->setContextService($this);
+            
+            if ($entity->getMovementFlow() == \Inventory\Model\Constants::WH_TRANSACTION_OUT) {
+                $postingStrategy->runGIReversal($entity, $u, $reversalDate, $reversalReason, TRUE);
+            }
+        } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }
 
@@ -760,16 +771,25 @@ class InventoryTransactionService extends AbstractService
         // ====== VALIDATED 2 ====== //
 
         // now checking onhand-quantity
-        $itemReportService = new \Inventory\Service\Report\ItemReportService();
-        $itemReportService->setDoctrineEM($this->getDoctrineEM());
-        $itemReportService->setControllerPlugin($this->getControllerPlugin());
 
-        $onhand = $itemReportService->getOnhandInWahrehouse($item, $entity->getWh(), $u);
+        try {
 
-        if ($onhand < $quantity) {
-            $m = $this->controllerPlugin->translate('Goods Issue imposible. Issue Quantity > On-hand Quantity');
-            $m = sprintf($m . ' (%s>%s)', $quantity, $onhand);
-            $errors[] = $m;
+            $itemReportService = new \Inventory\Service\Report\ItemReportService();
+
+            $itemReportService->setDoctrineEM($this->getDoctrineEM());
+            $itemReportService->setControllerPlugin($this->getControllerPlugin());
+
+            $onhand = $itemReportService->getOnhandInWahrehouse($entity,$item,$u);
+
+            if ($onhand < $quantity) {
+                $m = $this->controllerPlugin->translate('Goods Issue imposible. Issue Quantity > On-hand Quantity');
+                $m = sprintf($m . ' (%s>%s)', $quantity, $onhand);
+                $m = $m. $this->controllerPlugin->translate('. Please check stock or change issue date.');
+                
+                $errors[] = $m;
+            }
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
         }
 
         return $errors;

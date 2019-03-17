@@ -14,6 +14,7 @@ use Inventory\Model\AbstractTransactionStrategy;
 class GIService extends AbstractService
 {
 
+    
     /**
      *
      * @param \Application\Entity\NmtInventoryMv $entity
@@ -179,8 +180,8 @@ class GIService extends AbstractService
         if ($cost_center_id > 0) {
             $costCenter = $this->doctrineEM->getRepository('Application\Entity\FinCostCenter')->find($cost_center_id);
             $entity->setCostCenter($costCenter);
-        }else{
-            $entity->setCostCenter(null);            
+        } else {
+            $entity->setCostCenter(null);
         }
 
         $entity->setRemarks($remarks);
@@ -240,7 +241,6 @@ class GIService extends AbstractService
         }
 
         $this->getDoctrineEM()->persist($trx);
-        
     }
 
     /**

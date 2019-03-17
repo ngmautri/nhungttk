@@ -182,22 +182,8 @@ class FIFOLayerService extends AbstractService
             throw new \Exception("Nothing to valuate!");
         }
 
-        /**
-         * Important for FIFO
-         */
 
-        $criteria = array(
-            'isClosed' => 0,
-            'item' => $item,
-            'warehouse' => $warehouse
-        );
-        $sort = array(
-            'postingDate' => "ASC"
-        );
-        
-        //$layers = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryFIFOLayer')->findBy($criteria, $sort);
-
-        $sql = "SELECT * FROM nmt_inventory_fifo_layer WHERE 1 %s";
+        $sql = "SELECT * FROM nmt_inventory_fifo_layer WHERE 1 %s ORDER BY nmt_inventory_fifo_layer.posting_date ASC";
 
         $sql1 = sprintf("AND nmt_inventory_fifo_layer.posting_date <='%s'
 AND nmt_inventory_fifo_layer.is_closed=0 
@@ -214,7 +200,8 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getTrxDate()->format('Y-m-d
         
 
         if (count($layers) == 0) {
-            throw new \Exception("Goods Issue imposible. Please check the stock quantity and the issue date.");
+            $m = $this->controllerPlugin->translate("Goods Issue imposible. Please check the stock quantity and the issue date");
+            throw new \Exception($m);
         }
 
         $cogs = 0;

@@ -50,30 +50,33 @@ GROUP BY nmt_inventory_trx.item_id, nmt_inventory_trx.wh_id
 
     /**
      *
+     * @param \Application\Entity\NmtInventoryTrx $entity
      * @param \Application\Entity\NmtInventoryItem $item
-     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
+     *
      *
      * @param \Application\Entity\MlaUsers $u
      * @param string $trigger
      */
-    public function getOnhandInWahrehouse($item, $warehouse, $u, $trigger = null)
+    public function getOnhandInWahrehouse($entity, $item, $u, $trigger = null)
     {
         $sql = "
 SELECT
      SUM(nmt_inventory_fifo_layer.onhand_quantity) AS current_onhand
 FROM nmt_inventory_fifo_layer
-WHERE 1 AND %s
+WHERE 1 %s
 GROUP BY nmt_inventory_fifo_layer.item_id, nmt_inventory_fifo_layer.warehouse_id
-
 ";
 
         if ($item == null or $u == null) {
             return null;
         }
 
-        $sql1 = sprintf("nmt_inventory_fifo_layer.item_id = %s AND nmt_inventory_fifo_layer.warehouse_id = %s AND nmt_inventory_fifo_layer.is_closed=0", $item->getId(), $warehouse->getId());
+        $sql1 = sprintf("AND nmt_inventory_fifo_layer.posting_date <='%s' 
+AND nmt_inventory_fifo_layer.item_id = %s 
+AND nmt_inventory_fifo_layer.warehouse_id = %s 
+AND nmt_inventory_fifo_layer.is_closed=0", $entity->getTrxDate()->format('Y-m-d H:i:s'), $item->getId(), $entity->getWh()->getId());
+        
         $sql = sprintf($sql, $sql1);
-
         $stmt = $this->getDoctrineEM()
             ->getConnection()
             ->prepare($sql);

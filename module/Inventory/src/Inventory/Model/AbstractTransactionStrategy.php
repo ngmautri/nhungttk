@@ -2,6 +2,8 @@
 namespace Inventory\Model;
 
 use Inventory\Service\FIFOLayerService;
+use Zend\Math\Rand;
+use Zend\Validator\Date;
 
 /**
  *
@@ -12,6 +14,302 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
 {
 
     protected $contextService;
+
+    /**
+     * Templete Method
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param bool $isFlush
+     */
+    public function runGIReversal($entity, $u, $reversalDate, $reversalReason, $isFlush = TRUE)
+    {
+        if (! $entity instanceof \Application\Entity\NmtInventoryMv) {
+            throw new \Exception("WH Transaction is not found");
+        }
+        $criteria = array(
+            'movement' => $entity
+        );
+
+        $sort = array();
+
+        $rows = $this->contextService->getDoctrineEM()
+            ->getRepository('Application\Entity\NmtInventoryTrx')
+            ->findBy($criteria, $sort);
+
+        if (count($rows) == 0) {
+            throw new \Exception("WH Transaction is empty");
+        }
+
+        /**
+         * STEP 1: Duplicate WH transaction, and change to opposite flow.
+         * =====================
+         */
+
+        $changeOn = new \DateTime();
+
+        /** @var \Application\Entity\NmtInventoryMv $newEntity ;*/
+        $newEntity = clone ($entity);
+
+       
+        // updte new header to opposite flow.
+        $newEntity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
+        $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
+        $newEntity->setDocType($entity->getMovementType()."-1");
+        $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+        $entity->setSysNumber($this->contextService->getControllerPlugin()->getDocNumber($entity));
+        $entity->setRemarks($reversalReason);
+        $this->contextService->getDoctrineEM()->persist($newEntity);
+
+        foreach ($rows as $r) {
+
+            /** @var \Application\Entity\NmtInventoryTrx $r */
+            if ($r->getQuantity() == 0) {
+                continue;
+            }
+
+            // duplicate row
+            /** @var \Application\Entity\NmtInventoryTrx $new_row */
+            $new_row = clone ($r);
+
+            // important!
+            $new_row->setMovement($newEntity);
+
+            // overwride
+            $new_row->setTrxDate(new \DateTime($reversalDate));
+            $new_row->setRemarks($reversalReason);
+
+            // set opposite flow.
+            $new_row->setFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
+
+            $r->setIsReversed(1);
+            $r->setReversalReason($reversalReason);
+            $r->setReversalDate(new \DateTime($reversalDate));
+            $this->contextService->getDoctrineEM()->persist($new_row);
+
+            // marked old row as reversed.
+            $r->setTrxDate(new \DateTime($reversalDate));
+            $r->setRemarks($reversalReason);
+            $r->setIsReversed(1);
+            $r->setReversalReason($reversalReason);
+            $r->setReversalDate(new \DateTime($reversalDate));
+
+            $this->contextService->getDoctrineEM()->persist($r);
+        }
+
+        // Need to flush the the transaction.
+        $this->contextService->getDoctrineEM()->flush();
+
+        /**
+         * STEP 2: Create FIFO Layer for duplicated entity.
+         * =====================
+         */
+        $this->createFIFOLayer($newEntity, $rows, $u, False);
+
+        /**
+         * STEP 3: Create Journal Entry for duplicate entity
+         * =====================
+         */
+
+        $this->createJournalEntryForGR($newEntity, $rows,"reversal", $u, $isFlush);
+        
+        // change old header
+        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
+        $entity->setIsReversed(1);
+        $entity->setReversalReason($reversalReason);
+        $entity->setReversalDate(new \DateTime($reversalDate));
+        $entity->setRevisionNo($entity->getRevisionNo() + 1);
+        //$entity->setLastchangeBy($u);
+        $entity->setLastchangeOn($changeOn);
+        $this->contextService->getDoctrineEM()->persist($entity);
+        
+        if ($isFlush == true) {
+            $this->contextService->getDoctrineEM()->flush();
+        }
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param array $row
+     * @param bool $isFlush
+     */
+    protected function createFIFOLayer($entity, $rows, $u, $isFlush = FALSE)
+    {
+        if (count($rows) == 0) {
+            throw new \Exception("WH Transaction is empty");
+        }
+
+        foreach ($rows as $r) {
+
+            /** @var \Application\Entity\NmtInventoryTrx $r */
+            if ($r->getQuantity() == 0) {
+                continue;
+            }
+
+            // created FIFO if needed
+            if ($r->getItem() != null) {
+
+                if ($r->getItem()->getIsStocked() == 1) {
+
+                    /**
+                     *
+                     * @todo: Create FIFO Layer
+                     * @todo: recalculate price for inventory unit.
+                     */
+                    $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
+
+                    $fifoLayer->setIsClosed(0);
+                    $fifoLayer->setItem($r->getItem());
+                    $fifoLayer->setQuantity($r->getQuantity());
+
+                    // set WH
+                    $fifoLayer->setWarehouse($r->getWh());
+
+                    // will be changed uppon inventory transaction.
+                    $fifoLayer->setOnhandQuantity($r->getQuantity());
+                    $fifoLayer->setDocUnitPrice($r->getVendorUnitPrice());
+                    $fifoLayer->setLocalCurrency($r->getCurrency());
+                    $fifoLayer->setExchangeRate($r->getExchangeRate());
+                    $fifoLayer->setPostingDate($r->getTrxDate());
+                    $fifoLayer->setSourceClass(get_class($r));
+                    $fifoLayer->setSourceId($r->getID());
+                    $fifoLayer->setSourceToken($r->getToken());
+
+                    $fifoLayer->setToken(Rand::getString(22, \Application\Model\Constants::CHAR_LIST, true));
+                    $fifoLayer->setCreatedBy($u);
+                    $fifoLayer->setCreatedOn($r->getCreatedOn());
+                    $this->contextService->getDoctrineEM()->persist($fifoLayer);
+                }
+            }
+        }
+
+        if ($isFlush == true) {
+            $this->contextService->getDoctrineEM()->flush();
+        }
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param array $rows
+     * @param string $docType
+     * @param \Application\Entity\MlaUsers $u
+     * @param bool $isFlush
+     */
+    protected function createJournalEntryForGR($entity, $rows, $docType, $u, $isFlush)
+    {
+        if (count($rows) == 0) {
+            throw new \Exception("WH Transaction is empty");
+        }
+
+        // Create JE
+        $je = new \Application\Entity\FinJe();
+        $je->setCurrency($entity->getCurrency());
+        $je->setLocalCurrency($entity->getCurrency());
+        $je->setExchangeRate($entity->getExchangeRate());
+
+        $je->setPostingDate($entity->getMovementDate());
+        $je->setDocumentDate($entity->getMovementDate());
+        $je->setPostingPeriod($entity->getPostingPeriod());
+
+        $je->getDocType($docType);
+        $je->setCreatedBy($u);
+        $je->setCreatedOn($entity->getCreatedOn());
+        $je->setSysNumber($this->contextService->getControllerPlugin()
+            ->getDocNumber($je));
+
+        $je->setSourceClass(get_class($entity));
+        $je->setSourceId($entity->getId());
+        $je->setSourceToken($entity->getToken());
+
+        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+            $entity->setSysNumber($this->contextService->getControllerPlugin()
+                ->getDocNumber($entity));
+        }
+
+        $this->contextService->getDoctrineEM()->persist($je);
+
+        /**
+         * debit: inventory
+         * credit: expenses account.
+         */
+
+        $n = 0;
+        foreach ($rows as $r) {
+
+            /** @var \Application\Entity\NmtInventoryTrx $r */
+
+            if ($r->getQuantity() == 0) {
+                continue;
+            }
+
+            $n ++;
+
+            // Debit on inventory
+            $je_row = new \Application\Entity\FinJeRow();
+            $je_row->setJe($je);
+
+            /**
+             *
+             * @todo: using account of item group or given.
+             */
+            $criteria = array(
+                'id' => 3
+            );
+            $gl_account = $this->contextService->getDoctrineEM()
+                ->getRepository('Application\Entity\FinAccount')
+                ->findOneBy($criteria);
+
+            $je_row->setGlAccount($gl_account);
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+
+            $je_row->setDocAmount($r->getDocQuantity() * $r->getDocUnitPrice());
+            $je_row->setLocalAmount($r->getDocQuantity() * $r->getDocUnitPrice() * $entity->getExchangeRate());
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
+
+            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+            $je_row->setJeMemo("WH GR " . $entity->getSysNumber());
+
+            $this->contextService->getDoctrineEM()->persist($je_row);
+            $n ++;
+
+         
+            // Credit on expense
+            $je_row = new \Application\Entity\FinJeRow();
+            
+            $je_row->setJe($je);
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            
+
+            $criteria = array(
+                'id' => 6
+            );
+            $gl_account = $this->contextService->getDoctrineEM()
+                ->getRepository('Application\Entity\FinAccount')
+                ->findOneBy($criteria);
+            $je_row->setGlAccount($gl_account);
+
+            $je_row->setDocAmount($r->getDocQuantity() * $r->getDocUnitPrice());
+            $je_row->setLocalAmount($r->getDocQuantity() * $r->getDocUnitPrice() * $r->getExchangeRate());
+
+            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+            $je_row->setJeMemo("WH GR " . $entity->getSysNumber());
+
+            $je_row->setCreatedBy($u);
+            $je_row->setCreatedOn($entity->getCreatedOn());
+
+            $this->contextService->getDoctrineEM()->persist($je_row);
+        }
+
+        if ($isFlush == TRUE) {
+            $this->contextService->getDoctrineEM()->flush();
+        }
+    }
 
     /**
      * Templete Method
@@ -84,13 +382,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                 ->getDocNumber($entity));
         }
 
-        /*
-         * if ($isFlush == TRUE) {
-         * $this->contextService->getDoctrineEM()->flush();
-         * }
-         */
-
-        /**
+       /**
          * STEP 5: UPDATE HEADER
          * =====================
          */
@@ -113,9 +405,9 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
      */
     protected function createJournalEntryForGI($entity, $rows, $u, $isFlush)
     {
-        $n = 0;
-        $total_credit = 0;
-        $total_local_credit = 0;
+        if (count($rows) == 0) {
+            throw new \Exception("WH Transaction is empty");
+        }
 
         // Create JE
         $je = new \Application\Entity\FinJe();
@@ -137,8 +429,14 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
         $je->setSourceId($entity->getId());
         $je->setSourceToken($entity->getToken());
 
+        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+            $entity->setSysNumber($this->contextService->getControllerPlugin()
+                ->getDocNumber($entity));
+        }
+
         $this->contextService->getDoctrineEM()->persist($je);
 
+        $n = 0;
         foreach ($rows as $r) {
 
             /** @var \Application\Entity\NmtInventoryTrx $r */
@@ -146,6 +444,8 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             if ($r->getQuantity() == 0) {
                 continue;
             }
+
+            $n ++;
 
             // generate JE voucher.
             // Create JE Row - DEBIT
@@ -164,26 +464,21 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                 ->getRepository('Application\Entity\FinAccount')
                 ->findOneBy($criteria);
             $je_row->setGlAccount($gl_account);
-
             $je_row->setDocAmount($r->getCogsLocal());
             $je_row->setLocalAmount($r->getCogsLocal());
 
-            $total_credit = $total_credit + $r->getCogsLocal();
-            $total_local_credit = $total_credit;
-
             $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+            $je_row->setJeMemo("WH GI " . $entity->getSysNumber());
 
             $je_row->setCreatedBy($u);
             $je_row->setCreatedOn($entity->getCreatedOn());
 
             $this->contextService->getDoctrineEM()->persist($je_row);
-        }
-
-        if ($total_credit > 0) {
 
             // Create JE Row - Credit
-            $je_row = new \Application\Entity\FinJeRow();
+            $n ++;
 
+            $je_row = new \Application\Entity\FinJeRow();
             $je_row->setJe($je);
 
             // credit on inventory
@@ -201,20 +496,17 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
             $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
 
-            $je_row->setDocAmount($total_credit);
-            $je_row->setLocalAmount($total_local_credit);
+            // cogs in local
+            $je_row->setDocAmount($r->getCogsLocal());
+            $je_row->setLocalAmount($r->getCogsLocal());
+
+            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
+            $je_row->setJeMemo("WH GI " . $entity->getSysNumber());
 
             $je_row->setCreatedBy($u);
             $je_row->setCreatedOn($entity->getCreatedOn());
 
-            $n = $n + 1;
-            $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
             $this->contextService->getDoctrineEM()->persist($je_row);
-        }
-
-        if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
-            $entity->setSysNumber($this->contextService->getControllerPlugin()
-                ->getDocNumber($entity));
         }
 
         if ($isFlush == TRUE) {

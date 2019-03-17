@@ -31,6 +31,151 @@ class GIController extends AbstractActionController
 
     /**
      *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function reverseAction()
+    {
+        $request = $this->getRequest();
+
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
+        
+
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            "email" => $this->identity()
+        ));
+
+        // Is Posing
+        // =============================
+        if ($request->isPost()) {
+
+            $errors = array();
+
+            $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = (int) $data['entity_id'];
+            $entity_token = $data['entity_token'];
+
+            $reversalDate = $data['reversalDate'];
+            $reversalReason = $data['reversalReason'];
+            
+             
+            /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+            $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+            $entity_array = $res->getMovement($entity_id, $entity_token);
+            
+            if ($entity_array == null) {
+                return $this->redirect()->toRoute('access_denied');
+            }
+            
+            $entity = null;
+            if ($entity_array[0] instanceof NmtInventoryMv) {
+                $entity = $entity_array[0];
+            }
+            
+            if ($entity == null) {
+                $m = $nmtPlugin->translate("WH Transaction not found. Please check.");
+                $errors[] = $m;
+                $this->flashMessenger()->addMessage($m);
+                
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'entity' => null,
+                    'errors' => $errors,
+                    'issueType' => $issueType,
+                    'movementTypeInfo' => null
+                ));
+                
+                $viewModel->setTemplate("inventory/gi/reverse");
+                return $viewModel;
+            }
+            
+            $movementTypeInfo = '';
+            $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
+            if ($giType !== null) {
+                $movementTypeInfo = $giType['type_description'];
+            }
+                  
+            $errors = $this->inventoryTransactionService->reverse($entity, $u, $reversalDate, $reversalReason, __METHOD__);
+
+            if (count($errors) > 0) {
+
+                $m = $nmtPlugin->translate("Reversal failed!");
+                $this->flashMessenger()->addMessage($m);
+
+                $viewModel = new ViewModel(array(
+                    'redirectUrl' => $redirectUrl,
+                    'entity' => $entity,
+                    'errors' => $errors,
+                    'issueType' => $issueType,
+                    'movementTypeInfo' => $movementTypeInfo
+                ));
+
+                $viewModel->setTemplate("inventory/gi/reverse");
+                return $viewModel;
+            }
+
+            $m = sprintf("WH GI #%s reversed", $entity->getSysNumber());
+            $this->flashMessenger()->addMessage($m);
+
+            $redirectUrl = "/inventory/gi/list";
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+
+        // NO POST
+        // Initiate ......................
+        // ================================
+      /*   
+        if ($request->getHeader('Referer') == null) {
+            return $this->redirect()->toRoute('access_denied');
+        } else {
+            $redirectUrl = $this->getRequest()
+            ->getHeader('Referer')
+            ->getUri();
+        }
+         */
+        
+        $id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        
+        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $gi = $res->getMovement($id, $token);
+        
+        if ($gi == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $entity = null;
+        if ($gi[0] instanceof NmtInventoryMv) {
+            $entity = $gi[0];
+        }
+        
+        if ( $entity == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        $movementTypeInfo = '';
+        $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
+        if ($giType !== null) {
+            $movementTypeInfo = $giType['type_description'];
+        }
+        
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'entity' => $entity,
+            'errors' => null,
+            'issueType' => $issueType,
+            'movementTypeInfo' => $movementTypeInfo
+        ));
+        
+    }
+
+    /**
+     *
      * @return \Inventory\Service\InventoryTransactionService
      */
     public function getInventoryTransactionService()
@@ -104,25 +249,24 @@ class GIController extends AbstractActionController
             $entity = $gi[0];
         }
 
-        if (! $entity == null) {
-
-            $movementTypeInfo = '';
-            $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
-            if ($giType !== null) {
-                $movementTypeInfo = $giType['type_description'];
-            }
-
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null,
-                'currency_list' => $currency_list,
-                'issueType' => $issueType,
-                'movementTypeInfo' => $movementTypeInfo
-            ));
-        } else {
+        if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
+
+        $movementTypeInfo = '';
+        $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
+        if ($giType !== null) {
+            $movementTypeInfo = $giType['type_description'];
+        }
+
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'entity' => $entity,
+            'errors' => null,
+            'currency_list' => $currency_list,
+            'issueType' => $issueType,
+            'movementTypeInfo' => $movementTypeInfo
+        ));
     }
 
     /**
@@ -235,7 +379,7 @@ class GIController extends AbstractActionController
                 $entity->setLocalCurrency($default_cur);
             }
 
-            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, FALSE,__METHOD__);
+            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, FALSE, __METHOD__);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
@@ -355,7 +499,7 @@ class GIController extends AbstractActionController
 
             $entity = new NmtInventoryMv();
             $entity->setLocalCurrency($default_cur);
-            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, TRUE,__METHOD__);
+            $errors = $this->inventoryTransactionService->saveHeader($entity, $data, $u, TRUE, __METHOD__);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
@@ -376,8 +520,8 @@ class GIController extends AbstractActionController
             }
 
             $m = sprintf('[OK] Inventory transaction %s created.', $entity->getId());
-            
-            $redirectUrl =sprintf('/inventory/gi-row/add?token=%s&target_id=%s',$entity->getToken(),$entity->getId());
+
+            $redirectUrl = sprintf('/inventory/gi-row/add?token=%s&target_id=%s', $entity->getToken(), $entity->getId());
             $this->flashMessenger()->addMessage($m);
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -487,7 +631,7 @@ class GIController extends AbstractActionController
             }
 
             $errors = $this->inventoryTransactionService->post($entity, $data, $u, true, true, __METHOD__);
-            
+
             if (count($errors) > 0) {
                 return new ViewModel(array(
                     'redirectUrl' => $redirectUrl,

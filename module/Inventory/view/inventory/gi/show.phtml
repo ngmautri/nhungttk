@@ -32,6 +32,16 @@ if (count($errors) > 0) {
 		</div>
 		<?php endif;?>
 		
+		<?php if($entity->getDocStatus()== \Application\Model\Constants::DOC_STATUS_POSTED): ?>
+		<div style="position: relative; float: right;">
+
+			<a title="<?php echo $this->translate("Reverse Goods Receipt");?>"
+				class="btn btn-default btn-sm"
+				href="<?php echo $this->baseUrl ?>/inventory/gi/reverse?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
+				<i class="fa fa-undo" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Reverse");?> 
+								</a> 
+		</div>
+		<?php endif;?>
 
 
 		<form id="Create_Inv_Form" class="form-horizontal" action=""

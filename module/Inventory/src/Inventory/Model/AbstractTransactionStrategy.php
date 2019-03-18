@@ -51,13 +51,13 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
         /** @var \Application\Entity\NmtInventoryMv $newEntity ;*/
         $newEntity = clone ($entity);
 
-       
         // updte new header to opposite flow.
         $newEntity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
         $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
-        $newEntity->setDocType($entity->getMovementType()."-1");
+        $newEntity->setDocType($entity->getMovementType() . "-1");
         $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-        $entity->setSysNumber($this->contextService->getControllerPlugin()->getDocNumber($entity));
+        $entity->setSysNumber($this->contextService->getControllerPlugin()
+            ->getDocNumber($entity));
         $entity->setRemarks($reversalReason);
         $this->contextService->getDoctrineEM()->persist($newEntity);
 
@@ -68,24 +68,54 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                 continue;
             }
 
-            // duplicate row
-            /** @var \Application\Entity\NmtInventoryTrx $new_row */
-            $new_row = clone ($r);
+            /**
+             *
+             * @todo: get fifo layer consumption, and create new line
+             */
+            $criteria = array(
+                'inventoryTrx' => $r
+            );
 
-            // important!
-            $new_row->setMovement($newEntity);
+            $consums = $this->contextService->getDoctrineEM()
+                ->getRepository('Application\Entity\NmtInventoryFIFOLayerConsume')
+                ->findBy($criteria);
+            if (count($consums) > 0) {
+                foreach ($consums as $c) {
 
-            // overwride
-            $new_row->setTrxDate(new \DateTime($reversalDate));
-            $new_row->setRemarks($reversalReason);
+                    // duplicate row
+                    /** @var \Application\Entity\NmtInventoryFifoLayerConsume $c */
 
-            // set opposite flow.
-            $new_row->setFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
+                    /** @var \Application\Entity\NmtInventoryTrx $new_row */
+                    $new_row = new \Application\Entity\NmtInventoryTrx();
+
+                    // important!
+                    $new_row->setMovement($newEntity);
+                    $new_row->setWh($r->getWh());
+                    $new_row->setTrxDate(new \DateTime($reversalDate));
+                    $new_row->setItem($r->getItem());
+
+                    $new_row->setRemarks($reversalReason);
+                    $new_row->setTransactionStatus($r->getTransactionStatus() . "-1");
+
+                    // set opposite flow.
+                    $new_row->setFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
+                    $new_row->setQuantity($c->getQuantity());
+                    $new_row->setDocQuantity($c->getQuantity());
+
+                    $new_row->setVendorUnitPrice($c->getDocUnitPrice());
+                    $new_row->setDocUnitPrice($c->getDocUnitPrice());
+
+                    $new_row->setToken(Rand::getString(22, \Application\Model\Constants::CHAR_LIST, true));
+                    $new_row->setCreatedBy($u);
+                    $new_row->setCreatedOn($r->getCreatedOn());
+
+                    $this->contextService->getDoctrineEM()->persist($new_row);
+                }
+            }
 
             $r->setIsReversed(1);
             $r->setReversalReason($reversalReason);
             $r->setReversalDate(new \DateTime($reversalDate));
-            $this->contextService->getDoctrineEM()->persist($new_row);
 
             // marked old row as reversed.
             $r->setTrxDate(new \DateTime($reversalDate));
@@ -104,25 +134,25 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
          * STEP 2: Create FIFO Layer for duplicated entity.
          * =====================
          */
-        $this->createFIFOLayer($newEntity, $rows, $u, False);
+        $this->createFIFOLayer($newEntity, null, $u, False);
 
         /**
          * STEP 3: Create Journal Entry for duplicate entity
          * =====================
          */
 
-        $this->createJournalEntryForGR($newEntity, $rows,"reversal", $u, $isFlush);
-        
+        $this->createJournalEntryForGR($newEntity, $rows, "reversal", $u, $isFlush);
+
         // change old header
         $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
         $entity->setIsReversed(1);
         $entity->setReversalReason($reversalReason);
         $entity->setReversalDate(new \DateTime($reversalDate));
         $entity->setRevisionNo($entity->getRevisionNo() + 1);
-        //$entity->setLastchangeBy($u);
+        // $entity->setLastchangeBy($u);
         $entity->setLastchangeOn($changeOn);
         $this->contextService->getDoctrineEM()->persist($entity);
-        
+
         if ($isFlush == true) {
             $this->contextService->getDoctrineEM()->flush();
         }
@@ -135,10 +165,23 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
      * @param array $row
      * @param bool $isFlush
      */
-    protected function createFIFOLayer($entity, $rows, $u, $isFlush = FALSE)
+    protected function createFIFOLayer($entity, $rows = null, $u, $isFlush = FALSE)
     {
-        if (count($rows) == 0) {
-            throw new \Exception("WH Transaction is empty");
+        if ($rows == null) {
+
+            $criteria = array(
+                'movement' => $entity
+            );
+
+            $sort = array();
+
+            $rows = $this->contextService->getDoctrineEM()
+                ->getRepository('Application\Entity\NmtInventoryTrx')
+                ->findBy($criteria, $sort);
+
+            if (count($rows) == 0) {
+                throw new \Exception("WH Transaction is empty");
+            }
         }
 
         foreach ($rows as $r) {
@@ -173,6 +216,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                     $fifoLayer->setLocalCurrency($r->getCurrency());
                     $fifoLayer->setExchangeRate($r->getExchangeRate());
                     $fifoLayer->setPostingDate($r->getTrxDate());
+
                     $fifoLayer->setSourceClass(get_class($r));
                     $fifoLayer->setSourceId($r->getID());
                     $fifoLayer->setSourceToken($r->getToken());
@@ -277,14 +321,12 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             $this->contextService->getDoctrineEM()->persist($je_row);
             $n ++;
 
-         
             // Credit on expense
             $je_row = new \Application\Entity\FinJeRow();
-            
+
             $je_row->setJe($je);
             $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
             $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-            
 
             $criteria = array(
                 'id' => 6
@@ -382,7 +424,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                 ->getDocNumber($entity));
         }
 
-       /**
+        /**
          * STEP 5: UPDATE HEADER
          * =====================
          */

@@ -257,7 +257,10 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getTrxDate()->format('Y-m-d
 
                 $fifo_consume->setItem($layer->getItem());
                 $fifo_consume->setQuantity($consumpted_qty);
+                
+                $fifo_consume->setDocCurrency($layer->getDocCurrency());
                 $fifo_consume->setDocUnitPrice($layer->getDocUnitPrice());
+                
                 $fifo_consume->setDocTotalValue($fifo_consume->getQuantity() * $fifo_consume->getDocUnitPrice());
 
                 $fifo_consume->setExchangeRate($layer->getExchangeRate());

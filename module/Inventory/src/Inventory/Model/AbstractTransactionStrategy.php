@@ -53,12 +53,17 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
 
         // updte new header to opposite flow.
         $newEntity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
+    
         $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
         $newEntity->setDocType($entity->getMovementType() . "-1");
+        $newEntity->setMovementType($entity->getMovementType() . "-1");
+        
+        
         $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-        $entity->setSysNumber($this->contextService->getControllerPlugin()
-            ->getDocNumber($entity));
-        $entity->setRemarks($reversalReason);
+        $newEntity->setSysNumber($this->contextService->getControllerPlugin()
+            ->getDocNumber($newEntity));
+        $newEntity->setRemarks($reversalReason);
+        
         $this->contextService->getDoctrineEM()->persist($newEntity);
 
         foreach ($rows as $r) {
@@ -95,12 +100,17 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                     $new_row->setItem($r->getItem());
 
                     $new_row->setRemarks($reversalReason);
-                    $new_row->setTransactionStatus($r->getTransactionStatus() . "-1");
-
+                    $new_row->setDocType($r->getDocType() . "-1");
+                    $new_row->setReversalDoc($r->getId());
+                     
+                    
                     // set opposite flow.
                     $new_row->setFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
                     $new_row->setQuantity($c->getQuantity());
                     $new_row->setDocQuantity($c->getQuantity());
+                    $new_row->setLocalCurrency($c->getLocalCurrency());
+                    $new_row->setExchangeRate($c->getExchangeRate());
+                    
 
                     $new_row->setVendorUnitPrice($c->getDocUnitPrice());
                     $new_row->setDocUnitPrice($c->getDocUnitPrice());
@@ -113,7 +123,6 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                 }
             }
 
-            $r->setIsReversed(1);
             $r->setReversalReason($reversalReason);
             $r->setReversalDate(new \DateTime($reversalDate));
 
@@ -125,7 +134,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             $r->setReversalDate(new \DateTime($reversalDate));
 
             $this->contextService->getDoctrineEM()->persist($r);
-        }
+        };
 
         // Need to flush the the transaction.
         $this->contextService->getDoctrineEM()->flush();
@@ -141,7 +150,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
          * =====================
          */
 
-        $this->createJournalEntryForGR($newEntity, $rows, "reversal", $u, $isFlush);
+        $this->createJournalEntryForGR($newEntity, null, "reversal", $u, $isFlush);
 
         // change old header
         $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
@@ -213,8 +222,10 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                     // will be changed uppon inventory transaction.
                     $fifoLayer->setOnhandQuantity($r->getQuantity());
                     $fifoLayer->setDocUnitPrice($r->getVendorUnitPrice());
-                    $fifoLayer->setLocalCurrency($r->getCurrency());
-                    $fifoLayer->setExchangeRate($r->getExchangeRate());
+                    $fifoLayer->setLocalCurrency($entity->getLocalCurrency());
+                    $fifoLayer->setDocCurrency($entity->getDocCurrency());
+                    
+                    $fifoLayer->setExchangeRate($entity->getExchangeRate());
                     $fifoLayer->setPostingDate($r->getTrxDate());
 
                     $fifoLayer->setSourceClass(get_class($r));
@@ -242,10 +253,23 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
      * @param \Application\Entity\MlaUsers $u
      * @param bool $isFlush
      */
-    protected function createJournalEntryForGR($entity, $rows, $docType, $u, $isFlush)
+    protected function createJournalEntryForGR($entity, $rows = null, $docType, $u, $isFlush)
     {
-        if (count($rows) == 0) {
-            throw new \Exception("WH Transaction is empty");
+        if ($rows == null) {
+            
+            $criteria = array(
+                'movement' => $entity
+            );
+            
+            $sort = array();
+            
+            $rows = $this->contextService->getDoctrineEM()
+            ->getRepository('Application\Entity\NmtInventoryTrx')
+            ->findBy($criteria, $sort);
+            
+            if (count($rows) == 0) {
+                throw new \Exception("WH Transaction is empty");
+            }
         }
 
         // Create JE
@@ -310,13 +334,21 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
             $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
 
-            $je_row->setDocAmount($r->getDocQuantity() * $r->getDocUnitPrice());
-            $je_row->setLocalAmount($r->getDocQuantity() * $r->getDocUnitPrice() * $entity->getExchangeRate());
+            
+            /**
+             * Decimal doctrine.
+             * Values retrieved from the database are always converted to PHP's string type or null if no data is present.
+             */
+            $q = (float) $r->getDocQuantity();
+            $up = (float) $r->getDocUnitPrice();
+            
+            $je_row->setDocAmount($q*$up);
+            $je_row->setLocalAmount((float)$r->getDocQuantity() * (float) $r->getDocUnitPrice() * $entity->getExchangeRate());
             $je_row->setCreatedBy($u);
             $je_row->setCreatedOn($entity->getCreatedOn());
 
             $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
-            $je_row->setJeMemo("WH GR " . $entity->getSysNumber());
+            $je_row->setJeMemo("WH GR " . $entity->getSysNumber() . (float) $r->getDocUnitPrice());
 
             $this->contextService->getDoctrineEM()->persist($je_row);
             $n ++;
@@ -325,8 +357,8 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             $je_row = new \Application\Entity\FinJeRow();
 
             $je_row->setJe($je);
-            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
-            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
+            $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_CREDIT);
+            $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
 
             $criteria = array(
                 'id' => 6
@@ -506,8 +538,8 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                 ->getRepository('Application\Entity\FinAccount')
                 ->findOneBy($criteria);
             $je_row->setGlAccount($gl_account);
-            $je_row->setDocAmount($r->getCogsLocal());
-            $je_row->setLocalAmount($r->getCogsLocal());
+            $je_row->setDocAmount((float) $r->getCogsLocal());
+            $je_row->setLocalAmount((float) $r->getCogsLocal());
 
             $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
             $je_row->setJeMemo("WH GI " . $entity->getSysNumber());
@@ -539,8 +571,8 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_CREDIT);
 
             // cogs in local
-            $je_row->setDocAmount($r->getCogsLocal());
-            $je_row->setLocalAmount($r->getCogsLocal());
+            $je_row->setDocAmount((float) $r->getCogsLocal());
+            $je_row->setLocalAmount((float) $r->getCogsLocal());
 
             $je_row->setSysNumber($je->getSysNumber() . "-" . $n);
             $je_row->setJeMemo("WH GI " . $entity->getSysNumber());

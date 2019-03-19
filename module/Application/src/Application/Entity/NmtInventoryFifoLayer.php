@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryFifoLayer
  *
- * @ORM\Table(name="nmt_inventory_fifo_layer", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK2_idx", columns={"doc_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK3_idx", columns={"local_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK6_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_inventory_fifo_layer", indexes={@ORM\Index(name="nmt_inventory_fifo_layer_FK1_idx", columns={"item_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK2_idx", columns={"doc_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK3_idx", columns={"local_currency"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK4_idx1", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK6_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_fifo_layer_FK7_idx", columns={"inventory_trx_id"})})
  * @ORM\Entity
  */
 class NmtInventoryFifoLayer
@@ -122,7 +122,7 @@ class NmtInventoryFifoLayer
     /**
      * @var string
      *
-     * @ORM\Column(name="local_unit_price", type="string", length=45, nullable=true)
+     * @ORM\Column(name="local_unit_price", type="decimal", precision=14, scale=4, nullable=true)
      */
     private $localUnitPrice;
 
@@ -262,6 +262,16 @@ class NmtInventoryFifoLayer
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryTrx
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryTrx")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="inventory_trx_id", referencedColumnName="id")
+     * })
+     */
+    private $inventoryTrx;
 
 
 
@@ -1041,5 +1051,29 @@ class NmtInventoryFifoLayer
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set inventoryTrx
+     *
+     * @param \Application\Entity\NmtInventoryTrx $inventoryTrx
+     *
+     * @return NmtInventoryFifoLayer
+     */
+    public function setInventoryTrx(\Application\Entity\NmtInventoryTrx $inventoryTrx = null)
+    {
+        $this->inventoryTrx = $inventoryTrx;
+
+        return $this;
+    }
+
+    /**
+     * Get inventoryTrx
+     *
+     * @return \Application\Entity\NmtInventoryTrx
+     */
+    public function getInventoryTrx()
+    {
+        return $this->inventoryTrx;
     }
 }

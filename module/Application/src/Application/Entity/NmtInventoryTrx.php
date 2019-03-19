@@ -421,6 +421,13 @@ class NmtInventoryTrx
     private $docType;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="local_unit_price", type="decimal", precision=14, scale=4, nullable=true)
+     */
+    private $localUnitPrice;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -2048,6 +2055,30 @@ class NmtInventoryTrx
     public function getDocType()
     {
         return $this->docType;
+    }
+
+    /**
+     * Set localUnitPrice
+     *
+     * @param string $localUnitPrice
+     *
+     * @return NmtInventoryTrx
+     */
+    public function setLocalUnitPrice($localUnitPrice)
+    {
+        $this->localUnitPrice = $localUnitPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get localUnitPrice
+     *
+     * @return string
+     */
+    public function getLocalUnitPrice()
+    {
+        return $this->localUnitPrice;
     }
 
     /**

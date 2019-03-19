@@ -76,6 +76,12 @@ class InventoryTransactionService extends AbstractService
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
         }
+        
+        // check movement date
+        $ck = $this->checkCurrency($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
+        }
 
         // only allow to change transacion type and warehouse, when no line is created.
         $criteria = array(
@@ -472,6 +478,7 @@ class InventoryTransactionService extends AbstractService
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
             $entity->setCurrency($default_cur);
+            $entity->setLocalCurrency($default_cur);
         }
 
         $ck = $this->validateHeader($entity, $data, $u, false, true);
@@ -559,10 +566,10 @@ class InventoryTransactionService extends AbstractService
         /** @var \Application\Entity\NmtInventoryMv $newEntity ; */
         $newEntity = clone ($entity);
         $newEntity->setMovementDate(null);
-        
+
         $data = array();
         $data['movementDate'] = $reversalDate;
-  
+
         /**
          * Check Reversal Date.
          */
@@ -580,14 +587,14 @@ class InventoryTransactionService extends AbstractService
 
         try {
             $postingStrategy = InventoryTransactionStrategyFactory::getMovementStrategy($entity->getMovementType());
-            
+
             if (! $postingStrategy instanceof AbstractTransactionStrategy) {
                 throw new \Exception("Posting Strategy can't not be identified for this inventory movement type!");
             }
-            
+
             // Do posting now
             $postingStrategy->setContextService($this);
-            
+
             if ($entity->getMovementFlow() == \Inventory\Model\Constants::WH_TRANSACTION_OUT) {
                 $postingStrategy->runGIReversal($entity, $u, $reversalDate, $reversalReason, TRUE);
             }
@@ -596,6 +603,74 @@ class InventoryTransactionService extends AbstractService
         }
 
         return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkCurrency(\Application\Entity\NmtInventoryMv $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (! isset($data['currency_id']) and ! isset($data['exchangeRate'])) {
+            $entity->setExchangeRate(1);
+            $entity->setDocCurrency($entity->getLocalCurrency());
+            return null;
+        }
+
+        // ==========OK=========== //
+
+        $currency_id = (int) $data['currency_id'];
+        $exchangeRate = (double) $data['exchangeRate'];
+
+        // ** @var \Application\Entity\NmtApplicationCurrency $currency ; */
+        $currency = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationCurrency')->find($currency_id);
+
+        if ($currency == null) {
+            $errors[] = $this->controllerPlugin->translate('Currency not defined!');
+            return $errors;
+        }
+
+        /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+        $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+        if ($currency !== null) {
+            $entity->setCurrency($currency);
+            $entity->setDocCurrency($currency);
+            $entity->setCurrencyIso3($currency->getCurrency());
+
+            if ($currency == $entity->getLocalCurrency()) {
+                $entity->setExchangeRate(1);
+            } else {
+
+                // if user give exchange rate.
+                if ($exchangeRate != 0 and $exchangeRate != 1) {
+                    if (! is_numeric($exchangeRate)) {
+                        $errors[] = $this->controllerPlugin->translate('Foreign exchange rate is not valid. It must be a number.');
+                    } else {
+                        if ($exchangeRate < 0) {
+                            $errors[] = $this->controllerPlugin->translate('Foreign exchange rate must be greater than 0!');
+                        } else {
+                            $entity->setExchangeRate($exchangeRate);
+                        }
+                    }
+                } else {
+                    // get default exchange rate.
+                    /** @var \Application\Entity\FinFx $lastest_fx */
+
+                    $lastest_fx = $p->getLatestFX($currency_id, $entity->getLocalCurrency()
+                        ->getId());
+                    if ($lastest_fx !== null) {
+                        $entity->setExchangeRate($lastest_fx->getFxRate());
+                    } else {
+                        $errors[] = sprintf('FX rate for %s not definded yet!', $currency->getCurrency());
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -779,13 +854,13 @@ class InventoryTransactionService extends AbstractService
             $itemReportService->setDoctrineEM($this->getDoctrineEM());
             $itemReportService->setControllerPlugin($this->getControllerPlugin());
 
-            $onhand = $itemReportService->getOnhandInWahrehouse($entity,$item,$u);
+            $onhand = $itemReportService->getOnhandInWahrehouse($entity, $item, $u);
 
             if ($onhand < $quantity) {
                 $m = $this->controllerPlugin->translate('Goods Issue imposible. Issue Quantity > On-hand Quantity');
                 $m = sprintf($m . ' (%s>%s)', $quantity, $onhand);
-                $m = $m. $this->controllerPlugin->translate('. Please check stock or change issue date.');
-                
+                $m = $m . $this->controllerPlugin->translate('. Please check stock or change issue date.');
+
                 $errors[] = $m;
             }
         } catch (\Exception $e) {

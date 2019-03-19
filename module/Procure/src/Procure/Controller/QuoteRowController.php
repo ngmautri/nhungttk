@@ -585,13 +585,13 @@ class QuoteRowController extends AbstractActionController
                         }
                     }
 
-                    $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->getItem()->getToken(), $a->getItem()->getChecksum(), $a->getItem()->getId());
+                    $item_detail = sprintf("/inventory/item/show1?tab_idx=1&token=%s&checksum=%s&entity_id=%s", $a->getItem()->getToken(), $a->getItem()->getChecksum(), $a->getItem()->getId());
 
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
-                            ->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                            ->getItemName()) . "','1450',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     } else {
-                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1350',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
+                        $onclick = "showJqueryDialog('Detail of Item: " . ($a->getItem()->getItemName()) . "','1450',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";
                     }
 
                     if (strlen($a->getItem()->getItemName()) < 35) {

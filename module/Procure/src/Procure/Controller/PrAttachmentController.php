@@ -407,7 +407,6 @@ class PrAttachmentController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $entity_id,
-            'checksum' => $checksum,
             'token' => $token
         );
 
@@ -461,7 +460,6 @@ class PrAttachmentController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
-            'checksum' => $checksum,
             'token' => $token
         );
 
@@ -519,7 +517,6 @@ class PrAttachmentController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
-            'checksum' => $checksum,
             'token' => $token
         );
 
@@ -1014,7 +1011,6 @@ class PrAttachmentController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $id,
-            'checksum' => $checksum,
             'token' => $token
         );
 
@@ -1025,6 +1021,10 @@ class PrAttachmentController extends AbstractActionController
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
 
         if ($target !== null) {
+            return $this->redirect()->toRoute('access_denied');
+            
+        }
+        
 
             return new ViewModel(array(
                 'redirectUrl' => $redirectUrl,
@@ -1032,9 +1032,7 @@ class PrAttachmentController extends AbstractActionController
                 'target' => $target,
                 'entity' => null
             ));
-        } else {
-            return $this->redirect()->toRoute('access_denied');
-        }
+   
     }
 
     /**
@@ -1377,8 +1375,7 @@ class PrAttachmentController extends AbstractActionController
             $criteria = array(
                 'id' => $target_id,
                 'token' => $token,
-                'checksum' => $checksum
-            );
+             );
 
             /**@var \Application\Entity\NmtProcurePr $target ;*/
             $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
@@ -1566,7 +1563,6 @@ class PrAttachmentController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $id,
-            'checksum' => $checksum,
             'token' => $token
         );
 

@@ -214,14 +214,19 @@ class PrService extends AbstractService
             if ($isNew == TRUE) {
 
                 // Assign doc number
-                if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED or $entity->getSysNumber() == null) {
-                    $entity->setSysNumber($this->controllerPlugin->getDocNumber($entity));
+                if ($entity->getPrAutoNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED or $entity->getPrAutoNumber() == null) {
+                    $entity->setPrAutoNumber($this->controllerPlugin->getDocNumber($entity));
                 }
 
                 $entity->setCreatedBy($u);
                 $entity->setCreatedOn($changeOn);
                 $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             } else {
+                
+        /*         if ($entity->getPrAutoNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED or $entity->getPrAutoNumber() == null) {
+                    $entity->setPrAutoNumber($this->controllerPlugin->getDocNumber($entity));
+                }
+       */          
 
                 $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
                 if (count($changeArray) == 0) {

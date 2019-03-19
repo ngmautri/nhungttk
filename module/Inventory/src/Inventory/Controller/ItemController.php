@@ -193,12 +193,10 @@ EOT;
         $nmtPlugin = $this->Nmtplugin();
         $item_group_list = $nmtPlugin->itemGroupList();
         $uom_list = $nmtPlugin->uomList();
-        
+
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        
-        
 
         // accepted only ajax request
         if (! $request->isXmlHttpRequest()) {
@@ -236,31 +234,31 @@ EOT;
         $pictures = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy(array(
             "item" => $entity_id
         ));
-        
+
         $onhand_list = $this->itemReportService->getOnhandReportByItem($entity, $u, __METHOD__);
 
-        if ($entity instanceof NmtInventoryItem) {
-            return new ViewModel(array(
-                'entity' => $entity,
-                'department' => null,
-                'category' => null,
-                'pictures' => $pictures,
-                'redirectUrl' => $redirectUrl,
-                'total_picture' => $item['total_picture'],
-                'item_group_list' => $item_group_list,
-                'uom_list' => $uom_list,
+        if (! $entity instanceof NmtInventoryItem) {
 
-                'total_attachment' => $item['total_attachment'],
-                'total_pr_row' => $item['total_pr_row'],
-                'total_ap_row' => $item['total_ap_row'],
-                'total_po_row' => $item['total_po_row'],
-                'total_qo_row' => $item['total_qo_row'],
-                'tab_idx' => $tab_idx,
-                'onhand_list' => $onhand_list,                
-            ));
+            return $this->redirect()->toRoute('access_denied');
         }
+        return new ViewModel(array(
+            'entity' => $entity,
+            'department' => null,
+            'category' => null,
+            'pictures' => $pictures,
+            'redirectUrl' => $redirectUrl,
+            'total_picture' => $item['total_picture'],
+            'item_group_list' => $item_group_list,
+            'uom_list' => $uom_list,
 
-        return $this->redirect()->toRoute('access_denied');
+            'total_attachment' => $item['total_attachment'],
+            'total_pr_row' => $item['total_pr_row'],
+            'total_ap_row' => $item['total_ap_row'],
+            'total_po_row' => $item['total_po_row'],
+            'total_qo_row' => $item['total_qo_row'],
+            'tab_idx' => $tab_idx,
+            'onhand_list' => $onhand_list
+        ));
     }
 
     /**
@@ -1752,7 +1750,8 @@ EOT;
 
         /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
         $pic = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
-            'item' => $item_id
+            'item' => $item_id,
+            'isActive' => 1,
         ));
 
         if ($pic instanceof NmtInventoryItemPicture) {

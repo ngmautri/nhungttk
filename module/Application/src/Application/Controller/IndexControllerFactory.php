@@ -19,8 +19,14 @@ class IndexControllerFactory implements FactoryInterface {
 	 */
 	public function createService(ServiceLocatorInterface $serviceLocator) {
 		
-		$container = $serviceLocator->getServiceLocator ();
-		$controller = new IndexController();
-		return $controller;
+	    $sm = $serviceLocator->getServiceLocator();
+	    
+	    $controller = new IndexController();
+	    
+	    $sv =  $sm->get ('doctrine.entitymanager.orm_default' );
+	    $controller->setDoctrineEM($sv );
+	    
+	    
+	    return $controller;
 	}
 }

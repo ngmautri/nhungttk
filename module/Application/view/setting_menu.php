@@ -24,6 +24,9 @@
 	<li><a href="<?php echo $this->baseUrl ?>/application/search-index/update-all"><small><i class="fa fa-exchange" aria-hidden="true"></i></small>&nbsp;&nbsp;<?php echo $this->translate("API")?></a></li>
 
 				<li class="divider"></li>
+	<li><a href="<?php echo $this->baseUrl ?>/application/index/check-attachment"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("Check Attachment")?></a></li>
+
+				<li class="divider"></li>
 	<li><a href="<?php echo $this->baseUrl ?>/application/index/info"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;&nbsp;<?php echo $this->translate("System Information")?></a></li>
 		
 </ul>

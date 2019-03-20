@@ -174,7 +174,8 @@ class ItemPictureController extends AbstractActionController
              * @todo : Change Target
              */
             $criteria = array(
-                'item' => $target_id
+                'item' => $target_id,
+                'isActive' => 1,
             );
             
             $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy($criteria);

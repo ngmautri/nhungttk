@@ -232,6 +232,13 @@ class NmtApplicationAttachment
     private $fileExtension;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="file_exits", type="boolean", nullable=true)
+     */
+    private $fileExits;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1081,6 +1088,30 @@ class NmtApplicationAttachment
     public function getFileExtension()
     {
         return $this->fileExtension;
+    }
+
+    /**
+     * Set fileExits
+     *
+     * @param boolean $fileExits
+     *
+     * @return NmtApplicationAttachment
+     */
+    public function setFileExits($fileExits)
+    {
+        $this->fileExits = $fileExits;
+
+        return $this;
+    }
+
+    /**
+     * Get fileExits
+     *
+     * @return boolean
+     */
+    public function getFileExits()
+    {
+        return $this->fileExits;
     }
 
     /**

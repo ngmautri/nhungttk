@@ -68,7 +68,7 @@ class PdfStrategy extends DownloadStrategyAbstract
                 $pic_location = $pic_folder;
             }
 
-            $pic_url = sprintf('<img src="%s" border="0" height="150" width="150">', $pic_location);
+            $pic_url = sprintf('<img src="%s" border="0" height="100" width="100">', $pic_location);
 
             // '<span style="color:graytext; font-size:9pt"> item #'. $a->getItem()->getSysNumber() .'</span>'
 

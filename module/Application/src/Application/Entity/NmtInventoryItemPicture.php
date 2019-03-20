@@ -134,6 +134,13 @@ class NmtInventoryItemPicture
     private $createdOn;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="file_exits", type="boolean", nullable=true)
+     */
+    private $fileExits;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -547,6 +554,30 @@ class NmtInventoryItemPicture
     public function getCreatedOn()
     {
         return $this->createdOn;
+    }
+
+    /**
+     * Set fileExits
+     *
+     * @param boolean $fileExits
+     *
+     * @return NmtInventoryItemPicture
+     */
+    public function setFileExits($fileExits)
+    {
+        $this->fileExits = $fileExits;
+
+        return $this;
+    }
+
+    /**
+     * Get fileExits
+     *
+     * @return boolean
+     */
+    public function getFileExits()
+    {
+        return $this->fileExits;
     }
 
     /**

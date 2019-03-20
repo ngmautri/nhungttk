@@ -185,7 +185,9 @@ class GRfromPurchasing extends AbstractTransactionStrategy
                     $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
 
                     $fifoLayer->setIsClosed(0);
-                    $fifoLayer->setItem($r->getItem());
+                    
+                    
+                    $fifoLayer->setItem($r->getItem()); // Important
                     $fifoLayer->setQuantity($r->getQuantity());
 
                     // set WH
@@ -199,7 +201,10 @@ class GRfromPurchasing extends AbstractTransactionStrategy
                     $fifoLayer->setPostingDate($r->getTrxDate());
                     $fifoLayer->setSourceClass(get_class($r));
                     $fifoLayer->setSourceId($r->getID());
-                    $fifoLayer->setSourceToken($r->getToken());
+                    $fifoLayer->setSourceToken($r->getToken());                    
+                    
+                    //new
+                    $fifoLayer->setInventoryTrx($r);
 
                     $fifoLayer->setToken(Rand::getString(22, \Application\Model\Constants::CHAR_LIST, true));
                     $fifoLayer->setCreatedBy($u);

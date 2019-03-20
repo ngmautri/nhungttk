@@ -37,11 +37,9 @@ class GIController extends AbstractActionController
     {
         $request = $this->getRequest();
 
-        
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());
-        
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
@@ -61,26 +59,25 @@ class GIController extends AbstractActionController
 
             $reversalDate = $data['reversalDate'];
             $reversalReason = $data['reversalReason'];
-            
-             
+
             /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
             $entity_array = $res->getMovement($entity_id, $entity_token);
-            
+
             if ($entity_array == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
-            
+
             $entity = null;
             if ($entity_array[0] instanceof NmtInventoryMv) {
                 $entity = $entity_array[0];
             }
-            
+
             if ($entity == null) {
                 $m = $nmtPlugin->translate("WH Transaction not found. Please check.");
                 $errors[] = $m;
                 $this->flashMessenger()->addMessage($m);
-                
+
                 $viewModel = new ViewModel(array(
                     'redirectUrl' => $redirectUrl,
                     'entity' => null,
@@ -88,17 +85,17 @@ class GIController extends AbstractActionController
                     'issueType' => $issueType,
                     'movementTypeInfo' => null
                 ));
-                
+
                 $viewModel->setTemplate("inventory/gi/reverse");
                 return $viewModel;
             }
-            
+
             $movementTypeInfo = '';
             $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
             if ($giType !== null) {
                 $movementTypeInfo = $giType['type_description'];
             }
-                  
+
             $errors = $this->inventoryTransactionService->reverse($entity, $u, $reversalDate, $reversalReason, __METHOD__);
 
             if (count($errors) > 0) {
@@ -121,49 +118,48 @@ class GIController extends AbstractActionController
             $m = sprintf("WH GI #%s reversed", $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
 
-            $redirectUrl = "/inventory/gi/list";
+            //$redirectUrl = "/inventory/gi/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST
         // Initiate ......................
         // ================================
-      /*   
+
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
         } else {
             $redirectUrl = $this->getRequest()
-            ->getHeader('Referer')
-            ->getUri();
+                ->getHeader('Referer')
+                ->getUri();
         }
-         */
-        
+
         $id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
-        
+
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
         $gi = $res->getMovement($id, $token);
-        
+
         if ($gi == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $entity = null;
         if ($gi[0] instanceof NmtInventoryMv) {
             $entity = $gi[0];
         }
-        
-        if ( $entity == null) {
+
+        if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $movementTypeInfo = '';
         $giType = \Inventory\Model\Constants::getGoodsIssueType($entity->getMovementType(), $nmtPlugin->getTranslator());
         if ($giType !== null) {
             $movementTypeInfo = $giType['type_description'];
         }
-        
+
         return new ViewModel(array(
             'redirectUrl' => $redirectUrl,
             'entity' => $entity,
@@ -171,7 +167,6 @@ class GIController extends AbstractActionController
             'issueType' => $issueType,
             'movementTypeInfo' => $movementTypeInfo
         ));
-        
     }
 
     /**

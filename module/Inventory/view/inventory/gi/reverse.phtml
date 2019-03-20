@@ -16,8 +16,6 @@ if (count($errors) > 0) {
     echo '</div>';
 }
 
-
-
 ?>
 
 
@@ -65,7 +63,7 @@ if (count($errors) > 0) {
 						<label class="control-label col-sm-2 required"><?php echo $this->translate("Reversal Date");?> :</label>
 						<div class="col-sm-3">
 							<input class="form-control input-sm" type="text"
-								id="reversalDate" name="reversalDate" value=""
+								id="reversalDate" name="reversalDate" value="<?php if(!$entity == null): if ($entity->getMovementDate() !== null): echo date_format($entity->getMovementDate(),"Y-m-d"); endif; endif;?>"
 								placeholder=" please select" />
 						</div>
 					</div>

@@ -134,6 +134,13 @@ class NmtInventoryItemPicture
     private $createdOn;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="file_exits", type="boolean", nullable=true)
+     */
+    private $fileExits;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

@@ -76,7 +76,7 @@ class InventoryTransactionService extends AbstractService
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
         }
-        
+
         // check movement date
         $ck = $this->checkCurrency($entity, $data, $isPosting);
         if (count($ck) > 0) {
@@ -572,8 +572,10 @@ class InventoryTransactionService extends AbstractService
 
         /**
          * Check Reversal Date.
+         * in open period.
+         * Date must greater than document to be reversed.
          */
-        $ck = $this->checkMovementDate($newEntity, $data, TRUE);
+        $ck = $this->checkReversalDate($newEntity, $entity, $data, TRUE);
 
         if (count($ck) > 0) {
             $errors = array_merge($errors, $ck);
@@ -670,6 +672,80 @@ class InventoryTransactionService extends AbstractService
                     }
                 }
             }
+        }
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $newEntity
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param string $data
+     * @param boolean $isPosting
+     */
+    private function checkReversalDate(\Application\Entity\NmtInventoryMv $newEntity, \Application\Entity\NmtInventoryMv $entity, $data, $isPosting)
+    {
+        $errors = array();
+
+        if (isset($data['movementDate'])) {
+            $movementDate = $data['movementDate'];
+        } else {
+            $errors[] = $this->controllerPlugin->translate('No input given "movementDate"');
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ==========Validated=========== //
+
+        $validator = new Date();
+
+        if (! $movementDate == null) {
+            if (! $validator->isValid($movementDate)) {
+                $errors[] = $this->controllerPlugin->translate('WH transaction date is not correct or empty!');
+                return $errors;
+            } else {
+                $newEntity->setMovementDate(new \DateTime($movementDate));
+            }
+        }
+
+        // ==========OK=========== //
+
+        // Striclty check when posting.
+        if ($isPosting == TRUE) {
+
+            if ($newEntity->getMovementDate() == null) {
+                $errors[] = $this->controllerPlugin->translate('WH transaction date  is not correct or empty!');
+                return $errors;
+            }
+
+            /** @var \Application\Repository\NmtFinPostingPeriodRepository $p */
+            $p = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod');
+
+            // check if posting period is closed
+            /** @var \Application\Entity\NmtFinPostingPeriod $postingPeriod */
+            $postingPeriod = $p->getPostingPeriod(new \DateTime($movementDate));
+
+            if ($postingPeriod == null) {
+                $errors[] = sprintf('Posting period for [%s] not created!', $movementDate);
+                return $errors;
+            } else {
+
+                if ($postingPeriod->getPeriodStatus() == \Application\Model\Constants::PERIOD_STATUS_CLOSED) {
+                    $errors[] = sprintf('Period [%s] is closed for inventory transaction!', $postingPeriod->getPeriodName());
+                    return $errors;
+                }
+            }
+
+            $resveralDate = new \DateTime($movementDate);
+            
+            // not allow to reverse on the date < date of document.
+            if($resveralDate < $entity->getMovementDate()){
+                $errors[] = sprintf('It is posible to reverse on this date %s',date_format($resveralDate,"Y-m-d"));
+                return $errors;
+            }
+            
+            $newEntity->setMovementDate($resveralDate);
         }
     }
 

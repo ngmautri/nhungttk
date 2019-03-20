@@ -4,7 +4,12 @@
 	<li><a href="#general">Maximum in stock</a></li>
 </ul>
 
-
+<h4>
+	Total onhand: <span id="total_onhand"></span>
+</h4>
+<h4>
+	Stock value: <span id="stock_value"></span>
+</h4>
 <div id="tabs3"
 	style="font-size: 9.5pt; color: graytext; margin: 2pt 2pt 0pt 2pt">
 	<ul>
@@ -32,6 +37,9 @@ else :
     } else {
         echo $total_records . ' records found!';
     }
+
+    $total_onhand = 0;
+    $stock_value = 0;
 
     ?>
 
@@ -63,6 +71,12 @@ else :
 
         /**@var \Application\Entity\NmtInventoryFifoLayer $a ; */
         $count ++;
+        $total_onhand = $total_onhand + $a->getOnhandQuantity();
+
+        if ($a->getOnhandQuantity() * $a->getDocUnitPrice() !== null) :
+            $stock_value = $stock_value + $a->getOnhandQuantity() * $a->getDocUnitPrice();
+        endif;
+
         ?>
 	 <tr>
 					<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
@@ -103,4 +117,7 @@ $( "#tabs3" ).tabs({
 	   
 });
 $( "#tabs3" ).tabs( "option", "active", 0 );
+
+$("#total_onhand").text(<?php echo $total_onhand;?>);
+$("#stock_value").text(<?php echo $stock_value;?>);
 </script>

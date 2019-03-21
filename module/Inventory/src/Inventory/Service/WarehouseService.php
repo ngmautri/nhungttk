@@ -107,6 +107,8 @@ class WarehouseService extends AbstractService
 
                 if (count($r) >= 1) {
                     $errors[] = $whCode . ' exists';
+                } else {
+                    $entity->setWhCode($whCode);
                 }
             }
         }
@@ -170,8 +172,8 @@ class WarehouseService extends AbstractService
         }
 
         // ====== VALIDATED 1 ====== //
-        
-        if ($isNew == FALSE){
+
+        if ($isNew == FALSE) {
             $oldEntity = clone ($entity);
         }
 
@@ -184,11 +186,9 @@ class WarehouseService extends AbstractService
         // ====== VALIDATED 2 ====== //
 
         Try {
-            
+
             $changeOn = new \DateTime();
             $changeArray = array();
-            
-            
 
             if ($isNew == TRUE) {
 
@@ -197,13 +197,13 @@ class WarehouseService extends AbstractService
                 $entity->setCreatedOn($changeOn);
                 $entity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
             } else {
-                
+
                 $changeArray = $this->controllerPlugin->objectsAreIdentical($oldEntity, $entity);
                 if (count($changeArray) == 0) {
                     $errors[] = sprintf('Nothing changed.');
                     return $errors;
                 }
-                
+
                 $entity->setRevisionNo($entity->getRevisionNo() + 1);
                 $entity->setLastchangeBy($u);
                 $entity->setLastchangeOn($changeOn);
@@ -211,15 +211,82 @@ class WarehouseService extends AbstractService
 
             $this->doctrineEM->persist($entity);
             $this->doctrineEM->flush();
-            
-            
+
+            // to created Defaul Location
+            if ($entity->getLocation() == null) {
+
+                $rootLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
+                $rootLocation->setLocationCode('_ROOT_LOCATION_' . $entity->getId());
+                $rootLocation->setCreatedBy($u);
+                $rootLocation->setCreatedOn($changeOn);
+                $rootLocation->setIsActive(1);
+                $rootLocation->setIsRootLocation(1);
+                $rootLocation->setIsSystemLocation(1);
+                $rootLocation->setLocationName('_ROOT_LOCATION' . $entity->getId());
+                $rootLocation->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
+                
+
+                $this->doctrineEM->persist($rootLocation);
+                $this->doctrineEM->flush();
+                
+                $rootLocation->setPath($rootLocation->getId().'/');
+                $rootLocation->setPathDepth(1);
+                $this->doctrineEM->persist($rootLocation);
+                $this->doctrineEM->flush();
+                
+                
+                $entity->setLocation($rootLocation);
+
+                $returnLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
+                $returnLocation->setLocationCode('_RETURN_LOCATION_' . $entity->getId());
+                $returnLocation->setCreatedBy($u);
+                $returnLocation->setCreatedOn($changeOn);
+                $returnLocation->setIsActive(1);
+                $returnLocation->setIsRootLocation(0);
+                $returnLocation->setIsSystemLocation(0);
+                $returnLocation->setIsReturnLocation(1);
+                $returnLocation->setLocationName('_RETURN_LOCATION_' . $entity->getId());
+                $returnLocation->setParentId($rootLocation->getId()); // important
+                
+                $returnLocation->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
+                $this->doctrineEM->persist($returnLocation);
+                $this->doctrineEM->flush();
+                
+                $returnLocation->setPath($rootLocation->getPath().$returnLocation->getId().'/');
+                $returnLocation->setPathDepth($rootLocation->getPathDepth() + 1);
+                $this->doctrineEM->persist($returnLocation);
+                
+                $scrapLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
+                $scrapLocation->setLocationCode('_SCRAP_LOCATION_' . $entity->getId());
+                $scrapLocation->setCreatedBy($u);
+                $scrapLocation->setCreatedOn($changeOn);
+                $scrapLocation->setIsActive(1);
+                $scrapLocation->setIsRootLocation(0);
+                $scrapLocation->setIsSystemLocation(0);
+                $scrapLocation->setIsReturnLocation(0);
+                $scrapLocation->setIsScrapLocation(1);
+                $scrapLocation->setLocationName('_SCRAP_LOCATION_' . $entity->getId());
+                $scrapLocation->setParentId($rootLocation->getId()); // important
+                
+                $scrapLocation->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
+                
+                $this->doctrineEM->persist($scrapLocation);
+                $this->doctrineEM->flush();
+                
+                $scrapLocation->setPath($rootLocation->getPath().$scrapLocation->getId().'/');
+                $scrapLocation->setPathDepth($rootLocation->getPathDepth() + 1);                
+                $this->doctrineEM->persist($scrapLocation);
+                $this->doctrineEM->flush();
+                   
+            }
+
             // LOGGING
             if ($isNew == TRUE) {
                 $m = sprintf('[OK] Warehouse #%s created.', $entity->getId());
             } else {
-                
+
                 $m = sprintf('[OK] Warehouse #%s updated.', $entity->getId());
-                
+
                 $this->getEventManager()->trigger('inventory.change.log', __METHOD__, array(
                     'priority' => 7,
                     'message' => $m,
@@ -233,14 +300,13 @@ class WarehouseService extends AbstractService
                     'changeValidFrom' => $changeOn
                 ));
             }
-            
+
             $this->getEventManager()->trigger('inventory.activity.log', __METHOD__, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'createdBy' => $u,
                 'createdOn' => $changeOn
-            ));            
-            
+            ));
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }

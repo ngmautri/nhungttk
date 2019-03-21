@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryWarehouse
  *
- * @ORM\Table(name="nmt_inventory_warehouse", indexes={@ORM\Index(name="nmt_inventory_warehouse_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_FK2_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_warehouse_FK3_idx", columns={"wh_country"}), @ORM\Index(name="nmt_inventory_warehouse_FK4_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_warehouse_FK5_idx", columns={"stockkeeper_id"}), @ORM\Index(name="nmt_inventory_warehouse_FK6_idx", columns={"wh_controller_id"})})
+ * @ORM\Table(name="nmt_inventory_warehouse", indexes={@ORM\Index(name="nmt_inventory_warehouse_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_FK2_idx", columns={"company_id"}), @ORM\Index(name="nmt_inventory_warehouse_FK3_idx", columns={"wh_country"}), @ORM\Index(name="nmt_inventory_warehouse_FK4_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_warehouse_FK5_idx", columns={"stockkeeper_id"}), @ORM\Index(name="nmt_inventory_warehouse_FK6_idx", columns={"wh_controller_id"}), @ORM\Index(name="nmt_inventory_warehouse_FK7_idx", columns={"location_id"})})
  * @ORM\Entity
  */
 class NmtInventoryWarehouse
@@ -94,9 +94,9 @@ class NmtInventoryWarehouse
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_on", type="datetime", nullable=false)
+     * @ORM\Column(name="created_on", type="datetime", nullable=true)
      */
-    private $createdOn = 'CURRENT_TIMESTAMP';
+    private $createdOn;
 
     /**
      * @var string
@@ -185,6 +185,16 @@ class NmtInventoryWarehouse
      * })
      */
     private $whController;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouseLocation
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouseLocation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="location_id", referencedColumnName="id")
+     * })
+     */
+    private $location;
 
 
 
@@ -700,5 +710,29 @@ class NmtInventoryWarehouse
     public function getWhController()
     {
         return $this->whController;
+    }
+
+    /**
+     * Set location
+     *
+     * @param \Application\Entity\NmtInventoryWarehouseLocation $location
+     *
+     * @return NmtInventoryWarehouse
+     */
+    public function setLocation(\Application\Entity\NmtInventoryWarehouseLocation $location = null)
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return \Application\Entity\NmtInventoryWarehouseLocation
+     */
+    public function getLocation()
+    {
+        return $this->location;
     }
 }

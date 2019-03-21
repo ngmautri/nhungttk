@@ -1260,7 +1260,9 @@ class ItemTransactionController extends AbstractActionController
         }
         ;
         $criteria = array();
-        $sort_criteria = array();
+        $sort_criteria = array(
+            "createdOn" =>'DESC'
+        );
 
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryMv')->findBy($criteria, $sort_criteria);
         $total_records = count($list);

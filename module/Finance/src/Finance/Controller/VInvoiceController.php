@@ -422,7 +422,9 @@ class VInvoiceController extends AbstractActionController
             $m = sprintf("[OK] AP invoice %s posted.", $entity->getSysNumber());
             $this->flashMessenger()->addMessage($m);
 
-            $redirectUrl = "/finance/v-invoice/list";
+            //$redirectUrl = "/finance/v-invoice/list";
+            
+            $redirectUrl = sprintf("/finance/v-invoice/show?nid=%s&entity_id=%s&token=%s",\Application\Model\Constants::v4(),$entity->getId(), $entity->getToken());
             return $this->redirect()->toUrl($redirectUrl);
         }
 

@@ -55,7 +55,7 @@ class WarehouseController extends AbstractActionController
             $entity = new NmtInventoryWarehouse();
             $entity->setCompany($u->getCompany());
 
-            $errors = $this->warehouseService->saveEntity($entity, $data, $u);
+            $errors = $this->warehouseService->saveEntity($entity, $data, $u, TRUE);
 
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(

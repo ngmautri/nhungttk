@@ -73,8 +73,8 @@ else :
         $count ++;
         $total_onhand = $total_onhand + $a->getOnhandQuantity();
 
-        if ($a->getOnhandQuantity() * $a->getDocUnitPrice() !== null) :
-            $stock_value = $stock_value + $a->getOnhandQuantity() * $a->getDocUnitPrice();
+        if ($a->getOnhandQuantity() * $a->getDocUnitPrice()*$a->getExchangeRate() !== null) :
+        $stock_value = $stock_value + $a->getOnhandQuantity() * $a->getDocUnitPrice()*$a->getExchangeRate();
         endif;
 
         ?>

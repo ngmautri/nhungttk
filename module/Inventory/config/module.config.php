@@ -164,12 +164,14 @@ return array(
             'Inventory\Service\OpeningBalanceService' => 'Inventory\Service\OpeningBalanceServiceFactory',
             'Inventory\Service\ItemSerialService' => 'Inventory\Service\ItemSerialServiceFactory',
             'Inventory\Service\WarehouseService' => 'Inventory\Service\WarehouseServiceFactory',
+            'Inventory\Service\WarehouseLocationService' => 'Inventory\Service\WarehouseLocationServiceFactory',
             'Inventory\Service\ItemVariantService' => 'Inventory\Service\ItemVariantServiceFactory',
             'Inventory\Service\ItemGroupService' => 'Inventory\Service\ItemGroupServiceFactory',
             
             'Inventory\Service\InventoryTransactionService' => 'Inventory\Service\InventoryTransactionServiceFactory',
       
             'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
+            
             
             
         )

@@ -1,0 +1,152 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <h4>Location in Wahrehouse.</h4>
+  </div>
+</div>
+
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="$('#html').jstree('open_all');">Expand all
+</a>
+
+&nbsp;|&nbsp;
+<a style="color: #0080ff;" href="javascript:;"
+	onclick="$('#html').jstree('close_all');">Collapse all
+</a>
+
+
+<div id="html" class="demo">
+	<ul>
+	<?php echo $jsTree ?>
+</ul>
+</div>
+
+</div>
+
+<script>	
+// html demo
+	$('#html').jstree({
+		"core" : {
+		       // so that create works
+		       "check_callback" : true
+		     },
+		    "plugins" : [ "contextmenu" ],
+
+		    "contextmenu":{         
+		        "items": function($node) {
+		            var tree = $("#html").jstree(true);
+		            return {
+		                "Create": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Create New Category",
+		                    "action": function (obj) { 
+		                    	var ref = $.jstree.reference(obj.reference);
+                                sel = ref.get_selected();
+        	                    $node = tree.create_node($node);
+			                    tree.edit($node);
+		                    }
+		                },
+		                "Rename": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Rename Category",
+		                    "action": function (obj) { 
+		                        tree.edit($node);
+		                    }
+		                },                         
+		                "Remove": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Remove Category",
+		                    "action": function (obj) { 
+		                        tree.delete_node($node);
+		                    }
+		                },
+		                "Add Member": {
+		                    "separator_before": false,
+		                    "separator_after": false,
+		                    "label": "Add Member",
+		                    "action": function (obj) {
+		                    	var redirectUrl = "/application/item-category/add-member?category="+$node.text; 
+		                    	window.location = redirectUrl;
+		                   }
+		                },
+		                
+		            };
+		        }
+		    }
+		    
+    });
+
+	// When the jsTree is ready, add two more records.
+	$('#html').on('create_node.jstree', function (e, data) {
+		//alert(data.node.parent +  data.node.id);
+	});
+	
+	$('#html').on('rename_node.jstree', function (e, data) {
+		//alert(data.node.parent +  data.node.id);
+		//createRole(data.node.parent,data.node.id,data.node.text);
+    });
+
+	$('#html').on('delete_node.jstree', function (e, data) {
+		//alert(data.node.parent +  data.node.id);
+		//createRole(data.node.parent,data.node.id,data.node.text);
+    });
+
+	$("#html").on("click", ".jstree-anchor", function(e) {
+
+		   var node = $("#html").jstree(true).get_node($(this));
+		   var id = $("#html").jstree(true).get_node($(this)).id;
+		   var cat_name = $("#html").jstree(true).get_node($(this)).text;
+		   //var node = $("#html").jstree(true).get_node($(this)).data.ic.hasMember;
+			if (node.state.disabled)
+    		{
+        		//alert('disabled');
+    		}else{        		
+    			loadCategory(id,cat_name);
+        	}
+	});
+</script>
+
+<!-- Modal -->
+<div id="myModal" class="modal hide" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h5 class="modal-title">Message:</h5>
+		</div>
+		<div class="modal-body">
+			<div>
+				<span id="_status"></span>
+			</div>
+		</div>
+
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+		</div>
+	</div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal" id="modal1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<b><h5 class="modal-title" id = "modal_title" >Mascot International Laos</h5></b>
+			</div>
+			<div class="modal-body">
+				<div id="loaded_data">loading</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dialog1" style="display: none; padding-top: 4pt">
+	<div id="content">loading</div>
+</div>
+

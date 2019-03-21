@@ -15,8 +15,63 @@ class WarehouseController extends AbstractActionController
 {
 
     protected $warehouseService;
+    protected $warehouseLocationService;
 
     protected $doctrineEM;
+    
+    /**
+     * 
+     * @return \Inventory\Service\WarehouseLocationService
+     */
+    public function getWarehouseLocationService()
+    {
+        return $this->warehouseLocationService;
+    }
+
+  /**
+   * 
+   * @param \Inventory\Service\WarehouseLocationService $warehouseLocationService
+   */
+    public function setWarehouseLocationService(\Inventory\Service\WarehouseLocationService  $warehouseLocationService)
+    {
+        $this->warehouseLocationService = $warehouseLocationService;
+    }
+
+    /**
+     */
+    public function locationTreeAction() {
+        
+        $this->layout ( "layout/user/ajax" );
+        $id = (int) $this->params()->fromQuery('id');
+        $criteria = array(
+            'id' => $id
+        );
+        
+        
+        /** @var \Application\Entity\NmtInventoryWarehouse $entity ; */
+        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy($criteria);
+        if ($entity == null) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+        
+        /** @var \Application\Entity\NmtInventoryWarehouse $root ; */
+        $root = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouseLocation')->findOneBy(array("locationCode"=>$entity->getId()."-ROOT-LOCATION"));
+        
+        $this->warehouseLocationService->initCategory();
+        $this->warehouseLocationService->updateCategory($root->getId(),0);
+        $jsTree = $this->warehouseLocationService->generateJSTreeNew($root->getId(),false);
+        
+        
+        /* if ($request->isXmlHttpRequest ()) {
+         $this->layout ( "layout/user/ajax" );
+         }
+         
+         */
+        //$jsTree = $this->tree;
+        return new ViewModel ( array (
+            'jsTree' => $jsTree
+        ) );
+    }
 
     /*
      * Defaul Action

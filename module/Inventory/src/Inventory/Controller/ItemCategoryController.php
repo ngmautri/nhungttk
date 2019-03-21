@@ -9,18 +9,20 @@
  */
 namespace Inventory\Controller;
 
+use Application\Entity\NmtApplicationAclRoleResource;
+use Application\Entity\NmtApplicationAclUserRole;
+use Application\Entity\NmtInventoryItemCategory;
+use Application\Model\AclRole;
+use Application\Model\AclRoleTable;
+use Application\Service\DepartmentService;
+use Application\Service\ItemCategoryService;
+use Doctrine\ORM\EntityManager;
+use MLA\Paginator;
+use User\Model\AclRoleResource;
+use User\Model\AclUserRole;
+use User\Model\UserTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Model\AclRoleTable;
-use Nmt\Paginator;
-use Application\Service\ItemCategoryService;
-
-use Application\Entity\NmtApplicationAclRole;
-use Doctrine\ORM\EntityManager;
-use Application\Entity\NmtApplicationAclUserRole;
-use User\Model\UserTable;
-use Application\Entity\NmtApplicationAclRoleResource;
-use Application\Entity\NmtInventoryItemCategory;
 
 
 /**

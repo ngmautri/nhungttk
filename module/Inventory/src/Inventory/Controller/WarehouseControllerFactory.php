@@ -30,7 +30,10 @@ class WarehouseControllerFactory implements FactoryInterface {
 		
 		$sv =  $container->get('\Inventory\Service\WarehouseService');
 		$controller->setWarehouseService($sv);
-	   
+	
+		$sv =  $container->get('\Inventory\Service\WarehouseLocationService');
+		$controller->setWarehouseLocationService($sv);
+		
 		return $controller;
 	}
 }

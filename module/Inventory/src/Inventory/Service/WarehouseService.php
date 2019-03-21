@@ -216,13 +216,14 @@ class WarehouseService extends AbstractService
             if ($entity->getLocation() == null) {
 
                 $rootLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
-                $rootLocation->setLocationCode('_ROOT_LOCATION_' . $entity->getId());
+                $rootLocation->setWarehouse($entity);
+                $rootLocation->setLocationCode($entity->getId().'-ROOT-LOCATION') ;
                 $rootLocation->setCreatedBy($u);
                 $rootLocation->setCreatedOn($changeOn);
                 $rootLocation->setIsActive(1);
                 $rootLocation->setIsRootLocation(1);
                 $rootLocation->setIsSystemLocation(1);
-                $rootLocation->setLocationName('_ROOT_LOCATION' . $entity->getId());
+                $rootLocation->setLocationName($entity->getId().'-ROOT-LOCATION');
                 $rootLocation->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
                 
 
@@ -238,14 +239,15 @@ class WarehouseService extends AbstractService
                 $entity->setLocation($rootLocation);
 
                 $returnLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
-                $returnLocation->setLocationCode('_RETURN_LOCATION_' . $entity->getId());
+                $returnLocation->setWarehouse($entity);
+                $returnLocation->setLocationCode($entity->getId().'-RETURN-LOCATION');
                 $returnLocation->setCreatedBy($u);
                 $returnLocation->setCreatedOn($changeOn);
                 $returnLocation->setIsActive(1);
                 $returnLocation->setIsRootLocation(0);
                 $returnLocation->setIsSystemLocation(0);
                 $returnLocation->setIsReturnLocation(1);
-                $returnLocation->setLocationName('_RETURN_LOCATION_' . $entity->getId());
+                $returnLocation->setLocationName($entity->getId().'-RETURN-LOCATION');
                 $returnLocation->setParentId($rootLocation->getId()); // important
                 
                 $returnLocation->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
@@ -257,7 +259,8 @@ class WarehouseService extends AbstractService
                 $this->doctrineEM->persist($returnLocation);
                 
                 $scrapLocation = new \Application\Entity\NmtInventoryWarehouseLocation();
-                $scrapLocation->setLocationCode('_SCRAP_LOCATION_' . $entity->getId());
+                $scrapLocation->setWarehouse($entity);
+                $scrapLocation->setLocationCode($entity->getId().'-SCRAP-LOCATION');
                 $scrapLocation->setCreatedBy($u);
                 $scrapLocation->setCreatedOn($changeOn);
                 $scrapLocation->setIsActive(1);
@@ -265,7 +268,7 @@ class WarehouseService extends AbstractService
                 $scrapLocation->setIsSystemLocation(0);
                 $scrapLocation->setIsReturnLocation(0);
                 $scrapLocation->setIsScrapLocation(1);
-                $scrapLocation->setLocationName('_SCRAP_LOCATION_' . $entity->getId());
+                $scrapLocation->setLocationName($entity->getId().'-SCRAP-LOCATION');
                 $scrapLocation->setParentId($rootLocation->getId()); // important
                 
                 $scrapLocation->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));

@@ -1,16 +1,15 @@
 <?php
-
-namespace Application\Service;
+namespace Inventory\Service;
 use Application\Utility\AbstractCategory;
 use Doctrine\ORM\EntityManager;
 use Application\Entity\NmtApplicationDepartment;
 
 /**
+ * 
+ * @author Nguyen Mau Tri
  *
- * @author nmt
- *        
  */
-class ItemCategoryService extends AbstractCategory {
+class WarehouseLocationService extends AbstractCategory {
 	
 	protected $doctrineEM;
 	
@@ -20,14 +19,15 @@ class ItemCategoryService extends AbstractCategory {
 	 * @see \Application\Utility\AbstractCategory::initCategory()
 	 */
 	public function initCategory() {
-		$nodes = $this->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryItemCategory')->findBy(array(),array('nodeName'=>'ASC'));
-		
-	/* 	$n = new NmtApplicationDepartment();
-		$n->getNodeParentId(); */
-	
+		$nodes = $this->getDoctrineEM()->getRepository('Application\Entity\NmtInventoryWarehouseLocation')->findBy(array(),array('locationCode'=>'ASC'));
+
 		foreach ( $nodes as $row ) {
-			$id = $row->getNodeId();
-			$parent_id = $row->getNodeParentId();
+		    
+		    /** @var \Application\Entity\NmtInventoryWarehouseLocation $row ; */
+		    
+		    
+			$id = $row->getId();
+			$parent_id = $row->getParentId();
 			$this->data [$id] = $row;
 			$this->index [$parent_id] [] = $id;
 		}	
@@ -55,13 +55,13 @@ class ItemCategoryService extends AbstractCategory {
 		//inorder travesal
 		if (count ( $children ) > 0) {
 			
-			if($tree['instance']->getNodeName() == "_ROOT_"){
-				$this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true, "disabled":true}\' data-ic=\'{"hasMember":"0"}\'><span  style="cursor:text">ITEM CATEGORY</span>';
+		    if($tree['instance']->getLocationName() == "_ROOT_"){
+				$this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getId().'" data-jstree=\'{ "opened" : true, "disabled":true}\' data-ic=\'{"hasMember":"0"}\'><span  style="cursor:text">ITEM CATEGORY</span>';
 			}else{
 				if($expandAll === true){
-					$this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getNodeId().'" data-jstree=\'{ "opened" : true}\' data-ic=\'{"hasMember":"'.$tree['instance']->getHasMember().'"}>\'' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")\n";
+				    $this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getId().'" data-jstree=\'{ "opened" : true}\' data-ic=\'{"hasMember":"'.$tree['instance']->getHasMember().'"}>\'' . ucwords($tree['instance']->getLocationName()) . '('.count ( $children ).")\n";
 				}else{
-					$this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getNodeId().'" data-ic=\'{"hasMember":"' . $tree['instance']->getHasMember() . '"}\'>' . ucwords($tree['instance']->getNodeName()) . '('.count ( $children ).")\n";
+				    $this->jsTree = $this->jsTree . '<li id="' .  $tree['instance']->getId().'" data-ic=\'{"hasMember":"' . $tree['instance']->getHasMember() . '"}\'>' . ucwords($tree['instance']->getLocationName()) . '('.count ( $children ).")\n";
 				}
 			}
 			
@@ -72,7 +72,7 @@ class ItemCategoryService extends AbstractCategory {
 				if (count ( $value ['children'] ) > 0) {
 					$this->generateJSTreeNew($key,$expandAll);
 				} else {
-					$this->jsTree = $this->jsTree . '<li id="' .  $value['instance']->getNodeId().'" data-jstree=\'{}\' data-ic=\'{"hasMember":"'.$value ['instance']->getHasMember(). '"}\'>' . $value ['instance']->getNodeName() . ' </li>' . "\n";
+				    $this->jsTree = $this->jsTree . '<li id="' .  $value['instance']->getId().'" data-jstree=\'{}\' data-ic=\'{"hasMember":"'.$value ['instance']->getHasMember(). '"}\'>' . $value ['instance']->getLocationName() . ' </li>' . "\n";
 					$this->generateJSTreeNew($key,$expandAll);
 				}
 			}

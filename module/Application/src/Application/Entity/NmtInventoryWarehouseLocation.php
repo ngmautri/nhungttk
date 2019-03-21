@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryWarehouseLocation
  *
- * @ORM\Table(name="nmt_inventory_warehouse_location", indexes={@ORM\Index(name="nmt_inventory_warehouse_location_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK2_idx", columns={"last_change_by"})})
+ * @ORM\Table(name="nmt_inventory_warehouse_location", indexes={@ORM\Index(name="nmt_inventory_warehouse_location_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK2_idx", columns={"last_change_by"}), @ORM\Index(name="nmt_inventory_warehouse_location_FK3_idx", columns={"warehouse_id"})})
  * @ORM\Entity
  */
 class NmtInventoryWarehouseLocation
@@ -148,6 +148,13 @@ class NmtInventoryWarehouseLocation
     private $pathDepth;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="has_member", type="boolean", nullable=true)
+     */
+    private $hasMember;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -166,6 +173,16 @@ class NmtInventoryWarehouseLocation
      * })
      */
     private $lastChangeBy;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="warehouse_id", referencedColumnName="id")
+     * })
+     */
+    private $warehouse;
 
 
 
@@ -612,6 +629,30 @@ class NmtInventoryWarehouseLocation
     }
 
     /**
+     * Set hasMember
+     *
+     * @param boolean $hasMember
+     *
+     * @return NmtInventoryWarehouseLocation
+     */
+    public function setHasMember($hasMember)
+    {
+        $this->hasMember = $hasMember;
+
+        return $this;
+    }
+
+    /**
+     * Get hasMember
+     *
+     * @return boolean
+     */
+    public function getHasMember()
+    {
+        return $this->hasMember;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -657,5 +698,29 @@ class NmtInventoryWarehouseLocation
     public function getLastChangeBy()
     {
         return $this->lastChangeBy;
+    }
+
+    /**
+     * Set warehouse
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
+     *
+     * @return NmtInventoryWarehouseLocation
+     */
+    public function setWarehouse(\Application\Entity\NmtInventoryWarehouse $warehouse = null)
+    {
+        $this->warehouse = $warehouse;
+
+        return $this;
+    }
+
+    /**
+     * Get warehouse
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getWarehouse()
+    {
+        return $this->warehouse;
     }
 }

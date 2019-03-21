@@ -379,6 +379,20 @@ class NmtProcureGrRow
     private $docType;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="vendor_item_name", type="string", length=100, nullable=true)
+     */
+    private $vendorItemName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description_text", type="text", length=65535, nullable=true)
+     */
+    private $descriptionText;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1732,6 +1746,54 @@ class NmtProcureGrRow
     public function getDocType()
     {
         return $this->docType;
+    }
+
+    /**
+     * Set vendorItemName
+     *
+     * @param string $vendorItemName
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setVendorItemName($vendorItemName)
+    {
+        $this->vendorItemName = $vendorItemName;
+
+        return $this;
+    }
+
+    /**
+     * Get vendorItemName
+     *
+     * @return string
+     */
+    public function getVendorItemName()
+    {
+        return $this->vendorItemName;
+    }
+
+    /**
+     * Set descriptionText
+     *
+     * @param string $descriptionText
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setDescriptionText($descriptionText)
+    {
+        $this->descriptionText = $descriptionText;
+
+        return $this;
+    }
+
+    /**
+     * Get descriptionText
+     *
+     * @return string
+     */
+    public function getDescriptionText()
+    {
+        return $this->descriptionText;
     }
 
     /**

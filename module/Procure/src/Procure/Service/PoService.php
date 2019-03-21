@@ -26,8 +26,7 @@ class PoService extends AbstractService
         $errors = array();
 
         if (! $entity instanceof \Application\Entity\NmtProcurePo) {
-            $errors[] = $this->controllerPlugin->translate('AP invoice is not found!');
-        } else {
+            $errors[] = $this->controllerPlugin->translate('AP invoicePO');
             if ($entity->getLocalCurrency() == null) {
                 $errors[] = $this->controllerPlugin->translate('Local currency is not found!');
             }
@@ -53,7 +52,6 @@ class PoService extends AbstractService
         $contractNo = $data['contractNo'];
         $vendor_id = (int) $data['vendor_id'];
         $isActive = (int) $data['isActive'];
-        $paymentTerm = $data['paymentTerm'];
         
 
         if ($isActive !== 1) {
@@ -103,13 +101,12 @@ class PoService extends AbstractService
             $errors = array_merge($errors, $ck);
         }
         
-        
-        if ($paymentTerm == null) {
-            $errors[] = $this->controllerPlugin->translate('Please given payment term');
-        } else {
-            $entity->setPaymentTerm($paymentTerm);
+        // check currency and exchange rate
+        $ck = $this->checkPaymentTerm($entity, $data, $isPosting);
+        if (count($ck) > 0) {
+            $errors = array_merge($errors, $ck);
         }
-
+        
         $entity->setRemarks($remarks);
 
         return $errors;
@@ -208,6 +205,10 @@ class PoService extends AbstractService
 
         $entity->setIsActive($isActive);
         $entity->setRowNumber($rowNumber);
+        
+        $descriptionText = $data['descriptionText'];
+        $descriptionText = $data['descriptionText'];
+        
 
         // Inventory Transaction and validating.
         
@@ -237,6 +238,10 @@ class PoService extends AbstractService
         
 
         $entity->setVendorItemCode($vendorItemCode);
+        $entity->setVendorItemName($vendorItemCode);
+        
+        
+        
         $entity->setUnit($unit);
         $entity->setDocUnit($unit);
 
@@ -307,6 +312,8 @@ class PoService extends AbstractService
 
         //$entity->setRemarks($remarks . 'pr_id:' . $pr_row_id);
         $entity->setRemarks($remarks);
+        $entity->setDescriptionText($descriptionText);
+        
         
         return $errors;
     }
@@ -719,7 +726,31 @@ class PoService extends AbstractService
         }
         return $errors;
     }
-    
-    
+
+    /**
+     *
+     * @param \Application\Entity\FinVendorInvoice $entity
+     * @param array $data
+     * @param boolean $isPosting
+     */
+    private function checkPaymentTerm(\Application\Entity\NmtProcurePo $entity, $data, $isPosting)
+    {
+        $errors = array();
+        if (isset($data['payment_term_id'])) {
+            // $errors[] = $this->controllerPlugin->translate('Incoterm id is not set!');
+            
+            $payment_term_id = (int) $data['payment_term_id'];
+            
+            /** @var \Application\Entity\NmtApplicationPmtTerm $payment_term ; */
+            $payment_term = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationPmtTerm')->find($payment_term_id);
+            
+            if ($payment_term !== null) {
+                $entity->setPmtTerm($payment_term);
+            } else {
+                $errors[] = $this->controllerPlugin->translate('Payment Term is not set.');
+            }
+        }
+        return $errors;
+    }
     
 }

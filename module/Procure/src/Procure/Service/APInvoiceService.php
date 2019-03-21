@@ -251,12 +251,15 @@ class APInvoiceService extends AbstractService
         $isActive = (int) $data['isActive'];
         $rowNumber = $data['rowNumber'];
         $vendorItemCode = $data['vendorItemCode'];
-
+        $vendorItemName = $data['vendorItemName'];
+        
         $unit = $data['docUnit'];
         $conversionFactor = $data['conversionFactor'];
         $quantity = $data['docQuantity'];
         $unitPrice = $data['docUnitPrice'];
         $remarks = $data['remarks'];
+        $descriptionText = $data['descriptionText'];
+        
         $taxRate = $data['taxRate'];
 
         $target_wh_id = $data['target_wh_id'];
@@ -364,6 +367,8 @@ class APInvoiceService extends AbstractService
         }
 
         $entity->setRemarks($remarks);
+        $entity->setDescriptionText($descriptionText);
+        $entity->setVendorItemName($vendorItemName);
 
         return $errors;
     }
@@ -1087,6 +1092,10 @@ class APInvoiceService extends AbstractService
 
             $n ++;
             $row_tmp = new FinVendorInvoiceRow();
+            
+            $row_tmp->setVendorItemCode($l->getVendorItemCode());
+            $row_tmp->setVendorItemName($l->getVendorItemName());
+            $row_tmp->setDescriptionText($l->getDescriptionText());
 
             $row_tmp->setGlAccount($gl_account);
             $row_tmp->setCostCenter($cost_center);

@@ -38,11 +38,9 @@ class RowConvertor
         $row->setIsDraft(1);
         $row->setRowNumber($s->getRowNumber());
         $row->setPrRow($s->getPrRow());
-        $row->setItem($s->getItem());
-   
+        $row->setItem($s->getItem());   
         $row->setUnit($s->getUnit());
-        
-        
+         
         $row->setDocQuantity($s->getQuantity());
         $row->setDocUnit($s->getUnit());
         $row->setDocUnitPrice($s->getUnitPrice());
@@ -51,7 +49,12 @@ class RowConvertor
         $row->setExwUnitPrice($s->getUnitPrice());
         $row->setVendorItemCode($s->getVendorItemCode());
         $row->setDiscountRate($s->getDiscountRate());
+        
         $row->setRemarks($s->getRemarks());
+        $row->setDecriptionText($s->getDecriptionText());
+        $row->setVendorItemCode($s->getVendorItemCode());
+        $row->setVendorItemName($s->getVendorItemName());
+        
         $row->setCreatedBy($u);
         $row->setCreatedOn(new \DateTime());
         $row->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));

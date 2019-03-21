@@ -233,6 +233,48 @@ class NmtProcurePo
     private $paymentStatus;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="total_doc_value", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalDocValue;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_doc_tax", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalDocTax;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_doc_discount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalDocDiscount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_local_value", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalLocalValue;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_local_tax", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalLocalTax;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_local_discount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalLocalDiscount;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1062,6 +1104,150 @@ class NmtProcurePo
     public function getPaymentStatus()
     {
         return $this->paymentStatus;
+    }
+
+    /**
+     * Set totalDocValue
+     *
+     * @param string $totalDocValue
+     *
+     * @return NmtProcurePo
+     */
+    public function setTotalDocValue($totalDocValue)
+    {
+        $this->totalDocValue = $totalDocValue;
+
+        return $this;
+    }
+
+    /**
+     * Get totalDocValue
+     *
+     * @return string
+     */
+    public function getTotalDocValue()
+    {
+        return $this->totalDocValue;
+    }
+
+    /**
+     * Set totalDocTax
+     *
+     * @param string $totalDocTax
+     *
+     * @return NmtProcurePo
+     */
+    public function setTotalDocTax($totalDocTax)
+    {
+        $this->totalDocTax = $totalDocTax;
+
+        return $this;
+    }
+
+    /**
+     * Get totalDocTax
+     *
+     * @return string
+     */
+    public function getTotalDocTax()
+    {
+        return $this->totalDocTax;
+    }
+
+    /**
+     * Set totalDocDiscount
+     *
+     * @param string $totalDocDiscount
+     *
+     * @return NmtProcurePo
+     */
+    public function setTotalDocDiscount($totalDocDiscount)
+    {
+        $this->totalDocDiscount = $totalDocDiscount;
+
+        return $this;
+    }
+
+    /**
+     * Get totalDocDiscount
+     *
+     * @return string
+     */
+    public function getTotalDocDiscount()
+    {
+        return $this->totalDocDiscount;
+    }
+
+    /**
+     * Set totalLocalValue
+     *
+     * @param string $totalLocalValue
+     *
+     * @return NmtProcurePo
+     */
+    public function setTotalLocalValue($totalLocalValue)
+    {
+        $this->totalLocalValue = $totalLocalValue;
+
+        return $this;
+    }
+
+    /**
+     * Get totalLocalValue
+     *
+     * @return string
+     */
+    public function getTotalLocalValue()
+    {
+        return $this->totalLocalValue;
+    }
+
+    /**
+     * Set totalLocalTax
+     *
+     * @param string $totalLocalTax
+     *
+     * @return NmtProcurePo
+     */
+    public function setTotalLocalTax($totalLocalTax)
+    {
+        $this->totalLocalTax = $totalLocalTax;
+
+        return $this;
+    }
+
+    /**
+     * Get totalLocalTax
+     *
+     * @return string
+     */
+    public function getTotalLocalTax()
+    {
+        return $this->totalLocalTax;
+    }
+
+    /**
+     * Set totalLocalDiscount
+     *
+     * @param string $totalLocalDiscount
+     *
+     * @return NmtProcurePo
+     */
+    public function setTotalLocalDiscount($totalLocalDiscount)
+    {
+        $this->totalLocalDiscount = $totalLocalDiscount;
+
+        return $this;
+    }
+
+    /**
+     * Get totalLocalDiscount
+     *
+     * @return string
+     */
+    public function getTotalLocalDiscount()
+    {
+        return $this->totalLocalDiscount;
     }
 
     /**

@@ -225,6 +225,48 @@ class NmtProcureQo
     private $docType;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="total_doc_value", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalDocValue;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_doc_tax", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalDocTax;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_doc_discount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalDocDiscount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_local_value", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalLocalValue;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_local_tax", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalLocalTax;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="total_local_discount", type="decimal", precision=15, scale=4, nullable=true)
+     */
+    private $totalLocalDiscount;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1030,6 +1072,150 @@ class NmtProcureQo
     public function getDocType()
     {
         return $this->docType;
+    }
+
+    /**
+     * Set totalDocValue
+     *
+     * @param string $totalDocValue
+     *
+     * @return NmtProcureQo
+     */
+    public function setTotalDocValue($totalDocValue)
+    {
+        $this->totalDocValue = $totalDocValue;
+
+        return $this;
+    }
+
+    /**
+     * Get totalDocValue
+     *
+     * @return string
+     */
+    public function getTotalDocValue()
+    {
+        return $this->totalDocValue;
+    }
+
+    /**
+     * Set totalDocTax
+     *
+     * @param string $totalDocTax
+     *
+     * @return NmtProcureQo
+     */
+    public function setTotalDocTax($totalDocTax)
+    {
+        $this->totalDocTax = $totalDocTax;
+
+        return $this;
+    }
+
+    /**
+     * Get totalDocTax
+     *
+     * @return string
+     */
+    public function getTotalDocTax()
+    {
+        return $this->totalDocTax;
+    }
+
+    /**
+     * Set totalDocDiscount
+     *
+     * @param string $totalDocDiscount
+     *
+     * @return NmtProcureQo
+     */
+    public function setTotalDocDiscount($totalDocDiscount)
+    {
+        $this->totalDocDiscount = $totalDocDiscount;
+
+        return $this;
+    }
+
+    /**
+     * Get totalDocDiscount
+     *
+     * @return string
+     */
+    public function getTotalDocDiscount()
+    {
+        return $this->totalDocDiscount;
+    }
+
+    /**
+     * Set totalLocalValue
+     *
+     * @param string $totalLocalValue
+     *
+     * @return NmtProcureQo
+     */
+    public function setTotalLocalValue($totalLocalValue)
+    {
+        $this->totalLocalValue = $totalLocalValue;
+
+        return $this;
+    }
+
+    /**
+     * Get totalLocalValue
+     *
+     * @return string
+     */
+    public function getTotalLocalValue()
+    {
+        return $this->totalLocalValue;
+    }
+
+    /**
+     * Set totalLocalTax
+     *
+     * @param string $totalLocalTax
+     *
+     * @return NmtProcureQo
+     */
+    public function setTotalLocalTax($totalLocalTax)
+    {
+        $this->totalLocalTax = $totalLocalTax;
+
+        return $this;
+    }
+
+    /**
+     * Get totalLocalTax
+     *
+     * @return string
+     */
+    public function getTotalLocalTax()
+    {
+        return $this->totalLocalTax;
+    }
+
+    /**
+     * Set totalLocalDiscount
+     *
+     * @param string $totalLocalDiscount
+     *
+     * @return NmtProcureQo
+     */
+    public function setTotalLocalDiscount($totalLocalDiscount)
+    {
+        $this->totalLocalDiscount = $totalLocalDiscount;
+
+        return $this;
+    }
+
+    /**
+     * Get totalLocalDiscount
+     *
+     * @return string
+     */
+    public function getTotalLocalDiscount()
+    {
+        return $this->totalLocalDiscount;
     }
 
     /**

@@ -86,7 +86,7 @@ class PoController extends AbstractActionController
             if ($target == null) {
                 $errors[] = 'Quotation can\'t be empty!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                return new ViewModel(array(
+                $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_PO_FROM_QO,
                     
                     'redirectUrl' => $redirectUrl,
@@ -97,6 +97,10 @@ class PoController extends AbstractActionController
                     'incoterm_list' => $incoterm_list,
                     'nmtPlugin' => $nmtPlugin,
                 ));
+                
+                $viewModel->setTemplate("procure/po/crud");
+                return $viewModel;
+                
             }
 
             $entity = new NmtProcurePo();

@@ -379,6 +379,20 @@ class FinVendorInvoiceRow
     private $docType;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="description_text", type="text", length=65535, nullable=true)
+     */
+    private $descriptionText;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="vendor_item_name", type="string", length=100, nullable=true)
+     */
+    private $vendorItemName;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1722,6 +1736,54 @@ class FinVendorInvoiceRow
     public function getDocType()
     {
         return $this->docType;
+    }
+
+    /**
+     * Set descriptionText
+     *
+     * @param string $descriptionText
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setDescriptionText($descriptionText)
+    {
+        $this->descriptionText = $descriptionText;
+
+        return $this;
+    }
+
+    /**
+     * Get descriptionText
+     *
+     * @return string
+     */
+    public function getDescriptionText()
+    {
+        return $this->descriptionText;
+    }
+
+    /**
+     * Set vendorItemName
+     *
+     * @param string $vendorItemName
+     *
+     * @return FinVendorInvoiceRow
+     */
+    public function setVendorItemName($vendorItemName)
+    {
+        $this->vendorItemName = $vendorItemName;
+
+        return $this;
+    }
+
+    /**
+     * Get vendorItemName
+     *
+     * @return string
+     */
+    public function getVendorItemName()
+    {
+        return $this->vendorItemName;
     }
 
     /**

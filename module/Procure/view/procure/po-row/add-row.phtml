@@ -213,6 +213,14 @@ if (count($errors) > 0) {
 								Code:</label>
 							<div class="col-sm-3">
 								<input tabindex="3" class="form-control input-sm" type="text"
+									id="vendorItemName" name="vendorItemName"
+									value="<?php echo (!$entity == null)? $entity->getVendorItemName():"";?>">
+							</div>
+							
+							<label class="control-label col-sm-2" for="inputTag">Vendor Item
+								Code:</label>
+							<div class="col-sm-3">
+								<input tabindex="3" class="form-control input-sm" type="text"
 									id="vendor_item_code" name="vendorItemCode"
 									value="<?php echo (!$entity == null)? $entity->getVendorItemCode():"";?>">
 							</div>
@@ -333,13 +341,22 @@ if (count($errors) > 0) {
 
 						<div class="form-group margin-bottom">
 							<label class="control-label col-sm-2">Remark:</label>
-							<div class="col-sm-8">
+							<div class="col-sm-3">
 								<input tabindex="11" class="form-control input-sm" type="text"
 									placeholder="" name="remarks"
 									value="<?php echo (!$entity == null)? $entity->getRemarks():"";?>">
 							</div>
 						</div>
-						<hr style="margin: 5pt 1pt 5pt 1pt;">
+						
+										<div class="form-group margin-bottom">
+			<label class="control-label col-sm-2">Description:</label>
+				<div class="col-sm-4">
+					<textarea class="form-control input-sm" type="text" rows="6"
+						placeholder="" name="descriptionText" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getDescriptionText():"";?></textarea>
+				</div>
+			</div>
+			<hr style="margin: 5pt 1pt 5pt 1pt">
+					
 
 						<div class="form-group margin-bottom" style="margin-top: 10pt">
 							<label class="control-label col-sm-2" for="inputTag"></label>

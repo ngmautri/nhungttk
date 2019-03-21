@@ -147,6 +147,9 @@ class QoService extends AbstractService
         $unitPrice = $data['unitPrice'];
         $taxRate = $data['taxRate'];
         $rowNumber = $data['rowNumber'];
+        $descriptionText = $data['descriptionText'];
+        $vendorItemName = $data['vendorItemName'];
+        
         
         
         // $traceStock = $data['traceStock'];
@@ -233,7 +236,8 @@ class QoService extends AbstractService
         }
 
         $entity->setRemarks($remarks);
-
+        $entity->setDescriptionText($descriptionText);
+        $entity->setVendorItemName($vendorItemName);
         return $errors;
     }
     

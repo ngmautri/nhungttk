@@ -1,5 +1,6 @@
 <?php
 namespace Inventory\Model\GI;
+use Zend\Math\Rand;
 
 /**
  * Machine ID is required, exchange part.
@@ -111,6 +112,41 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
      */
     public function doPosting($entity, $u, $isFlush = false)
     {
+        // check warehouse 
+        $wh =  $entity->getWarehouse();
+         
+        $criteria = array(
+            'warehouse' => $wh,
+            'isReturnLocation'=> 1,
+        );
+        
+        /** @var \Application\Entity\NmtInventoryWarehouseLocation $returnLocation */
+        $returnLocation = $this->contextService->getDoctrineEM()
+        ->getRepository('Application\Entity\NmtInventoryWarehouseLocation')
+        ->findOneBy($criteria);
+        
+        if($returnLocation==null){
+            throw new \Exception('Return Location is not defined. Please check warehouse set-up');
+        }
+        
+        /** @var \Application\Entity\NmtInventoryMv $newEntity */
+        $newEntity = clone($entity);
+        
+        
+        $newEntity->setMovementType($entity->getMovementType()."+1"); // IMPORTANT
+        
+        $newEntity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN); // IMPORTANT        
+        $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
+        $newEntity->setRemarks('Automatic posting');
+        $newEntity->setSysNumber($this->contextService->getControllerPlugin()
+            ->getDocNumber($newEntity));
+        $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+        $newEntity->setIsDraft(0);
+        $newEntity->setIsPosted(1);
+        
+        $this->contextService->getDoctrineEM()->persist($newEntity);
+        
+        
         $criteria = array(
             'movement' => $entity
         );
@@ -121,36 +157,115 @@ class GIforRepairMachine extends \Inventory\Model\AbstractTransactionStrategy
             ->getRepository('Application\Entity\NmtInventoryTrx')
             ->findBy($criteria, $sort);
 
+            $n=0;
         foreach ($rows as $r) {
             /** @var \Application\Entity\NmtInventoryTrx $r */
 
             if ($r->getQuantity() == 0) {
                 continue;
             }
-
-            // Exchanging Part.
-            $item_ex = new \Application\Entity\NmtInventoryItemExchange();
-            $item_ex->setItem($r->getItem());
-            $item_ex->setMovementType($entity->getMovementType());
-            $item_ex->setFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
-            $item_ex->setQuantity($r->getQuantity());
-            $item_ex->setCreatedBy($u);
-            $item_ex->setCreatedOn($r->getTrxDate());
-            $item_ex->setWh($r->getWh());
-            $item_ex->setTrx($r);
-            $item_ex->setRemarks("Auto receipt old/defect part back into store!");
-            $this->contextService->getDoctrineEM()->persist($item_ex);
+            $n++;
+            /** @var \Application\Entity\NmtInventoryTrx $newRow */
+            $newRow =  clone($r);
+            
+            $newRow->setDocStatus($newEntity->getDocStatus());
+            
+            $newRow->setMovement($newEntity);
+            $newRow->setIssueFor(null);
+            $newRow->setCogsDoc(0);
+            $newRow->setCogsLocal(0);            
+            $newRow->setFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN); // IMPORTANT
+            $newRow->setWhLocation($returnLocation); // IMPORTANT
+            $newRow->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
+            $newRow->setRemarks('Automatic posting');
+            $newRow->setSysNumber($newEntity->getSysNumber()."-".$n);
+            $this->contextService->getDoctrineEM()->persist($newRow);
         }
+         
         $this->contextService->getDoctrineEM()->flush();
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
-     */
-    public function reverse($entity, $u, $reversalDate, $isFlush = false)
-    {}
+   /**
+    * 
+    * {@inheritDoc}
+    * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
+    */
+    public function reverse($entity, $u, $reversalDate, $reversalReason, $isFlush = false)
+    {
+        // check warehouse
+        $wh =  $entity->getWarehouse();
+        
+        $criteria = array(
+            'warehouse' => $wh,
+            'isReturnLocation'=> 1,
+        );
+        
+        /** @var \Application\Entity\NmtInventoryWarehouseLocation $returnLocation */
+        $returnLocation = $this->contextService->getDoctrineEM()
+        ->getRepository('Application\Entity\NmtInventoryWarehouseLocation')
+        ->findOneBy($criteria);
+        
+        if($returnLocation==null){
+            throw new \Exception('Return Location is not defined. Please check warehouse set-up');
+        }
+        
+        /** @var \Application\Entity\NmtInventoryMv $newEntity */
+        $newEntity = clone($entity);
+        
+        $newEntity->setIsReversed(1);
+        $newEntity->setReversalReason($reversalReason);
+        $newEntity->setReversalDate(new \DateTime($reversalDate));
+         
+        $newEntity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_OUT); // IMPORTANT
+        $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
+        $newEntity->setRemarks('[Reversal] Automatic posting');
+        $newEntity->setSysNumber($this->contextService->getControllerPlugin()
+            ->getDocNumber($newEntity));
+        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
+        $entity->setIsDraft(0);
+        $entity->setIsPosted(1);
+        
+        $this->contextService->getDoctrineEM()->persist($newEntity);
+        
+        
+        $criteria = array(
+            'movement' => $entity
+        );
+        
+        $sort = array();
+        
+        $rows = $this->contextService->getDoctrineEM()
+        ->getRepository('Application\Entity\NmtInventoryTrx')
+        ->findBy($criteria, $sort);
+        
+        $n=0;
+        foreach ($rows as $r) {
+            /** @var \Application\Entity\NmtInventoryTrx $r */
+            
+            if ($r->getQuantity() == 0) {
+                continue;
+            }
+            $n++;
+            /** @var \Application\Entity\NmtInventoryTrx $newRow */
+            $newRow =  clone($r);
+            
+            $newRow->setDocStatus($newEntity->getDocStatus());
+            $newRow->setMovement($newEntity);
+            $newRow->setIssueFor(null);
+            $newRow->setCogsDoc(0);
+            $newRow->setCogsLocal(0);
+            $newRow->setFlow($newEntity->getMovementFlow()); // IMPORTANT
+            $newRow->setWhLocation($returnLocation); // IMPORTANT
+            
+            $newRow->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true));
+            $newRow->setRemarks('[Reversal] Automatic posting');
+            $newRow->setSysNumber($newEntity->getSysNumber()."-".$n);
+            $this->contextService->getDoctrineEM()->persist($newRow);
+        }
+        
+        $this->contextService->getDoctrineEM()->flush();
+        
+    }
 
     /**
      *

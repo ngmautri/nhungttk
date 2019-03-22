@@ -144,6 +144,13 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
          * =====================
          */
         $this->createFIFOLayer($newEntity, null, $u, False);
+        
+        /**
+         * STEP 2-5: DO SPECIFIC TASK FOR EACH TYPE OF TRANSACTION, if need
+         * =====================
+         */
+        $this->reverse($entity, $u, $reversalDate, $reversalReason, $isFlush = TRUE);
+        
 
         /**
          * STEP 3: Create Journal Entry for duplicate entity
@@ -428,8 +435,8 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
 
             // update transaction row
             $r->setTrxDate($entity->getMovementDate());
-            $r->setDocStatus($entity->getMovementType());
-            $r->setDocType($entity->getMovementType());
+            $r->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+            $r->setDocType($entity->getDocStatus());
             $r->setTransactionType($entity->getMovementType());
 
             // calculate COGS
@@ -613,9 +620,10 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
      * @param \Application\Entity\NmtInventoryMv $entity
      * @param \Application\Entity\MlaUsers $u
      * @param \DateTime $reversalDate
+     * @param string $reversalReason
      * @param bool $isFlush
      */
-    abstract public function reverse($entity, $u, $reversalDate, $isFlush = false);
+    abstract public function reverse($entity, $u, $reversalDate, $reversalReason, $isFlush = TRUE);
 
     /**
      *

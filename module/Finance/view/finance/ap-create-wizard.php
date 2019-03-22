@@ -30,4 +30,13 @@
 	
 	
 </div>
+
+<?php if ($current_step=="STEP1") :?>
+<div style="padding: 1px; font-size: 9.5pt; margin: 5pt 2pt 5pt 5pt; color:graytext;">
+	<i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;<?php echo $this->translate("Goods receipt with invoice");?>.<br>
+	<?php echo $this->translate("Without invoice, please click ");?> <a style="color: navy" class="" target="_blank"
+		href="<?php echo $this->baseUrl ?>/procure/gr/add"><?php echo $this->translate("here");?></a>
+</div>
+<?php endif;?>	
+
 </div>						

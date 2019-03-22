@@ -18,6 +18,7 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 			<td><b>AP Invoice</b></td>			
 			<td><b>Vendor</b></td>				
 			<td><b><?php echo $this->translate("Item Name");?></b></td>			
+		    <td><b><?php echo $this->translate("Vendor Item code");?></b></td>			
 		
 			<td><b>Pr Date</b></td>
 			<td><b>Unit</b></td>
@@ -66,6 +67,7 @@ $nid = \Application\Model\Constants::FINANCE_HASH_ID;
 			
 			<td><?php if(!$a->getInvoice()->getVendor()==null): echo $a->getInvoice()->getVendor()->getVendorName();endif;?> </td>
 			<td><?php echo $a->getVendorItemCode();?></td>
+			<td><?php echo $a->getVendorItemName();?></td>
 	
 	
 			<td><?php if(!$a->getInvoice()->getInvoiceDate()==null): echo date_format ( $a->getInvoice()->getInvoiceDate(), "d/m/y");endif;?> </td>

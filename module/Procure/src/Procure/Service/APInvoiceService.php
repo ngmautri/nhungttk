@@ -1064,7 +1064,7 @@ class APInvoiceService extends AbstractService
                 continue;
             }
 
-            /** @var \Application\Entity\NmtProcurePoRow $l ; */
+            /** @var \Application\Entity\NmtProcurePoRow $r ; */
             $r = $l[0];
 
             $gl_account = null;
@@ -1093,9 +1093,9 @@ class APInvoiceService extends AbstractService
             $n ++;
             $row_tmp = new FinVendorInvoiceRow();
             
-            $row_tmp->setVendorItemCode($l->getVendorItemCode());
-            $row_tmp->setVendorItemName($l->getVendorItemName());
-            $row_tmp->setDescriptionText($l->getDescriptionText());
+            $row_tmp->setVendorItemCode($r->getVendorItemCode());
+            $row_tmp->setVendorItemName($r->getVendorItemName());
+            $row_tmp->setDescriptionText($r->getDescriptionText());
 
             $row_tmp->setGlAccount($gl_account);
             $row_tmp->setCostCenter($cost_center);

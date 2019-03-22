@@ -51,7 +51,7 @@ class RowConvertor
         $row->setDiscountRate($s->getDiscountRate());
         
         $row->setRemarks($s->getRemarks());
-        $row->setDecriptionText($s->getDecriptionText());
+        $row->setDescriptionText($s->getDescriptionText());
         $row->setVendorItemCode($s->getVendorItemCode());
         $row->setVendorItemName($s->getVendorItemName());
         

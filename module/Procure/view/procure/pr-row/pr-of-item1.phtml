@@ -109,7 +109,11 @@
 	   echo $this->translate("fullly received");
 	endif;
 	?>		
-			
+		
+		<?php if($r['gr_qty'] >0 AND $r['gr_qty']<$a->getQuantity()):
+	   echo $this->translate("partial");
+	endif;
+	?>		
 			</td>
 			
 			<td>

@@ -155,6 +155,11 @@ class QoService extends AbstractService
         // $traceStock = $data['traceStock'];
 
         $remarks = $data['remarks'];
+        
+        $entity->setRemarks($remarks);
+        $entity->setDescriptionText($descriptionText);
+        $entity->setVendorItemName($vendorItemName);
+        
 
         if ($isActive !== 1) {
             $isActive = 0;
@@ -235,10 +240,7 @@ class QoService extends AbstractService
             }
         }
 
-        $entity->setRemarks($remarks);
-        $entity->setDescriptionText($descriptionText);
-        $entity->setVendorItemName($vendorItemName);
-        return $errors;
+         return $errors;
     }
     
     /**

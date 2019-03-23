@@ -107,7 +107,7 @@ class GRfromPurchasingReversal extends Inventory\Model\AbstractTransactionStrate
      * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
      */
-    public function reverse($entity, $u, $reversalDate, $isFlush = false)
+    public function reverse($entity, $u, $reversalDate, $reversalReason, $isFlush = TRUE)
     {}
 
     /**

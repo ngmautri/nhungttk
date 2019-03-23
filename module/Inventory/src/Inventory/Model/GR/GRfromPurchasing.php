@@ -102,12 +102,13 @@ class GRfromPurchasing extends AbstractTransactionStrategy
         $this->contextService->getDoctrineEM()->flush();
     }
 
+
     /**
-     *
-     * {@inheritdoc}
+     * 
+     * {@inheritDoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
      */
-    public function reverse($entity, $u, $reversalDate, $isFlush = false)
+    public function reverse($entity, $u, $reversalDate, $reversalReason, $isFlush = false)
     {}
 
     /**

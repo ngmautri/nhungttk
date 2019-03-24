@@ -57,7 +57,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             ->beginTransaction(); // suspend auto-commit
 
         try {
-            
+
             if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
                 $entity->setSysNumber($this->contextService->getControllerPlugin()
                     ->getDocNumber($entity));
@@ -66,8 +66,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             $entity->setIsDraft(0);
             $entity->setIsPosted(1);
             $this->contextService->getDoctrineEM()->persist($entity);
-            
-            
+
             /**
              * STEP 1: Calculate COGS and create consumption of FIFO Layer.
              * =====================
@@ -100,7 +99,6 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
              * =====================
              */
 
-          
             // flush
             $this->contextService->getDoctrineEM()->flush();
 
@@ -347,6 +345,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                      */
                     $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
 
+                    $fifoLayer->setInventoryTrx($r); // New
                     $fifoLayer->setIsClosed(0);
                     $fifoLayer->setItem($r->getItem());
                     $fifoLayer->setQuantity($r->getQuantity());
@@ -372,6 +371,69 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                     $fifoLayer->setCreatedOn($r->getCreatedOn());
                     $this->contextService->getDoctrineEM()->persist($fifoLayer);
                 }
+            }
+        }
+
+        if ($isFlush == true) {
+            $this->contextService->getDoctrineEM()->flush();
+        }
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryTrx $trx
+     * @param \Application\Entity\MlaUsers $u
+     * @param array $row
+     * @param bool $isFlush
+     */
+    protected function createFIFOLayerByLine($trx, $u, $isFlush = FALSE)
+    {
+        if (! $trx instanceof \Application\Entity\NmtInventoryTrx) {
+            throw new \Exception("Invalid Agrument. Inventory transaction not given");
+        }
+
+        /** @var \Application\Entity\NmtInventoryTrx $trx ; */
+        if ($trx->getQuantity() == 0) {
+            continue;
+        }
+
+        // created FIFO if needed
+        if ($trx->getItem() != null) {
+
+            if ($trx->getItem()->getIsStocked() == 1) {
+
+                /**
+                 *
+                 * @todo: Create FIFO Layer
+                 * @todo: recalculate price for inventory unit.
+                 */
+                $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
+
+                $fifoLayer->setInventoryTrx($trx); // New
+                $fifoLayer->setIsClosed(0);
+                $fifoLayer->setItem($trx->getItem());
+                $fifoLayer->setQuantity($trx->getQuantity());
+
+                // set WH
+                $fifoLayer->setWarehouse($trx->getWh());
+
+                // will be changed uppon inventory transaction.
+                $fifoLayer->setOnhandQuantity($trx->getQuantity());
+                $fifoLayer->setDocUnitPrice($trx->getVendorUnitPrice());
+                $fifoLayer->setLocalCurrency($trx->getLocalCurrency());
+                $fifoLayer->setDocCurrency($trx->getDocCurrency());
+
+                $fifoLayer->setExchangeRate($trx->getExchangeRate());
+                $fifoLayer->setPostingDate($trx->getTrxDate());
+
+                $fifoLayer->setSourceClass(get_class($trx));
+                $fifoLayer->setSourceId($trx->getID());
+                $fifoLayer->setSourceToken($trx->getToken());
+
+                $fifoLayer->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
+                $fifoLayer->setCreatedBy($u);
+                $fifoLayer->setCreatedOn($trx->getCreatedOn());
+                $this->contextService->getDoctrineEM()->persist($fifoLayer);
             }
         }
 

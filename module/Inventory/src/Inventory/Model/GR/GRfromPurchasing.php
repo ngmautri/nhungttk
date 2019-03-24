@@ -13,9 +13,10 @@ use Inventory\Model\AbstractTransactionStrategy;
  */
 class GRfromPurchasing extends AbstractTransactionStrategy
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::validateRow()
      */
     public function validateRow($entity, $data, $u, $isNew, $isPosting)
@@ -79,44 +80,23 @@ class GRfromPurchasing extends AbstractTransactionStrategy
      * @see \Inventory\Model\AbstractTransactionStrategy::doPosting()
      */
     public function doPosting($entity, $u, $isFlush = false)
-    {
-        $criteria = array(
-            'movement' => $entity
-        );
-
-        $sort = array();
-
-        $rows = $this->contextService->getDoctrineEM()
-            ->getRepository('Application\Entity\NmtInventoryTrx')
-            ->findBy($criteria, $sort);
-
-        if (count($rows) == 0) {
-            throw new \Exception("Movement is empty");
-        }
-
-        $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
-        $entity->setIsDraft(0);
-        $entity->setIsPosted(1);
-
-        $this->contextService->getDoctrineEM()->persist($entity);
-        $this->contextService->getDoctrineEM()->flush();
+    {        
     }
 
-
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::reverse()
      */
     public function reverse($entity, $u, $reversalDate, $reversalReason, $isFlush = false)
     {}
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Model\AbstractTransactionStrategy::createMovement()
      */
-    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger=null)
+    public function createMovement($rows, $u, $isFlush = false, $movementDate = null, $wareHouse = null, $trigger = null)
     {
         if (! $u instanceof \Application\Entity\MlaUsers) {
             throw new \Exception("Invalid Argument! User can't be indentided for this transaction.");
@@ -137,16 +117,18 @@ class GRfromPurchasing extends AbstractTransactionStrategy
             }
         }
 
+        // =========Validated=======//
+
         $createdOn = new \DateTime();
 
         $mv = new \Application\Entity\NmtInventoryMv();
-        
+
         $default_cur = null;
         if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
             $default_cur = $u->getCompany()->getDefaultCurrency();
         }
         $mv->setLocalCurrency($default_cur);
-        
+
         $mv->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
         $mv->setMovementType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
         $mv->setTrxType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
@@ -160,82 +142,44 @@ class GRfromPurchasing extends AbstractTransactionStrategy
         $n = 0;
         foreach ($rows as $r) {
 
-            /** @var \Application\Entity\NmtInventoryTrx $r */
+            /** @var \Application\Entity\NmtInventoryTrx $r ;*/
             if (! $r instanceof \Application\Entity\NmtInventoryTrx) {
+                continue;
+            }
+
+            if ($r->getQuantity() == 0) {
                 continue;
             }
 
             $n ++;
             $r->setMovement($mv);
-            
+
             $r->setDocStatus($mv->getDocStatus());
             $r->setDocType(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING);
 
             $this->contextService->getDoctrineEM()->persist($r);
 
-            // created FIFO if needed
-            if ($r->getItem() != null) {
-
-                if ($r->getItem()->getIsStocked() == 1) {
-
-                    /**
-                     *
-                     * @todo: Create FIFO Layer
-                     * @todo: recalculate price for inventory unit.
-                     */
-                    $fifoLayer = new \Application\Entity\NmtInventoryFifoLayer();
-
-                    $fifoLayer->setIsClosed(0);
-                    
-                    
-                    $fifoLayer->setItem($r->getItem()); // Important
-                    $fifoLayer->setQuantity($r->getQuantity());
-
-                    // set WH
-                    $fifoLayer->setWarehouse($r->getWh());
-
-                    // will be changed uppon inventory transaction.
-                    $fifoLayer->setOnhandQuantity($r->getQuantity());
-                    $fifoLayer->setDocUnitPrice($r->getVendorUnitPrice());
-                    $fifoLayer->setLocalCurrency($r->getCurrency());
-                    $fifoLayer->setExchangeRate($r->getExchangeRate());
-                    $fifoLayer->setPostingDate($r->getTrxDate());
-                    $fifoLayer->setSourceClass(get_class($r));
-                    $fifoLayer->setSourceId($r->getID());
-                    $fifoLayer->setSourceToken($r->getToken());                    
-                    
-                    //new
-                    $fifoLayer->setInventoryTrx($r);
-
-                    $fifoLayer->setToken(Rand::getString(22, \Application\Model\Constants::CHAR_LIST, true));
-                    $fifoLayer->setCreatedBy($u);
-                    $fifoLayer->setCreatedOn($r->getCreatedOn());
-                    $this->contextService->getDoctrineEM()->persist($fifoLayer);
-
-                /**
-                 *
-                 * @todo: Calculate Moving Average Price.
-                 */
-                }
-            }
+            // create fifo layer from line
+            $this->createFIFOLayerByLine($r, $u, false);
         }
 
-        if ($n > 0) {
-            $mv->setMovementDate($movementDate);
-            $mv->setWarehouse($wareHouse);
-            $mv->setCreatedBy($u);
-            $mv->setCreatedOn($createdOn);
-            $mv->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-            $mv->setSysNumber($this->contextService->getControllerPlugin()
-                ->getDocNumber($mv));
-            $this->contextService->getDoctrineEM()->persist($mv);
+        if ($n == 0) {
+            throw new \Exception('Inventory transaction is not created');
         }
+
+        $mv->setMovementDate($movementDate);
+        $mv->setWarehouse($wareHouse);
+        $mv->setCreatedBy($u);
+        $mv->setCreatedOn($createdOn);
+        $mv->setToken(\Zend\Math\Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . \Zend\Math\Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+        $mv->setSysNumber($this->contextService->getControllerPlugin()->getDocNumber($mv));
+        $this->contextService->getDoctrineEM()->persist($mv);
 
         if ($isFlush == TRUE) {
             $this->contextService->getDoctrineEM()->flush();
         }
-        
-        if ($trigger==null){
+
+        if ($trigger == null) {
             $trigger = __METHOD__;
         }
 
@@ -245,9 +189,7 @@ class GRfromPurchasing extends AbstractTransactionStrategy
             'message' => $m,
             'createdBy' => $u,
             'createdOn' => $createdOn,
-            'isFlush' => $isFlush,
+            'isFlush' => $isFlush
         ));
     }
-   
-
 }

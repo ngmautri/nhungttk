@@ -210,7 +210,9 @@ class GIforTransferToWH extends \Inventory\Model\AbstractTransactionStrategy
                     
                     $this->contextService->getDoctrineEM()->persist($newRow);
                     
-                     $n++;
+                    // create FIFO layer for this line
+                    $this->createFIFOLayerByLine($newRow, $u);
+                    $n++;
                 }
             }
         }
@@ -231,7 +233,7 @@ class GIforTransferToWH extends \Inventory\Model\AbstractTransactionStrategy
          */
         
         // need to create FIFO
-        $this->createFIFOLayer($newEntity, null, $u, False);
+        //$this->createFIFOLayer($newEntity, null, $u, False);
         
     }
 

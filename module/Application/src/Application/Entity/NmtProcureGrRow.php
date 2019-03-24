@@ -393,6 +393,13 @@ class NmtProcureGrRow
     private $descriptionText;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
+     */
+    private $reversalBlocked;
+
+    /**
      * @var \Application\Entity\FinVendorInvoice
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\FinVendorInvoice")
@@ -1794,6 +1801,30 @@ class NmtProcureGrRow
     public function getDescriptionText()
     {
         return $this->descriptionText;
+    }
+
+    /**
+     * Set reversalBlocked
+     *
+     * @param boolean $reversalBlocked
+     *
+     * @return NmtProcureGrRow
+     */
+    public function setReversalBlocked($reversalBlocked)
+    {
+        $this->reversalBlocked = $reversalBlocked;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalBlocked
+     *
+     * @return boolean
+     */
+    public function getReversalBlocked()
+    {
+        return $this->reversalBlocked;
     }
 
     /**

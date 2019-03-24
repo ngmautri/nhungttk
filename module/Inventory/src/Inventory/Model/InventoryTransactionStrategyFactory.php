@@ -40,6 +40,13 @@ class InventoryTransactionStrategyFactory
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_COST_CENTER:
                 return new \Inventory\Model\GI\GIforCostCenter();
                 
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE:
+                return new \Inventory\Model\GI\GIforTransferToWH();
+      
+            case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
+                return new \Inventory\Model\GI\GIforTransferLocation();
+                
+                
             default:
                 return null;
         }

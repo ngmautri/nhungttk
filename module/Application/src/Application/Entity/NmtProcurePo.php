@@ -275,6 +275,13 @@ class NmtProcurePo
     private $totalLocalDiscount;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
+     */
+    private $reversalBlocked;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1248,6 +1255,30 @@ class NmtProcurePo
     public function getTotalLocalDiscount()
     {
         return $this->totalLocalDiscount;
+    }
+
+    /**
+     * Set reversalBlocked
+     *
+     * @param boolean $reversalBlocked
+     *
+     * @return NmtProcurePo
+     */
+    public function setReversalBlocked($reversalBlocked)
+    {
+        $this->reversalBlocked = $reversalBlocked;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalBlocked
+     *
+     * @return boolean
+     */
+    public function getReversalBlocked()
+    {
+        return $this->reversalBlocked;
     }
 
     /**

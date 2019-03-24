@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryMv
  *
- * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_mv_FK4_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK5_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK6_idx", columns={"local_currency_id"})})
+ * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_mv_FK4_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK5_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK6_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK7_idx", columns={"target_warehouse"}), @ORM\Index(name="nmt_inventory_mv_FK8_idx", columns={"source_location"}), @ORM\Index(name="nmt_inventory_mv_FK9_idx", columns={"tartget_location"})})
  * @ORM\Entity
  */
 class NmtInventoryMv
@@ -295,6 +295,20 @@ class NmtInventoryMv
     private $docType;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_transfer_transaction", type="boolean", nullable=true)
+     */
+    private $isTransferTransaction;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
+     */
+    private $reversalBlocked;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -353,6 +367,36 @@ class NmtInventoryMv
      * })
      */
     private $localCurrency;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouse")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="target_warehouse", referencedColumnName="id")
+     * })
+     */
+    private $targetWarehouse;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouseLocation
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouseLocation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="source_location", referencedColumnName="id")
+     * })
+     */
+    private $sourceLocation;
+
+    /**
+     * @var \Application\Entity\NmtInventoryWarehouseLocation
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtInventoryWarehouseLocation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="tartget_location", referencedColumnName="id")
+     * })
+     */
+    private $tartgetLocation;
 
 
 
@@ -1303,6 +1347,54 @@ class NmtInventoryMv
     }
 
     /**
+     * Set isTransferTransaction
+     *
+     * @param boolean $isTransferTransaction
+     *
+     * @return NmtInventoryMv
+     */
+    public function setIsTransferTransaction($isTransferTransaction)
+    {
+        $this->isTransferTransaction = $isTransferTransaction;
+
+        return $this;
+    }
+
+    /**
+     * Get isTransferTransaction
+     *
+     * @return boolean
+     */
+    public function getIsTransferTransaction()
+    {
+        return $this->isTransferTransaction;
+    }
+
+    /**
+     * Set reversalBlocked
+     *
+     * @param boolean $reversalBlocked
+     *
+     * @return NmtInventoryMv
+     */
+    public function setReversalBlocked($reversalBlocked)
+    {
+        $this->reversalBlocked = $reversalBlocked;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalBlocked
+     *
+     * @return boolean
+     */
+    public function getReversalBlocked()
+    {
+        return $this->reversalBlocked;
+    }
+
+    /**
      * Set createdBy
      *
      * @param \Application\Entity\MlaUsers $createdBy
@@ -1444,5 +1536,77 @@ class NmtInventoryMv
     public function getLocalCurrency()
     {
         return $this->localCurrency;
+    }
+
+    /**
+     * Set targetWarehouse
+     *
+     * @param \Application\Entity\NmtInventoryWarehouse $targetWarehouse
+     *
+     * @return NmtInventoryMv
+     */
+    public function setTargetWarehouse(\Application\Entity\NmtInventoryWarehouse $targetWarehouse = null)
+    {
+        $this->targetWarehouse = $targetWarehouse;
+
+        return $this;
+    }
+
+    /**
+     * Get targetWarehouse
+     *
+     * @return \Application\Entity\NmtInventoryWarehouse
+     */
+    public function getTargetWarehouse()
+    {
+        return $this->targetWarehouse;
+    }
+
+    /**
+     * Set sourceLocation
+     *
+     * @param \Application\Entity\NmtInventoryWarehouseLocation $sourceLocation
+     *
+     * @return NmtInventoryMv
+     */
+    public function setSourceLocation(\Application\Entity\NmtInventoryWarehouseLocation $sourceLocation = null)
+    {
+        $this->sourceLocation = $sourceLocation;
+
+        return $this;
+    }
+
+    /**
+     * Get sourceLocation
+     *
+     * @return \Application\Entity\NmtInventoryWarehouseLocation
+     */
+    public function getSourceLocation()
+    {
+        return $this->sourceLocation;
+    }
+
+    /**
+     * Set tartgetLocation
+     *
+     * @param \Application\Entity\NmtInventoryWarehouseLocation $tartgetLocation
+     *
+     * @return NmtInventoryMv
+     */
+    public function setTartgetLocation(\Application\Entity\NmtInventoryWarehouseLocation $tartgetLocation = null)
+    {
+        $this->tartgetLocation = $tartgetLocation;
+
+        return $this;
+    }
+
+    /**
+     * Get tartgetLocation
+     *
+     * @return \Application\Entity\NmtInventoryWarehouseLocation
+     */
+    public function getTartgetLocation()
+    {
+        return $this->tartgetLocation;
     }
 }

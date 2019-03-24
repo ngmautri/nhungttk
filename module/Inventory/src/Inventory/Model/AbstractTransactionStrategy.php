@@ -13,6 +13,137 @@ use Zend\Validator\Date;
 abstract class AbstractTransactionStrategy implements InventoryTransactionInterface
 {
 
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param array $data
+     * @param \Application\Entity\MlaUsers $u
+     * @param boolean $isNew
+     * @param boolean $isPosting
+     */
+    public function validateHeader($entity, $data, $u, $isNew, $isPosting)
+    {
+        // blank left
+    }
+
+    /**
+     * Templete Method
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param bool $isFlush
+     */
+    public function runTransferPosting($entity, $u, $isFlush = TRUE)
+    {
+        if (! $entity instanceof \Application\Entity\NmtInventoryMv) {
+            throw new \Exception("Movement is found");
+        }
+        $criteria = array(
+            'movement' => $entity
+        );
+
+        $sort = array();
+
+        $rows = $this->contextService->getDoctrineEM()
+            ->getRepository('Application\Entity\NmtInventoryTrx')
+            ->findBy($criteria, $sort);
+
+        if (count($rows) == 0) {
+            throw new \Exception("Movement is empty");
+        }
+
+        $this->contextService->getDoctrineEM()
+            ->getConnection()
+            ->beginTransaction(); // suspend auto-commit
+
+        try {
+            
+            if ($entity->getSysNumber() == \Application\Model\Constants::SYS_NUMBER_UNASSIGNED) {
+                $entity->setSysNumber($this->contextService->getControllerPlugin()
+                    ->getDocNumber($entity));
+            }
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+            $entity->setIsDraft(0);
+            $entity->setIsPosted(1);
+            $this->contextService->getDoctrineEM()->persist($entity);
+            
+            
+            /**
+             * STEP 1: Calculate COGS and create consumption of FIFO Layer.
+             * =====================
+             */
+            $fifoLayerService = new FIFOLayerService();
+            $fifoLayerService->setDoctrineEM($this->contextService->getDoctrineEM());
+            $fifoLayerService->setControllerPlugin($this->contextService->getControllerPlugin());
+
+            foreach ($rows as $r) {
+
+                /** @var \Application\Entity\NmtInventoryTrx $r */
+                if ($r->getQuantity() == 0) {
+                    continue;
+                }
+
+                // update transaction row
+                $r->setTrxDate($entity->getMovementDate());
+                $r->setDocStatus(\Application\Model\Constants::DOC_STATUS_POSTED);
+                $r->setDocType($entity->getMovementType());
+                $r->setTransactionType($entity->getMovementType());
+
+                // calculate COGS. it will generate consumption of FIFO layer.
+                $cogs = $fifoLayerService->calculateCOGS($r, $r->getItem(), $entity->getWarehouse(), $r->getQuantity(), $u);
+                $r->setCogsLocal($cogs);
+                $this->contextService->getDoctrineEM()->persist($r);
+            }
+
+            /**
+             * STEP 2: UPDATE HEADER
+             * =====================
+             */
+
+          
+            // flush
+            $this->contextService->getDoctrineEM()->flush();
+
+            /**
+             * STEP 2: DO SPECIFIC TASK FOR EACH TYPE OF TRANSACTION, if need
+             * =====================
+             */
+            $this->doPosting($entity, $u, false);
+
+            /**
+             *
+             * @todo STEP 3: DO JOURNAL ENTRY POSTING
+             *       =====================
+             */
+
+            // need flush now.
+            if ($isFlush == TRUE) {
+                $this->contextService->getDoctrineEM()->flush();
+                $this->contextService->getDoctrineEM()->commit();
+            }
+        } catch (\Exception $e) {
+            $this->contextService->getDoctrineEM()
+                ->getConnection()
+                ->rollBack();
+
+            $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
+            $entity->setIsDraft(1);
+            $entity->setIsPosted(0);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Templete Method
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param \Application\Entity\MlaUsers $u
+     * @param bool $isFlush
+     */
+    public function runTransferReserval($entity, $u, $reversalDate, $reversalReason, $isFlush = TRUE)
+    {}
+
     protected $contextService;
 
     /**
@@ -53,17 +184,16 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
 
         // updte new header to opposite flow.
         $newEntity->setMovementFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
-    
+
         $newEntity->setDocStatus(\Application\Model\Constants::DOC_STATUS_REVERSED);
         $newEntity->setDocType($entity->getMovementType() . "-1");
         $newEntity->setMovementType($entity->getMovementType() . "-1");
-        
-        
+
         $newEntity->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
         $newEntity->setSysNumber($this->contextService->getControllerPlugin()
             ->getDocNumber($newEntity));
         $newEntity->setRemarks($reversalReason);
-        
+
         $this->contextService->getDoctrineEM()->persist($newEntity);
 
         foreach ($rows as $r) {
@@ -102,15 +232,13 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                     $new_row->setRemarks($reversalReason);
                     $new_row->setDocType($r->getDocType() . "-1");
                     $new_row->setReversalDoc($r->getId());
-                     
-                    
+
                     // set opposite flow.
                     $new_row->setFlow(\Inventory\Model\Constants::WH_TRANSACTION_IN);
                     $new_row->setQuantity($c->getQuantity());
                     $new_row->setDocQuantity($c->getQuantity());
                     $new_row->setLocalCurrency($c->getLocalCurrency());
                     $new_row->setExchangeRate($c->getExchangeRate());
-                    
 
                     $new_row->setVendorUnitPrice($c->getDocUnitPrice());
                     $new_row->setDocUnitPrice($c->getDocUnitPrice());
@@ -134,7 +262,8 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             $r->setReversalDate(new \DateTime($reversalDate));
 
             $this->contextService->getDoctrineEM()->persist($r);
-        };
+        }
+        ;
 
         // Need to flush the the transaction.
         $this->contextService->getDoctrineEM()->flush();
@@ -144,13 +273,12 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
          * =====================
          */
         $this->createFIFOLayer($newEntity, null, $u, False);
-        
+
         /**
          * STEP 2-5: DO SPECIFIC TASK FOR EACH TYPE OF TRANSACTION, if need
          * =====================
          */
         $this->reverse($entity, $u, $reversalDate, $reversalReason, $isFlush = TRUE);
-        
 
         /**
          * STEP 3: Create Journal Entry for duplicate entity
@@ -231,7 +359,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
                     $fifoLayer->setDocUnitPrice($r->getVendorUnitPrice());
                     $fifoLayer->setLocalCurrency($entity->getLocalCurrency());
                     $fifoLayer->setDocCurrency($entity->getDocCurrency());
-                    
+
                     $fifoLayer->setExchangeRate($entity->getExchangeRate());
                     $fifoLayer->setPostingDate($r->getTrxDate());
 
@@ -263,17 +391,17 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
     protected function createJournalEntryForGR($entity, $rows = null, $docType, $u, $isFlush)
     {
         if ($rows == null) {
-            
+
             $criteria = array(
                 'movement' => $entity
             );
-            
+
             $sort = array();
-            
+
             $rows = $this->contextService->getDoctrineEM()
-            ->getRepository('Application\Entity\NmtInventoryTrx')
-            ->findBy($criteria, $sort);
-            
+                ->getRepository('Application\Entity\NmtInventoryTrx')
+                ->findBy($criteria, $sort);
+
             if (count($rows) == 0) {
                 throw new \Exception("WH Transaction is empty");
             }
@@ -341,16 +469,15 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
             $je_row->setPostingKey(\Finance\Model\Constants::POSTING_KEY_DEBIT);
             $je_row->setPostingCode(\Finance\Model\Constants::POSTING_KEY_DEBIT);
 
-            
             /**
              * Decimal doctrine.
              * Values retrieved from the database are always converted to PHP's string type or null if no data is present.
              */
             $q = (float) $r->getDocQuantity();
             $up = (float) $r->getDocUnitPrice();
-            
-            $je_row->setDocAmount($q*$up);
-            $je_row->setLocalAmount((float)$r->getDocQuantity() * (float) $r->getDocUnitPrice() * $entity->getExchangeRate());
+
+            $je_row->setDocAmount($q * $up);
+            $je_row->setLocalAmount((float) $r->getDocQuantity() * (float) $r->getDocUnitPrice() * $entity->getExchangeRate());
             $je_row->setCreatedBy($u);
             $je_row->setCreatedOn($entity->getCreatedOn());
 

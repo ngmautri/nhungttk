@@ -188,7 +188,11 @@ class FIFOLayerService extends AbstractService
         $sql1 = sprintf("AND nmt_inventory_fifo_layer.posting_date <='%s'
 AND nmt_inventory_fifo_layer.is_closed=0 
 AND nmt_inventory_fifo_layer.item_id=%s 
-AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getTrxDate()->format('Y-m-d H:i:s'), $item->getId(), $warehouse->getId());
+AND nmt_inventory_fifo_layer.warehouse_id=%s", 
+            $trx->getTrxDate()->format('Y-m-d H:i:s'), 
+            $item->getId(), 
+            $warehouse->getId());
+        
 
         $sql = sprintf($sql, $sql1);
 
@@ -196,9 +200,7 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getTrxDate()->format('Y-m-d
         $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryFIFOLayer', 'nmt_inventory_fifo_layer');
         $query = $this->doctrineEM->createNativeQuery($sql, $rsm);
         $layers = $query->getResult();
-    
         
-
         if (count($layers) == 0) {
             $m = $this->controllerPlugin->translate("Goods Issue imposible. Please check the stock quantity and the issue date");
             throw new \Exception($m);
@@ -270,8 +272,9 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getTrxDate()->format('Y-m-d
                 $fifo_consume->setCreatedOn($trx->getTrxDate());
                 $fifo_consume->setCreatedBy($u);
 
-                $trx->setToken(Rand::getString(10, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+                $fifo_consume->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
 
+                
                 $this->getDoctrineEM()->persist($fifo_consume);
             }
         }
@@ -282,6 +285,10 @@ AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getTrxDate()->format('Y-m-d
             throw new \Exception($m);
         }
 
+        // set header blocked for reversal
+        $trx->setReversalBlocked(1);
+        $trx->getMovement()->setReversalBlocked(1);
+        
         return $cogs;
     }
 

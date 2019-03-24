@@ -31,6 +31,10 @@ class TransferControllerFactory implements FactoryInterface{
 		$sv =  $container->get('Inventory\Service\ItemSearchService');
 		$controller->setItemSearchService($sv);
 		
+		$sv =  $container->get('Inventory\Service\InventoryTransactionService');
+		$controller->setInventoryTransactionService($sv);
+		
+		
 		return $controller;
 	}	
 	

@@ -226,6 +226,13 @@ class NmtProcurePrRow
     private $docType;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
+     */
+    private $reversalBlocked;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -1001,6 +1008,30 @@ class NmtProcurePrRow
     public function getDocType()
     {
         return $this->docType;
+    }
+
+    /**
+     * Set reversalBlocked
+     *
+     * @param boolean $reversalBlocked
+     *
+     * @return NmtProcurePrRow
+     */
+    public function setReversalBlocked($reversalBlocked)
+    {
+        $this->reversalBlocked = $reversalBlocked;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalBlocked
+     *
+     * @return boolean
+     */
+    public function getReversalBlocked()
+    {
+        return $this->reversalBlocked;
     }
 
     /**

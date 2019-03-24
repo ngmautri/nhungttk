@@ -183,6 +183,13 @@ class FinJe
     private $reversedDoc;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="reversal_blocked", type="boolean", nullable=true)
+     */
+    private $reversalBlocked;
+
+    /**
      * @var \Application\Entity\NmtApplicationCurrency
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCurrency")
@@ -814,6 +821,30 @@ class FinJe
     public function getReversedDoc()
     {
         return $this->reversedDoc;
+    }
+
+    /**
+     * Set reversalBlocked
+     *
+     * @param boolean $reversalBlocked
+     *
+     * @return FinJe
+     */
+    public function setReversalBlocked($reversalBlocked)
+    {
+        $this->reversalBlocked = $reversalBlocked;
+
+        return $this;
+    }
+
+    /**
+     * Get reversalBlocked
+     *
+     * @return boolean
+     */
+    public function getReversalBlocked()
+    {
+        return $this->reversalBlocked;
     }
 
     /**

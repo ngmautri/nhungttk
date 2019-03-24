@@ -51,7 +51,7 @@ class GrService extends AbstractService
         $entity->setRemarks($remarks);
 
         // only update remark posible, when posted.
-        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED OR $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED or $entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_REVERSED) {
             return null;
         }
 
@@ -103,7 +103,7 @@ class GrService extends AbstractService
      * @param \Application\Entity\MlaUsers $u
      * @param boolean $isNew
      */
-    public function saveHeader(\Application\Entity\NmtProcureGr $entity, $data, $u, $isNew = FALSE, $trigger=null)
+    public function saveHeader(\Application\Entity\NmtProcureGr $entity, $data, $u, $isNew = FALSE, $trigger = null)
     {
         $errors = array();
 
@@ -647,7 +647,7 @@ class GrService extends AbstractService
      * @param boolean $isFlush
      * @return array
      */
-    public function postGR($entity, array $data, $u, $isFlush = false, $trigger=null)
+    public function postGR($entity, array $data, $u, $isFlush = false, $trigger = null)
     {
         $errors = array();
 
@@ -779,11 +779,10 @@ class GrService extends AbstractService
                             $stock_gr_entity = new NmtInventoryTrx();
                         }
 
-                        
                         $stock_gr_entity->setGr($entity);
                         $stock_gr_entity->setDocCurrency($entity->getDocCurrency());
                         $stock_gr_entity->setLocalCurrency($entity->getLocalCurrency());
-                        
+
                         $stock_gr_entity->setGrRow($r);
                         $stock_gr_entity->setExchangeRate($r->getGr()
                             ->getExchangeRate());
@@ -827,6 +826,11 @@ class GrService extends AbstractService
                         $stock_gr_entity->setConvertedPurchaseQuantity($convertedPurchaseQuantity);
 
                         $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
+                        
+                        $stock_gr_entity->setDocUnitPrice($r->getUnit());
+                        $stock_gr_entity->setLocalUnitPrice($stock_gr_entity->getDocCurrency()*$stock_gr_entity->getExchangeRate()  );
+                        
+                        
                         $stock_gr_entity->setTrxDate($entity->getGrDate());
                         $stock_gr_entity->setCurrency($entity->getCurrency());
                         $stock_gr_entity->setRemarks('PO-GR.' . $r->getRowIdentifer());
@@ -848,19 +852,19 @@ class GrService extends AbstractService
              *
              * @todo: Do Accounting Posting
              */
-            $this->jeService->postGR($entity, $gr_rows, $u, $this->controllerPlugin,false, $trigger);
-         
+            $this->jeService->postGR($entity, $gr_rows, $u, $this->controllerPlugin, false, $trigger);
+
             // Inventory items found.
             if ($n > 0) {
 
                 // Post WH Goods receipt.
                 $inventoryPostingStrategy->setContextService($this);
-                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(), $entity->getWarehouse(),$trigger);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getGrDate(), $entity->getWarehouse(), $trigger);
             }
-            
+
             // now it is time to flush
             $this->doctrineEM->flush();
-            
+
             // LOGGING
             $m = sprintf('[OK] Goods Receipt %s posted', $entity->getSysNumber());
             $this->getEventManager()->trigger('procure.activity.log', $trigger, array(
@@ -884,7 +888,7 @@ class GrService extends AbstractService
      * @param bool $isFlush,
      *
      */
-    public function reverse($entity, $u, $reversalDate, $reversalReason, $trigger=null)
+    public function reverse($entity, $u, $reversalDate, $reversalReason, $trigger = null)
     {
         $errors = array();
 
@@ -902,12 +906,10 @@ class GrService extends AbstractService
                 $errors[] = $this->controllerPlugin->translate('GR reversed already.');
             }
 
-            // check if subsequce document.
-            // only when not reversed..
-            // 1 mean not.
-           /*  if ($entity->getIsReversable() == 1) {
-                $errors[] = $this->controllerPlugin->translate('GR is not reservable, becasue sequence document is created.');
-            } */
+            // check if blocked for reversed.
+            if ($entity->getReversalBlocked() == 1) {
+                $errors[] = $this->controllerPlugin->translate('GR can not be reversed, becasue sequence documents is created.');
+            }
         }
 
         if (! $u instanceof \Application\Entity\MlaUsers) {
@@ -923,13 +925,12 @@ class GrService extends AbstractService
         if (count($rows) == 0) {
             $errors[] = $this->controllerPlugin->translate('GR is empty. Reserval imposible.');
         }
-        
+
         $inventoryPostingStrategy = InventoryTransactionStrategyFactory::getMovementStrategy(\Inventory\Model\Constants::INVENTORY_GR_FROM_PURCHASING_REVERSAL);
-        
+
         if (! $inventoryPostingStrategy instanceof AbstractTransactionStrategy) {
-              $errors[] = $this->controllerPlugin->translate('Posting strategy is not identified for this inventory movement type');
+            $errors[] = $this->controllerPlugin->translate('Posting strategy is not identified for this inventory movement type');
         }
-        
 
         if (count($errors) > 0) {
             return $errors;
@@ -944,7 +945,7 @@ class GrService extends AbstractService
 
         $data = array();
         $data['grDate'] = $reversalDate;
-      
+
         /**
          * Check Reversal Date.
          */
@@ -961,6 +962,28 @@ class GrService extends AbstractService
         // ====== VALIDATED ====== //
 
         try {
+
+            /**
+             *
+             * @todo: REVERSAL WH GOODs RECEIPT
+             * ================================
+             */
+            $criteria = array(
+                'isActive' => 1,
+                'gr' => $entity
+            );
+
+            $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
+
+            /** @var \Application\Entity\NmtInventoryTrx $trx ; */
+
+            foreach ($inventory_trx_rows as $trx) {
+
+                if ($trx->getReversalBlocked() == 1) {
+                    $errors[] = $this->controllerPlugin->translate('Sequence document is blocked for  reversal');
+                    return $errors;
+                }
+            }
 
             $changeOn = new \DateTime();
 
@@ -1014,33 +1037,20 @@ class GrService extends AbstractService
                 $r->setReversalReason($reversalReason);
                 $r->setReversalDate(new \DateTime($reversalDate));
                 $this->doctrineEM->persist($r);
-             }
+            }
 
             /**
              * POSTING JOURNAL ENTRY
              * =============================
              */
 
-             $this->jeService->reverseGR($entity, $rows, $u, $this->controllerPlugin,false, true, $trigger);
-
-          
-            /**
-             *
-             * @todo: REVERSAL WH GOODs RECEIPT
-             * ================================
-             */
-            $criteria = array(
-                'isActive' => 1,
-                'gr' => $entity
-            );
-
-            $inventory_trx_rows = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryTrx')->findBy($criteria);
+            $this->jeService->reverseGR($entity, $rows, $u, $this->controllerPlugin, false, true, $trigger);
 
             // if have inventory item.
             if (count($inventory_trx_rows) > 0) {
                 // do posting now
                 $inventoryPostingStrategy->setContextService($this);
-                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getReversalDate(), $entity->getWarehouse(),$trigger);
+                $inventoryPostingStrategy->createMovement($inventory_trx_rows, $u, true, $entity->getReversalDate(), $entity->getWarehouse(), $trigger);
             }
 
             /**
@@ -1051,7 +1061,7 @@ class GrService extends AbstractService
 
             // Time to flush.
             $this->doctrineEM->flush();
-            
+
             /**
              * LOGGING
              * ======================
@@ -1066,7 +1076,6 @@ class GrService extends AbstractService
 
             // Time to flush.
             $this->doctrineEM->flush();
-            
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }

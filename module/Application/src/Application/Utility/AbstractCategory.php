@@ -1,11 +1,10 @@
 <?php
 
 namespace Application\Utility;
-
 /**
+ * 
+ * @author Nguyen Mau Tri
  *
- * @author nmt
- *        
  */
 abstract class AbstractCategory {
 	

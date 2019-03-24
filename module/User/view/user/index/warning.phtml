@@ -1,0 +1,22 @@
+<div class="container">
+
+	<div class="col-xs-12 col-md-12">
+<?php
+if (count($errors) > 0) {
+    echo '<div class="alert alert-warning alert-dismissible"" role="alert" style="font-size: 9.5pt"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[Info]';
+
+    echo '<ul>';
+    foreach ($errors as $error) :
+        echo '<li>' . $error . '</li>';
+    endforeach
+    ;
+    echo '</ul>';
+    echo '</div>';
+}
+?>   
+
+    <hr>
+		<button class="btn btn-default" onclick="window.history.back();">
+			<i class="glyphicon glyphicon-arrow-left"> </i> Go Back
+		</button>
+</div>

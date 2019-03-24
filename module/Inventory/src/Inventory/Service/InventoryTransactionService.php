@@ -104,6 +104,23 @@ class InventoryTransactionService extends AbstractService
             }
         }
 
+        // do specific checking.
+
+        // Movement Strategy.
+        $check_result = null;
+
+        $mvStrategy = InventoryTransactionStrategyFactory::getMovementStrategy($entity->getMovementType());
+        if (! $mvStrategy instanceof \Inventory\Model\AbstractTransactionStrategy) {
+            $errors[] = $this->controllerPlugin->translate("Invalid Argument! No strategy found.");
+        } else {
+            $mvStrategy->setContextService($this);
+            $check_result = $mvStrategy->validateHeader($entity, $data, $u, $isNew, $isPosting);
+        }
+
+        if (count($check_result) > 0) {
+            $errors = array_merge($errors, $check_result);
+        }
+
         return $errors;
     }
 
@@ -516,6 +533,68 @@ class InventoryTransactionService extends AbstractService
      * @param \Application\Entity\MlaUsers $u,
      * @param bool $isFlush,
      *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function postTransfer($entity, $data = null, $u, $isFlush = false, $isPosting = TRUE, $trigger = null)
+    {
+        $errors = array();
+
+        if (! $u instanceof \Application\Entity\MlaUsers) {
+            $m = $this->controllerPlugin->translate("Invalid Argument! User is not identified for this transaction.");
+            $errors[] = $m;
+        }
+
+        if (! $entity instanceof \Application\Entity\NmtInventoryMv) {
+            $m = $this->controllerPlugin->translate("Invalid Argument. WH transaction not found!");
+            $errors[] = $m;
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        }
+
+        // ====== VALIDATED 1 ====== //
+
+        $default_cur = null;
+        if ($u->getCompany() instanceof \Application\Entity\NmtApplicationCompany) {
+            $default_cur = $u->getCompany()->getDefaultCurrency();
+            $entity->setCurrency($default_cur);
+            $entity->setLocalCurrency($default_cur);
+        }
+
+        $ck = $this->validateHeader($entity, $data, $u, false, true);
+
+        if (count($ck) > 0) {
+            return $ck;
+        }
+
+        // ====== VALIDATED 2 ====== //
+
+        try {
+            $postingStrategy = InventoryTransactionStrategyFactory::getMovementStrategy($entity->getMovementType());
+
+            if (! $postingStrategy instanceof AbstractTransactionStrategy) {
+                throw new \Exception("Posting Strategy can't not be identified for this inventory movement type!");
+            }
+
+            // Do posting now
+            $postingStrategy->setContextService($this);
+            $postingStrategy->runTransferPosting($entity, $u, true);
+            
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        return $errors;
+    }
+
+    /**
+     *
+     * @param \Application\Entity\NmtInventoryMv $entity
+     * @param array $data
+     * @param \Application\Entity\MlaUsers $u,
+     * @param bool $isFlush,
+     *
      */
     public function reverse($entity, $u, $reversalDate, $reversalReason, $trigger = null)
     {
@@ -738,13 +817,13 @@ class InventoryTransactionService extends AbstractService
             }
 
             $resveralDate = new \DateTime($movementDate);
-            
+
             // not allow to reverse on the date < date of document.
-            if($resveralDate < $entity->getMovementDate()){
-                $errors[] = sprintf('It is posible to reverse on this date %s',date_format($resveralDate,"Y-m-d"));
+            if ($resveralDate < $entity->getMovementDate()) {
+                $errors[] = sprintf('It is posible to reverse on this date %s', date_format($resveralDate, "Y-m-d"));
                 return $errors;
             }
-            
+
             $newEntity->setMovementDate($resveralDate);
         }
     }

@@ -205,6 +205,9 @@ return array(
             'Inventory\Controller\GIRow' => 'Inventory\Controller\GIRowControllerFactory',
             
             'Inventory\Controller\Transfer' => 'Inventory\Controller\TransferControllerFactory',
+            'Inventory\Controller\TransferRow' => 'Inventory\Controller\TransferRowControllerFactory',
+            
+            
             'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
             'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
             'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory',

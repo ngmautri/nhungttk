@@ -27,14 +27,31 @@ class Constants
 
     const INVENTORY_GI_FOR_ASSET = 'GI107';
 
+    const INVENTORY_GI_FOR_TRANSFER_WAREHOUSE = 'GI108';
+
+    const INVENTORY_GI_FOR_TRANSFER_LOCATION = 'GI109';
+
     const INVENTORY_GI_FOR_DISPOSAL = 'GI999';
 
     // ========================================
-    const INVENTORY_GR_FROM_OPENNING_BALANCE = 'GR000';    
-    
+    const INVENTORY_GR_FROM_OPENNING_BALANCE = 'GR000';
+
     const INVENTORY_GR_FROM_PURCHASING = 'GR100';
+    
+    const INVENTORY_GR_FROM_TRANSFER_WAREHOUSE = 'GR101';
+    
+    const INVENTORY_GR_FROM_TRANSFER_LOCATION = 'GR102';
+    
 
     const INVENTORY_GR_FROM_PURCHASING_REVERSAL = 'GR100-1';
+    
+    
+    
+
+    // ========================================
+    const INVENTORY_TRANSFER_WAREHOUSE = 'warehouse';
+
+    const INVENTORY_TRANSFER_LOCATION = 'location';
 
     // ========================================
     const WH_TRANSACTION_IN = 'IN';
@@ -101,6 +118,11 @@ class Constants
                 self::INVENTORY_GI_FOR_RETURN_PO => array(
                     "type_name" => $translator->translate("Issue for return PO"),
                     "type_description" => $translator->translate("goods will be issued for returning to supplier. PO is required!")
+                ),
+                
+                self::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE => array(
+                    "type_name" => $translator->translate("Issue for transfer to other warehouse"),
+                    "type_description" => $translator->translate("goods will be issued for other warehouse.")
                 ),
 
                 self::INVENTORY_GI_FOR_DISPOSAL => array(

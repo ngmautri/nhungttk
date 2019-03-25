@@ -223,6 +223,7 @@ return array(
             'Inventory\Controller\ItemAccounting' => 'Inventory\Controller\ItemAccountingControllerFactory',
             'Inventory\Controller\ItemVariant' => 'Inventory\Controller\ItemVariantControllerFactory',
             
+            'Inventory\Controller\SimilarItem' => 'Inventory\Controller\SimilarItemControllerFactory',
             
         )
     ),

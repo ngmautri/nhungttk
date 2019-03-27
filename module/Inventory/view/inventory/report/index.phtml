@@ -1,182 +1,32 @@
-<h4>Stock Movement</h4>
 
-  <div class="panel-group">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h5 class="panel-title">
-          <a data-toggle="collapse" href="#collapse1">Filter</a>
-        </h5>
-      </div>
-      <div id="collapse1" class="panel-collapse collapse <?php echo count($movements)>0?"":"in"?>">
-        <div class="panel-body">
-        
- <form class="form-horizontal" action="<?php echo $this->baseUrl ?>/inventory/report/index"	method="get" enctype="multipart/form-data" id="ReportForm" >
-       
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">From Date</label>
-        <div class="controls">
-          <input type="text" id="start_date" placeholder="click to select" name="start_date" value="">
-        </div>
-       </div>
-  
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">To Date</label>
-        <div class="controls">
-          <input type="text" id="end_date" placeholder="click to select" name="end_date" value="">
-        </div>
-      </div>
-  
-      <div class="control-group">
-        <label class="control-label" for="inputNameLocal">Flow</label>
-        <div class="controls">
-        	<select name="flow" >
-        		<option value="ALL">All</option>
-   	    		<option value="IN">IN</option>
-   	    		<option value="OUT">OUT</option>
-   	
-   			</select>
-	     </div>
-      </div>
-      
-       <div class="control-group">
-        <div class="controls">
-             <button type="submit" class="btn"><i class="icon-search">  </i> show</button>
-        </div>
-      </div>
-    </form>
-        
-        
-        
-        </div>
-     </div>
-    </div>
-  </div>
+<div id="tabs" style="font-size: 9.5pt">
+
+	<ul>
+		<li><a href="#general"><?php echo $this->translate('Reporting'); ?></a></li>
+	</ul>
+	<div id="general" style="font-size: 9pt">
 
 
- 
+		<div class="row">
+			<div class="col-xs-6 col-md-3">
+				<div class="list-group" style="">
+					<a class="list-group-item" href="/inventory/opening-balance/list"><?php echo $this->translate('Opening Balance'); ?></a>
+					<a class="list-group-item" href="/inventory/item-group/list"><?php echo $this->translate('Item Group'); ?></a>
+					<a class="list-group-item" href="/inventory/serial-number/list"><?php echo $this->translate('Serial Number'); ?></a>
+					<a class="list-group-item" href="/inventory/batch-number/list"><?php echo $this->translate('Batch Number'); ?></a>
+					<a class="list-group-item" href="/inventory/warehouse/list"><?php echo $this->translate('Warehouse'); ?></a>
+					<a class="list-group-item"
+						href="/inventory/item-attachment/check-picture"><?php echo $this->translate('Check Picture'); ?></a>
+
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-sm-6 col-md-9" style="">
+				<h3><?php echo $this->translate('Inventory Reporting'); ?></h3>
+			</div>
+		</div>
 
 
 
-<?php if(count($movements)>0){
-	
-		echo '<div class="alert alert-info">';
-	
-		echo '<ul>';
-		echo '<li> <strong>' . $total_items . ' </strong> transaction(s) done from <strong>' .$fromDate . '</strong> To <strong>' .$toDate . '</strong></li>';
-			echo '<li>Flow		: <strong>' .$flow . '</strong></li>';
-	
-		echo '</ul>';
-		echo '</div>';
-		
-		if (! is_null ( $paginator )):
-		echo '<h5>Result '. $paginator->minInPage. ' to '.$paginator->maxInPage . ' | ' .  $total_items . ' Items found!</h5>';
-		else:
-		echo '<h5>'. $total_items . ' Items found! </h5>';
-		endif;
-		
-?>
-<a href="<?php echo $this->baseUrl ?>/inventory/report/index?start_date=<?php echo $fromDate;?>&end_date=<?php echo $toDate;?>&flow=<?php echo $flow;?>&output=csv"><i class="icon-download-alt">  </i> Download (csv)</a> 
-<hr>
-
-
-<table class="pure-table pure-table-bordered">
-<thead>
-	<tr>
-		<td><b>Date</b></td>
-		<td><b>Spare-part Name	</b></td>
-		<td><b>Tag	</b></td>
-		<td><b>Flow</b></td>
-		<td><b>Quantity</b></td>
-		<td><b>Requester</b></td>
-	
-		<td><b>Reason</b></td>
-		<td><b>Comment</b></td>
-		<td><b>Asset Tag</b></td>	
-		<td><b>Asset</b></td>
-		<td><b>Action</b></td>	
-			
-	</tr>
-</thead>
-<tbody>
-
-<?php 
-	
-
-	$count = 0;
-	foreach ($movements as $a) :
-	 	 $count++;
-	 echo  ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
-	 	 
-	 ?>
-
-		<td><?php echo date_format(date_create($a->movement_date),"Y-m-d");?></td>
-		<td><?php echo $a->sparepart_name;?></td>
-		<td><?php echo $a->tag;?></td>
-		<td><?php echo $a->flow;?></td>
-		<td><?php echo $a->quantity;?></td>
-		<td><?php echo $a->requester;?></td>
-
-		<td><?php echo $a->reason;?></td>
-		
-		<td><?php echo $a->comment;?></td>
-		<td><?php echo $a->asset_name;?></td>
-			
-		<td><?php echo $a->asset;?></td>
-		<td><?php echo $a->id;?></td>
-	</tr>
-
-<?php endforeach; ?>
-</tbody>
-</table>
-
-<br>
-<?php
-	
-if (! is_null ( $paginator )) {
-		
-	
-	//change it only
-	$base=$this->baseUrl . '/inventory/report/index?start_date='.$fromDate.'&end_date='.$toDate.'&flow='.$flow;
-	
-	$_connector_symbol = '&';
-
-	$last 	= $base . $_connector_symbol.'page=' . $paginator->totalPages . '&perPage=' . $paginator->resultsPerPage;
-	$first 	= $base . $_connector_symbol.'page=1&perPage=' . $paginator->resultsPerPage;
-
-	$p1 = ($paginator->page)-1;
-	$p2 = ($paginator->page)+1;
-
-	$prev = $base . $_connector_symbol.'page=' . $p1 . '&perPage=' . $paginator->resultsPerPage;
-	$next = $base . $_connector_symbol.'page=' . $p2 . '&perPage=' . $paginator->resultsPerPage;
-
-
-	echo '<ul class="pagination">';
-
-	if($paginator->page != 1 AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $first.'"> |< </a></li>';
-		echo '<li><a href="'.  $prev .'"> < </a></li>';
-	}
-
-	for($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-		$url = $base. $_connector_symbol.'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-
-			
-		if ($i == $paginator->page) {
-			echo   '<li><a class="active" href="#">'.$i.'</a></li>';
-		} else {
-			echo '<li><a href="'. $url. '"> '. $i. ' </a></li>';
-		}
-	}
-	if($paginator->page != $paginator->totalPages AND $paginator->totalPages > 10){
-		echo '<li><a href="'.  $next.'"> > </a></li>';
-		echo '<li><a href="'.  $last .'"> >| </a></li>';
-	}
-	echo '</ul>';
-}
-
-?>
-
-
-
-<?php }; ?>
+	</div>
+</div>

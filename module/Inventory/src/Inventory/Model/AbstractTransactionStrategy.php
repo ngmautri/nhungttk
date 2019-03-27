@@ -6,7 +6,7 @@ use Zend\Math\Rand;
 use Zend\Validator\Date;
 
 /**
- *
+ * Abstract inventory transaction.
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */

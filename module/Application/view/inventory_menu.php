@@ -19,6 +19,9 @@
 				class="glyphicon glyphicon-plus"></span></small>&nbsp;<?php echo $this->translate("New Goods Receipt");?></a></li>
 	<li><a href="/inventory/transfer/add"><small><span
 				class="glyphicon glyphicon-plus"></span></small>&nbsp;<?php echo $this->translate("New Goods Transfer");?></a></li>
+				<li class="divider"></li>
+	<li><a href="/inventory/report/index"><i class="fa fa-book" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Reporting'); ?></a></li>
+				
 				
 <li class="divider"></li>
 	<li><a href="/inventory/setting/index"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;<?php echo $this->translate('Setup'); ?></a></li>

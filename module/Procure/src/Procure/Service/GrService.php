@@ -827,7 +827,7 @@ class GrService extends AbstractService
 
                         $stock_gr_entity->setVendorUnitPrice($r->getUnitPrice());
                         
-                        $stock_gr_entity->setDocUnitPrice($r->getUnit());
+                        $stock_gr_entity->setDocUnitPrice($r->getUnitPrice());
                         $stock_gr_entity->setLocalUnitPrice($stock_gr_entity->getDocCurrency()*$stock_gr_entity->getExchangeRate()  );
                         
                         

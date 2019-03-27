@@ -20,6 +20,7 @@
 			<td><b>Pr Date</b></td>
 			<td><b>Ref</b></td>
 			<td><b>Item</b></td>
+			<td><b>Item Code</b></td>
 		
 			<td><b>Unit</b></td>
 			<td><b>Ordered Q'ty</b></td>
@@ -83,6 +84,8 @@
 			<td><?php echo $a->getRowIdentifer();?></td>
 		
 			<td><?php echo $a->getRowName();?></td>
+			<td><?php echo $a->getRowCode();?></td>
+		
 			<td><?php echo $a->getItem()->getStandardUom()->getUomCode();?></td>
 			<td><?php echo $a->getQuantity();?></td>
 			<td><?php if(!$a->getConvertedStandardQuantiy()==null): 

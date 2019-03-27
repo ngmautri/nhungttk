@@ -14,31 +14,140 @@ class FIFOLayerService extends AbstractService
 {
 
     /**
-     * Valuation
      *
+     * @param \Application\Entity\NmtInventoryTrx $trx
      * @param \Application\Entity\NmtInventoryItem $item
+     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
      * @param double $issuedQuantity
-     * @param \DateTime $transactionDate
+     * @param \Application\Entity\MlaUsers $u
+     * @throws \Exception
+     * @return number
      */
-    public function valuate(\Application\Entity\NmtInventoryItem $item, $issuedQuantity, $transactionDate)
+    public function calculateCOGS($trx, $item, $warehouse, $issuedQuantity, $u, $isFlush = false)
     {
-        $cost = 0;
+        if ($trx == null) {
+            throw new \Exception("Invalid Argurment!");
+        }
+
+        if ($item == null) {
+            throw new \Exception("Invalid Argurment! Item not found.");
+        }
+
+        if ($warehouse == null) {
+            throw new \Exception("Invalid Argurment! warehouse not found.");
+        }
+
+        if ($issuedQuantity == 0) {
+            throw new \Exception("Nothing to valuate!");
+        }
+
+        $sql = "SELECT * FROM nmt_inventory_fifo_layer WHERE 1 %s ORDER BY nmt_inventory_fifo_layer.posting_date ASC";
+
+        $sql1 = sprintf("AND nmt_inventory_fifo_layer.posting_date <='%s'
+AND nmt_inventory_fifo_layer.is_closed=0 
+AND nmt_inventory_fifo_layer.item_id=%s 
+AND nmt_inventory_fifo_layer.warehouse_id=%s", $trx->getTrxDate()->format('Y-m-d H:i:s'), $item->getId(), $warehouse->getId());
+
+        $sql = sprintf($sql, $sql1);
+
+        $rsm = new ResultSetMappingBuilder($this->doctrineEM);
+        $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryFIFOLayer', 'nmt_inventory_fifo_layer');
+        $query = $this->doctrineEM->createNativeQuery($sql, $rsm);
+        $layers = $query->getResult();
+
+        if (count($layers) == 0) {
+            $m = $this->controllerPlugin->translate("Goods Issue imposible. Please check the stock quantity and the issue date");
+            throw new \Exception($m);
+        }
+
+        $cogs = 0;
+
+        $total_onhand = 0;
+        $totalIssueQty = $issuedQuantity;
 
         /**
          *
-         * @todo Get Layer
+         * @todo Get Layer and caculate Consumption.
          */
+        foreach ($layers as $layer) {
+            /**@var \Application\Entity\NmtInventoryFIFOLayer $layer ;*/
 
-        /**
-         *
-         * @todao Doing Valuation and update FIFO Layer
-         */
+            $on_hand = $layer->getOnhandQuantity();
+            $total_onhand += $on_hand;
 
-        return $cost;
+            if ($issuedQuantity == 0) {
+                break;
+            }
+
+            $consumpted_qty = 0;
+
+            if ($on_hand <= $issuedQuantity) {
+
+                // create comsuption of all, close this layer
+                $consumpted_qty = $on_hand;
+
+                $layer->setOnhandQuantity(0);
+                $layer->setIsClosed(1);
+                $layer->setClosedOn($trx->getTrxDate());
+
+                $issuedQuantity = $issuedQuantity - $consumpted_qty;
+            } else {
+                $consumpted_qty = $issuedQuantity;
+
+                // deduct layer onhand
+                $layer->setOnhandQuantity($on_hand - $issuedQuantity);
+                $issuedQuantity = 0;
+            }
+
+            $cogs = $cogs + $consumpted_qty * $layer->getDocUnitPrice() * $layer->getExchangeRate();
+
+            $this->getDoctrineEM()->persist($layer);
+
+            /**
+             *
+             * @todo Create Layer Consumption
+             */
+            if ($consumpted_qty > 0) {
+                $fifo_consume = new \Application\Entity\NmtInventoryFifoLayerConsume();
+                $fifo_consume->setLayer($layer);
+
+                $fifo_consume->setItem($layer->getItem());
+                $fifo_consume->setQuantity($consumpted_qty);
+
+                $fifo_consume->setDocCurrency($layer->getDocCurrency());
+                $fifo_consume->setDocUnitPrice($layer->getDocUnitPrice());
+
+                $fifo_consume->setDocTotalValue($fifo_consume->getQuantity() * $fifo_consume->getDocUnitPrice());
+
+                $fifo_consume->setExchangeRate($layer->getExchangeRate());
+                $fifo_consume->setTotalValue($fifo_consume->getDocTotalValue() * $fifo_consume->getExchangeRate());
+
+                $fifo_consume->setInventoryTrx($trx); // important
+                $fifo_consume->setCreatedOn($trx->getTrxDate());
+                $fifo_consume->setCreatedBy($u);
+
+                $fifo_consume->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
+
+                $this->getDoctrineEM()->persist($fifo_consume);
+            }
+        }
+
+        if ($total_onhand < $totalIssueQty) {
+            $m = $this->controllerPlugin->translate('Goods Issue imposible. Issue Quantity > On-hand Quantity');
+            $m = sprintf($m . ' (%s>%s)', $totalIssueQty, $total_onhand);
+            throw new \Exception($m);
+        }
+
+        // Set header blocked for reversal
+        $trx->setReversalBlocked(1);
+        $trx->getMovement()->setReversalBlocked(1);
+
+        return $cogs;
     }
 
     /**
      *
+     * @deprecated
      * @param \Application\Entity\NmtInventoryTrx $trx
      * @param \Application\Entity\NmtInventoryItem $item
      * @param double $issuedQuantity
@@ -150,183 +259,8 @@ class FIFOLayerService extends AbstractService
             $m = sprintf($m . ' (%s>%s)', $totalIssueQty, $total_onhand);
             throw new \Exception($m);
         }
-
-        return $cogs;
-    }
-
-    /**
-     *
-     * @param \Application\Entity\NmtInventoryTrx $trx
-     * @param \Application\Entity\NmtInventoryItem $item
-     * @param \Application\Entity\NmtInventoryWarehouse $warehouse
-     * @param double $issuedQuantity
-     * @param \Application\Entity\MlaUsers $u
-     * @throws \Exception
-     * @return number
-     */
-    public function calculateCOGS($trx, $item, $warehouse, $issuedQuantity, $u, $isFlush = false)
-    {
-        if ($trx == null) {
-            throw new \Exception("Invalid Argurment!");
-        }
-
-        if ($item == null) {
-            throw new \Exception("Invalid Argurment! Item not found.");
-        }
-
-        if ($warehouse == null) {
-            throw new \Exception("Invalid Argurment! warehouse not found.");
-        }
-
-        if ($issuedQuantity == 0) {
-            throw new \Exception("Nothing to valuate!");
-        }
-
-
-        $sql = "SELECT * FROM nmt_inventory_fifo_layer WHERE 1 %s ORDER BY nmt_inventory_fifo_layer.posting_date ASC";
-
-        $sql1 = sprintf("AND nmt_inventory_fifo_layer.posting_date <='%s'
-AND nmt_inventory_fifo_layer.is_closed=0 
-AND nmt_inventory_fifo_layer.item_id=%s 
-AND nmt_inventory_fifo_layer.warehouse_id=%s", 
-            $trx->getTrxDate()->format('Y-m-d H:i:s'), 
-            $item->getId(), 
-            $warehouse->getId());
-        
-
-        $sql = sprintf($sql, $sql1);
-
-        $rsm = new ResultSetMappingBuilder($this->doctrineEM);
-        $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtInventoryFIFOLayer', 'nmt_inventory_fifo_layer');
-        $query = $this->doctrineEM->createNativeQuery($sql, $rsm);
-        $layers = $query->getResult();
-        
-        if (count($layers) == 0) {
-            $m = $this->controllerPlugin->translate("Goods Issue imposible. Please check the stock quantity and the issue date");
-            throw new \Exception($m);
-        }
-
-        $cogs = 0;
-
-        $total_onhand = 0;
-        $totalIssueQty = $issuedQuantity;
-
-        /**
-         *
-         * @todo Get Layer and caculate Consumption.
-         */
-        foreach ($layers as $layer) {
-            /**@var \Application\Entity\NmtInventoryFIFOLayer $layer ;*/
-
-            $on_hand = $layer->getOnhandQuantity();
-            $total_onhand += $on_hand;
-
-            if ($issuedQuantity == 0) {
-                break;
-            }
-
-            $consumpted_qty = 0;
-
-            if ($on_hand <= $issuedQuantity) {
-
-                // create comsuption of all, close this layer
-                $consumpted_qty = $on_hand;
-
-                $layer->setOnhandQuantity(0);
-                $layer->setIsClosed(1);
-                $layer->setClosedOn($trx->getTrxDate());
-
-                $issuedQuantity = $issuedQuantity - $consumpted_qty;
-            } else {
-                $consumpted_qty = $issuedQuantity;
-
-                // deduct layer onhand
-                $layer->setOnhandQuantity($on_hand - $issuedQuantity);
-                $issuedQuantity = 0;
-            }
-
-            $cogs = $cogs + $consumpted_qty * $layer->getDocUnitPrice() * $layer->getExchangeRate();
-
-            $this->getDoctrineEM()->persist($layer);
-
-            /**
-             *
-             * @todo Create Layer Consumption
-             */
-            if ($consumpted_qty > 0) {
-                $fifo_consume = new \Application\Entity\NmtInventoryFifoLayerConsume();
-                $fifo_consume->setLayer($layer);
-
-                $fifo_consume->setItem($layer->getItem());
-                $fifo_consume->setQuantity($consumpted_qty);
-                
-                $fifo_consume->setDocCurrency($layer->getDocCurrency());
-                $fifo_consume->setDocUnitPrice($layer->getDocUnitPrice());
-                
-                $fifo_consume->setDocTotalValue($fifo_consume->getQuantity() * $fifo_consume->getDocUnitPrice());
-
-                $fifo_consume->setExchangeRate($layer->getExchangeRate());
-                $fifo_consume->setTotalValue($fifo_consume->getDocTotalValue() * $fifo_consume->getExchangeRate());
-
-                $fifo_consume->setInventoryTrx($trx); // important
-                $fifo_consume->setCreatedOn($trx->getTrxDate());
-                $fifo_consume->setCreatedBy($u);
-
-                $fifo_consume->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true) . "_" . Rand::getString(21, \Application\Model\Constants::CHAR_LIST, true));
-
-                
-                $this->getDoctrineEM()->persist($fifo_consume);
-            }
-        }
-
-        if ($total_onhand < $totalIssueQty) {
-            $m = $this->controllerPlugin->translate('Goods Issue imposible. Issue Quantity > On-hand Quantity');
-            $m = sprintf($m . ' (%s>%s)', $totalIssueQty, $total_onhand);
-            throw new \Exception($m);
-        }
-
-        // set header blocked for reversal
-        $trx->setReversalBlocked(1);
-        $trx->getMovement()->setReversalBlocked(1);
         
         return $cogs;
     }
-
-    /**
-     *
-     * @param \Application\Entity\NmtProcureGr $source
-     * @param \Application\Entity\MlaUsers $u
-     * @throws \Exception
-     */
-    public function createFIFOLayerFromGR(\Application\Entity\NmtProcureGr $source, \Application\Entity\MlaUsers $u)
-    {
-        if (! $source instanceof \Application\Entity\NmtProcureGr) {
-            throw new \Exception("Source object is not valid");
-        }
-
-        if (! $u instanceof \Application\Entity\MlaUsers) {
-            throw new \Exception("User is not valid");
-        }
-
-        // Do create
-    }
-
-    /**
-     *
-     * @param \Application\Entity\FinVendorInvoice $source
-     * @param \Application\Entity\MlaUsers $u
-     * @throws \Exception
-     */
-    public function createFIFOLayerFromAP(\Application\Entity\FinVendorInvoice $source, \Application\Entity\MlaUsers $u)
-    {
-        if (! $source instanceof \Application\Entity\NmtProcureGr) {
-            throw new \Exception("Source object is not valid");
-        }
-
-        if (! $u instanceof \Application\Entity\MlaUsers) {
-            throw new \Exception("User is not valid");
-        }
-
-        // Do create
-    }
+    
 }

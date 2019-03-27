@@ -664,12 +664,15 @@ switch ($action) {
        
        
         { title: "FA Remarks", dataType: "string", dataIndx: "fa_remarks", align: 'left',minWidth: 150, editable: true},
-        { title: "Ref", dataType: "integer", dataIndx: "row_identifer", width:95,editable: false},
+        { title: "Ref", dataType: "integer", dataIndx: "row_identifer", width:90,editable: false},
         
         { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
    		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
         { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
-        { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},        
+        { title: "Name", dataType: "string", dataIndx: "row_name", width:150,editable: false },
+        { title: "Code", dataType: "string", dataIndx: "row_code", width:100,editable: false },
+        
+          { title: "Unit", dataType: "string", dataIndx: "row_unit", width: 50,align: 'right',editable: false},        
         { title: "Quantity", dataType: "integer", dataIndx: "row_quantity", width: 70,align: 'right',editable: true},
         { title: "Unit Price", dataType: "decimal", dataIndx: "row_unit_price", width:90, align: 'right',editable: true},
         { title: "Net", dataType: "decimal", dataIndx: "row_net", width:90, align: 'right',editable: false},

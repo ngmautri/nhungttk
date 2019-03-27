@@ -35,11 +35,9 @@ class GIforTransferToWH extends \Inventory\Model\AbstractTransactionStrategy
         if (count($errors) > 0) {
             return $errors;
         }
-        
-        
 
         // ====== VALIDATED 2 ====== //
-        
+
         $entity->setIsTransferTransaction(1);
 
         /**@var \Application\Entity\NmtInventoryWarehouse $target_wh ;*/
@@ -149,9 +147,9 @@ class GIforTransferToWH extends \Inventory\Model\AbstractTransactionStrategy
         $newEntity->setSysNumber($this->contextService->getControllerPlugin()
             ->getDocNumber($newEntity));
         $newEntity->setRemarks('Goods transfer - automatically generated');
-        
+
         $this->contextService->getDoctrineEM()->persist($newEntity);
-        
+
         $n = 0;
         foreach ($rows as $r) {
 
@@ -185,7 +183,7 @@ class GIforTransferToWH extends \Inventory\Model\AbstractTransactionStrategy
                     // important!
                     $newRow->setIsActive(1);
                     $newRow->setTrxDate($r->getTrxDate());
-                    
+
                     $newRow->setMovement($newEntity);
                     $newRow->setWh($newEntity->getTargetWarehouse());
 
@@ -203,38 +201,28 @@ class GIforTransferToWH extends \Inventory\Model\AbstractTransactionStrategy
 
                     $newRow->setVendorUnitPrice($c->getDocUnitPrice());
                     $newRow->setDocUnitPrice($c->getDocUnitPrice());
-                    
+
                     $newRow->setToken(Rand::getString(15, \Application\Model\Constants::CHAR_LIST, true));
                     $newRow->setCreatedBy($u);
                     $newRow->setCreatedOn($r->getCreatedOn());
-                    
+
                     $this->contextService->getDoctrineEM()->persist($newRow);
-                    
+
                     // create FIFO layer for this line
                     $this->createFIFOLayerByLine($newRow, $u);
-                    $n++;
+                    $n ++;
                 }
             }
         }
-        
-        
-        //throw new \Exception('Something wrong stopped' . count($consums));
-        
-        if($n==0){
+
+        // throw new \Exception('Something wrong stopped' . count($consums));
+
+        if ($n == 0) {
             throw new \Exception('Something wrong. Good receipt for new warehouse can not be created ' . count($consums));
         }
-        
+
         // Need to flush the the transaction.
         $this->contextService->getDoctrineEM()->flush();
-        
-        /**
-         * STEP 2: Create FIFO Layer for duplicated entity.
-         * =====================
-         */
-        
-        // need to create FIFO
-        //$this->createFIFOLayer($newEntity, null, $u, False);
-        
     }
 
     /**

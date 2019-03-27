@@ -89,5 +89,36 @@ AND nmt_inventory_fifo_layer.is_closed=0", $entity->getTrxDate()->format('Y-m-d 
         return 0;
     
     }
+    
+    /**
+     * 
+     * @param int $warehouse_id
+     * @param int $item_id
+     * @param int $is_active
+     * @param int $is_posted
+     */
+    public function getItemsInWarehouse($warehouse_id, $item_id, $is_active, $is_posted){
+        $sql  = 
+        "SELECT
+        nmt_inventory_trx.item_id,
+        nmt_inventory_item.item_name,
+        nmt_inventory_trx.wh_id,
+        nmt_inventory_trx.wh_location,
+        SUM(CASE WHEN (nmt_inventory_trx.flow = 'IN') THEN (nmt_inventory_trx.quantity) ELSE 0 END) AS in_amount,
+        SUM(CASE WHEN (nmt_inventory_trx.flow = 'OUT') THEN (nmt_inventory_trx.quantity) ELSE 0 END) AS out_amount
+        FROM nmt_inventory_trx
+        JOIN nmt_inventory_warehouse
+        ON nmt_inventory_trx.wh_id= nmt_inventory_warehouse.id
+        
+        LEFT JOIN nmt_inventory_item
+        ON nmt_inventory_trx.item_id = nmt_inventory_item.id
+        
+        WHERE 1 %s
+        GROUP BY nmt_inventory_trx.item_id,  nmt_inventory_trx.wh_id, nmt_inventory_trx.wh_location";
+        
+        
+        
+    
+    }
  
 }

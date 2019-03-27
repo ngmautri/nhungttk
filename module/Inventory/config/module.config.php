@@ -67,6 +67,15 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
+            
+            array(
+                'label' => 'Reporting',
+                'route' => 'Inventory/default',
+                'controller' => 'report',
+                'action' => 'index',
+                'icon' => 'fa fa-book'
+            ),
+            
     
             array(
                 'label' => 'Log',
@@ -224,6 +233,7 @@ return array(
             'Inventory\Controller\ItemVariant' => 'Inventory\Controller\ItemVariantControllerFactory',
             
             'Inventory\Controller\SimilarItem' => 'Inventory\Controller\SimilarItemControllerFactory',
+            'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
             
         )
     ),

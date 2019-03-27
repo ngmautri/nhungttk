@@ -599,8 +599,7 @@ class PoRowController extends AbstractActionController
                     /** @var \Application\Entity\NmtProcurePoRow $a ;*/
                     $a = $r[0];
 
-                    $a_json_row["row_identifer"] = $a->getRowIdentifer();
-                    $a_json_row["row_id"] = $a->getId();
+                    $a_json_row["row_identifer"] = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$a->getRowIdentifer());           $a_json_row["row_id"] = $a->getId();
                     $a_json_row["row_token"] = $a->getToken();
                     $a_json_row["row_number"] = $a->getRowNumber();
                     $a_json_row["row_unit"] = $a->getUnit();
@@ -679,7 +678,11 @@ class PoRowController extends AbstractActionController
 
                     // $a_json_row["item_name"] = $a->getItem()->getItemName();
 
-                    $a_json_row["item_sku"] = $a->getItem()->getItemSku();
+                    $a_json_row["row_name"] = '<span style="font-size:8pt; color: graytext">' . $a->getVendorItemName(). '</span>';
+                    $a_json_row["row_code"] = '<span style="font-size:8pt; color: graytext">' . $a->getVendorItemCode(). '</span>';
+                    
+                    $a_json_row["item_sku"] = sprintf('<span style="font-size:9pt; color: black">%s</span>', $a->getItem()->getItemSku());
+                   
                     $a_json_row["item_token"] = $a->getItem()->getToken();
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
                     $a_json_row["fa_remarks"] = $a->getFaRemarks();

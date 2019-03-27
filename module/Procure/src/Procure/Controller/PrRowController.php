@@ -1256,6 +1256,10 @@ class PrRowController extends AbstractActionController
 
                 $a_json_row["item_sku"] = '<span title="' . $pr_row_entity->getItem()->getItemSku() . '">' . substr($pr_row_entity->getItem()->getItemSku(), 0, 5) . '</span>';
 
+                $a_json_row["row_name"] = '<span style="font-size:8pt; color: graytext">' . $pr_row_entity->getRowName() . '</span';
+                $a_json_row["row_code"] = '<span style="font-size:8pt; color: graytext">'. $pr_row_entity->getRowCode() . '</span';
+                
+                
                 if (strlen($pr_row_entity->getItem()->getItemName()) < 35) {
                     $a_json_row["item_name"] = $pr_row_entity->getItem()->getItemName() . '<a style="cursor:pointer; color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                 } else {

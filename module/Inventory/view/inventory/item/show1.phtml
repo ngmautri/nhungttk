@@ -10,10 +10,11 @@
 <tr style="padding: 1pt 2pt 2pt 10pt;">
 <td style="width:10pt;"><td>
 <td><div style="position: relative; float: right;">
-			<img style="cursor: pointer;" title="click for more detail!"
-				onclick="$('#tabs').tabs({ active: 1});" class="img-rounded"
-				width="150" height="150"
-				src="/inventory/item/get-picture?&item_id=<?php echo (!$entity == null)? $entity->getId():"";?>" />
+				<?php   $url = $nmtPlugin->getItemPic($entity->getId()); ?>
+					<img style="cursor: pointer;" title="click for more detail!"
+						onclick="$('#tabs').tabs({ active: 1});" class="img-rounded"
+						width="150" height="150"
+						src="<?php echo $url ?>" />
 		</div></td>
 	<td style="padding: 1pt 2pt 2pt 10pt;">
 	<h3 style="padding: 2pt 2pt 2pt 1pt;"><?php echo (!$entity == null)?$entity->getItemName():"";?></h3>

@@ -177,9 +177,15 @@ if ($total_records <= 0) {
     } else {
         echo $total_records . ' records found!';
     }
+    
+    $url = sprintf( $this->baseUrl . '/inventory/item/list?layout=grid&is_active=%s&item_type=%s&sort_by=%s&sort=%s&is_fixed_asset=%s&perPage=%s&page=%s'
+        ,$is_active, $item_type,$sort_by,$sort,$is_fixed_asset,$per_pape,$page);
+    
 
     ?>
-
+    
+&nbsp;&nbsp;&nbsp;<a class="btn btn-default btn-sm" style="color:black;padding:1pt 5pt 1pt 5pt; margin:1pt 5pt 5pt 1pt;" title="Grid View" href="<?php echo $url;?>">
+	<i class="fa fa-th" aria-hidden="true"></i></a>
 
 	
 <table id="mytable26" style="font-size: 9.2pt; color: graytext;"

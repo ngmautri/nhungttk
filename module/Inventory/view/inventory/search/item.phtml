@@ -26,9 +26,16 @@ echo '<span>';
 echo $message;
 echo '</span>';
 
+?>
+	<a class="btn btn-default btn-sm" style="color:black;padding:1pt 5pt 1pt 5pt; margin:1pt 1pt 3pt 15pt;" title="Grid View" href="<?php echo $this->baseUrl ?>/inventory/search/item?layout=grid&q=<?php echo $q;?>">
+	<i class="fa fa-th" aria-hidden="true"></i></a>
+
+
+<?php 
 if (! $hits == null) :
 	
 	?>
+	
 <table id="mytable26" style="font-size: 9.2pt; color: graytext;" class="table table-hover table-bordered">
 	<thead>
 		<tr style = "">
@@ -51,6 +58,8 @@ if (! $hits == null) :
 	
 	$count = 0;
 	foreach ( $hits as $hit ) :
+	$url = $nmtPlugin->getItemPic($hit->item_id);
+	
 		$count ++;
 		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 		
@@ -58,7 +67,12 @@ if (! $hits == null) :
 	 <tr>
 	
 			<td> <?php echo $count;?></td>
-					<td><span id=""><?php echo $this->escapeHtml($hit->item_sys_number);?></span></td>
+					<td><span id="">
+						<img id="item_<?php echo $this->escapeHtml($hit->item_id);?>"
+								style="cursor: pointer;" title="click for more detail!"
+								onclick="" class="img-rounded" width="100" height="100"
+								src="<?php echo $url; ?>" />
+					</span></td>
 		
 	
 				<td>
@@ -67,9 +81,11 @@ if (! $hits == null) :
 	<?php echo $this->escapeHtml($hit->item_name);?></a>
 	
 				
-				</span></td>
+				</span>
+				<br><?php echo $this->escapeHtml($hit->item_sys_number);?>
+				</td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
-				<td><span id=""><?php if (isset($hit->item_sku1)): echo $this->escapeHtml($hit->item_sku1);endif; ?></span></td>
+				<td><span id="">	</span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->serial_number_key);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->manufacturer_code);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_serial);?></span></td>

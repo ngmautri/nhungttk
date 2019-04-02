@@ -127,7 +127,10 @@ class ItemAttachmentController extends AbstractActionController
 
                     if (! is_dir($thumbnail_public_folder)) {
                         mkdir($thumbnail_public_folder, 0777, true); // important
-                        copy($thumbnail_file, $thumbnail_public_folder."thumbnail_200_" . $pic->getFileName());
+                        
+                        if (!file_exists($thumbnail_public_folder."thumbnail_200_" . $pic->getFileName())){
+                            copy($thumbnail_file, $thumbnail_public_folder."thumbnail_200_" . $pic->getFileName());
+                        }
                     }
                 }
             }

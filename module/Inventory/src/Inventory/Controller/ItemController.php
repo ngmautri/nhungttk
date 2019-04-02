@@ -173,7 +173,8 @@ EOT;
                 'total_pr_row' => $item['total_pr_row'],
                 'total_ap_row' => $item['total_ap_row'],
                 'total_po_row' => $item['total_po_row'],
-                'total_qo_row' => $item['total_qo_row']
+                'total_qo_row' => $item['total_qo_row'],
+                'nmtPlugin' => $nmtPlugin
             ));
         }
 
@@ -257,7 +258,8 @@ EOT;
             'total_po_row' => $item['total_po_row'],
             'total_qo_row' => $item['total_qo_row'],
             'tab_idx' => $tab_idx,
-            'onhand_list' => $onhand_list
+            'onhand_list' => $onhand_list,
+            'nmtPlugin' => $nmtPlugin
         ));
     }
 
@@ -1192,6 +1194,8 @@ EOT;
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $layout = $this->params()->fromQuery('layout');
+        $page = $this->params()->fromQuery('page');
+        
 
         $criteria1 = array();
         if (! $item_type == null) {
@@ -1249,7 +1253,7 @@ EOT;
         // var_dump($criteria);
 
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 20;
+            $resultsPerPage = 28;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -1257,8 +1261,6 @@ EOT;
 
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
-        } else {
-            $page = $this->params()->fromQuery('page');
         }
         ;
 
@@ -1329,7 +1331,8 @@ EOT;
             'per_pape' => $resultsPerPage,
             'item_type' => $item_type,
             'layout' => $layout,
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'page' => $page,
         ));
 
         if ($layout == "grid") {
@@ -1690,7 +1693,9 @@ EOT;
                         // trigger uploadPicture. AbtractController is EventManagerAware.
                         $this->getEventManager()->trigger('uploadPicture', __CLASS__, array(
                             'picture_name' => $name,
-                            'pictures_dir' => $folder
+                            'pictures_dir' => $folder,
+                            'relavite_folder' => $folder_relative,
+                            'type' => 'ITEM'
                         ));
 
                         $m = sprintf("[OK] %s uploaded sucessfully!", $original_filename);
@@ -1812,15 +1817,6 @@ EOT;
      */
     public function getPicture1Action()
     {
-
-        // $request = $this->getRequest();
-
-        // accepted only ajax request
-        /*
-         * if (! $request->isXmlHttpRequest()) {o
-         * return $this->redirect()->toRoute('access_denied');
-         * }
-         */
         $item_id = (int) $this->params()->fromQuery('item_id');
 
         /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
@@ -1829,30 +1825,16 @@ EOT;
             'isActive' => 1
         ));
 
+        $thumbnail_file = '/images/no-pic1.jpg';
         if ($pic instanceof NmtInventoryItemPicture) {
 
-            // $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
+            $thumbnail_file = "/thumbnail/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+            $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
 
-            $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
-            /**
-             * Important! for UBUNTU
-             */
-            $pic_folder = str_replace('\\', '/', $pic_folder);
-
-            $imageContent = file_get_contents($pic_folder);
-
-            $response = $this->getResponse();
-            $response->setContent($imageContent);
-
-            $response->getHeaders()
-            ->addHeaderLine('Cache-Control', 'max-age=3600, must-revalidate', true)
-                ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                ->addHeaderLine('Content-Type', $pic->getFiletype());
-            // ->addHeaderLine('Content-Length', mb_strlen($imageContent)); // can cause problme in Ubuntu
-            return $response;
+            return $thumbnail_file;
         }
 
-        return null;
+        return $thumbnail_file;
     }
 
     /**

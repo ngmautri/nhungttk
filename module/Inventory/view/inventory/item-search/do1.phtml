@@ -45,15 +45,20 @@ if (! $hits == null) :
 		$count ++;
 		// echo ($count % 2 == 1) ? "<tr>" : "<tr class=\"pure-table-odd\">";
 		
+		$url = $nmtPlugin->getItemPic($hit->item_id);
+		
 		?>
 	 <tr>
 	
 			<td> <?php echo $count;?></td>
 	 		<td>		
 <a href="javascript:;"
-	onclick="selectId('<?php echo $this->escapeHtml($hit->item_id);?>','<?php echo $target_id;?>','<?php echo $this->escapeJs($hit->item_name);?>','<?php echo $target_name;?>');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
+	onclick="selectItem('<?php echo $this->escapeHtml($hit->item_id);?>','<?php echo $this->escapeHtml($hit->token);?>','<?php echo $target_id;?>','<?php echo $this->escapeJs($hit->item_name);?>','<?php echo $target_name;?>');"><small><i class="glyphicon glyphicon-triangle-right"></i></small>&nbsp;Select
 </a></td>
-		<td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
+		        <td><img onclick="" class="img-rounded" width="60" height="60"
+									src="<?php echo $url; ?>" /></td>
+									
+		        <td><span id=""><?php echo $this->escapeHtml($hit->item_name);?></span></td>
 				<td><span id=""><?php echo $this->escapeHtml($hit->item_sku);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_code);?></span></td>
 				<td><span id=""><?php echo  $this->escapeHtml($hit->manufacturer_serial);?></span></td>

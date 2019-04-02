@@ -288,7 +288,7 @@ if (count($errors) > 0) {
 
 									<div class="col-sm-1">
 										<a style="color: #0080ff;" href="javascript:;"
-											onclick="showJqueryDialog('Select Item','1300',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
+											onclick="showJqueryDialog('Select Item','1450',$(window).height()-80, '/inventory/item-search/do1?target_id=item_id&target_name=item_name','j_loaded_data', true);">Select&nbsp;&nbsp;<i
 											class="glyphicon glyphicon-folder-open"></i>
 										</a>
 
@@ -498,11 +498,13 @@ if (count($errors) > 0) {
 
 <script type="text/javascript">
 
+	var img ="";
+
+
         <?php
         if ($entity != null) :
             if ($entity->getItem() != null) :
                 ?>
-
 	    		  $("#item_id" ).val(<?php echo +$entity->getItem()->getId();?>);      	  
 	    	      $('#item_url').text('/inventory/item/show1?tab_idx=7&entity_id=<?php echo +$entity->getItem()->getId();?>&token=<?php echo $entity->getItem()->getToken();?>');
 	    	  	  $('#standard_uom_id').text('<?php echo $entity->getItem()->getStandardUom()->getUomCode(); ?>');
@@ -521,6 +523,7 @@ if (count($errors) > 0) {
     $( "#item_name" ).autocomplete({
      source: "/inventory/item-search/auto-complete",
      minLength: 2,
+     
      select: function( event, ui ) {
    	  	$( "#item_id" ).val(ui.item.id);
    	  	
@@ -549,15 +552,21 @@ if (count($errors) > 0) {
      }
     
    })
+   
    .autocomplete( "instance" )._renderItem = function( ul, item ) {
 	  var serial_no = "";
 	  if(item.item_serial!=""){
 		  serial_no = " : " + item.item_serial;
 	  }
- 	   
-      return $( "<li>" )
-        .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
-        .appendTo( ul );
+
+     var img = '<img class="img-rounded" width="60" height="60" src="'+item.item_thumbnail+'"/>';
+     var total_hit =item.total_hit;
+     return $( "<li>" )
+        .append("<div style='padding-bottom: 5px;'><table><tr><td>"+img+"</td><td style='padding: 1pt 1pt 1pt 5pt'><span style='color:black;font-size: 9.5pt; font-weight:bold'>" +item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></td></tr></table></div>" )
+        .append("<div style='color:graytext;font-size: 8pt; border-bottom: thin solid gray;'>" + item.n +" /"+total_hit+ " record found.</div>" )
+        .appendTo( ul )
+    	
+     
     };
    ;
     
@@ -584,6 +593,52 @@ if (count($errors) > 0) {
 		$('#purchase_uom_convert_text').text($('#quantity').val() + ' ' + $( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val()*$('#quantity').val() + " " + $( "#standard_uom_id" ).text());
  	});
 
+
+    /**
+     * 
+     * @param id
+     * @param target
+     */
+    function selectItem(id, token, target, name, target_name, context = null){
+    	var target_id = '#' + target;
+    	$(target_id).val(id);
+    	
+    	// alert(name);
+    	
+    	// alert(target_name);
+    	var target_name_id = '#' + target_name;
+    	$(target_name_id).val(name);
+    	
+    	
+    	// alert($(target_id).val());
+    	$('#modal1 .close').click();
+    	$('#global-notice').show();
+    	$('#global-notice').html('"' + name + '" selected');
+    	$('#global-notice').fadeOut(5000);
+    	$("#jquery_dialog").dialog("close");
+
+
+	    $("#item_id" ).val(id);
+   	  	$('#item_url').text('/inventory/item/show1?tab_idx=9&entity_id='+id+'&token='+token);
+  	 
+   		$('#item_detail').show();
+   		$("#quantity").focus();
+
+		var url = '/inventory/item/get-item?id='+id;
+   		$('#rowUnit').val("Loading...");
+   		$('#purchase_uom_convert_text').text("Loading...");
+   		
+		$.get(url, {   	}, function(data, status) {
+        		//alert(data.purchase_uom_code);
+        		$('#rowUnit').val(data.purchase_uom_code);
+        		$('#standard_uom_id').text(data.uom_code);
+        		$('#conversionFactor').val(data.purchase_uom_convert_factor);                
+                $('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
+       	   
+       	});
+
+    	
+    }
    
  	
     

@@ -1817,6 +1817,7 @@ EOT;
      */
     public function getPicture1Action()
     {
+          
         $item_id = (int) $this->params()->fromQuery('item_id');
 
         /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
@@ -1835,6 +1836,41 @@ EOT;
         }
 
         return $thumbnail_file;
+    }
+    
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function getPicture2Action()
+    {
+        $this->layout("layout/user/ajax");
+        
+        $item_id = (int) $this->params()->fromQuery('item_id');
+        
+        /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
+        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
+            'item' => $item_id,
+            'isActive' => 1
+        ));
+        
+        $a_json_row = array();
+        
+        $thumbnail_file = '/images/no-pic1.jpg';
+        if ($pic instanceof NmtInventoryItemPicture) {
+            
+            $thumbnail_file = "/thumbnail/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+            $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
+            
+         }        
+        
+        $a_json_row[] = $thumbnail_file;
+        
+        // var_dump($a_json);
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->setContent(json_encode($a_json_row));
+        return $response;
     }
 
     /**

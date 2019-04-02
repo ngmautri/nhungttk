@@ -89,6 +89,9 @@ class ItemAttachmentController extends AbstractActionController
      */
     public function checkPictureAction()
     {
+        // take long time
+        set_time_limit(2000);
+        
         $criteria = array();
 
         $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findBy($criteria);
@@ -109,16 +112,31 @@ class ItemAttachmentController extends AbstractActionController
                     $pic->setMarkedForDeletion(1);
                     $brokenFile[] = $pic;
                 }
-                
+
                 $this->doctrineEM->persist($pic);
+
+                // created thumbail.
+                $thumbnail_file = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+                $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
+
+                if (file_exists($thumbnail_file)) {
+
+                    // created thumbail.
+                    $thumbnail_public_folder = getcwd() . "/public/thumbnail/item/" . $pic->getFolderRelative();
+                    $thumbnail_public_folder = str_replace('\\', '/', $thumbnail_public_folder); // Important for UBUNTU
+
+                    if (! is_dir($thumbnail_public_folder)) {
+                        mkdir($thumbnail_public_folder, 0777, true); // important
+                        copy($thumbnail_file, $thumbnail_public_folder."thumbnail_200_" . $pic->getFileName());
+                    }
+                }
             }
-            
+
             $this->doctrineEM->flush();
         }
 
         return new ViewModel(array(
-            'brokenFile' => $brokenFile,
-            
+            'brokenFile' => $brokenFile
         ));
     }
 

@@ -121,8 +121,13 @@ class Constants
                 ),
                 
                 self::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE => array(
-                    "type_name" => $translator->translate("Issue for transfer to other warehouse"),
+                    "type_name" => $translator->translate("Transfer to other warehouse"),
                     "type_description" => $translator->translate("goods will be issued for other warehouse.")
+                ),
+                
+                self::INVENTORY_GI_FOR_TRANSFER_LOCATION => array(
+                    "type_name" => $translator->translate("Transfer to other location"),
+                    "type_description" => $translator->translate("goods will be issued for other location in warehouse.")
                 ),
 
                 self::INVENTORY_GI_FOR_DISPOSAL => array(

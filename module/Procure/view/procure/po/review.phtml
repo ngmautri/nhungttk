@@ -40,12 +40,17 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 		<span style="color: gray; margin: 2pt 2pt 2pt 8pt"><?php echo $this->translate('Summary:'); ?></span>
 
 		<div class="alert alert-info" role="alert"
-			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.5pt">
+			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.2pt">
 			<ul style="font-size: 9pt; margin: 0; padding-left: 15pt">
 				<li><?php if (!$entity == null): if (!$entity->getVendor() == null):echo $entity->getVendor()->getVendorName();endif;endif;?></li>
 				<li>-----</li>
 
+				<li><?php if (!$entity == null): if (!$entity->getIncoterm2() == null):echo "Incoterm: ".$entity->getIncoterm2()->getIncoterm(). " " . $entity->getIncotermPlace();endif;endif;?></li>
+
 				<li>Total Rows: <?php echo ($total_row);?></li>
+				
+					<li>-----</li>
+				
 				<li>Net: <?php echo number_format($net_amount,2) . " " . $entity->getCurrency()->getCurrency() ;?></li>
 				<li>Tax: <?php echo number_format($tax_amount,2);?></li>
 				<li>Gross: <?php echo number_format($gross_amount,2) . " " .$entity->getCurrency()->getCurrency();?></li>
@@ -54,7 +59,8 @@ if ($action == \Application\Model\Constants::FORM_ACTION_REVIEW) :
 		
 	<?php if($action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
 		<div class="alert alert-warning" role="alert"
-			style="padding: 2px; margin: 2pt 2pt 2pt 8pt; font-size: 9.5pt"><?php echo $this->translate('Please post when PO /Contract is signed. <br>Document can\'t be changed anymore when posted! <br> ');?>
+			style="padding: 5px 2px 2px 5px; margin: 5pt 2pt 2pt 8pt; font-size: 9.2pt;color: graytext;"><i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
+			<?php echo $this->translate('Please post when PO /Contract is signed. Document can\'t be changed anymore when posted! <br> ');?>
 		</div>
 	<?php endif;?>
 	</div>
@@ -137,7 +143,7 @@ if (count($errors) > 0) {
 				<?php if($action == \Application\Model\Constants::FORM_ACTION_SHOW):?>
 					<?php
 
-if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT) :
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT) :
             $url = sprintf('/procure/po/review?token=%s&entity_id=%s', $entity->getToken(), $entity->getId());
             ?>
 <a class="btn btn-default btn-sm" href="<?php echo $url;?>"
@@ -741,15 +747,15 @@ $( "#vendor_name_1" ).autocomplete({
        { title: "#", dataType: "integer", dataIndx: "row_number", width:10,editable: true },
   		{ title: "SKU", dataType: "string", dataIndx: "item_sku", width:50,editable: false },
        { title: "Item", dataType: "string", dataIndx: "item_name", width:220,editable: false },
-       { title: "Vendor Item Name", dataType: "string", dataIndx: "row_name", width:150,editable: false },
-       { title: "Code", dataType: "string", dataIndx: "row_code", width:50,editable: false },
+       { title: "Vendor Item Name", dataType: "string", dataIndx: "row_name", width:180,editable: false },
+       { title: "Code", dataType: "string", dataIndx: "row_code", width:100,editable: false },
        
       	<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
         { title: "Doc Qty", dataType: "string", dataIndx: "doc_qty", width: 70,align: 'right',editable: true},
-        { title: "Unit Price", dataType: "decimal", dataIndx: "doc_unit_price", width:90, align: 'right',editable: true},
+        { title: "Unit Price", dataType: "float", dataIndx: "doc_unit_price", width:90, align: 'right',editable: true},
         <?php else:?>
         { title: "Doc Qty", dataType: "string", dataIndx: "doc_qty", width: 70,align: 'right',editable: false},
-        { title: "Unit Price", dataType: "decimal", dataIndx: "doc_unit_price", width:90, align: 'right',editable: false},
+        { title: "Unit Price", dataType: "float", dataIndx: "doc_unit_price", width:90, align: 'right',editable: false},
        	<?php endif;?>
 
        
@@ -759,11 +765,11 @@ $( "#vendor_name_1" ).autocomplete({
        { title: "Tax", dataType: "integer", dataIndx: "row_tax_rate", width:80, align: 'right',editable: false},
        { title: "Gross", dataType: "decimal", dataIndx: "row_gross", width: 90,align: 'right',editable: false},
 
-       { title: "Receiving", dataType: "string", dataIndx: "draft_gr", width:80,editable: false },
-       { title: "Received", dataType: "string", dataIndx: "confirmed_gr", width:70,editable: false },
-       { title: "Balance", dataType: "integer", dataIndx: "open_gr", width:70,editable: false },
-       { title: "Billed qty", dataType: "integer", dataIndx: "billed_qty", width:70,editable: false },
-       { title: "Billed Amt", dataType: "decimal", dataIndx: "billed_amount", width:70,editable: false },
+       { title: "Receiving", dataType: "string", dataIndx: "draft_gr",align: 'right', width:80,editable: false },
+       { title: "Received", dataType: "string", dataIndx: "confirmed_gr", align: 'right',width:70,editable: false },
+       { title: "Balance", dataType: "integer", dataIndx: "open_gr", align: 'right',width:70,editable: false },
+       { title: "Billed qty", dataType: "integer", dataIndx: "billed_qty", align: 'right',width:70,editable: false },
+       { title: "Billed Amt", dataType: "decimal", dataIndx: "billed_amount",align: 'right', width:70,editable: false },
 
        { title: "Standard Qty", dataType: "integer", dataIndx: "standard_qty", width: 70,align: 'right',editable: false},
        { title: "Standard Unit", dataType: "integer", dataIndx: "standard_unit", width: 70,align: 'right',editable: false},

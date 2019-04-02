@@ -160,7 +160,7 @@ else:
 	
 	?>
 
-<table style="font-size: 9.3pt;" class="table table-bordered table-hover">
+<table id="mytable26" style="font-size: 9.2pt; color: graytext;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
@@ -169,8 +169,8 @@ else:
 			<td><b>Vendor</b></td>
 			<td><b>Contract No</b></td>
 			<td><b>Contract Date</b></td>
-			<td><b>Invoice Number</b></td>
-			<td><b>Invoice Date</b></td>
+			<td><b>Inv.Number</b></td>
+			<td><b>Inv.Date</b></td>
 			<td><b>SAP No.</b></td>
 			<td><b>Rows</b></td>
 			<td><b>Curr</b></td>
@@ -211,9 +211,9 @@ else:
 			
 			</td>
 			<td><?php echo $a->getContractNo()?></td>
-			<td><span style="color: gray;"><?php if($a->getContractDate()!==null):echo date_format($a->getContractDate(),"d-m-Y");   endif;?></span></td>
+			<td><span style="color: gray;"><?php if($a->getContractDate()!==null):echo date_format($a->getContractDate(),"d-m-y");   endif;?></span></td>
 			<td><?php echo $a->getInvoiceNo()?></td>
-			<td><span style="color: gray;"><?php if($a->getInvoiceDate()!==null):echo date_format($a->getInvoiceDate(),"d-m-Y");   endif;?></span></td>
+			<td><span style="color: gray;"><?php if($a->getInvoiceDate()!==null):echo date_format($a->getInvoiceDate(),"d-m-y");   endif;?></span></td>
 			<td><?php echo $a->getSapDoc()?></td>
 			<td><?php echo $l['active_row'];?></td>
 			<td><?php echo $a->getCurrency()->getCurrency()?></td>

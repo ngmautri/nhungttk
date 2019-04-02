@@ -29,7 +29,7 @@ echo '</span>';
 if (! $hits == null) :
 	
 	?>
-<table style = "font-size: 9.5pt;" class="table table-hover table-bordered">
+<table id="mytable26" style="font-size: 9.2pt; color: graytext;" class="table table-hover table-bordered">
 	<thead>
 		<tr style = "">
 			<td><b>#</b></td>
@@ -42,7 +42,7 @@ if (! $hits == null) :
 			<td><b>Manufacturer Serial</b></td>
 			<td><b>Manufacturer Model</b></td>
 			<td><b>Matched</b></td>
-			<td><b>Resource</b></td>
+			<td><b>Action</b></td>
 		</tr>
 	</thead>
 	<tbody>
@@ -77,12 +77,13 @@ if (! $hits == null) :
     
 			<td><span id=""><?php echo round($hit->score* 100,0). '%';?></span></td>
 	<td>
-	<a style="cursor:pointer;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($hit->item_id);?>" item_name="<?php echo $this->escapeHtml($hit->item_name);?>" target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Show</a>
-	<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo $hit->token;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Upload picture</a>
+	<a class="btn btn-default btn-sm" style="color:black;padding:1pt 5pt 2pt 5pt;" title="picture" item-pic="" id="<?php echo $this->escapeHtml($hit->item_id);?>" item_name="<?php echo $this->escapeHtml($hit->item_name);?>" target="blank" href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">
+	<i class="fa fa-eye" aria-hidden="true"></i></a>
+	<a class="btn btn-default btn-sm" style="color:black;padding:1pt 5pt 2pt 5pt;" title="edit" href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+	<a class="btn btn-default btn-sm" style="color:black;padding:1pt 5pt 2pt 5pt;" title="add attachment" href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload?token=<?php echo $hit->token;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>"><i class="fa fa-paperclip" aria-hidden="true"></i></a>
 
-	<a href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo $hit->token;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Upload picture</a>
-	<a href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo $hit->token;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Edit</a>
-	<a href="<?php echo $this->baseUrl ?>/inventory/item-attachment/upload?token=<?php echo $hit->token;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Attach</a>
+	<a class="btn btn-default btn-sm" style="color:black;padding:1pt 2pt 2pt 2pt;" href="<?php echo $this->baseUrl ?>/inventory/item/upload-picture?token=<?php echo $hit->token;?>&target_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">Upload picture</a>
+</a>
 		
 	</td>	
 		</tr>

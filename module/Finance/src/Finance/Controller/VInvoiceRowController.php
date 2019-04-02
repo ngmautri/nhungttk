@@ -41,16 +41,15 @@ class VInvoiceRowController extends AbstractActionController
         $gl_list = $nmtPlugin->glAccountList();
         $cost_center_list = $nmtPlugin->costCenterList();
         $wh_list = $nmtPlugin->warehouseList();
-        
 
         $request = $this->getRequest();
 
         // Is Posing
         // =============================
         if ($request->isPost()) {
-            
+
             $errors = array();
-            
+
             $data = $this->params()->fromPost();
             $redirectUrl = $request->getPost('redirectUrl');
             $invoice_id = $request->getPost('target_id');
@@ -87,13 +86,13 @@ class VInvoiceRowController extends AbstractActionController
                     'net_amount' => 0,
                     'tax_amount' => 0,
                     'gross_amount' => 0,
-                    'wh_list'=> $wh_list,
+                    'wh_list' => $wh_list,
+                    'nmtPlugin' => $nmtPlugin,
                     
                 ));
-                
+
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
                 return $viewModel;
-                
             }
 
             $entity = new FinVendorInvoiceRow();
@@ -120,13 +119,13 @@ class VInvoiceRowController extends AbstractActionController
                     'net_amount' => $invoice['net_amount'],
                     'tax_amount' => $invoice['tax_amount'],
                     'gross_amount' => $invoice['gross_amount'],
-                    'wh_list'=> $wh_list,
+                    'wh_list' => $wh_list,
+                    'nmtPlugin' => $nmtPlugin,
                     
                 ));
-                
+
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
                 return $viewModel;
-                
             }
 
             // NO ERROR
@@ -161,13 +160,13 @@ class VInvoiceRowController extends AbstractActionController
                     'net_amount' => $invoice['net_amount'],
                     'tax_amount' => $invoice['tax_amount'],
                     'gross_amount' => $invoice['gross_amount'],
-                    'wh_list'=> $wh_list,
+                    'wh_list' => $wh_list,
+                    'nmtPlugin' => $nmtPlugin,
                     
                 ));
-                
+
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
                 return $viewModel;
-                
             }
 
             $m = sprintf('[OK] A/P Invoice Row #%s - %s created.', $entity->getId(), $entity->getRowIdentifer());
@@ -245,13 +244,13 @@ class VInvoiceRowController extends AbstractActionController
             'net_amount' => $invoice['net_amount'],
             'tax_amount' => $invoice['tax_amount'],
             'gross_amount' => $invoice['gross_amount'],
-            'wh_list'=> $wh_list,
+            'wh_list' => $wh_list,
+            'nmtPlugin' => $nmtPlugin,
             
         ));
-        
+
         $viewModel->setTemplate("finance/v-invoice-row/crud");
         return $viewModel;
-        
     }
 
     /**
@@ -260,7 +259,12 @@ class VInvoiceRowController extends AbstractActionController
      */
     public function showAction()
     {
+        $this->layout("Finance/layout-fullscreen");
+        
         $request = $this->getRequest();
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
 
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
@@ -276,16 +280,43 @@ class VInvoiceRowController extends AbstractActionController
             'token' => $token
         );
 
-        $entity = $this->doctrineEM->getRepository('Application\Entity\NmtFinPostingPeriod')->findOneBy($criteria);
-        if ($entity !== null) {
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'entity' => $entity,
-                'errors' => null
-            ));
-        } else {
+        /** @var \Application\Entity\FinVendorInvoiceRow $entity ; */
+        $entity = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoiceRow')->findOneBy($criteria);
+
+        if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
+
+        $errors = array();
+        if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
+            $errors[] = "Invoice posted";
+         }
+        
+        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
+        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $invoice = $res->getVendorInvoice($entity->getInvoice()
+            ->getId(), $entity->getInvoice()
+            ->getToken());
+        
+        
+        $viewModel = new ViewModel(array(
+            'action' => \Application\Model\Constants::FORM_ACTION_SHOW,
+
+            'redirectUrl' => $redirectUrl,
+            'entity' => $entity,
+            'errors' => $errors,
+            'target' => $entity->getInvoice(),
+            'nmtPlugin' => $nmtPlugin,
+            'active_row' => $invoice['active_row'],
+            'total_row' => $invoice['total_row'],
+            'max_row_number' => $invoice['total_row'],
+            'net_amount' => $invoice['net_amount'],
+            'tax_amount' => $invoice['tax_amount'],
+            'gross_amount' => $invoice['gross_amount'],
+         ));
+
+        $viewModel->setTemplate("finance/v-invoice-row/crud");
+        return $viewModel;
     }
 
     /**
@@ -336,7 +367,6 @@ class VInvoiceRowController extends AbstractActionController
         $gl_list = $nmtPlugin->glAccountList();
         $cost_center_list = $nmtPlugin->costCenterList();
         $wh_list = $nmtPlugin->warehouseList();
-        
 
         $request = $this->getRequest();
 
@@ -344,7 +374,7 @@ class VInvoiceRowController extends AbstractActionController
 
             $errors = array();
             $data = $this->params()->fromPost();
-            
+
             $redirectUrl = $request->getPost('redirectUrl');
             $entity_id = (int) $request->getPost('entity_id');
             $token = $request->getPost('token');
@@ -378,7 +408,9 @@ class VInvoiceRowController extends AbstractActionController
                     'tax_amount' => null,
                     'gross_amount' => null,
                     'n' => $nTry,
-                    'wh_list'=> $wh_list,
+                    'wh_list' => $wh_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
                 ));
 
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
@@ -394,7 +426,7 @@ class VInvoiceRowController extends AbstractActionController
             $target = $entity->getInvoice();
             $oldEntity = clone ($entity);
 
-           $errors = $this->apService->validateRow($target, $entity, $data);
+            $errors = $this->apService->validateRow($target, $entity, $data);
 
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
@@ -430,7 +462,8 @@ class VInvoiceRowController extends AbstractActionController
                     'tax_amount' => $invoice['tax_amount'],
                     'gross_amount' => $invoice['gross_amount'],
                     'n' => $nTry,
-                    'wh_list'=> $wh_list,
+                    'wh_list' => $wh_list,
+                    'nmtPlugin' => $nmtPlugin,
                     
                 ));
 
@@ -470,7 +503,9 @@ class VInvoiceRowController extends AbstractActionController
                     'tax_amount' => $invoice['tax_amount'],
                     'gross_amount' => $invoice['gross_amount'],
                     'n' => $nTry,
-                    'wh_list'=> $wh_list,
+                    'wh_list' => $wh_list,
+                    'nmtPlugin' => $nmtPlugin,
+                    
                 ));
 
                 $viewModel->setTemplate("finance/v-invoice-row/crud");
@@ -541,6 +576,7 @@ class VInvoiceRowController extends AbstractActionController
             if ($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_POSTED) {
                 $m = sprintf('[Info] A/P Invoice Row #%s - %s  already posted!', $entity->getId(), $entity->getRowIdentifer());
                 $this->flashMessenger()->addMessage($m);
+                $redirectUrl = sprintf('/finance/v-invoice-row/show?entity_id=%s&token=%s', $entity->getId(), $entity->getToken());
                 return $this->redirect()->toUrl($redirectUrl);
             }
 
@@ -566,7 +602,9 @@ class VInvoiceRowController extends AbstractActionController
                 'tax_amount' => $invoice['tax_amount'],
                 'gross_amount' => $invoice['gross_amount'],
                 'n' => 0,
-                'wh_list'=> $wh_list,
+                'wh_list' => $wh_list,
+                'nmtPlugin' => $nmtPlugin,
+                
             ));
 
             $viewModel->setTemplate("finance/v-invoice-row/crud");

@@ -491,6 +491,21 @@ class GIController extends AbstractActionController
             $errors = array();
             $data = $this->params()->fromPost();
             $redirectUrl = $data['redirectUrl'];
+            
+            
+            $movementType = $data['movementType'];
+            switch ($movementType){
+                case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE: 
+                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'],$data['source_wh_id'], $data['movementDate']);
+                    return $this->redirect()->toUrl($redirectUrl);
+                    
+                case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
+                    $redirectUrl = sprintf('/inventory/transfer/add?movementType=%s&sourceWH=%s&transferDate=%s', $data['movementType'],$data['source_wh_id'], $data['movementDate']);
+                    return $this->redirect()->toUrl($redirectUrl);
+                    
+            }
+            
+            
 
             $entity = new NmtInventoryMv();
             $entity->setLocalCurrency($default_cur);

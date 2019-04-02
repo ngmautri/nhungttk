@@ -664,7 +664,7 @@ GROUP BY nmt_procure_po_row.id
                     }
 
                     // close row
-                    if ($r['confirmed_gr_balance'] == 0 and $r['confirmed_ap_balance'] == 0) {
+                    if ($r['open_gr_qty'] == 0 AND $r['open_ap_qty'] == 0) {
                         $po_row->setTransactionStatus(\Application\Model\Constants::TRANSACTION_STATUS_COMPLETED);
                     } else {
                         $completed = false;

@@ -23,19 +23,25 @@ class GIforTransferToLocation extends \Inventory\Model\AbstractTransactionStrate
         if (isset($data['source_wh_id'])) {
             $source_wh_id = $data['source_wh_id'];
         } else {
-            $errors[] = $this->controllerPlugin->translate('No input given "source_wh_id"');
+            $errors[] = $this->getContextService()
+                ->getControllerPlugin()
+                ->translate('No input given "source_wh_id"');
         }
 
         if (isset($data['source_location_id'])) {
             $source_location_id = $data['source_location_id'];
         } else {
-            $errors[] = $this->controllerPlugin->translate('No input given "source_location_id"');
+            $errors[] = $this->getContextService()
+                ->getControllerPlugin()
+                ->translate('No input given "source_location_id"');
         }
 
         if (isset($data['target_location_id'])) {
             $target_location_id = $data['target_location_id'];
         } else {
-            $errors[] = $this->controllerPlugin->translate('No input given "target_location_id"');
+            $errors[] = $this->getContextService()
+                ->getControllerPlugin()
+                ->translate('No input given "target_location_id"');
         }
 
         if (count($errors) > 0) {
@@ -74,35 +80,44 @@ class GIforTransferToLocation extends \Inventory\Model\AbstractTransactionStrate
         /**@var \Application\Entity\NmtInventoryWarehouseLocation $source_location ;*/
         $source_location = $this->getContextService()
             ->getDoctrineEM()
-            ->getRepository('Application\Entity\NmtInventoryWarehouseLocaction')
+            ->getRepository('Application\Entity\NmtInventoryWarehouseLocation')
             ->findOneBy($criteria);
 
         if ($source_location == null) {
             $errors[] = $this->getContextService()
                 ->getControllerPlugin()
                 ->translate('Source Location is required');
+        } else {
+
+            $n_check ++;
+
+            // check stock of source.
+            $entity->setSourceLocation($source_location);
         }
 
         // check target location
         $criteria = array(
             "warehouse" => $source_wh,
-            "id" => $source_location_id
+            "id" => $target_location_id
         );
 
         /**@var \Application\Entity\NmtInventoryWarehouseLocation $target_location ;*/
         $target_location = $this->getContextService()
             ->getDoctrineEM()
-            ->getRepository('Application\Entity\NmtInventoryWarehouseLocaction')
+            ->getRepository('Application\Entity\NmtInventoryWarehouseLocation')
             ->findOneBy($criteria);
 
         if ($target_location == null) {
             $errors[] = $this->getContextService()
                 ->getControllerPlugin()
                 ->translate('Target Location is required');
+        } else {
+
+            $n_check ++;
+            $entity->setTartgetLocation($target_location);
         }
-        
+
         // Check availability in source warehouse.
-        
 
         return $errors;
     }
@@ -134,7 +149,7 @@ class GIforTransferToLocation extends \Inventory\Model\AbstractTransactionStrate
      */
     public function getTransactionIdentifer()
     {
-        return \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANFER_WAREHOUSE;
+        return \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION;
     }
 
     /**

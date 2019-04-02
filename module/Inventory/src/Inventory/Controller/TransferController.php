@@ -102,52 +102,51 @@ class TransferController extends AbstractActionController
                 ->getUri();
         }
 
-        $type = (int) $this->params()->fromQuery('type');
-
         $this->layout("Inventory/layout-fullscreen");
 
-        /*
-         * $errors = array();
-         * $errors[] = "Notthing found";
-         * $viewModel = new ViewModel(array(
-         * 'errors' => $errors
-         * ));
-         *
-         * $viewModel->setTemplate("notify/warning");
-         * return $viewModel;
-         */
-
-        switch ($type) {
-
-            case \Inventory\Model\Constants::INVENTORY_TRANSFER_WAREHOUSE:
-
-                break;
-
-            case \Inventory\Model\Constants::INVENTORY_TRANSFER_LOCATION:
-
-                break;
-
-            default:
-        }
+        $movementType = $this->params()->fromQuery('movementType');
+        $sourceWhID = (int) $this->params()->fromQuery('sourceWH');
+        $transferDate = $this->params()->fromQuery('transferDate');
 
         $entity = new NmtInventoryMv();
-        $entity->setMovementType(\Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_WAREHOUSE);
+
+        $criteria = array(
+            'id' => $sourceWhID
+        );
+
+        $sourceWh =null;
+        $location =null;
+        
+        $sourceWh = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouse')->findOneBy($criteria);
+       
+        if ($sourceWh !== null) {
+            $criteria = array(
+                'warehouse' => $sourceWh
+            );
+
+            $location = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryWarehouseLocation')->findBy($criteria);
+        }
+
+        $entity->setWarehouse($sourceWh);
+        $entity->setMovementDate(new \Datetime($transferDate));
+        $entity->setMovementType($movementType);
+
         $entity->setIsActive(1);
 
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
             'form_action' => '/inventory/transfer/add',
             'form_title' => $nmtPlugin->translate("Create Good Transfer"),
-
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
             'nmtPlugin' => $nmtPlugin,
             'transactionType' => $transactionType,
-            'isAllowed' => $isAllowed
+            'isAllowed' => $isAllowed,
+            'location' => $location
         ));
 
-        $viewModel->setTemplate("inventory/transfer/crud");
+        $viewModel->setTemplate("inventory/transfer/crud" . $movementType);
         return $viewModel;
     }
 
@@ -336,7 +335,7 @@ class TransferController extends AbstractActionController
     public function showAction()
     {
         $request = $this->getRequest();
-        //$this->layout("Inventory/layout-fullscreen");
+        // $this->layout("Inventory/layout-fullscreen");
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
@@ -477,7 +476,7 @@ class TransferController extends AbstractActionController
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'form_action' => '/inventory/transfer/edit',
                     'form_title' => $nmtPlugin->translate("Edit Goods Transfer"),
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -514,7 +513,7 @@ class TransferController extends AbstractActionController
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
                     'form_action' => '/inventory/transfer/edit',
                     'form_title' => $nmtPlugin->translate("Edit Goods Transfer"),
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -578,7 +577,7 @@ class TransferController extends AbstractActionController
             'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
             'form_action' => '/inventory/transfer/edit',
             'form_title' => $nmtPlugin->translate("Edit Goods Transfer"),
-            
+
             'errors' => $errors,
             'entity' => $entity,
             'redirectUrl' => $redirectUrl,
@@ -602,7 +601,7 @@ class TransferController extends AbstractActionController
     {
         $request = $this->getRequest();
         $this->layout("Inventory/layout-fullscreen");
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
         $issueType = \Inventory\Model\Constants::getGoodsIssueTypes($nmtPlugin->getTranslator());

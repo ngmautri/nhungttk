@@ -2,6 +2,7 @@
 namespace Application\Controller\Plugin;
 
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Application\Entity\NmtInventoryItemPicture;
 use Doctrine\ORM\EntityManager;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
 
@@ -20,7 +21,45 @@ class NmtPlugin extends AbstractPlugin
     protected $dbConfig;
 
     protected $stmpOutlook;
-    
+
+    public function getItemPic1($id)
+    {
+
+        /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
+        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
+            'item' => $id,
+            'isActive' => 1
+        ));
+
+        if ($pic instanceof NmtInventoryItemPicture) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getItemPic($id)
+    {
+
+        /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
+        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
+            'item' => $id,
+            'isActive' => 1
+        ));
+
+        $thumbnail_file = '/images/no-pic1.jpg';
+        if ($pic instanceof NmtInventoryItemPicture) {
+
+            $thumbnail_file = "/thumbnail/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+            $thumbnail_file = str_replace('\\', '/', $thumbnail_file); // Important for UBUNTU
+            
+            return $thumbnail_file;
+        }
+
+        return $thumbnail_file;
+    }
+
     /**
      * Return User List
      *
@@ -31,9 +70,9 @@ class NmtPlugin extends AbstractPlugin
         $criteria = array(
             'block' => 0
         );
-        
+
         $sort_criteria = array();
-        
+
         $list = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findBy($criteria, $sort_criteria);
         return $list;
     }
@@ -55,12 +94,12 @@ class NmtPlugin extends AbstractPlugin
             return $result;
         }
 
-        if( $user1 === $user2){
+        if ($user1 === $user2) {
             $result['result'] = 1;
             $result['message'] = 'Owner operation';
             return $result;
         }
-        
+
         /**@var \Application\Repository\MlaUsersRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\MlaUsers');
         $isAdmin = $res->isAdministrator($user1);
@@ -96,8 +135,7 @@ class NmtPlugin extends AbstractPlugin
             $result['message'] = ' User not found';
             return $result;
         }
-        
-     
+
         $path_array = explode("/", $role2->getRole()->getPath());
         $role_level = array();
         $test = '';

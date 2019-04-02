@@ -13,6 +13,8 @@ use Zend\Validator\Date;
 abstract class AbstractTransactionStrategy implements InventoryTransactionInterface
 {
 
+    protected $contextService;
+    
     /**
      *
      * @param \Application\Entity\NmtInventoryMv $entity
@@ -142,8 +144,7 @@ abstract class AbstractTransactionStrategy implements InventoryTransactionInterf
     public function runTransferReserval($entity, $u, $reversalDate, $reversalReason, $isFlush = TRUE)
     {}
 
-    protected $contextService;
-
+ 
     /**
      * Templete Method
      *

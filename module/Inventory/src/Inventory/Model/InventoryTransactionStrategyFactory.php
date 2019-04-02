@@ -44,7 +44,7 @@ class InventoryTransactionStrategyFactory
                 return new \Inventory\Model\GI\GIforTransferToWH();
       
             case \Inventory\Model\Constants::INVENTORY_GI_FOR_TRANSFER_LOCATION:
-                return new \Inventory\Model\GI\GIforTransferLocation();
+                return new \Inventory\Model\GI\GIforTransferToLocation();
                 
                 
             default:

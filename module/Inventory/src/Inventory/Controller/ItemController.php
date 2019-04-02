@@ -1178,6 +1178,10 @@ EOT;
      */
     public function listAction()
     {
+
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+
         $sort_criteria = array();
         $criteria = array();
 
@@ -1187,6 +1191,7 @@ EOT;
 
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
+        $layout = $this->params()->fromQuery('layout');
 
         $criteria1 = array();
         if (! $item_type == null) {
@@ -1232,6 +1237,10 @@ EOT;
             $sort = "DESC";
 		endif;
 
+        if ($layout == null) :
+            $layout = "grid";
+		endif;
+
         $sort_criteria = array(
             $sort_by => $sort
         );
@@ -1240,7 +1249,7 @@ EOT;
         // var_dump($criteria);
 
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 15;
+            $resultsPerPage = 20;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -1309,7 +1318,7 @@ EOT;
         // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
         // var_dump (count($all));
 
-        return new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
             'paginator' => $paginator,
@@ -1318,8 +1327,15 @@ EOT;
             'is_active' => $is_active,
             'is_fixed_asset' => $is_fixed_asset,
             'per_pape' => $resultsPerPage,
-            'item_type' => $item_type
+            'item_type' => $item_type,
+            'layout' => $layout,
+            'nmtPlugin' => $nmtPlugin
         ));
+
+        if ($layout == "grid") {
+            $viewModel->setTemplate("inventory/item/list-gird");
+        }
+        return $viewModel;
     }
 
     /**
@@ -1398,7 +1414,7 @@ EOT;
         // var_dump($criteria);
 
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 15;
+            $resultsPerPage = 20;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
@@ -1742,7 +1758,7 @@ EOT;
 
         // accepted only ajax request
         /*
-         * if (! $request->isXmlHttpRequest()) {
+         * if (! $request->isXmlHttpRequest()) {o
          * return $this->redirect()->toRoute('access_denied');
          * }
          */
@@ -1751,13 +1767,14 @@ EOT;
         /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
         $pic = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
             'item' => $item_id,
-            'isActive' => 1,
+            'isActive' => 1
         ));
 
         if ($pic instanceof NmtInventoryItemPicture) {
 
-            $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
+            // $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
 
+            $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
             /**
              * Important! for UBUNTU
              */
@@ -1769,12 +1786,13 @@ EOT;
             $response->setContent($imageContent);
 
             $response->getHeaders()
+                ->addHeaderLine('Cache-Control', 'max-age=3600, must-revalidate', true)
                 ->addHeaderLine('Content-Transfer-Encoding', 'binary')
                 ->addHeaderLine('Content-Type', $pic->getFiletype());
             // ->addHeaderLine('Content-Length', mb_strlen($imageContent)); // can cause problme in Ubuntu
             return $response;
         } else {
-            $pic_folder = getcwd() . "/public/images/no-pic.jpg";
+            $pic_folder = getcwd() . "/public/images/no-pic1.jpg";
             $imageContent = file_get_contents($pic_folder);
 
             $response = $this->getResponse();
@@ -1786,6 +1804,55 @@ EOT;
             // ->addHeaderLine('Content-Length', mb_strlen($imageContent));
             return $response;
         }
+    }
+
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function getPicture1Action()
+    {
+
+        // $request = $this->getRequest();
+
+        // accepted only ajax request
+        /*
+         * if (! $request->isXmlHttpRequest()) {o
+         * return $this->redirect()->toRoute('access_denied');
+         * }
+         */
+        $item_id = (int) $this->params()->fromQuery('item_id');
+
+        /** @var \Application\Entity\NmtInventoryItemPicture $pic ;*/
+        $pic = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemPicture')->findOneBy(array(
+            'item' => $item_id,
+            'isActive' => 1
+        ));
+
+        if ($pic instanceof NmtInventoryItemPicture) {
+
+            // $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
+
+            $pic_folder = getcwd() . "/data/inventory/picture/item/" . $pic->getFolderRelative() . "thumbnail_200_" . $pic->getFileName();
+            /**
+             * Important! for UBUNTU
+             */
+            $pic_folder = str_replace('\\', '/', $pic_folder);
+
+            $imageContent = file_get_contents($pic_folder);
+
+            $response = $this->getResponse();
+            $response->setContent($imageContent);
+
+            $response->getHeaders()
+            ->addHeaderLine('Cache-Control', 'max-age=3600, must-revalidate', true)
+                ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+                ->addHeaderLine('Content-Type', $pic->getFiletype());
+            // ->addHeaderLine('Content-Length', mb_strlen($imageContent)); // can cause problme in Ubuntu
+            return $response;
+        }
+
+        return null;
     }
 
     /**

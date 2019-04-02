@@ -1,6 +1,12 @@
 <?php
 $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
+
+/**
+ *
+ * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ */
 ?>
+
 
 <div id="tabs" style="font-size: 9.5pt">
 
@@ -101,6 +107,7 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 
 									</div>
 								</div>
+
 								<div class="form-group margin-bottom">
 									<label class="control-label col-sm-2" for="inputTag">Layout</label>
 									<div class="col-sm-3">
@@ -110,8 +117,9 @@ $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
 												<?php echo $layout=='list'? "selected='selected'":"";?>
 												value="list">List</option>
 
-											<option <?php echo $layout=='grid'? "selected='selected'":"";?>
-												value=grid>Gird</option>
+											<option
+												<?php echo $layout=='grid'? "selected='selected'":"";?>
+												value="grid">grid</option>
 										</select>
 
 									</div>
@@ -180,58 +188,91 @@ if ($total_records <= 0) {
 
     ?>
 
+<hr style="margin: 5pt 1pt 5pt 1pt;">
+		<div class="container-fluid">
 
-	
-<table id="mytable26" style="font-size: 9.2pt; color: graytext;"
-			class="table table-bordered table-hover">
-			<thead>
-				<tr>
-					<td><b>#</b></td>
-					<td><b>ID</b></td>
-					<td><b>SKU</b></td>
-					<td><b>Item Name</b></td>
-					<td><b>Item Code</b></td>
-					<td><b>ID</b></td>
-					<td><b>Action</b></td>
-				</tr>
-			</thead>
+ <?php
 
-			<tbody>
- 
-	 <?php
-
+    $lineBreak = 4;
     $count = 0;
+
     foreach ($list as $a) :
-        $count ++;
+    
+        $url = $nmtPlugin->getItemPic($a['id']);
+     
+        if ($count == 0 || $count % $lineBreak == 0) {
+            echo '<div class="row" style="height-min:110px; border:1px;">';
+        }
+
         ?>
-	 <tr>
-					<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-					<td><a style="color: navy;"
-						href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $a['token'] ;?>&entity_id=<?php echo $a['id'];?>&checksum=<?php echo $a['checksum'];?>"><?php echo $a['sys_number'];?></a>
+		    <div class="col-xs-6 col-md-3	">
 
-					</td>
 
-					<td><?php echo $this->escapeHtml(($a['item_sku']));?></td>
-					<td><span class="dropdown"><a class="dropdown-toggle"
-							data-toggle="dropdown" href="#"
-							title="<?php echo $this->escapeHtml($a['item_name']);?>"
-							style="padding-left: 20px; padding-right: 10px;"><?php echo substr($this->escapeHtml($a['item_name']),0,45);?> <span
-								class="caret"></span></a> </span></td>
-					<td><?php echo substr($this->escapeHtml($a['manufacturer_model']),0,30);?></td>
-					<td><?php echo $this->escapeHtml($a['serial_number']);?></td>
+				<table style="">
+					<tr style="padding: 1pt 2pt 10pt 1pt;">
+						<td>
 
-					<!-- <td><?php echo date_format ( $a['created_on'], "d/m/y");?> </td>  -->
-					<td><a style="cursor: pointer;" title="picture" item-pic=""
-						id="<?php echo $this->escapeHtml($a['id']);?>"
-						item_name="<?php echo $this->escapeHtml($a['item_name']);?>"
-						href="<?php echo $this->baseUrl ?>/inventory/item/show?nid=<?php echo $nid;?>&token=<?php echo $this->escapeHtml($a['token']);?>&entity_id=<?php echo $this->escapeHtml($a['id']);?>&checksum=<?php echo $this->escapeHtml($a['checksum']);?>">Show</a>
-					</td>
 
-				</tr>
+							<div style="position: relative; float: right;">
+								<!-- <span class="badge badge-primary"><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count+1;?></span> -->
+
+								<!--  <img id="item_<?php echo $this->escapeHtml($a['id']);?>"
+									style="cursor: pointer;" title="click for more detail!"
+									onclick="" class="img-rounded" width="120" height="120"
+									src="/inventory/item/get-picture1?&item_id=<?php echo $a['id'];?>" />-->
+									
+									 <img id="item_<?php echo $this->escapeHtml($a['id']);?>"
+									style="cursor: pointer;" title="click for more detail!"
+									onclick="" class="img-rounded" width="100" height="100"
+									src="<?php echo $url; ?>" />
+								
+								
+							</div>
+						</td>
+
+						<td style="padding: 1pt 1pt 1pt 10pt;">
+						
+						
+						<span
+							style="padding: 1pt 1pt 1pt 2pt; font-weight: bold;">
+							<a target="_blank" style="color: black;"
+						href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $a['token'] ;?>&entity_id=<?php echo $a['id'];?>&checksum=<?php echo $a['checksum'];?>">
+						<?php echo substr($this->escapeHtml($a['item_name']),0,100);?></a>					
+							
+							
+								</span> <span style="padding: 1pt 1pt 1pt 1pt; color: graytext;">
+								<br><?php echo $this->escapeHtml(($a['item_sku']));?>
+						
+			<br><?php echo $this->escapeHtml($a['sys_number']);?>
+				<br><?php echo $this->escapeHtml($a['serial_number']);?>
+						<br><?php echo substr($this->escapeHtml($a['manufacturer_model']),0,30);?>
+						
+	
+		<?php ?>
+	
+					<tr>
+				
+				</table>
+
+
+			</div>
+
+		<?php
+        $count ++;
+
+        if ($count % $lineBreak == 0) {
+
+            echo '</div><hr style="margin: 5pt 1pt 5pt 1pt;">';
+        }
+        ?>
+        
+    	
 <?php endforeach; ?>
+</div>
 
- </tbody>
-		</table>
+
+
+
 
 <?php
 
@@ -259,22 +300,22 @@ if ($total_records <= 0) {
         }
 
         for ($i = $paginator->minInPageSet; $i <= $paginator->maxInPageSet; $i ++) {
-			
-			$url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
-			
-			if ($i == $paginator->page) {
-				echo '<li><a class="active" href="#">' . $i . '</a></li>';
-			} else {
-				echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
-			}
-		}
-		if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
-			echo '<li><a href="' . $next . '"> > </a></li>';
-			echo '<li><a href="' . $last . '"> >| </a></li>';
-		}
-		echo '</ul>';
+
+            $url = $base . $_connector_symbol . 'page=' . $i . '&perPage=' . $paginator->resultsPerPage;
+
+            if ($i == $paginator->page) {
+                echo '<li><a class="active" href="#">' . $i . '</a></li>';
+            } else {
+                echo '<li><a href="' . $url . '"> ' . $i . ' </a></li>';
+            }
+        }
+        if ($paginator->page != $paginator->totalPages and $paginator->totalPages > 10) {
+            echo '<li><a href="' . $next . '"> > </a></li>';
+            echo '<li><a href="' . $last . '"> >| </a></li>';
+        }
+        echo '</ul>';
 endif;
-	
+
 }
 // ===============================
 ?>

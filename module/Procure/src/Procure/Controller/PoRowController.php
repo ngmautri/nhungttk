@@ -588,6 +588,14 @@ class PoRowController extends AbstractActionController
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
             $list = $res->getPOStatus($target_id, $token);
+            
+            
+            $decimalNo = 0;
+            
+            if ($target->getCurrency()->getCurrency()=="USD"){
+                $decimalNo=2;
+            }
+            
 
             $total_records = 0;
             if (count($list) > 0) {
@@ -599,20 +607,24 @@ class PoRowController extends AbstractActionController
                     /** @var \Application\Entity\NmtProcurePoRow $a ;*/
                     $a = $r[0];
 
-                    $a_json_row["row_identifer"] = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$a->getRowIdentifer());           $a_json_row["row_id"] = $a->getId();
-                    $a_json_row["row_token"] = $a->getToken();
+                    //$a_json_row["row_identifer"] = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$a->getRowIdentifer());
+                    
+                    $a_json_row["row_identifer"] = $a->getRowIdentifer();
+                    
+                    $a_json_row["row_id"] = $a->getId();
+                     $a_json_row["row_token"] = $a->getToken();
                     $a_json_row["row_number"] = $a->getRowNumber();
                     $a_json_row["row_unit"] = $a->getUnit();
                     $a_json_row["row_quantity"] = $a->getQuantity();
 
                     if ($a->getUnitPrice() !== null) {
-                        $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), 2);
+                        $a_json_row["row_unit_price"] = number_format($a->getUnitPrice(), $decimalNo);
                     } else {
                         $a_json_row["row_unit_price"] = 0;
                     }
 
                     if ($a->getNetAmount() !== null) {
-                        $a_json_row["row_net"] = number_format($a->getNetAmount(), 2);
+                        $a_json_row["row_net"] = number_format($a->getNetAmount(), $decimalNo);
                     } else {
                         $a_json_row["row_net"] = 0;
                     }
@@ -624,7 +636,7 @@ class PoRowController extends AbstractActionController
                     }
 
                     if ($a->getGrossAmount() !== null) {
-                        $a_json_row["row_gross"] = number_format($a->getGrossAmount(), 2);
+                        $a_json_row["row_gross"] = number_format($a->getGrossAmount(), $decimalNo);
                     } else {
                         $a_json_row["row_gross"] = 0;
                     }
@@ -647,7 +659,13 @@ class PoRowController extends AbstractActionController
                         }
                     }
 
-                    $a_json_row["draft_gr"] = $r['draft_gr_qty'];
+                    
+                    if ($r['draft_gr_qty'] > 0) {
+                        $a_json_row["draft_gr"] = number_format($r['draft_gr_qty'],2);
+                    } else {
+                        $a_json_row["draft_gr"] = 0;
+                    }
+                    
 
                     $url = sprintf("/procure/po-row/gr-of?token=%s&entity_id=%s", $a->getToken(), $a->getId());
                     $onclick1 = sprintf("showJqueryDialog('Goods Receipt ','1350',$(window).height()-50,'%s','j_loaded_data', true);", $url);
@@ -656,10 +674,16 @@ class PoRowController extends AbstractActionController
                     if ($r['posted_gr_qty'] > 0) {
                         $a_json_row["confirmed_gr"] = number_format($r['posted_gr_qty'],2) . $received_detail;
                     } else {
-                        $a_json_row["confirmed_gr"] = $r['posted_gr_qty'];
+                        $a_json_row["confirmed_gr"] = 0;
                     }
 
-                    $a_json_row["open_gr"] = $r['open_gr_qty'];
+                    
+                    if ($r['open_gr_qty'] > 0) {
+                        $a_json_row["open_gr"] = number_format($r['open_gr_qty'],2);
+                    } else {
+                        $a_json_row["open_gr"] = 0;
+                    }
+                    
 
                     $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->getItem()->getToken(), $a->getItem()->getChecksum(), $a->getItem()->getId());
 
@@ -689,10 +713,9 @@ class PoRowController extends AbstractActionController
                     $a_json_row["remarks"] = $a->getRemarks();
                       
                     if($r['billed_amount']>0){
-                    $a_json_row["billed_amount"] = number_format($r['billed_amount'],2);
+                        $a_json_row["billed_amount"] = number_format($r['billed_amount'],$decimalNo);
                     }else{
-                        $a_json_row["billed_amount"] = $r['billed_amount'];
-                        
+                        $a_json_row["billed_amount"] = 0;
                     }
                     
             
@@ -723,7 +746,13 @@ class PoRowController extends AbstractActionController
                     $a_json_row["standard_unit"] = $standard_unit;
                     
                     $a_json_row["doc_qty"] = $a->getDocQuantity();
-                    $a_json_row["doc_unit_price"] = $a->getDocUnitPrice();
+                    
+                    
+                    if ($a->getDocUnitPrice() !== null) {
+                        $a_json_row["doc_unit_price"] = number_format($a->getDocUnitPrice(), $decimalNo);
+                    } else {
+                        $a_json_row["doc_unit_price"] = 0;
+                    }
                     
 
                     $a_json[] = $a_json_row;

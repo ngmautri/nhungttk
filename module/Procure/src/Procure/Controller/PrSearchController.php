@@ -33,18 +33,26 @@ class PrSearchController extends AbstractActionController
      */
     public function autocompleteAction()
     {
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        
         /* retrieve the search term that autocomplete sends */
         $q = trim(strip_tags($_GET['term']));
         // $q = $this->params ()->fromQuery ( 'q' );
         
         $a_json = array();
         $a_json_row = array();
-        
+        $n=0;
         if ($q !== "") {
             $results = $this->prSearchService->search($q);
             
             if (count($results) > 0) {
                 foreach ($results['hits'] as $a) {
+                    
+                    
+                    $n ++;
+                    $a_json_row["n"] = $n;
+                    
                     $a_json_row["value"] = $a->pr_number . ' | ' . $a->item_name;
                     
                     $a_json_row["pr_id"] = $a->pr_id;
@@ -71,6 +79,14 @@ class PrSearchController extends AbstractActionController
                     $a_json_row["row_unit"] = $a->row_unit;
                     $a_json_row["row_name"] = $a->row_name;                    
                     $a_json_row["row_conversion_factor"] = $a->row_conversion_factor;
+                    
+                    $item_thumbnail = '/images/no-pic1.jpg';                    
+                    if($a->item_id!=null){
+                        $item_thumbnail =  $nmtPlugin->getItemPic($a->item_id);                        
+                    }
+                    
+                    $a_json_row["item_thumbnail"] = $item_thumbnail;
+                    $a_json_row["total_hit"] = count($results['hits']);
                     
                     $a_json[] = $a_json_row;
                 }

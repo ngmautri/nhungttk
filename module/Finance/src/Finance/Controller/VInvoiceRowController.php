@@ -762,7 +762,7 @@ class VInvoiceRowController extends AbstractActionController
                      * }
                      */
 
-                    $item_detail = "/inventory/item/show1?tab_idx=1&token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
+                    $item_detail = "/inventory/item/show1?tab_idx=11&token=" . $a->getItem()->getToken() . "&checksum=" . $a->getItem()->getChecksum() . "&entity_id=" . $a->getItem()->getId();
                     if ($a->getItem()->getItemName() !== null) {
                         $onclick = "showJqueryDialog('Detail of Item: " . $escaper->escapeJs($a->getItem()
                             ->getItemName()) . "','1480',$(window).height()-50,'" . $item_detail . "','j_loaded_data', true);";

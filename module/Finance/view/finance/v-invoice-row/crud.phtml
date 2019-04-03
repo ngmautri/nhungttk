@@ -1,8 +1,8 @@
 <?php
 
 /**@var \Application\Entity\FinVendorInvoice $target ;
-   @var \Application\Entity\FinVendorInvoiceRow $entity ;
-   @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ @var \Application\Entity\FinVendorInvoiceRow $entity ;
+ @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
  */
 $form_action = '';
 $form_title = '';
@@ -285,8 +285,8 @@ if (count($errors) > 0) {
 									class="form-control input-sm">
 									<option value=""><?php echo $this->translate("...");?></option>
    	    							<?php
-   	    							$wh_list = $nmtPlugin->warehouseList();
-   	    							
+            $wh_list = $nmtPlugin->warehouseList();
+
             if ($wh_list !== null) :
                 foreach ($wh_list as $gl) :
 
@@ -410,7 +410,7 @@ if (count($errors) > 0) {
 									class="form-control input-sm">
 									<option value=""><?php echo $this->translate("Select GL Account");?></option>
    	    							<?php
-   	    							$gl_list = $nmtPlugin->glAccountList();
+            $gl_list = $nmtPlugin->glAccountList();
             if ($gl_list !== null) :
                 foreach ($gl_list as $gl) :
 
@@ -448,8 +448,8 @@ if (count($errors) > 0) {
 									class="form-control input-sm">
 									<option value=""><?php echo $this->translate("Select Cost Center");?></option>
    	    							<?php
-   	    							$cost_center_list = $nmtPlugin->costCenterList();
-   	    							
+            $cost_center_list = $nmtPlugin->costCenterList();
+
             if ($cost_center_list !== null) :
                 foreach ($cost_center_list as $cc) :
 
@@ -591,12 +591,15 @@ if (count($errors) > 0) {
         }
         })
         .autocomplete( "instance" )._renderItem = function( ul, item ) {
-        return $( "<li>" )
-    .append( "<div style='padding-bottom: 15px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + 
-                  "</span><br><span style='padding-top: 7px;color:gray;font-size: 9pt;'>" + item.pr_number + " | " + item.row_name +"<span></div>" )
-  
- //         .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;color:gray;font-size: 9.5pt;'>" + item.pr_number + "<br><span style='color:black;font-size: 9.5pt;'>" + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + "<span></div>" )
-          .appendTo( ul );
+
+    	  var img = '<img class="img-rounded" width="60" height="60" src="'+item.item_thumbnail+'"/>';
+    	  var total_hit =item.total_hit;
+    	  
+        
+        return $( '<li>'	 )
+        .append('<div><table><tr><td>'+img+'</td><td style="padding: 1pt 1pt 1pt 5pt"><span style="font-size: 9.5pt;font-weight: bold;">' + item.item_sku_key  +  ' | ' + item.item_name + ' | Qty: ' + item.row_quantity + '</span><br>	<span style="padding-top: 7px;color:gray;font-size: 9pt;">' + item.pr_number + ' | ' + item.row_name + '</span></td></tr></table></div>')
+    	.append('<div style="color:graytext;font-size: 8pt; border-bottom: thin solid gray;">' + item.n + ' /' + total_hit + ' record found.</div>' )
+     	.appendTo( ul );
         };	
 
 
@@ -653,6 +656,9 @@ if (count($errors) > 0) {
             })
             .autocomplete( "instance" )._renderItem = function( ul, item ) {
             return $( "<li>" )
+            
+            
+            
         .append( "<div style='padding-bottom: 15px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>"  + item.item_sku_key  +  " | " + item.item_name + " | Q'ty: " + item.row_quantity + 
                       "</span><br><span style='padding-top: 7px;color:gray;font-size: 9pt;'>"+ item.vendor_name +'<br>' + item.po_number + " | " + item.row_identifer_keyword  + " | " + item.manufacturer_code_key +"<span></div>" )
       
@@ -698,9 +704,12 @@ if (count($errors) > 0) {
     		  serial_no = " : " + item.item_serial;
     	  }
     	   
-         return $( "<li>" )
-           .append( "<div style='padding-bottom: 5px; border-bottom: thin solid gray;'><span style='font-size: 9.5pt;font-weight: bold;'>" + item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></div>" )
-           .appendTo( ul );
+    	  var img = '<img class="img-rounded" width="60" height="60" src="'+item.item_thumbnail+'"/>';
+    	     var total_hit =item.total_hit;
+    	     return $( "<li>" )
+    	        .append("<div style='padding-bottom: 5px;'><table><tr><td>"+img+"</td><td style='padding: 1pt 1pt 1pt 5pt'><span style='color:black;font-size: 9.5pt; font-weight:bold'>" +item.value + "</span><br><span style='color:gray;font-size: 9pt;'>" + item.item_sku + serial_no +"<span></td></tr></table></div>" )
+    	        .append("<div style='color:graytext;font-size: 8pt; border-bottom: thin solid gray;'>" + item.n +" /"+total_hit+ " record found.</div>" )
+    	        .appendTo( ul )
        };
 
     $('#quantity').bind('change', function() {
@@ -770,5 +779,51 @@ if ($entity != null) :
 
 
 ?>
+
+/**
+ * 
+ * @param id
+ * @param target
+ */
+function selectItem(id, token, target, name, target_name, context = null){
+	var target_id = '#' + target;
+	$(target_id).val(id);
+	
+	// alert(name);
+	
+	// alert(target_name);
+	var target_name_id = '#' + target_name;
+	$(target_name_id).val(name);
+	
+	
+	// alert($(target_id).val());
+	$('#modal1 .close').click();
+	$('#global-notice').show();
+	$('#global-notice').html('"' + name + '" selected');
+	$('#global-notice').fadeOut(5000);
+	$("#jquery_dialog").dialog("close");
+
+
+    $("#item_id" ).val(id);
+	  	$('#item_url').text('/inventory/item/show1?tab_idx=9&entity_id='+id+'&token='+token);
+	 
+		$('#item_detail').show();
+		$("#quantity").focus();
+
+	var url = '/inventory/item/get-item?id='+id;
+		$('#rowUnit').val("Loading...");
+		$('#purchase_uom_convert_text').text("Loading...");
+		
+	$.get(url, {   	}, function(data, status) {
+    		//alert(data.purchase_uom_code);
+    		$('#rowUnit').val(data.purchase_uom_code);
+    		$('#standard_uom_id').text(data.uom_code);
+    		$('#conversionFactor').val(data.purchase_uom_convert_factor);                
+            $('#purchase_uom_convert_text').text($( "#rowUnit" ).val() + " = " +  $('#conversionFactor').val() + " " + $( "#standard_uom_id" ).text());
+   	   
+   	});
+
+	
+}
 
  </script>

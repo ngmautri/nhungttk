@@ -188,6 +188,8 @@ class PoService extends AbstractService
         $rowNumber = $data['rowNumber'];
 
         $vendorItemCode = $data['vendorItemCode'];
+        $vendorItemName= $data['vendorItemName'];
+        
         $unit = $data['unit'];
         $conversionFactor = $data['conversionFactor'];
 
@@ -206,7 +208,6 @@ class PoService extends AbstractService
         $entity->setIsActive($isActive);
         $entity->setRowNumber($rowNumber);
         
-        $descriptionText = $data['descriptionText'];
         $descriptionText = $data['descriptionText'];
         
 
@@ -238,7 +239,7 @@ class PoService extends AbstractService
         
 
         $entity->setVendorItemCode($vendorItemCode);
-        $entity->setVendorItemName($vendorItemCode);
+        $entity->setVendorItemName($vendorItemName);
         
         
         

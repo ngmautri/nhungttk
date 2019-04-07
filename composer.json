@@ -15,7 +15,8 @@
 		"tecnickcom/tcpdf" : "6.2.12",
 		"symfony/workflow" : "~3.3",
 		"symfony/event-dispatcher" : "2.8.*",
-		"endroid/qrcode" : "2.5.0"
+		"endroid/qrcode" : "2.5.0",
+		"ramsey/uuid" : "~3.8"
 	},
 	"minimum-stability" : "stable"
 }

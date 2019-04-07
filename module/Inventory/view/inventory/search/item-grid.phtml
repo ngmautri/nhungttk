@@ -95,7 +95,7 @@ if (! $hits == null) :
 							href="<?php echo $this->baseUrl ?>/inventory/item/show?token=<?php echo $hit->token ;?>&entity_id=<?php echo $hit->item_id;?>&checksum=<?php echo $hit->checksum;?>">
 						<?php echo ucwords(substr($this->escapeHtml($hit->item_name),0,100));?></a>
 					</span> 
-					<span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-size: 8pt;"> 
+					<span style="padding: 1pt 1pt 1pt 1pt; color: graytext; font-: 8pt;"> 
 					<br><?php echo $this->escapeHtml($hit->item_sku);?>
 					<?php if (isset($hit->item_sku1)): if($hit->item_sku1!=null): echo '<br>' . $this->escapeHtml($hit->item_sku1); endif;endif; ?>
 					<?php if($hit->serial_number_key!=null): echo '<br>' . $this->escapeHtml($hit->serial_number_key); endif; ?>
@@ -107,7 +107,7 @@ if (! $hits == null) :
 					<div style="margin: 2px; font-size: 9pt">
 
 					<div class="dropdown">
-						<button  style="color:black; padding:1pt 2pt 1pt 2pt; color: navy;" class="btn btn-default dropdown-toggle btn-sm"
+						<button  style="color:black; padding:2pt 2pt 2pt 2pt; color: navy; font-site:8.5pt" class="btn btn-default dropdown-toggle btn-sm"
 							type="button" id="dropdownMenu1" data-toggle="dropdown"
 							aria-haspopup="true" aria-expanded="true">
 							<i class="fa fa-bars" aria-hidden="true"></i>&nbsp;Action&nbsp;<span

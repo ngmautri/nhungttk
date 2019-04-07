@@ -1,5 +1,5 @@
 <?php
-namespace Procure\Service;
+namespace Procure\Service\Search;
 
 use Application\Service\AbstractService;
 use Doctrine\ORM\EntityManager;

@@ -230,7 +230,7 @@ class QoService extends AbstractService
         }
         
         if ($rowNumber != null) {
-            if (! is_numeric($taxRate)) {
+            if (! is_numeric($rowNumber)) {
                 $errors[] = 'Row Number is not valid. It must be a number.';
             } else {
                 if ($taxRate < 0) {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Procure\Service;
+namespace Procure\Service\Search;
 
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * AP Invoice Search
+ * Search Quotation
  * @author Nguyen Mau Tri
  *
  */

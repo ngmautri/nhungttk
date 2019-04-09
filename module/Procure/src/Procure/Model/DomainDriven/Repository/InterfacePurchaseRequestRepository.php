@@ -6,7 +6,7 @@ namespace Procure\Model\DomainDriven\Repository\Doctrine;
  * @author Nguyen Mau Tri
  *
  */
-Interface InterfaceQuotationOrderRepository
+Interface InterfacePurchaseRequestRepository
 {
     public function get($id);
     

@@ -16,7 +16,8 @@
 		"symfony/workflow" : "~3.3",
 		"symfony/event-dispatcher" : "2.8.*",
 		"endroid/qrcode" : "2.5.0",
-		"ramsey/uuid" : "~3.8"
+		"ramsey/uuid" : "~3.8",
+		"moneyphp/money" : "~3.2"
 	},
 	"minimum-stability" : "stable"
 }

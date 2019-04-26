@@ -584,12 +584,13 @@
 
 
 <script type="text/javascript">
-$("#create_item_form :input").attr("disabled", "disabled");
+	$("#create_item_form :input").attr("disabled", "disabled");
 
 	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
    	$('#sales_uom_convert_text').text($( "#sales_uom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
  	$('#stock_uom_convert_text').text($( "#stock_uom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
- 	  
+
+ 	$( "#tabs" ).tabs( {active:<?php echo $tab_idx;?>});
 </script>
 
 

@@ -142,6 +142,8 @@ EOT;
         $entity_id = (int) $this->params()->fromQuery('entity_id');
         $token = $this->params()->fromQuery('token');
 
+        $tab_idx = (int) $this->params()->fromQuery('tab_idx');
+        
         /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
         $item = $res->getItem($entity_id, $token);
@@ -176,7 +178,9 @@ EOT;
                 'total_ap_row' => $item['total_ap_row'],
                 'total_po_row' => $item['total_po_row'],
                 'total_qo_row' => $item['total_qo_row'],
-                'nmtPlugin' => $nmtPlugin
+                'nmtPlugin' => $nmtPlugin,
+                'tab_idx' => $tab_idx,
+                
             ));
         }
 

@@ -3,6 +3,9 @@
 
 $attachment_url =  $this->baseUrl . '/inventory/item-serial-attachment';
 $nid = \Application\Model\Constants::INVENTORY_HASH_ID;
+if(!$target== null){
+    $redirectUrl=sprintf("/inventory/item/show?tab_idx=5&entity_id=%s&token=%s",$target->getItem()->getId(), $target->getItem()->getToken());
+}
 ?>
 
 <h4>

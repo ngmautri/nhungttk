@@ -27,10 +27,12 @@ if ($total_records <= 0) {
 
     ?>
 
-<table style="font-size: 9pt;" class="table table-bordered table-hover">
+<table id="mytable26" style="font-size: 9pt; color: graytext;" class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<td><b>#</b></td>
+			<td><b>Ref</b></td>
+	
 			<td><b>BarCode</b></td>
 			<td><b>BarCode1</b></td>
 
@@ -59,12 +61,15 @@ if ($total_records <= 0) {
         ?>
 	 <tr>
 			<td><?php echo ($paginator===null)? $count:$paginator->minInPage -1+ $count;?></td>
-			<td><img alt="" height=""
-				src="/inventory/item/barcode?barcode=<?php echo (!$a == null)? $a->getSysNumber():"";?>">
+			
+			<td><?php  if($a->getApRow()!==null): echo $a->getApRow()->getInvoice()->getSysNumber(); endif;?></td>
+		
+			<td><!-- <img alt="" height=""
+				src="/inventory/item/barcode?barcode=<?php echo (!$a == null)? $a->getSysNumber():"";?>"> -->
 			</td>
 			<td>	<?php echo $a->getSerialNumber();?></td>
 			<td></td>
-			<td><?php  if($a->getGrRow()!==null): echo number_format($a->getGrRow()->getUnitPrice(),2); endif;?></td>
+			<td><?php  if($a->getApRow()!==null): echo number_format($a->getApRow()->getUnitPrice(),2); endif;?></td>
 			<td></td>
 
 			<td>
@@ -85,11 +90,15 @@ if ($total_records <= 0) {
 			<td>
 			<?php echo $a->getRemarks();?>
 			</td>
-			<td><a
-				href="<?php echo $this->baseUrl ?>/inventory/item-serial/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><small><i
-						class="glyphicon glyphicon-pencil"></i></small>&nbsp;<?php echo $this->translate('Edit');?></a>
+			<td><a class="" style="color:black;padding:1pt 2pt 2pt 2pt;"
+				href="<?php echo $this->baseUrl ?>/inventory/item-serial/edit?token=<?php echo $a->getToken();?>&entity_id=<?php echo $a->getId();?>"><?php echo $this->translate('Edit');?></a>
 
-			</td>
+<a class="" style="color:black;padding:1pt 2pt 1pt 2pt;"
+				href="<?php echo $this->baseUrl ?>/inventory/item-serial-attachment/upload-pictures?token=<?php echo $a->getToken();?>&target_id=<?php echo $a->getId();?>"><?php echo $this->translate('Upload');?></a>
+		
+			
+		
+		</td>
 		</tr>
 <?php endforeach; ?>
 

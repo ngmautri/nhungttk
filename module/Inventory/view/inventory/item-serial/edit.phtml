@@ -36,7 +36,7 @@ if (count($errors) > 0) {
 	<div id="general" style="font-size: 9pt">
 
 		<a style="cursor: pointer;" title=""
-			href="<?php echo $this->baseUrl ?>/inventory/item/show?nid=<?php echo $nid;?>&token=<?php echo $entity->getItem()->getToken();?>&entity_id=<?php echo $entity->getItem()->getId();?>"><h5
+			href="<?php echo $this->baseUrl ?>/inventory/item/show?tab_idx=5&nid=<?php echo $nid;?>&token=<?php echo $entity->getItem()->getToken();?>&entity_id=<?php echo $entity->getItem()->getId();?>"><h5
 				style="color: graytext;"><?php echo (!$entity == null)? $entity->getItem()->getItemName():"";?>:</h5>
 		</a> <img alt="" height=""
 			src="/inventory/item/barcode?barcode=<?php echo (!$entity == null)? $entity->getSysNumber():"";?>">

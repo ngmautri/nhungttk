@@ -528,6 +528,9 @@ class ItemSerialController extends AbstractActionController
                 ));
                 
                 $this->flashMessenger()->addMessage($m);
+                
+                $redirectUrl=sprintf("/inventory/item/show?tab_idx=5&entity_id=%s&token=%s",$entity->getItem()->getId(), $entity->getItem()->getToken());
+                
                 return $this->redirect()->toUrl($redirectUrl);
             }
         }

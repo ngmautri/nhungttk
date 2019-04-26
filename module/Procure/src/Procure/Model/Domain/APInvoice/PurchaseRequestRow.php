@@ -1,18 +1,16 @@
 <?php
-namespace Procure\Service;
-
+namespace Procure\Model\Domain\PurchaseRequest;
 
 /**
- * Purchase Request.
+ * Purchase Request Row.
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class PurchaseRequest
+class PurchaseRequestRow
 {
+
     private $id;
+
     private $vendorId;
-    private $submitedDate;
-    
-    
 }

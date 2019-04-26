@@ -5,7 +5,6 @@ namespace Procure\Model\DomainDriven\Repository\Doctrine;
  *
  * @author Nguyen Mau Tri
  *        
- *@ORM\Entity
  */
 class DoctrinePurchaseRequestRepository implements InterfacePurchaseRequestRepository
 {

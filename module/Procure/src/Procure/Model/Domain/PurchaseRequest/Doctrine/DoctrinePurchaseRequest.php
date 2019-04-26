@@ -1,10 +1,10 @@
 <?php
-namespace Procure\Model\DomainDriven\Entity\Doctrine;
+namespace Procure\Model\Domain\PurchaseRequest\Doctrine;
 
-use Procure\Model\DomainDriven\Entity\InterfacePurchaseRequest;
+use Procure\Model\Domain\PurchaseRequest\InterfacePurchaseRequest;
+
 
 /**
- * Abtract Factory
  *
  * @author Nguyen Mau Tri
  *        
@@ -12,7 +12,8 @@ use Procure\Model\DomainDriven\Entity\InterfacePurchaseRequest;
  */
 class DoctrinePurchaseRequest extends \Application\Entity\NmtProcurePr implements InterfacePurchaseRequest
 {
-
+    
+    
     public function validateHeader()
     {}
 
@@ -21,4 +22,5 @@ class DoctrinePurchaseRequest extends \Application\Entity\NmtProcurePr implement
 
     public function addRow()
     {}
+    
 }

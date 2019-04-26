@@ -24,6 +24,8 @@ use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mail\Header\ContentType;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  *
@@ -1334,7 +1336,9 @@ EOT;
             'nmtPlugin' => $nmtPlugin,
             'page' => $page,
         ));
-
+        
+        //echo Uuid::uuid4();
+        
         if ($layout == "grid") {
             $viewModel->setTemplate("inventory/item/list-gird");
         }

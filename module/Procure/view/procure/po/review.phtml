@@ -751,11 +751,11 @@ $( "#vendor_name_1" ).autocomplete({
        { title: "Code", dataType: "string", dataIndx: "row_code", width:100,editable: false },
        
       	<?php if($entity->getDocStatus() == \Application\Model\Constants::DOC_STATUS_DRAFT && $action == \Application\Model\Constants::FORM_ACTION_REVIEW):?>
-        { title: "Doc Qty", dataType: "string", dataIndx: "doc_qty", width: 70,align: 'right',editable: true},
-        { title: "Unit Price", dataType: "float", dataIndx: "doc_unit_price", width:90, align: 'right',editable: true},
+        { title: "Doc Qty", dataType: "decimal", dataIndx: "doc_qty", width: 70,align: 'right',editable: true},
+        { title: "Unit Price", dataType: "decimal", dataIndx: "doc_unit_price", width:90, align: 'right',editable: true},
         <?php else:?>
         { title: "Doc Qty", dataType: "string", dataIndx: "doc_qty", width: 70,align: 'right',editable: false},
-        { title: "Unit Price", dataType: "float", dataIndx: "doc_unit_price", width:90, align: 'right',editable: false},
+        { title: "Unit Price", dataType: "decimal", dataIndx: "doc_unit_price", width:90, align: 'right',editable: false},
        	<?php endif;?>
 
        

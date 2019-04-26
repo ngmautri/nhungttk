@@ -592,7 +592,9 @@ class PoRowController extends AbstractActionController
             
             $decimalNo = 0;
             
-            if ($target->getCurrency()->getCurrency()=="USD"){
+            $currency_decimal = array("USD","THB","EUR");
+
+            if (in_array($target->getCurrency()->getCurrency(),$currency_decimal)){
                 $decimalNo=2;
             }
             

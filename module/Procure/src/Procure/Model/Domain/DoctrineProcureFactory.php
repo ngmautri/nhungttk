@@ -1,8 +1,7 @@
 <?php
-namespace Procure\Model\DomainDriven\Repository\Doctrine;
+namespace Procure\Model\Domain;
 
-use Procure\Model\DomainDriven\Entity\Doctrine\DoctrinePurchaseRequest;
-
+use Procure\Model\Domain\PurchaseRequest\Doctrine\DoctrinePurchaseRequest;
 /**
  *
  * @author Nguyen Mau Tri
@@ -35,11 +34,7 @@ class DoctrineProcureFactory extends AbstractProcureFactory
     public function createReturnOrderRepository()
     {}
 
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Procure\Model\DomainDriven\Repository\Doctrine\AbstractProcureFactory::createPurchaseRequest()
-     */
+    
     public function createPurchaseRequest()
     {
         $pr = new DoctrinePurchaseRequest();

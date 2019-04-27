@@ -15,9 +15,9 @@
 		"tecnickcom/tcpdf" : "6.2.12",
 		"symfony/workflow" : "~3.3",
 		"symfony/event-dispatcher" : "2.8.*",
-		"endroid/qrcode" : "2.5.0",
 		"ramsey/uuid" : "~3.8",
-		"moneyphp/money" : "~3.2"
+		"moneyphp/money" : "~3.2",
+		"endroid/qr-code" : "2.5.1"
 	},
 	"minimum-stability" : "stable"
 }

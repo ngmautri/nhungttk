@@ -3,9 +3,8 @@ namespace Procure\Model\Domain;
 
 /**
  * Abtract Factory
+ * @author Nguyen Mau Tri (ngmautri@gmail.com)
  *
- * @author Nguyen Mau Tri
- *        
  */
 abstract class AbstractProcureFactory
 {

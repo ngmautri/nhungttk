@@ -585,7 +585,7 @@ class PrAttachmentController extends AbstractActionController
              * Important! for UBUNTU
              */
             $pic_folder = str_replace('\\', '/', $pic_folder);
-            
+
             $imageContent = file_get_contents($pic_folder);
 
             $response = $this->getResponse();
@@ -679,14 +679,13 @@ class PrAttachmentController extends AbstractActionController
         if ($pic !== null) {
 
             $pic_folder = getcwd() . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $pic->getFolderRelative() . "thumbnail_450_" . $pic->getFileName();
-          
+
             /**
              * Important! for UBUNTU
              */
             $pic_folder = str_replace('\\', '/', $pic_folder);
-            
+
             $imageContent = file_get_contents($pic_folder);
-            
 
             $response = $this->getResponse();
             $response->setContent($imageContent);
@@ -943,10 +942,11 @@ class PrAttachmentController extends AbstractActionController
 
                         $folder_relative = $name[0] . $name[1] . DIRECTORY_SEPARATOR . $name[2] . $name[3] . DIRECTORY_SEPARATOR . $name[4] . $name[5];
                         $folder = ROOT . self::ATTACHMENT_FOLDER . DIRECTORY_SEPARATOR . $folder_relative;
-                        
-                        /** Important! for UBUNTU */
+
+                        /**
+                         * Important! for UBUNTU
+                         */
                         $folder = str_replace('\\', '/', $folder);
-                        
 
                         if (! is_dir($folder)) {
                             mkdir($folder, 0777, true); // important
@@ -1020,19 +1020,16 @@ class PrAttachmentController extends AbstractActionController
          */
         $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
 
-        if ($target !== null) {
+        if ($target == null) {
             return $this->redirect()->toRoute('access_denied');
-            
         }
-        
 
-            return new ViewModel(array(
-                'redirectUrl' => $redirectUrl,
-                'errors' => null,
-                'target' => $target,
-                'entity' => null
-            ));
-   
+        return new ViewModel(array(
+            'redirectUrl' => $redirectUrl,
+            'errors' => null,
+            'target' => $target,
+            'entity' => null
+        ));
     }
 
     /**
@@ -1374,8 +1371,8 @@ class PrAttachmentController extends AbstractActionController
 
             $criteria = array(
                 'id' => $target_id,
-                'token' => $token,
-             );
+                'token' => $token
+            );
 
             /**@var \Application\Entity\NmtProcurePr $target ;*/
             $target = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePr')->findOneBy($criteria);
@@ -1614,10 +1611,12 @@ class PrAttachmentController extends AbstractActionController
 
         if ($attachment !== null) {
             $f = ROOT . $attachment->getAttachmentFolder() . DIRECTORY_SEPARATOR . $attachment->getFilename();
-            
-            /** Important! for UBUNTU */
+
+            /**
+             * Important! for UBUNTU
+             */
             $f = str_replace('\\', '/', $f);
-            
+
             $output = file_get_contents($f);
 
             $response = $this->getResponse();
@@ -1673,21 +1672,24 @@ class PrAttachmentController extends AbstractActionController
             'total_records' => $total_records
         ));
     }
-	
-	/**
-	 *
-	 * @return \Zend\View\Model\ViewModel
-	 */
-	
-	/**
-	 *
-	 * @return \Zend\Stdlib\ResponseInterface
-	 */
-	public function getDoctrineEM() {
-		return $this->doctrineEM;
-	}
-	public function setDoctrineEM(EntityManager $doctrineEM) {
-		$this->doctrineEM = $doctrineEM;
-		return $this;
-	}
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+
+    /**
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    public function setDoctrineEM(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+        return $this;
+    }
 }

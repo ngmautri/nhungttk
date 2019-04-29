@@ -429,6 +429,13 @@ class NmtInventoryItem
     private $standardPrice;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
+     */
+    private $uuid;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -2010,6 +2017,30 @@ class NmtInventoryItem
     public function getStandardPrice()
     {
         return $this->standardPrice;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return NmtInventoryItem
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     /**

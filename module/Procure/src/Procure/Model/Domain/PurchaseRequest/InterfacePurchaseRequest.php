@@ -8,7 +8,8 @@ namespace Procure\Model\Domain\PurchaseRequest;
  */
 Interface InterfacePurchaseRequest
 {
-    public function addRow();
-    public function editRow();
+    public function addRow(InterfacePurchaseRequestRow $row);
+    public function editRow(InterfacePurchaseRequestRow $row);
+    public function submit();
     public function validateHeader();    
 }

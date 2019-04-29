@@ -22,5 +22,8 @@ class DoctrinePurchaseRequest extends \Application\Entity\NmtProcurePr implement
 
     public function addRow()
     {}
+    public function submit()
+    {}
+
     
 }

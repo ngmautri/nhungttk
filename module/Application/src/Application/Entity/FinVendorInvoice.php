@@ -338,6 +338,13 @@ class FinVendorInvoice
     private $reversalBlocked;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
+     */
+    private $uuid;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1577,6 +1584,30 @@ class FinVendorInvoice
     public function getReversalBlocked()
     {
         return $this->reversalBlocked;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return FinVendorInvoice
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     /**

@@ -274,6 +274,13 @@ class NmtProcureQo
     private $reversalBlocked;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
+     */
+    private $uuid;
+
+    /**
      * @var \Application\Entity\NmtBpVendor
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtBpVendor")
@@ -1247,6 +1254,30 @@ class NmtProcureQo
     public function getReversalBlocked()
     {
         return $this->reversalBlocked;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return NmtProcureQo
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     /**

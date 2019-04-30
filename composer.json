@@ -19,5 +19,11 @@
 		"moneyphp/money" : "~3.2",
 		"endroid/qr-code" : "2.5.1"
 	},
-	"minimum-stability" : "stable"
+	"minimum-stability" : "stable",
+	"autoload" : {
+		"psr-0" : {
+			"Application" : "module/Application/src",
+			"Inventory" : "module/Inventory/src"
+		}
+	}
 }

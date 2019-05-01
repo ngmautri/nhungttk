@@ -71,6 +71,13 @@ class NmtApplicationDepartment
     private $createdOn = 'CURRENT_TIMESTAMP';
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="uuid", type="string", length=36, nullable=true)
+     */
+    private $uuid;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

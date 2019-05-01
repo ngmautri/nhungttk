@@ -10,7 +10,7 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\Event;
 use Inventory\Model\AssetTypeTable;
 use Inventory\Model\AssetType;
-use AssetTypeTest\Bootstrap;
+use ApplicationTest\Bootstrap;
 
 class AssetTypeTest extends PHPUnit_Framework_TestCase {
 	private $assetType;

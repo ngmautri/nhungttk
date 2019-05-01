@@ -5,7 +5,7 @@ namespace Calendar\Service;
 
 /**
  * 
- * @author nmt
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
 class CalendarService

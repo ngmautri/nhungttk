@@ -43,8 +43,9 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
             //$company = new Company(new CompanyId(Uuid::uuid4()->toString()), "Mascot", new Currency("LAK"));
             //var_dump ($company);
 
+            $uuid = "466829bf-b754-4341-aafe-11e3ac841847";
             $rep = new DoctrineCompanyRepository($em);
-            var_dump($rep->getById(1));
+            var_dump($rep->getByUUID($uuid));
             
             //$rep = new DoctrineSharedService($em);
             //var_dump($rep->getCurrencyList());

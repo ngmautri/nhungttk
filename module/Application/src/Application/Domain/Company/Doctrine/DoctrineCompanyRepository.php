@@ -89,7 +89,7 @@ class DoctrineCompanyRepository implements CompanyRepositoryInterface
             throw new InvalidArgumentException("Curreny is not set");
         }
 
-        $company = new Company(new CompanyId("uuid", $entity->getId()), $entity->getCompanyName(), new Currency($currency->getCurrency()));
+        $company = new Company(new CompanyId($entity->getUuid(), $entity->getId()), $entity->getCompanyName(), new Currency($currency->getCurrency()));
         return $company;
     }
     
@@ -98,7 +98,34 @@ class DoctrineCompanyRepository implements CompanyRepositoryInterface
      * 
      */
     public function getByUUID($uuid)
-    {}
+    {
+        $criteria = array(
+            "uuid" => $uuid
+        );
+        
+        /**
+         *
+         * @var \Application\Entity\NmtApplicationCompany $entity ;
+         */
+        $entity = $this->em->getRepository("\Application\Entity\NmtApplicationCompany")->findOneBy($criteria);
+        if ($entity == null) {
+            return null;
+        }
+        
+        /**
+         *
+         * @var \Application\Entity\NmtApplicationCurrency $currency ;
+         */
+        $currency = $entity->getDefaultCurrency();
+        
+        if ($currency == null) {
+            throw new InvalidArgumentException("Curreny is not set");
+        }
+        
+        $company = new Company(new CompanyId($entity->getUuid(), $entity->getId()), $entity->getCompanyName(), new Currency($currency->getCurrency()));
+        return $company;
+        
+    }
 
     public function store(Company $company)
     {}

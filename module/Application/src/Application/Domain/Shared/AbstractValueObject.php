@@ -9,8 +9,9 @@ namespace Application\Domain\Shared;
 abstract class AbstractValueObject
 {
 
-    public function equals($o1,$o2)
+    public function equals(AbstractValueObject $o2)
     {
+        $o1=$this;
         $diffArray = array();
 
         if (get_class($o1) !== get_class($o2)) {

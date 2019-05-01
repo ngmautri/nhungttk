@@ -33,53 +33,35 @@ class Bootstrap
 
         static::initAutoloader();
 
+        $rootPath = dirname(static::findParentPath('module'));
+
         // use ModuleManager to load this module and it's dependencies
 
         // application config
         $config = array(
-            'module_listener_options' => array(
-                'module_paths' => $zf2ModulePaths
-            ),
+
             'modules' => array(
+                'DoctrineModule',
+                'DoctrineORMModule',
                 'Application',
                 'Inventory'
+            ),
+
+            'module_listener_options' => array(
+                'module_paths' => $zf2ModulePaths,
+
+                // An array of paths from which to glob configuration files after
+                // modules are loaded. These effectively overide configuration
+                // provided by modules themselves. Paths may use GLOB_BRACE notation.
+                'config_glob_paths' => array(
+                    // '/config/autoload/{,*.}{global,local}.php'
+                    $rootPath . '/config/autoload/{,*.}{global,local}.php'
+                )
             )
         );
 
         // ServiceManager Config
-        $smConfig = array(
-            'factories' => array(
-                'Zend\Db\Adapter\Adapter' => function ($sm) {
-                    return $adapter = new Adapter(array(
-                        'driver' => 'Pdo_Mysql',
-                        'hostname' => 'localhost',
-                        'database' => 'mla',
-                        'username' => 'root',
-                        'password' => ''
-                    ));
-                },
-
-                // Email Service
-                'SmtpTransportService' => function ($sm) {
-
-                    $transport = new SmtpTransport();
-                    $options = new SmtpOptions(array(
-                        'name' => 'Web.de',
-                        'host' => 'smtp.web.de',
-                        'port' => '587',
-                        'connection_class' => 'login',
-                        'connection_config' => array(
-                            'username' => 'mib-team@web.de',
-                            'password' => 'mib2009',
-                            'ssl' => 'tls'
-                        )
-                    ));
-
-                    $transport->setOptions($options);
-                    return $transport;
-                }
-            )
-        );
+        $smConfig = array();
 
         $serviceManager = new ServiceManager(new ServiceManagerConfig($smConfig));
         $serviceManager->setService('ApplicationConfig', $config);
@@ -90,6 +72,8 @@ class Bootstrap
     public static function chroot()
     {
         $rootPath = dirname(static::findParentPath('module'));
+        // echo $rootPath;
+
         chdir($rootPath);
     }
 

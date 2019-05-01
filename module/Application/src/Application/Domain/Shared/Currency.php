@@ -43,18 +43,7 @@ class Currency extends AbstractValueObject
         return $this->code;
     }
 
-    /**
-     * Checks whether this currency is the same as an other.
-     *
-     * @param Currency $other
-     *
-     * @return bool
-     */
-    public function equals(Currency $other)
-    {
-        return $this->code === $other->code;
-    }
-
+    
     /**
      *
      * @return string

@@ -1,11 +1,11 @@
 <?php
-namespace Inventory\Domain\Item;
+namespace Inventory\Domain\Item\Factory;
 
 /**
  * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
  */
-abstract class AbstractItemFactory{
+class InventoryItemFactory{
 
 }

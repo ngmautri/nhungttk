@@ -9,12 +9,8 @@ namespace Procure\Model\Domain\PurchaseRequest;
  * @var \Application\Entity\NmtProcurePr
  *        
  */
-class PurchaseRequest
+class PurchaseRequestId
 {
-    /**
-     * 
-     * @var PurchaseRequestId;
-     */
     private $id;
     private $uuid;
     

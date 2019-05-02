@@ -1,10 +1,10 @@
 <?php
-namespace Application\Domain\Company\Doctrine;
+namespace Inventory\Domain\Item\Repository\Doctrine;
 
-use Application\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Exception\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Item\AbstractItem;
-use Inventory\Domain\Item\ItemRepositoryInterface;
+use Inventory\Domain\Item\Repository\ItemRepositoryInterface;
 
 /**
  *
@@ -31,8 +31,32 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         }
         $this->em = $em;
     }
+
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Item\Repository\ItemRepositoryInterface::getById()
+     */
     public function getById($id)
-    {}
+    {
+        $criteria = array(
+            "id" => $id
+        );
+        
+        /**
+         *
+         * @var \Application\Entity\NmtInventoryItem $entity ;
+         */
+        $entity = $this->em->getRepository("\Application\Entity\NmtInventoryItem")->findOneBy($criteria);
+        if ($entity == null) {
+            return null;
+        }
+     
+        
+       
+        return $entity->getItemName();
+        
+    }
 
     public function getByUUID($uuid)
     {}
@@ -42,7 +66,4 @@ class DoctrineItemRepository implements ItemRepositoryInterface
 
     public function findAll()
     {}
-
-
-   
 }

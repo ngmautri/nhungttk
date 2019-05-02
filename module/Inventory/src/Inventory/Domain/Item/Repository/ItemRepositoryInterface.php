@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Item;
+namespace Inventory\Domain\Item\Repository;
 use Inventory\Domain\Item\AbstractItem;
 
 /**
@@ -12,6 +12,6 @@ Interface ItemRepositoryInterface
     public function findAll();
     public function getById($id);
     public function getByUUID($uuid);
-    public function store(AbstractItem $item);
+    public function store(AbstractItem $item);    
     
 }

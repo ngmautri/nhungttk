@@ -1,14 +1,14 @@
 <?php
-namespace InventoryTest\Model;
+namespace ProcureTest\Model;
 
 use PHPUnit_Framework_TestCase;
 use Doctrine\ORM\EntityManager;
-use InventoryTest\Bootstrap;
-use Inventory\Domain\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
-use Inventory\Domain\Item\Repository\Doctrine\DoctrineItemRepository;
+use ProcureTest\Bootstrap;
+use Procure\Model\Domain\PurchaseRequest\PurchaseRequest;
 
-class InventoryTest extends PHPUnit_Framework_TestCase
+
+class ProcureTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -33,12 +33,10 @@ class InventoryTest extends PHPUnit_Framework_TestCase
             /** @var EntityManager $em ; */
             $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             echo Uuid::uuid4()->toString();
+            
+            var_dump(new PurchaseRequest());
 
-            $rep = new DoctrineItemRepository($em);
-            
-            
-            var_dump($rep->getById(100));
-        } catch (InvalidArgumentException $e) {
+           } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }
     }

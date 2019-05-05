@@ -42,9 +42,9 @@ class Bootstrap
 
             'modules' => array(
                 'DoctrineModule',
-                'DoctrineORMModule',               
-                'Inventory',
+                'DoctrineORMModule',
                 'Application',
+                'Inventory',               
             ),
 
             'module_listener_options' => array(

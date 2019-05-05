@@ -14,6 +14,12 @@ abstract class AbstractItem
      * @var ItemId;
      */
     private $id;
+    
+    /**
+     * 
+     * @var string
+     */
+    private $itemName;
 
     /**
      *
@@ -39,6 +45,16 @@ abstract class AbstractItem
      */
     private $standardUnit;
     
+    public function getItemName()
+    {
+        return $this->itemName;
+    }
+
+    public function setItemName($itemName)
+    {
+        $this->itemName = $itemName;
+    }
+
     // =====================
 
     /**

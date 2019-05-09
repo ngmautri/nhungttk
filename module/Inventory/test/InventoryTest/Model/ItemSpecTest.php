@@ -34,12 +34,14 @@ class ItemSpecTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
        $item = new InventoryItem();
-       $item->setItemName("test item");
+       $item->setItemName("Test");
        
-       $spec =  new ItemSpecification($item);
-       $spec1 =  new InventoryItemSpecification($item);
+       $spec =  new ItemSpecification();
+       $spec1 =  new InventoryItemSpecification();
        $spec3 = $spec->andSpec($spec1);
        
-       var_dump($spec3->isSatisfiedBy($item));
+       $result = $spec3->isSatisfiedBy($item);
+       
+       var_dump($result);
     }
 }

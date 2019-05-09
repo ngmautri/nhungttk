@@ -22,8 +22,8 @@ class AndSpecification extends AbstractSpecification
     private $spec2;
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecification::isSatisfiedBy()
      */
     public function isSatisfiedBy($subject)

@@ -16,31 +16,31 @@ abstract class AbstractSpecification implements SpecificationInterface
      */
     abstract public function isSatisfiedBy($subject);
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Application\Domain\Shared\Specification\SpecificationInterface::andSpec()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\SpecificationInterface::andSpec()
+     */
     public function andSpec(SpecificationInterface $spec)
     {
         return new AndSpecification($this, $spec);
     }
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Application\Domain\Shared\Specification\SpecificationInterface::notSpec()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\SpecificationInterface::notSpec()
+     */
     public function notSpec(SpecificationInterface $spec)
     {
         return new AndSpecification($spec);
     }
 
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Application\Domain\Shared\Specification\SpecificationInterface::orSpec()
-    */
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\SpecificationInterface::orSpec()
+     */
     public function orSpec(SpecificationInterface $spec)
     {
         return new OrSpecification($this, $spec);

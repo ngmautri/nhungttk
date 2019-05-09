@@ -8,6 +8,6 @@ namespace Inventory\Domain\Item\Factory;
  */
 abstract class AbstractItemFactory{
 
-    abstract function createItem();
+    abstract function createItemFrom();
     
 }

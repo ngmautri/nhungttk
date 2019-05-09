@@ -23,24 +23,30 @@ class InventoryItemSpecification extends AbstractSpecification
      *
      * @param AbstractItem $subject
      */
-    public function __construct(AbstractItem $subject)
+    public function __construct(AbstractItem $subject = null)
     {
         $this->subject = $subject;
     }
 
-   /**
-    * 
-    * @param AbstractItem $subject
-    * @return boolean
-    */
+    /**
+     *
+     * @param AbstractItem $subject
+     * @return boolean
+     */
     public function isSatisfiedBy($subject)
     {
         if ($subject == null)
             return false;
 
-        if ($subject->getItemType() !== ItemType::INVENTORY_ITEM_TYPE)
+        if ($subject->getItemType() !== ItemType::INVENTORY_ITEM_TYPE) {
             return false;
+        }
 
+        // unit is required.
+        if ($subject->getItemSKU() == null) {
+            return false;
+        }
+     
         return true;
     }
 }

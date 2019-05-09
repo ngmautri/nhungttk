@@ -22,7 +22,7 @@ class ItemSpecification extends AbstractSpecification
      *
      * @param AbstractItem $subject
      */
-    public function __construct(AbstractItem $subject)
+    public function __construct(AbstractItem $subject=null)
     {
         $this->subject = $subject;
     }

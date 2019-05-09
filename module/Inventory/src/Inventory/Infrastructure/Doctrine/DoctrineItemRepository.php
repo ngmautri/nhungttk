@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Domain\Item\Repository\Doctrine;
+namespace Inventory\Infrastructure\Doctrine;
 
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;

@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
-use Inventory\Domain\Item\Repository\Doctrine\DoctrineItemRepository;
+
 
 class InventoryTest extends PHPUnit_Framework_TestCase
 {
@@ -34,10 +34,10 @@ class InventoryTest extends PHPUnit_Framework_TestCase
             $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             echo Uuid::uuid4()->toString();
 
-            $rep = new DoctrineItemRepository($em);
+            $rep = new \Inventory\Infrastructure\Doctrine\DoctrineItemRepository($em);
             
             
-            var_dump($rep->getById(100));
+            var_dump($rep->getById(1111));
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

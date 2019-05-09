@@ -14,9 +14,9 @@ abstract class AbstractItem
      * @var ItemId;
      */
     private $id;
-    
+
     /**
-     * 
+     *
      * @var string
      */
     private $itemName;
@@ -44,7 +44,27 @@ abstract class AbstractItem
      * @var StandardUnit;
      */
     private $standardUnit;
-    
+
+    public function getItemSKU()
+    {
+        return $this->itemSKU;
+    }
+
+    public function setItemSKU($itemSKU)
+    {
+        $this->itemSKU = $itemSKU;
+    }
+
+    public function getStandardUnit()
+    {
+        return $this->standardUnit;
+    }
+
+    public function setStandardUnit($standardUnit)
+    {
+        $this->standardUnit = $standardUnit;
+    }
+
     public function getItemName()
     {
         return $this->itemName;

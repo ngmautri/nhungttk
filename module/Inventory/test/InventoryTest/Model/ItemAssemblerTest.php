@@ -12,9 +12,8 @@ use Inventory\Domain\Item\Specification\ItemSpecification;
 use Inventory\Domain\Item\Specification\InventoryItemSpecification;
 use Inventory\Domain\Item\NoneInventoryItem;
 use Inventory\Domain\Item\ServiceItem;
-use Inventory\Application\DTO\ItemAssembler;
 
-class ItemAssemblerTest extends PHPUnit_Framework_TestCase
+class ItemSpecTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -28,19 +27,21 @@ class ItemAssemblerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $root = realpath(dirname(dirname(dirname(__FILE__))));
-        //echo $root;
+        echo $root;
         require ($root . '/Bootstrap.php');
     }
 
     public function testOther()
     {
-        $data = array();
-        
-        $data["itemSku"]="2-3";
-        $data["itemName"]="Special Item";
-         
-       $itemAssembler = new ItemAssembler();
-       $dto = $itemAssembler->createItemDTOFromArray($data);
-       echo($dto->itemName);
+       $item = new InventoryItem();
+       $item->setItemName("Test");
+       
+       $spec =  new ItemSpecification();
+       $spec1 =  new InventoryItemSpecification();
+       $spec3 = $spec->andSpec($spec1);
+       
+       $result = $spec3->isSatisfiedBy($item);
+       
+       var_dump($result);
     }
 }

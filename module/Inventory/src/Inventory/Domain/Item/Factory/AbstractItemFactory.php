@@ -9,5 +9,5 @@ namespace Inventory\Domain\Item\Factory;
 abstract class AbstractItemFactory
 {
 
-    abstract function createItemFromDB($input);
+    abstract function createItemFromDTO($input);
 }

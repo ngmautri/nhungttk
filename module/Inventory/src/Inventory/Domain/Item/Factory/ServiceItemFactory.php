@@ -1,10 +1,9 @@
 <?php
 namespace Inventory\Domain\Item\Factory;
 
-use Inventory\Domain\Item\InventoryItem;
-use Inventory\Domain\Item\Specification\ItemSpecification;
-use Inventory\Domain\Item\Specification\InventoryItemSpecification;
 use Inventory\Domain\Exception\LogicException;
+use Inventory\Domain\Item\ServiceItem;
+use Inventory\Domain\Item\Specification\ItemSpecification;
 use Ramsey;
 
 /**
@@ -12,7 +11,7 @@ use Ramsey;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class InventoryItemFactory extends AbstractItemFactory
+class ServiceItemFactory extends AbstractItemFactory
 {
 
     /**
@@ -23,9 +22,8 @@ class InventoryItemFactory extends AbstractItemFactory
     public function createItemFromDTO($input)
     {
         $spec1 = new ItemSpecification();
-        $spec2 = new InventoryItemSpecification();
 
-        $item = new InventoryItem();
+        $item = new ServiceItem();
 
         $reflectionClass = new \ReflectionClass($input);
         $itemProperites = $reflectionClass->getProperties();
@@ -44,16 +42,14 @@ class InventoryItemFactory extends AbstractItemFactory
         }
 
         // check invariants
-        $spec = $spec1->andSpec($spec2);
-
-        if (! $spec->isSatisfiedBy($item)) {
-            throw new LogicException("Can not create inventory-item");
+        if (! $spec1->isSatisfiedBy($item)) {
+            throw new LogicException("Can not create Service");
         }
 
         $item->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
         $item->token = $item->uuid;
-        
         $item->createdOn = new \DateTime();
+        
 
         return $item;
     }

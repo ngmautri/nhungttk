@@ -22,23 +22,27 @@ class ItemSpecification extends AbstractSpecification
      *
      * @param AbstractItem $subject
      */
-    public function __construct(AbstractItem $subject=null)
+    public function __construct(AbstractItem $subject = null)
     {
         $this->subject = $subject;
     }
 
-   /**
-    * 
-    * @param AbstractItem $subject
-    * @return boolean
-    */
+    /**
+     *
+     * @param AbstractItem $subject
+     * @return boolean
+     */
     public function isSatisfiedBy($subject)
     {
         if ($subject == null)
             return false;
 
-        if ($subject->getItemName() == null)
+        if ($subject->itemName == null)
             return false;
+
+        if (! preg_match('/^[a-zA-Z0-9._-]*$/', $subject->itemName)) {
+            return false;
+            }
 
         return true;
     }

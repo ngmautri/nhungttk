@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use InventoryTest\Bootstrap;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
-use Inventory\Domain\Item\Repository\Doctrine\DoctrineItemRepository;
 use Inventory\Domain\Item\InventoryItem;
 use Inventory\Domain\Item\Specification\ItemSpecification;
 use Inventory\Domain\Item\Specification\InventoryItemSpecification;
@@ -34,13 +33,13 @@ class ItemAssemblerTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-        $data = array();
+        $item = new InventoryItem();
+        $item->itemName = "Test";
         
-        $data["itemSku"]="2-3";
-        $data["itemName"]="Special Item";
-         
-       $itemAssembler = new ItemAssembler();
-       $dto = $itemAssembler->createItemDTOFromArray($data);
-       echo($dto->itemName);
+        $spec =  new ItemSpecification();
+        $spec1 =  new InventoryItemSpecification($item);
+        $spec3 = $spec->andSpec($spec1);
+        
+        var_dump($spec3->isSatisfiedBy($item));
     }
 }

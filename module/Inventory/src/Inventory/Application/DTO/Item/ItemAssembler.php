@@ -1,8 +1,7 @@
 <?php
-namespace Inventory\Application\DTO;
+namespace Inventory\Application\DTO\Item;
 
 use Inventory\Domain\Item\AbstractItem;
-use Inventory\Domain\Item\InventoryItem;
 
 /**
  *
@@ -58,7 +57,7 @@ class ItemAssembler
 
             return null;
         }
-
+        
         $dto = new ItemDTO();
 
         // mapping referrence
@@ -139,7 +138,7 @@ class ItemAssembler
             $propertyName = $property->getName();
 
             if (! is_object($property->getValue($entity))) {
-                // print '$dto->'. $property->getName() . "= " . $property->getValue($entity) ."\n";
+
                 if (property_exists($dto, $propertyName)) {
                     $dto->$propertyName = $property->getValue($entity);
                 }
@@ -147,76 +146,5 @@ class ItemAssembler
         }
 
         return $dto;
-    }
-
-    /**
-     * 
-     * @return array;
-     */
-    public static function checkItemDTO()
-    {
-        $missingProperties = array();
-        $entity = new \Application\Entity\NmtInventoryItem();
-
-        $dto = new InventoryItem();
-
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-
-              if (! property_exists($dto, $propertyName)) {
-                $missingProperties[] = $propertyName;
-            }
-        }
-
-        return $missingProperties;
-    }
-    
-    /**
-     * generete DTO File.
-     */
-    public static function createItemDTOProperities()
-    {
-        $entity = new \Application\Entity\NmtInventoryItem();
-        
-          
-        $reflectionClass = new \ReflectionClass($entity);
-        $itemProperites = $reflectionClass->getProperties();
-        
-        foreach ($itemProperites as $property) {
-            
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            
-            print "\n". "public $" . $propertyName .";";
-        
-        }
-        
-        
-    }
-    
-    /**
-     * generete DTO File.
-     */
-    public static function createStoreMapping()
-    { $entity = new \Application\Entity\NmtInventoryItem();
-    
-    
-    $reflectionClass = new \ReflectionClass($entity);
-    $itemProperites = $reflectionClass->getProperties();
-    
-    foreach ($itemProperites as $property) {
-        
-        $property->setAccessible(true);
-        $propertyName = $property->getName();
-        
-        print "\n". "\$entity->set" . ucfirst($propertyName) ."(\$item->".$propertyName .");" ;
-        
-    }
-        
     }
 }

@@ -1,15 +1,14 @@
 <?php
-namespace Inventory\Domain\Item;
-
-use Inventory\Application\DTO\ItemAssembler;
+namespace Inventory\Application\DTO\Item;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ * @var \Application\Entity\NmtInventoryItem ;
  */
-abstract class AbstractItem
+class ItemDTO
 {
+
     public $id;
 
     public $warehouseId;
@@ -165,23 +164,4 @@ abstract class AbstractItem
     public $lastTrxRow;
 
     public $lastPurchasing;
-
-    /**
-     *
-     * @return ItemDTO;
-     */
-    public function createItemDTO()
-    {
-        $itemDTO = ItemAssembler::createItemDTO($this);
-        return $itemDTO;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getItemType()
-    {
-        return ItemType::UNKNOWN_ITEM_TYPE;
-    }
 }

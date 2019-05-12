@@ -1,5 +1,12 @@
 <?php /**@var \Application\Entity\NmtInventoryItem $entity ;*/?>
-<?php /**@var \Inventory\Application\DTO\ItemDTO $itemDTO ;*/?>
+<?php
+/**
+ *
+ * @var \Inventory\Application\DTO\ItemDTO $dto ;
+ * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
+ */
+?>
+
 
 
 
@@ -14,7 +21,7 @@
 		<?php
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger alert-dismissible" role="alert" style="font-size: 9.5pt"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>[ERROR]';
-    
+
     echo '<ul>';
     foreach ($errors as $error) :
         echo '<li>' . $error . '</li> .';
@@ -26,7 +33,7 @@ if (count($errors) > 0) {
 ?>
 
 		<form id="create_item_form" class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/inventory/item/add"
+			action="<?php echo $this->baseUrl ?>/inventory/item/create"
 			method="post" enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
@@ -36,29 +43,29 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="itemSku"
-						value="<?php echo (!$entity == null)? $entity->getItemSku():"xx";?>">
-					<input class="form-control input-sm" type="text"
+						value="<?php echo (!$dto == null)? $dto->itemSku:"xx";?>"> <input
+						class="form-control input-sm" type="text"
 						placeholder="optional sku" name="itemSku1"
-						value="<?php echo (!$entity == null)? $entity->getItemSku1():"";?>">
+						value="<?php echo (!$dto == null)? $dto->itemSku1:"xx";?>">
 
 				</div>
 				<div class="col-sm-4">
 					<input
-						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
+						<?php if(!$dto == null): echo ($dto->isActive=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 					<input
-						<?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?>
+						<?php if(!$dto == null): echo ($dto->isStocked=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isStocked" value="1">&nbsp;Stocked
 					&nbsp;&nbsp; <input
-						<?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?>
+						<?php if(!$dto == null): echo ($dto->isPurchased=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isPurchased" value="1">&nbsp;Purchased
 					&nbsp;&nbsp;<br> <input
-						<?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?>
+						<?php if(!$dto == null): echo ($dto->isSaleItem=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isSaleItem" value="1">&nbsp;For Sale
 					&nbsp;&nbsp; <input
-						<?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?>
+						<?php if(!$dto == null): echo ($dto->isFixedAsset=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset <input
-						<?php if(!$entity == null): echo ($entity->getIsSparepart()=="1")?"checked":""; else: echo ""; endif;?>
+						<?php if(!$dto == null): echo ($dto->isSparepart=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isSparePart" value="1">&nbsp;Spare Part
 
 				</div>
@@ -75,14 +82,14 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="itemName"
-						value="<?php echo (!$entity == null)? $entity->getItemName():"";?>">
+						value="<?php echo (!$dto == null)? $dto->itemName:"";?>">
 				</div>
 
 				<label class="control-label col-sm-2">Item Foreign Name</label>
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="itemNameForeign"
-						value="<?php echo (!$entity == null)? $entity->getItemNameForeign():"";?>">
+						value="<?php echo (!$dto == null)? $dto->itemNameForeign:"";?>">
 				</div>
 			</div>
 			<div class="form-group margin-bottom">
@@ -90,7 +97,7 @@ if (count($errors) > 0) {
 				<div class="col-sm-8">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="itemDescription"
-						value="<?php echo (!$entity == null)? $entity->getItemDescription():"";?>">
+						value="<?php echo (!$dto == null)? $dto->itemDescription:"";?>">
 				</div>
 			</div>
 
@@ -99,7 +106,7 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="keywords"
-						value="<?php echo (!$entity == null)? $entity->getKeywords():"";?>">
+						value="<?php echo (!$dto == null)? $dto->keywords:"";?>">
 				</div>
 			</div>
 
@@ -110,14 +117,14 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="assetLabel"
-						value="<?php echo (!$entity == null)? $entity->getAssetLabel():"";?>">
+						value="<?php echo (!$dto == null)? $dto->assetLabel:"";?>">
 				</div>
 
 				<label class="control-label col-sm-2">Barcode</label>
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="barcode"
-						value="<?php echo (!$entity == null)? $entity->getBarcode():"";?>">
+						value="<?php echo (!$dto == null)? $dto->barcode:"";?>">
 
 				</div>
 
@@ -127,22 +134,23 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Standard Unit");?></label>
 				<div class="col-sm-3">
 
-					<select name="uom_id" id="uom_id" class="form-control input-sm">
-						<option value=""><?php echo $this->translate("Select standard unit");?></option>
+					<select name="standardUom" id="standardUom"
+						class="form-control input-sm">
+						<option value=""><?php echo $this->translate("Select Standard unit");?></option>
    	    	<?php
+
+        $uom_list = $nmtPlugin->uomList();
+
         if ($uom_list !== null) :
             foreach ($uom_list as $uom) :
 
                 /**@var \Application\Entity\NmtApplicationUom $uom ; */
                 $selected = '';
-                if ($entity !== null) :
-                    if ($entity->getStandardUom() !== null) :
-                        if ($entity->getStandardUom()->getId() == $uom->getId()) :
-                            $selected = 'selected';
-                            endif;
-                         endif;
+                if ($dto !== null) :
+                    if ($dto->standardUom == $uom->getId()) :
+                        $selected = 'selected';
                     endif;
-
+                endif;
 
 
                 echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
@@ -155,28 +163,27 @@ if (count($errors) > 0) {
 
 				</div>
 			</div>
-			
+
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2"><?php echo $this->translate("Inventory Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="stock_uom_id" id="stock_uom_id"
+					<select name="stockUom" id="stock_uom_id"
 						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select inventory unit");?></option>
    	    							<?php
+            $uom_list = $nmtPlugin->uomList();
+
             if ($uom_list !== null) :
                 foreach ($uom_list as $uom) :
 
                     /**@var \Application\Entity\NmtApplicationUom $uom ; */
                     $selected = '';
-                    if ($entity !== null) :
-                        if ($entity->getStockUom() !== null) :
-                        if ($entity->getStockUom()->getId() == $uom->getId()) :
-                                $selected = 'selected';
+                    if ($dto !== null) :
+                        if ($dto->stockUom == $uom->getId()) :
+                            $selected = 'selected';
    	    							endif;
    	    							endif;
-   	    							endif;
-
 
 
                     echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
@@ -186,43 +193,41 @@ if (count($errors) > 0) {
 
             ?>
    					</select>
-   					</div>
-   					
-   						<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
+				</div>
+
+				<label class="control-label col-sm-2"><?php echo $this->translate("Conversion Factor");?></label>
 				<div class="col-sm-1">
 					<input class="form-control input-sm" type="text" placeholder=""
-						name="stockUomConvertFactor"
-						id="stock_uom_convert_factor_id"
-						value="<?php echo (!$entity == null)? $entity->getStockUomConvertFactor():"";?>">
+						name="stockUomConvertFactor" id="stock_uom_convert_factor_id"
+						value="<?php echo (!$dto == null)? $dto->stockUomConvertFactor:"";?>">
 				</div>
-				
+
 				<div class="col-sm-3">
 					<span style="color: graytext;" id="stock_uom_convert_text"></span>
 				</div>
 
-				</div>
+			</div>
 
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2"><?php echo $this->translate("Purchase Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="purchase_uom_id" id="purchase_uom_id"
+					<select name="purchaseUom" id="purchase_uom_id"
 						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select purchase unit");?></option>
    	    							<?php
+            $uom_list = $nmtPlugin->uomList();
+
             if ($uom_list !== null) :
                 foreach ($uom_list as $uom) :
 
                     /**@var \Application\Entity\NmtApplicationUom $uom ; */
                     $selected = '';
-                    if ($entity !== null) :
-                        if ($entity->getPurchaseUom() !== null) :
-                            if ($entity->getPurchaseUom()->getId() == $uom->getId()) :
-                                $selected = 'selected';
+                    if ($dto !== null) :
+                        if ($dto->purchaseUom == $uom->getId()) :
+                            $selected = 'selected';
    	    							endif;
    	    							endif;
-   	    							endif;
-
 
 
                     echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
@@ -241,7 +246,7 @@ if (count($errors) > 0) {
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="purchaseUomConvertFactor"
 						id="purchase_uom_convert_factor_id"
-						value="<?php echo (!$entity == null)? $entity->getPurchaseUomConvertFactor():"";?>">
+						value="<?php echo (!$dto == null)? $dto->purchaseUomConvertFactor:"";?>">
 				</div>
 
 				<div class="col-sm-3">
@@ -253,23 +258,23 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Sales Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="sales_uom_id" id="sales_uom_id"
+					<select name="salesUom" id="sales_uom_id"
 						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select Sales Unit");?></option>
    	    							<?php
+
+            $uom_list = $nmtPlugin->uomList();
+
             if ($uom_list !== null) :
                 foreach ($uom_list as $uom) :
 
                     /**@var \Application\Entity\NmtApplicationUom $uom ; */
                     $selected = '';
-                    if ($entity !== null) :
-                        if ($entity->getSalesUom() !== null) :
-                            if ($entity->getSalesUom()->getId() == $uom->getId()) :
-                                $selected = 'selected';
+                    if ($dto !== null) :
+                        if ($dto->salesUom == $uom->getId()) :
+                            $selected = 'selected';
    	    							endif;
    	    							endif;
-   	    							endif;
-
 
 
                     echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($uom->getId()), ucwords($uom->getUomCode()));
@@ -287,7 +292,7 @@ if (count($errors) > 0) {
 				<div class="col-sm-1">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="salesUomConvertFactor" id="sales_uom_convert_factor_id"
-						value="<?php echo (!$entity == null)? $entity->getSalesUomConvertFactor():"";?>">
+						value="<?php echo (!$dto == null)? $dto->salesUomConvertFactor:"";?>">
 
 
 				</div>
@@ -302,40 +307,37 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<select class="form-control input-sm" name="itemType">
 						<option
-							<?php if(!$entity == null): echo ($entity->getItemType()=="ITEM")?"selected":""; endif;?>
+							<?php if(!$dto == null): echo ($dto->itemType=="ITEM")?"selected":""; endif;?>
 							value="ITEM">Item</option>
 						<option
-							<?php if(!$entity == null): echo ($entity->getItemType()=="SERVICE")?"selected":""; endif;?>
+							<?php if(!$dto == null): echo ($dto->itemType=="SERVICE")?"selected":""; endif;?>
 							value="SERVICE">Service</option>
 						<option
-							<?php if(!$entity == null): echo ($entity->getItemType()=="SOFTWARE")?"selected":""; endif;?>
+							<?php if(!$dto == null): echo ($dto->itemType=="SOFTWARE")?"selected":""; endif;?>
 							value="SOFTWARE">Software</option>
 					</select>
 				</div>
 
 				<label class="control-label col-sm-2"><?php echo $this->translate("Item Group");?>:</label>
 				<div class="col-sm-3">
-					<select name="item_group_id" class="form-control input-sm">
+					<select name="itemGroup" class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select Group");?></option>
    	    							<?php
+            $item_group_list = $nmtPlugin->itemGroupList();
+
             if ($item_group_list !== null) :
-                foreach ($item_group_list as $gl) :
+                foreach ($item_group_list as $l) :
 
-                    /**@var \Application\Entity\NmtInventoryItemGroup $gl ; */
+                    /**@var \Application\Entity\NmtInventoryItemGroup $l ; */
+                    $selected = '';
+                    if ($dto !== null) :
+                        if ($dto->itemGroup == $l->getId()) :
+                            $selected = 'selected';
+                     endif;
+                     endif;
 
-                    if ($entity !== null) :
-                        if ($entity->getItemGroup() !== null) :
-                            if ($entity->getItemGroup()->getId() == $gl->getId()) :
-                                echo '<option selected value="' . $gl->getId() . '">' . $gl->getGroupName() . '</option>';
-                            else :
-                                echo '<option value="' . $gl->getId() . '">' . $gl->getGroupName() . '</option>';
-                            endif;
-                        else :
-                            echo '<option value="' . $gl->getId() . '">' . $gl->getGroupName() . '</option>';
-                        endif;
-                    else :
-                        echo '<option value="' . $gl->getId() . '">' . $gl->getGroupName() . '</option>';
-                    endif;
+
+                    echo sprintf('<option %s value="%s">%s </option>', $selected, ucwords($l->getId()), ucwords($l->getGroupName()));
                 endforeach
                 ;
    	    							endif;
@@ -351,10 +353,10 @@ if (count($errors) > 0) {
 					<select class="form-control input-sm" name="monitoredBy">
 						<option value="">NONE</option>
 						<option
-							<?php if(!$entity == null): echo ($entity->getMonitoredBy()=="SN")?"selected":""; endif;?>
+							<?php if(!$dto == null): echo ($dto->monitoredBy=="SN")?"selected":""; endif;?>
 							value="SN">Serial Number</option>
 						<option
-							<?php if(!$entity == null): echo ($entity->getMonitoredBy()=="B")?"selected":""; endif;?>
+							<?php if(!$dto == null): echo ($dto->monitoredBy=="B")?"selected":""; endif;?>
 							value="B">Batch Number</option>
 					</select>
 				</div>
@@ -406,7 +408,7 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="location"
-						value="<?php echo (!$entity == null)? $entity->getLocation():"";?>">
+						value="<?php echo (!$dto == null)? $dto->location:"";?>">
 				</div>
 			</div>
 			<hr style="margin: 5pt 1pt 5pt 1pt">
@@ -416,13 +418,13 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="manufacturer"
-						value="<?php echo (!$entity == null)? $entity->getManufacturer():"";?>">
+						value="<?php echo (!$dto == null)? $dto->manufacturer:"";?>">
 				</div>
 				<label class="control-label col-sm-2">Manufacturer Model</label>
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="manufacturerModel"
-						value="<?php echo (!$entity == null)? $entity->getManufacturerModel():"";?>">
+						value="<?php echo (!$dto == null)? $dto->manufacturerModel:"";?>">
 				</div>
 			</div>
 
@@ -431,7 +433,7 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="manufacturerCode"
-						value="<?php echo (!$entity == null)? $entity->getManufacturerCode():"";?>">
+						value="<?php echo (!$dto == null)? $dto->manufacturerCode:"";?>">
 				</div>
 
 
@@ -439,7 +441,7 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="manufacturerSerial"
-						value="<?php echo (!$entity == null)? $entity->getManufacturerSerial():"";?>">
+						value="<?php echo (!$dto == null)? $dto->manufacturerSerial:"";?>">
 				</div>
 			</div>
 
@@ -448,10 +450,9 @@ if (count($errors) > 0) {
 				<div class="col-sm-3">
 					<input class="form-control input-sm" type="text" placeholder=""
 						name="leadTime"
-						value="<?php echo (!$entity == null)? $entity->getLeadTime():"";?>">
-
-					<input name="localAvailabiliy"
-						<?php if(!$entity == null): echo ($entity->getLocalAvailabiliy()=="1")?"checked":""; else: echo ""; endif;?>
+						value="<?php echo (!$dto == null)? $dto->leadTime:"";?>"> <input
+						name="localAvailabiliy"
+						<?php if(!$dto == null): echo ($dto->isActive=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" value="1">&nbsp;Local Availability
 
 				</div>
@@ -459,7 +460,7 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2">Remarks</label>
 				<div class="col-sm-3">
 					<textarea class="form-control input-sm" type="text" rows="5"
-						placeholder="" name="remarksText" style="font-size: 9pt;"><?php echo (!$entity == null)? $entity->getRemarksText():"";?></textarea>
+						placeholder="" name="remarks" style="font-size: 9pt;"><?php echo (!$dto == null)? $dto->remarks:"";?></textarea>
 				</div>
 			</div>
 			<hr style="margin: 5pt 1pt 5pt 1pt">

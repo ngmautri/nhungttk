@@ -26,6 +26,7 @@ use Zend\Mail\Header\ContentType;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Inventory\Application\Service\Item\ItemCRUDService;
 
 /**
  *
@@ -44,6 +45,12 @@ class ItemController extends AbstractActionController
     protected $smptService;
 
     protected $cacheService;
+
+    /**
+     *
+     * @var ItemCRUDService
+     */
+    protected $itemCRUDService;
 
     /**
      *
@@ -271,31 +278,43 @@ class ItemController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+
         // Is Posing
         // =============================
         if ($request->isPost()) {
             $errors = array();
             $data = $this->params()->fromPost();
+            $dto = \Inventory\Application\DTO\ItemAssembler::createItemDTOFromArray($data);
+            
+            $userId = $u->getId();
+            $errors = $this->itemCRUDService->save($dto, $userId, __METHOD__);
+
+            $viewModel = new ViewModel(array(
+                'errors' => $errors,
+                'redirectUrl' => null,
+                'entity' => null,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin
+            ));
+
+            $viewModel->setTemplate("inventory/item/crud");
+            return $viewModel;
         }
 
         // NO POST
         // Initiate ......................
         // =====================================================
-        $redirectUrl = null;
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        } else {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
-        }
+
         $viewModel = new ViewModel(array(
             'errors' => null,
-            'redirectUrl' => $redirectUrl,
+            'redirectUrl' => null,
             'entity' => null,
-            'itemDTO' => null,
-            'department' => null,
-            'category' => null
+            'dto' => null,
+            'nmtPlugin' => $nmtPlugin
         ));
 
         $viewModel->setTemplate("inventory/item/crud");
@@ -2110,7 +2129,9 @@ class ItemController extends AbstractActionController
     {
         $this->cacheService = $cacheService;
     }
+
     /**
+     *
      * @return mixed
      */
     public function getSmptService()
@@ -2119,6 +2140,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
+     *
      * @param mixed $smptService
      */
     public function setSmptService(SmtpTransport $smptService)
@@ -2126,4 +2148,21 @@ class ItemController extends AbstractActionController
         $this->smptService = $smptService;
     }
 
+    /**
+     *
+     * @return \Inventory\Application\Service\ItemCRUDService
+     */
+    public function getItemCRUDService()
+    {
+        return $this->itemCRUDService;
+    }
+
+    /**
+     *
+     * @param \Inventory\Application\Service\Item\ItemCRUDService $itemCRUDService
+     */
+    public function setItemCRUDService($itemCRUDService)
+    {
+        $this->itemCRUDService = $itemCRUDService;
+    }
 }

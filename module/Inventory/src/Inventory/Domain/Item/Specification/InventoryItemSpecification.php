@@ -43,7 +43,12 @@ class InventoryItemSpecification extends AbstractSpecification
         }
 
         // unit is required.
-        if ($subject->getItemSKU() == null) {
+        if ($subject->itemSku == null) {
+            return false;
+        }
+        
+        // unit is required.
+        if ($subject->standardUom == null) {
             return false;
         }
      

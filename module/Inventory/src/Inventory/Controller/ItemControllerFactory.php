@@ -35,7 +35,10 @@ class ItemControllerFactory implements FactoryInterface{
 	
 		$sv =  $container->get('Inventory\Service\ItemSearchService');
 		$controller->setItemSearchService($sv);
-	
+
+		$sv =  $container->get('Inventory\Application\Service\Item\ItemCRUDService');
+		$controller->setItemCRUDService($sv);
+		
 		$sv =  $container->get('Inventory\Service\Report\ItemReportService');
 		$controller->setItemReportService($sv);
 		

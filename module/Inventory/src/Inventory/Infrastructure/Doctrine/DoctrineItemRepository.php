@@ -5,6 +5,8 @@ use Inventory\Domain\Exception\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Item\AbstractItem;
 use Inventory\Domain\Item\Repository\ItemRepositoryInterface;
+use Inventory\Domain\Item\Factory\InventoryItemFactory;
+use Inventory\Application\DTO\ItemAssembler;
 
 /**
  *
@@ -33,8 +35,8 @@ class DoctrineItemRepository implements ItemRepositoryInterface
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Item\Repository\ItemRepositoryInterface::getById()
      */
     public function getById($id)
@@ -42,7 +44,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         $criteria = array(
             "id" => $id
         );
-        
+
         /**
          *
          * @var \Application\Entity\NmtInventoryItem $entity ;
@@ -51,12 +53,16 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         if ($entity == null) {
             return null;
         }
-     
-        
-       
-        return $entity->getItemName();
-        
-    }
+
+        $dto = ItemAssembler::createItemDTOFromDoctrine($entity);
+
+        if ($dto->isStocked == 1) {
+            $factory = new InventoryItemFactory();
+           return $factory->createItemFromDB($dto);
+       }
+
+       return null;
+   }
 
     public function getByUUID($uuid)
     {}

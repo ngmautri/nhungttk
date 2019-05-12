@@ -2,12 +2,12 @@
 namespace Inventory\Domain\Item\Factory;
 
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-abstract class AbstractItemFactory{
+abstract class AbstractItemFactory
+{
 
-    abstract function createItemFrom();
-    
+    abstract function createItemFromDB($input);
 }

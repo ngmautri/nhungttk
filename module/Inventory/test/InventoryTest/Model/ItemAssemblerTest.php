@@ -12,6 +12,7 @@ use Inventory\Domain\Item\Specification\ItemSpecification;
 use Inventory\Domain\Item\Specification\InventoryItemSpecification;
 use Inventory\Domain\Item\NoneInventoryItem;
 use Inventory\Domain\Item\ServiceItem;
+use Inventory\Application\DTO\ItemAssembler;
 
 class ItemSpecTest extends PHPUnit_Framework_TestCase
 {
@@ -34,14 +35,10 @@ class ItemSpecTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
        $item = new InventoryItem();
-       $item->setItemName("Test");
+       $item->itemName="test item";
+       $item->warehouseId=10;
+       $dto = $item->createItemDTO();
+       var_dump ($dto);
        
-       $spec =  new ItemSpecification();
-       $spec1 =  new InventoryItemSpecification();
-       $spec3 = $spec->andSpec($spec1);
-       
-       $result = $spec3->isSatisfiedBy($item);
-       
-       var_dump($result);
     }
 }

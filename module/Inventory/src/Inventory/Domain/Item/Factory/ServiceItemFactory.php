@@ -13,44 +13,30 @@ use Ramsey;
  */
 class ServiceItemFactory extends AbstractItemFactory
 {
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::createItem()
+     */
+    public function createItem()
+    {
+        $this->item = new ServiceItem();
+    }
 
     /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::createItemFromDB()
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::validate()
      */
-    public function createItemFromDTO($input)
+    public function validate()
     {
-        $spec1 = new ItemSpecification();
-
-        $item = new ServiceItem();
-
-        $reflectionClass = new \ReflectionClass($input);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-
-            if (! is_object($property->getValue($input))) {
-
-                if (property_exists($item, $propertyName)) {
-                    $item->$propertyName = $property->getValue($input);
-                }
-            }
-        }
-
-        // check invariants
-        if (! $spec1->isSatisfiedBy($item)) {
+        $spec = new ItemSpecification();
+           
+        if (! $spec->isSatisfiedBy($this->item)) {
             throw new LogicException("Can not create Service");
         }
-
-        $item->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
-        $item->token = $item->uuid;
-        $item->createdOn = new \DateTime();
-        
-
-        return $item;
     }
+
+
+   
 }

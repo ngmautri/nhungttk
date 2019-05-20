@@ -8,6 +8,8 @@ use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Item\Factory\InventoryItemFactory;
 use Inventory\Domain\Item\Factory\ServiceItemFactory;
 use Inventory\Infrastructure\Doctrine\DoctrineItemRepository;
+use Inventory\Domain\Item\ItemType;
+use Inventory\Domain\Item\NoneInventoryItem;
 
 /**
  *
@@ -41,12 +43,18 @@ class ItemCRUDService extends AbstractService
 
             $dto->createdBy = $userId;
 
-            if ($dto->isStocked == 1) {
-                $factory = new InventoryItemFactory();
-            }
+            switch ($dto->itemType) {
 
-            if ($dto->itemType == "SERVICE") {
-                $factory = new ServiceItemFactory();
+                case ItemType::INVENTORY_ITEM_TYPE:
+                    $factory = new InventoryItemFactory();
+                    break;
+
+                case ItemType::SERVICE_ITEM_TYPE:
+                    $factory = new ServiceItemFactory();
+                    break;
+                default:
+                    $factory = new InventoryItemFactory();
+                    break;
             }
 
             $item = $factory->createItemFromDTO($dto);
@@ -54,19 +62,16 @@ class ItemCRUDService extends AbstractService
             $rep = new DoctrineItemRepository($this->getDoctrineEM());
             $entityId = $rep->store($item);
             var_dump($entityId);
-            
+
             $this->getDoctrineEM()->commit();
             
-            
         } catch (\Exception $e) {
-            
+
             echo $e->getMessage();
 
             $this->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
-
-            
         }
     }
 

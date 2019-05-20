@@ -18,43 +18,28 @@ class InventoryItemFactory extends AbstractItemFactory
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::createItemFromDB()
+     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::createItem()
      */
-    public function createItemFromDTO($input)
+    public function createItem()
+    {
+        $this->item = new InventoryItem();
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::validate()
+     */
+    public function validate()
     {
         $spec1 = new ItemSpecification();
         $spec2 = new InventoryItemSpecification();
 
-        $item = new InventoryItem();
-
-        $reflectionClass = new \ReflectionClass($input);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-
-            if (! is_object($property->getValue($input))) {
-
-                if (property_exists($item, $propertyName)) {
-                    $item->$propertyName = $property->getValue($input);
-                }
-            }
-        }
-
         // check invariants
         $spec = $spec1->andSpec($spec2);
 
-        if (! $spec->isSatisfiedBy($item)) {
+        if (! $spec->isSatisfiedBy($this->item)) {
             throw new LogicException("Can not create inventory-item");
         }
-
-        $item->uuid = Ramsey\Uuid\Uuid::uuid4()->toString();
-        $item->token = $item->uuid;
-        
-        $item->createdOn = new \DateTime();
-
-        return $item;
     }
 }

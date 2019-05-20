@@ -18,7 +18,11 @@ class ItemAssembler
 
         foreach ($data as $property => $value) {
             if (property_exists($dto, $property)) {
-                $dto->$property = $value;
+                if ($value === null || $value === '') {
+                    $dto->$property = null;
+                }else{
+                    $dto->$property = $value;
+                }
             }
         }
 
@@ -150,7 +154,7 @@ class ItemAssembler
     }
 
     /**
-     * 
+     *
      * @return array;
      */
     public static function checkItemDTO()
@@ -168,53 +172,49 @@ class ItemAssembler
             $property->setAccessible(true);
             $propertyName = $property->getName();
 
-              if (! property_exists($dto, $propertyName)) {
+            if (! property_exists($dto, $propertyName)) {
                 $missingProperties[] = $propertyName;
             }
         }
 
         return $missingProperties;
     }
-    
+
     /**
      * generete DTO File.
      */
     public static function createItemDTOProperities()
     {
         $entity = new \Application\Entity\NmtInventoryItem();
-        
-          
+
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
-        
+
         foreach ($itemProperites as $property) {
-            
+
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            
-            print "\n". "public $" . $propertyName .";";
-        
+
+            print "\n" . "public $" . $propertyName . ";";
         }
-        
-        
     }
-    
+
     /**
      * generete DTO File.
      */
     public static function createStoreMapping()
-    { $entity = new \Application\Entity\NmtInventoryItem();
-    
-    
-    $reflectionClass = new \ReflectionClass($entity);
-    $itemProperites = $reflectionClass->getProperties();
-    
-    foreach ($itemProperites as $property) {
-        
-        $property->setAccessible(true);
-        $propertyName = $property->getName();
-        
-        print "\n". "\$entity->set" . ucfirst($propertyName) ."(\$item->".$propertyName .");" ;
+    {
+        $entity = new \Application\Entity\NmtInventoryItem();
+
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+
+            print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$item->" . $propertyName . ");" ;
         
     }
         

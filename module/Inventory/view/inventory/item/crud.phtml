@@ -1,4 +1,7 @@
-<?php /**@var \Application\Entity\NmtInventoryItem $entity ;*/?>
+
+<?php /**@var \Application\Entity\NmtInventoryItem $entity ;*/use Inventory\Domain\Item\ItemType;
+
+?>
 <?php
 /**
  *
@@ -38,6 +41,30 @@ if (count($errors) > 0) {
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" />
 
+			<div class="form-group margin-bottom required">
+				<label class="control-label col-sm-2">Item Type</label>
+				<div class="col-sm-3">
+					<select class="form-control input-sm" name="itemType">
+						<option
+							<?php if(!$dto == null): echo ($dto->itemType==ItemType::FIXED_ASSET_ITEM_TYPE)?"selected":""; endif;?>
+							value="<?php echo ItemType::FIXED_ASSET_ITEM_TYPE;?>"><?php echo $this->translate("Fixed Asset");?></option>
+						
+						<option
+						<?php if(!$dto == null): echo ($dto->itemType==ItemType::INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+							value="<?php echo ItemType::INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("Inventory Item");?></option>
+							
+						<option	<?php if(!$dto == null): echo ($dto->itemType==ItemType::NONE_INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+							value="<?php echo ItemType::NONE_INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("None-Inventory Item");?></option>
+					
+						<option
+						<?php if(!$dto == null): echo ($dto->itemType==ItemType::SERVICE_ITEM_TYPE)?"selected":""; endif;?>
+							value="<?php echo ItemType::SERVICE_ITEM_TYPE;?>"><?php echo $this->translate("Service");?></option>
+						
+					</select>
+				</div>
+			</div>
+		<hr style="margin: 5pt 1pt 5pt 1pt;">
+	
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2">Item ID</label>
 				<div class="col-sm-3">
@@ -303,21 +330,7 @@ if (count($errors) > 0) {
 
 			<hr style="margin: 5pt 1pt 5pt 1pt;">
 			<div class="form-group margin-bottom required">
-				<label class="control-label col-sm-2">Item Type</label>
-				<div class="col-sm-3">
-					<select class="form-control input-sm" name="itemType">
-						<option
-							<?php if(!$dto == null): echo ($dto->itemType=="ITEM")?"selected":""; endif;?>
-							value="ITEM">Item</option>
-						<option
-							<?php if(!$dto == null): echo ($dto->itemType=="SERVICE")?"selected":""; endif;?>
-							value="SERVICE">Service</option>
-						<option
-							<?php if(!$dto == null): echo ($dto->itemType=="SOFTWARE")?"selected":""; endif;?>
-							value="SOFTWARE">Software</option>
-					</select>
-				</div>
-
+				
 				<label class="control-label col-sm-2"><?php echo $this->translate("Item Group");?>:</label>
 				<div class="col-sm-3">
 					<select name="itemGroup" class="form-control input-sm">

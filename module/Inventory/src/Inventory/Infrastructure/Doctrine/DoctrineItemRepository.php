@@ -76,31 +76,29 @@ class DoctrineItemRepository implements ItemRepositoryInterface
     {
         $entity = new \Application\Entity\NmtInventoryItem();
 
-        $item_group = null;
         if ($item->itemGroup > 0) {
             $item_group = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->find($item->itemGroup);
             $entity->setItemGroup($item_group);
         }
 
-        $category = null;
         if ($item->itemCategory > 0) {
             $category = $this->doctrineEM->find('Application\Entity\NmtInventoryItemCategory', $item->itemCategory);
             $entity->setItemCategory($category);
         }
 
-    
-        $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $item->standardUom);
-        $entity->setStandardUom($uom);
-        
+        if ($item->standardUom > 0) {
+            $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $item->standardUom);
+            $entity->setStandardUom($uom);
+        }
+
         /**
-         * 
+         *
          * @var \Application\Entity\MlaUsers $user
          */
         $user = $this->doctrineEM->find('Application\Entity\MlaUsers', $item->createdBy);
         $entity->setCreatedBy($user);
-        
+
         $entity->setCompany($user->getCompany());
-        
 
         $entity->setWarehouseId($item->warehouseId); //
         $entity->setItemSku($item->itemSku);
@@ -108,7 +106,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         $entity->setItemNameForeign($item->itemNameForeign);
         $entity->setItemDescription($item->itemDescription);
         $entity->setItemType($item->itemType);
-        //$entity->setItemCategory($item->itemCategory);
+        // $entity->setItemCategory($item->itemCategory);
         $entity->setKeywords($item->keywords);
         $entity->setIsActive($item->isActive);
         $entity->setIsStocked($item->isStocked);
@@ -116,7 +114,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         $entity->setIsPurchased($item->isPurchased);
         $entity->setIsFixedAsset($item->isFixedAsset);
         $entity->setIsSparepart($item->isSparepart);
-        //$entity->setUom($item->uom);
+        // $entity->setUom($item->uom);
         $entity->setBarcode($item->barcode);
         $entity->setBarcode39($item->barcode39);
         $entity->setBarcode128($item->barcode128);

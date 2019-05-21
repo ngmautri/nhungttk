@@ -7,7 +7,5 @@ namespace Inventory\Domain\Event;
  *
  */
 class ItemCreatedEvent{
-    
-   
    
 }

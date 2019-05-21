@@ -15,6 +15,7 @@ use Application\Entity\NmtProcurePrRow;
 use Endroid\QrCode\QrCode;
 use Application\Service\PdfService;
 use Zend\Http\Client as HttpClient;
+use Zend\Http\Request;
 
 /**
  *
@@ -41,28 +42,65 @@ class PrController extends AbstractActionController
         $client->setAdapter('Zend\Http\Client\Adapter\Curl');
 
         $method = $this->params()->fromQuery('method', 'get');
-        $client->setUri('http://localhost:81/procure/pr-rest');
+        
 
         switch ($method) {
             case 'get':
 
                 $response = $this->getResponse();
-
+                $client->setUri('http://localhost:8983/solr/inventory_item/select?rows=1000');
                 $client->setMethod('GET');
                 $client->setParameterGET(array(
-                    'id' => 1
+                    'q' => "name:kim"
                 ));
                 break;
 
             case 'get-list':
                 $client->setMethod('GET');
+                $client->setUri('http://localhost:8983/solr/inventory_item/select');
                 break;
             case 'create':
-                $client->setMethod('POST');
-                $client->setParameterPOST(array(
-                    'name' => 'samsonasik'
+                
+                  $data = array(
+                    "name" => "Laos Finance manager",
+                    "name" => "kim");
+                
+                
+                $request = new Request();
+                $request->setUri('http://localhost:8983/solr/inventory_item/update/json/docs?commit=true');
+                $request->setMethod('POST');
+                $request->setContent(json_encode($data));                
+                
+                $request->getHeaders()->addHeaders(array(
+                    'Content-Type' => 'application/json'
                 ));
-                break;
+                
+                //$client->setHeaders('Content-type','application/json');
+                $client->setEncType(HttpClient::ENC_FORMDATA);
+            
+                // if get/get-list/create
+                $response = $client->send($request);
+                
+                if (! $response->isSuccess()) {
+                    // report failure
+                    $message = $response->getStatusCode() . ': ' . $response->getReasonPhrase();
+                    $message.=$response->getContent();
+                    $message = $message . $client->getMethod();
+                    $message = $message . "...........NO unknown....";
+                    
+                    $response = $this->getResponse();
+                    $response->setContent($message);
+                    return $response;
+                }
+                
+                $body = $response->getBody();
+                
+                $response = $this->getResponse();
+                $response->setContent($body);
+                
+                return $response;
+                
+                
             case 'update':
                 $data = array(
                     'name' => 'ikhsan'
@@ -99,25 +137,29 @@ class PrController extends AbstractActionController
 
                 return $response;
         }
-
-        // if get/get-list/create
-        $response = $client->send();
+        
+        
+        $response = $client->send(  );
+        
         if (! $response->isSuccess()) {
             // report failure
             $message = $response->getStatusCode() . ': ' . $response->getReasonPhrase();
             $message = $message . $client->getMethod();
-            $message = $message . "NO....";
-
+            $message = $message . "...........NO unknown....";
+            
             $response = $this->getResponse();
             $response->setContent($message);
             return $response;
         }
+        
         $body = $response->getBody();
-
+        
         $response = $this->getResponse();
         $response->setContent($body);
-
+        
         return $response;
+
+      
     }
 
     /**

@@ -2,14 +2,11 @@
 namespace Inventory\Application\Service\Item;
 
 use Application\Service\AbstractService;
-use Inventory\Domain\Item\Repository\ItemRepositoryInterface;
-use Inventory\Application\DTO\Item\ItemAssembler;
-use Inventory\Application\DTO\Item\ItemDTO;
+use Inventory\Domain\Item\ItemType;
 use Inventory\Domain\Item\Factory\InventoryItemFactory;
 use Inventory\Domain\Item\Factory\ServiceItemFactory;
 use Inventory\Infrastructure\Doctrine\DoctrineItemRepository;
-use Inventory\Domain\Item\ItemType;
-use Inventory\Domain\Item\NoneInventoryItem;
+use Inventory\Application\DTO\Item\ItemDTO;
 
 /**
  *
@@ -76,8 +73,9 @@ class ItemCRUDService extends AbstractService
     }
 
     /**
-     *
+     * 
      * @param ItemDTO $dto
+     * @return NULL[]|string[]
      */
     private function validate($dto)
     {

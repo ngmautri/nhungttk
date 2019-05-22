@@ -40,7 +40,8 @@ class ItemSpecTest extends PHPUnit_Framework_TestCase
         ItemAssembler::createStoreMapping();
         
         echo($dto->itemName);
-        ItemAssembler::createStoreMapping();
+        $missing = ItemAssembler::checkItemDTO();
+        var_dump($missing);
         
        
     }

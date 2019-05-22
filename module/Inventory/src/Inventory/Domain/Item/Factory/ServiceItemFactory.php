@@ -13,9 +13,10 @@ use Ramsey;
  */
 class ServiceItemFactory extends AbstractItemFactory
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::createItem()
      */
     public function createItem()
@@ -24,18 +25,30 @@ class ServiceItemFactory extends AbstractItemFactory
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::validate()
      */
     public function validate()
     {
         $spec = new ItemSpecification();
-           
+
         if (! $spec->isSatisfiedBy($this->item)) {
             throw new LogicException("Can not create Service");
         }
     }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::specifyItem()
+     */
+    public function specifyItem()
+    {
+        $this->item->itemType = "SERVICE";
+        
+    }
+
 
 
    

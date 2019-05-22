@@ -7,6 +7,7 @@ use Inventory\Domain\Item\AbstractItem;
 use Inventory\Domain\Item\Repository\ItemRepositoryInterface;
 use Inventory\Domain\Item\Factory\InventoryItemFactory;
 use Inventory\Application\DTO\ItemAssembler;
+use Ramsey;
 
 /**
  *
@@ -97,6 +98,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
          */
         $user = $this->doctrineEM->find('Application\Entity\MlaUsers', $item->createdBy);
         $entity->setCreatedBy($user);
+        $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
 
         $entity->setCompany($user->getCompany());
 
@@ -158,7 +160,8 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         $entity->setCapacity($item->capacity);
         $entity->setAvgUnitPrice($item->avgUnitPrice);
         $entity->setStandardPrice($item->standardPrice);
-        $entity->setUuid($item->uuid);
+       
+        $entity->setItemTypeId($item->itemTypeId);
         
         // $entity->setItemGroup($item->itemGroup);
         //$entity->setStockUom($item->stockUom);

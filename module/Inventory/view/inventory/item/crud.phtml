@@ -44,24 +44,26 @@ if (count($errors) > 0) {
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2">Item Type</label>
 				<div class="col-sm-3">
-					<select class="form-control input-sm" name="itemType">
+					<select class="form-control input-sm" name="itemTypeId">
 						<option
-							<?php if(!$dto == null): echo ($dto->itemType==ItemType::FIXED_ASSET_ITEM_TYPE)?"selected":""; endif;?>
+							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::FIXED_ASSET_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::FIXED_ASSET_ITEM_TYPE;?>"><?php echo $this->translate("Fixed Asset");?></option>
 						
 						<option
-						<?php if(!$dto == null): echo ($dto->itemType==ItemType::INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+						<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("Inventory Item");?></option>
 							
-						<option	<?php if(!$dto == null): echo ($dto->itemType==ItemType::NONE_INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+						<option	<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::NONE_INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::NONE_INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("None-Inventory Item");?></option>
 					
 						<option
-						<?php if(!$dto == null): echo ($dto->itemType==ItemType::SERVICE_ITEM_TYPE)?"selected":""; endif;?>
+						<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::SERVICE_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::SERVICE_ITEM_TYPE;?>"><?php echo $this->translate("Service");?></option>
 						
 					</select>
 				</div>
+				
+				
 			</div>
 		<hr style="margin: 5pt 1pt 5pt 1pt;">
 	

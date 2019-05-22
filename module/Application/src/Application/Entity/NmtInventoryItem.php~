@@ -435,6 +435,13 @@ class NmtInventoryItem
     private $uuid;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="item_type_id", type="integer", nullable=true)
+     */
+    private $itemTypeId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")

@@ -165,6 +165,8 @@ abstract class AbstractItem
     public $lastTrxRow;
 
     public $lastPurchasing;
+    
+    public $itemTypeId;
 
     /**
      *

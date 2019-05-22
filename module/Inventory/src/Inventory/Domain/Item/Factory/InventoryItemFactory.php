@@ -22,7 +22,11 @@ class InventoryItemFactory extends AbstractItemFactory
      */
     public function createItem()
     {
-        $this->item = new InventoryItem();
+        
+         $item = new InventoryItem();
+         $item->itemType = "ITEM";
+         
+         $this->item = $item;
     }
 
     /**
@@ -41,5 +45,16 @@ class InventoryItemFactory extends AbstractItemFactory
         if (! $spec->isSatisfiedBy($this->item)) {
             throw new LogicException("Can not create inventory-item");
         }
+    }
+    
+    /**
+     *
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::specifyItem()
+     */
+    public function specifyItem()
+    {
+        $this->item->itemType = "ITEM";
+        
     }
 }

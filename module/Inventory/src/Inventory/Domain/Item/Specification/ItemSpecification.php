@@ -40,7 +40,7 @@ class ItemSpecification extends AbstractSpecification
         if ($subject->itemName == null)
             return false;
 
-        if (! preg_match('/^[a-zA-Z0-9._-]*$/', $subject->itemName)) {
+        if (preg_match('/[^a-zA-Z0-9 ]/', $subject->itemName)) {
             return false;
             }
 

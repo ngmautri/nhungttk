@@ -47,10 +47,14 @@ abstract class AbstractItemFactory
                 }
             }
         }
+        
+        // abstract methode
+        $this->specifyItem();
 
         // abstract methode
         $this->validate();
 
+                
         return $item;
     }
 
@@ -63,4 +67,10 @@ abstract class AbstractItemFactory
      * validation
      */
     abstract function validate();
+    
+    /**
+     * create item;
+     */
+    abstract function specifyItem();
+    
 }

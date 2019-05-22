@@ -24,9 +24,8 @@ class PoRowController extends AbstractActionController
     protected $doctrineEM;
 
     protected $poService;
-    
+
     protected $poSearchService;
-    
 
     /*
      * Defaul Action
@@ -78,7 +77,7 @@ class PoRowController extends AbstractActionController
                 $errors[] = 'Contract /PO object can\'t be empty. Or token key is not valid!';
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => null,
@@ -107,7 +106,7 @@ class PoRowController extends AbstractActionController
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -144,7 +143,7 @@ class PoRowController extends AbstractActionController
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -211,7 +210,7 @@ class PoRowController extends AbstractActionController
 
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-            
+
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
@@ -336,10 +335,10 @@ class PoRowController extends AbstractActionController
 
                 $errors[] = 'Entity object can\'t be empty. Or token key is not valid!';
                 $this->flashMessenger()->addMessage('Something wrong!');
-                     
+
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -352,19 +351,18 @@ class PoRowController extends AbstractActionController
                     'gross_amount' => null,
                     'n' => $nTry
                 ));
-                
+
                 $viewModel->setTemplate("procure/po-row/add-row");
                 return $viewModel;
-                
             }
 
             // entity found
-            $target=$entity->getPo();
-            
+            $target = $entity->getPo();
+
             if ($target == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
-    
+
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
             $po = $res->getPo($target->getId(), $target->getToken());
@@ -372,7 +370,7 @@ class PoRowController extends AbstractActionController
             if ($po == null) {
                 return $this->redirect()->toRoute('access_denied');
             }
-           
+
             // target ok
 
             $oldEntity = clone ($entity);
@@ -383,8 +381,10 @@ class PoRowController extends AbstractActionController
                 $errors[] = $e->getMessage();
             }
 
-            
-            /** @todo: problem when both attribut is 0 */
+            /**
+             *
+             * @todo: problem when both attribut is 0
+             */
             $changeArray = $nmtPlugin->objectsAreIdentical($oldEntity, $entity);
 
             if (count($changeArray) == 0) {
@@ -406,7 +406,7 @@ class PoRowController extends AbstractActionController
 
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -419,7 +419,7 @@ class PoRowController extends AbstractActionController
                     'gross_amount' => $po['gross_amount'],
                     'n' => $nTry
                 ));
-                
+
                 $viewModel->setTemplate("procure/po-row/add-row");
                 return $viewModel;
             }
@@ -443,7 +443,7 @@ class PoRowController extends AbstractActionController
 
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
@@ -456,7 +456,7 @@ class PoRowController extends AbstractActionController
                     'gross_amount' => $po['gross_amount'],
                     'n' => $nTry
                 ));
-                
+
                 $viewModel->setTemplate("procure/po-row/add-row");
                 return $viewModel;
             }
@@ -516,13 +516,13 @@ class PoRowController extends AbstractActionController
         if ($entity == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $target = $entity->getPo();
-        
+
         if ($target == null) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
         $po = $res->getPo($target->getId(), $target->getToken());
@@ -531,10 +531,9 @@ class PoRowController extends AbstractActionController
             return $this->redirect()->toRoute('access_denied');
         }
 
-     
         $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-            
+
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
@@ -547,7 +546,7 @@ class PoRowController extends AbstractActionController
             'gross_amount' => $po['gross_amount'],
             'n' => 0
         ));
-        
+
         $viewModel->setTemplate("procure/po-row/add-row");
         return $viewModel;
     }
@@ -570,8 +569,7 @@ class PoRowController extends AbstractActionController
             'id' => $target_id,
             'token' => $token
         );
-        
-    
+
         /**
          *
          * @todo : Change Target
@@ -588,16 +586,18 @@ class PoRowController extends AbstractActionController
             /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
             $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePo');
             $list = $res->getPOStatus($target_id, $token);
-            
-            
-            $decimalNo = 0;
-            
-            $currency_decimal = array("USD","THB","EUR");
 
-            if (in_array($target->getCurrency()->getCurrency(),$currency_decimal)){
-                $decimalNo=2;
+            $decimalNo = 0;
+
+            $currency_decimal = array(
+                "USD",
+                "THB",
+                "EUR"
+            );
+
+            if (in_array($target->getCurrency()->getCurrency(), $currency_decimal)) {
+                $decimalNo = 2;
             }
-            
 
             $total_records = 0;
             if (count($list) > 0) {
@@ -609,12 +609,12 @@ class PoRowController extends AbstractActionController
                     /** @var \Application\Entity\NmtProcurePoRow $a ;*/
                     $a = $r[0];
 
-                    //$a_json_row["row_identifer"] = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$a->getRowIdentifer());
-                    
+                    // $a_json_row["row_identifer"] = sprintf('<span style="font-size:8pt; color: graytext">%s</span>',$a->getRowIdentifer());
+
                     $a_json_row["row_identifer"] = $a->getRowIdentifer();
-                    
+
                     $a_json_row["row_id"] = $a->getId();
-                     $a_json_row["row_token"] = $a->getToken();
+                    $a_json_row["row_token"] = $a->getToken();
                     $a_json_row["row_number"] = $a->getRowNumber();
                     $a_json_row["row_unit"] = $a->getUnit();
                     $a_json_row["row_quantity"] = $a->getQuantity();
@@ -661,31 +661,27 @@ class PoRowController extends AbstractActionController
                         }
                     }
 
-                    
                     if ($r['draft_gr_qty'] > 0) {
-                        $a_json_row["draft_gr"] = number_format($r['draft_gr_qty'],2);
+                        $a_json_row["draft_gr"] = number_format($r['draft_gr_qty'], 2);
                     } else {
                         $a_json_row["draft_gr"] = 0;
                     }
-                    
 
                     $url = sprintf("/procure/po-row/gr-of?token=%s&entity_id=%s", $a->getToken(), $a->getId());
                     $onclick1 = sprintf("showJqueryDialog('Goods Receipt ','1350',$(window).height()-50,'%s','j_loaded_data', true);", $url);
                     $received_detail = sprintf('<a title="click for goods receipt!" style="color: #337ab7;" href="javascript:;" onclick="%s" >&nbsp;&nbsp;(i)&nbsp;</a>', $onclick1);
 
                     if ($r['posted_gr_qty'] > 0) {
-                        $a_json_row["confirmed_gr"] = number_format($r['posted_gr_qty'],2) . $received_detail;
+                        $a_json_row["confirmed_gr"] = number_format($r['posted_gr_qty'], 2) . $received_detail;
                     } else {
                         $a_json_row["confirmed_gr"] = 0;
                     }
 
-                    
                     if ($r['open_gr_qty'] > 0) {
-                        $a_json_row["open_gr"] = number_format($r['open_gr_qty'],2);
+                        $a_json_row["open_gr"] = number_format($r['open_gr_qty'], 2);
                     } else {
                         $a_json_row["open_gr"] = 0;
                     }
-                    
 
                     $item_detail = sprintf("/inventory/item/show1?token=%s&checksum=%s&entity_id=%s", $a->getItem()->getToken(), $a->getItem()->getChecksum(), $a->getItem()->getId());
 
@@ -704,23 +700,22 @@ class PoRowController extends AbstractActionController
 
                     // $a_json_row["item_name"] = $a->getItem()->getItemName();
 
-                    $a_json_row["row_name"] = '<span style="font-size:8pt; color: graytext">' . $a->getVendorItemName(). '</span>';
-                    $a_json_row["row_code"] = '<span style="font-size:8pt; color: graytext">' . $a->getVendorItemCode(). '</span>';
-                    
+                    $a_json_row["row_name"] = '<span style="font-size:8pt; color: graytext">' . $a->getVendorItemName() . '</span>';
+                    $a_json_row["row_code"] = '<span style="font-size:8pt; color: graytext">' . $a->getVendorItemCode() . '</span>';
+
                     $a_json_row["item_sku"] = sprintf('<span style="font-size:9pt; color: black">%s</span>', $a->getItem()->getItemSku());
-                   
+
                     $a_json_row["item_token"] = $a->getItem()->getToken();
                     $a_json_row["item_checksum"] = $a->getItem()->getChecksum();
                     $a_json_row["fa_remarks"] = $a->getFaRemarks();
                     $a_json_row["remarks"] = $a->getRemarks();
-                      
-                    if($r['billed_amount']>0){
-                        $a_json_row["billed_amount"] = number_format($r['billed_amount'],$decimalNo);
-                    }else{
+
+                    if ($r['billed_amount'] > 0) {
+                        $a_json_row["billed_amount"] = number_format($r['billed_amount'], $decimalNo);
+                    } else {
                         $a_json_row["billed_amount"] = 0;
                     }
-                    
-            
+
                     $a_json_row["exw_unit_price"] = $a->getExwUnitPrice();
                     $a_json_row["total_exw_price"] = $a->getTotalExwPrice();
 
@@ -746,16 +741,14 @@ class PoRowController extends AbstractActionController
                     }
 
                     $a_json_row["standard_unit"] = $standard_unit;
-                    
+
                     $a_json_row["doc_qty"] = $a->getDocQuantity();
-                    
-                    
+
                     if ($a->getDocUnitPrice() !== null) {
                         $a_json_row["doc_unit_price"] = number_format($a->getDocUnitPrice(), $decimalNo);
                     } else {
                         $a_json_row["doc_unit_price"] = 0;
                     }
-                    
 
                     $a_json[] = $a_json_row;
                 }
@@ -894,7 +887,17 @@ class PoRowController extends AbstractActionController
 
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $l, $a->getRowNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $l, $a->getRemarks());
-                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getRowIdentifer());
+
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, "-");
+                    if ($a->getPrRow() !== null) {
+
+                        if ($a->getPrRow()->getPr() !== null) {
+                            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $l, $a->getPrRow()
+                                ->getPr()
+                                ->getPrNumber());
+                        }
+                    }
+
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $l, $a->getItem()
                         ->getSysNumber());
                     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $l, $a->getVendorItemCode());
@@ -981,7 +984,7 @@ class PoRowController extends AbstractActionController
 
         return $this->redirect()->toRoute('access_denied');
     }
-    
+
     /**
      *
      * @return \Zend\View\Helper\ViewModel
@@ -989,63 +992,63 @@ class PoRowController extends AbstractActionController
     public function rowOfVendorAction()
     {
         $request = $this->getRequest();
-        
+
         // accepted only ajax request
-        
+
         if (! $request->isXmlHttpRequest()) {
             return $this->redirect()->toRoute('access_denied');
         }
-        
+
         $this->layout("layout/user/ajax");
-        
+
         $vendor_id = (int) $this->params()->fromQuery('target_id');
         $vendor_token = $this->params()->fromQuery('token');
-        
+
         $is_active = (int) $this->params()->fromQuery('is_active');
         $sort_by = $this->params()->fromQuery('sort_by');
         $sort = $this->params()->fromQuery('sort');
         $currentState = $this->params()->fromQuery('currentState');
-        
+
         if (is_null($this->params()->fromQuery('perPage'))) {
             $resultsPerPage = 15;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }
         ;
-        
+
         if (is_null($this->params()->fromQuery('page'))) {
             $page = 1;
         } else {
             $page = $this->params()->fromQuery('page');
         }
         ;
-        
+
         $is_active = (int) $this->params()->fromQuery('is_active');
-        
+
         if ($is_active == null) {
             $is_active = 1;
         }
-        
+
         if ($sort_by == null) :
-        $sort_by = "itemName";
+            $sort_by = "itemName";
         endif;
-        
+
         if ($sort == null) :
-        $sort = "ASC";
+            $sort = "ASC";
         endif;
-        
+
         /**@var \Application\Repository\NmtProcurePoRepository $res ;*/
         $res = $this->doctrineEM->getRepository('\Application\Entity\NmtProcurePo');
-        $list = $res->getPoRowOfVendor($vendor_id,$vendor_token,$sort_by, $sort);
+        $list = $res->getPoRowOfVendor($vendor_id, $vendor_token, $sort_by, $sort);
         $total_records = count($list);
         $paginator = null;
-        
+
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
             // $list = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
-            $list = $res->getPoRowOfVendor($vendor_id, $vendor_token,$sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+            $list = $res->getPoRowOfVendor($vendor_id, $vendor_token, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
-        
+
         return new ViewModel(array(
             'list' => $list,
             'total_records' => $total_records,
@@ -1055,9 +1058,8 @@ class PoRowController extends AbstractActionController
             'sort' => $sort,
             'per_pape' => $resultsPerPage,
             'currentState' => $currentState,
-            'vendor_id'=>$vendor_id,
-            'vendor_token'=>$vendor_token,
-            
+            'vendor_id' => $vendor_id,
+            'vendor_token' => $vendor_token
         ));
     }
 
@@ -1118,11 +1120,10 @@ class PoRowController extends AbstractActionController
      */
     public function updateRowAction()
     {
-        
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        
+
         $a_json_final = array();
         $escaper = new Escaper();
 
@@ -1134,7 +1135,7 @@ class PoRowController extends AbstractActionController
         // echo json_encode($sent_list);
 
         $to_update = $sent_list['updateList'];
-        
+
         foreach ($to_update as $a) {
             $criteria = array(
                 'id' => $a['row_id'],
@@ -1145,21 +1146,20 @@ class PoRowController extends AbstractActionController
             $entity = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePoRow')->findOneBy($criteria);
 
             if ($entity != null) {
-             
+
                 $errors = $this->poService->validateRow1($entity, $a);
-                if(count($errors)>0){
+                if (count($errors) > 0) {
                     $response = $this->getResponse();
                     $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-                    
+
                     $a_json_final['status'] = \Application\Model\Constants::AJAX_FAILED;
                     $a_json_final['message'] = $errors;
                     $response->setContent(json_encode($a_json_final));
                     return $response;
                 }
-                
+
                 $this->poService->saveRow($entity->getPo(), $entity, $u);
                 $this->doctrineEM->persist($entity);
-                
             }
         }
         $this->doctrineEM->flush();
@@ -1215,26 +1215,25 @@ class PoRowController extends AbstractActionController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
-    
+
     /**
      *
-     *  @return \Procure\Service\PoService
+     * @return \Procure\Service\PoService
      */
     public function getPoService()
     {
         return $this->poService;
     }
-    
+
     /**
      *
-     *  @param \Procure\Service\PoService $poService
+     * @param \Procure\Service\PoService $poService
      */
     public function setPoService(\Procure\Service\PoService $poService)
     {
         $this->poService = $poService;
     }
-    
-    
+
     /**
      *
      * @return \Procure\Service\PoService
@@ -1243,7 +1242,7 @@ class PoRowController extends AbstractActionController
     {
         return $this->poSearchService;
     }
-    
+
     /**
      *
      * @param \Procure\Service\PoService $poSearchService

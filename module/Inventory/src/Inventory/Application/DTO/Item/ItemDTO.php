@@ -164,4 +164,6 @@ class ItemDTO
     public $lastTrxRow;
 
     public $lastPurchasing;
+    
+    public $itemTypeId;
 }

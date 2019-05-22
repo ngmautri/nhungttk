@@ -436,6 +436,13 @@ class NmtInventoryItem
     private $uuid;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="item_type_id", type="integer", nullable=true)
+     */
+    private $itemTypeId;
+
+    /**
      * @var \Application\Entity\MlaUsers
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\MlaUsers")
@@ -2041,6 +2048,30 @@ class NmtInventoryItem
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    /**
+     * Set itemTypeId
+     *
+     * @param integer $itemTypeId
+     *
+     * @return NmtInventoryItem
+     */
+    public function setItemTypeId($itemTypeId)
+    {
+        $this->itemTypeId = $itemTypeId;
+
+        return $this;
+    }
+
+    /**
+     * Get itemTypeId
+     *
+     * @return integer
+     */
+    public function getItemTypeId()
+    {
+        return $this->itemTypeId;
     }
 
     /**

@@ -34,9 +34,9 @@ class ItemAssemblerTest extends PHPUnit_Framework_TestCase
     public function testOther()
     {
         $item = new InventoryItem();
-        $item->itemName = "12Test service";
+        $item->itemName = "Test %service";
         
-        var_dump(!preg_match('/[^a-zA-Z0-9 ]/', $item->itemName));
+        var_dump(preg_match('/[#$%*@]/', $item->itemName));
             
         $spec =  new ItemSpecification();
         $spec1 =  new InventoryItemSpecification($item);

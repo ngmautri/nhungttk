@@ -288,7 +288,7 @@ class ItemController extends AbstractActionController
         if ($request->isPost()) {
             $errors = array();
             $data = $this->params()->fromPost();
-            $dto = \Inventory\Application\DTO\ItemAssembler::createItemDTOFromArray($data);
+            $dto = \Inventory\Application\DTO\Item\ItemAssembler::createItemDTOFromArray($data);
             
             $userId = $u->getId();
             $errors = $this->itemCRUDService->save($dto, $userId, __METHOD__);

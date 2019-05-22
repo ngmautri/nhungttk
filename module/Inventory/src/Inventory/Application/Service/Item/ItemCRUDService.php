@@ -86,8 +86,8 @@ class ItemCRUDService extends AbstractService
         if ($dto->itemName === '' or $dto->itemName === null) {
             $errors[] = $this->controllerPlugin->translate("Please give Item Name");
         } else {
-            if (preg_match('/[^a-zA-Z0-9 ]/', $dto->itemName)) {
-                $errors[] = $this->controllerPlugin->translate("Item name contains invalid character (e.g. #,%)");
+            if (preg_match('/[#$%*@]/', $dto->itemName) == 1) {
+                $errors[] = $this->controllerPlugin->translate("Item name contains invalid character (e.g. #,%,&,*)");
             }
         }
 

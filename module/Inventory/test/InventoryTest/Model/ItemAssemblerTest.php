@@ -1,12 +1,8 @@
 <?php
 namespace InventoryTest\Model;
 
-use Doctrine\ORM\EntityManager;
-use Inventory\Application\DTO\ItemAssembler;
-use Inventory\Domain\Item\InventoryItem;
+use Inventory\Application\DTO\Item\ItemAssembler;
 use PHPUnit_Framework_TestCase;
-use Inventory\Domain\Item\Specification\ItemSpecification;
-use Inventory\Domain\Item\Specification\InventoryItemSpecification;
 
 class ItemSpecTest extends PHPUnit_Framework_TestCase
 {
@@ -35,7 +31,7 @@ class ItemSpecTest extends PHPUnit_Framework_TestCase
         $data["itemSku"]="2-3";
         $data["itemName"]="Special Item";
         
-        $itemAssembler = new ItemAssembler();
+        $itemAssembler = new \Inventory\Application\DTO\Item\ItemAssembler();
         $dto = $itemAssembler->createItemDTOFromArray($data);
         ItemAssembler::createStoreMapping();
         

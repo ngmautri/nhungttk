@@ -12,5 +12,5 @@ Interface ItemRepositoryInterface
     public function findAll();
     public function getById($id);
     public function getByUUID($uuid);
-    public function store(AbstractItem $item);        
+    public function store(AbstractItem $itemAggregate);        
 }

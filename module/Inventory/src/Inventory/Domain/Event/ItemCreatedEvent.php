@@ -1,11 +1,35 @@
 <?php
 namespace Inventory\Domain\Event;
 
+use Symfony\Component\Workflow\Event\Event;
+use Inventory\Domain\Item\AbstractItem;
+
 /**
- * 
- * @author Nguyen Mau Tri - ngmautri@gmail.com
  *
+ * @author Nguyen Mau Tri - ngmautri@gmail.com
+ *        
  */
-class ItemCreatedEvent{
-   
+class ItemCreatedEvent extends Event{
+
+    const EVENT_NAME = "inventory.item.created";
+
+    protected $item;
+
+    /**
+     *
+     * @param AbstractItem $item
+     */
+    public function __construct(AbstractItem $item)
+    {
+        $this->item = $item;
+    }
+
+    /**
+     *
+     * @return \Inventory\Domain\Item\AbstractItem
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
 }

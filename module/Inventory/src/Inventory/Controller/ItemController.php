@@ -286,23 +286,29 @@ class ItemController extends AbstractActionController
         // Is Posing
         // =============================
         if ($request->isPost()) {
-            $errors = array();
             $data = $this->params()->fromPost();
             $dto = \Inventory\Application\DTO\Item\ItemAssembler::createItemDTOFromArray($data);
-            
+
             $userId = $u->getId();
-            $errors = $this->itemCRUDService->save($dto, $userId, __METHOD__);
+            $notification = $this->itemCRUDService->save($dto, $userId, __METHOD__);
+            if ($notification->hasErrors()) {
+            
+                $viewModel = new ViewModel(array(
+                    'errors' => $notification->errorMessage(),
+                    'redirectUrl' => null,
+                    'entity' => null,
+                    'dto' => $dto,
+                    'nmtPlugin' => $nmtPlugin
+                ));
 
-            $viewModel = new ViewModel(array(
-                'errors' => $errors,
-                'redirectUrl' => null,
-                'entity' => null,
-                'dto' => $dto,
-                'nmtPlugin' => $nmtPlugin
-            ));
+                $viewModel->setTemplate("inventory/item/crud");
+                return $viewModel;
+            }
 
-            $viewModel->setTemplate("inventory/item/crud");
-            return $viewModel;
+            $m = "Item created.";
+            $this->flashMessenger()->addMessage($m);
+            $redirectUrl = "/inventory/item/list";
+            return $this->redirect()->toUrl($redirectUrl);
         }
 
         // NO POST

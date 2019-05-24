@@ -7,6 +7,10 @@ use Inventory\Domain\Item\Factory\InventoryItemFactory;
 use Inventory\Domain\Item\Factory\ServiceItemFactory;
 use Inventory\Infrastructure\Doctrine\DoctrineItemRepository;
 use Inventory\Application\DTO\Item\ItemDTO;
+use Application\Notification;
+use Inventory\Domain\Event\ItemCreatedEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Inventory\Application\Event\ItemCreatedEventHandler;
 
 /**
  *
@@ -26,23 +30,17 @@ class ItemCRUDService extends AbstractService
      */
     public function save($dto, $userId, $isNew = FALSE, $trigger = null)
     {
+        $notification = new Notification();
+
         $this->getDoctrineEM()
             ->getConnection()
             ->beginTransaction(); // suspend auto-commit
 
         try {
 
-            $errors = $this->validate($dto);
-            
-            //var_dump($dto);
-
-            if (count($errors) > 0) {
-                return $errors;
-            }
-
             $dto->createdBy = $userId;
 
-            switch ($dto->itemType) {
+            switch ($dto->itemTypeId) {
 
                 case ItemType::INVENTORY_ITEM_TYPE:
                     $factory = new InventoryItemFactory();
@@ -55,42 +53,34 @@ class ItemCRUDService extends AbstractService
                     $factory = new InventoryItemFactory();
                     break;
             }
+            // var_dump($factory);
 
             $item = $factory->createItemFromDTO($dto);
+            // var_dump($item);
 
-            $rep = new DoctrineItemRepository($this->getDoctrineEM());
-            $entityId = $rep->store($item);
-            var_dump($entityId);
+            // $rep = new DoctrineItemRepository($this->getDoctrineEM());
+            // $rep->store($item);
 
-            $this->getDoctrineEM()->commit();
+            // $this->getDoctrineEM()->commit(); // now commit
+            //$event = new ItemCreatedEvent($item);
+            //var_dump($event);
+           /*  $dispatcher = new EventDispatcher();
+            $dispatcher->addSubscriber(new ItemCreatedEventHandler());
+            $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
+             */
             
+            $this->getEventManager()->trigger(ItemCreatedEvent::EVENT_NAME, $trigger, array(
+                'item' => $item,                
+            ));            
+              
         } catch (\Exception $e) {
 
-            echo $e->getMessage();
-
+            $notification->addError($e->getMessage());
             $this->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
         }
-    }   
 
-    /**
-     * 
-     * @param ItemDTO $dto
-     * @return NULL[]|string[]
-     */
-    private function validate($dto)
-    {
-        $errors = array();
-
-        if ($dto->itemName === '' or $dto->itemName === null) {
-            $errors[] = $this->controllerPlugin->translate("Please give Item Name");
-        } else {
-            if (preg_match('/[#$%*@]/', $dto->itemName) == 1) {
-                $errors[] = $this->controllerPlugin->translate("Item name contains invalid character (e.g. #,%,&,*)");
-            }
-        }
-
-        return $errors;
+        return $notification;
     }
 }

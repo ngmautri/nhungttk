@@ -4,8 +4,9 @@ namespace InventoryTest\Model;
 use Doctrine\ORM\EntityManager;
 use Inventory\Application\DTO\Item\ItemAssembler;
 use PHPUnit_Framework_TestCase;
+use Inventory\Domain\Item\ItemSnapshotAssembler;
 
-class ItemSpecTest extends PHPUnit_Framework_TestCase
+class ItemSnapshotTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -27,18 +28,7 @@ class ItemSpecTest extends PHPUnit_Framework_TestCase
     {
        
         
-        $data = array();
-        
-        $data["itemSku"]="2-3";
-        $data["itemName"]="Special Item";
-        
-        $itemAssembler = new \Inventory\Application\DTO\Item\ItemAssembler();
-        $dto = $itemAssembler->createItemDTOFromArray($data);
-        ItemAssembler::createItemDTOProperities();
-        
-       /*  echo($dto->itemName);
-        $missing = ItemAssembler::checkItemDTO();
-        var_dump($missing); */
+       ItemSnapshotAssembler::createItemFromSnapshotCode();
         
        
     }

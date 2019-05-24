@@ -181,7 +181,7 @@ class ItemAssembler
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
+            print "\n" . "private $" . $propertyName . ";";
         }
     }
 

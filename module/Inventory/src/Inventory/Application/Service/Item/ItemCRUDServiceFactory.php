@@ -4,7 +4,6 @@ namespace Inventory\Application\Service\Item;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -30,12 +29,11 @@ class ItemCRUDServiceFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
 
-        $grListener = $container->get('Application\Listener\LoggingListener');
+        $l = $container->get('Inventory\Application\Event\Listener\ItemCreatedEventListener');
 
         $eventManager = $container->get('EventManager');
-        $eventManager->attachAggregate($grListener);
-
-        $service->setEventManager($eventManager);
+         $eventManager->attachAggregate($l);
+         $service->setEventManager($eventManager);
 
         return $service;
     }

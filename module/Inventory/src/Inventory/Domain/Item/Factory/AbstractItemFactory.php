@@ -3,6 +3,9 @@ namespace Inventory\Domain\Item\Factory;
 
 use Inventory\Domain\Item\AbstractItem;
 use Inventory\Application\DTO\Item\ItemDTO;
+use Application\Notification;
+use Inventory\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Item\ItemSnapshot;
 
 /**
  *
@@ -27,7 +30,14 @@ abstract class AbstractItemFactory
 
         // abstract method
         $this->createItem();
+        
+        /**
+         *
+         * @var AbstractItem $item
+         */
         $item = $this->item;
+        
+        $itemSnapshot = new ItemSnapshot();
 
         $reflectionClass = new \ReflectionClass($input);
         $itemProperites = $reflectionClass->getProperties();
@@ -39,22 +49,30 @@ abstract class AbstractItemFactory
 
             if (! is_object($property->getValue($input))) {
 
-                if (property_exists($item, $propertyName)) {
+                if (property_exists($itemSnapshot, $propertyName)) {
 
                     if ($property->getValue($input) !== null) {
-                        $item->$propertyName = $property->getValue($input);
+                        
+                        $itemSnapshot->$propertyName = $property->getValue($input);
                     }
                 }
             }
         }
         
-        // abstract methode
-        $this->specifyItem();
+        // make from snapshot
+        $item->makeItemFrom($itemSnapshot);
 
-        // abstract methode
-        $this->validate();
+        /**
+         * abstract methode, should return Notification object
+         *
+         * @var Notification $notification
+         */
+        $notification = $this->validate();
 
-                
+        if ($notification->hasErrors()) {
+            throw new InvalidArgumentException($notification->errorMessage());
+        }
+
         return $item;
     }
 
@@ -67,10 +85,19 @@ abstract class AbstractItemFactory
      * validation
      */
     abstract function validate();
-    
+
     /**
      * create item;
      */
     abstract function specifyItem();
+    
+    /**
+     *
+     * @param string $s
+     * @return boolean
+     */
+    protected function isNullOrBlank($s) {
+        return ($s == null || $s == "");
+    }
     
 }

@@ -182,6 +182,7 @@ return array(
             'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
             
             'Inventory\Application\Service\Item\ItemCRUDService' => 'Inventory\Application\Service\Item\ItemCRUDServiceFactory',
+            'Inventory\Application\Event\Listener\ItemCreatedEventListener' => 'Inventory\Application\Event\Listener\ItemCreatedEventListenerFactory',
             
             
         )

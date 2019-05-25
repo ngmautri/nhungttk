@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Service;
+namespace Inventory\Application\Service\Search\ZendSearch;
 
 use Application\Entity\NmtInventoryItem;
 use Application\Service\AbstractService;
@@ -13,15 +13,16 @@ use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Search\Query\Wildcard;
 use Exception;
+use Inventory\Service\Search\ItemSearchInterface;
 
 /**
- *
+ * 
  * @author Nguyen Mau Tri - ngmautri@gmail.com
- *        
+ *
  */
-class ItemSearchService extends AbstractService
+class ItemSearchService extends AbstractService implements ItemSearchInterface 
 {
-
+    
     const ITEM_INDEX = "/data/inventory/indexes/item";
 
     /**
@@ -751,6 +752,21 @@ class ItemSearchService extends AbstractService
             return $result;
         }
     }
+    public function search($q)
+    {}
+
+    public function createDoc($doc, $isNew = true)
+    {}
+
+    public function searchFixedAsset($q)
+    {}
+
+    public function searchInventoryItem($q)
+    {}
+
+    public function searchServiceItem($q)
+    {}
+
 
     // Analyzer::setDefault ( new CaseInsensitive () );
     // $analyzer = Analyzer::getDefault ( new CaseInsensitive () );

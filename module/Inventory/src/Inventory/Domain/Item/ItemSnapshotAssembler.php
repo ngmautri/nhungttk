@@ -3,6 +3,7 @@ namespace Inventory\Domain\Item;
 
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Exception\InvalidArgumentException;
+use ReflectionProperty;
 
 /**
  *
@@ -16,7 +17,7 @@ class ItemSnapshotAssembler
      *
      * @return ItemSnapshot;
      */
-    public static  function createItemFromSnapshotCode()
+    public static function createItemFromSnapshotCode()
     {
         $itemSnapshot = new ItemSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
@@ -27,7 +28,7 @@ class ItemSnapshotAssembler
             print "\n" . "\$this->" . $propertyName . " = \$itemSnapshot->" . $propertyName . ";";
         }
     }
-    
+
     /**
      *
      * @param array $data
@@ -55,12 +56,12 @@ class ItemSnapshotAssembler
      */
     public static function createItemSnapshotFromDTO($dto)
     {
-        if ($dto instanceof ItemDTO)
+        if (!$dto instanceof ItemDTO)
             return null;
 
         $snapShot = new ItemSnapshot();
 
-        $reflectionClass = new \ReflectionClass($dto);
+        $reflectionClass = new \ReflectionClass(get_class($dto));
         $itemProperites = $reflectionClass->getProperties();
 
         foreach ($itemProperites as $property) {
@@ -72,30 +73,35 @@ class ItemSnapshotAssembler
         }
         return $snapShot;
     }
-    
-    
+
     /**
      *
      * @param AbstractItem $item
-     * @return \Inventory\Domain\Item\ItemSnapshot
+     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
      */
     public static function createItemSnapshotFrom($item)
     {
-        if ($item instanceof AbstractItem)
+        if (! $item instanceof AbstractItem) {
             return null;
-            
-            $snapShot = new ItemSnapshot();
-            
-            $reflectionClass = new \ReflectionClass($item);
-            $itemProperites = $reflectionClass->getProperties();
-            
-            foreach ($itemProperites as $property) {
-                $property->setAccessible(true);
-                $propertyName = $property->getName();
-                if (property_exists($snapShot, $propertyName)) {
-                    $item->$propertyName = $property->getValue($item);
-                }
+        }
+
+ 
+        $snapShot = new ItemSnapshot();
+
+        // should you reflection object
+        $reflectionClass = new \ReflectionObject($item);
+        $itemProperites = $reflectionClass->getProperties();
+        
+        foreach ($itemProperites as $property) {
+
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (property_exists($snapShot, $propertyName)) {
+
+                $snapShot->$propertyName = $property->getValue($item);
             }
-            return $snapShot;
+        }
+          
+        return $snapShot;
     }
 }

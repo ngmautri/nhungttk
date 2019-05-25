@@ -1,16 +1,15 @@
 <?php
 namespace Inventory\Application\Service\Item;
 
+use Application\Notification;
 use Application\Service\AbstractService;
+use Inventory\Domain\Event\ItemCreatedEvent;
 use Inventory\Domain\Item\ItemType;
 use Inventory\Domain\Item\Factory\InventoryItemFactory;
 use Inventory\Domain\Item\Factory\ServiceItemFactory;
 use Inventory\Infrastructure\Doctrine\DoctrineItemRepository;
-use Inventory\Application\DTO\Item\ItemDTO;
-use Application\Notification;
-use Inventory\Domain\Event\ItemCreatedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Inventory\Application\Event\ItemCreatedEventHandler;
+use Inventory\Application\Event\Handler\ItemCreatedEventHandler;
 
 /**
  *
@@ -56,23 +55,24 @@ class ItemCRUDService extends AbstractService
             // var_dump($factory);
 
             $item = $factory->createItemFromDTO($dto);
-            // var_dump($item);
+            //var_dump($item);
 
-            // $rep = new DoctrineItemRepository($this->getDoctrineEM());
-            // $rep->store($item);
+            $rep = new DoctrineItemRepository($this->getDoctrineEM());
+            $itemId = $rep->store($item);
 
-            // $this->getDoctrineEM()->commit(); // now commit
-            //$event = new ItemCreatedEvent($item);
-            //var_dump($event);
-           /*  $dispatcher = new EventDispatcher();
-            $dispatcher->addSubscriber(new ItemCreatedEventHandler());
-            $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
-             */
+            $this->getDoctrineEM()->commit(); // now commit
             
+            $event = new ItemCreatedEvent($item);
+
+            $dispatcher = new EventDispatcher();
+            $dispatcher->addSubscriber(new ItemCreatedEventHandler($item));
+            $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
+
             $this->getEventManager()->trigger(ItemCreatedEvent::EVENT_NAME, $trigger, array(
-                'item' => $item,                
-            ));            
-              
+                'itemId' => $itemId
+            ));
+
+            $notification->addSuccess("Item created" . $itemId);
         } catch (\Exception $e) {
 
             $notification->addError($e->getMessage());

@@ -89,15 +89,17 @@ class DoctrineItemRepository implements ItemRepositoryInterface
     public function store(AbstractItem $itemAggregate)
     {
         $entity = new \Application\Entity\NmtInventoryItem();
-
+        
+    
         $item = $itemAggregate->createItemSnapshot();
+        //var_dump($item);
 
         /**
          *
          * @var ItemSnapshot $item ;
          */
         if ($item == null)
-            throw new InvalidArgumentException();
+            throw new InvalidArgumentException("Nothing to store.");
 
         if ($item->itemGroup > 0) {
             $item_group = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->find($item->itemGroup);

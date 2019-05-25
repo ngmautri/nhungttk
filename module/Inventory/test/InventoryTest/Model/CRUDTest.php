@@ -37,19 +37,22 @@ class CRUDTest extends PHPUnit_Framework_TestCase
             $eventManager = Bootstrap::getServiceManager()->get('EventManager');
             
             
-            
+            /**
+             * 
+             * @var \Inventory\Application\Service\Item\ItemCRUDService $sv ;
+             */
             $sv = Bootstrap::getServiceManager()->get('Inventory\Application\Service\Item\ItemCRUDService');
             
             $data = array();
             
             $data["itemSku"]="2-3";
+            $data["isActive"]=1;
             $data["itemName"]="Special Item";
             $data["standardUom"]=1;
             $data["itemTypeId"]=ItemType::INVENTORY_ITEM_TYPE;
             
             $itemAssembler = new \Inventory\Application\DTO\Item\ItemAssembler();
             $dto = $itemAssembler->createItemDTOFromArray($data);
-            //var_dump($dto);
             
             
             /* $service = new ItemCRUDService();
@@ -57,8 +60,8 @@ class CRUDTest extends PHPUnit_Framework_TestCase
             $service->setDoctrineEM($em);
              */
             
-            $notificattion = $sv->save($dto, 39);
-            var_dump($notificattion);
+            var_dump($notificattion = $sv->save($dto, 39));
+            
             
             
         } catch (InvalidArgumentException $e) {

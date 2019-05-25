@@ -7,13 +7,14 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Inventory\Domain\Event\ItemCreatedEvent;
 use Inventory\Domain\Item\AbstractItem;
+use Inventory\Domain\Event\ItemUpdatedEvent;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemCreatedEventListener implements ListenerAggregateInterface
+class ItemUpdatedEventListener implements ListenerAggregateInterface
 {
 
     protected $listeners = array();
@@ -28,9 +29,9 @@ class ItemCreatedEventListener implements ListenerAggregateInterface
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
-        $this->listeners[] = $events->attach(ItemCreatedEvent::EVENT_NAME, array(
+        $this->listeners[] = $events->attach(ItemUpdatedEvent::EVENT_NAME, array(
             $this,
-            'onItemCreated'
+            'onItemUpdated'
         ), 200);
     }
 
@@ -38,19 +39,17 @@ class ItemCreatedEventListener implements ListenerAggregateInterface
      *
      * @param EventInterface $e
      */
-    public function onItemCreated(EventInterface $e)
+    public function onItemUpdated(EventInterface $e)
     {
         $searcher = new \Inventory\Application\Service\Search\ZendSearch\ItemSearchService();
-        $searcher->setDoctrineEM($this->getDoctrineEM());
+
         /**
          *
          * @var AbstractItem $item
          */
-        $itemId = $e->getParam('itemId');
-        
-        var_dump($searcher->updateItemIndex($itemId,true, false));
-         
-        //$searcher->updateItemIndex($item->getId(), TRUE, FALSE);
+        $item = $e->getParam('item');
+
+        $searcher->updateItemIndex($item->getId(), FALSE, FALSE);
     }
 
     public function detach(EventManagerInterface $events)

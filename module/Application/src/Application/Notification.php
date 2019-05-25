@@ -10,7 +10,9 @@ class Notification
 {
 
     private $errors;
-
+    private $warnings;
+    private $success;
+    
     public function __construct()
     {
         $this->errors = array();
@@ -23,6 +25,24 @@ class Notification
     public function addError($err)
     {
         $this->errors[] = $err;
+    }
+    
+    /**
+     * 
+     * @param string $mes
+     */
+    public function addWarning($mes)
+    {
+        $this->warnings[] = $mes;
+    }
+    
+    /**
+     *
+     * @param string $mes
+     */
+    public function addSuccess($mes)
+    {
+        $this->success[] = $mes;
     }
  
     /**
@@ -52,6 +72,10 @@ class Notification
         $this->errors = $errors;
     }
     
+    /**
+     * 
+     * @return string
+     */
     public function errorMessage() {
         if($this->hasErrors()){
             $str ='';

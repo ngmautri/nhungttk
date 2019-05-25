@@ -1,5 +1,5 @@
 <?php
-namespace Inventory\Service\Search;
+namespace Inventory\Domain\Service\Search;
 
 /**
  *
@@ -21,5 +21,7 @@ Interface ItemSearchInterface
 
     public function optimizeIndex();
 
-    public function createDoc($doc);
+    public function createDoc($doc, $isNew = true);
+
+    public function updateItemIndex($itemId, $isNew = true, $optimized = false);
 }

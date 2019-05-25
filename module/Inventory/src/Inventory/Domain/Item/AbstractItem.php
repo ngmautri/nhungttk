@@ -11,164 +11,85 @@ use Inventory\Domain\Exception\InvalidArgumentException;
  */
 abstract class AbstractItem
 {
-
-    private $id;
-
-    private $warehouseId;
-
-    private $itemSku;
-
-    private $itemName;
-
-    private $itemNameForeign;
-
-    private $itemDescription;
-
-    private $itemType;
-
-    private $itemCategory;
-
-    private $keywords;
-
-    private $isActive;
-
-    private $isStocked;
-
-    private $isSaleItem;
-
-    private $isPurchased;
-
-    private $isFixedAsset;
-
-    private $isSparepart;
-
-    private $uom;
-
-    private $barcode;
-
-    private $barcode39;
-
-    private $barcode128;
-
-    private $status;
-
-    private $createdOn;
-
-    private $manufacturer;
-
-    private $manufacturerCode;
-
-    private $manufacturerCatalog;
-
-    private $manufacturerModel;
-
-    private $manufacturerSerial;
-
-    private $origin;
-
-    private $serialNumber;
-
-    private $lastPurchasePrice;
-
-    private $lastPurchaseCurrency;
-
-    private $lastPurchaseDate;
-
-    private $leadTime;
-
-    private $validFromDate;
-
-    private $validToDate;
-
-    private $location;
-
-    private $itemInternalLabel;
-
-    private $assetLabel;
-
-    private $sparepartLabel;
-
-    private $remarks;
-
-    private $localAvailabiliy;
-
-    private $lastChangeOn;
-
-    private $token;
-
-    private $checksum;
-
-    private $currentState;
-
-    private $docNumber;
-
-    private $monitoredBy;
-
-    private $sysNumber;
-
-    private $remarksText;
-
-    private $revisionNo;
-
-    private $itemSku1;
-
-    private $itemSku2;
-
-    private $assetGroup;
-
-    private $assetClass;
-
-    private $stockUomConvertFactor;
-
-    private $purchaseUomConvertFactor;
-
-    private $salesUomConvertFactor;
-
-    private $capacity;
-
-    private $avgUnitPrice;
-
-    private $standardPrice;
-
-    private $uuid;
-
-    private $itemTypeId;
-
-    private $createdBy;
-
-    private $itemGroup;
-
-    private $stockUom;
-
-    private $cogsAccount;
-
-    private $purchaseUom;
-
-    private $salesUom;
-
-    private $inventoryAccount;
-
-    private $expenseAccount;
-
-    private $revenueAccount;
-
-    private $defaultWarehouse;
-
-    private $lastChangeBy;
-
-    private $standardUom;
-
-    private $company;
-
-    private $lastPrRow;
-
-    private $lastPoRow;
-
-    private $lastApInvoiceRow;
-
-    private $lastTrxRow;
-
-    private $lastPurchasing;
+    protected $id;
+    protected $warehouseId;
+    protected $itemSku;
+    protected $itemName;
+    protected $itemNameForeign;
+    protected $itemDescription;
+    protected $itemType;
+    protected $itemCategory;
+    protected $keywords;
+    protected $isActive;
+    protected $isStocked;
+    protected $isSaleItem;
+    protected $isPurchased;
+    protected $isFixedAsset;
+    protected $isSparepart;
+    protected $uom;
+    protected $barcode;
+    protected $barcode39;
+    protected $barcode128;
+    protected $status;
+    protected $createdOn;
+    protected $manufacturer;
+    protected $manufacturerCode;
+    protected $manufacturerCatalog;
+    protected $manufacturerModel;
+    protected $manufacturerSerial;
+    protected $origin;
+    protected $serialNumber;
+    protected $lastPurchasePrice;
+    protected $lastPurchaseCurrency;
+    protected $lastPurchaseDate;
+    protected $leadTime;
+    protected $validFromDate;
+    protected $validToDate;
+    protected $location;
+    protected $itemInternalLabel;
+    protected $assetLabel;
+    protected $sparepartLabel;
+    protected $remarks;
+    protected $localAvailabiliy;
+    protected $lastChangeOn;
+    protected $token;
+    protected $checksum;
+    protected $currentState;
+    protected $docNumber;
+    protected $monitoredBy;
+    protected $sysNumber;
+    protected $remarksText;
+    protected $revisionNo;
+    protected $itemSku1;
+    protected $itemSku2;
+    protected $assetGroup;
+    protected $assetClass;
+    protected $stockUomConvertFactor;
+    protected $purchaseUomConvertFactor;
+    protected $salesUomConvertFactor;
+    protected $capacity;
+    protected $avgUnitPrice;
+    protected $standardPrice;
+    protected $uuid;
+    protected $itemTypeId;
+    protected $createdBy;
+    protected $itemGroup;
+    protected $stockUom;
+    protected $cogsAccount;
+    protected $purchaseUom;
+    protected $salesUom;
+    protected $inventoryAccount;
+    protected $expenseAccount;
+    protected $revenueAccount;
+    protected $defaultWarehouse;
+    protected $lastChangeBy;
+    protected $standardUom;
+    protected $company;
+    protected $lastPrRow;
+    protected $lastPoRow;
+    protected $lastApInvoiceRow;
+    protected $lastTrxRow;
+    protected $lastPurchasing;
 
     /**
      *

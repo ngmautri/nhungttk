@@ -184,6 +184,7 @@ return array(
             'Inventory\Application\Service\Item\ItemCRUDService' => 'Inventory\Application\Service\Item\ItemCRUDServiceFactory',
             'Inventory\Application\Event\Listener\ItemCreatedEventListener' => 'Inventory\Application\Event\Listener\ItemCreatedEventListenerFactory',
             
+            'Inventory\Application\Service\Search\ZendSearch\ItemSearchService' => 'Inventory\Application\Service\Search\ZendSearch\ItemSearchServiceFactory',
             
         )
     ),

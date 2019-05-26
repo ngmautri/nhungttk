@@ -43,7 +43,7 @@ class InventoryItem extends GenericItem
         }
         
         if ($this->getStandardUom() == null) {
-            $err = "Item unit is empty or invalid. It is required for inventory item.";
+            $err = "Measurement unit is empty or invalid. It is required for inventory item.";
             $notification->addError($err);
         }
             

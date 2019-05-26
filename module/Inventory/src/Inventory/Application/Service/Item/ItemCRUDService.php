@@ -15,6 +15,8 @@ use Inventory\Domain\Item\ItemSnapshotAssembler;
 use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Event\ItemUpdatedEvent;
 use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
+use Inventory\Domain\Item\GenericItem;
+use Inventory\Application\Event\Listener\ItemLoggingListener;
 
 /**
  *
@@ -23,7 +25,6 @@ use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
  */
 class ItemCRUDService extends AbstractService
 {
-
     /**
      *
      * @param \Inventory\Application\DTO\Item\ItemDTO $dto
@@ -32,7 +33,33 @@ class ItemCRUDService extends AbstractService
      * @param string $trigger
      * @return
      */
-    public function save($dto, $userId, $trigger = null, $generateSysNumber = True)
+    public function show($itemId, $itemToken)
+    {
+        
+        $rep = new DoctrineItemRepository($this->getDoctrineEM());
+        
+        /**
+         * 
+         * @var GenericItem $item
+         */
+        $item = $rep->getById($itemId);
+        
+        if ($item == null)
+            return null;
+        
+        return $item->createItemDTO();        
+    }
+    
+    
+    /**
+     *
+     * @param \Inventory\Application\DTO\Item\ItemDTO $dto
+     * @param string $userId
+     * @param boolean $isNew
+     * @param string $trigger
+     * @return
+     */
+    public function create($dto, $userId, $trigger = null, $generateSysNumber = True)
     {
         $notification = new Notification();
 
@@ -63,19 +90,23 @@ class ItemCRUDService extends AbstractService
             $rep = new DoctrineItemRepository($this->getDoctrineEM());
             $itemId = $rep->store($item, $generateSysNumber);
 
-            $this->getDoctrineEM()->commit(); // now commit
-
             $event = new ItemCreatedEvent($item);
 
             $dispatcher = new EventDispatcher();
             $dispatcher->addSubscriber(new ItemCreatedEventHandler($item));
             $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
 
-            $this->getEventManager()->trigger(ItemCreatedEvent::EVENT_NAME, $trigger, array(
-                'itemId' => $itemId
+            $m = sprintf("[OK] Item #%s", $itemId);
+            $this->getEventManager()->trigger(ItemLoggingListener::ITEM_CREATED_LOG, __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $userId,
+                'createdOn' => new \DateTime()
             ));
-    
-            $notification->addSuccess("Item created #" . $itemId);
+
+            $notification->addSuccess($m);
+
+            $this->getDoctrineEM()->commit(); // now commit
         } catch (\Exception $e) {
 
             $notification->addError($e->getMessage());
@@ -144,7 +175,7 @@ class ItemCRUDService extends AbstractService
                 $notification->addError("Nothing change on Item #" . $itemId);
                 return $notification;
             }
-            
+
             var_dump($changeArray);
 
             // do change
@@ -179,6 +210,10 @@ class ItemCRUDService extends AbstractService
             $changeOn = new \DateTime();
             
             $this->getEventManager()->trigger(ItemUpdatedEvent::EVENT_NAME, $trigger, array(
+                'itemId' => $itemId,
+            ));
+
+            $this->getEventManager()->trigger(ItemLoggingListener::ITEM_UPDATED_LOG, $trigger, array(
                 'priority' => \Zend\Log\Logger::INFO,
                 'message' => $m,
                 'objectId' => $itemId,
@@ -193,7 +228,6 @@ class ItemCRUDService extends AbstractService
             
             $notification->addSuccess($m);
             $this->getDoctrineEM()->commit(); // now commit
-            
             
         } catch (\Exception $e) {
             

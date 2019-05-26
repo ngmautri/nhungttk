@@ -18,7 +18,9 @@ class ItemAssembler
 
         foreach ($data as $property => $value) {
             if (property_exists($dto, $property)) {
-                $dto->$property = $value;
+                if ($value !== null) {
+                    $dto->$property = $value;
+                }
             }
         }
 
@@ -37,7 +39,9 @@ class ItemAssembler
         $itemProperites = $reflectionClass->getProperties();
 
         foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
             $propertyName = $property->getName();
+
             if (property_exists($dto, $propertyName)) {
                 $dto->$propertyName = $property->getValue($item);
             }

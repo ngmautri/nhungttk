@@ -290,15 +290,17 @@ class ItemController extends AbstractActionController
             $dto = \Inventory\Application\DTO\Item\ItemAssembler::createItemDTOFromArray($data);
 
             $userId = $u->getId();
-            $notification = $this->itemCRUDService->save($dto, $userId, __METHOD__);
+            $notification = $this->itemCRUDService->create($dto, $userId, __METHOD__);
             if ($notification->hasErrors()) {
-            
+
                 $viewModel = new ViewModel(array(
                     'errors' => $notification->errorMessage(),
                     'redirectUrl' => null,
                     'entity' => null,
                     'dto' => $dto,
-                    'nmtPlugin' => $nmtPlugin
+                    'nmtPlugin' => $nmtPlugin,
+                    'form_action' => "/inventory/item/create",
+                    'form_title' => "Create Item"
                 ));
 
                 $viewModel->setTemplate("inventory/item/crud");
@@ -320,13 +322,15 @@ class ItemController extends AbstractActionController
             'redirectUrl' => null,
             'entity' => null,
             'dto' => null,
-            'nmtPlugin' => $nmtPlugin
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => "/inventory/item/create",
+            'form_title' => "Create Item"
         ));
 
         $viewModel->setTemplate("inventory/item/crud");
         return $viewModel;
     }
-    
+
     /**
      *
      * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
@@ -334,59 +338,83 @@ class ItemController extends AbstractActionController
     public function updateAction()
     {
         $request = $this->getRequest();
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-        
+
         // Is Posing
         // =============================
         if ($request->isPost()) {
             $data = $this->params()->fromPost();
+            $redirectUrl = $data['redirectUrl'];
+            $entity_id = (int) $data['entity_id'];
+            $nTry = $data['n'];
+
             $dto = \Inventory\Application\DTO\Item\ItemAssembler::createItemDTOFromArray($data);
-            
+
             $userId = $u->getId();
-            $notification = $this->itemCRUDService->update($dto, $userId, __METHOD__);
+            $notification = $this->itemCRUDService->update($entity_id, $data, $userId, __METHOD__);
             if ($notification->hasErrors()) {
-                
+
                 $viewModel = new ViewModel(array(
                     'errors' => $notification->errorMessage(),
                     'redirectUrl' => null,
                     'entity' => null,
                     'dto' => $dto,
-                    'nmtPlugin' => $nmtPlugin
+                    'nmtPlugin' => $nmtPlugin,
+                    'form_action' => "/inventory/item/update",
+                    'form_title' => "Edit Item",
+                    'action'=>\Application\Model\Constants::FORM_ACTION_EDIT,
                 ));
-                
+
                 $viewModel->setTemplate("inventory/item/crud");
                 return $viewModel;
             }
-            
-            $m = "Item created.";
+
+            $m = "Item update";
             $this->flashMessenger()->addMessage($m);
             $redirectUrl = "/inventory/item/list";
             return $this->redirect()->toUrl($redirectUrl);
         }
-        
+
         // NO POST
         // Initiate ......................
         // =====================================================
-        
+
+        /*
+         * $redirectUrl = null;
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('access_denied');
+         * } else {
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         * }
+         */
+
+        $entity_id = (int) $this->params()->fromQuery('entity_id');
+        $token = $this->params()->fromQuery('token');
+        $dto = $this->itemCRUDService->show($entity_id, $token);
+
         $viewModel = new ViewModel(array(
             'errors' => null,
             'redirectUrl' => null,
             'entity' => null,
-            'dto' => null,
-            'nmtPlugin' => $nmtPlugin
+            'dto' => $dto,
+            'nmtPlugin' => $nmtPlugin,
+            'form_action' => "/inventory/item/update",
+            'form_title' => "Edit Item",
+            'action'=>\Application\Model\Constants::FORM_ACTION_EDIT,
         ));
-        
+
         $viewModel->setTemplate("inventory/item/crud");
         return $viewModel;
     }
-    
 
     /**
      *

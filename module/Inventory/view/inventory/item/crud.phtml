@@ -1,14 +1,10 @@
-
 <?php
-
-/**@var \Application\Entity\NmtInventoryItem $entity ;*/
 use Inventory\Domain\Item\ItemType;
 
-?>
-<?php
 /**
  *
- * @var \Inventory\Application\DTO\ItemDTO $dto ;
+ * @var \Application\Entity\NmtInventoryItem $entity ;
+ * @var \Inventory\Application\DTO\Item\ItemDTO $dto ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
  */
 ?>
@@ -19,7 +15,7 @@ use Inventory\Domain\Item\ItemType;
 
 <div id="tabs" style="font-size: 9pt">
 	<ul>
-		<li><a href="#general">New Item</a></li>
+		<li><a href="#general"><?php echo $form_title;?></a></li>
 	</ul>
 
 	<div id="general">
@@ -33,10 +29,25 @@ if (count($errors) > 0) {
 ?>
 
 		<form id="create_item_form" class="form-horizontal"
-			action="<?php echo $this->baseUrl ?>/inventory/item/create"
-			method="post" enctype="multipart/form-data">
+			action="<?php echo $form_action;?>" method="post"
+			enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
-				value="<?php echo $redirectUrl ?>" />
+				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
+				name="redirectUrl" value="<?php echo $redirectUrl ?>" /> <input
+				type="hidden" id="target_id" name="target_id"
+				value="<?php if (!$target == null): echo $target->getId();endif;?>" />
+			<input type="hidden" id="target_token" name="target_token"
+				value="<?php if (!$target == null): echo $target->getToken();endif;?>" />
+
+			<input type="hidden" id="entity_id" name="entity_id"
+				value="<?php if(!$dto == null): echo $dto->id; endif;?>" /> <input
+				type="hidden" id="token" name="token"
+				value="<?php if (!$entity == null): echo $entity->getToken();endif;?>" />
+
+							
+            			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+            				<input type="hidden" name="n" value="<?php echo $n;?>" />
+            			<?php endif;?>
 
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2">Item Type</label>

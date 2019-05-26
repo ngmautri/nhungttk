@@ -44,11 +44,15 @@
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 							<li><a
-								href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>"><small><i
+								href="<?php echo $this->baseUrl ?>/inventory/item/edit?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><small><i
 										class="glyphicon glyphicon-pencil"></i></small>&nbsp;Edit</a></li>
+										<li><a
+								href="<?php echo $this->baseUrl ?>/inventory/item/update?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><small><i
+										class="glyphicon glyphicon-pencil"></i></small>&nbsp;Update</a></li>
+			
 							<li role="separator" class="divider"></li>
 							<li><a
-								href="<?php echo $this->baseUrl ?>/inventory/item/clone?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>&checksum=<?php echo (!$entity == null)? $entity->getChecksum():"";?>">
+								href="<?php echo $this->baseUrl ?>/inventory/item/clone?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&target_id=<?php echo (!$entity == null)? $entity->getId():"";?>">
 									<small><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;</small>&nbsp;Clone
 							</a></li>
 

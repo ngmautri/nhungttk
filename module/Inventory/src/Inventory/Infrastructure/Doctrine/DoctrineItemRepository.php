@@ -40,8 +40,8 @@ class DoctrineItemRepository implements ItemRepositoryInterface
     }
 
     /**
-     *
-     * {@inheritdoc}
+     * 
+     * {@inheritDoc}
      * @see \Inventory\Domain\Item\Repository\ItemRepositoryInterface::getById()
      */
     public function getById($id)

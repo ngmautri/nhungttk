@@ -12,6 +12,7 @@ use Zend\Log\Logger;
 use Zend\Log\Writer\Stream;
 use Zend\Math\Rand;
 use Ramsey;
+use Application\Entity\NmtInventoryLog;
 
 /**
  *
@@ -20,7 +21,9 @@ use Ramsey;
  */
 class ItemLoggingListener implements ListenerAggregateInterface
 {
-
+    const ITEM_CREATED_LOG = "inventory.item.created.log";
+    const ITEM_UPDATED_LOG = "inventory.item.updated.log";
+    
     protected $listeners = array();
 
     protected $events;
@@ -33,12 +36,12 @@ class ItemLoggingListener implements ListenerAggregateInterface
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
-        $this->listeners[] = $events->attach(ItemCreatedEvent::EVENT_NAME, array(
+        $this->listeners[] = $events->attach(self::ITEM_CREATED_LOG, array(
             $this,
             'onItemCreatedLog'
         ), 200);
 
-        $this->listeners[] = $events->attach(ItemUpdatedEvent::EVENT_NAME, array(
+        $this->listeners[] = $events->attach(self::ITEM_UPDATED_LOG, array(
             $this,
             'onItemUpdatedLog'
         ), 200);
@@ -63,7 +66,34 @@ class ItemLoggingListener implements ListenerAggregateInterface
      * @param EventInterface $e
      */
     public function onItemCreatedLog(EventInterface $e)
-    {}
+    {
+        $log_priority = $e->getParam('priority');
+        $log_message = $e->getParam('message');
+        $createdBy = $e->getParam('createdBy');
+        $createdOn = $e->getParam('createdOn');
+
+        $filename = 'inventory_activity_log_' . date('F') . '_' . date('Y') . '.txt';
+        $log = new Logger();
+        $writer = new Stream('./data/log/' . $filename);
+        $log->addWriter($writer);
+        $log->log($log_priority, $log_message);
+
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'id' => $createdBy
+        ));
+
+        // update DB
+        $entity = new NmtInventoryLog();
+        $entity->setPriority($log_priority);
+        $entity->setMessage($log_message);
+        $entity->setTriggeredby($e->getTarget());
+        $entity->setCreatedBy($u);
+        $entity->setCreatedOn($createdOn);
+        $entity->setToken(Ramsey\Uuid\Uuid::uuid4()->toString());
+        $this->doctrineEM->persist($entity);
+
+        $this->doctrineEM->flush();
+    }
 
     /**
      *

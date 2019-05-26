@@ -114,7 +114,8 @@ class ItemSnapshotAssembler
 
         $excludedProperties = array(
             "id",
-            "uuid"
+            "uuid",
+            "token",
         );
 
         foreach ($itemProperites as $property) {

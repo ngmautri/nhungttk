@@ -42,14 +42,10 @@ class ItemUpdatedEventListener implements ListenerAggregateInterface
     public function onItemUpdated(EventInterface $e)
     {
         $searcher = new \Inventory\Application\Service\Search\ZendSearch\ItemSearchService();
-
-        /**
-         *
-         * @var AbstractItem $item
-         */
-        $item = $e->getParam('item');
-
-        $searcher->updateItemIndex($item->getId(), FALSE, FALSE);
+        $searcher->setDoctrineEM($this->getDoctrineEM());
+        
+        $itemId = $e->getParam('itemId');
+        var_dump($searcher->updateItemIndex($itemId, FALSE, FALSE));
     }
 
     public function detach(EventManagerInterface $events)

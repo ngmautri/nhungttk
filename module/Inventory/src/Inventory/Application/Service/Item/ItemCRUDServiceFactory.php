@@ -29,11 +29,15 @@ class ItemCRUDServiceFactory implements FactoryInterface
         $sv = $container->get('doctrine.entitymanager.orm_default');
         $service->setDoctrineEM($sv);
 
-        $l = $container->get('Inventory\Application\Event\Listener\ItemCreatedEventListener');
-
         $eventManager = $container->get('EventManager');
-         $eventManager->attachAggregate($l);
-         $service->setEventManager($eventManager);
+
+        $l = $container->get('Inventory\Application\Event\Listener\ItemCreatedEventListener');
+        $eventManager->attachAggregate($l);
+
+        $l = $container->get('Inventory\Application\Event\Listener\ItemUpdatedEventListener');
+        $eventManager->attachAggregate($l);
+
+        $service->setEventManager($eventManager);
 
         return $service;
     }

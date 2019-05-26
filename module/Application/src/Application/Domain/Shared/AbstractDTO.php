@@ -6,10 +6,10 @@ namespace Application\Domain\Shared;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractValueObject
+abstract class AbstractDTO
 {
 
-    public function compare(AbstractValueObject $o2)
+    public function compare(AbstractDTO $o2)
     {
         $o1=$this;
         $diffArray = array();

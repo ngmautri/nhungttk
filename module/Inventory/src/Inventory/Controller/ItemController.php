@@ -326,6 +326,67 @@ class ItemController extends AbstractActionController
         $viewModel->setTemplate("inventory/item/crud");
         return $viewModel;
     }
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel|\Zend\Http\Response
+     */
+    public function updateAction()
+    {
+        $request = $this->getRequest();
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
+        ));
+        
+        // Is Posing
+        // =============================
+        if ($request->isPost()) {
+            $data = $this->params()->fromPost();
+            $dto = \Inventory\Application\DTO\Item\ItemAssembler::createItemDTOFromArray($data);
+            
+            $userId = $u->getId();
+            $notification = $this->itemCRUDService->update($dto, $userId, __METHOD__);
+            if ($notification->hasErrors()) {
+                
+                $viewModel = new ViewModel(array(
+                    'errors' => $notification->errorMessage(),
+                    'redirectUrl' => null,
+                    'entity' => null,
+                    'dto' => $dto,
+                    'nmtPlugin' => $nmtPlugin
+                ));
+                
+                $viewModel->setTemplate("inventory/item/crud");
+                return $viewModel;
+            }
+            
+            $m = "Item created.";
+            $this->flashMessenger()->addMessage($m);
+            $redirectUrl = "/inventory/item/list";
+            return $this->redirect()->toUrl($redirectUrl);
+        }
+        
+        // NO POST
+        // Initiate ......................
+        // =====================================================
+        
+        $viewModel = new ViewModel(array(
+            'errors' => null,
+            'redirectUrl' => null,
+            'entity' => null,
+            'dto' => null,
+            'nmtPlugin' => $nmtPlugin
+        ));
+        
+        $viewModel->setTemplate("inventory/item/crud");
+        return $viewModel;
+    }
+    
 
     /**
      *

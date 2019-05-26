@@ -6,10 +6,14 @@ namespace Application\Domain\Shared;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class AbstractValueObject
+abstract class AbstractEntity
 {
+    protected $id;
+    protected $uuid;
+    protected $verison;
+    
 
-    public function compare(AbstractValueObject $o2)
+    public function compare(AbstractEntity $o2)
     {
         $o1=$this;
         $diffArray = array();

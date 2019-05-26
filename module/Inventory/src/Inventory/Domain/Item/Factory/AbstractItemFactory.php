@@ -1,9 +1,6 @@
 <?php
 namespace Inventory\Domain\Item\Factory;
 
-use Inventory\Domain\Item\AbstractItem;
-use Inventory\Application\DTO\Item\ItemDTO;
-use Application\Notification;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Item\ItemSnapshot;
 
@@ -17,26 +14,24 @@ abstract class AbstractItemFactory
 
     /**
      *
-     * @var AbstractItem;
+     * @var GenericItem;
      */
     protected $item;
 
     /**
      *
-     * @param ItemDTO $input
+     * @param \Inventory\Application\DTO\Item\ItemDTO $input
      */
     public function createItemFromDTO($input)
     {
 
-        // abstract method
-        $this->createItem();
-        
         /**
+         * Abstract Method
          *
-         * @var AbstractItem $item
+         * @var GenericItem $item
          */
-        $item = $this->item;
-        
+        $item = $this->createItem();
+
         $itemSnapshot = new ItemSnapshot();
 
         $reflectionClass = new \ReflectionClass($input);
@@ -52,22 +47,22 @@ abstract class AbstractItemFactory
                 if (property_exists($itemSnapshot, $propertyName)) {
 
                     if ($property->getValue($input) !== null) {
-                        
+
                         $itemSnapshot->$propertyName = $property->getValue($input);
                     }
                 }
             }
         }
-        
+
         // make from snapshot
         $item->makeItemFrom($itemSnapshot);
 
         /**
-         * abstract methode, should return Notification object
-         *
-         * @var Notification $notification
+         * Abstract Method
          */
-        $notification = $this->validate();
+        $this->specifyItem();
+
+        $notification = $item->validate();
 
         if ($notification->hasErrors()) {
             throw new InvalidArgumentException($notification->errorMessage());
@@ -77,27 +72,48 @@ abstract class AbstractItemFactory
     }
 
     /**
+     *
+     * @param ItemSnapshot $itemSnapshot
+     * @throws InvalidArgumentException
+     * @return \Inventory\Domain\Item\GenericItem
+     */
+    public function createItemFromSnapshot($itemSnapshot)
+    {
+        if ($itemSnapshot == null)
+            throw new InvalidArgumentException("Item Snapshot is empty");
+
+        /**
+         * Abstract Method
+         *
+         * @var GenericItem $item
+         */
+        $item = $this->createItem();
+
+        // make from snapshot
+        $item->makeItemFrom($itemSnapshot);
+        /**
+         * Abstract Method
+         */
+        $this->specifyItem();
+
+        $notification = $item->validate();
+
+        if ($notification->hasErrors()) {
+            throw new InvalidArgumentException($notification->errorMessage());
+        }
+        
+        return $item;
+    }
+
+    /**
      * create item;
      */
     abstract function createItem();
-
-    /**
-     * validation
-     */
-    abstract function validate();
 
     /**
      * create item;
      */
     abstract function specifyItem();
     
-    /**
-     *
-     * @param string $s
-     * @return boolean
-     */
-    protected function isNullOrBlank($s) {
-        return ($s == null || $s == "");
-    }
-    
+   
 }

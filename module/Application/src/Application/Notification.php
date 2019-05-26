@@ -12,6 +12,7 @@ class Notification
     private $errors;
     private $warnings;
     private $success;
+    private $sourceClass;
     
     public function __construct()
     {
@@ -86,4 +87,15 @@ class Notification
         }
         return null;
     }
+    
+    public function getSourceClass()
+    {
+        return $this->sourceClass;
+    }
+
+    public function setSourceClass($sourceClass)
+    {
+        $this->sourceClass = $sourceClass;
+    }
+
 }

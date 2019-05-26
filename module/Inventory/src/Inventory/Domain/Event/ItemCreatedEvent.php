@@ -3,6 +3,7 @@ namespace Inventory\Domain\Event;
 
 use Symfony\Component\Workflow\Event\Event;
 use Inventory\Domain\Item\AbstractItem;
+use Inventory\Domain\Item\GenericItem;
 
 /**
  *
@@ -17,16 +18,16 @@ class ItemCreatedEvent extends Event{
 
     /**
      *
-     * @param AbstractItem $item
+     * @param GenericItem $item
      */
-    public function __construct(AbstractItem $item)
+    public function __construct(GenericItem $item)
     {
         $this->item = $item;
     }
 
     /**
      *
-     * @return \Inventory\Domain\Item\AbstractItem
+     * @return \Inventory\Domain\Item\GenericItem
      */
     public function getItem()
     {

@@ -78,7 +78,7 @@ class ChangeLogController extends AbstractActionController
         
         if ($total_records > $resultsPerPage) {
             $paginator = new Paginator($total_records, $page, $resultsPerPage);
-            $list = $this->doctrineEM->getRepository('Application\Entity\NmtHrContractLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+             $list = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryChangeLog')->findBy($criteria, $sort_criteria, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
         }
         
         return new ViewModel(array(

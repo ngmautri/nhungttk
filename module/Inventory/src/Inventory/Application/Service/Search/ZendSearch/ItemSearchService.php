@@ -48,7 +48,10 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
             $index = Lucene::open(getcwd() . self::ITEM_INDEX);
             Analyzer::setDefault(new CaseInsensitive());
 
+            $m = "Document added";
             if ($isNew == FALSE) {
+                
+                $m = "Document updated";
                 // update
                 $ck_query = 'item_token_keyword:__' . $itemId;
                 $ck_hits = $index->find($ck_query);
@@ -58,6 +61,8 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
                         $index->delete($hit->id);
                     }
                 }
+                
+                
             }
 
             $rep = new DoctrineItemReportingRepository();
@@ -76,7 +81,7 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
             if ($optimized === true) {
                 $index->optimize();
             }
-            $notification->addSuccess(sprintf("[0k] Search index updated! Total documents:%s.", $index->numDocs()));
+            $notification->addSuccess(sprintf("[0k] %s! Total documents:%s.", $m, $index->numDocs()));
         } catch (Exception $e) {
             $notification->addError($e->getMessage());
         }

@@ -26,38 +26,6 @@ class ServiceItemFactory extends AbstractItemFactory
         $this->item = new ServiceItem();
         return $this->item;
     }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::validate()
-     */
-    public function validate()
-    {
-        $notification = new Notification();
-
-        if ($this->item == null) {
-            throw new InvalidArgumentException("Item is empty");
-        }
-
-        /**
-         *
-         * @var AbstractItem $item
-         */
-        $item = $this->item;
-        if ($this->isNullOrBlank($item->getItemName())) {
-            $err = "Item name is null or empty";
-            $notification->addError($err);
-        } else {
-
-            if (preg_match('/[#$%*@]/', $item->getItemName()) == 1) {
-                $err = "Item name contains invalid character (e.g. #,%,&,*)";
-                $notification->addError($err);
-            }
-        }
-
-        return $notification;
-    }
     
     /**
      * 
@@ -66,11 +34,9 @@ class ServiceItemFactory extends AbstractItemFactory
      */
     public function specifyItem()
     {
-        $this->item->itemType = "SERVICE";
+        $item = $this->item;
+        $item->setItemType("SERVICE");
         
     }
 
-
-
-   
 }

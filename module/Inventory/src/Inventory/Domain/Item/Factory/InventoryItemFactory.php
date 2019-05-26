@@ -9,6 +9,7 @@ use Ramsey;
 use Application\Notification;
 use Inventory\Domain\Item\AbstractItem;
 use Inventory\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Item\GenericItem;
 
 /**
  *
@@ -25,75 +26,21 @@ class InventoryItemFactory extends AbstractItemFactory
      */
     public function createItem()
     {
-        $item = new InventoryItem();
-        $this->item = $item;
-        return $item;
+        $this->item = new InventoryItem();
+        return $this->item;
     }
 
     /**
      *
      * {@inheritdoc}
-     * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::validate()
-     */
-    public function validate()
-    {
-        /*
-         * $spec1 = new ItemSpecification();
-         * $spec2 = new InventoryItemSpecification();
-         *
-         * // check invariants
-         * $spec = $spec1->andSpec($spec2);
-         *
-         * if (! $spec->isSatisfiedBy($this->item)) {
-         * throw new LogicException("Can not create inventory-item");
-         * }
-         */
-        $notification = new Notification();
-
-        if ($this->item == null) {
-            throw new InvalidArgumentException("Item is empty");
-        }
-        
-
-        /**
-         *
-         * @var AbstractItem $item
-         */
-        $item = $this->item;
-         
-        if ($this->isNullOrBlank($item->getItemName())) {
-            $err = "Item name is null or empty";
-            $notification->addError($err);
-        } else {
-
-            if (preg_match('/[#$%*@]/', $item->getItemName()) == 1) {
-                $err = "Item name contains invalid character (e.g. #,%,&,*)";
-                $notification->addError($err);
-            }
-        }
-
-        if ($this->isNullOrBlank($item->getItemSku())) {
-            $err = "Item SKU is null or empty";
-            $notification->addError($err);
-        }
-
-        if ($item->getStandardUom() == null) {
-            $err = "Item unit is null or empty";
-            $notification->addError($err);
-        }
-        
-        return $notification;
-    }
-    
-    
-    /**
-     *
-     * {@inheritDoc}
      * @see \Inventory\Domain\Item\Factory\AbstractItemFactory::specifyItem()
      */
     public function specifyItem()
     {
-        $this->item->itemType = "ITEM";
-        
+        /**
+         * @var GenericItem $item ;
+         */
+        $item =  $this->item;
+        $item->setItemType("ITEM");
     }
 }

@@ -1,6 +1,6 @@
 <?php
 namespace Inventory\Domain\Item\Repository;
-use Inventory\Domain\Item\AbstractItem;
+use Inventory\Domain\Item\GenericItem;
 
 /**
  *
@@ -12,5 +12,5 @@ Interface ItemRepositoryInterface
     public function findAll();
     public function getById($id);
     public function getByUUID($uuid);
-    public function store(AbstractItem $itemAggregate);        
+    public function store(GenericItem $itemAggregate);        
 }

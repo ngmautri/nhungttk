@@ -1,12 +1,14 @@
 <?php
 namespace Inventory\Domain\Item;
 
+use Application\Domain\Shared\AbstractValueObject;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSnapshot
+class ItemSnapshot extends AbstractValueObject
 {
 
     public $id;

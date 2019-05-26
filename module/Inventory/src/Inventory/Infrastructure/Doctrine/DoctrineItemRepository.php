@@ -10,6 +10,7 @@ use Inventory\Domain\Item\Factory\InventoryItemFactory;
 use Ramsey;
 use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\Factory\ServiceItemFactory;
+use Inventory\Domain\Item\GenericItem;
 
 /**
  *
@@ -58,7 +59,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
 
         $itemSnapshot = $this->createItemSnapshot($entity);
 
-        switch ($itemSnapshot->itemType) {
+        switch ($itemSnapshot->itemTypeId) {
 
             case ItemType::INVENTORY_ITEM_TYPE:
                 $factory = new InventoryItemFactory();
@@ -75,7 +76,6 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         $item = $factory->createItem();
         $item->makeItemFrom($itemSnapshot);
         return $item;
-        
     }
 
     public function getByUUID($uuid)
@@ -86,20 +86,50 @@ class DoctrineItemRepository implements ItemRepositoryInterface
      * {@inheritdoc}
      * @see \Inventory\Domain\Item\Repository\ItemRepositoryInterface::store()
      */
-    public function store(AbstractItem $itemAggregate)
+    public function store(GenericItem $itemAggregate)
     {
-        $entity = new \Application\Entity\NmtInventoryItem();
-        
-    
+        if ($itemAggregate == null)
+            throw new InvalidArgumentException("Item is empty");
+
+        // create snapshot
         $item = $itemAggregate->createItemSnapshot();
-        //var_dump($item);
 
         /**
          *
          * @var ItemSnapshot $item ;
          */
         if ($item == null)
-            throw new InvalidArgumentException("Nothing to store.");
+            throw new InvalidArgumentException("ItemSnapshot can be created");
+
+        /**
+         *
+         * @var \Application\Entity\NmtInventoryItem $entity ;
+         */
+
+        var_dump($itemAggregate->getId());
+
+        if ($itemAggregate->getId() > 0) {
+            $entity = $this->doctrineEM->find("\Application\Entity\NmtInventoryItem", $itemAggregate->getId());
+            
+            if ($entity == null)
+                throw new InvalidArgumentException("Item cant not retrived.");
+                
+                
+        } else {
+            $entity = new \Application\Entity\NmtInventoryItem();
+            $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
+
+            if ($item->createdBy > 0) {
+
+                /**
+                 *
+                 * @var \Application\Entity\MlaUsers $u ;
+                 */
+                $u = $this->doctrineEM->find('Application\Entity\MlaUsers', $item->createdBy);
+                $entity->setCreatedBy($u);
+                $entity->setCompany($u->getCompany());
+            }
+        }
 
         if ($item->itemGroup > 0) {
             $item_group = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->find($item->itemGroup);
@@ -116,15 +146,10 @@ class DoctrineItemRepository implements ItemRepositoryInterface
             $entity->setStandardUom($uom);
         }
 
-        /**
-         *
-         * @var \Application\Entity\MlaUsers $user
-         */
-        $user = $this->doctrineEM->find('Application\Entity\MlaUsers', $item->createdBy);
-        $entity->setCreatedBy($user);
-        $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
-
-        $entity->setCompany($user->getCompany());
+        if ($item->lastChangeBy > 0) {
+            $u = $this->doctrineEM->find('Application\Entity\MlaUsers', $item->lastChangeBy);
+            $entity->setLastChangeBy($u);
+        }
 
         $entity->setWarehouseId($item->warehouseId); //
         $entity->setItemSku($item->itemSku);
@@ -184,7 +209,6 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         $entity->setCapacity($item->capacity);
         $entity->setAvgUnitPrice($item->avgUnitPrice);
         $entity->setStandardPrice($item->standardPrice);
-
         $entity->setItemTypeId($item->itemTypeId);
 
         // $entity->setItemGroup($item->itemGroup);
@@ -207,7 +231,6 @@ class DoctrineItemRepository implements ItemRepositoryInterface
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
-
         return $entity->getId();
     }
 

@@ -59,7 +59,7 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            
+
             array(
                 'label' => 'Item Variant',
                 'route' => 'Inventory/default',
@@ -67,7 +67,7 @@ return array(
                 'action' => 'list',
                 'icon' => 'glyphicon glyphicon-list'
             ),
-            
+
             array(
                 'label' => 'Reporting',
                 'route' => 'Inventory/default',
@@ -75,8 +75,7 @@ return array(
                 'action' => 'index',
                 'icon' => 'fa fa-book'
             ),
-            
-    
+
             array(
                 'label' => 'Log',
                 'route' => 'Inventory/default',
@@ -176,17 +175,17 @@ return array(
             'Inventory\Service\WarehouseLocationService' => 'Inventory\Service\WarehouseLocationServiceFactory',
             'Inventory\Service\ItemVariantService' => 'Inventory\Service\ItemVariantServiceFactory',
             'Inventory\Service\ItemGroupService' => 'Inventory\Service\ItemGroupServiceFactory',
-            
+
             'Inventory\Service\InventoryTransactionService' => 'Inventory\Service\InventoryTransactionServiceFactory',
-      
+
             'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
-            
+
             'Inventory\Application\Service\Item\ItemCRUDService' => 'Inventory\Application\Service\Item\ItemCRUDServiceFactory',
             'Inventory\Application\Event\Listener\ItemCreatedEventListener' => 'Inventory\Application\Event\Listener\ItemCreatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemUpdatedEventListener' => 'Inventory\Application\Event\Listener\ItemUpdatedEventListenerFactory',
-            
-            'Inventory\Application\Service\Search\ZendSearch\ItemSearchService' => 'Inventory\Application\Service\Search\ZendSearch\ItemSearchServiceFactory',
-            
+            'Inventory\Application\Event\Listener\ItemLoggingListener' => 'Inventory\Application\Event\Listener\ItemLoggingListenerFactory',
+
+            'Inventory\Application\Service\Search\ZendSearch\ItemSearchService' => 'Inventory\Application\Service\Search\ZendSearch\ItemSearchServiceFactory'
         )
     ),
 
@@ -216,29 +215,27 @@ return array(
             'Inventory\Controller\GR' => 'Inventory\Controller\GRControllerFactory',
             'Inventory\Controller\GI' => 'Inventory\Controller\GIControllerFactory',
             'Inventory\Controller\GIRow' => 'Inventory\Controller\GIRowControllerFactory',
-            
+
             'Inventory\Controller\Transfer' => 'Inventory\Controller\TransferControllerFactory',
             'Inventory\Controller\TransferRow' => 'Inventory\Controller\TransferRowControllerFactory',
-            
-            
+
             'Inventory\Controller\ChangeLog' => 'Inventory\Controller\ChangeLogControllerFactory',
             'Inventory\Controller\ActivityLog' => 'Inventory\Controller\ActivityLogControllerFactory',
             'Inventory\Controller\Dashboard' => 'Inventory\Controller\DashboardControllerFactory',
-           
+
             'Inventory\Controller\OpeningBalance' => 'Inventory\Controller\OpeningBalanceControllerFactory',
             'Inventory\Controller\OpeningBalanceRow' => 'Inventory\Controller\OpeningBalanceRowControllerFactory',
-            
+
             'Inventory\Controller\Stock' => 'Inventory\Controller\StockControllerFactory',
-             
+
             'Inventory\Controller\Setting' => 'Inventory\Controller\SettingControllerFactory',
-            
+
             'Inventory\Controller\ItemGroup' => 'Inventory\Controller\ItemGroupControllerFactory',
             'Inventory\Controller\ItemAccounting' => 'Inventory\Controller\ItemAccountingControllerFactory',
             'Inventory\Controller\ItemVariant' => 'Inventory\Controller\ItemVariantControllerFactory',
-            
+
             'Inventory\Controller\SimilarItem' => 'Inventory\Controller\SimilarItemControllerFactory',
-            'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory',
-            
+            'Inventory\Controller\Report' => 'Inventory\Controller\ReportControllerFactory'
         )
     ),
     'view_manager' => array(
@@ -253,7 +250,7 @@ return array(
             'Inventory/layout-fluid' => __DIR__ . '/../view/layout/layout-fluid.phtml',
             'Inventory/gi-create-layout' => __DIR__ . '/../view/layout/create_gi_layout.phtml',
             'Inventory/layout-fullscreen' => __DIR__ . '/../view/layout/layout-fullscreen.phtml',
-            
+
             'layout/no-layout' => __DIR__ . '/../view/layout/no-layout.phtml',
             'inventory/index/index' => __DIR__ . '/../view/inventory/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',

@@ -12,7 +12,6 @@ abstract class AbstractEntity
     protected $uuid;
     protected $verison;
     
-
     public function compare(AbstractEntity $o2)
     {
         $o1=$this;

@@ -11,6 +11,7 @@ use Ramsey;
 use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\Factory\ServiceItemFactory;
 use Inventory\Domain\Item\GenericItem;
+use Inventory\Application\DTO\Item\ItemAssembler;
 
 /**
  *
@@ -86,7 +87,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
      * {@inheritdoc}
      * @see \Inventory\Domain\Item\Repository\ItemRepositoryInterface::store()
      */
-    public function store(GenericItem $itemAggregate)
+    public function store(GenericItem $itemAggregate, $generateSysNumber = True)
     {
         if ($itemAggregate == null)
             throw new InvalidArgumentException("Item is empty");
@@ -105,19 +106,25 @@ class DoctrineItemRepository implements ItemRepositoryInterface
          *
          * @var \Application\Entity\NmtInventoryItem $entity ;
          */
-
-        var_dump($itemAggregate->getId());
-
         if ($itemAggregate->getId() > 0) {
             $entity = $this->doctrineEM->find("\Application\Entity\NmtInventoryItem", $itemAggregate->getId());
-            
-            if ($entity == null)
+
+            if ($entity == null) {
                 throw new InvalidArgumentException("Item cant not retrived.");
-                
-                
+            }
+
+            $entity->setLastChangeOn($item->lastChangeOn);
+            if ($entity->getToken() == null) {
+                $entity->setToken($entity->getUuid());
+            }
         } else {
             $entity = new \Application\Entity\NmtInventoryItem();
             $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
+            $entity->setToken($entity->getUuid());
+
+            if ($generateSysNumber == True) {
+                $entity->setSysNumber($this->generateSysNumber($entity));
+            }
 
             if ($item->createdBy > 0) {
 
@@ -126,9 +133,13 @@ class DoctrineItemRepository implements ItemRepositoryInterface
                  * @var \Application\Entity\MlaUsers $u ;
                  */
                 $u = $this->doctrineEM->find('Application\Entity\MlaUsers', $item->createdBy);
-                $entity->setCreatedBy($u);
-                $entity->setCompany($u->getCompany());
+                if ($u !== null) {
+                    $entity->setCreatedBy($u);
+                    $entity->setCompany($u->getCompany());
+                }
             }
+
+            $entity->setCreatedOn(new \DateTime());
         }
 
         if ($item->itemGroup > 0) {
@@ -170,7 +181,6 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         $entity->setBarcode39($item->barcode39);
         $entity->setBarcode128($item->barcode128);
         $entity->setStatus($item->status);
-        $entity->setCreatedOn($item->createdOn);
         $entity->setManufacturer($item->manufacturer);
         $entity->setManufacturerCode($item->manufacturerCode);
         $entity->setManufacturerCatalog($item->manufacturerCatalog);
@@ -190,13 +200,15 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         $entity->setSparepartLabel($item->sparepartLabel);
         $entity->setRemarks($item->remarks);
         $entity->setLocalAvailabiliy($item->localAvailabiliy);
-        // $entity->setLastChangeOn($item->lastChangeOn);
-        $entity->setToken($item->token);
-        $entity->setChecksum($item->checksum);
+
+        // $entity->setToken($item->token);
+        // $entity->setChecksum($item->checksum);
         $entity->setCurrentState($item->currentState);
         $entity->setDocNumber($item->docNumber);
         $entity->setMonitoredBy($item->monitoredBy);
-        $entity->setSysNumber($item->sysNumber);
+
+        // $entity->setSysNumber($item->sysNumber);
+
         $entity->setRemarksText($item->remarksText);
         $entity->setRevisionNo($item->revisionNo);
         $entity->setItemSku1($item->itemSku1);
@@ -228,6 +240,26 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         // $entity->setLastApInvoiceRow($item->lastApInvoiceRow);
         // $entity->setLastTrxRow($item->lastTrxRow);
         // $entity->setLastPurchasing($item->lastPurchasing);
+
+        // Need check one more time.
+        $dto = ItemAssembler::createItemDTOFromDoctrine($entity);
+
+        switch ($dto->itemTypeId) {
+
+            case ItemType::INVENTORY_ITEM_TYPE:
+                $factory = new InventoryItemFactory();
+                break;
+
+            case ItemType::SERVICE_ITEM_TYPE:
+                $factory = new ServiceItemFactory();
+                break;
+            default:
+                $factory = new InventoryItemFactory();
+                break;
+        }
+
+        // will throw exception if false.
+        $item = $factory->createItemFromDTO($dto);
 
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
@@ -332,4 +364,49 @@ class DoctrineItemRepository implements ItemRepositoryInterface
 
         return $itemSnapshot;
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\Repository\ItemRepositoryInterface::generateSysNumber()
+     */
+    public function generateSysNumber($obj)
+    {
+        $criteria = array(
+            'isActive' => 1,
+            'subjectClass' => get_class($obj)
+        );
+
+        /** @var \Application\Entity\NmtApplicationDocNumber $docNumber ; */
+        $docNumber = $this->doctrineEM->getRepository('Application\Entity\NmtApplicationDocNumber')->findOneBy($criteria);
+
+        if ($docNumber instanceof \Application\Entity\NmtApplicationDocNumber) {
+
+            $maxLen = strlen($docNumber->getToNumber());
+            $currentLen = 1;
+            $currentDoc = $docNumber->getPrefix();
+            $current_no = $docNumber->getCurrentNumber();
+
+            if ($current_no == null) {
+                $current_no = $docNumber->getFromNumber();
+            } else {
+                $current_no ++;
+                $currentLen = strlen($current_no);
+            }
+            
+            $docNumber->setCurrentNumber($current_no);
+            
+            $tmp = "";
+            for ($i = 0; $i < $maxLen - $currentLen; $i ++) {
+                
+                $tmp = $tmp . "0";
+            }
+            
+            $currentDoc = $currentDoc . $tmp . $current_no;
+            return $currentDoc;
+        }
+        
+        return null;
+    }
+
 }

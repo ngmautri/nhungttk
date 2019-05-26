@@ -45,12 +45,13 @@ class CRUDTest extends PHPUnit_Framework_TestCase
             
             $data = array();
             
-            $data["itemSku"]="2-5";
+            $data["itemSku"]="2-7-5";
             $data["isActive"]=1;
-            $data["itemName"]="Special Item 2-5 new";
+            $data["itemName"]="Special Item 2-5 updated5";
             $data["itemDescription"]="Special Item itemDescription";
+            $data["remarks"]="Special Item itemDescription";
             
-            $data["standardUom"]=1;
+            $data["standardUom"]=200;
             $data["itemTypeId"]=ItemType::INVENTORY_ITEM_TYPE;
             
             $itemAssembler = new \Inventory\Application\DTO\Item\ItemAssembler();
@@ -62,9 +63,9 @@ class CRUDTest extends PHPUnit_Framework_TestCase
             $service->setDoctrineEM($em);
              */
             
-            //var_dump($notificattion = $sv->update(4278, $data, 39));
+            //var_dump($notificattion = $sv->update(4292, $data,390 , __METHOD__));
             
-            var_dump($notificattion = $sv->save($dto,39));
+            var_dump($notificattion = $sv->save($dto,39,__METHOD__));
             
             
         } catch (InvalidArgumentException $e) {

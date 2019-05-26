@@ -37,6 +37,9 @@ class ItemCRUDServiceFactory implements FactoryInterface
         $l = $container->get('Inventory\Application\Event\Listener\ItemUpdatedEventListener');
         $eventManager->attachAggregate($l);
 
+        $l = $container->get('Inventory\Application\Event\Listener\ItemLoggingListener');
+        $eventManager->attachAggregate($l);
+        
         $service->setEventManager($eventManager);
 
         return $service;

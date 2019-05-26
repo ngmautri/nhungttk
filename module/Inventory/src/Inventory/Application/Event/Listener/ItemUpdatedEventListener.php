@@ -45,7 +45,7 @@ class ItemUpdatedEventListener implements ListenerAggregateInterface
         $searcher->setDoctrineEM($this->getDoctrineEM());
         
         $itemId = $e->getParam('itemId');
-        var_dump($searcher->updateItemIndex($itemId, FALSE, FALSE));
+        $searcher->updateItemIndex($itemId, FALSE, FALSE);
     }
 
     public function detach(EventManagerInterface $events)

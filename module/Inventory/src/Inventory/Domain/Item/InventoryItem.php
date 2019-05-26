@@ -21,6 +21,11 @@ class InventoryItem extends GenericItem
         $notification = new Notification();
         $notification->setSourceClass("nmt");
         
+        if ($this->isNullOrBlank($this->getCreatedBy())) {
+            $err = "User is not found.";
+            $notification->addError($err);
+        }
+        
         if ($this->isNullOrBlank($this->getItemName())) {
             $err = "Item name is null or empty. It is required for any item.";
             $notification->addError($err);
@@ -38,9 +43,10 @@ class InventoryItem extends GenericItem
         }
         
         if ($this->getStandardUom() == null) {
-            $err = "Item unit is null or empty. It is required for inventory item.";
+            $err = "Item unit is empty or invalid. It is required for inventory item.";
             $notification->addError($err);
         }
+            
         
         return $notification;
     }

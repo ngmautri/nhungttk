@@ -33,10 +33,12 @@ class SearchSolrTest extends PHPUnit_Framework_TestCase
     {
         try {
 
+            /** @var EntityManager $em ; */
+            $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+               
             $searcher = new ItemSearchService();
-            
-            $q="kimdfds";
-            var_dump($searcher->search($q));
+            $searcher->setDoctrineEM($em);
+            var_dump($searcher->updateItemIndex(1010));
             
             
         } catch (InvalidArgumentException $e) {

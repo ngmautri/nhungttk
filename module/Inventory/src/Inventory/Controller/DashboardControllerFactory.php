@@ -28,6 +28,13 @@ class DashboardControllerFactory implements FactoryInterface{
 		
 		$sv =  $container->get('doctrine.entitymanager.orm_default');
 		$controller->setDoctrineEM($sv);
+		
+		$sv = $container->get('Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository');
+		$controller->setItemReportingRepository($sv);
+		
+		$sv = $container->get('Inventory\Infrastructure\Persistence\DoctrineItemListRepository');
+		$controller->setItemListRepository($sv);
+		
 	
 		return $controller;
 	}	

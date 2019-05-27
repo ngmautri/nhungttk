@@ -22,7 +22,7 @@ class InventoryItem extends GenericItem
         $notification->setSourceClass("nmt");
         
         if ($this->isNullOrBlank($this->getCreatedBy())) {
-            $err = "User is not found.";
+            $err = "User ID is not found.";
             $notification->addError($err);
         }
         

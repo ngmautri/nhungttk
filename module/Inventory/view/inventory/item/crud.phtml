@@ -404,7 +404,8 @@ if (count($errors) > 0) {
 					class="glyphicon glyphicon-folder-open"></i>
 				</a>
 			</div>
-
+			
+			<?php $dto->?>
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2">Department</label>
 				<div class="col-sm-3">
@@ -417,7 +418,7 @@ if (count($errors) > 0) {
 						id="department_name_selected"
 						placeholder="Please select standard unit" name="department_id"
 						value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
-
+					
 				</div>
 
 				<a style="color: #0080ff;" href="javascript:;"

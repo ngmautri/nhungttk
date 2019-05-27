@@ -5,7 +5,7 @@
 <li class="divider"></li>
 	<li><a href="/inventory/item/add"><small><i
 				class="glyphicon glyphicon-plus"></i></small>&nbsp;<?php echo $this->translate('Create new item'); ?></a></li>
-	<li><a href="/inventory/item/list"><small><i
+	<li><a href="/inventory/item/list2"><small><i
 				class="glyphicon glyphicon-list"></i></small>&nbsp;Item List</a></li>
 	<li><a href="/application/item-category/list"><small><i
 				class="glyphicon glyphicon-list"></i></small>&nbsp;Item Category</a></li>

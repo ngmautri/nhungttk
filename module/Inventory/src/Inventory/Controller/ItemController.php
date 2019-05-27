@@ -27,6 +27,8 @@ use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Inventory\Application\Service\Item\ItemCRUDService;
+use Inventory\Infrastructure\Persistence\DoctrineItemListRepository;
+use Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository;
 
 /**
  *
@@ -37,6 +39,8 @@ class ItemController extends AbstractActionController
 {
 
     protected $doctrineEM;
+    protected $itemListRepository;
+    protected $itemReportingRepository;
 
     protected $itemSearchService;
 
@@ -300,7 +304,9 @@ class ItemController extends AbstractActionController
                     'dto' => $dto,
                     'nmtPlugin' => $nmtPlugin,
                     'form_action' => "/inventory/item/create",
-                    'form_title' => "Create Item"
+                    'form_title' => "Create Item",
+                    'action'=>\Application\Model\Constants::FORM_ACTION_ADD,
+                    
                 ));
 
                 $viewModel->setTemplate("inventory/item/crud");
@@ -324,7 +330,8 @@ class ItemController extends AbstractActionController
             'dto' => null,
             'nmtPlugin' => $nmtPlugin,
             'form_action' => "/inventory/item/create",
-            'form_title' => "Create Item"
+            'form_title' => "Create Item",
+            'action'=>\Application\Model\Constants::FORM_ACTION_ADD,
         ));
 
         $viewModel->setTemplate("inventory/item/crud");
@@ -1280,7 +1287,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
-     *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function listAction()
@@ -1443,6 +1450,143 @@ class ItemController extends AbstractActionController
 
         if ($layout == "grid") {
             $viewModel->setTemplate("inventory/item/list-gird");
+        }
+        return $viewModel;
+    }
+    
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function list2Action()
+    {
+        
+        /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
+        $nmtPlugin = $this->Nmtplugin();
+        
+        $sort_criteria = array();
+        $criteria = array();
+        
+        $item_type = $this->params()->fromQuery('item_type');
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $is_fixed_asset = (int) $this->params()->fromQuery('is_fixed_asset');
+        
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $layout = $this->params()->fromQuery('layout');
+        $page = $this->params()->fromQuery('page');
+        $resultsPerPage = $this->params()->fromQuery('perPage');
+        
+        
+        $criteria1 = array();
+        if (! $item_type == null) {
+            $criteria1 = array(
+                "itemType" => $item_type
+            );
+        }
+        
+        if ($is_active == null) {
+            $is_active = 1;
+        }
+        
+        $criteria2 = array();
+        
+        if ($is_active == 1) {
+            $criteria2 = array(
+                "isActive" => 1
+            );
+        } elseif ($is_active == - 1) {
+            $criteria2 = array(
+                "isActive" => 0
+            );
+        }
+        
+        $criteria3 = array();
+        if (! $is_fixed_asset == '') {
+            $criteria3 = array(
+                "isFixedAsset" => $is_fixed_asset
+            );
+            
+            if ($is_fixed_asset == - 1) {
+                $criteria3 = array(
+                    "isFixedAsset" => 0
+                );
+            }
+        }
+        
+        if ($sort_by == null) :
+        $sort_by = "createdOn";
+        endif;
+        
+        if ($sort == null) :
+        $sort = "DESC";
+        endif;
+        
+        if ($layout == null) :
+        $layout = "grid";
+        endif;
+        
+        $sort_criteria = array(
+            $sort_by => $sort
+        );
+        
+        $criteria = array_merge($criteria1, $criteria2, $criteria3);
+        // var_dump($criteria);
+        
+        if ($resultsPerPage==null) {
+            $resultsPerPage = 28;
+          }
+        
+        if ($page==null) {
+            $page = 1;
+        }
+        ;
+        
+         $res = $this->getItemListRepository();
+        
+        $total_recored_cache_key = "item_list_type" . $item_type . "_is_active" . $is_active . "_is_fixed_asset" . $is_fixed_asset;
+        
+        $ck = $this->cacheService->hasItem($total_recored_cache_key);
+        
+        if ($ck) {
+            $total_records = $this->cacheService->getItem($total_recored_cache_key);
+        } else {
+            $total_records = $res->getTotalItem($item_type, $is_active, $is_fixed_asset);
+            $this->cacheService->setItem($total_recored_cache_key, $total_records);
+        }
+        
+        $paginator = null;
+        $list = null;
+        
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1);
+        } else {
+            $list = $res->getItems($item_type, $is_active, $is_fixed_asset, $sort_by, $sort, 0, 0);
+        }
+        
+        $viewModel = new ViewModel(array(
+            'list' => $list,
+            'total_records' => $total_records,
+            'paginator' => $paginator,
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'is_active' => $is_active,
+            'is_fixed_asset' => $is_fixed_asset,
+            'per_pape' => $resultsPerPage,
+            'item_type' => $item_type,
+            'layout' => $layout,
+            'nmtPlugin' => $nmtPlugin,
+            'page' => $page
+        ));
+        
+        $viewModel->setTemplate("inventory/item/list2");
+         
+        
+        // echo Uuid::uuid4();
+        
+        if ($layout == "grid") {
+            $viewModel->setTemplate("inventory/item/list-gird2");
         }
         return $viewModel;
     }
@@ -1977,8 +2121,6 @@ class ItemController extends AbstractActionController
         return $response;
     }
 
-    /**
-     */
     public function barcodeAction()
     {
         $barcode = $this->params()->fromQuery('barcode');
@@ -2080,7 +2222,7 @@ class ItemController extends AbstractActionController
     }
 
     /**
-     *
+     * @deprecated
      * @return \Zend\View\Model\ViewModel
      */
     public function updateSysNumberAction()
@@ -2243,9 +2385,10 @@ class ItemController extends AbstractActionController
         $this->smptService = $smptService;
     }
 
+    
     /**
-     *
-     * @return \Inventory\Application\Service\ItemCRUDService
+     * 
+     * @return \Inventory\Application\Service\Item\ItemCRUDService
      */
     public function getItemCRUDService()
     {
@@ -2260,4 +2403,42 @@ class ItemController extends AbstractActionController
     {
         $this->itemCRUDService = $itemCRUDService;
     }
+    
+    /**
+     * 
+     * @return \Inventory\Infrastructure\Persistence\DoctrineItemListRepository
+     */
+    public function getItemListRepository()
+    {
+        return $this->itemListRepository;
+    }
+
+    /**
+     * 
+     * @param DoctrineItemListRepository $itemListRepository
+     */
+    public function setItemListRepository(DoctrineItemListRepository $itemListRepository)
+    {
+        $this->itemListRepository = $itemListRepository;
+    }
+    
+    /**
+     * 
+     * @return \Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository
+     */
+    public function getItemReportingRepository()
+    {
+        return $this->itemReportingRepository;
+    }
+
+    /**
+     * 
+     * @param DoctrineItemReportingRepository $itemReportingRepository
+     */
+    public function setItemReportingRepository(DoctrineItemReportingRepository $itemReportingRepository)
+    {
+        $this->itemReportingRepository = $itemReportingRepository;
+    }
+
+
 }

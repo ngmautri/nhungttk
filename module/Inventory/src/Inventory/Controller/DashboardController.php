@@ -4,6 +4,8 @@ namespace Inventory\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Doctrine\ORM\EntityManager;
 use Zend\View\Model\ViewModel;
+use Inventory\Infrastructure\Persistence\DoctrineItemListRepository;
+use Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository;
 use MLA\Paginator;
 
 /**
@@ -17,6 +19,9 @@ class DashboardController extends AbstractActionController
     const CHAR_LIST = "__0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
     protected $doctrineEM;
+    protected $itemListRepository;
+    protected $itemReportingRepository;
+    
 
     /**
      *
@@ -69,8 +74,7 @@ class DashboardController extends AbstractActionController
         }
         ;
         
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $res = $this->itemReportingRepository;
         $list = $res->getLastAPRows(45);
         
         $total_records = count($list);
@@ -121,8 +125,7 @@ class DashboardController extends AbstractActionController
         }
         ;
         
-        /**@var \Application\Repository\NmtProcurePrRowRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtProcurePrRow');
+        $res = $this->itemReportingRepository;
         $list = $res->getLastCreatedPrRow(45);
         
         $total_records = count($list);
@@ -172,8 +175,7 @@ class DashboardController extends AbstractActionController
         }
         ;
         
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $res = $this->itemReportingRepository;
         $mostOrderItems = $res->getMostOrderItems(108);
         
         $total_records = count($mostOrderItems);
@@ -224,8 +226,7 @@ class DashboardController extends AbstractActionController
         }
         ;
         
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $res = $this->itemReportingRepository;
         $list = $res->getLastCreatedItems(45);
         
         $total_records = count($list);
@@ -276,8 +277,7 @@ class DashboardController extends AbstractActionController
         }
         ;
         
-        /**@var \Application\Repository\FinVendorInvoiceRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\FinVendorInvoice');
+        $res = $this->itemReportingRepository;
         $list = $res->getMostValueItems(8200,135,0);
         
         $total_records = count($list);
@@ -315,8 +315,7 @@ class DashboardController extends AbstractActionController
         $this->layout("layout/user/ajax");
         
     
-        /**@var \Application\Repository\NmtInventoryItemRepository $res ;*/
-        $res = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItem');
+        $res = $this->itemReportingRepository;
         $entity = $res->getRandomItem();
          
         return new ViewModel(array(
@@ -334,4 +333,41 @@ class DashboardController extends AbstractActionController
         $this->doctrineEM = $doctrineEM;
         return $this;
     }
+    
+    /**
+     *
+     * @return \Inventory\Infrastructure\Persistence\DoctrineItemListRepository
+     */
+    public function getItemListRepository()
+    {
+        return $this->itemListRepository;
+    }
+    
+    /**
+     *
+     * @param DoctrineItemListRepository $itemListRepository
+     */
+    public function setItemListRepository(DoctrineItemListRepository $itemListRepository)
+    {
+        $this->itemListRepository = $itemListRepository;
+    }
+    
+    /**
+     *
+     * @return \Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository
+     */
+    public function getItemReportingRepository()
+    {
+        return $this->itemReportingRepository;
+    }
+    
+    /**
+     *
+     * @param DoctrineItemReportingRepository $itemReportingRepository
+     */
+    public function setItemReportingRepository(DoctrineItemReportingRepository $itemReportingRepository)
+    {
+        $this->itemReportingRepository = $itemReportingRepository;
+    }
+    
 }

@@ -116,6 +116,7 @@ class ItemSnapshotAssembler
             "id",
             "uuid",
             "token",
+            "createdBy",
         );
 
         foreach ($itemProperites as $property) {
@@ -123,7 +124,9 @@ class ItemSnapshotAssembler
             $propertyName = $property->getName();
             if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
 
-                if ($property->getValue($dto) !== null) {
+                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
+                    //$snapShot->$propertyName = null; // do not do it when update.
+                } else {
                     $snapShot->$propertyName = $property->getValue($dto);
                 }
             }
@@ -154,7 +157,12 @@ class ItemSnapshotAssembler
             $propertyName = $property->getName();
             if (property_exists($snapShot, $propertyName)) {
 
-                $snapShot->$propertyName = $property->getValue($item);
+                if ($property->getValue($item) == null || $property->getValue($item) == "") {
+                    $snapShot->$propertyName = null;
+                } else {
+                    $snapShot->$propertyName = $property->getValue($item);
+                }
+                
             }
         }
           

@@ -46,8 +46,9 @@ abstract class AbstractItemFactory
 
                 if (property_exists($itemSnapshot, $propertyName)) {
 
-                    if ($property->getValue($input) !== null) {
-
+                    if ($property->getValue($input) == null || $property->getValue($input)=="") {
+                        $itemSnapshot->$propertyName = null;                        
+                    } else {
                         $itemSnapshot->$propertyName = $property->getValue($input);
                     }
                 }
@@ -64,9 +65,8 @@ abstract class AbstractItemFactory
 
         $notification = $item->validate();
 
-        if ($notification->hasErrors()) {
+        if ($notification->hasErrors())
             throw new InvalidArgumentException($notification->errorMessage());
-        }
 
         return $item;
     }
@@ -98,10 +98,9 @@ abstract class AbstractItemFactory
 
         $notification = $item->validate();
 
-        if ($notification->hasErrors()) {
+        if ($notification->hasErrors())
             throw new InvalidArgumentException($notification->errorMessage());
-        }
-        
+
         return $item;
     }
 

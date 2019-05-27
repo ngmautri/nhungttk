@@ -8,13 +8,21 @@ namespace Application\Domain\Shared;
  */
 abstract class AbstractEntity
 {
+
     protected $id;
+
     protected $uuid;
+
     protected $verison;
-    
+
+    protected function isNullOrBlank($s)
+    {
+        return ($s == null || $s == "");
+    }
+
     public function compare(AbstractEntity $o2)
     {
-        $o1=$this;
+        $o1 = $this;
         $diffArray = array();
 
         if (get_class($o1) !== get_class($o2)) {
@@ -245,6 +253,5 @@ abstract class AbstractEntity
         }
 
         return $diffArray;
-        
     }
 }

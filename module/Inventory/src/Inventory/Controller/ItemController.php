@@ -300,7 +300,7 @@ class ItemController extends AbstractActionController
                 $viewModel = new ViewModel(array(
                     'errors' => $notification->errorMessage(),
                     'redirectUrl' => null,
-                    'entity' => null,
+                    'entity_id' => null,                    
                     'dto' => $dto,
                     'nmtPlugin' => $nmtPlugin,
                     'form_action' => "/inventory/item/create",
@@ -326,7 +326,7 @@ class ItemController extends AbstractActionController
         $viewModel = new ViewModel(array(
             'errors' => null,
             'redirectUrl' => null,
-            'entity' => null,
+            'entity_id' => null,
             'dto' => null,
             'nmtPlugin' => $nmtPlugin,
             'form_action' => "/inventory/item/create",
@@ -371,7 +371,7 @@ class ItemController extends AbstractActionController
                 $viewModel = new ViewModel(array(
                     'errors' => $notification->errorMessage(),
                     'redirectUrl' => null,
-                    'entity' => null,
+                    'entity_id' => $entity_id,
                     'dto' => $dto,
                     'nmtPlugin' => $nmtPlugin,
                     'form_action' => "/inventory/item/update",
@@ -383,7 +383,7 @@ class ItemController extends AbstractActionController
                 return $viewModel;
             }
 
-            $m = "Item update";
+            $m = "Item updated #" . $entity_id;
             $this->flashMessenger()->addMessage($m);
             $redirectUrl = "/inventory/item/list";
             return $this->redirect()->toUrl($redirectUrl);
@@ -411,7 +411,7 @@ class ItemController extends AbstractActionController
         $viewModel = new ViewModel(array(
             'errors' => null,
             'redirectUrl' => null,
-            'entity' => null,
+            'entity_id' => $entity_id,            
             'dto' => $dto,
             'nmtPlugin' => $nmtPlugin,
             'form_action' => "/inventory/item/update",

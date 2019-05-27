@@ -10,7 +10,6 @@ Interface TransactionRepositoryInterface
 {
     public function findAll();
     public function getById($id);
-    public function getByUUID($uuid);
-    
+    public function getByUUID($uuid);    
     
 }

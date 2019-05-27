@@ -1,31 +1,28 @@
 <?php
-namespace Inventory\Domain\Item;
+namespace Inventory\Domain\Warehouse\Transaction;
 
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use ReflectionProperty;
+use Inventory\Domain\Warehouse\Transaction\WarehouseTransactionSnapshot;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class ItemSnapshotAssembler
+class WarehouseTransactionSnapshotAssembler
 {
 
-    /**
-     *
-     * @return ItemSnapshot;
-     */
-    public static function createItemFromSnapshotCode()
+    public static function createFromSnapshotCode()
     {
-        $itemSnapshot = new ItemSnapshot();
+        $itemSnapshot = new WarehouseTransactionSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$this->" . $propertyName . " = \$itemSnapshot->" . $propertyName . ";";
+            print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
         }
     }
 

@@ -26,12 +26,11 @@ class ServiceItem extends GenericItem
             $notification->addError($err);
         } else {
             
-            if (preg_match('/[#$%*@]/', $this->getItemName()) == 1) {
+            if (preg_match('/[#$%*@,=+^]/', $this->getItemName()) == 1) {
                 $err = "Item name contains invalid character (e.g. #,%,&,*)";
                 $notification->addError($err);
             }
         }
-        
         return $notification;
     }
     

@@ -3,6 +3,7 @@ namespace Inventory\Domain\Item\Factory;
 
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Domain\Item\ItemType;
 
 /**
  *
@@ -11,6 +12,33 @@ use Inventory\Domain\Item\ItemSnapshot;
  */
 abstract class AbstractItemFactory
 {
+
+    public static function getItemFacotory($itemTypeId)
+    {
+        switch ($itemTypeId) {
+
+            case ItemType::INVENTORY_ITEM_TYPE:
+                $factory = new InventoryItemFactory();
+                break;
+
+            case ItemType::SERVICE_ITEM_TYPE:
+                $factory = new ServiceItemFactory();
+                break;
+
+            case ItemType::NONE_INVENTORY_ITEM_TYPE:
+                $factory = new NoneInventoryItemFactory();
+                break;
+                
+            case ItemType::FIXED_ASSET_ITEM_TYPE:
+                $factory = new FixedAssetItemFactory();
+                break;
+            default:
+                $factory = new InventoryItemFactory();
+                break;
+        }
+
+        return $factory;
+    }
 
     /**
      *
@@ -46,8 +74,8 @@ abstract class AbstractItemFactory
 
                 if (property_exists($itemSnapshot, $propertyName)) {
 
-                    if ($property->getValue($input) == null || $property->getValue($input)=="") {
-                        $itemSnapshot->$propertyName = null;                        
+                    if ($property->getValue($input) == null || $property->getValue($input) == "") {
+                        $itemSnapshot->$propertyName = null;
                     } else {
                         $itemSnapshot->$propertyName = $property->getValue($input);
                     }

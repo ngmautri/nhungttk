@@ -33,20 +33,10 @@ if (count($errors) > 0) {
 			enctype="multipart/form-data">
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
-				name="redirectUrl" value="<?php echo $redirectUrl ?>" /> <input
-				type="hidden" id="target_id" name="target_id"
-				value="<?php if (!$target == null): echo $target->getId();endif;?>" />
-			<input type="hidden" id="target_token" name="target_token"
-				value="<?php if (!$target == null): echo $target->getToken();endif;?>" />
-
-			<input type="hidden" id="entity_id" name="entity_id"
-				value="<?php if(!$dto == null): echo $dto->id; endif;?>" /> <input
-				type="hidden" id="token" name="token"
-				value="<?php if (!$entity == null): echo $entity->getToken();endif;?>" />
-
-							
-            			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
-            				<input type="hidden" name="n" value="<?php echo $n;?>" />
+				id="entity_id" name="entity_id" value="<?php echo $entity_id;?>" />
+			<input
+				<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?><input
+				type="hidden" name="n" value="<?php echo $n;?>" />
             			<?php endif;?>
 
 			<div class="form-group margin-bottom required">
@@ -206,7 +196,7 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Inventory Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="stockUom" id="stock_uom_id"
+					<select name="stockUom" id="stockUom"
 						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select inventory unit");?></option>
    	    							<?php
@@ -250,7 +240,7 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Purchase Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="purchaseUom" id="purchase_uom_id"
+					<select name="purchaseUom" id="purchaseUom"
 						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select purchase unit");?></option>
    	    							<?php
@@ -296,7 +286,7 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Sales Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="salesUom" id="sales_uom_id"
+					<select name="salesUom" id="salesUom"
 						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select Sales Unit");?></option>
    	    							<?php
@@ -404,8 +394,8 @@ if (count($errors) > 0) {
 					class="glyphicon glyphicon-folder-open"></i>
 				</a>
 			</div>
-			
-			<?php $dto->?>
+
+
 			<div class="form-group margin-bottom">
 				<label class="control-label col-sm-2">Department</label>
 				<div class="col-sm-3">
@@ -418,7 +408,7 @@ if (count($errors) > 0) {
 						id="department_name_selected"
 						placeholder="Please select standard unit" name="department_id"
 						value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
-					
+
 				</div>
 
 				<a style="color: #0080ff;" href="javascript:;"

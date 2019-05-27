@@ -191,16 +191,6 @@ abstract class GenericItem extends AbstractEntity
 
     /**
      *
-     * @param string $s
-     * @return boolean
-     */
-    protected function isNullOrBlank($s)
-    {
-        return ($s == null || $s == "");
-    }
-
-    /**
-     *
      * @param ItemSnapshot $itemSnapshot
      */
     public function makeItemFrom($itemSnapshot)

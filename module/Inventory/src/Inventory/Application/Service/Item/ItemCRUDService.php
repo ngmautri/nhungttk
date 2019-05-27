@@ -167,7 +167,9 @@ class ItemCRUDService extends AbstractService
 
             $newItemSnapshot = clone ($itemSnapshot);
             $newItemSnapshot = ItemSnapshotAssembler::updateItemSnapshotFromDTO($newItemSnapshot, $dto);
-            // var_dump($newItemSnapshot);
+            //var_dump($itemSnapshot);
+            //var_dump("=============");
+            //var_dump($newItemSnapshot);
 
             $changeArray = $itemSnapshot->compare($newItemSnapshot);
 

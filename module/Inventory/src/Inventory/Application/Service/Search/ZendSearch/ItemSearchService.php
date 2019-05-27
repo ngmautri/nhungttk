@@ -1,9 +1,11 @@
 <?php
 namespace Inventory\Application\Service\Search\ZendSearch;
 
+use Application\Notification;
 use Application\Service\AbstractService;
+use Inventory\Application\DTO\Item\ItemSearchResultDTO;
 use Inventory\Domain\Service\Search\ItemSearchInterface;
-use Application\Entity\NmtInventoryItem;
+use Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository;
 use ZendSearch\Lucene\Document;
 use ZendSearch\Lucene\Lucene;
 use ZendSearch\Lucene\Analysis\Analyzer\Analyzer;
@@ -14,9 +16,6 @@ use ZendSearch\Lucene\Search\Query\Boolean;
 use ZendSearch\Lucene\Search\Query\MultiTerm;
 use ZendSearch\Lucene\Search\Query\Wildcard;
 use Exception;
-use Inventory\Application\DTO\Item\ItemSearchResultDTO;
-use Application\Notification;
-use Inventory\Infrastructure\Persistance\DoctrineItemReportingRepository;
 
 /**
  *

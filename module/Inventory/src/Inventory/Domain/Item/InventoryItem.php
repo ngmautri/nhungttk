@@ -31,7 +31,7 @@ class InventoryItem extends GenericItem
             $notification->addError($err);
         } else {
             
-            if (preg_match('/[#$%*@]/', $this->getItemName()) == 1) {
+            if (preg_match('/[#$%*@,=+^]/', $this->getItemName()) == 1) {
                 $err = "Item name contains invalid character (e.g. #,%,&,*)";
                 $notification->addError($err);
             }
@@ -46,7 +46,21 @@ class InventoryItem extends GenericItem
             $err = "Measurement unit is empty or invalid. It is required for inventory item.";
             $notification->addError($err);
         }
-            
+
+        if (!$this->isNullOrBlank($this->getStockUom()) && $this->isNullOrBlank($this->getStockUomConvertFactor())) {
+            $err = "Inventory measurement unit is set, but no conversion factor!";
+            $notification->addError($err);
+        }
+        
+        if (!$this->isNullOrBlank($this->getPurchaseUom()) && $this->isNullOrBlank($this->getPurchaseUomConvertFactor())) {
+            $err = "Purchase measurement unit is set, but no conversion factor!";
+            $notification->addError($err);
+        }
+        
+        if (!$this->isNullOrBlank($this->getSalesUom()) && $this->isNullOrBlank($this->getSalesUomConvertFactor())) {
+            $err = "Sales measurement unit is set, but no conversion factor!";
+            $notification->addError($err);
+        }
         
         return $notification;
     }

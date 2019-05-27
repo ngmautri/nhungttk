@@ -12,6 +12,7 @@ use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\Factory\ServiceItemFactory;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Application\DTO\Item\ItemAssembler;
+use Inventory\Domain\Item\Factory\AbstractItemFactory;
 
 /**
  *
@@ -40,8 +41,8 @@ class DoctrineItemRepository implements ItemRepositoryInterface
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Item\Repository\ItemRepositoryInterface::getById()
      */
     public function getById($id)
@@ -60,19 +61,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
 
         $itemSnapshot = $this->createItemSnapshot($entity);
 
-        switch ($itemSnapshot->itemTypeId) {
-
-            case ItemType::INVENTORY_ITEM_TYPE:
-                $factory = new InventoryItemFactory();
-                break;
-
-            case ItemType::SERVICE_ITEM_TYPE:
-                $factory = new ServiceItemFactory();
-                break;
-            default:
-                $factory = new InventoryItemFactory();
-                break;
-        }
+        $factory = AbstractItemFactory::getItemFacotory($itemSnapshot->itemTypeId);
 
         $item = $factory->createItem();
         $item->makeItemFrom($itemSnapshot);
@@ -155,6 +144,21 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         if ($item->standardUom > 0) {
             $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $item->standardUom);
             $entity->setStandardUom($uom);
+        }
+
+        if ($item->stockUom > 0) {
+            $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $item->stockUom);
+            $entity->setStockUom($uom);
+        }
+
+        if ($item->purchaseUom > 0) {
+            $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $item->purchaseUom);
+            $entity->setPurchaseUom($uom);
+        }
+
+        if ($item->salesUom > 0) {
+            $uom = $this->doctrineEM->find('Application\Entity\NmtApplicationUom', $item->salesUom);
+            $entity->setSalesUom($uom);
         }
 
         if ($item->lastChangeBy > 0) {
@@ -244,19 +248,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         // Need check one more time.
         $dto = ItemAssembler::createItemDTOFromDoctrine($entity);
 
-        switch ($dto->itemTypeId) {
-
-            case ItemType::INVENTORY_ITEM_TYPE:
-                $factory = new InventoryItemFactory();
-                break;
-
-            case ItemType::SERVICE_ITEM_TYPE:
-                $factory = new ServiceItemFactory();
-                break;
-            default:
-                $factory = new InventoryItemFactory();
-                break;
-        }
+        $factory = AbstractItemFactory::getItemFacotory($dto->itemTypeId);
 
         // will throw exception if false.
         $item = $factory->createItemFromDTO($dto);

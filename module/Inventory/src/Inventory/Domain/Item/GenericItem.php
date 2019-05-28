@@ -188,6 +188,9 @@ abstract class GenericItem extends AbstractEntity
     }
 
     abstract public function validate();
+    
+    
+    
 
     /**
      *

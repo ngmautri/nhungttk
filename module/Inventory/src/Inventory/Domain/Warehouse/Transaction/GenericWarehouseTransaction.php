@@ -136,6 +136,22 @@ Abstract Class GenericWarehouseTransaction extends AbstractEntity
     
     /**
      * 
+     * @param GenericWarehouseTransaction $this
+     */
+    public function makeDTO($this){
+        
+    }
+    
+    /**
+     * 
+     * @param GenericWarehouseTransaction $this
+     */
+    public function makeSnapshot($this){
+        
+    }
+    
+    /**
+     * 
      * @param WarehouseTransactionSnapshot $snapshot
      */
     public function makeFromSnapshot($snapshot){

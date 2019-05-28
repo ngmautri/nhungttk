@@ -17,13 +17,16 @@
 		"symfony/event-dispatcher" : "2.8.*",
 		"ramsey/uuid" : "~3.8",
 		"moneyphp/money" : "~3.2",
-		"endroid/qr-code" : "2.5.1"
+		"endroid/qr-code" : "2.5.1",
+		"nesbot/carbon" : "1.37.1"
 	},
 	"minimum-stability" : "stable",
 	"autoload" : {
 		"psr-0" : {
+			"Inventory" : "module/Inventory/src",
 			"Application" : "module/Application/src",
-			"Inventory" : "module/Inventory/src"
+			"ApplicationTest" : "module/Application/test",
+			"InventoryTest" : "module/Inventory/test"
 		}
 	}
 }

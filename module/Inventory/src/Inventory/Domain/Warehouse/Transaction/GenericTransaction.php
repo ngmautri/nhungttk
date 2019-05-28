@@ -142,7 +142,7 @@ abstract class GenericTransaction extends AbstractEntity
      */
     public function makeDTO()
     {
-        return WarehouseTransactionDTOAssembler::createDTOFrom($this);
+        return TransactionDTOAssembler::createDTOFrom($this);
     }
 
     /**

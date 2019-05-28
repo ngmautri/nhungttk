@@ -1,19 +1,19 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction\GI;
 
-use Inventory\Domain\Warehouse\Transaction\GenericWarehouseTransaction;
+use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GIforCostCenter extends GenericWarehouseTransaction
+class GIforCostCenter extends GenericTransaction
 {
     /**
      * 
      * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericWarehouseTransaction::validate()
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::validate()
      */
     public function validate()
     {}

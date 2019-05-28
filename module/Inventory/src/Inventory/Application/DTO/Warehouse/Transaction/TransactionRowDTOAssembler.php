@@ -1,8 +1,8 @@
 <?php
 namespace Inventory\Application\DTO\Warehouse\Transaction;
 
-use Inventory\Domain\Warehouse\Transaction\GenericWarehouseTransaction;
-use Inventory\Domain\Warehouse\Transaction\WarehouseTransactionRow;
+use Inventory\Domain\Warehouse\Transaction\TransactionRow;
+
 
 /**
  *
@@ -12,17 +12,17 @@ use Inventory\Domain\Warehouse\Transaction\WarehouseTransactionRow;
 class TransactionRowDTOAssembler
 {
 
-   /**
+  /**
    * 
-   * @param WarehouseTransactionRow $obj
-   * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\WarehouseTransactionRowDTO
+   * @param TransactionRow $obj
+   * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO
    */
     public static function createDTOFrom($obj)
     {
-        if (! $obj instanceof WarehouseTransactionRow)
+        if (! $obj instanceof TransactionRow)
             return null;
 
-            $dto = new WarehouseTransactionRowDTO();
+            $dto = new TransactionRowDTO();
 
         $reflectionClass = new \ReflectionClass($obj);
         $itemProperites = $reflectionClass->getProperties();
@@ -63,7 +63,7 @@ class TransactionRowDTOAssembler
      */
     public static function createAutoGereatedFields()
     {
-        $dto = new WarehouseTransactionDTO();
+        $dto = new TransactionDTO();
         $reflectionClass = new \ReflectionClass($dto);
         $itemProperites = $reflectionClass->getProperties();
         $auto_generated = array();

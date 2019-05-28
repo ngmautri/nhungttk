@@ -15,7 +15,7 @@ class TransactionSnapshotAssembler
 
     public static function createFromSnapshotCode()
     {
-        $itemSnapshot = new WarehouseTransactionSnapshot();
+        $itemSnapshot = new TransactionSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
@@ -144,16 +144,16 @@ class TransactionSnapshotAssembler
     }
 
     /**
-     *
-     * @param GenericWarehouseTransaction $obj
-     * @return NULL|\Inventory\Domain\Warehouse\Transaction\WarehouseTransactionSnapshot
+     * 
+     * @param unknown $obj
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
      */
     public static function createSnapshotFrom($obj)
     {
-        if (! $obj instanceof GenericWarehouseTransaction)
+        if (! $obj instanceof GenericTransaction)
             return null;
 
-        $snapShot = new WarehouseTransactionSnapshot();
+        $snapShot = new TransactionSnapshot();
 
         // should uss reflection object
         $reflectionClass = new \ReflectionObject($obj);

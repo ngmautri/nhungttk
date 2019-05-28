@@ -2,6 +2,7 @@
 namespace InventoryTest\WarehouseTransaction;
 
 use PHPUnit_Framework_TestCase;
+use Doctrine\ORM\EntityManager;
 use Inventory\Domain\Warehouse\Transaction\GI\GIforRepairMachine;
 
 class TransactionSnapshotAssembler extends PHPUnit_Framework_TestCase
@@ -32,7 +33,7 @@ class TransactionSnapshotAssembler extends PHPUnit_Framework_TestCase
         //WarehouseTransactionDTOAssembler::createWarehouseTransactionDTOProperities();
         //var_dump(in_array("token",WarehouseTransactionDTOAssembler::createAutoGereatedFields()));
         
-        \Inventory\Domain\Warehouse\Transaction\WarehouseTransactionSnapshotAssembler::createFromSnapshotCode();
+        \Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler::createFromSnapshotCode();
         
         
         $trx = new GIforRepairMachine();

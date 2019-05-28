@@ -1,13 +1,10 @@
 <?php
 namespace InventoryTest\WarehouseTransaction;
 
-use Doctrine\ORM\EntityManager;
-use Inventory\Application\DTO\Item\ItemAssembler;
 use PHPUnit_Framework_TestCase;
-use Inventory\Application\DTO\Warehouse\Transaction\WarehouseTransactionDTOAssembler;
-use Inventory\Application\DTO\Warehouse\Transaction\WarehouseTransactionRowDTOAssembler;
+use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTOAssembler;
 
-class TransactionRowDTOAssembler extends PHPUnit_Framework_TestCase
+class TransactionRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -35,7 +32,7 @@ class TransactionRowDTOAssembler extends PHPUnit_Framework_TestCase
         //WarehouseTransactionDTOAssembler::createWarehouseTransactionDTOProperities();
         //var_dump(in_array("token",WarehouseTransactionDTOAssembler::createAutoGereatedFields()));
         
-        var_dump(WarehouseTransactionRowDTOAssembler::createDTOProperities());
+        var_dump(TransactionRowDTOAssembler::createDTOProperities());
         
        /*  echo($dto->itemName);
         $missing = ItemAssembler::checkItemDTO();

@@ -1,6 +1,6 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction\GI;
-use Inventory\Domain\Warehouse\Transaction\GenericWarehouseTransaction;
+use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
 
 /**
  * Machine ID is required, exchange part.
@@ -8,12 +8,13 @@ use Inventory\Domain\Warehouse\Transaction\GenericWarehouseTransaction;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GIforRepairMachine extends GenericWarehouseTransaction
+class GIforRepairMachine extends GenericTransaction
 {
+    
     /**
      * 
      * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericWarehouseTransaction::validate()
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::validate()
      */
     public function validate()
     {}

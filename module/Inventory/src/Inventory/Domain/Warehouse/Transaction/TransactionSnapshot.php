@@ -7,7 +7,7 @@ namespace Inventory\Domain\Warehouse\Transaction;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseTransactionSnapshot
+class TransactionSnapshot
 {
     /**
      * @system_genereted

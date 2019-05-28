@@ -6,7 +6,7 @@ namespace Inventory\Application\DTO\Warehouse\Transaction;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  * @var \Application\Entity\NmtInventoryMv ;
  */
-class WarehouseTransactionDTO
+class TransactionDTO
 {
 
     /**

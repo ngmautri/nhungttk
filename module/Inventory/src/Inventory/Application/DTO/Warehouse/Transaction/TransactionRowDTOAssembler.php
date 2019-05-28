@@ -1,47 +1,60 @@
 <?php
 namespace Inventory\Application\DTO\Warehouse\Transaction;
 
+use Inventory\Domain\Warehouse\Transaction\GenericWarehouseTransaction;
+use Inventory\Domain\Warehouse\Transaction\WarehouseTransactionRow;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseTransactionDTOAssembler
+class TransactionRowDTOAssembler
 {
 
-    /**
-     *
-     * @return array;
-     */
-    public static function checkItemDTO()
+   /**
+   * 
+   * @param WarehouseTransactionRow $obj
+   * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\WarehouseTransactionRowDTO
+   */
+    public static function createDTOFrom($obj)
     {
-        $missingProperties = array();
-        $entity = new \Application\Entity\NmtInventoryItem();
-        $dto = new InventoryItem();
-        $reflectionClass = new \ReflectionClass($entity);
+        if (! $obj instanceof WarehouseTransactionRow)
+            return null;
+
+            $dto = new WarehouseTransactionRowDTO();
+
+        $reflectionClass = new \ReflectionClass($obj);
         $itemProperites = $reflectionClass->getProperties();
+
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            if (! property_exists($dto, $propertyName)) {
-                $missingProperties[] = $propertyName;
+
+            if (property_exists($dto, $propertyName)) {
+                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
+                    $dto->$propertyName = null;
+                } else {
+                    $dto->$propertyName = $property->getValue($obj);
+                }
             }
         }
-        return $missingProperties;
+
+        return $dto;
     }
 
     /**
      * generete DTO File.
      */
-    public static function createWarehouseTransactionDTOProperities()
+    public static function createDTOProperities()
     {
-        $entity = new \Application\Entity\NmtInventoryMv();
+        $entity = new \Application\Entity\NmtInventoryTrx();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "public $" . $propertyName . ";";
+            print "\n" . "protected $" . $propertyName . ";";
         }
     }
 
@@ -68,13 +81,13 @@ class WarehouseTransactionDTOAssembler
      */
     public static function createStoreMapping()
     {
-        $entity = new \Application\Entity\NmtInventoryItem();
+        $entity = new \Application\Entity\NmtInventoryMv();
         $reflectionClass = new \ReflectionClass($entity);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
-            print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$item->" . $propertyName . ");";
+            print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
         }
     }
 }

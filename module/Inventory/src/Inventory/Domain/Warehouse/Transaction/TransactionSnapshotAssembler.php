@@ -10,13 +10,13 @@ use Inventory\Domain\Item\ItemSnapshot;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseTransactionSnapshotAssembler
+class TransactionSnapshotAssembler
 {
 
     public static function createFromSnapshotCode()
     {
         $itemSnapshot = new WarehouseTransactionSnapshot();
-        $reflectionClass = new \Ref($itemSnapshot);
+        $reflectionClass = new \ReflectionClass($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
@@ -145,19 +145,18 @@ class WarehouseTransactionSnapshotAssembler
 
     /**
      *
-     * @param AbstractItem $item
-     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
+     * @param GenericWarehouseTransaction $obj
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\WarehouseTransactionSnapshot
      */
-    public static function createItemSnapshotFrom($item)
+    public static function createSnapshotFrom($obj)
     {
-        if (! $item instanceof GenericItem) {
+        if (! $obj instanceof GenericWarehouseTransaction)
             return null;
-        }
 
-        $snapShot = new ItemSnapshot();
+        $snapShot = new WarehouseTransactionSnapshot();
 
         // should uss reflection object
-        $reflectionClass = new \ReflectionObject($item);
+        $reflectionClass = new \ReflectionObject($obj);
         $itemProperites = $reflectionClass->getProperties();
 
         foreach ($itemProperites as $property) {
@@ -166,10 +165,10 @@ class WarehouseTransactionSnapshotAssembler
             $propertyName = $property->getName();
             if (property_exists($snapShot, $propertyName)) {
 
-                if ($property->getValue($item) == null || $property->getValue($item) == "") {
+                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
                     $snapShot->$propertyName = null;
                 } else {
-                    $snapShot->$propertyName = $property->getValue($item);
+                    $snapShot->$propertyName = $property->getValue($obj);
                 }
                 
             }

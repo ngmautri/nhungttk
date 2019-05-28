@@ -2,13 +2,14 @@
 namespace Inventory\Domain\Warehouse\Transaction;
 
 use Application\Domain\Shared\AbstractEntity;
+use Inventory\Application\DTO\Warehouse\Transaction\WarehouseTransactionDTOAssembler;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-Abstract Class GenericWarehouseTransaction extends AbstractEntity
+abstract class GenericTransaction extends AbstractEntity
 {
 
     protected $id;
@@ -112,104 +113,109 @@ Abstract Class GenericWarehouseTransaction extends AbstractEntity
     protected $sourceLocation;
 
     protected $tartgetLocation;
-    
+
     /**
      *
      * @return boolean
      */
     public function isValid()
     {
-        
+
         /**
          *
          * @var Notification $notification
          */
         $notification = $this->validate();
-        
-        if($notification == null)
+
+        if ($notification == null)
             return false;
-        
+
         return ! $notification->hasErrors();
     }
-    
+
     abstract public function validate();
+
     
     /**
      * 
-     * @param GenericWarehouseTransaction $this
+     * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\WarehouseTransactionDTO
      */
-    public function makeDTO($this){
-        
+    public function makeDTO()
+    {
+        return WarehouseTransactionDTOAssembler::createDTOFrom($this);
     }
-    
+
     /**
      * 
-     * @param GenericWarehouseTransaction $this
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\WarehouseTransactionSnapshot
      */
-    public function makeSnapshot($this){
-        
+    public function makeSnapshot()
+    {
+        return WarehouseTransactionSnapshotAssembler::createSnapshotFrom($this);
     }
-    
+
     /**
-     * 
+     *
      * @param WarehouseTransactionSnapshot $snapshot
      */
-    public function makeFromSnapshot($snapshot){
-        if (! $snapshot instanceof $snapshot)
+    public function makeFromSnapshot($snapshot)
+    {
+        if (! $snapshot instanceof WarehouseTransactionSnapshot)
             return;
-            
-            $this->id = $snapshot->id;
-            $this->token = $snapshot->token;
-            $this->currencyIso3 = $snapshot->currencyIso3;
-            $this->exchangeRate = $snapshot->exchangeRate;
-            $this->remarks = $snapshot->remarks;
-            $this->createdOn = $snapshot->createdOn;
-            $this->currentState = $snapshot->currentState;
-            $this->isActive = $snapshot->isActive;
-            $this->trxType = $snapshot->trxType;
-            $this->lastchangeBy = $snapshot->lastchangeBy;
-            $this->lastchangeOn = $snapshot->lastchangeOn;
-            $this->postingDate = $snapshot->postingDate;
-            $this->sapDoc = $snapshot->sapDoc;
-            $this->contractNo = $snapshot->contractNo;
-            $this->contractDate = $snapshot->contractDate;
-            $this->quotationNo = $snapshot->quotationNo;
-            $this->quotationDate = $snapshot->quotationDate;
-            $this->sysNumber = $snapshot->sysNumber;
-            $this->revisionNo = $snapshot->revisionNo;
-            $this->deliveryMode = $snapshot->deliveryMode;
-            $this->incoterm = $snapshot->incoterm;
-            $this->incotermPlace = $snapshot->incotermPlace;
-            $this->paymentTerm = $snapshot->paymentTerm;
-            $this->paymentMethod = $snapshot->paymentMethod;
-            $this->docStatus = $snapshot->docStatus;
-            $this->isDraft = $snapshot->isDraft;
-            $this->workflowStatus = $snapshot->workflowStatus;
-            $this->transactionStatus = $snapshot->transactionStatus;
-            $this->movementType = $snapshot->movementType;
-            $this->movementDate = $snapshot->movementDate;
-            $this->journalMemo = $snapshot->journalMemo;
-            $this->movementFlow = $snapshot->movementFlow;
-            $this->movementTypeMemo = $snapshot->movementTypeMemo;
-            $this->isPosted = $snapshot->isPosted;
-            $this->isReversed = $snapshot->isReversed;
-            $this->reversalDate = $snapshot->reversalDate;
-            $this->reversalDoc = $snapshot->reversalDoc;
-            $this->reversalReason = $snapshot->reversalReason;
-            $this->isReversable = $snapshot->isReversable;
-            $this->docType = $snapshot->docType;
-            $this->isTransferTransaction = $snapshot->isTransferTransaction;
-            $this->reversalBlocked = $snapshot->reversalBlocked;
-            $this->createdBy = $snapshot->createdBy;
-            $this->warehouse = $snapshot->warehouse;
-            $this->postingPeriod = $snapshot->postingPeriod;
-            $this->currency = $snapshot->currency;
-            $this->docCurrency = $snapshot->docCurrency;
-            $this->localCurrency = $snapshot->localCurrency;
-            $this->targetWarehouse = $snapshot->targetWarehouse;
-            $this->sourceLocation = $snapshot->sourceLocation;
-            $this->tartgetLocation = $snapshot->tartgetLocation;
+
+        $this->id = $snapshot->id;
+        $this->token = $snapshot->token;
+        $this->currencyIso3 = $snapshot->currencyIso3;
+        $this->exchangeRate = $snapshot->exchangeRate;
+        $this->remarks = $snapshot->remarks;
+        $this->createdOn = $snapshot->createdOn;
+        $this->currentState = $snapshot->currentState;
+        $this->isActive = $snapshot->isActive;
+        $this->trxType = $snapshot->trxType;
+        $this->lastchangeBy = $snapshot->lastchangeBy;
+        $this->lastchangeOn = $snapshot->lastchangeOn;
+        $this->postingDate = $snapshot->postingDate;
+        $this->sapDoc = $snapshot->sapDoc;
+        $this->contractNo = $snapshot->contractNo;
+        $this->contractDate = $snapshot->contractDate;
+        $this->quotationNo = $snapshot->quotationNo;
+        $this->quotationDate = $snapshot->quotationDate;
+        $this->sysNumber = $snapshot->sysNumber;
+        $this->revisionNo = $snapshot->revisionNo;
+        $this->deliveryMode = $snapshot->deliveryMode;
+        $this->incoterm = $snapshot->incoterm;
+        $this->incotermPlace = $snapshot->incotermPlace;
+        $this->paymentTerm = $snapshot->paymentTerm;
+        $this->paymentMethod = $snapshot->paymentMethod;
+        $this->docStatus = $snapshot->docStatus;
+        $this->isDraft = $snapshot->isDraft;
+        $this->workflowStatus = $snapshot->workflowStatus;
+        $this->transactionStatus = $snapshot->transactionStatus;
+        $this->movementType = $snapshot->movementType;
+        $this->movementDate = $snapshot->movementDate;
+        $this->journalMemo = $snapshot->journalMemo;
+        $this->movementFlow = $snapshot->movementFlow;
+        $this->movementTypeMemo = $snapshot->movementTypeMemo;
+        $this->isPosted = $snapshot->isPosted;
+        $this->isReversed = $snapshot->isReversed;
+        $this->reversalDate = $snapshot->reversalDate;
+        $this->reversalDoc = $snapshot->reversalDoc;
+        $this->reversalReason = $snapshot->reversalReason;
+        $this->isReversable = $snapshot->isReversable;
+        $this->docType = $snapshot->docType;
+        $this->isTransferTransaction = $snapshot->isTransferTransaction;
+        $this->reversalBlocked = $snapshot->reversalBlocked;
+        $this->createdBy = $snapshot->createdBy;
+        $this->warehouse = $snapshot->warehouse;
+        $this->postingPeriod = $snapshot->postingPeriod;
+        $this->currency = $snapshot->currency;
+        $this->docCurrency = $snapshot->docCurrency;
+        $this->localCurrency = $snapshot->localCurrency;
+        $this->targetWarehouse = $snapshot->targetWarehouse;
+        $this->sourceLocation = $snapshot->sourceLocation;
+        $this->tartgetLocation = $snapshot->tartgetLocation;
     }
+
     public function getId()
     {
         return $this->id;
@@ -464,7 +470,4 @@ Abstract Class GenericWarehouseTransaction extends AbstractEntity
     {
         return $this->tartgetLocation;
     }
-
-    
-    
 }

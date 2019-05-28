@@ -2,9 +2,8 @@
 namespace Inventory\Domain\Warehouse\Transaction;
 
 use Inventory\Application\DTO\Item\ItemDTO;
-use Inventory\Domain\Exception\InvalidArgumentException;
-use ReflectionProperty;
-use Inventory\Domain\Warehouse\Transaction\WarehouseTransactionSnapshot;
+use Inventory\Domain\Item\GenericItem;
+use Inventory\Domain\Item\ItemSnapshot;
 
 /**
  *
@@ -17,7 +16,7 @@ class WarehouseTransactionSnapshotAssembler
     public static function createFromSnapshotCode()
     {
         $itemSnapshot = new WarehouseTransactionSnapshot();
-        $reflectionClass = new \ReflectionClass($itemSnapshot);
+        $reflectionClass = new \Ref($itemSnapshot);
         $itemProperites = $reflectionClass->getProperties();
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);

@@ -2,6 +2,7 @@
 namespace InventoryTest\WarehouseTransaction;
 
 use PHPUnit_Framework_TestCase;
+use Doctrine\ORM\EntityManager;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTOAssembler;
 
 class TransactionRowDTOAssemblerTest extends PHPUnit_Framework_TestCase

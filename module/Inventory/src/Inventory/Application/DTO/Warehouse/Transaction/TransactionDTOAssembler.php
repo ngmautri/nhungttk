@@ -1,8 +1,8 @@
 <?php
 namespace Inventory\Application\DTO\Warehouse\Transaction;
 
-
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
+use Inventory\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -11,10 +11,31 @@ use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
  */
 class TransactionDTOAssembler
 {
+    
+    public static function createItemDTOFromArray($data,$doctrineEM = null)
+    {
+        $dto = new TransactionDTO();
+        
+        foreach ($data as $property => $value) {
+            if (property_exists($dto, $property)) {
+                if ($value == null || $value == "") {
+                    $dto->$property = null;
+                }else{
+                    $dto->$property = $value;
+                }
+            }
+        }
+        
+        $notification = $dto->validate($doctrineEM);
+        if ($notification->hasErrors())
+            throw new InvalidArgumentException($notification->errorMessage());
+        
+        return $dto;
+    }
 
   /**
    * 
-   * @param unknown $obj
+   * @param GenericTransaction $obj
    * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO
    */
     public static function createDTOFrom($obj)

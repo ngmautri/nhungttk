@@ -10,12 +10,6 @@ use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
  */
 class GIforRepairMachine extends GenericTransaction
 {
-    
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::validate()
-     */
-    public function validate()
+    public function specificValidation($notification = null)
     {}
 }

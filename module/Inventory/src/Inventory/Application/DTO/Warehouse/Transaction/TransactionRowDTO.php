@@ -301,4 +301,6 @@ class TransactionRowDTO
     public $pmtMethod;
 
     public $invoiceRow;
+    
+    
 }

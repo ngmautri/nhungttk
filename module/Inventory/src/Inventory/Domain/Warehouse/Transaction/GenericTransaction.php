@@ -1,8 +1,9 @@
-<?php
+ <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
 use Application\Domain\Shared\AbstractEntity;
-use Inventory\Application\DTO\Warehouse\Transaction\WarehouseTransactionDTOAssembler;
+use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
+use Application\Notification;
 
 /**
  *
@@ -133,12 +134,52 @@ abstract class GenericTransaction extends AbstractEntity
         return ! $notification->hasErrors();
     }
 
-    abstract public function validate();
-
-    
     /**
-     * 
-     * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\WarehouseTransactionDTO
+     *
+     * @return Notification
+     */
+    public function validate()
+    {
+        $notification = new Notification();
+        $notification = $this->generalValidation();
+
+        if ($this->specificValidation($notification) !== null) {
+            return $this->specificValidation($notification);
+        }
+
+        return $notification;
+    }
+
+    /**
+     *
+     * @param Notification $notification
+     * @return string|\Application\Notification
+     */
+    protected function generalValidation($notification = null)
+    {
+        if ($notification == null)
+            $notification = new Notification();
+
+        // do verification now
+        if ($this->warehouse == null)
+            $notification->addError("Source warehouse is not set");
+
+        // check movement date
+        if ($this->movementDate == null)
+            $notification->addError("Transactrion Date is not correct or empty");
+
+        // check currency and exchange rate.
+        if ($this->currency == null)
+            $notification->addError("Currency is not correct or empty");
+
+        return $notification;
+    }
+
+    abstract public function specificValidation($notification = null);
+
+    /**
+     *
+     * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO
      */
     public function makeDTO()
     {
@@ -146,21 +187,21 @@ abstract class GenericTransaction extends AbstractEntity
     }
 
     /**
-     * 
-     * @return NULL|\Inventory\Domain\Warehouse\Transaction\WarehouseTransactionSnapshot
+     *
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
      */
     public function makeSnapshot()
     {
-        return WarehouseTransactionSnapshotAssembler::createSnapshotFrom($this);
+        return TransactionSnapshotAssembler::createSnapshotFrom($this);
     }
 
     /**
      *
-     * @param WarehouseTransactionSnapshot $snapshot
+     * @param TransactionSnapshot $snapshot
      */
     public function makeFromSnapshot($snapshot)
     {
-        if (! $snapshot instanceof WarehouseTransactionSnapshot)
+        if (! $snapshot instanceof TransactionSnapshot)
             return;
 
         $this->id = $snapshot->id;

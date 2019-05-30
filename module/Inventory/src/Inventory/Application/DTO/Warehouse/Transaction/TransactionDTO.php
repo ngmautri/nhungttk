@@ -1,6 +1,11 @@
 <?php
 namespace Inventory\Application\DTO\Warehouse\Transaction;
 
+use Application\Notification;
+use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Inventory\Application\Specification\Doctrine\DoctrineSpecificationFactory;
+use Inventory\Domain\Warehouse\Transaction\TransactionType;
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
@@ -10,11 +15,13 @@ class TransactionDTO
 {
 
     /**
+     *
      * @system_genereted
      */
     public $id;
 
     /**
+     *
      * @system_genereted
      */
     public $token;
@@ -26,11 +33,13 @@ class TransactionDTO
     public $remarks;
 
     /**
+     *
      * @system_genereted
      */
     public $createdOn;
 
     /**
+     *
      * @system_genereted
      */
     public $currentState;
@@ -40,11 +49,13 @@ class TransactionDTO
     public $trxType;
 
     /**
+     *
      * @system_genereted
      */
     public $lastchangeBy;
 
     /**
+     *
      * @system_genereted
      */
     public $lastchangeOn;
@@ -62,11 +73,13 @@ class TransactionDTO
     public $quotationDate;
 
     /**
+     *
      * @system_genereted
      */
     public $sysNumber;
 
     /**
+     *
      * @system_genereted
      */
     public $revisionNo;
@@ -82,6 +95,7 @@ class TransactionDTO
     public $paymentMethod;
 
     /**
+     *
      * @system_genereted
      */
     public $docStatus;
@@ -89,11 +103,13 @@ class TransactionDTO
     public $isDraft;
 
     /**
+     *
      * @system_genereted
      */
     public $workflowStatus;
 
     /**
+     *
      * @system_genereted
      */
     public $transactionStatus;
@@ -109,21 +125,25 @@ class TransactionDTO
     public $movementTypeMemo;
 
     /**
+     *
      * @system_genereted
      */
     public $isPosted;
 
     /**
+     *
      * @system_genereted
      */
     public $isReversed;
 
     /**
+     *
      * @system_genereted
      */
     public $reversalDate;
 
     /**
+     *
      * @system_genereted
      */
     public $reversalDoc;
@@ -131,26 +151,31 @@ class TransactionDTO
     public $reversalReason;
 
     /**
+     *
      * @system_genereted
      */
     public $isReversable;
 
     /**
+     *
      * @system_genereted
      */
     public $docType;
 
     /**
+     *
      * @system_genereted
      */
     public $isTransferTransaction;
 
     /**
+     *
      * @system_genereted
      */
     public $reversalBlocked;
 
     /**
+     *
      * @system_genereted
      */
     public $createdBy;
@@ -170,6 +195,36 @@ class TransactionDTO
     public $sourceLocation;
 
     public $tartgetLocation;
-    
-   
+
+    /**
+     *
+     * @return \Application\Notification
+     */
+    public function validate($doctrineEM = null)
+    {
+        $notification = new Notification();
+        $specFactory = new ZendSpecificationFactory();
+        $specFactory1 = new DoctrineSpecificationFactory($doctrineEM);
+
+        if ($specFactory->getNullorBlankSpecification()->isSatisfiedBy($this->warehouse)) {
+            $notification->addError("Warehouse is empty");
+        } else {
+            if ($specFactory1->getWarehouseExitsSpecification()->isSatisfiedBy($this->warehouse) == False)
+                $notification->addError("Warehouse not exits...");
+        }
+
+        if (! $specFactory->getDateSpecification()->isSatisfiedBy($this->movementDate))
+            $notification->addError("Transaction date is not correct or empty");
+
+        if ($specFactory->getNullorBlankSpecification()->isSatisfiedBy($this->movementType)) {
+            $notification->addError("Transaction Type is not correct or empty");
+        } else {
+            $supportedType = TransactionType::getSupportedTransaction();
+            if (! in_array($this->movementType, $supportedType)) {
+                $notification->addError("Transaction Type is not supported");
+            }
+        }
+
+        return $notification;
+    }
 }

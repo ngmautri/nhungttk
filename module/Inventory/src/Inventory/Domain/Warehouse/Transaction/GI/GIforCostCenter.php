@@ -10,14 +10,18 @@ use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
  */
 class GIforCostCenter extends GenericTransaction
 {
+    
     /**
      * 
      * {@inheritDoc}
-     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::validate()
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificValidation()
      */
-    public function validate()
-    {}
+    public function specificValidation($notification = null)
+    {
+       // empty
+    }
 
+    
 
   
 }

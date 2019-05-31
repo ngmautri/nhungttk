@@ -143,17 +143,17 @@ class TransactionSnapshotAssembler
         return $snapShot;
     }
 
-    /**
-     * 
-     * @param unknown $obj
-     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
-     */
+  /**
+   * 
+   * @param TransactionRow $obj
+   * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
+   */
     public static function createSnapshotFrom($obj)
     {
-        if (! $obj instanceof GenericTransaction)
+        if (! $obj instanceof TransactionRow)
             return null;
 
-        $snapShot = new TransactionSnapshot();
+        $snapShot = new TransactionRowSnapshot();
 
         // should uss reflection object
         $reflectionClass = new \ReflectionObject($obj);

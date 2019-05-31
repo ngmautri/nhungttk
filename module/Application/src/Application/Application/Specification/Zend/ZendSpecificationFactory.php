@@ -43,4 +43,16 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new NullorBlankSpecification();
     }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getPositiveNumberSpecification()
+     */
+    public function getPositiveNumberSpecification()
+    {
+        return new PositiveNumberSpecification();
+        
+    }
+
 }

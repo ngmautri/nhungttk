@@ -2,14 +2,14 @@
 namespace Inventory\Domain\Warehouse\Transaction\GI;
 
 use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
-use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
+use Inventory\Domain\Warehouse\Transaction\GoodsReceiptInterface;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GIforCostCenter extends GenericTransaction implements GoodsIssueInterface
+class GRFromPurchasing extends GenericTransaction implements GoodsReceiptInterface
 {
     
     /**
@@ -21,8 +21,6 @@ class GIforCostCenter extends GenericTransaction implements GoodsIssueInterface
     {
        // empty
     }
-
-    
 
   
 }

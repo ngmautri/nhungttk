@@ -1,18 +1,14 @@
 <?php
 namespace Inventory\Infrastructure\Doctrine;
 
-use Inventory\Domain\Exception\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
-use Inventory\Domain\Item\AbstractItem;
-use Inventory\Domain\Item\ItemType;
-use Inventory\Domain\Item\Repository\ItemRepositoryInterface;
-use Inventory\Domain\Item\Factory\InventoryItemFactory;
-use Ramsey;
-use Inventory\Domain\Item\ItemSnapshot;
-use Inventory\Domain\Item\Factory\ServiceItemFactory;
-use Inventory\Domain\Item\GenericItem;
 use Inventory\Application\DTO\Item\ItemAssembler;
+use Inventory\Domain\Exception\InvalidArgumentException;
+use Inventory\Domain\Item\GenericItem;
+use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\Factory\AbstractItemFactory;
+use Inventory\Domain\Item\Repository\ItemRepositoryInterface;
+use Ramsey;
 
 /**
  *

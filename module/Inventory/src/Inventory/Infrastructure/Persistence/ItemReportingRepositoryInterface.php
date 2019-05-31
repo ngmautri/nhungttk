@@ -22,4 +22,6 @@ Interface ItemReportingRepositoryInterface
     
     public function getLastCreatedPrRow($limit = 100, $offset = 0);
     
+    public function getOnhandInWahrehouse($itemId, $wareHouseId, $transactionDate);
+    
 }

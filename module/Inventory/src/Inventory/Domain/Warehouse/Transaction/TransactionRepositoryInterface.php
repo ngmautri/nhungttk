@@ -15,5 +15,9 @@ Interface TransactionRepositoryInterface
 
     public function getByUUID($uuid);
 
-    public function store(GenericTransaction $trx);
+    public function store(GenericTransaction $trx, $generateSysNumber = True);
+
+    public function storeRow(TransactionRow $row);
+
+    public function post(GenericTransaction $trx, $generateSysNumber = True);
 }

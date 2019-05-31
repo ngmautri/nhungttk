@@ -21,6 +21,23 @@ class TransactionRowSnapshotAssembler
             print "\n" . "\$this->" . $propertyName . " = \$snapshot->" . $propertyName . ";";
         }
     }
+    
+    /**
+     * generete Mapping.
+     */
+    public static function createStoreMapping()
+    {
+        $entity = new \Application\Entity\NmtInventoryTrx();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
+        }
+    }
+    
+    
 
    /**
     * 

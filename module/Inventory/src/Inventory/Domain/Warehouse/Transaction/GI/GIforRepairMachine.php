@@ -8,7 +8,7 @@ use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GIforRepairMachine extends GenericTransaction
+class GIforRepairMachine extends GenericTransaction implements GoodsIssueInterface
 {
     public function specificValidation($notification = null)
     {}

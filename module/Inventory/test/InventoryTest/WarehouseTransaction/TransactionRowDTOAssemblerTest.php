@@ -4,6 +4,7 @@ namespace InventoryTest\WarehouseTransaction;
 use PHPUnit_Framework_TestCase;
 use Doctrine\ORM\EntityManager;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTOAssembler;
+use InventoryTest\Bootstrap;
 
 class TransactionRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
 {
@@ -24,16 +25,24 @@ class TransactionRowDTOAssemblerTest extends PHPUnit_Framework_TestCase
     }
 
     public function testOther()
+
     {
+        $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+
         $data = array();
 
+        $data["item"] = 1010;
         $data["itemSku"] = "2-3";
         $data["itemName"] = "Special Item";
-
-        //WarehouseTransactionDTOAssembler::createWarehouseTransactionDTOProperities();
-        //var_dump(in_array("token",WarehouseTransactionDTOAssembler::createAutoGereatedFields()));
+        $data["docQuantity"] = "19.004";
         
-        var_dump(TransactionRowDTOAssembler::createDTOProperities());
+        // WarehouseTransactionDTOAssembler::createWarehouseTransactionDTOProperities();
+        // var_dump(in_array("token",WarehouseTransactionDTOAssembler::createAutoGereatedFields()));
+
+//        var_dump(TransactionRowDTOAssembler::createDTOProperities());
+
+        var_dump(TransactionRowDTOAssembler::createDTOFromArray($data, $em));
+        
         
        /*  echo($dto->itemName);
         $missing = ItemAssembler::checkItemDTO();

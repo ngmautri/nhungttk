@@ -4,7 +4,6 @@ namespace Inventory\Domain\Warehouse\Transaction;
 use Application\Domain\Shared\AbstractEntity;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
 use Application\Notification;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
 
 /**
  *
@@ -115,17 +114,6 @@ abstract class GenericTransaction extends AbstractEntity
     protected $sourceLocation;
 
     protected $tartgetLocation;
-    
-    protected $transactionRows;
-    
-    
-    /**
-     * 
-     * @param TransactionRowDTO $transactionRowDTO
-     */
-    public function addRow($transactionRowDTO){
-        
-    }
 
     /**
      *

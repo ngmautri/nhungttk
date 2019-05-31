@@ -211,17 +211,17 @@ LIMIT %s
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\FinVendorInvoiceRow', 'fin_vendor_invoice_row');
             $rsm->addScalarResult("lak_unit_price", "lak_unit_price");
             $query = $this->doctrineEM->createNativeQuery($sql, $rsm);
-            
+
             $result = $query->getResult();
             return $result;
         } catch (NoResultException $e) {
             return null;
         }
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Infrastructure\Persistence\ItemReportingRepositoryInterface::getLastCreatedPrRow()
      */
     public function getLastCreatedPrRow($limit = 100, $offset = 0)
@@ -231,13 +231,13 @@ SELECT
 	nmt_procure_pr_row.*
 FROM nmt_procure_pr_row
 ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
-        
+
         if ($offset > 0) {
             $sql_tmp = $sql_tmp . " OFFSET " . $offset;
         }
-        
+
         $sql = sprintf($sql_tmp, $limit);
-        
+
         try {
             $rsm = new ResultSetMappingBuilder($this->doctrineEM);
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
@@ -248,7 +248,42 @@ ORDER BY nmt_procure_pr_row.created_on DESC LIMIT %s";
             return null;
         }
     }
-    
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Infrastructure\Persistence\ItemReportingRepositoryInterface::getOnhandInWahrehouse()
+     */
+    public function getOnhandInWahrehouse($itemId, $wareHouseId, $transactionDate)
+    {
+        $sql = "
+SELECT
+     SUM(nmt_inventory_fifo_layer.onhand_quantity) AS current_onhand
+FROM nmt_inventory_fifo_layer
+WHERE 1 %s
+GROUP BY nmt_inventory_fifo_layer.item_id, nmt_inventory_fifo_layer.warehouse_id
+";
+
+        if ($itemId == null or $wareHouseId == null || $transactionDate == null) {
+            return null;
+        }
+
+        $sql1 = sprintf("AND nmt_inventory_fifo_layer.posting_date <='%s'
+AND nmt_inventory_fifo_layer.item_id = %s
+AND nmt_inventory_fifo_layer.warehouse_id = %s
+AND nmt_inventory_fifo_layer.is_closed=0", $transactionDate, $itemId, $wareHouseId);
+
+        $sql = sprintf($sql, $sql1);
+        $stmt = $this->getDoctrineEM()
+            ->getConnection()
+            ->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+        
+        if (count($results) == 1) {
+            return $results[0]['current_onhand'];
+        }
+        return 0;
+    }
    
 }

@@ -11,4 +11,5 @@ abstract class AbstractSpecificationFactory
     abstract function getDateSpecification();
     abstract function getEmailSpecification();
     abstract function getNullorBlankSpecification();
+    abstract function getPositiveNumberSpecification();
 }

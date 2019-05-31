@@ -28,6 +28,8 @@ class ItemSnapshotAssembler
             print "\n" . "\$this->" . $propertyName . " = \$itemSnapshot->" . $propertyName . ";";
         }
     }
+    
+    
 
     /**
      *

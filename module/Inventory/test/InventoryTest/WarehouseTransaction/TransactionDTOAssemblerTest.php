@@ -34,8 +34,8 @@ class TransactionDTOAssemblerTest extends PHPUnit_Framework_TestCase
 
         $data["itemSku"] = "2-3";
         $data["movementDate"] = "2012-12-14";
-        $data["movementType"] = TransactionType::GI_FOR_COST_CENTER;
-        $data["warehouse"] = 5;
+        $data["movementType"] = TransactionType::GI_FOR_COST_CENTER+1;
+        $data["warehouse"] = 10;
         
         //WarehouseTransactionDTOAssembler::createWarehouseTransactionDTOProperities();
         //var_dump(in_array("token",WarehouseTransactionDTOAssembler::createAtoGereatedFields()));

@@ -1,16 +1,13 @@
 <?php
 namespace Inventory\Domain\Service;
 
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class FIFOLayerServiceInterface
+Interface FIFOLayerServiceInterface
 {
 
-    public function calculate();
-    
-    
+    public function calculateCOGS($itemId, $qty, \DateTime $transactionDate);
 }

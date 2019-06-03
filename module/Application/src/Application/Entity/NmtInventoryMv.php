@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtInventoryMv
  *
- * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_mv_FK4_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK5_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK6_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK7_idx", columns={"target_warehouse"}), @ORM\Index(name="nmt_inventory_mv_FK8_idx", columns={"source_location"}), @ORM\Index(name="nmt_inventory_mv_FK9_idx", columns={"tartget_location"})})
+ * @ORM\Table(name="nmt_inventory_mv", indexes={@ORM\Index(name="nmt_inventory_mv_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_inventory_mv_FK2_idx", columns={"warehouse_id"}), @ORM\Index(name="nmt_inventory_mv_FK3_idx", columns={"posting_period"}), @ORM\Index(name="nmt_inventory_mv_FK4_idx", columns={"currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK5_idx", columns={"doc_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK6_idx", columns={"local_currency_id"}), @ORM\Index(name="nmt_inventory_mv_FK7_idx", columns={"target_warehouse"}), @ORM\Index(name="nmt_inventory_mv_FK8_idx", columns={"source_location"}), @ORM\Index(name="nmt_inventory_mv_FK9_idx", columns={"tartget_location"}), @ORM\Index(name="nmt_inventory_mv_FK10_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class NmtInventoryMv
@@ -317,6 +317,16 @@ class NmtInventoryMv
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
     /**
      * @var \Application\Entity\NmtInventoryWarehouse
@@ -1416,6 +1426,30 @@ class NmtInventoryMv
     public function getCreatedBy()
     {
         return $this->createdBy;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \Application\Entity\NmtApplicationCompany $company
+     *
+     * @return NmtInventoryMv
+     */
+    public function setCompany(\Application\Entity\NmtApplicationCompany $company = null)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Application\Entity\NmtApplicationCompany
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 
     /**

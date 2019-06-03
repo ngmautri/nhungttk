@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction\GI;
 
-use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
+use Inventory\Domain\Warehouse\Transaction\GoodsIssue;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
 
 /**
@@ -9,7 +9,7 @@ use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GIforCostCenter extends GenericTransaction implements GoodsIssueInterface
+class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 {
     
     /**
@@ -21,6 +21,18 @@ class GIforCostCenter extends GenericTransaction implements GoodsIssueInterface
     {
        // empty
     }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::addTransactionRow()
+     */
+    public function addTransactionRow($transactionRowDTO)
+    {
+        
+             
+    }
+
 
     
 

@@ -191,4 +191,6 @@ class TransactionDTO
     public $sourceLocation;
 
     public $tartgetLocation;
+    
+    public $company;
 }

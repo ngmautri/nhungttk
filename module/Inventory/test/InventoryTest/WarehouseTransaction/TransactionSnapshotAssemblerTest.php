@@ -33,7 +33,7 @@ class TransactionSnapshotAssembler extends PHPUnit_Framework_TestCase
         //WarehouseTransactionDTOAssembler::createWarehouseTransactionDTOProperities();
         //var_dump(in_array("token",WarehouseTransactionDTOAssembler::createAutoGereatedFields()));
         
-        \Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler::createFromSnapshotCode();
+        var_dump(\Inventory\Domain\Warehouse\Transaction\TransactionSnapshotAssembler::createFromSnapshotCode());
         
         
         $trx = new GIforRepairMachine();

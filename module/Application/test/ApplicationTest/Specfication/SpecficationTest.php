@@ -3,15 +3,8 @@ namespace ApplicationTest\Model;
 
 use Ramsey\Uuid\Uuid;
 use PHPUnit_Framework_TestCase;
-use Application\Domain\Company\CompanyId;
-use Application\Domain\Company\Company;
-use Application\Domain\Shared\Currency;
-use ApplicationTest\Bootstrap;
 use Doctrine\ORM\EntityManager;
-use Application\Domain\Company\Doctrine\DoctrineCompanyRepository;
-use Application\Domain\Exception\InvalidArgumentException;
-use Application\Domain\Service\DoctrineSharedService;
-use Application\Application\Specification\ZendSpecificationFactory;
+use ApplicationTest\Bootstrap;
 
 class SpecficationTest extends PHPUnit_Framework_TestCase
 {
@@ -33,11 +26,10 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
 
     public function testOther()
     {
-            
-            
-            $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory();
-            $spec = $factory->getEmailSpecification();
-            var_dump($spec->isSatisfiedBy("2016-12-05dsfads@mascot.dk"));
+        $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
+        $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
+        $spec = $factory->getCanPostOnDateSpecification();
+        var_dump($spec->isSatisfiedBy("2019-05-31"));
     }
 }

@@ -8,6 +8,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Zend\Mail\Transport\SmtpOptions;
 use RuntimeException;
+use Zend\EventManager\EventManager;
 error_reporting(E_ALL | E_STRICT);
 chdir(__DIR__);
 
@@ -44,7 +45,7 @@ class Bootstrap
                 'DoctrineModule',
                 'DoctrineORMModule',
                 'Application',
-                'Inventory'
+                'Inventory',               
             ),
 
             'module_listener_options' => array(
@@ -62,9 +63,11 @@ class Bootstrap
 
         // ServiceManager Config
         $smConfig = array();
-
+        //
+      
         $serviceManager = new ServiceManager(new ServiceManagerConfig($smConfig));
         $serviceManager->setService('ApplicationConfig', $config);
+        
         $serviceManager->get('ModuleManager')->loadModules();
         static::$serviceManager = $serviceManager;
     }

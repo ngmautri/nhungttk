@@ -25,13 +25,20 @@ class Money extends AbstractValueObject
 
     /**
      *
+     * @var Currency
+     */
+    private $exchangeRate;
+
+    /**
+     *
      * @param int $amount
      * @param Currency $currency
      * @var Currency
      */
-    function __construct(int $amount, Currency $currency)
+    function __construct($amount, Currency $currency, $exchangeRate)
     {
         $this->amount = $amount;
         $this->currency = $currency;
+        $this->exchangeRate = $exchangeRate;
     }
 }

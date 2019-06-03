@@ -1,7 +1,7 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction\GI;
 
-use Inventory\Domain\Warehouse\Transaction\GenericTransaction;
+use Inventory\Domain\Warehouse\Transaction\GoodsReceipt;
 use Inventory\Domain\Warehouse\Transaction\GoodsReceiptInterface;
 
 /**
@@ -9,18 +9,19 @@ use Inventory\Domain\Warehouse\Transaction\GoodsReceiptInterface;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class GRFromPurchasing extends GenericTransaction implements GoodsReceiptInterface
+class GRFromPurchasing extends GoodsReceipt implements GoodsReceiptInterface
 {
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificValidation()
      */
     public function specificValidation($notification = null)
     {
-       // empty
+        // empty
     }
 
-  
+    public function addTransactionRow($transactionRowDTO)
+    {}
 }

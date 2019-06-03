@@ -95,7 +95,7 @@ class TransactionDTOAssembler
     /**
      * generete DTO File.
      */
-    public static function createWarehouseTransactionDTOProperities()
+    public static function createDTOProperities()
     {
         $entity = new \Application\Entity\NmtInventoryMv();
         $reflectionClass = new \ReflectionClass($entity);
@@ -138,5 +138,26 @@ class TransactionDTOAssembler
             $propertyName = $property->getName();
             print "\n" . "\$entity->set" . ucfirst($propertyName) . "(\$snapshot->" . $propertyName . ");";
         }
+    }
+    
+    /**
+     *
+     * @return array;
+     */
+    public static function findMissingProperties()
+    {
+        $missingProperties = array();
+        $entity = new \Application\Entity\NmtInventoryMv();
+        $dto = new TransactionDTO();
+        $reflectionClass = new \ReflectionClass($entity);
+        $itemProperites = $reflectionClass->getProperties();
+        foreach ($itemProperites as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            if (! property_exists($dto, $propertyName)) {
+                $missingProperties[] = $propertyName;
+            }
+        }
+        return $missingProperties;
     }
 }

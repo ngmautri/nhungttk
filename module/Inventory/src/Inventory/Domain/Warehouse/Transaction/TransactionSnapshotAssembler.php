@@ -4,6 +4,7 @@ namespace Inventory\Domain\Warehouse\Transaction;
 use Inventory\Application\DTO\Item\ItemDTO;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Domain\Item\ItemSnapshot;
+use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO;
 
 /**
  *
@@ -176,4 +177,6 @@ class TransactionSnapshotAssembler
           
         return $snapShot;
     }
+    
+  
 }

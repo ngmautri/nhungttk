@@ -17,4 +17,7 @@ Interface CompanyRepositoryInterface
     public function store(Company $company);
     public function addDeparment(Company $company, Department $department);
     public function addWarehouse(Company $company, $warehouse);
+    public function addPostingPeriod(Company $company);
+    public function getPostingPeriod($periodId);
+        
 }

@@ -1,4 +1,4 @@
-o<?php
+<?php
 namespace Inventory\Model;
 
 use Inventory\Service\FIFOLayerService;

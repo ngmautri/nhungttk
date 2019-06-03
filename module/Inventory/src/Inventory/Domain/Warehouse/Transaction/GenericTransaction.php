@@ -1,10 +1,12 @@
- <?php
+<?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
 use Application\Domain\Shared\AbstractEntity;
+use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
 use Application\Notification;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
+use Application\Domain\Shared\Specification\AbstractSpecification;
 
 /**
  *
@@ -116,15 +118,40 @@ abstract class GenericTransaction extends AbstractEntity
 
     protected $tartgetLocation;
     
-    protected $transactionRows;
-    
-    
+    protected $company;
+
+    // ============================
+
     /**
-     * 
+     *
+     * @var AbstractSpecificationFactory
+     */
+    protected $sharedSpecificationFactory;
+
+    /**
+     *
+     * @var \Inventory\Domain\AbstractSpecificationFactory
+     */
+    protected $domainSpecificationFactory;
+
+    /**
+     *
+     * @var array
+     */
+    protected $transactionRows;
+
+    abstract public function post();
+
+    /**
+     *
      * @param TransactionRowDTO $transactionRowDTO
      */
-    public function addRow($transactionRowDTO){
-        
+    public function addRow($transactionRowDTO)
+    {
+        $row = new TransactionRow();
+        $snapshot = TransactionRowSnapshotAssembler::createSnapshotFromDTO($transactionRowDTO);
+        $row->makeFromSnapshot($snapshot);
+        $this->transactionRows[] = $row;
     }
 
     /**
@@ -147,6 +174,7 @@ abstract class GenericTransaction extends AbstractEntity
     }
 
     /**
+     * validation header
      *
      * @return Notification
      */
@@ -172,22 +200,62 @@ abstract class GenericTransaction extends AbstractEntity
         if ($notification == null)
             $notification = new Notification();
 
+        /**
+         *
+         * @var AbstractSpecification $spec ;
+         */
+
+        if ($this->domainSpecificationFactory == null or $this->sharedSpecificationFactory == null)
+            $notification->addError("Validators is not found");
+
         // do verification now
-        if ($this->warehouse == null)
+
+        if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($this->movementDate))
+            $notification->addError("Transaction date is not correct or empty");
+
+        if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($this->currency))
+            $notification->addError("Currency is empty or invalid");
+
+        // check movement type
+        if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($this->movementType)) {
+            $notification->addError("Transaction Type is not correct or empty");
+        } else {
+            $supportedType = TransactionType::getSupportedTransaction();
+            if (! in_array($this->movementType, $supportedType)) {
+                $notification->addError("Transaction Type is not supported");
+            }
+        }
+        
+        // company
+        $spec = $this->sharedSpecificationFactory->getCompanyExitsSpecification();
+        if (! $spec->isSatisfiedBy($this->company));
+        $notification->addError("Company not exits..." . $this->warehouse);
+        
+        // check local currency
+        if ($this->warehouse == null) {
             $notification->addError("Source warehouse is not set");
+        } else {
 
-        // check movement date
-        if ($this->movementDate == null)
-            $notification->addError("Transactrion Date is not correct or empty");
-
-        // check currency and exchange rate.
-        if ($this->currency == null)
-            $notification->addError("Currency is not correct or empty");
+            $spec = $this->domainSpecificationFactory->getWarehouseExitsSpecification();
+            if (! $spec->isSatisfiedBy($this->warehouse));
+            $notification->addError("Source Warehouse not exits..." . $this->warehouse);
+        }
+  
+        // check local currency
+        if ($this->localCurrency == null) {
+            $notification->addError("Local currency is not set");
+        } else {
+            $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
+            if (! $spec->isSatisfiedBy($this->localCurrency));
+            $notification->addError("Local currency not exits..." . $this->warehouse);
+        }
 
         return $notification;
     }
 
     abstract public function specificValidation($notification = null);
+
+    abstract public function addTransactionRow($transactionRowDTO);
 
     /**
      *

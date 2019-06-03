@@ -12,4 +12,7 @@ abstract class AbstractSpecificationFactory
     abstract function getEmailSpecification();
     abstract function getNullorBlankSpecification();
     abstract function getPositiveNumberSpecification();
+    abstract function getCurrencyExitsSpecification();
+    abstract function getCanPostOnDateSpecification();
+    abstract function getCompanyExitsSpecification();
 }

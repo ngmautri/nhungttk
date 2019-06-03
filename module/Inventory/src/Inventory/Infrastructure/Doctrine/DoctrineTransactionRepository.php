@@ -139,7 +139,7 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
             }
             $entity->setCreatedOn(new \DateTime());
         }
-        
+
         $entity->setId($snapshot->id);
         $entity->setToken($snapshot->token);
         $entity->setChecksum($snapshot->checksum);
@@ -227,28 +227,27 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
         $entity->setCurrency($snapshot->currency);
         $entity->setPmtMethod($snapshot->pmtMethod);
         $entity->setInvoiceRow($snapshot->invoiceRow);
-        
+
         // Need check one more time.
         $dto = TransactionRowDTOAssembler::createDTOFrom($entity);
-        
+
         $factory = AbstractItemFactory::getItemFacotory($dto->itemTypeId);
-        
+
         // will throw exception if false.
         $item = $factory->createItemFromDTO($dto);
-        
+
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
         return $entity->getId();
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\TransactionRepositoryInterface::post()
      */
     public function post(GenericTransaction $trx, $generateSysNumber = True)
     {}
-    
 
     /**
      *
@@ -257,7 +256,4 @@ class DoctrineTransactionRepository implements TransactionRepositoryInterface
      */
     private function createsSnapshot($entity)
     {}
-    
-    
-    
 }

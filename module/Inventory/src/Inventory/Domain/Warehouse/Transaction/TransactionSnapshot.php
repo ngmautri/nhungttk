@@ -171,5 +171,7 @@ class TransactionSnapshot
     
     public $tartgetLocation;
     
+    public $company;
+    
     
 }

@@ -2,9 +2,7 @@
 namespace Application\Application\Specification\Zend;
 
 use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
-use Application\Application\Specification\Zend\EmailSpecification;
-use Application\Application\Specification\Zend\DateSpecification;
-use Application\Application\Specification\Zend\NullorBlankSpecification;
+use Doctrine\ORM\EntityManager;
 
 /**
  *
@@ -13,6 +11,20 @@ use Application\Application\Specification\Zend\NullorBlankSpecification;
  */
 class ZendSpecificationFactory extends AbstractSpecificationFactory
 {
+
+    /**
+     *
+     * @var EntityManager
+     */
+    protected $doctrineEM;
+
+    /*
+     * @param EntityManager $doctrineEM
+     */
+    public function __construct(EntityManager $doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+    }
 
     /**
      *
@@ -43,16 +55,63 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new NullorBlankSpecification();
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getPositiveNumberSpecification()
      */
     public function getPositiveNumberSpecification()
     {
         return new PositiveNumberSpecification();
-        
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getCurrencyExitsSpecification()
+     */
+    public function getCurrencyExitsSpecification()
+    {
+        return new CurrencyExitsSpecification($this->doctrineEM);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::CanPostOnDateSpecification()
+     */
+    public function getCanPostOnDateSpecification()
+    {
+        return new CanPostOnDateSpecification($this->doctrineEM);
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getCompanyExitsSpecification()
+     */
+    public function getCompanyExitsSpecification()
+    {}
+    
+    /**
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getDoctrineEM()
+    {
+        return $this->doctrineEM;
+    }
+
+    /**
+     *
+     * @param \Doctrine\ORM\EntityManager $doctrineEM
+     */
+    public function setDoctrineEM($doctrineEM)
+    {
+        $this->doctrineEM = $doctrineEM;
+    }
+   
+
+  
 }

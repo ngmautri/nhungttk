@@ -80,8 +80,8 @@
 	 <tr style="color:graytext;">
 			 <td ><?php echo $count;?></td>
 	 		<td><a title="<?php echo $this->escapeHtml($a->getPr()->getPrAutoNumber());?>" href="/procure/pr/show?entity_id=<?php echo $a->getPr()->getId();?>&token=<?php echo $a->getPr()->getToken();?>" target="_blank"><?php echo $this->escapeHtml($a->getPr()->getPrNumber());?></a></td>
-			<td><?php if(!$a->getPr()->getCreatedOn()==null): echo date_format ( $a->getPr()->getSubmittedOn(), "d/m/y");endif;?> </td>
-			<td><?php echo $a->getRowIdentifer();?></td>
+			<td><?php if(!$a->getPr()->getSubmittedOn()==null): echo date_format ( $a->getPr()->getSubmittedOn(), "d/m/y");endif;?> </td>
+   		    <td><?php echo $a->getRowIdentifer();?></td>
 		
 			<td><?php echo $a->getRowName();?></td>
 			<td><?php echo $a->getRowCode();?></td>

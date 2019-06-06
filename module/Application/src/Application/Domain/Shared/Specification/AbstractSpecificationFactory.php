@@ -15,4 +15,5 @@ abstract class AbstractSpecificationFactory
     abstract function getCurrencyExitsSpecification();
     abstract function getCanPostOnDateSpecification();
     abstract function getCompanyExitsSpecification();
+    abstract function getWarehouseExitsSpecification();
 }

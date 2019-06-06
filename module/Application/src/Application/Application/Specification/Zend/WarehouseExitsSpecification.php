@@ -1,12 +1,14 @@
 <?php
 namespace Application\Application\Specification\Zend;
 
+
+
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class CurrencyExitsSpecification extends DoctrineSpecification
+class WarehouseExitsSpecification extends DoctrineSpecification
 {
 
     /**
@@ -17,14 +19,16 @@ class CurrencyExitsSpecification extends DoctrineSpecification
     public function isSatisfiedBy($subject)
     {
         if ($this->doctrineEM == null || $subject == null || $subject == "")
-            return false;
+        {
+             return false;
+        }
+            
 
         /**
          *
-         * @var \Application\Entity\NmtApplicationCurrency $entity ;
+         * @var \Application\Entity\NmtInventoryWarehouse $wh ;
          */
-        $entity = $this->doctrineEM->find("\Application\Entity\NmtApplicationCurrency", $subject);
-
-        return (! $entity == null);
+        $wh = $this->doctrineEM->find("\Application\Entity\NmtInventoryWarehouse", $subject);
+        return (! $wh == null);
     }
 }

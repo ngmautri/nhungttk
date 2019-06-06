@@ -95,6 +95,16 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {}
     
     /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getWarehouseExitsSpecification()
+     */
+    public function getWarehouseExitsSpecification()
+    {
+        return new WarehouseExitsSpecification($this->doctrineEM);
+    }
+    
+    /**
      *
      * @return \Doctrine\ORM\EntityManager
      */
@@ -111,6 +121,7 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         $this->doctrineEM = $doctrineEM;
     }
+   
    
 
   

@@ -7,6 +7,7 @@ use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
 use Application\Notification;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
 use Application\Domain\Shared\Specification\AbstractSpecification;
+use Application\Application\Specification\Zend\CanPostOnDateSpecification;
 
 /**
  *
@@ -117,7 +118,7 @@ abstract class GenericTransaction extends AbstractEntity
     protected $sourceLocation;
 
     protected $tartgetLocation;
-    
+
     protected $company;
 
     // ============================
@@ -195,7 +196,7 @@ abstract class GenericTransaction extends AbstractEntity
      * @param Notification $notification
      * @return string|\Application\Notification
      */
-    protected function generalValidation($notification = null)
+    protected function generalValidation($notification = null, $isPosting = false)
     {
         if ($notification == null)
             $notification = new Notification();
@@ -204,14 +205,31 @@ abstract class GenericTransaction extends AbstractEntity
          *
          * @var AbstractSpecification $spec ;
          */
-
         if ($this->domainSpecificationFactory == null or $this->sharedSpecificationFactory == null)
             $notification->addError("Validators is not found");
 
         // do verification now
 
-        if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($this->movementDate))
+        // company
+        $spec = $this->sharedSpecificationFactory->getCompanyExitsSpecification();
+        if (! $spec->isSatisfiedBy($this->company)) {
+            $notification->addError("Company not exits..." . $this->company);
+        }
+
+        if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($this->movementDate)) {
             $notification->addError("Transaction date is not correct or empty");
+        } else {
+
+            /**
+             *
+             * @var CanPostOnDateSpecification $spec ;
+             */
+            $spec1 = $this->sharedSpecificationFactory->getCanPostOnDateSpecification();
+            $spec1->setCompanyId($this->company);
+            if (! $spec1->isSatisfiedBy($this->movementDate)) {
+                $notification->addError("Can not post on this date");
+            }
+        }
 
         if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($this->currency))
             $notification->addError("Currency is empty or invalid");
@@ -225,29 +243,24 @@ abstract class GenericTransaction extends AbstractEntity
                 $notification->addError("Transaction Type is not supported");
             }
         }
-        
-        // company
-        $spec = $this->sharedSpecificationFactory->getCompanyExitsSpecification();
-        if (! $spec->isSatisfiedBy($this->company));
-        $notification->addError("Company not exits..." . $this->warehouse);
-        
+
         // check local currency
         if ($this->warehouse == null) {
             $notification->addError("Source warehouse is not set");
         } else {
 
             $spec = $this->domainSpecificationFactory->getWarehouseExitsSpecification();
-            if (! $spec->isSatisfiedBy($this->warehouse));
-            $notification->addError("Source Warehouse not exits..." . $this->warehouse);
+            if (! $spec->isSatisfiedBy($this->warehouse))
+                $notification->addError("Source Warehouse not exits..." . $this->warehouse);
         }
-  
+
         // check local currency
         if ($this->localCurrency == null) {
             $notification->addError("Local currency is not set");
         } else {
             $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
-            if (! $spec->isSatisfiedBy($this->localCurrency));
-            $notification->addError("Local currency not exits..." . $this->warehouse);
+            if (! $spec->isSatisfiedBy($this->localCurrency))
+                $notification->addError("Local currency not exits..." . $this->localCurrency);
         }
 
         return $notification;

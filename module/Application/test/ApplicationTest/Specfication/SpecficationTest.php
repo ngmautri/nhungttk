@@ -30,6 +30,7 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
 
         $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
         $spec = $factory->getCanPostOnDateSpecification();
-        var_dump($spec->isSatisfiedBy("2019-05-31"));
+        $spec->setCompanyId(1);
+        var_dump($spec->isSatisfiedBy("2019-05-30"));
     }
 }

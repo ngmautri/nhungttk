@@ -1,127 +1,18 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
-use Application\Domain\Shared\AbstractEntity;
-use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
 use Application\Notification;
+use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
 use Application\Domain\Shared\Specification\AbstractSpecification;
-use Application\Application\Specification\Zend\CanPostOnDateSpecification;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class GenericTransaction extends AbstractEntity
+abstract class GenericTransaction extends AbstractTransaction
 {
-
-    protected $id;
-
-    protected $token;
-
-    protected $currencyIso3;
-
-    protected $exchangeRate;
-
-    protected $remarks;
-
-    protected $createdOn;
-
-    protected $currentState;
-
-    protected $isActive;
-
-    protected $trxType;
-
-    protected $lastchangeBy;
-
-    protected $lastchangeOn;
-
-    protected $postingDate;
-
-    protected $sapDoc;
-
-    protected $contractNo;
-
-    protected $contractDate;
-
-    protected $quotationNo;
-
-    protected $quotationDate;
-
-    protected $sysNumber;
-
-    protected $revisionNo;
-
-    protected $deliveryMode;
-
-    protected $incoterm;
-
-    protected $incotermPlace;
-
-    protected $paymentTerm;
-
-    protected $paymentMethod;
-
-    protected $docStatus;
-
-    protected $isDraft;
-
-    protected $workflowStatus;
-
-    protected $transactionStatus;
-
-    protected $movementType;
-
-    protected $movementDate;
-
-    protected $journalMemo;
-
-    protected $movementFlow;
-
-    protected $movementTypeMemo;
-
-    protected $isPosted;
-
-    protected $isReversed;
-
-    protected $reversalDate;
-
-    protected $reversalDoc;
-
-    protected $reversalReason;
-
-    protected $isReversable;
-
-    protected $docType;
-
-    protected $isTransferTransaction;
-
-    protected $reversalBlocked;
-
-    protected $createdBy;
-
-    protected $warehouse;
-
-    protected $postingPeriod;
-
-    protected $currency;
-
-    protected $docCurrency;
-
-    protected $localCurrency;
-
-    protected $targetWarehouse;
-
-    protected $sourceLocation;
-
-    protected $tartgetLocation;
-
-    protected $company;
-
-    // ============================
 
     /**
      *
@@ -179,10 +70,13 @@ abstract class GenericTransaction extends AbstractEntity
      *
      * @return Notification
      */
-    public function validate()
+    public function validate($notification = null, $isPosting = false)
     {
-        $notification = new Notification();
-        $notification = $this->generalValidation();
+        if ($notification == null) {
+            $notification = new Notification();
+        }
+
+        $notification = $this->generalValidation($notification);
 
         if ($this->specificValidation($notification) !== null) {
             return $this->specificValidation($notification);
@@ -244,7 +138,7 @@ abstract class GenericTransaction extends AbstractEntity
             }
         }
 
-        // check local currency
+        // check warehouse currency
         if ($this->warehouse == null) {
             $notification->addError("Source warehouse is not set");
         } else {
@@ -268,340 +162,148 @@ abstract class GenericTransaction extends AbstractEntity
 
     abstract public function specificValidation($notification = null);
 
+    abstract public function specificRowValidation($notification = null);
+
     abstract public function addTransactionRow($transactionRowDTO);
 
     /**
+     * validation header
      *
-     * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO
+     * @return Notification
      */
-    public function makeDTO()
+    public function validateRow($row, $notification, $isPosting = false)
     {
-        return TransactionDTOAssembler::createDTOFrom($this);
+        if ($notification == null) {
+            $notification = new Notification();
+        }
+
+        $notification = $this->generalRowValidation();
+
+        if ($this->specificRowValidation($notification) !== null) {
+            return $this->specificValidation($notification);
+        }
+
+        return $notification;
+    }
+
+    /**
+     * 
+     * @param TransactionRow $row
+     * @param Notification $notification
+     * @param boolean $isPosting
+     * @return string|\Application\Notification
+     */
+    protected function generalRowValidation(TransactionRow $row, $notification = null, $isPosting = false)
+    {
+             
+        
+        if ($notification == null)
+            $notification = new Notification();
+        
+        
+            if ($row == null){
+                return $notification
+            }
+                 
+
+        /**
+         *
+         * @var AbstractSpecification $spec ;
+         */
+        if ($this->domainSpecificationFactory == null or $this->sharedSpecificationFactory == null)
+            $notification->addError("Validators is not found");
+
+        // do verification now
+
+        // company
+        $spec = $this->sharedSpecificationFactory->getCompanyExitsSpecification();
+        if (! $spec->isSatisfiedBy($this->company)) {
+            $notification->addError("Company not exits..." . $this->company);
+        }
+
+        if (! $this->sharedSpecificationFactory->getDateSpecification()->isSatisfiedBy($this->movementDate)) {
+            $notification->addError("Transaction date is not correct or empty");
+        } else {
+
+            /**
+             *
+             * @var CanPostOnDateSpecification $spec ;
+             */
+            $spec1 = $this->sharedSpecificationFactory->getCanPostOnDateSpecification();
+            $spec1->setCompanyId($this->company);
+            if (! $spec1->isSatisfiedBy($this->movementDate)) {
+                $notification->addError("Can not post on this date");
+            }
+        }
+
+        if (! $this->sharedSpecificationFactory->getCurrencyExitsSpecification()->isSatisfiedBy($this->currency))
+            $notification->addError("Currency is empty or invalid");
+
+        // check movement type
+        if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($this->movementType)) {
+            $notification->addError("Transaction Type is not correct or empty");
+        } else {
+            $supportedType = TransactionType::getSupportedTransaction();
+            if (! in_array($this->movementType, $supportedType)) {
+                $notification->addError("Transaction Type is not supported");
+            }
+        }
+
+        // check warehouse currency
+        if ($this->warehouse == null) {
+            $notification->addError("Source warehouse is not set");
+        } else {
+
+            $spec = $this->domainSpecificationFactory->getWarehouseExitsSpecification();
+            if (! $spec->isSatisfiedBy($this->warehouse))
+                $notification->addError("Source Warehouse not exits..." . $this->warehouse);
+        }
+
+        // check local currency
+        if ($this->localCurrency == null) {
+            $notification->addError("Local currency is not set");
+        } else {
+            $spec = $this->sharedSpecificationFactory->getCurrencyExitsSpecification();
+            if (! $spec->isSatisfiedBy($this->localCurrency))
+                $notification->addError("Local currency not exits..." . $this->localCurrency);
+        }
+
+        return $notification;
     }
 
     /**
      *
-     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
+     * @return \Application\Domain\Shared\Specification\AbstractSpecificationFactory
      */
-    public function makeSnapshot()
+    public function getSharedSpecificationFactory()
     {
-        return TransactionSnapshotAssembler::createSnapshotFrom($this);
+        return $this->sharedSpecificationFactory;
     }
 
     /**
      *
-     * @param TransactionSnapshot $snapshot
+     * @return \Inventory\Domain\AbstractSpecificationFactory
      */
-    public function makeFromSnapshot($snapshot)
+    public function getDomainSpecificationFactory()
     {
-        if (! $snapshot instanceof TransactionSnapshot)
-            return;
-
-        $this->id = $snapshot->id;
-        $this->token = $snapshot->token;
-        $this->currencyIso3 = $snapshot->currencyIso3;
-        $this->exchangeRate = $snapshot->exchangeRate;
-        $this->remarks = $snapshot->remarks;
-        $this->createdOn = $snapshot->createdOn;
-        $this->currentState = $snapshot->currentState;
-        $this->isActive = $snapshot->isActive;
-        $this->trxType = $snapshot->trxType;
-        $this->lastchangeBy = $snapshot->lastchangeBy;
-        $this->lastchangeOn = $snapshot->lastchangeOn;
-        $this->postingDate = $snapshot->postingDate;
-        $this->sapDoc = $snapshot->sapDoc;
-        $this->contractNo = $snapshot->contractNo;
-        $this->contractDate = $snapshot->contractDate;
-        $this->quotationNo = $snapshot->quotationNo;
-        $this->quotationDate = $snapshot->quotationDate;
-        $this->sysNumber = $snapshot->sysNumber;
-        $this->revisionNo = $snapshot->revisionNo;
-        $this->deliveryMode = $snapshot->deliveryMode;
-        $this->incoterm = $snapshot->incoterm;
-        $this->incotermPlace = $snapshot->incotermPlace;
-        $this->paymentTerm = $snapshot->paymentTerm;
-        $this->paymentMethod = $snapshot->paymentMethod;
-        $this->docStatus = $snapshot->docStatus;
-        $this->isDraft = $snapshot->isDraft;
-        $this->workflowStatus = $snapshot->workflowStatus;
-        $this->transactionStatus = $snapshot->transactionStatus;
-        $this->movementType = $snapshot->movementType;
-        $this->movementDate = $snapshot->movementDate;
-        $this->journalMemo = $snapshot->journalMemo;
-        $this->movementFlow = $snapshot->movementFlow;
-        $this->movementTypeMemo = $snapshot->movementTypeMemo;
-        $this->isPosted = $snapshot->isPosted;
-        $this->isReversed = $snapshot->isReversed;
-        $this->reversalDate = $snapshot->reversalDate;
-        $this->reversalDoc = $snapshot->reversalDoc;
-        $this->reversalReason = $snapshot->reversalReason;
-        $this->isReversable = $snapshot->isReversable;
-        $this->docType = $snapshot->docType;
-        $this->isTransferTransaction = $snapshot->isTransferTransaction;
-        $this->reversalBlocked = $snapshot->reversalBlocked;
-        $this->createdBy = $snapshot->createdBy;
-        $this->warehouse = $snapshot->warehouse;
-        $this->postingPeriod = $snapshot->postingPeriod;
-        $this->currency = $snapshot->currency;
-        $this->docCurrency = $snapshot->docCurrency;
-        $this->localCurrency = $snapshot->localCurrency;
-        $this->targetWarehouse = $snapshot->targetWarehouse;
-        $this->sourceLocation = $snapshot->sourceLocation;
-        $this->tartgetLocation = $snapshot->tartgetLocation;
+        return $this->domainSpecificationFactory;
     }
 
-    public function getId()
+    /**
+     *
+     * @param \Application\Domain\Shared\Specification\AbstractSpecificationFactory $sharedSpecificationFactory
+     */
+    public function setSharedSpecificationFactory($sharedSpecificationFactory)
     {
-        return $this->id;
+        $this->sharedSpecificationFactory = $sharedSpecificationFactory;
     }
 
-    public function getToken()
+    /**
+     *
+     * @param \Inventory\Domain\AbstractSpecificationFactory $domainSpecificationFactory
+     */
+    public function setDomainSpecificationFactory($domainSpecificationFactory)
     {
-        return $this->token;
-    }
-
-    public function getCurrencyIso3()
-    {
-        return $this->currencyIso3;
-    }
-
-    public function getExchangeRate()
-    {
-        return $this->exchangeRate;
-    }
-
-    public function getRemarks()
-    {
-        return $this->remarks;
-    }
-
-    public function getCreatedOn()
-    {
-        return $this->createdOn;
-    }
-
-    public function getCurrentState()
-    {
-        return $this->currentState;
-    }
-
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
-    public function getTrxType()
-    {
-        return $this->trxType;
-    }
-
-    public function getLastchangeBy()
-    {
-        return $this->lastchangeBy;
-    }
-
-    public function getLastchangeOn()
-    {
-        return $this->lastchangeOn;
-    }
-
-    public function getPostingDate()
-    {
-        return $this->postingDate;
-    }
-
-    public function getSapDoc()
-    {
-        return $this->sapDoc;
-    }
-
-    public function getContractNo()
-    {
-        return $this->contractNo;
-    }
-
-    public function getContractDate()
-    {
-        return $this->contractDate;
-    }
-
-    public function getQuotationNo()
-    {
-        return $this->quotationNo;
-    }
-
-    public function getQuotationDate()
-    {
-        return $this->quotationDate;
-    }
-
-    public function getSysNumber()
-    {
-        return $this->sysNumber;
-    }
-
-    public function getRevisionNo()
-    {
-        return $this->revisionNo;
-    }
-
-    public function getDeliveryMode()
-    {
-        return $this->deliveryMode;
-    }
-
-    public function getIncoterm()
-    {
-        return $this->incoterm;
-    }
-
-    public function getIncotermPlace()
-    {
-        return $this->incotermPlace;
-    }
-
-    public function getPaymentTerm()
-    {
-        return $this->paymentTerm;
-    }
-
-    public function getPaymentMethod()
-    {
-        return $this->paymentMethod;
-    }
-
-    public function getDocStatus()
-    {
-        return $this->docStatus;
-    }
-
-    public function getIsDraft()
-    {
-        return $this->isDraft;
-    }
-
-    public function getWorkflowStatus()
-    {
-        return $this->workflowStatus;
-    }
-
-    public function getTransactionStatus()
-    {
-        return $this->transactionStatus;
-    }
-
-    public function getMovementType()
-    {
-        return $this->movementType;
-    }
-
-    public function getMovementDate()
-    {
-        return $this->movementDate;
-    }
-
-    public function getJournalMemo()
-    {
-        return $this->journalMemo;
-    }
-
-    public function getMovementFlow()
-    {
-        return $this->movementFlow;
-    }
-
-    public function getMovementTypeMemo()
-    {
-        return $this->movementTypeMemo;
-    }
-
-    public function getIsPosted()
-    {
-        return $this->isPosted;
-    }
-
-    public function getIsReversed()
-    {
-        return $this->isReversed;
-    }
-
-    public function getReversalDate()
-    {
-        return $this->reversalDate;
-    }
-
-    public function getReversalDoc()
-    {
-        return $this->reversalDoc;
-    }
-
-    public function getReversalReason()
-    {
-        return $this->reversalReason;
-    }
-
-    public function getIsReversable()
-    {
-        return $this->isReversable;
-    }
-
-    public function getDocType()
-    {
-        return $this->docType;
-    }
-
-    public function getIsTransferTransaction()
-    {
-        return $this->isTransferTransaction;
-    }
-
-    public function getReversalBlocked()
-    {
-        return $this->reversalBlocked;
-    }
-
-    public function getCreatedBy()
-    {
-        return $this->createdBy;
-    }
-
-    public function getWarehouse()
-    {
-        return $this->warehouse;
-    }
-
-    public function getPostingPeriod()
-    {
-        return $this->postingPeriod;
-    }
-
-    public function getCurrency()
-    {
-        return $this->currency;
-    }
-
-    public function getDocCurrency()
-    {
-        return $this->docCurrency;
-    }
-
-    public function getLocalCurrency()
-    {
-        return $this->localCurrency;
-    }
-
-    public function getTargetWarehouse()
-    {
-        return $this->targetWarehouse;
-    }
-
-    public function getSourceLocation()
-    {
-        return $this->sourceLocation;
-    }
-
-    public function getTartgetLocation()
-    {
-        return $this->tartgetLocation;
+        $this->domainSpecificationFactory = $domainSpecificationFactory;
     }
 }

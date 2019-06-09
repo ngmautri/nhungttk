@@ -150,7 +150,7 @@ class ItemCRUDService extends AbstractService
             }
 
             $dto = ItemAssembler::createItemDTOFromArray($data);
-        
+
             /**
              *
              * @var ItemSnapshot $itemSnapshot ;
@@ -179,7 +179,14 @@ class ItemCRUDService extends AbstractService
 
             $newItem = ItemFactory::createItem($newItemSnapshot->itemTypeId);
             $newItem->makeFromSnapshot($newItemSnapshot);
-            
+
+            // Validate
+            $notification = $newItem->validate($notification);
+
+            if ($notification->hasErrors()) {
+                return $notification;
+            }
+
             $rep->store($newItem, False);
 
             $event = new ItemUpdatedEvent($newItem);

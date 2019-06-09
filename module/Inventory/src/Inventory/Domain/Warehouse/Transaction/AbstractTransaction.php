@@ -2,12 +2,7 @@
 namespace Inventory\Domain\Warehouse\Transaction;
 
 use Application\Domain\Shared\AbstractEntity;
-use Application\Domain\Shared\Specification\AbstractSpecificationFactory;
 use Inventory\Application\DTO\Warehouse\Transaction\TransactionDTOAssembler;
-use Application\Notification;
-use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
-use Application\Domain\Shared\Specification\AbstractSpecification;
-use Application\Application\Specification\Zend\CanPostOnDateSpecification;
 
 /**
  *

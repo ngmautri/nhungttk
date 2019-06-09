@@ -36,13 +36,33 @@ abstract class GenericTransaction extends AbstractTransaction
     protected $transactionRows;
 
     /**
-     * 
+     *
      * @var ValuationServiceInterface
      */
     protected $valuationService;
     
-    
+
     abstract public function post();
+
+    abstract public function specificValidation($notification = null);
+
+    /**
+     *
+     * @param TransactionRow $row
+     * @param Notification $notification
+     * @param boolean $isPosting
+     */
+    abstract public function specificRowValidation($row, $notification = null, $isPosting = false);
+
+    /**
+     *
+     * @param TransactionRow $row
+     * @param Notification $notification
+     * @param boolean $isPosting
+     */
+    abstract public function specificRowValidationByFlow($row, $notification = null, $isPosting = false);
+
+    abstract public function addTransactionRow($transactionRow);
 
     /**
      *
@@ -186,26 +206,6 @@ abstract class GenericTransaction extends AbstractTransaction
 
         return $notification;
     }
-
-    abstract public function specificValidation($notification = null);
-
-    /**
-     *
-     * @param TransactionRow $row
-     * @param Notification $notification
-     * @param boolean $isPosting
-     */
-    abstract public function specificRowValidation($row, $notification = null, $isPosting = false);
-
-    /**
-     *
-     * @param TransactionRow $row
-     * @param Notification $notification
-     * @param boolean $isPosting
-     */
-    abstract public function specificRowValidationByFlow($row, $notification = null, $isPosting = false);
-
-    abstract public function addTransactionRow($transactionRow);
 
     /**
      * validation row

@@ -87,47 +87,66 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getCompanyExitsSpecification()
      */
     public function getCompanyExitsSpecification()
     {
         return new CompanyExitsSpecification($this->doctrineEM);
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getWarehouseExitsSpecification()
      */
     public function getWarehouseExitsSpecification()
     {
         return new WarehouseExitsSpecification($this->doctrineEM);
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getItemExitsSpecification()
      */
     public function getItemExitsSpecification()
     {
         return new ItemExitsSpecification($this->doctrineEM);
-        
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getCostCenterExitsSpecification()
      */
     public function getCostCenterExitsSpecification()
     {
         return new CostCenterExitsSpecification($this->doctrineEM);
     }
+
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getUserExitsSpecification()
+     */
+    public function getUserExitsSpecification()
+    {
+        return new UserExitsSpecification($this->doctrineEM);
+    }
     
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getMeasureUnitExitsSpecification()
+     */
+    public function getMeasureUnitExitsSpecification()
+    {
+        return new MeasureUnitExitsSpecification($this->doctrineEM);
+    }
     
+
     /**
      *
      * @return \Doctrine\ORM\EntityManager
@@ -145,6 +164,8 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         $this->doctrineEM = $doctrineEM;
     }
+   
+   
   
     
 

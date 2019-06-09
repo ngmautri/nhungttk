@@ -10,38 +10,23 @@ use Application\Notification;
  */
 class ServiceItem extends GenericItem
 {
-    
+
     /**
-     * 
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Item\GenericItem::validate()
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\GenericItem::specificValidation()
      */
-    public function validate()
+    public function specificValidation(Notification $notification = null)
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\GenericItem::specifyItem()
+     */
+    public function specifyItem()
     {
-        $notification = new Notification();
-        $notification->setSourceClass(get_class($this));
-        
-        if ($this->isNullOrBlank($this->getItemName())) {
-            $err = "Item name is null or empty. It is required for any item.";
-            $notification->addError($err);
-        } else {
-            
-            if (preg_match('/[#$%*@,=+^]/', $this->getItemName()) == 1) {
-                $err = "Item name contains invalid character (e.g. #,%,&,*)";
-                $notification->addError($err);
-            }
-        }
-        return $notification;
+        $this->setItemType("SERVICE");
+        $this->setItemTypeId(ItemType::SERVICE_ITEM_TYPE);
     }
-    
-   /**
-    * 
-    * {@inheritDoc}
-    * @see \Inventory\Domain\Item\GenericItem::getItemType()
-    */
-    public function getItemType()
-    {
-        return ItemType::SERVICE_ITEM_TYPE;
-    }
-  
 }

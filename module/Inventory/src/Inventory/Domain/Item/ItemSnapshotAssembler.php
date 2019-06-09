@@ -17,7 +17,7 @@ class ItemSnapshotAssembler
      *
      * @return ItemSnapshot;
      */
-    public static function createItemFromSnapshotCode()
+    public static function createFromSnapshotCode()
     {
         $itemSnapshot = new ItemSnapshot();
         $reflectionClass = new \ReflectionClass($itemSnapshot);
@@ -36,7 +36,7 @@ class ItemSnapshotAssembler
      * @param array $data
      * @return \Inventory\Domain\Item\ItemSnapshot
      */
-    public static function createItemSnapshotFromArray($data)
+    public static function createSnapshotFromArray($data)
     {
         if ($data == null)
             return null;
@@ -45,7 +45,13 @@ class ItemSnapshotAssembler
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {
-                $snapShot->$property = $value;
+                
+                if($value==null || $value == ""){
+                    $snapShot->$property = null;
+                }else{
+                    $snapShot->$property = $value;
+                }
+                
             }
         }
         return $snapShot;
@@ -57,7 +63,7 @@ class ItemSnapshotAssembler
      * @param array $data
      * @return NULL|\Inventory\Domain\Item\ItemSnapshot
      */
-    public static function updateItemSnapshotFromArray($snapShot, $data)
+    public static function updateSnapshotFromArray($snapShot, $data)
     {
         if ($data == null || ! $snapShot instanceof ItemSnapshot)
             return null;
@@ -80,7 +86,7 @@ class ItemSnapshotAssembler
      * @param ItemDTO $dto
      * @return \Inventory\Domain\Item\ItemSnapshot
      */
-    public static function createItemSnapshotFromDTO($dto)
+    public static function createSnapshotFromDTO($dto)
     {
         if (! $dto instanceof ItemDTO)
             return null;
@@ -106,7 +112,7 @@ class ItemSnapshotAssembler
      * @param ItemDTO $dto
      * @return NULL|\Inventory\Domain\Item\ItemSnapshot
      */
-    public static function updateItemSnapshotFromDTO($snapShot, $dto)
+    public static function updateSnapshotFromDTO($snapShot, $dto)
     {
         if (! $dto instanceof ItemDTO || ! $snapShot instanceof ItemSnapshot)
             return null;
@@ -151,10 +157,10 @@ class ItemSnapshotAssembler
 
     /**
      *
-     * @param AbstractItem $item
+     * @param GenericItem $item
      * @return NULL|\Inventory\Domain\Item\ItemSnapshot
      */
-    public static function createItemSnapshotFrom($item)
+    public static function createSnapshotFrom($item)
     {
         if (! $item instanceof GenericItem) {
             return null;

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationUom
  *
- * @ORM\Table(name="nmt_application_uom", uniqueConstraints={@ORM\UniqueConstraint(name="uom_name_UNIQUE", columns={"uom_name"})}, indexes={@ORM\Index(name="nmt_application_uom_FK1_idx", columns={"created_by"})})
+ * @ORM\Table(name="nmt_application_uom", uniqueConstraints={@ORM\UniqueConstraint(name="uom_name_UNIQUE", columns={"uom_name"})}, indexes={@ORM\Index(name="nmt_application_uom_FK1_idx", columns={"created_by"}), @ORM\Index(name="nmt_application_uom_FK2_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class NmtApplicationUom
@@ -86,6 +86,16 @@ class NmtApplicationUom
      * })
      */
     private $createdBy;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 }

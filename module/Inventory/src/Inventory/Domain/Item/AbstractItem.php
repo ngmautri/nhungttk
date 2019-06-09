@@ -11,91 +11,170 @@ use Inventory\Domain\Exception\InvalidArgumentException;
  */
 abstract class AbstractItem
 {
+
     protected $id;
+
     protected $warehouseId;
+
     protected $itemSku;
+
     protected $itemName;
+
     protected $itemNameForeign;
+
     protected $itemDescription;
+
     protected $itemType;
+
     protected $itemCategory;
+
     protected $keywords;
+
     protected $isActive;
+
     protected $isStocked;
+
     protected $isSaleItem;
+
     protected $isPurchased;
+
     protected $isFixedAsset;
+
     protected $isSparepart;
+
     protected $uom;
+
     protected $barcode;
+
     protected $barcode39;
+
     protected $barcode128;
+
     protected $status;
+
     protected $createdOn;
+
     protected $manufacturer;
+
     protected $manufacturerCode;
+
     protected $manufacturerCatalog;
+
     protected $manufacturerModel;
+
     protected $manufacturerSerial;
+
     protected $origin;
+
     protected $serialNumber;
+
     protected $lastPurchasePrice;
+
     protected $lastPurchaseCurrency;
+
     protected $lastPurchaseDate;
+
     protected $leadTime;
+
     protected $validFromDate;
+
     protected $validToDate;
+
     protected $location;
+
     protected $itemInternalLabel;
+
     protected $assetLabel;
+
     protected $sparepartLabel;
+
     protected $remarks;
+
     protected $localAvailabiliy;
+
     protected $lastChangeOn;
+
     protected $token;
+
     protected $checksum;
+
     protected $currentState;
+
     protected $docNumber;
+
     protected $monitoredBy;
+
     protected $sysNumber;
+
     protected $remarksText;
+
     protected $revisionNo;
+
     protected $itemSku1;
+
     protected $itemSku2;
+
     protected $assetGroup;
+
     protected $assetClass;
+
     protected $stockUomConvertFactor;
+
     protected $purchaseUomConvertFactor;
+
     protected $salesUomConvertFactor;
+
     protected $capacity;
+
     protected $avgUnitPrice;
+
     protected $standardPrice;
+
     protected $uuid;
+
     protected $itemTypeId;
+
     protected $createdBy;
+
     protected $itemGroup;
+
     protected $stockUom;
+
     protected $cogsAccount;
+
     protected $purchaseUom;
+
     protected $salesUom;
+
     protected $inventoryAccount;
+
     protected $expenseAccount;
+
     protected $revenueAccount;
+
     protected $defaultWarehouse;
+
     protected $lastChangeBy;
+
     protected $standardUom;
+
     protected $company;
+
     protected $lastPrRow;
+
     protected $lastPoRow;
+
     protected $lastApInvoiceRow;
+
     protected $lastTrxRow;
+
     protected $lastPurchasing;
 
     /**
      *
      * @param ItemSnapshot $itemSnapshot
      */
-    public function makeItemFrom($itemSnapshot)
+    public function makeFromSnapshot($itemSnapshot)
     {
         if (! $itemSnapshot instanceof ItemSnapshot)
             return;
@@ -179,13 +258,14 @@ abstract class AbstractItem
         $this->lastTrxRow = $itemSnapshot->lastTrxRow;
         $this->lastPurchasing = $itemSnapshot->lastPurchasing;
         $this->itemTypeId = $itemSnapshot->itemTypeId;
+        
     }
 
     /**
      *
      * @return ItemDTO;
      */
-    public function createItemDTO()
+    public function createDTO()
     {
         $itemDTO = ItemAssembler::createItemDTO($this);
         return $itemDTO;
@@ -195,11 +275,17 @@ abstract class AbstractItem
      *
      * @return ItemSnapshot;
      */
-    public function createItemSnapshot()
+    public function createSnapshot()
     {
-        $itemSnapshot = ItemSnapshotAssembler::createItemSnapshotFrom($this);
+        $itemSnapshot = ItemSnapshotAssembler::createSnapshotFrom($this);
         return $itemSnapshot;
     }
+    
+    protected function setItemType($itemType)
+    {
+        $this->itemType = $itemType;
+    }
+    
 
     /**
      *
@@ -209,6 +295,7 @@ abstract class AbstractItem
     {
         return ItemType::UNKNOWN_ITEM_TYPE;
     }
+
     public function getId()
     {
         return $this->id;
@@ -598,7 +685,620 @@ abstract class AbstractItem
     {
         return $this->lastPurchasing;
     }
+    /**
+     * @param mixed $warehouseId
+     */
+    protected function setWarehouseId($warehouseId)
+    {
+        $this->warehouseId = $warehouseId;
+    }
 
+    /**
+     * @param mixed $itemSku
+     */
+    protected function setItemSku($itemSku)
+    {
+        $this->itemSku = $itemSku;
+    }
 
-    
+    /**
+     * @param mixed $itemName
+     */
+    protected function setItemName($itemName)
+    {
+        $this->itemName = $itemName;
+    }
+
+    /**
+     * @param mixed $itemNameForeign
+     */
+    protected function setItemNameForeign($itemNameForeign)
+    {
+        $this->itemNameForeign = $itemNameForeign;
+    }
+
+    /**
+     * @param mixed $itemDescription
+     */
+    protected function setItemDescription($itemDescription)
+    {
+        $this->itemDescription = $itemDescription;
+    }
+
+    /**
+     * @param mixed $itemCategory
+     */
+    protected function setItemCategory($itemCategory)
+    {
+        $this->itemCategory = $itemCategory;
+    }
+
+    /**
+     * @param mixed $keywords
+     */
+    protected function setKeywords($keywords)
+    {
+        $this->keywords = $keywords;
+    }
+
+    /**
+     * @param mixed $isActive
+     */
+    protected function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @param mixed $isStocked
+     */
+    protected function setIsStocked($isStocked)
+    {
+        $this->isStocked = $isStocked;
+    }
+
+    /**
+     * @param mixed $isSaleItem
+     */
+    protected function setIsSaleItem($isSaleItem)
+    {
+        $this->isSaleItem = $isSaleItem;
+    }
+
+    /**
+     * @param mixed $isPurchased
+     */
+    protected function setIsPurchased($isPurchased)
+    {
+        $this->isPurchased = $isPurchased;
+    }
+
+    /**
+     * @param mixed $isFixedAsset
+     */
+    protected function setIsFixedAsset($isFixedAsset)
+    {
+        $this->isFixedAsset = $isFixedAsset;
+    }
+
+    /**
+     * @param mixed $isSparepart
+     */
+    protected function setIsSparepart($isSparepart)
+    {
+        $this->isSparepart = $isSparepart;
+    }
+
+    /**
+     * @param mixed $uom
+     */
+    protected function setUom($uom)
+    {
+        $this->uom = $uom;
+    }
+
+    /**
+     * @param mixed $barcode
+     */
+    protected function setBarcode($barcode)
+    {
+        $this->barcode = $barcode;
+    }
+
+    /**
+     * @param mixed $barcode39
+     */
+    protected function setBarcode39($barcode39)
+    {
+        $this->barcode39 = $barcode39;
+    }
+
+    /**
+     * @param mixed $barcode128
+     */
+    protected function setBarcode128($barcode128)
+    {
+        $this->barcode128 = $barcode128;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    protected function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @param mixed $createdOn
+     */
+    protected function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     * @param mixed $manufacturer
+     */
+    protected function setManufacturer($manufacturer)
+    {
+        $this->manufacturer = $manufacturer;
+    }
+
+    /**
+     * @param mixed $manufacturerCode
+     */
+    protected function setManufacturerCode($manufacturerCode)
+    {
+        $this->manufacturerCode = $manufacturerCode;
+    }
+
+    /**
+     * @param mixed $manufacturerCatalog
+     */
+    protected function setManufacturerCatalog($manufacturerCatalog)
+    {
+        $this->manufacturerCatalog = $manufacturerCatalog;
+    }
+
+    /**
+     * @param mixed $manufacturerModel
+     */
+    protected function setManufacturerModel($manufacturerModel)
+    {
+        $this->manufacturerModel = $manufacturerModel;
+    }
+
+    /**
+     * @param mixed $manufacturerSerial
+     */
+    protected function setManufacturerSerial($manufacturerSerial)
+    {
+        $this->manufacturerSerial = $manufacturerSerial;
+    }
+
+    /**
+     * @param mixed $origin
+     */
+    protected function setOrigin($origin)
+    {
+        $this->origin = $origin;
+    }
+
+    /**
+     * @param mixed $serialNumber
+     */
+    protected function setSerialNumber($serialNumber)
+    {
+        $this->serialNumber = $serialNumber;
+    }
+
+    /**
+     * @param mixed $lastPurchasePrice
+     */
+    protected function setLastPurchasePrice($lastPurchasePrice)
+    {
+        $this->lastPurchasePrice = $lastPurchasePrice;
+    }
+
+    /**
+     * @param mixed $lastPurchaseCurrency
+     */
+    protected function setLastPurchaseCurrency($lastPurchaseCurrency)
+    {
+        $this->lastPurchaseCurrency = $lastPurchaseCurrency;
+    }
+
+    /**
+     * @param mixed $lastPurchaseDate
+     */
+    protected function setLastPurchaseDate($lastPurchaseDate)
+    {
+        $this->lastPurchaseDate = $lastPurchaseDate;
+    }
+
+    /**
+     * @param mixed $leadTime
+     */
+    protected function setLeadTime($leadTime)
+    {
+        $this->leadTime = $leadTime;
+    }
+
+    /**
+     * @param mixed $validFromDate
+     */
+    protected function setValidFromDate($validFromDate)
+    {
+        $this->validFromDate = $validFromDate;
+    }
+
+    /**
+     * @param mixed $validToDate
+     */
+    protected function setValidToDate($validToDate)
+    {
+        $this->validToDate = $validToDate;
+    }
+
+    /**
+     * @param mixed $location
+     */
+    protected function setLocation($location)
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * @param mixed $itemInternalLabel
+     */
+    protected function setItemInternalLabel($itemInternalLabel)
+    {
+        $this->itemInternalLabel = $itemInternalLabel;
+    }
+
+    /**
+     * @param mixed $assetLabel
+     */
+    protected function setAssetLabel($assetLabel)
+    {
+        $this->assetLabel = $assetLabel;
+    }
+
+    /**
+     * @param mixed $sparepartLabel
+     */
+    protected function setSparepartLabel($sparepartLabel)
+    {
+        $this->sparepartLabel = $sparepartLabel;
+    }
+
+    /**
+     * @param mixed $remarks
+     */
+    protected function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     * @param mixed $localAvailabiliy
+     */
+    protected function setLocalAvailabiliy($localAvailabiliy)
+    {
+        $this->localAvailabiliy = $localAvailabiliy;
+    }
+
+    /**
+     * @param mixed $lastChangeOn
+     */
+    protected function setLastChangeOn($lastChangeOn)
+    {
+        $this->lastChangeOn = $lastChangeOn;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    protected function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @param mixed $checksum
+     */
+    protected function setChecksum($checksum)
+    {
+        $this->checksum = $checksum;
+    }
+
+    /**
+     * @param mixed $currentState
+     */
+    protected function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+    }
+
+    /**
+     * @param mixed $docNumber
+     */
+    protected function setDocNumber($docNumber)
+    {
+        $this->docNumber = $docNumber;
+    }
+
+    /**
+     * @param mixed $monitoredBy
+     */
+    protected function setMonitoredBy($monitoredBy)
+    {
+        $this->monitoredBy = $monitoredBy;
+    }
+
+    /**
+     * @param mixed $sysNumber
+     */
+    protected function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+    }
+
+    /**
+     * @param mixed $remarksText
+     */
+    protected function setRemarksText($remarksText)
+    {
+        $this->remarksText = $remarksText;
+    }
+
+    /**
+     * @param mixed $revisionNo
+     */
+    protected function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     * @param mixed $itemSku1
+     */
+    protected function setItemSku1($itemSku1)
+    {
+        $this->itemSku1 = $itemSku1;
+    }
+
+    /**
+     * @param mixed $itemSku2
+     */
+    protected function setItemSku2($itemSku2)
+    {
+        $this->itemSku2 = $itemSku2;
+    }
+
+    /**
+     * @param mixed $assetGroup
+     */
+    protected function setAssetGroup($assetGroup)
+    {
+        $this->assetGroup = $assetGroup;
+    }
+
+    /**
+     * @param mixed $assetClass
+     */
+    protected function setAssetClass($assetClass)
+    {
+        $this->assetClass = $assetClass;
+    }
+
+    /**
+     * @param mixed $stockUomConvertFactor
+     */
+    protected function setStockUomConvertFactor($stockUomConvertFactor)
+    {
+        $this->stockUomConvertFactor = $stockUomConvertFactor;
+    }
+
+    /**
+     * @param mixed $purchaseUomConvertFactor
+     */
+    protected function setPurchaseUomConvertFactor($purchaseUomConvertFactor)
+    {
+        $this->purchaseUomConvertFactor = $purchaseUomConvertFactor;
+    }
+
+    /**
+     * @param mixed $salesUomConvertFactor
+     */
+    protected function setSalesUomConvertFactor($salesUomConvertFactor)
+    {
+        $this->salesUomConvertFactor = $salesUomConvertFactor;
+    }
+
+    /**
+     * @param mixed $capacity
+     */
+    protected function setCapacity($capacity)
+    {
+        $this->capacity = $capacity;
+    }
+
+    /**
+     * @param mixed $avgUnitPrice
+     */
+    protected function setAvgUnitPrice($avgUnitPrice)
+    {
+        $this->avgUnitPrice = $avgUnitPrice;
+    }
+
+    /**
+     * @param mixed $standardPrice
+     */
+    protected function setStandardPrice($standardPrice)
+    {
+        $this->standardPrice = $standardPrice;
+    }
+
+    /**
+     * @param mixed $uuid
+     */
+    protected function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     * @param mixed $itemTypeId
+     */
+    protected function setItemTypeId($itemTypeId)
+    {
+        $this->itemTypeId = $itemTypeId;
+    }
+
+    /**
+     * @param mixed $createdBy
+     */
+    protected function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     * @param mixed $itemGroup
+     */
+    protected function setItemGroup($itemGroup)
+    {
+        $this->itemGroup = $itemGroup;
+    }
+
+    /**
+     * @param mixed $stockUom
+     */
+    protected function setStockUom($stockUom)
+    {
+        $this->stockUom = $stockUom;
+    }
+
+    /**
+     * @param mixed $cogsAccount
+     */
+    protected function setCogsAccount($cogsAccount)
+    {
+        $this->cogsAccount = $cogsAccount;
+    }
+
+    /**
+     * @param mixed $purchaseUom
+     */
+    protected function setPurchaseUom($purchaseUom)
+    {
+        $this->purchaseUom = $purchaseUom;
+    }
+
+    /**
+     * @param mixed $salesUom
+     */
+    protected function setSalesUom($salesUom)
+    {
+        $this->salesUom = $salesUom;
+    }
+
+    /**
+     * @param mixed $inventoryAccount
+     */
+    protected function setInventoryAccount($inventoryAccount)
+    {
+        $this->inventoryAccount = $inventoryAccount;
+    }
+
+    /**
+     * @param mixed $expenseAccount
+     */
+    protected function setExpenseAccount($expenseAccount)
+    {
+        $this->expenseAccount = $expenseAccount;
+    }
+
+    /**
+     * @param mixed $revenueAccount
+     */
+    protected function setRevenueAccount($revenueAccount)
+    {
+        $this->revenueAccount = $revenueAccount;
+    }
+
+    /**
+     * @param mixed $defaultWarehouse
+     */
+    protected function setDefaultWarehouse($defaultWarehouse)
+    {
+        $this->defaultWarehouse = $defaultWarehouse;
+    }
+
+    /**
+     * @param mixed $lastChangeBy
+     */
+    protected function setLastChangeBy($lastChangeBy)
+    {
+        $this->lastChangeBy = $lastChangeBy;
+    }
+
+    /**
+     * @param mixed $standardUom
+     */
+    protected function setStandardUom($standardUom)
+    {
+        $this->standardUom = $standardUom;
+    }
+
+    /**
+     * @param mixed $company
+     */
+    protected function setCompany($company)
+    {
+        $this->company = $company;
+    }
+
+    /**
+     * @param mixed $lastPrRow
+     */
+    protected function setLastPrRow($lastPrRow)
+    {
+        $this->lastPrRow = $lastPrRow;
+    }
+
+    /**
+     * @param mixed $lastPoRow
+     */
+    protected function setLastPoRow($lastPoRow)
+    {
+        $this->lastPoRow = $lastPoRow;
+    }
+
+    /**
+     * @param mixed $lastApInvoiceRow
+     */
+    protected function setLastApInvoiceRow($lastApInvoiceRow)
+    {
+        $this->lastApInvoiceRow = $lastApInvoiceRow;
+    }
+
+    /**
+     * @param mixed $lastTrxRow
+     */
+    protected function setLastTrxRow($lastTrxRow)
+    {
+        $this->lastTrxRow = $lastTrxRow;
+    }
+
+    /**
+     * @param mixed $lastPurchasing
+     */
+    protected function setLastPurchasing($lastPurchasing)
+    {
+        $this->lastPurchasing = $lastPurchasing;
+    }
+
 }

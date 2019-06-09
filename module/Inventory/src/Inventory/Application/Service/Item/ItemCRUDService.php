@@ -17,6 +17,7 @@ use Inventory\Domain\Event\ItemUpdatedEvent;
 use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Application\Event\Listener\ItemLoggingListener;
+use Inventory\Domain\Item\Factory\ItemFactory;
 
 /**
  *
@@ -25,6 +26,7 @@ use Inventory\Application\Event\Listener\ItemLoggingListener;
  */
 class ItemCRUDService extends AbstractService
 {
+
     /**
      *
      * @param \Inventory\Application\DTO\Item\ItemDTO $dto
@@ -35,22 +37,20 @@ class ItemCRUDService extends AbstractService
      */
     public function show($itemId, $itemToken)
     {
-        
         $rep = new DoctrineItemRepository($this->getDoctrineEM());
-        
+
         /**
-         * 
+         *
          * @var GenericItem $item
          */
         $item = $rep->getById($itemId);
-        
+
         if ($item == null)
             return null;
-        
-        return $item->createItemDTO();        
+
+        return $item->createItemDTO();
     }
-    
-    
+
     /**
      *
      * @param \Inventory\Application\DTO\Item\ItemDTO $dto
@@ -59,7 +59,7 @@ class ItemCRUDService extends AbstractService
      * @param string $trigger
      * @return
      */
-    public function create($dto, $userId, $trigger = null, $generateSysNumber = True)
+    public function create($dto, $companyId, $userId, $trigger = null, $generateSysNumber = True)
     {
         $notification = new Notification();
 
@@ -69,28 +69,21 @@ class ItemCRUDService extends AbstractService
 
         try {
 
+            $dto->company = $companyId;
             $dto->createdBy = $userId;
+            $snapshot = ItemSnapshotAssembler::createSnapshotFromDTO($dto);
 
-            switch ($dto->itemTypeId) {
+            $item = ItemFactory::createItem($dto->itemTypeId);
+            $item->makeFromSnapshot($snapshot);
+            $notification = $item->validate($notification);
 
-                case ItemType::INVENTORY_ITEM_TYPE:
-                    $factory = new InventoryItemFactory();
-                    break;
-
-                case ItemType::SERVICE_ITEM_TYPE:
-                    $factory = new ServiceItemFactory();
-                    break;
-                default:
-                    $factory = new InventoryItemFactory();
-                    break;
+            if ($notification->hasErrors()) {
+                return $notification;
             }
-
-            $item = $factory->createItemFromDTO($dto);
 
             $rep = new DoctrineItemRepository($this->getDoctrineEM());
             $itemId = $rep->store($item, $generateSysNumber);
 
-            
             $event = new ItemCreatedEvent($item);
             $dispatcher = new EventDispatcher();
             $dispatcher->addSubscriber(new ItemCreatedEventHandler($itemId, $this->getDoctrineEM()));
@@ -157,19 +150,18 @@ class ItemCRUDService extends AbstractService
             }
 
             $dto = ItemAssembler::createItemDTOFromArray($data);
-            // var_dump($dto);
-
+        
             /**
              *
              * @var ItemSnapshot $itemSnapshot ;
              */
-            $itemSnapshot = $item->createItemSnapshot();
+            $itemSnapshot = $item->createSnapshot();
 
             $newItemSnapshot = clone ($itemSnapshot);
-            $newItemSnapshot = ItemSnapshotAssembler::updateItemSnapshotFromDTO($newItemSnapshot, $dto);
-            //var_dump($itemSnapshot);
-            //var_dump("=============");
-            //var_dump($newItemSnapshot);
+            $newItemSnapshot = ItemSnapshotAssembler::updateSnapshotFromDTO($newItemSnapshot, $dto);
+            // var_dump($itemSnapshot);
+            // var_dump("=============");
+            // var_dump($newItemSnapshot);
 
             $changeArray = $itemSnapshot->compare($newItemSnapshot);
 
@@ -178,28 +170,16 @@ class ItemCRUDService extends AbstractService
                 return $notification;
             }
 
-            //var_dump($changeArray);
+            // var_dump($changeArray);
 
             // do change
             $newItemSnapshot->lastChangeBy = $userId;
             $newItemSnapshot->lastChangeOn = new \DateTime();
             $newItemSnapshot->revisionNo ++;
 
-            switch ($newItemSnapshot->itemTypeId) {
-
-                case ItemType::INVENTORY_ITEM_TYPE:
-                    $factory = new InventoryItemFactory();
-                    break;
-
-                case ItemType::SERVICE_ITEM_TYPE:
-                    $factory = new ServiceItemFactory();
-                    break;
-                default:
-                    $factory = new InventoryItemFactory();
-                    break;
-            }
-
-            $newItem = $factory->createItemFromSnapshot($newItemSnapshot);
+            $newItem = ItemFactory::createItem($newItemSnapshot->itemTypeId);
+            $newItem->makeFromSnapshot($newItemSnapshot);
+            
             $rep->store($newItem, False);
 
             $event = new ItemUpdatedEvent($newItem);
@@ -210,9 +190,9 @@ class ItemCRUDService extends AbstractService
 
             $m = "Item updated #" . $itemId;
             $changeOn = new \DateTime();
-            
+
             $this->getEventManager()->trigger(ItemUpdatedEvent::EVENT_NAME, $trigger, array(
-                'itemId' => $itemId,
+                'itemId' => $itemId
             ));
 
             $this->getEventManager()->trigger(ItemLoggingListener::ITEM_UPDATED_LOG, $trigger, array(

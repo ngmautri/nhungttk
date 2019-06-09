@@ -2,6 +2,8 @@
 namespace Inventory\Domain\Item;
 
 use Application\Notification;
+use Application\Domain\Shared\Specification\AbstractSpecification;
+use Application\Domain\Shared\Specification\AbstractSpecificationForCompany;
 
 /**
  *
@@ -10,71 +12,67 @@ use Application\Notification;
  */
 class InventoryItem extends GenericItem
 {
-    /**
-     *
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Item\GenericItem::validate()
-     */
-    public function validate()
+
+    public function specificValidation(Notification $notification = null)
     {
-        
-        $notification = new Notification();
-        $notification->setSourceClass("nmt");
-        
-        if ($this->isNullOrBlank($this->getCreatedBy())) {
-            $err = "User ID is not found.";
-            $notification->addError($err);
-        }
-        
-        if ($this->isNullOrBlank($this->getItemName())) {
-            $err = "Item name is null or empty. It is required for any item.";
-            $notification->addError($err);
-        } else {
-            
-            if (preg_match('/[#$%*@,=+^]/', $this->getItemName()) == 1) {
-                $err = "Item name contains invalid character (e.g. #,%,&,*)";
-                $notification->addError($err);
-            }
-        }
-        
-        if ($this->isNullOrBlank($this->getItemSku())) {
-            $err = "Item SKU is null or empty. It is required for inventory item.";
-            $notification->addError($err);
-        }
-        
-        if ($this->getStandardUom() == null) {
-            $err = "Measurement unit is empty or invalid. It is required for inventory item.";
-            $notification->addError($err);
+        if ($notification == null)
+            $notification = new Notification();
+
+        if ($this->sharedSpecificationFactory == null)
+            $notification->addError("Shared Specification not found");
+
+        if ($notification->hasErrors())
+            return $notification;
+
+        /**
+         *
+         * @var AbstractSpecification $spec
+         * @var AbstractSpecificationForCompany $spec1
+         */
+
+        $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();
+
+        if ($spec->isSatisfiedBy($this->getItemSku())) {
+            $notification->addError("Item SKU is null or empty. It is required for inventory item.");
         }
 
-        if (!$this->isNullOrBlank($this->getStockUom()) && $this->isNullOrBlank($this->getStockUomConvertFactor())) {
-            $err = "Inventory measurement unit is set, but no conversion factor!";
-            $notification->addError($err);
+        
+        $spec = $this->sharedSpecificationFactory->getPositiveNumberSpecification();        
+        $spec1 = $this->sharedSpecificationFactory->getMeasureUnitExitsSpecification();
+        $spec1->setCompanyId($this->company);
+        
+        if (!$spec1->isSatisfiedBy($this->getStandardUom())) {
+            $notification->addError("Measurement unit is invalid or empty. It is required for inventory item.");
+        }
+
+        if (!$spec1->isSatisfiedBy($this->getStockUom())) {
+            $notification->addError("Inventory measurement unit is invalid");
         }
         
-        if (!$this->isNullOrBlank($this->getPurchaseUom()) && $this->isNullOrBlank($this->getPurchaseUomConvertFactor())) {
-            $err = "Purchase measurement unit is set, but no conversion factor!";
-            $notification->addError($err);
+        if (!$spec->isSatisfiedBy($this->getStockUomConvertFactor())) {
+            $notification->addError("Inventory measurement conversion factor invalid!");
         }
-        
-        if (!$this->isNullOrBlank($this->getSalesUom()) && $this->isNullOrBlank($this->getSalesUomConvertFactor())) {
-            $err = "Sales measurement unit is set, but no conversion factor!";
-            $notification->addError($err);
+
+        if ($spec1->isSatisfiedBy($this->getPurchaseUom()) && !$spec->isSatisfiedBy($this->getPurchaseUomConvertFactor())) {
+            $notification->addError("Purchase measurement unit is set, but no conversion factor!");
         }
-        
+
+        if ($spec1->isSatisfiedBy($this->getSalesUom()) && !$spec->isSatisfiedBy($this->getSalesUomConvertFactor())) {
+            $notification->addError("Sales measurement unit is set, but no conversion factor!");
+        }
+
         return $notification;
     }
 
     /**
-     * 
-     * {@inheritDoc}
-     * @see \Inventory\Domain\Item\GenericItem::getItemType()
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Item\GenericItem::specifyItem()
      */
-    public function getItemType()
+    public function specifyItem()
     {
-        return ItemType::INVENTORY_ITEM_TYPE;
+        $this->setItemType("ITEM");
+        $this->setItemTypeId(ItemType::INVENTORY_ITEM_TYPE);
+        $this->setIsStocked(1);
     }
-    
-    
-
 }

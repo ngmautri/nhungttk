@@ -29,6 +29,13 @@ class NmtApplicationAclRoleResource
     private $updatedOn = 'CURRENT_TIMESTAMP';
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="nmt_application_acl_role_resourcecol", type="string", length=45, nullable=true)
+     */
+    private $nmtApplicationAclRoleResourcecol;
+
+    /**
      * @var \Application\Entity\NmtApplicationAclRole
      *
      * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationAclRole")
@@ -92,6 +99,30 @@ class NmtApplicationAclRoleResource
     public function getUpdatedOn()
     {
         return $this->updatedOn;
+    }
+
+    /**
+     * Set nmtApplicationAclRoleResourcecol
+     *
+     * @param string $nmtApplicationAclRoleResourcecol
+     *
+     * @return NmtApplicationAclRoleResource
+     */
+    public function setNmtApplicationAclRoleResourcecol($nmtApplicationAclRoleResourcecol)
+    {
+        $this->nmtApplicationAclRoleResourcecol = $nmtApplicationAclRoleResourcecol;
+
+        return $this;
+    }
+
+    /**
+     * Get nmtApplicationAclRoleResourcecol
+     *
+     * @return string
+     */
+    public function getNmtApplicationAclRoleResourcecol()
+    {
+        return $this->nmtApplicationAclRoleResourcecol;
     }
 
     /**

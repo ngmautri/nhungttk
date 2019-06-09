@@ -29,9 +29,9 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
          $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
-        $spec = $factory->getCostCenterExitsSpecification();
+        $spec = $factory->getUserExitsSpecification();
         $spec->setCompanyId(1);
-        var_dump($spec->isSatisfiedBy(-6)); 
+        var_dump($spec->isSatisfiedBy(45)); 
         
         
     }

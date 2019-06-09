@@ -17,5 +17,7 @@ abstract class AbstractSpecificationFactory
     abstract function getCompanyExitsSpecification();
     abstract function getWarehouseExitsSpecification();    
     abstract function getItemExitsSpecification();
+    abstract function getUserExitsSpecification();
     abstract function getCostCenterExitsSpecification();
+    abstract function getMeasureUnitExitsSpecification();
 }

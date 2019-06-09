@@ -1,17 +1,11 @@
 <?php
 namespace InventoryTest\Model;
 
-use PHPUnit_Framework_TestCase;
 use Doctrine\ORM\EntityManager;
-use InventoryTest\Bootstrap;
-use Inventory\Domain\Exception\InvalidArgumentException;
-use Ramsey\Uuid\Uuid;
 use Inventory\Domain\Item\InventoryItem;
-use Inventory\Domain\Item\Specification\ItemSpecification;
 use Inventory\Domain\Item\Specification\InventoryItemSpecification;
-use Inventory\Domain\Item\NoneInventoryItem;
-use Inventory\Domain\Item\ServiceItem;
-use Inventory\Application\DTO\ItemAssembler;
+use Inventory\Domain\Item\Specification\ItemSpecification;
+use PHPUnit_Framework_TestCase;
 
 class ItemAssemblerTest extends PHPUnit_Framework_TestCase
 {

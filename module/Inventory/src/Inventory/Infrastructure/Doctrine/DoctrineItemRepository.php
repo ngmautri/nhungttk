@@ -9,6 +9,7 @@ use Inventory\Domain\Item\ItemSnapshot;
 use Inventory\Domain\Item\Factory\AbstractItemFactory;
 use Inventory\Domain\Item\Repository\ItemRepositoryInterface;
 use Ramsey;
+use Inventory\Domain\Item\Factory\ItemFactory;
 
 /**
  *
@@ -55,11 +56,9 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         if ($entity == null)
             return null;
 
-        $itemSnapshot = $this->createItemSnapshot($entity);
+        $itemSnapshot = $this->createSnapshot($entity);
 
-        $factory = AbstractItemFactory::getItemFacotory($itemSnapshot->itemTypeId);
-
-        $item = $factory->createItem();
+        $item = ItemFactory::createItem($itemSnapshot->itemTypeId);
         $item->makeItemFrom($itemSnapshot);
         return $item;
     }
@@ -78,7 +77,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
             throw new InvalidArgumentException("Item is empty");
 
         // create snapshot
-        $item = $itemAggregate->createItemSnapshot();
+        $item = $itemAggregate->createSnapshot();
 
         /**
          *
@@ -240,15 +239,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         // $entity->setLastApInvoiceRow($item->lastApInvoiceRow);
         // $entity->setLastTrxRow($item->lastTrxRow);
         // $entity->setLastPurchasing($item->lastPurchasing);
-
-        // Need check one more time.
-        $dto = ItemAssembler::createItemDTOFromDoctrine($entity);
-
-        $factory = AbstractItemFactory::getItemFacotory($dto->itemTypeId);
-
-        // will throw exception if false.
-        $item = $factory->createItemFromDTO($dto);
-
+   
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
         return $entity->getId();
@@ -262,7 +253,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
      * @param \Application\Entity\NmtInventoryItem $entity
      *
      */
-    private function createItemSnapshot($entity)
+    private function createSnapshot($entity)
     {
         if ($entity == null)
             return null;
@@ -381,7 +372,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
                 $current_no ++;
                 $currentLen = strlen($current_no);
             }
-            
+
             $docNumber->setCurrentNumber($current_no);
             
             $tmp = "";

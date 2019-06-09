@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NmtApplicationPmtMethod
  *
- * @ORM\Table(name="nmt_application_pmt_method", indexes={@ORM\Index(name="nmt_application_pmt_method_idx1", columns={"created_by"}), @ORM\Index(name="nmt_application_pmt_method_FK2_idx", columns={"gl_account"}), @ORM\Index(name="nmt_application_pmt_method_FK3_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_application_pmt_method_FK4_idx", columns={"gl_account1"})})
+ * @ORM\Table(name="nmt_application_pmt_method", indexes={@ORM\Index(name="nmt_application_pmt_method_idx1", columns={"created_by"}), @ORM\Index(name="nmt_application_pmt_method_FK2_idx", columns={"gl_account"}), @ORM\Index(name="nmt_application_pmt_method_FK3_idx", columns={"lastchange_by"}), @ORM\Index(name="nmt_application_pmt_method_FK4_idx", columns={"gl_account1"}), @ORM\Index(name="nmt_application_pmt_method_FK5_idx", columns={"company_id"})})
  * @ORM\Entity
  */
 class NmtApplicationPmtMethod
@@ -109,6 +109,16 @@ class NmtApplicationPmtMethod
      * })
      */
     private $glAccount1;
+
+    /**
+     * @var \Application\Entity\NmtApplicationCompany
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\NmtApplicationCompany")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="company_id", referencedColumnName="id")
+     * })
+     */
+    private $company;
 
 
 }

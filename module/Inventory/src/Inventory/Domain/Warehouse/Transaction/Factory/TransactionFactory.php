@@ -12,7 +12,7 @@ use Inventory\Domain\Warehouse\Transaction\GI\GIforCostCenter;
 class TransactionFactory
 {
 
-        public static function getFactory($transactionTypeId)
+    public static function createTransaction($transactionTypeId)
     {
         switch ($transactionTypeId) {
 
@@ -26,6 +26,4 @@ class TransactionFactory
 
         return $trx;
     }
-
- 
 }

@@ -28,64 +28,20 @@ class TransactionSnapshotAssembler
 
     /**
      *
-     * @param array $data
-     * @return \Inventory\Domain\Item\ItemSnapshot
+     * @param TransactionDTO $dto
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
      */
-    public static function createItemSnapshotFromArray($data)
+    public static function createSnapshotFromDTO(TransactionDTO $dto)
     {
-        if ($data == null)
+        if (! $dto instanceof TransactionDTO)
             return null;
 
-        $snapShot = new ItemSnapshot();
-
-        foreach ($data as $property => $value) {
-            if (property_exists($snapShot, $property)) {
-                $snapShot->$property = $value;
-            }
-        }
-        return $snapShot;
-    }
-
-    /**
-     *
-     * @param \Inventory\Domain\Item\ItemSnapshot $snapShot
-     * @param array $data
-     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
-     */
-    public static function updateItemSnapshotFromArray($snapShot, $data)
-    {
-        if ($data == null || ! $snapShot instanceof ItemSnapshot)
-            return null;
-
-        $excludedProperties = array(
-            "id",
-            "uuid"
-        );
-
-        foreach ($data as $property => $value) {
-            if (property_exists($snapShot, $property) && ! in_array($property, $excludedProperties)) {
-                $snapShot->$property = $value;
-            }
-        }
-        return $snapShot;
-    }
-
-    /**
-     *
-     * @param ItemDTO $dto
-     * @return \Inventory\Domain\Item\ItemSnapshot
-     */
-    public static function createItemSnapshotFromDTO($dto)
-    {
-        if (! $dto instanceof ItemDTO)
-            return null;
-
-        $snapShot = new ItemSnapshot();
+        $snapShot = new TransactionSnapshot();
 
         $reflectionClass = new \ReflectionClass(get_class($dto));
-        $itemProperites = $reflectionClass->getProperties();
+        $properites = $reflectionClass->getProperties();
 
-        foreach ($itemProperites as $property) {
+        foreach ($properites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();
             if (property_exists($snapShot, $propertyName)) {
@@ -96,87 +52,22 @@ class TransactionSnapshotAssembler
     }
 
     /**
-     *
-     * @param \Inventory\Domain\Item\ItemSnapshot $snapShot
-     * @param ItemDTO $dto
-     * @return NULL|\Inventory\Domain\Item\ItemSnapshot
+     * 
+     * @param array $data
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
      */
-    public static function updateItemSnapshotFromDTO($snapShot, $dto)
+    public static function createSnapshotFromArray($data)
     {
-        if (! $dto instanceof ItemDTO || ! $snapShot instanceof ItemSnapshot)
+        if ($data == null)
             return null;
 
-        $reflectionClass = new \ReflectionClass($dto);
-        $itemProperites = $reflectionClass->getProperties();
+            $snapShot = new TransactionSnapshot();
 
-        /**
-         * Fields, that are update automatically
-         *
-         * @var array $excludedProperties
-         */
-        $excludedProperties = array(
-            "id",
-            "uuid",
-            "token",
-            "checksum",
-            "createdBy",
-            "createdOn",
-            "lastChangeOn",
-            "lastChangeBy",
-            "sysNumber",
-            "company",
-            "itemType",
-            "revisionNo"
-        );
-
-        foreach ($itemProperites as $property) {
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName) && ! in_array($propertyName, $excludedProperties)) {
-
-                if ($property->getValue($dto) == null || $property->getValue($dto) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($dto);
-                }
+        foreach ($data as $property => $value) {
+            if (property_exists($snapShot, $property)) {
+                $snapShot->$property = $value;
             }
         }
         return $snapShot;
     }
-
-  /**
-   * 
-   * @param TransactionRow $obj
-   * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
-   */
-    public static function createSnapshotFrom($obj)
-    {
-        if (! $obj instanceof TransactionRow)
-            return null;
-
-        $snapShot = new TransactionRowSnapshot();
-
-        // should uss reflection object
-        $reflectionClass = new \ReflectionObject($obj);
-        $itemProperites = $reflectionClass->getProperties();
-
-        foreach ($itemProperites as $property) {
-
-            $property->setAccessible(true);
-            $propertyName = $property->getName();
-            if (property_exists($snapShot, $propertyName)) {
-
-                if ($property->getValue($obj) == null || $property->getValue($obj) == "") {
-                    $snapShot->$propertyName = null;
-                } else {
-                    $snapShot->$propertyName = $property->getValue($obj);
-                }
-                
-            }
-        }
-          
-        return $snapShot;
-    }
-    
-  
 }

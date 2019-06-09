@@ -96,4 +96,20 @@ AND nmt_inventory_fifo_layer.is_closed=0", $transactionDate, $itemId, $wareHouse
     {
         $this->transactionDate = $transactionDate;
     }
+    /**
+     * @return mixed
+     */
+    public function getIssueQuantity()
+    {
+        return $this->issueQuantity;
+    }
+
+    /**
+     * @param mixed $issueQuantity
+     */
+    public function setIssueQuantity($issueQuantity)
+    {
+        $this->issueQuantity = $issueQuantity;
+    }
+
 }

@@ -29,35 +29,6 @@ class TransactionDTOAssembler
                 }
             }
         }
-        // validation.
-
-        $notification = new Notification();
-        $specFactory = new ZendSpecificationFactory();
-
-        if (! $specFactory->getDateSpecification()->isSatisfiedBy($dto->movementDate))
-            $notification->addError("Transaction date is not correct or empty");
-
-        if ($specFactory->getNullorBlankSpecification()->isSatisfiedBy($dto->movementType)) {
-            $notification->addError("Transaction Type is not correct or empty");
-        } else {
-            $supportedType = TransactionType::getSupportedTransaction();
-            if (! in_array($dto->movementType, $supportedType)) {
-                $notification->addError("Transaction Type is not supported");
-            }
-        }
-
-        $specFactory1 = new DoctrineSpecificationFactory($doctrineEM);
-    
-        if ($specFactory->getNullorBlankSpecification()->isSatisfiedBy($dto->warehouse)) {
-            $notification->addError("Warehouse is empty");
-        } else {
-            if ($specFactory1->getWarehouseExitsSpecification()->isSatisfiedBy($dto->warehouse) == False)
-                $notification->addError("Warehouse not exits...");
-        }
-
-        if ($notification->hasErrors())
-            throw new InvalidArgumentException($notification->errorMessage());
-
         return $dto;
     }
 

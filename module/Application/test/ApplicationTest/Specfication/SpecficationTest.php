@@ -28,9 +28,11 @@ class SpecficationTest extends PHPUnit_Framework_TestCase
     {
         $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-        $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
-        $spec = $factory->getCanPostOnDateSpecification();
+         $factory = new \Application\Application\Specification\Zend\ZendSpecificationFactory($em);
+        $spec = $factory->getCostCenterExitsSpecification();
         $spec->setCompanyId(1);
-        var_dump($spec->isSatisfiedBy("2019-05-30"));
+        var_dump($spec->isSatisfiedBy(-6)); 
+        
+        
     }
 }

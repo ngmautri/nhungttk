@@ -1,7 +1,7 @@
 <?php
 namespace Application\Application\Specification\Zend;
 
-use Application\Domain\Shared\Specification\AbstractSpecification;
+use Application\Domain\Shared\Specification\AbstractSpecificationForCompany;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -9,11 +9,11 @@ use Doctrine\ORM\EntityManager;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class DoctrineSpecification extends AbstractSpecification
+abstract class DoctrineSpecification extends AbstractSpecificationForCompany
 {
 
     protected $doctrineEM;
-
+ 
     /**
      *
      * @param EntityManager $doctrineEM

@@ -8,7 +8,7 @@ namespace Application\Application\Specification\Zend;
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseExitsSpecification extends DoctrineSpecification
+class CostCenterExitsSpecification extends DoctrineSpecification
 {
 
     /**
@@ -29,9 +29,9 @@ class WarehouseExitsSpecification extends DoctrineSpecification
         
         /**
          *
-         * @var \Application\Entity\NmtInventoryWarehouse $wh ;
+         * @var \Application\Entity\FinCostCenter $entity ;
          */
-        $wh = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryWarehouse")->findOneBy($criteria);
-        return (! $wh == null);
+        $entity = $this->doctrineEM->getRepository("\Application\Entity\FinCostCenter")->findOneBy($criteria);
+        return (! $entity == null);
     }
 }

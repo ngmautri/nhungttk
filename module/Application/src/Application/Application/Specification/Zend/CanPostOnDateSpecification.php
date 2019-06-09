@@ -16,8 +16,6 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 class CanPostOnDateSpecification extends DoctrineSpecification
 {
 
-    private $companyId;
-
     /**
      *
      * {@inheritdoc}
@@ -102,21 +100,4 @@ AND company_id=%s";
         return true;
     }
 
-    /**
-     *
-     * @return mixed
-     */
-    public function getCompanyId()
-    {
-        return $this->companyId;
-    }
-
-    /**
-     *
-     * @param mixed $companyId
-     */
-    public function setCompanyId($companyId)
-    {
-        $this->companyId = $companyId;
-    }
 }

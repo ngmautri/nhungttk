@@ -120,7 +120,7 @@ abstract class AbstractTransaction extends AbstractEntity
     protected $tartgetLocation;
 
     protected $company;
-   
+
     /**
      *
      * @return NULL|\Inventory\Application\DTO\Warehouse\Transaction\TransactionDTO
@@ -199,6 +199,7 @@ abstract class AbstractTransaction extends AbstractEntity
         $this->targetWarehouse = $snapshot->targetWarehouse;
         $this->sourceLocation = $snapshot->sourceLocation;
         $this->tartgetLocation = $snapshot->tartgetLocation;
+        $this->company = $snapshot->company;
     }
 
     public function getId()

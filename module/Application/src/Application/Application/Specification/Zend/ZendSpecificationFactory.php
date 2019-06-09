@@ -92,7 +92,9 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
      * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getCompanyExitsSpecification()
      */
     public function getCompanyExitsSpecification()
-    {}
+    {
+        return new CompanyExitsSpecification($this->doctrineEM);
+    }
     
     /**
      * 
@@ -103,6 +105,28 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         return new WarehouseExitsSpecification($this->doctrineEM);
     }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getItemExitsSpecification()
+     */
+    public function getItemExitsSpecification()
+    {
+        return new ItemExitsSpecification($this->doctrineEM);
+        
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Application\Domain\Shared\Specification\AbstractSpecificationFactory::getCostCenterExitsSpecification()
+     */
+    public function getCostCenterExitsSpecification()
+    {
+        return new CostCenterExitsSpecification($this->doctrineEM);
+    }
+    
     
     /**
      *
@@ -121,6 +145,9 @@ class ZendSpecificationFactory extends AbstractSpecificationFactory
     {
         $this->doctrineEM = $doctrineEM;
     }
+  
+    
+
    
    
 

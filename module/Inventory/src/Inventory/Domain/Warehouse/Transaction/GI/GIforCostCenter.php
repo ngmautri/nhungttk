@@ -1,8 +1,10 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction\GI;
 
+use Application\Notification;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssue;
 use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
+use Inventory\Domain\Warehouse\Transaction\TransactionRow;
 
 /**
  *
@@ -11,30 +13,60 @@ use Inventory\Domain\Warehouse\Transaction\GoodsIssueInterface;
  */
 class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
 {
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificValidation()
      */
     public function specificValidation($notification = null)
     {
-       // empty
+        // empty
     }
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::addTransactionRow()
      */
     public function addTransactionRow($transactionRowDTO)
+    {}
+
+    /**
+     * It require Cost Center.
+     *
+     * @param TransactionRow $row
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificRowValidation()
+     */
+    public function specificRowValidation($row, $notification = null, $isPosting = false)
     {
-        
-             
+        if ($notification == null) {
+            $notification = new Notification();
+        }
+
+        if ($row == null)
+            $notification->addError("Row is empty");
+
+        if ($this->sharedSpecificationFactory == null)
+            $notification->addError("Validator is not found");
+
+        if ($this->sharedSpecificationFactory->getNullorBlankSpecification()->isSatisfiedBy($row->getCostCenter())) {
+            $notification->addError("Cost Center is required!");
+        } else {
+
+            /**
+             *
+             * @var AbstractSpecificationForCompany $spec ;
+             */
+            $spec = $this->sharedSpecificationFactory->getCostCenterExitsSpecification();
+            $spec->setCompanyId($this->company);
+
+            if (! $spec->isSatisfiedBy($row->getCostCenter())) {
+                $notification->addError("Cost Center not extis #" . $row->getCostCenter());
+            }
+        }
+
+           return $notification;
     }
-
-
-    
-
-  
 }

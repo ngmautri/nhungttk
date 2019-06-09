@@ -1,41 +1,94 @@
 <?php
 namespace Inventory\Domain\Warehouse\Transaction;
 
+use Application\Notification;
 
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-abstract class GoodsIssue extends GenericTransaction 
+abstract class GoodsIssue extends GenericTransaction
 {
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::post()
      */
-    public function post(){
-        //1.validate header
-        
+    public function post()
+    {
+        // 1.validate header
         $notification = $this->validate();
-        
-        //2. caculate cogs
-        
-         foreach($this->transactionRows as $row){
-            
-             /**
-              * @var  \Inventory\Domain\Warehouse\Transaction\TransactionRow $row ; 
-              */
-             $row->getDocQuantity();
-              
-        }
-        
-        //3. do specific ation
-        
-        //4. store transaction
-        
-    }
-    
-    
 
+        if ($this->getValuationService() == null)
+            $notification->addError("Valuation service (COGS) not found!");
+
+        if ($notification->hasErrors())
+            return $notification;
+
+        // 2. caculate cogs
+        foreach ($this->transactionRows as $row) {
+
+            /**
+             *
+             * @var \Inventory\Domain\Warehouse\Transaction\TransactionRow $row ;
+             */
+
+            $cogs = $this->getValuationService()->calculateCOGS($this, $row);
+            var_dump($cogs);
+        }
+
+        // 3. do specific ation
+
+        // 4. store transaction
+        
+        return $notification;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::addTransactionRow()
+     */
+    public function addTransactionRow($transactionRowDTO)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificRowValidationByFlow()
+     */
+    public function specificRowValidationByFlow($row, $notification = null, $isPosting = false)
+    {
+        if ($notification == null)
+            $notification = new Notification();
+
+        if ($this->domainSpecificationFactory == null)
+            $notification->addError("No Domain Validator found");
+
+        if ($row == null)
+            $notification->addError("Row is empty");
+
+        if ($notification->hasErrors())
+            return $notification;
+
+        // Now doing validation.
+
+        /**
+         *
+         * @var OnhandQuantitySpecification $specDomain
+         */
+        $specDomain = $this->domainSpecificationFactory->getOnhandQuantitySpecification();
+        $specDomain->setWarehouseId($this->warehouse);
+        $specDomain->setTransactionDate($this->movementDate);
+        $specDomain->setIssueQuantity($row->getDocQuantity());
+
+        if (! $specDomain->isSatisfiedBy($row->getItem()))
+            $notification->addError("Can not issue this quantity " . $row->getDocQuantity());
+
+        return $notification;
+    }
 }

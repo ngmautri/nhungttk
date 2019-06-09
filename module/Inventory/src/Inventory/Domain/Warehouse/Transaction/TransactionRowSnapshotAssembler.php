@@ -11,6 +11,25 @@ use Inventory\Application\DTO\Warehouse\Transaction\TransactionRowDTO;
  */
 class TransactionRowSnapshotAssembler
 {
+    /**
+     *
+     * @param array $data
+     * @return NULL|\Inventory\Domain\Warehouse\Transaction\TransactionSnapshot
+     */
+    public static function createSnapshotFromArray($data)
+    {
+        if ($data == null)
+            return null;
+            
+            $snapShot = new TransactionRowSnapshot();
+            
+            foreach ($data as $property => $value) {
+                if (property_exists($snapShot, $property)) {
+                    $snapShot->$property = $value;
+                }
+            }
+            return $snapShot;
+    }
     
     /**
      * 

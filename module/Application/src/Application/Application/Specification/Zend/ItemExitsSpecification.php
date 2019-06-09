@@ -1,14 +1,12 @@
 <?php
 namespace Application\Application\Specification\Zend;
 
-
-
 /**
  *
  * @author Nguyen Mau Tri - ngmautri@gmail.com
  *        
  */
-class WarehouseExitsSpecification extends DoctrineSpecification
+class ItemExitsSpecification extends DoctrineSpecification
 {
 
     /**
@@ -21,17 +19,17 @@ class WarehouseExitsSpecification extends DoctrineSpecification
         if ($this->doctrineEM == null || $subject == null || $subject == "" || $this->getCompanyId() == null) {
             return false;
         }
-        
+
         $criteria = array(
             "id" => $subject,
             "company" => $this->getCompanyId()
         );
-        
+
         /**
          *
-         * @var \Application\Entity\NmtInventoryWarehouse $wh ;
+         * @var \Application\Entity\NmtInventoryItem $entiy ;
          */
-        $wh = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryWarehouse")->findOneBy($criteria);
-        return (! $wh == null);
+        $entiy = $this->doctrineEM->getRepository("\Application\Entity\NmtInventoryItem")->findOneBy($criteria);
+         return (! $entiy == null);
     }
 }

@@ -21,7 +21,7 @@ class TransactionType
 
     const GI_FOR_RETURN_PO = 'GI104';
 
-    const GI_FOR_REPAIRING = 'GI105';
+    const GI_FOR_EXTERNAL_REPAIR = 'GI105';
 
     const GI_FOR_MAINTENANCE_WORK = 'GI106';
 
@@ -52,7 +52,7 @@ class TransactionType
         $list[] = self::GI_FOR_PROJECT;
         $list[] = self::GI_FOR_COST_CENTER;
         $list[] = self::GI_FOR_RETURN_PO;
-        $list[] = self::GI_FOR_REPAIRING;
+        $list[] = self::GI_FOR_EXTERNAL_REPAIR;
         $list[] = self::GI_FOR_ASSET;
         $list[] = self::GI_FOR_TRANSFER_WAREHOUSE;
         $list[] = self::GI_FOR_TRANSFER_LOCATION;

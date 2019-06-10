@@ -7,12 +7,11 @@ use InventoryTest\Bootstrap;
 use Inventory\Domain\Exception\InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Inventory\Domain\Item\Factory\InventoryItemFactory;
-use Inventory\Domain\Item\ItemSnapshotAssembler;
-use Inventory\Domain\Item\Factory\ItemFactory;
+use Inventory\Application\Service\Item\ItemCRUDService;
 use Inventory\Domain\Item\ItemType;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
+use Inventory\Domain\Item\MonitorMethod;
 
-class ItemFactoryTest extends PHPUnit_Framework_TestCase
+class ItemUpdate extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -36,28 +35,35 @@ class ItemFactoryTest extends PHPUnit_Framework_TestCase
 
             /** @var EntityManager $em ; */
             $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
+             
+            
+            /**
+             * 
+             * @var \Inventory\Application\Service\Item\ItemCRUDService $sv ;
+             */
+            $sv = Bootstrap::getServiceManager()->get('Inventory\Application\Service\Item\ItemCRUDService');
             
             $data = array();
             
-            $data["company"]=1;
-            $data["createdBy"]=39;
-            $data["itemName"]="Special Item";
-            $data["itemSku"]="3-5";
+            $data["itemSku"]="2-7-5";
+            $data["isActive"]=1;
+            $data["itemName"]="Special Item 2-5 updated5";
+            $data["itemDescription"]="Special Item itemDescription";
+            $data["remarks"]="Special Item itemDescription";
+            
             $data["standardUom"]=1;
             $data["stockUom"]=1;
             $data["stockUomConvertFactor"]=1;
+            $data["keywords"]="gerber";
             
-            $snapshot = ItemSnapshotAssembler::createSnapshotFromArray($data);
+            $data["monitoredBy"]= MonitorMethod::ITEM_WITH_BATCH_NO;
             
+            $itemAssembler = new \Inventory\Application\DTO\Item\ItemAssembler();
+            $dto = $itemAssembler->createItemDTOFromArray($data);
             
-            $item = ItemFactory::createItem(ItemType::INVENTORY_ITEM_TYPE);
-            $item->makeFromSnapshot($snapshot);
-             $sharedSpecificationFactory= new ZendSpecificationFactory($em);
-            $item->setSharedSpecificationFactory($sharedSpecificationFactory);
+            var_dump($notificattion = $sv->update(4330, $data,39 , __METHOD__));
+                
             
-            var_dump($item->validate());
-            
-            //var_dump($item->createSnapshot());
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

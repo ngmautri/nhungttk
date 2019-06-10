@@ -47,7 +47,7 @@ class ChangeLogController extends AbstractActionController
         $class_name = $this->params()->fromQuery('class_name');
         
         if (is_null($this->params()->fromQuery('perPage'))) {
-            $resultsPerPage = 10;
+            $resultsPerPage = 30;
         } else {
             $resultsPerPage = $this->params()->fromQuery('perPage');
         }

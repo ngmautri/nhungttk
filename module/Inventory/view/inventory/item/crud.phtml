@@ -1,5 +1,6 @@
 <?php
 use Inventory\Domain\Item\ItemType;
+use Inventory\Domain\Item\MonitorMethod;
 
 /**
  *
@@ -8,9 +9,6 @@ use Inventory\Domain\Item\ItemType;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
  */
 ?>
-
-
-
 
 
 <div id="tabs" style="font-size: 9pt">
@@ -34,10 +32,9 @@ if (count($errors) > 0) {
 			<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 				id="entity_id" name="entity_id" value="<?php echo $entity_id;?>" />
-			<input
-				<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?><input
-				type="hidden" name="n" value="<?php echo $n;?>" />
-            			<?php endif;?>
+			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+			<input type="hidden" name="n" value="<?php echo $n;?>" />
+			<?php endif;?>
 
 			<div class="form-group margin-bottom required">
 				<label class="control-label col-sm-2">Item Type</label>
@@ -61,8 +58,6 @@ if (count($errors) > 0) {
 
 					</select>
 				</div>
-
-
 			</div>
 			<hr style="margin: 5pt 1pt 5pt 1pt;">
 
@@ -162,7 +157,7 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Standard Unit");?></label>
 				<div class="col-sm-3">
 
-					<select name="standardUom" id="standardUom"
+					<select name="standardUom" id="standardUom_id"
 						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select Standard unit");?></option>
    	    	<?php
@@ -196,8 +191,7 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Inventory Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="stockUom" id="stockUom"
-						class="form-control input-sm">
+					<select name="stockUom" id="stockUom_id" class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select inventory unit");?></option>
    	    							<?php
             $uom_list = $nmtPlugin->uomList();
@@ -240,7 +234,7 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Purchase Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="purchaseUom" id="purchaseUom"
+					<select name="purchaseUom" id="purchaseUom_id"
 						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select purchase unit");?></option>
    	    							<?php
@@ -286,8 +280,7 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Sales Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="salesUom" id="salesUom"
-						class="form-control input-sm">
+					<select name="salesUom" id="salesUom_id" class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select Sales Unit");?></option>
    	    							<?php
 
@@ -367,55 +360,13 @@ if (count($errors) > 0) {
 					<select class="form-control input-sm" name="monitoredBy">
 						<option value="">NONE</option>
 						<option
-							<?php if(!$dto == null): echo ($dto->monitoredBy=="SN")?"selected":""; endif;?>
-							value="SN">Serial Number</option>
+						<?php if(!$dto == null): echo ($dto->monitoredBy==MonitorMethod::ITEM_WITH_SERIAL_NO)?"selected":""; endif;?>
+							value="<?php echo MonitorMethod::ITEM_WITH_BATCH_NO;?>">Serial Number</option>
 						<option
-							<?php if(!$dto == null): echo ($dto->monitoredBy=="B")?"selected":""; endif;?>
-							value="B">Batch Number</option>
+						<?php if(!$dto == null): echo ($dto->monitoredBy==MonitorMethod::ITEM_WITH_BATCH_NO)?"selected":""; endif;?>
+							value="<?php echo MonitorMethod::ITEM_WITH_BATCH_NO;?>">Batch Number</option>
 					</select>
 				</div>
-			</div>
-
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2">Item Category</label>
-				<div class="col-sm-3">
-
-					<input disabled class="form-control input-sm" type="text"
-						id="item_category_name" placeholder="Please select item category"
-						name="country_code_2"
-						value="<?php if($category !== null):echo $category->getNodeName();endif;?>">
-					<input type="hidden" class="form-control input-sm"
-						id="item_category_name_selected" name="item_category_id"
-						value="<?php if($category!== null):echo $category->getNodeId();endif;?>">
-				</div>
-
-				<a style="color: #0080ff;" href="javascript:;"
-					onclick="showBootstrapDialog('Select Item Category','/application/item-category/list1','b_loaded_data');">Select&nbsp;&nbsp;<i
-					class="glyphicon glyphicon-folder-open"></i>
-				</a>
-			</div>
-
-
-			<div class="form-group margin-bottom">
-				<label class="control-label col-sm-2">Department</label>
-				<div class="col-sm-3">
-
-					<input disabled class="form-control input-sm" type="text"
-						id="department_name" placeholder="Please select!"
-						name="deparment_name"
-						value="<?php if($department !== null):echo $department->getNodeName();endif;?>">
-					<input type="hidden" class="form-control input-sm" type="text"
-						id="department_name_selected"
-						placeholder="Please select standard unit" name="department_id"
-						value="<?php if($department!== null):echo $department->getNodeId();endif;?>">
-
-				</div>
-
-				<a style="color: #0080ff;" href="javascript:;"
-					onclick="showBootstrapDialog('Select Deparment','/application/department/list1','b_loaded_data');">Select&nbsp;&nbsp;<i
-					class="glyphicon glyphicon-folder-open"></i>
-				</a>
-
 			</div>
 
 			<div class="form-group margin-bottom">
@@ -467,7 +418,7 @@ if (count($errors) > 0) {
 						name="leadTime"
 						value="<?php echo (!$dto == null)? $dto->leadTime:"";?>"> <input
 						name="localAvailabiliy"
-						<?php if(!$dto == null): echo ($dto->isActive=="1")?"checked":""; else: echo "checked"; endif;?>
+						<?php if(!$dto == null): echo ($dto->localAvailabiliy=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" value="1">&nbsp;Local Availability
 
 				</div>
@@ -490,46 +441,47 @@ if (count($errors) > 0) {
 			</div>
 
 		</form>
+
 	</div>
 </div>
 
 
 <script type="text/javascript">
 
-	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
-	$('#sales_uom_convert_text').text($( "#sales_uom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
-   	$('#stock_uom_convert_text').text($( "#stock_uom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+   	$('#stock_uom_convert_text').text($( "#stockUuom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
     
 
-	$('#uom_id').change(function() {
-	   	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
-	   	$('#sales_uom_convert_text').text($( "#sales_uom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+	$('#standardUom_id').change(function() {
+	   	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
+	   	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
 	});
 
     $('#purchase_uom_convert_factor_id').bind('change', function() {
-    	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+    	$('#purchase_uom_convert_text').text($( "#purchaseUom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
     
     });
 
-    $('#purchase_uom_id').change(function() {
-    	$('#purchase_uom_convert_text').text($( "#purchase_uom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+    $('#purchaseUom_id').change(function() {
+    	$('#purchase_uom_convert_text').text($( "#purchaseUom_id option:selected" ).text() + " = " +  $('#purchase_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
    	});
 
-    $('#sales_uom_id').change(function() {
-     	$('#sales_uom_convert_text').text($( "#sales_uom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+    $('#salesUom_id').change(function() {
+     	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
     });
 
     $('#sales_uom_convert_factor_id').bind('change', function() {
-    	$('#sales_uom_convert_text').text($( "#sales_uom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+    	$('#sales_uom_convert_text').text($( "#salesUom_id option:selected" ).text() + " = " +  $('#sales_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
     
     });
 
-    $('#stock_uom_id').change(function() {
-       	$('#stock_uom_convert_text').text($( "#stock_uom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+    $('#stockUom_id').change(function() {
+       	$('#stock_uom_convert_text').text($( "#stockUom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
     });
 
     $('#stock_uom_convert_factor_id').bind('change', function() {
-    	$('#stock_uom_convert_text').text($( "#stock_uom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#uom_id option:selected" ).text());
+    	$('#stock_uom_convert_text').text($( "#stockUom_id option:selected" ).text() + " = " +  $('#stock_uom_convert_factor_id').val() + " " + $( "#standardUom_id option:selected" ).text());
     
     });
 

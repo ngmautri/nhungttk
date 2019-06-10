@@ -28,8 +28,6 @@ class ItemSnapshotAssembler
             print "\n" . "\$this->" . $propertyName . " = \$itemSnapshot->" . $propertyName . ";";
         }
     }
-    
-    
 
     /**
      *
@@ -45,13 +43,12 @@ class ItemSnapshotAssembler
 
         foreach ($data as $property => $value) {
             if (property_exists($snapShot, $property)) {
-                
-                if($value==null || $value == ""){
+
+                if ($value == null || $value == "") {
                     $snapShot->$property = null;
-                }else{
+                } else {
                     $snapShot->$property = $value;
                 }
-                
             }
         }
         return $snapShot;
@@ -100,7 +97,7 @@ class ItemSnapshotAssembler
             $property->setAccessible(true);
             $propertyName = $property->getName();
             if (property_exists($snapShot, $propertyName)) {
-                $dto->$propertyName = $property->getValue($dto);
+                $snapShot->$propertyName = $property->getValue($dto);
             }
         }
         return $snapShot;
@@ -137,9 +134,14 @@ class ItemSnapshotAssembler
             "sysNumber",
             "company",
             "itemType",
-            "revisionNo"
+            "revisionNo",
+            "isStocked",
+            "itemTypeId",
+            
         );
 
+        //$dto->itemTypeId
+        
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);
             $propertyName = $property->getName();

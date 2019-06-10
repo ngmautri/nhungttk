@@ -1,12 +1,11 @@
 <?php
 namespace Inventory\Application\Service\Search\Solr;
 
+use Application\Notification;
 use Application\Service\AbstractService;
 use Inventory\Domain\Service\Search\ItemSearchInterface;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request;
-use Application\Notification;
-use Inventory\Infrastructure\Persistance\DoctrineItemReportingRepository;
 
 /**
  * SOlr integration
@@ -78,7 +77,7 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
         if ($itemId == null)
             return ($notification->addError("ItemId is empty. Nothing to index"));
 
-        $rep = new DoctrineItemReportingRepository();
+        $rep = new \Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository();
         $rep->setDoctrineEM($this->getDoctrineEM());
         $records = $rep->getAllItemWithSerial($itemId);
 

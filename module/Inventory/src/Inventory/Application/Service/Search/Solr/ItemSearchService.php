@@ -1,12 +1,12 @@
 <?php
 namespace Inventory\Application\Service\Search\Solr;
 
+use Application\Notification;
 use Application\Service\AbstractService;
 use Inventory\Domain\Service\Search\ItemSearchInterface;
+use Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request;
-use Application\Notification;
-use Inventory\Infrastructure\Persistance\DoctrineItemReportingRepository;
 
 /**
  * SOlr integration

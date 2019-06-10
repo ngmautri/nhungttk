@@ -18,12 +18,6 @@ class InventoryItem extends GenericItem
         if ($notification == null)
             $notification = new Notification();
 
-        if ($this->sharedSpecificationFactory == null)
-            $notification->addError("Shared Specification not found");
-
-        if ($notification->hasErrors())
-            return $notification;
-
         /**
          *
          * @var AbstractSpecification $spec

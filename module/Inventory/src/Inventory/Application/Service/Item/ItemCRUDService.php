@@ -18,6 +18,7 @@ use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
 use Inventory\Domain\Item\GenericItem;
 use Inventory\Application\Event\Listener\ItemLoggingListener;
 use Inventory\Domain\Item\Factory\ItemFactory;
+use Application\Application\Specification\Zend\ZendSpecificationFactory;
 
 /**
  *
@@ -48,7 +49,7 @@ class ItemCRUDService extends AbstractService
         if ($item == null)
             return null;
 
-        return $item->createItemDTO();
+        return $item->createDTO();
     }
 
     /**
@@ -75,6 +76,10 @@ class ItemCRUDService extends AbstractService
 
             $item = ItemFactory::createItem($dto->itemTypeId);
             $item->makeFromSnapshot($snapshot);
+
+            $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
+            $item->setSharedSpecificationFactory($sharedSpecificationFactory);
+
             $notification = $item->validate($notification);
 
             if ($notification->hasErrors()) {
@@ -98,8 +103,8 @@ class ItemCRUDService extends AbstractService
             ));
 
             $notification->addSuccess($m);
-
             $this->getDoctrineEM()->commit(); // now commit
+            
         } catch (\Exception $e) {
 
             $notification->addError($e->getMessage());
@@ -148,31 +153,33 @@ class ItemCRUDService extends AbstractService
                 $notification->addError(sprintf("Item %s can not be retrieved", $itemId));
                 return $notification;
             }
-
-            $dto = ItemAssembler::createItemDTOFromArray($data);
-
+            
             /**
              *
              * @var ItemSnapshot $itemSnapshot ;
              */
             $itemSnapshot = $item->createSnapshot();
-
             $newItemSnapshot = clone ($itemSnapshot);
-            $newItemSnapshot = ItemSnapshotAssembler::updateSnapshotFromDTO($newItemSnapshot, $dto);
-            // var_dump($itemSnapshot);
-            // var_dump("=============");
-            // var_dump($newItemSnapshot);
+            
+            var_dump($itemSnapshot);
 
+            $dto = ItemAssembler::createItemDTOFromArray($data);
+
+           
+            
+
+            $newItemSnapshot = ItemSnapshotAssembler::updateSnapshotFromDTO($newItemSnapshot, $dto);
+         
+            var_dump($newItemSnapshot);
+            
             $changeArray = $itemSnapshot->compare($newItemSnapshot);
 
-            if (count($changeArray) == 0) {
+            if ($changeArray == null) {
                 $notification->addError("Nothing change on Item #" . $itemId);
                 return $notification;
             }
 
-            // var_dump($changeArray);
-
-            // do change
+             // do change
             $newItemSnapshot->lastChangeBy = $userId;
             $newItemSnapshot->lastChangeOn = new \DateTime();
             $newItemSnapshot->revisionNo ++;
@@ -180,6 +187,9 @@ class ItemCRUDService extends AbstractService
             $newItem = ItemFactory::createItem($newItemSnapshot->itemTypeId);
             $newItem->makeFromSnapshot($newItemSnapshot);
 
+            $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
+            $newItem->setSharedSpecificationFactory($sharedSpecificationFactory);
+            
             // Validate
             $notification = $newItem->validate($notification);
 
@@ -187,6 +197,8 @@ class ItemCRUDService extends AbstractService
                 return $notification;
             }
 
+            echo $newItem->getId();
+            
             $rep->store($newItem, False);
 
             $event = new ItemUpdatedEvent($newItem);

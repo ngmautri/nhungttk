@@ -59,7 +59,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         $itemSnapshot = $this->createSnapshot($entity);
 
         $item = ItemFactory::createItem($itemSnapshot->itemTypeId);
-        $item->makeItemFrom($itemSnapshot);
+        $item->makeFromSnapshot($itemSnapshot);
         return $item;
     }
 
@@ -93,15 +93,16 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         if ($itemAggregate->getId() > 0) {
             $entity = $this->doctrineEM->find("\Application\Entity\NmtInventoryItem", $itemAggregate->getId());
 
-            if ($entity == null) {
+            if ($entity == null)
                 throw new InvalidArgumentException("Item cant not retrived.");
-            }
+            
 
             $entity->setLastChangeOn($item->lastChangeOn);
             if ($entity->getToken() == null) {
                 $entity->setToken($entity->getUuid());
             }
         } else {
+
             $entity = new \Application\Entity\NmtInventoryItem();
             $entity->setUuid(Ramsey\Uuid\Uuid::uuid4()->toString());
             $entity->setToken($entity->getUuid());
@@ -129,6 +130,8 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         if ($item->itemGroup > 0) {
             $item_group = $this->doctrineEM->getRepository('Application\Entity\NmtInventoryItemGroup')->find($item->itemGroup);
             $entity->setItemGroup($item_group);
+        }else{
+            $entity->setItemGroup(null);
         }
 
         if ($item->itemCategory > 0) {
@@ -156,11 +159,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
             $entity->setSalesUom($uom);
         }
 
-        if ($item->lastChangeBy > 0) {
-            $u = $this->doctrineEM->find('Application\Entity\MlaUsers', $item->lastChangeBy);
-            $entity->setLastChangeBy($u);
-        }
-
+    
         $entity->setWarehouseId($item->warehouseId); //
         $entity->setItemSku($item->itemSku);
         $entity->setItemName($item->itemName);
@@ -239,7 +238,7 @@ class DoctrineItemRepository implements ItemRepositoryInterface
         // $entity->setLastApInvoiceRow($item->lastApInvoiceRow);
         // $entity->setLastTrxRow($item->lastTrxRow);
         // $entity->setLastPurchasing($item->lastPurchasing);
-   
+
         $this->doctrineEM->persist($entity);
         $this->doctrineEM->flush();
         return $entity->getId();

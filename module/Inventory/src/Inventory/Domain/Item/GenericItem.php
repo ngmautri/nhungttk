@@ -98,6 +98,8 @@ abstract class GenericItem extends AbstractItem
             $notification->addError("User is not identified for this transaction. #" . $this->createdBy);
         }
 
+        
+        $spec = $this->sharedSpecificationFactory->getNullorBlankSpecification();        
         if ($spec->isSatisfiedBy($this->getItemName())) {
             $notification->addError("Item name is null or empty. It is required for any item.");
         } else {

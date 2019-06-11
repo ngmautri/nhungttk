@@ -6,6 +6,7 @@ use Application\Entity\NmtInventoryItemCategoryMember;
 use Application\Entity\NmtInventoryItemDepartment;
 use Application\Entity\NmtInventoryItemPicture;
 use Doctrine\ORM\EntityManager;
+use Inventory\Application\DTO\Item\ItemAssembler;
 use Inventory\Application\Service\Item\ItemCRUDService;
 use Inventory\Infrastructure\Persistence\DoctrineItemListRepository;
 use Inventory\Infrastructure\Persistence\DoctrineItemReportingRepository;
@@ -268,65 +269,63 @@ class ItemController extends AbstractActionController
      */
     public function createAction()
     {
-        $request = $this->getRequest();
-
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
+
+        $prg = $this->prg('/inventory/item/create', true);
+
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => null,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => "/inventory/item/create",
+                'form_title' => "Create Item",
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD
+            ));
+
+            $viewModel->setTemplate("inventory/item/crud");
+            return $viewModel;
+        }
 
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
 
-        // Is Posing
-        // =============================
-        if ($request->isPost()) {
-            $data = $this->params()->fromPost();
-            $dto = \Inventory\Application\DTO\Item\ItemAssembler::createItemDTOFromArray($data);
+        $data = $prg;
+        $dto = ItemAssembler::createItemDTOFromArray($data);
 
-            $userId = $u->getId();
+        $userId = $u->getId();
 
-            $notification = $this->itemCRUDService->create($dto, $u->getCompany(), $userId, __METHOD__);
-            if ($notification->hasErrors()) {
+        $notification = $this->itemCRUDService->create($dto, 1, $userId, __METHOD__, false);
+        if ($notification->hasErrors()) {
 
-                $viewModel = new ViewModel(array(
-                    'errors' => $notification->errorMessage(),
-                    'redirectUrl' => null,
-                    'entity_id' => null,
-                    'dto' => $dto,
-                    'nmtPlugin' => $nmtPlugin,
-                    'form_action' => "/inventory/item/create",
-                    'form_title' => "Create Item",
-                    'action' => \Application\Model\Constants::FORM_ACTION_ADD
-                ));
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->errorMessage(),
+                'redirectUrl' => null,
+                'entity_id' => null,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => "/inventory/item/create",
+                'form_title' => "Create Item",
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD
+            ));
 
-                $viewModel->setTemplate("inventory/item/crud");
-                return $viewModel;
-            }
-
-            $m = "Item created.";
-            $this->flashMessenger()->addMessage($m);
-            $redirectUrl = "/inventory/item/list";
-            return $this->redirect()->toUrl($redirectUrl);
+            $viewModel->setTemplate("inventory/item/crud");
+            return $viewModel;
         }
 
-        // NO POST
-        // Initiate ......................
-        // =====================================================
-
-        $viewModel = new ViewModel(array(
-            'errors' => null,
-            'redirectUrl' => null,
-            'entity_id' => null,
-            'dto' => null,
-            'nmtPlugin' => $nmtPlugin,
-            'form_action' => "/inventory/item/create",
-            'form_title' => "Create Item",
-            'action' => \Application\Model\Constants::FORM_ACTION_ADD
-        ));
-
-        $viewModel->setTemplate("inventory/item/crud");
-        return $viewModel;
+        $this->flashMessenger()->addMessage($notification->successMessage());
+        $redirectUrl = "/inventory/item/list2";
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**
@@ -335,8 +334,6 @@ class ItemController extends AbstractActionController
      */
     public function updateAction()
     {
-        $request = $this->getRequest();
-
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
@@ -345,76 +342,73 @@ class ItemController extends AbstractActionController
             'email' => $this->identity()
         ));
 
-        // Is Posing
-        // =============================
-        if ($request->isPost()) {
-            $data = $this->params()->fromPost();
-            $redirectUrl = $data['redirectUrl'];
-            $entity_id = (int) $data['entity_id'];
-            $nTry = $data['n'];
+        $prg = $this->prg('/inventory/item/update', true);
 
-            $dto = \Inventory\Application\DTO\Item\ItemAssembler::createItemDTOFromArray($data);
+        if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
+            // returned a response to redirect us
+            return $prg;
+        } elseif ($prg === false) {
 
-            $userId = $u->getId();
-            $notification = $this->itemCRUDService->update($entity_id, $data, $userId, __METHOD__);
-            
-            if ($notification->hasErrors()) {
+            // this wasn't a POST request, but there were no params in the flash messenger
+            // probably this is the first time the form was loaded
 
-                $viewModel = new ViewModel(array(
-                    'errors' => $notification->errorMessage(),
-                    'redirectUrl' => $redirectUrl,
-                    'entity_id' => $entity_id,
-                    'dto' => $dto,
-                    'nmtPlugin' => $nmtPlugin,
-                    'form_action' => "/inventory/item/update",
-                    'form_title' => "Edit Item",
-                    'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-                    'n' => $nTry
-                ));
+            $entity_id = (int) $this->params()->fromQuery('entity_id');
+            $token = $this->params()->fromQuery('token');
+            $dto = $this->itemCRUDService->show($entity_id, $token);
 
-                $viewModel->setTemplate("inventory/item/crud");
-                return $viewModel;
-            }
+            $viewModel = new ViewModel(array(
+                'errors' => null,
+                'redirectUrl' => null,
+                'entity_id' => $entity_id,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => "/inventory/item/update",
+                'form_title' => "Edit Item",
+                'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                'n' => 0
+            ));
 
-            $m = "[OK] Item updated #" . $entity_id;
-            $this->flashMessenger()->addMessage($m);
-            $redirectUrl = "/inventory/item/list2";
-            return $this->redirect()->toUrl($redirectUrl);
+            $viewModel->setTemplate("inventory/item/crud");
+            return $viewModel;
         }
 
-        // NO POST
-        // Initiate ......................
-        // =====================================================
-
-        /*
-         * $redirectUrl = null;
-         * if ($request->getHeader('Referer') == null) {
-         * return $this->redirect()->toRoute('access_denied');
-         * } else {
-         * $redirectUrl = $this->getRequest()
-         * ->getHeader('Referer')
-         * ->getUri();
-         * }
-         */
-
-        $entity_id = (int) $this->params()->fromQuery('entity_id');
-        $token = $this->params()->fromQuery('token');
-        $dto = $this->itemCRUDService->show($entity_id, $token);
-
-        $viewModel = new ViewModel(array(
-            'errors' => null,
-            'redirectUrl' => null,
-            'entity_id' => $entity_id,
-            'dto' => $dto,
-            'nmtPlugin' => $nmtPlugin,
-            'form_action' => "/inventory/item/update",
-            'form_title' => "Edit Item",
-            'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
-            'n' => 0
+        /**@var \Application\Entity\MlaUsers $u ;*/
+        $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
+            'email' => $this->identity()
         ));
 
-        $viewModel->setTemplate("inventory/item/crud");
-        return $viewModel;
+        $data = $prg;
+
+        $redirectUrl = $data['redirectUrl'];
+        $entity_id = (int) $data['entity_id'];
+        $nTry = $data['n'];
+
+        $dto = ItemAssembler::createItemDTOFromArray($data);
+
+        $userId = $u->getId();
+
+        $notification = $this->itemCRUDService->update($entity_id, $dto, $userId, __METHOD__);
+        if ($notification->hasErrors()) {
+
+            $viewModel = new ViewModel(array(
+                'errors' => $notification->errorMessage(),
+                'redirectUrl' => $redirectUrl,
+                'entity_id' => $entity_id,
+                'dto' => $dto,
+                'nmtPlugin' => $nmtPlugin,
+                'form_action' => "/inventory/item/update",
+                'form_title' => "Edit Item",
+                'action' => \Application\Model\Constants::FORM_ACTION_EDIT,
+                'n' => $nTry
+            ));
+
+            $viewModel->setTemplate("inventory/item/crud");
+            return $viewModel;
+        }
+
+        $this->flashMessenger()->addMessage($notification->successMessage());
+        $redirectUrl = "/inventory/item/list2";
+        return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**
@@ -788,7 +782,7 @@ class ItemController extends AbstractActionController
 
                 $this->flashMessenger()->addMessage($m);
                 $redirectUrl = "/inventory/item/show?token=" . $new_item->getToken() . "&entity_id=" . $new_item->getId() . "&checksum=" . $new_item->getChecksum();
-                return $this->redirect()->toUrl($redirectUrl);
+                $this->redirect()->toUrl($redirectUrl);
             } catch (Exception $e) {
 
                 $errors[] = $e->getMessage();
@@ -808,13 +802,15 @@ class ItemController extends AbstractActionController
         // Initiate ......................
         // =====================================================
         $redirectUrl = null;
-        if ($request->getHeader('Referer') == null) {
-            return $this->redirect()->toRoute('access_denied');
-        } else {
-            $redirectUrl = $this->getRequest()
-                ->getHeader('Referer')
-                ->getUri();
-        }
+        /*
+         * if ($request->getHeader('Referer') == null) {
+         * return $this->redirect()->toRoute('access_denied');
+         * } else {
+         * $redirectUrl = $this->getRequest()
+         * ->getHeader('Referer')
+         * ->getUri();
+         * }
+         */
         return new ViewModel(array(
             'errors' => null,
             'redirectUrl' => $redirectUrl,

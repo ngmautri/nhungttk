@@ -2,23 +2,18 @@
 namespace Inventory\Application\Service\Item;
 
 use Application\Notification;
+use Application\Application\Specification\Zend\ZendSpecificationFactory;
 use Application\Service\AbstractService;
+use Inventory\Application\DTO\Item\ItemAssembler;
+use Inventory\Application\Event\Handler\ItemCreatedEventHandler;
+use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
+use Inventory\Application\Event\Listener\ItemLoggingListener;
 use Inventory\Domain\Event\ItemCreatedEvent;
-use Inventory\Domain\Item\ItemType;
-use Inventory\Domain\Item\Factory\InventoryItemFactory;
-use Inventory\Domain\Item\Factory\ServiceItemFactory;
+use Inventory\Domain\Event\ItemUpdatedEvent;
+use Inventory\Domain\Item\ItemSnapshotAssembler;
+use Inventory\Domain\Item\Factory\ItemFactory;
 use Inventory\Infrastructure\Doctrine\DoctrineItemRepository;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Inventory\Application\Event\Handler\ItemCreatedEventHandler;
-use Inventory\Application\DTO\Item\ItemAssembler;
-use Inventory\Domain\Item\ItemSnapshotAssembler;
-use Inventory\Domain\Item\ItemSnapshot;
-use Inventory\Domain\Event\ItemUpdatedEvent;
-use Inventory\Application\Event\Handler\ItemUpdatedEventHandler;
-use Inventory\Domain\Item\GenericItem;
-use Inventory\Application\Event\Listener\ItemLoggingListener;
-use Inventory\Domain\Item\Factory\ItemFactory;
-use Application\Application\Specification\Zend\ZendSpecificationFactory;
 
 /**
  *
@@ -64,53 +59,63 @@ class ItemCRUDService extends AbstractService
     {
         $notification = new Notification();
 
+        $dto->company = $companyId;
+        $dto->createdBy = $userId;
+        $snapshot = ItemSnapshotAssembler::createSnapshotFromDTO($dto);
+
+        $item = ItemFactory::createItem($snapshot->itemTypeId);
+        $item->makeFromSnapshot($snapshot);
+
+        $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
+        $item->setSharedSpecificationFactory($sharedSpecificationFactory);
+
+        $notification = $item->validate($notification);
+
+        if ($notification->hasErrors()) {
+            return $notification;
+        }
+
         $this->getDoctrineEM()
             ->getConnection()
             ->beginTransaction(); // suspend auto-commit
 
         try {
 
-            $dto->company = $companyId;
-            $dto->createdBy = $userId;
-            $snapshot = ItemSnapshotAssembler::createSnapshotFromDTO($dto);
-
-            $item = ItemFactory::createItem($dto->itemTypeId);
-            $item->makeFromSnapshot($snapshot);
-
-            $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
-            $item->setSharedSpecificationFactory($sharedSpecificationFactory);
-
-            $notification = $item->validate($notification);
-
-            if ($notification->hasErrors()) {
-                return $notification;
-            }
-
             $rep = new DoctrineItemRepository($this->getDoctrineEM());
             $itemId = $rep->store($item, $generateSysNumber);
 
-            $event = new ItemCreatedEvent($item);
-            $dispatcher = new EventDispatcher();
-            $dispatcher->addSubscriber(new ItemCreatedEventHandler($itemId, $this->getDoctrineEM()));
-            $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
-
-            $m = sprintf("[OK] Item #%s", $itemId);
-            $this->getEventManager()->trigger(ItemLoggingListener::ITEM_CREATED_LOG, __METHOD__, array(
-                'priority' => \Zend\Log\Logger::INFO,
-                'message' => $m,
-                'createdBy' => $userId,
-                'createdOn' => new \DateTime()
-            ));
-
-            $notification->addSuccess($m);
-            $this->getDoctrineEM()->commit(); // now commit
-            
+            $this->getDoctrineEM()
+                ->getConnection()
+                ->commit(); // now commit
         } catch (\Exception $e) {
 
-            $notification->addError($e->getMessage());
             $this->getDoctrineEM()
                 ->getConnection()
                 ->rollBack();
+            $this->getDoctrineEM()->close();
+            $notification->addError($e->getMessage());
+        }
+
+        if (! $notification->hasErrors()) {
+
+            /*
+             * // event
+             * $event = new ItemCreatedEvent($item);
+             * $dispatcher = new EventDispatcher();
+             * $dispatcher->addSubscriber(new ItemCreatedEventHandler($itemId, $this->getDoctrineEM()));
+             * $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
+             *
+             * $m = sprintf("[OK] Item #%s", $itemId);
+             * $this->getEventManager()->trigger(ItemLoggingListener::ITEM_CREATED_LOG, __METHOD__, array(
+             * 'priority' => \Zend\Log\Logger::INFO,
+             * 'message' => $m,
+             * 'createdBy' => $userId,
+             * 'createdOn' => new \DateTime()
+             * ));
+             */
+
+            $m = sprintf("[OK] Item ID# %s", $itemId);
+            $notification->addSuccess($m);
         }
 
         return $notification;
@@ -153,33 +158,26 @@ class ItemCRUDService extends AbstractService
                 $notification->addError(sprintf("Item %s can not be retrieved", $itemId));
                 return $notification;
             }
-            
+
             /**
              *
              * @var ItemSnapshot $itemSnapshot ;
              */
             $itemSnapshot = $item->createSnapshot();
             $newItemSnapshot = clone ($itemSnapshot);
-            
-            var_dump($itemSnapshot);
 
             $dto = ItemAssembler::createItemDTOFromArray($data);
 
-           
-            
-
             $newItemSnapshot = ItemSnapshotAssembler::updateSnapshotFromDTO($newItemSnapshot, $dto);
-         
-            var_dump($newItemSnapshot);
-            
+
             $changeArray = $itemSnapshot->compare($newItemSnapshot);
 
-            if ($changeArray == null) {
+             if ($changeArray == null) {
                 $notification->addError("Nothing change on Item #" . $itemId);
                 return $notification;
             }
 
-             // do change
+            // do change
             $newItemSnapshot->lastChangeBy = $userId;
             $newItemSnapshot->lastChangeOn = new \DateTime();
             $newItemSnapshot->revisionNo ++;
@@ -189,7 +187,7 @@ class ItemCRUDService extends AbstractService
 
             $sharedSpecificationFactory = new ZendSpecificationFactory($this->getDoctrineEM());
             $newItem->setSharedSpecificationFactory($sharedSpecificationFactory);
-            
+
             // Validate
             $notification = $newItem->validate($notification);
 
@@ -197,8 +195,6 @@ class ItemCRUDService extends AbstractService
                 return $notification;
             }
 
-            echo $newItem->getId();
-            
             $rep->store($newItem, False);
 
             $event = new ItemUpdatedEvent($newItem);
@@ -226,18 +222,17 @@ class ItemCRUDService extends AbstractService
                 'changeDate' => $changeOn,
                 'changeValidFrom' => $changeOn
             ));
-            
+
             $notification->addSuccess($m);
             $this->getDoctrineEM()->commit(); // now commit
-            
         } catch (\Exception $e) {
-            
+
             $notification->addError($e->getMessage());
             $this->getDoctrineEM()
-            ->getConnection()
-            ->rollBack();
+                ->getConnection()
+                ->rollBack();
         }
-        
+
         return $notification;
     }
 }

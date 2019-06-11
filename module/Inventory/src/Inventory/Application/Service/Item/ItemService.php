@@ -2,6 +2,7 @@
 namespace Inventory\Application\Service;
 
 use Application\Service\AbstractService;
+use InventoryTest\Model\ItemAssemblerTest;
 use Inventory\Domain\Item\Repository\ItemRepositoryInterface;
 use Inventory\Application\DTO\ItemAssembler;
 

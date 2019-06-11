@@ -18,7 +18,7 @@ return array(
                 'label' => 'Add New Item',
                 'route' => 'Inventory/default',
                 'controller' => 'item',
-                'action' => 'add',
+                'action' => 'create',
                 'icon' => 'glyphicon glyphicon-plus'
             ),
 
@@ -177,10 +177,11 @@ return array(
             'Inventory\Service\ItemGroupService' => 'Inventory\Service\ItemGroupServiceFactory',
 
             'Inventory\Service\InventoryTransactionService' => 'Inventory\Service\InventoryTransactionServiceFactory',
-
             'Inventory\Service\Report\ItemReportService' => 'Inventory\Service\Report\ItemReportServiceFactory',
+            
 
             'Inventory\Application\Service\Item\ItemCRUDService' => 'Inventory\Application\Service\Item\ItemCRUDServiceFactory',
+            
             'Inventory\Application\Event\Listener\ItemCreatedEventListener' => 'Inventory\Application\Event\Listener\ItemCreatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemUpdatedEventListener' => 'Inventory\Application\Event\Listener\ItemUpdatedEventListenerFactory',
             'Inventory\Application\Event\Listener\ItemLoggingListener' => 'Inventory\Application\Event\Listener\ItemLoggingListenerFactory',

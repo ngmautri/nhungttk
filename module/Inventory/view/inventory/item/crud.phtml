@@ -8,6 +8,7 @@ use Inventory\Domain\Item\MonitorMethod;
  * @var \Inventory\Application\DTO\Item\ItemDTO $dto ;
  * @var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;
  */
+
 ?>
 
 
@@ -29,10 +30,11 @@ if (count($errors) > 0) {
 		<form id="create_item_form" class="form-horizontal"
 			action="<?php echo $form_action;?>" method="post"
 			enctype="multipart/form-data">
-			<input type="hidden" name="redirectUrl"
+			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+				<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
 				id="entity_id" name="entity_id" value="<?php echo $entity_id;?>" />
-			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
+
 			<input type="hidden" name="n" value="<?php echo $n;?>" />
 			<?php endif;?>
 
@@ -191,7 +193,8 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Inventory Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="stockUom" id="stockUom_id" class="form-control input-sm">
+					<select name="stockUom" id="stockUom_id"
+						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select inventory unit");?></option>
    	    							<?php
             $uom_list = $nmtPlugin->uomList();
@@ -280,7 +283,8 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2"><?php echo $this->translate("Sales Unit");?>:</label>
 				<div class="col-sm-3">
 
-					<select name="salesUom" id="salesUom_id" class="form-control input-sm">
+					<select name="salesUom" id="salesUom_id"
+						class="form-control input-sm">
 						<option value=""><?php echo $this->translate("Select Sales Unit");?></option>
    	    							<?php
 
@@ -360,11 +364,13 @@ if (count($errors) > 0) {
 					<select class="form-control input-sm" name="monitoredBy">
 						<option value="">NONE</option>
 						<option
-						<?php if(!$dto == null): echo ($dto->monitoredBy==MonitorMethod::ITEM_WITH_SERIAL_NO)?"selected":""; endif;?>
-							value="<?php echo MonitorMethod::ITEM_WITH_BATCH_NO;?>">Serial Number</option>
+							<?php if(!$dto == null): echo ($dto->monitoredBy==MonitorMethod::ITEM_WITH_SERIAL_NO)?"selected":""; endif;?>
+							value="<?php echo MonitorMethod::ITEM_WITH_BATCH_NO;?>">Serial
+							Number</option>
 						<option
-						<?php if(!$dto == null): echo ($dto->monitoredBy==MonitorMethod::ITEM_WITH_BATCH_NO)?"selected":""; endif;?>
-							value="<?php echo MonitorMethod::ITEM_WITH_BATCH_NO;?>">Batch Number</option>
+							<?php if(!$dto == null): echo ($dto->monitoredBy==MonitorMethod::ITEM_WITH_BATCH_NO)?"selected":""; endif;?>
+							value="<?php echo MonitorMethod::ITEM_WITH_BATCH_NO;?>">Batch
+							Number</option>
 					</select>
 				</div>
 			</div>

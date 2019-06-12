@@ -201,9 +201,10 @@
   <div class="form-group">
      <button type="submit" class="btn btn-default"><small><i class="glyphicon glyphicon-search"> </i></small></button>
   </div>
+
   
 </form>
-<hr>
+<hr style="margin:5pt 1pt 10pt 1pt;">
     				    <?php // <-- Update this !!
 				    echo $this->navigation('inventory_navi')
 				              ->menu()
@@ -215,7 +216,13 @@
 				              //->setUlClass('nav nav-pills nav-stacked') ->setUlClass('procure_menu');;
 				              ?>
        
-     
+     <hr>
+ 			 <div class="panel panel-default" style="margin:1pt 1pt 2pt 5pt;">
+					<div style=" padding:0px" class="panel-heading"><i class="fa fa-calendar" aria-hidden="true"></i> <strong>Calendar</strong></div>
+					<div class="panel-body" style="padding:0px;">
+						<div id="calendar_containter" style="height: 60pt;font-size:9pt;"></div>
+					</div>
+				</div>
       
         </div>
         <!-- /#sidebar-wrapper -->
@@ -335,5 +342,10 @@ if($this->flashMessenger()!==null){
     
      <?php echo $this->inlineScript()?>
     </body>
+    
+    <script>
+	doPaginator('/calendar/index/month1','calendar_containter');
+		
+</script>
 </html>
     

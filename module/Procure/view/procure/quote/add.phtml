@@ -79,6 +79,8 @@ if (count($errors) > 0) {
 						enctype="multipart/form-data">
 						<input type="hidden" name="redirectUrl"
 							value="<?php echo $redirectUrl ?>" /> 
+							<input type="hidden" name="form_token" value="<?php echo $form_token ?>" />
+							
 							
 				<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
      					<input type="hidden" name="entity_id"

@@ -28,5 +28,8 @@ class NoneInventoryItem extends GenericItem
     {
         $this->setItemType("ITEM");
         $this->setItemTypeId(ItemType::NONE_INVENTORY_ITEM_TYPE);
+        $this->setIsStocked(0);
+        $this->setIsFixedAsset(0);
+        $this->setIsSparepart(0);
     }
 }

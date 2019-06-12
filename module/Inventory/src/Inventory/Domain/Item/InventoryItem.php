@@ -68,5 +68,7 @@ class InventoryItem extends GenericItem
         $this->setItemType("ITEM");
         $this->setItemTypeId(ItemType::INVENTORY_ITEM_TYPE);
         $this->setIsStocked(1);
+        $this->setIsFixedAsset(0);
+        $this->setIsSparepart(1);
     }
 }

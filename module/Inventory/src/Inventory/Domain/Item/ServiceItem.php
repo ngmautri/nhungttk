@@ -28,5 +28,8 @@ class ServiceItem extends GenericItem
     {
         $this->setItemType("SERVICE");
         $this->setItemTypeId(ItemType::SERVICE_ITEM_TYPE);
+        $this->setIsFixedAsset(0);
+        $this->setIsStocked(0);
+        $this->setIsSparepart(0);
     }
 }

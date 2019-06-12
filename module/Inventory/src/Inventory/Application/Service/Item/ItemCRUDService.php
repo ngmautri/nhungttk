@@ -84,6 +84,27 @@ class ItemCRUDService extends AbstractService
             $rep = new DoctrineItemRepository($this->getDoctrineEM());
             $itemId = $rep->store($item, $generateSysNumber);
 
+            // event
+            $event = new ItemCreatedEvent($item);
+            $dispatcher = new EventDispatcher();
+            $dispatcher->addSubscriber(new ItemCreatedEventHandler($itemId, $this->getDoctrineEM()));
+            $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
+
+            $m = sprintf("[OK] Item # %s created", $itemId);
+
+            $this->getEventManager()->trigger(ItemCreatedEvent::EVENT_NAME, $trigger, array(
+                'itemId' => $itemId
+            ));
+
+            $this->getEventManager()->trigger(ItemLoggingListener::ITEM_CREATED_LOG, __METHOD__, array(
+                'priority' => \Zend\Log\Logger::INFO,
+                'message' => $m,
+                'createdBy' => $userId,
+                'createdOn' => new \DateTime()
+            ));
+
+            $notification->addSuccess($m);
+
             $this->getDoctrineEM()
                 ->getConnection()
                 ->commit(); // now commit
@@ -94,28 +115,6 @@ class ItemCRUDService extends AbstractService
                 ->rollBack();
             $this->getDoctrineEM()->close();
             $notification->addError($e->getMessage());
-        }
-
-        if (! $notification->hasErrors()) {
-
-            /*
-             * // event
-             * $event = new ItemCreatedEvent($item);
-             * $dispatcher = new EventDispatcher();
-             * $dispatcher->addSubscriber(new ItemCreatedEventHandler($itemId, $this->getDoctrineEM()));
-             * $dispatcher->dispatch(ItemCreatedEvent::EVENT_NAME, $event);
-             *
-             * $m = sprintf("[OK] Item #%s", $itemId);
-             * $this->getEventManager()->trigger(ItemLoggingListener::ITEM_CREATED_LOG, __METHOD__, array(
-             * 'priority' => \Zend\Log\Logger::INFO,
-             * 'message' => $m,
-             * 'createdBy' => $userId,
-             * 'createdOn' => new \DateTime()
-             * ));
-             */
-
-            $m = sprintf("[OK] Item ID# %s", $itemId);
-            $notification->addSuccess($m);
         }
 
         return $notification;
@@ -172,7 +171,7 @@ class ItemCRUDService extends AbstractService
 
             $changeArray = $itemSnapshot->compare($newItemSnapshot);
 
-             if ($changeArray == null) {
+            if ($changeArray == null) {
                 $notification->addError("Nothing change on Item #" . $itemId);
                 return $notification;
             }
@@ -203,7 +202,7 @@ class ItemCRUDService extends AbstractService
             $dispatcher->addSubscriber(new ItemUpdatedEventHandler($newItem));
             $dispatcher->dispatch(ItemUpdatedEvent::EVENT_NAME, $event);
 
-            $m = "Item updated #" . $itemId;
+            $m = sprintf("Item #%s updated", $itemId);
             $changeOn = new \DateTime();
 
             $this->getEventManager()->trigger(ItemUpdatedEvent::EVENT_NAME, $trigger, array(
@@ -225,6 +224,7 @@ class ItemCRUDService extends AbstractService
 
             $notification->addSuccess($m);
             $this->getDoctrineEM()->commit(); // now commit
+            
         } catch (\Exception $e) {
 
             $notification->addError($e->getMessage());

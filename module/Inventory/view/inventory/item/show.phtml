@@ -44,7 +44,8 @@ use Inventory\Domain\Item\ItemType;
 								class="caret"></span>
 						</button>
 						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-							<li><a href="<?php echo $this->baseUrl ?>/inventory/item/update?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><small><i
+							<li><a
+								href="<?php echo $this->baseUrl ?>/inventory/item/update?token=<?php echo (!$entity == null)? $entity->getToken():"";?>&entity_id=<?php echo (!$entity == null)? $entity->getId():"";?>"><small><i
 										class="glyphicon glyphicon-pencil"></i></small>&nbsp;<?php echo $this->translate("Edit");?></a></li>
 
 							<li role="separator" class="divider"></li>
@@ -190,17 +191,17 @@ use Inventory\Domain\Item\ItemType;
 						<?php if(!$entity == null): echo ($entity->getIsActive()=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
 					<input
+						<?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?>
+						type="checkbox" name="isPurchased" value="1">&nbsp;Purchased
+					&nbsp;&nbsp;<input
+						<?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?>
+						type="checkbox" name="isSaleItem" value="0">&nbsp;For Sale
+					&nbsp;&nbsp; <br> <input
+						<?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?>
+						type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset <input
 						<?php if(!$entity == null): echo ($entity->getIsStocked()=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isStocked" value="1">&nbsp;Stocked
 					&nbsp;&nbsp; <input
-						<?php if(!$entity == null): echo ($entity->getIsPurchased()=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="isPurchased" value="1">&nbsp;Purchased
-					&nbsp;&nbsp;<br> <input
-						<?php if(!$entity == null): echo ($entity->getIsSaleItem()=="1")?"checked":""; else: echo ""; endif;?>
-						type="checkbox" name="isSaleItem" value="1">&nbsp;For Sale
-					&nbsp;&nbsp; <input
-						<?php if(!$entity == null): echo ($entity->getIsFixedAsset()=="1")?"checked":""; else: echo ""; endif;?>
-						type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset <input
 						<?php if(!$entity == null): echo ($entity->getIsSparepart()=="1")?"checked":""; else: echo ""; endif;?>
 						type="checkbox" name="isSparePart" value="1">&nbsp;Spare Part
 

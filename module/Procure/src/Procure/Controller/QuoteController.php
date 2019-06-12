@@ -9,6 +9,9 @@ use Doctrine\ORM\EntityManager;
 use MLA\Paginator;
 use Application\Entity\NmtProcureQoRow;
 use Application\Entity\NmtProcureQo;
+use Ramsey\Uuid\Uuid;
+use Zend\Session\Container;
+use Ramsey;
 
 /**
  * Quotation
@@ -30,6 +33,14 @@ class QuoteController extends AbstractActionController
      */
     public function addAction()
     {
+ 
+        // create new session
+        $session = new Container('MLA_FORM');
+        $hasFormToken = $session->offsetExists('form_token');
+        
+       
+        
+        
         $this->layout("Procure/layout-fullscreen");
         $request = $this->getRequest();
 
@@ -50,12 +61,25 @@ class QuoteController extends AbstractActionController
         // Is Posing
         // =============================
         if ($request->isPost()) {
-
+            
+            
             $errors = array();
 
             $data = $this->params()->fromPost();
             $redirectUrl = $data['redirectUrl'];
-
+            
+            
+            $form_token = $data['form_token'];
+            
+            if($hasFormToken){
+                $tk = $session->offsetGet('form_token');
+                
+                if($form_token !== $tk){
+                    return $this->redirect()->toRoute('access_denied');                    
+                }
+                
+            }
+                
             $entity = new NmtProcureQo();
             $entity->setLocalCurrency($default_cur);
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
@@ -69,7 +93,7 @@ class QuoteController extends AbstractActionController
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
-                    
+                    'form_token'=>$tk,
                     
                 ));
             }
@@ -92,7 +116,7 @@ class QuoteController extends AbstractActionController
                     'entity' => $entity,
                     'currency_list' => $currency_list,
                     'incoterm_list' => $incoterm_list,
-                    
+                    'form_token'=>$tk,                    
                 ));
             }
 
@@ -111,6 +135,8 @@ class QuoteController extends AbstractActionController
                 'entity_token' => $entity->getToken()
             ));
 
+            $session->getManager()->forgetMe();
+            
             $redirectUrl = "/procure/quote-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId();
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -125,6 +151,14 @@ class QuoteController extends AbstractActionController
                 ->getUri();
         }
 
+        
+        if(!$hasFormToken){
+            $tk = Ramsey\Uuid\Uuid::uuid4()->toString();
+            $session->offsetSet('form_token',$tk);
+        }else{
+            $tk = $session->offsetGet('form_token');            
+        }
+        
         $entity = new NmtProcureQo();
         $entity->setIsActive(1);
 
@@ -140,7 +174,7 @@ class QuoteController extends AbstractActionController
             'entity' => $entity,
             'currency_list' => $currency_list,
             'incoterm_list' => $incoterm_list,
-            
+            'form_token'=>$tk,            
         ));
     }
 

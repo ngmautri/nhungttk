@@ -1,5 +1,4 @@
-<?php
-namespace Inventory\Controller;
+<?php namespace Inventory\Controller;
 
 use Application\Entity\NmtInventoryItem;
 use Application\Entity\NmtInventoryItemCategoryMember;
@@ -406,7 +405,7 @@ class ItemController extends AbstractActionController
             return $viewModel;
         }
 
-        $this->flashMessenger()->addMessage($notification->successMessage());
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = "/inventory/item/list2";
         return $this->redirect()->toUrl($redirectUrl);
     }

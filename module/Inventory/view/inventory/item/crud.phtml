@@ -75,23 +75,16 @@ if (count($errors) > 0) {
 
 				</div>
 				<div class="col-sm-4">
-					<input
+					<input 
 						<?php if(!$dto == null): echo ($dto->isActive=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;
+						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;<br>
 					<input
-						<?php if(!$dto == null): echo ($dto->isStocked=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="isStocked" value="1">&nbsp;Stocked
-					&nbsp;&nbsp; <input
 						<?php if(!$dto == null): echo ($dto->isPurchased=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isPurchased" value="1">&nbsp;Purchased
-					&nbsp;&nbsp;<br> <input
-						<?php if(!$dto == null): echo ($dto->isSaleItem=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="isSaleItem" value="1">&nbsp;For Sale
-					&nbsp;&nbsp; <input
-						<?php if(!$dto == null): echo ($dto->isFixedAsset=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="isFixedAsset" value="1">&nbsp;Fixed Asset <input
-						<?php if(!$dto == null): echo ($dto->isSparepart=="1")?"checked":""; else: echo "checked"; endif;?>
-						type="checkbox" name="isSparePart" value="1">&nbsp;Spare Part
+					&nbsp;&nbsp;<input
+						<?php if(!$dto == null): echo ($dto->isSaleItem=="1")?"checked":""; else: echo ""; endif;?>
+						type="checkbox" name="isSaleItem" value="0"/>&nbsp;For Sale&nbsp;&nbsp; 
+						
 
 				</div>
 

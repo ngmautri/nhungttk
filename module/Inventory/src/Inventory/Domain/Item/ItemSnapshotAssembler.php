@@ -136,11 +136,13 @@ class ItemSnapshotAssembler
             "itemType",
             "revisionNo",
             "isStocked",
+            "isFixedAsset",
+            "isSparepart",
             "itemTypeId",
             
         );
 
-        //$dto->itemTypeId
+        //$dto->isSparepart;
         
         foreach ($itemProperites as $property) {
             $property->setAccessible(true);

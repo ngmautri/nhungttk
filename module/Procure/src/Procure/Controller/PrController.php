@@ -16,6 +16,8 @@ use Endroid\QrCode\QrCode;
 use Application\Service\PdfService;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request;
+use Ramsey\Uuid;
+use Ramsey;
 
 /**
  *
@@ -42,7 +44,6 @@ class PrController extends AbstractActionController
         $client->setAdapter('Zend\Http\Client\Adapter\Curl');
 
         $method = $this->params()->fromQuery('method', 'get');
-        
 
         switch ($method) {
             case 'get':
@@ -60,47 +61,46 @@ class PrController extends AbstractActionController
                 $client->setUri('http://localhost:8983/solr/inventory_item/select');
                 break;
             case 'create':
-                
-                  $data = array(
+
+                $data = array(
                     "name" => "Laos Finance manager",
-                    "name" => "kim");
-                
-                
+                    "name" => "kim"
+                );
+
                 $request = new Request();
                 $request->setUri('http://localhost:8983/solr/inventory_item/update/json/docs?commit=true');
                 $request->setMethod('POST');
-                $request->setContent(json_encode($data));                
-                
+                $request->setContent(json_encode($data));
+
                 $request->getHeaders()->addHeaders(array(
                     'Content-Type' => 'application/json'
                 ));
-                
-                //$client->setHeaders('Content-type','application/json');
+
+                // $client->setHeaders('Content-type','application/json');
                 $client->setEncType(HttpClient::ENC_FORMDATA);
-            
+
                 // if get/get-list/create
                 $response = $client->send($request);
-                
+
                 if (! $response->isSuccess()) {
                     // report failure
                     $message = $response->getStatusCode() . ': ' . $response->getReasonPhrase();
-                    $message.=$response->getContent();
+                    $message .= $response->getContent();
                     $message = $message . $client->getMethod();
                     $message = $message . "...........NO unknown....";
-                    
+
                     $response = $this->getResponse();
                     $response->setContent($message);
                     return $response;
                 }
-                
+
                 $body = $response->getBody();
-                
+
                 $response = $this->getResponse();
                 $response->setContent($body);
-                
+
                 return $response;
-                
-                
+
             case 'update':
                 $data = array(
                     'name' => 'ikhsan'
@@ -137,29 +137,26 @@ class PrController extends AbstractActionController
 
                 return $response;
         }
-        
-        
-        $response = $client->send(  );
-        
+
+        $response = $client->send();
+
         if (! $response->isSuccess()) {
             // report failure
             $message = $response->getStatusCode() . ': ' . $response->getReasonPhrase();
             $message = $message . $client->getMethod();
             $message = $message . "...........NO unknown....";
-            
+
             $response = $this->getResponse();
             $response->setContent($message);
             return $response;
         }
-        
+
         $body = $response->getBody();
-        
+
         $response = $this->getResponse();
         $response->setContent($body);
-        
-        return $response;
 
-      
+        return $response;
     }
 
     /**
@@ -250,7 +247,7 @@ class PrController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-    
+
         // Is Posting .................
         // ============================
 
@@ -258,28 +255,27 @@ class PrController extends AbstractActionController
             $errors = array();
             $data = $this->params()->fromPost();
             $redirectUrl = $data['redirectUrl'];
-            
+
             $entity = new NmtProcurePr();
             $entity->setDocStatus(\Application\Model\Constants::DOC_STATUS_DRAFT);
             $errors = $this->prService->saveHeader($entity, $data, $u, TRUE, __METHOD__);
-            
+
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-                    
+
                     'redirectUrl' => $redirectUrl,
                     'errors' => $errors,
                     'entity' => $entity,
-                    'nmtPlugin' => $nmtPlugin,
-                    
+                    'nmtPlugin' => $nmtPlugin
                 ));
-                
+
                 $viewModel->setTemplate("procure/pr/crud");
                 return $viewModel;
             }
-      
+
             $m = sprintf('[OK] PR #%s - %s created', $entity->getId(), $entity->getPrAutoNumber());
-            
+
             // create QR_CODE
             $redirectUrl = "/procure/pr/show?token=" . $entity->getToken() . "&entity_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
 
@@ -297,7 +293,7 @@ class PrController extends AbstractActionController
             $qrCode->setSize(100);
             $qrCode->writeFile($folder . $qr_code_name);
 
-             $redirectUrl = "/procure/pr-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
+            $redirectUrl = "/procure/pr-row/add?token=" . $entity->getToken() . "&target_id=" . $entity->getId() . "&checksum=" . $entity->getChecksum();
 
             return $this->redirect()->toUrl($redirectUrl);
         }
@@ -319,17 +315,16 @@ class PrController extends AbstractActionController
         $entity->setIsDraft(1);
         $entity->setWarehouse($u->getCompany()
             ->getDefaultWarehouse());
-        $viewModel =  new ViewModel(array(
+        $viewModel = new ViewModel(array(
             'action' => \Application\Model\Constants::FORM_ACTION_ADD,
-            
+
             'redirectUrl' => $redirectUrl,
             'errors' => null,
             'entity' => $entity,
-            'nmtPlugin' => $nmtPlugin,
+            'nmtPlugin' => $nmtPlugin
         ));
         $viewModel->setTemplate("procure/pr/crud");
         return $viewModel;
-        
     }
 
     /**
@@ -498,10 +493,9 @@ class PrController extends AbstractActionController
     public function showAction()
     {
         $request = $this->getRequest();
-        
+
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        
 
         if ($request->getHeader('Referer') == null) {
             return $this->redirect()->toRoute('access_denied');
@@ -565,9 +559,7 @@ class PrController extends AbstractActionController
                 'active_row' => $pr['active_row'],
                 'total_attachment' => $pr['total_attachment'],
                 'total_picture' => $pr['total_picture'],
-                'nmtPlugin' => $nmtPlugin,
-                
-                
+                'nmtPlugin' => $nmtPlugin
             ));
         } else {
             return $this->redirect()->toRoute('access_denied');
@@ -952,7 +944,7 @@ class PrController extends AbstractActionController
                     'n' => $nTry,
                     'nmtPlugin' => $nmtPlugin
                 ));
-                
+
                 $viewModel->setTemplate("procure/pr/crud");
                 return $viewModel;
             }

@@ -10,10 +10,13 @@ class Notification
 {
 
     private $errors;
+
     private $warnings;
+
     private $success;
+
     private $sourceClass;
-    
+
     public function __construct()
     {
         $this->errors = array();
@@ -27,16 +30,16 @@ class Notification
     {
         $this->errors[] = $err;
     }
-    
+
     /**
-     * 
+     *
      * @param string $mes
      */
     public function addWarning($mes)
     {
         $this->warnings[] = $mes;
     }
-    
+
     /**
      *
      * @param string $mes
@@ -45,7 +48,7 @@ class Notification
     {
         $this->success[] = $mes;
     }
- 
+
     /**
      *
      * @return boolean
@@ -53,6 +56,15 @@ class Notification
     public function hasErrors()
     {
         return 0 != count($this->errors);
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function hasSuccess()
+    {
+        return 0 != count($this->success);
     }
 
     /**
@@ -72,22 +84,52 @@ class Notification
     {
         $this->errors = $errors;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
-    public function errorMessage() {
-        if($this->hasErrors()){
-            $str ='';
-            foreach ($this->errors as $e){
-                $str .= $e ."<br>";                
+    public function errorMessage($html = true)
+    {
+        if ($this->hasErrors()) {
+            $str = '';
+
+            if ($html == true) {
+                $newLine = "<br>";
+            } else {
+                $newLine = "\n";
+            }
+            foreach ($this->errors as $e) {
+                $str .= $e . $newLine;
             }
             return $str;
         }
         return null;
     }
-    
+
+    /**
+     *
+     * @return string
+     */
+    public function successMessage($html = true)
+    {
+        if ($this->hasSuccess()) {
+            $str = '';
+
+            if ($html == true) {
+                $newLine = "<br>";
+            } else {
+                $newLine = "\n";
+            }
+
+            foreach ($this->success as $e) {
+                $str .= $e . $newLine;
+            }
+            return $str;
+        }
+        return null;
+    }
+
     public function getSourceClass()
     {
         return $this->sourceClass;
@@ -97,5 +139,4 @@ class Notification
     {
         $this->sourceClass = $sourceClass;
     }
-
 }

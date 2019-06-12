@@ -104,7 +104,7 @@ abstract class GenericItem extends AbstractItem
             $notification->addError("Item name is null or empty. It is required for any item.");
         } else {
 
-            if (preg_match('/[#$%@,=+^]/', $this->getItemName()) == 1) {
+            if (preg_match('/[#$%@=+^]/', $this->getItemName()) == 1) {
                 $err = "Item name contains invalid character (e.g. #,%,&,*)";
                 $notification->addError($err);
             }

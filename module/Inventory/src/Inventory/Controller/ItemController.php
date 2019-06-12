@@ -322,7 +322,7 @@ class ItemController extends AbstractActionController
             return $viewModel;
         }
 
-        $this->flashMessenger()->addMessage($notification->successMessage());
+        $this->flashMessenger()->addMessage($notification->successMessage(false));
         $redirectUrl = "/inventory/item/list2";
         return $this->redirect()->toUrl($redirectUrl);
     }

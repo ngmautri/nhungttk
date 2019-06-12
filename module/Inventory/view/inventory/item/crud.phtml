@@ -42,20 +42,16 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2">Item Type</label>
 				<div class="col-sm-3">
 					<select class="form-control input-sm" name="itemTypeId">
-						<option
-							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::FIXED_ASSET_ITEM_TYPE)?"selected":""; endif;?>
+						<option <?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::FIXED_ASSET_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::FIXED_ASSET_ITEM_TYPE;?>"><?php echo $this->translate("Fixed Asset");?></option>
 
-						<option
-							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+						<option <?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("Inventory Item");?></option>
 
-						<option
-							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::NONE_INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+						<option <?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::NONE_INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::NONE_INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("None-Inventory Item");?></option>
 
-						<option
-							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::SERVICE_ITEM_TYPE)?"selected":""; endif;?>
+						<option <?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::SERVICE_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::SERVICE_ITEM_TYPE;?>"><?php echo $this->translate("Service");?></option>
 
 					</select>
@@ -75,7 +71,7 @@ if (count($errors) > 0) {
 
 				</div>
 				<div class="col-sm-4">
-					<input 
+					<input
 						<?php if(!$dto == null): echo ($dto->isActive=="1")?"checked":""; else: echo "checked"; endif;?>
 						type="checkbox" name="isActive" value="1">&nbsp;Active&nbsp;&nbsp;<br>
 					<input
@@ -83,8 +79,9 @@ if (count($errors) > 0) {
 						type="checkbox" name="isPurchased" value="1">&nbsp;Purchased
 					&nbsp;&nbsp;<input
 						<?php if(!$dto == null): echo ($dto->isSaleItem=="1")?"checked":""; else: echo ""; endif;?>
-						type="checkbox" name="isSaleItem" value="0"/>&nbsp;For Sale&nbsp;&nbsp; 
-						
+						type="checkbox" name="isSaleItem" value="0" />&nbsp;For
+					Sale&nbsp;&nbsp;
+
 
 				</div>
 

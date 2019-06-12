@@ -41,7 +41,7 @@ class ItemSearchService extends AbstractService
         $doc->addField(Field::UnIndexed('token', $row['token']));
         $doc->addField(Field::UnIndexed('checksum', $row['checksum']));
         
-        $doc->addField(Field::Keyword('item_token_keyword', $row['token'] . "__" . $row['id']));
+        $doc->addField(Field::Keyword('item_token_keyword',"__" . $row['id']));
 
         $doc->addField(Field::Keyword('item_token_serial_keyword', $row['token'] . "__" . $row['id']. "__" . $row['serial_id']));
         
@@ -202,7 +202,7 @@ class ItemSearchService extends AbstractService
                         $doc->addField(Field::UnIndexed('item_id', $row->getId()));
                         $doc->addField(Field::UnIndexed('token', $row->getToken()));
                         $doc->addField(Field::UnIndexed('checksum', $row->getChecksum()));
-                        $doc->addField(Field::Keyword('item_token_keyword', $row->getToken() . "__" . $row->getId()));
+                        $doc->addField(Field::Keyword('item_token_keyword', "__" . $row->getId()));
 
                         $doc->addField(Field::Keyword('item_sku_key', $row->getItemSku()));
                         $doc->addField(Field::Keyword('item_sku1_key', $row->getItemSku1()));
@@ -292,7 +292,7 @@ class ItemSearchService extends AbstractService
                 Analyzer::setDefault(new CaseInsensitive());
                 
                 if ($is_new ==0) {
-                    $ck_query = 'item_token_keyword:' . $item->getToken() . '__' . $item->getId();
+                    $ck_query = 'item_token_keyword:__' . $item->getId();
                     $ck_hits = $index->find($ck_query);
                     
                     if (count($ck_hits) >0 ) {                        
@@ -348,7 +348,7 @@ class ItemSearchService extends AbstractService
                 Analyzer::setDefault(new CaseInsensitive());
 
                 if ($is_new !== 1) {
-                    $ck_query = 'item_token_keyword:' . $row->getToken() . '__' . $row->getId();
+                    $ck_query = 'item_token_keyword:__' . $row->getId();
                     $ck_hits = $index->find($ck_query);
 
                     if (count($ck_hits) == 1) {

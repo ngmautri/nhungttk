@@ -49,7 +49,7 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
 
             $m = "Document added";
             if ($isNew == FALSE) {
-                
+
                 $m = "Document updated";
                 // update
                 $ck_query = 'item_token_keyword:__' . $itemId;
@@ -60,8 +60,6 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
                         $index->delete($hit->id);
                     }
                 }
-                
-                
             }
 
             $rep = new DoctrineItemReportingRepository();
@@ -81,7 +79,7 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
                 $index->optimize();
             }
             $notification->addSuccess(sprintf("[0k] %s! Total documents:%s.", $m, $index->numDocs()));
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $notification->addError($e->getMessage());
         }
 
@@ -189,8 +187,42 @@ class ItemSearchService extends AbstractService implements ItemSearchInterface
     public function searchServiceItem($q)
     {}
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Service\Search\ItemSearchInterface::createIndex()
+     */
     public function createIndex()
-    {}
+    {
+        $notification = new Notification();
+
+        // take long time
+        set_time_limit(2000);
+        try {
+            $index = Lucene::open(getcwd() . self::ITEM_INDEX);
+            Analyzer::setDefault(new CaseInsensitive());
+
+            $rep = new DoctrineItemReportingRepository();
+            $rep->setDoctrineEM($this->getDoctrineEM());
+            $records = $rep->getAllItemWithSerial();
+
+            if (count($records) == 0) {
+                $notification->setErrors(sprintf("[INFO] Nothing for indexing"));
+                return $notification;
+            }
+
+            foreach ($records as $row) {
+                $this->_addDocument($index, $row);
+            }
+
+            $index->optimize();
+
+            $notification->addSuccess(sprintf("[0k] %s! Total documents:%s.", $index->numDocs()));
+        } catch (\Exception $e) {
+            $notification->addError($e->getMessage());
+        }
+        return $notification;
+    }
 
     /**
      *

@@ -91,6 +91,7 @@ class TransactionValidationAssemblerTest extends PHPUnit_Framework_TestCase
             $cogsService->setDoctrineEM($em);
             $trx->setValuationService($cogsService);
             var_dump($trx->post());
+            
         } catch (\Exception $e) {
             echo $e->getMessage();
             $em->getConnection()->rollBack();

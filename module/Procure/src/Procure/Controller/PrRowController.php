@@ -1901,9 +1901,15 @@ class PrRowController extends AbstractActionController
             }
             $count = 0;
             foreach ($list as $a) {
+                
+             
 
                 /**@var \Application\Entity\NmtProcurePrRow $pr_row_entity ;*/
                 $pr_row_entity = $a[0];
+                
+                if($pr_row_entity->getItem()==null){
+                    continue;
+                }
 
                 $item_detail = "/inventory/item/show1?token=" . $pr_row_entity->getItem()->getToken() . "&checksum=" . $pr_row_entity->getItem()->getChecksum() . "&entity_id=" . $pr_row_entity->getItem()->getId();
                 if ($pr_row_entity->getItem()->getItemName() !== null) {

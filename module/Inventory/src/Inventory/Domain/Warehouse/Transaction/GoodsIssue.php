@@ -26,6 +26,12 @@ abstract class GoodsIssue extends GenericTransaction
 
         if ($notification->hasErrors())
             return $notification;
+        
+        /**
+         *  Template Method
+         *  ===============
+         */
+        $this->prePost();
 
         // 2. caculate cogs
         foreach ($this->transactionRows as $row) {
@@ -39,8 +45,12 @@ abstract class GoodsIssue extends GenericTransaction
             var_dump($cogs);
         }
 
-        // 3. do specific ation
-
+        /**
+         *  Template Method
+         *  ==============
+         */
+        $this->afterPost();
+        
         // 4. store transaction
         
         return $notification;

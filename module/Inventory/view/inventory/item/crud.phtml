@@ -30,6 +30,11 @@ if (count($errors) > 0) {
 		<form id="create_item_form" class="form-horizontal"
 			action="<?php echo $form_action;?>" method="post"
 			enctype="multipart/form-data">
+
+			<input type="hidden" name="form_token"
+				value="<?php echo $form_token ?>" />
+		
+			
 			<?php if($action == \Application\Model\Constants::FORM_ACTION_EDIT):?>
 				<input type="hidden" name="redirectUrl"
 				value="<?php echo $redirectUrl ?>" /> <input type="hidden"
@@ -42,16 +47,20 @@ if (count($errors) > 0) {
 				<label class="control-label col-sm-2">Item Type</label>
 				<div class="col-sm-3">
 					<select class="form-control input-sm" name="itemTypeId">
-						<option <?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::FIXED_ASSET_ITEM_TYPE)?"selected":""; endif;?>
+						<option
+							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::FIXED_ASSET_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::FIXED_ASSET_ITEM_TYPE;?>"><?php echo $this->translate("Fixed Asset");?></option>
 
-						<option <?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+						<option
+							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("Inventory Item");?></option>
 
-						<option <?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::NONE_INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
+						<option
+							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::NONE_INVENTORY_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::NONE_INVENTORY_ITEM_TYPE;?>"><?php echo $this->translate("None-Inventory Item");?></option>
 
-						<option <?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::SERVICE_ITEM_TYPE)?"selected":""; endif;?>
+						<option
+							<?php if(!$dto == null): echo ($dto->itemTypeId==ItemType::SERVICE_ITEM_TYPE)?"selected":""; endif;?>
 							value="<?php echo ItemType::SERVICE_ITEM_TYPE;?>"><?php echo $this->translate("Service");?></option>
 
 					</select>

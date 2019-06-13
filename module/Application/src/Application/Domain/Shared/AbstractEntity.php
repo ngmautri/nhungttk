@@ -15,10 +15,7 @@ abstract class AbstractEntity
 
     protected $verison;
 
-    protected function isNullOrBlank($s)
-    {
-        return ($s == null || $s == "");
-    }
+   
 
     public function compare(AbstractEntity $o2)
     {

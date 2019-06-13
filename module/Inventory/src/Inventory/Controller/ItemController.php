@@ -1,4 +1,5 @@
-<?php namespace Inventory\Controller;
+<?php
+namespace Inventory\Controller;
 
 use Application\Entity\NmtInventoryItem;
 use Application\Entity\NmtInventoryItemCategoryMember;
@@ -18,6 +19,8 @@ use Zend\Math\Rand;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Exception;
+use Zend\Session\Container;
+use Ramsey;
 
 /**
  *
@@ -271,6 +274,9 @@ class ItemController extends AbstractActionController
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
 
+        // create new session
+        $session = new Container('MLA_FORM');
+       
         $prg = $this->prg('/inventory/item/create', true);
 
         if ($prg instanceof \Zend\Http\PhpEnvironment\Response) {
@@ -279,6 +285,15 @@ class ItemController extends AbstractActionController
         } elseif ($prg === false) {
             // this wasn't a POST request, but there were no params in the flash messenger
             // probably this is the first time the form was loaded
+            $hasFormToken = $session->offsetExists('form_token');
+            
+            if (! $hasFormToken) {
+                $tk = Ramsey\Uuid\Uuid::uuid4()->toString();
+                $session->offsetSet('form_token', $tk);
+            } else {
+                $tk = $session->offsetGet('form_token');
+            }
+
             $viewModel = new ViewModel(array(
                 'errors' => null,
                 'redirectUrl' => null,
@@ -287,19 +302,29 @@ class ItemController extends AbstractActionController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => "/inventory/item/create",
                 'form_title' => "Create Item",
-                'action' => \Application\Model\Constants::FORM_ACTION_ADD
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                'form_token' => $tk
             ));
 
             $viewModel->setTemplate("inventory/item/crud");
             return $viewModel;
         }
 
+        $data = $prg;
+
+        $form_token = $data['form_token'];
+
+        $tk = $session->offsetGet('form_token');
+        
+
+        if ($form_token != $tk) {
+            return $this->redirect()->toRoute('access_denied');
+        }
+
         /**@var \Application\Entity\MlaUsers $u ;*/
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             'email' => $this->identity()
         ));
-
-        $data = $prg;
         $dto = ItemAssembler::createItemDTOFromArray($data);
 
         $userId = $u->getId();
@@ -315,16 +340,21 @@ class ItemController extends AbstractActionController
                 'nmtPlugin' => $nmtPlugin,
                 'form_action' => "/inventory/item/create",
                 'form_title' => "Create Item",
-                'action' => \Application\Model\Constants::FORM_ACTION_ADD
+                'action' => \Application\Model\Constants::FORM_ACTION_ADD,
+                'form_token' => $tk
             ));
 
             $viewModel->setTemplate("inventory/item/crud");
             return $viewModel;
         }
-
-        $this->flashMessenger()->addMessage($notification->successMessage(false));
+        
+        $session->getManager()->getStorage()->clear('MLA_FORM');
+        
+        
+        $this->flashMessenger()->addMessage($notification->successMessage(false) . '\n'.$tk);
         $redirectUrl = "/inventory/item/list2";
-        return $this->redirect()->toUrl($redirectUrl);
+
+          return $this->redirect()->toUrl($redirectUrl);
     }
 
     /**

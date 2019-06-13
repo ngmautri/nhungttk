@@ -42,6 +42,10 @@ abstract class GenericTransaction extends AbstractTransaction
     protected $valuationService;
     
 
+    abstract public function prePost();
+    
+    abstract public function afterPost();
+    
     abstract public function post();
 
     abstract public function specificValidation($notification = null);

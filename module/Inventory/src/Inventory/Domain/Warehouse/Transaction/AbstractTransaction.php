@@ -451,4 +451,420 @@ abstract class AbstractTransaction extends AbstractEntity
     {
         return $this->tartgetLocation;
     }
+    /**
+     * @param mixed $id
+     */
+    protected function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    protected function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @param mixed $currencyIso3
+     */
+    protected function setCurrencyIso3($currencyIso3)
+    {
+        $this->currencyIso3 = $currencyIso3;
+    }
+
+    /**
+     * @param mixed $exchangeRate
+     */
+    protected function setExchangeRate($exchangeRate)
+    {
+        $this->exchangeRate = $exchangeRate;
+    }
+
+    /**
+     * @param mixed $remarks
+     */
+    protected function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     * @param mixed $createdOn
+     */
+    protected function setCreatedOn($createdOn)
+    {
+        $this->createdOn = $createdOn;
+    }
+
+    /**
+     * @param mixed $currentState
+     */
+    protected function setCurrentState($currentState)
+    {
+        $this->currentState = $currentState;
+    }
+
+    /**
+     * @param mixed $isActive
+     */
+    protected function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @param mixed $trxType
+     */
+    protected function setTrxType($trxType)
+    {
+        $this->trxType = $trxType;
+    }
+
+    /**
+     * @param mixed $lastchangeBy
+     */
+    protected function setLastchangeBy($lastchangeBy)
+    {
+        $this->lastchangeBy = $lastchangeBy;
+    }
+
+    /**
+     * @param mixed $lastchangeOn
+     */
+    protected function setLastchangeOn($lastchangeOn)
+    {
+        $this->lastchangeOn = $lastchangeOn;
+    }
+
+    /**
+     * @param mixed $postingDate
+     */
+    protected function setPostingDate($postingDate)
+    {
+        $this->postingDate = $postingDate;
+    }
+
+    /**
+     * @param mixed $sapDoc
+     */
+    protected function setSapDoc($sapDoc)
+    {
+        $this->sapDoc = $sapDoc;
+    }
+
+    /**
+     * @param mixed $contractNo
+     */
+    protected function setContractNo($contractNo)
+    {
+        $this->contractNo = $contractNo;
+    }
+
+    /**
+     * @param mixed $contractDate
+     */
+    protected function setContractDate($contractDate)
+    {
+        $this->contractDate = $contractDate;
+    }
+
+    /**
+     * @param mixed $quotationNo
+     */
+    protected function setQuotationNo($quotationNo)
+    {
+        $this->quotationNo = $quotationNo;
+    }
+
+    /**
+     * @param mixed $quotationDate
+     */
+    protected function setQuotationDate($quotationDate)
+    {
+        $this->quotationDate = $quotationDate;
+    }
+
+    /**
+     * @param mixed $sysNumber
+     */
+    protected function setSysNumber($sysNumber)
+    {
+        $this->sysNumber = $sysNumber;
+    }
+
+    /**
+     * @param mixed $revisionNo
+     */
+    protected function setRevisionNo($revisionNo)
+    {
+        $this->revisionNo = $revisionNo;
+    }
+
+    /**
+     * @param mixed $deliveryMode
+     */
+    protected function setDeliveryMode($deliveryMode)
+    {
+        $this->deliveryMode = $deliveryMode;
+    }
+
+    /**
+     * @param mixed $incoterm
+     */
+    protected function setIncoterm($incoterm)
+    {
+        $this->incoterm = $incoterm;
+    }
+
+    /**
+     * @param mixed $incotermPlace
+     */
+    protected function setIncotermPlace($incotermPlace)
+    {
+        $this->incotermPlace = $incotermPlace;
+    }
+
+    /**
+     * @param mixed $paymentTerm
+     */
+    protected function setPaymentTerm($paymentTerm)
+    {
+        $this->paymentTerm = $paymentTerm;
+    }
+
+    /**
+     * @param mixed $paymentMethod
+     */
+    protected function setPaymentMethod($paymentMethod)
+    {
+        $this->paymentMethod = $paymentMethod;
+    }
+
+    /**
+     * @param mixed $docStatus
+     */
+    protected function setDocStatus($docStatus)
+    {
+        $this->docStatus = $docStatus;
+    }
+
+    /**
+     * @param mixed $isDraft
+     */
+    protected function setIsDraft($isDraft)
+    {
+        $this->isDraft = $isDraft;
+    }
+
+    /**
+     * @param mixed $workflowStatus
+     */
+    protected function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+    }
+
+    /**
+     * @param mixed $transactionStatus
+     */
+    protected function setTransactionStatus($transactionStatus)
+    {
+        $this->transactionStatus = $transactionStatus;
+    }
+
+    /**
+     * @param mixed $movementType
+     */
+    protected function setMovementType($movementType)
+    {
+        $this->movementType = $movementType;
+    }
+
+    /**
+     * @param mixed $movementDate
+     */
+    protected function setMovementDate($movementDate)
+    {
+        $this->movementDate = $movementDate;
+    }
+
+    /**
+     * @param mixed $journalMemo
+     */
+    protected function setJournalMemo($journalMemo)
+    {
+        $this->journalMemo = $journalMemo;
+    }
+
+    /**
+     * @param mixed $movementFlow
+     */
+    protected function setMovementFlow($movementFlow)
+    {
+        $this->movementFlow = $movementFlow;
+    }
+
+    /**
+     * @param mixed $movementTypeMemo
+     */
+    protected function setMovementTypeMemo($movementTypeMemo)
+    {
+        $this->movementTypeMemo = $movementTypeMemo;
+    }
+
+    /**
+     * @param mixed $isPosted
+     */
+    protected function setIsPosted($isPosted)
+    {
+        $this->isPosted = $isPosted;
+    }
+
+    /**
+     * @param mixed $isReversed
+     */
+    protected function setIsReversed($isReversed)
+    {
+        $this->isReversed = $isReversed;
+    }
+
+    /**
+     * @param mixed $reversalDate
+     */
+    protected function setReversalDate($reversalDate)
+    {
+        $this->reversalDate = $reversalDate;
+    }
+
+    /**
+     * @param mixed $reversalDoc
+     */
+    protected function setReversalDoc($reversalDoc)
+    {
+        $this->reversalDoc = $reversalDoc;
+    }
+
+    /**
+     * @param mixed $reversalReason
+     */
+    protected function setReversalReason($reversalReason)
+    {
+        $this->reversalReason = $reversalReason;
+    }
+
+    /**
+     * @param mixed $isReversable
+     */
+    protected function setIsReversable($isReversable)
+    {
+        $this->isReversable = $isReversable;
+    }
+
+    /**
+     * @param mixed $docType
+     */
+    protected function setDocType($docType)
+    {
+        $this->docType = $docType;
+    }
+
+    /**
+     * @param mixed $isTransferTransaction
+     */
+    protected function setIsTransferTransaction($isTransferTransaction)
+    {
+        $this->isTransferTransaction = $isTransferTransaction;
+    }
+
+    /**
+     * @param mixed $reversalBlocked
+     */
+    protected function setReversalBlocked($reversalBlocked)
+    {
+        $this->reversalBlocked = $reversalBlocked;
+    }
+
+    /**
+     * @param mixed $createdBy
+     */
+    protected function setCreatedBy($createdBy)
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     * @param mixed $warehouse
+     */
+    protected function setWarehouse($warehouse)
+    {
+        $this->warehouse = $warehouse;
+    }
+
+    /**
+     * @param mixed $postingPeriod
+     */
+    protected function setPostingPeriod($postingPeriod)
+    {
+        $this->postingPeriod = $postingPeriod;
+    }
+
+    /**
+     * @param mixed $currency
+     */
+    protected function setCurrency($currency)
+    {
+        $this->currency = $currency;
+    }
+
+    /**
+     * @param mixed $docCurrency
+     */
+    protected function setDocCurrency($docCurrency)
+    {
+        $this->docCurrency = $docCurrency;
+    }
+
+    /**
+     * @param mixed $localCurrency
+     */
+    protected function setLocalCurrency($localCurrency)
+    {
+        $this->localCurrency = $localCurrency;
+    }
+
+    /**
+     * @param mixed $targetWarehouse
+     */
+    protected function setTargetWarehouse($targetWarehouse)
+    {
+        $this->targetWarehouse = $targetWarehouse;
+    }
+
+    /**
+     * @param mixed $sourceLocation
+     */
+    protected function setSourceLocation($sourceLocation)
+    {
+        $this->sourceLocation = $sourceLocation;
+    }
+
+    /**
+     * @param mixed $tartgetLocation
+     */
+    protected function setTartgetLocation($tartgetLocation)
+    {
+        $this->tartgetLocation = $tartgetLocation;
+    }
+
+    /**
+     * @param mixed $company
+     */
+    protected function setCompany($company)
+    {
+        $this->company = $company;
+    }
+
 }

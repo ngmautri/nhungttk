@@ -17,6 +17,22 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
     /**
      *
      * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::prePost()
+     */
+    public function prePost()
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::afterPost()
+     */
+    public function afterPost()
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Inventory\Domain\Warehouse\Transaction\GenericTransaction::specificValidation()
      */
     public function specificValidation($notification = null)
@@ -63,10 +79,11 @@ class GIforCostCenter extends GoodsIssue implements GoodsIssueInterface
             $spec->setCompanyId($this->company);
 
             if (! $spec->isSatisfiedBy($row->getCostCenter())) {
-                $notification->addError("Cost Center not extis #" . $row->getCostCenter());
+                $notification->addError("Cost Center not exits #" . $row->getCostCenter());
             }
         }
 
            return $notification;
     }
+   
 }

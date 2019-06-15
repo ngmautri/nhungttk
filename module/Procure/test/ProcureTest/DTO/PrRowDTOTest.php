@@ -1,5 +1,5 @@
 <?php
-namespace ProcureTest\Model;
+namespace ProcureTest\DTO;
 
 use PHPUnit_Framework_TestCase;
 use Doctrine\ORM\EntityManager;
@@ -9,9 +9,10 @@ use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Model\Domain\PurchaseRequest\PurchaseRequest;
 use Procure\Domain\APInvoice\Repository\Doctrine\DoctrineAPInvoiceRepository;
 use Procure\Infrastructure\Persistence\DoctrinePRListRepository;
+use Procure\Application\DTO\Pr\PrRowReportDTOAssembler;
+use Procure\Application\DTO\Pr\PrRowDTOAssembler;
 
-
-class PrListRespository extends PHPUnit_Framework_TestCase
+class PrRowDTOTest extends PHPUnit_Framework_TestCase
 {
 
     protected $serviceManager;
@@ -33,15 +34,7 @@ class PrListRespository extends PHPUnit_Framework_TestCase
     {
         try {
 
-            /** @var EntityManager $em ; */
-            $em = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
-            //echo Uuid::uuid4()->toString();
-            
-            $rep = new DoctrinePRListRepository();
-            $rep->setDoctrineEM($em);
-            
-            $result = $rep->getAllPrRow();
-            var_dump(count($result));
+                PrRowDTOAssembler::createMapping();
 
            } catch (InvalidArgumentException $e) {
             echo $e->getMessage();

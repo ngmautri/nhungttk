@@ -19,17 +19,63 @@ class DoctrinePRListRepository extends AbstractDoctrineRepository implements PRL
      * {@inheritdoc}
      * @see \Procure\Infrastructure\Persistence\PRListRepositoryInterface::getAllPrRow()
      */
-    public function getAllPrRow($is_active = 1, $pr_year = 0, $balance = null, $sort_by = null, $sort = null, $limit = 0, $offset = 0)
+    public function getAllPrRow($is_active = 1, $pr_year, $balance = null, $sort_by = null, $sort = "ASC", $limit, $offset)
     {
         $sql = PrSQL::PR_ROW_SQL;
         $sql_tmp = '';
 
-        $sql = sprintf($sql, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp, $sql_tmp);
-        // echo $sql;
+        $sql_tmp1='';
+        if ($is_active == 1) {
+            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 1 AND nmt_procure_pr_row.is_active = 1)";
+        } elseif ($is_active == - 1) {
+            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr.is_active = 0 OR nmt_procure_pr_row.is_active = 0)";
+        }
+
+        if ($pr_year > 0) {
+            $sql_tmp1 = $sql_tmp1 . " AND year(nmt_procure_pr.created_on) =" . $pr_year;
+        }
+
+        if ($balance == 0) {
+            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr_row.quantity -  IFNULL(nmt_procure_gr_row.posted_gr_qty,0)) <= 0";
+        }
+        if ($balance == 1) {
+            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr_row.quantity -  IFNULL(nmt_procure_gr_row.posted_gr_qty,0)) > 0";
+        }
+        if ($balance == - 1) {
+            $sql_tmp1 = $sql_tmp1 . " AND (nmt_procure_pr_row.quantity -  IFNULL(nmt_procure_gr_row.posted_gr_qty,0)) < 0";
+        }
+
+        switch ($sort_by) {
+            case "itemName":
+                $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_inventory_item.item_name " . $sort;
+                break;
+
+            case "prNumber":
+                $sql_tmp1 = $sql_tmp1 . " ORDER BY nmt_procure_pr.pr_number " . $sort;
+                break;
+                
+            case "balance":
+                $sql_tmp1 = $sql_tmp1 . " ORDER BY (nmt_procure_pr_row.quantity - IFNULL(nmt_inventory_trx.posted_gr_qty,0) " . $sort;
+                break;
+        }
+
+        if ($limit > 0) {
+            $sql_tmp1 = $sql_tmp1 . " LIMIT " . $limit;
+        }
+
+        if ($offset > 0) {
+            $sql_tmp1 = $sql_tmp1 . " OFFSET " . $offset;
+        }
+     
+        $sql = sprintf($sql,$sql_tmp1);
+        $sql = $sql . ";";
+        
+        echo $sql;
 
         try {
             $rsm = new ResultSetMappingBuilder($this->getDoctrineEM());
             $rsm->addRootEntityFromClassMetadata('\Application\Entity\NmtProcurePrRow', 'nmt_procure_pr_row');
+
             $rsm->addScalarResult("pr_qty", "pr_qty");
 
             $rsm->addScalarResult("po_qty", "po_qty");
@@ -43,6 +89,11 @@ class DoctrinePRListRepository extends AbstractDoctrineRepository implements PRL
 
             $rsm->addScalarResult("ap_qty", "ap_qty");
             $rsm->addScalarResult("posted_ap_qty", "posted_ap_qty");
+
+            $rsm->addScalarResult("pr_name", "pr_name");
+            $rsm->addScalarResult("pr_year", "pr_year");
+
+            $rsm->addScalarResult("item_name", "item_name");
 
             $query = $this->getDoctrineEM()->createNativeQuery($sql, $rsm);
             $result = $query->getResult();

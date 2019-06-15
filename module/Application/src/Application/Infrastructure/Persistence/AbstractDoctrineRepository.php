@@ -2,7 +2,6 @@
 namespace Application\Infrastructure\Persistence;
 
 
-use Application\Domain\Exception\InvalidArgumentException;
 
 /**
  *
@@ -14,12 +13,6 @@ class AbstractDoctrineRepository
 
     protected $doctrineEM;
     
-    public function __construct(\Doctrine\ORM\EntityManager $doctrineEM){
-        if($doctrineEM ==null){
-            throw new InvalidArgumentException();
-        }
-        $this->doctrineEM = $doctrineEM;
-    }
     
 
     /**

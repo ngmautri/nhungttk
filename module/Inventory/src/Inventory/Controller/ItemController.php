@@ -329,7 +329,7 @@ class ItemController extends AbstractActionController
 
         $userId = $u->getId();
 
-        $notification = $this->itemCRUDService->create($dto, 1, $userId, __METHOD__, false);
+        $notification = $this->itemCRUDService->create($dto, 1, $userId, __METHOD__, true);
         if ($notification->hasErrors()) {
 
             $viewModel = new ViewModel(array(
@@ -2004,7 +2004,7 @@ class ItemController extends AbstractActionController
         $token = $this->params()->fromQuery('token');
         $criteria = array(
             'id' => $target_id,
-            'checksum' => $checksum,
+            //'checksum' => $checksum,
             'token' => $token
         );
 

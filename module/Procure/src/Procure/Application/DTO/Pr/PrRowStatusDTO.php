@@ -36,6 +36,7 @@ class PrRowStatusDTO extends PrRowDTO
     public $prYear;
     
     public $itemName;
+    public $itemDetail;
     public $itemSKU;
     
 }

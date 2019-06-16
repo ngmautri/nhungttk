@@ -7,6 +7,7 @@ use Procure\Application\Reporting\PR\Output\PrRowStatusInExcel;
 use Procure\Application\Reporting\PR\Output\PrRowStatusInHTMLTable;
 use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 use Procure\Infrastructure\Persistence\DoctrinePRListRepository;
+use Procure\Application\Reporting\PR\Output\PrRowStatusInOpenOffice;
 
 /**
  * PR Row Service.
@@ -25,26 +26,38 @@ class PrRowStatusReporter extends AbstractService
 
     public function getPrRowStatus($is_active = 1, $pr_year, $balance = 1, $sort_by, $sort, $limit, $offset, $outputStrategy)
     {
-      
         $factory = null;
         switch ($outputStrategy) {
             case \Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY:
                 $factory = new PrRowStatusInArray();
                 break;
             case PrRowStatusOutputStrategy::OUTPUT_IN_EXCEL:
-                $limit =0;
-                $offset =0;
-                
+                $limit = 0;
+                $offset = 0;
+
                 // download all
                 $factory = new PrRowStatusInExcel();
+                break;
+
+            case PrRowStatusOutputStrategy::OUTPUT_IN_OPEN_OFFICE:
+                $limit = 0;
+                $offset = 0;
+
+                // download all
+                $factory = new PrRowStatusInOpenOffice();
                 break;
 
             case PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE:
                 $factory = new PrRowStatusInHTMLTable();
                 $factory->setOffset($offset);
                 break;
+
+            default:
+                $factory = new PrRowStatusInArray();
+                break;
+                
         }
-        
+
         $result = $this->getPrListRespository()->getAllPrRow($is_active, $pr_year, $balance, $sort_by, $sort, $limit, $offset);
         return $factory->createOutput($result);
     }

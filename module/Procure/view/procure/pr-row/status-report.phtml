@@ -6,19 +6,20 @@ use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 
 $output1 = PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY;
 $title1 = "Gird View";
+$icon = 'fa fa-th';
 
 if ($output == PrRowStatusOutputStrategy::OUTPUT_IN_ARRAY) :
     $output1 = PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE;
     $title1 = "HTML View";
+    $icon = 'fa fa-list';
+    
 endif;
 
 $link = "/procure/pr-row/status-report?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s&output=%s";
 $url = $this->baseUrl . sprintf($link, $pr_year, $balance, $is_active, $sort_by, $sort, $output1);
 
-
 $link1 = "/procure/pr-row/status-report-gird?pr_year=%s&balance=%s&is_active=%s&sort_by=%s&sort=%s";
 $url1 = $this->baseUrl . sprintf($link1, $pr_year, $balance, $is_active, $sort_by, $sort);
-
 
 $filtered1 = "Year=%s, Balance=%s, Sorted By=%s %s, Display=%s";
 $filtered = sprintf($filtered1, $pr_year, $balance, $sort_by, $sort, $output1);
@@ -155,23 +156,59 @@ $filtered = sprintf($filtered1, $pr_year, $balance, $sort_by, $sort, $output1);
 				</form>
 			</div>
 		</div>
-
-		<div style="position: relative; float: right; margin-bottom: 3px">
-			<a class="btn btn-default btn-sm"
-				href="<?php echo $this->baseUrl ?>/procure/pr-row/status-report?output=<?php echo PrRowStatusOutputStrategy::OUTPUT_IN_EXCEL;?>&pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>"><i
-				class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel</a>
-		</div>
-
-		<hr>
-
-
-
+	
 		<div style="color: gray; font-size: 9pt; margin-top: 8px"><?php echo $filtered; ?>
+		</div>
+		
+		<hr style="font-size: 9.5pt;margin: 3pt 1pt 5pt 1pt;">
 
-&nbsp;&nbsp;&nbsp;<a class="btn btn-default btn-sm"
-				style="color: black; padding: 1pt 5pt 1pt 5pt; margin: 1pt 5pt 5pt 1pt;"
+
+		<div id="transaction" class="collapse in">
+			<div id="pr_rows">
+
+				<div style="font-size: 9pt">
+
+					<div class="dropdown">
+						<button
+							style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+							title="" class="btn btn-default dropdown-toggle btn-sm"
+							type="button" id="dropdownMenu1" data-toggle="dropdown"
+							aria-haspopup="true" aria-expanded="true">
+							<i class="fa fa-download" aria-hidden="true"></i>&nbsp;Download &nbsp;<span
+								class="caret"></span>
+						</button>
+						<!-- 
+						<a
+							style="font-size: 9.5pt; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
+							title="<?php echo $this->translate("Refresh");?>"
+							class="btn btn-default btn-sm" href="javascript:;"
+							onclick="refreshGird();">&nbsp;<i class="fa fa-refresh"
+							aria-hidden="true"></i>&nbsp;
+						</a> 
+						 -->
+						
+						<a class="btn btn-default btn-sm"
+				style="color: black; margin-bottom: 2pt; padding: 3pt 5pt 3pt 5pt;"
 				title="<?php echo $title1; ?>" href="<?php echo $url;?>"> <i
-				class="fa fa-th" aria-hidden="true"></i></a>
+				class="<?php echo $icon;?>" aria-hidden="true"></i> </a>
+
+						<ul style="font-size: 9.5pt;" class="dropdown-menu"
+							aria-labelledby="dropdownMenu1">
+							
+								<li><a class=""
+				href="<?php echo $this->baseUrl ?>/procure/pr-row/status-report?output=<?php echo PrRowStatusOutputStrategy::OUTPUT_IN_EXCEL;?>&pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>"><i
+				class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;Excel (*.xlxs)</a></li>
+							
+									<li><a class=""
+				href="<?php echo $this->baseUrl ?>/procure/pr-row/status-report?output=<?php echo PrRowStatusOutputStrategy::OUTPUT_IN_OPEN_OFFICE;?>&pr_year=<?php echo $pr_year;?>&is_active=<?php echo $is_active; ?>&sort_by=<?php echo $sort_by ?>&sort=<?php echo $sort ?>&balance=<?php echo $balance ?>"><i
+				class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;&nbsp;OpenOffice (*.ods)</a></li>
+					
+						</ul>
+					</div>
+
+				</div>
+
+			</div>
 		</div>
 
 <?php

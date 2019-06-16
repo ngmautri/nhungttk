@@ -581,7 +581,7 @@ class QuoteRowController extends AbstractActionController
                                 ->getPr()
                                 ->getChecksum());
 
-                            $a_json_row["pr_number"] = $a->getPrRow()->getRowIdentifer() . $link;
+                            $a_json_row["pr_number"] = sprintf('<span style="font-size:8pt; color: gray text;">%s</span>',$a->getPrRow()->getPr()->getPrName()) . $link;
                         }
                     }
 

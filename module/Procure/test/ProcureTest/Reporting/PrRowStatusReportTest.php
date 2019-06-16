@@ -3,11 +3,10 @@ namespace ProcureTest\DTO;
 
 use ProcureTest\Bootstrap;
 use Procure\Application\Reporting\PR\PrRowStatusReporter;
+use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 use Procure\Domain\Exception\InvalidArgumentException;
 use Procure\Infrastructure\Persistence\DoctrinePRListRepository;
 use PHPUnit_Framework_TestCase;
-use Doctrine\Entity\E;
-use Doctrine\ORM\EntityManager;
 
 class PrRowStatusReportTest extends PHPUnit_Framework_TestCase
 {
@@ -35,21 +34,13 @@ class PrRowStatusReportTest extends PHPUnit_Framework_TestCase
             $doctrineEM = Bootstrap::getServiceManager()->get('doctrine.entitymanager.orm_default');
             $rep = new DoctrinePRListRepository();
             $rep->setDoctrineEM($doctrineEM);
-
+            
+        
             $reporter = new PrRowStatusReporter();
             $reporter->setPrListRespository($rep);
             $reporter->setDoctrineEM($doctrineEM);
-            $results = $reporter->getPrRowStatus(1, 2019, 1, "itemName", "ASC",0,0);
-
-            $n = 0;
-            foreach ($results as $result) {
-                var_dump((array) $result);
-                $n ++;
-                echo $n;
-                if ($n == 1) {
-                    break;
-                }
-            }
+            $results = $reporter->getPrRowStatus(1, 2019, 0, "itemName", "ASC",10,1,PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE);
+            var_dump($results);
         } catch (InvalidArgumentException $e) {
             echo $e->getMessage();
         }

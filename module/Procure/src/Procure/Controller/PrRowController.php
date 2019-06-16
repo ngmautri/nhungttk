@@ -15,6 +15,8 @@ use Zend\Escaper\Escaper;
 use Procure\Service\PrSearchService;
 use Zend\Cache\Storage\StorageInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Procure\Application\Reporting\PR\PrRowStatusReporter;
+use Procure\Application\Reporting\PR\Output\PrRowStatusOutputStrategy;
 
 /**
  *
@@ -31,6 +33,8 @@ class PrRowController extends AbstractActionController
     protected $prService;
 
     protected $cacheService;
+
+    protected $prRowStatusReporter;
 
     /**
      *
@@ -188,15 +192,14 @@ class PrRowController extends AbstractActionController
     {
         $request = $this->getRequest();
         $this->layout("Procure/layout-fullscreen");
-        
+
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-     
+
         // Is Posting .................
         // ============================
 
@@ -244,13 +247,13 @@ class PrRowController extends AbstractActionController
 
             $entity = new NmtProcurePrRow();
             $entity->setPr($target);
-            
+
             $n = $entity_array['total_row'] + 1;
             $rowIdentifer = $target->getPrAutoNumber() . "-$n";
             $entity->setRowIdentifer($rowIdentifer);
 
-            $errors = $this->prService->saveRow($target, $entity, $data,$u, TRUE, __METHOD__);
-   
+            $errors = $this->prService->saveRow($target, $entity, $data, $u, TRUE, __METHOD__);
+
             if (count($errors) > 0) {
                 $viewModel = new ViewModel(array(
                     'action' => \Application\Model\Constants::FORM_ACTION_ADD,
@@ -261,14 +264,13 @@ class PrRowController extends AbstractActionController
                     'total_row' => $entity_array['total_row'],
                     'max_row_number' => $entity_array['max_row_number'],
                     'active_row' => $entity_array['active_row'],
-                     'nmtPlugin' => $nmtPlugin
+                    'nmtPlugin' => $nmtPlugin
                 ));
 
                 $viewModel->setTemplate("procure/pr-row/crud");
                 return $viewModel;
             }
 
-          
             $m = sprintf('[OK] Row #%s for PR#%s created.', $entity->getRowIdentifer(), $target->getId());
 
             // to update.
@@ -403,6 +405,100 @@ class PrRowController extends AbstractActionController
             'item_type' => $item_type,
             'balance' => $balance,
             'pr_year' => $pr_year
+        ));
+    }
+
+    /**
+     *
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function statusReportAction()
+    {
+
+        // $this->layout ( "layout/fluid" );
+        $item_type = $this->params()->fromQuery('item_type');
+        $is_active = (int) $this->params()->fromQuery('is_active');
+        $is_fixed_asset = (int) $this->params()->fromQuery('is_fixed_asset');
+
+        $output = (int) $this->params()->fromQuery('output');
+
+        $sort_by = $this->params()->fromQuery('sort_by');
+        $sort = $this->params()->fromQuery('sort');
+        $balance = $this->params()->fromQuery('balance');
+        $pr_year = $this->params()->fromQuery('pr_year');
+       
+        if (is_null($this->params()->fromQuery('perPage'))) {
+            $resultsPerPage = 30;
+        } else {
+            $resultsPerPage = $this->params()->fromQuery('perPage');
+        }
+        ;
+
+        if (is_null($this->params()->fromQuery('page'))) {
+            $page = 1;
+        } else {
+            $page = $this->params()->fromQuery('page');
+        }
+        ;
+
+        if ($output == null) :
+            // $sort_by = "prNumber";
+            $output = PrRowStatusOutputStrategy::OUTPUT_IN_HMTL_TABLE;
+        endif;
+
+        if ($sort_by == null) :
+            // $sort_by = "prNumber";
+            $sort_by = "itemName";
+        endif;
+
+            // $n = new NmtInventoryItem();
+        if ($balance == null) :
+            $balance = 1;
+        endif;
+
+        if ($is_active == null) :
+            $is_active = 1;
+        endif;
+
+            // $n = new NmtInventoryItem();
+        if ($pr_year == null) :
+            // $pr_year = date('Y');
+            $pr_year = 0;
+        endif;
+
+        if ($sort == null) :
+            $sort = "ASC";
+        endif;
+
+        $paginator = null;
+        $result = null;
+        
+        $total_records = $this->getPrRowStatusReporter()->getPrRowStatusTotal($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0, $output);
+        
+         
+        if ($total_records > $resultsPerPage) {
+            $paginator = new Paginator($total_records, $page, $resultsPerPage);
+            $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, ($paginator->maxInPage - $paginator->minInPage) + 1, $paginator->minInPage - 1, $output);
+        } else {
+            $result = $this->getPrRowStatusReporter()->getPrRowStatus($is_active, $pr_year, $balance, $sort_by, $sort, 0, 0, $output);
+        }
+
+        // $all = $this->doctrineEM->getRepository ( 'Application\Entity\NmtInventoryItem' )->getAllItem();
+        // var_dump (count($all));
+
+        return new ViewModel(array(
+            'sort_by' => $sort_by,
+            'sort' => $sort,
+            'is_active' => $is_active,
+            'is_fixed_asset' => $is_fixed_asset,
+            'per_pape' => $resultsPerPage,
+            'item_type' => $item_type,
+            'balance' => $balance,
+            'pr_year' => $pr_year,
+            'output' => $output,
+            'result' => $result,
+            'paginator' => $paginator,
+            
         ));
     }
 
@@ -1257,9 +1353,8 @@ class PrRowController extends AbstractActionController
                 $a_json_row["item_sku"] = '<span title="' . $pr_row_entity->getItem()->getItemSku() . '">' . substr($pr_row_entity->getItem()->getItemSku(), 0, 5) . '</span>';
 
                 $a_json_row["row_name"] = '<span style="font-size:8pt; color: graytext">' . $pr_row_entity->getRowName() . '</span';
-                $a_json_row["row_code"] = '<span style="font-size:8pt; color: graytext">'. $pr_row_entity->getRowCode() . '</span';
-                
-                
+                $a_json_row["row_code"] = '<span style="font-size:8pt; color: graytext">' . $pr_row_entity->getRowCode() . '</span';
+
                 if (strlen($pr_row_entity->getItem()->getItemName()) < 35) {
                     $a_json_row["item_name"] = $pr_row_entity->getItem()->getItemName() . '<a style="cursor:pointer; color:#337ab7"  item-pic="" id="' . $pr_row_entity->getItem()->getId() . '" item_name="' . $pr_row_entity->getItem()->getItemName() . '" title="' . $pr_row_entity->getItem()->getItemName() . '" href="javascript:;" onclick="' . $onclick . '" >&nbsp;&nbsp;(i)&nbsp;</a>';
                 } else {
@@ -1901,13 +1996,11 @@ class PrRowController extends AbstractActionController
             }
             $count = 0;
             foreach ($list as $a) {
-                
-             
 
                 /**@var \Application\Entity\NmtProcurePrRow $pr_row_entity ;*/
                 $pr_row_entity = $a[0];
-                
-                if($pr_row_entity->getItem()==null){
+
+                if ($pr_row_entity->getItem() == null) {
                     continue;
                 }
 
@@ -2142,11 +2235,10 @@ class PrRowController extends AbstractActionController
 
         /**@var \Application\Controller\Plugin\NmtPlugin $nmtPlugin ;*/
         $nmtPlugin = $this->Nmtplugin();
-        
+
         $u = $this->doctrineEM->getRepository('Application\Entity\MlaUsers')->findOneBy(array(
             "email" => $this->identity()
         ));
-        
 
         // Is Posting .................
         // ============================
@@ -2183,7 +2275,6 @@ class PrRowController extends AbstractActionController
                     'total_row' => null,
                     'max_row_number' => null,
                     'nmtPlugin' => $nmtPlugin
-                    
                 ));
 
                 $viewModel->setTemplate("procure/pr-row/crud");
@@ -2208,7 +2299,7 @@ class PrRowController extends AbstractActionController
             }
 
             $errors = $this->prService->saveRow($target, $entity, $data, $u, FALSE, __METHOD__);
-            
+
             if ($nTry >= 3) {
                 $errors[] = sprintf('Do you really want to edit "%s"?', $entity->getPr()->getPrName() . '=>' . $entity->getRowIdentifer());
             }
@@ -2238,7 +2329,7 @@ class PrRowController extends AbstractActionController
             }
 
             $m = sprintf('"PR Row #%s; %s" updated', $entity->getId(), $entity->getRowIdentifer());
-        
+
             $index_update_status = $this->prSearchService->updateIndex(0, $entity, FALSE);
 
             $this->flashMessenger()->addMessage($index_update_status);
@@ -2387,5 +2478,23 @@ class PrRowController extends AbstractActionController
     public function setPrService(\Procure\Service\PrService $prService)
     {
         $this->prService = $prService;
+    }
+
+    /**
+     *
+     * @return \Procure\Application\Reporting\PR\PrRowStatusReporter
+     */
+    public function getPrRowStatusReporter()
+    {
+        return $this->prRowStatusReporter;
+    }
+
+    /**
+     *
+     * @param PrRowStatusReporter $prRowStatusReporter
+     */
+    public function setPrRowStatusReporter(PrRowStatusReporter $prRowStatusReporter)
+    {
+        $this->prRowStatusReporter = $prRowStatusReporter;
     }
 }

@@ -88,6 +88,15 @@ return array(
                 'icon' => 'glyphicon glyphicon-list'
             
             ),
+            
+            array(
+                'label' => 'PR Row Report',
+                'route' => 'procure/default',
+                'controller' => 'pr-row',
+                'action' => 'status-report',
+                'icon' => 'glyphicon glyphicon-list'
+                
+            ),
             array(
                 'label' => 'Log',
                 'route' => 'procure/default',
@@ -212,6 +221,15 @@ return array(
             'Procure\Service\ApSearchService' => 'Procure\Service\ApSearchServiceFactory',
             
             'Procure\Service\Upload\PrRowUploadService' => 'Procure\Service\Upload\PrRowUploadServiceFactory',
+
+            
+            // Repository Service
+            'Procure\Infrastructure\Persistence\DoctrinePRListRepository' => 'Procure\Infrastructure\Persistence\Factory\DoctrinePRListRepositoryFactory',
+            
+            
+            // Reporing Service
+            'Procure\Application\Reporting\PR\PrRowStatusReporter' => 'Procure\Application\Reporting\PR\PrRowStatusReporterFactory',
+            
         )
     ),
     
